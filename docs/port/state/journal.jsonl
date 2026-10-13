@@ -11,3 +11,4 @@
 {"at": "2026-10-13T17:24:20+00:00", "event": "meter", "weeklyPct": 5.0, "fiveHourPct": 10.0, "note": "after P0-A: 9 agents, 837k subagent tokens, weekly moved <1 point"}
 {"at": "2026-10-13T17:26:11+00:00", "event": "add-batch", "batch": "P0-B1", "wps": ["P0-04", "P0-06", "P0-07"], "estimatedAgents": 10}
 {"at": "2026-10-13T17:26:11+00:00", "event": "set-batch", "batch": "P0-B1", "status": "running", "runId": null}
+{"at": "2026-10-13T17:26:18+00:00", "event": "set-batch", "batch": "P0-B1", "status": "running", "runId": "wf_1572df5b-70c"}
