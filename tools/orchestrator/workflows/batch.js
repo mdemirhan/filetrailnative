@@ -12,8 +12,11 @@ export const meta = {
   ],
 }
 
-// args: { batchId, repo, preamble, integrate, critic, wps: [{ id, title, risk, model, lenses, gate, brief }] }
+// args: { batchId, repo, integrate, critic, wps: [{ id, title, risk, model, lenses, gate }] }
+// Agents read their instructions from the committed files docs/port/state/preamble.md and
+// docs/port/state/wp/<id>.md, so the workflow input stays small.
 const A = args
+const PRE = 'First read docs/port/state/preamble.md (in your working copy) and follow it.'
 const MAX_FIX_LOOPS = 2
 
 const IMPL = {
@@ -100,7 +103,7 @@ function modelOpts(wp) {
   return { model: 'sonnet', effort: 'medium' }
 }
 
-const head = (wp) => `${A.preamble}\n\n# Work package ${wp.id}: ${wp.title}\nRisk: ${wp.risk}. Branch: port/${wp.id}.\n\n${wp.brief}\n`
+const head = (wp) => `${PRE}\n\n# Work package ${wp.id}: ${wp.title}\nRisk: ${wp.risk}. Branch: port/${wp.id}.\nYour brief is docs/port/state/wp/${wp.id}.md: read it in full before starting.\n`
 const gateList = (wp) => (wp.gate.length ? wp.gate.map((c) => `- \`${c}\``).join('\n') : '- `scripts/ci.sh --scope ' + wp.id + '` (if scripts/ci.sh exists)')
 
 function implement(wp) {
@@ -121,7 +124,7 @@ Return status "blocked" only if the brief cannot be done; list why in blockers, 
 
 function gate(wp, round) {
   return agent(
-    `${A.preamble}\n\n## Your role: gate runner for work package ${wp.id}
+    `${PRE}\n\n## Your role: gate runner for work package ${wp.id}
 In your own worktree, run \`git checkout --detach port/${wp.id}\`, then run each gate command below from the repo root, in order:
 ${gateList(wp)}
 Report pass only if every command exits 0. Do not change or commit anything. For each failure, quote at most 40 relevant lines.`,
@@ -207,7 +210,7 @@ const ready = reports.filter((r) => r && r.status === 'ready')
 if (A.integrate && ready.length) {
   phase('Integrate')
   integration = await agent(
-    `${A.preamble}\n\n## Your role: integrator for batch ${A.batchId}
+    `${PRE}\n\n## Your role: integrator for batch ${A.batchId}
 You work in the orchestrator's checkout (${A.repo}), which has port/integration checked out. Do not switch branches here and do not touch docs/port/state/.
 Merge these branches one at a time, in this order, with \`git merge --no-ff port/<id> -m "Merge <id>: <title>"\`:
 ${ready.map((r) => `- port/${r.id}${r.sharedFileRequests && r.sharedFileRequests.length ? ` — shared-file requests to apply after merging it: ${r.sharedFileRequests.join('; ')}` : ''}`).join('\n')}
@@ -220,7 +223,7 @@ Return the merged ids, the final head sha and whether the last CI run passed.`,
 let critic = null
 if (A.critic) {
   phase('Critic')
-  critic = await agent(`${A.preamble}\n\n## Your role: phase critic\n${A.critic}`, {
+  critic = await agent(`${PRE}\n\n## Your role: phase critic\n${A.critic}`, {
     label: `critic:${A.batchId}`, phase: 'Critic', schema: CRITIC, model: 'sonnet', effort: 'medium',
   })
 }

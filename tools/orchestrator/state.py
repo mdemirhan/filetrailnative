@@ -73,7 +73,6 @@ def batch_args(state: dict[str, Any], batch_id: str) -> dict[str, Any]:
     wps = []
     for wp_id in batch["wps"]:
         wp = state["wps"][wp_id]
-        brief = (STATE_DIR / "wp" / f"{wp_id}.md").read_text()
         wps.append(
             {
                 "id": wp_id,
@@ -82,13 +81,11 @@ def batch_args(state: dict[str, Any], batch_id: str) -> dict[str, Any]:
                 "model": wp["model"],
                 "lenses": wp.get("lenses", []),
                 "gate": wp.get("gate", []),
-                "brief": brief,
             }
         )
     return {
         "batchId": batch_id,
         "repo": str(ROOT),
-        "preamble": PREAMBLE.read_text(),
         "integrate": batch.get("integrate", True),
         "critic": batch.get("critic"),
         "wps": wps,
