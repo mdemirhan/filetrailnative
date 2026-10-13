@@ -236,9 +236,8 @@
                 }
                 return Outcome(.ok)
             case .prefs(let prefs):
-                guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
                 return AutomationPrefs.apply(
-                    prefs, context: .init(controller: controller, window: window, prefs: prefs))
+                    prefs, context: .init(controller: currentController, window: window, prefs: prefs))
             case .open(let path):
                 guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
                 guard let url = scenario?.resolve(path) else { return Outcome(.failed, "no scenario") }

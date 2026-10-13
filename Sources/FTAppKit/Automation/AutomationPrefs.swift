@@ -16,7 +16,8 @@
         }
 
         struct Context {
-            var controller: MainWindowController
+            /// The explorer window's controller; nil when the window steps act on is another one.
+            var controller: MainWindowController?
             var window: NSWindow
             /// Every value of the step, for keys that go together (sortBy and sortDirection).
             var prefs: [String: Scenario.PrefValue]
@@ -101,9 +102,10 @@
                 return .applied
             },
             "viewMode": { value, context in
+                guard let controller = context.controller else { return .unsupported("viewMode outside an explorer") }
                 switch value.string {
-                case "icons": context.controller.showAsIcons(nil)
-                case "details": context.controller.showAsList(nil)
+                case "icons": controller.showAsIcons(nil)
+                case "details": controller.showAsList(nil)
                 case "list": return .unsupported("viewMode list")
                 default: return .failed("viewMode \(describe(value))")
                 }
@@ -111,9 +113,10 @@
             },
             "sortBy": { value, context in
                 guard let key = value.string else { return .failed("sortBy \(describe(value))") }
+                guard let controller = context.controller else { return .unsupported("sortBy outside an explorer") }
                 let ascending = (context.prefs["sortDirection"]?.string ?? "asc") != "desc"
                 return AutomationCommands.sort(
-                    by: key, ascending: ascending, controller: context.controller, window: context.window)
+                    by: key, ascending: ascending, controller: controller, window: context.window)
                     ? .applied : .unsupported("sortBy \(key)")
             },
             "sortDirection": { value, context in
@@ -122,8 +125,11 @@
                 }
                 // Applied with sortBy when the step has both.
                 if context.prefs["sortBy"] != nil { return .applied }
+                guard let controller = context.controller else {
+                    return .unsupported("sortDirection outside an explorer")
+                }
                 return AutomationCommands.sort(
-                    by: "name", ascending: direction == "asc", controller: context.controller, window: context.window)
+                    by: "name", ascending: direction == "asc", controller: controller, window: context.window)
                     ? .applied : .unsupported("sortDirection")
             },
             "zoomPercent": { value, _ in

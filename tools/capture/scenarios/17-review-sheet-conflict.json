@@ -20,7 +20,7 @@
     {"step":"expect","element":"title","text":"Copies"},
     {"step":"key","key":"v","modifiers":["cmd"]},
     {"step":"expectSheet","name":"review sheet"},
-    {"step":"expect","element":"review sheet heading","text":"2 of 2 items already exist in “Copies”"},
+    {"step":"expect","element":"review sheet title","text":"2 of 2 items already exist in “Copies”"},
     {"step":"wait","ms":300},
     {"step":"snapshot","name":"main"},
     {"step":"geometry","name":"main"},
