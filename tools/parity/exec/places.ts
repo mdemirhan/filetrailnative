@@ -172,8 +172,9 @@ export async function makePlaces(scenario: Scenario): Promise<Places> {
   };
 }
 
-// Makes the scenario's tree: items in order, then modes and flags deepest first, so a
-// read-only or locked folder is filled before it is closed.
+// Makes the scenario's tree: items in order, then modes and flags deepest first (the most path
+// components first; equally deep ones last item first), so a read-only or locked folder is filled
+// before it is closed.
 export async function buildTree(places: Places, tree: ScenarioItem[]): Promise<void> {
   const { nativeSetFlags } = await nativeFs();
   for (const item of tree) {
@@ -187,7 +188,8 @@ export async function buildTree(places: Places, tree: ScenarioItem[]): Promise<v
       await symlink(item.target, path);
     }
   }
-  for (const item of [...tree].reverse()) {
+  const depth = (item: ScenarioItem) => item.path.split("/").length;
+  for (const item of [...tree].reverse().sort((a, b) => depth(b) - depth(a))) {
     if (item.kind === "symlink") {
       continue;
     }
@@ -202,19 +204,53 @@ export async function buildTree(places: Places, tree: ScenarioItem[]): Promise<v
 
 // What the scenario's tree holds now, wherever its folders are.
 export async function snapshotPlaces(places: Places): Promise<SnapshotEntry[]> {
-  const entries = await snapshotTree(places.root);
-  for (const volume of places.volumes) {
-    entries.push(...(await snapshotTree(volume.root)));
+  return snapshotAll([places.root, ...places.volumes.map((volume) => volume.root)]);
+}
+
+// What the Trash folders hold now.
+export async function snapshotTrash(places: Places): Promise<SnapshotEntry[]> {
+  return snapshotAll([places.trash, ...places.volumes.map((volume) => volume.trash)]);
+}
+
+// Snapshots of several roots, merged and sorted. Folders the owner can't list and files the
+// owner can't read are opened for the snapshot (u+rx, u+r) and closed again after, and keep
+// their own mode in it.
+async function snapshotAll(roots: string[]): Promise<SnapshotEntry[]> {
+  const entries: SnapshotEntry[] = [];
+  for (const root of roots) {
+    const opened = await openForSnapshot(root, "");
+    try {
+      const modes = new Map(opened.map((item) => [item.relative.normalize("NFD"), item.mode]));
+      for (const entry of await snapshotTree(root)) {
+        const mode = modes.get(entry.path);
+        entries.push(mode === undefined ? entry : { ...entry, mode: mode.toString(8).padStart(4, "0") });
+      }
+    } finally {
+      for (const item of opened.reverse()) {
+        await chmod(join(root, item.relative), item.mode).catch(() => {});
+      }
+    }
   }
   return entries.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 }
 
-export async function snapshotTrash(places: Places): Promise<SnapshotEntry[]> {
-  const entries = await snapshotTree(places.trash);
-  for (const volume of places.volumes) {
-    entries.push(...(await snapshotTree(volume.trash)));
+async function openForSnapshot(root: string, relative: string): Promise<Array<{ relative: string; mode: number }>> {
+  const opened: Array<{ relative: string; mode: number }> = [];
+  for (const name of await readdir(relative === "" ? root : join(root, relative))) {
+    const childRelative = relative === "" ? name : `${relative}/${name}`;
+    const path = join(root, childRelative);
+    const stats = await lstat(path);
+    const mode = stats.mode & 0o7777;
+    const needed = stats.isDirectory() ? 0o500 : stats.isFile() ? 0o400 : 0;
+    if ((mode & needed) !== needed) {
+      await chmod(path, mode | needed);
+      opened.push({ relative: childRelative, mode });
+    }
+    if (stats.isDirectory()) {
+      opened.push(...(await openForSnapshot(root, childRelative)));
+    }
   }
-  return entries.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+  return opened;
 }
 
 // Clears locks, opens every folder to its owner, and removes the work folder and the
