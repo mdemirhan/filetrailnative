@@ -119,12 +119,17 @@ struct AppPreferencesTests {
     // F-015
     @Test func savedColumnOrdersDropUnknownOrDuplicateKeysAndAppendNewColumns() {
         let order = JSONNode.array(["size", "size", "name", "bogus", "modified"].map(JSONNode.string) + [.number(5)])
-        #expect(AppPreferenceLimits.normalizeDetailColumnOrder(order) == [.size, .modified, .kind, .created, .permissions])
+        #expect(
+            AppPreferenceLimits.normalizeDetailColumnOrder(order) == [.size, .modified, .kind, .created, .permissions])
         #expect(AppPreferenceLimits.normalizeDetailColumnOrder(nil) == AppPreferenceLimits.defaultDetailColumnOrder)
-        #expect(AppPreferenceLimits.normalizeDetailColumnOrder(.string("size")) == AppPreferenceLimits.defaultDetailColumnOrder)
+        #expect(
+            AppPreferenceLimits.normalizeDetailColumnOrder(.string("size"))
+                == AppPreferenceLimits.defaultDetailColumnOrder)
         let search = JSONNode.array(["kind", "folder"].map(JSONNode.string))
         #expect(
-            AppPreferenceLimits.normalizeSearchColumnOrder(search) == [.kind, .folder, .modified, .size, .created, .permissions])
+            AppPreferenceLimits.normalizeSearchColumnOrder(search) == [
+                .kind, .folder, .modified, .size, .created, .permissions,
+            ])
     }
 
     @Test func acceptsAnAccentAsSixHexDigitsAndWritesItInLowerCase() {

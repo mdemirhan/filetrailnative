@@ -32,10 +32,12 @@ struct ToolbarItemsTests {
 
     // T-1f3bf2e9 F-067
     @Test func putsAFixedItemThatAListIsMissingAtTheEnd() {
-        #expect(Self.sanitized(["search", "back", "title"]) == ["search", "back", "title", "clipboard", "viewOptions"])
+        #expect(
+            Self.sanitized(["search", "back", "title"]) == ["search", "back", "title", "clipboard", "viewOptions"])
         #expect(
             Self.sanitized(["back", "view"]) == ["back", "view", "title", "clipboard", "search", "viewOptions"])
-        #expect(ToolbarItems.sanitizeTopItems(.null).map(\.rawValue) == ["title", "clipboard", "search", "viewOptions"])
+        #expect(
+            ToolbarItems.sanitizeTopItems(.null).map(\.rawValue) == ["title", "clipboard", "search", "viewOptions"])
     }
 
     // T-ebfaa9c3 F-017 F-067
@@ -117,7 +119,8 @@ struct ToolbarItemsTests {
         #expect(ToolbarItems.ids.count == 37)
         #expect(Set(ToolbarItems.ids).count == 37)
         #expect(ToolbarItems.definitions.filter(\.allowDuplicates).map(\.id) == [.topSeparator])
-        #expect(ToolbarItems.definitions.filter(\.topRequired).map(\.id) == [.title, .clipboard, .viewOptions, .search])
+        #expect(
+            ToolbarItems.definitions.filter(\.topRequired).map(\.id) == [.title, .clipboard, .viewOptions, .search])
         #expect(ToolbarItems.definition(.editSelection).tooltipLabel == "Edit in Text Editor")
         #expect(ToolbarItems.definition(.help).tooltipLabel == "File Trail Help")
         #expect(ToolbarItems.definition(.trashSelection).shortcutCommand == .trashSelection)

@@ -71,7 +71,9 @@ struct CommandAvailabilityGoldenTests {
             actionNoticeOpen: input.shortcut.actionNoticeOpen, copyPasteModalOpen: input.shortcut.copyPasteModalOpen,
             focusedPane: pane(input.shortcut.focusedPane), locationSheetOpen: input.shortcut.locationSheetOpen,
             mainView: MainView(rawValue: input.shortcut.mainView) ?? .explorer,
-            selectedTreeTargetKind: input.shortcut.selectedTreeTargetKind.flatMap { SelectedTreeTargetKind(rawValue: $0) })
+            selectedTreeTargetKind: input.shortcut.selectedTreeTargetKind.flatMap {
+                SelectedTreeTargetKind(rawValue: $0)
+            })
         let context = CommandAvailabilityContext(
             shortcutContext: shortcut, currentPath: input.currentPath, selectedPathsInViewOrder: input.selectedPaths,
             activeContentEntries: input.entries.map(entry), selectedEntry: input.selectedEntry.map(entry),

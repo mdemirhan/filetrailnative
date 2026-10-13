@@ -33,36 +33,52 @@ public struct ToolbarTooltipState: Equatable, Sendable {
 /// - Text that can be cut short (a name, a path) carries the whole text, and a value shown in short
 ///   (a relative date, a permission code) carries the exact one.
 public enum Tooltips {
-    /// `shortcutLabel` is the shortcut already written as symbols ("⌘⌫"); the shortcut table that
-    /// writes it is the commands package's.
+    /// `shortcutLabel` is the shortcut already written as symbols ("⌘⌫").
     public static func format(_ label: String, shortcutLabel: String? = nil) -> String {
         guard let shortcutLabel, !shortcutLabel.isEmpty else { return label }
         return "\(label) (\(shortcutLabel))"
     }
 
-    /// The name of a toolbar item whose wording depends on state, or nil for one whose name is its
-    /// definition's (`tooltipLabel ?? label` in the toolbar items table). `itemID` is the toolbar
-    /// item's id as the table spells it.
-    public static func toolbarItemLabel(itemID: String, state: ToolbarTooltipState = ToolbarTooltipState()) -> String? {
+    /// `formatTooltip`: the shortcut is written as in the app's data ("Cmd+Backspace") and shown as symbols.
+    public static func format(_ label: String, shortcut: String?) -> String {
+        guard let shortcut, !shortcut.isEmpty else { return label }
+        return format(label, shortcutLabel: ShortcutLabels.format(shortcut))
+    }
+
+    /// `getToolbarItemLabel`: the item's name where it is listed or pointed at: its tooltip, and the » menu.
+    public static func toolbarItemLabel(itemID: ToolbarItemID, state: ToolbarTooltipState = ToolbarTooltipState())
+        -> String
+    {
         switch itemID {
-        case "foldersFirst":
+        case .foldersFirst:
             return state.foldersFirst == true ? "Mix Files and Folders" : "List Folders First"
-        case "hidden":
+        case .hidden:
             return state.hiddenFilesShown == true ? "Hide Hidden Files" : "Show Hidden Files"
-        case "folderTree":
+        case .folderTree:
             return state.folderTreeOpen == false ? "Show Folder Tree" : "Hide Folder Tree"
-        case "infoPanel":
+        case .infoPanel:
             return state.infoPanelOpen == true ? "Hide Info Panel" : "Show Info Panel"
-        case "infoRow":
+        case .infoRow:
             return state.infoRowOpen == true ? "Hide Info Row" : "Show Info Row"
-        case "editSelection":
+        case .editSelection:
             if let name = state.textEditorName, !name.isEmpty {
                 return "Edit in \(name)"
             }
-            return nil
         default:
-            return nil
+            break
         }
+        let definition = ToolbarItems.definition(itemID)
+        return definition.tooltipLabel ?? definition.label
+    }
+
+    /// `getToolbarItemTooltip`: the item's name, then the key it has now.
+    public static func toolbarItemTooltip(
+        itemID: ToolbarItemID, state: ToolbarTooltipState = ToolbarTooltipState(),
+        shortcuts: ShortcutDisplay = .defaults
+    ) -> String {
+        let command = ToolbarItems.definition(itemID).shortcutCommand
+        return format(
+            toolbarItemLabel(itemID: itemID, state: state), shortcut: command.flatMap { shortcuts.written($0) })
     }
 }
 

@@ -230,4 +230,31 @@ public enum ApplicationMenu {
         ])
         return items
     }
+
+    // MARK: Applying the states
+
+    /// What `applyApplicationMenuItemStates` needs of a menu item.
+    public protocol ItemControl: AnyObject {
+        var isEnabled: Bool { get set }
+        var isVisible: Bool { get set }
+        var isChecked: Bool { get set }
+        /// A radio item is only ever switched on: that switches the others in its group off.
+        var isRadio: Bool { get }
+    }
+
+    /// `applyApplicationMenuItemStates`: sets what changed on the items the menu has, and skips the others.
+    public static func apply<Item: ItemControl>(_ states: [ApplicationMenuItemState], item: (String) -> Item?) {
+        for state in states {
+            guard let control = item(state.id) else { continue }
+            if let enabled = state.enabled, control.isEnabled != enabled {
+                control.isEnabled = enabled
+            }
+            if let visible = state.visible, control.isVisible != visible {
+                control.isVisible = visible
+            }
+            if let checked = state.checked, control.isChecked != checked, !control.isRadio || checked {
+                control.isChecked = checked
+            }
+        }
+    }
 }

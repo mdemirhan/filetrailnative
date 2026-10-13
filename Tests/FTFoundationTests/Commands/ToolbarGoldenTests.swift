@@ -42,7 +42,8 @@ struct ToolbarGoldenTests {
             }
         }
         return Output(
-            sanitized: sanitized.map(\.rawValue), palette: ToolbarItems.paletteItems(excluding: sanitized).map(\.rawValue),
+            sanitized: sanitized.map(\.rawValue),
+            palette: ToolbarItems.paletteItems(excluding: sanitized).map(\.rawValue),
             edited: edited.map(\.rawValue))
     }
 

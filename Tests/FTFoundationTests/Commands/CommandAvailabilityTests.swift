@@ -481,7 +481,13 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.duplicateSelection, inTrash))
         #expect(Self.run(.renameSelection, inTrash))
         #expect(Self.run(.trashSelection, Self.context { $0.homePath = "/Users/demo" }))
-        #expect(!Self.run(.newFolder, Self.context { $0.currentPath = "/Users/demo/.Trash"; $0.homePath = "/Users/demo" }))
+        #expect(
+            !Self.run(
+                .newFolder,
+                Self.context {
+                    $0.currentPath = "/Users/demo/.Trash"
+                    $0.homePath = "/Users/demo"
+                }))
 
         #expect(Self.run(.emptyTrash, Self.context()))
         #expect(Self.run(.emptyTrash, Self.context { $0.trashIsEmpty = false }))
