@@ -29,6 +29,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
 
     private(set) var folder: URL
     var onClose: (() -> Void)?
+    /// Called once, after the first folder has been drawn (used by the launch benchmark).
+    var onFirstDraw: (() -> Void)?
 
     private let sidebar = SidebarViewController()
     private let browser = BrowserViewController()
@@ -137,6 +139,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         updateNavigationItems()
         window?.contentView?.layoutSubtreeIfNeeded()
         window?.displayIfNeeded()
+        if let callback = onFirstDraw {
+            onFirstDraw = nil
+            callback()
+        }
         Task {
             let capacity = await Task.detached(priority: .utility) {
                 FolderLoader.availableCapacity(at: url)
