@@ -21,3 +21,6 @@
 {"at": "2026-10-13T18:14:58+00:00", "event": "reconcile", "recover": true, "notes": [], "recovered": [{"wp": "P0-01", "path": "/Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_6aa12543-af9-1", "hadChanges": false}, {"wp": "P0-01", "path": "/Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_6aa12543-af9-2", "hadChanges": false}, {"wp": "P0-01", "path": "/Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_6aa12543-af9-3", "hadChanges": false}]}
 {"at": "2026-10-13T18:15:24+00:00", "event": "apply-report", "batch": "P0-B2", "wps": ["P0-05"]}
 {"at": "2026-10-13T18:19:48+00:00", "event": "next", "text": "Wave 1: run batches W1-A (P0-08, P0-09), W1-B (P0-10, P1-*), ..."}
+{"at": "2026-10-13T18:20:07+00:00", "event": "add-batch", "batch": "W1-A", "wps": ["P0-08", "P0-09"], "estimatedAgents": 8}
+{"at": "2026-10-13T18:20:07+00:00", "event": "set-batch", "batch": "W1-A", "status": "running", "runId": null}
+{"at": "2026-10-13T18:20:07+00:00", "event": "next", "text": "Wave 1 batches: W1-A P0-08+P0-09; W1-B P0-10+P1-02+P1-03; W1-C P1-01+P2-04+P2-06; W1-D P1-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P4-01; W1-G P2-07+P4-02"}
