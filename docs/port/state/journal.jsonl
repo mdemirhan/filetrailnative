@@ -36,3 +36,4 @@
 {"at": "2026-10-13T20:19:28+00:00", "event": "meter", "weeklyPct": 9.0, "fiveHourPct": 14.0, "note": "after W1-B (1.29M agent tokens)"}
 {"at": "2026-10-13T20:19:28+00:00", "event": "add-batch", "batch": "W1-C", "wps": ["P1-01", "P1-03", "P0-12"], "estimatedAgents": 10}
 {"at": "2026-10-13T20:19:28+00:00", "event": "set-batch", "batch": "W1-C", "status": "running", "runId": null}
+{"at": "2026-10-13T20:19:36+00:00", "event": "set-batch", "batch": "W1-C", "status": "running", "runId": "wf_6ffc31f6-ecf"}
