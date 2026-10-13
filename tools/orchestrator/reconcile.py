@@ -182,6 +182,23 @@ def main(argv: list[str]) -> int:
             {"wp": wp_id, "path": path, "hadChanges": bool(dirty)}
         )
 
+    if recover:
+        # Branches of merged work packages, and the ones the workflow tool makes for agent
+        # worktrees, are no longer needed once main holds their commits. `branch -d` refuses
+        # anything not merged, so unmerged work is never lost.
+        base = state["integrationBranch"]
+        for pattern in ("refs/heads/port/", "refs/heads/worktree-wf_*"):
+            names = git("for-each-ref", "--format=%(refname:short)", pattern).split()
+            for name in names:
+                wp = state["wps"].get(name.removeprefix("port/"))
+                if name.startswith("port/") and (
+                    wp is None or wp["status"] != "merged"
+                ):
+                    continue
+                if git("branch", "--merged", base, "--list", name):
+                    git("branch", "-d", "-q", name, check=False)
+                    summary.setdefault("deletedBranches", []).append(name)
+
     reference = Path(state["referenceCache"]).expanduser() / "electron"
     if (reference / ".git").exists():
         pinned = git("rev-parse", "--short", "HEAD", cwd=reference, check=False)
