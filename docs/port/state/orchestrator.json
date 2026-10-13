@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T17:09:50+00:00",
+  "updatedAt": "2026-10-13T17:12:47+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
@@ -35,9 +35,9 @@
         "P0-03"
       ],
       "status": "running",
-      "runId": null,
+      "runId": "wf_b64a3b17-5f8",
       "estimatedAgents": 7,
-      "startedAt": "2026-10-13T17:09:50+00:00"
+      "startedAt": "2026-10-13T17:12:47+00:00"
     }
   },
   "wps": {

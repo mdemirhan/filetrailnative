@@ -4,3 +4,4 @@
 {"at": "2026-10-13T17:09:32+00:00", "event": "reconcile", "recover": false, "notes": ["reference build not set up yet"], "recovered": []}
 {"at": "2026-10-13T17:09:50+00:00", "event": "meter", "weeklyPct": 5.0, "fiveHourPct": 9.0, "note": "before batch P0-A"}
 {"at": "2026-10-13T17:09:50+00:00", "event": "set-batch", "batch": "P0-A", "status": "running", "runId": null}
+{"at": "2026-10-13T17:12:47+00:00", "event": "set-batch", "batch": "P0-A", "status": "running", "runId": "wf_b64a3b17-5f8"}
