@@ -1,0 +1,30 @@
+{
+  "name": "a15-make-it-yours",
+  "description": "A15: Settings changes take effect in the open window: the Dark theme, a Purple accent, and marks for cut items switched off. (UI zoom is out of scope, DEVIATIONS D-005.)",
+  "features": ["F-646","F-891","F-892","F-893","F-895"],
+  "behaviors": ["B-CLIP-013"],
+  "tier": ["wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"menu","path":["File Trail","Settings…"]},
+    {"step":"selectWindow","title":"Settings"},
+    {"step":"expect","element":"settings title","text":"General"},
+    {"step":"click","element":"appearance option","text":"Dark"},
+    {"step":"click","element":"accent swatch","text":"Accent color Purple"},
+    {"step":"click","element":"settings switch","text":"Mark copied and cut items"},
+    {"step":"wait","ms":500},
+    {"step":"snapshot","name":"settings"},
+    {"step":"selectWindow","index":0},
+    {"step":"select","names":["Avatar.jsx","Toast.jsx"]},
+    {"step":"key","key":"x","modifiers":["cmd"]},
+    {"step":"expect","element":"clipboard count","text":"2"},
+    {"step":"expect","element":"cut list row","count":0},
+    {"step":"wait","ms":500},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

@@ -3,16 +3,18 @@
     import AppKit
     import FTFoundation
 
-    /// `FileTrail --automation <scenario.json> --out <dir>`: runs a capture scenario in the front window,
-    /// waiting for each step to settle, writes `<out>/report.json`, and quits.
+    /// `FileTrail --automation <scenario.json> --out <dir> [--elements <elements.json>]`: runs a capture
+    /// scenario, waiting for each step to settle, writes `<out>/report.json`, and quits.
     @MainActor
     final class AutomationRunner {
         struct Options: Equatable, Sendable {
             var scenario: URL
             var out: URL
+            /// `tools/capture/elements.json`; by default the one found beside the scenario.
+            var elements: URL?
         }
 
-        /// The `--automation` and `--out` values, or nil when automation wasn't asked for.
+        /// The `--automation`, `--out` and `--elements` values, or nil when automation wasn't asked for.
         nonisolated static func options(from arguments: [String]) -> Options? {
             func value(after flag: String) -> String? {
                 guard let index = arguments.firstIndex(of: flag), arguments.indices.contains(index + 1) else {
@@ -23,16 +25,19 @@
             guard let scenario = value(after: "--automation") else { return nil }
             let out = value(after: "--out") ?? FileManager.default.currentDirectoryPath
             func url(_ path: String) -> URL { URL(fileURLWithPath: (path as NSString).expandingTildeInPath) }
-            return Options(scenario: url(scenario), out: url(out))
+            return Options(scenario: url(scenario), out: url(out), elements: value(after: "--elements").map(url))
         }
 
         /// Seconds a step may take before the run moves on without it.
         static let stepTimeout: Double = 30
 
-        private let options: Options
+        let options: Options
         private let controller: () -> MainWindowController?
         private let report: ReportBox
-        private var scenario: Scenario?
+        private(set) var scenario: Scenario?
+        private(set) var elements: AutomationElements?
+        /// The window steps act on: the front explorer window until a step picks another.
+        weak var current: NSWindow?
         private let watchdog = DispatchQueue(label: "filetrail.automation.watchdog")
         private var hardTimer: DispatchSourceTimer?
 
@@ -51,6 +56,9 @@
                 let parsed = try Scenario.parse(Data(contentsOf: options.scenario))
                 scenario = parsed
                 report.update { $0.scenario = parsed.name }
+                if let file = options.elements ?? AutomationElements.locate(near: options.scenario) {
+                    elements = try AutomationElements.parse(Data(contentsOf: file))
+                }
                 return parsed
             } catch {
                 report.update { $0.error = "could not read the scenario: \(error)" }
@@ -63,6 +71,18 @@
             guard let scenario else { return nil }
             for case .open(let path) in scenario.steps { return scenario.resolve(path) }
             return nil
+        }
+
+        /// The window steps act on.
+        var currentWindow: NSWindow? {
+            if let current, current.isVisible { return current }
+            return controller()?.window
+        }
+
+        /// The explorer window steps act on, when the current window is one.
+        var currentController: MainWindowController? {
+            guard let window = currentWindow else { return controller() }
+            return window.windowController as? MainWindowController
         }
 
         func run() async {
@@ -79,7 +99,7 @@
                     $0.steps.append(
                         .init(
                             index: offset + 1, step: step.kind, status: outcome.status, message: outcome.message,
-                            milliseconds: elapsed))
+                            milliseconds: elapsed, check: outcome.check))
                 }
                 report.write()
             }
@@ -90,7 +110,7 @@
             let current = report.current
             FileHandle.standardError.write(
                 Data(
-                    "automation \(current.scenario): \(current.steps.count) steps, \(current.unsupportedCount) unsupported, \(current.failedCount) failed\n"
+                    "automation \(current.scenario): \(current.steps.count) steps, \(current.unsupportedCount) unsupported, \(current.failedCount) failed, \(current.failedChecks) expectations unmet\n"
                         .utf8))
             NSApp.terminate(nil)
         }
@@ -148,8 +168,8 @@
 
         // MARK: Settling
 
-        /// Waits until the window stops changing: navigation done, rows loaded, run loop idle.
-        private func settle() async {
+        /// Waits until the windows stop changing: navigation done, rows loaded, run loop idle.
+        func settle() async {
             let deadline = ContinuousClock.now + .seconds(5)
             var last = fingerprint()
             var stable = 0
@@ -163,22 +183,25 @@
                     last = current
                 }
             }
-            guard let window = controller()?.window else { return }
+            guard let window = currentWindow else { return }
             window.contentView?.layoutSubtreeIfNeeded()
             window.displayIfNeeded()
         }
 
         private func fingerprint() -> [String] {
-            guard let controller = controller(), let window = controller.window else { return [] }
+            let visible = NSApp.windows.filter(\.isVisible)
+            var parts = ["\(visible.count)", "\(visible.map(\.windowNumber))"]
+            guard let window = currentWindow else { return parts }
             let table = Views.folderTable(in: window)
             let collection = Views.first(NSCollectionView.self, in: window.contentView)
-            return [
-                controller.folder.path, window.title,
+            parts += [
+                currentController?.folder.path ?? "", window.title, "\(window.attachedSheet != nil)",
                 String(describing: window.firstResponder.map(ObjectIdentifier.init)),
                 "\(table?.numberOfRows ?? -1)", "\(table?.selectedRowIndexes.map { $0 } ?? [])",
                 "\(collection?.numberOfItems(inSection: 0) ?? -1)", Views.statusText(in: window) ?? "",
                 "\(window.contentView?.frame.size ?? .zero)",
             ]
+            return parts
         }
 
         // MARK: Steps
@@ -186,17 +209,23 @@
         struct Outcome {
             var status: AutomationReport.Status
             var message: String?
+            var check: AutomationReport.Check?
 
-            init(_ status: AutomationReport.Status, _ message: String? = nil) {
+            init(_ status: AutomationReport.Status, _ message: String? = nil, check: AutomationReport.Check? = nil) {
                 self.status = status
                 self.message = message
+                self.check = check
             }
         }
 
+        /// Why a step couldn't find what it acts on.
+        struct Failure: Error {
+            let message: String
+            init(_ message: String) { self.message = message }
+        }
+
         private func perform(_ step: Scenario.Step) async -> Outcome {
-            guard let controller = controller(), let window = controller.window else {
-                return Outcome(.failed, "no window")
-            }
+            guard let window = currentWindow else { return Outcome(.failed, "no window") }
             switch step {
             case .window(let width, let height):
                 window.setContentSize(NSSize(width: width, height: height))
@@ -207,8 +236,10 @@
                 }
                 return Outcome(.ok)
             case .prefs(let prefs):
-                return applyPrefs(prefs, controller: controller, window: window)
+                return AutomationPrefs.apply(
+                    prefs, context: .init(controller: currentController, window: window, prefs: prefs))
             case .open(let path):
+                guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
                 guard let url = scenario?.resolve(path) else { return Outcome(.failed, "no scenario") }
                 guard FileManager.default.fileExists(atPath: url.path) else {
                     return Outcome(.failed, "no folder at \(url.path)")
@@ -225,6 +256,7 @@
             case .type(let text):
                 return type(text, window: window)
             case .command(let id):
+                guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
                 return AutomationCommands.run(id, controller: controller, window: window)
             case .wait(let milliseconds):
                 try? await Task.sleep(for: .milliseconds(milliseconds))
@@ -240,56 +272,40 @@
                 } catch {
                     return Outcome(.failed, "could not write the geometry: \(error.localizedDescription)")
                 }
-            }
-        }
-
-        private func applyPrefs(
-            _ prefs: [String: Scenario.PrefValue], controller: MainWindowController, window: NSWindow
-        ) -> Outcome {
-            var unsupported: [String] = []
-            var failed: [String] = []
-            for key in prefs.keys.sorted() {
-                guard let value = prefs[key] else { continue }
-                switch key {
-                case "theme":
-                    switch value.string {
-                    case "light": NSApp.appearance = NSAppearance(named: .aqua)
-                    case "dark": NSApp.appearance = NSAppearance(named: .darkAqua)
-                    case "auto", "system": NSApp.appearance = nil
-                    default: failed.append("theme \(value)")
-                    }
-                case "viewMode":
-                    switch value.string {
-                    case "icons": controller.showAsIcons(nil)
-                    case "details": controller.showAsList(nil)
-                    default: unsupported.append("viewMode \(value.string ?? "?")")
-                    }
-                case "sortBy", "sortDirection":
-                    continue
-                case "zoomPercent":
-                    if value.number != 100 { unsupported.append("zoomPercent \(value.number ?? 0)") }
-                case "density":
-                    if value.string != "comfortable" { unsupported.append("density \(value.string ?? "?")") }
-                case "accent":
-                    // The spike draws with the system accent color.
-                    if value.string?.lowercased() != "#007aff" { unsupported.append("accent \(value.string ?? "?")") }
-                case "favoritesPlacement":
-                    // The spike's sidebar is the separate layout: Favorites and Locations lists.
-                    if value.string != "separate" { unsupported.append("favoritesPlacement \(value.string ?? "?")") }
-                default:
-                    unsupported.append(key)
+            case .click(let ref, let button, let count, let modifiers, let hold):
+                return await click(
+                    ref, button: button, count: count, modifiers: modifiers, holdMilliseconds: hold, window: window)
+            case .pick(let ref, let option):
+                return pick(ref, option: option, window: window)
+            case .menu(let path):
+                return AutomationMenus.choose(path, window: window)
+            case .contextMenu(let ref, let choose):
+                return contextMenu(ref, choose: choose, window: window)
+            case .drag(let from, let to, let modifiers, let edge):
+                return await drag(from: from, to: to, modifiers: modifiers, toEdge: edge, window: window)
+            case .expectSheet(let name):
+                return await expectSheet(name, window: window)
+            case .sheetButton(let label):
+                return sheetButton(label, window: window)
+            case .newWindow:
+                return newWindow()
+            case .newTab:
+                return newTab(window: window)
+            case .selectTab(let index):
+                return selectTab(index, window: window)
+            case .selectWindow(let index, let title):
+                return selectWindow(index: index, title: title)
+            case .fs(let op):
+                guard let scenario else { return Outcome(.failed, "no scenario") }
+                do {
+                    try AutomationFileOps.perform(op, scenario: scenario)
+                    return Outcome(.ok)
+                } catch {
+                    return Outcome(.failed, "\(op.name): \(error)")
                 }
+            case .expect(let ref, let text, let visible, let count):
+                return expect(ref, text: text, visible: visible, count: count, window: window)
             }
-            if prefs["sortBy"] != nil || prefs["sortDirection"] != nil {
-                let key = prefs["sortBy"]?.string ?? "name"
-                let ascending = (prefs["sortDirection"]?.string ?? "asc") != "desc"
-                if !AutomationCommands.sort(by: key, ascending: ascending, controller: controller, window: window) {
-                    unsupported.append("sortBy \(key)")
-                }
-            }
-            if !failed.isEmpty { return Outcome(.failed, "bad values: " + failed.joined(separator: ", ")) }
-            if !unsupported.isEmpty { return Outcome(.partial, "unsupported: " + unsupported.joined(separator: ", ")) }
-            return Outcome(.ok)
         }
 
         private func select(_ names: [String], in window: NSWindow) -> Outcome {
@@ -342,9 +358,9 @@
         }
 
         private func type(_ text: String, window: NSWindow) -> Outcome {
-            guard let editor = window.firstResponder as? NSTextView else {
-                return Outcome(.failed, "no text field has the keyboard")
-            }
+            let target = ElementFinder.windows(around: window).lazy.compactMap { $0.firstResponder as? NSTextView }
+                .first
+            guard let editor = target else { return Outcome(.failed, "no text field has the keyboard") }
             editor.insertText(text, replacementRange: editor.selectedRange())
             return Outcome(.ok)
         }

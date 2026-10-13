@@ -1,0 +1,20 @@
+{
+  "name": "11-context-menu-file",
+  "description": "The context menu of a file in the list, in app/src/components",
+  "features": ["F-797","F-808","F-810","F-815"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"click","element":"list row","text":"Avatar.jsx"},
+    {"step":"contextMenu","element":"list row","text":"Avatar.jsx"},
+    {"step":"expect","element":"context menu","visible":true},
+    {"step":"expect","element":{"name":"context menu item","index":0},"text":"Open"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

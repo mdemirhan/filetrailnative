@@ -1,0 +1,21 @@
+{
+  "name": "20-outside-file-created",
+  "description": "A file made by another app in the folder on screen appears in the list",
+  "features": ["F-685"],
+  "tier": ["wp","wave","final"],
+  "setup": {"scratch":true},
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"click","element":"list row","text":"Toast.jsx"},
+    {"step":"fs","op":"create","path":"app/src/components/Made Outside.jsx","contents":"export {};\n"},
+    {"step":"wait","ms":1500},
+    {"step":"expect","element":{"name":"list row","text":"Made Outside.jsx"},"visible":true},
+    {"step":"expect","element":"selected list row","text":"Toast.jsx"},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

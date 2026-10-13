@@ -1,6 +1,15 @@
 {
   "name": "06-list-selection-4",
   "description": "Four items selected in app/src/components",
+  "features": [
+    "F-780",
+    "F-828"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

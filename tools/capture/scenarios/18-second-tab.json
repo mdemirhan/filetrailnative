@@ -1,0 +1,22 @@
+{
+  "name": "18-second-tab",
+  "description": "A second tab (⌘T) moved to app/src: the tab strip with two tabs",
+  "features": ["F-573","F-673","F-721","F-722"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"newTab"},
+    {"step":"open","path":"app/src"},
+    {"step":"expect","element":"tab","count":2},
+    {"step":"expect","element":{"name":"tab","index":1},"text":"src"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"},
+    {"step":"selectTab","index":0},
+    {"step":"expect","element":"title","text":"components"}
+  ]
+}

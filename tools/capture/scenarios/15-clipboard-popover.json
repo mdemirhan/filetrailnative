@@ -1,0 +1,22 @@
+{
+  "name": "15-clipboard-popover",
+  "description": "Two items copied, then the toolbar clipboard button opens its popover",
+  "features": ["F-800","F-801"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"select","names":["Avatar.jsx","Toast.jsx"]},
+    {"step":"key","key":"c","modifiers":["cmd"]},
+    {"step":"click","element":"clipboard button"},
+    {"step":"expectSheet","name":"clipboard popover"},
+    {"step":"expect","element":"clipboard popover item","count":2},
+    {"step":"expect","element":"clipboard popover title","text":"2 items copied"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

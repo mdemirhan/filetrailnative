@@ -1,6 +1,14 @@
 {
   "name": "08-list-empty-folder",
   "description": "An empty folder",
+  "features": [
+    "F-752"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "setup": {

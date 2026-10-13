@@ -1,0 +1,29 @@
+{
+  "name": "17-review-sheet-conflict",
+  "description": "Two copied files pasted into a folder that has both: the review sheet",
+  "features": ["F-681","F-865","F-866","F-867","F-868"],
+  "tier": ["wp","wave","final"],
+  "setup": {"scratch":true},
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"fs","op":"create","path":"app/src/components/Copies","directory":true},
+    {"step":"fs","op":"create","path":"app/src/components/Copies/Avatar.jsx","contents":"older avatar\n"},
+    {"step":"fs","op":"create","path":"app/src/components/Copies/Toast.jsx","contents":"older toast\n"},
+    {"step":"open","path":"app/src/components"},
+    {"step":"wait","ms":500},
+    {"step":"select","names":["Avatar.jsx","Toast.jsx"]},
+    {"step":"key","key":"c","modifiers":["cmd"]},
+    {"step":"click","element":"list row","text":"Copies","count":2},
+    {"step":"expect","element":"title","text":"Copies"},
+    {"step":"key","key":"v","modifiers":["cmd"]},
+    {"step":"expectSheet","name":"review sheet"},
+    {"step":"expect","element":"review sheet title","text":"2 of 2 items already exist in “Copies”"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"},
+    {"step":"sheetButton","label":"Cancel"}
+  ]
+}

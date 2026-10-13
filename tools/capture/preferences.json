@@ -1,0 +1,22 @@
+{
+  "comment": "The original's preference keys (DEFAULT_APP_PREFERENCES, apps/desktop/src/shared/appPreferences.ts:390-448) and its window session keys (:357-380). Scenario prefs steps may set any of them; 'density' is a capture shorthand for the four compact switches. Sources/FTAppKit/Automation/AutomationPrefs.swift holds the same list.",
+  "keys": [
+    "theme", "accent", "zoomPercent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
+    "compactListView", "compactDetailsView", "compactIconView", "compactTreeView", "singleClickExpandTreeItems",
+    "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns", "searchColumnOrder",
+    "searchColumnWidths", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
+    "folderTreeOpen", "propertiesOpen", "detailRowOpen", "topToolbarItems", "terminalApp", "defaultTextEditor",
+    "openWithApplications", "fileActivationAction", "diskImageOpensIn", "returnKeyAction", "shortcutOverrides",
+    "openItemLimit", "includeHidden", "searchPatternMode", "searchMatchScope", "searchRecursive",
+    "searchSkipGitFolders", "searchSkipGitIgnored", "searchResultsSortBy", "searchResultsSortDirection",
+    "treeWidth", "inspectorWidth", "restoreSessionOnStartup", "openTabs", "activeTabIndex", "treeRootPath",
+    "lastVisitedPath", "lastVisitedFavoritePath", "favorites", "favoritesPlacement", "favoritesExpanded",
+    "locationsExpanded", "favoritesInitialized", "batchRenameSettings", "batchRenamePresets"
+  ],
+  "session": [
+    "openTabs", "activeTabIndex", "treeRootPath", "lastVisitedPath", "lastVisitedFavoritePath", "viewMode",
+    "searchViewMode", "sortBy", "sortDirection", "searchResultsSortBy", "searchResultsSortDirection",
+    "includeHidden", "foldersFirst", "favoritesExpanded", "locationsExpanded", "folderTreeOpen", "propertiesOpen",
+    "detailRowOpen", "treeWidth", "inspectorWidth", "detailColumnWidths", "searchColumnWidths"
+  ]
+}
