@@ -1,5 +1,5 @@
 {
-  "comment": "Logical element names: the original's CSS selector (and the child holding the text, when not the element) and the Swift accessibilityIdentifier. 'first' compares only the top-left match; 'text' also compares font size, weight and color.",
+  "comment": "Logical element names: the original's CSS selector (and the child holding the text, when not the element) and the Swift accessibilityIdentifier. 'first' compares only the top-left match; 'text' also compares font size, weight and color; 'geometry: false' names an element only for steps to act on (click, expect), and it is not compared. Steps pick one of several matches by 'text' (the text child's text) or 'index' (top to bottom, then left to right).",
   "elements": {
     "window content": {
       "electron": { "selector": "main.app-shell" },
@@ -19,6 +19,16 @@
       "swift": "sidebar.row",
       "first": true,
       "text": true
+    },
+    "sidebar row": {
+      "electron": { "selector": ".tree-pane .sidebar-sections .tree-row", "textSelector": ".tree-label-text" },
+      "swift": "sidebar.row",
+      "geometry": false
+    },
+    "sidebar disclosure": {
+      "electron": { "selector": ".tree-pane .tree-row .tree-expand" },
+      "swift": "sidebar.row.disclosure",
+      "geometry": false
     },
     "toolbar": {
       "electron": { "selector": "header.window-toolbar" },
@@ -42,6 +52,38 @@
       "swift": "toolbar.search",
       "text": true
     },
+    "clipboard button": {
+      "electron": { "selector": ".window-toolbar .clipboard-button" },
+      "swift": "toolbar.clipboard"
+    },
+    "clipboard count": {
+      "electron": { "selector": ".window-toolbar .clipboard-button .clipboard-button-count" },
+      "swift": "toolbar.clipboard.count",
+      "text": true
+    },
+    "clipboard popover": {
+      "electron": { "selector": ".clipboard-menu" },
+      "swift": "clipboardPopover"
+    },
+    "clipboard popover title": {
+      "electron": { "selector": ".clipboard-menu .clipboard-menu-title" },
+      "swift": "clipboardPopover.title",
+      "text": true
+    },
+    "clipboard popover item": {
+      "electron": { "selector": ".clipboard-menu .clipboard-menu-item", "textSelector": ".clipboard-menu-item-name" },
+      "swift": "clipboardPopover.item",
+      "text": true
+    },
+    "tab strip": {
+      "electron": { "selector": ".tab-strip" },
+      "swift": "tabBar"
+    },
+    "tab": {
+      "electron": { "selector": ".tab-strip .tab-strip-tab", "textSelector": ".tab-strip-label" },
+      "swift": "tabBar.tab",
+      "text": true
+    },
     "content": {
       "electron": { "selector": ".content-viewport" },
       "swift": "content"
@@ -61,6 +103,29 @@
       "first": true,
       "text": true
     },
+    "list row": {
+      "electron": { "selector": ".details-row", "textSelector": ".details-name-label" },
+      "swift": "list.row",
+      "geometry": false
+    },
+    "list row name": {
+      "electron": { "selector": ".details-row .details-name", "textSelector": ".details-name-label" },
+      "swift": "list.row.name",
+      "geometry": false
+    },
+    "selected list row": {
+      "electron": { "selector": ".details-row[aria-selected=\"true\"]", "textSelector": ".details-name-label" },
+      "swift": "list.row.selected",
+      "geometry": false
+    },
+    "cut list row": {
+      "electron": { "selector": ".details-row.clipboard-cut", "textSelector": ".details-name-label" },
+      "swift": "list.row.cut"
+    },
+    "size bar": {
+      "electron": { "selector": ".details-row .size-bar" },
+      "swift": "list.row.sizeBar"
+    },
     "first icon": {
       "electron": { "selector": ".flow-grid .flow-item" },
       "swift": "icons.item",
@@ -72,9 +137,111 @@
       "first": true,
       "text": true
     },
+    "icon": {
+      "electron": { "selector": ".flow-grid .flow-item", "textSelector": ".flow-item-label" },
+      "swift": "icons.item",
+      "geometry": false
+    },
+    "list filter": {
+      "electron": { "selector": ".list-filter-pill", "textSelector": ".list-filter-pill-value" },
+      "swift": "listFilter",
+      "text": true
+    },
+    "rename field": {
+      "electron": { "selector": ".inline-rename-input" },
+      "swift": "rename.field",
+      "text": true
+    },
+    "rename error": {
+      "electron": { "selector": ".inline-rename-error" },
+      "swift": "rename.error",
+      "text": true
+    },
+    "path bar": {
+      "electron": { "selector": ".content-pathbar-row .pathbar" },
+      "swift": "pathBar"
+    },
+    "path bar segment": {
+      "electron": { "selector": ".pathbar .pathbar-segment", "textSelector": ".pathbar-segment-label" },
+      "swift": "pathBar.segment",
+      "text": true
+    },
+    "path bar separator": {
+      "electron": { "selector": ".pathbar .pathbar-separator" },
+      "swift": "pathBar.separator",
+      "geometry": false
+    },
     "status bar": {
       "electron": { "selector": ".content-pathbar-status" },
       "swift": "statusBar",
+      "text": true
+    },
+    "info panel": {
+      "electron": { "selector": ".get-info-panel" },
+      "swift": "infoPanel"
+    },
+    "context menu": {
+      "electron": { "selector": ".context-menu" },
+      "swift": "contextMenu"
+    },
+    "context menu item": {
+      "electron": { "selector": ".context-menu .context-menu-item", "textSelector": ".context-menu-item-label" },
+      "swift": "contextMenu.item",
+      "text": true
+    },
+    "alert": {
+      "electron": { "selector": "dialog.alert" },
+      "swift": "alert"
+    },
+    "alert title": {
+      "electron": { "selector": "dialog.alert .alert-title" },
+      "swift": "alert.title",
+      "text": true
+    },
+    "text prompt field": {
+      "electron": { "selector": ".text-prompt-input" },
+      "swift": "prompt.field",
+      "text": true
+    },
+    "review sheet": {
+      "electron": { "selector": "dialog.copy-paste-sheet" },
+      "swift": "reviewSheet"
+    },
+    "review sheet heading": {
+      "electron": { "selector": "dialog.copy-paste-sheet .copy-paste-sheet-heading" },
+      "swift": "reviewSheet.heading",
+      "text": true
+    },
+    "go to folder": {
+      "electron": { "selector": ".go-to-folder-dialog" },
+      "swift": "goToFolder"
+    },
+    "go to folder field": {
+      "electron": { "selector": ".go-to-folder-dialog .go-to-folder-input" },
+      "swift": "goToFolder.field",
+      "text": true
+    },
+    "go to folder suggestion": {
+      "electron": { "selector": ".go-to-folder-dialog .go-to-folder-suggestion", "textSelector": ".go-to-folder-suggestion-name" },
+      "swift": "goToFolder.suggestion",
+      "text": true
+    },
+    "toast": {
+      "electron": { "selector": ".toast-card" },
+      "swift": "toast"
+    },
+    "settings window": {
+      "electron": { "selector": "main.settings-window" },
+      "swift": "settings"
+    },
+    "settings section": {
+      "electron": { "selector": ".settings-sidebar .settings-sidebar-item", "textSelector": "span:last-child" },
+      "swift": "settings.section",
+      "text": true
+    },
+    "settings title": {
+      "electron": { "selector": ".settings-pane .settings-pane-title" },
+      "swift": "settings.title",
       "text": true
     }
   }

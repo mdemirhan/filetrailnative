@@ -1,0 +1,20 @@
+{
+  "name": "13-new-folder",
+  "description": "File > New Folder makes “untitled folder” and opens its name for editing",
+  "features": ["F-573","F-793"],
+  "tier": ["wp","wave","final"],
+  "setup": {"scratch":true},
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"menu","path":["File","New Folder"]},
+    {"step":"expectSheet","name":"rename field"},
+    {"step":"expect","element":"rename field","text":"untitled folder"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

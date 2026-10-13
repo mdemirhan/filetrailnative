@@ -1,0 +1,20 @@
+{
+  "name": "19-settings-general",
+  "description": "File Trail > Settings… opens the Settings window on its General tab",
+  "features": ["F-572","F-633","F-887","F-888","F-889","F-892"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"menu","path":["File Trail","Settings…"]},
+    {"step":"selectWindow","title":"Settings"},
+    {"step":"expectSheet","name":"settings window"},
+    {"step":"expect","element":"settings title","text":"General"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

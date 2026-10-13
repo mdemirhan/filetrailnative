@@ -1,6 +1,15 @@
 {
   "name": "05-list-sorted-date",
   "description": "photos sorted by date modified, newest first",
+  "features": [
+    "F-768",
+    "F-774"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

@@ -1,6 +1,15 @@
 {
   "name": "07-list-root",
   "description": "The Lighthouse root folder",
+  "features": [
+    "F-756",
+    "F-764"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

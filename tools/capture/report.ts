@@ -39,12 +39,14 @@ export interface ElementSpec {
   swift: string;
   first?: boolean;
   text?: boolean;
+  geometry?: boolean;
 }
 interface ReportEntry {
   index: number;
   step: string;
   status: string;
   message?: string;
+  check?: { passed: boolean; detail: string };
 }
 interface Report {
   scenario: string;
@@ -90,10 +92,12 @@ export function frameDelta(a: Frame, b: Frame): number {
   );
 }
 
-/// Pairs each named element of the two dumps and says how far apart they are.
+/// Pairs each named element of the two dumps and says how far apart they are. An element one
+/// side has and the other doesn't is "missing" on that side, not "off".
 export function compareGeometry(a: Dump, b: Dump, specs: Record<string, ElementSpec>): Row[] {
   const rows: Row[] = [];
   for (const [name, spec] of Object.entries(specs)) {
+    if (spec.geometry === false) continue;
     let left = a.elements.filter((e) => e.id === spec.swift).sort(byPosition);
     let right = b.elements.filter((e) => e.id === spec.swift).sort(byPosition);
     if (spec.first) {
@@ -133,12 +137,43 @@ export function compareGeometry(a: Dump, b: Dump, specs: Record<string, ElementS
   return rows;
 }
 
-/// Logical elements with any row not "ok" (an element neither side has doesn't count).
-export function geometrySummary(rows: Row[]): { off: number; total: number; max: number } {
-  const names = new Set(rows.filter((r) => r.status !== "absent").map((r) => r.element));
-  const off = new Set(rows.filter((r) => r.status !== "ok" && r.status !== "absent").map((r) => r.element));
-  const max = rows.reduce((worst, r) => Math.max(worst, r.delta ?? 0), 0);
-  return { off: off.size, total: names.size, max };
+export interface GeometrySummary {
+  /// Logical elements with a row off by more than the tolerance, or in another style.
+  off: number;
+  /// Logical elements with a row only side B has (missing on side A), and the other way round.
+  missingA: number;
+  missingB: number;
+  /// Logical elements either side has (an element neither side has doesn't count).
+  total: number;
+  /// The largest frame difference of a pair, in points.
+  max: number;
+}
+
+export function geometrySummary(rows: Row[]): GeometrySummary {
+  const names = (keep: (row: Row) => boolean) => new Set(rows.filter(keep).map((r) => r.element)).size;
+  return {
+    off: names((r) => r.status === "off" || r.status === "style"),
+    missingA: names((r) => r.status === "missing-a"),
+    missingB: names((r) => r.status === "missing-b"),
+    total: names((r) => r.status !== "absent"),
+    max: rows.reduce((worst, r) => Math.max(worst, r.delta ?? 0), 0),
+  };
+}
+
+/// "2 off, 9 missing (swift)": what the runner line and the contact sheet say of the geometry.
+export function geometryText(g: GeometrySummary, labelA: string, labelB: string): string {
+  const parts = [`${g.off} off`];
+  if (g.missingB > 0) parts.push(`${g.missingB} missing (${labelB})`);
+  if (g.missingA > 0) parts.push(`${g.missingA} missing (${labelA})`);
+  const max = g.max > 0 ? ` (max ${Math.round(g.max * 10) / 10}pt)` : "";
+  return `${parts.join(", ")} of ${g.total}${max}`;
+}
+
+/// A row's status as the contact sheet shows it.
+export function rowStatusText(status: Row["status"], labelA: string, labelB: string): string {
+  if (status === "missing-a") return `missing (${labelA})`;
+  if (status === "missing-b") return `missing (${labelB})`;
+  return status;
 }
 
 function compare() {
@@ -157,9 +192,13 @@ function compare() {
   const pixeldiff = arg("--pixeldiff") ?? "build/pixeldiff/pixeldiff";
   const labelA = arg("--label-a") ?? "electron";
   const labelB = arg("--label-b") ?? "swift";
-  const scenario = readJSON<{ name: string; description?: string; steps: { step: string; name?: string }[] }>(
-    scenarioFile,
-  );
+  const scenario = readJSON<{
+    name: string;
+    description?: string;
+    features?: string[];
+    behaviors?: string[];
+    steps: { step: string; name?: string }[];
+  }>(scenarioFile);
   if (!scenario) throw new Error(`could not read ${scenarioFile}`);
   mkdirSync(out, { recursive: true });
 
@@ -177,7 +216,7 @@ function compare() {
   const snapshots: unknown[] = [];
   const geometries: unknown[] = [];
   let worstPixels = 0;
-  let geometry = { off: 0, total: 0, max: 0 };
+  let geometry: GeometrySummary = { off: 0, missingA: 0, missingB: 0, total: 0, max: 0 };
   const allRows: Row[] = [];
   for (const step of scenario.steps) {
     if (step.step === "geometry" && step.name) {
@@ -241,34 +280,45 @@ function compare() {
   geometry = geometrySummary(allRows);
 
   const notable = (report: Report | null) =>
-    (report?.steps ?? []).filter((s) => s.status !== "ok").map((s) => ({ ...s, side: report?.side }));
+    (report?.steps ?? [])
+      .filter((s) => s.status !== "ok" || s.check?.passed === false)
+      .map((s) => ({ ...s, side: report?.side }));
   const notes = [...notable(reportA), ...notable(reportB)];
   const unsupported = notes.filter((s) => s.status === "unsupported" || s.status === "partial").length;
   const failedA = notable(reportA).filter((s) => s.status === "failed" || s.status === "timeout");
   const failedB = notable(reportB).filter((s) => s.status === "failed" || s.status === "timeout");
-  // The reference must do every step; this app failing one is a difference to report.
+  // The reference must do every step and meet every expectation (they describe what it does);
+  // this app failing one is a difference to report.
   for (const step of failedA) problems.push(`${labelA} step ${step.index} (${step.step}): ${step.message ?? step.status}`);
+  for (const step of notable(reportA).filter((s) => s.check?.passed === false)) {
+    problems.push(`${labelA} step ${step.index} (expect): ${step.check?.detail}`);
+  }
+  const unmetB = notable(reportB).filter((s) => s.check?.passed === false).length;
 
   const summary = {
     scenario: scenario.name,
     description: scenario.description ?? "",
+    features: scenario.features ?? [],
+    behaviors: scenario.behaviors ?? [],
     labels: [labelA, labelB],
     geometry,
     pixels: worstPixels,
     unsupported,
     failed: failedB.length,
+    unmet: unmetB,
     problems,
     notes,
     snapshots,
     geometries,
   };
   writeFileSync(join(out, "summary.json"), `${JSON.stringify(summary, null, 2)}\n`);
-  const maxText = geometry.max > 0 ? ` (max ${Math.round(geometry.max)}pt)` : "";
-  let line = `${scenario.name.padEnd(28)}  geometry: ${geometry.off}/${geometry.total} elements off${maxText}  pixels: ${worstPixels.toFixed(2)}  unsupported: ${unsupported} steps`;
+  let line = `${scenario.name.padEnd(28)}  geometry: ${geometryText(geometry, labelA, labelB)}  pixels: ${worstPixels.toFixed(2)}  unsupported: ${unsupported} steps`;
   if (failedB.length > 0) line += `  failed: ${failedB.length} steps`;
+  if (unmetB > 0) line += `  expect: ${unmetB} unmet (${labelB})`;
   if (problems.length > 0) line += `  PIPELINE: ${problems.join("; ")}`;
   console.log(line);
-  process.exit(problems.length > 0 ? 3 : geometry.off > 0 ? 1 : 0);
+  const miss = geometry.off + geometry.missingA + geometry.missingB > 0 || unmetB > 0;
+  process.exit(problems.length > 0 ? 3 : miss ? 1 : 0);
 }
 
 function escape(text: string): string {
@@ -309,7 +359,7 @@ function contact() {
 <tr><th>element</th><th>#</th><th>status</th><th>${escape(labelA)}</th><th>${escape(labelB)}</th><th>Δ pt</th><th>text</th></tr>
 ${g.rows
   .map(
-    (r) => `<tr class="${r.status}"><td>${escape(r.element)}</td><td>${r.index}</td><td>${r.status}</td><td>${fmt(r.a?.frame)}</td><td>${fmt(r.b?.frame)}</td><td>${r.delta === undefined ? "" : Math.round(r.delta * 10) / 10}</td><td>${escape(
+    (r) => `<tr class="${r.status}"><td>${escape(r.element)}</td><td>${r.index}</td><td>${escape(rowStatusText(r.status, labelA, labelB))}</td><td>${fmt(r.a?.frame)}</td><td>${fmt(r.b?.frame)}</td><td>${r.delta === undefined ? "" : Math.round(r.delta * 10) / 10}</td><td>${escape(
       r.style && r.style.length > 0 ? r.style.join(", ") : `${fmtText(r.a?.text)} | ${fmtText(r.b?.text)}`,
     )}</td></tr>`,
   )
@@ -318,12 +368,15 @@ ${g.rows
       )
       .join("\n");
     const notes = (summary.notes as (ReportEntry & { side: string })[])
-      .map((n) => `<li>${escape(n.side)} step ${n.index} (${escape(n.step)}): ${escape(n.status)} ${escape(n.message ?? "")}</li>`)
+      .map(
+        (n) =>
+          `<li>${escape(n.side)} step ${n.index} (${escape(n.step)}): ${escape(n.check?.passed === false ? `unmet: ${n.check.detail}` : `${n.status} ${n.message ?? ""}`)}</li>`,
+      )
       .concat((summary.problems as string[]).map((p) => `<li class="problem">${escape(p)}</li>`))
       .join("\n");
     sections.push(`<section id="${escape(name)}">
 <h2>${escape(summary.scenario)}</h2>
-<p class="meta">${escape(summary.description)} — geometry ${summary.geometry.off}/${summary.geometry.total} off (max ${Math.round(summary.geometry.max)} pt) · pixels ${summary.pixels.toFixed(3)} · unsupported ${summary.unsupported}</p>
+<p class="meta">${escape(summary.description)} — geometry ${escape(geometryText(summary.geometry, labelA, labelB))} · pixels ${summary.pixels.toFixed(3)} · unsupported ${summary.unsupported}${summary.unmet ? ` · ${summary.unmet} expectations unmet` : ""}${(summary.features ?? []).length ? ` · ${escape(summary.features.join(" "))}` : ""}</p>
 ${images}
 ${tables}
 ${notes ? `<ul class="notes">${notes}</ul>` : ""}
@@ -354,12 +407,122 @@ ${sections.join("\n")}
   writeFileSync(join(out, "contact.html"), html);
 }
 
+/// A hand-made pair of captures with known differences, run through `compare` itself: the sidebar 3 pt
+/// to the right, the status bar only on the first side, the list header only on the second, and one
+/// unmet expectation on the second. Checks that the comparison reports exactly that.
+function selftest() {
+  const out = arg("--out");
+  if (!out) {
+    console.error("usage: report.ts selftest --out <dir>");
+    process.exit(2);
+  }
+  const here = dirname(new URL(import.meta.url).pathname);
+  const dirA = join(out, "electron");
+  const dirB = join(out, "swift");
+  for (const dir of [dirA, dirB]) mkdirSync(dir, { recursive: true });
+  const element = (id: string, x: number, y: number, width: number, height: number, text?: Text): Element => ({
+    id,
+    frame: { x, y, width, height },
+    ...(text ? { text } : {}),
+  });
+  const title: Text = { string: "components", fontSize: 13, fontWeight: 700, color: "#000000d8" };
+  const shared = [
+    element("toolbar", 0, 0, 1200, 52),
+    element("toolbar.title", 120, 16, 90, 18, title),
+    element("content", 280, 52, 920, 680),
+  ];
+  const dumpA: Dump = {
+    format: "filetrail-geometry/1",
+    side: "electron",
+    name: "main",
+    window: { width: 1200, height: 760 },
+    elements: [...shared, element("sidebar", 0, 52, 280, 708), element("statusBar", 280, 736, 920, 24)],
+  };
+  const dumpB: Dump = {
+    ...dumpA,
+    side: "swift",
+    elements: [...shared, element("sidebar", 3, 52, 280, 708), element("list.header", 280, 52, 920, 28)],
+  };
+  writeFileSync(join(dirA, "main.json"), JSON.stringify(dumpA));
+  writeFileSync(join(dirB, "main.json"), JSON.stringify(dumpB));
+  const expectStep = (passed: boolean) => ({
+    index: 2,
+    step: "expect",
+    status: "ok",
+    milliseconds: 1,
+    check: { passed, detail: passed ? "title: text “components”" : "title: text “Lighthouse”, expected “components”" },
+  });
+  const geometryStep = { index: 1, step: "geometry", status: "ok", milliseconds: 1 };
+  writeFileSync(
+    join(dirA, "report.json"),
+    JSON.stringify({ scenario: "selftest", side: "electron", steps: [geometryStep, expectStep(true)] }),
+  );
+  writeFileSync(
+    join(dirB, "report.json"),
+    JSON.stringify({ scenario: "selftest", side: "swift", steps: [geometryStep, expectStep(false)] }),
+  );
+  const scenarioFile = join(out, "selftest.json");
+  writeFileSync(
+    scenarioFile,
+    JSON.stringify({
+      name: "selftest-known-offsets",
+      steps: [
+        { step: "geometry", name: "main" },
+        { step: "expect", element: "title", text: "components" },
+      ],
+    }),
+  );
+  const run = spawnSync(
+    process.execPath,
+    [
+      new URL(import.meta.url).pathname,
+      "compare",
+      "--scenario",
+      scenarioFile,
+      "--a",
+      dirA,
+      "--b",
+      dirB,
+      "--out",
+      join(out, "diff"),
+      "--elements",
+      join(here, "elements.json"),
+    ],
+    { encoding: "utf8" },
+  );
+  const summary = readJSON<{ geometry: GeometrySummary; unmet: number; problems: string[] }>(
+    join(out, "diff", "summary.json"),
+  );
+  const line = run.stdout.trim();
+  const failures: string[] = [];
+  if (run.status !== 1) failures.push(`compare exited ${run.status}, expected 1 (a geometry miss)`);
+  if (!summary) failures.push("no summary.json");
+  else {
+    const g = summary.geometry;
+    if (g.off !== 1 || g.max !== 3) failures.push(`off ${g.off} (max ${g.max} pt), expected 1 off by 3 pt`);
+    if (g.missingB !== 1) failures.push(`${g.missingB} missing (swift), expected 1`);
+    if (g.missingA !== 1) failures.push(`${g.missingA} missing (electron), expected 1`);
+    if (g.total !== 6) failures.push(`${g.total} elements, expected 6`);
+    if (summary.unmet !== 1) failures.push(`${summary.unmet} unmet expectations, expected 1`);
+    if (summary.problems.length > 0) failures.push(`problems: ${summary.problems.join("; ")}`);
+  }
+  if (!line.includes("geometry: 1 off, 1 missing (swift), 1 missing (electron) of 6 (max 3pt)")) {
+    failures.push(`runner line: ${line}`);
+  }
+  if (failures.length > 0) {
+    console.log(`selftest known offsets: FAILED (${failures.join("; ")})`);
+    process.exit(1);
+  }
+  console.log("selftest known offsets: passed (1 off by 3 pt, 1 missing on each side, 1 unmet expectation)");
+}
+
 if (import.meta.main) {
   const command = process.argv[2];
   if (command === "compare") compare();
   else if (command === "contact") contact();
+  else if (command === "selftest") selftest();
   else {
-    console.error("usage: report.ts compare|contact …");
+    console.error("usage: report.ts compare|contact|selftest …");
     process.exit(2);
   }
 }

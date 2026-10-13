@@ -1,6 +1,15 @@
 {
   "name": "10-search-typed",
   "description": "Search field focused with text typed, in app/src/components",
+  "features": [
+    "F-713",
+    "F-750"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

@@ -1,0 +1,20 @@
+{
+  "name": "16-go-to-folder-typed",
+  "description": "Go to Folder (⌘K) with a path typed, listing its completions",
+  "features": ["F-592","F-856","F-857","F-860"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"key","key":"k","modifiers":["cmd"]},
+    {"step":"expectSheet","name":"go to folder"},
+    {"step":"type","text":"~/Library/Caches/filetrail-port/fixtures/lighthouse/Lighthouse/app/"},
+    {"step":"wait","ms":500},
+    {"step":"expect","element":{"name":"go to folder suggestion","index":0},"text":"dist"},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

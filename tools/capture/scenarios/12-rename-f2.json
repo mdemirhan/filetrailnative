@@ -1,0 +1,26 @@
+{
+  "name": "12-rename-f2",
+  "description": "F2 on Avatar.jsx opens the inline rename field; a new name is typed and kept",
+  "features": ["F-578","F-793","F-794"],
+  "tier": ["wp","wave","final"],
+  "setup": {"scratch":true},
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"click","element":"list row","text":"Avatar.jsx"},
+    {"step":"key","key":"F2"},
+    {"step":"expect","element":"rename field","text":"Avatar.jsx"},
+    {"step":"type","text":"Profile"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"},
+    {"step":"key","key":"Enter"},
+    {"step":"wait","ms":500},
+    {"step":"expect","element":{"name":"list row","text":"Profile.jsx"},"visible":true},
+    {"step":"expect","element":{"name":"list row","text":"Avatar.jsx"},"visible":false},
+    {"step":"snapshot","name":"renamed"}
+  ]
+}

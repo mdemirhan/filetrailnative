@@ -1,0 +1,20 @@
+{
+  "name": "14-cut-items-marks",
+  "description": "Four items cut with ⌘X: dimmed with scissors marks, and the toolbar clipboard count",
+  "features": ["F-581","F-791","F-800"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"select","names":["DatePicker.jsx","SearchField.jsx","Toast.jsx","TripList.jsx"]},
+    {"step":"key","key":"x","modifiers":["cmd"]},
+    {"step":"expect","element":"cut list row","count":4},
+    {"step":"expect","element":"clipboard count","text":"4"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

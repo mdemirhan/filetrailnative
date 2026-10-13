@@ -1,6 +1,17 @@
 {
   "name": "03-icons-components-light",
   "description": "Icons view of app/src/components, light",
+  "features": [
+    "F-756",
+    "F-757",
+    "F-758",
+    "F-759"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

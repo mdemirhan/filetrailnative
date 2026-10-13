@@ -1,6 +1,18 @@
 {
   "name": "02-list-components-dark",
   "description": "List view of app/src/components, dark",
+  "features": [
+    "F-646",
+    "F-657",
+    "F-658",
+    "F-764",
+    "F-765"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

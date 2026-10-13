@@ -1,6 +1,16 @@
 {
   "name": "04-list-sorted-size",
   "description": "photos sorted by size, largest first",
+  "features": [
+    "F-768",
+    "F-772",
+    "F-773"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

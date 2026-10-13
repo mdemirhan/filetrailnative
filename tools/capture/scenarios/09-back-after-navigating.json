@@ -1,6 +1,15 @@
 {
   "name": "09-back-after-navigating",
   "description": "app/src, then components, then Back",
+  "features": [
+    "F-590",
+    "F-833"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [
