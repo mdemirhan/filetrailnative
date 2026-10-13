@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T19:00:44+00:00",
+  "updatedAt": "2026-10-13T20:19:28+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "Wave 1 batches: W1-A P0-08+P0-09 (running); W1-B P0-10+P0-11+P1-02; W1-C P1-01+P1-03+P2-04; W1-D P1-04+P2-05+P2-06; W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01; W1-H P4-02. Behavior extraction (wf_406371f4-4b5) running.",
+  "nextAction": "W1-C P1-01+P1-03+P0-12; W1-D P1-04+P2-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06; W1-H P4-02",
   "pause": {
     "requested": false,
     "reason": null,
@@ -43,6 +43,12 @@
       "weeklyPct": 8.0,
       "fiveHourPct": 9.0,
       "note": "after W1-A + behavior extraction (~3.95M agent tokens): weekly 6->8"
+    },
+    {
+      "at": "2026-10-13T20:19:28+00:00",
+      "weeklyPct": 9.0,
+      "fiveHourPct": 14.0,
+      "note": "after W1-B (1.29M agent tokens)"
     }
   ],
   "batches": {
@@ -176,10 +182,38 @@
         "P0-11",
         "P1-02"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_00ca2bd2-1d1",
       "estimatedAgents": 10,
-      "startedAt": "2026-10-13T19:00:44+00:00"
+      "startedAt": "2026-10-13T19:00:44+00:00",
+      "endedAt": "2026-10-13T20:19:24+00:00",
+      "integration": {
+        "merged": [
+          "P0-10",
+          "P0-11",
+          "P1-02"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "f29b5d1",
+        "summary": "merged cleanly; 183 tests; parity sync 106 citations; flaky DiskImageSelfTests seen twice (P0-12)"
+      },
+      "critic": null,
+      "spentOutputTokens": null,
+      "agents": 8,
+      "subagentTokens": 1294469,
+      "durationMin": 77.8
+    },
+    "W1-C": {
+      "wps": [
+        "P1-01",
+        "P1-03",
+        "P0-12"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 10,
+      "startedAt": "2026-10-13T20:19:28+00:00"
     }
   },
   "wps": {
@@ -401,7 +435,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P1-01",
       "headSha": null,
       "attempts": 0,
@@ -433,19 +467,24 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P1-02",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "2c753ca",
+      "attempts": 1,
       "gate": [
         "tools/parity/gen.sh --check",
         "scripts/ci.sh"
       ],
       "lenses": [],
-      "summary": null,
+      "summary": "FTFoundation Formatting (dates, sizes, permissions, status/search text, list filter, typeahead, refinement, icon-label truncation, tooltips wording, tab labels, RelativeClock) and Ranking (visited folders, tracker, Places, Go menu, history menu). Goldens relative-dates 500, sizes 300, icon-label 300, list-filter 200, visited-ranking 200, all matching.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "relative-dates recorded under Electron's Node (Bun ICU differs)",
+        "tooltip rows needing shortcut/toolbar tables deferred to P1-03",
+        "titleTooltips DOM-timing rows deferred to P5-01"
+      ]
     },
     "P1-03": {
       "title": "Preferences, toolbar items, shortcuts, command availability",
@@ -463,7 +502,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P1-03",
       "headSha": null,
       "attempts": 0,
@@ -1041,7 +1080,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P1-02: titleTooltips DOM-timing rows T-9e960311, T-cc926cf5, T-1849bac0, T-91fc6643, T-4e5d4df9, T-34663665, T-6005952a, T-16801ecd, T-5c9514b8, T-bea514b5, T-f8d9bae2 (AppKit tooltip delay and placement)."
+      ]
     },
     "P5-02": {
       "title": "Sidebar",
@@ -1428,10 +1470,10 @@
       "depends": [
         "P0-05"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-10",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "9039611",
+      "attempts": 1,
       "gate": [
         "tools/capture/run.sh --selftest",
         "tools/capture/run.sh --tier wp",
@@ -1440,10 +1482,15 @@
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Automation steps on both sides: click/pick/menu/contextMenu/drag/expectSheet/sheetButton/newWindow/newTab/selectTab/selectWindow/fs/expect; prefs registry of 57 keys; missing vs off reporting; real selftest; tiers; 10 new scenarios and 17 acceptance flows (a01-a17, Electron-complete); elements.json 101 names.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "icon elements fixed to the Icons view selectors",
+        "extra steps pick, holdMs, toEdge, fs touch",
+        "A4 never runs Replace, A14 has no relaunch, A17 no disk images (left to P3 goldens and later flows)"
+      ]
     },
     "P0-11": {
       "title": "Parity matrix counts behavior rules (B- ids)",
@@ -1454,12 +1501,35 @@
       "depends": [
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-11",
+      "headSha": "283e14e",
+      "attempts": 1,
+      "gate": [
+        "bun tools/parity-matrix/sync.ts --check",
+        "scripts/ci.sh"
+      ],
+      "lenses": [],
+      "summary": "sync.ts reads 1708 B- ids, validates B- citations in tests and scenarios, writes behaviors.tsv, report.ts per-area summary, features.md Behaviors column (69 rows linked heuristically).",
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-12": {
+      "title": "Fix flaky disk-image detach in tests",
+      "phase": "P0",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-08"
+      ],
+      "status": "implementing",
+      "branch": "port/P0-12",
       "headSha": null,
       "attempts": 0,
       "gate": [
-        "bun tools/parity-matrix/sync.ts --check",
+        "for i in $(seq 1 10); do swift test --filter DiskImageSelfTests >/dev/null 2>&1 || exit 1; done",
         "scripts/ci.sh"
       ],
       "lenses": [],
