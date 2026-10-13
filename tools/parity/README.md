@@ -20,7 +20,7 @@ The reference app's own TypeScript (in the clone `tools/reference/setup.sh` buil
 |---|---|
 | `exec/places.ts` | The scenario format, the work folder (`tree/` = `$ROOT`, `trash/` = `$TRASH`, `journal/replace-journal.json`), disk images, building the tree, snapshots |
 | `exec/run.ts` | Runs an execution scenario: builds the tree, starts `engine.ts` in a child Bun process, recovers after a crash, records the outcome |
-| `exec/engine.ts` | The child: analysis, policy, `executeCopyPasteFromAnalysis` with the native file system (`testNativePaste.ts`), the app's journal file (`writeJournal.ts`) and a folder Trash; writes one JSON record per line as things happen |
+| `exec/engine.ts` | The child: the review and the paste through the app's `WriteService` (as `bootstrap.ts` makes it) with the native file system (`testNativePaste.ts`), the app's journal file (`writeJournal.ts`) and the app's Trash wrapper (`createTrashItem`) around a folder Trash; answers and stops as the window does; writes one JSON record per line as things happen |
 | `exec/analysis.ts` | Runs an analysis scenario in-process: the report, the choices, the resolution |
 | `exec/normalize.ts` | Normalization, mirrored by `FTTestSupport.ExecNormalize` |
 | `exec/scenarios.ts` | Builders the `exec-*` and `analysis-*` suites use |
@@ -38,21 +38,25 @@ Run one by hand: `bun tools/parity/exec/run.ts [--raw] <scenario.json>`, `bun to
   "policy": { "file": "skip", "directory": "skip", "mismatch": "skip" },
   "overrides": [{ "nodeId": "item-1/b.txt", "action": "keep_both" }],
   "answers": ["overwrite"],
+  "applyToRemaining": [true],
   "stopAt": { "afterEvent": 3 },
   "crashAt": { "journalWrite": 2 },
   "changes": [{ "ops": [{ "op": "write", "path": "destination/a.txt", "content": "x\n" }] },
               { "afterEvent": 2, "ops": [{ "op": "remove", "path": "source/b.txt" }] }],
   "trash": true,
-  "volumes": { "destination": "fat32" } }
+  "volumes": { "destination": "fat32" },
+  "volumesWithoutTrash": ["destination"] }
 ```
 
 - **tree**: made in order; then modes and flags, deepest first (equally deep: last first), so a read-only or locked folder is filled before it is closed.
 - **overrides**: per-item review choices, by analysis node id.
-- **answers**: replies to runtime questions in order; `skip` once they run out. Each must be one the engine allows, as the write service would refuse it (the generator fails otherwise).
-- **stopAt**: aborts right after the n-th progress event, as the Stop button does.
+- **answers**: replies to runtime questions in order (`resolveRuntimeConflict`, given as the question's event goes out); `skip` once they run out. Each must be one the engine allows, as the write service would refuse it (the generator fails otherwise).
+- **applyToRemaining**: by position, which answers are given "for the rest of this operation". The write service then answers later conflicts of the same kind itself, without a question, when the answer suits them (`autoResolve`); others are asked.
+- **stopAt**: right after the n-th progress event (the first is `queued`), `cancelOperation`, as the Stop button does; a question still open is dropped unanswered.
 - **crashAt**: the child kills itself with `SIGKILL` right after its n-th journal write (each `add`, and each `remove` of an entry it holds, rewrites the file). `run.ts` then runs the app's startup recovery (`openWriteJournal`, `recoverWrites` with `answerWithinMs: 3000`, as `bootstrap.ts` does) on the same folders.
-- **changes**: made on disk after the review (no `afterEvent`) or right after the n-th progress event, before the engine goes on.
-- **trash**: `false` gives the engine no Trash, so a Replace asks before deleting for good. Otherwise the Trash is `testNativePaste.ts`'s: items are moved into the disk's Trash folder as `<n>-<name>`.
+- **changes**: made on disk after the review, before Paste (no `afterEvent`), or right after the n-th progress event, before the engine goes on. Ops: `write`, `mkdir`, `remove`, `chmod` (`mode`, octal).
+- **trash**: `false` gives the engine no Trash at all, so a Replace asks before deleting for good. Otherwise the Trash is the app's `createTrashItem` (which tells a locked item, and a disk that may have no Trash, from other failures) around a stand-in for the Trash like `testNativePaste.ts`'s: items are moved into their disk's Trash folder as `<n>-<name>`.
+- **volumesWithoutTrash**: folders of `volumes` whose disk has no Trash: the stand-in fails there with `ENOTSUP`, as the Trash does on such a disk, so `createTrashItem` says it may have none and a Replace asks (`trash_unavailable`) before deleting for good.
 - **volumes**: top-level folders made on a copy-on-write clone of a blank disk image (`apfs`, `apfs-cs`, `hfs`, `fat32`, `exfat`, from `tools/fixtures/disk-images.sh`), attached once per process with `hdiutil` and detached at exit. Their tree and Trash map to `$ROOT` and `$TRASH` too.
 
 ### Execution outcome
@@ -61,10 +65,10 @@ Run one by hand: `bun tools/parity/exec/run.ts [--raw] <scenario.json>`, `bun to
 
 - `before`, `after`, `trash`: tree snapshots (`snapshot.ts`), all disks merged. Items the owner can't read are opened for the snapshot and keep their own mode in it.
 - `events`, in order, each with a `kind`:
-  - `event`: a progress event, without its `result`;
-  - `answer`: `{ conflictId, allowed, answer }`, right after the question's `awaiting_resolution` event;
+  - `event`: a progress event, without its `result`, as the write service sends them: `queued` first, then the engine's, and the service's own `failed` (with a result for every item) or `cancelled` when the paste throws;
+  - `answer`: `{ conflictId, allowed, answer, applyToRemaining }`, after the question's `awaiting_resolution` event (and any change due then). A conflict a standing answer covers has neither;
   - `journal`: `{ write, entries }`, the journal file after each write;
-  - `change`, `stop`, `crash` (`{ afterJournalWrite }`), `issues` (the review refused the paste), `error` (the engine threw).
+  - `change`, `stop`, `crash` (`{ afterJournalWrite }`), `issues` (the review refused the paste), `error` (the review itself failed).
 - `result`: the final result without `undoLog`, or null; `undoLog` beside it.
 - `journal`: the file when the engine finished or died (`[]` if never written).
 - `recovery`, after a crash: `{ notices, finished, log: [{ level, message, details }], after, trash, journal }`.
@@ -94,10 +98,10 @@ Normalizing twice changes nothing, so a recording replayed compares equal.
 
 | Suite | Cases |
 |---|---|
-| `exec-copy` | Plain copies, merge, Keep Both, Replace (file, folder, package, link), Skip, type mismatches, locks, no Trash, a blocked Replace, an unreadable folder, other disks |
+| `exec-copy` | Plain copies, merge, Keep Both, Replace (file, folder, package, link), Skip, type mismatches, locks, no Trash, a blocked Replace, an unreadable folder, other disks, other disks without a Trash, a paste that fails as a whole |
 | `exec-cut` | Same-disk renames, per-file moves into a merged folder, Replace, Skip, a locked file, a move into its own folder, moves to and from other disks |
-| `exec-runtime` | Changes after the review or mid-paste, each allowed answer |
-| `exec-stop` | Stops at chosen events: before anything, inside a folder copy, between items, while building a replacement, during a move, with a question open |
+| `exec-runtime` | Changes after the review or mid-paste, each allowed answer, answers for the rest of the operation (reused, asked again, another kind) |
+| `exec-stop` | Stops at chosen events: while queued, as it starts, inside a folder copy, between items, while building a replacement, during a move, with a question open |
 | `exec-crash` | A crash after each journal write of a folder Replace (copy, and same-disk move), a file Replace, a folder copied whole, and a folder moved to another disk; then recovery |
 | `analysis-cases` | Hand-picked: file-operations.md §2 and §7 A–C |
 | `analysis-random` | 90 seeded random trees (seed 20261013) |
@@ -106,7 +110,7 @@ Normalizing twice changes nothing, so a recording replayed compares equal.
 ### Swift side (`FTTestSupport`)
 
 - `ExecScenario`: the scenario; `build(in:)` makes the tree as `places.ts` does, `applyChanges(afterEvent:in:)` makes its changes.
-- `ExecPlaces.make(for:)`: the same folders and disk images (`ExecDiskImages`); `snapshotTree()`, `snapshotTrash()`, `readJournal()`, `trashFor(_:)`, `tokens`.
+- `ExecPlaces.make(for:)`: the same folders and disk images (`ExecDiskImages`); `snapshotTree()`, `snapshotTrash()`, `readJournal()`, `trashFor(_:)`, `hasTrash(_:)`, `tokens`.
 - `ExecEngine`: `run(scenario, answers:, stopAt:, crashAt:, in: places) async throws -> ExecOutcome`, which the Swift write engine implements; `ExecAnalysisEngine` for the analysis.
 - `ExecHarness`: `cases(suite:)`, `check(_:with:)`, `checkAnalysis(_:with:)`, `mismatchReport(suite:engine:)` (builds the tree in fresh folders, runs the engine, normalizes, compares) and `builtTreeDifferences(_:)`.
 - `ExecDiff.differences(expected:actual:)`: the first differences, one line each (`events[3].completedItemCount: expected 2, got 3`). Strings compare scalar for scalar.

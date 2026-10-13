@@ -9,6 +9,7 @@ import {
   KEEP_ALL,
   REPLACE_ALL,
   SKIP_ALL,
+  chmod,
   dir,
   execCases,
   file,
@@ -210,6 +211,46 @@ export async function generate(): Promise<GoldenCase[]> {
       [file("source/f/a.txt", "new\n"), file("destination/f/old.txt")],
       { sources: ["source/f"], ...INTO },
       { policy: REPLACE_ALL, volumes: { destination: "hfs" } },
+    ),
+    // The app's Trash (createTrashItem) on a disk that has none: "may not have a Trash", so the
+    // Replace asks before deleting for good.
+    scenario(
+      "Replace on another disk without a Trash, deleted for good once agreed",
+      [file("source/a.txt", "new\n"), file("source/f/x.txt"), file("destination/a.txt", "old\n"), file("destination/f/y.txt")],
+      { sources: ["source/a.txt", "source/f"], ...INTO },
+      { policy: REPLACE_ALL, answers: ["overwrite", "overwrite"], volumes: { destination: "apfs" }, volumesWithoutTrash: ["destination"] },
+    ),
+    scenario(
+      "Replace on a FAT32 disk without a Trash, skipped: nothing changes",
+      [file("source/a.txt", "new\n"), file("destination/a.txt", "old\n")],
+      { sources: ["source/a.txt"], ...INTO },
+      { policy: REPLACE_ALL, answers: ["skip"], volumes: { destination: "fat32" }, volumesWithoutTrash: ["destination"] },
+    ),
+    scenario(
+      "Replace on a disk without a Trash, deleted for good for the rest: the second isn't asked",
+      [file("source/a.txt", "new a\n"), file("source/b.txt", "new b\n"), file("destination/a.txt"), file("destination/b.txt")],
+      { sources: ["source/a.txt", "source/b.txt"], ...INTO },
+      {
+        policy: REPLACE_ALL,
+        answers: ["overwrite"],
+        applyToRemaining: [true],
+        volumes: { destination: "exfat" },
+        volumesWithoutTrash: ["destination"],
+      },
+    ),
+    scenario(
+      "a locked item on another disk can't go to the Trash: the Replace fails, saying it is locked",
+      [file("source/a.txt", "new\n"), file("destination/a.txt", "old\n", { flags: ["uchg"] })],
+      { sources: ["source/a.txt"], ...INTO },
+      { policy: REPLACE_ALL, volumes: { destination: "apfs" } },
+    ),
+    // Thrown before any item is started (Keep Both finds no free name in a folder it can't
+    // look in): the write service's own "failed" event and result.
+    scenario(
+      "the destination can't be looked in after the review, Keep Both: the paste fails as a whole",
+      [file("source/a.txt"), file("destination/a.txt")],
+      { sources: ["source/a.txt"], ...INTO },
+      { policy: KEEP_ALL, changes: [{ ops: [chmod("destination", "0000")] }] },
     ),
   ]);
 }

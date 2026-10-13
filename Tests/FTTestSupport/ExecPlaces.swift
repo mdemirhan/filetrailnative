@@ -13,6 +13,8 @@ public struct ExecPlaces: Sendable {
         public let mount: String
         public let root: String
         public let trash: String
+        /// False for a folder in the scenario's `volumesWithoutTrash`.
+        public let hasTrash: Bool
     }
 
     public let work: String
@@ -46,7 +48,7 @@ public struct ExecPlaces: Sendable {
             volumes.append(
                 Volume(
                     folder: folder, format: format, mount: mount, root: scenarioBase + "/tree",
-                    trash: scenarioBase + "/trash"))
+                    trash: scenarioBase + "/trash", hasTrash: !(scenario.volumesWithoutTrash ?? []).contains(folder)))
         }
         return ExecPlaces(
             work: work, root: work + "/tree", trash: work + "/trash", journal: work + "/journal/replace-journal.json",
@@ -63,6 +65,12 @@ public struct ExecPlaces: Sendable {
     /// The Trash folder for an item at `path` (its disk's).
     public func trashFor(_ path: String) -> String {
         volumes.first { path.hasPrefix($0.mount + "/") }?.trash ?? trash
+    }
+
+    /// Whether the disk holding `path` has a Trash (the startup disk always does). On one that
+    /// hasn't, the engine's Trash fails as the Trash does there (ENOTSUP).
+    public func hasTrash(_ path: String) -> Bool {
+        volumes.first { path.hasPrefix($0.mount + "/") }?.hasTrash ?? true
     }
 
     /// For ExecNormalize: each place and its token.

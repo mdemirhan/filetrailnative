@@ -68,7 +68,9 @@ struct ExecGoldenTests {
         let reused = try events("two files appear, Keep Both for the rest: the second isn't asked")
         #expect(questions(reused) == 1)
         #expect(reused.contains { $0["kind"]?.stringValue == "answer" && $0["applyToRemaining"] == .bool(true) })
-        #expect(questions(try events("Overwrite for the rest, then a deleted source: asked again, as only Skip suits")) == 2)
+        #expect(
+            questions(try events("Overwrite for the rest, then a deleted source: asked again, as only Skip suits")) == 2
+        )
         #expect(questions(try events("Merge for the rest, then a file inside: a file is asked about")) == 2)
     }
 

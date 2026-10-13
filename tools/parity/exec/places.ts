@@ -23,7 +23,8 @@ export type ScenarioItem =
 export type ChangeOp =
   | { op: "write"; path: string; content: string }
   | { op: "mkdir"; path: string }
-  | { op: "remove"; path: string };
+  | { op: "remove"; path: string }
+  | { op: "chmod"; path: string; mode: string };
 
 export type Scenario = {
   name: string;
@@ -34,6 +35,9 @@ export type Scenario = {
   overrides?: Array<{ nodeId: string; action: string }>;
   // Answers to the runtime questions, in the order they are asked; "skip" once they run out.
   answers?: string[];
+  // For each answer, by position: true when it is given "for the rest of this operation" (the
+  // question's "Apply to remaining"); missing ones are false.
+  applyToRemaining?: boolean[];
   // Stop the paste right after its n-th progress event, as the Stop button does.
   stopAt?: { afterEvent: number } | null;
   // Kill the engine right after its n-th write of the journal file, then run recovery.
@@ -41,10 +45,14 @@ export type Scenario = {
   // Changes made on disk while the paste runs: after the review (no `afterEvent`) or right
   // after the n-th progress event.
   changes?: Array<{ afterEvent?: number; ops: ChangeOp[] }>;
-  // false: the disk has no Trash (a Replace asks before deleting for good).
+  // false: the engine has no Trash at all (a Replace asks before deleting for good).
   trash?: boolean;
   // Top-level folders made on a disk image of their own instead: { "destination": "fat32" }.
   volumes?: Record<string, DiskFormat>;
+  // Folders of `volumes` whose disk has no Trash: moving an item there to the Trash fails as it
+  // does on such a disk (ENOTSUP), which the app's createTrashItem turns into "may not have a
+  // Trash", and a Replace asks before deleting for good.
+  volumesWithoutTrash?: string[];
 };
 
 export type Places = {
@@ -54,8 +62,9 @@ export type Places = {
   // Its Trash ("$TRASH").
   trash: string;
   journal: string;
-  // For each folder on a disk image: where its tree and its Trash are, and the mount.
-  volumes: Array<{ folder: string; format: DiskFormat; mount: string; root: string; trash: string }>;
+  // For each folder on a disk image: where its tree and its Trash are, the mount, and whether
+  // the disk has a Trash (volumesWithoutTrash).
+  volumes: Array<{ folder: string; format: DiskFormat; mount: string; root: string; trash: string; hasTrash: boolean }>;
   // Absolute path of a scenario-relative path.
   resolve: (relative: string) => string;
   // The Trash folder for an item at an absolute path (its disk's).
@@ -143,13 +152,23 @@ export async function makePlaces(scenario: Scenario): Promise<Places> {
   await mkdir(trash);
   await mkdir(join(work, "journal"));
   const volumes: Places["volumes"] = [];
+  const withoutTrash = scenario.volumesWithoutTrash ?? [];
+  for (const folder of withoutTrash) {
+    if (scenario.volumes?.[folder] === undefined) {
+      throw new Error(`${scenario.name}: "${folder}" in volumesWithoutTrash isn't one of its volumes`);
+    }
+  }
   for (const [folder, format] of Object.entries(scenario.volumes ?? {}).sort(([a], [b]) => (a < b ? -1 : 1))) {
     const mount = await mountedVolume(format);
     scenarioCount += 1;
     const base = join(mount, `scenario-${process.pid}-${scenarioCount}`);
     await mkdir(join(base, "tree"), { recursive: true });
     await mkdir(join(base, "trash"));
-    volumes.push({ folder, format, mount, root: join(base, "tree"), trash: join(base, "trash") });
+    const hasTrash = !withoutTrash.includes(folder);
+    if (volumes.some((volume) => volume.mount === mount && volume.hasTrash !== hasTrash)) {
+      throw new Error(`${scenario.name}: two folders on one ${format} disk, with and without a Trash`);
+    }
+    volumes.push({ folder, format, mount, root: join(base, "tree"), trash: join(base, "trash"), hasTrash });
   }
   const volumeOf = (relative: string) => volumes.find((volume) => relative.split("/")[0] === volume.folder);
   return {

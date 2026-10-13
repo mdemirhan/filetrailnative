@@ -78,7 +78,7 @@ export async function generate(): Promise<GoldenCase[]> {
       "a file appears in a merged folder part way through, answered overwrite",
       [file("source/f/a.txt"), file("source/f/b.txt", "pasted b\n"), file("destination/f/old.txt")],
       { sources: ["source/f"], ...INTO },
-      { policy: ADD_MISSING, answers: ["overwrite"], changes: [{ afterEvent: 2, ops: [write("destination/f/b.txt", "appeared\n")] }] },
+      { policy: ADD_MISSING, answers: ["overwrite"], changes: [{ afterEvent: 3, ops: [write("destination/f/b.txt", "appeared\n")] }] },
     ),
     scenario(
       "two questions and one answer: the rest are skipped",
@@ -95,6 +95,49 @@ export async function generate(): Promise<GoldenCase[]> {
       [file("source/a.txt", "moving\n"), dir("destination")],
       { mode: "cut", sources: ["source/a.txt"], ...INTO },
       { answers: ["overwrite"], changes: [{ ops: [write("destination/a.txt", "taken\n")] }] },
+    ),
+    // "Apply to remaining" (writeService.ts standingResolutions, autoResolve): reused, without a
+    // question, only for a conflict of the same kind that offers the same answer.
+    scenario(
+      "two files appear, Keep Both for the rest: the second isn't asked",
+      [file("source/a.txt"), file("source/b.txt"), file("source/c.txt"), dir("destination")],
+      { sources: ["source/a.txt", "source/b.txt", "source/c.txt"], ...INTO },
+      {
+        answers: ["keep_both"],
+        applyToRemaining: [true],
+        changes: [{ ops: [write("destination/a.txt", "x\n"), write("destination/b.txt", "y\n")] }],
+      },
+    ),
+    scenario(
+      "Overwrite for the rest, then a deleted source: asked again, as only Skip suits",
+      [file("source/a.txt", "as reviewed\n"), file("source/b.txt"), file("source/c.txt", "as reviewed\n"), dir("destination")],
+      { sources: ["source/a.txt", "source/b.txt", "source/c.txt"], ...INTO },
+      {
+        answers: ["overwrite", "skip"],
+        applyToRemaining: [true, false],
+        changes: [
+          { ops: [write("source/a.txt", "changed\n"), remove("source/b.txt"), write("source/c.txt", "changed too\n")] },
+        ],
+      },
+    ),
+    scenario(
+      "Merge for the rest, then a file inside: a file is asked about",
+      [file("source/f/a.txt", "pasted\n"), file("source/f/b.txt"), file("source/g/c.txt"), dir("destination")],
+      { sources: ["source/f", "source/g"], ...INTO },
+      {
+        answers: ["merge", "overwrite"],
+        applyToRemaining: [true, false],
+        changes: [
+          {
+            ops: [
+              mkdir("destination/f"),
+              write("destination/f/a.txt", "appeared\n"),
+              mkdir("destination/g"),
+              write("destination/g/d.txt", "d\n"),
+            ],
+          },
+        ],
+      },
     ),
   ]);
 }

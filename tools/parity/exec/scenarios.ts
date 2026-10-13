@@ -36,6 +36,10 @@ export function mkdir(path: string): ChangeOp {
   return { op: "mkdir", path };
 }
 
+export function chmod(path: string, mode: string): ChangeOp {
+  return { op: "chmod", path, mode };
+}
+
 // A paste of `sources` into `destination` with every optional field written out, so the
 // golden's input says everything the scenario does.
 export function scenario(
@@ -51,11 +55,13 @@ export function scenario(
     policy: options.policy ?? SKIP_ALL,
     overrides: options.overrides ?? [],
     answers: options.answers ?? [],
+    applyToRemaining: options.applyToRemaining ?? [],
     stopAt: options.stopAt ?? null,
     crashAt: options.crashAt ?? null,
     changes: options.changes ?? [],
     trash: options.trash ?? true,
     volumes: options.volumes ?? {},
+    volumesWithoutTrash: options.volumesWithoutTrash ?? [],
   };
 }
 

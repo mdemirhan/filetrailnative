@@ -1,4 +1,4 @@
-// Runs an execution scenario through the reference's copy engine in a fresh work folder and
+// Runs an execution scenario through the reference's write service in a fresh work folder and
 // describes everything that matters about what it did (format in tools/parity/README.md):
 // the tree before and after, the ordered event stream (progress, questions with their allowed
 // answers and the answer given, journal writes, stops, a crash), the result, the undo log, the
@@ -14,7 +14,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { importReference } from "../lib/reference";
-import { type EngineSpec, nextTrashNumber, withTrash } from "./engine";
+import { type EngineSpec, type TrashPlace, withTrash } from "./engine";
 import { type Place, normalizeOutcome } from "./normalize";
 import {
   type Places,
@@ -37,6 +37,8 @@ export type ScenarioOutcome = {
   after: SnapshotEntry[];
   trash: SnapshotEntry[];
   // In order: { kind: "event" | "answer" | "journal" | "change" | "stop" | "crash" | "issues" | "error", ... }.
+  // Events are the write service's, from "queued" to the last (its own "failed" or "cancelled"
+  // when the paste threw).
   events: Json[];
   // The paste's result without its undo log; null when it never finished.
   result: Json | null;
@@ -71,13 +73,13 @@ type JournalModule = {
   ) => Promise<{ notices: string[]; finished: string[] }>;
 };
 
-function trashPlaces(scenario: Scenario, places: Places): EngineSpec["trash"] {
+function trashPlaces(scenario: Scenario, places: Places): TrashPlace[] | null {
   if (scenario.trash === false) {
     return null;
   }
   return [
-    { mount: "", folder: places.trash },
-    ...places.volumes.map((volume) => ({ mount: volume.mount, folder: volume.trash })),
+    { mount: "", folder: places.trash, hasTrash: true },
+    ...places.volumes.map((volume) => ({ mount: volume.mount, folder: volume.trash, hasTrash: volume.hasTrash })),
   ];
 }
 
@@ -113,6 +115,7 @@ export async function runScenarioRaw(scenario: Scenario): Promise<RawOutcome> {
       policy: scenario.policy,
       overrides: scenario.overrides ?? [],
       answers: scenario.answers ?? [],
+      applyToRemaining: scenario.applyToRemaining ?? [],
       stopAfterEvent: scenario.stopAt?.afterEvent ?? null,
       crashAfterJournalWrite: scenario.crashAt?.journalWrite ?? null,
       changes: (scenario.changes ?? []).map((change) => ({
@@ -169,10 +172,10 @@ export async function runScenarioRaw(scenario: Scenario): Promise<RawOutcome> {
 
 // The app's startup recovery (bootstrap.ts: openWriteJournal, then recoverWrites) on the
 // journal a crash left, with the same file system and Trash the engine had.
-async function recover(places: Places, trash: EngineSpec["trash"]): Promise<ScenarioOutcome["recovery"]> {
+async function recover(places: Places, trash: TrashPlace[] | null): Promise<ScenarioOutcome["recovery"]> {
   const core = await importReference<Core>("packages/core/src/fs/testNativePaste.ts");
   const module = await importReference<JournalModule>("apps/desktop/src/main/bootstrap/writeJournal.ts");
-  const fileSystem = withTrash(core.nativeFileSystem, trash, await nextTrashNumber(trash));
+  const fileSystem = await withTrash(core.nativeFileSystem, trash);
   const log: Array<{ level: string; message: string; details: unknown }> = [];
   const journal = await module.openWriteJournal(places.journal);
   const report = await module.recoverWrites(

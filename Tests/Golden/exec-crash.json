@@ -44,13 +44,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 1
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -207,6 +209,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -385,13 +401,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 2
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -573,6 +591,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -821,13 +853,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 3
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -984,6 +1018,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1267,13 +1315,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 1
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -1373,6 +1423,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1516,13 +1580,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 2
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -1606,6 +1672,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1753,13 +1833,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 1
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -1831,6 +1913,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1960,13 +2056,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 2
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2047,6 +2145,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -2204,13 +2316,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 3
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2282,6 +2396,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -2449,13 +2577,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 1
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2562,6 +2692,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -2709,13 +2853,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 2
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2847,6 +2993,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -3096,13 +3256,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 3
         },
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -3234,6 +3396,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -3469,6 +3645,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 1
@@ -3477,7 +3654,8 @@
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -3570,6 +3748,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -3712,6 +3904,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 2
@@ -3720,7 +3913,8 @@
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -3831,6 +4025,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -4057,6 +4265,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": {
           "journalWrite": 3
@@ -4065,7 +4274,8 @@
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -4176,6 +4386,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,

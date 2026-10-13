@@ -39,13 +39,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -310,13 +312,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -695,13 +699,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -880,13 +886,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -1274,6 +1282,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
@@ -1281,7 +1290,8 @@
         "volumes": {
           "source": "apfs",
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -1484,13 +1494,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "folder": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -1732,13 +1744,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -2003,13 +2017,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -2388,13 +2404,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -2559,13 +2577,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -2953,6 +2973,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
@@ -2960,7 +2981,8 @@
         "volumes": {
           "source": "apfs-cs",
           "destination": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -3163,13 +3185,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "folder": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -3411,13 +3435,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "hfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -3682,13 +3708,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "hfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -4067,13 +4095,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "hfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -4252,13 +4282,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "hfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -4646,6 +4678,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
@@ -4653,7 +4686,8 @@
         "volumes": {
           "source": "hfs",
           "destination": "hfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -4856,13 +4890,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "folder": "hfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -5104,13 +5140,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -5386,13 +5424,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -5828,13 +5868,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -6035,13 +6077,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -6484,6 +6528,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
@@ -6491,7 +6536,8 @@
         "volumes": {
           "source": "fat32",
           "destination": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -6749,13 +6795,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "folder": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -7041,13 +7089,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "exfat"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -7323,13 +7373,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "exfat"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -7765,13 +7817,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "exfat"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -7972,13 +8026,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "exfat"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -8421,6 +8477,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
@@ -8428,7 +8485,8 @@
         "volumes": {
           "source": "exfat",
           "destination": "exfat"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -8686,13 +8744,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "folder": "exfat"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -8977,13 +9037,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -9217,6 +9279,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
@@ -9224,7 +9287,8 @@
         "volumes": {
           "source": "apfs-cs",
           "destination": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -9472,13 +9536,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -9628,13 +9694,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs-cs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -9810,13 +9878,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -10098,13 +10168,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -10358,6 +10430,7 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
@@ -10365,7 +10438,8 @@
         "volumes": {
           "source": "fat32",
           "destination": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [
@@ -10666,13 +10740,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "exfat"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "allConflictsChoices": [

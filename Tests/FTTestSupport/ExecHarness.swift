@@ -34,8 +34,11 @@ public struct ExecOutcome: Codable, Sendable {
     public var after: [TreeSnapshot.Entry]
     public var trash: [TreeSnapshot.Entry]
     /// In order, each with a `kind`:
-    /// - "event": a progress event (CopyPasteProgressEvent without `result`);
-    /// - "answer": { conflictId, allowed, answer } right after the question's event;
+    /// - "event": a progress event (CopyPasteProgressEvent without `result`), as the write service
+    ///   sends them: "queued" first, and its own "failed" (with a result) or "cancelled" when the
+    ///   paste throws;
+    /// - "answer": { conflictId, allowed, answer, applyToRemaining } after the question's event
+    ///   (and its changes); a conflict a standing answer covers has no question and no answer;
     /// - "journal": { write: n, entries } after each write of the journal file;
     /// - "change": { ops } when a scenario change was made; "stop": the paste was stopped;
     /// - "crash": { afterJournalWrite }; "issues": { issues } when the review refused the paste;
@@ -90,13 +93,16 @@ public struct ExecOutcome: Codable, Sendable {
     }
 }
 
-/// The Swift write engine, as the differential drives it. `places` already holds the scenario's
-/// tree; the engine pastes `scenario.paste` with its policy and overrides, uses `places.trashFor`
-/// as the Trash (or none when `scenario.trash == false`) and `places.journal` as its journal file,
-/// makes `scenario.changes` at their points (ExecScenario.applyChanges), answers runtime questions
-/// from `answers` in order ("skip" once they run out), stops after event `stopAt`, and at
-/// `crashAt` is killed right after that journal write and recovered. It reports with the ids
-/// "analysis-test" and "op-test" (normalized either way).
+/// The Swift write engine, as the differential drives it, through its write service as the app
+/// does. `places` already holds the scenario's tree; the engine pastes `scenario.paste` with its
+/// policy and overrides, uses `places.trashFor` as the Trash, failing as on a disk without one
+/// where `places.hasTrash` is false (and has none when `scenario.trash == false`), and
+/// `places.journal` as its journal file, makes `scenario.changes` at their points
+/// (ExecScenario.applyChanges), answers runtime questions from `answers` in order ("skip" once
+/// they run out), each "for the rest of this operation" where `scenario.applyToRemaining` says,
+/// stops after event `stopAt` as the Stop button does (a question still open goes unanswered),
+/// and at `crashAt` is killed right after that journal write and recovered. It reports with the
+/// ids "analysis-test" and "op-test" (normalized either way).
 public protocol ExecEngine: Sendable {
     func run(
         _ scenario: ExecScenario, answers: [String], stopAt: ExecScenario.StopPoint?, crashAt: ExecScenario.CrashPoint?,

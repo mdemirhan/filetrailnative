@@ -33,11 +33,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -91,6 +93,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -228,11 +244,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -350,6 +368,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -478,11 +510,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -545,6 +579,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -721,11 +769,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -809,6 +859,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1006,11 +1070,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -1151,6 +1217,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1352,11 +1432,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -1474,6 +1556,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1605,11 +1701,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -1699,6 +1797,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -1843,11 +1955,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -1923,6 +2037,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -2054,11 +2182,13 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
-        "volumes": {}
+        "volumes": {},
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2155,13 +2285,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2215,6 +2347,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -2333,13 +2479,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2457,6 +2605,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -2686,13 +2848,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "destination": "apfs"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -2794,6 +2958,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
@@ -3000,13 +3178,15 @@
         },
         "overrides": [],
         "answers": [],
+        "applyToRemaining": [],
         "stopAt": null,
         "crashAt": null,
         "changes": [],
         "trash": true,
         "volumes": {
           "source": "fat32"
-        }
+        },
+        "volumesWithoutTrash": []
       },
       "output": {
         "after": [
@@ -3147,6 +3327,20 @@
           }
         ],
         "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
           {
             "analysisId": "analysis",
             "completedByteCount": 0,
