@@ -154,17 +154,16 @@ async function main() {
     env: { ...process.env, ...(now ? { FILETRAIL_NOW: now } : {}) } as Record<string, string>,
   });
 
-  let page = await app.firstWindow();
+  // The clock goes in before the window's page loads (the app opens it once it has started), so
+  // the first listing is drawn on it. It then runs on from that instant, as FILETRAIL_NOW does.
+  if (now) {
+    await app.context().clock.install({ time: new Date(now) });
+    await app.context().clock.resume();
+  }
+  const page = await app.firstWindow();
   try {
+    if (now) await page.clock.resume();
     await page.locator("main.app-shell").waitFor({ timeout: 30_000 });
-    if (now) {
-      // Installed, then the page loaded again, so the first listing is drawn on the frozen clock.
-      // A reload reopens the window's tabs as they are, without history.
-      await page.clock.install({ time: new Date(now) });
-      await page.reload();
-      await page.locator("main.app-shell").waitFor({ timeout: 30_000 });
-      await page.clock.resume();
-    }
     if (firstOpen) await waitForFolder(firstOpen);
     await settle();
 

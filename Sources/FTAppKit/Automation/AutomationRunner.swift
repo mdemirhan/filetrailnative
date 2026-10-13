@@ -272,6 +272,9 @@
                 case "accent":
                     // The spike draws with the system accent color.
                     if value.string?.lowercased() != "#007aff" { unsupported.append("accent \(value.string ?? "?")") }
+                case "favoritesPlacement":
+                    // The spike's sidebar is the separate layout: Favorites and Locations lists.
+                    if value.string != "separate" { unsupported.append("favoritesPlacement \(value.string ?? "?")") }
                 default:
                     unsupported.append(key)
                 }

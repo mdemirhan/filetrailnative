@@ -15,7 +15,7 @@
       "text": true
     },
     "first sidebar row": {
-      "electron": { "selector": ".tree-pane .tree-row", "textSelector": ".tree-label-text" },
+      "electron": { "selector": ".tree-pane .sidebar-sections .tree-row", "textSelector": ".tree-label-text" },
       "swift": "sidebar.row",
       "first": true,
       "text": true
@@ -25,20 +25,20 @@
       "swift": "toolbar"
     },
     "title": {
-      "electron": { "selector": ".toolbar-title" },
+      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-title" },
       "swift": "toolbar.title",
       "text": true
     },
     "back button": {
-      "electron": { "selector": ".window-toolbar button[aria-label=\"Back\"]" },
+      "electron": { "selector": ".window-toolbar .toolbar-row button[aria-label=\"Back\"]" },
       "swift": "toolbar.back"
     },
     "view switch": {
-      "electron": { "selector": ".window-toolbar .toolbar-segmented" },
+      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-segmented" },
       "swift": "toolbar.viewSwitch"
     },
     "search field": {
-      "electron": { "selector": ".toolbar-search", "textSelector": ".toolbar-search-input" },
+      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-search", "textSelector": ".toolbar-search-input" },
       "swift": "toolbar.search",
       "text": true
     },

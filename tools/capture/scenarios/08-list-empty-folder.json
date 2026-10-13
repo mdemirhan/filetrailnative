@@ -1,0 +1,47 @@
+{
+  "name": "08-list-empty-folder",
+  "description": "An empty folder",
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "setup": {
+    "emptyFolders": [
+      "~/Library/Caches/filetrail-port/captures/scratch/Empty Folder"
+    ]
+  },
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "~/Library/Caches/filetrail-port/captures/scratch/Empty Folder"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}
