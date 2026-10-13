@@ -74,10 +74,12 @@ public struct ExecScenario: Codable, Equatable, Sendable {
     /// after the n-th progress event, before the engine goes on.
     public struct Change: Codable, Equatable, Sendable {
         public struct Op: Codable, Equatable, Sendable {
-            /// "write", "mkdir" or "remove".
+            /// "write", "mkdir", "remove" or "chmod".
             public var op: String
             public var path: String
             public var content: String?
+            /// For "chmod": octal, "0000".
+            public var mode: String?
         }
 
         public var afterEvent: Int?
@@ -91,19 +93,25 @@ public struct ExecScenario: Codable, Equatable, Sendable {
     public var overrides: [Override]?
     /// Answers to runtime questions in the order asked; "skip" once they run out.
     public var answers: [String]?
+    /// For each answer, by position: true when it is given "for the rest of this operation" (the
+    /// question's "Apply to remaining"); missing ones are false.
+    public var applyToRemaining: [Bool]?
     public var stopAt: StopPoint?
     public var crashAt: CrashPoint?
     public var changes: [Change]?
-    /// false: the disk has no Trash.
+    /// false: the engine has no Trash at all.
     public var trash: Bool?
     /// Top-level folders made on a disk image of their own: ["destination": "fat32"].
     public var volumes: [String: String]?
+    /// Folders of `volumes` whose disk has no Trash: moving an item there to the Trash fails as on
+    /// such a disk (ENOTSUP), and a Replace asks before deleting for good.
+    public var volumesWithoutTrash: [String]?
 
     public init(
         name: String, tree: [Item], paste: Paste, policy: Policy, overrides: [Override]? = nil,
-        answers: [String]? = nil,
+        answers: [String]? = nil, applyToRemaining: [Bool]? = nil,
         stopAt: StopPoint? = nil, crashAt: CrashPoint? = nil, changes: [Change]? = nil, trash: Bool? = nil,
-        volumes: [String: String]? = nil
+        volumes: [String: String]? = nil, volumesWithoutTrash: [String]? = nil
     ) {
         self.name = name
         self.tree = tree
@@ -111,11 +119,13 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         self.policy = policy
         self.overrides = overrides
         self.answers = answers
+        self.applyToRemaining = applyToRemaining
         self.stopAt = stopAt
         self.crashAt = crashAt
         self.changes = changes
         self.trash = trash
         self.volumes = volumes
+        self.volumesWithoutTrash = volumesWithoutTrash
     }
 
     public struct BuildFailure: Error, CustomStringConvertible {
@@ -194,6 +204,10 @@ public struct ExecScenario: Codable, Equatable, Sendable {
             case "remove":
                 if FileManager.default.fileExists(atPath: path) {
                     try FileManager.default.removeItem(atPath: path)
+                }
+            case "chmod":
+                guard let bits = mode_t(op.mode ?? "", radix: 8), chmod(path, bits) == 0 else {
+                    throw BuildFailure(description: "can't set mode \(op.mode ?? "") on \(path)")
                 }
             default:
                 throw BuildFailure(description: "unknown change \(op.op)")

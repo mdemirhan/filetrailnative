@@ -52,6 +52,56 @@ struct ExecGoldenTests {
         #expect(Set(answers) == ["overwrite", "merge", "keep_both", "skip"])
     }
 
+    /// "Apply to remaining" answers: a later conflict of the same kind is answered without a
+    /// question (writeService.ts autoResolve), one the standing answer doesn't suit is asked again,
+    /// and one of another kind is asked.
+    @Test func recordingsPinStandingAnswers() throws {
+        let cases = try ExecHarness.cases(suite: "exec-runtime")
+        func events(_ name: String) throws -> [JSONValue] {
+            let found = try #require(cases.first { $0.name == name }, Comment(rawValue: name))
+            #expect(found.input.applyToRemaining?.contains(true) == true)
+            return found.output["events"]?.arrayValue ?? []
+        }
+        func questions(_ events: [JSONValue]) -> Int {
+            events.filter { $0["status"]?.stringValue == "awaiting_resolution" }.count
+        }
+        let reused = try events("two files appear, Keep Both for the rest: the second isn't asked")
+        #expect(questions(reused) == 1)
+        #expect(reused.contains { $0["kind"]?.stringValue == "answer" && $0["applyToRemaining"] == .bool(true) })
+        #expect(questions(try events("Overwrite for the rest, then a deleted source: asked again, as only Skip suits")) == 2)
+        #expect(questions(try events("Merge for the rest, then a file inside: a file is asked about")) == 2)
+    }
+
+    /// The paste runs through the write service, whose own events are recorded: "queued" first,
+    /// and the "failed" event and result it makes when the paste throws.
+    @Test func recordingsHoldTheWriteServiceEvents() throws {
+        let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
+        for testCase in execution {
+            let first = (testCase.output["events"]?.arrayValue ?? []).first { $0["kind"]?.stringValue == "event" }
+            if let first {
+                #expect(first["status"]?.stringValue == "queued", Comment(rawValue: testCase.name))
+            }
+        }
+        let failed = execution.filter { $0.output["result"]?["status"]?.stringValue == "failed" }
+            .filter { $0.output["result"]?["summary"]?["completedItemCount"] == .int(0) }
+            .filter { ($0.output["events"]?.arrayValue ?? []).last?["status"]?.stringValue == "failed" }
+        #expect(!failed.isEmpty)
+        #expect(execution.contains { ($0.input.stopAt?.afterEvent ?? 0) == 1 })
+    }
+
+    /// The Trash is the app's (createTrashItem): on a disk without one, a Replace asks before
+    /// deleting for good.
+    @Test func recordingsCoverADiskWithoutATrash() throws {
+        let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
+        let trashless = execution.filter { !($0.input.volumesWithoutTrash ?? []).isEmpty }
+        #expect(
+            trashless.contains { testCase in
+                (testCase.output["events"]?.arrayValue ?? []).contains {
+                    $0["runtimeConflict"]?["reason"]?.stringValue == "trash_unavailable"
+                }
+            })
+    }
+
     @Test func normalizationMapsPlacesHiddenNamesIdsAndDates() throws {
         let places = try ExecPlaces.make(for: emptyScenario)
         defer { places.remove() }
