@@ -12,7 +12,6 @@ The reference app's own TypeScript (in the clone `tools/reference/setup.sh` buil
 2. Run `tools/parity/gen.sh <suite>` and commit `Tests/Golden/<suite>.json`.
 3. In a test: `let cases: [GoldenCase<In, Out>] = try Golden.load(suite: "<suite>")`, then `Golden.expectMatches(cases) { port($0) }`. It reports the first 10 mismatches, one line each, comparing outputs as JSON (NFC and NFD differ).
 
-
 ## The write-engine differential (PLAN.md §5.3)
 
 `exec/` runs scenarios through the reference's own write engine and records everything that matters; `FTTestSupport.ExecHarness` runs the same scenarios through the Swift engine and compares.
