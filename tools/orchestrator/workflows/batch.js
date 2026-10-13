@@ -16,7 +16,9 @@ export const meta = {
 // Agents read their instructions from the committed files docs/port/state/preamble.md and
 // docs/port/state/wp/<id>.md, so the workflow input stays small.
 const A = args
-const PRE = 'First read docs/port/state/preamble.md (in your working copy) and follow it.'
+// Agent worktrees start from main, not port/integration, so instructions are read by absolute
+// path from the orchestrator's checkout, and every agent checks out the branch it needs first.
+const PRE = `First read ${A.repo}/docs/port/state/preamble.md and follow it. Your worktree may start on another branch (main): never work on main; check out the branch your role names below.`
 const MAX_FIX_LOOPS = 2
 
 const IMPL = {
@@ -103,16 +105,16 @@ function modelOpts(wp) {
   return { model: 'sonnet', effort: 'medium' }
 }
 
-const head = (wp) => `${PRE}\n\n# Work package ${wp.id}: ${wp.title}\nRisk: ${wp.risk}. Branch: port/${wp.id}.\nYour brief is docs/port/state/wp/${wp.id}.md: read it in full before starting.\n`
+const head = (wp) => `${PRE}\n\n# Work package ${wp.id}: ${wp.title}\nRisk: ${wp.risk}. Branch: port/${wp.id}.\nYour brief is ${A.repo}/docs/port/state/wp/${wp.id}.md: read it in full before starting.\n`
 const gateList = (wp) => (wp.gate.length ? wp.gate.map((c) => `- \`${c}\``).join('\n') : '- `scripts/ci.sh --scope ' + wp.id + '` (if scripts/ci.sh exists)')
 
 function implement(wp) {
   return agent(
     `${head(wp)}
 ## Your role: implementer
-You are in your own fresh git worktree based on port/integration.
+You are in your own fresh git worktree (it may start on main).
 1. If \`git log port/${wp.id} --grep='Port-Stage: implemented' -1\` prints a commit, the work is already done: return status "already_done" with that sha and a summary taken from the git log. Change nothing.
-2. If branch port/${wp.id} exists, an earlier run was interrupted: \`git checkout port/${wp.id}\` and continue from its commits. Otherwise \`git checkout -b port/${wp.id}\`.
+2. If branch port/${wp.id} exists, an earlier run was interrupted: \`git checkout port/${wp.id}\` and continue from its commits. Otherwise \`git checkout -b port/${wp.id} port/integration\`.
 3. Do the work in the brief. Commit as you go with messages "wip(${wp.id}): ...".
 4. Run the gate commands below until they all pass:
 ${gateList(wp)}

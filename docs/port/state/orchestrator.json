@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T17:12:47+00:00",
+  "updatedAt": "2026-10-13T17:26:11+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
   "wave": 0,
   "phase": "P0",
-  "nextAction": "Run batch P0-A (P0-01, P0-02, P0-03)",
+  "nextAction": "Run batch P0-B1 (P0-04, P0-06, P0-07), then P0-B2 (P0-05)",
   "pause": {
     "requested": false,
     "reason": null,
@@ -25,6 +25,12 @@
       "weeklyPct": 5.0,
       "fiveHourPct": 9.0,
       "note": "before batch P0-A"
+    },
+    {
+      "at": "2026-10-13T17:24:20+00:00",
+      "weeklyPct": 5.0,
+      "fiveHourPct": 10.0,
+      "note": "after P0-A: 9 agents, 837k subagent tokens, weekly moved <1 point"
     }
   ],
   "batches": {
@@ -34,10 +40,46 @@
         "P0-02",
         "P0-03"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_b64a3b17-5f8",
       "estimatedAgents": 7,
-      "startedAt": "2026-10-13T17:12:47+00:00"
+      "startedAt": "2026-10-13T17:12:47+00:00",
+      "endedAt": "2026-10-13T17:24:20+00:00",
+      "integration": {
+        "merged": [
+          "P0-01",
+          "P0-02",
+          "P0-03"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "6068063",
+        "summary": "merged cleanly; CI green"
+      },
+      "critic": null,
+      "spentOutputTokens": 147019,
+      "agents": 9,
+      "subagentTokens": 837158,
+      "durationMin": 10.5,
+      "meterBefore": {
+        "weeklyPct": 5,
+        "fiveHourPct": 9
+      },
+      "meterAfter": {
+        "weeklyPct": 5,
+        "fiveHourPct": 10
+      }
+    },
+    "P0-B1": {
+      "wps": [
+        "P0-04",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 10,
+      "startedAt": "2026-10-13T17:26:11+00:00"
     }
   },
   "wps": {
@@ -48,20 +90,29 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-01",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "83b82bd",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "scripts/ci.sh --full",
         "scripts/build-app.sh debug && \"build/File Trail.app/Contents/MacOS/FileTrail\" --snapshot \"$TMPDIR/p0-01.png\" && test -s \"$TMPDIR/p0-01.png\" (skip if no window server)"
       ],
       "lenses": [],
-      "summary": null,
+      "summary": "Spike split into CFileTrail, FTFoundation, FTFileSystem, FTOperations, FTAppKit and a thin FileTrail executable, with 4 smoke-test targets. Quiet scripts/ci.sh (build with zero-warning check, test, format, --full app), quiet build-app.sh, .swift-format. Snapshot gate passed.",
       "findings": [],
-      "fixes": [],
-      "blockers": []
+      "fixes": [
+        {
+          "status": "partial",
+          "summary": "no code change; first gate run failed only because the gate worktree started on main"
+        }
+      ],
+      "blockers": [],
+      "deviations": [
+        "MainWindowController reaches AppDelegate via NSApp.delegate",
+        "forEach replaced by for-in (swift-format strict)"
+      ]
     },
     "P0-02": {
       "title": "Reference build and fixtures",
@@ -70,10 +121,10 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-02",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "fdfe37a",
+      "attempts": 1,
       "gate": [
         "tools/reference/setup.sh",
         "test -d ~/Library/Caches/filetrail-port/reference/electron/apps/desktop/dist/main",
@@ -81,10 +132,15 @@
         "tools/fixtures/disk-images.sh && ls ~/Library/Caches/filetrail-port/fixtures/disks/"
       ],
       "lenses": [],
-      "summary": null,
+      "summary": "tools/reference/{setup.sh,run.sh} build the pinned e4d0872 into ~/Library/Caches/filetrail-port/reference/electron (Playwright smoke passed, idempotent). tools/fixtures: lighthouse tree from the screenshots (FIXTURE_NOW 2026-10-13 14:38), bench trees up to 100k files + 200k-file deep tree, edge-case names; five 256 MB sparse disk images with cp -c clones.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "setup.sh runs Electron install.js (bun skips postinstall)",
+        "exFAT volume name FTTEST (11-char limit)",
+        "run.sh starts electron directly instead of start.sh"
+      ]
     },
     "P0-03": {
       "title": "Parity matrix",
@@ -93,10 +149,10 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-03",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "9f80e8d",
+      "attempts": 1,
       "gate": [
         "bun tools/parity-matrix/extract.ts",
         "bun tools/parity-matrix/extract.ts && git diff --exit-code docs/port/parity/tests.tsv",
@@ -104,7 +160,7 @@
         "test $(grep -c '^| F-' docs/port/parity/features.md) -ge 300"
       ],
       "lenses": [],
-      "summary": null,
+      "summary": "tests.tsv: 3400 cases from 257 files (L 1416, FS 683, UI 1218, E 51, e2e 32), stable ids, idempotent re-run. report.ts summarizes tests and features. features.md: 932 F- rows across P1-P6 + Cross-cutting, incl. checklist A-N.",
       "findings": [],
       "fixes": [],
       "blockers": []
@@ -119,12 +175,18 @@
         "P0-01",
         "P0-02"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-04",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "tools/parity/exec/selftest.sh",
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -160,11 +222,14 @@
       "depends": [
         "P0-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-06",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "bun tools/tokens/extract-css.ts && bun tools/tokens/accent-golden.ts && git diff --exit-code Tests/Golden/accent.json Tests/Golden/css-tokens.json",
+        "scripts/ci.sh"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -181,11 +246,14 @@
         "P0-01",
         "P0-02"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-07",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "tools/bench/run.sh --quick --report-only",
+        "scripts/ci.sh"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],

@@ -80,22 +80,34 @@ def worktrees() -> list[dict[str, str]]:
 
 
 def owner_of(tree: dict[str, str], branches: dict[str, str]) -> str | None:
-    """The work package a worktree belongs to: its port/ branch, or a detached HEAD built on one."""
+    """The work package a worktree belongs to: its port/ branch, or a detached HEAD on one
+    (built on its tip, or at an earlier commit of it)."""
     branch = tree.get("branch", "").removeprefix("refs/heads/")
     if branch.startswith("port/") and branch != "port/integration":
         return branch.removeprefix("port/")
     head = tree.get("HEAD")
-    if "detached" in tree and head:
-        for wp_id, sha in branches.items():
-            if (
-                subprocess.run(
-                    ["git", "merge-base", "--is-ancestor", sha, head],
-                    cwd=ROOT,
-                    check=False,
-                ).returncode
-                == 0
-            ):
-                return wp_id
+    if "detached" not in tree or not head:
+        return None
+
+    def is_ancestor(a: str, b: str) -> bool:
+        return (
+            subprocess.run(
+                ["git", "merge-base", "--is-ancestor", a, b], cwd=ROOT, check=False
+            ).returncode
+            == 0
+        )
+
+    integration = git("rev-parse", "port/integration")
+    for wp_id, sha in branches.items():
+        if is_ancestor(sha, head) or (
+            is_ancestor(head, sha) and not is_ancestor(head, integration)
+        ):
+            return wp_id
+    # Already merged: a detached worktree whose commit is in port/integration holds nothing new.
+    if is_ancestor(head, integration) and "/.claude/worktrees/wf_" in tree.get(
+        "worktree", ""
+    ):
+        return "merged"
     return None
 
 
@@ -149,6 +161,12 @@ def main(argv: list[str]) -> int:
             summary["notes"].append(
                 f"worktree {path} ({wp_id}){' has uncommitted changes' if dirty else ''}"
             )
+            continue
+        if dirty and wp_id == "merged":
+            summary["notes"].append(
+                f"worktree {path} is on merged work but has uncommitted changes; left alone"
+            )
+            summary["ok"] = False
             continue
         if dirty:
             git("add", "-A", cwd=Path(path))
