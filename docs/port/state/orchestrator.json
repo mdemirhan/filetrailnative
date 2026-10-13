@@ -1,0 +1,1085 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-13T17:08:52+00:00",
+  "updatedAt": "2026-10-13T17:09:32+00:00",
+  "referenceCommit": "e4d0872",
+  "referenceCache": "~/Library/Caches/filetrail-port/reference",
+  "integrationBranch": "port/integration",
+  "wave": 0,
+  "phase": "P0",
+  "nextAction": "Run batch P0-A (P0-01, P0-02, P0-03)",
+  "pause": {
+    "requested": false,
+    "reason": null,
+    "until": null
+  },
+  "meter": [
+    {
+      "at": "2026-10-13T17:08:52+00:00",
+      "weeklyPct": 5.0,
+      "fiveHourPct": 9.0,
+      "note": "baseline before P0, includes inventory and planning"
+    }
+  ],
+  "batches": {
+    "P0-A": {
+      "wps": [
+        "P0-01",
+        "P0-02",
+        "P0-03"
+      ],
+      "status": "planned",
+      "runId": null,
+      "estimatedAgents": 7
+    }
+  },
+  "wps": {
+    "P0-01": {
+      "title": "Package restructure and quiet CI",
+      "phase": "P0",
+      "wave": 0,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [],
+      "status": "todo",
+      "branch": "port/P0-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "scripts/ci.sh",
+        "scripts/ci.sh --full",
+        "scripts/build-app.sh debug && \"build/File Trail.app/Contents/MacOS/FileTrail\" --snapshot \"$TMPDIR/p0-01.png\" && test -s \"$TMPDIR/p0-01.png\" (skip if no window server)"
+      ],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-02": {
+      "title": "Reference build and fixtures",
+      "phase": "P0",
+      "wave": 0,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [],
+      "status": "todo",
+      "branch": "port/P0-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "tools/reference/setup.sh",
+        "test -d ~/Library/Caches/filetrail-port/reference/electron/apps/desktop/dist/main",
+        "bun tools/fixtures/generate.ts && test -d ~/Library/Caches/filetrail-port/fixtures/lighthouse/Lighthouse/app/src/components",
+        "tools/fixtures/disk-images.sh && ls ~/Library/Caches/filetrail-port/fixtures/disks/"
+      ],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-03": {
+      "title": "Parity matrix",
+      "phase": "P0",
+      "wave": 0,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [],
+      "status": "todo",
+      "branch": "port/P0-03",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "bun tools/parity-matrix/extract.ts",
+        "bun tools/parity-matrix/extract.ts && git diff --exit-code docs/port/parity/tests.tsv",
+        "bun tools/parity-matrix/report.ts",
+        "test $(grep -c '^| F-' docs/port/parity/features.md) -ge 300"
+      ],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-04": {
+      "title": "Differential harness",
+      "phase": "P0",
+      "wave": 0,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [
+        "P0-01",
+        "P0-02"
+      ],
+      "status": "todo",
+      "branch": "port/P0-04",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-05": {
+      "title": "Capture harness and in-app automation",
+      "phase": "P0",
+      "wave": 0,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [
+        "P0-01",
+        "P0-02"
+      ],
+      "status": "todo",
+      "branch": "port/P0-05",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-06": {
+      "title": "Design tokens, accent math, zoom",
+      "phase": "P0",
+      "wave": 0,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-01"
+      ],
+      "status": "todo",
+      "branch": "port/P0-06",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-07": {
+      "title": "Bench harness and budgets",
+      "phase": "P0",
+      "wave": 0,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02"
+      ],
+      "status": "todo",
+      "branch": "port/P0-07",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P1-01": {
+      "title": "Paths, names, Keep Both naming, fitName",
+      "phase": "P1",
+      "wave": 1,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P1-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P1-02": {
+      "title": "Formatting and visited-folder ranking",
+      "phase": "P1",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P1-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P1-03": {
+      "title": "Preferences, toolbar items, shortcuts, command availability",
+      "phase": "P1",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P1-03",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P1-04": {
+      "title": "Batch-rename logic",
+      "phase": "P1",
+      "wave": 1,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P1-04",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P2-01": {
+      "title": "Listing, tree, suggestions, folder watch",
+      "phase": "P2",
+      "wave": 1,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P2-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P2-02": {
+      "title": "Folder sizes",
+      "phase": "P2",
+      "wave": 1,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P2-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P2-03": {
+      "title": "Volumes, eject, disk images",
+      "phase": "P2",
+      "wave": 1,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P2-03",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P2-04": {
+      "title": "Icons and thumbnails",
+      "phase": "P2",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P2-04",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P2-05": {
+      "title": "Open With, Terminal/Editor, Trash state, Empty Trash",
+      "phase": "P2",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P2-05",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P2-06": {
+      "title": "fd search",
+      "phase": "P2",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P2-06",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P2-07": {
+      "title": "App-state store, visited folders file, logger",
+      "phase": "P2",
+      "wave": 1,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P2-07",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-01": {
+      "title": "Fingerprints, syscall wrappers, stoppable copy",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P1-01",
+        "P2-01"
+      ],
+      "status": "todo",
+      "branch": "port/P3-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-02": {
+      "title": "Analysis report and policy",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-01"
+      ],
+      "status": "todo",
+      "branch": "port/P3-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-03": {
+      "title": "Copy/move execution and runtime conflicts",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-02"
+      ],
+      "status": "todo",
+      "branch": "port/P3-03",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-04": {
+      "title": "Replace staging, journal, recovery",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-03"
+      ],
+      "status": "todo",
+      "branch": "port/P3-04",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-05": {
+      "title": "Write coordinator",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-04"
+      ],
+      "status": "todo",
+      "branch": "port/P3-05",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-06": {
+      "title": "Trash, delete, new folder, rename",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-05",
+        "P2-05"
+      ],
+      "status": "todo",
+      "branch": "port/P3-06",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-07": {
+      "title": "Undo",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-06"
+      ],
+      "status": "todo",
+      "branch": "port/P3-07",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P3-08": {
+      "title": "Batch-rename execution",
+      "phase": "P3",
+      "wave": 2,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-07",
+        "P1-04"
+      ],
+      "status": "todo",
+      "branch": "port/P3-08",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P4-01": {
+      "title": "App delegate, commands and menus",
+      "phase": "P4",
+      "wave": 1,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P4-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P4-02": {
+      "title": "Windows and native tabs",
+      "phase": "P4",
+      "wave": 1,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [
+        "P0-01",
+        "P0-02",
+        "P0-03",
+        "P0-04",
+        "P0-05",
+        "P0-06",
+        "P0-07"
+      ],
+      "status": "todo",
+      "branch": "port/P4-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P4-03": {
+      "title": "Theme, zoom, About, Acknowledgements, Help",
+      "phase": "P4",
+      "wave": 2,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P4-01",
+        "P0-06"
+      ],
+      "status": "todo",
+      "branch": "port/P4-03",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-01": {
+      "title": "Window layout and toolbar",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P4-01",
+        "P4-02",
+        "P0-06"
+      ],
+      "status": "todo",
+      "branch": "port/P5-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "visual"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-02": {
+      "title": "Sidebar",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P5-01",
+        "P2-01"
+      ],
+      "status": "todo",
+      "branch": "port/P5-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "visual"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-03": {
+      "title": "List view",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P5-01",
+        "P2-01"
+      ],
+      "status": "todo",
+      "branch": "port/P5-03",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "visual"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-04": {
+      "title": "Icon view and Compact List",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P5-03",
+        "P2-04"
+      ],
+      "status": "todo",
+      "branch": "port/P5-04",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "visual"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-05": {
+      "title": "Selection, keyboard, filter, rename, navigation",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P5-03"
+      ],
+      "status": "todo",
+      "branch": "port/P5-05",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "performance"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-06": {
+      "title": "Path bar, status bar, Info Row, Info panel",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P5-01"
+      ],
+      "status": "todo",
+      "branch": "port/P5-06",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-07": {
+      "title": "Search UI",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P5-03",
+        "P2-06"
+      ],
+      "status": "todo",
+      "branch": "port/P5-07",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "visual"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-08": {
+      "title": "Drag and drop, clipboard marks",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [
+        "P5-05",
+        "P3-05"
+      ],
+      "status": "todo",
+      "branch": "port/P5-08",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P5-09": {
+      "title": "Context menus, Open With, Quick Look, toasts, progress",
+      "phase": "P5",
+      "wave": 2,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P5-03",
+        "P2-05"
+      ],
+      "status": "todo",
+      "branch": "port/P5-09",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P6-01": {
+      "title": "Go To / Move To, alerts",
+      "phase": "P6",
+      "wave": 3,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P5-05"
+      ],
+      "status": "todo",
+      "branch": "port/P6-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P6-02": {
+      "title": "Copy and paste dialogs",
+      "phase": "P6",
+      "wave": 3,
+      "risk": "high",
+      "model": "opus",
+      "depends": [
+        "P3-05",
+        "P5-01"
+      ],
+      "status": "todo",
+      "branch": "port/P6-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "safety",
+        "visual"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P6-03": {
+      "title": "Batch Rename sheet",
+      "phase": "P6",
+      "wave": 3,
+      "risk": "medium",
+      "model": "sonnet",
+      "depends": [
+        "P3-08",
+        "P5-01"
+      ],
+      "status": "todo",
+      "branch": "port/P6-03",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [
+        "parity",
+        "visual"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P6-04": {
+      "title": "Settings and shortcut recorder",
+      "phase": "P6",
+      "wave": 3,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P4-03",
+        "P1-03"
+      ],
+      "status": "todo",
+      "branch": "port/P6-04",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P8-01": {
+      "title": "Signing, notarization, DMG",
+      "phase": "P8",
+      "wave": 5,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P6-01",
+        "P6-02",
+        "P6-03",
+        "P6-04"
+      ],
+      "status": "todo",
+      "branch": "port/P8-01",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P8-02": {
+      "title": "Bundle id cutover, import, README, release script",
+      "phase": "P8",
+      "wave": 5,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P8-01"
+      ],
+      "status": "todo",
+      "branch": "port/P8-02",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    }
+  }
+}

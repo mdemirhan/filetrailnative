@@ -55,7 +55,7 @@ There are 3,366 Vitest cases and 31 Playwright e2e cases. By class:
 |---|---|---|
 | Pure logic | ~1,700 | XCTest unit tests, including about 550 renderer view-model `lib/*` cases |
 | Real filesystem | ~700 | XCTest with temp dirs and `hdiutil` disk images |
-| UI behavior | ~1,150 | Controller tests and XCUITest |
+| UI behavior | ~1,150 | Controller tests and in-app automation flows |
 | Electron or Zod transport | ~50 | Replaced by Codable and service-boundary tests |
 
 The spike already in this repo is the starting point for the shell, the List and Icon views and the benchmark/snapshot mode. Its lessons stay binding:
@@ -68,7 +68,7 @@ The spike already in this repo is the starting point for the shell, the List and
 
 ### 3.1 Project layout
 
-There is one Swift package for all logic and one Xcode project for the app bundle and UI tests. `swift test` stays fast for the core; `xcodebuild` handles signing, entitlements, assets and XCUITest.
+Everything is one Swift package; there is no Xcode project. `scripts/build-app.sh` wraps the executable in an app bundle, as the spike does, and also handles the Info.plist, entitlements, icon, the bundled `fd` and code signing. UI flows and screenshots come from a debug-only in-app automation mode instead of XCUITest. That mode drives the app's own commands and events and draws its own windows into PNGs, so it needs no Accessibility or Screen Recording permission and has no hand-maintained project file. (Changed on 2026-10-13, while starting P0.)
 
 ```text
 Package.swift                    FileTrailKit: libraries + unit/FS tests
@@ -89,8 +89,9 @@ Sources/
   FTAppKit/                      AppKit UI: windows and tabs, menus, toolbar, sidebar, views, dialogs,
                                  Settings, Help, About, Acknowledgements
 Tests/  FTFoundationTests  FTFileSystemTests  FTOperationsTests  FTAppKitTests (controller tests, fakes)
-App/    FileTrail.xcodeproj  (app target = thin main + Info.plist + entitlements + assets + fd)
-        FileTrailUITests/    (XCUITest: e2e flows + scenario driver for screenshots)
+  FileTrail/                    executable: main.swift only; debug builds add the automation mode
+                                 (--automation <script>: run scenario steps, dump view geometry, snapshot)
+Resources/                       Info.plist, entitlements, AppIcon.icns; fd added by build-app.sh
 tools/  parity/  capture/  pixeldiff/  fixtures/   (see §5)
 ```
 
@@ -182,7 +183,7 @@ The spike's `--bench` grows into `tools/bench`. It runs fixed scenarios against 
 
 ### 5.1 Reference app
 
-- `tools/reference/setup.sh` clones `~/src/tsproj/filetrail` at the pinned commit into `.reference/electron/` (gitignored), runs `bun install`, builds native-fs, and runs `bun run desktop:build`.
+- `tools/reference/setup.sh` clones `~/src/tsproj/filetrail` at the pinned commit into `~/Library/Caches/filetrail-port/reference/electron` (outside every checkout), runs `bun install`, builds native-fs, and runs `bun run desktop:build`.
 - The user's own checkout is never built in or written to.
 - Re-pinning to a newer commit is an explicit orchestrator step that also diffs the inventories.
 
@@ -228,8 +229,8 @@ Zoom levels other than 100% and Compact density are not captured as screenshots.
    - A fixed window size, accent and preferences.
 2. **Capture.**
    - Electron: Playwright `_electron` drives the scenarios.
-   - Swift: an XCUITest scenario driver.
-   - Both: `screencapture -o -l <windowID>`, plus the Swift `--snapshot` fallback.
+   - Swift: the in-app automation mode runs the same scenario steps and draws the window into a PNG itself.
+   - Electron: `page.screenshot`. The native traffic-light area is masked on both sides.
 3. **Geometry diff (the main gate).**
    - Electron: a DOM dump of named elements' frames (`getBoundingClientRect` by `data-testid`/role).
    - Swift: a debug view-tree dump of the same names (`accessibilityIdentifier`).
@@ -242,7 +243,7 @@ Zoom levels other than 100% and Compact density are not captured as screenshots.
 
 - **Ported unit and FS tests.** Every L and FS row in `tests.tsv` gets a Swift test of the same intent. Real-disk tests use sparse `hdiutil` images (FAT32, exFAT, HFS+, APFS case-sensitive), cloned from a cached blank image as the original does. Large-file tests are gated behind `FILETRAIL_LARGE_FILE_TESTS`.
 - **Controller tests.** The ~1,150 React behavior tests are covered **by feature row, not one-for-one**. Many of them repeat a flow through a different component, so each `F-###` UI row gets the controller tests that prove it. Window controllers are driven with fake services and the same visible-state assertions. A React test whose behavior is already proven is marked `covered-by:<swift test>` in `tests.tsv` instead of being ported. L and FS tests are still ported one-for-one.
-- **XCUITest e2e.** The 31 Playwright flows, plus one flow per major feature row. These include drag inside the app and between windows. Drags to and from Finder are a human checkpoint (§8).
+- **In-app automation e2e.** The 31 Playwright flows, plus one flow per major feature row. These include drag inside the app and between windows. Drags to and from Finder are a human checkpoint (§8).
 - **Behavior differential.** For each scenario, both apps run the same scripted action sequence (keys, menu commands, clicks by element name). The resulting filesystem state, selection, window title, status text and visible rows are compared.
 
 ## 6. Orchestration
@@ -283,7 +284,7 @@ Each WP is passed to the workflow in `args`:
 
 Rules every implementer follows:
 
-- Touch only the paths in `owns`. Shared files (`Package.swift`, the Xcode project, `DesignTokens.swift`, the command table) are changed only by the integrator, from requests in the WP's report.
+- Touch only the paths in `owns`. Shared files (`Package.swift`, `scripts/ci.sh`, `DesignTokens.swift`, the command table) are changed only by the integrator, from requests in the WP's report.
 - Cite the TS source and inventory section in a short header comment of each ported file.
 - Port the listed tests before calling the WP done.
 - Accepted risks from `FILE_OPERATION_RISKS.md` are not "fixed". A finding below its bar goes to the accepted list.
@@ -343,7 +344,7 @@ The loop stops at a set ceiling of 2 rounds. If it hasn't run dry by then, what'
 These apply throughout. They are listed roughly by how much they save.
 
 1. **Scripts gate the work, not agents.** Builds, tests, differential runs, geometry and pixel diffs, bench and parity-matrix bookkeeping are scripts whose results are plain data. Agents read the results; they never re-derive them.
-2. **Quiet build output.** `scripts/ci.sh` prints a one-line summary plus only the failing tests, errors and warnings, capped at 200 lines. Full logs go to `build/logs/` for an agent to `grep` when it needs more. Raw `xcodebuild` output can run to tens of thousands of lines per run, and agents run CI many times.
+2. **Quiet build output.** `scripts/ci.sh` prints a one-line summary plus only the failing tests, errors and warnings, capped at 200 lines. Full logs go to `build/logs/` for an agent to `grep` when it needs more. Raw `swift build` and `swift test` output can run to tens of thousands of lines per run, and agents run CI many times.
 3. **The model matches the work.**
 
    | Model | Used for | Effort |
@@ -393,7 +394,7 @@ The orchestrator commits the state files to `port/integration` after every chang
 1. List the `port/*` branches and any leftover worktrees, and compare them with the state.
 2. Commit any uncommitted changes in a leftover worktree as `wip(<wp>): recovered`; never discard them. Then remove the worktree.
 3. Mark WPs that were mid-stage as interrupted; they continue from their last `Port-Stage` commit.
-4. Check that the reference build in `.reference/` is still at the pinned commit.
+4. Check that the reference build in `~/Library/Caches/filetrail-port/reference/electron` is still at the pinned commit.
 5. Read the usage meter.
 
 Within the same session, a stopped workflow can also continue with Workflow `resumeFromRunId`, which returns the agents that already finished from cache at no cost. Across sessions, the state files and branches do the same job.
@@ -424,12 +425,15 @@ All P0 work is Sonnet except P0-04 and P0-05, which set up the checks everything
 | WP | Risk · model | Delivers |
 |---|---|---|
 | P0-00 | orchestrator itself, no agents | Checkpoint scaffolding (§6.7): `ORCHESTRATOR.md`, the state schema with the initial `orchestrator.json`, `journal.jsonl`, `reconcile.sh`, the `/port` skill (`.claude/skills/port/SKILL.md`, with `status` and `pause`), and the workflow scripts in `tools/orchestrator/`. Tested by stopping and resuming a dummy batch. |
-| P0-01 | low · Sonnet | Package and Xcode project restructure (§3.1); quiet `scripts/ci.sh` (§6.6) with build, `swift test`, `xcodebuild test`, `swift-format lint` and a zero-warning check; `.gitignore` for `.reference/` |
-| P0-02 | low · Sonnet | Reference setup (§5.1); fixture generator (Lighthouse tree, large trees for bench, disk-image cache); bench harness grown from the spike's `--bench`, with a budget file and regression check |
+| P0-01 | low · Sonnet | Package restructure (§3.1); quiet `scripts/ci.sh` (§6.6) with build, `swift test`, `swift-format lint` and a zero-warning check; `build-app.sh` updated |
+| P0-02 | low · Sonnet | Reference setup (§5.1); fixture generator (Lighthouse tree, large trees for bench, disk-image cache) |
 | P0-03 | low · Sonnet | Parity matrix: a **script** extracts `tests.tsv` from all Vitest/Playwright files; an agent turns the inventories into `features.md` |
 | P0-04 | medium · Opus | Differential harness: Bun driver, Swift CLI runner and comparator, with one end-to-end example |
-| P0-05 | medium · Opus | Capture harness: Playwright and XCUITest scenario drivers, geometry dumpers, `pixeldiff`, contact sheet, first 10 scenarios |
+| P0-05 | medium · Opus | Capture harness: Playwright driver and the in-app automation mode, geometry dumpers, `pixeldiff`, contact sheet, first 10 scenarios |
 | P0-06 | low · Sonnet | `DesignTokens.swift` + accent math (differential tests against `accent.ts`), zoom-scaled metrics |
+| P0-07 | low · Sonnet | Bench harness grown from the spike's `--bench`, with a budget file (§4) and a regression check |
+
+P0 runs as two batches. **P0-A:** P0-01, P0-02, P0-03, with no dependencies between them. **P0-B:** P0-04 to P0-07, which build on P0-01's package layout and P0-02's reference build.
 
 **Gate:** CI green on the restructured spike; one scenario captured from both apps and diffed; one differential case passing; matrix files generated; token use of P0 measured to recalibrate §10.
 
@@ -526,7 +530,7 @@ All P8 work is low · Sonnet.
 
 | When | What |
 |---|---|
-| Before P0 | Grant Screen Recording and Accessibility to the terminal or Claude app that runs the agents (needed for `screencapture` and XCUITest). Run `xcodebuild test` once interactively, so macOS's automation prompt is answered. |
+| During P0 | Nothing to grant. The in-app automation mode needs no Accessibility or Screen Recording permission. macOS may ask once for access to Desktop, Documents or Downloads when the app opens folders there. |
 | Before P3 gate | Real-disk checks the harness can't fake: an exFAT USB stick, an SMB share, unplugging during a cross-disk move, a full disk. I'll give a script and checklist. |
 | Before P5 gate | Drag between File Trail and Finder, Mail and Photos, both ways (scripted drags can't cross apps reliably). |
 | Each wave gate | Approve the deviations log entries added in that wave. |
