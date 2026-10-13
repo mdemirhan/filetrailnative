@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T17:26:18+00:00",
+  "updatedAt": "2026-10-13T17:41:27+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
   "wave": 0,
   "phase": "P0",
-  "nextAction": "Run batch P0-B1 (P0-04, P0-06, P0-07), then P0-B2 (P0-05)",
+  "nextAction": "Run batch P0-B2 (P0-05 + phase critic), then the P0 gate",
   "pause": {
     "requested": false,
     "reason": null,
@@ -31,6 +31,12 @@
       "weeklyPct": 5.0,
       "fiveHourPct": 10.0,
       "note": "after P0-A: 9 agents, 837k subagent tokens, weekly moved <1 point"
+    },
+    {
+      "at": "2026-10-13T17:40:50+00:00",
+      "weeklyPct": 6.0,
+      "fiveHourPct": 12.0,
+      "note": "after P0-B1: ~1.57M agent tokens over P0-A+P0-B1 moved weekly 5->6"
     }
   ],
   "batches": {
@@ -76,10 +82,45 @@
         "P0-06",
         "P0-07"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_1572df5b-70c",
       "estimatedAgents": 10,
-      "startedAt": "2026-10-13T17:26:18+00:00"
+      "startedAt": "2026-10-13T17:26:18+00:00",
+      "endedAt": "2026-10-13T17:40:50+00:00",
+      "integration": {
+        "merged": [
+          "P0-04",
+          "P0-06",
+          "P0-07"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "08b2be7",
+        "summary": "merged cleanly; CI green after each merge"
+      },
+      "critic": null,
+      "spentOutputTokens": 169829,
+      "agents": 8,
+      "subagentTokens": 736692,
+      "durationMin": 13.8,
+      "meterBefore": {
+        "weeklyPct": 5,
+        "fiveHourPct": 10
+      },
+      "meterAfter": {
+        "weeklyPct": 6,
+        "fiveHourPct": 12
+      }
+    },
+    "P0-B2": {
+      "wps": [
+        "P0-05"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 6,
+      "critic": "Phase P0 critic. In the orchestrator checkout (port/integration, after the merge above), compare what phase 0 delivered with docs/port/PLAN.md sections 5 (validation system) and 6.6-6.7, and with the P0 table in section 7. Run, do not just read: scripts/ci.sh, tools/parity/gen.sh --check, tools/parity/exec/selftest.sh, tools/capture/run.sh --selftest, tools/bench/run.sh --quick --report-only, bun tools/parity-matrix/report.ts. List concrete gaps that would stop phases 1-3 from using these tools as the plan intends (e.g. a harness that cannot yet do something a P1/P2/P3 work package will need). Each gap needs evidence (a command and its output, or a file:line). Do not modify files. At most 10 gaps.",
+      "startedAt": "2026-10-13T17:41:27+00:00"
     }
   },
   "wps": {
@@ -175,10 +216,10 @@
         "P0-01",
         "P0-02"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-04",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "cffc46d",
+      "attempts": 1,
       "gate": [
         "tools/parity/gen.sh --check",
         "tools/parity/exec/selftest.sh",
@@ -187,10 +228,15 @@
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "tools/parity: reference loader (pinned clone), seeded PRNG, golden driver, gen.sh [--check]. Goldens paths-nested (346), trash-paths (398), exec-copy-single (reference copy engine). Byte-identical TS/Swift tree snapshots, selftest over every item kind. FTTestSupport: Golden.load, mismatch report, temp dirs, ExecScenario. FTFoundation/Paths.swift: withoutNestedPaths, isInsideTrash, isTrashFolder.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "ExecGoldenTests.swift added in FTOperationsTests",
+        "selftest Swift side compiled with swiftc into build/parity",
+        "snapshots omit folder sizes; mode as octal string"
+      ]
     },
     "P0-05": {
       "title": "Capture harness and in-app automation",
@@ -202,12 +248,18 @@
         "P0-01",
         "P0-02"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-05",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "tools/capture/run.sh --selftest",
+        "tools/capture/run.sh --tier wp",
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -222,19 +274,24 @@
       "depends": [
         "P0-01"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-06",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "1e1eec4",
+      "attempts": 1,
       "gate": [
         "bun tools/tokens/extract-css.ts && bun tools/tokens/accent-golden.ts && git diff --exit-code Tests/Golden/accent.json Tests/Golden/css-tokens.json",
         "scripts/ci.sh"
       ],
       "lenses": [],
-      "summary": null,
+      "summary": "tools/tokens: extract-css (158 tokens/theme, none unresolved), accent-golden (622 cases), gen-swift-palette. FTFoundation/Design: RGBA, ThemePalette (generated), DesignTokens, Layouts, Metrics(zoom:density:), AccentPalette. All 622 accent cases match; CSS token mapping table; zoom/density tests 75-150%.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "Metrics does no rounding beyond the icon-grid column floor (original relies on page zoom)",
+        "bg-active, crumb-active-bg and z-* listed as not used natively",
+        "AccentPalette falls back to #007aff on bad hex"
+      ]
     },
     "P0-07": {
       "title": "Bench harness and budgets",
@@ -246,19 +303,23 @@
         "P0-01",
         "P0-02"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-07",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "7df0bba",
+      "attempts": 1,
       "gate": [
         "tools/bench/run.sh --quick --report-only",
         "scripts/ci.sh"
       ],
       "lenses": [],
-      "summary": null,
+      "summary": "Benchmark moved to FTAppKit/Debug; --bench (BENCH json), --bench-launch, --bench-scroll. tools/bench/run.sh with budgets.json and baseline.json from the spike (spike misses open-3k 52 ms, open-100k, back, scroll, stall budgets).",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "onFirstDraw hook in MainWindowController",
+        "regression check ignores changes under 1 unit"
+      ]
     },
     "P1-01": {
       "title": "Paths, names, Keep Both naming, fitName",
