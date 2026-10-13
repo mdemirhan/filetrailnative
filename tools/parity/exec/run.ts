@@ -5,7 +5,8 @@
 // Trash, the journal file, and after a crash what the app's startup recovery made of it.
 // The engine runs in a child Bun process (engine.ts), so a crash can be a real SIGKILL.
 // Usage: bun tools/parity/exec/run.ts [--raw] <scenario.json>   (prints the outcome as JSON;
-// --raw leaves it as recorded, with the places normalize.ts needs)
+//        bun tools/parity/exec/run.ts [--raw] --golden <suite> <index>   (a recorded case's scenario)
+// --raw leaves it as recorded, with the places normalize.ts needs.
 
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -212,15 +213,30 @@ export async function runScenario(scenario: Scenario): Promise<ScenarioOutcome> 
   return normalizeOutcome(outcome, places) as ScenarioOutcome;
 }
 
+// The scenario of a recorded case: Tests/Golden/<suite>.json, case number `index` (from 0).
+async function goldenScenario(suite: string, index: number): Promise<Scenario> {
+  const golden = JSON.parse(await readFile(join(import.meta.dir, "../../../Tests/Golden", `${suite}.json`), "utf8"));
+  const found = golden.cases[index]?.input as Scenario | undefined;
+  if (found === undefined) {
+    throw new Error(`no case ${index} in ${suite}`);
+  }
+  return found;
+}
+
 if (import.meta.main) {
   const args = process.argv.slice(2);
   const raw = args.includes("--raw");
-  const file = args.find((arg) => arg !== "--raw");
-  if (file === undefined) {
-    console.error("usage: bun tools/parity/exec/run.ts [--raw] <scenario.json>");
+  const rest = args.filter((arg) => arg !== "--raw");
+  const usage = "usage: bun tools/parity/exec/run.ts [--raw] <scenario.json> | --golden <suite> <index>";
+  let scenario: Scenario;
+  if (rest[0] === "--golden" && rest[1] !== undefined && rest[2] !== undefined) {
+    scenario = await goldenScenario(rest[1], Number(rest[2]));
+  } else if (rest.length === 1 && rest[0] !== undefined) {
+    scenario = JSON.parse(await readFile(rest[0], "utf8")) as Scenario;
+  } else {
+    console.error(usage);
     process.exit(2);
   }
-  const scenario = JSON.parse(await readFile(file, "utf8")) as Scenario;
   try {
     const output = raw ? await runScenarioRaw(scenario) : await runScenario(scenario);
     process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);

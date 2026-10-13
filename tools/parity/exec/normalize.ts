@@ -141,3 +141,15 @@ function sortSnapshots(outcome: unknown): void {
     }
   }
 }
+
+// Usage: bun tools/parity/exec/normalize.ts <raw.json>   (raw: what `run.ts --raw` prints;
+// prints the normalized outcome)
+if (import.meta.main) {
+  const [file] = process.argv.slice(2);
+  if (file === undefined) {
+    console.error("usage: bun tools/parity/exec/normalize.ts <raw.json>");
+    process.exit(2);
+  }
+  const raw = JSON.parse(await Bun.file(file).text()) as { places: Place[]; outcome: unknown };
+  process.stdout.write(`${JSON.stringify(normalizeOutcome(raw.outcome, raw.places), null, 2)}\n`);
+}

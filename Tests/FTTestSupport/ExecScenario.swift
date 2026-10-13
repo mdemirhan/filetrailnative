@@ -1,5 +1,6 @@
-// The execution scenarios tools/parity/exec/run.ts runs through the reference engine (format in
-// tools/parity/README.md), and what it recorded, so the Swift engine can run the same ones.
+// Port of the scenario format of tools/parity/exec/places.ts (described in tools/parity/README.md):
+// the execution and analysis scenarios the reference engine was run on, and how their trees and
+// their changes on disk are made, so the Swift engine runs the same ones.
 import Darwin
 import Foundation
 
@@ -14,6 +15,18 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         /// "uchg" and "hidden".
         public var flags: [String]?
         public var target: String?
+
+        public init(
+            path: String, kind: String, content: String? = nil, mode: String? = nil, flags: [String]? = nil,
+            target: String? = nil
+        ) {
+            self.path = path
+            self.kind = kind
+            self.content = content
+            self.mode = mode
+            self.flags = flags
+            self.target = target
+        }
     }
 
     public struct Paste: Codable, Equatable, Sendable {
@@ -21,47 +34,103 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         public var mode: String
         public var sources: [String]
         public var destination: String
+
+        public init(mode: String, sources: [String], destination: String) {
+            self.mode = mode
+            self.sources = sources
+            self.destination = destination
+        }
     }
 
     public struct Policy: Codable, Equatable, Sendable {
         public var file: String
         public var directory: String
         public var mismatch: String
+
+        public init(file: String, directory: String, mismatch: String) {
+            self.file = file
+            self.directory = directory
+            self.mismatch = mismatch
+        }
     }
 
+    /// A per-item choice from the review, by analysis node id ("item-1/sub/a.txt").
+    public struct Override: Codable, Equatable, Sendable {
+        public var nodeId: String
+        public var action: String
+    }
+
+    /// Stop the paste right after its n-th progress event, as the Stop button does.
     public struct StopPoint: Codable, Equatable, Sendable {
         public var afterEvent: Int
+    }
+
+    /// Kill the engine right after its n-th write of the journal file, then run recovery.
+    public struct CrashPoint: Codable, Equatable, Sendable {
+        public var journalWrite: Int
+    }
+
+    /// Changes made on disk while the paste runs: after the review (no `afterEvent`), or right
+    /// after the n-th progress event, before the engine goes on.
+    public struct Change: Codable, Equatable, Sendable {
+        public struct Op: Codable, Equatable, Sendable {
+            /// "write", "mkdir" or "remove".
+            public var op: String
+            public var path: String
+            public var content: String?
+        }
+
+        public var afterEvent: Int?
+        public var ops: [Op]
     }
 
     public var name: String
     public var tree: [Item]
     public var paste: Paste
     public var policy: Policy
+    public var overrides: [Override]?
     /// Answers to runtime questions in the order asked; "skip" once they run out.
     public var answers: [String]?
     public var stopAt: StopPoint?
+    public var crashAt: CrashPoint?
+    public var changes: [Change]?
+    /// false: the disk has no Trash.
+    public var trash: Bool?
+    /// Top-level folders made on a disk image of their own: ["destination": "fat32"].
+    public var volumes: [String: String]?
 
-    /// The reference's outcome. `result` and `questions` are kept as raw JSON for now.
-    public struct Outcome: Decodable, Sendable {
-        public var before: [TreeSnapshot.Entry]
-        public var after: [TreeSnapshot.Entry]
-        public var statuses: [String]
+    public init(
+        name: String, tree: [Item], paste: Paste, policy: Policy, overrides: [Override]? = nil, answers: [String]? = nil,
+        stopAt: StopPoint? = nil, crashAt: CrashPoint? = nil, changes: [Change]? = nil, trash: Bool? = nil,
+        volumes: [String: String]? = nil
+    ) {
+        self.name = name
+        self.tree = tree
+        self.paste = paste
+        self.policy = policy
+        self.overrides = overrides
+        self.answers = answers
+        self.stopAt = stopAt
+        self.crashAt = crashAt
+        self.changes = changes
+        self.trash = trash
+        self.volumes = volumes
     }
 
     public struct BuildFailure: Error, CustomStringConvertible {
         public let description: String
     }
 
-    /// Makes the scenario's tree under `root`, as run.ts does: items in order, then modes and flags
-    /// deepest first.
-    public func build(in root: String) throws {
+    /// Makes the scenario's tree, as places.ts does: items in order, then modes and flags deepest
+    /// first (equally deep ones last item first).
+    public func build(in places: ExecPlaces) throws {
         for item in tree {
-            let path = root + "/" + item.path
+            let path = places.resolve(item.path)
             let parent = (path as NSString).deletingLastPathComponent
             try FileManager.default.createDirectory(atPath: parent, withIntermediateDirectories: true)
             switch item.kind {
             case "file":
-                guard FileManager.default.createFile(atPath: path, contents: Data((item.content ?? "").utf8)) else {
+                guard Self.writeFile(path, item.content ?? "") else {
                     throw BuildFailure(description: "can't make \(path)")
                 }
             case "dir":
@@ -72,8 +141,12 @@ public struct ExecScenario: Codable, Equatable, Sendable {
                 throw BuildFailure(description: "unknown kind \(item.kind)")
             }
         }
-        for item in tree.reversed() where item.kind != "symlink" {
-            let path = root + "/" + item.path
+        let depth = { (item: Item) in item.path.split(separator: "/", omittingEmptySubsequences: false).count }
+        let deepestFirst = Array(tree.reversed()).enumerated()
+            .sorted { a, b in depth(a.element) != depth(b.element) ? depth(a.element) > depth(b.element) : a.offset < b.offset }
+            .map(\.element)
+        for item in deepestFirst where item.kind != "symlink" {
+            let path = places.resolve(item.path)
             let mode = item.mode ?? (item.kind == "dir" ? "0755" : "0644")
             guard let bits = mode_t(mode, radix: 8), chmod(path, bits) == 0 else {
                 throw BuildFailure(description: "can't set mode \(mode) on \(path)")
@@ -84,6 +157,43 @@ public struct ExecScenario: Codable, Equatable, Sendable {
             }
             if flags != 0 && lchflags(path, flags) != 0 {
                 throw BuildFailure(description: "can't set flags on \(path)")
+            }
+        }
+    }
+
+    /// The changes due at `afterEvent` (nil: after the review), made on disk now.
+    public func applyChanges(afterEvent: Int?, in places: ExecPlaces) throws {
+        for change in changes ?? [] where change.afterEvent == afterEvent {
+            try Self.apply(change.ops, in: places)
+        }
+    }
+
+    /// Writes `content` in place as Node's writeFile does (open, truncate, write): an existing
+    /// file keeps its inode, which the engine's fingerprints compare.
+    static func writeFile(_ path: String, _ content: String) -> Bool {
+        let descriptor = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0o666)
+        guard descriptor >= 0 else { return false }
+        defer { close(descriptor) }
+        let bytes = Array(content.utf8)
+        return bytes.withUnsafeBytes { write(descriptor, $0.baseAddress, $0.count) } == bytes.count
+    }
+
+    public static func apply(_ ops: [Change.Op], in places: ExecPlaces) throws {
+        for op in ops {
+            let path = places.resolve(op.path)
+            switch op.op {
+            case "write":
+                guard Self.writeFile(path, op.content ?? "") else {
+                    throw BuildFailure(description: "can't write \(path)")
+                }
+            case "mkdir":
+                try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
+            case "remove":
+                if FileManager.default.fileExists(atPath: path) {
+                    try FileManager.default.removeItem(atPath: path)
+                }
+            default:
+                throw BuildFailure(description: "unknown change \(op.op)")
             }
         }
     }
