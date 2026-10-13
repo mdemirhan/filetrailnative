@@ -1,4 +1,4 @@
-// Port of packages/contracts/src/paths.ts and packages/contracts/src/trash.ts
+// Port of packages/contracts/src/paths.ts and packages/contracts/src/trash.ts, and the path rules of assertNotSystemLocation (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import Foundation
 
 /// Path rules shared by every operation. Paths are compared by their exact Unicode scalars, as the
@@ -69,6 +69,55 @@ public enum Paths {
         return rest.first == "/" && rest.count > 1 && !rest.dropFirst().contains("/")
     }
 
+    // MARK: System locations
+
+    /// Folders that hold the system, the apps, every user's files, or a whole disk. Deleting or trashing
+    /// one is never what was meant, so it is refused whatever the window asks.
+    public static let systemLocations = [
+        "/", "/Users", "/Volumes", "/System",
+        // The startup disk's data volume, where /Users and /Applications really are.
+        "/System/Volumes/Data", "/Applications", "/Library", "/private", "/usr", "/bin", "/sbin", "/etc",
+        "/var", "/opt",
+    ]
+
+    /// The home folder's own folders, which Finder won't let go either ("" is the home folder itself).
+    public static let homeFolderNames = [
+        "", "Desktop", "Documents", "Downloads", "Library", "Movies", "Music", "Pictures", "Public", ".Trash",
+    ]
+
+    /// Every path protected by name: the system locations, then the home folder and its own folders.
+    public static func protectedPaths(homePath: String) -> [String] {
+        let home = NodePath.resolve(homePath)
+        return systemLocations + homeFolderNames.map { NodePath.join(home, $0) }
+    }
+
+    /// The message for refusing to delete, trash, move or rename `path` (`verb` is "moved", "deleted"…)
+    /// judging by its name alone, or nil. The disk is asked too, by the caller: what is at the path
+    /// (the same folder can be reached by other paths), and whether it is where a disk is mounted.
+    public static func systemLocationRefusal(path: String, verb: String, homePath: String) -> String? {
+        guard path.unicodeScalars.first == "/" else { return "Expected an absolute path." }
+        let resolved = NodePath.resolve(path)
+        // The disk ignores case, so "/users" is "/Users".
+        let normalized = Array(JSText.lowercased(resolved).unicodeScalars)
+        if normalized == ["/"] {
+            return "The startup disk can't be \(verb)."
+        }
+        let refusal = "\u{201C}\(NodePath.basename(resolved))\u{201D} can't be \(verb)."
+        let protected = protectedPaths(homePath: homePath).map { Array(JSText.lowercased($0).unicodeScalars) }
+        if protected.contains(normalized) {
+            return refusal
+        }
+        // /^\/volumes\/[^/]+$/
+        let volumes = Array("/volumes/".unicodeScalars)
+        if normalized.starts(with: volumes) {
+            let name = normalized[volumes.count...]
+            if !name.isEmpty && !name.contains("/") {
+                return refusal
+            }
+        }
+        return nil
+    }
+
     private typealias Scalars = [Unicode.Scalar]
 
     private static func scalars(_ text: String) -> Scalars {
@@ -78,7 +127,7 @@ public enum Paths {
     /// NFD, then lowercased as JavaScript's `toLowerCase` does (with the final-sigma rule, which
     /// Swift's own `lowercased()` leaves out).
     private static func comparable(_ path: String) -> Scalars {
-        scalars(path.decomposedStringWithCanonicalMapping.lowercased(with: nil))
+        scalars(JSText.lowercased(path.decomposedStringWithCanonicalMapping))
     }
 
     /// `.replace(/\/+$/u, "")`
