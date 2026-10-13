@@ -6,7 +6,7 @@ You are part of a team porting File Trail, a macOS file browser, from Electron/T
 
 | What | Where |
 |---|---|
-| This repo | Your current directory: a git worktree of `/Users/tcmudemirhan/src/swiftproj/filetrail` |
+| This repo | Your current directory: a git worktree of `/Users/tcmudemirhan/src/swiftproj/filetrail`, whose `main` is the integration branch |
 | The original app (READ-ONLY) | `/Users/tcmudemirhan/src/tsproj/filetrail`, pinned at commit `e4d0872`. Never write, build, install or run anything there. Read the files directly, or with `git -C … show e4d0872:<path>` |
 | Built copy of the original | `~/Library/Caches/filetrail-port/reference/electron` (made by `tools/reference/setup.sh`; may not exist yet) |
 | Shared fixtures and disk images | `~/Library/Caches/filetrail-port/fixtures` |
@@ -32,7 +32,7 @@ You are part of a team porting File Trail, a macOS file browser, from Electron/T
 - **Git.**
   - Commit often on your branch.
   - No `Co-Authored-By` trailers.
-  - Never `git stash`, never push, never commit to `port/integration` or `main` (only the integrator merges).
+  - Never `git stash`, never push, never commit to `main` (only the integrator merges).
   - Leave your branch free when you finish (`git checkout --detach`).
 - **Keep output small.**
   - `scripts/ci.sh` prints only a summary and failures; full logs are in `build/logs/`. `grep` them rather than printing them.

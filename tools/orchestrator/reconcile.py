@@ -55,7 +55,7 @@ def last_stage(wp_id: str) -> str | None:
         "log",
         f"port/{wp_id}",
         "--not",
-        "port/integration",
+        st.load()["integrationBranch"],
         "--format=%(trailers:key=Port-Stage,valueonly,separator=%x2C)",
         check=False,
     )
@@ -97,13 +97,13 @@ def owner_of(tree: dict[str, str], branches: dict[str, str]) -> str | None:
             == 0
         )
 
-    integration = git("rev-parse", "port/integration")
+    integration = git("rev-parse", st.load()["integrationBranch"])
     for wp_id, sha in branches.items():
         if is_ancestor(sha, head) or (
             is_ancestor(head, sha) and not is_ancestor(head, integration)
         ):
             return wp_id
-    # Already merged: a detached worktree whose commit is in port/integration holds nothing new.
+    # Already merged: a detached worktree whose commit is in the integration branch holds nothing new.
     if is_ancestor(head, integration) and "/.claude/worktrees/wf_" in tree.get(
         "worktree", ""
     ):

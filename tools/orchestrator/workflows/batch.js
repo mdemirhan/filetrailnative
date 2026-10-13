@@ -7,7 +7,7 @@ export const meta = {
     { title: 'Gate', detail: 'run the work package gate commands' },
     { title: 'Review', detail: 'lenses by risk tier; findings need a failing test or a diff' },
     { title: 'Fix', detail: 'at most 2 fix loops' },
-    { title: 'Integrate', detail: 'merge ready work packages into port/integration, one at a time' },
+    { title: 'Integrate', detail: 'merge ready work packages into main, one at a time' },
     { title: 'Critic', detail: 'optional end-of-phase check' },
   ],
 }
@@ -16,9 +16,9 @@ export const meta = {
 // Agents read their instructions from the committed files docs/port/state/preamble.md and
 // docs/port/state/wp/<id>.md, so the workflow input stays small.
 const A = args
-// Agent worktrees start from main, not port/integration, so instructions are read by absolute
-// path from the orchestrator's checkout, and every agent checks out the branch it needs first.
-const PRE = `First read ${A.repo}/docs/port/state/preamble.md and follow it. Your worktree may start on another branch (main): never work on main; check out the branch your role names below.`
+// Agent worktrees start from main, the integration branch. Instructions are read by absolute path
+// from the orchestrator's checkout, and every agent checks out the branch it needs first.
+const PRE = `First read ${A.repo}/docs/port/state/preamble.md and follow it. Your worktree starts on main: never commit to main; check out the branch your role names below.`
 const MAX_FIX_LOOPS = 2
 
 const IMPL = {
@@ -112,9 +112,9 @@ function implement(wp) {
   return agent(
     `${head(wp)}
 ## Your role: implementer
-You are in your own fresh git worktree (it may start on main).
-1. If \`git log port/${wp.id} --grep='Port-Stage: implemented' -1\` prints a commit, the work is already done: return status "already_done" with that sha and a summary taken from the git log. Change nothing.
-2. If branch port/${wp.id} exists, an earlier run was interrupted: \`git checkout port/${wp.id}\` and continue from its commits. Otherwise \`git checkout -b port/${wp.id} port/integration\`.
+You are in your own fresh git worktree (it starts on main).
+1. If \`git log main..port/${wp.id} --grep='Port-Stage: implemented' -1\` prints a commit (only this branch's own commits count, never ones inherited from main), the work is already done: return status "already_done" with that sha and a summary taken from the git log. Change nothing.
+2. If branch port/${wp.id} exists, an earlier run was interrupted: \`git checkout port/${wp.id}\` and continue from its commits. Otherwise \`git checkout -b port/${wp.id} main\`.
 3. Do the work in the brief. Commit as you go with messages "wip(${wp.id}): ...".
 4. Run the gate commands below until they all pass:
 ${gateList(wp)}
@@ -146,7 +146,7 @@ function review(wp, lens) {
     `${head(wp)}
 ## Your role: reviewer, lens ${lens}
 ${LENSES[lens]}
-In your own worktree, run \`git checkout --detach port/${wp.id}\` and review the change (\`git diff port/integration...port/${wp.id}\`).
+In your own worktree, run \`git checkout --detach port/${wp.id}\` and review the change (\`git diff main...port/${wp.id}\`).
 Try to show that this work package does NOT match the original. Every finding must come with evidence: a failing test (give its code and how to run it) or a concrete side-by-side of reference behavior vs port behavior with file:line on both sides. Findings without evidence are dropped. Do not commit. Report only findings of medium severity or higher, at most 10, most severe first. An empty list is a fine answer.`,
     { label: `review:${wp.id}:${lens}`, phase: 'Review', schema: FINDINGS, isolation: 'worktree', ...opts },
   )
@@ -160,7 +160,7 @@ function fix(wp, round, gateResult, findings) {
   return agent(
     `${head(wp)}
 ## Your role: fixer, round ${round}
-In your own worktree: \`git checkout port/${wp.id}\`. If \`git log port/${wp.id} --grep='Port-Stage: fixed-${round}' -1\` prints a commit, return status "fixed" with that sha.
+In your own worktree: \`git checkout port/${wp.id}\`. If \`git log main..port/${wp.id} --grep='Port-Stage: fixed-${round}' -1\` prints a commit (only this branch's own commits count), return status "fixed" with that sha.
 Fix the problems below. For each finding, first add its failing test, then make it pass. A finding you can show is wrong (the reference behaves like the port): say so in remaining, with the evidence, and leave the code.
 ${problems}
 
@@ -213,11 +213,11 @@ if (A.integrate && ready.length) {
   phase('Integrate')
   integration = await agent(
     `${PRE}\n\n## Your role: integrator for batch ${A.batchId}
-You work in the orchestrator's checkout (${A.repo}), which has port/integration checked out. Do not switch branches here and do not touch docs/port/state/.
+You work in the orchestrator's checkout (${A.repo}), which has main checked out. Do not switch branches here and do not touch docs/port/state/.
 Merge these branches one at a time, in this order, with \`git merge --no-ff port/<id> -m "Merge <id>: <title>"\`:
 ${ready.map((r) => `- port/${r.id}${r.sharedFileRequests && r.sharedFileRequests.length ? ` — shared-file requests to apply after merging it: ${r.sharedFileRequests.join('; ')}` : ''}`).join('\n')}
-After each merge, run \`scripts/ci.sh\` (if it exists) and fix any break the merge caused, committing the fix on port/integration. If a merge conflicts in a way you cannot resolve without changing a work package's design, abort that merge (\`git merge --abort\`) and list it in notMerged with the reason.
-When all merges are done, if tools/parity-matrix/sync.ts exists, run \`bun tools/parity-matrix/sync.ts\` (it updates docs/port/parity/ from the merged tests' citations and results) and commit the result as "Sync parity matrix after ${A.batchId}". If a merge conflicts only inside docs/port/parity/, take port/integration's side and let the sync rebuild it.
+After each merge, run \`scripts/ci.sh\` (if it exists) and fix any break the merge caused, committing the fix on main. If a merge conflicts in a way you cannot resolve without changing a work package's design, abort that merge (\`git merge --abort\`) and list it in notMerged with the reason.
+When all merges are done, if tools/parity-matrix/sync.ts exists, run \`bun tools/parity-matrix/sync.ts\` (it updates docs/port/parity/ from the merged tests' citations and results) and commit the result as "Sync parity matrix after ${A.batchId}". If a merge conflicts only inside docs/port/parity/, take main's side and let the sync rebuild it.
 Return the merged ids, the final head sha and whether the last CI run passed.`,
     { label: `integrate:${A.batchId}`, phase: 'Integrate', schema: INTEGRATION, model: 'sonnet', effort: 'medium' },
   )

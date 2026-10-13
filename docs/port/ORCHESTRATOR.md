@@ -25,7 +25,7 @@ Any Claude Code session that loads this file runs the port. The plan is `docs/po
 6. **Run the batch.** Launch `Workflow({scriptPath: "tools/orchestrator/workflows/batch.js", args})`. `args` comes from `python3 tools/orchestrator/state.py batch-args <batchId>`. Record the returned run id in the state right away.
 7. **Record the results** when the workflow returns. Apply each WP report with `state.py apply-report`. Record the meter reading after the batch and the tokens per agent. Rewrite `STATUS.md` (`state.py status-md`). Commit everything as `port: checkpoint <batchId>`.
 8. **At a phase end,** run the phase critic (inside the next batch, or as a one-agent workflow). Turn real gaps into new WPs.
-9. **At a wave end,** run `tools/capture/run.sh --acceptance` (PLAN.md §3.4a). A Finder-improvement flow that passed before and fails now blocks the gate. Then stop and ask the user to approve the new `DEVIATIONS.md` entries and to do the human checkpoints of PLAN.md §8. Then merge `port/integration` into `main`.
+9. **At a wave end,** run `tools/capture/run.sh --acceptance` (PLAN.md §3.4a). A Finder-improvement flow that passed before and fails now blocks the gate. Then stop and ask the user to approve the new `DEVIATIONS.md` entries and to do the human checkpoints of PLAN.md §8. (`main` already holds the work; nothing to merge.)
 10. **Repeat** from step 2.
 
 The orchestrator does not write feature code. It writes only state, briefs, status and the orchestrator tools.
@@ -38,9 +38,9 @@ The orchestrator does not write feature code. It writes only state, briefs, stat
 
 ## Branch and commit rules
 
-- `port/integration` is the orchestrator's branch, checked out in the orchestrator's worktree.
-- Each WP works on `port/<wp-id>`, made from `port/integration` by its implementer.
+- `main` is the integration branch, checked out in the main checkout (`/Users/tcmudemirhan/src/swiftproj/filetrail`), where the orchestrator runs. Don't edit files there while a batch runs.
+- Each WP works on `port/<wp-id>`, made from `main` by its implementer.
 - When an agent finishes, it detaches HEAD (`git checkout --detach`) so the branch is free for the next stage's agent.
 - Stage commits end with a trailer line: `Port-Stage: implemented`, `Port-Stage: fixed-1`, `Port-Stage: fixed-2`.
 - No `Co-Authored-By` trailers (global CLAUDE.md).
-- Only the integrator merges into `port/integration`, using `--no-ff`, one WP at a time, and runs the full CI after each merge.
+- Only the integrator merges into `main`, using `--no-ff`, one WP at a time, and runs the full CI after each merge.

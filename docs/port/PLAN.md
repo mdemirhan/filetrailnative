@@ -22,9 +22,8 @@ Defaults chosen in this plan (change any of them by saying so):
 - **Zero third-party Swift dependencies.** System frameworks only, plus the bundled `fd`.
 - **Bundle id.** `com.filetrail.native` during development, so both apps run side by side for comparison. At release cutover it becomes `com.filetrail.desktop`, with a one-time import of the Electron app's `app-state.json` and `visited-folders.json` (§7, phase 8).
 - **Git.**
-  - Work happens on the integration branch `port/integration`.
+  - `main` is the integration branch, checked out in the main checkout where the orchestrator runs (changed on 2026-10-13 from a separate `port/integration` branch).
   - Each work package gets its own branch and worktree.
-  - The orchestrator merges `port/integration` into local `main` at each wave gate.
   - Nothing is pushed: the repo has no remote.
   - Commits carry no `Co-Authored-By` trailer, per the global CLAUDE.md.
 
@@ -332,7 +331,7 @@ for each WP (pipeline, worktree isolation):
       high   — parity + safety + one domain lens (all Opus); write engine and the copy flow UI
   fix            → apply findings that come with a failing test or diff; re-gate
   (fix→gate→verify at most 2 times; after that, report as blocked with the open findings)
-barrier → integrator (Sonnet): merge passing branches into port/integration one at a time,
+barrier → integrator (Sonnet): merge passing branches into main one at a time,
           full CI, bench, fix integration breaks; escalate to Opus only on a break it can't fix
 critic  → once per phase (Sonnet): "what in this phase's feature rows is still unproven?"
 ```
@@ -400,7 +399,7 @@ The orchestrator never depends on what is in its conversation. Everything it nee
 | `port/<wp-id>` branches | The work itself. Implementers and fixers commit as they go (`wip(<wp>): …`), and each finished stage is a commit with a `Port-Stage: implemented / gated / reviewed / fixed-N` trailer. |
 | `tools/orchestrator/` | The workflow scripts, kept in the repo and run by path, so a resumed session runs the same script. |
 
-The orchestrator commits the state files to `port/integration` after every change ("port: checkpoint …").
+The orchestrator commits the state files to `main` after every change ("port: checkpoint …").
 
 **Stages are idempotent.** A WP moves through todo → implementing → implemented → gated → reviewed → fixing (1–2) → ready → merged, or ends as blocked. Before acting, each stage checks the branch for its own `Port-Stage` commit; if it's there, the stage is skipped. Re-running a batch after a stop therefore redoes only the stage that was interrupted.
 
