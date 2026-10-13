@@ -20,7 +20,9 @@ import Testing
             "--bg-active": "stale violet default; the accent's activeBg replaces it at run time",
             "--crumb-active-bg": "stale default; the accent's activeBg replaces it at run time",
         ]
-        for layer in ["below", "raised", "sticky", "toolbar", "float", "notification", "menu", "modal", "drag", "tooltip"] {
+        for layer in [
+            "below", "raised", "sticky", "toolbar", "float", "notification", "menu", "modal", "drag", "tooltip",
+        ] {
             table["--z-\(layer)"] = "CSS stacking order; AppKit orders views and windows itself"
         }
         return table
@@ -61,7 +63,8 @@ import Testing
             "--duration-flash": ms(motion.flash),
             "--duration-flash-slow": ms(motion.flashSlow),
             "--duration-spin": ms(motion.spin),
-            "--ease-standard": "cubic-bezier(\(formatCSSNumber(motion.easing.x1)), \(formatCSSNumber(motion.easing.y1)), "
+            "--ease-standard":
+                "cubic-bezier(\(formatCSSNumber(motion.easing.x1)), \(formatCSSNumber(motion.easing.y1)), "
                 + "\(formatCSSNumber(motion.easing.x2)), \(formatCSSNumber(motion.easing.y2)))",
             "--disabled-opacity": formatCSSNumber(DesignTokens.disabledOpacity),
             "--pane-header-height": px(DesignTokens.paneHeaderHeight),
@@ -187,8 +190,12 @@ import Testing
         let names = Set(light.keys).union(dark.keys)
         #expect(Set(light.keys) == Set(dark.keys))
         for name in Self.notUsed.keys { #expect(names.contains(name), "unused entry \(name) is not in the golden") }
-        for name in Self.designValues.keys { #expect(names.contains(name), "design entry \(name) is not in the golden") }
-        for name in Self.accentValues(.light).keys { #expect(names.contains(name), "accent entry \(name) is not in the golden") }
+        for name in Self.designValues.keys {
+            #expect(names.contains(name), "design entry \(name) is not in the golden")
+        }
+        for name in Self.accentValues(.light).keys {
+            #expect(names.contains(name), "accent entry \(name) is not in the golden")
+        }
         // Every palette property is a real token, so a rename in the golden cannot leave dead code.
         let camelNames = Set(names.map(Self.camelCase))
         for label in Self.paletteProperties(.light).keys {

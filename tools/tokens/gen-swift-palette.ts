@@ -1,7 +1,7 @@
 // Writes Sources/FTFoundation/Design/ThemePalette.swift from Tests/Golden/css-tokens.json: the
 // theme-dependent colours, shadows and the pressed-button brightness. The Swift test still
 // compares every property against the golden independently.
-//   bun tools/tokens/extract-css.ts && bun tools/tokens/gen-swift-palette.ts
+//   bun tools/tokens/extract-css.ts && bun tools/tokens/gen-swift-palette.ts && xcrun swift-format format -i Sources/FTFoundation/Design/ThemePalette.swift
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { REPO_ROOT, parseColor, splitTopLevel } from "./lib";

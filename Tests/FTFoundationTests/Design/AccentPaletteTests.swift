@@ -69,7 +69,9 @@ import Testing
     @Test func goldenCoversPresetsAndRandomColors() throws {
         let cases = try #require(try GoldenFile.json("accent.json")["cases"] as? [[String: Any]])
         let accents = Set(cases.compactMap { ($0["input"] as? [String: String])?["accent"] })
-        let presets = ["#007aff", "#a550a7", "#f74f9e", "#e0383e", "#f7821b", "#ffc600", "#62ba46", "#8c8c8c", "#d4845a"]
+        let presets = [
+            "#007aff", "#a550a7", "#f74f9e", "#e0383e", "#f7821b", "#ffc600", "#62ba46", "#8c8c8c", "#d4845a",
+        ]
         for preset in presets {
             #expect(accents.contains(preset))
         }
