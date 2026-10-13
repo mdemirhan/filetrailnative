@@ -45,7 +45,8 @@
             case "toggleFolderTree":
                 (window.contentViewController as? NSSplitViewController)?.toggleSidebar(nil)
             case "editSelectAll":
-                guard let responder = window.firstResponder, responder.responds(to: #selector(NSResponder.selectAll(_:)))
+                guard let responder = window.firstResponder,
+                    responder.responds(to: #selector(NSResponder.selectAll(_:)))
                 else { return .init(.failed, "nothing to select in") }
                 responder.perform(#selector(NSResponder.selectAll(_:)), with: nil)
             case "focusFileSearch":
@@ -98,7 +99,9 @@
         }
 
         private static func currentSort(in window: NSWindow) -> (key: String, ascending: Bool)? {
-            guard let sort = Views.folderTable(in: window)?.sortDescriptors.first, let key = sort.key else { return nil }
+            guard let sort = Views.folderTable(in: window)?.sortDescriptors.first, let key = sort.key else {
+                return nil
+            }
             return (key, sort.ascending)
         }
 

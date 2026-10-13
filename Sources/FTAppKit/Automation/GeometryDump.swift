@@ -91,7 +91,8 @@
                 side: "swift", name: name, window: Size(width: size.width, height: size.height), elements: elements)
         }
 
-        private static func collect(_ view: NSView, in window: NSWindow, allViews: Bool, into elements: inout [Element]) {
+        private static func collect(_ view: NSView, in window: NSWindow, allViews: Bool, into elements: inout [Element])
+        {
             guard !view.isHidden else { return }
             let id = view.accessibilityIdentifier()
             if !id.isEmpty || allViews {

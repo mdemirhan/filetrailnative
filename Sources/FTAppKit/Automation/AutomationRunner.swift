@@ -7,13 +7,13 @@
     /// waiting for each step to settle, writes `<out>/report.json`, and quits.
     @MainActor
     final class AutomationRunner {
-        struct Options: Equatable {
+        struct Options: Equatable, Sendable {
             var scenario: URL
             var out: URL
         }
 
         /// The `--automation` and `--out` values, or nil when automation wasn't asked for.
-        static func options(from arguments: [String]) -> Options? {
+        nonisolated static func options(from arguments: [String]) -> Options? {
             func value(after flag: String) -> String? {
                 guard let index = arguments.firstIndex(of: flag), arguments.indices.contains(index + 1) else {
                     return nil
@@ -173,7 +173,8 @@
             let table = Views.folderTable(in: window)
             let collection = Views.first(NSCollectionView.self, in: window.contentView)
             return [
-                controller.folder.path, window.title, String(describing: window.firstResponder.map(ObjectIdentifier.init)),
+                controller.folder.path, window.title,
+                String(describing: window.firstResponder.map(ObjectIdentifier.init)),
                 "\(table?.numberOfRows ?? -1)", "\(table?.selectedRowIndexes.map { $0 } ?? [])",
                 "\(collection?.numberOfItems(inSection: 0) ?? -1)", Views.statusText(in: window) ?? "",
                 "\(window.contentView?.frame.size ?? .zero)",
@@ -310,7 +311,8 @@
                 var paths = Set<IndexPath>()
                 for index in 0..<collection.numberOfItems(inSection: 0) {
                     let path = IndexPath(item: index, section: 0)
-                    let item = collection.item(at: path) ?? source.collectionView(collection, itemForRepresentedObjectAt: path)
+                    let item =
+                        collection.item(at: path) ?? source.collectionView(collection, itemForRepresentedObjectAt: path)
                     if let name = item.textField?.stringValue, missing.remove(name) != nil { paths.insert(path) }
                 }
                 collection.selectionIndexPaths = paths
@@ -318,7 +320,8 @@
             } else {
                 return Outcome(.failed, "no folder view")
             }
-            return missing.isEmpty ? Outcome(.ok) : Outcome(.failed, "not found: " + missing.sorted().joined(separator: ", "))
+            return missing.isEmpty
+                ? Outcome(.ok) : Outcome(.failed, "not found: " + missing.sorted().joined(separator: ", "))
         }
 
         private func press(_ name: String, modifiers names: [String], window: NSWindow) -> Outcome {
@@ -378,7 +381,8 @@
     /// Finding the window's views by kind.
     @MainActor
     enum Views {
-        static func first<T: NSView>(_ type: T.Type, in view: NSView?, where accept: (T) -> Bool = { _ in true }) -> T? {
+        static func first<T: NSView>(_ type: T.Type, in view: NSView?, where accept: (T) -> Bool = { _ in true }) -> T?
+        {
             guard let view, !view.isHidden else { return nil }
             if let match = view as? T, accept(match) { return match }
             for child in view.subviews {
@@ -401,8 +405,10 @@
         }
 
         static func statusText(in window: NSWindow) -> String? {
-            first(NSTextField.self, in: window.contentView) { $0.accessibilityIdentifier() == AutomationTags.statusBar }?
-                .stringValue
+            first(NSTextField.self, in: window.contentView) {
+                $0.accessibilityIdentifier() == AutomationTags.statusBar
+            }?
+            .stringValue
         }
     }
 #endif
