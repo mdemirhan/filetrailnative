@@ -15,11 +15,16 @@ let package = Package(
             name: "FTAppKit", dependencies: ["FTFoundation", "FTFileSystem", "FTOperations", "CFileTrail"],
             path: "Sources/FTAppKit"),
         .executableTarget(name: "FileTrail", dependencies: ["FTAppKit"], path: "Sources/FileTrail"),
-        .testTarget(name: "FTFoundationTests", dependencies: ["FTFoundation"], path: "Tests/FTFoundationTests"),
+        // Golden files, tree snapshots and temp folders for the tests (see tools/parity/README.md).
+        .target(name: "FTTestSupport", path: "Tests/FTTestSupport"),
         .testTarget(
-            name: "FTFileSystemTests", dependencies: ["FTFileSystem", "FTFoundation"], path: "Tests/FTFileSystemTests"),
+            name: "FTFoundationTests", dependencies: ["FTFoundation", "FTTestSupport"], path: "Tests/FTFoundationTests"),
         .testTarget(
-            name: "FTOperationsTests", dependencies: ["FTOperations", "FTFoundation"], path: "Tests/FTOperationsTests"),
-        .testTarget(name: "FTAppKitTests", dependencies: ["FTAppKit"], path: "Tests/FTAppKitTests"),
+            name: "FTFileSystemTests", dependencies: ["FTFileSystem", "FTFoundation", "FTTestSupport"],
+            path: "Tests/FTFileSystemTests"),
+        .testTarget(
+            name: "FTOperationsTests", dependencies: ["FTOperations", "FTFoundation", "FTTestSupport"],
+            path: "Tests/FTOperationsTests"),
+        .testTarget(name: "FTAppKitTests", dependencies: ["FTAppKit", "FTTestSupport"], path: "Tests/FTAppKitTests"),
     ]
 )
