@@ -154,7 +154,8 @@ public enum ExecHarness {
 
     /// Runs one execution case through `engine` in fresh folders. Nil when the normalized outcome
     /// matches the recording; else its first differences, one per line.
-    public static func check(_ testCase: Case, with engine: some ExecEngine, limit: Int = 10) async throws -> [String]? {
+    public static func check(_ testCase: Case, with engine: some ExecEngine, limit: Int = 10) async throws -> [String]?
+    {
         let scenario = testCase.input
         let places = try ExecPlaces.make(for: scenario)
         defer { places.remove() }
@@ -165,7 +166,8 @@ public enum ExecHarness {
     }
 
     /// Runs one analysis case through `engine` in fresh folders, as `check` does.
-    public static func checkAnalysis(_ testCase: Case, with engine: some ExecAnalysisEngine, limit: Int = 10) async throws
+    public static func checkAnalysis(_ testCase: Case, with engine: some ExecAnalysisEngine, limit: Int = 10)
+        async throws
         -> [String]?
     {
         let places = try ExecPlaces.make(for: testCase.input)
@@ -197,7 +199,8 @@ public enum ExecHarness {
                 reports.append(([testCase.name] + lines.map { "  " + $0 }).joined(separator: "\n"))
             }
         }
-        return count == 0 ? nil : (["\(count) of \(all.count) \(suite) cases differ:"] + reports).joined(separator: "\n")
+        return count == 0
+            ? nil : (["\(count) of \(all.count) \(suite) cases differ:"] + reports).joined(separator: "\n")
     }
 
     /// Builds the case's tree here and names how its snapshot differs from the recorded `before`.

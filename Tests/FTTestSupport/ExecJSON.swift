@@ -82,7 +82,9 @@ public indirect enum JSONValue: Sendable, Codable, CustomStringConvertible {
         case .string(let text): return JSONText.quote(text)
         case .array(let items): return "[" + items.map(\.description).joined(separator: ",") + "]"
         case .object(let members):
-            let body = JSONValue.sortedKeys(members).map { JSONText.quote($0) + ":" + (members[$0]?.description ?? "null") }
+            let body = JSONValue.sortedKeys(members).map {
+                JSONText.quote($0) + ":" + (members[$0]?.description ?? "null")
+            }
             return "{" + body.joined(separator: ",") + "}"
         }
     }
@@ -119,7 +121,9 @@ public enum ExecDiff {
         return lines
     }
 
-    private static func walk(_ expected: JSONValue, _ actual: JSONValue, path: String, limit: Int, into lines: inout [String]) {
+    private static func walk(
+        _ expected: JSONValue, _ actual: JSONValue, path: String, limit: Int, into lines: inout [String]
+    ) {
         guard lines.count < limit, expected != actual else { return }
         switch (expected, actual) {
         case (.array(let a), .array(let b)):

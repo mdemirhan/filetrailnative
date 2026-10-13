@@ -44,7 +44,9 @@ public struct ExecPlaces: Sendable {
             try FileManager.default.createDirectory(atPath: scenarioBase + "/tree", withIntermediateDirectories: true)
             try FileManager.default.createDirectory(atPath: scenarioBase + "/trash", withIntermediateDirectories: true)
             volumes.append(
-                Volume(folder: folder, format: format, mount: mount, root: scenarioBase + "/tree", trash: scenarioBase + "/trash"))
+                Volume(
+                    folder: folder, format: format, mount: mount, root: scenarioBase + "/tree",
+                    trash: scenarioBase + "/trash"))
         }
         return ExecPlaces(
             work: work, root: work + "/tree", trash: work + "/trash", journal: work + "/journal/replace-journal.json",
@@ -127,7 +129,8 @@ public struct ExecPlaces: Sendable {
             }
             try openForSnapshot(root: root, relative: "", opened: &opened)
             let modes = Dictionary(
-                opened.map { ($0.relative.decomposedStringWithCanonicalMapping, $0.mode) }, uniquingKeysWith: { a, _ in a })
+                opened.map { ($0.relative.decomposedStringWithCanonicalMapping, $0.mode) },
+                uniquingKeysWith: { a, _ in a })
             for var entry in try TreeSnapshot.entries(of: root) {
                 if let mode = modes[entry.path] {
                     let digits = String(mode, radix: 8)
@@ -139,7 +142,9 @@ public struct ExecPlaces: Sendable {
         return entries.sorted { $0.path.utf16.lexicographicallyPrecedes($1.path.utf16) }
     }
 
-    private static func openForSnapshot(root: String, relative: String, opened: inout [(relative: String, mode: mode_t)]) throws {
+    private static func openForSnapshot(
+        root: String, relative: String, opened: inout [(relative: String, mode: mode_t)]
+    ) throws {
         let folder = relative.isEmpty ? root : root + "/" + relative
         for name in try FileManager.default.contentsOfDirectory(atPath: folder) {
             let childRelative = relative.isEmpty ? name : relative + "/" + name
@@ -150,7 +155,9 @@ public struct ExecPlaces: Sendable {
             let kind = info.st_mode & S_IFMT
             let needed: mode_t = kind == S_IFDIR ? 0o500 : kind == S_IFREG ? 0o400 : 0
             if mode & needed != needed {
-                guard chmod(path, mode | needed) == 0 else { throw Failure(description: "can't open \(path) to snapshot it") }
+                guard chmod(path, mode | needed) == 0 else {
+                    throw Failure(description: "can't open \(path) to snapshot it")
+                }
                 opened.append((childRelative, mode))
             }
             if kind == S_IFDIR {

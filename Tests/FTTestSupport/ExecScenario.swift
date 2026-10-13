@@ -100,7 +100,8 @@ public struct ExecScenario: Codable, Equatable, Sendable {
     public var volumes: [String: String]?
 
     public init(
-        name: String, tree: [Item], paste: Paste, policy: Policy, overrides: [Override]? = nil, answers: [String]? = nil,
+        name: String, tree: [Item], paste: Paste, policy: Policy, overrides: [Override]? = nil,
+        answers: [String]? = nil,
         stopAt: StopPoint? = nil, crashAt: CrashPoint? = nil, changes: [Change]? = nil, trash: Bool? = nil,
         volumes: [String: String]? = nil
     ) {
@@ -143,7 +144,9 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         }
         let depth = { (item: Item) in item.path.split(separator: "/", omittingEmptySubsequences: false).count }
         let deepestFirst = Array(tree.reversed()).enumerated()
-            .sorted { a, b in depth(a.element) != depth(b.element) ? depth(a.element) > depth(b.element) : a.offset < b.offset }
+            .sorted { a, b in
+                depth(a.element) != depth(b.element) ? depth(a.element) > depth(b.element) : a.offset < b.offset
+            }
             .map(\.element)
         for item in deepestFirst where item.kind != "symlink" {
             let path = places.resolve(item.path)

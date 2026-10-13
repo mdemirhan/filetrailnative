@@ -71,13 +71,16 @@ struct ExecGoldenTests {
                     "kind": .string("event"), "operationId": .string("op-test"), "analysisId": .string("analysis-test"),
                     "runtimeConflict": .object([
                         "conflictId": .string("runtime-item-1-destination-7"),
-                        "sourceFingerprint": .object(["dev": .int(16_777_234), "ino": .int(99), "mtimeMs": .double(1.5)]),
+                        "sourceFingerprint": .object([
+                            "dev": .int(16_777_234), "ino": .int(99), "mtimeMs": .double(1.5),
+                        ]),
                     ]),
                 ]),
             ]),
             "result": .object([
                 "startedAt": .string("2026-10-13T10:00:00Z"), "trashedPaths": .array([.string(places.trash + "/1-f")]),
-                "error": .string("“f” is still in “\(places.root.replacingOccurrences(of: "/private/var/", with: "/var/"))/d”."),
+                "error": .string(
+                    "“f” is still in “\(places.root.replacingOccurrences(of: "/private/var/", with: "/var/"))/d”."),
             ]),
             "after": .array([
                 .object(["path": .string("d/.f.filetrail-0a1b2c3d")]), .object(["path": .string("d/a")]),
@@ -100,7 +103,9 @@ struct ExecGoldenTests {
                     "kind": .string("event"), "operationId": .string("operation"), "analysisId": .string("analysis"),
                     "runtimeConflict": .object([
                         "conflictId": .string("runtime-item-1-destination-q1"),
-                        "sourceFingerprint": .object(["dev": .string("dev-1"), "ino": .string("ino-1"), "mtimeMs": .string("set")]),
+                        "sourceFingerprint": .object([
+                            "dev": .string("dev-1"), "ino": .string("ino-1"), "mtimeMs": .string("set"),
+                        ]),
                     ]),
                 ]),
             ]),
