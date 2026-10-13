@@ -46,6 +46,8 @@ final class BrowserViewController: NSViewController {
         status.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
         status.textColor = .secondaryLabelColor
         status.alignment = .center
+        status.setAccessibilityIdentifier("statusBar")
+        container.setAccessibilityIdentifier("content")
 
         for view in [container, separator, status] as [NSView] {
             view.translatesAutoresizingMaskIntoConstraints = false

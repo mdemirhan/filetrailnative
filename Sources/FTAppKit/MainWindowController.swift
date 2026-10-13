@@ -62,6 +62,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         split.addSplitViewItem(sidebarItem)
         split.addSplitViewItem(NSSplitViewItem(viewController: browser))
         window.contentViewController = split
+        split.view.setAccessibilityIdentifier("window.content")
         window.setContentSize(NSSize(width: 1000, height: 620))
         window.center()
 
@@ -295,6 +296,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
             item.searchField.target = self
             item.searchField.action = #selector(searchChanged(_:))
             item.searchField.sendsSearchStringImmediately = true
+            item.searchField.setAccessibilityIdentifier("toolbar.search")
             searchItem = item
             return item
         default:
