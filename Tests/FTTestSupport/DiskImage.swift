@@ -49,9 +49,9 @@ public enum DiskImage {
         defer { work.remove() }
         let image = work.appending("volume.sparseimage")
         try clone(kind, to: image)
-        let mount = try attach(image)
-        defer { detach(mount) }
-        return try await body(mount)
+        let attached = try attach(image)
+        defer { detach(attached, image: image) }
+        return try await body(attached.mount)
     }
 
     private static var repositoryRoot: URL {
@@ -78,22 +78,60 @@ public enum DiskImage {
         try FileManager.default.copyItem(at: source, to: destination)
     }
 
-    private static func attach(_ image: URL) throws -> URL {
+    private struct Attached {
+        let mount: URL
+        /// The whole-disk device (`/dev/diskN`), which detaches every volume of the image.
+        let device: String
+    }
+
+    private static func attach(_ image: URL) throws -> Attached {
         let output = try run(
             "/usr/bin/hdiutil", ["attach", "-nobrowse", "-noautoopen", "-plist", image.path])
         guard
             let plist = try PropertyListSerialization.propertyList(from: output, format: nil) as? [String: Any],
             let entities = plist["system-entities"] as? [[String: Any]],
-            let mountPoint = entities.compactMap({ $0["mount-point"] as? String }).first
+            let mountPoint = entities.compactMap({ $0["mount-point"] as? String }).first,
+            let slice = entities.first(where: { $0["mount-point"] != nil })?["dev-entry"] as? String
         else { throw Failure(description: "hdiutil attach reported no mount point for \(image.path)") }
         // realpath'd, so paths the code under test reports match ours.
-        return URL(fileURLWithPath: mountPoint).resolvingSymlinksInPath()
+        return Attached(
+            mount: URL(fileURLWithPath: mountPoint).resolvingSymlinksInPath(), device: wholeDisk(of: slice))
     }
 
-    private static func detach(_ mount: URL) {
-        for attempt in 0..<5 {
-            if (try? run("/usr/bin/hdiutil", ["detach", "-force", mount.path])) != nil { return }
-            Thread.sleep(forTimeInterval: 0.5 * Double(attempt + 1))
+    /// `/dev/disk4s1` -> `/dev/disk4`.
+    private static func wholeDisk(of slice: String) -> String {
+        guard let range = slice.range(of: #"^/dev/disk[0-9]+"#, options: .regularExpression) else { return slice }
+        return String(slice[range])
+    }
+
+    /// Detaches by device (a path can be busy), forcing on the retries, and returns once the image
+    /// is no longer attached and its mount point is gone, so the clone can be deleted.
+    private static func detach(_ attached: Attached, image: URL) {
+        for attempt in 0..<3 {
+            let force = attempt > 0
+            _ = try? run("/usr/bin/hdiutil", ["detach"] + (force ? ["-force"] : []) + [attached.device])
+            if waitUntilGone(attached, image: image, timeout: 5) { return }
+        }
+    }
+
+    private static func waitUntilGone(_ attached: Attached, image: URL, timeout: TimeInterval) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        repeat {
+            if !isAttached(image) && !FileManager.default.fileExists(atPath: attached.mount.path) { return true }
+            Thread.sleep(forTimeInterval: 0.05)
+        } while Date() < deadline
+        return false
+    }
+
+    private static func isAttached(_ image: URL) -> Bool {
+        guard let data = try? run("/usr/bin/hdiutil", ["info", "-plist"]),
+            let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
+            let images = plist["images"] as? [[String: Any]]
+        else { return false }
+        let real = image.resolvingSymlinksInPath().path
+        return images.contains { entry in
+            guard let path = entry["image-path"] as? String else { return false }
+            return URL(fileURLWithPath: path).resolvingSymlinksInPath().path == real
         }
     }
 
