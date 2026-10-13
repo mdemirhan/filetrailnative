@@ -30,3 +30,4 @@
 {"at": "2026-10-13T19:00:27+00:00", "event": "meter", "weeklyPct": 8.0, "fiveHourPct": 9.0, "note": "after W1-A + behavior extraction (~3.95M agent tokens): weekly 6->8"}
 {"at": "2026-10-13T19:00:27+00:00", "event": "add-batch", "batch": "W1-B", "wps": ["P0-10", "P0-11", "P1-02"], "estimatedAgents": 10}
 {"at": "2026-10-13T19:00:27+00:00", "event": "set-batch", "batch": "W1-B", "status": "running", "runId": null}
+{"at": "2026-10-13T19:00:44+00:00", "event": "set-batch", "batch": "W1-B", "status": "running", "runId": "wf_00ca2bd2-1d1"}
