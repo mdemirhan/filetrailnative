@@ -1,0 +1,23 @@
+{
+  "source": "docs/port/PLAN.md section 4",
+  "regression_percent": 10,
+  "regression_floor": 1.0,
+  "metrics": {
+    "bundle_mb": {"unit": "MB", "budget": 12, "note": "app bundle, fd included"},
+    "idle_mb": {"unit": "MB", "budget": 60, "note": "physical footprint, one window in Home, 3 s after launch"},
+    "launch_ms": {"unit": "ms", "budget": 350, "note": "median of 5 (3 with --quick), process start to first folder drawn"},
+    "open_300_ms": {"unit": "ms", "budget": null},
+    "open_3000_ms": {"unit": "ms", "budget": 50, "note": "List view, to drawn"},
+    "open_30000_ms": {"unit": "ms", "budget": null},
+    "open_100000_ms": {"unit": "ms", "budget": 600, "note": "to first rows"},
+    "stall_100000_ms": {"unit": "ms", "budget": 50, "note": "longest main-thread stall while opening"},
+    "back_ms": {"unit": "ms", "budget": 10, "note": "back to a small folder"},
+    "scroll_max_ms": {"unit": "ms", "budget": 16, "note": "longest frame interval while scrolling the List top to bottom"},
+    "scroll_p99_ms": {"unit": "ms", "budget": null}
+  },
+  "not_yet_measured": {
+    "first_search_results_ms": {"budget": 150, "note": "fd, Home; added with the search work package"},
+    "copy_throughput": {"budget": "copyfile, +-5%", "note": "added with the copy work package"},
+    "icons_scroll_max_ms": {"budget": 16, "note": "Icons view scroll; added with the Icons view package"}
+  }
+}

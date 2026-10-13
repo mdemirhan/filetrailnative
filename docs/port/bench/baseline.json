@@ -1,0 +1,19 @@
+{
+  "metrics": {
+    "back_ms": 17.27,
+    "bundle_mb": 0.42,
+    "idle_mb": 42.0,
+    "launch_ms": 282.41,
+    "open_100000_ms": 1420.03,
+    "open_30000_ms": 438.94,
+    "open_3000_ms": 51.9,
+    "open_300_ms": 22.4,
+    "scroll_max_ms": 25.07,
+    "scroll_p99_ms": 15.66,
+    "stall_100000_ms": 593.13,
+    "stall_30000_ms": 203.62,
+    "stall_3000_ms": 52.75,
+    "stall_300_ms": 48.09
+  },
+  "note": "Last accepted run; refresh with tools/bench/run.sh --update-baseline."
+}
