@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T17:41:27+00:00",
+  "updatedAt": "2026-10-13T17:41:38+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
@@ -117,10 +117,10 @@
         "P0-05"
       ],
       "status": "running",
-      "runId": null,
+      "runId": "wf_6aa12543-af9",
       "estimatedAgents": 6,
       "critic": "Phase P0 critic. In the orchestrator checkout (port/integration, after the merge above), compare what phase 0 delivered with docs/port/PLAN.md sections 5 (validation system) and 6.6-6.7, and with the P0 table in section 7. Run, do not just read: scripts/ci.sh, tools/parity/gen.sh --check, tools/parity/exec/selftest.sh, tools/capture/run.sh --selftest, tools/bench/run.sh --quick --report-only, bun tools/parity-matrix/report.ts. List concrete gaps that would stop phases 1-3 from using these tools as the plan intends (e.g. a harness that cannot yet do something a P1/P2/P3 work package will need). Each gap needs evidence (a command and its output, or a file:line). Do not modify files. At most 10 gaps.",
-      "startedAt": "2026-10-13T17:41:27+00:00"
+      "startedAt": "2026-10-13T17:41:38+00:00"
     }
   },
   "wps": {
