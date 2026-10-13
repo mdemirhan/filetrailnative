@@ -44,6 +44,10 @@
             case left, right
         }
 
+        enum Edge: String, Equatable, Sendable {
+            case top, bottom
+        }
+
         /// A change to the fixture made from outside the app, as another app would make it.
         enum FileOp: Equatable, Sendable {
             /// A file (with `contents`) or, with `directory`, a folder.
@@ -55,6 +59,8 @@
             case chmod(path: String, mode: String)
             /// The Finder's Locked flag (`uchg`).
             case lock(path: String, locked: Bool)
+            /// Dates the item to the scenario's clock (a folder a write just changed shows today's real time).
+            case touch(path: String)
 
             var name: String {
                 switch self {
@@ -64,6 +70,7 @@
                 case .delete: "delete"
                 case .chmod: "chmod"
                 case .lock: "lock"
+                case .touch: "touch"
                 }
             }
         }
@@ -79,10 +86,14 @@
             case wait(milliseconds: Int)
             case snapshot(name: String)
             case geometry(name: String, allViews: Bool)
-            case click(ElementRef, button: MouseButton, count: Int, modifiers: [String])
+            /// `holdMilliseconds` keeps the button down that long (a press and hold).
+            case click(ElementRef, button: MouseButton, count: Int, modifiers: [String], holdMilliseconds: Int)
+            /// Sets a pop-up button to the item with this title, as choosing it does.
+            case pick(ElementRef, option: String)
             case menu(path: [String])
             case contextMenu(ElementRef, choose: [String])
-            case drag(from: ElementRef, to: ElementRef, modifiers: [String])
+            /// `toEdge` drops in the top or bottom quarter of the target (before or after it in a list).
+            case drag(from: ElementRef, to: ElementRef, modifiers: [String], toEdge: Edge?)
             case expectSheet(name: String)
             case sheetButton(label: String)
             case newWindow
@@ -106,6 +117,7 @@
                 case .snapshot: "snapshot"
                 case .geometry: "geometry"
                 case .click: "click"
+                case .pick: "pick"
                 case .menu: "menu"
                 case .contextMenu: "contextMenu"
                 case .drag: "drag"
@@ -241,6 +253,13 @@
                     throw fail("missing element \"\(key)\"")
                 }
             }
+            func edge() throws -> Edge? {
+                guard let value = step["toEdge"] else { return nil }
+                guard let name = value as? String, let edge = Edge(rawValue: name) else {
+                    throw fail("\"toEdge\" must be \"top\" or \"bottom\"")
+                }
+                return edge
+            }
             func modifiers() throws -> [String] {
                 guard let value = step["modifiers"] else { return [] }
                 guard let list = value as? [String] else { throw fail("\"modifiers\" is not a list") }
@@ -279,8 +298,13 @@
                 guard let button = MouseButton(rawValue: buttonName) else { throw fail("unknown button \(buttonName)") }
                 let count = try optionalInt("count") ?? 1
                 guard (1...3).contains(count) else { throw fail("\"count\" must be 1 to 3") }
+                let hold = try optionalInt("holdMs") ?? 0
+                guard hold >= 0, hold <= 5000 else { throw fail("\"holdMs\" must be 0 to 5000") }
                 return .click(
-                    try element("element", siblings: true), button: button, count: count, modifiers: try modifiers())
+                    try element("element", siblings: true), button: button, count: count, modifiers: try modifiers(),
+                    holdMilliseconds: hold)
+            case "pick":
+                return .pick(try element("element", siblings: true), option: try string("option"))
             case "menu":
                 guard let path = step["path"] as? [String], !path.isEmpty else { throw fail("missing \"path\"") }
                 return .menu(path: path)
@@ -296,7 +320,7 @@
             case "drag":
                 return .drag(
                     from: try element("from", siblings: false), to: try element("to", siblings: false),
-                    modifiers: try modifiers())
+                    modifiers: try modifiers(), toEdge: try edge())
             case "expectSheet":
                 return .expectSheet(name: try string("name"))
             case "sheetButton":
@@ -348,6 +372,8 @@
                 return .chmod(path: path, mode: mode)
             case "lock":
                 return .lock(path: path, locked: step["locked"] as? Bool ?? true)
+            case "touch":
+                return .touch(path: path)
             default:
                 throw fail("unknown op \"\(op)\"")
             }

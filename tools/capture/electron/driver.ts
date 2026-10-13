@@ -43,10 +43,12 @@ type Step =
       button?: "left" | "right";
       count?: number;
       modifiers?: string[];
+      holdMs?: number;
     }
+  | { step: "pick"; element: ElementRef; index?: number; text?: string; option: string }
   | { step: "menu"; path: string[] }
   | { step: "contextMenu"; element: ElementRef; index?: number; text?: string; choose?: string | string[] }
-  | { step: "drag"; from: ElementRef; to: ElementRef; modifiers?: string[] }
+  | { step: "drag"; from: ElementRef; to: ElementRef; modifiers?: string[]; toEdge?: "top" | "bottom" }
   | { step: "expectSheet"; name: string }
   | { step: "sheetButton"; label: string }
   | { step: "newWindow" }
@@ -55,7 +57,7 @@ type Step =
   | { step: "selectWindow"; index?: number; title?: string }
   | {
       step: "fs";
-      op: "create" | "write" | "rename" | "delete" | "chmod" | "lock";
+      op: "create" | "write" | "rename" | "delete" | "chmod" | "lock" | "touch";
       path: string;
       contents?: string;
       directory?: boolean;
@@ -74,7 +76,7 @@ interface Scenario {
 }
 
 interface ElementSpec {
-  electron: { selector: string; textSelector?: string };
+  electron: { selector: string; textSelector?: string; textAttribute?: string };
   swift: string;
   first?: boolean;
   text?: boolean;
@@ -103,6 +105,7 @@ interface Found {
   x?: number;
   y?: number;
   text?: string;
+  height?: number;
 }
 
 const STEP_TIMEOUT_MS = 30_000;
@@ -355,18 +358,26 @@ async function main() {
     const spec = elements[name];
     if (!spec) throw new Error(`unknown element "${name}"`);
     const found = await target.evaluate(
-      ({ selector, textSelector, text, index }) => {
+      ({ selector, textSelector, textAttribute, text, index }) => {
         const textOf = (node: Element): string => {
+          // A button drawn as an icon is named by its label (aria-label), not by text.
+          if (textAttribute) return node.getAttribute(textAttribute) ?? "";
           const holder = textSelector ? (node.querySelector(textSelector) ?? node) : node;
           if (holder instanceof HTMLInputElement) return holder.value || holder.placeholder;
+          if (holder instanceof HTMLSelectElement) return holder.selectedOptions[0]?.textContent?.trim() ?? "";
           // textContent, not innerText: a name is drawn as stem and extension spans, which
           // innerText splits onto two lines.
           return (holder.textContent ?? "").replace(/\s+/g, " ").trim();
         };
         const matches = Array.from(document.querySelectorAll(selector))
           .map((node) => ({ node, rect: node.getBoundingClientRect() }))
-          .filter(({ rect }) => (rect.width > 0 || rect.height > 0) && rect.bottom > 0 && rect.right > 0)
-          .filter(({ rect }) => rect.top < window.innerHeight && rect.left < window.innerWidth)
+          // On screen: its center is in the window (a step acts at the center).
+          .filter(({ rect }) => rect.width > 0 || rect.height > 0)
+          .filter(({ rect }) => {
+            const x = rect.x + rect.width / 2;
+            const y = rect.y + rect.height / 2;
+            return x >= 0 && y >= 0 && x < window.innerWidth && y < window.innerHeight;
+          })
           .filter(({ node }) => text === undefined || textOf(node) === text)
           .sort((a, b) => a.rect.y - b.rect.y || a.rect.x - b.rect.x);
         const picked = matches[index ?? 0];
@@ -375,10 +386,17 @@ async function main() {
           count: matches.length,
           x: picked.rect.x + picked.rect.width / 2,
           y: picked.rect.y + picked.rect.height / 2,
+          height: picked.rect.height,
           text: textOf(picked.node),
         };
       },
-      { selector: spec.electron.selector, textSelector: spec.electron.textSelector, text, index },
+      {
+        selector: spec.electron.selector,
+        textSelector: spec.electron.textSelector,
+        textAttribute: spec.electron.textAttribute,
+        text,
+        index,
+      },
     );
     const label = [name, text === undefined ? "" : `“${text}”`, index === undefined ? "" : `#${index}`]
       .filter(Boolean)
@@ -386,12 +404,52 @@ async function main() {
     return { found: found as Found, label };
   }
 
-  async function at(ref: ElementRef, siblings?: { index?: number; text?: string }, target: Page = page) {
-    const { found, label } = await find(ref, siblings, target);
-    if (found.x === undefined || found.y === undefined) {
+  /// The point a step acts on. An element scrolled out of its list is scrolled into view first, as
+  /// a person would; the matches on screen are then counted again.
+  async function at(
+    ref: ElementRef,
+    siblings?: { index?: number; text?: string },
+    target: Page = page,
+    edge?: "top" | "bottom",
+  ) {
+    let { found, label } = await find(ref, siblings, target);
+    if (found.x === undefined && (await reveal(ref, siblings, target))) {
+      ({ found, label } = await find(ref, siblings, target));
+    }
+    if (found.x === undefined || found.y === undefined || found.height === undefined) {
       throw new Error(found.count === 0 ? `no ${label} on screen` : `only ${found.count} of ${label}`);
     }
-    return { x: found.x, y: found.y, label };
+    const shift = edge === "top" ? -found.height / 4 : edge === "bottom" ? found.height / 4 : 0;
+    return { x: found.x, y: found.y + shift, label };
+  }
+
+  async function reveal(ref: ElementRef, siblings: { index?: number; text?: string } | undefined, target: Page) {
+    const { index, text, name } = elementRef(ref, siblings);
+    const spec = elements[name];
+    return target.evaluate(
+      ({ selector, textSelector, textAttribute, text, index }) => {
+        const textOf = (node: Element): string => {
+          if (textAttribute) return node.getAttribute(textAttribute) ?? "";
+          const holder = textSelector ? (node.querySelector(textSelector) ?? node) : node;
+          if (holder instanceof HTMLInputElement) return holder.value || holder.placeholder;
+          return (holder.textContent ?? "").replace(/\s+/g, " ").trim();
+        };
+        const matches = Array.from(document.querySelectorAll(selector))
+          .filter((node) => text === undefined || textOf(node) === text)
+          .filter((node) => node.getClientRects().length > 0);
+        const node = matches[index ?? 0];
+        if (!node) return false;
+        node.scrollIntoView({ block: "center", inline: "nearest" });
+        return true;
+      },
+      {
+        selector: spec.electron.selector,
+        textSelector: spec.electron.textSelector,
+        textAttribute: spec.electron.textAttribute,
+        text,
+        index,
+      },
+    );
   }
 
   async function withModifiers<T>(names: string[] | undefined, action: () => Promise<T>): Promise<T> {
@@ -545,10 +603,41 @@ async function main() {
         return { status: "ok" };
       case "click": {
         const point = await at(step.element, step);
-        await withModifiers(step.modifiers, () =>
-          page.mouse.click(point.x, point.y, { button: step.button ?? "left", clickCount: step.count ?? 1 }),
-        );
+        const hold = step.holdMs ?? 0;
+        await withModifiers(step.modifiers, async () => {
+          if (hold > 0) {
+            // A press held down (the Back button's history menu opens after 350 ms).
+            await page.mouse.move(point.x, point.y);
+            await page.mouse.down({ button: step.button ?? "left" });
+            await page.waitForTimeout(hold);
+            await page.mouse.up({ button: step.button ?? "left" });
+          } else {
+            await page.mouse.click(point.x, point.y, { button: step.button ?? "left", clickCount: step.count ?? 1 });
+          }
+        });
         return { status: "ok" };
+      }
+      case "pick": {
+        // A pop-up (a <select>) set to one of its options by its text, as choosing it does.
+        const point = await at(step.element, step);
+        const picked = await page.evaluate(
+          ({ x, y, option }) => {
+            const node = document.elementFromPoint(x, y);
+            const select =
+              node instanceof HTMLSelectElement ? node : node?.closest("label, span")?.querySelector("select");
+            if (!(select instanceof HTMLSelectElement)) return "not a pop-up";
+            const choice = Array.from(select.options).find((o) => o.textContent?.trim() === option);
+            if (!choice) return `no option “${option}”`;
+            if (choice.disabled) return `“${option}” is disabled`;
+            const setValue = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")?.set;
+            setValue?.call(select, choice.value);
+            select.dispatchEvent(new Event("input", { bubbles: true }));
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+            return null;
+          },
+          { x: point.x, y: point.y, option: step.option },
+        );
+        return picked ? { status: "failed", message: picked } : { status: "ok" };
       }
       case "menu": {
         const problem = await chooseMenu(step.path);
@@ -591,7 +680,7 @@ async function main() {
         return { status: "ok" };
       }
       case "drag":
-        return drag(step.from, step.to, step.modifiers);
+        return drag(step.from, step.to, step.modifiers, step.toEdge);
       case "expectSheet": {
         const shown = await waitUntil(async () => (await find(step.name)).found.count > 0);
         return shown ? { status: "ok" } : { status: "failed", message: `no ${step.name} shown` };
@@ -723,7 +812,12 @@ async function main() {
   // A drag of the app's items starts a native drag session, which a test can't drive. It is played
   // as e2e/dragIn.spec.ts plays a drag from another app: the items go on the drag pasteboard, and
   // the target is sent the drag's events, as Chromium sends them.
-  async function drag(from: ElementRef, to: ElementRef, modifiers?: string[]): Promise<Outcome> {
+  async function drag(
+    from: ElementRef,
+    to: ElementRef,
+    modifiers?: string[],
+    edge?: "top" | "bottom",
+  ): Promise<Outcome> {
     const source = await at(from);
     const items = await page.evaluate(
       ({ x, y }) => {
@@ -737,7 +831,69 @@ async function main() {
       },
       { x: source.x, y: source.y },
     );
-    if (items.length === 0) return { status: "failed", message: `no item at ${source.label}` };
+    if (items.length === 0) {
+      const target = await at(to, undefined, page, edge);
+      // An HTML drag inside the page (a favorite row): its events are sent with one DataTransfer
+      // from the drag start to the drop, as Chromium sends them, a frame apart so the page can
+      // take in each one (it keeps what is being dragged in its state).
+      const fire = (type: string, point: { x: number; y: number }, onSource: boolean) =>
+        page.evaluate(
+          ({ type, point, onSource, from }) => {
+            const state = window as unknown as { __captureDrag?: DataTransfer };
+            if (type === "dragstart") state.__captureDrag = new DataTransfer();
+            const dataTransfer = state.__captureDrag;
+            const node = onSource
+              ? document.elementFromPoint(from.x, from.y)?.closest('[draggable="true"]')
+              : document.elementFromPoint(point.x, point.y);
+            if (!node || !dataTransfer) return "missing";
+            const event = new DragEvent(type, {
+              bubbles: true,
+              cancelable: true,
+              clientX: point.x,
+              clientY: point.y,
+              dataTransfer,
+            });
+            node.dispatchEvent(event);
+            if (type === "dragend") state.__captureDrag = undefined;
+            return event.defaultPrevented ? "taken" : "ignored";
+          },
+          { type, point, onSource, from: { x: source.x, y: source.y } },
+        );
+      const draggable = await page.evaluate(
+        ({ x, y }) => document.elementFromPoint(x, y)?.closest('[draggable="true"]') != null,
+        { x: source.x, y: source.y },
+      );
+      if (draggable) {
+        const to = { x: target.x, y: target.y };
+        await fire("dragstart", { x: source.x, y: source.y }, true);
+        await settle();
+        await fire("dragenter", to, false);
+        let over = await fire("dragover", to, false);
+        await settle();
+        over = await fire("dragover", to, false);
+        if (over === "taken") await fire("drop", to, false);
+        await fire("dragend", to, true);
+        return over === "taken"
+          ? { status: "ok", message: "HTML drag events" }
+          : { status: "failed", message: "the target refused the drop" };
+      }
+      // Not a file and not an HTML drag: a drag the page runs itself with the pointer (toolbar items).
+      await withModifiers(modifiers, async () => {
+        await page.mouse.move(source.x, source.y);
+        await page.mouse.down();
+        const steps = 12;
+        for (let step = 1; step <= steps; step += 1) {
+          await page.mouse.move(
+            source.x + ((target.x - source.x) * step) / steps,
+            source.y + ((target.y - source.y) * step) / steps,
+          );
+          await page.waitForTimeout(16);
+        }
+        await page.waitForTimeout(100);
+        await page.mouse.up();
+      });
+      return { status: "ok", message: "pointer drag" };
+    }
     // The target may be in another window.
     let targetPage: Page | undefined;
     let point: { x: number; y: number; label: string } | undefined;
@@ -844,6 +1000,13 @@ async function main() {
         break;
       case "lock":
         execFileSync("chflags", [step.locked === false ? "nouchg" : "uchg", path]);
+        break;
+      case "touch":
+        // Dates an item to the scenario's clock: a folder a write just changed would otherwise
+        // show today's real time in the capture.
+        if (!existsSync(path)) throw new Error(`${step.path} does not exist`);
+        if (now) utimesSync(path, new Date(now), new Date(now));
+        else utimesSync(path, new Date(), new Date());
         break;
       default:
         return { status: "failed", message: `unknown op ${(step as { op: string }).op}` };

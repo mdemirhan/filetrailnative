@@ -1,0 +1,22 @@
+{
+  "name": "a11-folder-sizes",
+  "description": "A11: sorted by size, files get size bars; Calculate Size on the Lighthouse folder sizes every folder in it, so folders get bars too",
+  "features": ["F-768","F-772","F-773"],
+  "behaviors": ["B-INFO-160","B-INFO-161","B-INFO-175","B-INFO-176","B-INFO-177","B-INFO-180","B-INFO-181","B-INFO-182"],
+  "tier": ["wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"."},
+    {"step":"command","id":"sortBySize"},
+    {"step":"wait","ms":800},
+    {"step":"expect","element":"size bar","count":9},
+    {"step":"command","id":"calculateSize"},
+    {"step":"wait","ms":3000},
+    {"step":"expect","element":"size bar","count":17},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

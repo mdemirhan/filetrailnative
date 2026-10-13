@@ -1,248 +1,107 @@
 {
-  "comment": "Logical element names: the original's CSS selector (and the child holding the text, when not the element) and the Swift accessibilityIdentifier. 'first' compares only the top-left match; 'text' also compares font size, weight and color; 'geometry: false' names an element only for steps to act on (click, expect), and it is not compared. Steps pick one of several matches by 'text' (the text child's text) or 'index' (top to bottom, then left to right).",
+  "comment": "Logical element names: the original's CSS selector (and the child holding the text, when not the element, or the attribute naming an icon button) and the Swift accessibilityIdentifier. 'first' compares only the top-left match; 'text' also compares font size, weight and color; 'geometry: false' names an element only for steps to act on (click, expect), and it is not compared. Steps pick one of several matches by 'text' (the text child's text, an input's value, a pop-up's chosen item, or the 'textAttribute'; on the Swift side the accessibility label) or 'index' (top to bottom, then left to right).",
   "elements": {
-    "window content": {
-      "electron": { "selector": "main.app-shell" },
-      "swift": "window.content"
-    },
-    "sidebar": {
-      "electron": { "selector": "aside.tree-pane" },
-      "swift": "sidebar"
-    },
-    "sidebar section headers": {
-      "electron": { "selector": ".sidebar-section-header", "textSelector": ".sidebar-section-title" },
-      "swift": "sidebar.sectionHeader",
-      "text": true
-    },
-    "first sidebar row": {
-      "electron": { "selector": ".tree-pane .sidebar-sections .tree-row", "textSelector": ".tree-label-text" },
-      "swift": "sidebar.row",
-      "first": true,
-      "text": true
-    },
-    "sidebar row": {
-      "electron": { "selector": ".tree-pane .sidebar-sections .tree-row", "textSelector": ".tree-label-text" },
-      "swift": "sidebar.row",
-      "geometry": false
-    },
-    "sidebar disclosure": {
-      "electron": { "selector": ".tree-pane .tree-row .tree-expand" },
-      "swift": "sidebar.row.disclosure",
-      "geometry": false
-    },
-    "toolbar": {
-      "electron": { "selector": "header.window-toolbar" },
-      "swift": "toolbar"
-    },
-    "title": {
-      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-title" },
-      "swift": "toolbar.title",
-      "text": true
-    },
-    "back button": {
-      "electron": { "selector": ".window-toolbar .toolbar-row button[aria-label=\"Back\"]" },
-      "swift": "toolbar.back"
-    },
-    "view switch": {
-      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-segmented" },
-      "swift": "toolbar.viewSwitch"
-    },
-    "search field": {
-      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-search", "textSelector": ".toolbar-search-input" },
-      "swift": "toolbar.search",
-      "text": true
-    },
-    "clipboard button": {
-      "electron": { "selector": ".window-toolbar .clipboard-button" },
-      "swift": "toolbar.clipboard"
-    },
-    "clipboard count": {
-      "electron": { "selector": ".window-toolbar .clipboard-button .clipboard-button-count" },
-      "swift": "toolbar.clipboard.count",
-      "text": true
-    },
-    "clipboard popover": {
-      "electron": { "selector": ".clipboard-menu" },
-      "swift": "clipboardPopover"
-    },
-    "clipboard popover title": {
-      "electron": { "selector": ".clipboard-menu .clipboard-menu-title" },
-      "swift": "clipboardPopover.title",
-      "text": true
-    },
-    "clipboard popover item": {
-      "electron": { "selector": ".clipboard-menu .clipboard-menu-item", "textSelector": ".clipboard-menu-item-name" },
-      "swift": "clipboardPopover.item",
-      "text": true
-    },
-    "tab strip": {
-      "electron": { "selector": ".tab-strip" },
-      "swift": "tabBar"
-    },
-    "tab": {
-      "electron": { "selector": ".tab-strip .tab-strip-tab", "textSelector": ".tab-strip-label" },
-      "swift": "tabBar.tab",
-      "text": true
-    },
-    "content": {
-      "electron": { "selector": ".content-viewport" },
-      "swift": "content"
-    },
-    "list header": {
-      "electron": { "selector": ".details-header" },
-      "swift": "list.header"
-    },
-    "first list row": {
-      "electron": { "selector": ".details-row" },
-      "swift": "list.row",
-      "first": true
-    },
-    "first list row name": {
-      "electron": { "selector": ".details-row .details-name", "textSelector": ".details-name-label" },
-      "swift": "list.row.name",
-      "first": true,
-      "text": true
-    },
-    "list row": {
-      "electron": { "selector": ".details-row", "textSelector": ".details-name-label" },
-      "swift": "list.row",
-      "geometry": false
-    },
-    "list row name": {
-      "electron": { "selector": ".details-row .details-name", "textSelector": ".details-name-label" },
-      "swift": "list.row.name",
-      "geometry": false
-    },
-    "selected list row": {
-      "electron": { "selector": ".details-row[aria-selected=\"true\"]", "textSelector": ".details-name-label" },
-      "swift": "list.row.selected",
-      "geometry": false
-    },
-    "cut list row": {
-      "electron": { "selector": ".details-row.clipboard-cut", "textSelector": ".details-name-label" },
-      "swift": "list.row.cut"
-    },
-    "size bar": {
-      "electron": { "selector": ".details-row .size-bar" },
-      "swift": "list.row.sizeBar"
-    },
-    "first icon": {
-      "electron": { "selector": ".flow-grid .flow-item" },
-      "swift": "icons.item",
-      "first": true
-    },
-    "first icon name": {
-      "electron": { "selector": ".flow-grid .flow-item .flow-item-label" },
-      "swift": "icons.item.name",
-      "first": true,
-      "text": true
-    },
-    "icon": {
-      "electron": { "selector": ".flow-grid .flow-item", "textSelector": ".flow-item-label" },
-      "swift": "icons.item",
-      "geometry": false
-    },
-    "list filter": {
-      "electron": { "selector": ".list-filter-pill", "textSelector": ".list-filter-pill-value" },
-      "swift": "listFilter",
-      "text": true
-    },
-    "rename field": {
-      "electron": { "selector": ".inline-rename-input" },
-      "swift": "rename.field",
-      "text": true
-    },
-    "rename error": {
-      "electron": { "selector": ".inline-rename-error" },
-      "swift": "rename.error",
-      "text": true
-    },
-    "path bar": {
-      "electron": { "selector": ".content-pathbar-row .pathbar" },
-      "swift": "pathBar"
-    },
-    "path bar segment": {
-      "electron": { "selector": ".pathbar .pathbar-segment", "textSelector": ".pathbar-segment-label" },
-      "swift": "pathBar.segment",
-      "text": true
-    },
-    "path bar separator": {
-      "electron": { "selector": ".pathbar .pathbar-separator" },
-      "swift": "pathBar.separator",
-      "geometry": false
-    },
-    "status bar": {
-      "electron": { "selector": ".content-pathbar-status" },
-      "swift": "statusBar",
-      "text": true
-    },
-    "info panel": {
-      "electron": { "selector": ".get-info-panel" },
-      "swift": "infoPanel"
-    },
-    "context menu": {
-      "electron": { "selector": ".context-menu" },
-      "swift": "contextMenu"
-    },
-    "context menu item": {
-      "electron": { "selector": ".context-menu .context-menu-item", "textSelector": ".context-menu-item-label" },
-      "swift": "contextMenu.item",
-      "text": true
-    },
-    "alert": {
-      "electron": { "selector": "dialog.alert" },
-      "swift": "alert"
-    },
-    "alert title": {
-      "electron": { "selector": "dialog.alert .alert-title" },
-      "swift": "alert.title",
-      "text": true
-    },
-    "text prompt field": {
-      "electron": { "selector": ".text-prompt-input" },
-      "swift": "prompt.field",
-      "text": true
-    },
-    "review sheet": {
-      "electron": { "selector": "dialog.copy-paste-sheet" },
-      "swift": "reviewSheet"
-    },
-    "review sheet heading": {
-      "electron": { "selector": "dialog.copy-paste-sheet .copy-paste-sheet-heading" },
-      "swift": "reviewSheet.heading",
-      "text": true
-    },
-    "go to folder": {
-      "electron": { "selector": ".go-to-folder-dialog" },
-      "swift": "goToFolder"
-    },
-    "go to folder field": {
-      "electron": { "selector": ".go-to-folder-dialog .go-to-folder-input" },
-      "swift": "goToFolder.field",
-      "text": true
-    },
-    "go to folder suggestion": {
-      "electron": { "selector": ".go-to-folder-dialog .go-to-folder-suggestion", "textSelector": ".go-to-folder-suggestion-name" },
-      "swift": "goToFolder.suggestion",
-      "text": true
-    },
-    "toast": {
-      "electron": { "selector": ".toast-card" },
-      "swift": "toast"
-    },
-    "settings window": {
-      "electron": { "selector": "main.settings-window" },
-      "swift": "settings"
-    },
-    "settings section": {
-      "electron": { "selector": ".settings-sidebar .settings-sidebar-item", "textSelector": "span:last-child" },
-      "swift": "settings.section",
-      "text": true
-    },
-    "settings title": {
-      "electron": { "selector": ".settings-pane .settings-pane-title" },
-      "swift": "settings.title",
-      "text": true
-    }
+    "window content": {"electron":{"selector":"main.app-shell"},"swift":"window.content"},
+    "sidebar": {"electron":{"selector":"aside.tree-pane"},"swift":"sidebar"},
+    "sidebar section headers": {"electron":{"selector":".sidebar-section-header","textSelector":".sidebar-section-title"},"swift":"sidebar.sectionHeader","text":true},
+    "first sidebar row": {"electron":{"selector":".tree-pane .sidebar-sections .tree-row","textSelector":".tree-label-text"},"swift":"sidebar.row","first":true,"text":true},
+    "sidebar row": {"electron":{"selector":".tree-pane .tree-row","textSelector":".tree-label-text"},"swift":"sidebar.row","geometry":false},
+    "selected sidebar row": {"electron":{"selector":".tree-pane .tree-row[aria-selected=\"true\"]","textSelector":".tree-label-text"},"swift":"sidebar.row.selected","geometry":false},
+    "expanded sidebar row": {"electron":{"selector":".tree-pane .tree-row[aria-expanded=\"true\"]","textSelector":".tree-label-text"},"swift":"sidebar.row.expanded","geometry":false},
+    "favorite row": {"electron":{"selector":".tree-pane .tree-row[data-tree-kind=\"favorite\"]","textSelector":".tree-label-text"},"swift":"sidebar.favorite","geometry":false},
+    "toolbar": {"electron":{"selector":"header.window-toolbar"},"swift":"toolbar"},
+    "title": {"electron":{"selector":".window-toolbar .toolbar-row .toolbar-title"},"swift":"toolbar.title","text":true},
+    "back button": {"electron":{"selector":".window-toolbar .toolbar-row button[aria-label=\"Back\"]"},"swift":"toolbar.back"},
+    "forward button": {"electron":{"selector":".window-toolbar .toolbar-row button[aria-label=\"Forward\"]"},"swift":"toolbar.forward","geometry":false},
+    "view switch": {"electron":{"selector":".window-toolbar .toolbar-row .toolbar-segmented"},"swift":"toolbar.viewSwitch"},
+    "search field": {"electron":{"selector":".window-toolbar .toolbar-row .toolbar-search","textSelector":".toolbar-search-input"},"swift":"toolbar.search","text":true},
+    "search field input": {"electron":{"selector":".window-toolbar .toolbar-search-input"},"swift":"toolbar.search.field","geometry":false},
+    "search options button": {"electron":{"selector":".window-toolbar .toolbar-search-options-button"},"swift":"toolbar.search.options","geometry":false},
+    "search options menu": {"electron":{"selector":".toolbar-search-menu"},"swift":"searchOptionsMenu"},
+    "search option": {"electron":{"selector":".toolbar-search-menu .toolbar-menu-item","textSelector":".toolbar-menu-label"},"swift":"searchOptionsMenu.item","text":true},
+    "checked search option": {"electron":{"selector":".toolbar-search-menu .toolbar-menu-item[aria-checked=\"true\"]","textSelector":".toolbar-menu-label"},"swift":"searchOptionsMenu.item.checked","geometry":false},
+    "clipboard button": {"electron":{"selector":".window-toolbar .clipboard-button"},"swift":"toolbar.clipboard"},
+    "clipboard count": {"electron":{"selector":".window-toolbar .clipboard-button .clipboard-button-count"},"swift":"toolbar.clipboard.count","text":true},
+    "clipboard popover": {"electron":{"selector":".clipboard-menu"},"swift":"clipboardPopover"},
+    "clipboard popover title": {"electron":{"selector":".clipboard-menu .clipboard-menu-title"},"swift":"clipboardPopover.title","text":true},
+    "clipboard popover item": {"electron":{"selector":".clipboard-menu .clipboard-menu-item","textSelector":".clipboard-menu-item-name"},"swift":"clipboardPopover.item","text":true},
+    "history menu": {"electron":{"selector":".history-menu"},"swift":"historyMenu"},
+    "history menu item": {"electron":{"selector":".history-menu .history-menu-item","textSelector":".history-menu-name"},"swift":"historyMenu.item","text":true},
+    "toolbar handle": {"electron":{"selector":".toolbar-edit-layer .toolbar-edit-handle","textAttribute":"aria-label"},"swift":"toolbar.customize.handle","geometry":false},
+    "toolbar customize panel": {"electron":{"selector":".toolbar-customize-panel"},"swift":"toolbar.customize"},
+    "toolbar customize title": {"electron":{"selector":".toolbar-customize-panel .toolbar-customize-title"},"swift":"toolbar.customize.title","text":true},
+    "toolbar palette item": {"electron":{"selector":".toolbar-customize-panel .toolbar-customize-item","textSelector":".toolbar-customize-label"},"swift":"toolbar.customize.item","geometry":false},
+    "tab strip": {"electron":{"selector":".tab-strip"},"swift":"tabBar"},
+    "tab": {"electron":{"selector":".tab-strip .tab-strip-tab","textSelector":".tab-strip-label"},"swift":"tabBar.tab","text":true},
+    "content": {"electron":{"selector":".content-viewport"},"swift":"content"},
+    "list header": {"electron":{"selector":".details-header"},"swift":"list.header"},
+    "list header cell": {"electron":{"selector":".details-header .details-header-cell","textSelector":".details-header-label"},"swift":"list.header.cell","geometry":false},
+    "first list row": {"electron":{"selector":".details-row"},"swift":"list.row","first":true},
+    "first list row name": {"electron":{"selector":".details-row .details-name","textSelector":".details-name-label"},"swift":"list.row.name","first":true,"text":true},
+    "list row": {"electron":{"selector":".details-row","textSelector":".details-name-label"},"swift":"list.row","geometry":false},
+    "list row name": {"electron":{"selector":".details-row .details-name","textSelector":".details-name-label"},"swift":"list.row.name","geometry":false},
+    "list row date": {"electron":{"selector":".details-row span[role=\"gridcell\"][title]:not(.details-permissions):not(.details-folder)"},"swift":"list.row.date","geometry":false},
+    "selected list row": {"electron":{"selector":".details-row[aria-selected=\"true\"]","textSelector":".details-name-label"},"swift":"list.row.selected","geometry":false},
+    "cut list row": {"electron":{"selector":".details-row.clipboard-cut","textSelector":".details-name-label"},"swift":"list.row.cut"},
+    "size bar": {"electron":{"selector":".details-row .details-size-bar"},"swift":"list.row.sizeBar"},
+    "first icon": {"electron":{"selector":".icon-grid-items .icon-item"},"swift":"icons.item","first":true},
+    "first icon name": {"electron":{"selector":".icon-grid-items .icon-item .icon-item-label"},"swift":"icons.item.name","first":true,"text":true},
+    "icon": {"electron":{"selector":".icon-grid-items .icon-item","textSelector":".icon-item-label"},"swift":"icons.item","geometry":false},
+    "compact list item": {"electron":{"selector":".flow-list .flow-item","textSelector":".flow-item-label"},"swift":"compactList.item","geometry":false},
+    "list filter": {"electron":{"selector":".list-filter-pill","textSelector":".list-filter-pill-value"},"swift":"listFilter","text":true},
+    "list filter count": {"electron":{"selector":".list-filter-pill .list-filter-pill-count"},"swift":"listFilter.count","text":true},
+    "empty state title": {"electron":{"selector":".content-state .empty-state-title"},"swift":"emptyState.title","text":true},
+    "rename field": {"electron":{"selector":".inline-rename-input"},"swift":"rename.field","text":true},
+    "rename error": {"electron":{"selector":".inline-rename-error"},"swift":"rename.error","text":true},
+    "search scope bar": {"electron":{"selector":".search-scope-bar"},"swift":"searchBar"},
+    "search scope": {"electron":{"selector":".search-scope-bar .search-scope-segmented button"},"swift":"searchBar.scope","text":true},
+    "selected search scope": {"electron":{"selector":".search-scope-bar .search-scope-segmented button[aria-pressed=\"true\"]"},"swift":"searchBar.scope.selected","geometry":false},
+    "search filter field": {"electron":{"selector":".search-scope-bar .search-results-filter .search-field-input"},"swift":"searchBar.filter","text":true},
+    "path bar": {"electron":{"selector":".content-pathbar-row .pathbar"},"swift":"pathBar"},
+    "path bar segment": {"electron":{"selector":".pathbar .pathbar-segment","textSelector":".pathbar-segment-label"},"swift":"pathBar.segment","text":true},
+    "path bar folder button": {"electron":{"selector":".pathbar .pathbar-separator-button","textAttribute":"aria-label"},"swift":"pathBar.separator","geometry":false},
+    "path bar folder menu": {"electron":{"selector":".pathbar-folder-menu"},"swift":"pathBarMenu"},
+    "path bar folder menu item": {"electron":{"selector":".pathbar-folder-menu .toolbar-menu-item","textSelector":".toolbar-menu-label"},"swift":"pathBarMenu.item","text":true},
+    "checked path bar folder menu item": {"electron":{"selector":".pathbar-folder-menu .toolbar-menu-item[aria-checked=\"true\"]","textSelector":".toolbar-menu-label"},"swift":"pathBarMenu.item.checked","geometry":false},
+    "path editor": {"electron":{"selector":".pathbar-input"},"swift":"pathBar.editor","text":true},
+    "status bar": {"electron":{"selector":".content-pathbar-status"},"swift":"statusBar","text":true},
+    "info panel": {"electron":{"selector":".get-info-panel"},"swift":"infoPanel"},
+    "context menu": {"electron":{"selector":".context-menu"},"swift":"contextMenu"},
+    "context menu item": {"electron":{"selector":".context-menu .context-menu-item","textSelector":".context-menu-item-label"},"swift":"contextMenu.item","text":true},
+    "context submenu": {"electron":{"selector":".context-submenu"},"swift":"contextMenu.submenu"},
+    "alert": {"electron":{"selector":"dialog.alert"},"swift":"alert"},
+    "alert title": {"electron":{"selector":"dialog.alert .alert-title"},"swift":"alert.title","text":true},
+    "text prompt field": {"electron":{"selector":".text-prompt-input"},"swift":"prompt.field","text":true},
+    "review sheet": {"electron":{"selector":"dialog.copy-paste-sheet"},"swift":"reviewSheet"},
+    "review sheet title": {"electron":{"selector":"dialog.copy-paste-sheet .copy-paste-sheet-title"},"swift":"reviewSheet.title","text":true},
+    "review choice": {"electron":{"selector":"dialog.copy-paste-sheet .copy-paste-sheet-bar .copy-paste-segment"},"swift":"reviewSheet.choice","text":true},
+    "review hint": {"electron":{"selector":"dialog.copy-paste-sheet .copy-paste-sheet-bar-hint"},"swift":"reviewSheet.hint","text":true},
+    "review note": {"electron":{"selector":"dialog.copy-paste-sheet .copy-paste-sheet-footer-note"},"swift":"reviewSheet.note","text":true},
+    "go to folder": {"electron":{"selector":".go-to-folder-dialog"},"swift":"goToFolder"},
+    "go to folder field": {"electron":{"selector":".go-to-folder-dialog .go-to-folder-input"},"swift":"goToFolder.field","text":true},
+    "go to folder label": {"electron":{"selector":".go-to-folder-dialog .go-to-folder-suggestions-label","textSelector":"span:first-child"},"swift":"goToFolder.label","text":true},
+    "go to folder hint": {"electron":{"selector":".go-to-folder-dialog .go-to-folder-hint"},"swift":"goToFolder.hint","text":true},
+    "go to folder suggestion": {"electron":{"selector":".go-to-folder-dialog .go-to-folder-suggestion","textSelector":".go-to-folder-suggestion-name"},"swift":"goToFolder.suggestion","text":true},
+    "batch rename sheet": {"electron":{"selector":".batch-rename-sheet"},"swift":"batchRename"},
+    "batch rename title": {"electron":{"selector":".batch-rename-sheet .batch-rename-title"},"swift":"batchRename.title","text":true},
+    "batch rename mode": {"electron":{"selector":".batch-rename-sheet .batch-rename-modes .segmented-item"},"swift":"batchRename.mode","text":true},
+    "selected batch rename mode": {"electron":{"selector":".batch-rename-sheet .batch-rename-modes .segmented-item.is-selected"},"swift":"batchRename.mode.selected","geometry":false},
+    "batch rename field": {"electron":{"selector":".batch-rename-sheet .batch-rename-options input.batch-rename-field"},"swift":"batchRename.field","geometry":false},
+    "batch rename presets": {"electron":{"selector":".batch-rename-sheet .batch-rename-presets select"},"swift":"batchRename.presets","geometry":false},
+    "batch rename new name": {"electron":{"selector":".batch-rename-sheet .batch-rename-rows .batch-rename-row .batch-rename-new"},"swift":"batchRename.newName","text":true},
+    "batch rename note": {"electron":{"selector":".batch-rename-sheet .batch-rename-rows .batch-rename-row-note"},"swift":"batchRename.note","text":true},
+    "toast": {"electron":{"selector":".toast-card"},"swift":"toast"},
+    "settings window": {"electron":{"selector":"main.settings-window"},"swift":"settings"},
+    "settings section": {"electron":{"selector":".settings-sidebar .settings-sidebar-item","textSelector":"span:last-child"},"swift":"settings.section","text":true},
+    "settings title": {"electron":{"selector":".settings-pane .settings-pane-title"},"swift":"settings.title","text":true},
+    "appearance option": {"electron":{"selector":".settings-appearance-option"},"swift":"settings.appearance","geometry":false},
+    "accent swatch": {"electron":{"selector":".settings-accent-swatch","textAttribute":"aria-label"},"swift":"settings.accent","geometry":false},
+    "settings switch": {"electron":{"selector":".settings-switch","textAttribute":"aria-label"},"swift":"settings.switch","geometry":false},
+    "favorite icon button": {"electron":{"selector":".settings-favorite-icon-button","textAttribute":"aria-label"},"swift":"settings.favoriteIcon","geometry":false},
+    "favorite icon choice": {"electron":{"selector":".settings-icon-grid-item","textAttribute":"aria-label"},"swift":"settings.favoriteIcon.choice","geometry":false},
+    "shortcut search field": {"electron":{"selector":".shortcut-settings-search-field .search-field-input"},"swift":"settings.shortcuts.search","geometry":false},
+    "shortcut row label": {"electron":{"selector":".shortcut-row .shortcut-row-label"},"swift":"settings.shortcuts.label","text":true},
+    "shortcut key": {"electron":{"selector":".shortcut-row:not(.fixed) .shortcut-slot-key"},"swift":"settings.shortcuts.key","text":true},
+    "shortcut note": {"electron":{"selector":".shortcut-row-note > span:first-child"},"swift":"settings.shortcuts.note","text":true}
   }
 }

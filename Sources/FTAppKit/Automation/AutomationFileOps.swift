@@ -65,6 +65,8 @@
                 try fm.setAttributes([.posixPermissions: bits], ofItemAtPath: try inside(path).path)
             case .lock(let path, let locked):
                 try fm.setAttributes([.immutable: locked], ofItemAtPath: try inside(path).path)
+            case .touch(let path):
+                try fm.setAttributes([.modificationDate: date ?? Date()], ofItemAtPath: try inside(path).path)
             }
         }
     }

@@ -7,7 +7,7 @@
 
         func click(
             _ ref: Scenario.ElementRef, button: Scenario.MouseButton, count: Int, modifiers names: [String],
-            window: NSWindow
+            holdMilliseconds: Int = 0, window: NSWindow
         ) async -> Outcome {
             guard let modifiers = KeyEvents.modifiers(names) else {
                 return Outcome(.failed, "unknown modifier in \(names)")
@@ -21,9 +21,35 @@
             // resolved and not shown, as contextMenu does.
             if button == .right { return contextMenu(match, choose: [], ref: ref) }
             guard let target = match.view.window else { return Outcome(.failed, "\(ref) is in no window") }
+            if holdMilliseconds > 0 {
+                let done = await MouseEvents.press(
+                    at: MouseEvents.center(of: match.view), in: target, holdMilliseconds: holdMilliseconds,
+                    modifiers: modifiers)
+                return done ? Outcome(.ok) : Outcome(.failed, "could not make the mouse events")
+            }
             let done = await MouseEvents.click(
                 at: MouseEvents.center(of: match.view), in: target, count: count, modifiers: modifiers)
             return done ? Outcome(.ok) : Outcome(.failed, "could not make the mouse events")
+        }
+
+        /// Sets a pop-up button to the item titled `option` and sends its action, as choosing it does.
+        func pick(_ ref: Scenario.ElementRef, option: String, window: NSWindow) -> Outcome {
+            let match: ElementFinder.Match
+            switch ElementFinder.find(ref, elements: elements, in: window) {
+            case .failure(let failure): return Outcome(.failed, failure.message)
+            case .success(let found): match = found
+            }
+            guard let popUp = Views.first(NSPopUpButton.self, in: match.view) else {
+                return Outcome(.failed, "\(ref) is not a pop-up button")
+            }
+            popUp.menu?.update()
+            guard let item = popUp.item(withTitle: option) else { return Outcome(.failed, "no option “\(option)”") }
+            guard item.isEnabled else { return Outcome(.failed, "“\(option)” is disabled") }
+            popUp.select(item)
+            if let action = popUp.action {
+                NSApp.sendAction(action, to: popUp.target, from: popUp)
+            }
+            return Outcome(.ok)
         }
 
         func contextMenu(_ ref: Scenario.ElementRef, choose: [String], window: NSWindow) -> Outcome {
@@ -67,7 +93,8 @@
         }
 
         func drag(
-            from: Scenario.ElementRef, to: Scenario.ElementRef, modifiers names: [String], window: NSWindow
+            from: Scenario.ElementRef, to: Scenario.ElementRef, modifiers names: [String], toEdge: Scenario.Edge?,
+            window: NSWindow
         ) async -> Outcome {
             guard let modifiers = KeyEvents.modifiers(names) else {
                 return Outcome(.failed, "unknown modifier in \(names)")
@@ -92,7 +119,11 @@
             else { return Outcome(.failed, "to: \(reason)") }
 
             let start = MouseEvents.center(of: source.view)
-            let end = MouseEvents.center(of: destination.view)
+            let center = MouseEvents.center(of: destination.view)
+            let quarter = destination.view.convert(destination.view.bounds, to: nil).height / 4
+            // Window coordinates grow upward: the top quarter is above the center.
+            let shift: CGFloat = toEdge == .top ? quarter : toEdge == .bottom ? -quarter : 0
+            let end = NSPoint(x: center.x, y: center.y + shift)
             if let (sourceView, dragSource) = AutomationDrag.nearest(AutomationDragSource.self, from: source.view),
                 let (targetView, dropTarget) = AutomationDrag.nearest(AutomationDropTarget.self, from: destination.view)
             {

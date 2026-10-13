@@ -273,14 +273,17 @@
                 } catch {
                     return Outcome(.failed, "could not write the geometry: \(error.localizedDescription)")
                 }
-            case .click(let ref, let button, let count, let modifiers):
-                return await click(ref, button: button, count: count, modifiers: modifiers, window: window)
+            case .click(let ref, let button, let count, let modifiers, let hold):
+                return await click(
+                    ref, button: button, count: count, modifiers: modifiers, holdMilliseconds: hold, window: window)
+            case .pick(let ref, let option):
+                return pick(ref, option: option, window: window)
             case .menu(let path):
                 return AutomationMenus.choose(path, window: window)
             case .contextMenu(let ref, let choose):
                 return contextMenu(ref, choose: choose, window: window)
-            case .drag(let from, let to, let modifiers):
-                return await drag(from: from, to: to, modifiers: modifiers, window: window)
+            case .drag(let from, let to, let modifiers, let edge):
+                return await drag(from: from, to: to, modifiers: modifiers, toEdge: edge, window: window)
             case .expectSheet(let name):
                 return await expectSheet(name, window: window)
             case .sheetButton(let label):

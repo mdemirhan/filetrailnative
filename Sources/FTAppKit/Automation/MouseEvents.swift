@@ -51,6 +51,21 @@
             return true
         }
 
+        /// A press held for a while, then released. Both go through the event queue: a view tracking the
+        /// press runs its own loop, and the main queue (this task) still runs inside it, so the release
+        /// arrives on time.
+        static func press(
+            at point: NSPoint, in window: NSWindow, holdMilliseconds: Int, modifiers: NSEvent.ModifierFlags
+        ) async -> Bool {
+            guard let down = event(.leftMouseDown, at: point, in: window, modifiers: modifiers) else { return false }
+            NSApp.postEvent(down, atStart: false)
+            try? await Task.sleep(for: .milliseconds(holdMilliseconds))
+            guard let up = event(.leftMouseUp, at: point, in: window, modifiers: modifiers) else { return false }
+            NSApp.postEvent(up, atStart: false)
+            try? await Task.sleep(for: .milliseconds(50))
+            return true
+        }
+
         /// A press, a drag in steps, and a release. A view that starts a native drag session (`NSDraggingSession`)
         /// can't be driven this way: the window server runs that session, not these events.
         static func drag(
