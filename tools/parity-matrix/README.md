@@ -14,6 +14,7 @@ In `Tests/**/*.swift`, a comment on the line before a `@Test`, or inside its bod
 ```swift
 // T-1a2b3c4d T-5e6f7a8b      cases of the original this test ports
 // F-123                      a UI-row test can cite features
+// B-NAV-014                  a test or scenario can cite a behavior rule of docs/port/behaviors/*.md
 // covered-by-feature F-123   the T ids cited by this test are proven by the feature instead
 // N/A T-1a2b3c4d <reason>    not ported, with the reason (a row, no test needed)
 ```
@@ -32,8 +33,14 @@ bun tools/parity-matrix/sync.ts --check    # gate: no writes, no test run; fails
 `passing` when every citing test passed (without results, an existing `passing` is kept). `N/A` and
 `covered-by-feature` rows keep their status and note. Idempotent.
 
-`features.md`: columns `ID | Feature or behavior | Spec | Planned WP | Tests | Scenario | Status`. Tests comes
+`features.md`: columns `ID | Feature or behavior | Spec | Planned WP | Tests | Scenario | Behaviors | Status`. Tests comes
 from F citations, Scenario from the top-level `"features": ["F-..."]` key of `tools/capture/scenarios/*.json`.
 Status is `done` when every test and scenario of the row passes (a scenario passes when
 `tools/capture/out/<name>/diff/summary.json` shows no geometry miss), `partial` when it has some evidence
 but not all passing, `todo` otherwise. Statuses other than these three are left as written.
+
+`behaviors.tsv`: one row per `B-` rule of `docs/port/behaviors/*.md`, columns `id | area | improvement | tests | scenarios | status`.
+Tests come from `B-` citations in Swift tests, scenarios from the top-level `"behaviors": ["B-..."]` key of the scenario JSON. Status is
+`todo`, `partial` or `done` by the same rules as features; `N/A` for a rule cited as `// N/A B-... reason`. An unknown `B-` id is an error.
+The `Behaviors` column of `features.md` is generated: an F row lists up to 8 rules that share identifiers (camelCase names, file names) with it;
+it stays empty where no match is clear. `report.ts` prints a behaviors summary per area.

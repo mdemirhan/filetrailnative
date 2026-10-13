@@ -60,6 +60,20 @@ function featuresReport(): string {
   return [`Features: ${pairs.length} rows (${[...overall].map(([s, n]) => `${s} ${n}`).join(", ")})`, table("By area", group(pairs), statuses)].join("\n");
 }
 
+function behaviorsReport(): string {
+  const path = `${DIR}/behaviors.tsv`;
+  if (!existsSync(path)) return "behaviors.tsv: missing";
+  const rows = readFileSync(path, "utf8").split("\n").filter((l) => l).slice(1).map((l) => l.split("\t"));
+  const known = (s: string): string => (s.startsWith("N/A") ? "N/A" : s);
+  const statuses = ["todo", "partial", "done", "N/A"];
+  const pairs: [string, string][] = rows.map((r) => [r[1] ?? "", known(r[5] ?? "")]);
+  const overall = tally(pairs.map(([, st]) => st));
+  return [`Behaviors: ${rows.length} rules (${[...overall].map(([st, n]) => `${st} ${n}`).join(", ")})`, table("By area", group(pairs), statuses)].join("\n");
+}
+
 console.log(testsReport());
 console.log("");
 console.log(featuresReport());
+
+console.log("");
+console.log(behaviorsReport());
