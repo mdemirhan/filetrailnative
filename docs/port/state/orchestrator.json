@@ -405,8 +405,13 @@
       "branch": "port/P1-01",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -432,7 +437,10 @@
       "branch": "port/P1-02",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -459,7 +467,10 @@
       "branch": "port/P1-03",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -486,8 +497,13 @@
       "branch": "port/P1-04",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -513,8 +529,15 @@
       "branch": "port/P2-01",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh",
+        "tools/bench/run.sh --quick --report-only"
+      ],
+      "lenses": [
+        "parity",
+        "performance"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -540,8 +563,14 @@
       "branch": "port/P2-02",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity",
+        "performance"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -567,8 +596,12 @@
       "branch": "port/P2-03",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -594,7 +627,10 @@
       "branch": "port/P2-04",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -621,7 +657,9 @@
       "branch": "port/P2-05",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -648,7 +686,11 @@
       "branch": "port/P2-06",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh",
+        "scripts/ci.sh --full"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -676,8 +718,12 @@
       "branch": "port/P2-07",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -902,8 +948,13 @@
       "branch": "port/P4-01",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/capture/run.sh --tier wp"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -932,8 +983,14 @@
       "branch": "port/P4-02",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
-      "lenses": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/capture/run.sh --tier wp"
+      ],
+      "lenses": [
+        "parity",
+        "visual"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
