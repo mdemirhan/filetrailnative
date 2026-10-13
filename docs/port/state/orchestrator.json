@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T18:15:24+00:00",
+  "updatedAt": "2026-10-13T18:19:48+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "Wave-0 gate: user approves deviations and the merge to main; then plan wave-1 batches (P0-08..10, P1, P2, P4-01/02)",
+  "nextAction": "Wave 1: run batches W1-A (P0-08, P0-09), W1-B (P0-10, P1-*), ...",
   "pause": {
     "requested": false,
     "reason": null,
