@@ -1,11 +1,17 @@
 #!/bin/bash
-# Builds "build/File Trail.app" from the Swift package.
+# Builds "build/File Trail.app" from the Swift package. Quiet: the build log goes to build/logs/build-app.log.
 # Usage: scripts/build-app.sh [release|debug]
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 config="${1:-release}"
-swift build -c "$config"
+mkdir -p build/logs
+log=build/logs/build-app.log
+if ! swift build -c "$config" --product FileTrail >"$log" 2>&1; then
+    sed $'s/\x1b\\[[0-9;]*m//g' "$log" | grep -E 'error:|warning:' | awk '!seen[$0]++' | cut -c1-300 | head -60
+    echo "build failed; full log in $log" >&2
+    exit 1
+fi
 binary="$(swift build -c "$config" --show-bin-path)/FileTrail"
 
 app="build/File Trail.app"
@@ -17,6 +23,6 @@ cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
 if [ "$config" = release ]; then
     strip -rSTx "$app/Contents/MacOS/FileTrail"
 fi
-codesign --force --sign - "$app" >/dev/null
+codesign --force --sign - "$app" >/dev/null 2>&1
 
 echo "Built $app ($(du -sh "$app" | cut -f1))"

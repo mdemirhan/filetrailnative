@@ -166,7 +166,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         }
         for item in items {
             if let target = FolderLoader.folderTarget(of: item) {
-                appDelegate.openTab(at: target, nextTo: self)
+                (NSApp.delegate as? AppDelegate)?.openTab(at: target, nextTo: self)
             } else {
                 NSWorkspace.shared.open(item.url)
             }
@@ -218,7 +218,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     }
 
     override func newWindowForTab(_ sender: Any?) {
-        appDelegate.openTab(at: folder, nextTo: self)
+        (NSApp.delegate as? AppDelegate)?.openTab(at: folder, nextTo: self)
     }
 
     private func setMode(_ mode: BrowserViewController.Mode) {

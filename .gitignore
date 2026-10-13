@@ -2,3 +2,5 @@
 /.build/
 /.swiftpm/
 /build/
+/tools/capture/out/
+*.xcresult

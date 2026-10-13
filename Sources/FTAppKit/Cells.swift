@@ -6,8 +6,7 @@ import AppKit
 final class LabelCell: NSTableCellView {
     private let iconSize: CGFloat?
 
-    init(identifier: NSUserInterfaceItemIdentifier, iconSize: CGFloat?, alignment: NSTextAlignment = .left)
-    {
+    init(identifier: NSUserInterfaceItemIdentifier, iconSize: CGFloat?, alignment: NSTextAlignment = .left) {
         self.iconSize = iconSize
         super.init(frame: .zero)
         self.identifier = identifier

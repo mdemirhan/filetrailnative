@@ -109,7 +109,7 @@ final class BrowserViewController: NSViewController {
     }
 
     private func install() {
-        container.subviews.forEach { $0.removeFromSuperview() }
+        for subview in container.subviews { subview.removeFromSuperview() }
         let paneView = (pane as! NSViewController).view
         paneView.frame = container.bounds
         paneView.autoresizingMask = [.width, .height]
