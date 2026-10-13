@@ -81,4 +81,28 @@ names="${FILETRAIL_PORT_CACHE:-$HOME/Library/Caches/filetrail-port}/fixtures/nam
 if [[ -d "$names" ]]; then
   compare names "$names"
 fi
+
+# Normalization: recorded cases run again through the reference (run.ts --raw), then normalized by
+# normalize.ts and by FTTestSupport.ExecNormalize, which must agree. The cases have hidden names
+# left by a crash, recovery, journal ids, questions, file ids, and a disk image.
+normalizer=build/parity/exec-normalize
+normalizer_sources=(tools/parity/exec/normalize-main.swift Tests/FTTestSupport/ExecJSON.swift
+  Tests/FTTestSupport/ExecNormalize.swift Tests/FTTestSupport/JSONText.swift)
+if [[ ! -x "$normalizer" ]] || [[ -n "$(find "${normalizer_sources[@]}" -newer "$normalizer")" ]]; then
+  mkdir -p build/parity
+  xcrun swiftc -O -parse-as-library -swift-version 6 -o "$normalizer" "${normalizer_sources[@]}"
+fi
+for pick in exec-crash:1 exec-crash:3 exec-crash:13 exec-runtime:0 exec-runtime:5 exec-runtime:17 exec-copy:16 exec-copy:19 \
+  exec-copy:24 exec-copy:28 exec-cut:11 exec-stop:5; do
+  suite="${pick%%:*}" index="${pick##*:}" label="normalize-$suite-$index"
+  bun tools/parity/exec/run.ts --raw --golden "$suite" "$index" >"$tmp/$label-raw.json"
+  bun tools/parity/exec/normalize.ts "$tmp/$label-raw.json" >"$tmp/$label-bun.json"
+  if out="$("$normalizer" "$tmp/$label-raw.json" "$tmp/$label-bun.json")"; then
+    echo "PASS $label"
+  else
+    echo "FAIL $label: normalize.ts and ExecNormalize differ"
+    echo "$out" | head -20 | cut -c1-200
+    failed=1
+  fi
+done
 exit "$failed"

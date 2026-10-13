@@ -1,144 +1,249 @@
-// Runs an execution scenario through the reference's copy engine (packages/core, with the native
-// copy, exclusive rename and lock flags, as testNativePaste.ts wires it) in a fresh temp folder, and
-// describes what it did. The scenario format is in tools/parity/README.md.
-// Usage: bun tools/parity/exec/run.ts <scenario.json>   (prints the outcome as JSON)
+// Runs an execution scenario through the reference's write service in a fresh work folder and
+// describes everything that matters about what it did (format in tools/parity/README.md):
+// the tree before and after, the ordered event stream (progress, questions with their allowed
+// answers and the answer given, journal writes, stops, a crash), the result, the undo log, the
+// Trash, the journal file, and after a crash what the app's startup recovery made of it.
+// The engine runs in a child Bun process (engine.ts), so a crash can be a real SIGKILL.
+// Usage: bun tools/parity/exec/run.ts [--raw] <scenario.json>   (prints the outcome as JSON;
+//        bun tools/parity/exec/run.ts [--raw] --golden <suite> <index>   (a recorded case's scenario)
+// --raw leaves it as recorded, with the places normalize.ts needs.
 
-import { chmod, mkdir, mkdtemp, readFile, realpath, rm, symlink, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 
 import { importReference } from "../lib/reference";
-import { type SnapshotEntry, snapshotTree } from "./snapshot";
+import { type EngineSpec, type TrashPlace, withTrash } from "./engine";
+import { type Place, normalizeOutcome } from "./normalize";
+import {
+  type Places,
+  type Scenario,
+  buildTree,
+  detachAll,
+  makePlaces,
+  removePlaces,
+  snapshotPlaces,
+  snapshotTrash,
+} from "./places";
+import type { SnapshotEntry } from "./snapshot";
 
-export type ScenarioItem =
-  | { path: string; kind: "file"; content: string; mode?: string; flags?: string[] }
-  | { path: string; kind: "dir"; mode?: string; flags?: string[] }
-  | { path: string; kind: "symlink"; target: string };
+export type { Scenario, ScenarioItem } from "./places";
 
-export type Scenario = {
-  name: string;
-  tree: ScenarioItem[];
-  paste: { mode: "copy" | "cut"; sources: string[]; destination: string };
-  policy: { file: string; directory: string; mismatch: string };
-  // Answers to the runtime questions, in the order they are asked; "skip" once they run out.
-  answers?: string[];
-  // Where to stop the paste part way (not supported yet): { "afterEvent": n }.
-  stopAt?: { afterEvent: number } | null;
-};
+type Json = Record<string, unknown>;
 
 export type ScenarioOutcome = {
   before: SnapshotEntry[];
   after: SnapshotEntry[];
-  result: unknown;
-  questions: unknown[];
-  statuses: string[];
+  trash: SnapshotEntry[];
+  // In order: { kind: "event" | "answer" | "journal" | "change" | "stop" | "crash" | "issues" | "error", ... }.
+  // Events are the write service's, from "queued" to the last (its own "failed" or "cancelled"
+  // when the paste threw).
+  events: Json[];
+  // The paste's result without its undo log; null when it never finished.
+  result: Json | null;
+  undoLog: unknown;
+  // The journal file when the engine was done (or killed); [] when it was never written.
+  journal: unknown;
+  // After a crash: the startup recovery's report and log, and the tree, Trash and journal after it.
+  recovery: {
+    notices: string[];
+    finished: string[];
+    log: Array<{ level: string; message: string; details: unknown }>;
+    after: SnapshotEntry[];
+    trash: SnapshotEntry[];
+    journal: unknown;
+  } | null;
 };
 
-type NativePaste = {
-  runPaste: (args: Record<string, unknown>) => Promise<{
-    report: { issues: unknown[] };
-    result: Record<string, unknown> | null;
-    conflicts: unknown[];
-    events: Array<{ status: string }>;
-  }>;
-  native: { nativeSetFlags: (path: string, flags: number) => Promise<void> };
+export type RawOutcome = { places: Place[]; outcome: ScenarioOutcome };
+
+const ENGINE = join(import.meta.dir, "engine.ts");
+// As bootstrap.ts gives recovery at startup (RECOVERY_ANSWER_WITHIN_MS).
+const RECOVERY_ANSWER_WITHIN_MS = 3000;
+
+type Core = { nativeFileSystem: Record<string, unknown> };
+type JournalModule = {
+  openWriteJournal: (path: string) => Promise<unknown>;
+  recoverWrites: (
+    journal: unknown,
+    fileSystem: unknown,
+    logger: { info: (message: string, details?: unknown) => void; error: (message: string, details?: unknown) => void },
+    options: { answerWithinMs: number },
+  ) => Promise<{ notices: string[]; finished: string[] }>;
 };
 
-const FLAG_BITS: Record<string, number> = { uchg: 0x2, hidden: 0x8000 };
-// Left out of the outcome: they change from run to run.
-const UNSTABLE_KEYS = new Set(["startedAt", "finishedAt", "undoLog"]);
-
-async function buildTree(root: string, tree: ScenarioItem[], engine: NativePaste): Promise<void> {
-  for (const item of tree) {
-    const path = join(root, item.path);
-    await mkdir(dirname(path), { recursive: true });
-    if (item.kind === "file") {
-      await writeFile(path, item.content);
-    } else if (item.kind === "dir") {
-      await mkdir(path, { recursive: true });
-    } else {
-      await symlink(item.target, path);
-    }
+function trashPlaces(scenario: Scenario, places: Places): TrashPlace[] | null {
+  if (scenario.trash === false) {
+    return null;
   }
-  // Modes and flags last, deepest first, so a read-only or locked folder is filled before.
-  for (const item of [...tree].reverse()) {
-    if (item.kind === "symlink") {
-      continue;
-    }
-    const path = join(root, item.path);
-    await chmod(path, Number.parseInt(item.mode ?? (item.kind === "dir" ? "0755" : "0644"), 8));
-    const flags = (item.flags ?? []).reduce((bits, flag) => bits | (FLAG_BITS[flag] ?? 0), 0);
-    if (flags !== 0) {
-      await engine.native.nativeSetFlags(path, flags);
+  return [
+    { mount: "", folder: places.trash, hasTrash: true },
+    ...places.volumes.map((volume) => ({ mount: volume.mount, folder: volume.trash, hasTrash: volume.hasTrash })),
+  ];
+}
+
+async function readJournal(path: string): Promise<unknown> {
+  if (!existsSync(path)) {
+    return [];
+  }
+  return JSON.parse(await readFile(path, "utf8"));
+}
+
+function checkAnswers(scenario: Scenario, events: Json[]): void {
+  for (const event of events) {
+    if (event.kind === "answer" && !(event.allowed as string[]).includes(event.answer as string)) {
+      throw new Error(
+        `${scenario.name}: answer "${event.answer}" isn't one of ${JSON.stringify(event.allowed)} (the write service would refuse it)`,
+      );
     }
   }
 }
 
-// Paths under the scenario's folder become "$ROOT/..."; unstable keys are dropped.
-function normalize(value: unknown, root: string): unknown {
-  if (typeof value === "string") {
-    return value === root ? "$ROOT" : value.startsWith(`${root}/`) ? `$ROOT${value.slice(root.length)}` : value;
+// Runs the scenario and returns the outcome as recorded, with the places to normalize it by.
+export async function runScenarioRaw(scenario: Scenario): Promise<RawOutcome> {
+  const places = await makePlaces(scenario);
+  try {
+    await buildTree(places, scenario.tree);
+    const before = await snapshotPlaces(places);
+    const trash = trashPlaces(scenario, places);
+    const logPath = join(places.work, "engine.log");
+    const spec: EngineSpec = {
+      mode: scenario.paste.mode,
+      sources: scenario.paste.sources.map(places.resolve),
+      destination: places.resolve(scenario.paste.destination),
+      policy: scenario.policy,
+      overrides: scenario.overrides ?? [],
+      answers: scenario.answers ?? [],
+      applyToRemaining: scenario.applyToRemaining ?? [],
+      stopAfterEvent: scenario.stopAt?.afterEvent ?? null,
+      crashAfterJournalWrite: scenario.crashAt?.journalWrite ?? null,
+      changes: (scenario.changes ?? []).map((change) => ({
+        afterEvent: change.afterEvent ?? null,
+        ops: change.ops.map((op) => ({ ...op, path: places.resolve(op.path) })),
+      })),
+      trash,
+      journalPath: places.journal,
+      logPath,
+    };
+    const specPath = join(places.work, "engine.json");
+    await writeFile(specPath, JSON.stringify(spec));
+    const child = spawnSync(process.execPath, [ENGINE, specPath], { encoding: "utf8" });
+    const crashed = child.signal === "SIGKILL";
+    if (scenario.crashAt && !crashed) {
+      throw new Error(`${scenario.name}: the engine never made journal write ${scenario.crashAt.journalWrite}`);
+    }
+    if (!crashed && child.status !== 0) {
+      throw new Error(`${scenario.name}: the engine failed (${child.status ?? child.signal}): ${child.stderr.slice(-2000)}`);
+    }
+    const lines = existsSync(logPath) ? (await readFile(logPath, "utf8")).split("\n").filter(Boolean) : [];
+    const records = lines.map((line) => JSON.parse(line) as Json);
+    const events = records.filter((item) => item.kind !== "result");
+    if (crashed) {
+      events.push({ kind: "crash", afterJournalWrite: scenario.crashAt?.journalWrite ?? null });
+    }
+    checkAnswers(scenario, events);
+    const finished = records.find((item) => item.kind === "result")?.result as Json | undefined;
+    const issues = records.find((item) => item.kind === "issues");
+    let result: Json | null = null;
+    let undoLog: unknown = null;
+    if (finished !== undefined) {
+      const { undoLog: log, ...rest } = finished;
+      result = rest;
+      undoLog = log ?? null;
+    } else if (issues !== undefined) {
+      result = { issues: issues.issues };
+    }
+    const outcome: ScenarioOutcome = {
+      before,
+      after: await snapshotPlaces(places),
+      trash: await snapshotTrash(places),
+      events,
+      result,
+      undoLog,
+      journal: await readJournal(places.journal),
+      recovery: crashed ? await recover(places, trash) : null,
+    };
+    return { places: places.tokens, outcome };
+  } finally {
+    await removePlaces(places);
+  }
+}
+
+// The app's startup recovery (bootstrap.ts: openWriteJournal, then recoverWrites) on the
+// journal a crash left, with the same file system and Trash the engine had.
+async function recover(places: Places, trash: TrashPlace[] | null): Promise<ScenarioOutcome["recovery"]> {
+  const core = await importReference<Core>("packages/core/src/fs/testNativePaste.ts");
+  const module = await importReference<JournalModule>("apps/desktop/src/main/bootstrap/writeJournal.ts");
+  const fileSystem = await withTrash(core.nativeFileSystem, trash);
+  const log: Array<{ level: string; message: string; details: unknown }> = [];
+  const journal = await module.openWriteJournal(places.journal);
+  const report = await module.recoverWrites(
+    journal,
+    fileSystem,
+    {
+      info: (message, details) => log.push({ level: "info", message, details: plain(details) }),
+      error: (message, details) => log.push({ level: "error", message, details: plain(details) }),
+    },
+    { answerWithinMs: RECOVERY_ANSWER_WITHIN_MS },
+  );
+  return {
+    notices: report.notices,
+    finished: report.finished,
+    log,
+    after: await snapshotPlaces(places),
+    trash: await snapshotTrash(places),
+    journal: await readJournal(places.journal),
+  };
+}
+
+// What the recovery logged with a message, as JSON: errors by their message.
+function plain(value: unknown): unknown {
+  if (value instanceof Error) {
+    return value.message;
   }
   if (Array.isArray(value)) {
-    return value.map((item) => normalize(item, root));
+    return value.map(plain);
   }
   if (value !== null && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value)
-        .filter(([key]) => !UNSTABLE_KEYS.has(key))
-        .map(([key, item]) => [key, normalize(item, root)]),
-    );
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, plain(item)]));
   }
-  return value;
+  return value ?? null;
 }
 
 export async function runScenario(scenario: Scenario): Promise<ScenarioOutcome> {
-  if (scenario.stopAt) {
-    throw new Error("stopAt is not supported yet");
-  }
-  const engine = await importReference<NativePaste>("packages/core/src/fs/testNativePaste.ts");
-  const root = await realpath(await mkdtemp(join(tmpdir(), "ft-parity-")));
-  try {
-    await buildTree(root, scenario.tree, engine);
-    const before = await snapshotTree(root);
-    const answers = [...(scenario.answers ?? [])];
-    const run = await engine.runPaste({
-      mode: scenario.paste.mode,
-      sourcePaths: scenario.paste.sources.map((source) => join(root, source)),
-      destinationDirectoryPath: join(root, scenario.paste.destination),
-      policy: scenario.policy,
-      resolve: () => answers.shift() ?? "skip",
-    });
-    const after = await snapshotTree(root);
-    // Each status once per run of equal ones: progress events come as often as the copy reports.
-    const statuses = run.events.map((event) => event.status).filter((status, index, all) => status !== all[index - 1]);
-    return {
-      before,
-      after,
-      result: normalize(run.result ?? { issues: run.report.issues }, root),
-      questions: normalize(run.conflicts, root) as unknown[],
-      statuses,
-    };
-  } finally {
-    await clearFlags(root, engine);
-    await rm(root, { recursive: true, force: true });
-  }
+  const { places, outcome } = await runScenarioRaw(scenario);
+  return normalizeOutcome(outcome, places) as ScenarioOutcome;
 }
 
-async function clearFlags(root: string, engine: NativePaste): Promise<void> {
-  for (const entry of await snapshotTree(root).catch(() => [])) {
-    if (entry.flags.length > 0) {
-      await engine.native.nativeSetFlags(join(root, entry.path), 0).catch(() => {});
-    }
+// The scenario of a recorded case: Tests/Golden/<suite>.json, case number `index` (from 0).
+async function goldenScenario(suite: string, index: number): Promise<Scenario> {
+  const golden = JSON.parse(await readFile(join(import.meta.dir, "../../../Tests/Golden", `${suite}.json`), "utf8"));
+  const found = golden.cases[index]?.input as Scenario | undefined;
+  if (found === undefined) {
+    throw new Error(`no case ${index} in ${suite}`);
   }
+  return found;
 }
 
 if (import.meta.main) {
-  const [file] = process.argv.slice(2);
-  if (file === undefined) {
-    console.error("usage: bun tools/parity/exec/run.ts <scenario.json>");
+  const args = process.argv.slice(2);
+  const raw = args.includes("--raw");
+  const rest = args.filter((arg) => arg !== "--raw");
+  const usage = "usage: bun tools/parity/exec/run.ts [--raw] <scenario.json> | --golden <suite> <index>";
+  let scenario: Scenario;
+  if (rest[0] === "--golden" && rest[1] !== undefined && rest[2] !== undefined) {
+    scenario = await goldenScenario(rest[1], Number(rest[2]));
+  } else if (rest.length === 1 && rest[0] !== undefined) {
+    scenario = JSON.parse(await readFile(rest[0], "utf8")) as Scenario;
+  } else {
+    console.error(usage);
     process.exit(2);
   }
-  const scenario = JSON.parse(await readFile(file, "utf8")) as Scenario;
-  process.stdout.write(`${JSON.stringify(await runScenario(scenario), null, 2)}\n`);
+  try {
+    const output = raw ? await runScenarioRaw(scenario) : await runScenario(scenario);
+    process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
+  } finally {
+    detachAll();
+  }
 }
