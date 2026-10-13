@@ -151,7 +151,9 @@ def main(argv: list[str]) -> int:
     here = str(ROOT)
     for tree in worktrees():
         path = tree.get("worktree", "")
-        if path == here:
+        # Only worktrees made by workflow agents (".claude/worktrees/wf_…") are ours to recover;
+        # the user's checkouts and session worktrees are never touched.
+        if path == here or "/.claude/worktrees/wf_" not in path:
             continue
         wp_id = owner_of(tree, branches)
         if not wp_id:
