@@ -25,7 +25,7 @@ Any Claude Code session that loads this file runs the port. The plan is `docs/po
 6. **Run the batch.** Launch `Workflow({scriptPath: "tools/orchestrator/workflows/batch.js", args})`. `args` comes from `python3 tools/orchestrator/state.py batch-args <batchId>`. Record the returned run id in the state right away.
 7. **Record the results** when the workflow returns. Apply each WP report with `state.py apply-report`. Record the meter reading after the batch and the tokens per agent. Rewrite `STATUS.md` (`state.py status-md`). Commit everything as `port: checkpoint <batchId>`.
 8. **At a phase end,** run the phase critic (inside the next batch, or as a one-agent workflow). Turn real gaps into new WPs.
-9. **At a wave end,** stop and ask the user to approve the new `DEVIATIONS.md` entries and to do the human checkpoints of PLAN.md §8. Then merge `port/integration` into `main`.
+9. **At a wave end,** run `tools/capture/run.sh --acceptance` (PLAN.md §3.4a). A Finder-improvement flow that passed before and fails now blocks the gate. Then stop and ask the user to approve the new `DEVIATIONS.md` entries and to do the human checkpoints of PLAN.md §8. Then merge `port/integration` into `main`.
 10. **Repeat** from step 2.
 
 The orchestrator does not write feature code. It writes only state, briefs, status and the orchestrator tools.

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T18:20:17+00:00",
+  "updatedAt": "2026-10-13T19:00:27+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "Wave 1 batches: W1-A P0-08+P0-09; W1-B P0-10+P1-02+P1-03; W1-C P1-01+P2-04+P2-06; W1-D P1-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P4-01; W1-G P2-07+P4-02",
+  "nextAction": "Wave 1 batches: W1-A P0-08+P0-09 (running); W1-B P0-10+P0-11+P1-02; W1-C P1-01+P1-03+P2-04; W1-D P1-04+P2-05+P2-06; W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01; W1-H P4-02. Behavior extraction (wf_406371f4-4b5) running.",
   "pause": {
     "requested": false,
     "reason": null,
@@ -37,6 +37,12 @@
       "weeklyPct": 6.0,
       "fiveHourPct": 12.0,
       "note": "after P0-B1: ~1.57M agent tokens over P0-A+P0-B1 moved weekly 5->6"
+    },
+    {
+      "at": "2026-10-13T19:00:27+00:00",
+      "weeklyPct": 8.0,
+      "fiveHourPct": 9.0,
+      "note": "after W1-A + behavior extraction (~3.95M agent tokens): weekly 6->8"
     }
   ],
   "batches": {
@@ -143,10 +149,37 @@
         "P0-08",
         "P0-09"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_77d3eaf1-555",
       "estimatedAgents": 8,
-      "startedAt": "2026-10-13T18:20:17+00:00"
+      "startedAt": "2026-10-13T18:20:17+00:00",
+      "endedAt": "2026-10-13T19:00:19+00:00",
+      "integration": {
+        "merged": [
+          "P0-08",
+          "P0-09"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "dc736aa",
+        "summary": "merged cleanly; 55 tests passing"
+      },
+      "critic": null,
+      "spentOutputTokens": null,
+      "agents": 8,
+      "subagentTokens": 943286,
+      "durationMin": 39.7
+    },
+    "W1-B": {
+      "wps": [
+        "P0-10",
+        "P0-11",
+        "P1-02"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 10,
+      "startedAt": "2026-10-13T19:00:27+00:00"
     }
   },
   "wps": {
@@ -395,7 +428,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P1-02",
       "headSha": null,
       "attempts": 0,
@@ -636,7 +669,8 @@
         "P0-05",
         "P0-06",
         "P0-07",
-        "P0-08"
+        "P0-08",
+        "P1-03"
       ],
       "status": "todo",
       "branch": "port/P2-07",
@@ -859,7 +893,10 @@
         "P0-05",
         "P0-06",
         "P0-07",
-        "P0-08"
+        "P0-08",
+        "P1-03",
+        "P2-03",
+        "P2-07"
       ],
       "status": "todo",
       "branch": "port/P4-01",
@@ -887,7 +924,9 @@
         "P0-06",
         "P0-07",
         "P0-08",
-        "P0-10"
+        "P0-10",
+        "P2-07",
+        "P4-01"
       ],
       "status": "todo",
       "branch": "port/P4-02",
@@ -901,7 +940,7 @@
       "blockers": []
     },
     "P4-03": {
-      "title": "Theme, zoom, About, Acknowledgements, Help",
+      "title": "Theme, accent, About, Acknowledgements, Help (and remove the unused zoom parameter from Metrics)",
       "phase": "P4",
       "wave": 2,
       "risk": "low",
@@ -1274,19 +1313,23 @@
         "P0-03",
         "P0-04"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-08",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "8253c8a",
+      "attempts": 1,
       "gate": [
         "bun tools/parity-matrix/sync.ts --check",
         "scripts/ci.sh"
       ],
       "lenses": [],
-      "summary": null,
+      "summary": "tools/parity-matrix/sync.ts: scans T-/F- citations in Swift tests, validates ids, updates tests.tsv (swiftTest, ported/passing, covered-by-feature, N/A) and features.md (new Tests and Scenario columns) from swift test xunit results; --check and --no-run. FTTestSupport.DiskImage.withVolume for FAT32/exFAT/HFS+/APFS/APFS-cs with .diskImages trait; LargeFileTests.enabled.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "--check reads last results, never runs tests",
+        "DiskImage clones with FileManager.copyItem (clonefile)"
+      ]
     },
     "P0-09": {
       "title": "Write-engine differential completion",
@@ -1297,10 +1340,10 @@
       "depends": [
         "P0-04"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-09",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "b4263fe",
+      "attempts": 1,
       "gate": [
         "tools/parity/gen.sh --check",
         "tools/parity/exec/selftest.sh",
@@ -1309,9 +1352,14 @@
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Exec differential completed: event stream via the reference WriteService (queued, questions, answers incl. applyToRemaining, terminal cancelled/failed), normalized undo log, Trash via the app's createTrashItem incl. disks without Trash, journal per write, stopAt and crashAt with recovery; analysis goldens for conflict trees; 10 golden suites; FTTestSupport ExecHarness/ExecEngine protocol/comparator with a ReferenceReplayEngine.",
       "findings": [],
-      "fixes": [],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "3 parity findings fixed: standing answers, write-service terminal events, real Trash selection per disk"
+        }
+      ],
       "blockers": []
     },
     "P0-10": {
@@ -1323,7 +1371,7 @@
       "depends": [
         "P0-05"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-10",
       "headSha": null,
       "attempts": 0,
@@ -1339,6 +1387,35 @@
       "findings": [],
       "fixes": [],
       "blockers": []
+    },
+    "P0-11": {
+      "title": "Parity matrix counts behavior rules (B- ids)",
+      "phase": "P0",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-08"
+      ],
+      "status": "implementing",
+      "branch": "port/P0-11",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "bun tools/parity-matrix/sync.ts --check",
+        "scripts/ci.sh"
+      ],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
     }
+  },
+  "behaviorExtraction": {
+    "runId": "wf_406371f4-4b5",
+    "agents": 8,
+    "subagentTokens": 3007873,
+    "rules": 1708
   }
 }

@@ -149,13 +149,38 @@ There is no IPC. The 80 channels and 14 push events become async methods on acto
 | Session restore of windows, tabs, front tab and bounds | Same `app-state.json` schema: each stored window becomes a tab group, in order |
 | Tab context menu: Duplicate Tab; middle-click close; spring-switch on file drag hover; "+" button tooltip | **Deviations** (the system tab bar owns these). Logged in `DEVIATIONS.md`; Duplicate Tab stays in File menu / shortcuts |
 
-### 3.5 Look: tokens, zoom, accent
+### 3.4a What File Trail does better than Finder (first-class scope)
+
+These are why people use File Trail. The table below is only an index. The **specification is code-derived**: `docs/port/behaviors/<area>.md` lists numbered rules (`B-NAV-…`, `B-SEL-…`, `B-INFO-…`, `B-SRCH-…`, `B-TREE-…`, `B-CLIP-…`, `B-VIEW-…`, `B-DLG-…`). They were extracted from the original's source and its own tests, each citing the file:line that decides it and the test ids that check it. For example: what Back restores (selection, scroll position), which item is selected after going up, when the Info panel measures a folder, and how a refined search filters without searching again. Work packages implement and test against these rules, Swift tests cite the `B-` ids they prove, and the parity sync counts them the way it counts `F-` rows.
+
+Each improvement is also a named acceptance flow (`tools/capture/scenarios/acceptance/*.json`, tier `wave`), so it is checked against the Electron app at **every wave gate**, not only in the final sweep. A work package that touches one of them must keep its flow passing.
+
+| # | Improvement over Finder | Built in | Acceptance flow |
+|---|---|---|---|
+| A1 | Search as you type with `fd`, from the current folder: name or full path; text, glob or regex; widen to Home or the whole disk; filter field over results; skip `.git` and `.gitignore`d files; results in any view with their own columns and sort; one search per tab, still running in background tabs | P2-06, P5-07 | Type "trip", switch to glob and regex, widen to Home, filter by folder, switch views, background-tab search |
+| A2 | A real folder tree beside the files: expand arrows, Use as Tree Root, ⇧⌘H back to Home, Favorites and Locations above it, hide/show | P5-02 | Expand, set root, go Home, hide and show the tree |
+| A3 | Cut and paste with a visible clipboard: ⌘X/⌘V moves, marks and dimming until pasted, toolbar clipboard count and popover (jump to, remove one, clear), works across windows | P5-08, P5-01, P6-02 | Cut 4 files, open the popover, remove one, paste in another window |
+| A4 | Pasting never destroys: Skip / Keep Both / Replace / Add Missing; replaced items go to the Trash; cross-disk moves verified; crash recovery picks up an interrupted Replace | P3-02 to P3-05, P6-02 | Paste onto conflicts and choose each option; a crash mid-Replace, then relaunch |
+| A5 | Undo and Redo of file operations: rename, move, copy, Trash; "Can't Undo" rules; dynamic menu labels | P3-07, P4-01 | Rename, move, trash, then undo each and redo |
+| A6 | Any folder in a few keystrokes: Go To (⌘K) with frecency ranking, Tab completion and `~` and `/` paths | P1-02, P6-01 | ⌘K, a few letters, Tab, Return |
+| A7 | Type to filter the file list (not jump): best match selected, Backspace edits, Esc restores, ⌘F turns it into a search | P5-05 | Type, Backspace, Esc, ⌘F |
+| A8 | Path bar that works: click a folder, `›` menus of siblings, double-click to edit as text; Back and Forward held down for history lists | P5-01, P5-06 | Each path-bar interaction; hold Back |
+| A9 | Your keys: every command on a shortcut, two per command, rebindable in Settings with conflict warnings, shown in menus, tooltips and Help | P1-03, P4-01, P6-04 | Rebind a command, check the conflict warning, menu and tooltip |
+| A10 | Customizable toolbar, arranged in place | P5-01 | Drag an item in, along and out |
+| A11 | See what takes space: folder sizes measured in one pass, size bars when sorted by size, auto-measure with the Info panel open | P2-02, P5-03, P5-06 | Calculate Size on Lighthouse, sort by size, check the bars |
+| A12 | Batch rename: replace (regex), add, number, date and date taken, case, live preview, conflict policy, presets | P1-04, P3-08, P6-03 | Each mode, a conflict, save and reuse a preset |
+| A13 | Three views (Icons with Quick Look thumbnails, List with optional Created and Permissions columns, Compact List) and Compact density; Quick Look on Space | P5-03, P5-04, P5-09 | Each view at each density; Space |
+| A14 | Per-tab state (folder, history, tree, view, search) and window management: New Window, Move Tab, Merge All Windows, session restore | P4-02 | Two windows with tabs, move a tab, merge, quit and relaunch |
+| A15 | Make it yours: Light, Dark or Auto; any accent; and Settings for the text editor, terminal, double-click and Return actions, disk images in a window or tab, columns, search defaults and session restore | P4-03, P6-04 | Theme, accent and zoom changes; a few Settings toggles taking effect |
+| A16 | Favorites with chosen icons and drag order; Open in Terminal and Copy Path on keys; Open With with pinned apps and Always Open With | P5-02, P2-05, P5-09 | Add a favorite, change its icon, reorder; Open With menu |
+| A17 | Drag in and out with Finder and other apps; eject from the sidebar; disk images open in File Trail; the folder on screen stays current as other apps change it; hidden files on ⇧⌘.; relative dates | P5-08, P2-03, P2-01, P1-02 | Eject an image from the sidebar, open a .dmg, an outside change appears, toggle hidden files |
+
+P0-10 adds the scenario steps these flows need. The flows themselves are written by the work packages that build each feature, and tagged with the feature rows they prove.
+
+### 3.5 Look: tokens, accent
 
 - **Tokens.** `FTFoundation/DesignTokens.swift` is generated once from `styles.css` (`ui.md` §5): type scale, radii, spacing, all light and dark colors, and motion. No literal metric appears in UI code; everything reads a token.
-- **Zoom, 75–150%.**
-  - AppKit has no page zoom, so every token is a function of `zoom` (fonts and metrics).
-  - Changing zoom re-lays out every window.
-  - This is built in from the first UI commit; retrofitting it later would touch every view.
+- **No UI zoom.** The original's whole-window zoom (75–150%, ⌘+ / ⌘− / ⌘0) is dropped by decision on 2026-10-13 (DEVIATIONS D-005), to keep the port simple. Metrics are fixed at the original's 100% values.
 - **Accent.** Any hex color. The derived colors are computed as in `accent.ts`: selection background with 4.5:1 contrast, soft background, borders, solid buttons. `controlAccentColor` and the system selection drawing are not used. Selection is drawn by a custom `NSTableRowView`/collection item, and turns gray when the window is inactive.
 - **Chrome.**
   - `NSVisualEffectView(.sidebar)` for the translucent sidebar.
@@ -221,7 +246,7 @@ The checks run in three tiers, so the expensive steps run rarely (see §6.6):
 | Wave gate | End of each UI wave | All scenarios, light and dark, 100% | Only scenarios whose pixel diff is over the threshold |
 | Final | P7, once at the start and once at the end | Light and dark, 100%, Comfortable | Over-threshold scenarios, and 1 in 10 of the rest as a spot check |
 
-Zoom levels other than 100% and Compact density are not captured as screenshots. They are covered by unit tests of the token math at every gate: every metric and font at 75%, 125% and 150%, and every Compact metric, checked against the values in `styles.css` and `ui.md` §2.
+Compact density is not captured as screenshots. It is covered by unit tests of the token math at every gate: every Compact metric checked against the values in `styles.css` and `ui.md` §2. (UI zoom is out of scope; see §3.5.)
 
 1. **Scenario catalog** (`tools/capture/scenarios.json`). About 120 named UI states, such as `list-sorted-size-bars`, `cut-items-clipboard-popover`, `review-sheet-folder-conflict`, `batch-rename-numbering`, `settings-shortcuts`, `search-results-scope-bar`, `goto-panel-suggestions`.
    - A deterministic fixture tree (`tools/fixtures`, the "Lighthouse" project from the README screenshots) with fixed mtimes.
@@ -430,7 +455,7 @@ All P0 work is Sonnet except P0-04 and P0-05, which set up the checks everything
 | P0-03 | low · Sonnet | Parity matrix: a **script** extracts `tests.tsv` from all Vitest/Playwright files; an agent turns the inventories into `features.md` |
 | P0-04 | medium · Opus | Differential harness: Bun driver, Swift CLI runner and comparator, with one end-to-end example |
 | P0-05 | medium · Opus | Capture harness: Playwright driver and the in-app automation mode, geometry dumpers, `pixeldiff`, contact sheet, first 10 scenarios |
-| P0-06 | low · Sonnet | `DesignTokens.swift` + accent math (differential tests against `accent.ts`), zoom-scaled metrics |
+| P0-06 | low · Sonnet | `DesignTokens.swift` + accent math (differential tests against `accent.ts`), density metrics |
 | P0-07 | low · Sonnet | Bench harness grown from the spike's `--bench`, with a budget file (§4) and a regression check |
 
 P0 runs as two batches. **P0-A:** P0-01, P0-02, P0-03, with no dependencies between them. **P0-B:** P0-04 to P0-07, which build on P0-01's package layout and P0-02's reference build.
@@ -488,7 +513,7 @@ This is the highest-risk phase. Every WP is **high · Opus**, the WPs run in dep
 |---|---|---|---|
 | P4-01 | 1 | medium · Sonnet | App delegate, launch arguments, open-file, Dock menu, quit while busy, logging wiring; command registry and menus built from the shortcut table, dynamic Undo labels, window targeting rules |
 | P4-02 | 1 | medium · Opus | Window and tab model (§3.4): session restore, New Window / Move Tab / Merge rules, 100-tab limit, Reopen Closed Tab, `lastClosedWindow` |
-| P4-03 | 2 | low · Sonnet | Theme (auto/light/dark), accent, global zoom, inactive-window state; About, Acknowledgements (licenses generated at build time), Help window and its content |
+| P4-03 | 2 | low · Sonnet | Theme (auto/light/dark), accent, inactive-window state; About, Acknowledgements (licenses generated at build time), Help window and its content |
 
 ### P5. Explorer UI
 
@@ -541,7 +566,6 @@ All P8 work is low · Sonnet.
 | Risk | Mitigation |
 |---|---|
 | Copy engine (3k lines of TS, safety-critical) reimplemented with a subtle difference | Differential execution and crash-injection testing on 5 file systems; mandatory safety lens; the original's 700 FS tests ported; human real-disk pass |
-| Whole-UI zoom has no AppKit equivalent | Tokens are functions of zoom from the first UI commit; 75–150% is checked by unit tests of the token math at every gate (no zoomed screenshots) |
 | Native tabs can't do some original tab behaviors | Mapped in §3.4; remaining differences logged and approved at a gate |
 | "Pixel perfect" vs native rendering | Geometry is the hard gate (±1 pt); pixels are a soft gate with masks; vision review covers the rest |
 | Workflows produce plausible but unverified work | Every WP is gated on executable checks (tests, differential, geometry); a reviewer's finding counts only with a failing test or a diff |
@@ -567,6 +591,6 @@ These are estimates. P0 is measured precisely and the remaining phases are re-es
 Cuts adopted on 2026-10-13, which trade some assurance for cost:
 - P7 ceiling of 2 rounds instead of 4 (about 10–20M); the remaining findings come to you as a list.
 - Low-risk WPs with no reviewer, relying on their gate and the phase critic (about 5–8M).
-- No 125% zoom or Compact density screenshots; unit tests of the token math instead (about 3–5M).
+- No Compact density screenshots; unit tests of the token math instead (about 3–5M). UI zoom was later dropped entirely (§3.5).
 
 One further lever remains: **vision review done only by you,** from the contact sheets, at the wave gates (about 5–10M).

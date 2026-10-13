@@ -38,3 +38,15 @@ You are part of a team porting File Trail, a macOS file browser, from Electron/T
   - `scripts/ci.sh` prints only a summary and failures; full logs are in `build/logs/`. `grep` them rather than printing them.
   - Never paste more than 40 lines of any log into your answer.
 - **Your final answer is data for the orchestrator.** Keep it to the requested structure; no prose for humans.
+
+## Porting rules (from wave 1 on)
+
+- **Tests.** Port the original's tests listed in your brief.
+  - Find them in `docs/port/parity/tests.tsv` by file. Each Swift test cites the ids it ports in a comment on the line before `@Test`: `// T-1a2b3c4d T-5e6f7a8b`.
+  - Logic (L) and filesystem (FS) cases are ported one for one.
+  - E cases (zod, IPC, preload, protocol) are marked `// N/A T-… <reason>` in the test file that replaces their intent.
+  - UI cases are covered by feature row: cite `F-…` ids on the controller test or scenario that proves the feature, and mark a UI case already proven elsewhere `// covered-by-feature F-…`.
+  - `bun tools/parity-matrix/sync.ts --no-write` (once it exists) checks your citations. Don't commit changes to `docs/port/parity/`: the integrator runs the sync once after merging a batch, so parallel work packages never conflict there.
+- **Goldens.** Where the brief names golden suites, add generators under `tools/parity/golden/` (see `tools/parity/README.md`). Record the reference's outputs and test the Swift port against them. Fuzz with a fixed seed, and include the edge cases the inventories list.
+- **Same behavior first.** Reproduce the original's behavior, including its known gaps: packages detected by the extension list in listings, hidden meaning a leading dot, symlink-only "Alias" labels, single-item Quick Look. Only the bugs listed as approved in `docs/port/DEVIATIONS.md` are fixed. If you find another difference you think should not be copied, list it under deviations in your result and copy the behavior anyway.
+- **System APIs.** Use the same macOS APIs the original uses (`docs/port/inventory/native-and-system.md`, "Quick API mapping table"), called directly from Swift, or from `CFileTrail` where C is clearer.

@@ -217,6 +217,7 @@ You work in the orchestrator's checkout (${A.repo}), which has port/integration 
 Merge these branches one at a time, in this order, with \`git merge --no-ff port/<id> -m "Merge <id>: <title>"\`:
 ${ready.map((r) => `- port/${r.id}${r.sharedFileRequests && r.sharedFileRequests.length ? ` — shared-file requests to apply after merging it: ${r.sharedFileRequests.join('; ')}` : ''}`).join('\n')}
 After each merge, run \`scripts/ci.sh\` (if it exists) and fix any break the merge caused, committing the fix on port/integration. If a merge conflicts in a way you cannot resolve without changing a work package's design, abort that merge (\`git merge --abort\`) and list it in notMerged with the reason.
+When all merges are done, if tools/parity-matrix/sync.ts exists, run \`bun tools/parity-matrix/sync.ts\` (it updates docs/port/parity/ from the merged tests' citations and results) and commit the result as "Sync parity matrix after ${A.batchId}". If a merge conflicts only inside docs/port/parity/, take port/integration's side and let the sync rebuild it.
 Return the merged ids, the final head sha and whether the last CI run passed.`,
     { label: `integrate:${A.batchId}`, phase: 'Integrate', schema: INTEGRATION, model: 'sonnet', effort: 'medium' },
   )
