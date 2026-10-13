@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T20:19:36+00:00",
+  "updatedAt": "2026-10-13T20:20:49+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "W1-C P1-01+P1-03+P0-12; W1-D P1-04+P2-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06; W1-H P4-02",
+  "nextAction": "Paused after W1-C. On resume: record W1-C, then W1-D P1-04+P2-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06; W1-H P4-02",
   "pause": {
-    "requested": false,
-    "reason": null,
+    "requested": true,
+    "reason": "requested by user: stop after W1-C",
     "until": null
   },
   "meter": [
