@@ -38,6 +38,7 @@ final class SidebarViewController: NSViewController, NSOutlineViewDataSource, NS
         scroll.drawsBackground = false
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
+        scroll.setAccessibilityIdentifier("sidebar")
         view = scroll
 
         let center = NSWorkspace.shared.notificationCenter
@@ -154,6 +155,7 @@ final class SidebarViewController: NSViewController, NSOutlineViewDataSource, NS
             let cell =
                 outlineView.makeView(withIdentifier: id, owner: nil) as? LabelCell
                 ?? LabelCell(identifier: id, iconSize: nil)
+            cell.setAccessibilityIdentifier("sidebar.sectionHeader")
             cell.textField?.stringValue = node.title
             return cell
         }
@@ -161,6 +163,7 @@ final class SidebarViewController: NSViewController, NSOutlineViewDataSource, NS
         let cell =
             outlineView.makeView(withIdentifier: id, owner: nil) as? LabelCell
             ?? LabelCell(identifier: id, iconSize: 18)
+        cell.setAccessibilityIdentifier("sidebar.row")
         cell.textField?.stringValue = node.title
         cell.textField?.lineBreakMode = .byTruncatingTail
         cell.imageView?.image = node.symbol.flatMap {

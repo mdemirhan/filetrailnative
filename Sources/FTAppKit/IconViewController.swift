@@ -144,6 +144,8 @@ final class IconItem: NSCollectionViewItem {
             label.widthAnchor.constraint(lessThanOrEqualTo: root.widthAnchor, constant: -8),
         ])
         label.preferredMaxLayoutWidth = 92
+        root.setAccessibilityIdentifier("icons.item")
+        label.setAccessibilityIdentifier("icons.item.name")
         view = root
         imageView = icon
         textField = label

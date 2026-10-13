@@ -1,4 +1,5 @@
 import AppKit
+import FTFoundation
 
 @MainActor
 public final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -9,17 +10,37 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private var home: URL { FileManager.default.homeDirectoryForCurrentUser }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
+        AppClock.start()
         NSApp.mainMenu = MainMenu.make()
 
-        let arguments = CommandLine.arguments.dropFirst()
-        let snapshot = arguments.firstIndex(of: "--snapshot").flatMap {
-            arguments.index(after: $0) < arguments.endIndex ? arguments[arguments.index(after: $0)] : nil
+        let arguments = Array(CommandLine.arguments.dropFirst())
+        func value(after flag: String) -> String? {
+            arguments.firstIndex(of: flag).flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
         }
-        let start =
-            arguments.first { !$0.hasPrefix("-") && $0 != snapshot }
-            .map { URL(fileURLWithPath: ($0 as NSString).expandingTildeInPath) } ?? home
+        let snapshot = value(after: "--snapshot")
+        let flagValues = Set(["--snapshot", "--automation", "--out"].compactMap(value(after:)))
+        let requested = arguments.first { !$0.hasPrefix("-") && !flagValues.contains($0) }
+            .map { URL(fileURLWithPath: ($0 as NSString).expandingTildeInPath) }
+
+        #if DEBUG
+            let automation = AutomationRunner.options(from: arguments).map { options in
+                AutomationRunner(options: options) { [weak self] in self?.controllers.last }
+            }
+            _ = automation?.load()
+            let start = automation?.startFolder ?? requested ?? home
+        #else
+            let start = requested ?? home
+        #endif
+
         let controller = openWindow(at: start)
         NSApp.activate()
+
+        #if DEBUG
+            if let automation {
+                Task { await automation.run() }
+                return
+            }
+        #endif
 
         if arguments.contains("--bench-launch") {
             Benchmark.launch(controller)

@@ -1,0 +1,81 @@
+{
+  "comment": "Logical element names: the original's CSS selector (and the child holding the text, when not the element) and the Swift accessibilityIdentifier. 'first' compares only the top-left match; 'text' also compares font size, weight and color.",
+  "elements": {
+    "window content": {
+      "electron": { "selector": "main.app-shell" },
+      "swift": "window.content"
+    },
+    "sidebar": {
+      "electron": { "selector": "aside.tree-pane" },
+      "swift": "sidebar"
+    },
+    "sidebar section headers": {
+      "electron": { "selector": ".sidebar-section-header", "textSelector": ".sidebar-section-title" },
+      "swift": "sidebar.sectionHeader",
+      "text": true
+    },
+    "first sidebar row": {
+      "electron": { "selector": ".tree-pane .sidebar-sections .tree-row", "textSelector": ".tree-label-text" },
+      "swift": "sidebar.row",
+      "first": true,
+      "text": true
+    },
+    "toolbar": {
+      "electron": { "selector": "header.window-toolbar" },
+      "swift": "toolbar"
+    },
+    "title": {
+      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-title" },
+      "swift": "toolbar.title",
+      "text": true
+    },
+    "back button": {
+      "electron": { "selector": ".window-toolbar .toolbar-row button[aria-label=\"Back\"]" },
+      "swift": "toolbar.back"
+    },
+    "view switch": {
+      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-segmented" },
+      "swift": "toolbar.viewSwitch"
+    },
+    "search field": {
+      "electron": { "selector": ".window-toolbar .toolbar-row .toolbar-search", "textSelector": ".toolbar-search-input" },
+      "swift": "toolbar.search",
+      "text": true
+    },
+    "content": {
+      "electron": { "selector": ".content-viewport" },
+      "swift": "content"
+    },
+    "list header": {
+      "electron": { "selector": ".details-header" },
+      "swift": "list.header"
+    },
+    "first list row": {
+      "electron": { "selector": ".details-row" },
+      "swift": "list.row",
+      "first": true
+    },
+    "first list row name": {
+      "electron": { "selector": ".details-row .details-name", "textSelector": ".details-name-label" },
+      "swift": "list.row.name",
+      "first": true,
+      "text": true
+    },
+    "first icon": {
+      "electron": { "selector": ".flow-grid .flow-item" },
+      "swift": "icons.item",
+      "first": true
+    },
+    "first icon name": {
+      "electron": { "selector": ".flow-grid .flow-item .flow-item-label" },
+      "swift": "icons.item.name",
+      "first": true,
+      "text": true
+    },
+    "status bar": {
+      "electron": { "selector": ".content-pathbar-status" },
+      "swift": "statusBar",
+      "text": true
+    }
+  }
+}

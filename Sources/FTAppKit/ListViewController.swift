@@ -61,6 +61,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         table.target = self
         table.doubleAction = #selector(doubleClicked(_:))
 
+        table.headerView?.setAccessibilityIdentifier("list.header")
         let scroll = NSScrollView()
         scroll.documentView = table
         scroll.hasVerticalScroller = true
@@ -110,6 +111,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
                 alignment: column == .size ? .right : .left)
         switch column {
         case .name:
+            cell.setAccessibilityIdentifier("list.row.name")
             cell.textField?.stringValue = item.name
             cell.imageView?.image = FileIcons.icon(for: item.url)
         case .modified:
@@ -121,6 +123,10 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         }
         if column != .name { cell.textField?.textColor = .secondaryLabelColor }
         return cell
+    }
+
+    func tableView(_ tableView: NSTableView, didAdd rowView: NSTableRowView, forRow row: Int) {
+        rowView.setAccessibilityIdentifier("list.row")
     }
 
     func tableView(_ tableView: NSTableView, typeSelectStringFor tableColumn: NSTableColumn?, row: Int)
