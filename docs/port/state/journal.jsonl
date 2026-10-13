@@ -24,3 +24,4 @@
 {"at": "2026-10-13T18:20:07+00:00", "event": "add-batch", "batch": "W1-A", "wps": ["P0-08", "P0-09"], "estimatedAgents": 8}
 {"at": "2026-10-13T18:20:07+00:00", "event": "set-batch", "batch": "W1-A", "status": "running", "runId": null}
 {"at": "2026-10-13T18:20:07+00:00", "event": "next", "text": "Wave 1 batches: W1-A P0-08+P0-09; W1-B P0-10+P1-02+P1-03; W1-C P1-01+P2-04+P2-06; W1-D P1-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P4-01; W1-G P2-07+P4-02"}
+{"at": "2026-10-13T18:20:17+00:00", "event": "set-batch", "batch": "W1-A", "status": "running", "runId": "wf_77d3eaf1-555"}
