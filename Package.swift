@@ -5,9 +5,21 @@ let package = Package(
     name: "FileTrail",
     platforms: [.macOS(.v14)],
     targets: [
-        .executableTarget(
-            name: "FileTrail",
-            path: "Sources/FileTrail"
-        )
+        .target(name: "CFileTrail", path: "Sources/CFileTrail"),
+        .target(name: "FTFoundation", path: "Sources/FTFoundation"),
+        .target(name: "FTFileSystem", dependencies: ["FTFoundation", "CFileTrail"], path: "Sources/FTFileSystem"),
+        .target(
+            name: "FTOperations", dependencies: ["FTFoundation", "FTFileSystem", "CFileTrail"],
+            path: "Sources/FTOperations"),
+        .target(
+            name: "FTAppKit", dependencies: ["FTFoundation", "FTFileSystem", "FTOperations", "CFileTrail"],
+            path: "Sources/FTAppKit"),
+        .executableTarget(name: "FileTrail", dependencies: ["FTAppKit"], path: "Sources/FileTrail"),
+        .testTarget(name: "FTFoundationTests", dependencies: ["FTFoundation"], path: "Tests/FTFoundationTests"),
+        .testTarget(
+            name: "FTFileSystemTests", dependencies: ["FTFileSystem", "FTFoundation"], path: "Tests/FTFileSystemTests"),
+        .testTarget(
+            name: "FTOperationsTests", dependencies: ["FTOperations", "FTFoundation"], path: "Tests/FTOperationsTests"),
+        .testTarget(name: "FTAppKitTests", dependencies: ["FTAppKit"], path: "Tests/FTAppKitTests"),
     ]
 )

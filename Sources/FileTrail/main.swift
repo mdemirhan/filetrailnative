@@ -1,4 +1,5 @@
 import AppKit
+import FTAppKit
 
 let app = NSApplication.shared
 let appDelegate = AppDelegate()

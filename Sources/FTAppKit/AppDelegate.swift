@@ -1,12 +1,14 @@
 import AppKit
 
 @MainActor
-final class AppDelegate: NSObject, NSApplicationDelegate {
+public final class AppDelegate: NSObject, NSApplicationDelegate {
+    public override init() { super.init() }
+
     private var controllers: [MainWindowController] = []
 
     private var home: URL { FileManager.default.homeDirectoryForCurrentUser }
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    public func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.mainMenu = MainMenu.make()
 
         let arguments = CommandLine.arguments.dropFirst()
@@ -27,11 +29,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+    public func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         false
     }
 
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+    public func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if !flag { openWindow(at: home) }
         return true
     }
@@ -71,9 +73,10 @@ enum Benchmark {
     /// Opens each sub-folder of `root` and goes back, three times over, then
     /// prints the median timings and quits.
     static func run(in controller: MainWindowController, root: URL) async {
-        let folders = ((try? FileManager.default.contentsOfDirectory(
-            at: root, includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
-            options: [.skipsHiddenFiles])) ?? [])
+        let folders =
+            ((try? FileManager.default.contentsOfDirectory(
+                at: root, includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
+                options: [.skipsHiddenFiles])) ?? [])
             .filter {
                 let values = try? $0.resourceValues(forKeys: [.isDirectoryKey, .isPackageKey])
                 return values?.isDirectory == true && values?.isPackage != true

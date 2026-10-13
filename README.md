@@ -13,6 +13,10 @@ scripts/build-app.sh
 open "build/File Trail.app"
 ```
 
+To check your changes, run `scripts/ci.sh` (build with zero warnings, tests, format lint; one line per
+step, full logs in `build/logs/`). `--scope <filter>` limits the tests, and `--full` also builds the
+release app bundle.
+
 Requires macOS 14 or later and Xcode 16 or later. There is no Xcode project: it's a Swift package,
 and `scripts/build-app.sh` wraps the binary in an app bundle with an ad-hoc signature. Because
 that signature changes with every build, macOS asks again for access to Desktop, Documents and

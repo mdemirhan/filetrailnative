@@ -22,7 +22,8 @@ enum MainMenu {
         appMenu.addItem(
             withTitle: "Show All", action: #selector(NSApplication.unhideAllApplications(_:)), keyEquivalent: "")
         appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: "Quit File Trail", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(
+            withTitle: "Quit File Trail", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
 
         let file = submenu(in: main, title: "File")
         file.addItem(withTitle: "New Window", action: #selector(AppDelegate.newWindow(_:)), keyEquivalent: "n")
