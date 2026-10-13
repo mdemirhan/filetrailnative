@@ -2224,58 +2224,58 @@ T-a31fcc6d	apps/desktop/src/renderer/lib/focusedEditTarget.test.ts	focusedEditTa
 T-f797d02e	apps/desktop/src/renderer/lib/focusedEditTarget.test.ts	focusGivesPaneTheKeyboard	gives a pane the keyboard for its list, but not for a text field inside it	it	L	renderer/lib	FTFoundation	todo		
 T-59350e27	apps/desktop/src/renderer/lib/focusedEditTarget.test.ts	focusGivesPaneTheKeyboard	keeps the pane's keyboard for the inline rename field	it	L	renderer/lib	FTFoundation	todo		
 T-2e08aed7	apps/desktop/src/renderer/lib/folderViewMemory.test.ts	rememberFolderView	keeps the folders in the history and replaces the one left	it	L	renderer/lib	FTFoundation	todo		
-T-e100b72c	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	counts a folder picked in Go To at once	it	L	renderer/lib	FTFoundation	todo		
-T-5f1923af	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	counts a folder opened another way once it has stayed on screen	it	L	renderer/lib	FTFoundation	todo		
-T-0540857f	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	only passes through a folder left before it stayed	it	L	renderer/lib	FTFoundation	todo		
-T-7d304c05	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	counts a folder used before it stayed	it	L	renderer/lib	FTFoundation	todo		
-T-b692dcd0	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	passes through a folder still being decided on when the window goes	it	L	renderer/lib	FTFoundation	todo		
-T-ebb3347d	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	formats invalid dates defensively	it	L	renderer/lib	FTFoundation	todo		
-T-96aba066	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	counts in minutes within the hour	it	L	renderer/lib	FTFoundation	todo		
-T-bd895bd6	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	keeps counting minutes across midnight	it	L	renderer/lib	FTFoundation	todo		
-T-7fc420f5	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	names today, yesterday and the weekdays before them	it	L	renderer/lib	FTFoundation	todo		
-T-082754d2	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	drops the year for this year and the time for older ones	it	L	renderer/lib	FTFoundation	todo		
-T-54369463	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	counts days on the calendar across daylight saving changes	it	L	renderer/lib	FTFoundation	todo		
-T-97fcf72a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	shows a date in the future in full, allowing for a clock a little ahead	it	L	renderer/lib	FTFoundation	todo		
-T-2c10658e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	gives the whole date for the tooltip	it	L	renderer/lib	FTFoundation	todo		
-T-1a458436	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	formats bytes and deferred states	it	L	renderer/lib	FTFoundation	todo		
-T-c1d84397	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	counts sizes in steps of 1,000, as Finder does	it	L	renderer/lib	FTFoundation	todo		
-T-cf726d7a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	steps up a unit instead of showing 1000 of one	it	L	renderer/lib	FTFoundation	todo		
-T-4d93eedd	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	formats Unix permission modes	it	L	renderer/lib	FTFoundation	todo		
-T-b9212962	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	splits Unix permission modes into symbolic and octal parts	it	L	renderer/lib	FTFoundation	todo		
-T-55337866	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	splits path segments including root	it	L	renderer/lib	FTFoundation	todo		
-T-4c7f5482	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	preserves the extension separately for display truncation	it	L	renderer/lib	FTFoundation	todo		
-T-5005707e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns ms for sub-second	it	L	renderer/lib	FTFoundation	todo		
-T-7d10f1e9	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns seconds for 1-59 seconds	it	L	renderer/lib	FTFoundation	todo		
-T-8e864ba0	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns minutes for 1-59 min	it	L	renderer/lib	FTFoundation	todo		
-T-e25f9802	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns hours for 1-23 hours	it	L	renderer/lib	FTFoundation	todo		
-T-a4a87e81	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns days for 1-29 days	it	L	renderer/lib	FTFoundation	todo		
-T-cd1e192a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns months for 30+ days	it	L	renderer/lib	FTFoundation	todo		
-T-e7f2053e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns years for 365+ days	it	L	renderer/lib	FTFoundation	todo		
-T-8b884841	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	handles negative values	it	L	renderer/lib	FTFoundation	todo		
-T-45659169	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatShortDateTime	formats a timestamp to a short readable date	it	L	renderer/lib	FTFoundation	todo		
-T-8cbd4faa	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns null for null	it	L	renderer/lib	FTFoundation	todo		
-T-ba805edb	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 0 B for zero	it	L	renderer/lib	FTFoundation	todo		
-T-b03aa542	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 512 B	it	L	renderer/lib	FTFoundation	todo		
-T-cb8fc5ea	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 1.0 KB for 1000	it	L	renderer/lib	FTFoundation	todo		
-T-4f128644	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 1.0 MB for 1000000	it	L	renderer/lib	FTFoundation	todo		
-T-dc463c3e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns null when src is null	it	L	renderer/lib	FTFoundation	todo		
-T-9e77b684	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns null when dest is null	it	L	renderer/lib	FTFoundation	todo		
-T-f1ae4d99	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns null when both are null	it	L	renderer/lib	FTFoundation	todo		
-T-b5c00c19	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta null when formatted sizes differ	it	L	renderer/lib	FTFoundation	todo		
-T-d4e8025e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta null when bytes are equal	it	L	renderer/lib	FTFoundation	todo		
-T-2bb3f254	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta null when both are 0	it	L	renderer/lib	FTFoundation	todo		
-T-ba7ea15a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta when same formatted size but different bytes (src larger)	it	L	renderer/lib	FTFoundation	todo		
-T-a082619c	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta when same formatted size but different bytes (dest larger)	it	L	renderer/lib	FTFoundation	todo		
-T-74a26cc5	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	computes correct delta for ambiguous 1.0 MB values	it	L	renderer/lib	FTFoundation	todo		
-T-08e47033	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	returns disk info when logical and disk sizes differ	it	L	renderer/lib	FTFoundation	todo		
-T-8ca2198e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	returns null disk when logical and disk sizes format the same	it	L	renderer/lib	FTFoundation	todo		
-T-7099a412	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	names files, then folders, with thousands separators	it	L	renderer/lib	FTFoundation	todo		
-T-49b7ee5d	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	leaves out a kind the folder doesn't hold	it	L	renderer/lib	FTFoundation	todo		
-T-9451db68	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	says one file and one folder in the singular	it	L	renderer/lib	FTFoundation	todo		
-T-34419f12	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	says Empty for a folder with nothing in it	it	L	renderer/lib	FTFoundation	todo		
-T-108c669a	apps/desktop/src/renderer/lib/goMenuPlaces.test.ts	goMenuPlaces	finds the folders in Home, and the places outside it	it	L	renderer/lib	FTFoundation	todo		
-T-e67aa010	apps/desktop/src/renderer/lib/goMenuPlaces.test.ts	goMenuPlaces	has no place in Home until Home is known	it	L	renderer/lib	FTFoundation	todo		
-T-9e77156e	apps/desktop/src/renderer/lib/goMenuPlaces.test.ts	goMenuPlaces	tells the place commands from the others	it	L	renderer/lib	FTFoundation	todo		
+T-e100b72c	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	counts a folder picked in Go To at once	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsAFolderPickedInGoToAtOnce	
+T-5f1923af	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	counts a folder opened another way once it has stayed on screen	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsAFolderOpenedAnotherWayOnceItHasStayedOnScreen	
+T-0540857f	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	only passes through a folder left before it stayed	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/onlyPassesThroughAFolderLeftBeforeItStayed	
+T-7d304c05	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	counts a folder used before it stayed	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsAFolderUsedBeforeItStayed	
+T-b692dcd0	apps/desktop/src/renderer/lib/folderVisitTracker.test.ts	folder visit tracker	passes through a folder still being decided on when the window goes	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/passesThroughAFolderStillBeingDecidedOnWhenTheWindowGoes	
+T-ebb3347d	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	formats invalid dates defensively	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/formatsInvalidDatesDefensively	
+T-96aba066	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	counts in minutes within the hour	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsInMinutesWithinTheHour	
+T-bd895bd6	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	keeps counting minutes across midnight	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/keepsCountingMinutesAcrossMidnight	
+T-7fc420f5	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	names today, yesterday and the weekdays before them	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/namesTodayYesterdayAndTheWeekdaysBeforeThem	
+T-082754d2	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	drops the year for this year and the time for older ones	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/dropsTheYearForThisYearAndTheTimeForOlderOnes	
+T-54369463	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	counts days on the calendar across daylight saving changes	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsDaysOnTheCalendarAcrossDaylightSavingChanges	
+T-97fcf72a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	shows a date in the future in full, allowing for a clock a little ahead	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/showsADateInTheFutureInFull	
+T-2c10658e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDateTime	gives the whole date for the tooltip	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/givesTheWholeDateForTheTooltip	
+T-1a458436	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	formats bytes and deferred states	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/formatsBytesAndDeferredStates	
+T-c1d84397	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	counts sizes in steps of 1,000, as Finder does	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsSizesInStepsOfOneThousand	
+T-cf726d7a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	steps up a unit instead of showing 1000 of one	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/stepsUpAUnitInsteadOfShowingAThousandOfOne	
+T-4d93eedd	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	formats Unix permission modes	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/formatsUnixPermissionModes	
+T-b9212962	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	splits Unix permission modes into symbolic and octal parts	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/splitsPermissionModesIntoSymbolicAndOctalParts	
+T-55337866	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	splits path segments including root	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/splitsPathSegmentsIncludingRoot	
+T-4c7f5482	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers	preserves the extension separately for display truncation	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/preservesTheExtensionSeparatelyForDisplayTruncation	
+T-5005707e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns ms for sub-second	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationInMilliseconds	
+T-7d10f1e9	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns seconds for 1-59 seconds	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationInSeconds	
+T-8e864ba0	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns minutes for 1-59 min	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationInMinutes	
+T-e25f9802	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns hours for 1-23 hours	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationInHours	
+T-a4a87e81	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns days for 1-29 days	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationInDays	
+T-cd1e192a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns months for 30+ days	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationInMonths	
+T-e7f2053e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	returns years for 365+ days	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationInYears	
+T-8b884841	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatRelativeDuration	handles negative values	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/durationOfNegativeValues	
+T-45659169	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatShortDateTime	formats a timestamp to a short readable date	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/formatsAShortDateTime	
+T-8cbd4faa	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns null for null	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/hintSizes	
+T-ba805edb	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 0 B for zero	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/hintSizes	
+T-b03aa542	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 512 B	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/hintSizes	
+T-cb8fc5ea	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 1.0 KB for 1000	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/hintSizes	
+T-4f128644	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatHintSize	returns 1.0 MB for 1000000	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/hintSizes	
+T-dc463c3e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns null when src is null	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithoutADelta	
+T-9e77b684	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns null when dest is null	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithoutADelta	
+T-f1ae4d99	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns null when both are null	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithoutADelta	
+T-b5c00c19	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta null when formatted sizes differ	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithoutADelta	
+T-d4e8025e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta null when bytes are equal	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithoutADelta	
+T-2bb3f254	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta null when both are 0	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithoutADelta	
+T-ba7ea15a	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta when same formatted size but different bytes (src larger)	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithADelta	
+T-a082619c	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	returns delta when same formatted size but different bytes (dest larger)	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithADelta	
+T-74a26cc5	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatSizeComparison	computes correct delta for ambiguous 1.0 MB values	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sizeComparisonWithADelta	
+T-08e47033	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	returns disk info when logical and disk sizes differ	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/folderSizeDetailSaysTheSizeOnDisk	
+T-8ca2198e	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	returns null disk when logical and disk sizes format the same	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/folderSizeDetailSaysTheSizeOnDisk	
+T-7099a412	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	names files, then folders, with thousands separators	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/folderSizeDetailNamesWhatTheFolderHolds	
+T-49b7ee5d	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	leaves out a kind the folder doesn't hold	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/folderSizeDetailNamesWhatTheFolderHolds	
+T-9451db68	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	says one file and one folder in the singular	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/folderSizeDetailNamesWhatTheFolderHolds	
+T-34419f12	apps/desktop/src/renderer/lib/formatting.test.ts	formatting helpers › formatFolderSizeDetail	says Empty for a folder with nothing in it	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/folderSizeDetailNamesWhatTheFolderHolds	
+T-108c669a	apps/desktop/src/renderer/lib/goMenuPlaces.test.ts	goMenuPlaces	finds the folders in Home, and the places outside it	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/findsTheFoldersInHomeAndThePlacesOutsideIt	
+T-e67aa010	apps/desktop/src/renderer/lib/goMenuPlaces.test.ts	goMenuPlaces	has no place in Home until Home is known	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/hasNoPlaceInHomeUntilHomeIsKnown	
+T-9e77156e	apps/desktop/src/renderer/lib/goMenuPlaces.test.ts	goMenuPlaces	tells the place commands from the others	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/tellsThePlaceCommandsFromTheOthers	
 T-7229a2ec	apps/desktop/src/renderer/lib/helpContent.test.ts	helpContent	gives every topic a title, an introduction and uniquely named sections and rows	it	L	renderer/lib	FTFoundation	todo		
 T-16be1b56	apps/desktop/src/renderer/lib/helpContent.test.ts	helpContent	lists shortcuts for each topic without repeating one within a topic	it	L	renderer/lib	FTFoundation	todo		
 T-ff1d7b21	apps/desktop/src/renderer/lib/helpContent.test.ts	helpContent	documents every keyboard shortcut in the application menu	it	L	renderer/lib	FTFoundation	todo		
@@ -2283,9 +2283,9 @@ T-d680d940	apps/desktop/src/renderer/lib/helpContent.test.ts	helpContent	follows
 T-4f2e3f5e	apps/desktop/src/renderer/lib/helpContent.test.ts	helpContent	names only commands that exist in its sentences	it	L	renderer/lib	FTFoundation	todo		
 T-b51e9329	apps/desktop/src/renderer/lib/helpContent.test.ts	helpContent	covers the search patterns people get wrong	it	L	renderer/lib	FTFoundation	todo		
 T-9ccf0275	apps/desktop/src/renderer/lib/helpContent.test.ts	helpContent	searches rows and shortcuts by their words and by the shortcut as written	it	L	renderer/lib	FTFoundation	todo		
-T-8f3fa1a7	apps/desktop/src/renderer/lib/historyMenu.test.ts	history menu	lists where Back leads, nearest first	it	L	renderer/lib	FTFoundation	todo		
-T-87426be6	apps/desktop/src/renderer/lib/historyMenu.test.ts	history menu	lists where Forward leads, nearest first	it	L	renderer/lib	FTFoundation	todo		
-T-389442af	apps/desktop/src/renderer/lib/historyMenu.test.ts	history menu	stops at a dozen folders in either direction	it	L	renderer/lib	FTFoundation	todo		
+T-8f3fa1a7	apps/desktop/src/renderer/lib/historyMenu.test.ts	history menu	lists where Back leads, nearest first	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/listsWhereBackLeadsNearestFirst	
+T-87426be6	apps/desktop/src/renderer/lib/historyMenu.test.ts	history menu	lists where Forward leads, nearest first	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/listsWhereForwardLeadsNearestFirst	
+T-389442af	apps/desktop/src/renderer/lib/historyMenu.test.ts	history menu	stops at a dozen folders in either direction	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/stopsAtADozenFoldersInEitherDirection	
 T-7bc9401f	apps/desktop/src/renderer/lib/iconGridLayout.test.ts	iconGridLayout	puts the icon as far down in its item as the stylesheet does	it	L	renderer/lib	FTAppKit	todo		
 T-ff73f27d	apps/desktop/src/renderer/lib/iconGridLayout.test.ts	iconGridLayout	takes clicks on the tile and the name where the stylesheet draws them	it	L	renderer/lib	FTAppKit	todo		
 T-a8a78af5	apps/desktop/src/renderer/lib/iconGridLayout.test.ts	iconGridLayout	uses smaller icons and tighter rows in compact mode	it	L	renderer/lib	FTAppKit	todo		
@@ -2297,15 +2297,15 @@ T-ac5c7f93	apps/desktop/src/renderer/lib/iconGridLayout.test.ts	iconGridLayout �
 T-7baaab02	apps/desktop/src/renderer/lib/iconGridLayout.test.ts	iconGridLayout › getIconGridRevealScrollTop	scrolls down just far enough for a row below the viewport	it	L	renderer/lib	FTAppKit	todo		
 T-4ce6d4ac	apps/desktop/src/renderer/lib/iconGridLayout.test.ts	iconGridLayout › getIconGridRevealScrollTop	brings the bottom padding in with the last row	it	L	renderer/lib	FTAppKit	todo		
 T-a9405ac4	apps/desktop/src/renderer/lib/iconGridLayout.test.ts	iconGridLayout › getIconGridRevealScrollTop	shows the top of a row that is taller than the viewport	it	L	renderer/lib	FTAppKit	todo		
-T-56a7ac62	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	returns a name that fits unchanged	it	L	renderer/lib	FTFoundation	todo		
-T-4695b6ea	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	keeps the start, the end of the name and the extension	it	L	renderer/lib	FTFoundation	todo		
-T-7dbf72ef	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	uses all the room there is	it	L	renderer/lib	FTFoundation	todo		
-T-62cad7de	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	does not leave a space before the ellipsis	it	L	renderer/lib	FTFoundation	todo		
-T-e4e6d3ab	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	keeps less of the end when the name before the extension is short	it	L	renderer/lib	FTFoundation	todo		
-T-af019005	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	keeps less of the end when all of it leaves no room for a start	it	L	renderer/lib	FTFoundation	todo		
-T-31947138	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	returns the name whole when no shortening fits	it	L	renderer/lib	FTFoundation	todo		
-T-99ce80bb	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	never cuts a character outside the basic plane in half	it	L	renderer/lib	FTFoundation	todo		
-T-e1345f3d	apps/desktop/src/renderer/lib/iconLabel.test.ts	fitIconLabel	leaves names whole where nothing can be measured	it	L	renderer/lib	FTFoundation	todo		
+T-56a7ac62	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	returns a name that fits unchanged	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/returnsANameThatFitsUnchanged	
+T-4695b6ea	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	keeps the start, the end of the name and the extension	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/keepsTheStartTheEndOfTheNameAndTheExtension	
+T-7dbf72ef	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	uses all the room there is	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/usesAllTheRoomThereIs	
+T-62cad7de	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	does not leave a space before the ellipsis	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/doesNotLeaveASpaceBeforeTheEllipsis	
+T-e4e6d3ab	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	keeps less of the end when the name before the extension is short	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/keepsLessOfTheEndWhenTheNameBeforeTheExtensionIsShort	
+T-af019005	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	keeps less of the end when all of it leaves no room for a start	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/keepsLessOfTheEndWhenAllOfItLeavesNoRoomForAStart	
+T-31947138	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	returns the name whole when no shortening fits	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/returnsTheNameWholeWhenNoShorteningFits	
+T-99ce80bb	apps/desktop/src/renderer/lib/iconLabel.test.ts	shortenNameInMiddle	never cuts a character outside the basic plane in half	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/neverCutsACharacterOutsideTheBasicPlaneInHalf	
+T-e1345f3d	apps/desktop/src/renderer/lib/iconLabel.test.ts	fitIconLabel	leaves names whole where nothing can be measured	it	L	renderer/lib	FTFoundation	N/A		fitIconLabel measures the label in the DOM and leaves names whole where nothing can be measured; AppKit supplies the text widths and the two-line wrapping later
 T-1a0ba4b2	apps/desktop/src/renderer/lib/infoPreview.test.ts	resolveInfoItem	uses the item's properties once they match the target	it	L	renderer/lib	FTFoundation	todo		
 T-f59e299b	apps/desktop/src/renderer/lib/infoPreview.test.ts	resolveInfoItem	previews a listed item from the listing while its properties load	it	L	renderer/lib	FTFoundation	todo		
 T-19c2787c	apps/desktop/src/renderer/lib/infoPreview.test.ts	resolveInfoItem	previews the folder on screen when nothing is selected	it	L	renderer/lib	FTFoundation	todo		
@@ -2334,11 +2334,11 @@ T-1cbec273	apps/desktop/src/renderer/lib/internalDragAndDrop.test.ts	a drag of m
 T-4147b976	apps/desktop/src/renderer/lib/internalDragAndDrop.test.ts	a drag of many items	refuses a folder into itself or below it, not a folder whose name only starts the same	it	L	renderer/lib	FTFoundation	todo		
 T-83343b0d	apps/desktop/src/renderer/lib/layoutTokens.test.ts	layoutTokens	defines stable explorer pane constraints	it	L	renderer/lib	FTAppKit	todo		
 T-13ea5c0d	apps/desktop/src/renderer/lib/layoutTokens.test.ts	layoutTokens	pages the sidebar tree by the row heights the stylesheet draws	it	L	renderer/lib	FTAppKit	todo		
-T-74e6332c	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	keeps the names that contain the text, in their order, ignoring case	it	L	renderer/lib	FTFoundation	todo		
-T-60a391b3	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	returns the same list when there is no filter	it	L	renderer/lib	FTFoundation	todo		
-T-0d4539c1	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	selects the first name starting with the text, as type-to-select would	it	L	renderer/lib	FTFoundation	todo		
-T-95a42904	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	filters search results by name or by the folder they are in	it	L	renderer/lib	FTFoundation	todo		
-T-f76d7a77	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	counts the items, mentioning the total only while some are hidden	it	L	renderer/lib	FTFoundation	todo		
+T-74e6332c	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	keeps the names that contain the text, in their order, ignoring case	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/keepsTheNamesThatContainTheText	
+T-60a391b3	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	returns the same list when there is no filter	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/returnsTheSameListWhenThereIsNoFilter	
+T-0d4539c1	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	selects the first name starting with the text, as type-to-select would	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/selectsTheFirstNameStartingWithTheText	
+T-95a42904	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	filters search results by name or by the folder they are in	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/filtersSearchResultsByNameOrByTheFolderTheyAreIn	
+T-f76d7a77	apps/desktop/src/renderer/lib/listFilter.test.ts	list filter	counts the items, mentioning the total only while some are hidden	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsTheItemsMentioningTheTotalOnlyWhileSomeAreHidden	
 T-f07a04a6	apps/desktop/src/renderer/lib/logging.test.ts	logging helpers	normalizes arbitrary errors to messages	it	L	renderer/lib	FTFoundation	todo		
 T-f6353d2d	apps/desktop/src/renderer/lib/logging.test.ts	logging helpers	forwards renderer logs to the preload bridge when available	it	L	renderer/lib	FTFoundation	todo		
 T-708e7d78	apps/desktop/src/renderer/lib/logging.test.ts	logging helpers	treats a plain object second argument as structured context	it	L	renderer/lib	FTFoundation	todo		
@@ -2378,18 +2378,18 @@ T-866df106	apps/desktop/src/renderer/lib/pagedScroll.test.ts	scrollElementByAmou
 T-b89b3345	apps/desktop/src/renderer/lib/pagedScroll.test.ts	scrollElementByAmount	scrolls up and down, stopping at either end	it	L	renderer/lib	FTAppKit	todo		
 T-9376e8bb	apps/desktop/src/renderer/lib/pagedScroll.test.ts	scrollElementByAmount	tells a scroll event, for the views that follow the scroll position	it	L	renderer/lib	FTAppKit	todo		
 T-b7e58442	apps/desktop/src/renderer/lib/pagedScroll.test.ts	scrollElementByAmount	returns false when the element can't scroll that way, or is already at the end	it	L	renderer/lib	FTAppKit	todo		
-T-03dac36f	apps/desktop/src/renderer/lib/places.test.ts	places	lists opened folders and favorites once each, named as the sidebar names them	it	L	renderer/lib	FTFoundation	todo		
-T-17c86615	apps/desktop/src/renderer/lib/places.test.ts	places	lists the most used places first when nothing is typed	it	L	renderer/lib	FTFoundation	todo		
-T-35f7d93b	apps/desktop/src/renderer/lib/places.test.ts	places	ranks by how the text matches first, and by use second	it	L	renderer/lib	FTFoundation	todo		
-T-182825e8	apps/desktop/src/renderer/lib/places.test.ts	places	matches every word typed, in the name or in the path	it	L	renderer/lib	FTFoundation	todo		
-T-93e5444b	apps/desktop/src/renderer/lib/places.test.ts	places	reports which letters of the name matched	it	L	renderer/lib	FTFoundation	todo		
-T-415c212b	apps/desktop/src/renderer/lib/places.test.ts	places	says where a place is: its folder, or its own path when it is named otherwise	it	L	renderer/lib	FTFoundation	todo		
-T-07d278a9	apps/desktop/src/renderer/lib/places.test.ts	places	tells a path from a name, and shortens the home folder	it	L	renderer/lib	FTFoundation	todo		
-T-117d436c	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	reads the minute that is now	it	L	renderer/lib	FTFoundation	todo		
-T-bcb122bb	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	runs no minute timer for dates that do not read in minutes	it	L	renderer/lib	FTFoundation	todo		
-T-57e92028	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	ticks on the minute while a date on screen reads in minutes	it	L	renderer/lib	FTFoundation	todo		
-T-ebe6fe52	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	stops ticking while the window can not be seen, and catches up when it can	it	L	renderer/lib	FTFoundation	todo		
-T-1a415366	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	ticks at midnight, when Today becomes Yesterday	it	L	renderer/lib	FTFoundation	todo		
+T-03dac36f	apps/desktop/src/renderer/lib/places.test.ts	places	lists opened folders and favorites once each, named as the sidebar names them	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/listsOpenedFoldersAndFavoritesOnceEachNamedAsTheSidebarNamesThem	
+T-17c86615	apps/desktop/src/renderer/lib/places.test.ts	places	lists the most used places first when nothing is typed	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/listsTheMostUsedPlacesFirstWhenNothingIsTyped	
+T-35f7d93b	apps/desktop/src/renderer/lib/places.test.ts	places	ranks by how the text matches first, and by use second	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/ranksByHowTheTextMatchesFirstAndByUseSecond	
+T-182825e8	apps/desktop/src/renderer/lib/places.test.ts	places	matches every word typed, in the name or in the path	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/matchesEveryWordTypedInTheNameOrInThePath	
+T-93e5444b	apps/desktop/src/renderer/lib/places.test.ts	places	reports which letters of the name matched	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/reportsWhichLettersOfTheNameMatched	
+T-415c212b	apps/desktop/src/renderer/lib/places.test.ts	places	says where a place is: its folder, or its own path when it is named otherwise	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/saysWhereAPlaceIs	
+T-07d278a9	apps/desktop/src/renderer/lib/places.test.ts	places	tells a path from a name, and shortens the home folder	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/tellsAPathFromANameAndShortensTheHomeFolder	
+T-117d436c	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	reads the minute that is now	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/readsTheMinuteThatIsNow	
+T-bcb122bb	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	runs no minute timer for dates that do not read in minutes	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/runsNoMinuteTimerForDatesThatDoNotReadInMinutes	
+T-57e92028	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	ticks on the minute while a date on screen reads in minutes	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/ticksOnTheMinuteWhileADateOnScreenReadsInMinutes	
+T-ebe6fe52	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	stops ticking while the window can not be seen, and catches up when it can	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/stopsTickingWhileTheWindowCanNotBeSeenAndCatchesUpWhenItCan	
+T-1a415366	apps/desktop/src/renderer/lib/relativeClock.test.ts	relativeClock	ticks at midnight, when Today becomes Yesterday	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/ticksAtMidnightWhenTodayBecomesYesterday	
 T-0cb7701a	apps/desktop/src/renderer/lib/rendererCommandAvailability.test.ts	canRunToolbarRendererCommand	disables selection commands without a content selection	it	L	renderer/lib	FTFoundation	todo		
 T-c81f8a3d	apps/desktop/src/renderer/lib/rendererCommandAvailability.test.ts	canRunToolbarRendererCommand	requires a ready clipboard and destination for paste	it	L	renderer/lib	FTFoundation	todo		
 T-a6627a45	apps/desktop/src/renderer/lib/rendererCommandAvailability.test.ts	canRunToolbarRendererCommand	copies and cuts the tree's folder from the tree, whatever the list has selected	it	L	renderer/lib	FTFoundation	todo		
@@ -2425,10 +2425,10 @@ T-ffa12885	apps/desktop/src/renderer/lib/scrollbarVisibility.test.ts	scrollbarVi
 T-f37b9997	apps/desktop/src/renderer/lib/scrollbarVisibility.test.ts	scrollbarVisibility	does the same for Help, Settings, the Info panel and Favorites	it	L	renderer/lib	FTAppKit	todo		
 T-39ebe2dd	apps/desktop/src/renderer/lib/scrollbarVisibility.test.ts	scrollbarVisibility	leaves other scrolling elements alone	it	L	renderer/lib	FTAppKit	todo		
 T-a8ad7dc0	apps/desktop/src/renderer/lib/scrollbarVisibility.test.ts	scrollbarVisibility	takes its marks off when it is uninstalled	it	L	renderer/lib	FTAppKit	todo		
-T-e566169a	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	matches plain text as fd does: exactly with an uppercase letter, any case without	it	L	renderer/lib	FTFoundation	todo		
-T-dc2d82a3	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	looks at the whole path when the search matches the full path	it	L	renderer/lib	FTFoundation	todo		
-T-9dadd92e	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	knows when longer text can only find a subset of what shorter text finds	it	L	renderer/lib	FTFoundation	todo		
-T-2d1cc088	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	keeps the results on screen that the new text also finds	it	L	renderer/lib	FTFoundation	todo		
+T-e566169a	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	matches plain text as fd does: exactly with an uppercase letter, any case without	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/matchesPlainTextAsFdDoes	
+T-dc2d82a3	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	looks at the whole path when the search matches the full path	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/looksAtTheWholePathWhenTheSearchMatchesTheFullPath	
+T-9dadd92e	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	knows when longer text can only find a subset of what shorter text finds	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/knowsWhenLongerTextCanOnlyFindASubset	
+T-2d1cc088	apps/desktop/src/renderer/lib/searchRefinement.test.ts	search refinement	keeps the results on screen that the new text also finds	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/keepsTheResultsOnScreenThatTheNewTextAlsoFinds	
 T-920069db	apps/desktop/src/renderer/lib/searchResults.test.ts	search result ordering	appends incremental batches without reordering the existing list	it	L	renderer/lib	FTFoundation	todo		
 T-4802ec5b	apps/desktop/src/renderer/lib/searchResults.test.ts	search result ordering	sorts by path when requested	it	L	renderer/lib	FTFoundation	todo		
 T-bc11048e	apps/desktop/src/renderer/lib/searchResults.test.ts	search result ordering	sorts by name in descending order when requested	it	L	renderer/lib	FTFoundation	todo		
@@ -2437,12 +2437,12 @@ T-7d602a4b	apps/desktop/src/renderer/lib/searchResults.test.ts	search result hel
 T-cbadd337	apps/desktop/src/renderer/lib/searchResults.test.ts	sorting search results by kind	puts folders first, then files by extension, those without one last	it	L	renderer/lib	FTFoundation	todo		
 T-88a11cc8	apps/desktop/src/renderer/lib/searchResults.test.ts	formatSearchStatus	adds the selection's size once it is known	it	L	renderer/lib	FTFoundation	todo		
 T-56a22bbc	apps/desktop/src/renderer/lib/searchResults.test.ts	formatSearchStatus	has no size with nothing selected	it	L	renderer/lib	FTFoundation	todo		
-T-91b90458	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	adds up files whose sizes the list has, with nothing to calculate	it	L	renderer/lib	FTFoundation	todo		
-T-36d01adb	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	offers Calculate while any folder's size is unknown, and no total	it	L	renderer/lib	FTFoundation	todo		
-T-b1bc11e9	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	shows calculating while any folder is	it	L	renderer/lib	FTFoundation	todo		
-T-2bd1264c	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	sums everything up once every size is known	it	L	renderer/lib	FTFoundation	todo		
-T-beb94f48	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	counts a link to a folder as the link itself, not the folder it points to	it	L	renderer/lib	FTFoundation	todo		
-T-90b9b5d3	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	waits for a file's size before showing the total of known folders	it	L	renderer/lib	FTFoundation	todo		
+T-91b90458	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	adds up files whose sizes the list has, with nothing to calculate	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/addsUpFilesWhoseSizesTheListHas	
+T-36d01adb	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	offers Calculate while any folder's size is unknown, and no total	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/offersCalculateWhileAnyFoldersSizeIsUnknown	
+T-b1bc11e9	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	shows calculating while any folder is	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/showsCalculatingWhileAnyFolderIs	
+T-2bd1264c	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	sums everything up once every size is known	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/sumsEverythingUpOnceEverySizeIsKnown	
+T-beb94f48	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	counts a link to a folder as the link itself, not the folder it points to	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/countsALinkToAFolderAsTheLinkItself	
+T-90b9b5d3	apps/desktop/src/renderer/lib/selectionSize.test.ts	selection size	waits for a file's size before showing the total of known folders	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/waitsForAFilesSizeBeforeShowingTheTotalOfKnownFolders	
 T-a4cb0582	apps/desktop/src/renderer/lib/shortcutPolicy.test.ts	shortcutPolicy	pastes into the folder on screen even when no pane has focus	it	L	renderer/lib	FTFoundation	todo		
 T-66231064	apps/desktop/src/renderer/lib/shortcutPolicy.test.ts	shortcutPolicy	allows explorer-scoped commands in the explorer view	it	L	renderer/lib	FTFoundation	todo		
 T-494df166	apps/desktop/src/renderer/lib/shortcutPolicy.test.ts	shortcutPolicy	blocks explorer-scoped commands in help and settings views	it	L	renderer/lib	FTFoundation	todo		
@@ -2499,15 +2499,15 @@ T-25e74d78	apps/desktop/src/renderer/lib/startupNavigation.test.ts	startup navig
 T-ff6743f1	apps/desktop/src/renderer/lib/startupNavigation.test.ts	startup navigation › resolveStartupTabs	shows a folder the app was launched with in a restored tab, or in a new one	it	L	renderer/lib	FTFoundation	todo		
 T-bd036e34	apps/desktop/src/renderer/lib/startupNavigation.test.ts	startup navigation › resolveStartupTabs	opens the tabs a window was given, whatever the setting says	it	L	renderer/lib	FTFoundation	todo		
 T-0a1f16d6	apps/desktop/src/renderer/lib/startupNavigation.test.ts	startup navigation › resolveStartupTabs	falls back to the last tab when the saved active tab is out of range	it	L	renderer/lib	FTFoundation	todo		
-T-4ef3ba98	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	shows the item count when nothing is selected	it	L	renderer/lib	FTFoundation	todo		
-T-e0ca8e31	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	adds the folder's size when nothing is selected and it is known	it	L	renderer/lib	FTFoundation	todo		
-T-87bcada4	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	adds the selection's size when it is known	it	L	renderer/lib	FTFoundation	todo		
-T-2757fa9d	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	says when the size is being calculated	it	L	renderer/lib	FTFoundation	todo		
-T-381332af	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	says how many items show when typing has narrowed the list	it	L	renderer/lib	FTFoundation	todo		
-T-053962d8	apps/desktop/src/renderer/lib/statusSummary.test.ts	selectionStatusSize	is the total once every size is known	it	L	renderer/lib	FTFoundation	todo		
-T-21d8abac	apps/desktop/src/renderer/lib/statusSummary.test.ts	selectionStatusSize	is calculating while a folder in the selection is	it	L	renderer/lib	FTFoundation	todo		
-T-ce0169b8	apps/desktop/src/renderer/lib/statusSummary.test.ts	selectionStatusSize	is unknown while a folder in the selection has not been calculated	it	L	renderer/lib	FTFoundation	todo		
-T-e563b4a1	apps/desktop/src/renderer/lib/statusSummary.test.ts	folderStatusSize	is the folder's size, or calculating, or unknown	it	L	renderer/lib	FTFoundation	todo		
+T-4ef3ba98	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	shows the item count when nothing is selected	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/showsTheItemCountWhenNothingIsSelected	
+T-e0ca8e31	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	adds the folder's size when nothing is selected and it is known	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/addsTheFoldersSizeWhenNothingIsSelectedAndItIsKnown	
+T-87bcada4	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	adds the selection's size when it is known	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/addsTheSelectionsSizeWhenItIsKnown	
+T-2757fa9d	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	says when the size is being calculated	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/saysWhenTheSizeIsBeingCalculated	
+T-381332af	apps/desktop/src/renderer/lib/statusSummary.test.ts	buildContentStatusSummary	says how many items show when typing has narrowed the list	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/saysHowManyItemsShowWhenTypingHasNarrowedTheList	
+T-053962d8	apps/desktop/src/renderer/lib/statusSummary.test.ts	selectionStatusSize	is the total once every size is known	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/selectionSizeIsTheTotalOnceEverySizeIsKnown	
+T-21d8abac	apps/desktop/src/renderer/lib/statusSummary.test.ts	selectionStatusSize	is calculating while a folder in the selection is	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/selectionSizeIsCalculatingWhileAFolderInTheSelectionIs	
+T-ce0169b8	apps/desktop/src/renderer/lib/statusSummary.test.ts	selectionStatusSize	is unknown while a folder in the selection has not been calculated	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/selectionSizeIsUnknownWhileAFolderHasNotBeenCalculated	
+T-e563b4a1	apps/desktop/src/renderer/lib/statusSummary.test.ts	folderStatusSize	is the folder's size, or calculating, or unknown	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/folderSizeIsReadyOrCalculatingOrUnknown	
 T-3a1d6beb	apps/desktop/src/renderer/lib/theme.test.ts	theme helpers	picks the stylesheet's palette and applies the accent to the document root	it	L	renderer/lib	FTAppKit	todo		
 T-3ab16b37	apps/desktop/src/renderer/lib/theme.test.ts	theme helpers	uses one accent everywhere: no toolbar, favorite or text color overrides	it	L	renderer/lib	FTAppKit	todo		
 T-3f0d78e0	apps/desktop/src/renderer/lib/theme.test.ts	theme helpers	draws everything in the system font	it	L	renderer/lib	FTAppKit	todo		
@@ -2524,10 +2524,10 @@ T-16801ecd	apps/desktop/src/renderer/lib/titleTooltips.test.ts	titleTooltips	hid
 T-5c9514b8	apps/desktop/src/renderer/lib/titleTooltips.test.ts	titleTooltips	follows a title that changes while the tooltip is showing	it	L	renderer/lib	FTAppKit	todo		
 T-bea514b5	apps/desktop/src/renderer/lib/titleTooltips.test.ts	titleTooltips	leaves file and folder rows, labelled buttons and row controls to themselves	it	L	renderer/lib	FTAppKit	todo		
 T-f8d9bae2	apps/desktop/src/renderer/lib/titleTooltips.test.ts	titleTooltips	shows nothing for empty titles and stops when uninstalled	it	L	renderer/lib	FTAppKit	todo		
-T-fba42efc	apps/desktop/src/renderer/lib/titleTooltips.test.ts	titleTooltips	places the tooltip under a control, flips above near the bottom, and stays on screen	it	L	renderer/lib	FTAppKit	todo		
+T-fba42efc	apps/desktop/src/renderer/lib/titleTooltips.test.ts	titleTooltips	places the tooltip under a control, flips above near the bottom, and stays on screen	it	L	renderer/lib	FTAppKit	passing	FTFoundationTests/placesTheTooltipUnderAControlFlipsAboveNearTheBottomAndStaysOnScreen	
 T-27fe44c2	apps/desktop/src/renderer/lib/toasts.test.ts	toasts	drops the oldest visible toast when a fourth toast is queued	it	L	renderer/lib	FTFoundation	todo		
 T-0638bf68	apps/desktop/src/renderer/lib/toasts.test.ts	toasts	keeps every notification on screen for four seconds	it	L	renderer/lib	FTFoundation	todo		
-T-77685469	apps/desktop/src/renderer/lib/tooltips.test.ts	tooltips	writes a command's name and then its shortcut as symbols	it	L	renderer/lib	FTAppKit	todo		
+T-77685469	apps/desktop/src/renderer/lib/tooltips.test.ts	tooltips	writes a command's name and then its shortcut as symbols	it	L	renderer/lib	FTAppKit	passing	FTFoundationTests/writesACommandsNameAndThenItsShortcut	
 T-32e945b7	apps/desktop/src/renderer/lib/tooltips.test.ts	tooltips	writes shortcuts in the order macOS does	it	L	renderer/lib	FTAppKit	todo		
 T-760ee5f0	apps/desktop/src/renderer/lib/tooltips.test.ts	tooltips	names toolbar buttons as the menus name their commands	it	L	renderer/lib	FTAppKit	todo		
 T-db1ba4f6	apps/desktop/src/renderer/lib/tooltips.test.ts	tooltips	says what a click on an on/off button will do	it	L	renderer/lib	FTAppKit	todo		
@@ -2550,8 +2550,8 @@ T-a5280d40	apps/desktop/src/renderer/lib/treeView.test.ts	flattenVisibleTree	ret
 T-c3c420b1	apps/desktop/src/renderer/lib/treeView.test.ts	getTreeKeyboardAction	moves through visible tree rows	it	L	renderer/lib	FTFoundation	todo		
 T-eaf07a43	apps/desktop/src/renderer/lib/treeView.test.ts	getTreeKeyboardAction	expands and collapses tree nodes on horizontal arrows	it	L	renderer/lib	FTFoundation	todo		
 T-05d06d43	apps/desktop/src/renderer/lib/treeView.test.ts	getTreeKeyboardAction	navigates to parent and requests loading for unloaded nodes	it	L	renderer/lib	FTFoundation	todo		
-T-eb1d7cfe	apps/desktop/src/renderer/lib/typeahead.test.ts	typeahead helpers	detects printable character keys	it	L	renderer/lib	FTFoundation	todo		
-T-df5c84b6	apps/desktop/src/renderer/lib/typeahead.test.ts	typeahead helpers	matches the first visible tree node by prefix	it	L	renderer/lib	FTFoundation	todo		
+T-eb1d7cfe	apps/desktop/src/renderer/lib/typeahead.test.ts	typeahead helpers	detects printable character keys	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/detectsPrintableCharacterKeys	
+T-df5c84b6	apps/desktop/src/renderer/lib/typeahead.test.ts	typeahead helpers	matches the first visible tree node by prefix	it	L	renderer/lib	FTFoundation	passing	FTFoundationTests/matchesTheFirstVisibleTreeNodeByPrefix	
 T-0304b141	apps/desktop/src/renderer/lib/undoQuestion.test.ts	describeUndoQuestion	names the operation an item that changed came from	it	L	renderer/lib	FTFoundation	todo		
 T-86561a8d	apps/desktop/src/renderer/lib/undoQuestion.test.ts	describeUndoQuestion	never goes ahead with changed work by default, and keeps both names by default	it	L	renderer/lib	FTFoundation	todo		
 T-5a9c708a	apps/desktop/src/renderer/lib/virtualization.test.ts	computeRowsPerColumn	computes rows for a standard viewport	it	L	renderer/lib	FTAppKit	todo		
@@ -2711,14 +2711,14 @@ T-6856c3fc	apps/desktop/src/shared/toolbarItems.test.ts	toolbarItems	offers ever
 T-2b6a35fc	apps/desktop/src/shared/toolbarItems.test.ts	toolbarItems	offers every item the toolbar does not hold, and the space always	it	L	shared	FTFoundation	todo		
 T-23d43fd9	apps/desktop/src/shared/toolbarItems.test.ts	toolbarItems	offers the app's own buttons and the new file actions	it	L	shared	FTFoundation	todo		
 T-01a55030	apps/desktop/src/shared/toolbarItems.test.ts	toolbarItems	gives every button a command to run, apart from the ones the toolbar draws itself	it	L	shared	FTFoundation	todo		
-T-74b40c9a	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	keeps each visit, newest first, and moves the folder to the front	it	L	shared	FTFoundation	todo		
-T-5d1ef9e3	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	keeps only the latest visits of a folder	it	L	shared	FTFoundation	todo		
-T-1f07a6cc	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	only makes a folder passed through known, without a visit	it	L	shared	FTFoundation	todo		
-T-405c4507	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	weighs each visit by how it was made and how long ago	it	L	shared	FTFoundation	todo		
-T-71b23b8a	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	forgets the least used folders past the limit, never the one just opened	it	L	shared	FTFoundation	todo		
-T-3b35105d	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	forgets a folder on request	it	L	shared	FTFoundation	todo		
-T-75b06913	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	writes one folder per line and reads it back	it	L	shared	FTFoundation	todo		
-T-a135762b	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	reads saved visits leniently	it	L	shared	FTFoundation	todo		
+T-74b40c9a	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	keeps each visit, newest first, and moves the folder to the front	it	L	shared	FTFoundation	passing	FTFoundationTests/keepsEachVisitNewestFirstAndMovesTheFolderToTheFront	
+T-5d1ef9e3	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	keeps only the latest visits of a folder	it	L	shared	FTFoundation	passing	FTFoundationTests/keepsOnlyTheLatestVisitsOfAFolder	
+T-1f07a6cc	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	only makes a folder passed through known, without a visit	it	L	shared	FTFoundation	passing	FTFoundationTests/onlyMakesAFolderPassedThroughKnownWithoutAVisit	
+T-405c4507	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	weighs each visit by how it was made and how long ago	it	L	shared	FTFoundation	passing	FTFoundationTests/weighsEachVisitByHowItWasMadeAndHowLongAgo	
+T-71b23b8a	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	forgets the least used folders past the limit, never the one just opened	it	L	shared	FTFoundation	passing	FTFoundationTests/forgetsTheLeastUsedFoldersPastTheLimitNeverTheOneJustOpened	
+T-3b35105d	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	forgets a folder on request	it	L	shared	FTFoundation	passing	FTFoundationTests/forgetsAFolderOnRequest	
+T-75b06913	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	writes one folder per line and reads it back	it	L	shared	FTFoundation	passing	FTFoundationTests/writesOneFolderPerLineAndReadsItBack	
+T-a135762b	apps/desktop/src/shared/visitedFolders.test.ts	visited folders	reads saved visits leniently	it	L	shared	FTFoundation	passing	FTFoundationTests/readsSavedVisitsLeniently	
 T-ac4bf5f6	packages/contracts/src/copyPasteChoices.test.ts	copy/paste choices	offers Merge only for two folders	it	L	contracts	FTFoundation	todo		
 T-de383202	packages/contracts/src/copyPasteChoices.test.ts	copy/paste choices	offers only Skip when the source disappeared	it	L	contracts	FTFoundation	todo		
 T-036007a2	packages/contracts/src/copyPasteChoices.test.ts	runtime conflict choices	offers only going ahead or skipping when nothing is at the destination any more	it	L	contracts	FTFoundation	todo		
