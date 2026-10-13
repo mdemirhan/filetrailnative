@@ -1,0 +1,134 @@
+{
+  "suite": "exec-copy-single",
+  "referenceCommit": "e4d0872",
+  "seed": 0,
+  "generator": "tools/parity/golden/exec-copy-single.ts",
+  "cases": [
+    {
+      "name": "copy one file into an empty folder",
+      "input": {
+        "name": "copy one file into an empty folder",
+        "tree": [
+          {
+            "path": "source/notes.txt",
+            "kind": "file",
+            "content": "File Trail parity\n",
+            "mode": "0644"
+          },
+          {
+            "path": "destination",
+            "kind": "dir",
+            "mode": "0755"
+          }
+        ],
+        "paste": {
+          "mode": "copy",
+          "sources": [
+            "source/notes.txt"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "skip",
+          "directory": "skip",
+          "mismatch": "skip"
+        },
+        "answers": [],
+        "stopAt": null
+      },
+      "output": {
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/notes.txt",
+            "sha256": "cc64ed5273ac68ee4cecca2469b0b30ac99e0db5c20f3ad95dda1045c4671afb",
+            "size": 18
+          }
+        ],
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/notes.txt",
+            "sha256": "cc64ed5273ac68ee4cecca2469b0b30ac99e0db5c20f3ad95dda1045c4671afb",
+            "size": 18
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/notes.txt",
+            "sha256": "cc64ed5273ac68ee4cecca2469b0b30ac99e0db5c20f3ad95dda1045c4671afb",
+            "size": 18
+          }
+        ],
+        "result": {
+          "operationId": "op-test",
+          "mode": "copy",
+          "status": "completed",
+          "destinationDirectoryPath": "$ROOT/destination",
+          "summary": {
+            "topLevelItemCount": 1,
+            "totalItemCount": 1,
+            "completedItemCount": 1,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "cancelledItemCount": 0,
+            "completedByteCount": 18,
+            "totalBytes": 18
+          },
+          "items": [
+            {
+              "sourcePath": "$ROOT/source/notes.txt",
+              "destinationPath": "$ROOT/destination/notes.txt",
+              "sourceKind": "file",
+              "status": "completed",
+              "error": null,
+              "skipReason": null
+            }
+          ],
+          "error": null
+        },
+        "questions": [],
+        "statuses": [
+          "running",
+          "completed"
+        ]
+      }
+    }
+  ]
+}

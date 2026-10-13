@@ -84,7 +84,8 @@ public enum Golden {
             guard !expected.utf8.elementsEqual(got.utf8) else { continue }
             count += 1
             if lines.count < limit {
-                lines.append("\(testCase.name) | input: \(render(testCase.input)) | expected: \(expected) | actual: \(got)")
+                let input = render(testCase.input)
+                lines.append("\(testCase.name) | input: \(input) | expected: \(expected) | actual: \(got)")
             }
         }
         guard count > 0 else { return nil }
