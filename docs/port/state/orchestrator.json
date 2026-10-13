@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T17:09:32+00:00",
+  "updatedAt": "2026-10-13T17:09:50+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
@@ -19,6 +19,12 @@
       "weeklyPct": 5.0,
       "fiveHourPct": 9.0,
       "note": "baseline before P0, includes inventory and planning"
+    },
+    {
+      "at": "2026-10-13T17:09:50+00:00",
+      "weeklyPct": 5.0,
+      "fiveHourPct": 9.0,
+      "note": "before batch P0-A"
     }
   ],
   "batches": {
@@ -28,9 +34,10 @@
         "P0-02",
         "P0-03"
       ],
-      "status": "planned",
+      "status": "running",
       "runId": null,
-      "estimatedAgents": 7
+      "estimatedAgents": 7,
+      "startedAt": "2026-10-13T17:09:50+00:00"
     }
   },
   "wps": {
@@ -41,7 +48,7 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-01",
       "headSha": null,
       "attempts": 0,
@@ -63,7 +70,7 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-02",
       "headSha": null,
       "attempts": 0,
@@ -86,7 +93,7 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-03",
       "headSha": null,
       "attempts": 0,
