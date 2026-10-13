@@ -2,14 +2,71 @@
 #if DEBUG
     import Foundation
 
-    /// One UI state to capture, as written in `tools/capture/scenarios/*.json`. The same file drives the
-    /// original app (through Playwright) and this one (through `--automation`).
+    /// One UI state or flow to capture, as written in `tools/capture/scenarios/**/*.json`. The same file
+    /// drives the original app (through Playwright) and this one (through `--automation`).
     struct Scenario: Equatable, Sendable {
         var name: String
-        /// The folder relative paths in `open` steps start from: absolute, `~/…`, or relative to the
-        /// fixtures folder (`FILETRAIL_FIXTURES`, by default `~/Library/Caches/filetrail-port/fixtures`).
+        /// The folder relative paths in `open` and `fs` steps start from: absolute, `~/…`, or relative to
+        /// the fixtures folder (`FILETRAIL_FIXTURES`, by default `~/Library/Caches/filetrail-port/fixtures`).
+        /// `FILETRAIL_SCENARIO_ROOT` replaces it: run.sh points it at a scratch copy for scenarios that
+        /// change files.
         var root: String?
+        /// The frozen clock (local ISO time); `fs` steps date what they make with it.
+        var now: String?
+        /// The feature rows (`F-…`) and behavior rules (`B-…`) the scenario proves, and its tiers.
+        var features: [String] = []
+        var behaviors: [String] = []
+        var tiers: [String] = []
         var steps: [Step]
+
+        /// A logical element of `tools/capture/elements.json`, narrowed to one of several by its text or
+        /// its place (top to bottom, then left to right).
+        struct ElementRef: Equatable, Sendable, CustomStringConvertible {
+            var name: String
+            var index: Int?
+            var text: String?
+
+            init(_ name: String, index: Int? = nil, text: String? = nil) {
+                self.name = name
+                self.index = index
+                self.text = text
+            }
+
+            var description: String {
+                var parts = [name]
+                if let text { parts.append("“\(text)”") }
+                if let index { parts.append("#\(index)") }
+                return parts.joined(separator: " ")
+            }
+        }
+
+        enum MouseButton: String, Equatable, Sendable {
+            case left, right
+        }
+
+        /// A change to the fixture made from outside the app, as another app would make it.
+        enum FileOp: Equatable, Sendable {
+            /// A file (with `contents`) or, with `directory`, a folder.
+            case create(path: String, contents: String, directory: Bool)
+            case write(path: String, contents: String, append: Bool)
+            case rename(path: String, to: String)
+            case delete(path: String)
+            /// `mode` in octal, as `chmod` takes it.
+            case chmod(path: String, mode: String)
+            /// The Finder's Locked flag (`uchg`).
+            case lock(path: String, locked: Bool)
+
+            var name: String {
+                switch self {
+                case .create: "create"
+                case .write: "write"
+                case .rename: "rename"
+                case .delete: "delete"
+                case .chmod: "chmod"
+                case .lock: "lock"
+                }
+            }
+        }
 
         enum Step: Equatable, Sendable {
             case window(width: Double, height: Double)
@@ -22,6 +79,18 @@
             case wait(milliseconds: Int)
             case snapshot(name: String)
             case geometry(name: String, allViews: Bool)
+            case click(ElementRef, button: MouseButton, count: Int, modifiers: [String])
+            case menu(path: [String])
+            case contextMenu(ElementRef, choose: [String])
+            case drag(from: ElementRef, to: ElementRef, modifiers: [String])
+            case expectSheet(name: String)
+            case sheetButton(label: String)
+            case newWindow
+            case newTab
+            case selectTab(index: Int)
+            case selectWindow(index: Int?, title: String?)
+            case fs(FileOp)
+            case expect(ElementRef, text: String?, visible: Bool?, count: Int?)
 
             /// The step's name as written in the file.
             var kind: String {
@@ -36,14 +105,30 @@
                 case .wait: "wait"
                 case .snapshot: "snapshot"
                 case .geometry: "geometry"
+                case .click: "click"
+                case .menu: "menu"
+                case .contextMenu: "contextMenu"
+                case .drag: "drag"
+                case .expectSheet: "expectSheet"
+                case .sheetButton: "sheetButton"
+                case .newWindow: "newWindow"
+                case .newTab: "newTab"
+                case .selectTab: "selectTab"
+                case .selectWindow: "selectWindow"
+                case .fs: "fs"
+                case .expect: "expect"
                 }
             }
         }
 
-        enum PrefValue: Equatable, Sendable {
+        /// A preference value: the original's preferences include lists and objects (favorites, columns).
+        indirect enum PrefValue: Equatable, Sendable {
             case string(String)
             case number(Double)
             case bool(Bool)
+            case null
+            case array([PrefValue])
+            case object([String: PrefValue])
 
             var string: String? {
                 if case .string(let value) = self { return value }
@@ -58,6 +143,30 @@
             var bool: Bool? {
                 if case .bool(let value) = self { return value }
                 return nil
+            }
+
+            init?(json: Any) {
+                switch json {
+                case let text as String: self = .string(text)
+                case let number as NSNumber:
+                    self = Scenario.isBool(number) ? .bool(number.boolValue) : .number(number.doubleValue)
+                case is NSNull: self = .null
+                case let list as [Any]:
+                    var values: [PrefValue] = []
+                    for element in list {
+                        guard let value = PrefValue(json: element) else { return nil }
+                        values.append(value)
+                    }
+                    self = .array(values)
+                case let object as [String: Any]:
+                    var values: [String: PrefValue] = [:]
+                    for (key, element) in object {
+                        guard let value = PrefValue(json: element) else { return nil }
+                        values[key] = value
+                    }
+                    self = .object(values)
+                default: return nil
+                }
             }
         }
 
@@ -85,53 +194,76 @@
                 }
                 return try parseStep(step, index: index + 1)
             }
-            return Scenario(name: name, root: top["root"] as? String, steps: steps)
+            func strings(_ key: String) throws -> [String] {
+                guard let value = top[key] else { return [] }
+                guard let list = value as? [String] else { throw ParseError(description: "\"\(key)\" is not a list") }
+                return list
+            }
+            return Scenario(
+                name: name, root: top["root"] as? String, now: top["now"] as? String,
+                features: try strings("features"), behaviors: try strings("behaviors"), tiers: try strings("tier"),
+                steps: steps)
         }
 
         private static func parseStep(_ step: [String: Any], index: Int) throws -> Step {
             guard let kind = step["step"] as? String else {
                 throw ParseError(description: "step \(index): missing \"step\"")
             }
+            func fail(_ message: String) -> ParseError {
+                ParseError(description: "step \(index) (\(kind)): \(message)")
+            }
             func string(_ key: String) throws -> String {
-                guard let value = step[key] as? String else {
-                    throw ParseError(description: "step \(index) (\(kind)): missing \"\(key)\"")
-                }
+                guard let value = step[key] as? String else { throw fail("missing \"\(key)\"") }
                 return value
             }
             func number(_ key: String) throws -> Double {
                 guard let value = step[key] as? NSNumber, !isBool(value) else {
-                    throw ParseError(description: "step \(index) (\(kind)): missing number \"\(key)\"")
+                    throw fail("missing number \"\(key)\"")
                 }
                 return value.doubleValue
+            }
+            func optionalInt(_ key: String) throws -> Int? {
+                guard step[key] != nil else { return nil }
+                return Int(try number(key))
+            }
+            func element(_ key: String, siblings: Bool) throws -> ElementRef {
+                switch step[key] {
+                case let name as String:
+                    guard siblings else { return ElementRef(name) }
+                    return ElementRef(name, index: try optionalInt("index"), text: step["text"] as? String)
+                case let object as [String: Any]:
+                    guard let name = (object["name"] ?? object["element"]) as? String else {
+                        throw fail("\"\(key)\" has no \"name\"")
+                    }
+                    let position = object["index"] as? NSNumber
+                    return ElementRef(name, index: position.map(\.intValue), text: object["text"] as? String)
+                default:
+                    throw fail("missing element \"\(key)\"")
+                }
+            }
+            func modifiers() throws -> [String] {
+                guard let value = step["modifiers"] else { return [] }
+                guard let list = value as? [String] else { throw fail("\"modifiers\" is not a list") }
+                return list
             }
             switch kind {
             case "window":
                 return .window(width: try number("width"), height: try number("height"))
             case "prefs":
-                guard let values = step["prefs"] as? [String: Any] else {
-                    throw ParseError(description: "step \(index) (prefs): missing \"prefs\"")
-                }
+                guard let values = step["prefs"] as? [String: Any] else { throw fail("missing \"prefs\"") }
                 var prefs: [String: PrefValue] = [:]
                 for (key, value) in values {
-                    if let text = value as? String {
-                        prefs[key] = .string(text)
-                    } else if let number = value as? NSNumber {
-                        prefs[key] = isBool(number) ? .bool(number.boolValue) : .number(number.doubleValue)
-                    } else {
-                        throw ParseError(description: "step \(index) (prefs): \"\(key)\" is not a plain value")
-                    }
+                    guard let parsed = PrefValue(json: value) else { throw fail("\"\(key)\" is not a JSON value") }
+                    prefs[key] = parsed
                 }
                 return .prefs(prefs)
             case "open":
                 return .open(path: try string("path"))
             case "select":
-                guard let names = step["names"] as? [String] else {
-                    throw ParseError(description: "step \(index) (select): missing \"names\"")
-                }
+                guard let names = step["names"] as? [String] else { throw fail("missing \"names\"") }
                 return .select(names: names)
             case "key":
-                let modifiers = step["modifiers"] as? [String] ?? []
-                return .key(key: try string("key"), modifiers: modifiers)
+                return .key(key: try string("key"), modifiers: try modifiers())
             case "type":
                 return .type(text: try string("text"))
             case "command":
@@ -142,16 +274,90 @@
                 return .snapshot(name: try string("name"))
             case "geometry":
                 return .geometry(name: try string("name"), allViews: step["allViews"] as? Bool ?? false)
+            case "click":
+                let buttonName = step["button"] as? String ?? "left"
+                guard let button = MouseButton(rawValue: buttonName) else { throw fail("unknown button \(buttonName)") }
+                let count = try optionalInt("count") ?? 1
+                guard (1...3).contains(count) else { throw fail("\"count\" must be 1 to 3") }
+                return .click(
+                    try element("element", siblings: true), button: button, count: count, modifiers: try modifiers())
+            case "menu":
+                guard let path = step["path"] as? [String], !path.isEmpty else { throw fail("missing \"path\"") }
+                return .menu(path: path)
+            case "contextMenu":
+                let choose: [String]
+                switch step["choose"] {
+                case nil: choose = []
+                case let label as String: choose = [label]
+                case let labels as [String]: choose = labels
+                default: throw fail("\"choose\" is not a label or a list of labels")
+                }
+                return .contextMenu(try element("element", siblings: true), choose: choose)
+            case "drag":
+                return .drag(
+                    from: try element("from", siblings: false), to: try element("to", siblings: false),
+                    modifiers: try modifiers())
+            case "expectSheet":
+                return .expectSheet(name: try string("name"))
+            case "sheetButton":
+                return .sheetButton(label: try string("label"))
+            case "newWindow":
+                return .newWindow
+            case "newTab":
+                return .newTab
+            case "selectTab":
+                return .selectTab(index: Int(try number("index")))
+            case "selectWindow":
+                let position = try optionalInt("index")
+                let title = step["title"] as? String
+                guard position != nil || title != nil else { throw fail("needs \"index\" or \"title\"") }
+                return .selectWindow(index: position, title: title)
+            case "fs":
+                return .fs(try parseFileOp(step, fail: fail))
+            case "expect":
+                let visible = step["visible"] as? Bool
+                let count = try optionalInt("count")
+                let text = step["text"] as? String
+                guard visible != nil || count != nil || text != nil else {
+                    throw fail("needs \"text\", \"visible\" or \"count\"")
+                }
+                return .expect(try element("element", siblings: false), text: text, visible: visible, count: count)
             default:
                 throw ParseError(description: "step \(index): unknown step \"\(kind)\"")
             }
         }
 
-        private static func isBool(_ number: NSNumber) -> Bool {
+        private static func parseFileOp(_ step: [String: Any], fail: (String) -> ParseError) throws -> FileOp {
+            guard let op = step["op"] as? String else { throw fail("missing \"op\"") }
+            guard let path = step["path"] as? String, !path.isEmpty else { throw fail("missing \"path\"") }
+            let contents = step["contents"] as? String ?? ""
+            switch op {
+            case "create":
+                return .create(path: path, contents: contents, directory: step["directory"] as? Bool ?? false)
+            case "write":
+                return .write(path: path, contents: contents, append: step["append"] as? Bool ?? false)
+            case "rename":
+                guard let target = step["to"] as? String, !target.isEmpty else { throw fail("missing \"to\"") }
+                return .rename(path: path, to: target)
+            case "delete":
+                return .delete(path: path)
+            case "chmod":
+                guard let mode = step["mode"] as? String, Int(mode, radix: 8) != nil else {
+                    throw fail("\"mode\" must be an octal string such as \"644\"")
+                }
+                return .chmod(path: path, mode: mode)
+            case "lock":
+                return .lock(path: path, locked: step["locked"] as? Bool ?? true)
+            default:
+                throw fail("unknown op \"\(op)\"")
+            }
+        }
+
+        fileprivate static func isBool(_ number: NSNumber) -> Bool {
             CFGetTypeID(number) == CFBooleanGetTypeID()
         }
 
-        /// Resolves a path from an `open` step.
+        /// Resolves a path from an `open` or `fs` step.
         func resolve(_ path: String, environment: [String: String] = ProcessInfo.processInfo.environment) -> URL {
             let home = FileManager.default.homeDirectoryForCurrentUser.path
             func expand(_ text: String) -> String {
@@ -160,11 +366,23 @@
                 return text
             }
             let fixtures = expand(environment["FILETRAIL_FIXTURES"] ?? "~/Library/Caches/filetrail-port/fixtures")
-            var base = expand(root ?? "")
+            var base = expand(environment["FILETRAIL_SCENARIO_ROOT"].flatMap { $0.isEmpty ? nil : $0 } ?? root ?? "")
             if !base.hasPrefix("/") { base = (fixtures as NSString).appendingPathComponent(base) }
             let target = expand(path)
             let full = target.hasPrefix("/") ? target : (base as NSString).appendingPathComponent(target)
             return URL(fileURLWithPath: (full as NSString).standardizingPath, isDirectory: true)
+        }
+
+        /// The scenario's clock as a date, read as local time.
+        var nowDate: Date? {
+            guard let now else { return nil }
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            for format in ["yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd'T'HH:mm"] {
+                formatter.dateFormat = format
+                if let date = formatter.date(from: now) { return date }
+            }
+            return ISO8601DateFormatter().date(from: now)
         }
     }
 #endif
