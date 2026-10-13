@@ -18,3 +18,5 @@
 {"at": "2026-10-13T17:41:26+00:00", "event": "add-batch", "batch": "P0-B2", "wps": ["P0-05"], "estimatedAgents": 6}
 {"at": "2026-10-13T17:41:27+00:00", "event": "set-batch", "batch": "P0-B2", "status": "running", "runId": null}
 {"at": "2026-10-13T17:41:38+00:00", "event": "set-batch", "batch": "P0-B2", "status": "running", "runId": "wf_6aa12543-af9"}
+{"at": "2026-10-13T18:14:58+00:00", "event": "reconcile", "recover": true, "notes": [], "recovered": [{"wp": "P0-01", "path": "/Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_6aa12543-af9-1", "hadChanges": false}, {"wp": "P0-01", "path": "/Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_6aa12543-af9-2", "hadChanges": false}, {"wp": "P0-01", "path": "/Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_6aa12543-af9-3", "hadChanges": false}]}
+{"at": "2026-10-13T18:15:24+00:00", "event": "apply-report", "batch": "P0-B2", "wps": ["P0-05"]}

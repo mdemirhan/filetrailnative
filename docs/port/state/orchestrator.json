@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T17:41:38+00:00",
+  "updatedAt": "2026-10-13T18:15:24+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "port/integration",
-  "wave": 0,
-  "phase": "P0",
-  "nextAction": "Run batch P0-B2 (P0-05 + phase critic), then the P0 gate",
+  "wave": 1,
+  "phase": "P1/P2/P4 + P0 follow-ups",
+  "nextAction": "Wave-0 gate: user approves deviations and the merge to main; then plan wave-1 batches (P0-08..10, P1, P2, P4-01/02)",
   "pause": {
     "requested": false,
     "reason": null,
@@ -116,11 +116,27 @@
       "wps": [
         "P0-05"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_6aa12543-af9",
       "estimatedAgents": 6,
-      "critic": "Phase P0 critic. In the orchestrator checkout (port/integration, after the merge above), compare what phase 0 delivered with docs/port/PLAN.md sections 5 (validation system) and 6.6-6.7, and with the P0 table in section 7. Run, do not just read: scripts/ci.sh, tools/parity/gen.sh --check, tools/parity/exec/selftest.sh, tools/capture/run.sh --selftest, tools/bench/run.sh --quick --report-only, bun tools/parity-matrix/report.ts. List concrete gaps that would stop phases 1-3 from using these tools as the plan intends (e.g. a harness that cannot yet do something a P1/P2/P3 work package will need). Each gap needs evidence (a command and its output, or a file:line). Do not modify files. At most 10 gaps.",
-      "startedAt": "2026-10-13T17:41:38+00:00"
+      "critic": {
+        "summary": "P0 tools run clean; 10 gaps for later phases: exec differential lacks stop/crash injection, journal/undo/trash/event comparison, Swift runner and analysis-report differential; automation lacks pointer/menu/drag/sheet/multi-window steps and most prefs; capture selftest never compares Electron vs Swift and reports missing elements as off; matrix has no Swift-citation scanner; features.md lacks test/scenario links; no Swift disk-image helper."
+      },
+      "startedAt": "2026-10-13T17:41:38+00:00",
+      "endedAt": "2026-10-13T18:15:24+00:00",
+      "integration": {
+        "merged": [
+          "P0-05"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "23d0a09",
+        "summary": "merged; FTAppKitTests now depends on FTFoundation explicitly"
+      },
+      "spentOutputTokens": null,
+      "agents": 5,
+      "subagentTokens": 593479,
+      "durationMin": 32.9
     }
   },
   "wps": {
@@ -248,10 +264,10 @@
         "P0-01",
         "P0-02"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-05",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "657a355",
+      "attempts": 1,
       "gate": [
         "tools/capture/run.sh --selftest",
         "tools/capture/run.sh --tier wp",
@@ -260,10 +276,15 @@
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "AppClock (FILETRAIL_NOW). DEBUG-only --automation scenario runner (window/prefs/open/select/key/type/command/wait/snapshot/geometry, watchdogs). Electron driver via reference Playwright (seeded app-state, frozen page clock, Go to Folder, filetrail:command). pixeldiff (CoreImage ΔE per region, heat map, masks). tools/capture/run.sh with cached reference captures and contact.html. 10 Lighthouse scenarios at 1200x760.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deviations": [
+        "scenario setup.emptyFolders",
+        "extra 'type' step",
+        "favoritesPlacement 'separate' seeded so section headers show"
+      ]
     },
     "P0-06": {
       "title": "Design tokens, accent math, zoom",
@@ -334,7 +355,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P1-01",
@@ -360,7 +382,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P1-02",
@@ -386,7 +409,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P1-03",
@@ -412,7 +436,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P1-04",
@@ -438,7 +463,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P2-01",
@@ -464,7 +490,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P2-02",
@@ -490,7 +517,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P2-03",
@@ -516,7 +544,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P2-04",
@@ -542,7 +571,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P2-05",
@@ -568,7 +598,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P2-06",
@@ -594,7 +625,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P2-07",
@@ -614,6 +646,7 @@
       "risk": "high",
       "model": "opus",
       "depends": [
+        "P0-09",
         "P1-01",
         "P2-01"
       ],
@@ -815,7 +848,8 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08"
       ],
       "status": "todo",
       "branch": "port/P4-01",
@@ -841,7 +875,9 @@
         "P0-04",
         "P0-05",
         "P0-06",
-        "P0-07"
+        "P0-07",
+        "P0-08",
+        "P0-10"
       ],
       "status": "todo",
       "branch": "port/P4-02",
@@ -882,9 +918,10 @@
       "risk": "medium",
       "model": "sonnet",
       "depends": [
+        "P0-06",
+        "P0-10",
         "P4-01",
-        "P4-02",
-        "P0-06"
+        "P4-02"
       ],
       "status": "todo",
       "branch": "port/P5-01",
@@ -1212,6 +1249,82 @@
       "attempts": 0,
       "gate": [],
       "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-08": {
+      "title": "Parity bookkeeping and disk-image test helper",
+      "phase": "P0",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P0-03",
+        "P0-04"
+      ],
+      "status": "todo",
+      "branch": "port/P0-08",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "bun tools/parity-matrix/sync.ts --check",
+        "scripts/ci.sh"
+      ],
+      "lenses": [],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-09": {
+      "title": "Write-engine differential completion",
+      "phase": "P0",
+      "wave": 1,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [
+        "P0-04"
+      ],
+      "status": "todo",
+      "branch": "port/P0-09",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "tools/parity/exec/selftest.sh",
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": []
+    },
+    "P0-10": {
+      "title": "Automation and capture extensions",
+      "phase": "P0",
+      "wave": 1,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [
+        "P0-05"
+      ],
+      "status": "todo",
+      "branch": "port/P0-10",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "tools/capture/run.sh --selftest",
+        "tools/capture/run.sh --tier wp",
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
