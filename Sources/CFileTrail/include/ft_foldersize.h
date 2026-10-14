@@ -55,6 +55,9 @@ ft_finished_folder *ft_folder_walk_take_finished(ft_folder_walk *walk);
 
 void ft_finished_folders_free(ft_finished_folder *head);
 
+/// The disk walked. Set before any folder is finished, so it is safe to read once told of one.
+int64_t ft_folder_walk_dev(const ft_folder_walk *walk);
+
 ft_folder_walk_result ft_folder_walk_get_result(const ft_folder_walk *walk);
 
 /// Frees the walk and what it still holds. Not while it runs.

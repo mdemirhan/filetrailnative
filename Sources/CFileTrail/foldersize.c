@@ -522,6 +522,7 @@ struct ft_folder_walk {
   char *root_path;
   int background;       /* walked at utility QoS: a measurement the app started itself */
   atomic_int cancelled; /* written from any thread, read by worker pthreads */
+  _Atomic int64_t dev;  /* the disk walked, set before any worker starts */
   ft_folder_walk_result result;
   finished_list_t finished;
 };
@@ -537,6 +538,7 @@ ft_folder_walk *ft_folder_walk_create(const char *root_path, int background,
   }
   w->background = background ? 1 : 0;
   atomic_init(&w->cancelled, 0);
+  atomic_init(&w->dev, 0);
   pthread_mutex_init(&w->finished.lock, NULL);
   w->finished.head = NULL;
   w->finished.notify = notify;
@@ -550,6 +552,10 @@ void ft_folder_walk_cancel(ft_folder_walk *walk) {
 
 ft_finished_folder *ft_folder_walk_take_finished(ft_folder_walk *walk) {
   return finished_take(&walk->finished);
+}
+
+int64_t ft_folder_walk_dev(const ft_folder_walk *walk) {
+  return atomic_load(&walk->dev);
 }
 
 ft_folder_walk_result ft_folder_walk_get_result(const ft_folder_walk *walk) {
@@ -586,6 +592,7 @@ void ft_folder_walk_run(ft_folder_walk *w) {
 
   /* Set before any worker starts, so a folder on the finished list was put there after it was set. */
   result->dev = (int64_t)root_stat.st_dev;
+  atomic_store(&w->dev, result->dev);
   char *root_path = strdup(w->root_path);
   walk_dir_t *root = root_path ? walk_dir_new(root_path, NULL) : NULL;
   if (!root) {
