@@ -40,12 +40,30 @@ func measure(
     return MeasuredWalk(result: result, batches: batches)
 }
 
+/// Made with the system calls, which keep a name as spelled (Foundation would spell an accent its own way, and
+/// the walker reports names exactly).
 func write(_ path: String, _ size: Int) throws {
-    try Data(String(repeating: "x", count: size).utf8).write(to: URL(fileURLWithPath: path))
+    let descriptor = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0o644)
+    guard descriptor >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+    defer { close(descriptor) }
+    let bytes = [UInt8](repeating: UInt8(ascii: "x"), count: size)
+    var written = 0
+    while written < size {
+        let count = bytes[written...].withUnsafeBytes { Darwin.write(descriptor, $0.baseAddress, $0.count) }
+        guard count > 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+        written += count
+    }
 }
 
+/// `mkdir -p`.
 func makeFolder(_ path: String) throws {
-    try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
+    var made = path.hasPrefix("/") ? "" : "."
+    for part in path.split(separator: "/", omittingEmptySubsequences: true) {
+        made += "/" + part
+        if mkdir(made, 0o755) != 0 && errno != EEXIST {
+            throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
+        }
+    }
 }
 
 /// Files and folders as the original's first suite makes them:
