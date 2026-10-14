@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T06:35:42+00:00",
+  "updatedAt": "2026-10-14T06:56:07+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "Running W1-D P1-04+P1-05+P2-04. Next (user OK'd >10 agents): W1-E all six ready P2s: P2-01+P2-02+P2-03+P2-05+P2-06+P2-07 (~25 agents); W1-F P4-01; W1-G P4-02; then wave-1 end gate",
+  "nextAction": "QUIET MODE (no windows) until user says go; see quietMode in state. Running W1-E (all six P2s). Then on go: deferred GUI checks, W1-F P4-01, W1-G P4-02, wave-1 end gate",
   "pause": {
     "requested": false,
     "reason": null,
@@ -55,6 +55,12 @@
       "weeklyPct": 10.0,
       "fiveHourPct": 16.0,
       "note": "after W1-C (1.21M agent tokens)"
+    },
+    {
+      "at": "2026-10-14T06:54:56+00:00",
+      "weeklyPct": 11.0,
+      "fiveHourPct": 2.0,
+      "note": "after W1-D (884K agent tokens)"
     }
   ],
   "batches": {
@@ -244,14 +250,53 @@
         "P1-05",
         "P2-04"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_01017fdc-f23",
       "estimatedAgents": 10,
       "meterBefore": {
         "weeklyPct": 10,
         "fiveHourPct": 0
       },
-      "startedAt": "2026-10-14T06:32:43+00:00"
+      "startedAt": "2026-10-14T06:32:43+00:00",
+      "endedAt": "2026-10-14T06:54:35+00:00",
+      "integration": {
+        "merged": [
+          "P1-04",
+          "P1-05",
+          "P2-04"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "b9a10267e9c67e81b0d6691f493b3d29f2cc2894",
+        "summary": "All three branches merged with no conflicts, and the last scripts/ci.sh run passed (build, test, format; 553 tests). On main I also renamed the `.passthrough` default arguments to `.standard` and dropped `.passthrough`. tools/parity/gen.sh --check now skips suites that export `machineLocal = true`, which covers kind-strings, and it passes. The first parity sync failed on P2-04's test files: seven F-id citations sat above `@Suite` instead of a `@Test`. I moved those citations onto the first `@Test` of each suite, then the sync ran (421 citations) and I committed it as \"Sync parity matrix after W1-D\"."
+      },
+      "critic": null,
+      "spentOutputTokens": 218955,
+      "agents": 8,
+      "subagentTokens": 884072,
+      "durationMin": 21.6,
+      "meterAfter": {
+        "weeklyPct": 11,
+        "fiveHourPct": 2
+      }
+    },
+    "W1-E": {
+      "wps": [
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-05",
+        "P2-06",
+        "P2-07"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 25,
+      "meterBefore": {
+        "weeklyPct": 11,
+        "fiveHourPct": 2
+      },
+      "startedAt": "2026-10-14T06:56:07+00:00"
     }
   },
   "wps": {
@@ -582,23 +627,34 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P1-04",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "tools/parity/gen.sh --check",
-        "scripts/ci.sh"
-      ],
+      "headSha": "158de4759f0cfd178735cc982b8cef9ebb0297f6",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P1-04 gates: `tools/parity/gen.sh --check` exit 0 (goldens up to date, 26 suites). `scripts/ci.sh` exit 0 (build PASS, test PASS 499 tests in passing runs / 0 failing, format PASS). Worktree detached at 158de47 (port/P1-04). Nothing changed or committed."
+      },
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Branch port/P1-04 is committed with the Port-Stage trailer, and the worktree is detached. Both gates pass: `tools/parity/gen.sh --check` (26 suites up to date) and `scripts/ci.sh` (build, test with 499 passing, format).\nAdded `Sources/FTFoundation/BatchRename/`, with settings and types, `proposeNames`, `planBatchRename` (number, skip, block), saved-settings and preset sanitizers, and `JSRegExp`.\n`JSRegExp` runs JavaScript unicode-mode regexes on `NSRegularExpression` after translating the pattern. It rewrites `$`, `.`, `\\d \\w \\s \\b`, named groups and literals so ICU's case folding matches JavaScript's.\nThe sanitizers are wired into `BatchRenameSanitizers.standard` in `PreferencesSanitizer.swift`, and `.passthrough` now points at it.\nGoldens `batch-rename-propose` (600 cases, 2.7 MB) and `batch-rename-plan` (300 cases, 1.5 MB) both pass. A separate 322-case regex fuzz found a few differences, listed below. I used it to find them and did not commit it.\nThe 58 tests from `shared/batchRename.test.ts` are ported, plus the planning half of the 9 `batchRenamePlanAndRun` tests, each with its T-id. The run half is P3-08.",
       "findings": [],
       "fixes": [],
       "blockers": [],
       "notes": [
         "P1-03 asks: wire sanitizeBatchRenameSettings/Presets through BatchRenameSanitizers in Sources/FTFoundation/Preferences/PreferencesSanitizer.swift"
+      ],
+      "sharedFileRequests": [
+        "Sources/FTFoundation/Preferences/AppState.swift: its default arguments still say `.passthrough`. That now equals `BatchRenameSanitizers.standard`, so nothing breaks, but the integrator may want to rename them to `.standard` and drop `.passthrough`.",
+        "After merging, the integrator runs `bun tools/parity-matrix/sync.ts` to pick up the T-ids cited in `Tests/FTFoundationTests/BatchRename/BatchRenameTests.swift`. I did not touch `docs/port/parity/`."
+      ],
+      "deviations": [
+        "The pattern-error text after 'The pattern isn’t valid: ' is this port's own wording, not V8's or JavaScriptCore's. The goldens compare only the prefix; whether a pattern is an error matches the reference on every pattern tested.",
+        "A few regex edge cases still differ from JavaScript and are documented on `JSRegExp`. They are: a back reference to a group that took no part, which fails here but matches the empty string in JavaScript; `\\P{Lu}` under the `i` flag; the captures of empty loops such as `(a*)*` and `(|a)+`; look-behinds that are not of bounded length; and a ligature such as ﬁ inside a character class also matching 'fi'.",
+        "A saved text setting cut at 255 UTF-16 units inside a surrogate pair leaves U+FFFD here, where JavaScript keeps half the pair, because a Swift String cannot hold a lone surrogate.",
+        "The reference runs on Bun's JavaScriptCore, not V8, so the goldens record JSC's regex behaviour. The two engines are not known to differ on the tested patterns, but I did not check against V8.",
+        "The golden JSON files are large (4.2 MB together)."
       ]
     },
     "P2-01": {
@@ -617,14 +673,13 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-01",
       "headSha": null,
       "attempts": 0,
       "gate": [
         "tools/parity/gen.sh --check",
-        "scripts/ci.sh",
-        "tools/bench/run.sh --quick --report-only"
+        "scripts/ci.sh"
       ],
       "lenses": [
         "parity",
@@ -633,7 +688,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deferredGate": [
+        "tools/bench/run.sh --quick --report-only"
+      ]
     },
     "P2-02": {
       "title": "Folder sizes",
@@ -651,7 +709,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-02",
       "headSha": null,
       "attempts": 0,
@@ -684,7 +742,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-03",
       "headSha": null,
       "attempts": 0,
@@ -715,19 +773,29 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-04",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "tools/parity/gen.sh --check",
-        "scripts/ci.sh"
-      ],
+      "headSha": "854c9e7f38a7ab3b641653613e38909bc3a24270",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P2-04 gate: PASS. Checked out port/P2-04 detached at 854c9e7. `tools/parity/gen.sh --check` exit 0 (\"goldens up to date (25 suite(s))\"). `scripts/ci.sh` exit 0: build PASS, test PASS (482 tests in passing runs, 0 failing), format PASS. Nothing changed or committed. Logs: scratchpad gen.log and ci.log."
+      },
       "lenses": [],
-      "summary": null,
+      "summary": "Branch port/P2-04, head 854c9e7. Both gates pass (gen.sh --check and scripts/ci.sh, 482 tests, build and format clean). I ran the FTFileSystemTests suite 10 more times with no failures, after fixing one order-dependent assertion.\nAdded to Sources/FTFileSystem/Icons/:\n- IconCacheKey: the ext:/kind:/path: keys, special folder names and volume roots.\n- FileIconStore: LRU of 2048, de-duplicated requests, 80 ms deferral, folder and file preloads.\n- IconSamples: the generic-kind sample items in $TMPDIR/filetrail-icon-samples.\n- FileKind: kMDItemKind, then LSCopyKindStringForURL (looked up with dlsym to avoid the deprecation warning), then the localized type description.\n- FileThumbnailService: QLThumbnailGenerator with iconMode off for images and audiovisual files, and an \"mtimeMs:size\" version.\n- ThumbnailStore: LRU of 500, one check per listing.\n- ThumbnailLoadQueue: at most 4 loads at once, with cancel.\nAdded the kind-strings golden (tools/parity/golden/kind-strings.ts and Tests/Golden/kind-strings.json), and ported tests in Tests/FTFileSystemTests/Icons/ citing T- and F- ids (F-147, 156, 157, 223 to 227, 762).",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "sharedFileRequests": [
+        "tools/parity/gen.sh (and lib/golden.ts): the kind-strings golden is machine-local (Spotlight kind strings depend on OS version, language and installed apps). Give gen.sh --check the same machine-local skip that P2-02 adds for folder-size-trees; my generator already exports `machineLocal = true` as a marker. On this machine --check passes today."
+      ],
+      "deviations": [
+        "Icons and thumbnails are returned as NSImage / ThumbnailPicture (with an isOpaque flag standing in for the JPEG-or-PNG distinction), and icon cache keys have no @large suffix because NSImage needs no 64 vs 128 px split, as the brief allows.",
+        "The 'framed' outline rule (opaque means JPEG means outlined) is carried as ThumbnailPicture.isOpaque, using the same pixel-by-pixel opacity test as native_thumbnail.m.",
+        "The Swift test for kind-strings is skipped (via .enabled(if:)) when ~/Library/Caches/filetrail-port/fixtures/names is missing.",
+        "I did not port the favorite-icons row T-fe3f2758 from fileIcons.test.tsx, since it is SVG drawing belonging to the sidebar work package. The integrator should mark it N/A or covered-by-feature.",
+        "The original's known gaps are copied: custom folder icons on non-special folders are not shown, and symlink icons come from the path."
+      ]
     },
     "P2-05": {
       "title": "Open With, Terminal/Editor, Trash state, Empty Trash",
@@ -745,7 +813,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-05",
       "headSha": null,
       "attempts": 0,
@@ -774,7 +842,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-06",
       "headSha": null,
       "attempts": 0,
@@ -806,7 +874,7 @@
         "P0-08",
         "P1-03"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-07",
       "headSha": null,
       "attempts": 0,
@@ -1600,19 +1668,23 @@
       "depends": [
         "P1-01"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P1-05",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "tools/parity/gen.sh --check",
-        "scripts/ci.sh"
-      ],
+      "headSha": "81413bcead379eeceaee1d90cfbb911b64f50b6b",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "PASS. Checked out detached at port/P1-05 (HEAD 81413bc). gen.sh --check: exit 0 (\"goldens up to date (24 suite(s))\"). scripts/ci.sh: exit 0 (build PASS, test PASS with 430 tests in passing runs and 0 failing, format PASS). No files changed or committed; worktree clean."
+      },
       "lenses": [],
-      "summary": null,
+      "summary": "Keep Both copy numbers are now Doubles printed with JSText.integerText, as in the reference. This fixes both findings:\n- \"x copy 9223372036854775807.txt\" gives \"x copy 9223372036854776000.txt\" instead of trapping.\n- \"x copy 99999999999999999999.txt\" gives \"x copy 100000000000000000000.txt\".\n- Past 2^53 adding one changes nothing, so the loop follows the reference's double arithmetic. I added an attempts counter so it can't spin forever (the reference would hang on a taken name there).\n- Removed the \"too long for Int counts as no match\" doc comment.\n- The keep-both-names golden gained 34 huge-number cases (digit runs of 15-25, 2^53 boundary, Int.max). They are free-name cases only, because a taken name would hang the reference.\n- Added a Swift test, copyNumbersBeyondIntKeepCounting.\n- Gate: gen.sh --check and ci.sh both pass (430 tests).",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "sharedFileRequests": [],
+      "deviations": [
+        "The reference loops forever when a candidate with a copy number of 2^53 or more is taken (index + 1 stays equal). The port stops after maxDuplicateNameAttempts attempts and throws NoFreeName instead. All other behavior matches the reference."
+      ]
     }
   },
   "behaviorExtraction": {
@@ -1620,5 +1692,17 @@
     "agents": 8,
     "subagentTokens": 3007873,
     "rules": 1708
+  },
+  "quietMode": {
+    "on": true,
+    "since": "2026-10-14",
+    "why": "user in a video call: no windows until the user says go",
+    "deferred": [
+      "P2-01 gate: tools/bench/run.sh --quick --report-only (launches the app)",
+      "FILETRAIL_GUI_TESTS=1 tests added by W1-E WPs (listed in their summaries)",
+      "P4-01, P4-02: capture-harness gates and visual lens",
+      "wave-1 end: tools/capture/run.sh --acceptance"
+    ],
+    "onGo": "remove the Quiet mode section from docs/port/state/preamble.md; run the deferred items; restore P2-01 gate from deferredGate"
   }
 }

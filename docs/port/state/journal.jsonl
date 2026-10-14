@@ -52,3 +52,8 @@
 {"at": "2026-10-14T06:32:34+00:00", "event": "set-batch", "batch": "W1-D", "status": "running", "runId": null}
 {"at": "2026-10-14T06:32:43+00:00", "event": "set-batch", "batch": "W1-D", "status": "running", "runId": "wf_01017fdc-f23"}
 {"at": "2026-10-14T06:35:42+00:00", "event": "next", "text": "Running W1-D P1-04+P1-05+P2-04. Next (user OK'd >10 agents): W1-E all six ready P2s: P2-01+P2-02+P2-03+P2-05+P2-06+P2-07 (~25 agents); W1-F P4-01; W1-G P4-02; then wave-1 end gate"}
+{"at": "2026-10-14T06:54:35+00:00", "event": "apply-report", "batch": "W1-D", "wps": ["P1-04", "P1-05", "P2-04"]}
+{"at": "2026-10-14T06:54:56+00:00", "event": "meter", "weeklyPct": 11.0, "fiveHourPct": 2.0, "note": "after W1-D (884K agent tokens)"}
+{"at": "2026-10-14T06:56:07+00:00", "event": "add-batch", "batch": "W1-E", "wps": ["P2-01", "P2-02", "P2-03", "P2-05", "P2-06", "P2-07"], "estimatedAgents": 25}
+{"at": "2026-10-14T06:56:07+00:00", "event": "next", "text": "QUIET MODE (no windows) until user says go; see quietMode in state. Running W1-E (all six P2s). Then on go: deferred GUI checks, W1-F P4-01, W1-G P4-02, wave-1 end gate"}
+{"at": "2026-10-14T06:56:07+00:00", "event": "set-batch", "batch": "W1-E", "status": "running", "runId": null}

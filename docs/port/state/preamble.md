@@ -39,6 +39,16 @@ You are part of a team porting File Trail, a macOS file browser, from Electron/T
   - Never paste more than 40 lines of any log into your answer.
 - **Your final answer is data for the orchestrator.** Keep it to the requested structure; no prose for humans.
 
+## Quiet mode: nothing on screen (ON)
+
+The user is in a video call. Until this section is removed, nothing you run may put anything on the screen or take focus:
+- Don't launch the app (`build/File Trail.app`, `swift run`, `tools/bench/run.sh`, `tools/capture/*`), Terminal, a text editor, Finder, DiskImageMounter or any other app.
+- Don't run `open`, `osascript`/`NSAppleScript`, `NSWorkspace` open or launch calls, `NSOpenPanel`/`NSSavePanel`/`NSAlert`, or anything that orders a window front or activates an app.
+- Mount disk images only through `FTTestSupport.DiskImage` (`-nobrowse -noautoopen`), never by opening them.
+- Tests may build windows offscreen (`defer: true`, never ordered front), as the existing AppKit tests do.
+- A test that must launch an app, run AppleScript, open a panel or show a window still gets written, but guard it with `.enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1")`. Inline that check in your own test file; don't add a shared helper. List each guarded test under `deferredChecks` in your summary (one line each) so it can be run later.
+- If a gate command in your brief would show windows, skip it and say so in your summary.
+
 ## Porting rules (from wave 1 on)
 
 - **Tests.** Port the original's tests listed in your brief.
