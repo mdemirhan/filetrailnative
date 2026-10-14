@@ -1,8 +1,7 @@
 // Port of sanitizePreferences and its helpers in apps/desktop/src/main/appStateStore.ts (:556-884)
 import Foundation
 
-/// How the Rename sheet's saved settings and presets are checked. They belong to the batch-rename package; until that is
-/// wired in, a settings object or a preset list of the right shape is kept as it is, and anything else gets the default.
+/// How the Rename sheet's saved settings and presets are checked: by the batch-rename package (`standard`).
 public struct BatchRenameSanitizers: Sendable {
     public var settings: @Sendable (JSONNode?) -> JSONNode
     public var presets: @Sendable (JSONNode?) -> JSONNode
@@ -25,15 +24,18 @@ public struct BatchRenameSanitizers: Sendable {
         "caseStyle": .string("lower"), "applyTo": .string("name"), "onConflict": .string("number"),
     ])
 
-    public static let passthrough = BatchRenameSanitizers(
-        settings: { value in
-            if let value, value.object != nil { return value }
-            return defaultSettings
-        },
+    /// The batch-rename package's checks (`sanitizeBatchRenameSettings`, `sanitizeBatchRenamePresets`).
+    public static let standard = BatchRenameSanitizers(
+        settings: { value in BatchRename.node(of: BatchRename.sanitizeSettings(value)) },
         presets: { value in
-            if let value, value.array != nil { return value }
-            return .array([])
+            .array(
+                BatchRename.sanitizePresets(value).map { preset in
+                    .object(["name": .string(preset.name), "settings": BatchRename.node(of: preset.settings)])
+                })
         })
+
+    /// The name the readers' default arguments use; it is the real checks now.
+    public static let passthrough = standard
 }
 
 /// Checks everything a saved state holds: a value that is missing or invalid takes its default.
