@@ -25,7 +25,8 @@ public enum HdiutilProcess {
                 do {
                     try process.run()
                 } catch {
-                    continuation.resume(returning: HdiutilResult(ok: false, stdout: "", stderr: String(describing: error)))
+                    continuation.resume(
+                        returning: HdiutilResult(ok: false, stdout: "", stderr: String(describing: error)))
                     return
                 }
                 // Both pipes are read at once, so a full one can't stall the tool.
