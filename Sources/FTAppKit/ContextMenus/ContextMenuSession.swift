@@ -11,7 +11,6 @@ struct ContextMenuRequest {
     var shortcutContext: ShortcutContext
     var shortcuts: ShortcutDisplay
     var textEditorName: String
-    var ejectLabel: String?
     var pinnedApps: [OpenWithApplication]
     var viewMode: ExplorerViewMode
     var sortBy: SortByPreference
@@ -60,7 +59,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
     private func build() {
         let subject = request.subject
         let options = ContextMenuRules.options(
-            subject, request.world, textEditorName: request.textEditorName, ejectLabel: request.ejectLabel)
+            subject, request.world, textEditorName: request.textEditorName)
         let hidden = ContextMenuRules.hiddenActions(subject, request.world)
         disabled = ContextMenuRules.disabledActions(request.world)
         menu = NSMenu(title: "")
@@ -209,6 +208,14 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
     func menuDidClose(_ menu: NSMenu) {
         guard menu === self.menu, isOpen else { return }
         isOpen = false
+        // The session and its menu hold each other: the menu lets go of it once the chosen item's action has been
+        // sent, which comes after the menu closes.
+        let menu = self.menu
+        Task { @MainActor [self] in
+            withExtendedLifetime(self) {
+                objc_setAssociatedObject(menu, &Self.sessionKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            }
+        }
         responder?.contextMenuDidClose()
     }
 }

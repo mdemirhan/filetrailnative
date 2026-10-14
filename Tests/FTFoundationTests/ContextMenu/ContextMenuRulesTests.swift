@@ -215,6 +215,21 @@ struct ContextMenuRulesTests {
         #expect(!hidden(trash, world(trashEmpty: nil)).contains(.emptyTrash))
     }
 
+    // F-813
+    @Test func ejectNamesTheDiskAndIsLeftOutForAnythingElse() {
+        let plain = subject(.favorite, [("/a/Folder", .directory)])
+        #expect(hidden(plain, world()).contains(.eject))
+        #expect(!labels(plain, world()).contains { $0.hasPrefix("Eject") })
+        var disk = subject(.favorite, [("/Volumes/Backup", .directory)])
+        disk.ejectableDiskName = "Backup"
+        #expect(!hidden(disk, world()).contains(.eject))
+        let menu = labels(disk, world())
+        #expect(menu.first == "New Folder")
+        // After the ways to open it.
+        let eject = menu.firstIndex(of: "Eject “Backup”")
+        #expect(eject != nil && eject == menu.firstIndex(of: "Reveal in Tree").map { $0 + 2 })
+    }
+
     // F-814
     @Test func theBackgroundMenuHasNewFolderViewAsSortByAndEmptyTrashOnlyInTheTrash() {
         let background = subject(.background, [], scope: .background)

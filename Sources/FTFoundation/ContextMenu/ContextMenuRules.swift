@@ -11,11 +11,14 @@ public struct ContextMenuSubject: Equatable, Sendable {
     public var targetPath: String?
     /// The listing rows at `paths` (rows missing from the listing are left out, as `contextMenuTargetEntries`).
     public var entries: [CommandEntry]
+    /// The name of the disk a favorite or location is, when it can be ejected; nil for any other folder.
+    public var ejectableDiskName: String?
 
     public init(
         surface: ContextMenuSurface, scope: ContextMenuScope = .selection, paths: [String] = [],
-        targetPath: String? = nil, entries: [CommandEntry] = []
+        targetPath: String? = nil, entries: [CommandEntry] = [], ejectableDiskName: String? = nil
     ) {
+        self.ejectableDiskName = ejectableDiskName
         self.surface = surface
         self.scope = scope
         self.paths = paths
@@ -107,7 +110,7 @@ public enum ContextMenuRules {
             targetsFolder: !subject.entries.isEmpty && subject.entries.allSatisfy { $0.kind.isDirectoryLike },
             // Several items are renamed in the Rename sheet, as Finder's Rename does.
             renameLabel: subject.entries.count > 1 ? "Rename \(groupedCount(subject.entries.count)) Items…" : nil,
-            ejectLabel: ejectLabel)
+            ejectLabel: subject.ejectableDiskName.map { "Eject “\($0)”" } ?? ejectLabel)
     }
 
     /// `Number.prototype.toLocaleString()` for a count.
@@ -142,6 +145,8 @@ public enum ContextMenuRules {
             for action in writeLockedActions where action != .paste { hidden.insert(action) }
         }
         if favoriteToggleLabel(subject, world) == nil { hidden.insert(.toggleFavorite) }
+        // Eject is for a disk that can be ejected.
+        if subject.ejectableDiskName == nil { hidden.insert(.eject) }
         let isTreeSurface = surface == .treeFolder || surface == .favorite
         let isSingleFolder = entries.count == 1 && (entries.first?.kind.isDirectoryLike ?? false)
         // In the file list and search results a new tab opens on one folder.

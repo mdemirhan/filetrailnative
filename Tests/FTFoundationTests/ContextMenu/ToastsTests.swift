@@ -38,6 +38,11 @@ struct ToastsTests {
         #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [759]) == 12)
     }
 
+    // B-INFO-192 B-INFO-193
+    @Test func aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp() {
+        #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [760 - 28, 760 - 58]) == 68)
+    }
+
     @Test func notificationsRestAboveTheCardWhenThereIsOne() {
         #expect(BottomStack.offsetAboveBarsAndCard(windowHeight: 760, barTops: [727], cardHeight: nil) == 43)
         #expect(BottomStack.offsetAboveBarsAndCard(windowHeight: 760, barTops: [727], cardHeight: 90) == 43 + 90 + 8)

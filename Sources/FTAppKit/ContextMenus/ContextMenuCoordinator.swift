@@ -61,23 +61,21 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     func sidebarMenu(for request: SidebarContextMenuRequest) -> NSMenu? {
         guard let path = request.item.path else { return nil }
         let surface: ContextMenuSurface = request.kind == .favorite ? .favorite : .treeFolder
+        // Eject “Backup”, naming the disk as Finder does; only for a disk that can be ejected.
+        let volumes = SidebarVolumes.shared.volumes
+        let disk = surface == .favorite && EjectPlanning.isEjectablePath(volumes, path: path)
         let subject = ContextMenuSubject(
             surface: surface, scope: .selection, paths: [path], targetPath: path,
-            entries: [CommandEntry(path: path, kind: .directory)])
-        return menu(for: subject, ejectLabel: ejectLabel(for: request))
-    }
-
-    private func ejectLabel(for request: SidebarContextMenuRequest) -> String? {
-        guard request.item.canEject else { return nil }
-        // Eject “Backup”, naming the disk as Finder does.
-        return "Eject “\(request.item.label)”"
+            entries: [CommandEntry(path: path, kind: .directory)],
+            ejectableDiskName: disk ? (volumes.first { $0.path == path }?.name ?? "") : nil)
+        return menu(for: subject)
     }
 
     static func commandEntry(_ entry: DirectoryEntry) -> CommandEntry {
         CommandEntry(path: entry.path, kind: FTFoundation.EntryKind(rawValue: entry.kind.rawValue) ?? .other)
     }
 
-    func menu(for subject: ContextMenuSubject, ejectLabel: String? = nil) -> NSMenu? {
+    func menu(for subject: ContextMenuSubject) -> NSMenu? {
         var world = ContextMenuWorld(
             homePath: home, currentPath: tab.folder.path, isSearchMode: tab.searchRootPath != nil,
             favoritePaths: tab.sidebarController.model.favorites.map(\.path),
@@ -101,7 +99,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             shortcuts: ShortcutDisplay(
                 shortcuts: ShortcutCommands.resolve(preferences.shortcutOverrides),
                 returnKeyAction: preferences.returnKeyAction),
-            textEditorName: preferences.defaultTextEditor.appName, ejectLabel: ejectLabel,
+            textEditorName: preferences.defaultTextEditor.appName,
             pinnedApps: preferences.openWithApplications,
             viewMode: tab.searchRootPath != nil ? tab.searchViewMode : tab.viewMode, sortBy: tab.sortBy)
         let session = ContextMenuSession(request: request, responder: self)
