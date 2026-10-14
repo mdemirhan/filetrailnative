@@ -3106,7 +3106,9 @@
       "owner": "next P0 follow-up or P7",
       "also": [
         "2026-10-14 W2-U1: EjectCoordinator/FTFileSystem test unmountsTheVolumeAndEjectsItsDiskDetachingADiskImage failed once and passed on rerun (leftover image or concurrent hdiutil)."
-      ]
+      ],
+      "closed": true,
+      "status": "Fixed on port/flaky-tests and merged 2026-10-14 (CI 2082 passing). The 30-run proof under load was cut short by the stop."
     },
     {
       "at": "2026-10-14",
@@ -3157,7 +3159,7 @@
     {
       "at": "2026-10-14",
       "seenIn": "user stop",
-      "issue": "Unfinished side work, kept on branches: port/capture-once (original-app captures once: 2 commits, not finished, not merged); flaky-tests worktree agent-ae96022788db12b14 (no commits yet); P5-05 on port/P5-05 (6 wip commits). The offscreen GUI test research was stopped without a report.",
+      "issue": "Unfinished side work, kept on branches: port/capture-once (original-app captures once: 2 commits, not finished, not merged); P5-05 on port/P5-05 (6 wip commits). The offscreen GUI test research was stopped without a report.",
       "owner": "orchestrator, on resume",
       "closed": false
     }
