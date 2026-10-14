@@ -361,7 +361,13 @@ After phase 7 starts, the orchestrator repeats the following until one round fin
 4. Keep only findings that come with a failing test or a diff.
 5. Turn confirmed gaps into work packages and run them.
 
-There is no round ceiling (changed on 2026-10-14; it was 2). A no-progress guard stops it instead: if two rounds in a row close no gap and find nothing new with evidence, what's left goes to you as a list to decide on.
+The loop stops at the first of these (set on 2026-10-14; the ceiling was 2):
+- **Done:** the exit conditions above all hold.
+- **Ceiling:** 4 rounds, the original plan's number.
+- **No progress:** two rounds in a row close no gap and find nothing new with evidence.
+- **Diminishing returns:** from round 3 on, only findings of medium severity or higher become work packages; low-severity ones are collected for you instead.
+
+Whatever is left when it stops goes to you as a list to decide on.
 
 ### 6.6 Cost controls
 
@@ -587,7 +593,7 @@ That comes to an estimated **45–80M tokens**, down from 150–300M. Measured a
 
 These are estimates. P0 is measured precisely and the remaining phases are re-estimated from it before wave 1 starts.
 
-Cuts adopted on 2026-10-13, which trade some assurance for cost. **All of them were undone on 2026-10-14** (quota is no longer a constraint): the P7 loop is uncapped with a no-progress guard, low-risk WPs get a parity reviewer, every scenario gets vision review at wave gates, Compact density is captured, and P3 gets 4x differential seeds, crash and stop injection per write step, and a second adversarial safety review.
+Cuts adopted on 2026-10-13, which trade some assurance for cost. **All of them were undone on 2026-10-14** (quota is no longer a constraint): the P7 loop ceiling goes back to 4 rounds, with a no-progress guard and medium-or-higher findings only from round 3, low-risk WPs get a parity reviewer, every scenario gets vision review at wave gates, Compact density is captured, and P3 gets 4x differential seeds, crash and stop injection per write step, and a second adversarial safety review.
 - P7 ceiling of 2 rounds instead of 4 (about 10–20M); the remaining findings come to you as a list.
 - Low-risk WPs with no reviewer, relying on their gate and the phase critic (about 5–8M).
 - No Compact density screenshots; unit tests of the token math instead (about 3–5M). UI zoom was later dropped entirely (§3.5).

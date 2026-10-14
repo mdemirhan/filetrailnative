@@ -2708,7 +2708,7 @@
     "decided": "2026-10-14",
     "by": "user",
     "changes": [
-      "parity loop uncapped, with a no-progress guard",
+      "parity loop: ceiling 4 rounds (was 2), stop early on no progress for 2 rounds; from round 3 only medium+ findings become WPs",
       "all five critic angles every round",
       "low-risk WPs get a parity reviewer",
       "vision review of every scenario at wave gates",
