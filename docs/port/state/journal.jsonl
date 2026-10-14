@@ -107,3 +107,4 @@
 {"at": "2026-10-14T14:44:25+00:00", "event": "add-batch", "batch": "W2-P2", "wps": ["P3-03"], "estimatedAgents": 8}
 {"at": "2026-10-14T14:44:25+00:00", "event": "set-batch", "batch": "W2-P2", "status": "running", "runId": null}
 {"at": "2026-10-14T14:44:25+00:00", "event": "next", "text": "Tracks: W2-P2 (P3-03) running; W2-U1 (P5-02, P5-03) running."}
+{"at": "2026-10-14T14:44:31+00:00", "event": "set-batch", "batch": "W2-P2", "status": "running", "runId": "wf_5891dcb1-dcc"}
