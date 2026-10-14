@@ -57,7 +57,19 @@ private final class ScrollDriver: NSObject {
         await withCheckedContinuation { continuation in
             self.continuation = continuation
             link.add(to: .main, forMode: .common)
+            // A window that isn't on screen (screen locked, display asleep) gets no frames: end the run with
+            // none, so the bench reports it instead of waiting for the script's watchdog.
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration + 5) { [weak self] in
+                MainActor.assumeIsolated { self?.finish() }
+            }
         }
+    }
+
+    private func finish() {
+        link?.invalidate()
+        link = nil
+        continuation?.resume()
+        continuation = nil
     }
 
     @objc private func step(_ link: CADisplayLink) {
@@ -73,12 +85,7 @@ private final class ScrollDriver: NSObject {
         let maxY = max(0, (scrollView.documentView?.frame.height ?? 0) - clip.bounds.height)
         clip.scroll(to: NSPoint(x: 0, y: maxY * fraction))
         scrollView.reflectScrolledClipView(clip)
-        if fraction >= 1 {
-            link.invalidate()
-            self.link = nil
-            continuation?.resume()
-            continuation = nil
-        }
+        if fraction >= 1 { finish() }
     }
 }
 
@@ -169,6 +176,11 @@ enum Benchmark {
         await driver.run(in: window)
         stalls.stop()
         let frames = driver.frames.sorted()
+        if frames.isEmpty {
+            emit(["kind": "scroll", "error": "no frames: the window is not on screen"])
+            quit()
+            return
+        }
         let p99 = frames.isEmpty ? 0 : frames[min(frames.count - 1, Int(Double(frames.count) * 0.99))]
         emit([
             "kind": "scroll", "rows": Double(table.numberOfRows), "frames": Double(frames.count),

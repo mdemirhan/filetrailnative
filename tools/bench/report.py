@@ -50,11 +50,16 @@ except OSError:
 for line in listing_text.splitlines():
     try:
         r = json.loads(line)
-        metrics[f"list_{r['folder'].split('-')[1]}_ms"] = r["medianMs"]
+        if "metric" in r:
+            metrics[r["metric"]] = r["medianMs"]
+        else:
+            metrics[f"list_{r['folder'].split('-')[1]}_ms"] = r["medianMs"]
     except (ValueError, KeyError, IndexError):
         pass
 
 for r in bench_lines(f"{raw}/scroll.txt"):
+    if "error" in r:
+        print(f"scroll run failed: {r['error']}")
     if "frame_max_ms" in r:
         metrics["scroll_max_ms"] = r["frame_max_ms"]
         metrics["scroll_p99_ms"] = r["frame_p99_ms"]

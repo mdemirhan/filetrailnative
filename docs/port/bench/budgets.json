@@ -13,12 +13,12 @@
     "stall_100000_ms": {"unit": "ms", "budget": 50, "note": "longest main-thread stall while opening"},
     "list_3000_ms": {"unit": "ms", "budget": 25, "note": "DirectoryService read and sort, median of 15, no window (tools/bench/listing.sh)"},
     "list_100000_ms": {"unit": "ms", "budget": 400, "note": "DirectoryService read and sort, median of 7, no window (tools/bench/listing.sh)"},
+    "first_search_results_ms": {"unit": "ms", "budget": 150, "note": "fd on Home, recursive name search to first results polled, median of 7, no window (tools/bench/listing.sh)"},
     "back_ms": {"unit": "ms", "budget": 10, "note": "back to a small folder"},
     "scroll_max_ms": {"unit": "ms", "budget": 16, "note": "longest frame interval while scrolling the List top to bottom"},
     "scroll_p99_ms": {"unit": "ms", "budget": null}
   },
   "not_yet_measured": {
-    "first_search_results_ms": {"budget": 150, "note": "fd, Home; added with the search work package"},
     "copy_throughput": {"budget": "copyfile, +-5%", "note": "added with the copy work package"},
     "icons_scroll_max_ms": {"budget": 16, "note": "Icons view scroll; added with the Icons view package"}
   }

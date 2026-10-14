@@ -1,4 +1,5 @@
 // Port of apps/desktop/src/renderer/lib/rendererCommandAvailability.test.ts
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -458,17 +459,17 @@ struct CommandAvailabilityTests {
             $0.selectedEntry = entries.last
             $0.homePath = "/Users/demo"
         }
-        let clock = ContinuousClock()
-        let start = clock.now
-        let state = ApplicationMenuState.build(
-            viewMode: .list, sortBy: .name, foldersFirst: true, hiddenFilesShown: false, folderTreeOpen: true,
-            infoPanelOpen: false, infoRowOpen: false, favoriteIsSet: false, textEditing: false,
-            canRun: { CommandAvailability.canRun($0, context) })
-        let elapsed = start.duration(to: clock.now)
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (state, elapsed) = CPUTime.measureThread {
+            ApplicationMenuState.build(
+                viewMode: .list, sortBy: .name, foldersFirst: true, hiddenFilesShown: false, folderTreeOpen: true,
+                infoPanelOpen: false, infoRowOpen: false, favoriteIsSet: false, textEditing: false,
+                canRun: { CommandAvailability.canRun($0, context) })
+        }
         #expect(state.disabledCommands.contains(.editSelection))
         #expect(!state.disabledCommands.contains(.calculateSize))
         #expect(!state.disabledCommands.contains(.copySelection))
-        #expect(elapsed < .seconds(1))
+        #expect(elapsed < 1)
     }
 
     // F-003 F-004

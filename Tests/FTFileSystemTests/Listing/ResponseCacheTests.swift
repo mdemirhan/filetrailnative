@@ -212,10 +212,17 @@ struct ResponseCacheTests {
             _ = await cache.metadata(for: paths) { $0.map(detail) }
         }
         for _ in 0..<10 { await batch() }
-        let started = ContinuousClock.now
-        for _ in 0..<200 { await batch() }
-        // A few ms on a laptop; the bound only catches looking through all of them for each.
-        #expect(started.duration(to: .now) < .seconds(1))
+        // The quickest batch, not the total: a batch that waited for a turn on a busy machine says nothing, and
+        // the quickest still pays for any look through all those kept. A few ms on a laptop in a debug build.
+        var quickest = Double.infinity
+        for _ in 0..<200 {
+            let start = ContinuousClock.now
+            await batch()
+            let elapsed = start.duration(to: .now)
+            quickest = min(
+                quickest, Double(elapsed.components.seconds) * 1000 + Double(elapsed.components.attoseconds) / 1e15)
+        }
+        #expect(quickest < 10)
         #expect(cache.sizes.directoryMetadata == 5_000)
     }
 
