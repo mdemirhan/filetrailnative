@@ -429,38 +429,38 @@ B-DLG-228	DLG	A6, A9, A12, A15			todo
 B-DLG-229	DLG	A6, A9, A12, A15			todo
 B-DLG-230	DLG	A6, A9, A12, A15			todo
 B-DLG-231	DLG	A6, A9, A12, A15			todo
-B-DLG-232	DLG	A6, A9, A12, A15			todo
-B-DLG-233	DLG	A6, A9, A12, A15			todo
+B-DLG-232	DLG	A6, A9, A12, A15	paintsLightOrDarkAsChosenAndFollowsMacOSOnAuto		done
+B-DLG-233	DLG	A6, A9, A12, A15	ignoresAccentsThatAreNotHexColors, picksTheStylesheetsPaletteAndAppliesTheAccent		done
 B-DLG-234	DLG	A6, A9, A12, A15			todo
 B-DLG-235	DLG	A6, A9, A12, A15			todo
 B-DLG-236	DLG	A6, A9, A12, A15			todo
 B-DLG-237	DLG	A6, A9, A12, A15			todo
 B-DLG-238	DLG	A6, A9, A12, A15			todo
 B-DLG-239	DLG	A6, A9, A12, A15			todo
-B-DLG-240	DLG	A6, A9, A12, A15			todo
-B-DLG-241	DLG	A6, A9, A12, A15			todo
-B-DLG-242	DLG	A6, A9, A12, A15			todo
-B-DLG-243	DLG	A6, A9, A12, A15			todo
-B-DLG-244	DLG	A6, A9, A12, A15			todo
+B-DLG-240	DLG	A6, A9, A12, A15			N/A
+B-DLG-241	DLG	A6, A9, A12, A15			N/A
+B-DLG-242	DLG	A6, A9, A12, A15			N/A
+B-DLG-243	DLG	A6, A9, A12, A15			N/A
+B-DLG-244	DLG	A6, A9, A12, A15	choosesAutoLightOrDarkFromTheThemeButtonsMenu	57-theme-menu	partial
 B-DLG-245	DLG	A6, A9, A12, A15			todo
 B-DLG-246	DLG	A6, A9, A12, A15			todo
 B-DLG-247	DLG	A6, A9, A12, A15			todo
-B-DLG-248	DLG	A6, A9, A12, A15			todo
+B-DLG-248	DLG	A6, A9, A12, A15	tellsWhichPageIsOnScreenSoHelpCanOpenOnItAgain		done
 B-DLG-249	DLG	A6, A9, A12, A15			todo
-B-DLG-250	DLG	A6, A9, A12, A15			todo
-B-DLG-251	DLG	A6, A9, A12, A15			todo
-B-DLG-252	DLG	A6, A9, A12, A15			todo
-B-DLG-253	DLG	A6, A9, A12, A15			todo
-B-DLG-254	DLG	A6, A9, A12, A15			todo
-B-DLG-255	DLG	A6, A9, A12, A15			todo
-B-DLG-256	DLG	A6, A9, A12, A15			todo
-B-DLG-257	DLG	A6, A9, A12, A15			todo
-B-DLG-258	DLG	A6, A9, A12, A15			todo
+B-DLG-250	DLG	A6, A9, A12, A15	listsEveryTopicAndOpensOnTheFirstOne		done
+B-DLG-251	DLG	A6, A9, A12, A15	choosingATopicLeavesSearchResults		done
+B-DLG-252	DLG	A6, A9, A12, A15	showsATopicsExplanationsFollowedByItsShortcuts		done
+B-DLG-253	DLG	A6, A9, A12, A15	showsTheKeysChosenInSettingsAndLeadsThereToChangeThem		done
+B-DLG-254	DLG	A6, A9, A12, A15	showsTheKeysChosenInSettingsAndLeadsThereToChangeThem		done
+B-DLG-255	DLG	A6, A9, A12, A15	listsEveryShortcutOnTheKeyboardShortcutsPageGroupedByTopic, showsTheKeysChosenInSettingsAndLeadsThereToChangeThem		done
+B-DLG-256	DLG	A6, A9, A12, A15	searchesAcrossAllTopicsAndShortcutsAndEscapeClearsTheSearch		done
+B-DLG-257	DLG	A6, A9, A12, A15	searchesAcrossAllTopicsAndShortcutsAndEscapeClearsTheSearch		done
+B-DLG-258	DLG	A6, A9, A12, A15	exposesTheSelectedLayoutMode		done
 B-DLG-259	DLG	A6, A9, A12, A15			todo
-B-DLG-260	DLG	A6, A9, A12, A15			todo
-B-DLG-261	DLG	A6, A9, A12, A15			todo
-B-DLG-262	DLG	A6, A9, A12, A15			todo
-B-DLG-263	DLG	A6, A9, A12, A15			todo
+B-DLG-260	DLG	A6, A9, A12, A15	showsTheAppItsIconAndTheVersionsABugReportNeeds		done
+B-DLG-261	DLG	A6, A9, A12, A15	copiesTheDetailsAndSaysSoFor1500Milliseconds		done
+B-DLG-262	DLG	A6, A9, A12, A15	linksToTheProjectAndOpensAcknowledgements		done
+B-DLG-263	DLG	A6, A9, A12, A15	closesWithEscape		done
 B-INFO-001	INFO	A8, A11			todo
 B-INFO-002	INFO	A8, A11			todo
 B-INFO-003	INFO	A8, A11			todo
@@ -643,14 +643,14 @@ B-INFO-179	INFO	A8, A11			todo
 B-INFO-180	INFO	A8, A11			todo
 B-INFO-181	INFO	A8, A11			todo
 B-INFO-182	INFO	A8, A11			todo
-B-INFO-183	INFO	A8, A11			todo
-B-INFO-184	INFO	A8, A11			todo
-B-INFO-185	INFO	A8, A11			todo
+B-INFO-183	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	53-info-panel-open	partial
+B-INFO-184	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent		partial
+B-INFO-185	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	53-info-panel-open	partial
 B-INFO-186	INFO	A8, A11			todo
-B-INFO-187	INFO	A8, A11			todo
-B-INFO-188	INFO	A8, A11			todo
-B-INFO-189	INFO	A8, A11			todo
-B-INFO-190	INFO	A8, A11			todo
+B-INFO-187	INFO	A8, A11	resizesTreeAndInspectorPanesWithinBounds, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		partial
+B-INFO-188	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, givesAPaneBackItsWidthWhenTheWindowIsWidenedAgain, shrinksSidePanesToPreserveCenterContentWhenTheViewportNarrows, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		partial
+B-INFO-189	INFO	A8, A11	squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths, widensAPaneFromTheKeyboardAndKeepsThatWidth		partial
+B-INFO-190	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, hidesTheFolderTreeGivingItsRoomToTheListAndTheToolbar	52-tree-hidden	partial
 B-INFO-191	INFO	A8, A11			todo
 B-INFO-192	INFO	A8, A11			todo
 B-INFO-193	INFO	A8, A11			todo
@@ -686,19 +686,19 @@ B-NAV-021	NAV	A8, A14			todo
 B-NAV-022	NAV	A8, A14			todo
 B-NAV-023	NAV	A8, A14			todo
 B-NAV-024	NAV	A8, A14			todo
-B-NAV-025	NAV	A8, A14			todo
-B-NAV-026	NAV	A8, A14			todo
-B-NAV-027	NAV	A8, A14			todo
-B-NAV-028	NAV	A8, A14			todo
-B-NAV-029	NAV	A8, A14			todo
+B-NAV-025	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-026	NAV	A8, A14		58-history-hold	partial
+B-NAV-027	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-028	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-029	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
 B-NAV-030	NAV	A8, A14			todo
-B-NAV-031	NAV	A8, A14			todo
-B-NAV-032	NAV	A8, A14			todo
-B-NAV-033	NAV	A8, A14			todo
-B-NAV-034	NAV	A8, A14			todo
-B-NAV-035	NAV	A8, A14			todo
-B-NAV-036	NAV	A8, A14			todo
-B-NAV-037	NAV	A8, A14			todo
+B-NAV-031	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-032	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-033	NAV	A8, A14		58-history-hold	partial
+B-NAV-034	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-035	NAV	A8, A14		58-history-hold	partial
+B-NAV-036	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-037	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
 B-NAV-038	NAV	A8, A14			todo
 B-NAV-039	NAV	A8, A14			todo
 B-NAV-040	NAV	A8, A14			todo
@@ -1574,41 +1574,41 @@ B-VIEW-103	VIEW	A10, A13, A14			todo
 B-VIEW-104	VIEW	A10, A13, A14			todo
 B-VIEW-105	VIEW	A10, A13, A14			todo
 B-VIEW-106	VIEW	A10, A13, A14			todo
-B-VIEW-107	VIEW	A10, A13, A14			todo
-B-VIEW-108	VIEW	A10, A13, A14			todo
-B-VIEW-109	VIEW	A10, A13, A14			todo
-B-VIEW-110	VIEW	A10, A13, A14			todo
-B-VIEW-111	VIEW	A10, A13, A14			todo
-B-VIEW-112	VIEW	A10, A13, A14			todo
-B-VIEW-113	VIEW	A10, A13, A14			todo
-B-VIEW-114	VIEW	A10, A13, A14			todo
-B-VIEW-115	VIEW	A10, A13, A14			todo
-B-VIEW-116	VIEW	A10, A13, A14			todo
-B-VIEW-117	VIEW	A10, A13, A14			todo
-B-VIEW-118	VIEW	A10, A13, A14			todo
-B-VIEW-119	VIEW	A10, A13, A14			todo
-B-VIEW-120	VIEW	A10, A13, A14			todo
-B-VIEW-121	VIEW	A10, A13, A14			todo
-B-VIEW-122	VIEW	A10, A13, A14			todo
-B-VIEW-123	VIEW	A10, A13, A14			todo
+B-VIEW-107	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton	50-toolbar-default-light	partial
+B-VIEW-108	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton		partial
+B-VIEW-109	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton, keysEachItemByItsIdAndRepeatedSeparatorsByTheirCount	50-toolbar-default-light	partial
+B-VIEW-110	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton	50-toolbar-default-light	partial
+B-VIEW-111	VIEW	A10, A13, A14		50-toolbar-default-light	partial
+B-VIEW-112	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton, joinsTheButtonsOnEitherSideOfAnItemThatIsNotShown, putsButtonsSideBySideOnOneCapsuleAndLeavesTheTitleSearchAndViewSwitchOff	50-toolbar-default-light	partial
+B-VIEW-113	VIEW	A10, A13, A14	dropsSeparatorsLeftWithNothingToDivide		done
+B-VIEW-114	VIEW	A10, A13, A14	hidesTheItemsNearestTheEndInANarrowWindowAndListsThemUnderTheOverflowButton, hidesTheRemovableItemsNearestTheEndFirstAndNeverARequiredOne, keepsEveryItemWhileTheTitleAndSearchFieldCanStillGiveRoom	54-narrow-overflow	partial
+B-VIEW-115	VIEW	A10, A13, A14	hidesTheItemsNearestTheEndInANarrowWindowAndListsThemUnderTheOverflowButton, hidesTheRemovableItemsNearestTheEndFirstAndNeverARequiredOne, keepsTheRemovableItemsFromTheStartAndEveryRequiredItem, keepsTheWholeToolbarUntilItHasBeenLaidOut	54-narrow-overflow	partial
+B-VIEW-116	VIEW	A10, A13, A14	hidesTheItemsNearestTheEndInANarrowWindowAndListsThemUnderTheOverflowButton	54-narrow-overflow	partial
+B-VIEW-117	VIEW	A10, A13, A14	hidesTheItemsNearestTheEndInANarrowWindowAndListsThemUnderTheOverflowButton	54-narrow-overflow	partial
+B-VIEW-118	VIEW	A10, A13, A14		54-narrow-overflow	partial
+B-VIEW-119	VIEW	A10, A13, A14		50-toolbar-default-light	partial
+B-VIEW-120	VIEW	A10, A13, A14	showsAControlsTitleAfterThePointerRestsOnIt, togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
+B-VIEW-121	VIEW	A10, A13, A14	rendersAnIconForEverySupportedToolbarGlyphName		done
+B-VIEW-122	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
+B-VIEW-123	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
 B-VIEW-124	VIEW	A10, A13, A14			todo
-B-VIEW-125	VIEW	A10, A13, A14			todo
-B-VIEW-126	VIEW	A10, A13, A14			todo
-B-VIEW-127	VIEW	A10, A13, A14			todo
-B-VIEW-128	VIEW	A10, A13, A14			todo
+B-VIEW-125	VIEW	A10, A13, A14	listsTheViewOptionsAndSortsFromTheSortMenu	55-sort-menu	partial
+B-VIEW-126	VIEW	A10, A13, A14		55-sort-menu	partial
+B-VIEW-127	VIEW	A10, A13, A14	listsTheViewOptionsAndSortsFromTheSortMenu	56-view-options-menu	partial
+B-VIEW-128	VIEW	A10, A13, A14	offersCustomizeToolbarOnARightClickOfTheTitle		partial
 B-VIEW-129	VIEW	A10, A13, A14			todo
-B-VIEW-130	VIEW	A10, A13, A14			todo
-B-VIEW-131	VIEW	A10, A13, A14			todo
-B-VIEW-132	VIEW	A10, A13, A14			todo
-B-VIEW-133	VIEW	A10, A13, A14			todo
-B-VIEW-134	VIEW	A10, A13, A14			todo
-B-VIEW-135	VIEW	A10, A13, A14			todo
-B-VIEW-136	VIEW	A10, A13, A14			todo
-B-VIEW-137	VIEW	A10, A13, A14			todo
-B-VIEW-138	VIEW	A10, A13, A14			todo
-B-VIEW-139	VIEW	A10, A13, A14			todo
-B-VIEW-140	VIEW	A10, A13, A14			todo
-B-VIEW-141	VIEW	A10, A13, A14			todo
+B-VIEW-130	VIEW	A10, A13, A14	choosesAutoLightOrDarkFromTheThemeButtonsMenu	57-theme-menu	partial
+B-VIEW-131	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
+B-VIEW-132	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard	59-customize-toolbar	partial
+B-VIEW-133	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard	59-customize-toolbar	partial
+B-VIEW-134	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		partial
+B-VIEW-135	VIEW	A10, A13, A14	landsADraggedItemAfterEveryItemWhoseMiddleIsLeftOfThePointer, movesAddsAndTakesOffItemsByDragging		partial
+B-VIEW-136	VIEW	A10, A13, A14	movesAddsAndTakesOffItemsByDragging		partial
+B-VIEW-137	VIEW	A10, A13, A14	movesAddsAndTakesOffItemsByDragging		partial
+B-VIEW-138	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		partial
+B-VIEW-139	VIEW	A10, A13, A14		59-customize-toolbar	partial
+B-VIEW-140	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard	59-customize-toolbar	partial
+B-VIEW-141	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		partial
 B-VIEW-142	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
 B-VIEW-143	VIEW	A10, A13, A14			todo
 B-VIEW-144	VIEW	A10, A13, A14	namesATabAfterItsFolderOrAfterItsSearchWhileResultsAreShowing, tellsTabsOnFoldersOfTheSameNameApartByTheFolderEachIsIn		done
@@ -1703,7 +1703,7 @@ B-VIEW-232	VIEW	A10, A13, A14			todo
 B-VIEW-233	VIEW	A10, A13, A14			todo
 B-VIEW-234	VIEW	A10, A13, A14			todo
 B-VIEW-235	VIEW	A10, A13, A14			todo
-B-VIEW-236	VIEW	A10, A13, A14			todo
+B-VIEW-236	VIEW	A10, A13, A14	hidesTheFolderTreeGivingItsRoomToTheListAndTheToolbar	52-tree-hidden	partial
 B-VIEW-237	VIEW	A10, A13, A14			todo
-B-VIEW-238	VIEW	A10, A13, A14			todo
+B-VIEW-238	VIEW	A10, A13, A14		55-sort-menu	partial
 B-VIEW-239	VIEW	A10, A13, A14			todo
