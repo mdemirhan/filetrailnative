@@ -87,3 +87,5 @@
 {"at": "2026-10-14T11:39:23+00:00", "event": "add-batch", "batch": "W2-A", "wps": ["P3-01", "P4-03", "P5-01"], "estimatedAgents": 15}
 {"at": "2026-10-14T11:39:23+00:00", "event": "next", "text": "Running W2-A P3-01+P4-03+P5-01; then W2-B P3-02+P5-02+P5-03+P5-06"}
 {"at": "2026-10-14T11:39:23+00:00", "event": "set-batch", "batch": "W2-A", "status": "running", "runId": null}
+{"at": "2026-10-14T11:39:30+00:00", "event": "set-batch", "batch": "W2-A", "status": "planned", "runId": null}
+{"at": "2026-10-14T11:39:30+00:00", "event": "next", "text": "W2-A planned, NOT launched: waiting for user direction on the wave-2 briefs"}
