@@ -75,12 +75,17 @@ extension ExplorerWindowGUITests {
             tab.preferencesChanged(PreferencesChange(patch: [:], senderID: nil))
             harness.layout(tab)
             await settle()
+            // Under a loaded machine the rows arrive a moment later.
+            let controller = sidebar(tab)
+            _ = await waitUntil { controller.model.placement.rawValue == placement && self.hasFavorites(controller) }
         }
 
         // T-cdf3463c T-2caf696c T-9aa3fb64 T-01d458a9 F-728 F-729 B-TREE-001 B-TREE-004
         @Test func drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree() async throws {
             let harness = try ExplorerHarness()
             let tab = try await harness.open(listed(harness, ""))
+            // The tree on the folder under test, so the rows are the few of it, not the temporary directory's.
+            await rooted(tab, harness)
             await setPlacement(tab, "separate", harness)
             let controller = sidebar(tab)
             #expect(labels(controller).prefix(3) == ["Applications", "Desktop", "Documents"])
@@ -97,6 +102,8 @@ extension ExplorerWindowGUITests {
         @Test func rowsHaveTheOriginalsHeightIndentAndPadding() async throws {
             let harness = try ExplorerHarness()
             let tab = try await harness.open(listed(harness, ""))
+            // The tree on the folder under test, so the rows are the few of it, not the temporary directory's.
+            await rooted(tab, harness)
             await setPlacement(tab, "integrated", harness)
             let controller = sidebar(tab)
             let layout = controller.layout
