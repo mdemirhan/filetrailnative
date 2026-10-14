@@ -52,7 +52,7 @@ func removeMovedSources(
         var keptNames = Set<NameKeys.Exact>()
         for reviewedChild in current.children {
             let child = asExecuted(context, reviewedChild)
-            let name = NameKeys.Exact(NodePath.basename(child.node.sourcePath))
+            let name = NameKeys.Exact(basenameOf(child.node.sourcePath))
             // A folder skipped (or stopped) wasn't copied: it and everything in it stay.
             let childStatus = itemsBySource[NameKeys.Exact(child.node.sourcePath)]?.status
             if child.node.sourceKind == .directory && (childStatus == .skipped || childStatus == .cancelled) {
@@ -113,7 +113,7 @@ func tryDeleteMovedSource(
 func metadataKeptMessage(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> String? {
     guard context.shared.metadataNotCopied.contains(NameKeys.Exact(node.node.sourcePath)) else { return nil }
     return
-        "Its items were moved, but the folder's own information (such as its tags) couldn't all be copied, so the original \u{201C}\(NodePath.basename(node.node.sourcePath))\u{201D} was kept."
+        "Its items were moved, but the folder's own information (such as its tags) couldn't all be copied, so the original \u{201C}\(basenameOf(node.node.sourcePath))\u{201D} was kept."
 }
 
 /// Removes an empty source folder once its items were moved: nil when done (or left on purpose), else why it
@@ -131,7 +131,7 @@ func tryRemoveEmptySourceDirectory(
         // Its permissions changed, or it was swapped for another folder: it isn't removed, and "moved" mustn't
         // hide that it is still there.
         return
-            "Its items were moved, but the original \u{201C}\(NodePath.basename(sourcePath))\u{201D} changed during the move, so it was kept."
+            "Its items were moved, but the original \u{201C}\(basenameOf(sourcePath))\u{201D} changed during the move, so it was kept."
     }
     do {
         // rmdir only removes an empty folder, so anything left inside (skipped items, or something added in the
@@ -152,7 +152,7 @@ func tryRemoveEmptySourceDirectory(
 }
 
 private func plannedNames(_ node: ResolvedCopyPasteNode) -> Set<NameKeys.Exact> {
-    Set(node.children.map { NameKeys.Exact(NodePath.basename($0.node.sourcePath)) })
+    Set(node.children.map { NameKeys.Exact(basenameOf($0.node.sourcePath)) })
 }
 
 /// A moved folder that isn't empty afterwards: items this move left on purpose (skipped, failed) are reported on
@@ -197,7 +197,7 @@ private func describeLeftInMovedFolder(
     if newItems.isEmpty {
         return nil
     }
-    let folder = NodePath.basename(sourcePath)
+    let folder = basenameOf(sourcePath)
     let named = newItems.count == 1 ? "\u{201C}\(newItems[0])\u{201D} was" : "\(newItems.count) items were"
     let left = newItems.count == 1 ? "it was" : "they were"
     return
@@ -211,7 +211,7 @@ func describeAddedDuringCopy(_ node: ResolvedCopyPasteNode, _ fileSystem: some W
     if newItems.isEmpty {
         return nil
     }
-    let folder = NodePath.basename(node.node.sourcePath)
+    let folder = basenameOf(node.node.sourcePath)
     let named = newItems.count == 1 ? "\u{201C}\(newItems[0])\u{201D} was" : "\(newItems.count) items were"
     let copied = newItems.count == 1 ? "it wasn't" : "they weren't"
     return "\(named) added to \u{201C}\(folder)\u{201D} after the copy began, so \(copied) copied."

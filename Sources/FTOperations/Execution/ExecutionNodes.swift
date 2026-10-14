@@ -70,7 +70,7 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
 {
     let fileSystem = context.fileSystem
     let finalPath = currentNode.destinationPath
-    let name = NodePath.basename(finalPath)
+    let name = basenameOf(finalPath)
     // Everything it will remove is checked before anything is copied: a move that couldn't remove its originals
     // would leave them in both places.
     if context.mode == .cut {
@@ -195,7 +195,7 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
 func assertRemovableAfterCopy(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, deep: Bool) throws {
     let fileSystem = context.fileSystem
     let sourcePath = node.node.sourcePath
-    let parentPath = NodePath.dirname(sourcePath)
+    let parentPath = dirnameOf(sourcePath)
     for path in [sourcePath, parentPath] where isLocked(context.getFlags, path) {
         throw OperationError(lockedMessage(path))
     }
@@ -217,14 +217,14 @@ private func assertCanRemoveFrom(_ fileSystem: some WriteServiceFileSystem, _ fo
         try canModifyFolder(folderPath)
     } catch {
         let code = errorCode(error)
-        let item = NodePath.basename(itemPath)
+        let item = basenameOf(itemPath)
         if code == "EROFS" {
             throw OperationError("\u{201C}\(item)\u{201D} wasn't moved, because its disk is read-only.")
         }
         if code == "EACCES" || code == "EPERM" {
             let what =
                 sameText(folderPath, itemPath)
-                ? "what is inside it" : "it from \u{201C}\(NodePath.basename(folderPath))\u{201D}"
+                ? "what is inside it" : "it from \u{201C}\(basenameOf(folderPath))\u{201D}"
             throw OperationError(
                 "\u{201C}\(item)\u{201D} wasn't moved, because you don't have permission to remove \(what).")
         }
@@ -233,7 +233,7 @@ private func assertCanRemoveFrom(_ fileSystem: some WriteServiceFileSystem, _ fo
 }
 
 func renameOnlyMessage(_ node: ResolvedCopyPasteNode) -> String {
-    "\u{201C}\(NodePath.basename(node.node.sourcePath))\u{201D} wasn't moved because its destination changed after the move began. Try moving it again."
+    "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} wasn't moved because its destination changed after the move began. Try moving it again."
 }
 
 private func unreadableFolderMessage(_ mode: CopyPasteMode, _ reason: String?) -> String {
@@ -389,7 +389,7 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
         }
         if childResult.itemStatus != .completed {
             hasIncomplete = true
-            keptNames.insert(NameKeys.Exact(NodePath.basename(child.node.sourcePath)))
+            keptNames.insert(NameKeys.Exact(basenameOf(child.node.sourcePath)))
         } else if hasItemNotDone(childResult.childItems) {
             // A folder inside done, with something deeper in it not done (skipped).
             hasIncomplete = true
@@ -489,7 +489,7 @@ func preserveTimestampsIfSupported(
 }
 
 func incompletePackageMessage(_ node: ResolvedCopyPasteNode, _ mode: CopyPasteMode = .copy) -> String {
-    let name = NodePath.basename(node.node.sourcePath)
+    let name = basenameOf(node.node.sourcePath)
     return mode == .cut
         ? "\u{201C}\(name)\u{201D} wasn't moved because some items in it were skipped or couldn't be copied. Nothing in it was moved."
         : "\u{201C}\(name)\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
@@ -526,11 +526,11 @@ func tryRenameForCut(_ context: ExecutionContext, _ currentNode: ResolvedCopyPas
 func explainMissingFolder(_ fileSystem: some IdentityFileSystem, _ targetPath: String, _ error: any Error) -> any Error
 {
     guard errorCode(error) == "ENOENT" else { return error }
-    let folder = captureFingerprint(fileSystem, NodePath.dirname(targetPath))
+    let folder = captureFingerprint(fileSystem, dirnameOf(targetPath))
     return folder.exists
         ? error
         : OperationError(
-            "The folder \u{201C}\(NodePath.basename(NodePath.dirname(targetPath)))\u{201D} no longer exists.")
+            "The folder \u{201C}\(basenameOf(dirnameOf(targetPath)))\u{201D} no longer exists.")
 }
 
 /// rename(2) that never replaces anything at `to`: fails with EEXIST instead.

@@ -179,7 +179,7 @@ func recordMoved(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ t
     guard recordsUndo(context, node) else { return }
     let from = node.node.sourcePath
     let fileSystem = context.fileSystem
-    let parentId = context.shared.folderIds.id({ try fileSystem.stat($0) }, NodePath.dirname(from))
+    let parentId = context.shared.folderIds.id({ try fileSystem.stat($0) }, dirnameOf(from))
     recordUndoStep(
         context, node,
         .step(
@@ -275,7 +275,7 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
         while let runtimeConflict = check.conflict {
             if question > maxRuntimeAttempts {
                 throw OperationError(
-                    "\u{201C}\(NodePath.basename(currentNode.node.sourcePath))\u{201D} kept changing, so it was left.")
+                    "\u{201C}\(basenameOf(currentNode.node.sourcePath))\u{201D} kept changing, so it was left.")
             }
             try assertNotWrittenByThisPaste(context, currentNode, runtimeConflict)
             // Whatever the answer, it would copy or merge a folder whose items weren't read.
@@ -303,7 +303,7 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
             if outcome.itemStatus != .skipped {
                 context.shared.writtenPaths.insert(
                     NameKeys.exactDestinationKey(outcome.destinationPath, caseSensitive: context.caseSensitive))
-                context.shared.writtenByFolder[NameKeys.Exact(NodePath.dirname(outcome.destinationPath)), default: []]
+                context.shared.writtenByFolder[NameKeys.Exact(dirnameOf(outcome.destinationPath)), default: []]
                     .append(outcome.destinationPath)
             }
             return outcome
@@ -315,8 +315,8 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
                         context.getFlags, rootError(error),
                         [
                             currentNode.node.sourcePath, currentNode.destinationPath,
-                            NodePath.dirname(currentNode.destinationPath),
-                            NodePath.dirname(currentNode.node.sourcePath),
+                            dirnameOf(currentNode.destinationPath),
+                            dirnameOf(currentNode.node.sourcePath),
                         ]) ?? error
                 throw PlacedError.placed(explained, at: currentNode.destinationPath)
             }
@@ -380,7 +380,7 @@ private func assertNotWrittenByThisPaste(
     }
     let there = conflict.currentDestinationFingerprint
     guard there.ino != nil else { return }
-    for path in context.shared.writtenByFolder[NameKeys.Exact(NodePath.dirname(node.destinationPath))] ?? [] {
+    for path in context.shared.writtenByFolder[NameKeys.Exact(dirnameOf(node.destinationPath))] ?? [] {
         let written = captureFingerprint(context.fileSystem, path)
         if written.ino == there.ino && written.dev == there.dev {
             throw OperationError(sameNameMessage(node))
@@ -389,7 +389,7 @@ private func assertNotWrittenByThisPaste(
 }
 
 private func sameNameMessage(_ node: ResolvedCopyPasteNode) -> String {
-    "\u{201C}\(NodePath.basename(node.node.sourcePath))\u{201D} wasn't pasted because another item of this paste has the same name on this disk, which doesn't tell upper and lower case apart."
+    "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} wasn't pasted because another item of this paste has the same name on this disk, which doesn't tell upper and lower case apart."
 }
 
 /// Continues from what is on disk now, which is what the person just decided on. After a question about the
@@ -420,7 +420,7 @@ private func resolveWithRuntimeAnswer(
         : nil
     if resolution == .merge && conflictClass != .directoryConflict {
         throw OperationError(
-            "\u{201C}\(NodePath.basename(node.node.sourcePath))\u{201D} is no longer a folder, so it can't be merged and was left."
+            "\u{201C}\(basenameOf(node.node.sourcePath))\u{201D} is no longer a folder, so it can't be merged and was left."
         )
     }
     source.destinationPath = node.destinationPath
@@ -463,11 +463,11 @@ private func keepPlannedDestinations(
     var plannedChildren: [NameKeys.Exact: CopyPasteAnalysisNode] = [:]
     for child in planned.children {
         // A Map keeps the last item of a name.
-        plannedChildren[NameKeys.Exact(NodePath.basename(child.sourcePath))] = child
+        plannedChildren[NameKeys.Exact(basenameOf(child.sourcePath))] = child
     }
     var node = fresh
     node.children = fresh.children.map { child in
-        guard let plannedChild = plannedChildren[NameKeys.Exact(NodePath.basename(child.sourcePath))] else {
+        guard let plannedChild = plannedChildren[NameKeys.Exact(basenameOf(child.sourcePath))] else {
             return child
         }
         return keepPlannedDestinations(context, child, plannedChild)

@@ -38,7 +38,7 @@ private final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Se
             children[path] = []
         }
         if path != "/" {
-            children[NodePath.dirname(path)]?.append(NodePath.basename(path))
+            children[dirnameOf(path)]?.append(basenameOf(path))
         }
     }
 
@@ -52,7 +52,7 @@ private final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Se
             if nodes[path] != nil {
                 throw codedError("EEXIST", "EEXIST: \(path)")
             }
-            _ = try lookUp(NodePath.dirname(path))
+            _ = try lookUp(dirnameOf(path))
             add(path, isDirectory: isDirectory, size: size)
         }
     }
@@ -114,8 +114,8 @@ private final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Se
                     children[target] = names
                 }
             }
-            children[NodePath.dirname(from)]?.removeAll { $0 == NodePath.basename(from) }
-            children[NodePath.dirname(to)]?.append(NodePath.basename(to))
+            children[dirnameOf(from)]?.removeAll { $0 == basenameOf(from) }
+            children[dirnameOf(to)]?.append(basenameOf(to))
         }
     }
 }
