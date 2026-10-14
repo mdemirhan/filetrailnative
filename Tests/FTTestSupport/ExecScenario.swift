@@ -138,16 +138,18 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         for item in tree {
             let path = places.resolve(item.path)
             let parent = (path as NSString).deletingLastPathComponent
-            try FileManager.default.createDirectory(atPath: parent, withIntermediateDirectories: true)
+            try Self.makeDirectories(parent)
             switch item.kind {
             case "file":
                 guard Self.writeFile(path, item.content ?? "") else {
                     throw BuildFailure(description: "can't make \(path)")
                 }
             case "dir":
-                try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
+                try Self.makeDirectories(path)
             case "symlink":
-                try FileManager.default.createSymbolicLink(atPath: path, withDestinationPath: item.target ?? "")
+                guard symlink(item.target ?? "", path) == 0 else {
+                    throw BuildFailure(description: "can't make \(path)")
+                }
             default:
                 throw BuildFailure(description: "unknown kind \(item.kind)")
             }
@@ -181,6 +183,18 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         }
     }
 
+    /// `mkdir -p` with the names spelled exactly as given, as Node's mkdir makes them: FileManager
+    /// would store "Café" decomposed.
+    static func makeDirectories(_ path: String) throws {
+        var made = ""
+        for part in path.split(separator: "/", omittingEmptySubsequences: true) {
+            made += "/" + part
+            if mkdir(made, 0o777) != 0 && errno != EEXIST {
+                throw BuildFailure(description: "can't make \(made)")
+            }
+        }
+    }
+
     /// Writes `content` in place as Node's writeFile does (open, truncate, write): an existing
     /// file keeps its inode, which the engine's fingerprints compare.
     static func writeFile(_ path: String, _ content: String) -> Bool {
@@ -200,7 +214,7 @@ public struct ExecScenario: Codable, Equatable, Sendable {
                     throw BuildFailure(description: "can't write \(path)")
                 }
             case "mkdir":
-                try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
+                try makeDirectories(path)
             case "remove":
                 if FileManager.default.fileExists(atPath: path) {
                     try FileManager.default.removeItem(atPath: path)
