@@ -190,6 +190,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     let folderSizes: WindowFolderSizes
     /// The window's grid: sidebar, content, Info panel and the toolbar.
     let workspace: WorkspaceView
+    /// The right-click menus of the tab (P5-09).
+    lazy var contextMenus = ContextMenuCoordinator(tab: self)
     private let infoPanel = InfoPanelView()
     /// Customize Toolbar, while it is on.
     private(set) var customizer: ToolbarCustomizer?
@@ -273,12 +275,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
 
         wireContent()
+        installMenusAndNotifications()
         workspace.toolbar.attach(self)
         connectSearchField()
         #if DEBUG
             AutomationLayoutPrefs.registerOnce()
             AutomationSidebarPrefs.registerOnce()
             AutomationContentPrefs.registerOnce()
+            AutomationNotificationPrefs.registerOnce()
         #endif
         updateTitle()
         if loadNow { ensureLoaded() }
@@ -624,7 +628,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// Opens items: a folder in place (or in a new tab with command), the rest with the system.
-    private func open(_ entries: [DirectoryEntry], inNewTab: Bool = false) {
+    func open(_ entries: [DirectoryEntry], inNewTab: Bool = false) {
         if entries.count == 1, entries[0].isDirectoryLike, !inNewTab {
             go(to: entries[0].url)
             return
@@ -867,7 +871,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         group?.openNewTab(from: self)
     }
 
-    private func setMode(_ mode: ExplorerViewMode) {
+    func setMode(_ mode: ExplorerViewMode) {
         viewMode = mode
         content.setMode(mode)
         notify(.view)
@@ -876,7 +880,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// The sort commands and the column headers (`handleSortChange`): the field already in use reverses the direction;
     /// another sorts by it, descending for Date Modified and Size and ascending for Name and Kind.
-    private func sort(by field: SortByPreference) {
+    func sort(by field: SortByPreference) {
         let next = DetailsSorting.next(current: sortBy, direction: sortDirection, requested: field)
         setSort(next.sortBy, next.direction)
     }
@@ -1002,6 +1006,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     func preferencesChanged(_ change: PreferencesChange) {
         sidebar.applyPreferences()
         refreshColumns()
+        notificationsSettingChanged()
         notify(.preferences)
         if let customizer { customizer.refreshPanel() }
     }
@@ -1084,6 +1089,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
         case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
         case .focusContentPane: content.focusList()
+        case .quickLookSelection: quickLookSelection()
         default:
             if let selector = MenuCommandRouter.nativeEditSelector(command) {
                 NSApp.sendAction(selector, to: nil, from: nil)
