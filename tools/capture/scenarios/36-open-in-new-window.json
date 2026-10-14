@@ -1,0 +1,23 @@
+{
+  "name": "36-open-in-new-window",
+  "description": "Open in New Window on the selected folder components: a window of its own on it, with the first window's view (e2e windows.spec.ts: Open in New Window)",
+  "features": ["F-620","F-573"],
+  "behaviors": ["B-VIEW-177"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src"},
+    {"step":"select","names":["components"]},
+    {"step":"command","id":"openSelectionInNewWindow"},
+    {"step":"selectWindow","index":1},
+    {"step":"expect","element":"title","text":"components"},
+    {"step":"expect","element":{"name":"list row","text":"TripList.jsx"},"visible":true},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"selectWindow","index":0},
+    {"step":"expect","element":"title","text":"src"}
+  ]
+}

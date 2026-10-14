@@ -1,0 +1,21 @@
+{
+  "name": "35-new-window",
+  "description": "File > New Window (⌘N) from a window on app/src/components: a second window on the same folder, a step down and to the right (e2e windows.spec.ts: opens windows on the folder on screen)",
+  "features": ["F-620","F-573"],
+  "behaviors": ["B-VIEW-177"],
+  "tier": ["wp","wave","final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"newWindow"},
+    {"step":"expect","element":"title","text":"components"},
+    {"step":"expect","element":{"name":"list row","text":"Avatar.jsx"},"visible":true},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"selectWindow","index":0},
+    {"step":"expect","element":"title","text":"components"}
+  ]
+}

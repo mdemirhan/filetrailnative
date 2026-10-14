@@ -244,7 +244,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     /// navigation replaced this one or the folder couldn't be read.
     @discardableResult
     func navigate(to url: URL, history: HistoryMove = .push) async -> NavigationTiming? {
-        loaded = true
+        self.loaded = true
         navigationToken += 1
         let token = navigationToken
         let clock = ContinuousClock()
@@ -256,7 +256,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
             return (result, clock.now - started)
         }.value
         guard token == navigationToken else { return nil }
-        let loaded = clock.now
+        let readAt = clock.now
 
         let listing: FolderListing
         switch result {
@@ -309,8 +309,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         }
 
         let timing = NavigationTiming(
-            folder: url, itemCount: listing.items.count, read: read, load: loaded - started,
-            display: clock.now - loaded)
+            folder: url, itemCount: listing.items.count, read: read, load: readAt - started,
+            display: clock.now - readAt)
         if Self.logsTimings {
             FileHandle.standardError.write(
                 Data(
