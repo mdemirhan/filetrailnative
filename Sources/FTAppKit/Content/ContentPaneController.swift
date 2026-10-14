@@ -149,8 +149,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// bar row (P5-06).
     var contentShell: ContentPaneView { shell }
 
-    func setInfoRowOpen(_ open: Bool) {
-        shell.infoRow.setOpen(open, animated: shell.window != nil)
+    /// The Info Row slides open or closed (220 ms) unless the window is only being restored.
+    func setInfoRowOpen(_ open: Bool, animated: Bool = false) {
+        shell.infoRow.setOpen(open, animated: animated && shell.window != nil)
         shell.needsLayout = true
     }
 

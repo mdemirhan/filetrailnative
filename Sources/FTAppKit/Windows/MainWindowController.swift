@@ -1109,7 +1109,7 @@ extension MainWindowController: ExplorerWindowHandle {
             workspace.restore(treeWidth: Double(panels.treeWidth), inspectorWidth: Double(panels.inspectorWidth))
         }
         workspace.show(folderTree: panels.folderTreeOpen, infoPanel: panels.propertiesOpen)
-        content.setInfoRowOpen(panels.detailRowOpen)
+        content.setInfoRowOpen(panels.detailRowOpen, animated: workspace.isReady)
         if !workspace.isReady { workspace.becomeReady() }
         notify(.panels)
     }
