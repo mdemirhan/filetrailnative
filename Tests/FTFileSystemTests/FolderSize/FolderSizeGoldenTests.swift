@@ -77,32 +77,34 @@ private func measureTree(_ root: String) async throws -> TreeOutput {
         folderCount: walk.result.folderCount, dirs: dirs)
 }
 
-@MainActor @Suite struct FolderSizeGoldenTests {
-    // Machine-local: disk sizes (allocated blocks) depend on the volume, so this checks the port against what the
-    // reference's walker said on the machine that recorded the golden.
-    // F-179 F-180 F-181 F-182
-    @Test(.enabled(if: hasFixtures, "needs the shared fixtures"))
-    func theWalkerMatchesTheReferencesOnTheFixtureAndGeneratedTrees() async throws {
-        let cases: [GoldenCase<TreeInput, TreeOutput>] = try Golden.load(suite: "folder-size-trees")
-        #expect(!cases.isEmpty)
-        var measured: [String: TreeOutput] = [:]
-        for testCase in cases {
-            let key = Golden.render(testCase.input)
-            if testCase.input.kind == "fixture" {
-                measured[key] = try await measureTree(fixtures.path + "/" + (testCase.input.path ?? ""))
-                continue
+extension RealWalks {
+    @MainActor @Suite struct FolderSizeGoldenTests {
+        // Machine-local: disk sizes (allocated blocks) depend on the volume, so this checks the port against what the
+        // reference's walker said on the machine that recorded the golden.
+        // F-179 F-180 F-181 F-182
+        @Test(.enabled(if: hasFixtures, "needs the shared fixtures"))
+        func theWalkerMatchesTheReferencesOnTheFixtureAndGeneratedTrees() async throws {
+            let cases: [GoldenCase<TreeInput, TreeOutput>] = try Golden.load(suite: "folder-size-trees")
+            #expect(!cases.isEmpty)
+            var measured: [String: TreeOutput] = [:]
+            for testCase in cases {
+                let key = Golden.render(testCase.input)
+                if testCase.input.kind == "fixture" {
+                    measured[key] = try await measureTree(fixtures.path + "/" + (testCase.input.path ?? ""))
+                    continue
+                }
+                let directory = try TemporaryDirectory(prefix: "ft-golden-sizes")
+                defer { directory.remove() }
+                let locked = try build(testCase.input.entries ?? [], in: directory.path)
+                measured[key] = try await measureTree(directory.path)
+                for entry in locked.reversed() {
+                    chmod("\(directory.path)/\(entry.path)", 0o755)
+                }
             }
-            let directory = try TemporaryDirectory(prefix: "ft-golden-sizes")
-            defer { directory.remove() }
-            let locked = try build(testCase.input.entries ?? [], in: directory.path)
-            measured[key] = try await measureTree(directory.path)
-            for entry in locked.reversed() {
-                chmod("\(directory.path)/\(entry.path)", 0o755)
+            Golden.expectMatches(cases) { input in
+                measured[Golden.render(input)]
+                    ?? TreeOutput(total: -1, diskTotal: -1, fileCount: -1, folderCount: -1, dirs: [:])
             }
-        }
-        Golden.expectMatches(cases) { input in
-            measured[Golden.render(input)]
-                ?? TreeOutput(total: -1, diskTotal: -1, fileCount: -1, folderCount: -1, dirs: [:])
         }
     }
 }

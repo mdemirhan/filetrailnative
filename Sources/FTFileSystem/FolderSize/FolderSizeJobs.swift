@@ -230,14 +230,19 @@ public final class FolderSizeJobs {
 
     private func pruneFinishedJobs() {
         var finishedCount = jobs.values.reduce(0) { $0 + ($1.status.isFinished ? 1 : 0) }
-        if finishedCount <= Self.maxFinishedJobs { return }
-        for jobId in jobOrder.sorted(by: { $0.value < $1.value }).map(\.key) {
-            if finishedCount <= Self.maxFinishedJobs { break }
-            if jobs[jobId]?.status.isFinished == true {
-                jobs[jobId] = nil
-                jobOrder[jobId] = nil
-                finishedCount -= 1
+        // The oldest finished go first; usually one is over.
+        while finishedCount > Self.maxFinishedJobs {
+            var oldest: (jobId: String, sequence: Int)?
+            for (jobId, job) in jobs where job.status.isFinished {
+                let sequence = jobOrder[jobId] ?? 0
+                if oldest == nil || sequence < (oldest?.sequence ?? 0) {
+                    oldest = (jobId, sequence)
+                }
             }
+            guard let oldest else { return }
+            jobs[oldest.jobId] = nil
+            jobOrder[oldest.jobId] = nil
+            finishedCount -= 1
         }
     }
 

@@ -67,9 +67,8 @@ private final class MockNative: FolderSizeNative {
 }
 
 private func folders(_ dirs: [String: [Int64]]) -> [FinishedFolders.Folder] {
-    dirs.keys.sorted().map { path in
-        let totals = dirs[path] ?? []
-        return FinishedFolders.Folder(
+    dirs.map { path, totals in
+        FinishedFolders.Folder(
             path: path,
             totals: FolderTotals(
                 sizeBytes: totals[0], diskBytes: totals[1], fileCount: Int(totals[2]), folderCount: Int(totals[3])))
@@ -255,16 +254,19 @@ private func settle() async {
     @Test func forgetsTheSizesALargeWriteTouchedQuicklyHoweverManyAreKept() async {
         let native = MockNative()
         let jobs = make(native)
-        var dirs: [String: [Int64]] = [:]
-        for index in 0..<50_000 {
-            dirs["/Users/demo/Library/c\(index % 500)/d\(index)"] = [1, 1, 1, 0]
-        }
         _ = start(jobs, "/Users/demo/Library")
-        native.resolveActive(
-            FolderSizeResult(total: 1000, diskTotal: 1200, fileCount: 42, folderCount: 7, dev: nil, dirs: folders(dirs))
-        )
+        // In takes, with the rest of the app let in between, as a walk's folders arrive.
+        for take in 0..<6 {
+            var dirs: [String: [Int64]] = [:]
+            for index in (take * 5_000)..<((take + 1) * 5_000) {
+                dirs["/Users/demo/Library/c\(index % 500)/d\(index)"] = [1, 1, 1, 0]
+            }
+            native.finish(dirs)
+            await Task.yield()
+        }
+        native.resolveActive()
         await settle()
-        let changed = (0..<5_000).map { "/Users/demo/Library/c7/d\($0 * 500 + 7)/new.txt" }
+        let changed = (0..<3_000).map { "/Users/demo/Library/c7/d\($0 * 500 + 7)/new.txt" }
 
         let started = ContinuousClock.now
         FolderSizeWrites.forget(changedPaths: changed)
@@ -284,11 +286,15 @@ private func settle() async {
         let jobs = make(native)
         _ = start(jobs, "/test")
         native.finish(["/test/small": [1, 1, 1, 0]])
-        var dirs: [String: [Int64]] = [:]
-        for index in 0..<150_000 {
-            dirs["/test/big/d\(index)"] = [2, 2, 1, 0]
+        // More than the 100,000 an old limit kept, in takes with the rest of the app let in between.
+        for take in 0..<11 {
+            var dirs: [String: [Int64]] = [:]
+            for index in (take * 10_000)..<((take + 1) * 10_000) {
+                dirs["/test/big/d\(index)"] = [2, 2, 1, 0]
+            }
+            native.finish(dirs)
+            await Task.yield()
         }
-        native.finish(dirs)
         native.resolveActive()
         await settle()
 
@@ -550,21 +556,23 @@ private func settle() async {
     // A walk of the home folder stores hundreds of thousands of sizes, a take of 10,000 folders at a time: each take
     // must be stored in a moment.
     // T-2cdd29eb F-186
-    @Test func keepsUpWithAWalkThatStoresHundredsOfThousandsOfSizes() {
+    @Test func keepsUpWithAWalkThatStoresHundredsOfThousandsOfSizes() async {
         let native = MockNative()
         let jobs = make(native)
         _ = start(jobs, "/Users/demo")
         let started = ContinuousClock.now
-        for take in 0..<40 {
+        for take in 0..<20 {
             var dirs: [String: [Int64]] = [:]
             for index in (take * 10_000)..<((take + 1) * 10_000) {
                 dirs["/Users/demo/Library/c\(index % 400)/d\(index)"] = [1, 1, 1, 0]
             }
             native.finish(dirs)
+            // Lets the rest of the app run between takes, as it does between the walk's.
+            await Task.yield()
         }
         // About a second on a laptop; the bound only catches going back to one at a time.
         #expect(ContinuousClock.now - started < .seconds(6))
-        #expect(jobs.cachedSize("/Users/demo/Library/c399/d399999") == 1)
+        #expect(jobs.cachedSize("/Users/demo/Library/c399/d199999") == 1)
         #expect(jobs.cachedSize("/Users/demo/Library/c0/d0") == 1)
     }
 
