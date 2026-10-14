@@ -70,14 +70,18 @@ public enum CopyPasteNames {
         let (fullBaseName, ext) = splitNameExtension(
             sourceName, isDirectory: options.isDirectory, isPackage: options.isPackage)
         var baseName = fullBaseName
-        var firstIndex = 1
+        var firstIndex = 1.0
         if let existing = existingCopy(of: fullBaseName) {
             baseName = existing.base
             firstIndex = existing.number + 1
         }
+        // Doubles, as in JavaScript: past 2^53 adding one changes nothing, so the loop ends early or
+        // repeats a number; `attempts` keeps the repeat finite.
         var index = firstIndex
-        while index < firstIndex + maxDuplicateNameAttempts {
-            let suffix = index == 1 ? " copy" : " copy \(index)"
+        var attempts = 0
+        while index < firstIndex + Double(maxDuplicateNameAttempts) && attempts < maxDuplicateNameAttempts {
+            attempts += 1
+            let suffix = index == 1 ? " copy" : " copy \(JSText.integerText(index))"
             let candidate = NodePath.join(directory, fitName(baseName, suffix: suffix, extension: ext))
             index += 1
             if let reserved,
@@ -92,9 +96,9 @@ public enum CopyPasteNames {
         throw NoFreeName(sourceName: sourceName)
     }
 
-    /// `/^(.+?) copy(?: ([2-9]|[1-9]\d+))?$/u`: "x copy" continues as "x copy 2". A number too long for
-    /// an `Int` counts as no match.
-    static func existingCopy(of name: String) -> (base: String, number: Int)? {
+    /// `/^(.+?) copy(?: ([2-9]|[1-9]\d+))?$/u`: "x copy" continues as "x copy 2". The number is a double,
+    /// as `Number(…)` makes it.
+    static func existingCopy(of name: String) -> (base: String, number: Double)? {
         let scalars = Array(name.unicodeScalars)
         // `.` matches no line terminator.
         func isLineTerminator(_ scalar: Unicode.Scalar) -> Bool {
@@ -129,14 +133,14 @@ public enum CopyPasteNames {
     }
 
     /// `[2-9]|[1-9]\d+` over the whole slice (digits are ASCII), as a number.
-    private static func copyNumber(_ digits: ArraySlice<Unicode.Scalar>) -> Int? {
+    private static func copyNumber(_ digits: ArraySlice<Unicode.Scalar>) -> Double? {
         guard let first = digits.first, first.value >= 0x31, first.value <= 0x39 else { return nil }
         guard digits.allSatisfy({ $0.value >= 0x30 && $0.value <= 0x39 }) else { return nil }
         // A single digit must be 2-9: "x copy 1" is not a copy number.
         if digits.count == 1 && first.value == 0x31 { return nil }
         var view = String.UnicodeScalarView()
         view.append(contentsOf: digits)
-        return Int(String(view))
+        return Double(String(view))
     }
 
     /// Whether a name has the extension of a package (see `packageExtensions`).

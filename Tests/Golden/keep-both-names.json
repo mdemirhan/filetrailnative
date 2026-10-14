@@ -5611,7 +5611,483 @@
       }
     },
     {
-      "name": "all taken: \"report.txt\" #348",
+      "name": "huge number: \"x copy 9223372036854775807.txt\" #348",
+      "input": {
+        "name": "x copy 9223372036854775807.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9223372036854776000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9223372036854775808.txt\" #349",
+      "input": {
+        "name": "x copy 9223372036854775808.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9223372036854776000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 99999999999999999999.txt\" #350",
+      "input": {
+        "name": "x copy 99999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 100000000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 100000000000000.txt\" #351",
+      "input": {
+        "name": "x copy 100000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 100000000000001.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 999999999999999.txt\" #352",
+      "input": {
+        "name": "x copy 999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 1000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 1000000000000000.txt\" #353",
+      "input": {
+        "name": "x copy 1000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 1000000000000001.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9999999999999999.txt\" #354",
+      "input": {
+        "name": "x copy 9999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 10000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 10000000000000000.txt\" #355",
+      "input": {
+        "name": "x copy 10000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 10000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 99999999999999999.txt\" #356",
+      "input": {
+        "name": "x copy 99999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 100000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 100000000000000000.txt\" #357",
+      "input": {
+        "name": "x copy 100000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 100000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 999999999999999999.txt\" #358",
+      "input": {
+        "name": "x copy 999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 1000000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 1000000000000000000.txt\" #359",
+      "input": {
+        "name": "x copy 1000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 1000000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9999999999999999999.txt\" #360",
+      "input": {
+        "name": "x copy 9999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 10000000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 10000000000000000000.txt\" #361",
+      "input": {
+        "name": "x copy 10000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 10000000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 99999999999999999999.txt\" #362",
+      "input": {
+        "name": "x copy 99999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 100000000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 100000000000000000000.txt\" #363",
+      "input": {
+        "name": "x copy 100000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 100000000000000000000.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 999999999999999999999.txt\" #364",
+      "input": {
+        "name": "x copy 999999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 999999999999999999999.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 1000000000000000000000.txt\" #365",
+      "input": {
+        "name": "x copy 1000000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 1000000000000000000000.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9999999999999999999999.txt\" #366",
+      "input": {
+        "name": "x copy 9999999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 9999999999999999999999.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 10000000000000000000000.txt\" #367",
+      "input": {
+        "name": "x copy 10000000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 10000000000000000000000.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 99999999999999999999999.txt\" #368",
+      "input": {
+        "name": "x copy 99999999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 99999999999999999999999.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 100000000000000000000000.txt\" #369",
+      "input": {
+        "name": "x copy 100000000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 100000000000000000000000.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 999999999999999999999999.txt\" #370",
+      "input": {
+        "name": "x copy 999999999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 999999999999999999999999.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 1000000000000000000000000.txt\" #371",
+      "input": {
+        "name": "x copy 1000000000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 1000000000000000000000000.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9999999999999999999999999.txt\" #372",
+      "input": {
+        "name": "x copy 9999999999999999999999999.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 9999999999999999999999999.txt”."
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9007199254740990.txt\" #373",
+      "input": {
+        "name": "x copy 9007199254740990.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9007199254740991.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9007199254740991.txt\" #374",
+      "input": {
+        "name": "x copy 9007199254740991.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9007199254740992.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9007199254740992.txt\" #375",
+      "input": {
+        "name": "x copy 9007199254740992.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9007199254740992.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9007199254740993.txt\" #376",
+      "input": {
+        "name": "x copy 9007199254740993.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9007199254740992.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 9007199254740994.txt\" #377",
+      "input": {
+        "name": "x copy 9007199254740994.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9007199254740996.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 18014398509481984.txt\" #378",
+      "input": {
+        "name": "x copy 18014398509481984.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 18014398509481984.txt"
+      }
+    },
+    {
+      "name": "huge number: \"x copy 100000000000000000000000.txt\" #379",
+      "input": {
+        "name": "x copy 100000000000000000000000.txt",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "error": "Couldn't find a free name for “x copy 100000000000000000000000.txt”."
+      }
+    },
+    {
+      "name": "huge number, no extension: \"x copy 99999999999999999999\" #380",
+      "input": {
+        "name": "x copy 99999999999999999999",
+        "isFolder": false,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 100000000000000000000"
+      }
+    },
+    {
+      "name": "huge number, folder: \"x copy 9223372036854775807\" #381",
+      "input": {
+        "name": "x copy 9223372036854775807",
+        "isFolder": true,
+        "taken": [],
+        "reserved": [],
+        "caseSensitive": false,
+        "allTaken": false
+      },
+      "output": {
+        "path": "/target/x copy 9223372036854776000"
+      }
+    },
+    {
+      "name": "all taken: \"report.txt\" #382",
       "input": {
         "name": "report.txt",
         "isFolder": false,
@@ -5625,7 +6101,7 @@
       }
     },
     {
-      "name": "all taken: \"x copy 5\" #349",
+      "name": "all taken: \"x copy 5\" #383",
       "input": {
         "name": "x copy 5",
         "isFolder": false,
@@ -5639,7 +6115,7 @@
       }
     },
     {
-      "name": "all taken: \"Tool.app\" #350",
+      "name": "all taken: \"Tool.app\" #384",
       "input": {
         "name": "Tool.app",
         "isFolder": true,
@@ -5653,7 +6129,7 @@
       }
     },
     {
-      "name": "all taken: \"archive\" #351",
+      "name": "all taken: \"archive\" #385",
       "input": {
         "name": "archive",
         "isFolder": false,
@@ -5667,7 +6143,7 @@
       }
     },
     {
-      "name": "reserved: \"a.txt\" #352",
+      "name": "reserved: \"a.txt\" #386",
       "input": {
         "name": "a.txt",
         "isFolder": false,
@@ -5683,7 +6159,7 @@
       }
     },
     {
-      "name": "reserved case: \"a.txt\" #353",
+      "name": "reserved case: \"a.txt\" #387",
       "input": {
         "name": "a.txt",
         "isFolder": false,
@@ -5699,7 +6175,7 @@
       }
     },
     {
-      "name": "reserved case, sensitive: \"a.txt\" #354",
+      "name": "reserved case, sensitive: \"a.txt\" #388",
       "input": {
         "name": "a.txt",
         "isFolder": false,
@@ -5715,7 +6191,7 @@
       }
     },
     {
-      "name": "reserved nfd: \"Café.txt\" #355",
+      "name": "reserved nfd: \"Café.txt\" #389",
       "input": {
         "name": "Café.txt",
         "isFolder": false,
@@ -5731,7 +6207,7 @@
       }
     },
     {
-      "name": "reserved nfc: \"Café.txt\" #356",
+      "name": "reserved nfc: \"Café.txt\" #390",
       "input": {
         "name": "Café.txt",
         "isFolder": false,
@@ -5747,7 +6223,7 @@
       }
     },
     {
-      "name": "reserved and taken: \"a.txt\" #357",
+      "name": "reserved and taken: \"a.txt\" #391",
       "input": {
         "name": "a.txt",
         "isFolder": false,
@@ -5766,7 +6242,7 @@
       }
     },
     {
-      "name": "random: \"notes copy.txt\" #358",
+      "name": "random: \"notes copy.txt\" #392",
       "input": {
         "name": "notes copy.txt",
         "isFolder": false,
@@ -5784,7 +6260,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #359",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #393",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaéééé.app",
         "isFolder": false,
@@ -5806,7 +6282,7 @@
       }
     },
     {
-      "name": "random: \"backup.tar.gz\" #360",
+      "name": "random: \"backup.tar.gz\" #394",
       "input": {
         "name": "backup.tar.gz",
         "isFolder": false,
@@ -5822,7 +6298,7 @@
       }
     },
     {
-      "name": "random: \"report.txt\" #361",
+      "name": "random: \"report.txt\" #395",
       "input": {
         "name": "report.txt",
         "isFolder": false,
@@ -5838,7 +6314,7 @@
       }
     },
     {
-      "name": "random: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\" #362",
+      "name": "random: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\" #396",
       "input": {
         "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.app",
         "isFolder": true,
@@ -5852,7 +6328,7 @@
       }
     },
     {
-      "name": "random: \"trailing dot.\" #363",
+      "name": "random: \"trailing dot.\" #397",
       "input": {
         "name": "trailing dot.",
         "isFolder": true,
@@ -5868,7 +6344,7 @@
       }
     },
     {
-      "name": "random: \"x aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #364",
+      "name": "random: \"x aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #398",
       "input": {
         "name": "x aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa🇹🇷🇹🇷.tar.gz",
         "isFolder": true,
@@ -5888,7 +6364,7 @@
       }
     },
     {
-      "name": "random: \"a copycat.txt\" #365",
+      "name": "random: \"a copycat.txt\" #399",
       "input": {
         "name": "a copycat.txt",
         "isFolder": false,
@@ -5906,7 +6382,7 @@
       }
     },
     {
-      "name": "random: \"My.Folder\" #366",
+      "name": "random: \"My.Folder\" #400",
       "input": {
         "name": "My.Folder",
         "isFolder": true,
@@ -5923,7 +6399,7 @@
       }
     },
     {
-      "name": "random: \"ΑΣ copy.txt\" #367",
+      "name": "random: \"ΑΣ copy.txt\" #401",
       "input": {
         "name": "ΑΣ copy.txt",
         "isFolder": false,
@@ -5941,7 +6417,7 @@
       }
     },
     {
-      "name": "random: \"a copycat.txt\" #368",
+      "name": "random: \"a copycat.txt\" #402",
       "input": {
         "name": "a copycat.txt",
         "isFolder": false,
@@ -5955,7 +6431,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #369",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #403",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
         "isFolder": true,
@@ -5972,7 +6448,7 @@
       }
     },
     {
-      "name": "random: \"👩‍👩‍👧‍👦.txt\" #370",
+      "name": "random: \"👩‍👩‍👧‍👦.txt\" #404",
       "input": {
         "name": "👩‍👩‍👧‍👦.txt",
         "isFolder": false,
@@ -5989,7 +6465,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #371",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #405",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa👩‍👩‍👧‍👦.verylongextension",
         "isFolder": true,
@@ -6007,7 +6483,7 @@
       }
     },
     {
-      "name": "random: \"x copy\" #372",
+      "name": "random: \"x copy\" #406",
       "input": {
         "name": "x copy",
         "isFolder": false,
@@ -6023,7 +6499,7 @@
       }
     },
     {
-      "name": "random: \"draft copy 1.txt\" #373",
+      "name": "random: \"draft copy 1.txt\" #407",
       "input": {
         "name": "draft copy 1.txt",
         "isFolder": false,
@@ -6042,7 +6518,7 @@
       }
     },
     {
-      "name": "random: \"notes copy.txt\" #374",
+      "name": "random: \"notes copy.txt\" #408",
       "input": {
         "name": "notes copy.txt",
         "isFolder": false,
@@ -6060,7 +6536,7 @@
       }
     },
     {
-      "name": "random: \"backup.tar.xz\" #375",
+      "name": "random: \"backup.tar.xz\" #409",
       "input": {
         "name": "backup.tar.xz",
         "isFolder": false,
@@ -6078,7 +6554,7 @@
       }
     },
     {
-      "name": "random: \"🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷\" #376",
+      "name": "random: \"🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷\" #410",
       "input": {
         "name": "🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷.txt",
         "isFolder": false,
@@ -6092,7 +6568,7 @@
       }
     },
     {
-      "name": "random: \".hidden.txt\" #377",
+      "name": "random: \".hidden.txt\" #411",
       "input": {
         "name": ".hidden.txt",
         "isFolder": false,
@@ -6108,7 +6584,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #378",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #412",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaé́.jpeg",
         "isFolder": true,
@@ -6122,7 +6598,7 @@
       }
     },
     {
-      "name": "random: \"x copy 0\" #379",
+      "name": "random: \"x copy 0\" #413",
       "input": {
         "name": "x copy 0",
         "isFolder": false,
@@ -6142,7 +6618,7 @@
       }
     },
     {
-      "name": "random: \"backup.tar.zst\" #380",
+      "name": "random: \"backup.tar.zst\" #414",
       "input": {
         "name": "backup.tar.zst",
         "isFolder": true,
@@ -6161,7 +6637,7 @@
       }
     },
     {
-      "name": "random: \"x copy 10\" #381",
+      "name": "random: \"x copy 10\" #415",
       "input": {
         "name": "x copy 10",
         "isFolder": false,
@@ -6175,7 +6651,7 @@
       }
     },
     {
-      "name": "random: \"report.txt\" #382",
+      "name": "random: \"report.txt\" #416",
       "input": {
         "name": "report.txt",
         "isFolder": true,
@@ -6193,7 +6669,7 @@
       }
     },
     {
-      "name": "random: \"yx  copy\" #383",
+      "name": "random: \"yx  copy\" #417",
       "input": {
         "name": "yx  copy",
         "isFolder": false,
@@ -6209,7 +6685,7 @@
       }
     },
     {
-      "name": "random: \"x copy\" #384",
+      "name": "random: \"x copy\" #418",
       "input": {
         "name": "x copy",
         "isFolder": false,
@@ -6227,7 +6703,7 @@
       }
     },
     {
-      "name": "random: \"...\" #385",
+      "name": "random: \"...\" #419",
       "input": {
         "name": "...",
         "isFolder": true,
@@ -6248,7 +6724,7 @@
       }
     },
     {
-      "name": "random: \"notes copy.txt\" #386",
+      "name": "random: \"notes copy.txt\" #420",
       "input": {
         "name": "notes copy.txt",
         "isFolder": false,
@@ -6267,7 +6743,7 @@
       }
     },
     {
-      "name": "random: \"👩‍👩‍👧‍👦.txt\" #387",
+      "name": "random: \"👩‍👩‍👧‍👦.txt\" #421",
       "input": {
         "name": "👩‍👩‍👧‍👦.txt",
         "isFolder": false,
@@ -6281,7 +6757,7 @@
       }
     },
     {
-      "name": "random: \".env\" #388",
+      "name": "random: \".env\" #422",
       "input": {
         "name": ".env",
         "isFolder": false,
@@ -6300,7 +6776,7 @@
       }
     },
     {
-      "name": "random: \"Movie.fcpxbundle\" #389",
+      "name": "random: \"Movie.fcpxbundle\" #423",
       "input": {
         "name": "Movie.fcpxbundle",
         "isFolder": true,
@@ -6321,7 +6797,7 @@
       }
     },
     {
-      "name": "random: \"backup.tar.gz\" #390",
+      "name": "random: \"backup.tar.gz\" #424",
       "input": {
         "name": "backup.tar.gz",
         "isFolder": true,
@@ -6336,7 +6812,7 @@
       }
     },
     {
-      "name": "random: \"x draft copy 1.txt\" #391",
+      "name": "random: \"x draft copy 1.txt\" #425",
       "input": {
         "name": "x draft copy 1.txt",
         "isFolder": true,
@@ -6356,7 +6832,7 @@
       }
     },
     {
-      "name": "random: \"éééééééééééééééééééééééééééééééééééééééé\" #392",
+      "name": "random: \"éééééééééééééééééééééééééééééééééééééééé\" #426",
       "input": {
         "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
         "isFolder": false,
@@ -6376,7 +6852,7 @@
       }
     },
     {
-      "name": "random: \"x x copy 5\" #393",
+      "name": "random: \"x x copy 5\" #427",
       "input": {
         "name": "x x copy 5",
         "isFolder": false,
@@ -6393,7 +6869,7 @@
       }
     },
     {
-      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #394",
+      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #428",
       "input": {
         "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
         "isFolder": false,
@@ -6413,7 +6889,7 @@
       }
     },
     {
-      "name": "random: \"Café.txt\" #395",
+      "name": "random: \"Café.txt\" #429",
       "input": {
         "name": "Café.txt",
         "isFolder": false,
@@ -6433,7 +6909,7 @@
       }
     },
     {
-      "name": "random: \"yx  copy\" #396",
+      "name": "random: \"yx  copy\" #430",
       "input": {
         "name": "yx  copy",
         "isFolder": false,
@@ -6447,7 +6923,7 @@
       }
     },
     {
-      "name": "random: \"big copy 99999.bin\" #397",
+      "name": "random: \"big copy 99999.bin\" #431",
       "input": {
         "name": "big copy 99999.bin",
         "isFolder": false,
@@ -6467,7 +6943,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #398",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #432",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.jpeg",
         "isFolder": true,
@@ -6485,7 +6961,7 @@
       }
     },
     {
-      "name": "random: \"x copy 100000\" #399",
+      "name": "random: \"x copy 100000\" #433",
       "input": {
         "name": "x copy 100000",
         "isFolder": false,
@@ -6505,7 +6981,7 @@
       }
     },
     {
-      "name": "random: \" copy\" #400",
+      "name": "random: \" copy\" #434",
       "input": {
         "name": " copy",
         "isFolder": false,
@@ -6521,7 +6997,7 @@
       }
     },
     {
-      "name": "random: \"x copy 1\" #401",
+      "name": "random: \"x copy 1\" #435",
       "input": {
         "name": "x copy 1",
         "isFolder": false,
@@ -6538,7 +7014,7 @@
       }
     },
     {
-      "name": "random: \"x.tar.gz\" #402",
+      "name": "random: \"x.tar.gz\" #436",
       "input": {
         "name": "x.tar.gz",
         "isFolder": false,
@@ -6555,7 +7031,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #403",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #437",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa        .app",
         "isFolder": false,
@@ -6569,7 +7045,7 @@
       }
     },
     {
-      "name": "random: \"Talk.key\" #404",
+      "name": "random: \"Talk.key\" #438",
       "input": {
         "name": "Talk.key",
         "isFolder": false,
@@ -6585,7 +7061,7 @@
       }
     },
     {
-      "name": "random: \"tab\\there.md\" #405",
+      "name": "random: \"tab\\there.md\" #439",
       "input": {
         "name": "tab\there.md",
         "isFolder": false,
@@ -6601,7 +7077,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #406",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #440",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa日日日.app",
         "isFolder": false,
@@ -6617,7 +7093,7 @@
       }
     },
     {
-      "name": "random: \"x y x y x y x y x y x y x y x y x y x y \" #407",
+      "name": "random: \"x y x y x y x y x y x y x y x y x y x y \" #441",
       "input": {
         "name": "x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y x y ",
         "isFolder": false,
@@ -6635,7 +7111,7 @@
       }
     },
     {
-      "name": "random: \"x copy copy\" #408",
+      "name": "random: \"x copy copy\" #442",
       "input": {
         "name": "x copy copy",
         "isFolder": false,
@@ -6649,7 +7125,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #409",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #443",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaé́é́é́.app",
         "isFolder": false,
@@ -6666,7 +7142,7 @@
       }
     },
     {
-      "name": "random: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍\\ud83d\" #410",
+      "name": "random: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍\\ud83d\" #444",
       "input": {
         "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.tar.gz",
         "isFolder": true,
@@ -6683,7 +7159,7 @@
       }
     },
     {
-      "name": "random: \"x  copy\" #411",
+      "name": "random: \"x  copy\" #445",
       "input": {
         "name": "x  copy",
         "isFolder": false,
@@ -6701,7 +7177,7 @@
       }
     },
     {
-      "name": "random: \"a copy 2\\nb\" #412",
+      "name": "random: \"a copy 2\\nb\" #446",
       "input": {
         "name": "a copy 2\nb",
         "isFolder": false,
@@ -6717,7 +7193,7 @@
       }
     },
     {
-      "name": "random: \"éééééééééééééééééééé\" #413",
+      "name": "random: \"éééééééééééééééééééé\" #447",
       "input": {
         "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.verylongextension",
         "isFolder": true,
@@ -6732,7 +7208,7 @@
       }
     },
     {
-      "name": "random: \" copy\" #414",
+      "name": "random: \" copy\" #448",
       "input": {
         "name": " copy",
         "isFolder": false,
@@ -6748,7 +7224,7 @@
       }
     },
     {
-      "name": "random: \"éééééééééééééééééééééééééééééééééééééééé\" #415",
+      "name": "random: \"éééééééééééééééééééééééééééééééééééééééé\" #449",
       "input": {
         "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
         "isFolder": false,
@@ -6762,7 +7238,7 @@
       }
     },
     {
-      "name": "random: \"a copycat.txt\" #416",
+      "name": "random: \"a copycat.txt\" #450",
       "input": {
         "name": "a copycat.txt",
         "isFolder": false,
@@ -6779,7 +7255,7 @@
       }
     },
     {
-      "name": "random: \"Backup.Tar.Gz copy 3\" #417",
+      "name": "random: \"Backup.Tar.Gz copy 3\" #451",
       "input": {
         "name": "Backup.Tar.Gz copy 3",
         "isFolder": false,
@@ -6799,7 +7275,7 @@
       }
     },
     {
-      "name": "random: \"UPPER.TXT\" #418",
+      "name": "random: \"UPPER.TXT\" #452",
       "input": {
         "name": "UPPER.TXT",
         "isFolder": false,
@@ -6815,7 +7291,7 @@
       }
     },
     {
-      "name": "random: \"Backup.Tar.Gz copy 3\" #419",
+      "name": "random: \"Backup.Tar.Gz copy 3\" #453",
       "input": {
         "name": "Backup.Tar.Gz copy 3",
         "isFolder": false,
@@ -6829,7 +7305,7 @@
       }
     },
     {
-      "name": "random: \"x copy copy\" #420",
+      "name": "random: \"x copy copy\" #454",
       "input": {
         "name": "x copy copy",
         "isFolder": false,
@@ -6843,7 +7319,7 @@
       }
     },
     {
-      "name": "random: \"no extension\" #421",
+      "name": "random: \"no extension\" #455",
       "input": {
         "name": "no extension",
         "isFolder": true,
@@ -6860,7 +7336,7 @@
       }
     },
     {
-      "name": "random: \"x copy 1\" #422",
+      "name": "random: \"x copy 1\" #456",
       "input": {
         "name": "x copy 1",
         "isFolder": false,
@@ -6877,7 +7353,7 @@
       }
     },
     {
-      "name": "random: \"🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷\" #423",
+      "name": "random: \"🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷\" #457",
       "input": {
         "name": "🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷.txt",
         "isFolder": false,
@@ -6893,7 +7369,7 @@
       }
     },
     {
-      "name": "random: \"éééééééééééééééééééééééééééééééééééééééé\" #424",
+      "name": "random: \"éééééééééééééééééééééééééééééééééééééééé\" #458",
       "input": {
         "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.jpeg",
         "isFolder": true,
@@ -6911,7 +7387,7 @@
       }
     },
     {
-      "name": "random: \"x copy 10\" #425",
+      "name": "random: \"x copy 10\" #459",
       "input": {
         "name": "x copy 10",
         "isFolder": true,
@@ -6929,7 +7405,7 @@
       }
     },
     {
-      "name": "random: \"éééééééééééééééééééé\" #426",
+      "name": "random: \"éééééééééééééééééééé\" #460",
       "input": {
         "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.app",
         "isFolder": false,
@@ -6946,7 +7422,7 @@
       }
     },
     {
-      "name": "random: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\" #427",
+      "name": "random: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\" #461",
       "input": {
         "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt",
         "isFolder": false,
@@ -6966,7 +7442,7 @@
       }
     },
     {
-      "name": "random: \"yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #428",
+      "name": "random: \"yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #462",
       "input": {
         "name": "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa🇹🇷🇹🇷🇹🇷.jpeg",
         "isFolder": true,
@@ -6983,7 +7459,7 @@
       }
     },
     {
-      "name": "random: \"file.TXT\" #429",
+      "name": "random: \"file.TXT\" #463",
       "input": {
         "name": "file.TXT",
         "isFolder": false,
@@ -7000,7 +7476,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #430",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #464",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa日日.txt",
         "isFolder": true,
@@ -7015,7 +7491,7 @@
       }
     },
     {
-      "name": "random: \"x x.tar.gz\" #431",
+      "name": "random: \"x x.tar.gz\" #465",
       "input": {
         "name": "x x.tar.gz",
         "isFolder": false,
@@ -7034,7 +7510,7 @@
       }
     },
     {
-      "name": "random: \"x backup.tar.bz2\" #432",
+      "name": "random: \"x backup.tar.bz2\" #466",
       "input": {
         "name": "x backup.tar.bz2",
         "isFolder": false,
@@ -7048,7 +7524,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #433",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #467",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.jpeg",
         "isFolder": false,
@@ -7064,7 +7540,7 @@
       }
     },
     {
-      "name": "random: \"éééééééééééééééééééé\" #434",
+      "name": "random: \"éééééééééééééééééééé\" #468",
       "input": {
         "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.app",
         "isFolder": true,
@@ -7079,7 +7555,7 @@
       }
     },
     {
-      "name": "random: \"👩‍👩‍👧‍👦.txt\" #435",
+      "name": "random: \"👩‍👩‍👧‍👦.txt\" #469",
       "input": {
         "name": "👩‍👩‍👧‍👦.txt",
         "isFolder": false,
@@ -7099,7 +7575,7 @@
       }
     },
     {
-      "name": "random: \"Trip.photoslibrary\" #436",
+      "name": "random: \"Trip.photoslibrary\" #470",
       "input": {
         "name": "Trip.photoslibrary",
         "isFolder": true,
@@ -7115,7 +7591,7 @@
       }
     },
     {
-      "name": "random: \"x copy 2 copy 3\" #437",
+      "name": "random: \"x copy 2 copy 3\" #471",
       "input": {
         "name": "x copy 2 copy 3",
         "isFolder": false,
@@ -7132,7 +7608,7 @@
       }
     },
     {
-      "name": "random: \"backup.tar.xz\" #438",
+      "name": "random: \"backup.tar.xz\" #472",
       "input": {
         "name": "backup.tar.xz",
         "isFolder": false,
@@ -7150,7 +7626,7 @@
       }
     },
     {
-      "name": "random: \"yno extension\" #439",
+      "name": "random: \"yno extension\" #473",
       "input": {
         "name": "yno extension",
         "isFolder": false,
@@ -7167,7 +7643,7 @@
       }
     },
     {
-      "name": "random: \"yUPPER.TXT\" #440",
+      "name": "random: \"yUPPER.TXT\" #474",
       "input": {
         "name": "yUPPER.TXT",
         "isFolder": true,
@@ -7188,7 +7664,7 @@
       }
     },
     {
-      "name": "random: \"🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷\" #441",
+      "name": "random: \"🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷\" #475",
       "input": {
         "name": "🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷.verylongextension",
         "isFolder": true,
@@ -7207,7 +7683,7 @@
       }
     },
     {
-      "name": "random: \"x copy 1\" #442",
+      "name": "random: \"x copy 1\" #476",
       "input": {
         "name": "x copy 1",
         "isFolder": false,
@@ -7223,7 +7699,7 @@
       }
     },
     {
-      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #443",
+      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #477",
       "input": {
         "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.jpeg",
         "isFolder": false,
@@ -7243,7 +7719,7 @@
       }
     },
     {
-      "name": "random: \"trailing dot.\" #444",
+      "name": "random: \"trailing dot.\" #478",
       "input": {
         "name": "trailing dot.",
         "isFolder": false,
@@ -7257,7 +7733,7 @@
       }
     },
     {
-      "name": "random: \"Tool.app\" #445",
+      "name": "random: \"Tool.app\" #479",
       "input": {
         "name": "Tool.app",
         "isFolder": true,
@@ -7272,7 +7748,7 @@
       }
     },
     {
-      "name": "random: \"ynotes copy.txt\" #446",
+      "name": "random: \"ynotes copy.txt\" #480",
       "input": {
         "name": "ynotes copy.txt",
         "isFolder": false,
@@ -7288,7 +7764,7 @@
       }
     },
     {
-      "name": "random: \"UPPER.TXT\" #447",
+      "name": "random: \"UPPER.TXT\" #481",
       "input": {
         "name": "UPPER.TXT",
         "isFolder": false,
@@ -7308,7 +7784,7 @@
       }
     },
     {
-      "name": "random: \"yMovie.fcpxbundle\" #448",
+      "name": "random: \"yMovie.fcpxbundle\" #482",
       "input": {
         "name": "yMovie.fcpxbundle",
         "isFolder": false,
@@ -7324,7 +7800,7 @@
       }
     },
     {
-      "name": "random: \"x emoji 🎉.png\" #449",
+      "name": "random: \"x emoji 🎉.png\" #483",
       "input": {
         "name": "x emoji 🎉.png",
         "isFolder": false,
@@ -7338,7 +7814,7 @@
       }
     },
     {
-      "name": "random: \"x İstanbul.txt\" #450",
+      "name": "random: \"x İstanbul.txt\" #484",
       "input": {
         "name": "x İstanbul.txt",
         "isFolder": false,
@@ -7356,7 +7832,7 @@
       }
     },
     {
-      "name": "random: \"...\" #451",
+      "name": "random: \"...\" #485",
       "input": {
         "name": "...",
         "isFolder": false,
@@ -7373,7 +7849,7 @@
       }
     },
     {
-      "name": "random: \"Photos copy\" #452",
+      "name": "random: \"Photos copy\" #486",
       "input": {
         "name": "Photos copy",
         "isFolder": true,
@@ -7391,7 +7867,7 @@
       }
     },
     {
-      "name": "random: \"x copy\" #453",
+      "name": "random: \"x copy\" #487",
       "input": {
         "name": "x copy",
         "isFolder": true,
@@ -7408,7 +7884,7 @@
       }
     },
     {
-      "name": "random: \"copy.txt\" #454",
+      "name": "random: \"copy.txt\" #488",
       "input": {
         "name": "copy.txt",
         "isFolder": false,
@@ -7422,7 +7898,7 @@
       }
     },
     {
-      "name": "random: \"x copy.tar.gz\" #455",
+      "name": "random: \"x copy.tar.gz\" #489",
       "input": {
         "name": "x copy.tar.gz",
         "isFolder": false,
@@ -7442,7 +7918,7 @@
       }
     },
     {
-      "name": "random: \"Tool.app\" #456",
+      "name": "random: \"Tool.app\" #490",
       "input": {
         "name": "Tool.app",
         "isFolder": true,
@@ -7461,7 +7937,7 @@
       }
     },
     {
-      "name": "random: \"日本語.txt\" #457",
+      "name": "random: \"日本語.txt\" #491",
       "input": {
         "name": "日本語.txt",
         "isFolder": false,
@@ -7477,7 +7953,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #458",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #492",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa🇹🇷",
         "isFolder": false,
@@ -7493,7 +7969,7 @@
       }
     },
     {
-      "name": "random: \"x copy copy\" #459",
+      "name": "random: \"x copy copy\" #493",
       "input": {
         "name": "x copy copy",
         "isFolder": false,
@@ -7507,7 +7983,7 @@
       }
     },
     {
-      "name": "random: \"résumé copy 9.pdf\" #460",
+      "name": "random: \"résumé copy 9.pdf\" #494",
       "input": {
         "name": "résumé copy 9.pdf",
         "isFolder": false,
@@ -7523,7 +7999,7 @@
       }
     },
     {
-      "name": "random: \"ycopy\" #461",
+      "name": "random: \"ycopy\" #495",
       "input": {
         "name": "ycopy",
         "isFolder": false,
@@ -7542,7 +8018,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #462",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #496",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaé́é́é́.verylongextension",
         "isFolder": false,
@@ -7560,7 +8036,7 @@
       }
     },
     {
-      "name": "random: \"Café.txt\" #463",
+      "name": "random: \"Café.txt\" #497",
       "input": {
         "name": "Café.txt",
         "isFolder": true,
@@ -7577,7 +8053,7 @@
       }
     },
     {
-      "name": "random: \"yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #464",
+      "name": "random: \"yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #498",
       "input": {
         "name": "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa日日日.verylongextension",
         "isFolder": true,
@@ -7593,7 +8069,7 @@
       }
     },
     {
-      "name": "random: \"Talk copy.key\" #465",
+      "name": "random: \"Talk copy.key\" #499",
       "input": {
         "name": "Talk copy.key",
         "isFolder": false,
@@ -7613,7 +8089,7 @@
       }
     },
     {
-      "name": "random: \"My.Folder\" #466",
+      "name": "random: \"My.Folder\" #500",
       "input": {
         "name": "My.Folder",
         "isFolder": true,
@@ -7632,7 +8108,7 @@
       }
     },
     {
-      "name": "random: \"a.b.c.d\" #467",
+      "name": "random: \"a.b.c.d\" #501",
       "input": {
         "name": "a.b.c.d",
         "isFolder": false,
@@ -7646,7 +8122,7 @@
       }
     },
     {
-      "name": "random: \"notes copy.txt\" #468",
+      "name": "random: \"notes copy.txt\" #502",
       "input": {
         "name": "notes copy.txt",
         "isFolder": false,
@@ -7662,7 +8138,7 @@
       }
     },
     {
-      "name": "random: \"👩‍👩‍👧‍👦.txt\" #469",
+      "name": "random: \"👩‍👩‍👧‍👦.txt\" #503",
       "input": {
         "name": "👩‍👩‍👧‍👦.txt",
         "isFolder": false,
@@ -7676,7 +8152,7 @@
       }
     },
     {
-      "name": "random: \"x copy\" #470",
+      "name": "random: \"x copy\" #504",
       "input": {
         "name": "x copy",
         "isFolder": false,
@@ -7694,7 +8170,7 @@
       }
     },
     {
-      "name": "random: \"...\" #471",
+      "name": "random: \"...\" #505",
       "input": {
         "name": "...",
         "isFolder": false,
@@ -7711,7 +8187,7 @@
       }
     },
     {
-      "name": "random: \"file.TXT\" #472",
+      "name": "random: \"file.TXT\" #506",
       "input": {
         "name": "file.TXT",
         "isFolder": true,
@@ -7728,7 +8204,7 @@
       }
     },
     {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #473",
+      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #507",
       "input": {
         "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaéééé.txt",
         "isFolder": false,
@@ -7744,7 +8220,7 @@
       }
     },
     {
-      "name": "random: \"a copy 2\\nb\" #474",
+      "name": "random: \"a copy 2\\nb\" #508",
       "input": {
         "name": "a copy 2\nb",
         "isFolder": true,
@@ -7759,7 +8235,7 @@
       }
     },
     {
-      "name": "random: \"Photos 2024.v2\" #475",
+      "name": "random: \"Photos 2024.v2\" #509",
       "input": {
         "name": "Photos 2024.v2",
         "isFolder": true,
@@ -7774,7 +8250,7 @@
       }
     },
     {
-      "name": "random: \"BACKUP.TAR.GZ\" #476",
+      "name": "random: \"BACKUP.TAR.GZ\" #510",
       "input": {
         "name": "BACKUP.TAR.GZ",
         "isFolder": false,
@@ -7792,7 +8268,7 @@
       }
     },
     {
-      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #477",
+      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #511",
       "input": {
         "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
         "isFolder": false,
@@ -7808,7 +8284,7 @@
       }
     },
     {
-      "name": "random: \"a.b.c.d\" #478",
+      "name": "random: \"a.b.c.d\" #512",
       "input": {
         "name": "a.b.c.d",
         "isFolder": false,
@@ -7828,7 +8304,7 @@
       }
     },
     {
-      "name": "random: \"Tool.APP\" #479",
+      "name": "random: \"Tool.APP\" #513",
       "input": {
         "name": "Tool.APP",
         "isFolder": false,
@@ -7844,7 +8320,7 @@
       }
     },
     {
-      "name": "random: \"Backup.Tar.Gz copy 3\" #480",
+      "name": "random: \"Backup.Tar.Gz copy 3\" #514",
       "input": {
         "name": "Backup.Tar.Gz copy 3",
         "isFolder": false,
@@ -7864,7 +8340,7 @@
       }
     },
     {
-      "name": "random: \"...\" #481",
+      "name": "random: \"...\" #515",
       "input": {
         "name": "...",
         "isFolder": false,
@@ -7882,7 +8358,7 @@
       }
     },
     {
-      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #482",
+      "name": "random: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\" #516",
       "input": {
         "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.app",
         "isFolder": true,
@@ -7896,7 +8372,7 @@
       }
     },
     {
-      "name": "random: \"..\" #483",
+      "name": "random: \"..\" #517",
       "input": {
         "name": "..",
         "isFolder": false,
@@ -7910,7 +8386,7 @@
       }
     },
     {
-      "name": "random: \" copy\" #484",
+      "name": "random: \" copy\" #518",
       "input": {
         "name": " copy",
         "isFolder": false,
@@ -7924,7 +8400,7 @@
       }
     },
     {
-      "name": "random: \"x éééééééééééééééééééééééééééééééééééééé\" #485",
+      "name": "random: \"x éééééééééééééééééééééééééééééééééééééé\" #519",
       "input": {
         "name": "x éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.app",
         "isFolder": false,
@@ -7939,595 +8415,6 @@
       },
       "output": {
         "path": "/target/x ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé copy 4.app"
-      }
-    },
-    {
-      "name": "random: \"yfile.TXT\" #486",
-      "input": {
-        "name": "yfile.TXT",
-        "isFolder": false,
-        "taken": [
-          "yfile copy.TXT",
-          "yfile copy 2.TXT",
-          "yfile copy 3.TXT"
-        ],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/yfile copy 4.TXT"
-      }
-    },
-    {
-      "name": "random: \"two..dots.txt\" #487",
-      "input": {
-        "name": "two..dots.txt",
-        "isFolder": false,
-        "taken": [
-          "two..dots copy.txt",
-          "two..dots copy 2.txt"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/two..dots copy 3.txt"
-      }
-    },
-    {
-      "name": "random: \"İstanbul.txt\" #488",
-      "input": {
-        "name": "İstanbul.txt",
-        "isFolder": false,
-        "taken": [
-          "İstanbul copy.txt",
-          "İstanbul copy 2.txt",
-          "İstanbul copy 3.txt",
-          "İstanbul copy 4.txt",
-          "İstanbul copy 5.txt",
-          "..."
-        ],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/İstanbul copy 6.txt"
-      }
-    },
-    {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #489",
-      "input": {
-        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  ",
-        "isFolder": false,
-        "taken": [],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   copy"
-      }
-    },
-    {
-      "name": "random: \"a.\" #490",
-      "input": {
-        "name": "a.",
-        "isFolder": false,
-        "taken": [],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/a. copy"
-      }
-    },
-    {
-      "name": "random: \"x copy 2 copy 3\" #491",
-      "input": {
-        "name": "x copy 2 copy 3",
-        "isFolder": false,
-        "taken": [
-          "x copy 2 copy 4"
-        ],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/x copy 2 copy 5"
-      }
-    },
-    {
-      "name": "random: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #492",
-      "input": {
-        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa日日日日.app",
-        "isFolder": true,
-        "taken": [],
-        "reserved": [
-          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA日日日日.APP COPY"
-        ],
-        "caseSensitive": false,
-        "allTaken": false,
-        "isPackage": false
-      },
-      "output": {
-        "path": "/target/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa日日日日.app copy 2"
-      }
-    },
-    {
-      "name": "random: \"éééééééééééééééééééééééééééééééééééééééé\" #493",
-      "input": {
-        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
-        "isFolder": true,
-        "taken": [],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé copy"
-      }
-    },
-    {
-      "name": "random: \"x copy copy\" #494",
-      "input": {
-        "name": "x copy copy",
-        "isFolder": true,
-        "taken": [
-          "x copy copy 2",
-          "x copy copy 3",
-          "x copy copy 4"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/x copy copy 5"
-      }
-    },
-    {
-      "name": "random: \"👩‍👩‍👧‍👦.txt\" #495",
-      "input": {
-        "name": "👩‍👩‍👧‍👦.txt",
-        "isFolder": true,
-        "taken": [
-          "👩‍👩‍👧‍👦 copy.txt",
-          "👩‍👩‍👧‍👦 copy 2.txt"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false,
-        "isPackage": true
-      },
-      "output": {
-        "path": "/target/👩‍👩‍👧‍👦 copy 3.txt"
-      }
-    },
-    {
-      "name": "random: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\" #496",
-      "input": {
-        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.app",
-        "isFolder": true,
-        "taken": [
-          "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 copy.app",
-          "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 copy 2.app",
-          "Tool.app"
-        ],
-        "reserved": [
-          "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 COPY 3.APP"
-        ],
-        "caseSensitive": true,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 copy 3.app"
-      }
-    },
-    {
-      "name": "random: \"x copy.tar.gz\" #497",
-      "input": {
-        "name": "x copy.tar.gz",
-        "isFolder": true,
-        "taken": [
-          "x copy.tar.gz copy"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false,
-        "isPackage": false
-      },
-      "output": {
-        "path": "/target/x copy.tar.gz copy 2"
-      }
-    },
-    {
-      "name": "random: \"Café.txt\" #498",
-      "input": {
-        "name": "Café.txt",
-        "isFolder": false,
-        "taken": [
-          "Café copy.txt",
-          "Café copy 2.txt"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/Café copy 3.txt"
-      }
-    },
-    {
-      "name": "random: \".env\" #499",
-      "input": {
-        "name": ".env",
-        "isFolder": false,
-        "taken": [
-          ".env copy",
-          ".env copy 2"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/.env copy 3"
-      }
-    },
-    {
-      "name": "random: \"x copy 5\" #500",
-      "input": {
-        "name": "x copy 5",
-        "isFolder": false,
-        "taken": [],
-        "reserved": [
-          "x copy 6"
-        ],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/x copy 7"
-      }
-    },
-    {
-      "name": "random: \"x copy 5\" #501",
-      "input": {
-        "name": "x copy 5",
-        "isFolder": false,
-        "taken": [
-          "x copy 6",
-          "Trip.photoslibrary"
-        ],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/x copy 7"
-      }
-    },
-    {
-      "name": "random: \"Tool.app\" #502",
-      "input": {
-        "name": "Tool.app",
-        "isFolder": true,
-        "taken": [
-          "Tool.app copy",
-          "Tool.app copy 2"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false,
-        "isPackage": false
-      },
-      "output": {
-        "path": "/target/Tool.app copy 3"
-      }
-    },
-    {
-      "name": "random: \"UPPER.TXT\" #503",
-      "input": {
-        "name": "UPPER.TXT",
-        "isFolder": false,
-        "taken": [],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/UPPER copy.TXT"
-      }
-    },
-    {
-      "name": "random: \"yrésumé copy 9.pdf\" #504",
-      "input": {
-        "name": "yrésumé copy 9.pdf",
-        "isFolder": false,
-        "taken": [
-          "yrésumé copy 10.pdf",
-          "x copy copy"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/yrésumé copy 11.pdf"
-      }
-    },
-    {
-      "name": "random: \"Café.txt\" #505",
-      "input": {
-        "name": "Café.txt",
-        "isFolder": false,
-        "taken": [
-          "Café copy.txt"
-        ],
-        "reserved": [
-          "Café copy 2.txt"
-        ],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/Café copy 3.txt"
-      }
-    },
-    {
-      "name": "random: \"Talk copy.key\" #506",
-      "input": {
-        "name": "Talk copy.key",
-        "isFolder": false,
-        "taken": [
-          "Talk copy 2.key",
-          "Talk copy 3.key"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/Talk copy 4.key"
-      }
-    },
-    {
-      "name": "random: \"👩‍👩‍👧‍👦.txt\" #507",
-      "input": {
-        "name": "👩‍👩‍👧‍👦.txt",
-        "isFolder": true,
-        "taken": [
-          "👩‍👩‍👧‍👦.txt copy",
-          "👩‍👩‍👧‍👦.txt copy 2",
-          "👩‍👩‍👧‍👦.txt copy 3",
-          "👩‍👩‍👧‍👦.txt copy 4",
-          "👩‍👩‍👧‍👦.txt copy 5"
-        ],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false,
-        "isPackage": false
-      },
-      "output": {
-        "path": "/target/👩‍👩‍👧‍👦.txt copy 6"
-      }
-    },
-    {
-      "name": "random: \" copy\" #508",
-      "input": {
-        "name": " copy",
-        "isFolder": true,
-        "taken": [
-          " copy copy"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false,
-        "isPackage": true
-      },
-      "output": {
-        "path": "/target/ copy copy 2"
-      }
-    },
-    {
-      "name": "random: \"a.b.c.d\" #509",
-      "input": {
-        "name": "a.b.c.d",
-        "isFolder": false,
-        "taken": [
-          "a.b.c copy.d",
-          "a.b.c copy 2.d"
-        ],
-        "reserved": [
-          "A.B.C COPY 3.D"
-        ],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/a.b.c copy 4.d"
-      }
-    },
-    {
-      "name": "random: \"backup.tar.gz\" #510",
-      "input": {
-        "name": "backup.tar.gz",
-        "isFolder": false,
-        "taken": [
-          "backup copy.tar.gz"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/backup copy 2.tar.gz"
-      }
-    },
-    {
-      "name": "random: \"y copy\" #511",
-      "input": {
-        "name": "y copy",
-        "isFolder": false,
-        "taken": [
-          "backup.tar.xz"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/y copy 2"
-      }
-    },
-    {
-      "name": "random: \"Trip.photoslibrary\" #512",
-      "input": {
-        "name": "Trip.photoslibrary",
-        "isFolder": true,
-        "taken": [
-          "Trip copy.photoslibrary",
-          "Trip copy 2.photoslibrary",
-          "Trip copy 3.photoslibrary"
-        ],
-        "reserved": [
-          "Trip copy 4.photoslibrary"
-        ],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/Trip copy 5.photoslibrary"
-      }
-    },
-    {
-      "name": "random: \"big copy 99999\" #513",
-      "input": {
-        "name": "big copy 99999",
-        "isFolder": false,
-        "taken": [
-          "trailing dot."
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/big copy 100000"
-      }
-    },
-    {
-      "name": "random: \"yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\" #514",
-      "input": {
-        "name": "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa👩‍👩‍👧‍👦👩‍👩‍👧‍👦.jpeg",
-        "isFolder": true,
-        "taken": [
-          "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa copy",
-          "yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa copy 2"
-        ],
-        "reserved": [],
-        "caseSensitive": true,
-        "allTaken": false,
-        "isPackage": false
-      },
-      "output": {
-        "path": "/target/yaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa copy 3"
-      }
-    },
-    {
-      "name": "random: \"yfile.TXT\" #515",
-      "input": {
-        "name": "yfile.TXT",
-        "isFolder": false,
-        "taken": [
-          "yfile copy.TXT",
-          "yfile copy 2.TXT"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/yfile copy 3.TXT"
-      }
-    },
-    {
-      "name": "random: \"no extension\" #516",
-      "input": {
-        "name": "no extension",
-        "isFolder": true,
-        "taken": [
-          "no extension copy",
-          "no extension copy 2",
-          "no extension copy 3",
-          "no extension copy 4",
-          "no extension copy 5"
-        ],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false,
-        "isPackage": false
-      },
-      "output": {
-        "path": "/target/no extension copy 6"
-      }
-    },
-    {
-      "name": "random: \"backup.tar.xz\" #517",
-      "input": {
-        "name": "backup.tar.xz",
-        "isFolder": false,
-        "taken": [
-          "backup copy.tar.xz",
-          "backup copy 2.tar.xz",
-          "backup copy 3.tar.xz"
-        ],
-        "reserved": [
-          "backup copy 4.tar.xz"
-        ],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/backup copy 5.tar.xz"
-      }
-    },
-    {
-      "name": "random: \"yModel.custompkg\" #518",
-      "input": {
-        "name": "yModel.custompkg",
-        "isFolder": false,
-        "taken": [
-          "yModel copy.custompkg",
-          "yModel copy 2.custompkg"
-        ],
-        "reserved": [
-          "yModel copy 3.custompkg"
-        ],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/yModel copy 4.custompkg"
-      }
-    },
-    {
-      "name": "random: \"Trip.photoslibrary\" #519",
-      "input": {
-        "name": "Trip.photoslibrary",
-        "isFolder": false,
-        "taken": [],
-        "reserved": [],
-        "caseSensitive": false,
-        "allTaken": false
-      },
-      "output": {
-        "path": "/target/Trip copy.photoslibrary"
       }
     }
   ]

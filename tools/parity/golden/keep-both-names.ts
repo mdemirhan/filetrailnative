@@ -144,6 +144,19 @@ export async function generate(rng: Prng): Promise<GoldenCase[]> {
       }
     }
   }
+  // Copy numbers past what an Int holds: JavaScript numbers are doubles, so the next number rounds and,
+  // from 2^53, stops growing. Only free names here: a taken one would keep the reference looping.
+  const hugeNumbers = ["9223372036854775807", "9223372036854775808", "99999999999999999999"];
+  for (let length = 15; length <= 25; length++) {
+    hugeNumbers.push("1" + "0".repeat(length - 1), "9".repeat(length));
+  }
+  hugeNumbers.push("9007199254740990", "9007199254740991", "9007199254740992", "9007199254740993");
+  hugeNumbers.push("9007199254740994", "18014398509481984", "100000000000000000000000");
+  for (const digits of hugeNumbers) {
+    await add("huge number", base(`x copy ${digits}.txt`, false));
+  }
+  await add("huge number, no extension", base("x copy 99999999999999999999", false));
+  await add("huge number, folder", base("x copy 9223372036854775807", true));
   // Exhaustion and a volume that fails every lookup.
   for (const name of ["report.txt", "x copy 5", "Tool.app", "archive"]) {
     await add("all taken", { ...base(name, name === "Tool.app"), allTaken: true });

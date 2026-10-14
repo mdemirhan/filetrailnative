@@ -29,6 +29,25 @@ struct CopyPasteNamesTests {
             options: .init(isDirectory: isDirectory, isPackage: isPackage), exists: disk.exists)
     }
 
+    // Not in the reference's own tests: copy numbers are doubles there, so they never trap.
+    @Test func copyNumbersBeyondIntKeepCounting() throws {
+        #expect(
+            try Self.duplicate("x copy 9223372036854775807.txt") == "/target/x copy 9223372036854776000.txt")
+        #expect(
+            try Self.duplicate("x copy 99999999999999999999.txt") == "/target/x copy 100000000000000000000.txt")
+        #expect(try Self.duplicate("x copy 9007199254740991.txt") == "/target/x copy 9007199254740992.txt")
+        #expect(try Self.duplicate("x copy 9007199254740992.txt") == "/target/x copy 9007199254740992.txt")
+        // Adding the attempt count changes nothing at 1e23, so the reference's loop never runs.
+        #expect(throws: CopyPasteNames.NoFreeName.self) {
+            try Self.duplicate("x copy 123456789012345678901234.txt")
+        }
+        // The reference would loop here for good; the port gives up after the usual attempts.
+        let busy = Disk("x copy 9007199254740992.txt")
+        #expect(throws: CopyPasteNames.NoFreeName.self) {
+            try Self.duplicate("x copy 9007199254740992.txt", busy)
+        }
+    }
+
     // T-27257761
     @Test func resolvesKeepBothPathsFromTheSourceBasename() throws {
         let disk = Disk("report copy.txt")
