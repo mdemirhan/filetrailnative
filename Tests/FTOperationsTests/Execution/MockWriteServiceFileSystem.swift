@@ -439,8 +439,13 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     }
 
     /// `nodes.delete(path)`: drops that one entry, leaving what was stored under it.
-    func deleteNode(_ path: String) {
-        locked { delete(path) }
+    @discardableResult
+    func deleteNode(_ path: String) -> Bool {
+        locked {
+            guard has(path) else { return false }
+            delete(path)
+            return true
+        }
     }
 
     /// Hidden names a Replace or a folder copy builds the new item under.
