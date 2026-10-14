@@ -16,7 +16,7 @@
             func panel(_ key: String, _ apply: @escaping (inout TabGroupSession.Panels, Bool) -> Void) {
                 AutomationPrefs.register(key) { value, context in
                     guard case .bool(let on) = value else { return .failed("\(key) is not true or false") }
-                    guard let controller = context.controller else { return .unsupported("\(key) outside an explorer") }
+                    guard let controller = context.controller else { return .unsupported(key) }
                     controller.updatePanels { apply(&$0, on) }
                     return .applied
                 }
@@ -27,7 +27,7 @@
             func width(_ key: String, _ apply: @escaping (inout TabGroupSession.Panels, Int) -> Void) {
                 AutomationPrefs.register(key) { value, context in
                     guard let number = value.number else { return .failed("\(key) is not a number") }
-                    guard let controller = context.controller else { return .unsupported("\(key) outside an explorer") }
+                    guard let controller = context.controller else { return .unsupported(key) }
                     controller.updatePanels { apply(&$0, Int(number)) }
                     return .applied
                 }
@@ -42,7 +42,7 @@
             AutomationPrefs.register("topToolbarItems") { value, context in
                 guard case .array(let entries) = value else { return .failed("topToolbarItems is not a list") }
                 guard let controller = context.controller else {
-                    return .unsupported("topToolbarItems outside an explorer")
+                    return .unsupported("topToolbarItems")
                 }
                 let items = entries.compactMap(\.string).map { JSONNode.string($0) }
                 controller.updatePreferences(["topToolbarItems": .array(items)])
@@ -51,7 +51,7 @@
             func toggle(_ key: String, _ command: RendererCommand, _ current: @escaping (ExplorerViewState) -> Bool) {
                 AutomationPrefs.register(key) { value, context in
                     guard case .bool(let on) = value else { return .failed("\(key) is not true or false") }
-                    guard let controller = context.controller else { return .unsupported("\(key) outside an explorer") }
+                    guard let controller = context.controller else { return .unsupported(key) }
                     if current(controller.viewState) != on { controller.perform(command) }
                     return .applied
                 }
