@@ -123,7 +123,7 @@ public enum FolderMetadata {
         guard let mode else { return }
         do {
             try chmod(path, mode)
-        } catch where isUnsupported(error) {}
+        } catch  where isUnsupported(error) {}
     }
 
     /// `preserveTimestampsIfSupported`.
@@ -133,7 +133,7 @@ public enum FolderMetadata {
         guard let mtimeMs else { return }
         do {
             try utimes(path, mtimeMs, mtimeMs)
-        } catch where isUnsupported(error) {}
+        } catch  where isUnsupported(error) {}
     }
 
     private static func isUnsupported(_ error: any Error) -> Bool {

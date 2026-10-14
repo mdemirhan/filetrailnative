@@ -51,7 +51,8 @@ public struct DispatchProgressTicker: ProgressTicker {
 /// `createStoppableCopyFile`: the native copy, stopped by a `StopSignal`, with its progress.
 public struct StoppableCopy: Sendable {
     /// The native copy: `NativeFS.copyFile`, given a control when the copy can be stopped or reports progress.
-    public typealias NativeCopy = @Sendable (_ source: String, _ destination: String, _ control: CopyControl?) throws
+    public typealias NativeCopy =
+        @Sendable (_ source: String, _ destination: String, _ control: CopyControl?) throws
         -> Void
 
     /// How often the bytes copied so far are read while a file is being copied (`COPY_PROGRESS_INTERVAL_MS`).

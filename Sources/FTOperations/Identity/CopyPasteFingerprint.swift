@@ -297,7 +297,7 @@ public func fileIdOf(_ ino: UInt64?) -> UInt64? {
 func sameText(_ left: String?, _ right: String?) -> Bool {
     switch (left, right) {
     case (nil, nil): true
-    case let (left?, right?): left.unicodeScalars.elementsEqual(right.unicodeScalars)
+    case (let left?, let right?): left.unicodeScalars.elementsEqual(right.unicodeScalars)
     default: false
     }
 }

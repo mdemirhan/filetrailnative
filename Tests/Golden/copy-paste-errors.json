@@ -1,0 +1,3191 @@
+{
+  "suite": "copy-paste-errors",
+  "referenceCommit": "e4d0872",
+  "seed": 3882905601,
+  "generator": "tools/parity/golden/copy-paste-errors.ts",
+  "cases": [
+    {
+      "name": "native errno 0 UNKNOWN",
+      "input": {
+        "kind": "native",
+        "errno": 0,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "UNKNOWN",
+        "message": "UNKNOWN: Undefined error: 0, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "UNKNOWN: Undefined error: 0, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 1 EPERM",
+      "input": {
+        "kind": "native",
+        "errno": 1,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EPERM",
+        "message": "EPERM: Operation not permitted, lstat '/Users/me/café 😀.txt'",
+        "described": "You don't have permission to access this item."
+      }
+    },
+    {
+      "name": "native errno 2 ENOENT",
+      "input": {
+        "kind": "native",
+        "errno": 2,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENOENT",
+        "message": "ENOENT: No such file or directory, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "The item no longer exists."
+      }
+    },
+    {
+      "name": "native errno 3 ESRCH",
+      "input": {
+        "kind": "native",
+        "errno": 3,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ESRCH",
+        "message": "ESRCH: No such process, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ESRCH: No such process, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 4 EINTR",
+      "input": {
+        "kind": "native",
+        "errno": 4,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EINTR",
+        "message": "EINTR: Interrupted system call, lstat '/Users/me/café 😀.txt'",
+        "described": "The operation was interrupted. Try again."
+      }
+    },
+    {
+      "name": "native errno 5 EIO",
+      "input": {
+        "kind": "native",
+        "errno": 5,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EIO",
+        "message": "EIO: Input/output error, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "A disk error occurred."
+      }
+    },
+    {
+      "name": "native errno 6 ENXIO",
+      "input": {
+        "kind": "native",
+        "errno": 6,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENXIO",
+        "message": "ENXIO: Device not configured, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The disk isn't available."
+      }
+    },
+    {
+      "name": "native errno 7 E2BIG",
+      "input": {
+        "kind": "native",
+        "errno": 7,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "E2BIG",
+        "message": "E2BIG: Argument list too long, lstat '/Users/me/café 😀.txt'",
+        "described": "E2BIG: Argument list too long, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 8 ENOEXEC",
+      "input": {
+        "kind": "native",
+        "errno": 8,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENOEXEC",
+        "message": "ENOEXEC: Exec format error, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ENOEXEC: Exec format error, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 9 EBADF",
+      "input": {
+        "kind": "native",
+        "errno": 9,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EBADF",
+        "message": "EBADF: Bad file descriptor, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EBADF: Bad file descriptor, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 10 ECHILD",
+      "input": {
+        "kind": "native",
+        "errno": 10,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ECHILD",
+        "message": "ECHILD: No child processes, lstat '/Users/me/café 😀.txt'",
+        "described": "ECHILD: No child processes, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 11 EDEADLK",
+      "input": {
+        "kind": "native",
+        "errno": 11,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EDEADLK",
+        "message": "EDEADLK: Resource deadlock avoided, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EDEADLK: Resource deadlock avoided, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 12 ENOMEM",
+      "input": {
+        "kind": "native",
+        "errno": 12,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOMEM",
+        "message": "ENOMEM: Cannot allocate memory, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "There isn't enough memory to finish this."
+      }
+    },
+    {
+      "name": "native errno 13 EACCES",
+      "input": {
+        "kind": "native",
+        "errno": 13,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EACCES",
+        "message": "EACCES: Permission denied, lstat '/Users/me/café 😀.txt'",
+        "described": "You don't have permission to access this item."
+      }
+    },
+    {
+      "name": "native errno 14 EFAULT",
+      "input": {
+        "kind": "native",
+        "errno": 14,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EFAULT",
+        "message": "EFAULT: Bad address, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EFAULT: Bad address, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 15 ENOTBLK",
+      "input": {
+        "kind": "native",
+        "errno": 15,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOTBLK",
+        "message": "ENOTBLK: Block device required, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENOTBLK: Block device required, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 16 EBUSY",
+      "input": {
+        "kind": "native",
+        "errno": 16,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EBUSY",
+        "message": "EBUSY: Resource busy, lstat '/Users/me/café 😀.txt'",
+        "described": "The item is in use."
+      }
+    },
+    {
+      "name": "native errno 17 EEXIST",
+      "input": {
+        "kind": "native",
+        "errno": 17,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EEXIST",
+        "message": "EEXIST: File exists, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "An item with this name already exists."
+      }
+    },
+    {
+      "name": "native errno 18 EXDEV",
+      "input": {
+        "kind": "native",
+        "errno": 18,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EXDEV",
+        "message": "EXDEV: Cross-device link, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The item can't be moved directly to a different disk."
+      }
+    },
+    {
+      "name": "native errno 19 ENODEV",
+      "input": {
+        "kind": "native",
+        "errno": 19,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENODEV",
+        "message": "ENODEV: Operation not supported by device, lstat '/Users/me/café 😀.txt'",
+        "described": "The disk isn't available."
+      }
+    },
+    {
+      "name": "native errno 20 ENOTDIR",
+      "input": {
+        "kind": "native",
+        "errno": 20,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENOTDIR",
+        "message": "ENOTDIR: Not a directory, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "Part of the path isn't a folder any more."
+      }
+    },
+    {
+      "name": "native errno 21 EISDIR",
+      "input": {
+        "kind": "native",
+        "errno": 21,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EISDIR",
+        "message": "EISDIR: Is a directory, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "A folder is in the way where a file was expected."
+      }
+    },
+    {
+      "name": "native errno 22 EINVAL",
+      "input": {
+        "kind": "native",
+        "errno": 22,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EINVAL",
+        "message": "EINVAL: Invalid argument, lstat '/Users/me/café 😀.txt'",
+        "described": "This volume doesn't accept this name or operation."
+      }
+    },
+    {
+      "name": "native errno 23 ENFILE",
+      "input": {
+        "kind": "native",
+        "errno": 23,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENFILE",
+        "message": "ENFILE: Too many open files in system, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "Too many files are open. Close some apps and try again."
+      }
+    },
+    {
+      "name": "native errno 24 EMFILE",
+      "input": {
+        "kind": "native",
+        "errno": 24,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EMFILE",
+        "message": "EMFILE: Too many open files, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "Too many files are open. Close some apps and try again."
+      }
+    },
+    {
+      "name": "native errno 25 ENOTTY",
+      "input": {
+        "kind": "native",
+        "errno": 25,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENOTTY",
+        "message": "ENOTTY: Inappropriate ioctl for device, lstat '/Users/me/café 😀.txt'",
+        "described": "ENOTTY: Inappropriate ioctl for device, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 26 ETXTBSY",
+      "input": {
+        "kind": "native",
+        "errno": 26,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ETXTBSY",
+        "message": "ETXTBSY: Text file busy, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ETXTBSY: Text file busy, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 27 EFBIG",
+      "input": {
+        "kind": "native",
+        "errno": 27,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EFBIG",
+        "message": "EFBIG: File too large, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The file is too large for this volume."
+      }
+    },
+    {
+      "name": "native errno 28 ENOSPC",
+      "input": {
+        "kind": "native",
+        "errno": 28,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENOSPC",
+        "message": "ENOSPC: No space left on device, lstat '/Users/me/café 😀.txt'",
+        "described": "There isn't enough free space on the destination disk."
+      }
+    },
+    {
+      "name": "native errno 29 ESPIPE",
+      "input": {
+        "kind": "native",
+        "errno": 29,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ESPIPE",
+        "message": "ESPIPE: Illegal seek, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ESPIPE: Illegal seek, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 30 EROFS",
+      "input": {
+        "kind": "native",
+        "errno": 30,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EROFS",
+        "message": "EROFS: Read-only file system, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The destination is read-only."
+      }
+    },
+    {
+      "name": "native errno 31 EMLINK",
+      "input": {
+        "kind": "native",
+        "errno": 31,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EMLINK",
+        "message": "EMLINK: Too many links, lstat '/Users/me/café 😀.txt'",
+        "described": "EMLINK: Too many links, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 32 EPIPE",
+      "input": {
+        "kind": "native",
+        "errno": 32,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EPIPE",
+        "message": "EPIPE: Broken pipe, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EPIPE: Broken pipe, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 33 EDOM",
+      "input": {
+        "kind": "native",
+        "errno": 33,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EDOM",
+        "message": "EDOM: Numerical argument out of domain, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EDOM: Numerical argument out of domain, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 34 ERANGE",
+      "input": {
+        "kind": "native",
+        "errno": 34,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ERANGE",
+        "message": "ERANGE: Result too large, lstat '/Users/me/café 😀.txt'",
+        "described": "ERANGE: Result too large, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 35 EAGAIN",
+      "input": {
+        "kind": "native",
+        "errno": 35,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EAGAIN",
+        "message": "EAGAIN: Resource temporarily unavailable, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "The item is temporarily unavailable. Try again."
+      }
+    },
+    {
+      "name": "native errno 36 EINPROGRESS",
+      "input": {
+        "kind": "native",
+        "errno": 36,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EINPROGRESS",
+        "message": "EINPROGRESS: Operation now in progress, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EINPROGRESS: Operation now in progress, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 37 EALREADY",
+      "input": {
+        "kind": "native",
+        "errno": 37,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EALREADY",
+        "message": "EALREADY: Operation already in progress, lstat '/Users/me/café 😀.txt'",
+        "described": "EALREADY: Operation already in progress, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 38 ENOTSOCK",
+      "input": {
+        "kind": "native",
+        "errno": 38,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENOTSOCK",
+        "message": "ENOTSOCK: Socket operation on non-socket, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ENOTSOCK: Socket operation on non-socket, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 39 EDESTADDRREQ",
+      "input": {
+        "kind": "native",
+        "errno": 39,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EDESTADDRREQ",
+        "message": "EDESTADDRREQ: Destination address required, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EDESTADDRREQ: Destination address required, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 40 EMSGSIZE",
+      "input": {
+        "kind": "native",
+        "errno": 40,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EMSGSIZE",
+        "message": "EMSGSIZE: Message too long, lstat '/Users/me/café 😀.txt'",
+        "described": "EMSGSIZE: Message too long, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 41 EPROTOTYPE",
+      "input": {
+        "kind": "native",
+        "errno": 41,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EPROTOTYPE",
+        "message": "EPROTOTYPE: Protocol wrong type for socket, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EPROTOTYPE: Protocol wrong type for socket, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 42 ENOPROTOOPT",
+      "input": {
+        "kind": "native",
+        "errno": 42,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOPROTOOPT",
+        "message": "ENOPROTOOPT: Protocol not available, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENOPROTOOPT: Protocol not available, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 43 EPROTONOSUPPORT",
+      "input": {
+        "kind": "native",
+        "errno": 43,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EPROTONOSUPPORT",
+        "message": "EPROTONOSUPPORT: Protocol not supported, lstat '/Users/me/café 😀.txt'",
+        "described": "EPROTONOSUPPORT: Protocol not supported, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 44 ESOCKTNOSUPPORT",
+      "input": {
+        "kind": "native",
+        "errno": 44,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ESOCKTNOSUPPORT",
+        "message": "ESOCKTNOSUPPORT: Socket type not supported, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ESOCKTNOSUPPORT: Socket type not supported, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 45 ENOTSUP",
+      "input": {
+        "kind": "native",
+        "errno": 45,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOTSUP",
+        "message": "ENOTSUP: Operation not supported, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "This volume doesn't support this operation."
+      }
+    },
+    {
+      "name": "native errno 46 EPFNOSUPPORT",
+      "input": {
+        "kind": "native",
+        "errno": 46,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EPFNOSUPPORT",
+        "message": "EPFNOSUPPORT: Protocol family not supported, lstat '/Users/me/café 😀.txt'",
+        "described": "EPFNOSUPPORT: Protocol family not supported, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 47 EAFNOSUPPORT",
+      "input": {
+        "kind": "native",
+        "errno": 47,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EAFNOSUPPORT",
+        "message": "EAFNOSUPPORT: Address family not supported by protocol family, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EAFNOSUPPORT: Address family not supported by protocol family, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 48 EADDRINUSE",
+      "input": {
+        "kind": "native",
+        "errno": 48,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EADDRINUSE",
+        "message": "EADDRINUSE: Address already in use, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EADDRINUSE: Address already in use, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 49 EADDRNOTAVAIL",
+      "input": {
+        "kind": "native",
+        "errno": 49,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EADDRNOTAVAIL",
+        "message": "EADDRNOTAVAIL: Can't assign requested address, lstat '/Users/me/café 😀.txt'",
+        "described": "EADDRNOTAVAIL: Can't assign requested address, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 50 ENETDOWN",
+      "input": {
+        "kind": "native",
+        "errno": 50,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENETDOWN",
+        "message": "ENETDOWN: Network is down, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ENETDOWN: Network is down, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 51 ENETUNREACH",
+      "input": {
+        "kind": "native",
+        "errno": 51,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENETUNREACH",
+        "message": "ENETUNREACH: Network is unreachable, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENETUNREACH: Network is unreachable, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 52 ENETRESET",
+      "input": {
+        "kind": "native",
+        "errno": 52,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENETRESET",
+        "message": "ENETRESET: Network dropped connection on reset, lstat '/Users/me/café 😀.txt'",
+        "described": "ENETRESET: Network dropped connection on reset, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 53 ECONNABORTED",
+      "input": {
+        "kind": "native",
+        "errno": 53,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ECONNABORTED",
+        "message": "ECONNABORTED: Software caused connection abort, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ECONNABORTED: Software caused connection abort, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 54 ECONNRESET",
+      "input": {
+        "kind": "native",
+        "errno": 54,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ECONNRESET",
+        "message": "ECONNRESET: Connection reset by peer, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ECONNRESET: Connection reset by peer, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 55 ENOBUFS",
+      "input": {
+        "kind": "native",
+        "errno": 55,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENOBUFS",
+        "message": "ENOBUFS: No buffer space available, lstat '/Users/me/café 😀.txt'",
+        "described": "ENOBUFS: No buffer space available, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 56 EISCONN",
+      "input": {
+        "kind": "native",
+        "errno": 56,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EISCONN",
+        "message": "EISCONN: Socket is already connected, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EISCONN: Socket is already connected, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 57 ENOTCONN",
+      "input": {
+        "kind": "native",
+        "errno": 57,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOTCONN",
+        "message": "ENOTCONN: Socket is not connected, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENOTCONN: Socket is not connected, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 58 ESHUTDOWN",
+      "input": {
+        "kind": "native",
+        "errno": 58,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ESHUTDOWN",
+        "message": "ESHUTDOWN: Can't send after socket shutdown, lstat '/Users/me/café 😀.txt'",
+        "described": "ESHUTDOWN: Can't send after socket shutdown, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 59 ETOOMANYREFS",
+      "input": {
+        "kind": "native",
+        "errno": 59,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ETOOMANYREFS",
+        "message": "ETOOMANYREFS: Too many references: can't splice, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ETOOMANYREFS: Too many references: can't splice, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 60 ETIMEDOUT",
+      "input": {
+        "kind": "native",
+        "errno": 60,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ETIMEDOUT",
+        "message": "ETIMEDOUT: Operation timed out, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The volume took too long to respond."
+      }
+    },
+    {
+      "name": "native errno 61 ECONNREFUSED",
+      "input": {
+        "kind": "native",
+        "errno": 61,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ECONNREFUSED",
+        "message": "ECONNREFUSED: Connection refused, lstat '/Users/me/café 😀.txt'",
+        "described": "ECONNREFUSED: Connection refused, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 62 ELOOP",
+      "input": {
+        "kind": "native",
+        "errno": 62,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ELOOP",
+        "message": "ELOOP: Too many levels of symbolic links, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "The item's location loops back on itself through symbolic links."
+      }
+    },
+    {
+      "name": "native errno 63 ENAMETOOLONG",
+      "input": {
+        "kind": "native",
+        "errno": 63,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENAMETOOLONG",
+        "message": "ENAMETOOLONG: File name too long, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The name is too long."
+      }
+    },
+    {
+      "name": "native errno 64 EHOSTDOWN",
+      "input": {
+        "kind": "native",
+        "errno": 64,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EHOSTDOWN",
+        "message": "EHOSTDOWN: Host is down, lstat '/Users/me/café 😀.txt'",
+        "described": "EHOSTDOWN: Host is down, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 65 EHOSTUNREACH",
+      "input": {
+        "kind": "native",
+        "errno": 65,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EHOSTUNREACH",
+        "message": "EHOSTUNREACH: No route to host, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EHOSTUNREACH: No route to host, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 66 ENOTEMPTY",
+      "input": {
+        "kind": "native",
+        "errno": 66,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOTEMPTY",
+        "message": "ENOTEMPTY: Directory not empty, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The folder isn't empty."
+      }
+    },
+    {
+      "name": "native errno 67 EPROCLIM",
+      "input": {
+        "kind": "native",
+        "errno": 67,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EPROCLIM",
+        "message": "EPROCLIM: Too many processes, lstat '/Users/me/café 😀.txt'",
+        "described": "EPROCLIM: Too many processes, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 68 EUSERS",
+      "input": {
+        "kind": "native",
+        "errno": 68,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EUSERS",
+        "message": "EUSERS: Too many users, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EUSERS: Too many users, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 69 EDQUOT",
+      "input": {
+        "kind": "native",
+        "errno": 69,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EDQUOT",
+        "message": "EDQUOT: Disc quota exceeded, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "The destination's storage quota is full."
+      }
+    },
+    {
+      "name": "native errno 70 ESTALE",
+      "input": {
+        "kind": "native",
+        "errno": 70,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ESTALE",
+        "message": "ESTALE: Stale NFS file handle, lstat '/Users/me/café 😀.txt'",
+        "described": "The network volume went away. Reconnect it and try again."
+      }
+    },
+    {
+      "name": "native errno 71 EREMOTE",
+      "input": {
+        "kind": "native",
+        "errno": 71,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EREMOTE",
+        "message": "EREMOTE: Too many levels of remote in path, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EREMOTE: Too many levels of remote in path, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 72 EBADRPC",
+      "input": {
+        "kind": "native",
+        "errno": 72,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EBADRPC",
+        "message": "EBADRPC: RPC struct is bad, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EBADRPC: RPC struct is bad, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 73 ERPCMISMATCH",
+      "input": {
+        "kind": "native",
+        "errno": 73,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ERPCMISMATCH",
+        "message": "ERPCMISMATCH: RPC version wrong, lstat '/Users/me/café 😀.txt'",
+        "described": "ERPCMISMATCH: RPC version wrong, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 74 EPROGUNAVAIL",
+      "input": {
+        "kind": "native",
+        "errno": 74,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EPROGUNAVAIL",
+        "message": "EPROGUNAVAIL: RPC prog. not avail, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EPROGUNAVAIL: RPC prog. not avail, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 75 EPROGMISMATCH",
+      "input": {
+        "kind": "native",
+        "errno": 75,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EPROGMISMATCH",
+        "message": "EPROGMISMATCH: Program version wrong, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EPROGMISMATCH: Program version wrong, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 76 EPROCUNAVAIL",
+      "input": {
+        "kind": "native",
+        "errno": 76,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EPROCUNAVAIL",
+        "message": "EPROCUNAVAIL: Bad procedure for program, lstat '/Users/me/café 😀.txt'",
+        "described": "EPROCUNAVAIL: Bad procedure for program, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 77 ENOLCK",
+      "input": {
+        "kind": "native",
+        "errno": 77,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENOLCK",
+        "message": "ENOLCK: No locks available, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ENOLCK: No locks available, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 78 ENOSYS",
+      "input": {
+        "kind": "native",
+        "errno": 78,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOSYS",
+        "message": "ENOSYS: Function not implemented, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENOSYS: Function not implemented, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 79 EFTYPE",
+      "input": {
+        "kind": "native",
+        "errno": 79,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EFTYPE",
+        "message": "EFTYPE: Inappropriate file type or format, lstat '/Users/me/café 😀.txt'",
+        "described": "EFTYPE: Inappropriate file type or format, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 80 EAUTH",
+      "input": {
+        "kind": "native",
+        "errno": 80,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EAUTH",
+        "message": "EAUTH: Authentication error, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EAUTH: Authentication error, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 81 ENEEDAUTH",
+      "input": {
+        "kind": "native",
+        "errno": 81,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENEEDAUTH",
+        "message": "ENEEDAUTH: Need authenticator, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENEEDAUTH: Need authenticator, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 82 EPWROFF",
+      "input": {
+        "kind": "native",
+        "errno": 82,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EPWROFF",
+        "message": "EPWROFF: Device power is off, lstat '/Users/me/café 😀.txt'",
+        "described": "EPWROFF: Device power is off, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 83 EDEVERR",
+      "input": {
+        "kind": "native",
+        "errno": 83,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EDEVERR",
+        "message": "EDEVERR: Device error, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EDEVERR: Device error, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 84 EOVERFLOW",
+      "input": {
+        "kind": "native",
+        "errno": 84,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EOVERFLOW",
+        "message": "EOVERFLOW: Value too large to be stored in data type, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EOVERFLOW: Value too large to be stored in data type, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 85 EBADEXEC",
+      "input": {
+        "kind": "native",
+        "errno": 85,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EBADEXEC",
+        "message": "EBADEXEC: Bad executable (or shared library), lstat '/Users/me/café 😀.txt'",
+        "described": "EBADEXEC: Bad executable (or shared library), lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 86 EBADARCH",
+      "input": {
+        "kind": "native",
+        "errno": 86,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EBADARCH",
+        "message": "EBADARCH: Bad CPU type in executable, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EBADARCH: Bad CPU type in executable, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 87 ESHLIBVERS",
+      "input": {
+        "kind": "native",
+        "errno": 87,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ESHLIBVERS",
+        "message": "ESHLIBVERS: Shared library version mismatch, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ESHLIBVERS: Shared library version mismatch, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 88 EBADMACHO",
+      "input": {
+        "kind": "native",
+        "errno": 88,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EBADMACHO",
+        "message": "EBADMACHO: Malformed Mach-o file, lstat '/Users/me/café 😀.txt'",
+        "described": "EBADMACHO: Malformed Mach-o file, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 89 ECANCELED",
+      "input": {
+        "kind": "native",
+        "errno": 89,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ECANCELED",
+        "message": "ECANCELED: Operation canceled, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ECANCELED: Operation canceled, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 90 EIDRM",
+      "input": {
+        "kind": "native",
+        "errno": 90,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EIDRM",
+        "message": "EIDRM: Identifier removed, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EIDRM: Identifier removed, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 91 ENOMSG",
+      "input": {
+        "kind": "native",
+        "errno": 91,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENOMSG",
+        "message": "ENOMSG: No message of desired type, lstat '/Users/me/café 😀.txt'",
+        "described": "ENOMSG: No message of desired type, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 92 EILSEQ",
+      "input": {
+        "kind": "native",
+        "errno": 92,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EILSEQ",
+        "message": "EILSEQ: Illegal byte sequence, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EILSEQ: Illegal byte sequence, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 93 ENOATTR",
+      "input": {
+        "kind": "native",
+        "errno": 93,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOATTR",
+        "message": "ENOATTR: Attribute not found, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENOATTR: Attribute not found, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 94 EBADMSG",
+      "input": {
+        "kind": "native",
+        "errno": 94,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EBADMSG",
+        "message": "EBADMSG: Bad message, lstat '/Users/me/café 😀.txt'",
+        "described": "EBADMSG: Bad message, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 95 EMULTIHOP",
+      "input": {
+        "kind": "native",
+        "errno": 95,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "EMULTIHOP",
+        "message": "EMULTIHOP: EMULTIHOP (Reserved), rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "EMULTIHOP: EMULTIHOP (Reserved), rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 96 ENODATA",
+      "input": {
+        "kind": "native",
+        "errno": 96,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENODATA",
+        "message": "ENODATA: No message available on STREAM, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENODATA: No message available on STREAM, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 97 ENOLINK",
+      "input": {
+        "kind": "native",
+        "errno": 97,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENOLINK",
+        "message": "ENOLINK: ENOLINK (Reserved), lstat '/Users/me/café 😀.txt'",
+        "described": "ENOLINK: ENOLINK (Reserved), lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 98 ENOSR",
+      "input": {
+        "kind": "native",
+        "errno": 98,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENOSR",
+        "message": "ENOSR: No STREAM resources, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ENOSR: No STREAM resources, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 99 ENOSTR",
+      "input": {
+        "kind": "native",
+        "errno": 99,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "ENOSTR",
+        "message": "ENOSTR: Not a STREAM, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "ENOSTR: Not a STREAM, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 100 EPROTO",
+      "input": {
+        "kind": "native",
+        "errno": 100,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EPROTO",
+        "message": "EPROTO: Protocol error, lstat '/Users/me/café 😀.txt'",
+        "described": "EPROTO: Protocol error, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 101 ETIME",
+      "input": {
+        "kind": "native",
+        "errno": 101,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ETIME",
+        "message": "ETIME: STREAM ioctl timeout, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ETIME: STREAM ioctl timeout, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 102 EOPNOTSUPP",
+      "input": {
+        "kind": "native",
+        "errno": 102,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EOPNOTSUPP",
+        "message": "EOPNOTSUPP: Operation not supported on socket, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "This volume doesn't support this operation."
+      }
+    },
+    {
+      "name": "native errno 103 ENOPOLICY",
+      "input": {
+        "kind": "native",
+        "errno": 103,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "ENOPOLICY",
+        "message": "ENOPOLICY: Policy not found, lstat '/Users/me/café 😀.txt'",
+        "described": "ENOPOLICY: Policy not found, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 104 ENOTRECOVERABLE",
+      "input": {
+        "kind": "native",
+        "errno": 104,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "ENOTRECOVERABLE",
+        "message": "ENOTRECOVERABLE: State not recoverable, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "ENOTRECOVERABLE: State not recoverable, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 105 EOWNERDEAD",
+      "input": {
+        "kind": "native",
+        "errno": 105,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "EOWNERDEAD",
+        "message": "EOWNERDEAD: Previous owner died, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "EOWNERDEAD: Previous owner died, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "native errno 106 EQFULL",
+      "input": {
+        "kind": "native",
+        "errno": 106,
+        "syscall": "lstat",
+        "path": "/Users/me/café 😀.txt",
+        "dest": null
+      },
+      "output": {
+        "code": "EQFULL",
+        "message": "EQFULL: Interface output queue is full, lstat '/Users/me/café 😀.txt'",
+        "described": "EQFULL: Interface output queue is full, lstat '/Users/me/café 😀.txt'"
+      }
+    },
+    {
+      "name": "native errno 107 UNKNOWN",
+      "input": {
+        "kind": "native",
+        "errno": 107,
+        "syscall": "rename",
+        "path": "/tmp/x 'quoted'",
+        "dest": "/tmp/y\nz"
+      },
+      "output": {
+        "code": "UNKNOWN",
+        "message": "UNKNOWN: Capabilities insufficient, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'",
+        "described": "UNKNOWN: Capabilities insufficient, rename '/tmp/x 'quoted'' -> '/tmp/y\nz'"
+      }
+    },
+    {
+      "name": "native errno 108 UNKNOWN",
+      "input": {
+        "kind": "native",
+        "errno": 108,
+        "syscall": "copyfile",
+        "path": "/Volumes/Disk/a.txt",
+        "dest": "/Users/me/Documents/a.txt"
+      },
+      "output": {
+        "code": "UNKNOWN",
+        "message": "UNKNOWN: Unknown error: 108, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'",
+        "described": "UNKNOWN: Unknown error: 108, copyfile '/Volumes/Disk/a.txt' -> '/Users/me/Documents/a.txt'"
+      }
+    },
+    {
+      "name": "node error EPERM",
+      "input": {
+        "kind": "error",
+        "message": "EPERM: something, open '/x/y'",
+        "code": "EPERM"
+      },
+      "output": {
+        "described": "You don't have permission to access this item."
+      }
+    },
+    {
+      "name": "node error ENOENT",
+      "input": {
+        "kind": "error",
+        "message": "ENOENT: something, open '/x/y'",
+        "code": "ENOENT"
+      },
+      "output": {
+        "described": "The item no longer exists."
+      }
+    },
+    {
+      "name": "node error ESRCH",
+      "input": {
+        "kind": "error",
+        "message": "ESRCH: something, open '/x/y'",
+        "code": "ESRCH"
+      },
+      "output": {
+        "described": "ESRCH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EINTR",
+      "input": {
+        "kind": "error",
+        "message": "EINTR: something, open '/x/y'",
+        "code": "EINTR"
+      },
+      "output": {
+        "described": "The operation was interrupted. Try again."
+      }
+    },
+    {
+      "name": "node error EIO",
+      "input": {
+        "kind": "error",
+        "message": "EIO: something, open '/x/y'",
+        "code": "EIO"
+      },
+      "output": {
+        "described": "A disk error occurred."
+      }
+    },
+    {
+      "name": "node error ENXIO",
+      "input": {
+        "kind": "error",
+        "message": "ENXIO: something, open '/x/y'",
+        "code": "ENXIO"
+      },
+      "output": {
+        "described": "The disk isn't available."
+      }
+    },
+    {
+      "name": "node error E2BIG",
+      "input": {
+        "kind": "error",
+        "message": "E2BIG: something, open '/x/y'",
+        "code": "E2BIG"
+      },
+      "output": {
+        "described": "E2BIG: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOEXEC",
+      "input": {
+        "kind": "error",
+        "message": "ENOEXEC: something, open '/x/y'",
+        "code": "ENOEXEC"
+      },
+      "output": {
+        "described": "ENOEXEC: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EBADF",
+      "input": {
+        "kind": "error",
+        "message": "EBADF: something, open '/x/y'",
+        "code": "EBADF"
+      },
+      "output": {
+        "described": "EBADF: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ECHILD",
+      "input": {
+        "kind": "error",
+        "message": "ECHILD: something, open '/x/y'",
+        "code": "ECHILD"
+      },
+      "output": {
+        "described": "ECHILD: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EDEADLK",
+      "input": {
+        "kind": "error",
+        "message": "EDEADLK: something, open '/x/y'",
+        "code": "EDEADLK"
+      },
+      "output": {
+        "described": "EDEADLK: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOMEM",
+      "input": {
+        "kind": "error",
+        "message": "ENOMEM: something, open '/x/y'",
+        "code": "ENOMEM"
+      },
+      "output": {
+        "described": "There isn't enough memory to finish this."
+      }
+    },
+    {
+      "name": "node error EACCES",
+      "input": {
+        "kind": "error",
+        "message": "EACCES: something, open '/x/y'",
+        "code": "EACCES"
+      },
+      "output": {
+        "described": "You don't have permission to access this item."
+      }
+    },
+    {
+      "name": "node error EFAULT",
+      "input": {
+        "kind": "error",
+        "message": "EFAULT: something, open '/x/y'",
+        "code": "EFAULT"
+      },
+      "output": {
+        "described": "EFAULT: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EBUSY",
+      "input": {
+        "kind": "error",
+        "message": "EBUSY: something, open '/x/y'",
+        "code": "EBUSY"
+      },
+      "output": {
+        "described": "The item is in use."
+      }
+    },
+    {
+      "name": "node error EEXIST",
+      "input": {
+        "kind": "error",
+        "message": "EEXIST: something, open '/x/y'",
+        "code": "EEXIST"
+      },
+      "output": {
+        "described": "An item with this name already exists."
+      }
+    },
+    {
+      "name": "node error EXDEV",
+      "input": {
+        "kind": "error",
+        "message": "EXDEV: something, open '/x/y'",
+        "code": "EXDEV"
+      },
+      "output": {
+        "described": "The item can't be moved directly to a different disk."
+      }
+    },
+    {
+      "name": "node error ENODEV",
+      "input": {
+        "kind": "error",
+        "message": "ENODEV: something, open '/x/y'",
+        "code": "ENODEV"
+      },
+      "output": {
+        "described": "The disk isn't available."
+      }
+    },
+    {
+      "name": "node error ENOTDIR",
+      "input": {
+        "kind": "error",
+        "message": "ENOTDIR: something, open '/x/y'",
+        "code": "ENOTDIR"
+      },
+      "output": {
+        "described": "Part of the path isn't a folder any more."
+      }
+    },
+    {
+      "name": "node error EISDIR",
+      "input": {
+        "kind": "error",
+        "message": "EISDIR: something, open '/x/y'",
+        "code": "EISDIR"
+      },
+      "output": {
+        "described": "A folder is in the way where a file was expected."
+      }
+    },
+    {
+      "name": "node error EINVAL",
+      "input": {
+        "kind": "error",
+        "message": "EINVAL: something, open '/x/y'",
+        "code": "EINVAL"
+      },
+      "output": {
+        "described": "This volume doesn't accept this name or operation."
+      }
+    },
+    {
+      "name": "node error ENFILE",
+      "input": {
+        "kind": "error",
+        "message": "ENFILE: something, open '/x/y'",
+        "code": "ENFILE"
+      },
+      "output": {
+        "described": "Too many files are open. Close some apps and try again."
+      }
+    },
+    {
+      "name": "node error EMFILE",
+      "input": {
+        "kind": "error",
+        "message": "EMFILE: something, open '/x/y'",
+        "code": "EMFILE"
+      },
+      "output": {
+        "described": "Too many files are open. Close some apps and try again."
+      }
+    },
+    {
+      "name": "node error ENOTTY",
+      "input": {
+        "kind": "error",
+        "message": "ENOTTY: something, open '/x/y'",
+        "code": "ENOTTY"
+      },
+      "output": {
+        "described": "ENOTTY: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ETXTBSY",
+      "input": {
+        "kind": "error",
+        "message": "ETXTBSY: something, open '/x/y'",
+        "code": "ETXTBSY"
+      },
+      "output": {
+        "described": "ETXTBSY: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EFBIG",
+      "input": {
+        "kind": "error",
+        "message": "EFBIG: something, open '/x/y'",
+        "code": "EFBIG"
+      },
+      "output": {
+        "described": "The file is too large for this volume."
+      }
+    },
+    {
+      "name": "node error ENOSPC",
+      "input": {
+        "kind": "error",
+        "message": "ENOSPC: something, open '/x/y'",
+        "code": "ENOSPC"
+      },
+      "output": {
+        "described": "There isn't enough free space on the destination disk."
+      }
+    },
+    {
+      "name": "node error ESPIPE",
+      "input": {
+        "kind": "error",
+        "message": "ESPIPE: something, open '/x/y'",
+        "code": "ESPIPE"
+      },
+      "output": {
+        "described": "ESPIPE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EROFS",
+      "input": {
+        "kind": "error",
+        "message": "EROFS: something, open '/x/y'",
+        "code": "EROFS"
+      },
+      "output": {
+        "described": "The destination is read-only."
+      }
+    },
+    {
+      "name": "node error EMLINK",
+      "input": {
+        "kind": "error",
+        "message": "EMLINK: something, open '/x/y'",
+        "code": "EMLINK"
+      },
+      "output": {
+        "described": "EMLINK: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPIPE",
+      "input": {
+        "kind": "error",
+        "message": "EPIPE: something, open '/x/y'",
+        "code": "EPIPE"
+      },
+      "output": {
+        "described": "EPIPE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EDOM",
+      "input": {
+        "kind": "error",
+        "message": "EDOM: something, open '/x/y'",
+        "code": "EDOM"
+      },
+      "output": {
+        "described": "EDOM: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ERANGE",
+      "input": {
+        "kind": "error",
+        "message": "ERANGE: something, open '/x/y'",
+        "code": "ERANGE"
+      },
+      "output": {
+        "described": "ERANGE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EAGAIN",
+      "input": {
+        "kind": "error",
+        "message": "EAGAIN: something, open '/x/y'",
+        "code": "EAGAIN"
+      },
+      "output": {
+        "described": "The item is temporarily unavailable. Try again."
+      }
+    },
+    {
+      "name": "node error EINPROGRESS",
+      "input": {
+        "kind": "error",
+        "message": "EINPROGRESS: something, open '/x/y'",
+        "code": "EINPROGRESS"
+      },
+      "output": {
+        "described": "EINPROGRESS: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EALREADY",
+      "input": {
+        "kind": "error",
+        "message": "EALREADY: something, open '/x/y'",
+        "code": "EALREADY"
+      },
+      "output": {
+        "described": "EALREADY: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOTSOCK",
+      "input": {
+        "kind": "error",
+        "message": "ENOTSOCK: something, open '/x/y'",
+        "code": "ENOTSOCK"
+      },
+      "output": {
+        "described": "ENOTSOCK: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EDESTADDRREQ",
+      "input": {
+        "kind": "error",
+        "message": "EDESTADDRREQ: something, open '/x/y'",
+        "code": "EDESTADDRREQ"
+      },
+      "output": {
+        "described": "EDESTADDRREQ: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EMSGSIZE",
+      "input": {
+        "kind": "error",
+        "message": "EMSGSIZE: something, open '/x/y'",
+        "code": "EMSGSIZE"
+      },
+      "output": {
+        "described": "EMSGSIZE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPROTOTYPE",
+      "input": {
+        "kind": "error",
+        "message": "EPROTOTYPE: something, open '/x/y'",
+        "code": "EPROTOTYPE"
+      },
+      "output": {
+        "described": "EPROTOTYPE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOPROTOOPT",
+      "input": {
+        "kind": "error",
+        "message": "ENOPROTOOPT: something, open '/x/y'",
+        "code": "ENOPROTOOPT"
+      },
+      "output": {
+        "described": "ENOPROTOOPT: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPROTONOSUPPORT",
+      "input": {
+        "kind": "error",
+        "message": "EPROTONOSUPPORT: something, open '/x/y'",
+        "code": "EPROTONOSUPPORT"
+      },
+      "output": {
+        "described": "EPROTONOSUPPORT: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOTSUP",
+      "input": {
+        "kind": "error",
+        "message": "ENOTSUP: something, open '/x/y'",
+        "code": "ENOTSUP"
+      },
+      "output": {
+        "described": "This volume doesn't support this operation."
+      }
+    },
+    {
+      "name": "node error EAFNOSUPPORT",
+      "input": {
+        "kind": "error",
+        "message": "EAFNOSUPPORT: something, open '/x/y'",
+        "code": "EAFNOSUPPORT"
+      },
+      "output": {
+        "described": "EAFNOSUPPORT: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EADDRINUSE",
+      "input": {
+        "kind": "error",
+        "message": "EADDRINUSE: something, open '/x/y'",
+        "code": "EADDRINUSE"
+      },
+      "output": {
+        "described": "EADDRINUSE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EADDRNOTAVAIL",
+      "input": {
+        "kind": "error",
+        "message": "EADDRNOTAVAIL: something, open '/x/y'",
+        "code": "EADDRNOTAVAIL"
+      },
+      "output": {
+        "described": "EADDRNOTAVAIL: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENETDOWN",
+      "input": {
+        "kind": "error",
+        "message": "ENETDOWN: something, open '/x/y'",
+        "code": "ENETDOWN"
+      },
+      "output": {
+        "described": "ENETDOWN: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENETUNREACH",
+      "input": {
+        "kind": "error",
+        "message": "ENETUNREACH: something, open '/x/y'",
+        "code": "ENETUNREACH"
+      },
+      "output": {
+        "described": "ENETUNREACH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENETRESET",
+      "input": {
+        "kind": "error",
+        "message": "ENETRESET: something, open '/x/y'",
+        "code": "ENETRESET"
+      },
+      "output": {
+        "described": "ENETRESET: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ECONNABORTED",
+      "input": {
+        "kind": "error",
+        "message": "ECONNABORTED: something, open '/x/y'",
+        "code": "ECONNABORTED"
+      },
+      "output": {
+        "described": "ECONNABORTED: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ECONNRESET",
+      "input": {
+        "kind": "error",
+        "message": "ECONNRESET: something, open '/x/y'",
+        "code": "ECONNRESET"
+      },
+      "output": {
+        "described": "ECONNRESET: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOBUFS",
+      "input": {
+        "kind": "error",
+        "message": "ENOBUFS: something, open '/x/y'",
+        "code": "ENOBUFS"
+      },
+      "output": {
+        "described": "ENOBUFS: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EISCONN",
+      "input": {
+        "kind": "error",
+        "message": "EISCONN: something, open '/x/y'",
+        "code": "EISCONN"
+      },
+      "output": {
+        "described": "EISCONN: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOTCONN",
+      "input": {
+        "kind": "error",
+        "message": "ENOTCONN: something, open '/x/y'",
+        "code": "ENOTCONN"
+      },
+      "output": {
+        "described": "ENOTCONN: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ETIMEDOUT",
+      "input": {
+        "kind": "error",
+        "message": "ETIMEDOUT: something, open '/x/y'",
+        "code": "ETIMEDOUT"
+      },
+      "output": {
+        "described": "The volume took too long to respond."
+      }
+    },
+    {
+      "name": "node error ECONNREFUSED",
+      "input": {
+        "kind": "error",
+        "message": "ECONNREFUSED: something, open '/x/y'",
+        "code": "ECONNREFUSED"
+      },
+      "output": {
+        "described": "ECONNREFUSED: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ELOOP",
+      "input": {
+        "kind": "error",
+        "message": "ELOOP: something, open '/x/y'",
+        "code": "ELOOP"
+      },
+      "output": {
+        "described": "The item's location loops back on itself through symbolic links."
+      }
+    },
+    {
+      "name": "node error ENAMETOOLONG",
+      "input": {
+        "kind": "error",
+        "message": "ENAMETOOLONG: something, open '/x/y'",
+        "code": "ENAMETOOLONG"
+      },
+      "output": {
+        "described": "The name is too long."
+      }
+    },
+    {
+      "name": "node error EHOSTDOWN",
+      "input": {
+        "kind": "error",
+        "message": "EHOSTDOWN: something, open '/x/y'",
+        "code": "EHOSTDOWN"
+      },
+      "output": {
+        "described": "EHOSTDOWN: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EHOSTUNREACH",
+      "input": {
+        "kind": "error",
+        "message": "EHOSTUNREACH: something, open '/x/y'",
+        "code": "EHOSTUNREACH"
+      },
+      "output": {
+        "described": "EHOSTUNREACH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOTEMPTY",
+      "input": {
+        "kind": "error",
+        "message": "ENOTEMPTY: something, open '/x/y'",
+        "code": "ENOTEMPTY"
+      },
+      "output": {
+        "described": "The folder isn't empty."
+      }
+    },
+    {
+      "name": "node error EUSERS",
+      "input": {
+        "kind": "error",
+        "message": "EUSERS: something, open '/x/y'",
+        "code": "EUSERS"
+      },
+      "output": {
+        "described": "EUSERS: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EDQUOT",
+      "input": {
+        "kind": "error",
+        "message": "EDQUOT: something, open '/x/y'",
+        "code": "EDQUOT"
+      },
+      "output": {
+        "described": "The destination's storage quota is full."
+      }
+    },
+    {
+      "name": "node error ESTALE",
+      "input": {
+        "kind": "error",
+        "message": "ESTALE: something, open '/x/y'",
+        "code": "ESTALE"
+      },
+      "output": {
+        "described": "The network volume went away. Reconnect it and try again."
+      }
+    },
+    {
+      "name": "node error EREMOTE",
+      "input": {
+        "kind": "error",
+        "message": "EREMOTE: something, open '/x/y'",
+        "code": "EREMOTE"
+      },
+      "output": {
+        "described": "EREMOTE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOLCK",
+      "input": {
+        "kind": "error",
+        "message": "ENOLCK: something, open '/x/y'",
+        "code": "ENOLCK"
+      },
+      "output": {
+        "described": "ENOLCK: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOSYS",
+      "input": {
+        "kind": "error",
+        "message": "ENOSYS: something, open '/x/y'",
+        "code": "ENOSYS"
+      },
+      "output": {
+        "described": "ENOSYS: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EOVERFLOW",
+      "input": {
+        "kind": "error",
+        "message": "EOVERFLOW: something, open '/x/y'",
+        "code": "EOVERFLOW"
+      },
+      "output": {
+        "described": "EOVERFLOW: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ECANCELED",
+      "input": {
+        "kind": "error",
+        "message": "ECANCELED: something, open '/x/y'",
+        "code": "ECANCELED"
+      },
+      "output": {
+        "described": "ECANCELED: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EIDRM",
+      "input": {
+        "kind": "error",
+        "message": "EIDRM: something, open '/x/y'",
+        "code": "EIDRM"
+      },
+      "output": {
+        "described": "EIDRM: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOMSG",
+      "input": {
+        "kind": "error",
+        "message": "ENOMSG: something, open '/x/y'",
+        "code": "ENOMSG"
+      },
+      "output": {
+        "described": "ENOMSG: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EILSEQ",
+      "input": {
+        "kind": "error",
+        "message": "EILSEQ: something, open '/x/y'",
+        "code": "EILSEQ"
+      },
+      "output": {
+        "described": "EILSEQ: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EBADMSG",
+      "input": {
+        "kind": "error",
+        "message": "EBADMSG: something, open '/x/y'",
+        "code": "EBADMSG"
+      },
+      "output": {
+        "described": "EBADMSG: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOLINK",
+      "input": {
+        "kind": "error",
+        "message": "ENOLINK: something, open '/x/y'",
+        "code": "ENOLINK"
+      },
+      "output": {
+        "described": "ENOLINK: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPROTO",
+      "input": {
+        "kind": "error",
+        "message": "EPROTO: something, open '/x/y'",
+        "code": "EPROTO"
+      },
+      "output": {
+        "described": "EPROTO: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EOPNOTSUPP",
+      "input": {
+        "kind": "error",
+        "message": "EOPNOTSUPP: something, open '/x/y'",
+        "code": "EOPNOTSUPP"
+      },
+      "output": {
+        "described": "This volume doesn't support this operation."
+      }
+    },
+    {
+      "name": "node error ENOTBLK",
+      "input": {
+        "kind": "error",
+        "message": "ENOTBLK: something, open '/x/y'",
+        "code": "ENOTBLK"
+      },
+      "output": {
+        "described": "ENOTBLK: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ESOCKTNOSUPPORT",
+      "input": {
+        "kind": "error",
+        "message": "ESOCKTNOSUPPORT: something, open '/x/y'",
+        "code": "ESOCKTNOSUPPORT"
+      },
+      "output": {
+        "described": "ESOCKTNOSUPPORT: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPFNOSUPPORT",
+      "input": {
+        "kind": "error",
+        "message": "EPFNOSUPPORT: something, open '/x/y'",
+        "code": "EPFNOSUPPORT"
+      },
+      "output": {
+        "described": "EPFNOSUPPORT: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ESHUTDOWN",
+      "input": {
+        "kind": "error",
+        "message": "ESHUTDOWN: something, open '/x/y'",
+        "code": "ESHUTDOWN"
+      },
+      "output": {
+        "described": "ESHUTDOWN: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ETOOMANYREFS",
+      "input": {
+        "kind": "error",
+        "message": "ETOOMANYREFS: something, open '/x/y'",
+        "code": "ETOOMANYREFS"
+      },
+      "output": {
+        "described": "ETOOMANYREFS: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPROCLIM",
+      "input": {
+        "kind": "error",
+        "message": "EPROCLIM: something, open '/x/y'",
+        "code": "EPROCLIM"
+      },
+      "output": {
+        "described": "EPROCLIM: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EBADRPC",
+      "input": {
+        "kind": "error",
+        "message": "EBADRPC: something, open '/x/y'",
+        "code": "EBADRPC"
+      },
+      "output": {
+        "described": "EBADRPC: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ERPCMISMATCH",
+      "input": {
+        "kind": "error",
+        "message": "ERPCMISMATCH: something, open '/x/y'",
+        "code": "ERPCMISMATCH"
+      },
+      "output": {
+        "described": "ERPCMISMATCH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPROGUNAVAIL",
+      "input": {
+        "kind": "error",
+        "message": "EPROGUNAVAIL: something, open '/x/y'",
+        "code": "EPROGUNAVAIL"
+      },
+      "output": {
+        "described": "EPROGUNAVAIL: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPROGMISMATCH",
+      "input": {
+        "kind": "error",
+        "message": "EPROGMISMATCH: something, open '/x/y'",
+        "code": "EPROGMISMATCH"
+      },
+      "output": {
+        "described": "EPROGMISMATCH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPROCUNAVAIL",
+      "input": {
+        "kind": "error",
+        "message": "EPROCUNAVAIL: something, open '/x/y'",
+        "code": "EPROCUNAVAIL"
+      },
+      "output": {
+        "described": "EPROCUNAVAIL: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EFTYPE",
+      "input": {
+        "kind": "error",
+        "message": "EFTYPE: something, open '/x/y'",
+        "code": "EFTYPE"
+      },
+      "output": {
+        "described": "EFTYPE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EAUTH",
+      "input": {
+        "kind": "error",
+        "message": "EAUTH: something, open '/x/y'",
+        "code": "EAUTH"
+      },
+      "output": {
+        "described": "EAUTH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENEEDAUTH",
+      "input": {
+        "kind": "error",
+        "message": "ENEEDAUTH: something, open '/x/y'",
+        "code": "ENEEDAUTH"
+      },
+      "output": {
+        "described": "ENEEDAUTH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EPWROFF",
+      "input": {
+        "kind": "error",
+        "message": "EPWROFF: something, open '/x/y'",
+        "code": "EPWROFF"
+      },
+      "output": {
+        "described": "EPWROFF: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EDEVERR",
+      "input": {
+        "kind": "error",
+        "message": "EDEVERR: something, open '/x/y'",
+        "code": "EDEVERR"
+      },
+      "output": {
+        "described": "EDEVERR: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EBADEXEC",
+      "input": {
+        "kind": "error",
+        "message": "EBADEXEC: something, open '/x/y'",
+        "code": "EBADEXEC"
+      },
+      "output": {
+        "described": "EBADEXEC: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EBADARCH",
+      "input": {
+        "kind": "error",
+        "message": "EBADARCH: something, open '/x/y'",
+        "code": "EBADARCH"
+      },
+      "output": {
+        "described": "EBADARCH: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ESHLIBVERS",
+      "input": {
+        "kind": "error",
+        "message": "ESHLIBVERS: something, open '/x/y'",
+        "code": "ESHLIBVERS"
+      },
+      "output": {
+        "described": "ESHLIBVERS: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EBADMACHO",
+      "input": {
+        "kind": "error",
+        "message": "EBADMACHO: something, open '/x/y'",
+        "code": "EBADMACHO"
+      },
+      "output": {
+        "described": "EBADMACHO: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOATTR",
+      "input": {
+        "kind": "error",
+        "message": "ENOATTR: something, open '/x/y'",
+        "code": "ENOATTR"
+      },
+      "output": {
+        "described": "ENOATTR: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EMULTIHOP",
+      "input": {
+        "kind": "error",
+        "message": "EMULTIHOP: something, open '/x/y'",
+        "code": "EMULTIHOP"
+      },
+      "output": {
+        "described": "EMULTIHOP: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENODATA",
+      "input": {
+        "kind": "error",
+        "message": "ENODATA: something, open '/x/y'",
+        "code": "ENODATA"
+      },
+      "output": {
+        "described": "ENODATA: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOSR",
+      "input": {
+        "kind": "error",
+        "message": "ENOSR: something, open '/x/y'",
+        "code": "ENOSR"
+      },
+      "output": {
+        "described": "ENOSR: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOSTR",
+      "input": {
+        "kind": "error",
+        "message": "ENOSTR: something, open '/x/y'",
+        "code": "ENOSTR"
+      },
+      "output": {
+        "described": "ENOSTR: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ETIME",
+      "input": {
+        "kind": "error",
+        "message": "ETIME: something, open '/x/y'",
+        "code": "ETIME"
+      },
+      "output": {
+        "described": "ETIME: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOPOLICY",
+      "input": {
+        "kind": "error",
+        "message": "ENOPOLICY: something, open '/x/y'",
+        "code": "ENOPOLICY"
+      },
+      "output": {
+        "described": "ENOPOLICY: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error ENOTRECOVERABLE",
+      "input": {
+        "kind": "error",
+        "message": "ENOTRECOVERABLE: something, open '/x/y'",
+        "code": "ENOTRECOVERABLE"
+      },
+      "output": {
+        "described": "ENOTRECOVERABLE: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EOWNERDEAD",
+      "input": {
+        "kind": "error",
+        "message": "EOWNERDEAD: something, open '/x/y'",
+        "code": "EOWNERDEAD"
+      },
+      "output": {
+        "described": "EOWNERDEAD: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error EQFULL",
+      "input": {
+        "kind": "error",
+        "message": "EQFULL: something, open '/x/y'",
+        "code": "EQFULL"
+      },
+      "output": {
+        "described": "EQFULL: something, open '/x/y'"
+      }
+    },
+    {
+      "name": "node error code \"ERR_FS_EISDIR\"",
+      "input": {
+        "kind": "error",
+        "message": "failed with ERR_FS_EISDIR",
+        "code": "ERR_FS_EISDIR"
+      },
+      "output": {
+        "described": "A folder is in the way where a file was expected."
+      }
+    },
+    {
+      "name": "node error code \"ENOTRASH\"",
+      "input": {
+        "kind": "error",
+        "message": "failed with ENOTRASH",
+        "code": "ENOTRASH"
+      },
+      "output": {
+        "described": "failed with ENOTRASH"
+      }
+    },
+    {
+      "name": "node error code \"ABORT_ERR\"",
+      "input": {
+        "kind": "error",
+        "message": "failed with ABORT_ERR",
+        "code": "ABORT_ERR"
+      },
+      "output": {
+        "described": "failed with ABORT_ERR"
+      }
+    },
+    {
+      "name": "node error code \"EWHATEVER\"",
+      "input": {
+        "kind": "error",
+        "message": "failed with EWHATEVER",
+        "code": "EWHATEVER"
+      },
+      "output": {
+        "described": "failed with EWHATEVER"
+      }
+    },
+    {
+      "name": "node error code \"UNKNOWN\"",
+      "input": {
+        "kind": "error",
+        "message": "failed with UNKNOWN",
+        "code": "UNKNOWN"
+      },
+      "output": {
+        "described": "failed with UNKNOWN"
+      }
+    },
+    {
+      "name": "node error code \"enoent\"",
+      "input": {
+        "kind": "error",
+        "message": "failed with enoent",
+        "code": "enoent"
+      },
+      "output": {
+        "described": "failed with enoent"
+      }
+    },
+    {
+      "name": "node error code \"\"",
+      "input": {
+        "kind": "error",
+        "message": "failed with nothing",
+        "code": ""
+      },
+      "output": {
+        "described": "failed with nothing"
+      }
+    },
+    {
+      "name": "node rm of a folder",
+      "input": {
+        "kind": "error",
+        "message": "Path is a directory: rm returned EISDIR (is a directory) /var/x",
+        "code": "ERR_FS_EISDIR"
+      },
+      "output": {
+        "described": "A folder is in the way where a file was expected."
+      }
+    },
+    {
+      "name": "codeless error",
+      "input": {
+        "kind": "error",
+        "message": "Something else",
+        "code": null
+      },
+      "output": {
+        "described": "Something else"
+      }
+    },
+    {
+      "name": "codeless empty message",
+      "input": {
+        "kind": "error",
+        "message": "",
+        "code": null
+      },
+      "output": {
+        "described": ""
+      }
+    },
+    {
+      "name": "numeric code",
+      "input": {
+        "kind": "error",
+        "message": "The operation was aborted",
+        "code": 20
+      },
+      "output": {
+        "described": "The operation was aborted"
+      }
+    },
+    {
+      "name": "numeric errno-like code",
+      "input": {
+        "kind": "error",
+        "message": "EIO: i/o error",
+        "code": -5
+      },
+      "output": {
+        "described": "EIO: i/o error"
+      }
+    },
+    {
+      "name": "random 0",
+      "input": {
+        "kind": "error",
+        "message": "random 838299 '/p/0'",
+        "code": "EINPROGRESS"
+      },
+      "output": {
+        "described": "random 838299 '/p/0'"
+      }
+    },
+    {
+      "name": "random 1",
+      "input": {
+        "kind": "error",
+        "message": "random 312156 '/p/1'",
+        "code": "ENODATA"
+      },
+      "output": {
+        "described": "random 312156 '/p/1'"
+      }
+    },
+    {
+      "name": "random 2",
+      "input": {
+        "kind": "error",
+        "message": "random 345213 '/p/2'",
+        "code": "EINTR"
+      },
+      "output": {
+        "described": "The operation was interrupted. Try again."
+      }
+    },
+    {
+      "name": "random 3",
+      "input": {
+        "kind": "error",
+        "message": "random 212118 '/p/3'",
+        "code": "EACCES"
+      },
+      "output": {
+        "described": "You don't have permission to access this item."
+      }
+    },
+    {
+      "name": "random 4",
+      "input": {
+        "kind": "error",
+        "message": "random 401150 '/p/4'",
+        "code": "ENOPROTOOPT"
+      },
+      "output": {
+        "described": "random 401150 '/p/4'"
+      }
+    },
+    {
+      "name": "random 5",
+      "input": {
+        "kind": "error",
+        "message": "random 880582 '/p/5'",
+        "code": "EPERM"
+      },
+      "output": {
+        "described": "You don't have permission to access this item."
+      }
+    },
+    {
+      "name": "random 6",
+      "input": {
+        "kind": "error",
+        "message": "random 612703 '/p/6'",
+        "code": "ECONNABORTED"
+      },
+      "output": {
+        "described": "random 612703 '/p/6'"
+      }
+    },
+    {
+      "name": "random 7",
+      "input": {
+        "kind": "error",
+        "message": "random 500445 '/p/7'",
+        "code": "EAFNOSUPPORT"
+      },
+      "output": {
+        "described": "random 500445 '/p/7'"
+      }
+    },
+    {
+      "name": "random 8",
+      "input": {
+        "kind": "error",
+        "message": "random 570974 '/p/8'",
+        "code": null
+      },
+      "output": {
+        "described": "random 570974 '/p/8'"
+      }
+    },
+    {
+      "name": "random 9",
+      "input": {
+        "kind": "error",
+        "message": "random 436656 '/p/9'",
+        "code": null
+      },
+      "output": {
+        "described": "random 436656 '/p/9'"
+      }
+    },
+    {
+      "name": "random 10",
+      "input": {
+        "kind": "error",
+        "message": "random 861115 '/p/10'",
+        "code": null
+      },
+      "output": {
+        "described": "random 861115 '/p/10'"
+      }
+    },
+    {
+      "name": "random 11",
+      "input": {
+        "kind": "error",
+        "message": "random 952708 '/p/11'",
+        "code": "ENOLINK"
+      },
+      "output": {
+        "described": "random 952708 '/p/11'"
+      }
+    },
+    {
+      "name": "random 12",
+      "input": {
+        "kind": "error",
+        "message": "random 817615 '/p/12'",
+        "code": null
+      },
+      "output": {
+        "described": "random 817615 '/p/12'"
+      }
+    },
+    {
+      "name": "random 13",
+      "input": {
+        "kind": "error",
+        "message": "random 697741 '/p/13'",
+        "code": "ENOTTY"
+      },
+      "output": {
+        "described": "random 697741 '/p/13'"
+      }
+    },
+    {
+      "name": "random 14",
+      "input": {
+        "kind": "error",
+        "message": "random 552700 '/p/14'",
+        "code": "EADDRNOTAVAIL"
+      },
+      "output": {
+        "described": "random 552700 '/p/14'"
+      }
+    },
+    {
+      "name": "random 15",
+      "input": {
+        "kind": "error",
+        "message": "random 859273 '/p/15'",
+        "code": "EBUSY"
+      },
+      "output": {
+        "described": "The item is in use."
+      }
+    },
+    {
+      "name": "random 16",
+      "input": {
+        "kind": "error",
+        "message": "random 151968 '/p/16'",
+        "code": "ENAMETOOLONG"
+      },
+      "output": {
+        "described": "The name is too long."
+      }
+    },
+    {
+      "name": "random 17",
+      "input": {
+        "kind": "error",
+        "message": "random 870698 '/p/17'",
+        "code": "EHOSTUNREACH"
+      },
+      "output": {
+        "described": "random 870698 '/p/17'"
+      }
+    },
+    {
+      "name": "random 18",
+      "input": {
+        "kind": "error",
+        "message": "random 596653 '/p/18'",
+        "code": "EDESTADDRREQ"
+      },
+      "output": {
+        "described": "random 596653 '/p/18'"
+      }
+    },
+    {
+      "name": "random 19",
+      "input": {
+        "kind": "error",
+        "message": "random 802076 '/p/19'",
+        "code": null
+      },
+      "output": {
+        "described": "random 802076 '/p/19'"
+      }
+    },
+    {
+      "name": "thrown string \"plain\"",
+      "input": {
+        "kind": "string",
+        "value": "plain"
+      },
+      "output": {
+        "described": "plain"
+      }
+    },
+    {
+      "name": "thrown string \"\"",
+      "input": {
+        "kind": "string",
+        "value": ""
+      },
+      "output": {
+        "described": ""
+      }
+    },
+    {
+      "name": "thrown string \"ENOENT\"",
+      "input": {
+        "kind": "string",
+        "value": "ENOENT"
+      },
+      "output": {
+        "described": "ENOENT"
+      }
+    }
+  ]
+}
