@@ -1,0 +1,73 @@
+{
+  "name": "159-quick-look-space",
+  "description": "Space on a selected file opens Quick Look; Space again closes it",
+  "features": [
+    "F-145",
+    "F-686"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "click",
+      "element": "list row",
+      "text": "Avatar.jsx"
+    },
+    {
+      "step": "key",
+      "key": "Space"
+    },
+    {
+      "step": "wait",
+      "ms": 800
+    },
+    {
+      "step": "key",
+      "key": "Space"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "expect",
+      "element": "title",
+      "text": "components"
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    }
+  ]
+}

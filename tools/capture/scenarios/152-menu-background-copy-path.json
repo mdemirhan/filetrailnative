@@ -1,0 +1,66 @@
+{
+  "name": "152-menu-background-copy-path",
+  "description": "Copy Path chosen from the background's context menu names the folder on screen, in a folder short enough to leave room to right-click",
+  "features": [
+    "F-696",
+    "F-814",
+    "F-817"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "docs"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "contextMenu",
+      "element": "content",
+      "choose": "Copy Path"
+    },
+    {
+      "step": "expect",
+      "element": "toast",
+      "count": 1
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

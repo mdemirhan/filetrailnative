@@ -43,14 +43,16 @@ enum AppMenuStyle {
 /// rows 24 tall with a 16 pt check column, labels 30 pt in, shortcuts grey 14 pt after the label; separators 1 pt with
 /// 5/10 margins. The highlighted row is filled with the accent's solid button color.
 final class AppMenuView: NSView {
-    static let padding = 5.0
-    static let rowHeight = 24.0
-    static let rowPaddingLeading = 8.0
-    static let rowPaddingTrailing = 10.0
-    static let checkColumn = 16.0
-    static let rowGap = 6.0
-    static let shortcutGap = 14.0
-    static let separatorMargin = (vertical: 5.0, horizontal: 10.0)
+    static var padding: Double { DesignTokens.menu.padding }
+    static var rowHeight: Double { DesignTokens.menu.rowHeight }
+    static var rowPaddingLeading: Double { DesignTokens.menu.rowPaddingLeading }
+    static var rowPaddingTrailing: Double { DesignTokens.menu.rowPaddingTrailing }
+    static var checkColumn: Double { DesignTokens.menu.checkColumn }
+    static var rowGap: Double { DesignTokens.menu.rowGap }
+    static var shortcutGap: Double { DesignTokens.menu.shortcutGap }
+    static var separatorMargin: (vertical: Double, horizontal: Double) {
+        (DesignTokens.menu.separatorMarginVertical, DesignTokens.menu.separatorMarginHorizontal)
+    }
 
     let items: [AppMenuItem]
     let style: AppMenuStyle
@@ -64,7 +66,8 @@ final class AppMenuView: NSView {
     var onChoose: (Int) -> Void = { _ in }
 
     init(
-        items: [AppMenuItem], style: AppMenuStyle, identifier: String, rowIdentifier: String, minWidth: Double = 220,
+        items: [AppMenuItem], style: AppMenuStyle, identifier: String, rowIdentifier: String,
+        minWidth: Double = DesignTokens.menu.minWidth,
         maxWidth: Double? = nil
     ) {
         self.items = items
@@ -251,7 +254,7 @@ final class AppMenuRow: NSView, TextStyleSource {
         let titleWidth = Self.textWidth(label)
         if item.detail != nil {
             // `.history-menu-item`: padding 0 10, a gap of 10, the name at most 220 wide.
-            return 10 + min(220, titleWidth) + 10 + Self.textWidth(detail) + 10
+            return 10 + min(DesignTokens.menu.historyNameMaxWidth, titleWidth) + 10 + Self.textWidth(detail) + 10
         }
         var width =
             AppMenuView.rowPaddingLeading + AppMenuView.checkColumn + AppMenuView.rowGap + titleWidth
@@ -273,7 +276,7 @@ final class AppMenuRow: NSView, TextStyleSource {
             width: box, height: box)
         if item.detail != nil {
             // `.history-menu-item`: the name (at most 220) 10 in, the folder 10 after it, 10 from the end.
-            let nameWidth = min(220, Self.textWidth(label))
+            let nameWidth = min(DesignTokens.menu.historyNameMaxWidth, Self.textWidth(label))
             let detailX = 10 + nameWidth + 10
             place(label, x: 10, width: nameWidth)
             place(detail, x: detailX, width: bounds.width - detailX - 10)

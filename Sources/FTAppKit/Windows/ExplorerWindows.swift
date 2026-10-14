@@ -80,7 +80,9 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// Mounts a disk image opened from another app (P2's disk image opener).
     var mountDiskImage: (String) async -> DiskImageOpenResponse = { _ in DiskImageOpenResponse(status: .failed) }
     /// Shows a notice in a window (P5-09's notifications); by default the app beeps.
-    var showNotice: (WindowNotice, NSWindow?) -> Void = { _, _ in NSSound.beep() }
+    var showNotice: (WindowNotice, NSWindow?) -> Void = { notice, window in
+        if !NotificationOverlay.push(.info, title: notice.title, in: window) { NSSound.beep() }
+    }
     var log: (String) -> Void = { _ in }
 
     /// Where a tab with nowhere else to go opens.

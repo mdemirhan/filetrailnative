@@ -212,7 +212,10 @@ extension ExplorerWindowGUITests {
             #expect(hidden.isOn && hidden.icon.name == .hiddenShown)
             #expect(hidden.tooltip.hasPrefix("Hide Hidden Files"))
 
-            // A content-only command is off with nothing selected.
+            // A content-only command is off with nothing selected. (The window opens with the sidebar holding the
+            // keyboard, where Open acts on the selected folder, so the file list takes it first.)
+            tab.content.focusList()
+            tab.workspace.toolbar.refreshStates()
             #expect(button(tab, .openSelection)?.isEnabled == false)
             // Enclosing Folder runs its command.
             _ = button(tab, .up)?.accessibilityPerformPress()

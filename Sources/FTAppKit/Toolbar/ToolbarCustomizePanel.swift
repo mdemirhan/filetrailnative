@@ -7,17 +7,24 @@ import FTFoundation
 /// click to add at its far right, Restore Defaults and Done. While letting go would take a dragged item off, it says
 /// so with a red dashed outline.
 final class ToolbarCustomizePanel: NSView {
-    static let maxWidth = 760.0
-    static let sideMargin = 16.0
-    static let gapBelowToolbar = 8.0
-    static let padding = NSEdgeInsets(top: 16, left: 18, bottom: 14, right: 18)
-    static let columnMin = 76.0
-    static let rowGap = 8.0
-    static let columnGap = 4.0
-    static let chip = 32.0
-    static let itemPadding = (vertical: 4.0, horizontal: 2.0)
-    static let itemGap = 4.0
-    static let labelLineHeight = 1.2
+    private static var layout: CustomizePanelLayout { DesignTokens.customizePanel }
+    static var maxWidth: Double { layout.maxWidth }
+    static var sideMargin: Double { layout.sideMargin }
+    static var gapBelowToolbar: Double { layout.gapBelowToolbar }
+    static var padding: NSEdgeInsets {
+        NSEdgeInsets(
+            top: layout.paddingTop, left: layout.paddingLeading, bottom: layout.paddingBottom,
+            right: layout.paddingTrailing)
+    }
+    static var columnMin: Double { layout.columnMin }
+    static var rowGap: Double { layout.rowGap }
+    static var columnGap: Double { layout.columnGap }
+    static var chip: Double { layout.chip }
+    static var itemPadding: (vertical: Double, horizontal: Double) {
+        (layout.itemPaddingVertical, layout.itemPaddingHorizontal)
+    }
+    static var itemGap: Double { layout.itemGap }
+    static var labelLineHeight: Double { layout.labelLineHeight }
 
     var onAdd: (ToolbarItemID) -> Void = { _ in }
     var onPress: (ToolbarItemID, NSPoint) -> Void = { _, _ in }
@@ -329,9 +336,9 @@ final class ToolbarPaletteItemView: NSView, TextStyleSource {
 /// `PushButton` (`.push-button`): 24 tall, at least 76 wide, 12 pt in, radius 6, 13 pt text; the default one filled
 /// with the accent.
 final class PanelPushButton: NSView, TextStyleSource {
-    static let height = 24.0
-    static let minWidth = 76.0
-    static let paddingInline = 12.0
+    static var height: Double { DesignTokens.customizePanel.buttonHeight }
+    static var minWidth: Double { DesignTokens.customizePanel.buttonMinWidth }
+    static var paddingInline: Double { DesignTokens.customizePanel.buttonPaddingInline }
     let label = NSTextField(labelWithString: "")
     let isDefault: Bool
     var onClick: () -> Void = {}

@@ -1,0 +1,64 @@
+{
+  "name": "153-menu-background-sort-by-submenu",
+  "description": "Sort By on the background's context menu opens its submenu",
+  "features": [
+    "F-808",
+    "F-814"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "docs"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "contextMenu",
+      "element": "content",
+      "choose": "Sort By"
+    },
+    {
+      "step": "expectSheet",
+      "name": "context submenu"
+    },
+    {
+      "step": "key",
+      "key": "Escape"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    }
+  ]
+}

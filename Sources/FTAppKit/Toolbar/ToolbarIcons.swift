@@ -149,7 +149,11 @@ enum ToolbarGlyph {
 
     /// Strokes `name` into `rect` in the current context, `strokeWidth` in box units, as `.toolbar-icon` does.
     static func draw(_ name: ToolbarIconName, in rect: NSRect, strokeWidth: Double, color: NSColor, flipped: Bool) {
-        let drawing = drawing(name)
+        draw(drawing(name), in: rect, strokeWidth: strokeWidth, color: color, flipped: flipped)
+    }
+
+    /// Strokes any drawing the same way (the right-click menu's icons are drawn by it too).
+    static func draw(_ drawing: Drawing, in rect: NSRect, strokeWidth: Double, color: NSColor, flipped: Bool) {
         let scale = rect.width / drawing.box
         var transform = AffineTransform(translationByX: rect.minX, byY: flipped ? rect.minY : rect.maxY)
         transform.scale(x: scale, y: flipped ? scale : -scale)

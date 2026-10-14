@@ -1,0 +1,62 @@
+{
+  "name": "157-toasts-off",
+  "description": "No notification comes when Show notifications is off",
+  "features": [
+    "F-817"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "contextMenu",
+      "element": "list row",
+      "text": "Avatar.jsx",
+      "choose": "Copy Path"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "expect",
+      "element": "toast",
+      "count": 0
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    }
+  ]
+}

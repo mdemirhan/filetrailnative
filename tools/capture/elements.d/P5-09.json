@@ -1,0 +1,61 @@
+{
+  "comment": "P5-09: what the notifications, the progress card and the right-clicked sidebar row draw. The menus themselves are native NSMenus and are checked by contextMenu steps with choose. Merged into elements.json by run.sh.",
+  "elements": {
+    "toast icon": {
+      "electron": { "selector": ".toast-card .toast-card-icon-wrap" },
+      "swift": "toast.icon"
+    },
+    "toast title": {
+      "electron": { "selector": ".toast-card .toast-card-title" },
+      "swift": "toast.title",
+      "text": true
+    },
+    "toast detail": {
+      "electron": { "selector": ".toast-card .toast-card-message" },
+      "swift": "toast.detail",
+      "text": true
+    },
+    "progress card": {
+      "electron": { "selector": ".copy-paste-progress-card" },
+      "swift": "progressCard"
+    },
+    "progress card title": {
+      "electron": { "selector": ".copy-paste-progress-card .copy-paste-progress-card-title" },
+      "swift": "progressCard.title",
+      "text": true
+    },
+    "progress card percent": {
+      "electron": { "selector": ".copy-paste-progress-card .copy-paste-progress-card-percent" },
+      "swift": "progressCard.percent",
+      "text": true
+    },
+    "progress card bar": {
+      "electron": { "selector": ".copy-paste-progress-card .copy-paste-progress-card-track" },
+      "swift": "progressCard.track"
+    },
+    "progress card detail label": {
+      "electron": { "selector": ".copy-paste-progress-card .copy-paste-progress-card-detail-label" },
+      "swift": "progressCard.detailLabel",
+      "text": true
+    },
+    "progress card detail value": {
+      "electron": { "selector": ".copy-paste-progress-card .copy-paste-progress-card-detail-value" },
+      "swift": "progressCard.detailValue",
+      "text": true
+    },
+    "progress card meta": {
+      "electron": { "selector": ".copy-paste-progress-card .copy-paste-progress-card-meta" },
+      "swift": "progressCard.meta",
+      "text": true
+    },
+    "progress card stop": {
+      "electron": { "selector": ".copy-paste-progress-card .push-button" },
+      "swift": "progressCard.stop",
+      "text": true
+    },
+    "menu target row": {
+      "electron": { "selector": ".tree-row.menu-target" },
+      "swift": "sidebar.row.menuTarget"
+    }
+  }
+}
