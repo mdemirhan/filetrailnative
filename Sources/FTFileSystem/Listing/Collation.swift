@@ -1,4 +1,4 @@
-// Port of the string comparisons of packages/core/src/fs/explorerService.ts:
+// Port of the string comparisons of packages/core/src/fs/explorerService.ts (names are sorted by `NameKeys`):
 //   compareEntriesByName: a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
 //   the Kind column: a.localeCompare(b)
 import Foundation
@@ -23,17 +23,6 @@ struct CollationKey: Sendable {
 }
 
 enum Collation {
-    /// `localeCompare(b, undefined, { numeric: true, sensitivity: "base" })`: digits compare as numbers,
-    /// and case and accents don't count. Negative, zero or positive.
-    static func compareNumericBase(_ left: CollationKey, _ right: CollationKey) -> Int {
-        if let a = left.ascii, let b = right.ascii {
-            return a.withUnsafeBufferPointer { a in
-                b.withUnsafeBufferPointer { b in compareASCIINumeric(a, b) }
-            }
-        }
-        return foldedCompare(left.text, right.text, numeric: true, strength: .base)
-    }
-
     /// `localeCompare(b)`: case matters last (a lowercase letter comes before its capital).
     static func compareVariant(_ left: CollationKey, _ right: CollationKey) -> Int {
         if let a = left.ascii, let b = right.ascii {
@@ -44,11 +33,41 @@ enum Collation {
         return foldedCompare(left.text, right.text, numeric: false, strength: .variant)
     }
 
+    /// The text-only form of `compareNumericBase`, for names of which one is not ASCII.
+    static func compareNumericBase(_ left: String, _ right: String) -> Int {
+        foldedCompare(foldingKnown(left), foldingKnown(right), numeric: true, strength: .base)
+    }
+
+    /// The text with the characters `CollationTable` knows replaced by the ASCII ones they compare as, so
+    /// that what Foundation compares differs from the reference's collation only in the characters it
+    /// doesn't know (other scripts, emoji).
+    static func foldingKnown(_ text: String) -> String {
+        guard text.unicodeScalars.contains(where: { $0.value >= 0x80 }) else { return text }
+        var folded = String.UnicodeScalarView()
+        for scalar in text.unicodeScalars {
+            if scalar.value < 0x80 {
+                folded.append(scalar)
+            } else if CollationTable.ignorable.contains(scalar.value) {
+                continue
+            } else if let replacement = CollationTable.replacements[scalar.value] {
+                replacement.withUTF8Buffer { letters in
+                    for letter in letters { folded.append(Unicode.Scalar(letter)) }
+                }
+            } else {
+                folded.append(scalar)
+            }
+        }
+        return String(folded)
+    }
+
     // MARK: ASCII
 
+    @inline(__always)
+    static func weight(of byte: UInt8) -> UInt8 { weights[Int(byte)] }
+
     /// The primary weight of each ASCII character in the root collation (ICU), 0 for those it ignores
-    /// (control characters). Letters share a weight with their capitals. Recorded from the reference by
-    /// tools/parity/golden/listing-collation.ts.
+    /// (control characters). Letters share a weight with their capitals. Recorded from the reference's
+    /// localeCompare; the listing-sort golden checks it.
     private static let weights: [UInt8] = {
         var table = [UInt8](repeating: 0, count: 128)
         let order: [UInt8] = Array("\t\n\u{0B}\u{0C}\r _-,;:!?.'\"()[]{}@*/\\&#%`^+<=>|~$".utf8)
@@ -68,49 +87,6 @@ enum Collation {
     }()
 
     private static func isDigit(_ byte: UInt8) -> Bool { byte >= 48 && byte <= 57 }
-
-    private static func compareASCIINumeric(_ a: UnsafeBufferPointer<UInt8>, _ b: UnsafeBufferPointer<UInt8>) -> Int {
-        var i = 0
-        var j = 0
-        while true {
-            while i < a.count && weights[Int(a[i])] == 0 { i += 1 }
-            while j < b.count && weights[Int(b[j])] == 0 { j += 1 }
-            if i == a.count || j == b.count {
-                return (i == a.count ? 0 : 1) - (j == b.count ? 0 : 1)
-            }
-            let x = a[i]
-            let y = b[j]
-            if isDigit(x) && isDigit(y) {
-                // Numbers compare by value: without leading zeros, the longer is the greater.
-                var startA = i
-                while startA < a.count && a[startA] == 48 { startA += 1 }
-                var startB = j
-                while startB < b.count && b[startB] == 48 { startB += 1 }
-                var endA = startA
-                while endA < a.count && isDigit(a[endA]) { endA += 1 }
-                var endB = startB
-                while endB < b.count && isDigit(b[endB]) { endB += 1 }
-                let lengthA = endA - startA
-                let lengthB = endB - startB
-                if lengthA != lengthB { return lengthA < lengthB ? -1 : 1 }
-                var offset = 0
-                while offset < lengthA {
-                    let p = a[startA + offset]
-                    let q = b[startB + offset]
-                    if p != q { return p < q ? -1 : 1 }
-                    offset += 1
-                }
-                i = endA
-                j = endB
-                continue
-            }
-            let p = weights[Int(x)]
-            let q = weights[Int(y)]
-            if p != q { return p < q ? -1 : 1 }
-            i += 1
-            j += 1
-        }
-    }
 
     private static func compareASCIIVariant(_ a: UnsafeBufferPointer<UInt8>, _ b: UnsafeBufferPointer<UInt8>) -> Int {
         var i = 0

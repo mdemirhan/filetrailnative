@@ -44,7 +44,7 @@ static int grow_names(FTDirListing *listing, size_t *capacity, size_t needed) {
     return 0;
 }
 
-int ft_read_directory(const char *path, FTDirListing *listing) {
+int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *listing) {
     memset(listing, 0, sizeof(*listing));
     int fd = open(path, O_RDONLY | O_DIRECTORY);
     if (fd < 0) {
@@ -58,9 +58,19 @@ int ft_read_directory(const char *path, FTDirListing *listing) {
     struct attrlist request;
     memset(&request, 0, sizeof(request));
     request.bitmapcount = ATTR_BIT_MAP_COUNT;
-    request.commonattr = ATTR_CMN_RETURNED_ATTRS | ATTR_CMN_NAME | ATTR_CMN_ERROR | ATTR_CMN_OBJTYPE |
-                         ATTR_CMN_CRTIME | ATTR_CMN_MODTIME | ATTR_CMN_ACCESSMASK;
-    request.fileattr = ATTR_FILE_DATALENGTH;
+    request.commonattr = ATTR_CMN_RETURNED_ATTRS | ATTR_CMN_NAME | ATTR_CMN_ERROR | ATTR_CMN_OBJTYPE;
+    if (attributes & FT_READ_CREATED) {
+        request.commonattr |= ATTR_CMN_CRTIME;
+    }
+    if (attributes & FT_READ_MODIFIED) {
+        request.commonattr |= ATTR_CMN_MODTIME;
+    }
+    if (attributes & FT_READ_MODE) {
+        request.commonattr |= ATTR_CMN_ACCESSMASK;
+    }
+    if (attributes & FT_READ_SIZE) {
+        request.fileattr = ATTR_FILE_DATALENGTH;
+    }
 
     size_t entry_capacity = 0;
     size_t name_capacity = 0;

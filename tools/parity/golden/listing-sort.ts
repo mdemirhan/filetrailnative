@@ -114,6 +114,32 @@ const NAMES = [
   "docs", "Docs", "node_modules", "build", "dist", "tmp", "temp", "TEMP", "Untitled", "Untitled 2", "Untitled 10", "untitled folder",
 ];
 
+// Names with accents, decomposed accents, ligatures, curly quotes and other scripts, for the comparison of names
+// that are not plain ASCII.
+const WORDS = [
+  "resume", "cafe", "uber", "strasse", "naive", "angstrom", "oe", "ae", "zoe", "file", "report", "a", "b", "e", "n", "o", "u",
+  "s", "z", "ss", "x1", "10", "2", "d", "l", "i", "t", "Zoe", "Resume", "Cafe",
+];
+const MARKS = [
+  "é", "è", "ê", "ë", "É", "ñ", "Ñ", "ü", "Ü", "ö", "ç", "å", "Å", "ø", "Ø", "ß", "æ", "Æ", "œ", "ł", "đ", "ı", "İ", "ð", "þ", "ŕ",
+  "ž", "Ž", "š", "ő", "ǆ", "ǅ", "’", "‘", "“", "\u00a0", "\u0301", "\u0308", "–", "—", "×", "½", "²", "ﬁ", "Ω", "ж", "日", "🎉",
+  "\u200b", "\u0327", "ǖ", "ṓ", "ế", "ǿ",
+];
+
+function accentedName(rng: Prng): string {
+  let characters = [...rng.pick(WORDS)];
+  for (let count = rng.int(1, 3); count > 0; count--) {
+    characters.splice(rng.int(0, characters.length), 0, rng.pick(MARKS));
+  }
+  let name = characters.join("");
+  if (rng.chance(0.3)) {
+    name = name.normalize("NFD");
+  } else if (rng.chance(0.3)) {
+    name = name.normalize("NFC");
+  }
+  return rng.chance(0.5) ? `${name}.${rng.pick(["txt", "TXT", "md", "é", "Ä"])}` : name;
+}
+
 const SORT_BY = ["name", "modified", "kind", "size"] as const;
 const DIRECTIONS = ["asc", "desc"] as const;
 const TIMES = [0, 1_000, 1_700_000_000_000, 1_700_000_000_001, 1_700_000_100_000, 1_800_000_000_000, 946_684_800_000];
@@ -223,10 +249,15 @@ export async function generate(rng: Prng): Promise<GoldenCase[]> {
   // Random sets.
   while (cases.length < 300) {
     const count = rng.int(0, 40);
+    const accented = rng.chance(0.5);
     const used = new Set<string>();
     const items: Item[] = [];
     for (let index = 0; index < count; index++) {
-      const name = rng.chance(0.15) ? `${rng.pick(NAMES)} ${rng.int(0, 120)}` : rng.pick(NAMES);
+      const name = accented
+        ? `${accentedName(rng)}${rng.chance(0.3) ? ` ${rng.int(0, 120)}` : ""}`
+        : rng.chance(0.15)
+          ? `${rng.pick(NAMES)} ${rng.int(0, 120)}`
+          : rng.pick(NAMES);
       if (used.has(name)) {
         continue;
       }

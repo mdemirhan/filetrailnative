@@ -19,16 +19,16 @@ public final class KindLabeler: @unchecked Sendable {
     public static var system: KindLabeler { KindLabeler(describer: { FileKind.kind(forPath: $0) }) }
 
     /// What the system calls a file's kind, or nil.
-    func describe(path: String, fileExtension: String) -> String? {
+    func describe(path: @autoclosure () -> String, fileExtension: String) -> String? {
         guard let describer else { return nil }
-        if fileExtension.isEmpty { return describer(path) }
+        if fileExtension.isEmpty { return describer(path()) }
         lock.lock()
         if let known = byExtension[fileExtension] {
             lock.unlock()
             return known
         }
         lock.unlock()
-        let described = describer(path)
+        let described = describer(path())
         lock.lock()
         byExtension[fileExtension] = .some(described)
         lock.unlock()
@@ -36,13 +36,18 @@ public final class KindLabeler: @unchecked Sendable {
     }
 
     func label(for kind: EntryKind, path: String) -> String {
+        label(for: kind, fileExtension: ExplorerListing.extensionName(path), path: path)
+    }
+
+    /// The label of an entry, given the facts the caller already has.
+    func label(for kind: EntryKind, fileExtension: String, path: @autoclosure () -> String) -> String {
         // Human-readable labels are used directly in details/info UI and intentionally stay simple.
         switch kind {
         case .directory: return "Folder"
         case .symlinkDirectory: return "Alias Folder"
         case .symlinkFile: return "Alias File"
         case .bundle:
-            switch ExplorerListing.extensionName(path) {
+            switch fileExtension {
             case "app": return "Application"
             case "framework": return "Framework"
             case "xcodeproj": return "Xcode Project"
@@ -50,8 +55,7 @@ public final class KindLabeler: @unchecked Sendable {
             default: return "Bundle"
             }
         case .file:
-            let fileExtension = ExplorerListing.extensionName(path)
-            if let described = describe(path: path, fileExtension: fileExtension) { return described }
+            if let described = describe(path: path(), fileExtension: fileExtension) { return described }
             return fileExtension.isEmpty ? "File" : "\(fileExtension.uppercased()) File"
         case .other: return "Item"
         }
@@ -74,20 +78,27 @@ enum ExplorerListing {
 
     /// `extname(path)` without its dot, lowercased.
     static func extensionName(_ path: String) -> String {
-        let extensionWithDot = nodeExtname(path)
-        return extensionWithDot.isEmpty ? "" : String(extensionWithDot.dropFirst()).lowercased()
+        extensionName(ofName: NodePath.basename(path))
     }
 
-    /// Node's `path.extname`: from the last dot of the last part, unless that part starts with it
-    /// (".bashrc") or is "..". FTFoundation's `NodePath.extname` answers "" for any part starting "..".
-    static func nodeExtname(_ path: String) -> String {
-        let name = Array(NodePath.basename(path).unicodeScalars)
-        guard let dot = name.lastIndex(of: "."), dot > 0 else { return "" }
-        if name == [".", "."] { return "" }
-        if dot == name.count - 1 && dot == 1 && name[0] == "." { return "" }
-        var result = String.UnicodeScalarView()
-        result.append(contentsOf: name[dot...])
-        return String(result)
+    /// The same for a name without folders: from the last dot, unless the name starts with it (".bashrc")
+    /// or is "..". (FTFoundation's `NodePath.extname` answers "" for any name starting "..".)
+    static func extensionName(ofName name: String) -> String {
+        var name = name
+        return name.withUTF8 { bytes in
+            guard let dot = bytes.lastIndex(of: UInt8(ascii: ".")), dot > 0 else { return "" }
+            if dot == 1 && bytes.count == 2 { return "" }
+            let tail = UnsafeBufferPointer(rebasing: bytes[(dot + 1)...])
+            if tail.isEmpty { return "" }
+            if tail.allSatisfy({ $0 < 0x80 }) {
+                var lowered = [UInt8](tail)
+                for index in lowered.indices where lowered[index] >= 65 && lowered[index] <= 90 {
+                    lowered[index] += 32
+                }
+                return String(decoding: lowered, as: UTF8.self)
+            }
+            return String(decoding: tail, as: UTF8.self).lowercased()
+        }
     }
 
     static func isHidden(_ name: String) -> Bool { name.utf8.first == UInt8(ascii: ".") }
@@ -159,7 +170,8 @@ enum ExplorerListing {
     ) throws -> TreeChildren {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
         let records = try fileSystem.readDirectory(directoryPath)
-        var children: [(child: TreeChild, key: CollationKey)] = []
+        var children: [TreeChild] = []
+        var keys = NameKeys()
         for record in records {
             let hidden = isHidden(record.name)
             if !includeHidden && hidden { continue }
@@ -167,26 +179,15 @@ enum ExplorerListing {
             let kind = classify(record, path: entryPath, fileSystem)
             guard kind == .directory || kind == .symlinkDirectory else { continue }
             children.append(
-                (
-                    TreeChild(
-                        path: entryPath, name: record.name, kind: kind, isHidden: hidden,
-                        isSymlink: kind == .symlinkDirectory),
-                    CollationKey(record.name)
-                ))
+                TreeChild(
+                    path: entryPath, name: record.name, kind: kind, isHidden: hidden,
+                    isSymlink: kind == .symlinkDirectory))
+            keys.append(record.name)
         }
-        let sorted = stableSorted(children) { Collation.compareNumericBase($0.key, $1.key) }
-        return TreeChildren(path: directoryPath, children: sorted.map(\.child))
+        return TreeChildren(path: directoryPath, children: keys.sortedPositions().map { children[$0] })
     }
 
     // MARK: Snapshot
-
-    private struct SortItem {
-        var entry: DirectoryEntry
-        var key: CollationKey
-        var modifiedAt: Int64?
-        var sizeBytes: Int64?
-        var kindKey: CollationKey?
-    }
 
     /// Snapshot listing fetches extra stat data only for sort modes that require it so the common
     /// name-sorted path stays as cheap as possible.
@@ -196,107 +197,137 @@ enum ExplorerListing {
     ) throws -> DirectorySnapshot {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
         let records = try fileSystem.readDirectory(directoryPath)
-        var items: [SortItem] = []
-        items.reserveCapacity(records.count)
+
+        // What each kept entry is, one column per fact, so sorting touches only what it compares.
+        var entries: [DirectoryEntry] = []
+        entries.reserveCapacity(records.count)
+        var keys = NameKeys(capacity: records.count)
+        var modified: [Int64?] = []
+        var sizes: [Int64?] = []
+        var labels: [String] = []
         for record in records {
             let hidden = isHidden(record.name)
             if !includeHidden && hidden { continue }
             let entryPath = join(directoryPath, record.name)
             let kind = classify(record, path: entryPath, fileSystem)
-            let fileExtension = extensionName(record.name)
+            let fileExtension = extensionName(ofName: record.name)
             // A file without an extension is drawn as a document or as an executable, which only its
             // permissions tell apart. Other entries are not looked at unless the sort needs it.
             let needsExecutableFlag = kind == .file && fileExtension.isEmpty
             let stats =
                 sortBy == .modified || sortBy == .size || needsExecutableFlag
                 ? bestEffortStats(record, path: entryPath, fileSystem) : nil
-            // A link to a folder is sized as the link itself (see readEntrySize).
-            let linkStats: FileStats? =
-                sortBy == .size && kind == .symlinkDirectory
-                ? (record.lstat ?? safeLstat(entryPath, fileSystem)) : nil
             var entry = DirectoryEntry(
                 path: entryPath, name: record.name, fileExtension: fileExtension, kind: kind, isHidden: hidden,
                 isSymlink: kind == .symlinkDirectory || kind == .symlinkFile)
             if needsExecutableFlag, let stats {
                 entry.isExecutable = stats.mode & 0o111 != 0
             }
-            let sizeBytes: Int64? =
-                if let linkStats {
-                    linkStats.size
+            switch sortBy {
+            case .modified:
+                modified.append(stats?.mtimeMs)
+            case .size:
+                // A link to a folder is sized as the link itself (see readEntrySize).
+                if kind == .symlinkDirectory {
+                    sizes.append((record.lstat ?? safeLstat(entryPath, fileSystem))?.size)
                 } else if let stats, kind == .file || kind == .symlinkFile {
-                    stats.size
+                    sizes.append(stats.size)
                 } else {
-                    nil
+                    sizes.append(nil)
                 }
-            items.append(
-                SortItem(
-                    entry: entry, key: CollationKey(record.name), modifiedAt: stats?.mtimeMs, sizeBytes: sizeBytes,
-                    kindKey: sortBy == .kind ? CollationKey(kinds.label(for: kind, path: entryPath)) : nil))
+            case .kind:
+                labels.append(kinds.label(for: kind, fileExtension: fileExtension, path: entryPath))
+            case .name:
+                break
+            }
+            entries.append(entry)
+            keys.append(record.name)
         }
 
-        let sorted = stableSorted(items) {
-            compareEntries($0, $1, sortBy: sortBy, sortDirection: sortDirection, foldersFirst: foldersFirst)
-        }
+        let order = sortedPositions(
+            entries: entries, keys: keys, modified: modified, sizes: sizes, labels: labels, sortBy: sortBy,
+            sortDirection: sortDirection, foldersFirst: foldersFirst)
         let parent = NodePath.dirname(directoryPath)
+        var sorted: [DirectoryEntry] = []
+        sorted.reserveCapacity(order.count)
+        for position in order {
+            var entry = entries[position]
+            if sortBy == .size { entry.sizeBytes = sizes[position] }
+            sorted.append(entry)
+        }
         return DirectorySnapshot(
-            path: directoryPath, parentPath: directoryPath == parent ? nil : parent,
-            entries: sorted.map { item in
-                var entry = item.entry
-                if sortBy == .size { entry.sizeBytes = item.sizeBytes }
-                return entry
-            })
+            path: directoryPath, parentPath: directoryPath == parent ? nil : parent, entries: sorted)
     }
 
-    private static func compareEntries(
-        _ left: SortItem, _ right: SortItem, sortBy: DirectorySortKey, sortDirection: SortDirection,
-        foldersFirst: Bool
-    ) -> Int {
-        // `foldersFirst` is applied before the requested sort mode, matching Finder-style behavior.
-        if foldersFirst {
-            let leftRank = left.entry.kind.isDirectoryKind ? 0 : 1
-            let rightRank = right.entry.kind.isDirectoryKind ? 0 : 1
-            if leftRank != rightRank { return leftRank - rightRank }
+    /// `compareEntries`: the order of the entries.
+    private static func sortedPositions(
+        entries: [DirectoryEntry], keys: NameKeys, modified: [Int64?], sizes: [Int64?], labels: [String],
+        sortBy: DirectorySortKey, sortDirection: SortDirection, foldersFirst: Bool
+    ) -> [Int] {
+        let isFolder = entries.map { $0.kind.isDirectoryKind }
+        // Kinds compare as labels; each distinct label is ranked once.
+        var labelRanks: [Int] = []
+        if sortBy == .kind {
+            let sortedLabels = stableSorted(Array(Set(labels)).sorted()) {
+                Collation.compareVariant(CollationKey($0), CollationKey($1))
+            }
+            var rankOf: [String: Int] = [:]
+            var rank = 0
+            for (index, label) in sortedLabels.enumerated() {
+                if index > 0
+                    && Collation.compareVariant(CollationKey(sortedLabels[index - 1]), CollationKey(label)) != 0
+                {
+                    rank += 1
+                }
+                rankOf[label] = rank
+            }
+            labelRanks = labels.map { rankOf[$0] ?? 0 }
         }
-
-        // Items without a value (folders when sorting by size) stay at the end in both directions.
-        let leftValue: Int64?
-        let rightValue: Int64?
-        switch sortBy {
-        case .modified:
-            leftValue = left.modifiedAt
-            rightValue = right.modifiedAt
-        case .size:
-            leftValue = left.sizeBytes
-            rightValue = right.sizeBytes
-        default:
-            leftValue = 0
-            rightValue = 0
+        let descending = sortDirection == .descending
+        return keys.withComparator { compareNames in
+            var order = Array(0..<entries.count)
+            order.sort { left, right in
+                // `foldersFirst` is applied before the requested sort mode, matching Finder-style behavior.
+                if foldersFirst && isFolder[left] != isFolder[right] {
+                    return isFolder[left]
+                }
+                var compared = 0
+                switch sortBy {
+                case .modified:
+                    // Items without a value stay at the end in both directions.
+                    let missing = compareMissing(modified[left], modified[right])
+                    if missing != 0 { return missing < 0 }
+                    compared = compareValues(modified[left], modified[right])
+                case .size:
+                    let missing = compareMissing(sizes[left], sizes[right])
+                    if missing != 0 { return missing < 0 }
+                    compared = compareValues(sizes[left], sizes[right])
+                case .kind:
+                    compared = labelRanks[left] == labelRanks[right] ? 0 : (labelRanks[left] < labelRanks[right] ? -1 : 1)
+                case .name:
+                    break
+                }
+                if compared == 0 {
+                    compared = compareNames(left, right)
+                }
+                if descending { compared = -compared }
+                return compared != 0 ? compared < 0 : left < right
+            }
+            return order
         }
-        if leftValue == nil || rightValue == nil {
-            let missing = compareNullable(leftValue, rightValue)
-            if missing != 0 { return missing }
-        }
-
-        var compared = 0
-        switch sortBy {
-        case .modified: compared = compareNullable(left.modifiedAt, right.modifiedAt)
-        case .kind:
-            if let a = left.kindKey, let b = right.kindKey { compared = Collation.compareVariant(a, b) }
-        case .size: compared = compareNullable(left.sizeBytes, right.sizeBytes)
-        case .name: compared = Collation.compareNumericBase(left.key, right.key)
-        }
-        if compared == 0 {
-            compared = Collation.compareNumericBase(left.key, right.key)
-        }
-        return sortDirection == .descending ? -compared : compared
     }
 
-    /// Nulls sort last so missing metadata does not float directories/unknown values to the top.
-    private static func compareNullable(_ left: Int64?, _ right: Int64?) -> Int {
-        if left == right { return 0 }
-        guard let left else { return 1 }
-        guard let right else { return -1 }
-        return left < right ? -1 : 1
+    /// Nulls sort last so missing metadata does not float directories/unknown values to the top: negative
+    /// when only `right` lacks a value, positive when only `left` does, else 0.
+    private static func compareMissing(_ left: Int64?, _ right: Int64?) -> Int {
+        if left != nil && right != nil { return 0 }
+        if left == nil && right == nil { return 0 }
+        return left == nil ? 1 : -1
+    }
+
+    private static func compareValues(_ left: Int64?, _ right: Int64?) -> Int {
+        guard let left, let right else { return 0 }
+        return left == right ? 0 : (left < right ? -1 : 1)
     }
 
     // MARK: Metadata
@@ -396,19 +427,20 @@ enum ExplorerListing {
         }
         let records = try fileSystem.readDirectory(query.basePath)
         let typed = Array(query.typedName.lowercased().utf16)
-        var matches: [(suggestion: PathSuggestion, key: CollationKey)] = []
+        var matches: [PathSuggestion] = []
+        var keys = NameKeys()
         for record in records {
             if !includeHidden && isHidden(record.name) { continue }
             if !typed.isEmpty && !Array(record.name.lowercased().utf16).starts(with: typed) { continue }
             let entryPath = join(query.basePath, record.name)
             let kind = classify(record, path: entryPath, fileSystem)
             guard kind == .directory || kind == .symlinkDirectory else { continue }
-            matches.append(
-                (PathSuggestion(path: entryPath, name: record.name, isDirectory: true), CollationKey(record.name)))
+            matches.append(PathSuggestion(path: entryPath, name: record.name, isDirectory: true))
+            keys.append(record.name)
         }
-        let sorted = stableSorted(matches) { Collation.compareNumericBase($0.key, $1.key) }
         return PathSuggestions(
-            inputPath: inputPath, basePath: query.basePath, suggestions: sorted.prefix(limit).map(\.suggestion))
+            inputPath: inputPath, basePath: query.basePath,
+            suggestions: keys.sortedPositions().prefix(limit).map { matches[$0] })
     }
 
     private static func suggestionQuery(
