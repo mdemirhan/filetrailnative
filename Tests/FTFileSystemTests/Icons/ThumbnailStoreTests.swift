@@ -197,7 +197,10 @@ private func request(
         handles[5].cancel()
         provider.release(ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()))
         await settle()
-        #expect(provider.calls.map(\.path) == Array(names.prefix(5)))
+        // The first four start together, in no fixed order; the fifth comes after them.
+        #expect(Set(provider.calls.map(\.path)) == Set(names.prefix(5)))
+        #expect(provider.calls.count == 5)
+        #expect(provider.calls.last?.path == names[4])
         provider.release(ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()))
         await settle()
     }
