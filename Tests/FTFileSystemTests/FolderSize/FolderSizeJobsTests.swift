@@ -110,7 +110,16 @@ private func settle() async {
     private func make(
         _ native: MockNative, homePath: String = NSHomeDirectory(), onSettled: ((Int?, String) -> Void)? = nil
     ) -> FolderSizeJobs {
-        FolderSizeJobs(native: native, homePath: homePath, onSettled: onSettled)
+        let jobs = FolderSizeJobs(native: native, homePath: homePath, onSettled: onSettled)
+        // Ids that can't repeat: the tests that count jobs start hundreds within a millisecond, where two of
+        // the app's ids (the millisecond and 24 random bits) are the same about once in 400 runs, and the
+        // second job replaces the first.
+        var made = 0
+        jobs.makeJobId = {
+            made += 1
+            return "folder-size-test-\(made)"
+        }
+        return jobs
     }
 
     private func start(

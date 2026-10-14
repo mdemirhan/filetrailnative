@@ -5,8 +5,16 @@ import Testing
 
 @testable import FTFileSystem
 
-/// The `/dev/diskN` devices hdiutil has attached.
-private func attachedDevices() throws -> Set<String> {
+/// A disk image hdiutil has attached. Its image file is a test's own; the `/dev/diskN` it had, and the
+/// `/Volumes/<name>` its volume had, go to the next disk attached anywhere on the Mac once it is gone
+/// (other test processes attach and detach clones all the time), so a test asks after the image.
+private struct AttachedImage {
+    let path: String
+    let devices: Set<String>
+    let mountPoints: Set<String>
+}
+
+private func attachedImages() throws -> [AttachedImage] {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/usr/bin/hdiutil")
     process.arguments = ["info", "-plist"]
@@ -16,24 +24,41 @@ private func attachedDevices() throws -> Set<String> {
     try process.run()
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     process.waitUntilExit()
+    try #require(process.terminationStatus == 0, "hdiutil info failed")
     let plist = try PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
-    let images = plist?["images"] as? [[String: Any]] ?? []
-    var devices: Set<String> = []
-    for image in images {
-        for entity in image["system-entities"] as? [[String: Any]] ?? [] {
-            if let entry = entity["dev-entry"] as? String { devices.insert(entry) }
-        }
+    return (plist?["images"] as? [[String: Any]] ?? []).compactMap { image in
+        guard let path = image["image-path"] as? String else { return nil }
+        let entities = image["system-entities"] as? [[String: Any]] ?? []
+        let mountPoints = entities.compactMap { $0["mount-point"] as? String }
+        return AttachedImage(
+            path: realPath(path), devices: Set(entities.compactMap { $0["dev-entry"] as? String }),
+            mountPoints: Set(mountPoints.map(realPath)))
     }
-    return devices
+}
+
+/// realpath(3): resolvingSymlinksInPath would take /private off a mount point in a temporary folder.
+private func realPath(_ path: String) -> String {
+    guard let resolved = realpath(path, nil) else { return path }
+    defer { free(resolved) }
+    return String(cString: resolved)
+}
+
+/// The image whose volume is mounted at `path`.
+private func image(mountedAt path: String) throws -> AttachedImage {
+    try #require(attachedImages().first { $0.mountPoints.contains(path) })
+}
+
+/// `image` as attached now; nil once it is detached.
+private func attached(_ image: AttachedImage) throws -> AttachedImage? {
+    try attachedImages().first { $0.path == image.path }
 }
 
 private func isMounted(_ path: String) -> Bool {
     VolumeListing.mounts().contains { $0.path == path }
 }
 
-/// The device node (`/dev/disk5s1`) mounted at `path`. After an eject a path alone says nothing: another
-/// process attaching a clone of the same blank image can take the freed `/Volumes/<name>`, so tests ask
-/// whether this device is still mounted.
+/// The device node (`/dev/disk5s1`) mounted at `path`. It names this volume only while its image is
+/// attached.
 private func source(of path: String) throws -> String {
     try #require(VolumeListing.mounts().first { $0.path == path }).source
 }
@@ -52,13 +77,13 @@ private func wholeDevice(of path: String) throws -> String {
     // T-cfcc0c26 F-144 F-211 F-212
     @Test(.tags(.diskImage), .diskImages) func unmountsTheVolumeAndEjectsItsDiskDetachingADiskImage() async throws {
         try await DiskImage.withVolume(.apfs) { folder in
-            let device = try wholeDevice(of: folder.path)
-            let source = try source(of: folder.path)
+            let image = try image(mountedAt: folder.path)
             #expect(isMounted(folder.path))
-            #expect(try attachedDevices().contains(device))
+            // The disk the eject is to take away is this image's.
+            #expect(try image.devices.contains(wholeDevice(of: folder.path)))
             try await VolumeEjector.eject(path: folder.path, wholeDisk: true)
-            #expect(!isMounted(source: source))
-            #expect(try !attachedDevices().contains(device))
+            // Detached, so none of its volumes is mounted either.
+            #expect(try attached(image) == nil)
         }
     }
 
@@ -67,11 +92,15 @@ private func wholeDevice(of path: String) throws -> String {
         async throws
     {
         try await DiskImage.withVolume(.apfs) { folder in
+            let image = try image(mountedAt: folder.path)
             let device = try wholeDevice(of: folder.path)
             let source = try source(of: folder.path)
             try await VolumeEjector.eject(path: folder.path)
+            // Still attached, the image keeps its devices, so what is mounted from them would be its own.
+            let still = try #require(try attached(image))
+            #expect(still.devices.contains(device) && still.devices.contains(source))
+            #expect(still.mountPoints.isEmpty)
             #expect(!isMounted(source: source))
-            #expect(try attachedDevices().contains(device))
         }
     }
 
@@ -80,6 +109,7 @@ private func wholeDevice(of path: String) throws -> String {
         async throws
     {
         try await DiskImage.withVolume(.apfs) { folder in
+            let image = try image(mountedAt: folder.path)
             let file = folder.appendingPathComponent("open.txt")
             try Data("held".utf8).write(to: file)
             let handle = try FileHandle(forReadingFrom: file)
@@ -91,10 +121,9 @@ private func wholeDevice(of path: String) throws -> String {
                 #expect(error.code == "EBUSY")
                 #expect(error.path == folder.path)
             }
-            let source = try source(of: folder.path)
-            #expect(isMounted(source: source))
+            #expect(try attached(image)?.mountPoints.contains(folder.path) == true)
             try await VolumeEjector.eject(path: folder.path, force: true, wholeDisk: true)
-            #expect(!isMounted(source: source))
+            #expect(try attached(image) == nil)
         }
     }
 
@@ -116,11 +145,13 @@ private func wholeDevice(of path: String) throws -> String {
 
     // F-215 B-TREE-175
     @Test(.tags(.diskImage), .diskImages) func aVolumeAlreadyEjectedCountsAsEjected() async throws {
-        try await DiskImage.withVolume(.apfs) { folder in
-            let source = try source(of: folder.path)
+        // A mount point of its own: the second press must not find another clone mounted at the freed
+        // /Volumes/<name>, and eject that.
+        try await DiskImage.withVolume(.apfs, ownMountPoint: true) { folder in
+            let image = try image(mountedAt: folder.path)
             let request = EjectRequest(path: folder.path, wholeDisk: true, force: false)
             #expect(await EjectOutcome.ejectVolume(request).status == .ejected)
-            #expect(!isMounted(source: source))
+            #expect(try attached(image) == nil)
             // The second press of the button finds nothing mounted.
             #expect(await EjectOutcome.ejectVolume(request).status == .ejected)
         }

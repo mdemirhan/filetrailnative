@@ -142,6 +142,9 @@ public final class FolderSizeJobs {
     private var backgroundJobIds = Set<String>()
     // Set when the app quits: nothing more is measured.
     private var stopped = false
+    // Makes each job's id. The original's ids (the time in milliseconds and 24 random bits) can repeat
+    // among the hundreds of jobs a test starts in one millisecond, so such tests count on ids of their own.
+    var makeJobId: () -> String = FolderSizeJobs.randomJobId
 
     /// `homePath`: where the home folder is (tests use their own): its Trash is where deleted items go.
     public init(
@@ -270,7 +273,7 @@ public final class FolderSizeJobs {
         }
     }
 
-    private func generateJobId() -> String {
+    nonisolated static func randomJobId() -> String {
         let millis = Int(Date().timeIntervalSince1970 * 1000)
         let random = String(UInt32.random(in: 0..<0x100_0000), radix: 16)
         return "folder-size-\(millis)-\(String(repeating: "0", count: 6 - random.count))\(random)"
@@ -447,7 +450,7 @@ public final class FolderSizeJobs {
         }
 
         if let cached = cache.get(request.path) {
-            let jobId = generateJobId()
+            let jobId = makeJobId()
             var ready = job(jobId, request.path, .ready)
             ready.sizeBytes = cached.sizeBytes
             ready.diskBytes = cached.diskBytes
@@ -458,7 +461,7 @@ public final class FolderSizeJobs {
             return FolderSizeStartResponse(jobId: jobId, status: .ready)
         }
 
-        let jobId = generateJobId()
+        let jobId = makeJobId()
 
         if stopped {
             setFolderSizeJob(jobId, job(jobId, request.path, .cancelled))
