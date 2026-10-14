@@ -3,6 +3,32 @@
 import AppKit
 import FTFoundation
 
+/// The height of a line of text in the font, as the browser's `line-height: normal` rounds it.
+func lineBox(_ font: NSFont?) -> Double {
+    let font = font ?? .systemFont(ofSize: 12)
+    return Double(font.ascender - font.descender + font.leading).rounded()
+}
+
+/// `font-variant-numeric: tabular-nums`: every digit as wide as the others.
+func tabularFont(_ size: Double, weight: Int = 400) -> NSFont {
+    let weights: [Int: NSFont.Weight] = [500: .medium, 600: .semibold, 700: .bold]
+    return NSFont.monospacedDigitSystemFont(ofSize: CGFloat(size), weight: weights[weight] ?? .regular)
+}
+
+/// The width of the text in the font, to a fraction, as a text box measures it.
+func textExtent(_ text: String, _ font: NSFont?) -> Double {
+    Double((text as NSString).size(withAttributes: [.font: font ?? .systemFont(ofSize: 12)]).width)
+}
+
+/// The original's locale for dates: its language alone (Chromium reads the system's languages, not its region), so
+/// "Sep 17, 2026, 2:08 PM" on a machine set to a 24-hour region.
+extension DateText {
+    static let original: DateText = {
+        let language = Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
+        return DateText(locale: Locale(identifier: language))
+    }()
+}
+
 /// The line icons of the Info panel, in a 24-unit box, stroked in `currentColor` with round caps and joins.
 enum InfoGlyph {
     case close, quickLook, edit, name, favorite, rootTree, finder, terminal, copy, check, refresh

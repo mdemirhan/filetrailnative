@@ -1,0 +1,69 @@
+{
+  "name": "146-infopanel-several-light",
+  "description": "The Info panel for several items: the stacked icon, the count and Where",
+  "features": [
+    "F-826"
+  ],
+  "behaviors": [
+    "B-INFO-050",
+    "B-INFO-051",
+    "B-INFO-054"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "propertiesOpen": true
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "select",
+      "names": [
+        "DatePicker.jsx",
+        "SearchField.jsx",
+        "Toast.jsx",
+        "TripList.jsx"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 900
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

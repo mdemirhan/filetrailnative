@@ -42,14 +42,19 @@ final class PathSegmentView: NSView, TextStyleSource {
         applyColors()
     }
 
-    /// The width the segment wants: its text and 6 each side.
+    /// The width the segment wants, as the collapse rules measure it: its text, rounded up, and 6 each side.
     static func width(of text: String) -> Double {
-        ceil((text as NSString).size(withAttributes: [.font: font]).width) + 2 * InfoMetrics.segmentPaddingInline
+        ceil(textExtent(text, font)) + 2 * InfoMetrics.segmentPaddingInline
+    }
+
+    /// The width it has in the bar: the text to a fraction and 6 each side.
+    static func exactWidth(of text: String) -> Double {
+        textExtent(text, font) + 2 * InfoMetrics.segmentPaddingInline
     }
 
     override func layout() {
         super.layout()
-        let height = ceil(Self.font.ascender - Self.font.descender + Self.font.leading)
+        let height = lineBox(Self.font)
         label.frame = NSRect(
             x: InfoMetrics.segmentPaddingInline, y: (bounds.height - height) / 2,
             width: max(0, bounds.width - 2 * InfoMetrics.segmentPaddingInline), height: height)
@@ -130,14 +135,14 @@ final class PathSeparatorView: NSView, TextStyleSource {
     func setMenuOpen(_ open: Bool) { isActive = open }
 
     static var width: Double {
-        let glyph = ceil(("›" as NSString).size(withAttributes: [.font: ChromeColors.font(size: DesignTokens.typeScale.callout)]).width)
+        let glyph = textExtent("›", ChromeColors.font(size: DesignTokens.typeScale.callout))
         return max(InfoMetrics.separatorMinWidth, glyph + 6)
     }
 
     override func layout() {
         super.layout()
         let font = label.font ?? .systemFont(ofSize: 12)
-        let height = ceil(font.ascender - font.descender + font.leading)
+        let height = lineBox(font)
         label.frame = NSRect(x: 0, y: (bounds.height - height) / 2, width: bounds.width, height: height)
     }
 
@@ -193,7 +198,7 @@ final class PathBarView: NSView {
     private var itemViews: [NSView] = []
     private var scrollOffset = 0.0
     private var scrollToEnd = false
-    private let clip = NSView()
+    private let clip = InfoFlippedView()
 
     var onNavigate: (String) -> Void = { _ in }
     var onOpenInNewTab: (String) -> Void = { _ in }
@@ -304,9 +309,10 @@ final class PathBarView: NSView {
         var natural: [Double] = []
         for item in items {
             switch item {
-            case .collapsed: natural.append(measure("…", false, true, false))
+            case .collapsed: natural.append(PathSegmentView.exactWidth(of: "…"))
             case .segment(let segment, let isActive, let maxWidth):
-                natural.append(maxWidth ?? measure(segment.label, isActive, false, false))
+                let cap = isActive ? InfoMetrics.activeSegmentMaxWidth : InfoMetrics.segmentMaxWidth
+                natural.append(maxWidth ?? min(PathSegmentView.exactWidth(of: segment.label), cap))
             }
         }
         let separators = Double(max(0, items.count - 1)) * (PathSeparatorView.width + 2 * InfoMetrics.itemGap)

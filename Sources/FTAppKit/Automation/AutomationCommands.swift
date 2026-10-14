@@ -34,7 +34,7 @@
             "sortByName", "sortByModified", "sortBySize", "sortByKind", "goHomeRootTree", "goDocuments",
             "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD", "goApplications", "goTrash", "newWindow",
             "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
-            "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows",
+            "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows", "calculateSize",
         ]
 
         static func run(_ id: String, controller: MainWindowController, window: NSWindow) -> AutomationRunner.Outcome {
@@ -87,7 +87,8 @@
                 guard let url = place(id) else { return .init(.failed, "no folder for \(id)") }
                 controller.go(to: url)
             case "newWindow", "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab",
-                "openSelectionInNewTab", "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows":
+                "openSelectionInNewTab", "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows",
+                "calculateSize":
                 // The window and tab commands, as the menu sends them (P4-02).
                 guard let command = RendererCommand(rawValue: id) else { return .init(.failed, "no command \(id)") }
                 controller.perform(command)

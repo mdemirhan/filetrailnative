@@ -1,0 +1,68 @@
+{
+  "name": "140-inforow-several-light",
+  "description": "The Info Row for several selected files: the count and the summed size",
+  "features": [
+    "F-749"
+  ],
+  "behaviors": [
+    "B-INFO-075",
+    "B-INFO-084"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "detailRowOpen": true
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "select",
+      "names": [
+        "DatePicker.jsx",
+        "SearchField.jsx",
+        "Toast.jsx",
+        "TripList.jsx"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 700
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

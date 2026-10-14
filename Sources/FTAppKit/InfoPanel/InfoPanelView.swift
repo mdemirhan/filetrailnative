@@ -155,7 +155,7 @@ final class InfoPanelHeader: NSView {
     override init(frame: NSRect) {
         super.init(frame: frame)
         setAccessibilityIdentifier("infoPanel.header")
-        title.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 600)
+        title.font = tabularFont(DesignTokens.typeScale.callout, weight: 600)
         title.setAccessibilityIdentifier("infoPanel.title")
         spinner.setAccessibilityIdentifier("infoPanel.spinner")
         spinner.setAccessibilityLabel("Loading info")
@@ -179,18 +179,46 @@ final class InfoPanelHeader: NSView {
         let inset = InfoMetrics.panelInset
         let side = InfoMetrics.closeButton
         close.frame = NSRect(x: bounds.width - inset - side, y: (bounds.height - side) / 2, width: side, height: side)
-        let titleSize = (title.stringValue as NSString).size(withAttributes: [.font: title.font as Any])
+        let titleHeight = lineBox(title.font)
         title.frame = NSRect(
-            x: inset, y: ((bounds.height - ceil(titleSize.height)) / 2), width: ceil(titleSize.width),
-            height: ceil(titleSize.height))
+            x: inset, y: (bounds.height - titleHeight) / 2, width: textExtent(title.stringValue, title.font),
+            height: titleHeight)
         if showsSpinner {
             spinner.frame = NSRect(x: close.frame.minX - 12 - 10, y: (bounds.height - 10) / 2, width: 10, height: 10)
         }
     }
 }
 
+/// The box a value that is not plain text sits in, which the capture reads the size and style of.
+final class RowValueBox: NSView, TextStyleSource {
+    let sample = FlushTextField(labelWithString: "")
+    var styleTextField: NSTextField? { sample }
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        sample.alphaValue = 0
+        sample.frame = NSRect(x: 0, y: 0, width: 1, height: 1)
+        addSubview(sample)
+        setAccessibilityIdentifier("infoPanel.row.value")
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+}
+
+/// The main half of the split button: it carries the label's style for the capture.
+final class SplitMainPart: NSView, TextStyleSource {
+    weak var label: NSTextField?
+    var styleTextField: NSTextField? { label }
+    override var isFlipped: Bool { true }
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+}
+
 /// A split button: the main half and the Open With half, drawn as one, the accent filling both.
-final class SplitOpenButton: NSView {
+final class SplitOpenButton: NSView, TextStyleSource {
+    var styleTextField: NSTextField? { label }
     var title = "Open" { didSet { needsLayout = true } }
     var appIcon: NSImage? { didSet { needsLayout = true } }
     var isSplit = false { didSet { needsDisplay = true } }
@@ -202,9 +230,13 @@ final class SplitOpenButton: NSView {
     private(set) var menuOpen = false { didSet { needsDisplay = true } }
     let label = FlushTextField(labelWithString: "")
     let chevron = NSView()
+    /// The main half, which the capture names (`.get-info-open-main`).
+    let mainPart = SplitMainPart()
 
     override init(frame: NSRect) {
         super.init(frame: frame)
+        mainPart.label = label
+        addSubview(mainPart)
         label.font = ChromeColors.font(size: DesignTokens.typeScale.body)
         label.lineBreakMode = .byTruncatingTail
         label.alignment = .center
@@ -212,7 +244,8 @@ final class SplitOpenButton: NSView {
         addSubview(label)
         setAccessibilityElement(true)
         setAccessibilityRole(.button)
-        setAccessibilityIdentifier("infoPanel.open")
+        setAccessibilityIdentifier("infoPanel.openGroup")
+        mainPart.setAccessibilityIdentifier("infoPanel.open")
         chevron.setAccessibilityIdentifier("infoPanel.openWith")
         addSubview(chevron)
         chevron.isHidden = true
@@ -224,21 +257,27 @@ final class SplitOpenButton: NSView {
 
     func setMenuOpen(_ open: Bool) { menuOpen = open }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
+
     private var mainWidth: Double { isSplit ? bounds.width - InfoMetrics.openChevronWidth : bounds.width }
     private let iconSize = 16.0
 
     override func layout() {
         super.layout()
         chevron.isHidden = !isSplit
+        mainPart.frame = NSRect(x: 0, y: 0, width: mainWidth, height: bounds.height)
         chevron.frame = NSRect(x: mainWidth, y: 0, width: InfoMetrics.openChevronWidth, height: bounds.height)
         label.stringValue = title
-        let textWidth = ceil((title as NSString).size(withAttributes: [.font: label.font as Any]).width)
+        let textWidth = textExtent(title, label.font)
         let padding = 12.0
         let icon = appIcon != nil ? iconSize + 6 : 0
         let available = max(0, mainWidth - 2 * padding)
         let shown = min(textWidth, max(0, available - icon))
         let start = (mainWidth - (icon + shown)) / 2
-        let height = ceil(((label.font?.ascender ?? 0) - (label.font?.descender ?? 0)))
+        let height = lineBox(label.font)
         label.frame = NSRect(x: start + icon, y: (bounds.height - height) / 2, width: shown, height: height)
         label.textColor = NSColor(AppearanceModel.shared.theme.accent.onSolid)
         setAccessibilityLabel(title)
@@ -271,7 +310,7 @@ final class SplitOpenButton: NSView {
         }
         NSGraphicsContext.restoreGraphicsState()
         if let appIcon {
-            let textWidth = ceil((title as NSString).size(withAttributes: [.font: label.font as Any]).width)
+            let textWidth = textExtent(title, label.font)
             let available = max(0, mainWidth - 24)
             let shown = min(textWidth, max(0, available - iconSize - 6))
             let start = (mainWidth - (iconSize + 6 + shown)) / 2
@@ -344,7 +383,7 @@ final class OpensWithPopupView: NSView {
     static let paddingLeading = 6.0
     static let paddingTrailing = 4.0
     static let gap = 5.0
-    static let iconSize = 14.0
+    static let iconSize = 18.0
     static let chevron = 9.0
 
     override init(frame: NSRect) {
@@ -379,7 +418,7 @@ final class OpensWithPopupView: NSView {
     }
 
     var naturalWidth: Double {
-        let text = ceil((name.stringValue as NSString).size(withAttributes: [.font: name.font as Any]).width)
+        let text = textExtent(name.stringValue, name.font)
         let icon = app != nil ? Self.iconSize + Self.gap : 0
         return Self.paddingLeading + icon + text + Self.gap + Self.chevron + Self.paddingTrailing
     }
@@ -389,7 +428,7 @@ final class OpensWithPopupView: NSView {
         let icon = app != nil ? Self.iconSize + Self.gap : 0
         let textX = Self.paddingLeading + icon
         let width = max(0, bounds.width - textX - Self.gap - Self.chevron - Self.paddingTrailing)
-        let height = ceil((name.font?.ascender ?? 0) - (name.font?.descender ?? 0))
+        let height = lineBox(name.font)
         name.frame = NSRect(x: textX, y: (bounds.height - height) / 2, width: width, height: height)
         name.textColor = NSColor(AppearanceModel.shared.theme.palette.textPrimary)
     }
@@ -457,6 +496,8 @@ final class InfoPanelContentView: NSView {
         var label: FlushTextField
         var value: NSView
         var extra: FlushTextField?
+        /// The `<dd>` of a value that is not plain text, which the capture names.
+        var box: RowValueBox?
     }
 
     override var isFlipped: Bool { true }
@@ -472,7 +513,7 @@ final class InfoPanelContentView: NSView {
         name.lineBreakMode = .byTruncatingTail
         name.font = ChromeColors.font(size: DesignTokens.typeScale.title3, weight: 600)
         subtitle.alignment = .center
-        subtitle.font = ChromeColors.font(size: DesignTokens.typeScale.callout)
+        subtitle.font = tabularFont(DesignTokens.typeScale.callout)
         subtitle.lineBreakMode = .byTruncatingTail
         emptyLabel.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 600)
         for view in [heroIcon, name, subtitle, open, emptyLabel, opensWith, cell] as [NSView] { addSubview(view) }
@@ -514,6 +555,7 @@ final class InfoPanelContentView: NSView {
             views.label.removeFromSuperview()
             if views.value !== cell, views.value !== opensWith { views.value.removeFromSuperview() }
             views.extra?.removeFromSuperview()
+            views.box?.removeFromSuperview()
         }
         rowViews = []
         for (_, button) in actionButtons { button.removeFromSuperview() }
@@ -596,10 +638,11 @@ final class InfoPanelContentView: NSView {
     private func buildRows(_ rows: [InfoRow], folderSize: FolderSizeEntry?, opensWith app: InfoOpenApp?, kind: String) {
         for row in rows {
             let label = FlushTextField(labelWithString: row.label)
-            label.font = ChromeColors.font(size: DesignTokens.typeScale.callout)
+            label.font = tabularFont(DesignTokens.typeScale.callout)
             label.setAccessibilityIdentifier("infoPanel.row.label")
             addSubview(label)
             var extra: FlushTextField?
+            var box: RowValueBox?
             let value: NSView
             switch row.value {
             case .text(let text):
@@ -612,10 +655,13 @@ final class InfoPanelContentView: NSView {
             case .folderSize:
                 cell.isHidden = false
                 value = cell
+                box = RowValueBox()
             case .permissions(let words, let octal, let symbolic):
                 let field = FlushTextField(labelWithString: words)
                 field.alignment = .right
-                field.setAccessibilityIdentifier("infoPanel.row.value")
+                field.setAccessibilityIdentifier("infoPanel.row.words")
+                box = RowValueBox()
+                box?.sample.stringValue = words
                 let code = FlushTextField(labelWithString: octal)
                 code.font = ThemeFonts.mono(DesignTokens.typeScale.small)
                 code.toolTip = symbolic
@@ -625,7 +671,9 @@ final class InfoPanelContentView: NSView {
                 extra = code
                 value = field
             case .whereLink(let text, let path):
-                let link = TextLinkView(identifier: "infoPanel.row.value")
+                let link = TextLinkView(identifier: "infoPanel.where")
+                box = RowValueBox()
+                box?.sample.stringValue = text
                 link.text = text
                 link.toolTip = path
                 link.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
@@ -637,8 +685,11 @@ final class InfoPanelContentView: NSView {
                 opensWith.kindLabel = kind
                 opensWith.app = app
                 value = opensWith
+                box = RowValueBox()
+                box?.sample.stringValue = app?.name ?? "None"
             }
-            rowViews.append(RowViews(row: row, label: label, value: value, extra: extra))
+            if let box { addSubview(box) }
+            rowViews.append(RowViews(row: row, label: label, value: value, extra: extra, box: box))
         }
     }
 
@@ -667,6 +718,12 @@ final class InfoPanelContentView: NSView {
         for views in rowViews {
             views.label.textColor = NSColor(palette.textSecondary)
             views.extra?.textColor = NSColor(palette.textSecondary)
+            if let box = views.box {
+                let muted = views.row.muted
+                box.sample.textColor = NSColor(
+                    muted ? mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue) : palette.textPrimary)
+                box.sample.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: muted ? 600 : 400)
+            }
             if let field = views.value as? NSTextField {
                 let muted = views.row.muted
                 field.textColor = NSColor(
@@ -682,11 +739,11 @@ final class InfoPanelContentView: NSView {
     // MARK: Layout
 
     private func lineHeight(_ font: NSFont?) -> Double {
-        ceil((font?.ascender ?? 0) - (font?.descender ?? 0) + (font?.leading ?? 0))
+        lineBox(font)
     }
 
     private func textWidth(_ field: NSTextField) -> Double {
-        ceil((field.stringValue as NSString).size(withAttributes: [.font: field.font as Any]).width)
+        textExtent(field.stringValue, field.font)
     }
 
     func relayout() {
@@ -729,7 +786,8 @@ final class InfoPanelContentView: NSView {
             boxSide = InfoMetrics.heroStackBox
             iconSide = boxSide
         }
-        heroIcon.frame = NSRect(x: inset + (width - iconSide) / 2, y: y + (boxSide - iconSide) / 2, width: iconSide, height: iconSide)
+        heroIcon.inset = (boxSide - iconSide) / 2
+        heroIcon.frame = NSRect(x: inset + (width - boxSide) / 2, y: y, width: boxSide, height: boxSide)
         y += boxSide + InfoMetrics.heroGap
         let nameWidth = max(0, width - 2 * heroPad)
         let nameLine = (name.font?.pointSize ?? 15) * 1.3
@@ -750,10 +808,12 @@ final class InfoPanelContentView: NSView {
             attributes: [.font: nameFont, .paragraphStyle: nameParagraph])
         let lines = min(2, max(1, Int((measured.height / nameLine).rounded(.up))))
         let nameHeight = Double(lines) * nameLine
-        name.frame = NSRect(x: inset + heroPad, y: y, width: nameWidth, height: nameHeight)
+        let nameShown = min(nameWidth, max(ceil(measured.width), textExtent(name.stringValue, nameFont)))
+        name.frame = NSRect(x: inset + (width - nameShown) / 2, y: y, width: nameShown, height: nameHeight)
         y += nameHeight + InfoMetrics.heroGap
         let subtitleHeight = lineHeight(subtitle.font)
-        subtitle.frame = NSRect(x: inset + heroPad, y: y, width: nameWidth, height: subtitleHeight)
+        let subtitleShown = min(nameWidth, textExtent(subtitle.stringValue, subtitle.font))
+        subtitle.frame = NSRect(x: inset + (width - subtitleShown) / 2, y: y, width: subtitleShown, height: subtitleHeight)
         y += subtitleHeight + 14
 
         if case .item = body {
@@ -813,12 +873,17 @@ final class InfoPanelContentView: NSView {
                     field.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
                 }
             case let popup as OpensWithPopupView:
-                // margin -4 0: the pop-up reaches 4 pt above and below the line.
-                popup.frame = NSRect(x: valueX, y: top - 4, width: valueWidth, height: bodyLine + 8)
+                // margin -4 0: the pop-up is 4 pt taller above and below than its text.
+                popup.frame = NSRect(x: valueX, y: top - 2, width: valueWidth, height: bodyLine + 4)
             case let sizeCell as FolderSizeCellView:
                 sizeCell.frame = NSRect(x: valueX, y: top, width: valueWidth, height: valueHeight)
             default:
                 views.value.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
+            }
+            views.box?.frame = NSRect(x: valueX, y: top, width: valueWidth, height: valueHeight)
+            if let words = views.value as? NSTextField, views.extra != nil, let box = views.box {
+                box.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
+                _ = words
             }
             y = top + rowContent + InfoMetrics.rowPaddingBlock
             if index < rowViews.count - 1 {
@@ -831,7 +896,6 @@ final class InfoPanelContentView: NSView {
             if titleIndex < sectionTitles.count { place(title: sectionTitles[titleIndex]) }
             // `.get-info-actions`: margin 2 -8 0, a 2 gap, wrapping.
             var x = inset - 8
-            y += 2
             for (_, button) in actionButtons {
                 if x + InfoMetrics.actionWidth > inset + width + 8 {
                     x = inset - 8

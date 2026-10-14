@@ -1,0 +1,77 @@
+{
+  "name": "149-infopanel-open-with-menu-light",
+  "description": "The Info panel's Open With menu",
+  "features": [
+    "F-822"
+  ],
+  "behaviors": [
+    "B-INFO-060",
+    "B-INFO-063"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "propertiesOpen": true
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "select",
+      "names": [
+        "TripCard.jsx"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 900
+    },
+    {
+      "step": "click",
+      "element": "info panel open with"
+    },
+    {
+      "step": "expectSheet",
+      "name": "info panel open with menu"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

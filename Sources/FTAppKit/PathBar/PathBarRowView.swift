@@ -49,7 +49,7 @@ final class PathBarRowView: NSView {
         super.init(frame: frame)
         wantsLayer = true
         setAccessibilityIdentifier("pathBarRow")
-        status.font = ChromeColors.font(size: DesignTokens.typeScale.small)
+        status.font = tabularFont(DesignTokens.typeScale.small)
         status.alignment = .left
         status.lineBreakMode = .byTruncatingTail
         status.setAccessibilityIdentifier("statusBar")
@@ -154,8 +154,8 @@ final class PathBarRowView: NSView {
         if isEditing {
             editor.frame = NSRect(x: left, y: contentTop, width: width, height: contentHeight)
         } else {
-            let size = status.intrinsicContentSize
-            let natural: Double? = status.stringValue.isEmpty ? nil : Double(ceil(size.width))
+            let size = NSSize(width: 0, height: lineBox(status.font))
+            let natural: Double? = status.stringValue.isEmpty ? nil : textExtent(status.stringValue, status.font)
             let split = PathBarModel.rowLayout(contentWidth: width, statusWidth: natural)
             pathBar.frame = NSRect(x: left, y: contentTop, width: split.path, height: contentHeight)
             let spacing = InfoMetrics.pathRowGap + InfoMetrics.statusMarginLeft

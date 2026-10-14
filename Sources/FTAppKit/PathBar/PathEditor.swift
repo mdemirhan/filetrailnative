@@ -38,7 +38,7 @@ final class PathSuggestionRowView: NSView {
     static func height() -> Double {
         let font = ThemeFonts.mono(DesignTokens.typeScale.mono)
         let nameFont = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 500)
-        let line = max(ceil(font.ascender - font.descender + font.leading), ceil(nameFont.ascender - nameFont.descender + nameFont.leading))
+        let line = max(lineBox(font), lineBox(nameFont))
         return 2 * padding.vertical + line
     }
 
@@ -64,8 +64,8 @@ final class PathSuggestionRowView: NSView {
         let inner = max(0, bounds.width - 2 * Self.padding.horizontal - Self.gap)
         let pathWidth = max(Self.pathMinWidth, inner * 1.3 / 2.3)
         let nameWidth = max(0, inner - pathWidth)
-        let nameHeight = ceil((name.font?.ascender ?? 0) - (name.font?.descender ?? 0))
-        let pathHeight = ceil((path.font?.ascender ?? 0) - (path.font?.descender ?? 0))
+        let nameHeight = lineBox(name.font)
+        let pathHeight = lineBox(path.font)
         name.frame = NSRect(
             x: Self.padding.horizontal, y: (bounds.height - nameHeight) / 2, width: nameWidth, height: nameHeight)
         path.frame = NSRect(
@@ -435,7 +435,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate {
     override func layout() {
         super.layout()
         let font = field.font ?? .systemFont(ofSize: 13)
-        let height = ceil(font.ascender - font.descender + font.leading)
+        let height = lineBox(font)
         field.frame = NSRect(x: 10, y: (bounds.height - height) / 2, width: max(0, bounds.width - 20), height: height)
     }
 

@@ -1,0 +1,71 @@
+{
+  "name": "144-infopanel-folder-size-light",
+  "description": "The Info panel for a folder with a calculated size",
+  "features": [
+    "F-824",
+    "F-823"
+  ],
+  "behaviors": [
+    "B-INFO-041",
+    "B-INFO-043"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "propertiesOpen": true,
+        "autoCalculateFolderSizes": false
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "select",
+      "names": [
+        "components"
+      ]
+    },
+    {
+      "step": "command",
+      "id": "calculateSize"
+    },
+    {
+      "step": "wait",
+      "ms": 1500
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

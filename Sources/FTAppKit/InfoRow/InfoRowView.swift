@@ -20,6 +20,77 @@ struct InfoRowDisplay: Equatable {
     var facts: [Fact]
 }
 
+/// One fact of the line (`.info-row-fact`): its text or the folder size cell, with the dot before it that comes with every
+/// fact but the first (`.info-row-fact + .info-row-fact::before`, margin 0 6, inside the fact's box).
+final class InfoRowFactView: NSView, TextStyleSource {
+    let text = FlushTextField(labelWithString: "")
+    let dot = FlushTextField(labelWithString: "·")
+    var cell: FolderSizeCellView?
+    var hasDot = false
+
+    var styleTextField: NSTextField? { text }
+    override var isFlipped: Bool { true }
+
+    init(cell: FolderSizeCellView?, hasDot: Bool) {
+        self.cell = cell
+        self.hasDot = hasDot
+        super.init(frame: .zero)
+        setAccessibilityIdentifier("infoRow.fact")
+        text.font = tabularFont(DesignTokens.typeScale.callout)
+        text.lineBreakMode = .byTruncatingTail
+        dot.font = tabularFont(DesignTokens.typeScale.callout)
+        dot.setAccessibilityIdentifier("infoRow.dot")
+        if hasDot { addSubview(dot) }
+        if let cell {
+            addSubview(cell)
+            text.alphaValue = 0
+            text.stringValue = "Calculate size"
+        }
+        addSubview(text)
+        applyColors()
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// The width of the dot and its margins.
+    var dotSpace: Double {
+        hasDot ? textExtent("·", dot.font) + 2 * InfoMetrics.infoRowFactMargin : 0
+    }
+
+    var naturalWidth: Double {
+        dotSpace + (cell.map { Double($0.naturalSize.width) } ?? textExtent(text.stringValue, text.font))
+    }
+
+    func applyColors() {
+        let palette = AppearanceModel.shared.theme.palette
+        text.textColor = NSColor(palette.textSecondary)
+        dot.textColor = NSColor(palette.textDim)
+    }
+
+    override func layout() {
+        super.layout()
+        let line = lineBox(text.font)
+        let space = dotSpace
+        if hasDot {
+            dot.frame = NSRect(
+                x: InfoMetrics.infoRowFactMargin, y: (bounds.height - line) / 2,
+                width: textExtent("·", dot.font), height: line)
+        }
+        if let cell {
+            let size = cell.naturalSize
+            cell.frame = NSRect(x: space, y: (bounds.height - size.height) / 2, width: size.width, height: size.height)
+            text.frame = cell.frame
+        } else {
+            text.frame = NSRect(x: space, y: (bounds.height - line) / 2, width: max(0, bounds.width - space), height: line)
+        }
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        let hit = super.hitTest(point)
+        return hit === self || hit === text || hit === dot ? nil : hit
+    }
+}
+
 /// The Info Row's place under the list: 30 tall with a line on top while open; closed it keeps its 1 pt line, unseen
 /// (`max-height: 0`, `opacity: 0`). Like the path bar row it starts in the divider's half past the hairline. One line:
 /// the icon, the name, then the facts with dots between them.
@@ -32,9 +103,8 @@ final class InfoRowView: NSView {
 
     private let icon = InfoIconView()
     private let name = FlushTextField(labelWithString: "")
-    private let factsClip = NSView()
-    private var factViews: [NSView] = []
-    private var dots: [FlushTextField] = []
+    private let factsClip = InfoFlippedView()
+    private var factViews: [InfoRowFactView] = []
     private(set) var display: InfoRowDisplay?
     var iconStore: FileIconStore?
     var onCalculate: () -> Void = {}
@@ -91,7 +161,7 @@ final class InfoRowView: NSView {
         setAccessibilityIdentifier("infoRow")
         icon.setAccessibilityIdentifier("infoRow.icon")
         name.setAccessibilityIdentifier("infoRow.name")
-        name.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: 500)
+        name.font = tabularFont(DesignTokens.typeScale.callout, weight: 500)
         name.lineBreakMode = .byTruncatingTail
         factsClip.wantsLayer = true
         factsClip.layer?.masksToBounds = true
@@ -113,16 +183,36 @@ final class InfoRowView: NSView {
 
     func show(_ next: InfoRowDisplay?) {
         guard next != display else { return }
+        let sameShape = display?.facts.count == next?.facts.count && display?.name == next?.name
         display = next
+        if sameShape, let next, rebuildInPlace(next) {
+            needsLayout = true
+            return
+        }
         rebuildFacts()
         needsLayout = true
     }
 
+    /// The same facts with new values (a size arriving): only the folder size cell and the texts change.
+    private func rebuildInPlace(_ next: InfoRowDisplay) -> Bool {
+        guard factViews.count == next.facts.count else { return false }
+        for (view, fact) in zip(factViews, next.facts) {
+            switch fact.content {
+            case .text(let text):
+                guard view.cell == nil else { return false }
+                view.text.stringValue = text
+            case .folderSize(let entry):
+                guard view.cell != nil else { return false }
+                cell.update(entry)
+            }
+            view.toolTip = fact.tooltip
+        }
+        return true
+    }
+
     private func rebuildFacts() {
         for view in factViews { view.removeFromSuperview() }
-        for dot in dots { dot.removeFromSuperview() }
         factViews = []
-        dots = []
         guard let display else {
             name.stringValue = ""
             icon.show(nil, store: iconStore, deferLoad: true)
@@ -132,39 +222,20 @@ final class InfoRowView: NSView {
         name.toolTip = display.nameTooltip
         icon.show(display.icon, store: iconStore, deferLoad: true)
         for (index, fact) in display.facts.enumerated() {
-            if index > 0 {
-                let dot = FlushTextField(labelWithString: "·")
-                dot.font = ChromeColors.font(size: DesignTokens.typeScale.callout)
-                dot.setAccessibilityIdentifier("infoRow.dot")
-                dots.append(dot)
-                factsClip.addSubview(dot)
-            }
+            let view: InfoRowFactView
             switch fact.content {
             case .text(let text):
-                let field = FlushTextField(labelWithString: text)
-                field.font = ChromeColors.font(size: DesignTokens.typeScale.callout)
-                field.lineBreakMode = .byTruncatingTail
-                field.toolTip = fact.tooltip
-                field.setAccessibilityIdentifier("infoRow.fact")
-                factViews.append(field)
-                factsClip.addSubview(field)
+                view = InfoRowFactView(cell: nil, hasDot: index > 0)
+                view.text.stringValue = text
             case .folderSize(let entry):
                 cell.update(entry)
-                cell.toolTip = fact.tooltip
-                if cell.superview !== factsClip { factsClip.addSubview(cell) }
-                factViews.append(cell)
+                view = InfoRowFactView(cell: cell, hasDot: index > 0)
             }
+            view.toolTip = fact.tooltip
+            factsClip.addSubview(view)
+            factViews.append(view)
         }
         applyColors()
-    }
-
-    private func natural(_ view: NSView) -> NSSize {
-        if let field = view as? NSTextField {
-            let size = (field.stringValue as NSString).size(withAttributes: [.font: field.font as Any])
-            return NSSize(width: ceil(size.width), height: ceil(size.height))
-        }
-        if let cell = view as? FolderSizeCellView { return cell.naturalSize }
-        return .zero
     }
 
     override func layout() {
@@ -178,16 +249,14 @@ final class InfoRowView: NSView {
         icon.isHidden = display == nil
         icon.frame = NSRect(x: left, y: centerY - side / 2, width: side, height: side)
         guard display != nil else { return }
-        let nameSize = natural(name)
-        // Facts: each fact's natural width, with a dot (margin 6 each side) between.
-        let dotWidth = dots.first.map { natural($0).width } ?? 0
-        let separator = dotWidth + 2 * InfoMetrics.infoRowFactMargin
-        var factWidths = factViews.map { natural($0).width }
-        let factsTotal = factWidths.reduce(0, +) + separator * Double(max(0, factViews.count - 1))
+        let nameHeight = lineBox(name.font)
+        let nameNatural = textExtent(name.stringValue, name.font)
+        let widths = factViews.map(\.naturalWidth)
+        let factsTotal = widths.reduce(0, +)
         let start = left + side + InfoMetrics.infoRowGap
         let available = max(0, right - start)
         let gap = factViews.isEmpty ? 0 : InfoMetrics.infoRowGap
-        var nameWidth = nameSize.width
+        var nameWidth = nameNatural
         var factsWidth = factsTotal
         let overflow = nameWidth + gap + factsWidth - available
         if overflow > 0 {
@@ -197,34 +266,21 @@ final class InfoRowView: NSView {
             nameWidth -= nameCut
             factsWidth = max(0, factsWidth - (overflow - nameCut))
         }
-        name.frame = NSRect(x: start, y: centerY - nameSize.height / 2, width: nameWidth, height: nameSize.height)
-        let factsX = start + nameWidth + gap
-        factsClip.frame = NSRect(x: factsX, y: 0, width: factsWidth, height: bounds.height)
+        name.frame = NSRect(x: start, y: centerY - nameHeight / 2, width: nameWidth, height: nameHeight)
+        factsClip.frame = NSRect(x: start + nameWidth + gap, y: 0, width: factsWidth, height: bounds.height)
         factsClip.isHidden = factViews.isEmpty
         var x = 0.0
         for (index, view) in factViews.enumerated() {
-            if index > 0 {
-                let dot = dots[index - 1]
-                let size = natural(dot)
-                dot.frame = NSRect(
-                    x: x + InfoMetrics.infoRowFactMargin, y: centerY - size.height / 2, width: size.width, height: size.height)
-                x += separator
-            }
-            let size = natural(view)
-            view.frame = NSRect(x: x, y: centerY - size.height / 2, width: factWidths[index], height: size.height)
-            x += factWidths[index]
+            view.frame = NSRect(x: x, y: centerY - nameHeight / 2, width: widths[index], height: nameHeight)
+            x += widths[index]
         }
-        factWidths = []
         applyColors()
     }
 
     private func applyColors() {
         let theme = AppearanceModel.shared.theme
         name.textColor = NSColor(theme.palette.textPrimary)
-        for view in factViews {
-            (view as? NSTextField)?.textColor = NSColor(theme.palette.textSecondary)
-        }
-        for dot in dots { dot.textColor = NSColor(theme.palette.textDim) }
+        for view in factViews { view.applyColors() }
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -245,4 +301,7 @@ final class InfoRowView: NSView {
         super.setFrameSize(newSize)
         needsLayout = true
     }
+
+    /// Closed, its line is out of sight and out of reach.
+    override func hitTest(_ point: NSPoint) -> NSView? { isOpen ? super.hitTest(point) : nil }
 }

@@ -1,0 +1,63 @@
+{
+  "name": "136-pathbar-expanded-light",
+  "description": "The \u2026 button expands the whole path into a horizontal scroll",
+  "features": [
+    "F-744"
+  ],
+  "behaviors": [
+    "B-INFO-106",
+    "B-INFO-107"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "click",
+      "element": "path bar segment",
+      "text": "\u2026"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

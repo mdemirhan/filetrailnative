@@ -7,6 +7,8 @@ import FTFoundation
 @MainActor
 final class InfoIconView: NSView {
     private var image: NSImage?
+    /// Room between the box and the icon drawn in it (the hero's 104 box holds a 96 icon).
+    var inset = 0.0
     private var isFolder = false
     private var handle: LoadHandle?
     private var shown: String?
@@ -70,10 +72,11 @@ final class InfoIconView: NSView {
             }
             return
         }
+        let box = bounds.insetBy(dx: inset, dy: inset)
         if let image {
-            image.draw(in: bounds, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
+            image.draw(in: box, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
         } else if isFolder {
-            SidebarIconView.drawFolderStandIn(in: bounds)
+            SidebarIconView.drawFolderStandIn(in: box)
         }
     }
 }

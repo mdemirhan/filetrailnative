@@ -4,7 +4,8 @@ import AppKit
 import FTFoundation
 
 /// Text that acts as a link: the accent color, underlined under the pointer.
-final class TextLinkView: NSView {
+final class TextLinkView: NSView, TextStyleSource {
+    var styleTextField: NSTextField? { label }
     let label = FlushTextField(labelWithString: "")
     var onClick: (() -> Void)?
     var color: (Theme) -> RGBA = { $0.accent.solid } {
@@ -38,7 +39,7 @@ final class TextLinkView: NSView {
     }
 
     var naturalWidth: Double { ceil((text as NSString).size(withAttributes: [.font: font]).width) }
-    var naturalHeight: Double { ceil(font.ascender - font.descender + font.leading) }
+    var naturalHeight: Double { lineBox(font) }
 
     func applyStyle() {
         let theme = AppearanceModel.shared.theme
@@ -120,12 +121,13 @@ final class FolderSizeCellView: NSView {
         super.init(frame: .zero)
         setAccessibilityIdentifier(identifier)
         calculate.text = style == .panel ? "Calculate" : "Calculate size"
-        calculate.font = ThemeFonts.sans(DesignTokens.typeScale.callout, style == .panel ? .semibold : .regular)
+        calculate.font = tabularFont(DesignTokens.typeScale.callout, weight: style == .panel ? 600 : 400)
         for field in [sizeLine, itemsLine] {
             field.lineBreakMode = .byTruncatingTail
             field.alignment = style == .panel ? .right : .left
         }
-        sizeLine.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
+        sizeLine.font =
+            style == .row ? tabularFont(DesignTokens.typeScale.callout) : ThemeFonts.sans(DesignTokens.typeScale.callout)
         itemsLine.font = ThemeFonts.sans(DesignTokens.typeScale.small)
         sizeLine.setAccessibilityIdentifier(identifier + ".size")
         itemsLine.setAccessibilityIdentifier(identifier + ".items")
@@ -181,12 +183,12 @@ final class FolderSizeCellView: NSView {
     }
 
     private var lineHeight: (size: Double, items: Double) {
-        func height(_ font: NSFont?) -> Double { ceil(((font?.ascender ?? 0) - (font?.descender ?? 0)) + (font?.leading ?? 0)) }
+        func height(_ font: NSFont?) -> Double { lineBox(font) }
         return (height(sizeLine.font), height(itemsLine.font))
     }
 
     private func width(_ field: NSTextField) -> Double {
-        ceil((field.stringValue as NSString).size(withAttributes: [.font: field.font as Any]).width)
+        textExtent(field.stringValue, field.font)
     }
 
     /// The size the cell takes now.

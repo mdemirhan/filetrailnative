@@ -1,0 +1,72 @@
+{
+  "name": "143-infopanel-file-light",
+  "description": "The Info panel for a file: hero, Open in <app>, Information and Quick Actions",
+  "features": [
+    "F-697",
+    "F-820",
+    "F-821",
+    "F-822",
+    "F-823",
+    "F-825"
+  ],
+  "behaviors": [
+    "B-INFO-027",
+    "B-INFO-029",
+    "B-INFO-031",
+    "B-INFO-059"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "propertiesOpen": true
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "select",
+      "names": [
+        "TripCard.jsx"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 900
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

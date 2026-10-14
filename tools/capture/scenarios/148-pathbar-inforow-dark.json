@@ -1,0 +1,67 @@
+{
+  "name": "148-pathbar-inforow-dark",
+  "description": "The path bar and the Info Row in the dark theme",
+  "features": [
+    "F-742",
+    "F-748",
+    "F-747"
+  ],
+  "behaviors": [
+    "B-INFO-102",
+    "B-INFO-069"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "dark",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "detailRowOpen": true
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "select",
+      "names": [
+        "TripCard.jsx"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 600
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

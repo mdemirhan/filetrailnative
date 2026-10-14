@@ -191,6 +191,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// The window's grid: sidebar, content, Info panel and the toolbar.
     let workspace: WorkspaceView
     private let infoPanel = InfoPanelView()
+    /// What the Info panel and the Info Row describe (P5-06).
+    private(set) var infoController: InfoController?
     /// Customize Toolbar, while it is on.
     private(set) var customizer: ToolbarCustomizer?
     /// The folder a search runs from while the tab shows its results (P5-07 starts and ends searches).
@@ -273,12 +275,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
 
         wireContent()
+        wirePathBar()
+        infoController = InfoController(host: self, panel: infoPanel, row: content.contentShell.infoRow)
         workspace.toolbar.attach(self)
         connectSearchField()
         #if DEBUG
             AutomationLayoutPrefs.registerOnce()
             AutomationSidebarPrefs.registerOnce()
             AutomationContentPrefs.registerOnce()
+            AutomationInfoPrefs.registerOnce()
         #endif
         updateTitle()
         if loadNow { ensureLoaded() }
@@ -599,6 +604,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         if let sidebarKeyboard { window?.makeFirstResponder(sidebarKeyboard) }
         sidebar.folderOpened(url, open)
         updateNavigationItems()
+        updatePathBar()
         notify(.folder)
         window?.contentView?.layoutSubtreeIfNeeded()
         window?.displayIfNeeded()
@@ -1084,6 +1090,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
         case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
         case .focusContentPane: content.focusList()
+        case .calculateSize: infoController?.calculateSizeCommand()
         default:
             if let selector = MenuCommandRouter.nativeEditSelector(command) {
                 NSApp.sendAction(selector, to: nil, from: nil)
