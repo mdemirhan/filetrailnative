@@ -101,6 +101,7 @@ Normalizing twice changes nothing, so a recording replayed compares equal.
 | `exec-copy` | Plain copies, merge, Keep Both, Replace (file, folder, package, link), Skip, type mismatches, locks, no Trash, a blocked Replace, an unreadable folder, other disks, other disks without a Trash, a paste that fails as a whole |
 | `exec-cut` | Same-disk renames, per-file moves into a merged folder, Replace, Skip, a locked file, a move into its own folder, moves to and from other disks |
 | `exec-runtime` | Changes after the review or mid-paste, each allowed answer, answers for the rest of the operation (reused, asked again, another kind) |
+| `exec-volumes` | Copy, Add Missing merge, Keep Both, Skip, a same-disk move, and moves onto and off each disk image: apfs, apfs-cs, hfs, fat32, exfat |
 | `exec-stop` | Stops at chosen events: while queued, as it starts, inside a folder copy, between items, while building a replacement, during a move, with a question open |
 | `exec-crash` | A crash after each journal write of a folder Replace (copy, and same-disk move), a file Replace, a folder copied whole, and a folder moved to another disk; then recovery |
 | `analysis-cases` | Hand-picked: file-operations.md §2 and §7 A–C |
@@ -114,4 +115,4 @@ Normalizing twice changes nothing, so a recording replayed compares equal.
 - `ExecEngine`: `run(scenario, answers:, stopAt:, crashAt:, in: places) async throws -> ExecOutcome`, which the Swift write engine implements; `ExecAnalysisEngine` for the analysis.
 - `ExecHarness`: `cases(suite:)`, `check(_:with:)`, `checkAnalysis(_:with:)`, `mismatchReport(suite:engine:)` (builds the tree in fresh folders, runs the engine, normalizes, compares) and `builtTreeDifferences(_:)`.
 - `ExecDiff.differences(expected:actual:)`: the first differences, one line each (`events[3].completedItemCount: expected 2, got 3`). Strings compare scalar for scalar.
-- `ReferenceReplayEngine` returns the recordings themselves. `FTOperationsTests/ExecGoldenTests` runs it until the Swift engine exists, which proves decoding, normalizing and comparing, and builds every scenario's tree and checks it against the recorded `before`.
+- `SwiftExecEngine` (`FTOperationsTests/Exec`) runs `exec-copy`, `exec-cut`, `exec-runtime` and `exec-volumes`. `ReferenceReplayEngine` returns the recordings themselves; it only proves the decode path (decoding, normalizing and comparing, and building every scenario's tree and checking it against the recorded `before`) and stands in for `exec-stop` and `exec-crash`.
