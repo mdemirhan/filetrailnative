@@ -177,14 +177,15 @@ struct AppLoggerTests {
         defer { folder.remove() }
         let logger = AppLogger(filePath: folder.path + "/app.log", debugEnabled: true, sink: sink)
         let times = TimeBox([0, 119.4, 200, 320.5, 500, 502])
+        let clock: @Sendable () -> Double = { times.next() }
 
-        _ = await withTiming("tree:getChildren", "/a", logger: logger, timingsEnabled: false, clock: { times.next() }) {
+        _ = await withTiming("tree:getChildren", "/a", logger: logger, timingsEnabled: false, clock: clock) {
             1
         }
         logger.flush()
         #expect(sink.count(.debug) == 0)
 
-        _ = await withTiming("tree:getChildren", "/b", logger: logger, timingsEnabled: false, clock: { times.next() }) {
+        _ = await withTiming("tree:getChildren", "/b", logger: logger, timingsEnabled: false, clock: clock) {
             1
         }
         logger.flush()
@@ -193,7 +194,7 @@ struct AppLoggerTests {
             Timing.line(label: "tree:getChildren", path: "/b", elapsedMilliseconds: 120.5)
                 == "[filetrail] tree:getChildren /b 121ms")
 
-        _ = await withTiming("path:resolve", "/c", logger: logger, timingsEnabled: true, clock: { times.next() }) { 1 }
+        _ = await withTiming("path:resolve", "/c", logger: logger, timingsEnabled: true, clock: clock) { 1 }
         logger.flush()
         #expect(sink.count(.debug) == 2)
         #expect(
