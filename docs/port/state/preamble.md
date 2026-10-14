@@ -45,9 +45,9 @@ Anything that launches the app or puts a window on screen (`tools/capture/*`, `t
 `lockf -k ~/Library/Caches/filetrail-port/gui.lock <command>`
 
 Keep window runs few and narrow. The lock is shared by every agent on this Mac, and each full run puts dozens of windows on the user's screen.
-- While you work, run only what you changed: your own GUI suites (`swift test --filter FTAppKitTests.<YourSuite>`) and your own scenarios (`tools/capture/run.sh <scenario> …`).
-- Run the full `FTAppKitTests` GUI suite and `tools/capture/run.sh --tier wp` once, at the end, as your last check before you return. A gate agent runs each gate command once. A fixer reruns only the commands that failed, plus the full set once at the end.
-- Don't rerun a full suite to see whether a flake goes away; rerun the one test.
+- Run the full `FTAppKitTests` GUI suite, a full `tools/capture/run.sh --tier wp` or `--acceptance` set, or the bench only when your role's prompt lists that exact command for you to run (the batch checker, and the gate runners of batches started before 2026-10-14 evening). Builders and fixers otherwise run none of them, and run each listed one once, at the end.
+- While you work, run only what you changed: your own GUI suites (`swift test --filter FTAppKitTests.<YourSuite>`) and your own scenarios (`tools/capture/run.sh <scenario> …`), each once when it's ready rather than after every edit.
+- Don't rerun anything to see whether a flake goes away; rerun the one test.
 
 ## Messages during your run
 

@@ -7,6 +7,7 @@ export const meta = {
     { title: 'Gate', detail: 'run the work package gate commands' },
     { title: 'Review', detail: 'lenses by risk tier; findings need a failing test or a diff' },
     { title: 'Fix', detail: 'at most 2 fix loops' },
+    { title: 'Batch check', detail: 'window checks once, on all ready work packages merged together' },
     { title: 'Integrate', detail: 'merge ready work packages into main, one at a time' },
     { title: 'Critic', detail: 'optional end-of-phase check' },
   ],
@@ -106,7 +107,16 @@ function modelOpts(wp) {
 }
 
 const head = (wp) => `${PRE}\n\n# Work package ${wp.id}: ${wp.title}\nRisk: ${wp.risk}. Branch: port/${wp.id}.\nYour brief is ${A.repo}/docs/port/state/wp/${wp.id}.md: read it in full before starting.\n`
-const gateList = (wp) => (wp.gate.length ? wp.gate.map((c) => `- \`${c}\``).join('\n') : '- `scripts/ci.sh --scope ' + wp.id + '` (if scripts/ci.sh exists)')
+// Commands that put windows on screen (GUI tests, captures, bench) all take the GUI lock. They run once per batch,
+// in the batch check on all ready work packages merged together, not in each work package's build, gate and fix
+// (user, 2026-10-14: the same UI runs were repeating). Per work package only the windowless commands gate.
+const isWindowCmd = (c) => c.includes('gui.lock')
+const wpGate = (wp) => wp.gate.filter((c) => !isWindowCmd(c))
+const windowGate = (wp) => wp.gate.filter(isWindowCmd)
+const gateList = (wp) => (wpGate(wp).length ? wpGate(wp).map((c) => `- \`${c}\``).join('\n') : '- `scripts/ci.sh`')
+const windowNote = (wp) => (windowGate(wp).length
+  ? `\nThe window checks (${windowGate(wp).map((c) => `\`${c}\``).join(', ')}) are not yours to run in full: the batch check runs them once for the whole batch. While you work, run only your own GUI suites and your own scenarios, under the GUI lock, as the preamble says.`
+  : '')
 
 function implement(wp) {
   return agent(
@@ -117,7 +127,7 @@ You are in your own fresh git worktree (it starts on main).
 2. If branch port/${wp.id} exists, an earlier run was interrupted: \`git checkout port/${wp.id}\` and continue from its commits. Otherwise \`git checkout -b port/${wp.id} main\`.
 3. Do the work in the brief. Commit as you go with messages "wip(${wp.id}): ...".
 4. Run the gate commands below until they all pass:
-${gateList(wp)}
+${gateList(wp)}${windowNote(wp)}
 5. Make the final commit with a message whose last line is the trailer "Port-Stage: implemented". Then run \`git checkout --detach\` so the branch is free for the next agent.
 Return status "blocked" only if the brief cannot be done; list why in blockers, and still commit what you have.`,
     { label: `build:${wp.id}`, phase: 'Build', schema: IMPL, isolation: 'worktree', ...modelOpts(wp) },
@@ -166,7 +176,7 @@ Fix the problems below. For each finding, first add its failing test, then make 
 ${problems}
 
 Then run the gate commands until they pass:
-${gateList(wp)}
+${gateList(wp)}${windowNote(wp)}
 Make the last commit's message end with the trailer "Port-Stage: fixed-${round}", then run \`git checkout --detach\`.`,
     { label: `fix:${wp.id}#${round}`, phase: 'Fix', schema: FIX, isolation: 'worktree', ...modelOpts(wp) },
   )
@@ -208,8 +218,70 @@ log(`Batch ${A.batchId}: ${A.wps.map((w) => w.id).join(', ')}`)
 const spentBefore = budget.spent()
 const reports = await pipeline(A.wps, (wp) => runWp(wp))
 
+const BATCH_CHECK = {
+  type: 'object',
+  properties: {
+    pass: { type: 'boolean' },
+    summary: { type: 'string', description: 'One line per command: pass/fail and a key number' },
+    failures: {
+      type: 'array',
+      items: { type: 'object', properties: { wp: { type: 'string' }, detail: { type: 'string' } }, required: ['wp', 'detail'] },
+      description: 'Each failure with the work package it belongs to and at most 40 relevant lines',
+    },
+  },
+  required: ['pass', 'summary'],
+}
+
+function batchCheck(wps, round) {
+  const cmds = [...new Set(wps.flatMap(windowGate))]
+  return agent(
+    `${PRE}\n\n## Your role: batch checker for batch ${A.batchId}, round ${round}
+In your own worktree, make a throwaway branch from main and merge these work package branches into it, in order, with \`git merge --no-ff\`:
+${wps.map((w) => `- port/${w.id}`).join('\n')}
+If a merge conflicts, resolve it only if it is trivial (imports, lists, both sides kept); otherwise abort that merge, run the commands on that branch alone afterwards, and say so in the summary. Never push or keep the throwaway branch, and commit nothing to a port/ branch.
+Then run each command below once, from the repo root, in order:
+${cmds.map((c) => `- \`${c}\``).join('\n')}
+Report pass only if every command exits 0 (a bench run is report-only: pass it and quote its numbers). For each failure, find which work package it belongs to: by which branch added or changed the failing test, scenario or code, and if that isn't clear, by rerunning just the failing test or scenario on each branch alone. Rerun only the failing item, never a whole suite.`,
+    { label: `batch-check:${A.batchId}#${round}`, phase: 'Batch check', schema: BATCH_CHECK, isolation: 'worktree', model: 'sonnet', effort: 'medium' },
+  )
+}
+
+let ready = reports.filter((r) => r && r.status === 'ready')
+const checked = ready.map((r) => A.wps.find((w) => w.id === r.id)).filter((w) => windowGate(w).length)
+let batchCheckResult = null
+if (checked.length) {
+  phase('Batch check')
+  for (let round = 0; round <= MAX_FIX_LOOPS; round++) {
+    const inBatch = checked.filter((w) => reports.find((r) => r && r.id === w.id).status === 'ready')
+    if (!inBatch.length) break
+    batchCheckResult = await batchCheck(inBatch, round)
+    if (!batchCheckResult || batchCheckResult.pass || round === MAX_FIX_LOOPS) break
+    const failing = inBatch.filter((w) => (batchCheckResult.failures || []).some((f) => f.wp === w.id))
+    if (!failing.length) break
+    await parallel(failing.map((w) => async () => {
+      const failures = batchCheckResult.failures.filter((f) => f.wp === w.id)
+      const fixed = await fix(w, `batch-${round + 1}`, { pass: false, summary: `Batch check (window checks on the merged batch) failed for ${w.id}:`, failures: failures.map((f) => f.detail) }, [])
+      const report = reports.find((r) => r && r.id === w.id)
+      report.fixes.push(fixed)
+      if (fixed && fixed.headSha) report.headSha = fixed.headSha
+      const g = await gate(w, `batch-${round + 1}`)
+      if (!g || !g.pass) { report.status = 'blocked'; report.gate = g; report.blockers = [...(report.blockers || []), 'windowless gate failed after the batch-check fix'] }
+    }))
+  }
+  if (batchCheckResult && !batchCheckResult.pass) {
+    const failed = new Set((batchCheckResult.failures || []).map((f) => f.wp))
+    for (const r of reports) {
+      if (r && r.status === 'ready' && (failed.has(r.id) || !(batchCheckResult.failures || []).length)) {
+        r.status = 'blocked'
+        r.blockers = [...(r.blockers || []), 'batch window checks still failing after fix loops']
+      }
+    }
+  }
+  for (const r of reports) if (r && checked.some((w) => w.id === r.id)) r.batchCheck = batchCheckResult
+  ready = reports.filter((r) => r && r.status === 'ready')
+}
+
 let integration = null
-const ready = reports.filter((r) => r && r.status === 'ready')
 if (A.integrate && ready.length) {
   phase('Integrate')
   integration = await agent(
@@ -220,7 +292,7 @@ Another batch's integrator may use this checkout at the same time, so take the m
 Release it as your very last step, also when you stop early or something fails: \`rm -rf ~/Library/Caches/filetrail-port/integrate.lock\`.
 Merge these branches one at a time, in this order, with \`git merge --no-ff port/<id> -m "Merge <id>: <title>"\`:
 ${ready.map((r) => `- port/${r.id}${r.sharedFileRequests && r.sharedFileRequests.length ? ` — shared-file requests to apply after merging it: ${r.sharedFileRequests.join('; ')}` : ''}`).join('\n')}
-After each merge, run \`scripts/ci.sh\` (if it exists) and fix any break the merge caused, committing the fix on main. If a merge conflicts in a way you cannot resolve without changing a work package's design, abort that merge (\`git merge --abort\`) and list it in notMerged with the reason.
+After each merge, run \`scripts/ci.sh\` (if it exists; never the window checks, which the batch check already ran) and fix any break the merge caused, committing the fix on main. If a merge conflicts in a way you cannot resolve without changing a work package's design, abort that merge (\`git merge --abort\`) and list it in notMerged with the reason.
 When all merges are done, if tools/parity-matrix/sync.ts exists, run \`bun tools/parity-matrix/sync.ts\` (it updates docs/port/parity/ from the merged tests' citations and results) and commit the result as "Sync parity matrix after ${A.batchId}". If a merge conflicts only inside docs/port/parity/, take main's side and let the sync rebuild it.
 Return the merged ids, the final head sha and whether the last CI run passed.`,
     { label: `integrate:${A.batchId}`, phase: 'Integrate', schema: INTEGRATION, model: 'sonnet', effort: 'medium' },
@@ -235,4 +307,4 @@ if (A.critic) {
   })
 }
 
-return { batchId: A.batchId, reports, integration, critic, spentOutputTokens: budget.spent() - spentBefore }
+return { batchId: A.batchId, reports, batchCheck: batchCheckResult, integration, critic, spentOutputTokens: budget.spent() - spentBefore }
