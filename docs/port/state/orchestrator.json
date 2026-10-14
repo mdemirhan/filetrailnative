@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T12:06:56+00:00",
+  "updatedAt": "2026-10-14T13:55:36+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Running W2-A. Standing orders: after each batch/phase merge, clean up, launch next without asking; stop only for P3-gate real-disk checks, P5-gate cross-app drags, wave-gate deviation approvals. Draft wave-3 briefs (P6-01..04) in parallel once P3-05/P5-05 merge.",
+  "nextAction": "Two tracks running: W2-P1 (P3-02) and W2-U1 (P5-02, P5-03). Each track launches its next batch when its own merges (tracks in state).",
   "pause": {
     "requested": false,
     "reason": null,
@@ -85,6 +85,12 @@
       "weeklyPct": 15.0,
       "fiveHourPct": 18.0,
       "note": "after W1-H (1.55M agent tokens)"
+    },
+    {
+      "at": "2026-10-14T13:55:36+00:00",
+      "weeklyPct": 19.0,
+      "fiveHourPct": 16.0,
+      "note": "after W2-A (3.40M agent tokens)"
     }
   ],
   "batches": {
@@ -522,14 +528,54 @@
         "P4-03",
         "P5-01"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_26153c0e-afd",
       "estimatedAgents": 15,
       "meterBefore": {
         "weeklyPct": 16,
         "fiveHourPct": 3
       },
-      "startedAt": "2026-10-14T11:45:48+00:00"
+      "startedAt": "2026-10-14T11:45:48+00:00",
+      "endedAt": "2026-10-14T13:55:18+00:00",
+      "integration": {
+        "merged": [
+          "P3-01",
+          "P4-03",
+          "P5-01"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "13599e4e5aef6e0e6535841cb051bc7b12f853c0",
+        "summary": "All three merged with no conflicts, and the last scripts/ci.sh run passed (build, test with 1382 passing and 0 failing, format). Parity matrix synced and committed as \"Sync parity matrix after W2-A\".\n\nApplied after the merges:\n- scripts/build-app.sh now writes FTCommit into the built Info.plist and copies Resources/Acknowledgements into the app bundle.\n- The P5-01 request for `Metrics(density:)` is done: WindowMetrics.swift no longer passes `zoom: 100`.\n- AppDelegate.startServices installs ExplorerServices.installed with directoryService, folderWatches, clipboard and the preference channel. iconStore and volumeWatcher are passed as nil, since AppDelegate has neither yet.\n- ExplorerWindows.preferencesChanged now calls `tab.preferencesChanged(change)` directly. MainWindowController didn't conform to PreferenceChangeReceiver, so the old cast would have silently skipped every tab.\n\nNot applied:\n- The DesignTokens MenuLayout, CustomizePanelLayout and tooltip groups are not added, and the P5-01 views still use their named constants. This is a refactor of that work package's views.\n- The P5-08 clipboardChanged wiring is not done, because it belongs to that work package.\n- The P6-04 Settings requests (`register(pageWindow:)` and `openSettingsOnShortcuts`) are not done, because Settings isn't merged yet.\n- The optional ErrnoName cleanup from P3-01 is not done."
+      },
+      "critic": null,
+      "spentOutputTokens": 1043633,
+      "agents": 16,
+      "subagentTokens": 3396858,
+      "durationMin": 129.0,
+      "meterAfter": {
+        "weeklyPct": 19,
+        "fiveHourPct": 16
+      }
+    },
+    "W2-P1": {
+      "wps": [
+        "P3-02"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 8,
+      "startedAt": "2026-10-14T13:55:36+00:00"
+    },
+    "W2-U1": {
+      "wps": [
+        "P5-02",
+        "P5-03"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 11,
+      "startedAt": "2026-10-14T13:55:36+00:00"
     }
   },
   "wps": {
@@ -1269,10 +1315,10 @@
         "P1-01",
         "P2-01"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P3-01",
-      "headSha": "b78cd0ef2b69ca99488817b737e91c2adcca1b00",
-      "attempts": 0,
+      "headSha": "4104bd8179c109c70f2d06408e13104d7dba2d6a",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check",
@@ -1283,11 +1329,39 @@
         "safety",
         "performance"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Native/: NativeFS.copyFile/copyMetadata over CFileTrail ft_copyfile (status callback: stop, progress, xattr skip except resource fork, QUIT on errors) with CopyControl; FolderMetadata.apply (chmod+utimes fallback); renameExclusive (renamex_np, lstat+rename on ENOTSUP), isCaseSensitive, usesAppleDouble + magic, get/setFlags, get/setAcl, trashItem + trashErrno (native_trash.m mapping, cocoaCode); NativeError/NativeErrno exactly as native_errors.c; TrashItem (createTrashItem, live uses makeDiskHasTrash); PosixFileSystem.\nIdentity/: WriteServiceStats + IdentityFileSystem protocol, NodeFingerprint/captureFingerprint/captureFolderFingerprint/fingerprintsEqual/findSourceRelation, PastedItems (read once) with holdsAnyOf/isAnyOf, fileIdOf (>= 2^53 unknown); undoLog ids, stamps (Finder files skipped, SHA-1 names digest in UTF-16 order), FolderIds, UndoStep/UndoUnit/UndoLog with Codable in the original's JSON shape.\nCopy/: StopSignal/StopError, StoppableCopy (injectable ticker, 250 ms, never reports after return), describeCopyPasteError, lock flags, isLocked, findLockedRefusal.\nGolden copy-paste-errors (every errno 0..ELAST+1 plus Node-shaped errors; generator self-checks its text against the reference addon). Throughput test: 15 alternating runs each, medians within 5% (passes repeatedly).\nAll listed T ids ported or N/A (T-0c9bb001, T-d235c612); all F ids cited. Gates pass: ci.sh, gen.sh --check, large-file scoped ci.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "FolderMetadata.apply loses the 'metadata not copied' signal when the chmod/utimes fallback throws, so a cross-disk move would delete the original folder instead of keeping it",
+          "where": "Sources/FTOperations/Native/NativeCopy.swift:108-127 (FolderMetadata.apply) vs reference packages/core/src/fs/copyPasteExecution.ts:1404-1438 (applyDirectoryMetadata) and :2698-2707 (metadataKeptMessage)",
+          "evidence": "Reference (copyPasteExecution.ts:1427-1437): when copyMetadata throws on a move, it runs `context.metadataNotCopied.add(sourcePath)` first and only then calls preserveModeIfSupported and preserveTimestampsIfSupported. Either of those may throw (any code except ENOTSUP/EOPNOTSUPP, for example EPERM on a share or a locked folder). Callers swallow that throw with `.catch(() => undefined)` (lines 1057, 1382, 1731), but the source path is already in the set. So metadataKeptMessage (line 2703) still keeps the original folder (\"...couldn't all be copied, so the original was kept\") rather than calling tryRemoveEmptySourceDirectory.\n\nPort (NativeCopy.swift:113-127): `copied = false` is a local variable that only reaches the caller through `return copied`. When `try preserveMode(...)` or `try preserveTimestamps(...)` throws, apply throws, and that false never reaches the caller. A caller that swallows the error as the original does (`try?`) has nothing telling it to keep the original. The cross-disk move then removes the source folder, and its tags, ACL, custom icon and other xattrs that the copy could not take are lost for good.\n\nFailing test (put in Tests/FTOperationsTests/Native/ReviewFolderMetadataTests.swift and run `swift test --filter ReviewFolderMetadataTests`; it fails with 'Expectation failed: keepOriginal'):\n```swift\nimport Foundation\nimport Testing\n@testable import FTOperations\n\nstruct ReviewFolderMetadataTests {\n    @Test func aMoveWhoseFallbackThrowsStillSaysTheMetadataWasNotCopied() {\n        let refused = NativeError.errno(ENOTSUP, syscall: \"copyfile\", path: \"/s\", dest: \"/d\")\n        var keepOriginal = false\n        do {\n            keepOriginal = !(try FolderMetadata.apply(\n                source: \"/s\", destination: \"/d\", sourceMode: 0o755, sourceMtimeMs: 1500, moving: true,\n                copyMetadata: { _, _ in throw refused },\n                chmod: { _, _ in throw NativeError.errno(EPERM, syscall: \"chmod\", path: \"/d\") },\n                utimes: { _, _, _ in }))\n        } catch {\n            // swallowed as the original does: nothing says to keep the original\n        }\n        #expect(keepOriginal)\n    }\n}\n```\nFix: report 'not copied' independently of the fallback throwing. For example, return a result that carries both values, or take an `onNotCopied` callback that runs before the fallback, matching the order in the reference."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "headSha": "4104bd8179c109c70f2d06408e13104d7dba2d6a",
+          "summary": "Finding 1 is fixed. FolderMetadata.apply (Sources/FTOperations/Native/NativeCopy.swift) no longer returns a Bool that was lost when the fallback threw. It now takes an `onNotCopied: () -> Void` callback and returns nothing. On a move it calls the callback as soon as copyMetadata fails, before the chmod/utimes fallback, in the same order as the reference's metadataNotCopied.add. The review's test, as written, failed on the old code ('Expectation failed: keepOriginal'). I then changed it to the callback API in Tests/FTOperationsTests/Native/ReviewFolderMetadataTests.swift, and it passes. The existing test in NativeCopyTests.swift now records the callback in the call order instead of checking the return value. Nothing in Sources calls apply yet; only tests use it. All three gates pass: scripts/ci.sh, tools/parity/gen.sh --check, and FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests. The commit carries the 'Port-Stage: fixed-1' trailer, and the worktree is detached.",
+          "remaining": []
+        }
+      ],
       "blockers": [],
-      "carryOver": []
+      "carryOver": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "P3-01 gates, run from worktree detached at port/P3-01 (4104bd8): 1) scripts/ci.sh EXIT=0. 2) tools/parity/gen.sh --check EXIT=0 (\"goldens up to date (30 suite(s))\"). 3) FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests EXIT=0 (build PASS, test PASS 97 tests in passing runs, 0 failing, format PASS). Nothing changed or committed. Note: the first ci.sh run's stdout was redirected to /tmp/unused (a slip against the scratchpad rule); the file was deleted and the exit code was still captured.",
+        "failures": []
+      },
+      "sharedFileRequests": [
+        "Optional: FTFileSystem's internal ErrnoName (Sources/FTFileSystem/Volumes/EjectError.swift) duplicates FTOperations' public NativeErrno.name(of:). The owner of FTFileSystem could drop it in favour of a shared table later. No change is needed for this WP."
+      ],
+      "deviations": [
+        "Errors from calls the original made through Node's fs (lstat, stat, realpath, scandir, readlink, chmod, utime) are built like the addon's (libc strerror wording, e.g. 'ENOENT: No such file or directory, lstat ...') rather than libuv's lowercase wording ('no such file or directory'). Codes, syscall and paths match; the text only shows through describeCopyPasteError's fallback for codes outside its table. Behavior copied otherwise.",
+        "The copy-paste-errors golden leaves out JavaScript prototype-key codes ('constructor', 'toString', '__proto__'). describeCopyPasteError's object lookup returns a function for these. No real error has such a code.",
+        "Test adaptation only: on the 256 MB APFS image, a full disk still has about 6 MB of reserve that a resource fork can use. T-0c2e0a1d therefore writes a fork 2 MB larger than the reported free space, not the original's 2 MB fork.",
+        "Test ordering: /dev answers NSFeatureUnsupportedError only until the process has trashed something. Every real-Trash test in FTOperationsTests calls TrashProbe.touch() first (Tests/FTOperationsTests/Native/NativeTestSupport.swift), so the /dev case is always the first Trash call. Later work packages whose tests call the real NativeFS.trashItem must call it too."
+      ]
     },
     "P3-02": {
       "title": "Analysis report and policy",
@@ -1298,7 +1372,7 @@
       "depends": [
         "P3-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P3-02",
       "headSha": null,
       "attempts": 0,
@@ -1659,10 +1733,10 @@
         "P4-01",
         "P0-06"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P4-03",
-      "headSha": "4a2cd2a26719164161d769a67c336cd803faafaa",
-      "attempts": 0,
+      "headSha": "1415972ba794c62758876c5bc223d3ac2e46e77b",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/acknowledgements/gen.sh --check",
@@ -1672,10 +1746,41 @@
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "All four gate commands pass on port/P4-03 (head 1415972); the capture run exits 0.\nMETRICS: `Metrics(zoom:density:)` is now `Metrics(density:)`. `ZoomScale`, `zoomPercent`, `zoomRange`, `scale` and `scaled(_:)` are gone, and the `make` functions in `Layouts.swift` lost their scale argument. `DesignTokens.swift` was edited only to drop `.identity` (see sharedFileRequests). The `zoomPercent` preference is still read and ignored.\nAPPEARANCE: `AppearanceModel.shared` (`Appearance/`) holds the `Theme` (palette plus accent) and the selection colors, follows macOS while Auto, sets `NSApp.appearance`, sets page-window backgrounds (#161618 / #f4f5f8), and tells observers on change. The app's `WindowPreferenceChannel` (`AppDelegate.preferenceChannel`) routes to the model, `ExplorerWindows.preferencesChanged` (windows conform to `PreferenceChangeReceiver`), `PageWindows` and the menu rebuild.\nWINDOWS: `PageWindows` opens About, Acknowledgements and Help, one at a time, and remembers Help's last topic. About File Trail, File Trail Help and Keyboard Shortcuts open them.\nCONTENT: Help is generated by `tools/help/gen-swift-help.ts`, and `tools/acknowledgements/gen.sh [--check]` writes `Resources/Acknowledgements`.\nTESTS AND SCENARIOS: 95 new tests, including a `help-content` golden. Scenarios 39-49 are added (about, Help topics, Help search, Acknowledgements, theme with accent). Capture geometry for About, Help and Acknowledgements matches the original to within 1 pt, apart from the deviations below.\nThe `tools/capture/elements.json` names are appended, and `a15` now sets theme and accent with a `prefs` step.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "P4-03 gates (detached at port/P4-03, commit 1415972): 1) scripts/ci.sh exit 0 (build PASS, test PASS 1226 passing/0 failing, format PASS). 2) tools/acknowledgements/gen.sh --check exit 0 (up to date, 1 component). 3) lockf ... FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests exit 0 (272 tests in 32 suites passed). 4) lockf ... tools/capture/run.sh --tier wp exit 0, but its report lists many non-zero geometry/pixel diffs and some failed/unmet steps (e.g. 11-context-menu-file, 12-rename-f2, 16-go-to-folder-typed, 17-review-sheet-conflict, 19-settings-general failed:2 steps). Gate is pass by exit code; the capture report itself warrants a look. Full log: scratchpad g4.txt, contact sheet tools/capture/out/contact.html. Nothing changed or committed.",
+        "failures": [
+          "Capture tier wp exited 0 but reports deviations (not a gate failure by the stated rule):",
+          "19-settings-general: geometry 0 off, 3 missing (swift), 14 missing (electron) of 17; failed: 2 steps; expect: 1 unmet (swift)",
+          "12-rename-f2: failed: 1 steps; expect: 3 unmet (swift)",
+          "13-new-folder: failed: 1 steps; expect: 1 unmet (swift)",
+          "15-clipboard-popover: failed: 2 steps; expect: 2 unmet (swift)",
+          "16-go-to-folder-typed: pixels 0.88; failed: 2 steps; expect: 1 unmet (swift)",
+          "17-review-sheet-conflict: pixels 0.79; failed: 2 steps; expect: 1 unmet (swift)"
+        ]
+      },
+      "sharedFileRequests": [
+        "scripts/build-app.sh: write the short git hash into the built Info.plist as `FTCommit`, for example `/usr/libexec/PlistBuddy -c \"Add :FTCommit string $(git rev-parse --short HEAD)\" \"$app/Contents/Info.plist\"`. Without it About shows no commit. This also covers the release version, which is currently only the Info.plist `CFBundleShortVersionString`.",
+        "scripts/build-app.sh: copy `Resources/Acknowledgements` into `$app/Contents/Resources/Acknowledgements`. Without it a built app falls back to the source-tree copy, which only exists on this machine.",
+        "Sources/FTFoundation/Design/DesignTokens.swift: already applied, because the build needed it. `.make(.identity)` became `.make()` and `.make(density: d, .identity)` became `.make(density: d)`; the doc comment drops the zoom wording.",
+        "tools/capture/elements.json: 36 names appended (about, acknowledgements, help). P5-01 should use `elements.d/P5-01.json` as agreed.",
+        "Settings (P6-04): call `AppearanceModel.shared.register(pageWindow:)` for the Settings window so it gets the #161618 / #f4f5f8 background and the theme redraw. Set `AppDelegate.pageWindows.openSettingsOnShortcuts` to open Settings on the Shortcuts tab; the default sends only `.openSettings` to the front explorer window.",
+        "P5-01: make the explorer window observe `AppearanceModel.shared.observe` for redraws, read selection colors from `Theme.selection(paneFocused:windowActive:)` with `WindowActivity`, conform the tab controller to `PreferenceChangeReceiver`, and construct `Metrics(density:)`. `AutomationPrefs` already routes the `theme`, `accent` and `zoomPercent` scenario keys through the appearance model."
+      ],
+      "deviations": [
+        "About has no Electron row, and Copy Details has no Electron line: the native app has no runtime to name.",
+        "Help drops the zoom rows (Zoom in, Zoom out, Actual size, and the Appearance 'Zoom' row), because the zoom commands are gone (D-005).",
+        "Acknowledgements lists fd only, since the native bundle ships nothing else. There is no 'Open License Notices' button, as every entry carries its text.",
+        "The About icon is the app icon (AppIcon.icns) drawn 8.5% larger so its artwork matches the original SVG's size. Inline code in Help is mono on the input fill, without the chip's border and padding.",
+        "Page windows use the system traffic lights, moved to (16,18), and a transparent title bar.",
+        "a15-make-it-yours now sets theme and accent with a `prefs` step before Settings opens, because the Settings clicks need the window from P6-04. Its Settings toggle step is unchanged.",
+        "Scenario 49 shows unfocused-pane selection by focusing the tree, not by deactivating the window, because the driver's selectWindow always makes the window key.",
+        "The 13 styles.theme.test.ts cases are marked N/A, since there is no stylesheet. They are proven instead by the generated palettes (CSSTokenTests, AccentPaletteTests)."
+      ]
     },
     "P5-01": {
       "title": "Window layout and toolbar",
@@ -1689,10 +1794,10 @@
         "P4-01",
         "P4-02"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P5-01",
-      "headSha": "78653ed1d87f095f12732b3a4d65e1ad26bf4221",
-      "attempts": 0,
+      "headSha": "5680617513d412dfb7aee0fc929cf4e1d6beb823",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check",
@@ -1703,15 +1808,117 @@
         "parity",
         "visual"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Built the explorer window frame and toolbar. Layout/WorkspaceView is a frame-based grid: a full-height translucent sidebar, 8 pt hairline resizers that take ←/→ and ⇧, pane widths via FTFoundation/Layout/PaneWidths, a 220 ms Info panel slide, and a 52 pt band with the system tab bar under it. WindowChrome puts the traffic lights at 14,16. There is no NSToolbar, so no title-bar lines or dark band.\nThe toolbar is a custom view: capsules, title, view switch, sort/view-options/theme/overflow/history menus as in-window AppMenuViews, a right-click Customize Toolbar… menu, and in-place customizing (handles, scrim, panel, drags, keys, Restore Defaults/Done). Tooltips are app-drawn (TooltipScheduler + TooltipController).\nFTFoundation/Layout ports topToolbarLayout (fitting, capsules, drop index) and the CSS flex row (TopToolbarRow) and menu placement. Added the toolbar-layout golden (220 cases + a stylesheet case).\nMoved the spike views into Sidebar/, Content/, Content/List/ and Content/Icons/. Added the ContentPaneView rows and placeholders for PathBar, InfoRow and InfoPanel, plus Windows/ExplorerWindowContext.swift, which MainWindowController implements.\nrun.sh merges tools/capture/elements.d/*.json. Added elements.d/P5-01.json and scenarios 50-60.\nAll gates pass. Every P5-01 element shows 0 off and 0 missing in 50-60 and a10. The remaining offsets are other packages': sidebar rows/headers (P5-02), list header/rows and size bars (P5-03), icon items (P5-04), path bar and status text (P5-06), the native tab bar's 28 pt band (D-001), and the clipboard button in scenario 14 (P5-08 never fills the clipboard).\na08's hold-Back steps fail only because the path-bar clicks that build the history come from P5-06. The same hold/right-click flow passes in scenario 58.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "Right-click on any toolbar button opens the Customize Toolbar menu; the original only does so on empty room or the title",
+          "where": "Sources/FTAppKit/Toolbar/ToolbarButton.swift:109-113, Sources/FTAppKit/Toolbar/ToolbarView.swift:470-472",
+          "evidence": "Reference, ExplorerWorkspace.tsx:990-1005 (handleToolbarContextMenu): `const slot = target.closest('[data-toolbar-slot]'); if (slot && slot.dataset.toolbarSlot !== 'title') return;`. A right-click on any other item (Sort, View Options, Up, a disabled Back, a toggle) shows no menu. B-VIEW-128 says 'Right-clicks on other items are left alone'. Port: ToolbarButton.rightMouseDown calls `super.rightMouseDown` whenever the button has no `onRightClick` (every button except Back/Forward) or is disabled or inert. ToolbarSlotView has no rightMouseDown override, so the event reaches ToolbarView.rightMouseDown (line 470), which calls `showCustomizeMenu` for any non-customizing right-click. A right-click on Sort, Up, Folder Tree, a disabled Back, and so on therefore opens 'Customize Toolbar…'. Reproduce in a GUI test: send a rightMouseDown to the `toolbar.sort` button and assert that `AppMenuPresenter.shared.isOpen` is false. It will be true. Also found by reading the code only."
+        },
+        {
+          "severity": "medium",
+          "title": "Toolbar title never shows 'Searching “X”' in search mode",
+          "where": "Sources/FTAppKit/Toolbar/ToolbarView.swift:184-186 (ToolbarView.title(of:)), Sources/FTAppKit/Windows/ExplorerWindowContext.swift",
+          "evidence": "Reference, App.tsx:2805-2809: `toolbarTitle={isSearchMode ? `Searching “${getFolderDisplayName(searchRootPath)}”` : getFolderDisplayName(currentPath)}`. The brief, ui.md §1.2 and B-VIEW-119 all require this text. Port: `ToolbarView.title(of:)` returns only `ExplorerTabs.folderDisplayName(context.currentFolder.path)`. ExplorerWindowContext has no search-mode or search-root member (grep for 'search' in the file finds only `searchViewMode`), so the title cannot show it. In search mode the title keeps showing the folder name where the original shows 'Searching “Documents”'. The customize ghost title (ToolbarCustomizer.placeGhost) uses the same function, so the drag ghost is wrong in search mode too. This is the work package's own title-block requirement, not the search work package's. The context needs a search-root seam."
+        },
+        {
+          "severity": "medium",
+          "title": "Sort and View Options menus close on window resize and stay open when the visible toolbar items change",
+          "where": "Sources/FTAppKit/Toolbar/AppMenu.swift (`show(... closesOnResize: Bool = true)`), Sources/FTAppKit/Toolbar/ToolbarView.swift:sortMenu, viewOptionsMenu, present",
+          "evidence": "Reference, sort menu: ExplorerWorkspace.tsx:411-435 recomputes its position on `resize` and `scroll` and keeps it open. Lines 483-488 (`sortMenuResetKey`) close it whenever the set of visible toolbar items changes. The View Options menu (lines 491-519) has no resize listener at all, so it closes only on Escape, an outside press and blur (B-VIEW-126, B-VIEW-127). Port: `present()` calls `AppMenuPresenter.show`/`drop` with `closesOnResize` at its default of true for both menus, so any window resize closes them. This is correct only for Theme, Overflow and History, whose original components do have `window.addEventListener('resize', close)`. Nothing closes the sort menu when `visibleOptionalCount` or the overflow set changes. grep for `AppMenuPresenter.shared.close` in Toolbar/ finds only the toggle paths. Observable: open Sort and drag the window edge by 1 pt. The original keeps it open and repositioned; the port closes it. Open Sort, then shrink the window until Sort moves into »: the original closes the menu, and the port leaves it open over a button that is gone."
+        },
+        {
+          "severity": "medium",
+          "title": "Toolbar 'on' fill is drawn for the open folder tree, an open Info panel and toolbar buttons whose menu is open; the reference never draws it",
+          "where": "Sources/FTAppKit/Toolbar/ToolbarButton.swift:126-133 (fill = toolbarToggleOnBg when isOn || menuOpen)",
+          "evidence": "How I checked: ran `lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh 50-toolbar-default-light 53-info-panel-open 54-narrow-overflow 55-sort-menu`, then read pixels (in pt, 2x PNG) from tools/capture/out/<scenario>/{electron,swift}/*.png.\n- Folder Tree button, (309,14), scenario 50: electron #f0f0f3 (the bare capsule) vs swift #d5d5d7 (text-primary at 16%).\n- Info Panel button with the panel open, (1154,18), scenario 53: electron #f0f0f3 vs swift #d5d5d7.\n- Sort button with its menu open, (858,18), scenario 55: electron #f0f0f3 vs swift #d5d5d7.\n- Overflow » with its menu open, (758,18), scenario 54: electron #f0f0f3 vs swift #d5d5d7.\nCause on the reference side: the source styles.css:6306-6318 defines `--toolbar-toggle-on-bg` in a second `:root` block and uses it in `.window-toolbar .tb-btn.tb-btn-icon.active`. The shipped bundle (~/Library/Caches/filetrail-port/reference/electron/apps/desktop/dist/renderer/main.css) keeps the rule but has 0 definitions of `--toolbar-toggle-on-bg:`. The fill therefore resolves to nothing and the original shows no on-state. Every default window (tree open) shows this difference. Copy the reference look, or list it as a deviation."
+        },
+        {
+          "severity": "medium",
+          "title": "In Customize Toolbar the view switch, Sort and command buttons stay enabled and full strength; the original disables them (faded)",
+          "where": "Sources/FTAppKit/Windows/MainWindowController.swift:830-836 (canPerform builds CommandAvailabilityContext with no sheet/customizing state); ToolbarView.swift:148,163,168",
+          "evidence": "Reference: App.tsx:823-824 sets `sheetOpen = locationDialogOpen || toolbarCustomizing`. App.tsx:1417 passes `locationSheetOpen: sheetOpen` into canRunToolbarRendererCommand, which returns false through canHandleRendererCommand (rendererCommandAvailability.ts:139). ExplorerWorkspace.tsx:1199 and 1303 then render the view switch and Sort `disabled`, drawn at --disabled-opacity.\nCapture: scenario 59-customize-toolbar, selected view segment (770,16): electron #f6f6f8 (faded) vs swift #ffffff (full). In the same scenario's screenshots the Electron segment and sort icons are light grey; the Swift ones are full strength. a10 moved.png shows the same for the added New Tab button.\nPort: canPerform never sees the customizer (MainWindowController.swift:644-653 sets `customizer` but canPerform ignores it), so the toolbar stays live-looking."
+        },
+        {
+          "severity": "medium",
+          "title": "Customize palette labels 'Calculate Size' and 'Move to Trash' draw on one line, wider than their box; the original wraps them to two lines",
+          "where": "Sources/FTAppKit/Toolbar/ToolbarCustomizePanel.swift:437-438 (draws in bounds.insetBy(dx: -2, dy: 0)) vs lineCount/frame at :294-299",
+          "evidence": "Scenario 59-customize-toolbar: both sides report the label box as 72.89x26.4 (two lines) and the geometry passes. The ink differs (scan of the label box, pt):\n- 'Calculate Size' box x383-458 y234-263: electron ink x396.5-444.5 y237.5-259.0 (two lines) vs swift x384.0-457.0 y237.5-246.0 (one line overflowing the 72.89 box).\n- 'Move to Trash' x544-620 y312.5-341: electron x562-602.5 y316.5-337.5 (two lines) vs swift x546-618.5 y315.5-324 (one line).\nThe reference wraps at the box width (styles .toolbar-customize-label). The port lays out with the box width but draws in a box 4 pt wider, so texts 72.9-76.9 pt wide stay on one line. The same panel shows in a10."
+        },
+        {
+          "severity": "medium",
+          "title": "History hold menu: name and detail sit 2 pt and 6 pt further right, so the longest detail is cut with an ellipsis that the original doesn't show",
+          "where": "Sources/FTAppKit/Toolbar/AppMenu.swift:273-275 (label at x 10 with width textWidth+4, detail at 10+nameWidth+10, both NSTextFields with 2 pt cell insets) vs naturalWidth at :251",
+          "evidence": "Scenario 58-history-hold, main.png, crop x356-766 y45-110.\n- Electron row 'src': detail '~/Library/Caches/filetrail-port/fixtures/lighthouse/Lighthouse/app' shown in full.\n- Swift row 'src': detail truncated to '…/Lighthouse/…'.\nThe menu is 400.8 wide on both sides (geometry ok). Swift detail ink starts about 6 pt later: name+26 vs name+20 in the reference. Reference CSS: .history-menu-item gap 10, padding 0 10 (styles.css:3673-3693). naturalWidth sizes the menu to 10+name+10+detail+10, but layout adds 4 pt to the name and 2+2 pt of text-field inset, so the detail loses about 8 pt."
+        },
+        {
+          "severity": "medium",
+          "title": "Search field magnifier is 13 pt with stroke 2.4; the original renders it at 17 pt with stroke 1.7, and the placeholder starts 2 pt earlier",
+          "where": "Sources/FTAppKit/Toolbar/ToolbarItemViews.swift:429-433, 463-467 (iconSize 13, strokeWidth 2.4, leading 1+8+22+6)",
+          "evidence": "In the reference, `.window-toolbar .toolbar-icon{width:17px;height:17px;stroke-width:1.7}` comes after `.toolbar-search-icon .toolbar-icon{13px;2.4}` at the same specificity: main.css byte 101682 vs 16720 (styles.css:6287 vs 897). So the magnifier inside .window-toolbar is 17 px.\nScan of scenario 50 at x902-924 y12-39: electron magnifier ink y19.0-32.5 (13.5 pt tall) vs swift y20.5-31.0 (10.5 pt).\nPlaceholder 'Search' ink starts at x941.0 (electron) vs x939.0 (swift).\nThe search-field geometry row passes (899,9.5 200x32), so the geometry gate doesn't see this."
+        },
+        {
+          "severity": "medium",
+          "title": "Toolbar title and every toolbar menu label are drawn 2 pt right of the original (NSTextField cell inset on top of the CSS padding)",
+          "where": "Sources/FTAppKit/Toolbar/ToolbarItemViews.swift:140-143 (title field at x=titlePaddingLeading); Sources/FTAppKit/Toolbar/AppMenu.swift:278-283 (label at x=8+16+6)",
+          "evidence": "Geometry passes because it compares the field frames, but the ink differs.\n- Title: scan of scenario 50 at x434-700 y14-38 gives electron 'components' ink x440.5-529.0 vs swift x442.5-530.5. The reference has padding 0 4 0 8 with no extra inset (styles.css:3949-3958).\n- Menus: scenario 54 overflow menu, row 'as Icons' x585-770 y54-76: electron ink starts at 596.0 (row x565.5 + 30.5, matching ui.md §3 'labels start 30 px from the edge') vs swift 598.0.\nThe same 2 pt shift applies to the Sort, View Options, Theme and » menus."
+        },
+        {
+          "severity": "medium",
+          "title": "Toolbar menu shortcut text is clipped on the right (last glyph cut)",
+          "where": "Sources/FTAppKit/Toolbar/AppMenu.swift:279-281 (shortcut field placed at end - intrinsicWidth with width intrinsicWidth)",
+          "evidence": "Scenario 56-view-options-menu, main.png. Zoom crop at 2x x2160-2300 y150-220: electron shows the 'Hidden Files' shortcut '⇧⌘.' in full; swift shows '⇧⌘' with the '.' cut by the field edge.\nInk scan of 'Info Panel' ⌘I at x1090-1144 y113-135: electron x1116.5-1129.5 vs swift x1118.0-1130.5, with the right side of 'I' clipped. 'Hidden Files' row y78-100: electron x1103.0-1129.5 vs swift x1105.0-1130.5."
+        },
+        {
+          "severity": "medium",
+          "title": "Customize Toolbar: after a pointer drag the moved handle shows a 3 pt focus ring; the original shows only the 1 pt hover ring on the handle under the pointer",
+          "where": "Sources/FTAppKit/Toolbar/ToolbarCustomizer.swift:422-428 (focus ring whenever firstResponder === handle) and :130-133",
+          "evidence": "Reference: styles.css `.toolbar-edit-handle:focus-visible` gives the focus ring only to keyboard focus; `.toolbar-edit-handle:hover` gives an inset 1 px accent ring.\nCapture a10-customize-toolbar, moved.png, after step 13 drags New Tab onto Sort:\n- Electron: 1 pt ring on the Sort handle under the pointer. Pixels (852,25) and (852.5,25) are #a9c5f5; (853,25) is #efeff2. New Tab at (818.5,25) is #efeff2.\n- Swift: 3 pt ring on the New Tab handle. Pixels (818..820,25) are #a0c1f6. Sort (852.5,25) is #f0f0f3, so there is no hover ring."
+        },
+        {
+          "severity": "medium",
+          "title": "a08's hold-Back / right-click Forward steps still fail on the Swift side (the brief asks for them to pass)",
+          "where": "tools/capture/scenarios/acceptance/a08-path-bar-history.json steps 9-21; Swift report tools/capture/out/a08-path-bar-history/swift/report.json",
+          "evidence": "Ran `lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh tools/capture/scenarios/acceptance/a08-path-bar-history.json`. Result: 'failed: 10 steps, expect: 9 unmet (swift)'.\n- Step 10 expectSheet 'history menu': 'no history menu shown'.\n- Step 15 click: 'no history menu item “components” on screen'.\n- Step 20 expectSheet 'history menu': 'no history menu shown'.\nGeometry: 'history menu' and 'history menu item' are missing-b.\nCause: steps 3 and 6 navigate by clicking path bar segments, which the P5-01 placeholder doesn't draw ('no path bar segment “src” on screen'). History stays empty, so Back has no menu. Scenario 58-history-hold passes. The brief's a08 hold-Back requirement is unmet unless the path bar placeholder offers clickable segments or the result notes the dependency on P5-06."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "headSha": "5680617513d412dfb7aee0fc929cf4e1d6beb823",
+          "summary": "All 12 findings handled on port/P5-01 in commit 5680617, which carries the \"Port-Stage: fixed-1\" trailer. The worktree is now detached.\n\n1. Right-click: ToolbarSlotView now ignores right-clicks on items. Only the title and the empty room open \"Customize Toolbar…\". The » button also opens it, because in the reference it is not a [data-toolbar-slot]. Back and Forward still open their history menus.\n2. Search title: added `searchRootPath` (with an `ExplorerWindowChange.search` notification) to ExplorerWindowContext and MainWindowController. ToolbarView.title(of:) shows \"Searching “X”\" while it is set, and canPerform passes isSearchMode, so Sort is disabled in search mode. The reference's canRunToolbarRendererCommand does not block viewAs* in search mode, so the view switch stays enabled, as in the original.\n3. Menus on resize: AppMenuPresenter gained move(to:) and drop(closesOnResize:). Sort and View Options no longer close on a resize, and neither does the right-click Customize menu, whose reference has no resize listener. Sort follows its button after each toolbar layout and closes when the visible row keys change (sortMenuResetKey). Theme, » and the history menus still close on a resize.\n4. On fill: confirmed that the shipped main.css never defines --toolbar-toggle-on-bg or --toolbar-toggle-on-hover-bg, so the reference draws no fill for an on button, hovered or not. ToolbarButton.backgroundFill now returns nil for isOn or menuOpen, and the icon still turns the primary text color. This copies a reference CSS bug; it could be listed as a candidate deviation.\n5. Customizing: canPerform now builds ShortcutContext(locationSheetOpen: customizer != nil), matching sheetOpen. While customizing, the view switch, Sort and command buttons are disabled and dimmed.\n6. Palette labels: PaletteLabelView draws a multi-line label in its exact box. The 2 pt slack on each side is kept only for single-line labels, so 'Calculate Size' and 'Move to Trash' wrap to two lines.\n7, 9 and 10. Text insets: new FlushTextField and FlushTextFieldCell remove NSTextField's 2 pt horizontal inset, measured offscreen as ink at 3 pt versus 1 pt for plain string drawing. They are used for the toolbar title and the menu row label, detail and shortcut. The history row is now name at 10 with its text width, detail 10 after it and 10 from the end. The shortcut is right-aligned to the row padding and sized from the string width, so it is no longer clipped. Geometry frames are unchanged.\n8. Search field: the magnifier is now DesignTokens.toolbar.iconSize (17) with iconStrokeWidth (1.7). The leading width becomes 1+8+(17+1+8)+6, minus the 2 pt cell inset in searchTextRect.\n11. Handle rings: ToolbarEditLayer.focusVisible is set on keyDown and cleared on mouse down. The focus ring now shows only for keyboard focus, through the new ToolbarHandleView.ring (.none, .hover or .focus). After a drop, the handle under the release point gets the hover ring. Handle tracking areas now also get .enabledDuringMouseDrag.\n12. a08: see remaining.\n\nNew tests:\n- Tests/FTAppKitTests/Toolbar/ToolbarStateGUITests.swift (GUI) covers the right-click on items, the search-mode title, Sort and View Options staying open on resize while Theme closes and Sort closes when the row changes, disabling during customizing, and the focus and hover rings after a pointer drag.\n- Tests/FTAppKitTests/Toolbar/ToolbarDrawingTests.swift draws offscreen and scans the ink: no fill when on, palette label wrap, history detail position and width, menu label and title ink start, the full shortcut, and the search magnifier height and placeholder start.\n\nGates, all passing:\n- scripts/ci.sh: build, 1206 tests and format pass.\n- tools/parity/gen.sh --check: goldens up to date.\n- FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests: 252 tests pass.\n- tools/capture/run.sh --tier wp: exit 0. Every toolbar element row is ok. The remaining \"6 off, 2 missing\" in scenarios 50-60 belong to other packages' elements: sidebar headers and rows (P5-02), list header and rows (P5-03), status bar, path bar and segments (P5-06), and size bar.\n- a10-customize-toolbar (run with --acceptance) passes with no failed or unmet steps.\n\nPixel re-check against the reviewer's points:\n- a10 moved.png: Sort handle hover ring #a9c6f5 at (852,25), New Tab #efeff3, which matches Electron.\n- 50 Folder Tree, 53 Info Panel and 55 Sort with its menu open: swift #efeff3, matching Electron's bare capsule.\n- 59 view segment: swift #f6f6f7, the same as Electron.",
+          "remaining": [
+            "Finding 12 (a08 hold-Back) depends on P5-06; no code change. a08 steps 4 and 7 navigate by clicking path bar segments. The path bar is P5-06's, and the P5-01 placeholder has no segments, so History stays empty and the hold-Back steps can't run. Evidence: a copy of a08 steps 1-24 with steps 4 and 7 replaced by 'open app/src' and 'open app' (scratchpad a08-hold-back-only.json, run through tools/capture/run.sh) passes on the Swift side with no failed or unmet steps: the history menu shows with 2 items, choosing 'components' works, the right-click Forward menu opens, and Escape closes it. Scenario 58-history-hold also passes. a08 will pass these steps once P5-06's path bar segments ('pathBar.segment') navigate. Adding throwaway segments to the placeholder would only conflict with P5-06, which owns PathBar/.",
+            "Finding 4 copies a reference CSS bug: --toolbar-toggle-on-bg and --toolbar-toggle-on-hover-bg are never defined in the shipped stylesheet, so on toggles have no fill. It could be listed as a candidate deviation if the on fill should come back."
+          ]
+        }
+      ],
       "blockers": [],
       "carryOver": [
         "From P1-02: titleTooltips DOM-timing rows T-9e960311, T-cc926cf5, T-1849bac0, T-91fc6643, T-4e5d4df9, T-34663665, T-6005952a, T-16801ecd, T-5c9514b8, T-bea514b5, T-f8d9bae2 (AppKit tooltip delay and placement).",
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
         "User report (2026-10-14, screenshot of ~/tmp in Icons view): an extra line over the left pane makes the layout look uneven; the original sidebar runs smoothly up to the title bar. Check the window chrome (unified toolbar, sidebar split item, titlebar separator, tab bar band) against the original and remove lines the original does not have. Found on main (in-app snapshot of ~/tmp, 2026-10-14): the sidebar split divider is a hard vertical line that runs the full window height, through the title bar and toolbar band; the original's sidebar meets the content with no line there, and its toolbar hairline spans only the content side. Likely NSSplitViewItem(sidebarWithViewController:) + unified toolbar + fullSizeContentView drawing the divider in the titlebar; check NSSplitView.dividerStyle, the sidebar item's titlebarSeparatorStyle and window.titlebarSeparatorStyle. The user's screenshot also shows a dark band at the very top that the snapshot can't show; check the real window.",
         "From P4-04 (optional): restore-after-relaunch and no-window Dock reopen are in-process GUI tests, not capture scenarios; adding relaunch/dock steps needs tools/capture/electron/driver.ts and Swift automation steps. Do it if cheap; otherwise leave for P7."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P5-01 gates (worktree detached at 5680617, branch port/P5-01): 1) scripts/ci.sh EXIT=0 (build PASS, test PASS 1206 tests in passing runs, 0 failing, format PASS). 2) tools/parity/gen.sh --check EXIT=0. 3) FTAppKitTests with FILETRAIL_GUI_TESTS=1 under gui.lock EXIT=0, 252 tests in 30 suites passed. 4) tools/capture/run.sh --tier wp under gui.lock EXIT=0. Note: exit 0 but the capture report lists non-zero diffs and failed steps (e.g. 12-rename-f2 failed 1 step, 15-clipboard-popover failed 2 steps, 16-go-to-folder-typed, 17-review-sheet-conflict, 19-settings-general); 'expect ... unmet' entries are present. Per the gate rule (exit 0 = pass) this is a pass, but the capture diffs are worth a look. Full log: build/logs/gate-capture.log. Nothing was committed or changed."
+      },
+      "sharedFileRequests": [
+        "AppDelegate (P4-03): in startServices, set ExplorerServices.installed = ExplorerServices(directoryService:, folderWatches:, iconStore:, volumeWatcher:, clipboard: explorerWindows.clipboard, preferences: <the app's WindowPreferenceChannel>). Route the channel's onPreferencesChanged to MainWindowController.preferencesChanged(_:) for every tab in explorerWindows.allTabs. Until then ExplorerServices.current makes a fallback channel over AppDelegate.store.",
+        "After P4-03 merges: change the one line in Sources/FTAppKit/Layout/WindowMetrics.swift from Metrics(zoom: 100, density:) to Metrics(density:).",
+        "P5-08: call MainWindowController.clipboardChanged() when SharedClipboard changes, so the toolbar's clipboard button and count refresh.",
+        "DesignTokens.swift: add a MenuLayout token group (min width 220, padding 5, row 24, check column 16, gap 6, shortcut gap 14, separator margins 5/10, history max 420 / name max 220), a CustomizePanelLayout group (max width 760, margin 16, gap 8, padding 16/18/14, column min 76, gaps 8/4, chip 32, label line height 1.2) and tooltip padding 3/8, max 420. The P5-01 views then read those instead of their named constants."
+      ],
+      "deviations": [
+        "The toolbar is a custom view in the content under a transparent title bar, not an NSToolbar. On this macOS the unified NSToolbar band is 66 pt (compact 40), not 52, and its insets, overflow and sidebar separator can't match the original. Customize Toolbar is edited in place as in the original and A10, not with the system sheet that PLAN.md §3.5 suggests.",
+        "So the system tab bar shows under the 52 pt band, WindowChrome resizes NSTitlebarContainerView (as Electron's trafficLightPosition does) and re-applies it whenever the container frame changes. Presses in the band are forwarded by ExplorerTabWindow.sendEvent straight to the app's views, because AppKit otherwise treats them as title-bar presses in an inactive window. App-drawn controls accept first mouse.",
+        "The original never overflows the toolbar while a separator is in it: the separator measures 0 wide, so resolveVisibleOptionalCount keeps every item. This is copied and recorded in the golden; scenario 54 uses a toolbar without a separator.",
+        "App-drawn menus close on window resign only when the app is active. In a run in the background (automation) the window has no focus to lose. Real use is unchanged.",
+        "Ownership: small edits in Automation/ were needed for the new chrome. GeometryDump reads a TextStyleSource view's text field. AutomationCommands routes the toggles, customizeToolbar and viewAsList through perform (the old toggleFolderTree used the removed NSSplitViewController). A right-click on a ToolbarButton is sent as a real event. AutomationElements.load merges elements.d, and AutomationStepsTests now uses it.",
+        "Some metrics in the new views are named static constants that cite the CSS rule, not DesignTokens entries, because DesignTokens.swift is a shared file: menu padding/rows/check column/separator, customize-panel paddings and grid, tooltip padding, history-row gaps, sort-menu 200/12/8, search-cell offsets, the 10×22 customizing separator and the 40 pt customizing title minimum.",
+        "The native tab bar is 28 pt, not 29, and spans the sidebar (D-001). Panes start at 80 with two tabs, not 81."
       ]
     },
     "P5-02": {
@@ -1724,7 +1931,7 @@
         "P5-01",
         "P2-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P5-02",
       "headSha": null,
       "attempts": 0,
@@ -1744,7 +1951,8 @@
       "blockers": [],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
-        "From brief review: the layoutTokens.test.ts row \"pages the sidebar tree by the row heights\" is sidebar behavior and yours."
+        "From brief review: the layoutTokens.test.ts row \"pages the sidebar tree by the row heights\" is sidebar behavior and yours.",
+        "From W2-A integration: ExplorerServices.installed has volumeWatcher = nil because AppDelegate made none. Create the app's VolumeWatcher in AppDelegate.startServices (App/ is free now) and pass it, for the sidebar's Locations."
       ]
     },
     "P5-03": {
@@ -1758,7 +1966,7 @@
         "P4-03",
         "P5-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P5-03",
       "headSha": null,
       "attempts": 0,
@@ -1779,7 +1987,8 @@
       "blockers": [],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
-        "From P0-16: open_3000_ms is 58-61 ms against a 50 ms budget because the window still uses the spike FolderLoader (3000 resourceValues calls, ~25 ms) instead of DirectoryService (6-8 ms), plus ~36 ms of table display. Switch the window to DirectoryService and meet open_3000, open_100000, stall_100000, back and scroll_max budgets (tools/bench/run.sh; baseline.json holds the current over-budget values)."
+        "From P0-16: open_3000_ms is 58-61 ms against a 50 ms budget because the window still uses the spike FolderLoader (3000 resourceValues calls, ~25 ms) instead of DirectoryService (6-8 ms), plus ~36 ms of table display. Switch the window to DirectoryService and meet open_3000, open_100000, stall_100000, back and scroll_max budgets (tools/bench/run.sh; baseline.json holds the current over-budget values).",
+        "From W2-A integration: ExplorerServices.installed has iconStore = nil because AppDelegate made none. Create the app's FileIconStore in AppDelegate.startServices and pass it (P5-02 also edits startServices for the volume watcher in the same batch: keep your edit to the one line)."
       ]
     },
     "P5-04": {
@@ -1877,7 +2086,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
+        "From P5-01: acceptance a08's hold-Back and right-click Forward steps fail only because its path-bar clicks need your segments; make a08 pass end to end."
       ]
     },
     "P5-07": {
@@ -1946,7 +2156,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P4-04: T-317cfcc8 (windows.spec: paste in one window what was copied in another, B-VIEW-184) is left todo for this WP; ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and capture 38-paste-in-another-window must pass."
+        "From P4-04: T-317cfcc8 (windows.spec: paste in one window what was copied in another, B-VIEW-184) is left todo for this WP; ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and capture 38-paste-in-another-window must pass.",
+        "From P5-01: call MainWindowController.clipboardChanged() whenever SharedClipboard changes, so the toolbar clipboard button and its count refresh."
       ]
     },
     "P5-09": {
@@ -1978,7 +2189,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
+        "From P5-01: app-drawn menus (toolbar menus, history menus, and your context menus) use named constants citing CSS rules because DesignTokens had no menu group. Add MenuLayout, CustomizePanelLayout and tooltip token groups to DesignTokens.swift (values in P5-01's constants: menu min width 220, padding 5, row 24, check column 16, gap 6, shortcut gap 14, separators 5/10, history max 420 / name 220, etc.) and switch P5-01's views and yours to them. No literal metrics in UI code."
       ]
     },
     "P6-01": {
@@ -2073,7 +2285,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P4-03: register the Settings window with AppearanceModel.shared.register(pageWindow:) (page background and theme redraw), and set AppDelegate.pageWindows.openSettingsOnShortcuts so Help's \"Customize…\" opens the Shortcuts tab."
+      ]
     },
     "P8-01": {
       "title": "Signing, notarization, DMG",

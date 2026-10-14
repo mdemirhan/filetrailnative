@@ -94,3 +94,10 @@
 {"at": "2026-10-14T11:45:48+00:00", "event": "set-batch", "batch": "W2-A", "status": "running", "runId": "wf_26153c0e-afd"}
 {"at": "2026-10-14T12:05:56+00:00", "event": "next", "text": "Running W2-A. Standing orders: after each batch/phase merge, clean up, launch next without asking; stop only for P3-gate real-disk checks, P5-gate cross-app drags, wave-gate deviation approvals. Draft wave-3 briefs (P6-01..04) in parallel once P3-05/P5-05 merge."}
 {"at": "2026-10-14T12:06:56+00:00", "event": "reconcile", "recover": false, "notes": ["batch W2-A is marked running; if no workflow is running, rerun with --recover", "worktree /Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_26153c0e-afd-1 (P3-01) has uncommitted changes", "worktree /Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_26153c0e-afd-2 (P4-03) has uncommitted changes", "worktree /Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_26153c0e-afd-3 (P5-01) has uncommitted changes"], "recovered": []}
+{"at": "2026-10-14T13:55:18+00:00", "event": "apply-report", "batch": "W2-A", "wps": ["P3-01", "P4-03", "P5-01"]}
+{"at": "2026-10-14T13:55:36+00:00", "event": "meter", "weeklyPct": 19.0, "fiveHourPct": 16.0, "note": "after W2-A (3.40M agent tokens)"}
+{"at": "2026-10-14T13:55:36+00:00", "event": "add-batch", "batch": "W2-P1", "wps": ["P3-02"], "estimatedAgents": 8}
+{"at": "2026-10-14T13:55:36+00:00", "event": "add-batch", "batch": "W2-U1", "wps": ["P5-02", "P5-03"], "estimatedAgents": 11}
+{"at": "2026-10-14T13:55:36+00:00", "event": "next", "text": "Two tracks running: W2-P1 (P3-02) and W2-U1 (P5-02, P5-03). Each track launches its next batch when its own merges (tracks in state)."}
+{"at": "2026-10-14T13:55:36+00:00", "event": "set-batch", "batch": "W2-P1", "status": "running", "runId": null}
+{"at": "2026-10-14T13:55:36+00:00", "event": "set-batch", "batch": "W2-U1", "status": "running", "runId": null}
