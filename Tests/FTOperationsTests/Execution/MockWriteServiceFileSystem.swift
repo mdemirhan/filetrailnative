@@ -438,6 +438,11 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         locked { deleteTree(existingKey(path)) }
     }
 
+    /// `nodes.delete(path)`: drops that one entry, leaving what was stored under it.
+    func deleteNode(_ path: String) {
+        locked { delete(path) }
+    }
+
     /// Hidden names a Replace or a folder copy builds the new item under.
     func temporaryLeftovers() -> [String] {
         paths.filter { $0.contains(".filetrail-") }

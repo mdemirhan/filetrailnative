@@ -7,7 +7,7 @@ import os
 /// Keeps the writes in progress that leave items under hidden names (Replaces, folder copies, large file copies)
 /// in a small file, so the next start can finish or undo one that a crash or force quit interrupted. Each change
 /// is in the file before the write goes on.
-public final class FileWriteJournal: WriteJournal {
+public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     private struct State {
         /// By id, in the order first added, as a JavaScript Map keeps them.
         var order: [String] = []
@@ -15,12 +15,16 @@ public final class FileWriteJournal: WriteJournal {
     }
 
     private let filePath: String
+    private let writeFile: (String, String) throws -> Void
     // Held while the file is written, so one write happens at a time and an older list never lands over a newer
-    // one.
+    // one. (`writeFile` is only called with it held.)
     private let state: OSAllocatedUnfairLock<State>
 
-    private init(filePath: String, entries: [WriteJournalEntry]) {
+    private init(
+        filePath: String, entries: [WriteJournalEntry], writeFile: @escaping (String, String) throws -> Void
+    ) {
         self.filePath = filePath
+        self.writeFile = writeFile
         var state = State()
         for entry in entries {
             if state.entries[entry.id] == nil {
@@ -35,7 +39,12 @@ public final class FileWriteJournal: WriteJournal {
     /// be read as one is put aside (`<file>.unreadable-<ms>`), so the next write doesn't erase what it may still
     /// say, and the journal starts empty.
     public static func open(_ filePath: String) -> FileWriteJournal {
-        FileWriteJournal(filePath: filePath, entries: readEntries(filePath))
+        open(filePath, writeFile: writeWhole)
+    }
+
+    /// `open` writing the file with `writeFile(path, contents)`: a test's, that fails as a full disk does.
+    static func open(_ filePath: String, writeFile: @escaping (String, String) throws -> Void) -> FileWriteJournal {
+        FileWriteJournal(filePath: filePath, entries: readEntries(filePath), writeFile: writeFile)
     }
 
     /// What it holds, in the order the entries were first added.
@@ -64,7 +73,7 @@ public final class FileWriteJournal: WriteJournal {
     private func save(_ state: State) throws {
         let snapshot = JournalJSON.array(state.order.compactMap { state.entries[$0]?.jsonObject })
         do {
-            try Self.writeWhole(filePath, snapshot)
+            try writeFile(filePath, snapshot)
         } catch {
             throw Self.recoveryInfoError(error)
         }
