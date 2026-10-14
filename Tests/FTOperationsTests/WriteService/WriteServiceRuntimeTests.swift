@@ -267,6 +267,49 @@ struct WriteServiceRuntimeTests {
 }
 
 struct WriteServiceRuntimeCoordinationTests {
+    // Port of "answers later changes the same way when asked to, through the write service"
+    // (packages/core/src/fs/copyPasteReviewData.realfs.test.ts).
+    // T-248b9b50 F-242 F-327
+    @Test func answersLaterChangesTheSameWayWhenAskedToThroughTheWriteService() async throws {
+        try await withTemporaryDirectory { root in
+            let (source, target) = (root.path + "/source", root.path + "/target")
+            for name in ["a.txt", "b.txt", "c.txt"] {
+                try Disk.write(source + "/" + name, "new \(name)")
+            }
+            try Disk.makeDirectories(target)
+            let service = WriteService(.init(fileSystem: NativeWriteFileSystem()))
+            let log = ServiceLog()
+            _ = service.subscribe { event in
+                log.record(event)
+                if event.status == .awaitingResolution, let conflict = event.runtimeConflict {
+                    // Answered later, like a person clicking in the dialog.
+                    DispatchQueue.global().async {
+                        service.resolveRuntimeConflict(
+                            event.operationId, conflictId: conflict.conflictId, action: .keepBoth,
+                            applyToRemaining: true)
+                    }
+                }
+            }
+            let analysisId = try service.startCopyPasteAnalysis(
+                CopyPasteAnalysisRequest(
+                    mode: .copy, sourcePaths: ["a.txt", "b.txt", "c.txt"].map { source + "/" + $0 },
+                    destinationDirectoryPath: target)
+            ).analysisId
+            #expect(await waitFor { try service.getCopyPasteAnalysisUpdate(analysisId).done })
+            // All three names get taken after review, before the paste starts.
+            for name in ["a.txt", "b.txt", "c.txt"] {
+                try Disk.write(target + "/" + name, "someone else's \(name)")
+            }
+
+            _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: analysisId, policy: addMissing))
+
+            #expect(await waitFor { log.events.last?.result != nil })
+            #expect(log.events.filter { $0.status == .awaitingResolution }.count == 1)
+            #expect(log.events.last?.status == .completed)
+            #expect(Disk.list(target) == ["a copy.txt", "a.txt", "b copy.txt", "b.txt", "c copy.txt", "c.txt"])
+        }
+    }
+
     // T-384a8f35 F-242
     @Test func rejectsRuntimeConflictResolutionsForUnknownConflicts() {
         let service = WriteService(.init(fileSystem: MockWriteServiceFileSystem()))
