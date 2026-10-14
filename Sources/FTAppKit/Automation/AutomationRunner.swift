@@ -112,7 +112,9 @@
                 Data(
                     "automation \(current.scenario): \(current.steps.count) steps, \(current.unsupportedCount) unsupported, \(current.failedCount) failed, \(current.failedChecks) expectations unmet\n"
                         .utf8))
-            NSApp.terminate(nil)
+            // Not from inside this task: terminate waits in a nested event loop for the quit coordinator's reply,
+            // which is a main-actor task that cannot run while this one is still on the main actor.
+            DispatchQueue.main.async { NSApp.terminate(nil) }
         }
 
         // MARK: Watchdogs
