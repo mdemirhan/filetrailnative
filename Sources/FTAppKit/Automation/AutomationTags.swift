@@ -22,6 +22,8 @@
             case "NSToolbarView": return "toolbar"
             case "_NSToolbarTitleField": return "toolbar.title"
             case "NSToolbarItemGroupPickerView": return "toolbar.viewSwitch"
+            // A tab of the window's native tab bar (P4-02).
+            case "NSTabButton": return "tabBar.tab"
             case "NSToolbarButton":
                 switch (view as? NSButton)?.image?.accessibilityDescription {
                 case "Back": return "toolbar.back"
