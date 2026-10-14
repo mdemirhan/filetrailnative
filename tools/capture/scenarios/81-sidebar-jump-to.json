@@ -48,19 +48,27 @@
       "id": "focusTreePane"
     },
     {
-      "step": "type",
-      "text": "com"
+      "step": "key",
+      "key": "c"
+    },
+    {
+      "step": "key",
+      "key": "o"
+    },
+    {
+      "step": "key",
+      "key": "m"
     },
     {
       "step": "wait",
-      "ms": 600
-    },
-    {
-      "step": "snapshot",
-      "name": "main"
+      "ms": 100
     },
     {
       "step": "geometry",
+      "name": "main"
+    },
+    {
+      "step": "snapshot",
       "name": "main"
     }
   ]

@@ -63,6 +63,13 @@ final class SidebarOutlineView: NSOutlineView {
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
+    /// The list takes every press on a row itself; only a row's own buttons take theirs.
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard let hit = super.hitTest(point) else { return nil }
+        if hit is SidebarChevronView || hit is SidebarEjectView || hit is SidebarHeaderButton { return hit }
+        return self
+    }
+
     // MARK: Keys
 
     override func keyDown(with event: NSEvent) {

@@ -130,7 +130,13 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     /// Hooks onto the window: its activity (selections turn gray in the background) and its focus.
     func installWindow() {
         guard let window = view.window, activity == nil else { return }
-        let activity = WindowActivity(window: window)
+        // A capture run is driven without the app in front: its windows count as active, as the original's do.
+        var capture = false
+        #if DEBUG
+            capture = CommandLine.arguments.contains("--automation")
+        #endif
+        let alwaysActive = capture
+        let activity = WindowActivity(hasFocus: { [weak window] in alwaysActive || window?.isKeyWindow == true }, window: window)
         activity.onChange = { [weak self] _ in
             self?.reloadAll()
             SidebarVolumes.shared.refresh()
@@ -210,7 +216,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     private func treeRows() -> [SidebarListRow] {
         let layout = self.layout
         let presentation = model.treePresentation
-        var rows: [SidebarListRow] = [.spacer(id: "top", height: layout.treeListPaddingTop)]
+        var rows: [SidebarListRow] = [
+            .spacer(id: "top", height: separate ? layout.foldersTreePaddingTop : layout.treeListPaddingTop)
+        ]
         for item in presentation.visibleItems {
             rows.append(.item(state(item, subview: .tree, hasDisclosure: true)))
         }

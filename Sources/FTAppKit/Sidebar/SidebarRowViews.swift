@@ -30,6 +30,8 @@ final class SidebarFolderIcons {
 class SidebarPlainView: NSView {
     override var isFlipped: Bool { true }
     override var isOpaque: Bool { false }
+    // A click in a window that is not in front still reaches the row.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 }
 
 /// The icon of a row: a folder's own, or a favorite's line icon in the accent color.

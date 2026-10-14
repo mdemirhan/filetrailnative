@@ -73,6 +73,8 @@ public struct SidebarLayout: Equatable, Sendable {
     /// `.tree-list { padding: 6px 0 16px }` and its compact form (`4px 0 12px`).
     public let treeListPaddingTop: Double
     public let treeListPaddingBottom: Double
+    /// The Folders tree of the separate layout keeps 6 pt on top in either density (`.filesystem-tree-section .tree-list`).
+    public let foldersTreePaddingTop = 6.0
 
     // MARK: Section headers (`.sidebar-section-header`)
 

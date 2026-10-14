@@ -1,5 +1,6 @@
 // Port of TreeItemRow and renderSectionHeader (apps/desktop/src/renderer/components/TreePane.tsx) with the sidebar rules of styles.css
 import AppKit
+import CoreText
 import FTFoundation
 
 /// A view named for the geometry dump that shows another view's text style: the original's `.tree-row` is compared by
@@ -80,7 +81,10 @@ enum SidebarText {
     }
 
     static func width(_ text: String, font: NSFont, kern: Double = 0) -> Double {
-        Double(NSAttributedString(string: text, attributes: [.font: font, .kern: kern]).size().width)
+        // Core Text lays the line out with pair kerning, as the web page does.
+        let line = CTLineCreateWithAttributedString(
+            NSAttributedString(string: text, attributes: [.font: font, .kern: kern]))
+        return CTLineGetTypographicBounds(line, nil, nil, nil)
     }
 }
 
