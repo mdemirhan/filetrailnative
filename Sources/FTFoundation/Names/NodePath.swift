@@ -41,9 +41,30 @@ public enum NodePath {
     /// The last "." of the last part, and what follows; "" when it starts the part or there is none.
     public static func extname(_ path: String) -> String {
         let name = Array(basename(path).unicodeScalars)
-        guard let dot = name.lastIndex(of: "."), dot > 0 else { return "" }
-        if dot == 1 && name[0] == "." { return "" }
-        return scalarString(Array(name[dot...]))
+        var startDot = -1
+        var end = -1
+        var preDotState = 0
+        var index = name.count - 1
+        while index >= 0 {
+            let scalar = name[index]
+            if end == -1 { end = index + 1 }
+            if scalar == "." {
+                if startDot == -1 {
+                    startDot = index
+                } else if preDotState != 1 {
+                    preDotState = 1
+                }
+            } else if startDot != -1 {
+                preDotState = -1
+            }
+            index -= 1
+        }
+        if startDot == -1 || end == -1 || preDotState == 0
+            || (preDotState == 1 && startDot == end - 1 && startDot == 1)
+        {
+            return ""
+        }
+        return scalarString(Array(name[startDot..<end]))
     }
 
     /// `path.resolve(path)` for an absolute path: normalized, without a trailing slash.
