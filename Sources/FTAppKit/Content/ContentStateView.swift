@@ -170,7 +170,10 @@ final class ContentStateView: NSView {
         }
         let gap = CGFloat(stateLayout.gap)
         var total = parts.reduce(0) { $0 + $1.2 } + CGFloat(max(0, parts.count - 1)) * gap
-        if let searchButton { total += gap + PushButton.height; _ = searchButton }
+        if let searchButton {
+            total += gap + PushButton.height
+            _ = searchButton
+        }
         var y = max(CGFloat(stateLayout.emptyPaddingVertical), (areaHeight - total) / 2)
         for part in parts {
             part.0.frame = NSRect(x: ((width - part.1) / 2), y: y, width: part.1, height: part.2)

@@ -23,7 +23,8 @@ struct DetailsLayoutTests {
 
     // T-da426402 F-764
     @Test func nameIsFirstAndOptionalColumnsFollowTheirOrder() {
-        var visibility = DetailColumnVisibility(modified: false, size: true, kind: true, created: false, permissions: true)
+        var visibility = DetailColumnVisibility(
+            modified: false, size: true, kind: true, created: false, permissions: true)
         #expect(
             DetailsColumns.visible(visibility: visibility, order: AppPreferenceLimits.defaultDetailColumnOrder)
                 == [.name, .size, .kind, .permissions])
@@ -232,9 +233,10 @@ struct DetailsLayoutTests {
     static func columns(_ names: [String]?) -> [DetailColumn] { (names ?? []).compactMap(DetailColumn.init(rawValue:)) }
 
     static func widths(_ named: [String: Double]?) -> [DetailColumn: Double] {
-        Dictionary(uniqueKeysWithValues: (named ?? [:]).compactMap { name, value in
-            DetailColumn(rawValue: name).map { ($0, value) }
-        })
+        Dictionary(
+            uniqueKeysWithValues: (named ?? [:]).compactMap { name, value in
+                DetailColumn(rawValue: name).map { ($0, value) }
+            })
     }
 
     static func run(_ input: Input) -> Output {

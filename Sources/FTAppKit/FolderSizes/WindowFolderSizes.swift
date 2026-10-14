@@ -486,6 +486,7 @@ final class WindowFolderSizes {
     }
 
     private var homeTrashPath: String? {
-        homePath.isEmpty ? nil : homePath.replacingOccurrences(of: "/+$", with: "", options: .regularExpression) + "/.Trash"
+        homePath.isEmpty
+            ? nil : homePath.replacingOccurrences(of: "/+$", with: "", options: .regularExpression) + "/.Trash"
     }
 }

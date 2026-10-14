@@ -208,7 +208,8 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
         }
         // A column that can't be sorted by is a plain label, as wide as its text; a button's title takes the room.
         title.frame = NSRect(
-            x: 0, y: 0, width: sortable ? titleWidth : min(titleWidth, ceil(title.textWidth * 100) / 100), height: height)
+            x: 0, y: 0, width: sortable ? titleWidth : min(titleWidth, ceil(title.textWidth * 100) / 100),
+            height: height)
         let overhang = layout.separatorHitOverhang
         separator.frame = NSRect(
             x: bounds.width + overhang - layout.separatorHitWidth, y: -overhang, width: layout.separatorHitWidth,

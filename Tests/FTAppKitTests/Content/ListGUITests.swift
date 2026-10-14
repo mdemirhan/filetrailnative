@@ -68,7 +68,9 @@ extension ExplorerWindowGUITests {
             let window = try #require(tab.window)
             window.setContentSize(NSSize(width: 760, height: 600))
             harness.layout(tab)
-            let columns = try #require(header(tab)).subviews.compactMap { $0 as? DetailsHeaderCell }.filter { !$0.isHidden }
+            let columns = try #require(header(tab)).subviews.compactMap { $0 as? DetailsHeaderCell }.filter {
+                !$0.isHidden
+            }
             #expect(columns.count < 4 && columns.first?.column == .name)
             #expect(tab.content.columnState.widths[.kind] == 148)
             await harness.close()

@@ -232,7 +232,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             }
         }
         loadingTimer = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + ContentStateText.loadingDelayMilliseconds / 1000, execute: work)
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + ContentStateText.loadingDelayMilliseconds / 1000, execute: work)
     }
 
     /// A navigation that opens nothing (the folder is gone): the listing in front stays as it was.
@@ -336,7 +337,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// How the folder is ordered and shown. The window re-reads the folder for a new order; a size order is finished
     /// here, as folder sizes arrive.
-    func setView(sortBy: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, includeHidden: Bool) {
+    func setView(sortBy: SortByPreference, direction: SortDirectionPreference, foldersFirst: Bool, includeHidden: Bool)
+    {
         self.sortBy = sortBy
         sortDirection = direction
         self.foldersFirst = foldersFirst
@@ -557,7 +559,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             size = StatusSummary.selectionSize(summary)
         }
         status.stringValue = StatusSummary.content(
-            itemCount: listed.count, shownCount: filter.isEmpty ? nil : entries.count, selectedCount: selection.paths.count,
+            itemCount: listed.count, shownCount: filter.isEmpty ? nil : entries.count,
+            selectedCount: selection.paths.count,
             size: size)
         shell.pathBarRow.needsLayout = true
     }

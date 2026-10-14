@@ -19,7 +19,8 @@ public enum SizeBars {
 
     /// Where a bar is drawn in a Size cell: anchored at the right edge, `overhang` past it, as wide as its share of
     /// the cell with a least width, and never wider than the cell plus the overhang. Nil when it shows nothing.
-    public static func span(fraction: Double?, cellWidth: Double, layout: DetailsLayout) -> (x: Double, width: Double)? {
+    public static func span(fraction: Double?, cellWidth: Double, layout: DetailsLayout) -> (x: Double, width: Double)?
+    {
         guard let fraction, fraction > 0 else { return nil }
         let width = min(max(fraction * cellWidth, layout.sizeBarMinWidth), cellWidth + layout.sizeBarOverhang)
         return (cellWidth + layout.sizeBarOverhang - width, width)

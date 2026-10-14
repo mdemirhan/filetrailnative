@@ -71,9 +71,15 @@ struct ContentModelTests {
     @Test func otherOrdersAndTheFilter() {
         let listed = [Self.entry("b.txt"), Self.entry("a.txt"), Self.entry("Notes.md")]
         var contents = FolderContents(path: "/f", listed: listed)
-        #expect(contents.shown(sortBy: .name, direction: .asc, foldersFirst: true) { _ in nil }.map(\.name) == ["b.txt", "a.txt", "Notes.md"])
+        #expect(
+            contents.shown(sortBy: .name, direction: .asc, foldersFirst: true) { _ in nil }.map(\.name) == [
+                "b.txt", "a.txt", "Notes.md",
+            ])
         contents.filter = "TXT"
-        #expect(contents.shown(sortBy: .name, direction: .asc, foldersFirst: true) { _ in nil }.map(\.name) == ["b.txt", "a.txt"])
+        #expect(
+            contents.shown(sortBy: .name, direction: .asc, foldersFirst: true) { _ in nil }.map(\.name) == [
+                "b.txt", "a.txt",
+            ])
     }
 
     // B-NAV-119 B-VIEW-065: only a folder that is gone counts as gone; the Trash needs Full Disk Access.
@@ -86,7 +92,9 @@ struct ContentModelTests {
         let message = FolderReadFailure.message(ExplorerError.system(code: EPERM, path: "/Users/demo/.Trash"))
         #expect(FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", message: message, homePath: "/Users/demo"))
         #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/Other", message: message, homePath: "/Users/demo"))
-        #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", message: "No such file", homePath: "/Users/demo"))
+        #expect(
+            !FolderReadFailure.isTrashRefused(
+                path: "/Users/demo/.Trash", message: "No such file", homePath: "/Users/demo"))
         #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", message: nil, homePath: "/Users/demo"))
     }
 
@@ -121,7 +129,9 @@ struct ContentModelTests {
         let file = Self.entry("a.txt")
         #expect(ListCellText.size(entry: folder, metadata: nil, folderSize: .idle).text == "--")
         #expect(ListCellText.size(entry: folder, metadata: nil, folderSize: .idle).isPlaceholder)
-        #expect(ListCellText.size(entry: folder, metadata: nil, folderSize: .calculating(jobID: "j")).text == "Calculating…")
+        #expect(
+            ListCellText.size(entry: folder, metadata: nil, folderSize: .calculating(jobID: "j")).text == "Calculating…"
+        )
         #expect(
             ListCellText.size(
                 entry: folder, metadata: nil,
@@ -153,7 +163,9 @@ struct ContentModelTests {
         let kept = selection.keeping(existing: ["/b", "/c"])
         #expect(kept.paths == ["/b", "/c"])
         #expect(kept.anchorPath == "/b" && kept.leadPath == "/c")
-        #expect(ContentSelection.of(["/x", "/y"]) == ContentSelection(paths: ["/x", "/y"], anchorPath: "/x", leadPath: "/y"))
+        #expect(
+            ContentSelection.of(["/x", "/y"])
+                == ContentSelection(paths: ["/x", "/y"], anchorPath: "/x", leadPath: "/y"))
         #expect(selection.keeping(existing: []).isEmpty)
     }
 }

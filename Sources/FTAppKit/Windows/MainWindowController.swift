@@ -665,7 +665,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
         content.onSelectionChanged = { [weak self] _ in self?.notify(.selection) }
         content.onColumnWidthsChanged = { [weak self] widths in self?.saveColumnWidths(widths) }
-        content.setView(sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
+        content.setView(
+            sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
         content.setColumns(ListColumnState(preferences: preferences))
         content.setMode(viewMode)
     }
