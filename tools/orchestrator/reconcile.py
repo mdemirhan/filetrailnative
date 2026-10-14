@@ -13,6 +13,7 @@ Prints a JSON summary; "ok" is false when something needs the orchestrator's att
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -132,6 +133,16 @@ def main(argv: list[str]) -> int:
                     f"batch {batch_id} is marked running; if no workflow is running, rerun with --recover"
                 )
                 summary["ok"] = False
+
+    # The integrators' merge lock (batch.js). One left behind by a stopped integrator would block every later merge.
+    lock = Path.home() / "Library/Caches/filetrail-port/integrate.lock"
+    if lock.exists():
+        owner = (lock / "owner").read_text().strip() if (lock / "owner").exists() else "?"
+        if recover:
+            shutil.rmtree(lock, ignore_errors=True)
+            summary["recovered"].append(f"removed the merge lock held by {owner}")
+        else:
+            summary["notes"].append(f"merge lock held by {owner}; --recover removes it")
 
     for wp_id, wp in state["wps"].items():
         if wp_id not in branches or wp["status"] in ("merged", "ready", "blocked"):

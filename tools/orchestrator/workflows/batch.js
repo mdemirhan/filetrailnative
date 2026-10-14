@@ -214,6 +214,9 @@ if (A.integrate && ready.length) {
   integration = await agent(
     `${PRE}\n\n## Your role: integrator for batch ${A.batchId}
 You work in the orchestrator's checkout (${A.repo}), which has main checked out. Do not switch branches here and do not touch docs/port/state/.
+Another batch's integrator may use this checkout at the same time, so take the merge lock first and hold it until you are done:
+\`until mkdir ~/Library/Caches/filetrail-port/integrate.lock 2>/dev/null; do sleep 20; done; echo ${A.batchId} > ~/Library/Caches/filetrail-port/integrate.lock/owner\`
+Release it as your very last step, also when you stop early or something fails: \`rm -rf ~/Library/Caches/filetrail-port/integrate.lock\`.
 Merge these branches one at a time, in this order, with \`git merge --no-ff port/<id> -m "Merge <id>: <title>"\`:
 ${ready.map((r) => `- port/${r.id}${r.sharedFileRequests && r.sharedFileRequests.length ? ` — shared-file requests to apply after merging it: ${r.sharedFileRequests.join('; ')}` : ''}`).join('\n')}
 After each merge, run \`scripts/ci.sh\` (if it exists) and fix any break the merge caused, committing the fix on main. If a merge conflicts in a way you cannot resolve without changing a work package's design, abort that merge (\`git merge --abort\`) and list it in notMerged with the reason.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T12:05:56+00:00",
+  "updatedAt": "2026-10-14T12:06:56+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -1271,7 +1271,7 @@
       ],
       "status": "implementing",
       "branch": "port/P3-01",
-      "headSha": null,
+      "headSha": "b78cd0ef2b69ca99488817b737e91c2adcca1b00",
       "attempts": 0,
       "gate": [
         "scripts/ci.sh",
@@ -1654,7 +1654,7 @@
       ],
       "status": "implementing",
       "branch": "port/P4-03",
-      "headSha": null,
+      "headSha": "4a2cd2a26719164161d769a67c336cd803faafaa",
       "attempts": 0,
       "gate": [
         "scripts/ci.sh",
@@ -1682,7 +1682,7 @@
       ],
       "status": "implementing",
       "branch": "port/P5-01",
-      "headSha": null,
+      "headSha": "78653ed1d87f095f12732b3a4d65e1ad26bf4221",
       "attempts": 0,
       "gate": [
         "scripts/ci.sh",
@@ -2606,6 +2606,52 @@
       ],
       [
         "P3-08"
+      ]
+    ]
+  },
+  "tracks": {
+    "note": "From W2-A on, wave 2 runs as two independent pipelines (user OK on 2026-10-14: no quota limit). Each track launches its next batch as soon as its previous one merges; integrators serialize on ~/Library/Caches/filetrail-port/integrate.lock.",
+    "P3": [
+      [
+        "P3-02"
+      ],
+      [
+        "P3-03"
+      ],
+      [
+        "P3-04"
+      ],
+      [
+        "P3-05"
+      ],
+      [
+        "P3-06"
+      ],
+      [
+        "P3-07"
+      ],
+      [
+        "P3-08"
+      ]
+    ],
+    "UI": [
+      [
+        "P5-02",
+        "P5-03"
+      ],
+      [
+        "P5-05",
+        "P5-06"
+      ],
+      [
+        "P5-04",
+        "P5-09"
+      ],
+      [
+        "P5-07"
+      ],
+      [
+        "P5-08"
       ]
     ]
   }
