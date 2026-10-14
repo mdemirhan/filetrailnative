@@ -53,6 +53,11 @@ final class ToolbarView: NSView {
 
     override var isFlipped: Bool { true }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
+
     override var mouseDownCanMoveWindow: Bool { true }
 
     func attach(_ context: ExplorerWindowContext) {
@@ -130,6 +135,7 @@ final class ToolbarView: NSView {
                 switch id {
                 case .back: button.isEnabled = context.canGoBack
                 case .forward: button.isEnabled = context.canGoForward
+                case .up: button.isEnabled = context.currentFolder.path != "/"
                 case .foldersFirst: button.isOn = view.foldersFirst
                 case .hidden:
                     button.isOn = view.includeHidden
@@ -268,6 +274,7 @@ final class ToolbarView: NSView {
                 guard let self, let button else { return }
                 self.toggleMenu(from: button) { self.themeMenu(anchor: button) }
             }
+        case .up: button.onClick = { [weak self] in self?.context?.perform(.goEnclosingFolder) }
         case .foldersFirst: button.onClick = { [weak self] in self?.context?.perform(.toggleFoldersFirst) }
         case .hidden: button.onClick = { [weak self] in self?.context?.perform(.toggleHiddenFiles) }
         case .folderTree: button.onClick = { [weak self] in self?.context?.perform(.toggleFolderTree) }

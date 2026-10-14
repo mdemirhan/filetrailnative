@@ -31,6 +31,11 @@ final class PathBarRowView: NSView {
 
     override var isFlipped: Bool { true }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
+
     override func layout() {
         super.layout()
         let size = status.intrinsicContentSize

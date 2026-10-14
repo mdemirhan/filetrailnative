@@ -91,6 +91,11 @@ final class WorkspaceView: NSView {
 
     override var isFlipped: Bool { true }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
+
     /// Puts the panes in place once the preferences and the saved widths are in.
     func becomeReady() {
         isReady = true
@@ -259,6 +264,11 @@ final class WorkspaceCell: NSView {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
+
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
 
     override func layout() {
         super.layout()

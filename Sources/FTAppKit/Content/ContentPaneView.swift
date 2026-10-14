@@ -34,6 +34,11 @@ final class ContentPaneView: NSView {
 
     override var isFlipped: Bool { true }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
+
     override func layout() {
         super.layout()
         let width = bounds.width

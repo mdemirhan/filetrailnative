@@ -173,6 +173,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     private let infoPanel = InfoPanelView()
     /// Customize Toolbar, while it is on.
     private(set) var customizer: ToolbarCustomizer?
+    /// Services of its own, instead of the app's (a window in a test).
+    var servicesOverride: ExplorerServices?
     private var observers: [(token: Weak<ExplorerWindowObservation>, handler: (ExplorerWindowChange) -> Void)] = []
     private var backStack: [URL] = []
     private var forwardStack: [URL] = []
@@ -862,7 +864,7 @@ extension MainWindowController: ExplorerWindowContext {
         channel.update(patch, from: windowID)
     }
 
-    var services: ExplorerServices { ExplorerServices.current }
+    var services: ExplorerServices { servicesOverride ?? ExplorerServices.current }
 
     func observe(_ handler: @escaping @MainActor (ExplorerWindowChange) -> Void) -> ExplorerWindowObservation {
         let token = ExplorerWindowObservation()
