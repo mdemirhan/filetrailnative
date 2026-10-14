@@ -51,3 +51,4 @@
 {"at": "2026-10-14T06:32:34+00:00", "event": "next", "text": "Running W1-D P1-04+P1-05+P2-04; then W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06+P2-05; W1-H P4-02"}
 {"at": "2026-10-14T06:32:34+00:00", "event": "set-batch", "batch": "W1-D", "status": "running", "runId": null}
 {"at": "2026-10-14T06:32:43+00:00", "event": "set-batch", "batch": "W1-D", "status": "running", "runId": "wf_01017fdc-f23"}
+{"at": "2026-10-14T06:35:42+00:00", "event": "next", "text": "Running W1-D P1-04+P1-05+P2-04. Next (user OK'd >10 agents): W1-E all six ready P2s: P2-01+P2-02+P2-03+P2-05+P2-06+P2-07 (~25 agents); W1-F P4-01; W1-G P4-02; then wave-1 end gate"}
