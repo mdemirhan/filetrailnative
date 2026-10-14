@@ -1,8 +1,7 @@
 // The write-engine differential (tools/parity/exec, FTTestSupport.ExecHarness). The analysis suites
 // run through the Swift review (Exec/SwiftAnalysisEngine.swift), the execution suites through the
-// Swift paste engine (Exec/SwiftExecEngine.swift), but for the cases that need Replace
-// (Exec/PendingReplace.swift) and the stop and crash suites, which aren't injected (decided
-// 2026-10-14). ReferenceReplayEngine replays every execution recording, which proves the decode,
+// Swift paste engine (Exec/SwiftExecEngine.swift), but for the stop and crash suites, which
+// aren't injected (decided 2026-10-14). ReferenceReplayEngine replays every execution recording, which proves the decode,
 // normalize and compare path, and each scenario's tree is built here and checked against the
 // recorded "before".
 import FTTestSupport
@@ -26,16 +25,10 @@ struct ExecGoldenTests {
         let cases = try ExecHarness.cases(suite: suite)
         #expect(!cases.isEmpty)
         let engine = SwiftExecEngine()
-        for testCase in runnable(cases) where !PendingReplace.cases.contains(testCase.name) {
+        for testCase in runnable(cases) {
             let lines = try await ExecHarness.check(testCase, with: engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
         }
-    }
-
-    /// Every case on the Replace list is one of the suites' own, so emptying it runs them all.
-    @Test func pendingReplaceCasesAreRecorded() throws {
-        let names = Set(try Self.engineSuites.flatMap { try ExecHarness.cases(suite: $0) }.map(\.name))
-        #expect(PendingReplace.cases.isSubset(of: names))
     }
 
     @Test(arguments: ExecHarness.executionSuites)

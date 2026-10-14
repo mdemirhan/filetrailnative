@@ -1,5 +1,4 @@
-// Port of openWriteJournal, readEntries, isEntry and writeWhole (apps/desktop/src/main/bootstrap/writeJournal.ts);
-// recoverWrites is P3-04's
+// Port of openWriteJournal, readEntries, isEntry and writeWhole (apps/desktop/src/main/bootstrap/writeJournal.ts)
 import Darwin
 import Foundation
 import os
