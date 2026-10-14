@@ -615,6 +615,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .newTab: group?.openNewTab(from: self)
         case .closeTab: group?.closeTab(self)
         case .reopenClosedTab: group?.reopenClosedTab(from: self)
+        case .duplicateTab: group?.duplicateTab(self)
         case .selectNextTab: group?.selectAdjacentTab(from: self, .next)
         case .selectPreviousTab: group?.selectAdjacentTab(from: self, .previous)
         case .openSelectionInNewTab:

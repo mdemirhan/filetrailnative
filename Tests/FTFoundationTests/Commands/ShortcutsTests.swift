@@ -19,7 +19,8 @@ struct ShortcutsTests {
     @Test func namesEveryCommandOnceAndGivesNoKeyToTwoCommands() {
         let ids = ShortcutCommands.all.map(\.id)
         #expect(Set(ids).count == ids.count)
-        #expect(ids.count == 79)
+        // The original's 79, and Duplicate Tab (DEVIATIONS D-001).
+        #expect(ids.count == 80)
 
         let keys = ShortcutCommands.all.flatMap { Self.defaults[$0.id] ?? [] }
         #expect(Set(keys).count == keys.count)
@@ -31,10 +32,11 @@ struct ShortcutsTests {
     }
 
     // T-ea83b599 F-082
-    // The original lets 69 commands be changed; Zoom In, Zoom Out and Actual Size are dropped (D-005), so 66 are.
-    @Test func letsSixtySixCommandsBeChangedAndKeepsTheStandardOnesFixed() {
+    // The original lets 69 commands be changed; Zoom In, Zoom Out and Actual Size are dropped (D-005) and Duplicate
+    // Tab is added (D-001), so 67 are.
+    @Test func letsSixtySevenCommandsBeChangedAndKeepsTheStandardOnesFixed() {
         let fixed = ShortcutCommands.all.filter(\.fixed)
-        #expect(ShortcutCommands.all.count - fixed.count == 66)
+        #expect(ShortcutCommands.all.count - fixed.count == 67)
         #expect(
             fixed.map(\.id) == [
                 .undo, .redo, .cut, .copy, .paste, .selectAll, .settings, .closeWindow, .minimize, .fullScreen, .hide,
@@ -398,7 +400,8 @@ struct ShortcutsTests {
             (.rootTreeAtSelection, ["Cmd+Shift+R"]), (.refreshOrApplySearchSort, ["Cmd+R"]),
             (.goDocuments, []), (.goDesktop, []), (.goDownloads, []), (.goLibrary, []), (.goMacintoshHD, []),
             (.goApplications, []), (.goTrash, []), (.focusTreePane, []), (.focusContentPane, []),
-            (.newWindow, ["Cmd+N"]), (.newTab, ["Cmd+T"]), (.closeTab, ["Cmd+W"]), (.reopenClosedTab, ["Cmd+Shift+T"]),
+            (.newWindow, ["Cmd+N"]), (.newTab, ["Cmd+T"]), (.duplicateTab, []), (.closeTab, ["Cmd+W"]),
+            (.reopenClosedTab, ["Cmd+Shift+T"]),
             (.selectNextTab, ["Ctrl+Tab", "Cmd+Shift+]"]), (.selectPreviousTab, ["Ctrl+Shift+Tab", "Cmd+Shift+["]),
             (.openSelectionInNewTab, []), (.openSelectionInNewWindow, []), (.moveTabToNewWindow, []),
             (.mergeAllWindows, []), (.openSelection, ["Cmd+O"]), (.openSelectedItem, ["Cmd+Down"]),

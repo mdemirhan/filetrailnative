@@ -61,6 +61,8 @@ enum ApplicationMenuBuilder {
         context.addSubmenu(to: main, title: "File") { menu in
             menu.addItem(context.command(.newWindow, "New Window"))
             menu.addItem(context.command(.newTab, "New Tab"))
+            // The original's tab strip menu has it; the system tab bar has no menu of the app's (DEVIATIONS D-001).
+            menu.addItem(context.command(.duplicateTab, "Duplicate Tab"))
             menu.addItem(context.command(.newFolder, "New Folder"))
             menu.addItem(.separator())
             menu.addItem(context.command(.openSelection, "Open"))

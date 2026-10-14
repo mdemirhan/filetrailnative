@@ -261,7 +261,8 @@ struct ShortcutPolicyTests {
         for command in RendererCommand.allCases {
             _ = ShortcutPolicy.treeFocusBucket(of: command)
         }
-        #expect(RendererCommand.allCases.count == 71)
+        // The original's 71, and Duplicate Tab (DEVIATIONS D-001).
+        #expect(RendererCommand.allCases.count == 72)
         // The two commands the original keeps in two buckets' worth of notes.
         #expect(ShortcutPolicy.treeFocusBucket(of: .ejectVolume) == .globalExplorer)
         #expect(ShortcutPolicy.treeFocusBucket(of: .calculateSize) == .globalExplorer)

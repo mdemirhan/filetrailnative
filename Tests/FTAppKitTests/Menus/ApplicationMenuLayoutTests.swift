@@ -27,7 +27,7 @@ import Testing
             ])
         #expect(
             titles(submenu(main, "File")) == [
-                "New Window", "New Tab", "New Folder", "-", "Open", "Open in New Tab", "Open in New Window",
+                "New Window", "New Tab", "Duplicate Tab", "New Folder", "-", "Open", "Open in New Tab", "Open in New Window",
                 "Edit in Text Editor", "Quick Look", "Reveal in Folder", "-", "Calculate Size", "-", "Rename",
                 "Duplicate", "Move to…", "Add to Favorites", "Remove from Favorites", "-", "Open in Terminal",
                 "Show in Finder", "-", "Move to Trash", "Eject", "-", "Reopen Closed Tab", "Close Tab", "Close Window",
@@ -91,6 +91,7 @@ import Testing
         let expected: [(String, String, String?, RendererCommand)] = [
             ("File", "New Window", "Command+N", .newWindow),
             ("File", "New Tab", "Command+T", .newTab),
+            ("File", "Duplicate Tab", nil, .duplicateTab),
             ("File", "New Folder", "Command+Shift+N", .newFolder),
             ("File", "Open", "Command+O", .openSelection),
             ("File", "Open in New Tab", nil, .openSelectionInNewTab),
