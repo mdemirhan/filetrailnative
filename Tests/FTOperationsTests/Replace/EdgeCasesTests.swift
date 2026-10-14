@@ -224,7 +224,9 @@ struct EdgeCasesTests {
     // MARK: The last step of a Replace
 
     private func replaceSetup() -> MockWriteServiceFileSystem {
-        let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 2)), ("/target/a.txt", .file(size: 1))])
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/a.txt", .file(size: 2)), ("/target/a.txt", .file(size: 1)),
+        ])
         fileSystem.enableTrash()
         return fileSystem
     }

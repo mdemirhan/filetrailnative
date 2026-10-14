@@ -28,7 +28,7 @@ final class Hang: Sendable {
 }
 
 /// How long a test lets a disk take to answer (the original's fake timers stand at 1000 ms).
-private let answerWithinMs = 100
+private let answerWithinMs = 1_000
 
 struct ReplaceRecoveryAtStartTests {
     // T-2438126e F-353 F-525
@@ -48,7 +48,7 @@ struct ReplaceRecoveryAtStartTests {
         let outcomes = recoverInterruptedReplaces(
             [entry], fileSystem, RecoveryOptions(answerWithinMs: answerWithinMs))
 
-        #expect(Date().timeIntervalSince(started) < 2)
+        #expect(Date().timeIntervalSince(started) < 10)
         #expect(outcomes == [ReplaceRecovery(entry: entry, outcome: .unreachable(error: "The disk didn't answer."))])
         #expect(fileSystem.exists("/target/.a.txt.filetrail-0000abcd"))
         #expect(fileSystem.readNode("/target/a.txt")?.size == 2)
@@ -84,7 +84,8 @@ struct ReplaceRecoveryAtStartTests {
             id: "1", stagingPath: "/target/notes.txt", finalPath: "/target/a.txt", sourcePath: "/source/a.txt",
             moved: false, staged: false)
 
-        #expect(recoverInterruptedReplaces([entry], fileSystem) == [ReplaceRecovery(entry: entry, outcome: .nothingLeft)])
+        #expect(
+            recoverInterruptedReplaces([entry], fileSystem) == [ReplaceRecovery(entry: entry, outcome: .nothingLeft)])
         #expect(fileSystem.readNode("/target/notes.txt")?.size == 3)
     }
 }

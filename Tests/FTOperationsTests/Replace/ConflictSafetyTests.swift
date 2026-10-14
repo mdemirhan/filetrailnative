@@ -99,7 +99,9 @@ struct ConflictSafetyTests {
                 .run(withTrash(trashDir))
 
             #expect(run.result?.items.first?.status == .failed)
-            #expect(run.result?.items.first?.error == "Can't replace \u{201C}foo\u{201D} because it contains the item being pasted.")
+            #expect(
+                run.result?.items.first?.error
+                    == "Can't replace \u{201C}foo\u{201D} because it contains the item being pasted.")
             #expect(Disk.read(outer + "/outer.txt") == "outer")
             #expect(Disk.read(outer + "/foo/a.txt") == "important")
             #expect(Disk.list(trashDir) == [])
@@ -121,7 +123,9 @@ struct ConflictSafetyTests {
 
             #expect(run.report.nodes.first?.replaceBlockedReason == "It contains the item being pasted.")
             #expect(run.result?.items.first?.status == .failed)
-            #expect(run.result?.items.first?.error == "Can't replace \u{201C}X\u{201D} because it contains the item being pasted.")
+            #expect(
+                run.result?.items.first?.error
+                    == "Can't replace \u{201C}X\u{201D} because it contains the item being pasted.")
             #expect(Disk.read(outer + "/X/a.txt") == "inner")
             #expect(Disk.read(outer + "/other.txt") == "other")
             #expect(Disk.list(trashDir) == [])
@@ -135,8 +139,10 @@ struct ConflictSafetyTests {
             try Disk.write(outer + "/foo", "inner file")
             try Disk.write(outer + "/keep.txt", "keep")
 
-            let run = try await SafetyPaste(mode: .copy, sources: [outer + "/foo"], destination: root, replaceEach: true)
-                .run(withTrash(trashDir))
+            let run = try await SafetyPaste(
+                mode: .copy, sources: [outer + "/foo"], destination: root, replaceEach: true
+            )
+            .run(withTrash(trashDir))
 
             #expect(run.result?.items.first?.status == .failed)
             #expect(Disk.read(outer + "/foo") == "inner file")
@@ -152,8 +158,10 @@ struct ConflictSafetyTests {
             try Disk.write(real + "/a.txt", "original")
             try Disk.symlink(root + "/real", root + "/alias")
 
-            let copied = try await SafetyPaste(mode: .copy, sources: [real + "/a.txt"], destination: root + "/alias/docs")
-                .run(withTrash(trashDir))
+            let copied = try await SafetyPaste(
+                mode: .copy, sources: [real + "/a.txt"], destination: root + "/alias/docs"
+            )
+            .run(withTrash(trashDir))
             // Same folder: the copy gets a new name instead of replacing the original.
             #expect(copied.report.issues.isEmpty)
             #expect(copied.result?.status == .completed)
@@ -318,7 +326,8 @@ struct ConflictSafetyTests {
             ).run(withTrash(trashDir))
 
             #expect(run.result?.status == .partial)
-            #expect(names(run.result?.items) == [["a.txt", "completed"], ["b.txt", "failed"], ["c.txt", "completed"]])
+            #expect(
+                names(run.result?.items) == [["a.txt", "completed"], ["b.txt", "failed"], ["c.txt", "completed"]])
             #expect(run.result?.items[1].error == "You don't have permission to access this item.")
             // The failed copy leaves nothing half-written behind.
             #expect(!Disk.exists(target + "/b.txt"))

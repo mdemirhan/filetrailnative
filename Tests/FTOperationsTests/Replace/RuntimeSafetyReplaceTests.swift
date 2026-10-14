@@ -143,7 +143,8 @@ struct RuntimeSafetyReplaceTests {
             #expect(run.result?.status == .failed)
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}F\u{201D} changed while it was being replaced, so it was kept and nothing was replaced.")
+                    == "\u{201C}F\u{201D} changed while it was being replaced, so it was kept and nothing was replaced."
+            )
             #expect(Disk.list(dst + "/F") == ["new work.txt", "old.txt"])
             #expect(Disk.list(dst) == ["F"])
         }
@@ -213,7 +214,8 @@ struct RuntimeSafetyReplaceTests {
 
             let run = try await runPaste(
                 mode: .copy, sources: [src + "/F"], into: dst, policy: NativePaste.replaceAll,
-                fileSystem: NativePaste.withTrash(trash), beforeExecute: { try Disk.write(src + "/F/b.txt", "newer b") },
+                fileSystem: NativePaste.withTrash(trash),
+                beforeExecute: { try Disk.write(src + "/F/b.txt", "newer b") },
                 resolve: { _ in .skip })
 
             #expect(

@@ -199,13 +199,16 @@ public func answersWithin(_ fileSystem: some IdentityFileSystem, _ path: String,
 }
 
 /// Looks `path` up on a thread of its own: one that hangs (a network disk) is left hanging, never waited for
-/// past the time given. The semaphore is signalled once it comes back.
+/// past the time given, and holds none of the threads the rest of the app's work runs on (a busy shared pool
+/// would make a disk that answers at once look as if it didn't). The semaphore is signalled once it comes back.
 private func lookUp(_ fileSystem: some IdentityFileSystem, _ path: String) -> DispatchSemaphore {
     let answered = DispatchSemaphore(value: 0)
-    DispatchQueue.global(qos: .utility).async {
+    let thread = Thread {
         _ = try? fileSystem.lstat(path)
         answered.signal()
     }
+    thread.name = "FileTrail disk lookup"
+    thread.start()
     return answered
 }
 

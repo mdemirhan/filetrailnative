@@ -25,7 +25,8 @@ struct PartialFileRecoveryTests {
     {
         let report = try buildCopyPasteAnalysisReport(
             analysisId: "analysis-1",
-            request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: [Self.source], destinationDirectoryPath: "/target"),
+            request: CopyPasteAnalysisRequest(
+                mode: mode, sourcePaths: [Self.source], destinationDirectoryPath: "/target"),
             fileSystem: fileSystem,
             thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1_000_000_000_000))
         return (report, try resolveAnalysisWithPolicy(report: report, policy: Self.skip, fileSystem: fileSystem))

@@ -212,7 +212,8 @@ struct WriteServiceReplaceTests {
         }
 
         _ = try service.startCopyPasteAnalysis(
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
+            CopyPasteAnalysisRequest(
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
         #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
 
         fileSystem.addFile("/target/file.txt", .file(size: 99))
