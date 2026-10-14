@@ -25,7 +25,7 @@
     {"step":"snapshot","name":"dark-inactive"},
     {"step":"prefs","prefs":{"theme":"auto"}},
     {"step":"wait","ms":300},
-    {"step":"snapshot","name":"auto"},
+    {"step":"snapshot","name":"main"},
     {"step":"geometry","name":"main"}
   ]
 }
