@@ -126,6 +126,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     private var navigationToken = 0
     /// A tab brought back, or merged in, waits unread until it is first shown.
     private(set) var loaded = false
+    /// The tab was sent to another folder while in the background (its folder moved, or its disk went): the folder
+    /// is read when the tab is next shown.
+    private(set) var stale = false
 
     private var backItem: NSToolbarItem?
     private var forwardItem: NSToolbarItem?
@@ -254,9 +257,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
             currentPath: folder.path, searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false)
     }
 
-    /// Reads the tab's folder the first time it is shown.
+    /// Reads the tab's folder the first time it is shown, or again when it was sent elsewhere in the background.
     func ensureLoaded() {
-        guard !loaded else { return }
+        if loaded {
+            if stale {
+                stale = false
+                go(to: folder, history: .none)
+            }
+            return
+        }
         loaded = true
         Task {
             await navigate(to: folder, history: .none)
@@ -264,6 +273,48 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
                 onReady = nil
                 ready()
             }
+        }
+    }
+
+    /// `followMovedItems` and `leaveUnmountedDisks` for a tab in the background: it takes the place `snapshot` gives
+    /// it (folder, history, tree root) and reads its folder when it is next shown.
+    func takePlace(_ snapshot: TabSnapshot) {
+        let history = snapshot.historyPaths.map { URL(fileURLWithPath: $0) }
+        if history.indices.contains(snapshot.historyIndex) {
+            backStack = Array(history[..<snapshot.historyIndex])
+            forwardStack = history[(snapshot.historyIndex + 1)...].reversed()
+        } else {
+            backStack = []
+            forwardStack = []
+        }
+        let moved = folder.path != snapshot.currentPath
+        folder = URL(fileURLWithPath: snapshot.currentPath)
+        treeRootPath = snapshot.treeRootPath
+        let favoritePrefix = "favorite:"
+        if let item = snapshot.selectedTreeItemID, item.hasPrefix(favoritePrefix) {
+            favoritePath = String(item.dropFirst(favoritePrefix.count))
+        } else {
+            favoritePath = nil
+        }
+        if moved, loaded { stale = true }
+        updateTitle()
+        updateNavigationItems()
+        group?.tabChanged(self)
+    }
+
+    /// `followForeignMoveOnScreen`: the folder on screen, or one it is inside, was renamed or moved: it is read at its
+    /// new place, in place in the history.
+    func followOnScreen(_ moves: [PathMove]) {
+        let path = folder.path
+        let followed = ExplorerTabs.followMovedPath(path, moves)
+        guard !path.isEmpty, followed != path else { return }
+        let target = URL(fileURLWithPath: followed)
+        if loaded {
+            go(to: target, history: .none)
+        } else {
+            folder = target
+            updateTitle()
+            group?.tabChanged(self)
         }
     }
 

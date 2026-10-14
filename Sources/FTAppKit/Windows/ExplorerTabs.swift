@@ -333,10 +333,12 @@ public enum ExplorerTabs {
     }
 
     /// `leaveUnmountedDisks`: a background tab on a disk that was unmounted goes Home, as the tab on screen does.
-    public static func leaveUnmountedDisks(_ snapshot: TabSnapshot, unmounted: Set<String>, homePath: String)
-        -> TabSnapshot
-    {
-        func isGone(_ path: String) -> Bool { !path.isEmpty && unmounted.contains(volumeRootPath(path)) }
+    /// `volumeRoot` says which disk a path is on (`getVolumeRootPath`).
+    public static func leaveUnmountedDisks(
+        _ snapshot: TabSnapshot, unmounted: Set<String>, homePath: String,
+        volumeRoot: (String) -> String = volumeRootPath
+    ) -> TabSnapshot {
+        func isGone(_ path: String) -> Bool { !path.isEmpty && unmounted.contains(volumeRoot(path)) }
         guard isGone(snapshot.currentPath) || isGone(snapshot.treeRootPath) else { return snapshot }
         var left = snapshot
         left.historyPaths = snapshot.historyPaths.filter { !isGone($0) } + [homePath]
