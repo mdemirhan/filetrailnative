@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T17:35:57+00:00",
+  "updatedAt": "2026-10-14T17:45:33+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "W2-P3 (P3-04) and W2-U2 (P5-05, P5-06, P5-09) running. Next UI: [P5-04] after P5-05; P5-07 after P5-04; P5-08 after P3-05. Wave-3 briefs once P3-05 and P5-05 merge. Tab-bar layout WP after this phase (openIssues).",
+  "nextAction": "Paused (user): W2-U2 (P5-05, P5-06, P5-09) finishing; then stop. On resume: P3-05 (P3 track); UI [P5-04] after P5-05, P5-07 after P5-04, P5-08 after P3-05; wave-3 briefs once P3-05 and P5-05 merge; tab-bar/NSToolbar WP after this phase.",
   "pause": {
     "requested": true,
     "reason": "requested by user: stop after the running batches (W2-P3, W2-U2) finish and are recorded",
@@ -648,10 +648,26 @@
       "wps": [
         "P3-04"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_2599d55f-e8b",
       "estimatedAgents": 8,
-      "startedAt": "2026-10-14T16:43:24+00:00"
+      "startedAt": "2026-10-14T16:43:24+00:00",
+      "endedAt": "2026-10-14T17:45:30+00:00",
+      "integration": {
+        "merged": [
+          "P3-04"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "9803c25e3477f9aa799db4a91b1d34ae9b65cd85",
+        "summary": "Merged port/P3-04 cleanly. CI passed (build, test, format; 1972 tests passing, 0 failing). Parity matrix synced and committed. Merge lock released."
+      },
+      "critic": null,
+      "spentOutputTokens": 647031,
+      "agents": 6,
+      "subagentTokens": 996387,
+      "durationMin": 61.3,
+      "note": "All three review lenses returned no findings; the parity reviewer took 10 tool calls (42 s). Evidence is the differential (exec-copy/cut/runtime/volumes all match on five disk images) and 150 ported tests; the P3 phase critic re-covers Replace and recovery."
     },
     "W2-U2": {
       "wps": [
@@ -1577,10 +1593,10 @@
       "depends": [
         "P3-03"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P3-04",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "4e85bcebcd61a45f3bf717793ace11b277f05393",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check",
@@ -1592,7 +1608,7 @@
         "safety",
         "performance"
       ],
-      "summary": null,
+      "summary": "Replace is ported in Sources/FTOperations/Replace/: CopyPasteReplace.swift has executeReplace, applyStagedFolderMetadata and recordReplacement; ReplacedItem.swift has removeReplacedItem, assertReplacedItemUnchanged, countItemsInside and findLockedInside. They cover staging under a hidden name, moving the old item to the Trash or deleting it for good only once agreed, the exclusive swap and its visible-name fallback, writing the journal entry before staging, and the Trash location and then the new item as undo steps. Execution/ExecutionReplace.swift (the seam) is removed.\nRecovery is ported in Sources/FTOperations/Recovery/. CopyPasteRecovery.swift has recoverInterruptedReplaces, recoverPartialFiles and RunWriteAlone. Each disk gets its own lookup thread with a time limit (recoveryAnswerWithinMs = 3000). WriteRecovery.swift has recoverWrites, which never throws and posts the notices. The listing and folder-size caches are injected through RecoveryCaches and the log through RecoveryLogger. batch_rename entries are left untouched. It also has RecoveryRetry (retryRecovery) with an injected timer and recoveryRetryIntervalMs = 60_000.\nPendingReplace.swift is deleted, so ExecGoldenTests runs every case: exec-copy, exec-cut, exec-runtime and exec-volumes all match on all five disk images.\n150 new @Test functions in Tests/FTOperationsTests/{Replace,Recovery}/ cite every P3-04 T- id. The only uncited ones are the two rename-of-several cases (T-b6cfb45b, T-51361091), which belong to P3-08. They also cover the Replace step of T-706c8576 and the recovery step of T-93ae7a3b. sync.ts --no-write reports 1635 valid citations.\nAll four gates pass. A full scripts/ci.sh run gives 1860 tests.",
       "findings": [],
       "fixes": [],
       "blockers": [],
@@ -1601,6 +1617,17 @@
         "From P3-03: test rows left for you (Replace or crash recovery): T-00cf8c5b T-01f0d271 T-03dcc5bc T-0973956f T-0bb5550b T-0d702d5e T-10d0620f T-15257524 T-16d927c2 T-17121de6 T-19055326 T-192af090 T-1ae04534 T-1ca9e8c1 T-209072c1 T-22bd6a05 T-2336e156 T-23f2ab89 T-2438126e T-24b6ef42 T-271c5c8b T-302e20ea T-30a95e18 T-30bf2d98 T-342e6072 T-36ef50f8 T-37290acb T-39c40f5b T-4043a115 T-4110113e T-41d67e83 T-4492a990 T-465253ad T-47906982 T-49414386 T-4dbcade3 T-4f7f9c91 T-4fa90b14 T-51361091 T-592ef0a4 T-5cb81f6b T-632ee76c T-6378e158 T-66f20243 T-68d8d731 T-6f64ddff T-71769d45 T-751f9048 T-7a6bb677 T-81c8fbf8 T-8399d35f T-86936628 T-89d07db7 T-8c371eee T-8cf7f825 T-8de531ef T-9b428919 T-9d4d733c T-a1ed3e3b T-a3681238 T-a6a8250b T-aa23acf2 T-ac6200ce T-b2b14d9c T-b2ed4325 T-b2efb3f5 T-b34cde9f T-b53285ff T-b6120d61 T-b6cfb45b T-b9902d4e T-bbaefeb3 T-bbfba98c T-bc3d1d00 T-be6c64e9 T-c0ecbaec T-c7bfc4aa T-c87860f8 T-c889312f T-c924e277 T-ca0ca81f T-cfe02485 T-d236f420 T-dc9ef314 T-de750b08 T-df25867e T-e5058a23 T-e52d860b T-e7b6aa80 T-ee6a7a32 T-f21a582c T-fb074512. Partly ported, finish the remaining step: T-706c8576 (its Replace step) and T-93ae7a3b (its recovery step). F-463 and F-475 are still uncited (Replace).",
         "From P3-03: the Replace seam is Sources/FTOperations/Execution/ExecutionReplace.swift (replaceNotYetAvailableMessage); replace it with the real executeReplace. Tests/FTOperationsTests/Exec/PendingReplace.swift lists the 24 exec cases (exec-copy, exec-cut, exec-runtime and exec-volumes) that need Replace; empty it, and every exec-volumes case must then match on all five file systems.",
         "From P3-03: ExecutionContext already carries the Replace bookkeeping fields (Trash locations of moved-out items, the hidden-name build flag that suppresses undo steps); ExecutionFiles.recordIncomplete writes ReplaceJournalEntry. Exact path matching uses NameKeys.Exact (byte-exact Hashable); per-item dirname/basename go through Execution/ExecutionPaths.swift. Keep recursive walks inside WriteService.runWithRoomForDepth."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P3-04 gates, all exit 0 (worktree detached at port/P3-04, commit 4e85bce, nothing changed or committed): 1) scripts/ci.sh PASS (build, 1860 tests passing, 0 failing, format); 2) tools/parity/gen.sh --check PASS (goldens up to date, 33 suites); 3) tools/parity/exec/selftest.sh PASS (0 FAIL lines); 4) FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests PASS (575 tests passing, 0 failing, format). Logs: /tmp/gate1.out to /tmp/gate4.out.",
+        "failures": []
+      },
+      "sharedFileRequests": [],
+      "deviations": [
+        "The disk-answer check (answersWithin) looks each folder up on a Thread of its own instead of a GCD worker. Under parallel test load the shared pool made disks that answer at once look as if they didn't. The behavior is the same as the original's Promise.race.",
+        "RunWriteAlone is synchronous: (_ write: () -> Void) -> Bool. P3-05's coordinator must run `write` on the calling thread while it holds the slot, and return false when it doesn't run it.",
+        "These F-ids from the brief are still uncited: F-264, F-266, F-350, F-351, F-491, F-495..F-500, F-502, F-503, F-509, F-511, F-512, F-514, F-515. The tests that prove them are in P3-03's Execution/ and Journal/ test files, which I don't own. Their citations could be added there."
       ]
     },
     "P3-05": {
@@ -1631,7 +1658,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing."
+        "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing.",
+        "From P3-04: RunWriteAlone is synchronous, (_ write: () -> Void) -> Bool. The coordinator's runWriteAlone must run `write` on the calling thread while it holds the write slot, and return false when it doesn't run it (another write is running). Call recoverWrites at startup before any write service exists, and start RecoveryRetry (recoveryRetryIntervalMs = 60_000, injected timer) only for entries left at start. Caches go in through RecoveryCaches (DirectoryService's cache, FolderSizeAdjust), the log through RecoveryLogger."
       ]
     },
     "P3-06": {
@@ -1725,7 +1753,9 @@
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": []
+      "carryOver": [
+        "From P3-04: recovery leaves batch_rename journal entries untouched and writes them back; their put-back is yours, with the two rename-of-several writeJournal cases T-b6cfb45b and T-51361091."
+      ]
     },
     "P4-01": {
       "title": "App delegate, commands and menus",
@@ -3088,6 +3118,13 @@
       "seenIn": "W2-U1 results",
       "issue": "Small parity leftovers from P5-02: the sidebar chevron turns at once (the original animates 120 ms); T-fe3f2758 (favorite icons) has no unit test (icons are drawn from the original's SVG paths, shown by scenarios 70-79); scenario 83-sidebar-volume-eject is tier final because the Swift app has no fake-volume seam (it matches with a disk image mounted); the Trash label is 1 pt wider (Core Text kerning).",
       "owner": "P7 parity loop",
+      "closed": false
+    },
+    {
+      "at": "2026-10-14",
+      "seenIn": "W2-P3 (P3-04) result",
+      "issue": "F-264, F-266, F-350, F-351, F-491, F-495..F-500, F-502, F-503, F-509, F-511, F-512, F-514, F-515 are proven by tests in P3-03's Execution/ and Journal/ test files but not cited there.",
+      "owner": "P3 phase critic or P7: add the citations (test comments only)",
       "closed": false
     }
   ],
