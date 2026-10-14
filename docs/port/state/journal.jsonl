@@ -81,3 +81,6 @@
 {"at": "2026-10-14T10:33:14+00:00", "event": "next", "text": "Wave-1 gate passed (D-006..D-014 approved). Running W1-H P4-04+P0-15+P2-08+P0-16; then clean up branches/worktrees and start wave 2"}
 {"at": "2026-10-14T10:33:14+00:00", "event": "set-batch", "batch": "W1-H", "status": "running", "runId": null}
 {"at": "2026-10-14T10:33:22+00:00", "event": "set-batch", "batch": "W1-H", "status": "running", "runId": "wf_99f9b21c-af6"}
+{"at": "2026-10-14T11:23:12+00:00", "event": "apply-report", "batch": "W1-H", "wps": ["P4-04", "P0-15", "P2-08", "P0-16"]}
+{"at": "2026-10-14T11:23:25+00:00", "event": "meter", "weeklyPct": 15.0, "fiveHourPct": 18.0, "note": "after W1-H (1.55M agent tokens)"}
+{"at": "2026-10-14T11:23:25+00:00", "event": "next", "text": "Wave 1 done and cleaned up. Wave 2: waiting for the wave-2 brief drafts (agent), then W2-A"}

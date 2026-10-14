@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T10:33:22+00:00",
+  "updatedAt": "2026-10-14T11:23:25+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
-  "wave": 1,
-  "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "Wave-1 gate passed (D-006..D-014 approved). Running W1-H P4-04+P0-15+P2-08+P0-16; then clean up branches/worktrees and start wave 2",
+  "wave": 2,
+  "phase": "P3/P4-03/P5",
+  "nextAction": "Wave 1 done and cleaned up. Wave 2: waiting for the wave-2 brief drafts (agent), then W2-A",
   "pause": {
     "requested": false,
     "reason": null,
@@ -79,6 +79,12 @@
       "weeklyPct": 14.0,
       "fiveHourPct": 15.0,
       "note": "after W1-G (1.54M agent tokens)"
+    },
+    {
+      "at": "2026-10-14T11:23:25+00:00",
+      "weeklyPct": 15.0,
+      "fiveHourPct": 18.0,
+      "note": "after W1-H (1.55M agent tokens)"
     }
   ],
   "batches": {
@@ -479,14 +485,36 @@
         "P2-08",
         "P0-16"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_99f9b21c-af6",
       "estimatedAgents": 12,
       "meterBefore": {
         "weeklyPct": 14,
         "fiveHourPct": 15
       },
-      "startedAt": "2026-10-14T10:33:22+00:00"
+      "startedAt": "2026-10-14T10:33:22+00:00",
+      "endedAt": "2026-10-14T11:23:12+00:00",
+      "integration": {
+        "merged": [
+          "P4-04",
+          "P0-15",
+          "P2-08",
+          "P0-16"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "6102d5465a0b7d8bc0d704d9a27c80db519774d4",
+        "summary": "All four branches merged with no conflicts, and CI passed after each merge. The final CI run had 1137 tests passing and none failing. The parity matrix sync ran and is committed as \"Sync parity matrix after W1-H\". I did not apply the optional P4-04 follow-up (the 'relaunch' and 'dock' steps in tools/capture/electron/driver.ts), because it also needs matching Swift automation steps for capture scenarios 39+."
+      },
+      "critic": null,
+      "spentOutputTokens": 293194,
+      "agents": 15,
+      "subagentTokens": 1551461,
+      "durationMin": 49.4,
+      "meterAfter": {
+        "weeklyPct": 15,
+        "fiveHourPct": 18
+      }
     }
   },
   "wps": {
@@ -1335,7 +1363,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing."
+      ]
     },
     "P3-06": {
       "title": "Trash, delete, new folder, rename",
@@ -1608,7 +1639,8 @@
       "carryOver": [
         "From P1-02: titleTooltips DOM-timing rows T-9e960311, T-cc926cf5, T-1849bac0, T-91fc6643, T-4e5d4df9, T-34663665, T-6005952a, T-16801ecd, T-5c9514b8, T-bea514b5, T-f8d9bae2 (AppKit tooltip delay and placement).",
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
-        "User report (2026-10-14, screenshot of ~/tmp in Icons view): an extra line over the left pane makes the layout look uneven; the original sidebar runs smoothly up to the title bar. Check the window chrome (unified toolbar, sidebar split item, titlebar separator, tab bar band) against the original and remove lines the original does not have. Found on main (in-app snapshot of ~/tmp, 2026-10-14): the sidebar split divider is a hard vertical line that runs the full window height, through the title bar and toolbar band; the original's sidebar meets the content with no line there, and its toolbar hairline spans only the content side. Likely NSSplitViewItem(sidebarWithViewController:) + unified toolbar + fullSizeContentView drawing the divider in the titlebar; check NSSplitView.dividerStyle, the sidebar item's titlebarSeparatorStyle and window.titlebarSeparatorStyle. The user's screenshot also shows a dark band at the very top that the snapshot can't show; check the real window."
+        "User report (2026-10-14, screenshot of ~/tmp in Icons view): an extra line over the left pane makes the layout look uneven; the original sidebar runs smoothly up to the title bar. Check the window chrome (unified toolbar, sidebar split item, titlebar separator, tab bar band) against the original and remove lines the original does not have. Found on main (in-app snapshot of ~/tmp, 2026-10-14): the sidebar split divider is a hard vertical line that runs the full window height, through the title bar and toolbar band; the original's sidebar meets the content with no line there, and its toolbar hairline spans only the content side. Likely NSSplitViewItem(sidebarWithViewController:) + unified toolbar + fullSizeContentView drawing the divider in the titlebar; check NSSplitView.dividerStyle, the sidebar item's titlebarSeparatorStyle and window.titlebarSeparatorStyle. The user's screenshot also shows a dark band at the very top that the snapshot can't show; check the real window.",
+        "From P4-04 (optional): restore-after-relaunch and no-window Dock reopen are in-process GUI tests, not capture scenarios; adding relaunch/dock steps needs tools/capture/electron/driver.ts and Swift automation steps. Do it if cheap; otherwise leave for P7."
       ]
     },
     "P5-02": {
@@ -1662,7 +1694,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
+        "From P0-16: open_3000_ms is 58-61 ms against a 50 ms budget because the window still uses the spike FolderLoader (3000 resourceValues calls, ~25 ms) instead of DirectoryService (6-8 ms), plus ~36 ms of table display. Switch the window to DirectoryService and meet open_3000, open_100000, stall_100000, back and scroll_max budgets (tools/bench/run.sh; baseline.json holds the current over-budget values)."
       ]
     },
     "P5-04": {
@@ -1791,7 +1824,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P4-04: T-317cfcc8 (windows.spec: paste in one window what was copied in another, B-VIEW-184) is left todo for this WP; ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and capture 38-paste-in-another-window must pass."
+      ]
     },
     "P5-09": {
       "title": "Context menus, Open With, Quick Look, toasts, progress",
@@ -2218,10 +2254,52 @@
       ],
       "phase": "P4",
       "wave": 1,
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P4-04",
-      "attempts": 0,
-      "blockers": []
+      "attempts": 1,
+      "blockers": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "P4-04 gates (worktree detached at f8a0336, port/P4-04): 1) scripts/ci.sh exit 0 (build PASS, test PASS 1118 passing/0 failing, format PASS). 2) FTAppKitTests under gui.lock exit 0 (207 tests in 23 suites passed). 3) tools/capture/run.sh --tier wp under gui.lock exit 0 (38 scenarios; contact sheet at tools/capture/out/contact.html). Capture output includes non-zero \"failed\"/\"expect unmet\" counts on some steps (e.g. 11, 12, 13, 15, 16, 17, 19, 20, 38), but the run exited 0 so the gate passes as specified. Nothing changed or committed."
+      },
+      "headSha": "f8a0336fc0f4d415a5b513185ad5990772c3947b",
+      "summary": "Duplicate Tab: added RendererCommand/ShortcutCommandID .duplicateTab, a table row (\"Duplicate Tab\", .tabs, no keys, File > Duplicate Tab), a File menu item after New Tab, and a route in MainWindowController.perform. The old @objc duplicateTab: action is removed.\nTabs follow the disk: ExplorerWindows now watches NSWorkspace.didUnmountNotification and calls disksUnmounted, which closes tabs on the unmounted disk without remembering them. A window whose tabs are all on that disk closes. While a sheet is open, background tabs go Home through leaveUnmountedDisks (new volumeRoot parameter) and the front tab opens Home (B-VIEW-173). ExplorerWindows.itemsMoved(_:) moves background tabs to a renamed or moved folder via followMovedItems/takePlace and marks them stale so they re-read when shown. The front tab re-reads at the new place in its history (B-VIEW-172).\nMenu state: already correct on main after P4-02. Every menu step in captures 21-38 returns ok, and the items did what each scenario expects.\nStartup: StartupTabsTests ports all 14 startupNavigation.test.ts rows.\ne2e: windows.spec.ts flows are in-process GUI tests in NativeWindowsGUITests.swift: new window and restore after relaunch (T-f5fc5b34), no-window Dock reopen (T-90c6b35c), plus citations T-959a0c89 and T-a9d9c6ee. There are also new tests for the tab bar, tab order, restored tabs, moved folders, unmount and the sheet-blocked case.\nB-VIEW-142..184: each rule is now tested and cited, cited N/A (145, 147, 148, 150-153 belong to the native tab bar), or left todo for another work package (see deviations). All three gate commands pass.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "B-VIEW-172 (tabs follow renamed/moved folders) is implemented but never triggered in the app",
+          "where": "Swift: Sources/FTAppKit/Windows/ExplorerWindows.swift:126-133 (itemsMoved), ExplorerTabGroup.swift:342 (followMovedItems). Reference: apps/desktop/src/renderer/hooks/useExplorerTabs.ts:896-935 (client.onWriteOperationProgress -> collectFollowedMoves -> followMovedItems)",
+          "evidence": "Reference: every finished write operation whose result moved items feeds collectFollowedMoves, and every window's background tabs are moved (useExplorerTabs.ts:896-935). Port: `grep -rn \"itemsMoved\\|collectFollowedMoves\" Sources` finds only the definition and a doc comment saying \"P3-05's write coordinator calls it\". Nothing in Sources calls ExplorerWindows.itemsMoved. The only caller is a GUI test (NativeWindowsGUITests ~line 446), so renaming or moving a folder that a background tab shows leaves that tab pointing at the old path. The brief says to \"implement or cite each\" todo rule. Nothing cites a deferral for B-VIEW-172 either, and the tests mark it F-676 as if covered."
+        },
+        {
+          "severity": "medium",
+          "title": "T-317cfcc8 (windows.spec.ts: paste in one window what was copied in another) not ported or cited",
+          "where": "Brief item \"e2e flows\"; Tests/FTAppKitTests/Windows/NativeWindowsGUITests.swift; docs/port/parity/tests.tsv:32",
+          "evidence": "The brief lists T-317cfcc8 among the windows.spec.ts rows to cite on the new relaunch and Dock scenarios. T-f5fc5b34, T-959a0c89, T-a9d9c6ee and T-90c6b35c are cited in NativeWindowsGUITests.swift (lines 58, 129, 342, 393). `grep -rn 317cfcc8 Tests` returns nothing. tests.tsv:32 still marks it status `todo`: \"pastes in one window what was copied in another\" (B-VIEW-184, the app-wide clipboard shared between windows). No test, no covered-by-feature comment, no N/A marker and no deviation note exists for it."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "partial",
+          "headSha": "f8a0336fc0f4d415a5b513185ad5990772c3947b",
+          "summary": "Finding 1 (B-VIEW-172): ported the reference's onWriteOperationProgress listener into a window-side entry point. Sources/FTAppKit/Windows/ExplorerTabs.swift gains WriteOperationOutcome and WriteOperationProgress plus isRenameOrMove, movedItems, collectFollowedMoves and followedMoves. followedMoves ignores queued, running and awaiting_resolution events, events without a result, and results that moved nothing (only rename, batch_rename, move_to, undo, redo, or a paste of cut items count). ExplorerWindows.writeOperationProgress(_:) is the new entry point, and itemsMoved is now private. The tests were written first and failed to build until the code existed: T-b0dde00f and T-52ae9489 (collectFollowedMoves), an F-676 B-VIEW-172 filter test in ExplorerTabsTests.swift, and the GUI test in NativeWindowsGUITests.swift, which now sends a \"running\" rename event (nothing moves) and then a \"completed\" one (tabs follow). Finding 2 (T-317cfcc8): the flow cannot be ported yet (see remaining). I added a note to NativeWindowsGUITests.swift, written so the parity sync does not read it as a citation, saying the test waits for P5-08 and P3-05. Gates all pass: scripts/ci.sh (1118 tests), GUI FTAppKitTests (207 tests), capture --tier wp (exit 0). Commits 75d4425 and f8a0336 (the latter carries \"Port-Stage: fixed-1\"); HEAD is detached.",
+          "remaining": [
+            "B-VIEW-172 trigger: nothing in the app calls ExplorerWindows.writeOperationProgress yet, because no file operation exists. Sources/FTOperations/Module.swift is a placeholder ('later work packages add the real code'), and the write coordinator is P3-05 (PLAN.md:499). When P3-05 lands, the app shell (Sources/FTAppKit/App, which P4-04 does not own) needs to send every write progress event to ExplorerWindows.writeOperationProgress, the way the reference's onWriteOperationProgress reaches every window.",
+            "T-317cfcc8 is left as todo, which is correct; the finding's suggestion to port it now is wrong. Copy in one window and paste in another needs pieces that do not exist in the port: no window copies a file (MenuCommandRouter.swift:90 maps editCopy to NSText.copy for text fields only; copySelection and pasteSelection have no route outside Automation and the command table), and a paste is a write operation (P3-05). Copy, Cut and the clipboard button belong to P5-08 (PLAN.md:161 A3, :528). ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and no window reads it. The reference's capture scenario 38-paste-in-another-window also reports 'expect: 1 unmet (swift)'. NativeWindowsGUITests.swift now carries a note handing this test to P5-08; it is not an N/A marker, so the row stays todo instead of being hidden.",
+            "bun tools/parity-matrix/sync.ts --no-write --no-run still rewrote docs/port/parity/*.tsv and features.md in the working tree. I discarded those changes without committing them, but the flag does not seem to work."
+          ]
+        }
+      ],
+      "sharedFileRequests": [
+        "Optional follow-up: add 'relaunch' (quit and launch the Electron app again on the same user-data dir) and 'dock' (app.emit('activate')) steps to tools/capture/electron/driver.ts. That makes restore-after-relaunch and no-window Dock reopen possible as capture scenarios 39+, which also need matching Swift automation steps."
+      ],
+      "deviations": [
+        "The windows.spec.ts flows are in-process GUI tests, not capture scenarios. A relaunch or Dock step needs tools/capture/electron/driver.ts, which this package doesn't own, to restart or activate Electron mid-scenario; a step only one side knows fails the compare with exit 3. The Swift side would also need App/ changes to relaunch in process. No scenarios 39+ were added.",
+        "T-317cfcc8 (paste in another window) is not cited: the shared clipboard waits for P5-08, and capture 38 still shows its expectation unmet on the Swift side.",
+        "T-90c6b35c uses Go › Applications where the original uses Go › Desktop, so the test never triggers the macOS Desktop-folder permission prompt.",
+        "The FTFoundation command tests that are counts of the original (RendererCommand 71→72, ShortcutCommands 79→80, changeable 66→67, default keys list) were updated for Duplicate Tab (D-001). The command-availability and shortcut-resolution golden adapters leave duplicateTab out, because the reference never names it.",
+        "No dedicated test yet for B-VIEW-143, 160, 164-170, 174, 182-184: they depend on search tabs, selection/scroll snapshots, write operations, the clipboard or the system tab bar's Close Other Tabs; B-VIEW-171 is evidenced only by scenario 38, whose Swift expectation is unmet. ExplorerWindows.itemsMoved has no caller until P3-05's write coordinator calls it when a move/rename/cut-paste ends (collectFollowedMoves)."
+      ]
     },
     "P0-15": {
       "title": "Parity bookkeeping for P1/P2/P4: uncited rows, F- and B- citations, scenarios close e2e rows",
@@ -2237,10 +2315,31 @@
       ],
       "phase": "P0",
       "wave": 1,
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-15",
-      "attempts": 0,
-      "blockers": []
+      "attempts": 1,
+      "blockers": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "Gate for P0-15 (worktree detached at port/P0-15, fd6f442): PASS. 1) `bun tools/parity-matrix/sync.ts --no-write` exit 0 (953 citations valid; would update tests.tsv, features.md, behaviors.tsv, not written). 2) `scripts/ci.sh` exit 0. Nothing changed or committed. Full logs are in build/logs/ of the worktree.",
+        "failures": []
+      },
+      "headSha": "fd6f442bcf0694472978e1fc2cacf4f50f5ab3b7",
+      "summary": "Branch port/P0-15 (head d41c2e3, detached). Gate passes: sync.ts --no-write (953 citations valid) and scripts/ci.sh (1105 tests, format pass).\n- sync.ts reads a scenario's top-level \"tests\": [\"T-...\"] to close e2e rows (swiftTest \"scenario/<name>\", passing or ported). I checked it with a temporary scenario, then reverted. It also gains a --no-write flag, and the README is updated.\n- Uncited rows: 23 bootstrap rows, the native-fs rows, and the 4 accent rows are now cited.\n  - Bootstrap: new ApplicationPathsTests, a new patch-group test in PreferencePatchTests, and citations added to existing SystemActions tests.\n  - Native-fs: isPackage is covered by a new FolderLoaderTests; T-ace2aac0 and T-b682efab, and T-7a3e2fb1, are cited on existing tests.\n  - The quickLookPath N/A comment now uses the \"// N/A T-.. reason\" form that sync reads; T-fe3f2758 is N/A pointing at F-732 (P5-02).\n- Feature rows: about 190 F- citations across Names, Contracts, BatchRename, AppState, Logging, DiskImages, Search, Volumes, FolderSize and System tests.\n- Behavior rules: B- citations added for B-NAV-134, 135, 137, 139, 175, 181, 190 and 200..203; B-VIEW-185, 186, 188; and B-TREE-022..027, 165, 167, 168, 170, 173, 175, 176, 178.\n- Left uncited as gaps (no test proves them yet): F-031..033 (P5-08 drag), F-109, F-119 (run half is P3-08), F-133, F-137 partly, F-143, F-148, F-153, F-213, F-220, F-235, F-911; B-VIEW-187, 189..195 (window side); B-NAV-124, 138, 176..180, 182..189.\n- docs/port/parity/ is not committed; the integrator should run the sync.",
+      "findings": [],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "The single gate failure was FolderWatchStreamTests.tellsOfItemsMadeRenamedAndRemovedInsideTheFolder. The branch changes no Sources files and only adds citation comments to tests, so the cause is a flaky FSEvents timing race under load, not P0-15. The same test passed on rerun before my change, so I have no failing test to show first. I hardened the test to re-touch made.txt up to 4 times while waiting (4s each), in Tests/FTFileSystemTests/Watch/FolderWatchStreamTests.swift. After that, scripts/ci.sh passed (build, 1105 tests, format) and sync.ts --no-write exited 0 with 953 citations valid. Commit fd6f442 carries the Port-Stage: fixed-1 trailer, and HEAD is detached.",
+          "headSha": "fd6f442bcf0694472978e1fc2cacf4f50f5ab3b7"
+        }
+      ],
+      "sharedFileRequests": [],
+      "deviations": [
+        "The brief's gate command `bun tools/parity-matrix/sync.ts --no-write` did not exist as a flag: unknown flags were ignored and a full swift test run with a write happened. I added --no-write (validate citations, no test run, no writes).",
+        "F-119 left uncited on purpose: its planned WP is P3-08 and only the plan half is tested.",
+        "The user's global CLAUDE.md forbids Co-Authored-By trailers, so the final commit carries only the Port-Stage trailer."
+      ]
     },
     "P2-08": {
       "title": "Dates taken (ImageIO)",
@@ -2258,10 +2357,24 @@
       ],
       "phase": "P2",
       "wave": 1,
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-08",
-      "attempts": 0,
-      "blockers": []
+      "attempts": 1,
+      "blockers": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "P2-08 gates (detached at port/P2-08, HEAD 85e9aa0): `tools/parity/gen.sh --check` exit 0; `scripts/ci.sh` exit 0 (PASS build 10s, PASS test 32s with 1099 tests in passing runs and 0 failing, PASS format 2s). Nothing changed or committed.",
+        "failures": []
+      },
+      "headSha": "85e9aa02beacef1d64c0773088d5b96af28e1e90",
+      "summary": "Ported nativeDatesTaken to Sources/FTFileSystem/DatesTaken/DatesTaken.swift. The API is `DatesTaken.read(_ paths: [String]) async -> [String?]`.\n- It uses ImageIO. Only files whose extension is an image UTType are read.\n- The date is EXIF DateTimeOriginal, then DateTimeDigitized, in strict 19-character form. Zeros and spaces give nil.\n- Tests are in Tests/FTFileSystemTests/DatesTaken/DatesTakenTests.swift. The reference fixtures (taken.jpg, digitized.jpg, undated.jpg, taken.heic, clip.mov) are embedded as base64 in DatesTakenFixtures.swift because the test target has no resources.\n- T-f2411f69, T-eee6f364, T-5874efa5, T-663d0a15 and T-4461d73c are ported one for one. T-aa124d90 is marked N/A on the strict-digits unit test (the argument is typed as `[String]`).\n- Gates passed: `tools/parity/gen.sh --check` and `scripts/ci.sh` (1099 tests in passing runs, 0 failing). The DatesTakenTests suite is in the log as passed.\n- No golden was added: the output is machine-local and the fixtures give fixed expected dates, so the tests check those directly.\n- The final commit has the \"Port-Stage: implemented\" trailer, and the branch is detached.",
+      "findings": [],
+      "fixes": [],
+      "sharedFileRequests": [],
+      "deviations": [
+        "The brief file docs/port/state/wp/P2-08.md is untracked, so it is absent from the worktree; I read it from the shared checkout path.",
+        "T-aa124d90 (refuses non-array input) has no Swift counterpart because the API is typed."
+      ]
     },
     "P0-16": {
       "title": "Bench baseline and budgets, timing tests under load, stray DiskImageMounter",
@@ -2277,10 +2390,24 @@
       ],
       "phase": "P0",
       "wave": 1,
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-16",
-      "attempts": 0,
-      "blockers": []
+      "attempts": 1,
+      "blockers": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "P0-16 gate: PASS. Both commands exit 0. (1) lockf ... tools/bench/run.sh --quick --report-only: exit 0; bench verdicts: open_3000_ms 74.52 vs budget 50 OVER BUDGET; list_100000_ms 435.57 vs 400 OVER BUDGET; scroll_max_ms 22.01 vs 16 OVER BUDGET; scroll_p99_ms 19.21 vs baseline 9.12 REGRESSION (informational, not a command failure). (2) scripts/ci.sh: exit 0; PASS build (8s), PASS test (45s), 1094 tests in passing runs, 0 failing, PASS format (2s). Worktree left detached at f6c0f01, clean; nothing changed or committed.",
+        "failures": []
+      },
+      "headSha": "f6c0f0145f04c4431461c2987442d5b57f9cd5ac",
+      "summary": "Bench: re-measured on main. open_3000_ms is 58-61 ms against a 50 ms budget, so still over. The window is only 25 ms of read (the app's spike FolderLoader does 3000 resourceValues calls; DirectoryService reads the same folder in 6-8 ms) plus 36 ms of table display. The cause is the app not yet using DirectoryService, which is outside what I own, so I did not change it.\nscroll_max_ms did produce a number on this machine (19-33 ms against a 16 ms budget, noisy under load 5-11). Because a window that is not on screen gets no frames and would hang until the 120 s watchdog, the scroll run now ends after duration+5 s with an explicit error that report.py prints.\nAdded SearchBenchTests, run from listing.sh: first_search_results_ms is about 38-44 ms against 150 ms. It is now in budgets.json.\nbaseline.json refreshed with a full --update-baseline run. Several metrics are over budget on the spike listing path: open_100000 1503, stall_100000 801, list_100000 427-467, back 14.6 in the full run, scroll_max 33.\nTiming tests: WriteEffects and CommandAvailability now measure thread CPU time (new FTTestSupport CPUTime). ResponseCache asserts the quickest of 200 batches is under 10 ms instead of a total wall time, so a scheduling delay on one batch cannot fail it. A real regression would still show in every batch.\nDiskImageMounter: only DiskImageMounterHandOffTests calls the real hand-off, and it was already gated on FILETRAIL_GUI_TESTS=1. Under that flag it left the app running, so it now quits the instance it started. Every other test injects the hand-off.\nGate: ci.sh passes (1094 tests, 0 failing). The bench gate command ran, and the final bench run after the code edits was --update-baseline.",
+      "findings": [],
+      "fixes": [],
+      "sharedFileRequests": [],
+      "deviations": [
+        "open_3000_ms stays over its 50 ms budget until the app's FolderLoader is replaced by DirectoryService, or the display path is sped up",
+        "Several budgets (open_100000, stall_100000, list_100000, back, scroll_max) were over in the baseline run, so the new baseline records over-budget values"
+      ]
     }
   },
   "behaviorExtraction": {
@@ -2301,7 +2428,8 @@
       "issue": "Automation app hung after finishing scenario 02-list-components-dark: NSApp.terminate stuck in _shouldTerminate; applicationShouldTerminate returns .terminateLater and the QuitCoordinator Task never replied (AppDelegate.swift ~220, P4-01 code on main). Sample: AutomationRunner.finish -> terminate -> _shouldTerminate -> nextEventMatchingMask, idle 9+ min. Not every run hangs (01-light exited fine). tools/capture/run.sh has no per-scenario timeout, so a hang holds the GUI lock forever.",
       "also": "A DiskImageMounter was launched ~50 min earlier during quiet mode (W1-F, likely P4-01 or P0-13 tests) and left running; killed by orchestrator.",
       "owner": "check W1-G results; else new WP (quit hang + run.sh scenario timeout + find what launched DiskImageMounter)",
-      "status": "cause: NSApp.terminate called inside a main-actor Task/main-queue job deadlocks with applicationShouldTerminate -> .terminateLater + Task reply. Fixed: capture run.sh timeout 120 s (a697205); Benchmark quit via run loop (main); AutomationRunner fixed on both port/P4-02 and port/P0-14 (integrator picks one). Remaining: find what launched DiskImageMounter during quiet mode. DiskImageMounter launch -> P0-16."
+      "status": "cause: NSApp.terminate called inside a main-actor Task/main-queue job deadlocks with applicationShouldTerminate -> .terminateLater + Task reply. Fixed: capture run.sh timeout 120 s (a697205); Benchmark quit via run loop (main); AutomationRunner fixed on both port/P4-02 and port/P0-14 (integrator picks one). Remaining: find what launched DiskImageMounter during quiet mode. DiskImageMounter launch -> P0-16. Resolved by P0-16: only DiskImageMounterHandOffTests (gated) calls the real hand-off; it now quits the DiskImageMounter it starts.",
+      "closed": true
     }
   ],
   "userRequests": [
