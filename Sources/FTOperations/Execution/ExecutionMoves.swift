@@ -300,8 +300,14 @@ func createOperationResult(
     }
     // The items picked, not what is inside the folders among them ("Photos", not "Photos and 3 more" for one
     // folder holding three files).
-    let pickedPaths = Set(report.nodes.map { NameKeys.Exact($0.sourcePath) })
-    let topLevelItemCount = items.filter { pickedPaths.contains(NameKeys.Exact($0.sourcePath)) }.count
+    // Looked up by length first, as a paste's result can hold 100,000 items and more.
+    var pickedPaths: [Int: [String]] = [:]
+    for node in report.nodes {
+        pickedPaths[node.sourcePath.utf8.count, default: []].append(node.sourcePath)
+    }
+    let topLevelItemCount = items.filter { item in
+        pickedPaths[item.sourcePath.utf8.count]?.contains { $0.utf8.elementsEqual(item.sourcePath.utf8) } ?? false
+    }.count
     return CopyPasteOperationResult(
         operationId: operationId, mode: mode, status: status, destinationDirectoryPath: report.destinationDirectoryPath,
         startedAt: startedAt, finishedAt: finishedAt,

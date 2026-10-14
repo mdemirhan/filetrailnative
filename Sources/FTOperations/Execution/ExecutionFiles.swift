@@ -298,13 +298,16 @@ func rebaseItemResults(_ items: [CopyPasteItemResult], _ fromPath: String, _ toP
     }
 }
 
+/// `path` under `toPath` instead of `fromPath`, compared byte for byte (scalar for scalar, as `===` and
+/// `startsWith` compare): a folder of 100,000 items has each of their paths rebased.
 func rebasePath(_ path: String, _ fromPath: String, _ toPath: String) -> String {
-    if sameText(path, fromPath) {
+    let bytes = path.utf8
+    let from = fromPath.utf8
+    if bytes.elementsEqual(from) {
         return toPath
     }
-    let prefix = fromPath + "/"
-    guard startsWith(path, prefix) else { return path }
-    var rest = String.UnicodeScalarView()
-    rest.append(contentsOf: path.unicodeScalars.dropFirst(fromPath.unicodeScalars.count))
-    return toPath + String(rest)
+    guard bytes.count > from.count, bytes.starts(with: from),
+        bytes[bytes.index(bytes.startIndex, offsetBy: from.count)] == UInt8(ascii: "/")
+    else { return path }
+    return toPath + String(decoding: bytes.dropFirst(from.count), as: UTF8.self)
 }
