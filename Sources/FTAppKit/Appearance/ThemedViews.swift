@@ -81,7 +81,8 @@ final class ThemedTextCell: NSTextFieldCell {
     var verticallyCentered = false
 
     override func drawingRect(forBounds rect: NSRect) -> NSRect {
-        var area = rect
+        // The cell draws its text 2 pt in from this rectangle on each side; the rectangle is made wider to cancel it.
+        var area = rect.insetBy(dx: -2, dy: 0)
         area.origin.x += leadingInset
         area.size.width = max(0, area.width - leadingInset)
         if verticallyCentered {
@@ -99,7 +100,7 @@ final class ThemedTextCell: NSTextFieldCell {
         let size = attributedStringValue.boundingRect(
             with: NSSize(width: rect.width, height: .greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin])
-        return NSSize(width: ceil(size.width), height: ceil(size.height))
+        return NSSize(width: ceil(size.width), height: size.height)
     }
 }
 
@@ -140,15 +141,18 @@ public final class ThemedText: NSTextField, ThemeApplying {
         // The field's own font and color say what it shows (accessibility, the geometry dumps); the string keeps its runs.
         if text.length > 0 {
             font = text.attribute(.font, at: 0, effectiveRange: nil) as? NSFont ?? font
-            textColor = text.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor ?? textColor
+            textColor =
+                text.attribute(.reportedColor, at: 0, effectiveRange: nil) as? NSColor
+                ?? text.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor ?? textColor
         }
         attributedStringValue = text
     }
 
-    /// The height the text takes at this width.
+    /// The height the text takes at this width, as CSS lays it out (a line of 19.5 stays 19.5).
     public func height(forWidth width: CGFloat) -> CGFloat {
-        let bounds = NSRect(x: 0, y: 0, width: max(1, width), height: CGFloat.greatestFiniteMagnitude)
-        return ceil(cell?.cellSize(forBounds: bounds).height ?? 0)
+        let size = attributedStringValue.boundingRect(
+            with: NSSize(width: max(1, width), height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin])
+        return size.height
     }
 
     /// The width the text takes on one line.
@@ -157,10 +161,27 @@ public final class ThemedText: NSTextField, ThemeApplying {
     }
 }
 
+extension NSAttributedString.Key {
+    /// The color a run is meant to have, with its alpha: the run itself is drawn in that color flattened onto its
+    /// background (AppKit draws a translucent text color of an attributed string as an opaque one).
+    static let reportedColor = NSAttributedString.Key("filetrail.reportedColor")
+}
+
+extension RGBA {
+    /// This color over an opaque `background`, as one opaque color.
+    public func flattened(over background: RGBA) -> RGBA {
+        RGBA(
+            red: red * alpha + background.red * (1 - alpha), green: green * alpha + background.green * (1 - alpha),
+            blue: blue * alpha + background.blue * (1 - alpha))
+    }
+}
+
 /// Styles for the text of the stylesheet: font, color and line height.
 public struct TextStyle {
     public var font: NSFont
     public var color: @MainActor (Theme) -> RGBA
+    /// What the text lies on, for a translucent color to be flattened onto; the page's background by default.
+    public var background: @MainActor (Theme) -> RGBA = { $0.palette.bgBase }
     /// CSS `line-height` as a multiple of the font size; nil is the font's own.
     public var lineHeight: Double?
     public var alignment: NSTextAlignment = .left
@@ -188,8 +209,10 @@ public struct TextStyle {
             paragraph.minimumLineHeight = height
             paragraph.maximumLineHeight = height
         }
+        let wanted = color(theme)
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: font, .foregroundColor: NSColor(color(theme)), .paragraphStyle: paragraph,
+            .font: font, .foregroundColor: NSColor(wanted.alpha < 1 ? wanted.flattened(over: background(theme)) : wanted),
+            .paragraphStyle: paragraph, .reportedColor: NSColor(wanted),
         ]
         if kern != 0 { attributes[.kern] = kern }
         return attributes

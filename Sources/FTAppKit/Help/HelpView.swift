@@ -60,6 +60,9 @@ public final class HelpView: ThemedView {
             sidebar.addSubview(button)
         }
         scroll.drawsBackground = false
+        // The content runs under the title bar on its own: no inset for it.
+        scroll.automaticallyAdjustsContentInsets = false
+        scroll.contentInsets = NSEdgeInsetsZero
         scroll.hasVerticalScroller = true
         scroll.scrollerStyle = .overlay
         scroll.autohidesScrollers = true

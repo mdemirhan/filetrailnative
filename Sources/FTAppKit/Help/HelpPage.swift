@@ -23,9 +23,14 @@ private enum PageStyle {
         font: ThemeFonts.sans(DesignTokens.typeScale.body), color: { $0.palette.textSecondary }, lineHeight: lineHeight)
     static let label = TextStyle(
         font: ThemeFonts.sans(DesignTokens.typeScale.body), color: { $0.palette.textPrimary }, lineHeight: lineHeight)
-    static let note = TextStyle(
-        font: ThemeFonts.sans(DesignTokens.typeScale.callout), color: { $0.palette.textSecondary },
-        lineHeight: lineHeight)
+    static let note: TextStyle = {
+        var style = TextStyle(
+            font: ThemeFonts.sans(DesignTokens.typeScale.callout), color: { $0.palette.textSecondary },
+            lineHeight: lineHeight)
+        // The note lies on the accent-soft box.
+        style.background = { $0.accent.softBg.flattened(over: $0.palette.bgBase) }
+        return style
+    }()
     static let code = ThemeFonts.mono(DesignTokens.typeScale.callout)
 
     /// `renderInline`: plain text, and `code` in the code style. `{command}` is already the key it names.
@@ -45,7 +50,8 @@ private enum PageStyle {
         var attributes = style.attributes(theme)
         attributes[.font] = Self.code
         attributes[.foregroundColor] = NSColor(theme.palette.textPrimary)
-        attributes[.backgroundColor] = NSColor(theme.palette.bgInput)
+        attributes[.reportedColor] = NSColor(theme.palette.textPrimary)
+        attributes[.backgroundColor] = NSColor(theme.palette.bgInput.flattened(over: style.background(theme)))
         return NSAttributedString(string: text, attributes: attributes)
     }
 }

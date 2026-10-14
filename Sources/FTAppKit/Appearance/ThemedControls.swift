@@ -139,7 +139,7 @@ public final class PushButton: TextControl {
     public var preferredWidth: CGFloat {
         max(
             CGFloat(Self.minWidth),
-            ceil((title as NSString).size(withAttributes: [.font: Self.font]).width) + CGFloat(2 * Self.horizontalPadding))
+            (title as NSString).size(withAttributes: [.font: Self.font]).width + CGFloat(2 * Self.horizontalPadding))
     }
 
     public override var intrinsicContentSize: NSSize { NSSize(width: preferredWidth, height: CGFloat(Self.height)) }
@@ -296,7 +296,7 @@ public final class KeycapView: TextControl {
     public var preferredWidth: CGFloat {
         max(
             CGFloat(Self.minWidth),
-            ceil((key as NSString).size(withAttributes: [.font: Self.font]).width) + CGFloat(2 * Self.horizontalPadding + 2))
+            (key as NSString).size(withAttributes: [.font: Self.font]).width + CGFloat(2 * Self.horizontalPadding + 2))
     }
 
     public override func applyTheme(_ theme: Theme) {

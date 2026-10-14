@@ -49,6 +49,7 @@ public final class AboutWindowController: PageWindowController {
             model: model)
         (window as? PageWindow)?.closesOnEscape = true
         window?.contentView = aboutView
+        window?.initialFirstResponder = aboutView
         window?.setContentSize(Self.contentSize)
         themeChanged(model.theme)
     }
@@ -150,6 +151,9 @@ public final class AboutView: ThemedView {
     }
 
     public required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// The view itself takes the keyboard when the window opens, so no button shows a focus ring.
+    public override var acceptsFirstResponder: Bool { true }
 
     public override func applyTheme(_ theme: Theme) {
         super.applyTheme(theme)

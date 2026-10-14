@@ -28,6 +28,7 @@ public final class AcknowledgementsWindowController: PageWindowController {
             spec: PageWindowSpec(title: "Acknowledgements", size: Self.size, minSize: Self.minSize), model: model)
         (window as? PageWindow)?.closesOnEscape = true
         window?.contentView = listView
+        window?.initialFirstResponder = listView
         window?.setContentSize(Self.size)
         themeChanged(model.theme)
     }
@@ -38,28 +39,20 @@ public final class AcknowledgementsWindowController: PageWindowController {
 /// The page: a title strip, and under it the intro and one disclosure entry for each component.
 @MainActor
 public final class AcknowledgementsView: ThemedView {
-    private let titleStrip: ThemedView
-    private let titleText: ThemedText
+    private let titleStrip: AcknowledgementsTitle
     private let scroll = NSScrollView()
     private let list: AcknowledgementList
 
     static let titleHeight: CGFloat = 40
 
     init(components: [Acknowledgement], failed: Bool, openURL: @escaping @MainActor (URL) -> Void, theme: Theme) {
-        titleStrip = ThemedView(theme: theme)
-        titleText = ThemedText(
-            "Acknowledgements",
-            style: TextStyle(
-                font: ThemeFonts.sans(DesignTokens.typeScale.body, .semibold), color: { $0.palette.textPrimary },
-                alignment: .center))
+        titleStrip = AcknowledgementsTitle(theme: theme)
         list = AcknowledgementList(components: components, failed: failed, openURL: openURL, theme: theme)
         super.init(frame: NSRect(origin: .zero, size: AcknowledgementsWindowController.size), theme: theme)
         fill = { $0.palette.bgBase }
-        titleStrip.fill = { $0.palette.toolbarBg }
-        titleStrip.edges = [.bottom: { $0.palette.border }]
-        titleText.setAccessibilityIdentifier("acknowledgements.title")
-        titleStrip.addSubview(titleText)
         scroll.drawsBackground = false
+        scroll.automaticallyAdjustsContentInsets = false
+        scroll.contentInsets = NSEdgeInsetsZero
         scroll.hasVerticalScroller = true
         scroll.scrollerStyle = .overlay
         scroll.autohidesScrollers = true
@@ -73,6 +66,9 @@ public final class AcknowledgementsView: ThemedView {
 
     public required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
+    /// The view itself takes the keyboard when the window opens.
+    public override var acceptsFirstResponder: Bool { true }
+
     /// The entries, top to bottom.
     public var entries: [AcknowledgementEntryView] { list.entries }
 
@@ -81,13 +77,40 @@ public final class AcknowledgementsView: ThemedView {
     public override func layout() {
         super.layout()
         titleStrip.frame = NSRect(x: 0, y: 0, width: bounds.width, height: Self.titleHeight)
-        let titleHeight = ThemeFonts.normalLineHeight(ThemeFonts.sans(DesignTokens.typeScale.body, .semibold))
-        titleText.frame = NSRect(
-            x: 0, y: ((Self.titleHeight - 1 - titleHeight) / 2).rounded(), width: bounds.width, height: titleHeight)
         scroll.frame = NSRect(
             x: 0, y: Self.titleHeight, width: bounds.width, height: max(0, bounds.height - Self.titleHeight))
         list.frame.size.width = scroll.contentSize.width
         list.layoutForWidth(scroll.contentSize.width)
+    }
+}
+
+/// The strip across the top: the window's title centered, on the toolbar's color over a hairline.
+@MainActor
+final class AcknowledgementsTitle: TextControl {
+    init(theme: Theme) {
+        super.init(text: "Acknowledgements", theme: theme)
+        font = ThemeFonts.sans(DesignTokens.typeScale.body, .semibold)
+        alignment = .center
+        textColor = NSColor(theme.palette.textPrimary)
+        setAccessibilityIdentifier("acknowledgements.title")
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override func applyTheme(_ theme: Theme) {
+        super.applyTheme(theme)
+        textColor = NSColor(theme.palette.textPrimary)
+    }
+
+    override func drawChrome() {
+        NSColor(theme.palette.toolbarBg).setFill()
+        bounds.fill()
+        NSColor(theme.palette.border).setFill()
+        NSRect(x: 0, y: bounds.height - 1, width: bounds.width, height: 1).fill()
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        window?.performDrag(with: event)
     }
 }
 
@@ -150,6 +173,16 @@ final class AcknowledgementList: NSView, ThemeApplying {
     }
 }
 
+/// The line of an entry that opens and closes it (`<summary>`).
+@MainActor
+final class AcknowledgementSummary: NSView {
+    var onClick: () -> Void = {}
+
+    override var isFlipped: Bool { true }
+
+    override func mouseDown(with event: NSEvent) { onClick() }
+}
+
 /// One component: a summary line (disclosure triangle, name and version, license on the right), and when open its
 /// site and its license text.
 @MainActor
@@ -160,18 +193,24 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
     var onToggle: () -> Void = {}
     private let openURL: @MainActor (URL) -> Void
 
+    private let summary = AcknowledgementSummary()
     private let nameText: ThemedText
     private let licenseText: ThemedText
     public let link: LinkButton
     private let box: ThemedView
     private let boxScroll = NSScrollView()
-    private let textView = NSTextView()
+    private let licenseBody: ThemedText
+    /// What the box scrolls: the text with its padding.
+    private let licenseDocument = FlippedView()
 
     private static let nameFont = ThemeFonts.sans(DesignTokens.typeScale.body, .semibold)
     private static let bodyFont = ThemeFonts.sans(DesignTokens.typeScale.body)
     private static let licenseFont = ThemeFonts.sans(DesignTokens.typeScale.callout)
     private static let textFont = ThemeFonts.mono(DesignTokens.typeScale.small)
-    private static let summaryIndent: CGFloat = 16
+    /// Where the name starts: the disclosure marker's width.
+    private static let nameIndent: CGFloat = 11.17
+    /// `.acknowledgement-body`: padding-left.
+    private static let bodyIndent: CGFloat = 16
     private static let boxMaxHeight: CGFloat = 300
 
     init(component: Acknowledgement, openURL: @escaping @MainActor (URL) -> Void, theme: Theme) {
@@ -201,6 +240,9 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
             title: component.url.replacingOccurrences(of: "^https://(www\\.)?", with: "", options: .regularExpression),
             fontSize: DesignTokens.typeScale.callout, theme: theme)
         box = ThemedView(theme: theme)
+        var licenseStyle = TextStyle(font: Self.textFont, color: { $0.palette.textSecondary }, lineHeight: 1.5)
+        licenseStyle.background = { $0.palette.bgInput.flattened(over: $0.palette.bgBase) }
+        licenseBody = ThemedText(component.text, style: licenseStyle, wrapping: true, selectable: true)
         super.init(frame: .zero)
         nameText.setAccessibilityIdentifier("acknowledgements.name")
         licenseText.setAccessibilityIdentifier("acknowledgements.license")
@@ -211,23 +253,23 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
         box.borderColor = { $0.palette.border }
         box.cornerRadius = CGFloat(DesignTokens.radii.control)
         box.setAccessibilityIdentifier("acknowledgements.text")
-        textView.isEditable = false
-        textView.isSelectable = true
-        textView.drawsBackground = false
-        textView.textContainerInset = NSSize(width: 12, height: 10)
-        textView.textContainer?.lineFragmentPadding = 0
-        textView.textContainer?.widthTracksTextView = true
-        textView.isVerticallyResizable = true
-        textView.isHorizontallyResizable = false
-        boxScroll.documentView = textView
+        licenseDocument.addSubview(licenseBody)
+        boxScroll.documentView = licenseDocument
         boxScroll.drawsBackground = false
+        boxScroll.automaticallyAdjustsContentInsets = false
+        boxScroll.contentInsets = NSEdgeInsetsZero
         boxScroll.hasVerticalScroller = true
         boxScroll.scrollerStyle = .overlay
         box.addSubview(boxScroll)
+        summary.onClick = { [weak self] in
+            self?.window?.makeFirstResponder(self)
+            self?.toggle()
+        }
+        summary.setAccessibilityIdentifier("acknowledgements.row")
+        summary.setAccessibilityLabel(component.name)
+        summary.setAccessibilityRole(.disclosureTriangle)
+        addSubview(summary)
         for view in [nameText, licenseText] { addSubview(view) }
-        setAccessibilityRole(.disclosureTriangle)
-        setAccessibilityIdentifier("acknowledgements.row")
-        setAccessibilityLabel(component.name)
         applyTheme(theme)
     }
 
@@ -238,19 +280,6 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
 
     public func applyTheme(_ theme: Theme) {
         self.theme = theme
-        textView.textStorage?.setAttributedString(
-            NSAttributedString(
-                string: component.text,
-                attributes: [
-                    .font: Self.textFont, .foregroundColor: NSColor(theme.palette.textSecondary),
-                    .paragraphStyle: {
-                        let paragraph = NSMutableParagraphStyle()
-                        let height = CGFloat(DesignTokens.typeScale.small * 1.5)
-                        paragraph.minimumLineHeight = height
-                        paragraph.maximumLineHeight = height
-                        return paragraph
-                    }(),
-                ]))
         needsDisplay = true
     }
 
@@ -276,12 +305,6 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
         if let url = URL(string: component.url) { openURL(url) }
     }
 
-    public override func mouseDown(with event: NSEvent) {
-        window?.makeFirstResponder(self)
-        let point = convert(event.locationInWindow, from: nil)
-        if point.y < summaryHeight { toggle() }
-    }
-
     public override func keyDown(with event: NSEvent) {
         if event.charactersIgnoringModifiers == " " || event.keyCode == 36 { toggle() } else { super.keyDown(with: event) }
     }
@@ -291,22 +314,17 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
     /// The summary line: padding 8 above and below the text.
     private var summaryHeight: CGFloat { 8 + ThemeFonts.normalLineHeight(Self.nameFont) + 8 }
 
-    private func boxTextHeight(forWidth width: CGFloat) -> CGFloat {
-        let storage = textView.textStorage ?? NSTextStorage()
-        let rect = storage.boundingRect(
-            with: NSSize(width: max(1, width - 2 - 24), height: .greatestFiniteMagnitude),
-            options: [.usesLineFragmentOrigin, .usesFontLeading])
-        return ceil(rect.height)
+    /// The license box at this width: its text, 10 and 12 in, and a 1 pt border; at most 300 tall.
+    private func boxHeight(forWidth width: CGFloat) -> CGFloat {
+        min(Self.boxMaxHeight, licenseBody.height(forWidth: width - 2 - 24) + 20 + 2)
     }
 
     /// The entry's height at this width, with its bottom hairline.
     func height(forWidth width: CGFloat) -> CGFloat {
         var height = summaryHeight
         if isOpen {
-            let bodyWidth = width - Self.summaryIndent
             let linkHeight = ThemeFonts.normalLineHeight(Self.licenseFont)
-            let boxHeight = min(Self.boxMaxHeight, boxTextHeight(forWidth: bodyWidth) + 20 + 2)
-            height += linkHeight + 10 + boxHeight + 14
+            height += linkHeight + 10 + boxHeight(forWidth: width - Self.bodyIndent) + 14
         }
         return height + 1
     }
@@ -314,44 +332,45 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
     public override func layout() {
         super.layout()
         let width = bounds.width
+        summary.frame = NSRect(x: 0, y: 0, width: width, height: summaryHeight)
         let nameHeight = ThemeFonts.normalLineHeight(Self.nameFont)
         let licenseHeight = ThemeFonts.normalLineHeight(Self.licenseFont)
-        let licenseWidth = ceil(licenseText.naturalWidth)
-        // The license on the right; the name beside the triangle; their baselines line up.
-        nameText.frame = NSRect(
-            x: Self.summaryIndent, y: 8, width: max(0, width - Self.summaryIndent - licenseWidth - 16 - 20),
-            height: nameHeight)
+        // The license at the right of a line 20 shorter than the entry, the name beside the marker; baselines line up.
+        let licenseWidth = licenseText.naturalWidth
+        let right = width - 20 + Self.nameIndent
+        let nameWidth = min(nameText.naturalWidth, max(0, right - licenseWidth - 16 - Self.nameIndent))
+        nameText.frame = NSRect(x: Self.nameIndent, y: 8, width: nameWidth, height: nameHeight)
         licenseText.frame = NSRect(
-            x: width - 20 - licenseWidth, y: 8 + nameHeight - licenseHeight - 1, width: licenseWidth,
-            height: licenseHeight)
+            x: right - licenseWidth, y: 8 + nameHeight - licenseHeight, width: licenseWidth, height: licenseHeight)
         guard isOpen else { return }
-        let bodyX = Self.summaryIndent
-        let bodyWidth = width - bodyX
+        let bodyWidth = width - Self.bodyIndent
         var y = summaryHeight
-        let linkSize = link.preferredSize
-        link.frame = NSRect(x: bodyX, y: y, width: linkSize.width, height: ThemeFonts.normalLineHeight(Self.licenseFont))
-        y += ThemeFonts.normalLineHeight(Self.licenseFont) + 10
-        let boxHeight = min(Self.boxMaxHeight, boxTextHeight(forWidth: bodyWidth) + 20 + 2)
-        box.frame = NSRect(x: bodyX, y: y, width: bodyWidth, height: boxHeight)
+        let linkHeight = ThemeFonts.normalLineHeight(Self.licenseFont)
+        link.frame = NSRect(x: Self.bodyIndent, y: y, width: link.preferredSize.width, height: linkHeight)
+        y += linkHeight + 10
+        let height = boxHeight(forWidth: bodyWidth)
+        box.frame = NSRect(x: Self.bodyIndent, y: y, width: bodyWidth, height: height)
         boxScroll.frame = box.bounds.insetBy(dx: 1, dy: 1)
-        textView.frame.size.width = boxScroll.contentSize.width
+        let textWidth = bodyWidth - 2 - 24
+        let textHeight = licenseBody.height(forWidth: textWidth)
+        licenseBody.frame = NSRect(x: 12, y: 10, width: textWidth, height: textHeight)
+        licenseDocument.frame = NSRect(x: 0, y: 0, width: boxScroll.contentSize.width, height: textHeight + 20)
     }
 
     public override func draw(_ dirtyRect: NSRect) {
         // The disclosure triangle, and the hairline under the entry.
-        let color = NSColor(theme.palette.textSecondary)
-        color.setFill()
+        NSColor(theme.palette.textSecondary).setFill()
         let nameHeight = ThemeFonts.normalLineHeight(Self.nameFont)
         let midY = 8 + nameHeight / 2
         let triangle = NSBezierPath()
         if isOpen {
-            triangle.move(to: NSPoint(x: 1, y: midY - 2.5))
-            triangle.line(to: NSPoint(x: 9, y: midY - 2.5))
-            triangle.line(to: NSPoint(x: 5, y: midY + 4))
+            triangle.move(to: NSPoint(x: 0, y: midY - 3.5))
+            triangle.line(to: NSPoint(x: 9, y: midY - 3.5))
+            triangle.line(to: NSPoint(x: 4.5, y: midY + 4))
         } else {
-            triangle.move(to: NSPoint(x: 2, y: midY - 4.5))
-            triangle.line(to: NSPoint(x: 2, y: midY + 4.5))
-            triangle.line(to: NSPoint(x: 8.5, y: midY))
+            triangle.move(to: NSPoint(x: 1, y: midY - 4.5))
+            triangle.line(to: NSPoint(x: 1, y: midY + 4.5))
+            triangle.line(to: NSPoint(x: 8, y: midY))
         }
         triangle.close()
         triangle.fill()
