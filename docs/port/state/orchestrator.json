@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T14:44:31+00:00",
+  "updatedAt": "2026-10-14T16:43:16+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Tracks: W2-P2 (P3-03) running; W2-U1 (P5-02, P5-03) running.",
+  "nextAction": "W2-U1 (P5-02, P5-03) running; W2-P3 (P3-04) running. Then UI [P5-05,P5-06], P3 P3-05.",
   "pause": {
     "requested": false,
     "reason": null,
@@ -91,6 +91,12 @@
       "weeklyPct": 19.0,
       "fiveHourPct": 16.0,
       "note": "after W2-A (3.40M agent tokens)"
+    },
+    {
+      "at": "2026-10-14T16:43:05+00:00",
+      "weeklyPct": 24.0,
+      "fiveHourPct": 0.0,
+      "note": "after W2-P2"
     }
   ],
   "batches": {
@@ -596,10 +602,34 @@
       "wps": [
         "P3-03"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_5891dcb1-dcc",
       "estimatedAgents": 8,
-      "startedAt": "2026-10-14T14:44:31+00:00"
+      "startedAt": "2026-10-14T14:44:31+00:00",
+      "endedAt": "2026-10-14T16:42:35+00:00",
+      "integration": {
+        "merged": [
+          "P3-03"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "c9ae7ea6a346b1e2d49d10110d680cfa1a04ebc1",
+        "summary": "Merged P3-03 and applied the README requests: an exec-volumes row in the Suites table, and an updated Swift side paragraph. Synced the parity matrix and released the lock. The last full CI run passed, but it ran before the matrix-sync commit, which only touched docs/port/parity/ files. The first two CI runs after the merge failed on tests that passed on rerun with no changes: a hdiutil exfat attach failure, then a CopyPasteExecutionTests cancellation check. Both look flaky or environmental."
+      },
+      "critic": null,
+      "spentOutputTokens": 634701,
+      "agents": 8,
+      "subagentTokens": 1734305,
+      "durationMin": 117.3
+    },
+    "W2-P3": {
+      "wps": [
+        "P3-04"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 8,
+      "startedAt": "2026-10-14T16:43:16+00:00"
     }
   },
   "wps": {
@@ -1455,10 +1485,10 @@
       "depends": [
         "P3-02"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P3-03",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "f006788364f08ef3b19a8a39db0be7e25dfa39ed",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check",
@@ -1470,13 +1500,39 @@
         "safety",
         "performance"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "The paste engine is ported to Sources/FTOperations/Execution/. It covers create, merge, Keep Both and Skip, folders built under hidden names, large files under a hidden name with their journal entry, per-file moves, the same-disk rename, cross-disk moves checked before the originals go, runtime questions with standing answers, Stop, progress and undo recording. Replace is a seam that throws \"not yet available\". Also new: WriteServiceFileSystem, NativeWriteFileSystem, the journal types, FileWriteJournal, and the write service's resolveRuntimeConflict and cancelOperation; pastes now run on the real engine by default.\nDifferential: SwiftExecEngine runs exec-copy, exec-cut, exec-runtime and the new exec-volumes (40 cases on apfs, apfs-cs, hfs, fat32, exfat). Every case without Replace matches; the 24 that need Replace are in Tests/FTOperationsTests/Exec/PendingReplace.swift.\nAbout 245 new Swift tests, plus a mock write file system and native-paste helpers. All gates pass, and sync.ts --no-write reports every citation valid.\nTimings, release build in isolation: copyPasteLargeTree (150,000 files) 1.08 s for the port vs 1.16 s for the reference under Bun. exec-copy case 1 (largest tree) median 2.17 ms vs 2.53 ms. A 150 MB file pasted to another disk 0.180 s vs 0.179 s for a bare copyfile (gated test, 5% budget). In a debug build under CI load the large tree takes about 3.9 s.\nLeft for P3-04 (Replace or crash recovery): T-00cf8c5b T-01f0d271 T-03dcc5bc T-0973956f T-0bb5550b T-0d702d5e T-10d0620f T-15257524 T-16d927c2 T-17121de6 T-19055326 T-192af090 T-1ae04534 T-1ca9e8c1 T-209072c1 T-22bd6a05 T-2336e156 T-23f2ab89 T-2438126e T-24b6ef42 T-271c5c8b T-302e20ea T-30a95e18 T-30bf2d98 T-342e6072 T-36ef50f8 T-37290acb T-39c40f5b T-4043a115 T-4110113e T-41d67e83 T-4492a990 T-465253ad T-47906982 T-49414386 T-4dbcade3 T-4f7f9c91 T-4fa90b14 T-51361091 T-592ef0a4 T-5cb81f6b T-632ee76c T-6378e158 T-66f20243 T-68d8d731 T-6f64ddff T-71769d45 T-751f9048 T-7a6bb677 T-81c8fbf8 T-8399d35f T-86936628 T-89d07db7 T-8c371eee T-8cf7f825 T-8de531ef T-9b428919 T-9d4d733c T-a1ed3e3b T-a3681238 T-a6a8250b T-aa23acf2 T-ac6200ce T-b2b14d9c T-b2ed4325 T-b2efb3f5 T-b34cde9f T-b53285ff T-b6120d61 T-b6cfb45b T-b9902d4e T-bbaefeb3 T-bbfba98c T-bc3d1d00 T-be6c64e9 T-c0ecbaec T-c7bfc4aa T-c87860f8 T-c889312f T-c924e277 T-ca0ca81f T-cfe02485 T-d236f420 T-dc9ef314 T-de750b08 T-df25867e T-e5058a23 T-e52d860b T-e7b6aa80 T-ee6a7a32 T-f21a582c T-fb074512. Partly ported, with the remaining step left for P3-04: T-706c8576 (its Replace step) and T-93ae7a3b (its recovery step).\nF-463 and F-475 are uncited because they are Replace (P3-04's).",
+      "findings": [
+        {
+          "severity": "high",
+          "title": "The paste result's top-level count is quadratic when many picked items have paths of the same length (the original uses a Set, which is linear)",
+          "where": "Sources/FTOperations/Execution/ExecutionMoves.swift:305-311 (createOperationResult)",
+          "evidence": "Reference, packages/core/src/fs/copyPasteExecution.ts:2928-2929 (e4d0872):\n  const pickedPaths = new Set(args.report.nodes.map((node) => node.sourcePath));\n  const topLevelItemCount = args.items.filter((item) => pickedPaths.has(item.sourcePath)).length;\nThis is O(items) with hashed lookups.\n\nPort, ExecutionMoves.swift:305-311:\n  var pickedPaths: [Int: [String]] = [:]\n  for node in report.nodes { pickedPaths[node.sourcePath.utf8.count, default: []].append(node.sourcePath) }\n  let topLevelItemCount = items.filter { item in pickedPaths[item.sourcePath.utf8.count]?.contains { $0.utf8.elementsEqual(item.sourcePath.utf8) } ?? false }.count\nIt groups paths by UTF-8 length and then scans each group linearly. Picking N files from one folder with names of equal length (IMG_0001.JPG ...) puts all N paths in one group, so this is O(N^2) byte comparisons. It runs on the paste thread before the final event, so the result and the end of the progress window are delayed. NameKeys.Exact (a byte-exact Hashable key, already used everywhere else in this package) would keep the exact-match behavior and be O(N).\n\nFailing test, put in Tests/FTOperationsTests/Execution/ReviewTopLevelCountPerfTests.swift and run with `swift test --filter ReviewTopLevelCountPerfTests`:\n\nimport FTFoundation\nimport FTTestSupport\nimport Foundation\nimport Testing\n@testable import FTOperations\n\nstruct ReviewTopLevelCountPerfTests {\n    @Test func resultForManySameLengthPickedItemsIsLinear() async throws {\n        try await withTemporaryDirectory(prefix: \"toplevel\") { root in\n            try Disk.write(root.path + \"/src/IMG_00000.JPG\", \"x\")\n            try Disk.makeDirectories(root.path + \"/dst\")\n            let fileSystem = NativeWriteFileSystem()\n            var (report, _) = try realOperation(fileSystem, mode: .copy, sources: [root.path + \"/src/IMG_00000.JPG\"], into: root.path + \"/dst\")\n            let template = report.nodes[0]\n            let count = 4_000\n            let paths = (0..<count).map { i -> String in let d = String(i); return root.path + \"/src/IMG_\" + String(repeating: \"0\", count: 5 - d.count) + d + \".JPG\" }\n            report.nodes = paths.map { var n = template; n.sourcePath = $0; return n }\n            let items = paths.map { CopyPasteItemResult(sourcePath: $0, destinationPath: $0, sourceKind: .file, status: .completed, error: nil) }\n            let started = ContinuousClock.now\n            let result = createOperationResult(operationId: \"op\", report: report, mode: .copy, startedAt: Date(), finishedAt: Date(), completedByteCount: 0, totalBytes: 0, items: items, status: .completed, error: nil)\n            let elapsed = ContinuousClock.now - started\n            print(\"createOperationResult \\(count) same-length picked items: \\(elapsed)\")\n            #expect(result.summary.topLevelItemCount == count)\n            #expect(elapsed < .seconds(1))\n        }\n    }\n}\n\nObserved on port/P3-03 (c2731b3, debug build as scripts/ci.sh runs it): \"createOperationResult 4000 same-length picked items: 28.968879917 seconds\". The test fails with \"Expectation failed: elapsed < .seconds(1)\". With 40,000 items the test was still running after more than 10 minutes of CPU and was killed. The reference's Set lookup takes milliseconds for the same input."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "headSha": "f006788364f08ef3b19a8a39db0be7e25dfa39ed",
+          "summary": "Finding 1 (high) is fixed. Added the failing test Tests/FTOperationsTests/Execution/ReviewTopLevelCountPerfTests.swift. Before the fix it failed: 4000 same-length items took 29.1 s. In createOperationResult (Sources/FTOperations/Execution/ExecutionMoves.swift), the lookup that grouped paths by length is replaced with `Set(report.nodes.map { NameKeys.Exact($0.sourcePath) })` and a `contains` check. This keeps the exact byte match and runs in linear time. The test now takes 0.016 s. Gates passed: scripts/ci.sh (1711 tests), tools/parity/gen.sh --check, tools/parity/exec/selftest.sh (rc 0), and FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests (426 tests). The commit has the trailer \"Port-Stage: fixed-1\", and the worktree is detached.",
+          "remaining": []
+        }
+      ],
       "blockers": [],
       "carryOver": [
         "From P3-02: test rows left for you: T-248b9b50 (copyPasteReviewData, answers through the write service), T-aa0802fe (copyPasteLargeTree), T-f21a582c, T-384a8f35, T-986eb932, T-4b4ee729 (writeService.analysis), T-726a5109, T-63458da3, T-e5058a23, T-124863ab, T-bc27ba96, T-dc846056, T-2838f1c8, T-96aa43f3 (copyPastePackages), T-4ca2bce9, T-37ddd66b, T-170d73ea, T-430afe8c, T-6adcf405, T-1dd3b541, T-8227d576, T-250a2e62, T-3e4b85d5, T-12a18238, T-e7e30fd5 (writeService.test).",
         "From P3-02: WriteServiceDependencies.fileSystem is `any AnalysisFileSystem`; put the write calls in a WriteServiceFileSystem that refines it. Replace the `executeCopyPaste` default in WriteServicePaste.swift and add resolveRuntimeConflict, cancelOperation and the standing answers beside it. Recursive walks must use WriteService.runWithRoomForDepth/withRoomForDepth (16 MB stack): a 508-deep tree overflowed a task stack. Tests/FTTestSupport/ExecScenario.swift now builds folders with mkdir(2) and symlinks with symlink(2) (FileManager decomposed names like \"Café\"); keep that for the exec suites."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P3-03 gates, all exit 0 on detached f006788 (port/P3-03): 1) scripts/ci.sh PASS (build, test: 1711 passing, 0 failing, format). 2) tools/parity/gen.sh --check PASS (goldens up to date, 33 suites). 3) tools/parity/exec/selftest.sh PASS (all items). 4) FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests PASS (426 passing, 0 failing). Nothing changed or committed.",
+        "failures": []
+      },
+      "sharedFileRequests": [
+        "tools/parity/README.md: add an exec-volumes row to the Suites table (copy, Add Missing merge, Keep Both, Skip, a same-disk move, and moves onto and off each disk image: apfs, apfs-cs, hfs, fat32, exfat), and update the Swift side paragraph: SwiftExecEngine (FTOperationsTests/Exec) now runs exec-copy, exec-cut, exec-runtime and exec-volumes, and ReferenceReplayEngine only proves the decode path and stands in for exec-stop and exec-crash."
+      ],
+      "deviations": [
+        "No behavior deviations. Test adaptations: T-4b4ee729 (Swift listeners can't throw; it now checks that a listener removing itself doesn't stop later listeners getting their events) and T-e596cc6d (the original shows this through batch rename, which is P3-08's; it now checks the journal's own write failure).",
+        "dirname and basename on the paste's per-item hot path go byte by byte (Execution/ExecutionPaths.swift). They fall back to NodePath for any path that isn't absolute without a trailing slash, and a test checks they answer as NodePath does."
       ]
     },
     "P3-04": {
@@ -1488,7 +1544,7 @@
       "depends": [
         "P3-03"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P3-04",
       "headSha": null,
       "attempts": 0,
@@ -1508,7 +1564,10 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P3-02: T-b743943a (copyPasteBlockedReplace) is yours."
+        "From P3-02: T-b743943a (copyPasteBlockedReplace) is yours.",
+        "From P3-03: test rows left for you (Replace or crash recovery): T-00cf8c5b T-01f0d271 T-03dcc5bc T-0973956f T-0bb5550b T-0d702d5e T-10d0620f T-15257524 T-16d927c2 T-17121de6 T-19055326 T-192af090 T-1ae04534 T-1ca9e8c1 T-209072c1 T-22bd6a05 T-2336e156 T-23f2ab89 T-2438126e T-24b6ef42 T-271c5c8b T-302e20ea T-30a95e18 T-30bf2d98 T-342e6072 T-36ef50f8 T-37290acb T-39c40f5b T-4043a115 T-4110113e T-41d67e83 T-4492a990 T-465253ad T-47906982 T-49414386 T-4dbcade3 T-4f7f9c91 T-4fa90b14 T-51361091 T-592ef0a4 T-5cb81f6b T-632ee76c T-6378e158 T-66f20243 T-68d8d731 T-6f64ddff T-71769d45 T-751f9048 T-7a6bb677 T-81c8fbf8 T-8399d35f T-86936628 T-89d07db7 T-8c371eee T-8cf7f825 T-8de531ef T-9b428919 T-9d4d733c T-a1ed3e3b T-a3681238 T-a6a8250b T-aa23acf2 T-ac6200ce T-b2b14d9c T-b2ed4325 T-b2efb3f5 T-b34cde9f T-b53285ff T-b6120d61 T-b6cfb45b T-b9902d4e T-bbaefeb3 T-bbfba98c T-bc3d1d00 T-be6c64e9 T-c0ecbaec T-c7bfc4aa T-c87860f8 T-c889312f T-c924e277 T-ca0ca81f T-cfe02485 T-d236f420 T-dc9ef314 T-de750b08 T-df25867e T-e5058a23 T-e52d860b T-e7b6aa80 T-ee6a7a32 T-f21a582c T-fb074512. Partly ported, finish the remaining step: T-706c8576 (its Replace step) and T-93ae7a3b (its recovery step). F-463 and F-475 are still uncited (Replace).",
+        "From P3-03: the Replace seam is Sources/FTOperations/Execution/ExecutionReplace.swift (replaceNotYetAvailableMessage); replace it with the real executeReplace. Tests/FTOperationsTests/Exec/PendingReplace.swift lists the 24 exec cases (exec-copy, exec-cut, exec-runtime and exec-volumes) that need Replace; empty it, and every exec-volumes case must then match on all five file systems.",
+        "From P3-03: ExecutionContext already carries the Replace bookkeeping fields (Trash locations of moved-out items, the hidden-name build flag that suppresses undo steps); ExecutionFiles.recordIncomplete writes ReplaceJournalEntry. Exact path matching uses NameKeys.Exact (byte-exact Hashable); per-item dirname/basename go through Execution/ExecutionPaths.swift. Keep recursive walks inside WriteService.runWithRoomForDepth."
       ]
     },
     "P3-05": {
