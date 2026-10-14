@@ -75,7 +75,9 @@
                 let key = String(id.dropFirst("sortBy".count)).lowercased()
                 // Choosing the field sorted by again reverses the direction, as the original's Sort menu does.
                 let current = currentSort(in: window)
-                let ascending = current?.key == key ? !(current?.ascending ?? true) : true
+                // Size and Date Modified sort descending first, as the original's Sort menu does.
+                let first = !(key == "size" || key == "modified")
+                let ascending = current?.key == key ? !(current?.ascending ?? first) : first
                 guard sort(by: key, ascending: ascending, controller: controller, window: window) else {
                     return .init(.failed, "could not sort by \(key)")
                 }

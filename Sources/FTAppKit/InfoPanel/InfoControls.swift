@@ -25,13 +25,9 @@ func textExtent(_ text: String, _ font: NSFont?) -> Double {
     Double((text as NSString).size(withAttributes: [.font: font ?? .systemFont(ofSize: 12)]).width)
 }
 
-/// The original's locale for dates: its language alone (Chromium reads the system's languages, not its region), so
-/// "Sep 17, 2026, 2:08 PM" on a machine set to a 24-hour region.
+/// The original's locale for dates (`InfoLocale.original`).
 extension DateText {
-    static let original: DateText = {
-        let language = Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
-        return DateText(locale: Locale(identifier: language))
-    }()
+    static let original = DateText(locale: InfoLocale.original)
 }
 
 /// The line icons of the Info panel, in a 24-unit box, stroked in `currentColor` with round caps and joins.

@@ -16,6 +16,7 @@ final class PathFolderMenuView: NSView {
     }
     var onChoose: (Int) -> Void = { _ in }
     private var checkedRow: AppMenuRow?
+    private var markers: [(row: AppMenuRow, marker: RowValueBox)] = []
 
     override init(frame: NSRect) {
         super.init(frame: frame)
@@ -42,6 +43,7 @@ final class PathFolderMenuView: NSView {
         rows = []
         folderRows = []
         checkedRow = nil
+        markers = []
         func noteRow(_ text: String) {
             let row = AppMenuRow(item: AppMenuItem(title: text, enabled: false), keyboard: true)
             row.setAccessibilityIdentifier("pathBarMenu.note")
@@ -55,7 +57,14 @@ final class PathFolderMenuView: NSView {
             let item = AppMenuItem(title: folder.name, checked: checked ? true : nil, tooltip: folder.path)
             let row = AppMenuRow(item: item, keyboard: true)
             row.setAccessibilityIdentifier("pathBarMenu.item")
-            row.checkMark?.setAccessibilityIdentifier("pathBarMenu.item.checked")
+            if checked {
+                // The tick carries no text; this marker names the ticked row for the capture.
+                let marker = RowValueBox()
+                marker.setAccessibilityIdentifier("pathBarMenu.item.checked")
+                marker.sample.stringValue = folder.name
+                row.addSubview(marker)
+                markers.append((row, marker))
+            }
             row.toolTip = folder.path
             row.onHover = { [weak self] in self?.activeIndex = index }
             row.onClick = { [weak self] in self?.onChoose(index) }
@@ -87,6 +96,10 @@ final class PathFolderMenuView: NSView {
             y += AppMenuView.rowHeight
         }
         document.frame = NSRect(x: 0, y: 0, width: scroll.bounds.width, height: y + Self.padding)
+        for (row, marker) in markers {
+            row.layoutSubtreeIfNeeded()
+            marker.frame = row.checkMark?.frame ?? .zero
+        }
     }
 
     /// The ticked folder in view, in the middle.

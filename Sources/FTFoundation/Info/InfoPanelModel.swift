@@ -48,12 +48,22 @@ public struct InfoRow: Equatable, Sendable {
     public var muted: Bool
 }
 
+/// The locale the original formats numbers and dates in: its language alone (Chromium reads the system's languages, not its
+/// region), so "48,611 files" and "Sep 17, 2026, 2:08 PM" on a machine set to a European region.
+public enum InfoLocale {
+    public static let original: Locale = {
+        let language = Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
+        return Locale(identifier: language)
+    }()
+}
+
 public enum InfoPanelModel {
     public static let pending = "—"
 
     /// `toLocaleString()`: thousands separators.
-    static func integer(_ value: Int) -> String {
+    static func integer(_ value: Int, locale: Locale = InfoLocale.original) -> String {
         let formatter = NumberFormatter()
+        formatter.locale = locale
         formatter.numberStyle = .decimal
         return formatter.string(from: NSNumber(value: value)) ?? String(value)
     }
@@ -232,11 +242,11 @@ public enum InfoPanelModel {
     }
 
     /// "<size> (<disk> on disk)" over "N files, M folders".
-    public static func folderSizeLines(sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int) -> (
-        top: String, items: String
-    ) {
+    public static func folderSizeLines(
+        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, locale: Locale = InfoLocale.original
+    ) -> (top: String, items: String) {
         let detail = SizeText.folderDetail(
-            sizeBytes: sizeBytes, diskBytes: diskBytes, fileCount: fileCount, folderCount: folderCount)
+            sizeBytes: sizeBytes, diskBytes: diskBytes, fileCount: fileCount, folderCount: folderCount, locale: locale)
         return (detail.size + (detail.disk.map { " (\($0))" } ?? ""), detail.items)
     }
 

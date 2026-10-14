@@ -83,6 +83,8 @@ final class ExplorerTabWindow: NSWindow {
     private func forwardToolbarBand(_ event: NSEvent) -> Bool {
         switch event.type {
         case .leftMouseDown, .rightMouseDown, .otherMouseDown:
+            // A press whose release never came (a right-click that was only resolved) must not take the next release.
+            bandTarget = nil
             guard let content = contentView, let frameView = content.superview,
                 let hit = frameView.hitTest(frameView.convert(event.locationInWindow, from: nil)),
                 hit.isDescendant(of: content)
