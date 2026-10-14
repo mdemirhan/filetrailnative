@@ -288,8 +288,9 @@ public final class RecoveryRetry: Sendable {
         if leftoverIds.isEmpty {
             return retry
         }
-        let cancel = timer(intervalMs) { [weak retry] in
-            retry?.tick(recover: recover, remainingIds: remainingIds, isBusy: isBusy, onFinished: onFinished)
+        // Held by the timer, as an interval keeps going whether or not anyone holds it; let go once stopped.
+        let cancel = timer(intervalMs) {
+            retry.tick(recover: recover, remainingIds: remainingIds, isBusy: isBusy, onFinished: onFinished)
         }
         let stopNow = retry.state.withLock { state -> Bool in
             state.cancel = cancel
