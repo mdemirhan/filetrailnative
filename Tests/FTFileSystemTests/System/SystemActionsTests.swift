@@ -60,7 +60,7 @@ private final class FakeSystem: @unchecked Sendable {
 }
 
 @Suite struct SystemActionsTests {
-    // T-be8cc88a
+    // T-be8cc88a F-222
     @Test func opensTheItemWithItsDefaultApp() async {
         let system = FakeSystem()
         let result = await SystemActions.openPath("/Users/demo/notes.txt", opener: system.opener)
@@ -68,7 +68,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(system.calls == [.openPath("/Users/demo/notes.txt")])
     }
 
-    // T-01fe1dde
+    // T-01fe1dde F-222
     @Test func reportsWhyMacOSCouldNotOpenIt() async {
         let system = FakeSystem()
         system.openPathError = "No application knows how to open it."
@@ -76,7 +76,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(result == .failure("No application knows how to open it."))
     }
 
-    // T-5f2b0f35
+    // T-5f2b0f35 F-146 F-233
     @Test func opensFullDiskAccessInSystemSettings() async {
         let system = FakeSystem()
         #expect(await SystemActions.openFullDiskAccessSettings(opener: system.opener))
@@ -94,7 +94,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(!(await SystemActions.openFullDiskAccessSettings(opener: system.opener)))
     }
 
-    // T-fcd013e1
+    // T-fcd013e1 F-144 F-209
     @Test func givesTheSizeAndFreeSpaceOfTheDiskHoldingAFolder() {
         let info = VolumeInfo.sizes(atPath: NSTemporaryDirectory())
         #expect((info.totalBytes ?? 0) > 0)
@@ -159,7 +159,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(choice == SystemPickers.DirectoryChoice(canceled: true, path: nil))
     }
 
-    // T-fbe12d69 T-d88d425e
+    // T-fbe12d69 T-d88d425e F-221
     @Test func opensTheItemsWithTheApp() async {
         let system = FakeSystem()
         let result = await SystemActions.openPaths(
@@ -169,7 +169,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(system.calls == [.openWith("/Applications/Zed.app", ["/Users/demo/a.txt", "/Users/demo/b.txt"])])
     }
 
-    // T-46f29828 T-1b7582f5
+    // T-46f29828 T-1b7582f5 F-221 F-230
     @Test func revealsTheItemsInFinderWhenFinderIsTheApp() async {
         let system = FakeSystem()
         _ = await SystemActions.openPaths(
@@ -186,7 +186,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(result == .failure("Unable to find application named 'Gone'"))
     }
 
-    // T-cd79ef68 T-58a29428
+    // T-cd79ef68 T-58a29428 F-221
     @Test func refusesAnApplicationPathThatIsNotABundleWithoutOpeningAnything() async {
         let system = FakeSystem()
         for path in ["/bin/sh", "Zed.app", "/Applications/../bin/x.app", "  "] {
@@ -196,6 +196,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(system.calls.isEmpty)
     }
 
+    // F-229
     @Test func editsInTheTextEditor() async {
         let system = FakeSystem()
         _ = await SystemActions.editInTextEditor(
@@ -207,7 +208,7 @@ private final class FakeSystem: @unchecked Sendable {
 
     private let terminal = ApplicationSelection(appPath: "/Applications/iTerm.app", appName: "iTerm")
 
-    // T-64c3e418
+    // T-64c3e418 F-228
     @Test func opensAFolderItselfInTerminalWhenNoOtherTerminalIsChosen() async throws {
         try await withTemporaryDirectory { folder in
             let system = FakeSystem()
@@ -221,7 +222,7 @@ private final class FakeSystem: @unchecked Sendable {
         }
     }
 
-    // T-ec032101
+    // T-ec032101 F-228
     @Test func opensAFilesFolderWithTheChosenTerminal() async throws {
         try await withTemporaryDirectory { folder in
             try Data().write(to: folder.appending("notes.txt"))
@@ -235,7 +236,7 @@ private final class FakeSystem: @unchecked Sendable {
         }
     }
 
-    // T-6070e895
+    // T-6070e895 F-228
     @Test func opensTheFolderAnItemThatIsGoneWasIn() async {
         let system = FakeSystem()
         let result = await SystemActions.openInTerminal(
@@ -282,7 +283,7 @@ private final class FakeSystem: @unchecked Sendable {
     private let zed = ApplicationInfo(
         path: "/Applications/Zed.app", name: "Zed", bundleId: "dev.zed.Zed", version: "1")
 
-    // T-06f6f204
+    // T-06f6f204 F-219
     @Test func passesOnWhatLaunchServicesSaysThePinnedAppsByThePathsAsked() async {
         let kinds = [OpenWithKind(contentType: "net.daringfireball.markdown", name: "Markdown", isFolder: false)]
         let answer = LaunchServicesAnswer(defaultApp: zed, apps: [zed], kinds: kinds, appInfo: [nil])
@@ -297,7 +298,7 @@ private final class FakeSystem: @unchecked Sendable {
     }
 
     // The menu still lists the pinned apps that are on disk, and Other….
-    // T-f3ae0d7b
+    // T-f3ae0d7b F-219
     @Test func fallsBackToThePinnedAppsFoundOnDiskWhenLaunchServicesCantBeAsked() async {
         let result = await SystemActions.openWithApplications(
             paths: ["/Users/demo/a.md"],
@@ -310,7 +311,7 @@ private final class FakeSystem: @unchecked Sendable {
                     pinnedApps: [ApplicationInfo(path: "/Applications/Zed.app", name: "Zed"), nil, nil]))
     }
 
-    // T-84ba4eba
+    // T-84ba4eba F-162
     @Test func setsTheAppForTheKind() async {
         let log = ScriptLog()
         let result = await SystemActions.setDefaultApplication(
@@ -330,7 +331,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(log.sources.isEmpty)
     }
 
-    // T-d40dd022
+    // T-d40dd022 F-162
     @Test func saysWhyMacOSRefused() async {
         let result = await SystemActions.setDefaultApplication(
             applicationPath: "/Applications/Zed.app", contentType: "public.folder"

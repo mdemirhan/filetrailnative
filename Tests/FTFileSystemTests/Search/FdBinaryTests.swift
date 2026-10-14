@@ -6,7 +6,7 @@ import Testing
 @testable import FTFileSystem
 
 @Suite struct FdBinaryTests {
-    // T-a14ca4ed
+    // T-a14ca4ed F-922
     @Test func resolvesTheMatchingBundledFdBinaryFromTheHelpersFolder() throws {
         try withTemporaryDirectory { root in
             let helpers = root.appending("File Trail.app/Contents/Helpers")
@@ -47,6 +47,7 @@ import Testing
         }
     }
 
+    // F-922
     @Test func theManifestInTheRepositoryIsTheOneCompiledIn() throws {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()

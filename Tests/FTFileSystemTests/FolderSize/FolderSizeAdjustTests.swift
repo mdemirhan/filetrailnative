@@ -50,7 +50,7 @@ private func adjust(
 }
 
 @Suite struct FolderSizeAdjustTests {
-    // T-3c0430d8 F-238
+    // T-3c0430d8 F-238 F-191
     @Test func takesADeletedFileOffEveryMeasuredFolderThatHeldIt() {
         #expect(
             adjust(
@@ -69,7 +69,7 @@ private func adjust(
                 ])
     }
 
-    // T-ea6f97e9 F-238
+    // T-ea6f97e9 F-238 F-191
     @Test func takesADeletedFolderOffWithEverythingInItAndForgetsItsOwnSizes() {
         // 4 files, and the folder with the 1 folder inside it.
         #expect(
@@ -92,7 +92,7 @@ private func adjust(
                 == entries)
     }
 
-    // T-ab3b624e F-238
+    // T-ab3b624e F-238 F-191
     @Test func forgetsTheFoldersThatHeldWhatCouldntBeReadFirstOrMeasured() {
         let entries = [
             "/Users/demo": sized(1_000, 10, 2),
@@ -182,7 +182,7 @@ private func adjust(
                 ])
     }
 
-    // T-985ec077 F-238
+    // T-985ec077 F-238 F-191
     @Test func takesAMeasuredFolderOffTheMeasuredFolderHoldingItAndForgetsItsOwnSizes() {
         #expect(
             adjust(
@@ -217,7 +217,7 @@ private func adjust(
                 == ["/Users/demo/link/notes": measuredAgain(200, 2)])
     }
 
-    // T-a1acc72e F-238
+    // T-a1acc72e F-238 F-191
     @Test func takesSeveralItemsOffOneAfterAnother() {
         #expect(
             adjust(
@@ -235,7 +235,7 @@ private func adjust(
             trash: sized(50, 1),
         ]
 
-        // T-6ed18d4a F-238
+        // T-6ed18d4a F-238 F-192
         @Test func keepsTheSizeOfAFolderThatCountedTheTrashAndAddsToTheTrash() {
             #expect(
                 adjust(entries, [trashed("/Users/demo/Downloads/a.zip", file(200))], counted: true)
@@ -269,7 +269,7 @@ private func adjust(
                     ])
         }
 
-        // T-3fced040 F-238
+        // T-3fced040 F-238 F-192
         @Test func addsWhatComesFromOutsideTheHomeFolderToTheFoldersHoldingTheTrash() {
             #expect(
                 adjust(
@@ -291,7 +291,7 @@ private func adjust(
                     ])
         }
 
-        // T-e7fd8fe4 F-238
+        // T-e7fd8fe4 F-238 F-192
         @Test func forgetsTheFoldersHoldingTheTrashWhenItIsntKnownWhereAnItemWent() {
             #expect(
                 adjust(entries, [trashed("/Users/demo/Downloads/a.zip", nil, nil)], counted: true).isEmpty)
@@ -307,7 +307,7 @@ private func adjust(
             ]
             let inTrash = "\(trash)/old.zip"
 
-            // T-fc36d4d5 F-238
+            // T-fc36d4d5 F-238 F-192
             @Test func takesItOffTheTrashAndTheFoldersThatCountedTheTrash() {
                 for counted in [true, false, nil] as [Bool?] {
                     #expect(

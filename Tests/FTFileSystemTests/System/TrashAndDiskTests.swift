@@ -29,24 +29,24 @@ private struct NoSuchFile: Error {}
 @Suite struct DiskHasTrashTests {
     let diskHasTrash = makeDiskHasTrash(listMounts: { mounts }, realPath: linksAt([:]))
 
-    // T-71566c6c
+    // T-71566c6c F-155 F-236
     @Test func takesANetworkShareToHaveNoTrashInItOrAtItsTop() {
         #expect(!diskHasTrash("/Volumes/Share"))
         #expect(!diskHasTrash("/Volumes/Share/Projects/a.txt"))
     }
 
-    // T-c3107dcb
+    // T-c3107dcb F-155 F-236
     @Test func takesAnyOtherDiskToHaveOne() {
         #expect(diskHasTrash("/Volumes/USB/a.txt"))
         #expect(diskHasTrash("/Users/demo/a.txt"))
     }
 
-    // T-8a6058bb
+    // T-8a6058bb F-155 F-236
     @Test func doesntMistakeADiskWhoseNameStartsLikeASharesForTheShare() {
         #expect(diskHasTrash("/Volumes/Share 2/a.txt"))
     }
 
-    // T-59f8c035
+    // T-59f8c035 F-155 F-236
     @Test func readsTheDisksEachTimeSinceTheyComeAndGo() {
         final class Current: @unchecked Sendable { var mounts: [Mount] = [] }
         let current = Current()
@@ -56,19 +56,19 @@ private struct NoSuchFile: Error {}
         #expect(!hasTrash("/Volumes/Share/a.txt"))
     }
 
-    // T-861c8aae
+    // T-861c8aae F-155 F-236
     @Test func findsAShareReachedThroughALink() {
         let hasTrash = makeDiskHasTrash(
             listMounts: { mounts }, realPath: linksAt(["/Users/demo/NAS": "/Volumes/Share"]))
         #expect(!hasTrash("/Users/demo/NAS/Projects"))
     }
 
-    // T-550dc5fa
+    // T-550dc5fa F-155 F-236
     @Test func findsAShareNamedInAnotherCase() {
         #expect(!diskHasTrash("/volumes/SHARE/Projects"))
     }
 
-    // T-cb592e69
+    // T-cb592e69 F-155 F-236
     @Test func findsAShareMountedOutsideVolumes() {
         let hasTrash = makeDiskHasTrash(
             listMounts: { mounts }, realPath: linksAt(["/mnt": "/System/Volumes/Data/mnt"]))
@@ -76,7 +76,7 @@ private struct NoSuchFile: Error {}
         #expect(hasTrash("/mnt/other/a.txt"))
     }
 
-    // T-d5fc03ae
+    // T-d5fc03ae F-155 F-236
     @Test func followsThePartOfThePathThatExists() {
         let hasTrash = makeDiskHasTrash(
             listMounts: { mounts },
@@ -88,21 +88,21 @@ private struct NoSuchFile: Error {}
         #expect(!hasTrash("/Users/demo/NAS/New/Deeper"))
     }
 
-    // T-2ff64c9e
+    // T-2ff64c9e F-155 F-236
     @Test func goesByThePathAsGivenWhenNoPartOfItCanBeRead() {
         let hasTrash = makeDiskHasTrash(listMounts: { mounts }, realPath: { _ in throw NoSuchFile() })
         #expect(!hasTrash("/Volumes/Share/a.txt"))
         #expect(hasTrash("/Users/demo/a.txt"))
     }
 
-    // T-b3c7e3ed
+    // T-b3c7e3ed F-155
     @Test func theMountTableListsTheStartupDiskWhereverItIsMounted() {
         let listed = MountTable.list()
         #expect(listed.contains(Mount(path: "/", isLocal: true)))
         #expect(listed.contains(Mount(path: "/System/Volumes/Data", isLocal: true)))
     }
 
-    // T-624fdb66
+    // T-624fdb66 F-144 F-210 F-237
     @Test func followsALinkToTheDiskItLeadsTo() throws {
         try withTemporaryDirectory { root in
             try FileManager.default.createSymbolicLink(
@@ -117,7 +117,7 @@ private struct NoSuchFile: Error {}
 }
 
 @Suite struct DiskIdsTests {
-    // T-7bf85637
+    // T-7bf85637 F-144 F-210 F-237
     @Test func givesFoldersOnOneDiskTheSameIdAndNilForAPathThatIsntThere() throws {
         try withTemporaryDirectory { root in
             try FileManager.default.createDirectory(at: root.appending("a"), withIntermediateDirectories: false)
@@ -131,7 +131,7 @@ private struct NoSuchFile: Error {}
         }
     }
 
-    // T-8c15b096
+    // T-8c15b096 F-210 F-237
     @Test(.tags(.diskImage), .diskImages)
     func tellsAnotherDiskApartWhereverItIsMountedAlsoThroughALink() async throws {
         try await DiskImage.withVolume(.apfs) { volume in
@@ -154,7 +154,7 @@ private struct NoSuchFile: Error {}
         }
     }
 
-    // T-64afef80
+    // T-64afef80 F-146 F-154 F-231
     @Test func isEmptyWhenNoTrashHoldsAnythingButFindersDSStore() {
         let read = Self.reader([
             "/Users/demo/.Trash": .success([".DS_Store"]),
@@ -165,7 +165,7 @@ private struct NoSuchFile: Error {}
     }
 
     // Finder's Empty Trash empties every disk's Trash, so one with items makes it worth it.
-    // T-d2c931c9
+    // T-d2c931c9 F-154 F-231
     @Test func isntEmptyWhenAnotherDisksTrashHoldsSomething() {
         let read = Self.reader([
             "/Users/demo/.Trash": .success([]),
@@ -176,7 +176,7 @@ private struct NoSuchFile: Error {}
     }
 
     // Without Full Disk Access macOS refuses to list the Trash: nothing says it is empty.
-    // T-6c935069
+    // T-6c935069 F-146 F-231
     @Test func cantTellWhenTheTrashCantBeRead() {
         let read = Self.reader([
             "/Users/demo/.Trash": .failure(POSIXError(.EPERM)),
@@ -211,7 +211,7 @@ private final class ScriptLog: @unchecked Sendable {
 
 @Suite struct EmptyTrashTests {
     // AppleScript stops waiting for Finder after two minutes, which a large Trash takes longer than.
-    // T-e7e0eab4
+    // T-e7e0eab4 F-146 F-232
     @Test func asksFinderWithAWaitOfADayNotAppleScriptsTwoMinutes() async {
         let log = ScriptLog()
         let result = await TrashState.empty { source in log.add(source) }

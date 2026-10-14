@@ -25,6 +25,7 @@ private func mount(
         }
     }
 
+    // F-144 F-205 B-TREE-022
     @Test func listsOnlyBrowsableMountsDirectlyUnderVolumes() {
         let mounts = [
             mount("/", source: "/dev/disk1s1"),
@@ -58,12 +59,14 @@ private func mount(
                 ])
     }
 
+    // F-206 F-207 B-TREE-023
     @Test func aDeviceTheRegistryDoesNotKnowIsEjectedLikeAShare() {
         let volumes = VolumeListing.volumes(from: [mount("/Volumes/X", source: "/dev/disk99s1")], physicalDisk: lookup)
         #expect(volumes.first?.canEject == true)
         #expect(volumes.first?.disk == nil)
     }
 
+    // F-205
     @Test func theMountTableHoldsTheRoot() {
         let mounts = VolumeListing.mounts()
         let root = mounts.first { $0.path == "/" }
@@ -74,6 +77,7 @@ private func mount(
 
     // A real image, mounted without a Finder window (-nobrowse): the registry finds its physical disk. Not
     // listed, since a -nobrowse mount is marked MNT_DONTBROWSE.
+    // F-206 F-207 B-TREE-023
     @Test(.tags(.diskImage), .diskImages) func theRegistryFindsThePhysicalDiskOfAMountedImage() async throws {
         try await DiskImage.withVolume(.apfs) { folder in
             let record = try #require(VolumeListing.mounts().first { $0.path == folder.path })
@@ -90,6 +94,7 @@ private func mount(
         }
     }
 
+    // F-144 F-208 B-TREE-024
     @Test func theLiveListIsReadableAndSortsNaturally() {
         let volumes = Volume.sorted(VolumeListing.listVolumes())
         for volume in volumes { #expect(volume.path == "/Volumes/\(volume.name)") }

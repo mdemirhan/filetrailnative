@@ -27,7 +27,7 @@ struct AppStateReaderTests {
         """
     }
 
-    // T-ce547ed1 F-022
+    // T-ce547ed1 F-022 B-NAV-181
     @Test func keepsTheSavedTabsThatMakeSenseAndDropsTheRest() {
         let preferences = Self.preferences(
             """
@@ -245,7 +245,7 @@ struct AppStateReaderTests {
 
     // MARK: Windows
 
-    // T-894b255d
+    // T-894b255d F-130
     @Test func readsAFileSavedWithOneWindowAsThatWindowWithItsTabsAndPanels() {
         let state = Self.read(
             """
@@ -264,7 +264,7 @@ struct AppStateReaderTests {
         #expect(state.lastClosedWindow == nil)
     }
 
-    // T-bedcb0e7
+    // T-bedcb0e7 F-131
     @Test func opensAsTheWindowClosedLastEndedWhenTheListOfWindowsIsDamaged() {
         let state = Self.read(
             """
@@ -295,7 +295,7 @@ struct AppStateReaderTests {
         #expect(state.windows?.first?.session.frontTabIndex == 1)
     }
 
-    // T-7fddaaf9
+    // T-7fddaaf9 F-132
     @Test func keepsTheWindowsOfADamagedFileThatMakeSense() {
         var sixty = ""
         for index in 0..<60 { sixty += ", {\"id\": \"window-\(index + 1000)\"}" }
@@ -332,6 +332,7 @@ struct AppStateReaderTests {
         #expect(state.preferences?.treeWidth == 300)
     }
 
+    // F-134
     @Test func halfPixelWidthsRoundUpAndBadBoundsFallBack() {
         let state = Self.preferences(
             "{\"preferences\": {\"treeWidth\": 220.5, \"inspectorWidth\": 260.5, \"zoomPercent\": 75.5, \"openItemLimit\": 1.5}}"

@@ -73,7 +73,7 @@ private func attachOutput(_ mountPoints: String...) -> String {
         #expect(DiskImageNames.describeFailure(path: "/Users/demo/Broken.dmg", reason: " busy. ").message == "Busy.")
     }
 
-    // T-9e5c81d0
+    // T-9e5c81d0 F-216
     @Test func knowsDiskImagesByTheExtensionsDiskImageMounterOpensInAnyCase() {
         #expect(DiskImageNames.isDiskImagePath("/Users/demo/Install.dmg"))
         #expect(DiskImageNames.isDiskImagePath("/Users/demo/Backup.SPARSEBUNDLE"))

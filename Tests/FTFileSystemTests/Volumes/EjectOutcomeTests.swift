@@ -11,7 +11,7 @@ private final class Calls: @unchecked Sendable {
 @Suite struct EjectOutcomeTests {
     let request = EjectRequest(path: "/Volumes/Backup", wholeDisk: true, force: false)
 
-    // T-8956207d
+    // T-8956207d F-215
     @Test func passesTheChoicesOnAndSaysTheDiskIsEjected() async {
         let calls = Calls()
         let response = await EjectOutcome.ejectVolume(request) { path, force, wholeDisk in
@@ -24,7 +24,7 @@ private final class Calls: @unchecked Sendable {
         #expect(calls.all.first?.wholeDisk == true)
     }
 
-    // T-b6d277d8
+    // T-b6d277d8 F-212 F-215 B-TREE-173
     @Test func namesTheVolumeInUseWhichMayBeAnotherOnTheSameDisk() async {
         let response = await EjectOutcome.ejectVolume(request) { _, _, _ in
             throw EjectError(errnum: EBUSY, path: "/Volumes/Backup 2")
@@ -34,7 +34,7 @@ private final class Calls: @unchecked Sendable {
                 == EjectResponse(status: .busy, failedPath: "/Volumes/Backup 2", code: "EBUSY", reason: nil))
     }
 
-    // T-a48b7c51
+    // T-a48b7c51 F-215 B-TREE-175
     @Test func countsAVolumeAlreadyGoneAsEjected() async {
         let response = await EjectOutcome.ejectVolume(request) { _, _, _ in
             throw EjectError(errnum: ENOENT, path: "/Volumes/Backup")
@@ -49,7 +49,7 @@ private final class Calls: @unchecked Sendable {
         #expect(response.status == .failed)
     }
 
-    // T-824a0559
+    // T-824a0559 B-TREE-175
     @Test func givesAnyOtherFailureWithDiskArbitrationsSentence() async {
         let response = await EjectOutcome.ejectVolume(request) { _, _, _ in
             throw EjectError(errnum: EPERM, path: "/dev/disk4", reason: "Not permitted by a claim.")
@@ -60,6 +60,7 @@ private final class Calls: @unchecked Sendable {
                     status: .failed, failedPath: "/dev/disk4", code: "EPERM", reason: "Not permitted by a claim."))
     }
 
+    // F-214
     @Test func statusesMapToErrnosAsTheOriginalDoes() {
         // unix_err(EBUSY): the system's errno wrapped.
         #expect(VolumeEjector.errno(ofStatus: Int32(0xc000 | EBUSY)) == EBUSY)

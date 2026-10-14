@@ -190,7 +190,7 @@ import Testing
             treeRootPath: "/Users/demo", selectedTreeItemID: "fs:\(currentPath)", view: TabViewState())
     }
 
-    // T-7f43e078 F-676
+    // T-7f43e078 F-676 B-NAV-139
     @Test func followsARenamedOrMovedFolderAndFoldersInsideIt() {
         let moves = [PathMove(from: "/Users/demo/Projects", to: "/Users/demo/Work")]
 
@@ -218,7 +218,7 @@ import Testing
             selectedTreeItemID: "location:/Volumes/Backup", leftPaneSubview: .favorites, view: TabViewState())
     }
 
-    // T-29bd3543 F-676
+    // T-29bd3543 F-676 B-TREE-178
     @Test func sendsATabOnAnUnmountedDiskHomeKeepingItsHistoryElsewhere() {
         let left = ExplorerTabs.leaveUnmountedDisks(
             onDisk("/Volumes/Backup/Photos", ["/Users/demo/Desktop", "/Volumes/Backup/Photos"]),
