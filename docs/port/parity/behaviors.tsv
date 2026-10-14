@@ -795,12 +795,12 @@ B-NAV-130	NAV	A8, A14			todo
 B-NAV-131	NAV	A8, A14			todo
 B-NAV-132	NAV	A8, A14			todo
 B-NAV-133	NAV	A8, A14			todo
-B-NAV-134	NAV	A8, A14			todo
-B-NAV-135	NAV	A8, A14			todo
+B-NAV-134	NAV	A8, A14	letsGoOfTheFoldersListingsAndTheDetailsOfTheItemsThatChanged		done
+B-NAV-135	NAV	A8, A14	dropsAChangeStillSettlingWhenTheWindowMovesOn		done
 B-NAV-136	NAV	A8, A14			todo
-B-NAV-137	NAV	A8, A14			todo
+B-NAV-137	NAV	A8, A14	saysAnythingMayHaveChangedWhenAChangeHasNoName, saysAnythingMayHaveChangedWhenMoreThanAThousandItemsChanged		done
 B-NAV-138	NAV	A8, A14			todo
-B-NAV-139	NAV	A8, A14			todo
+B-NAV-139	NAV	A8, A14	followsARenamedOrMovedFolderAndFoldersInsideIt		done
 B-NAV-140	NAV	A8, A14			todo
 B-NAV-141	NAV	A8, A14			todo
 B-NAV-142	NAV	A8, A14			todo
@@ -836,22 +836,22 @@ B-NAV-171	NAV	A8, A14			todo
 B-NAV-172	NAV	A8, A14			todo
 B-NAV-173	NAV	A8, A14			todo
 B-NAV-174	NAV	A8, A14			todo
-B-NAV-175	NAV	A8, A14			todo
-B-NAV-176	NAV	A8, A14			todo
-B-NAV-177	NAV	A8, A14			todo
-B-NAV-178	NAV	A8, A14			todo
-B-NAV-179	NAV	A8, A14			todo
-B-NAV-180	NAV	A8, A14			todo
-B-NAV-181	NAV	A8, A14			todo
-B-NAV-182	NAV	A8, A14			todo
-B-NAV-183	NAV	A8, A14			todo
-B-NAV-184	NAV	A8, A14			todo
-B-NAV-185	NAV	A8, A14			todo
+B-NAV-175	NAV	A8, A14	givesTheLaunchFolderToTheWindowAsItIsMade, usesHomeAsTheTreeRootWhenTheExplicitStartupFolderIsInsideHome, usesTheExplicitStartupFolderInsteadOfTheLastVisitedFolder		done
+B-NAV-176	NAV	A8, A14	startsAtHomeWhenTheLastSessionIsNotReopened		done
+B-NAV-177	NAV	A8, A14	keepsAHandPickedTreeRootWhenTheLastVisitedFolderIsInsideIt		done
+B-NAV-178	NAV	A8, A14	keepsAHandPickedTreeRootThatIsTheLastVisitedFolderItself, keepsAHandPickedTreeRootWhenTheLastVisitedFolderIsInsideIt, usesHomeAsTheTreeRootWhenTheLastVisitedFolderIsInsideHomeButOutsideTheSavedRoot, usesSlashAsTheTreeRootWhenTheLastVisitedFolderIsAboveHomeAndOutsideTheSavedRoot, usesThePersistedSlashRootWhenRestoringAPathInsideHome		done
+B-NAV-179	NAV	A8, A14	bringsEveryTabBackAtItsOwnFolderWithItsOwnView		done
+B-NAV-180	NAV	A8, A14	restoresASelectedFavoritePathWhenTheRestoredFolderExactlyMatchesIt		done
+B-NAV-181	NAV	A8, A14	bringsEveryTabBackAtItsOwnFolderWithItsOwnView, keepsTheSavedTabsThatMakeSenseAndDropsTheRest		done
+B-NAV-182	NAV	A8, A14	fallsBackToTheLastTabWhenTheSavedActiveTabIsOutOfRange		done
+B-NAV-183	NAV	A8, A14	opensTheTabsAWindowWasGivenWhateverTheSettingSays		done
+B-NAV-184	NAV	A8, A14	opensASingleViewAtHomeWhenTheLastSessionIsNotReopened		done
+B-NAV-185	NAV	A8, A14	showsAFolderTheAppWasLaunchedWithInARestoredTabOrInANewOne		done
 B-NAV-186	NAV	A8, A14			todo
-B-NAV-187	NAV	A8, A14			todo
-B-NAV-188	NAV	A8, A14			todo
-B-NAV-189	NAV	A8, A14			todo
-B-NAV-190	NAV	A8, A14			todo
+B-NAV-187	NAV	A8, A14	restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped		partial
+B-NAV-188	NAV	A8, A14	restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped		partial
+B-NAV-189	NAV	A8, A14	tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen		partial
+B-NAV-190	NAV	A8, A14	keepsTheOpenTabsForTheQuitTimeWriteButWritesTheSettingAtOnce, keepsWhereTheUserIsForTheQuitTimeWrite		done
 B-NAV-191	NAV	A8, A14			todo
 B-NAV-192	NAV	A8, A14			todo
 B-NAV-193	NAV	A8, A14			todo
@@ -861,10 +861,10 @@ B-NAV-196	NAV	A8, A14			todo
 B-NAV-197	NAV	A8, A14			todo
 B-NAV-198	NAV	A8, A14			todo
 B-NAV-199	NAV	A8, A14			todo
-B-NAV-200	NAV	A8, A14			todo
-B-NAV-201	NAV	A8, A14			todo
-B-NAV-202	NAV	A8, A14			todo
-B-NAV-203	NAV	A8, A14			todo
+B-NAV-200	NAV	A8, A14	countsAFolderPickedInGoToAtOnce		done
+B-NAV-201	NAV	A8, A14	countsAFolderOpenedAnotherWayOnceItHasStayedOnScreen, countsAFolderUsedBeforeItStayed		done
+B-NAV-202	NAV	A8, A14	onlyPassesThroughAFolderLeftBeforeItStayed		done
+B-NAV-203	NAV	A8, A14	passesThroughAFolderStillBeingDecidedOnWhenTheWindowGoes		done
 B-NAV-204	NAV	A8, A14			todo
 B-NAV-205	NAV	A8, A14			todo
 B-NAV-206	NAV	A8, A14			todo
@@ -1288,12 +1288,12 @@ B-TREE-018	TREE	A2, A16			todo
 B-TREE-019	TREE	A2, A16			todo
 B-TREE-020	TREE	A2, A16			todo
 B-TREE-021	TREE	A2, A16			todo
-B-TREE-022	TREE	A2, A16			todo
-B-TREE-023	TREE	A2, A16			todo
-B-TREE-024	TREE	A2, A16			todo
-B-TREE-025	TREE	A2, A16			todo
-B-TREE-026	TREE	A2, A16			todo
-B-TREE-027	TREE	A2, A16			todo
+B-TREE-022	TREE	A2, A16	listsOnlyBrowsableMountsDirectlyUnderVolumes		done
+B-TREE-023	TREE	A2, A16	aDeviceTheRegistryDoesNotKnowIsEjectedLikeAShare, theRegistryFindsThePhysicalDiskOfAMountedImage		done
+B-TREE-024	TREE	A2, A16	listsDisksByNameNumbersInOrderAndLetterCaseAside, theLiveListIsReadableAndSortsNaturally		done
+B-TREE-025	TREE	A2, A16	readsTheListOnceABurstOfChangesSettlesAndTellsOfRealChangesOnly		done
+B-TREE-026	TREE	A2, A16	findsADiskTheWatchMissedWhenAskedToLookAgain, stopsWatchingAndDropsAChangeStillSettling		done
+B-TREE-027	TREE	A2, A16	comparesTheVolumesOfTwoPaths, putsEverythingElseOnTheStartupVolume, putsPathsUnderVolumesOnThatVolume		done
 B-TREE-028	TREE	A2, A16			todo
 B-TREE-029	TREE	A2, A16			todo
 B-TREE-030	TREE	A2, A16			todo
@@ -1431,20 +1431,20 @@ B-TREE-161	TREE	A2, A16			todo
 B-TREE-162	TREE	A2, A16			todo
 B-TREE-163	TREE	A2, A16			todo
 B-TREE-164	TREE	A2, A16			todo
-B-TREE-165	TREE	A2, A16			todo
+B-TREE-165	TREE	A2, A16	asksFirstAboutAVolumeWhoseDiskHoldsOthersNamingThem, ejectsADiskOfItsOwnAtOnce, neverGroupsNetworkSharesWhichHaveNoDisk		done
 B-TREE-166	TREE	A2, A16			todo
-B-TREE-167	TREE	A2, A16			todo
-B-TREE-168	TREE	A2, A16			todo
+B-TREE-167	TREE	A2, A16	doesNothingForADiskThatCantBeEjectedOrIsGone		done
+B-TREE-168	TREE	A2, A16	targetIsNoneWithTheFileListInFrontOrForAnythingButAnEjectableDisk, targetIsTheDiskSelectedInTheSidebarItsLocationsRowOrTheTopOfTheTree		done
 B-TREE-169	TREE	A2, A16			todo
-B-TREE-170	TREE	A2, A16			todo
+B-TREE-170	TREE	A2, A16	asksAboutAllTheVolumesOfTheDisk		done
 B-TREE-171	TREE	A2, A16			todo
 B-TREE-172	TREE	A2, A16			todo
-B-TREE-173	TREE	A2, A16			todo
+B-TREE-173	TREE	A2, A16	namesTheVolumeInUseWhichMayBeAnotherOnTheSameDisk, saysWhichDiskIsInUseAndCallsAServerAVolume		done
 B-TREE-174	TREE	A2, A16			todo
-B-TREE-175	TREE	A2, A16			todo
-B-TREE-176	TREE	A2, A16			todo
+B-TREE-175	TREE	A2, A16	aVolumeAlreadyEjectedCountsAsEjected, countsAVolumeAlreadyGoneAsEjected, givesAnyOtherFailureWithDiskArbitrationsSentence		done
+B-TREE-176	TREE	A2, A16	namesTheDiskAskedForWhenTheDiskItselfFailedWithDiskArbitrationsReason, otherFailureWording		done
 B-TREE-177	TREE	A2, A16			todo
-B-TREE-178	TREE	A2, A16			todo
+B-TREE-178	TREE	A2, A16	sendsATabOnAnUnmountedDiskHomeKeepingItsHistoryElsewhere		done
 B-TREE-179	TREE	A2, A16			todo
 B-TREE-180	TREE	A2, A16			todo
 B-TREE-181	TREE	A2, A16			todo
@@ -1609,27 +1609,27 @@ B-VIEW-138	VIEW	A10, A13, A14			todo
 B-VIEW-139	VIEW	A10, A13, A14			todo
 B-VIEW-140	VIEW	A10, A13, A14			todo
 B-VIEW-141	VIEW	A10, A13, A14			todo
-B-VIEW-142	VIEW	A10, A13, A14			todo
+B-VIEW-142	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
 B-VIEW-143	VIEW	A10, A13, A14			todo
-B-VIEW-144	VIEW	A10, A13, A14			todo
-B-VIEW-145	VIEW	A10, A13, A14			todo
-B-VIEW-146	VIEW	A10, A13, A14			todo
-B-VIEW-147	VIEW	A10, A13, A14			todo
-B-VIEW-148	VIEW	A10, A13, A14			todo
-B-VIEW-149	VIEW	A10, A13, A14			todo
-B-VIEW-150	VIEW	A10, A13, A14			todo
-B-VIEW-151	VIEW	A10, A13, A14			todo
-B-VIEW-152	VIEW	A10, A13, A14			todo
-B-VIEW-153	VIEW	A10, A13, A14			todo
-B-VIEW-154	VIEW	A10, A13, A14			todo
+B-VIEW-144	VIEW	A10, A13, A14	namesATabAfterItsFolderOrAfterItsSearchWhileResultsAreShowing, tellsTabsOnFoldersOfTheSameNameApartByTheFolderEachIsIn		done
+B-VIEW-145	VIEW	A10, A13, A14			N/A
+B-VIEW-146	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
+B-VIEW-147	VIEW	A10, A13, A14			N/A
+B-VIEW-148	VIEW	A10, A13, A14			N/A
+B-VIEW-149	VIEW	A10, A13, A14	savesTheTabsInTheOrderOfTheTabBar		partial
+B-VIEW-150	VIEW	A10, A13, A14			N/A
+B-VIEW-151	VIEW	A10, A13, A14			N/A
+B-VIEW-152	VIEW	A10, A13, A14			N/A
+B-VIEW-153	VIEW	A10, A13, A14			N/A
+B-VIEW-154	VIEW	A10, A13, A14	tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen		partial
 B-VIEW-155	VIEW	A10, A13, A14	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit, opensNoMoreThanAHundredTabsAndSaysSo		partial
-B-VIEW-156	VIEW	A10, A13, A14			todo
-B-VIEW-157	VIEW	A10, A13, A14			todo
+B-VIEW-156	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
+B-VIEW-157	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
 B-VIEW-158	VIEW	A10, A13, A14	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit		partial
 B-VIEW-159	VIEW	A10, A13, A14	closesAndReopensTabsAndStepsThroughThem		partial
 B-VIEW-160	VIEW	A10, A13, A14			todo
 B-VIEW-161	VIEW	A10, A13, A14	closesAndReopensTabsAndStepsThroughThem		partial
-B-VIEW-162	VIEW	A10, A13, A14			todo
+B-VIEW-162	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack, tabsOnAnUnmountedDiskCloseAndAWindowAllOnItCloses		partial
 B-VIEW-163	VIEW	A10, A13, A14	closesAndReopensTabsAndStepsThroughThem		partial
 B-VIEW-164	VIEW	A10, A13, A14			todo
 B-VIEW-165	VIEW	A10, A13, A14			todo
@@ -1639,23 +1639,23 @@ B-VIEW-168	VIEW	A10, A13, A14			todo
 B-VIEW-169	VIEW	A10, A13, A14			todo
 B-VIEW-170	VIEW	A10, A13, A14			todo
 B-VIEW-171	VIEW	A10, A13, A14		38-paste-in-another-window	partial
-B-VIEW-172	VIEW	A10, A13, A14			todo
-B-VIEW-173	VIEW	A10, A13, A14			todo
+B-VIEW-172	VIEW	A10, A13, A14	followsTheMovesOfAFinishedRenameMoveOrCutPasteOnly, tabsFollowAFolderRenamedOrMovedByAnyWindow		partial
+B-VIEW-173	VIEW	A10, A13, A14	tabsOnAnUnmountedDiskCloseAndAWindowAllOnItCloses, tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen		partial
 B-VIEW-174	VIEW	A10, A13, A14			todo
-B-VIEW-175	VIEW	A10, A13, A14			todo
-B-VIEW-176	VIEW	A10, A13, A14	bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch		partial
-B-VIEW-177	VIEW	A10, A13, A14		35-new-window, 36-open-in-new-window	partial
+B-VIEW-175	VIEW	A10, A13, A14	restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped		partial
+B-VIEW-176	VIEW	A10, A13, A14	bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch, opensASingleViewAtHomeWhenTheLastSessionIsNotReopened		partial
+B-VIEW-177	VIEW	A10, A13, A14	opensWindowsOnTheFolderOnScreenAndBringsBackThoseOpenAtQuit	35-new-window, 36-open-in-new-window	partial
 B-VIEW-178	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
 B-VIEW-179	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
-B-VIEW-180	VIEW	A10, A13, A14			todo
-B-VIEW-181	VIEW	A10, A13, A14			todo
+B-VIEW-180	VIEW	A10, A13, A14	tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen		partial
+B-VIEW-181	VIEW	A10, A13, A14	opensTheTabsAWindowWasGivenWhateverTheSettingSays		done
 B-VIEW-182	VIEW	A10, A13, A14			todo
 B-VIEW-183	VIEW	A10, A13, A14			todo
 B-VIEW-184	VIEW	A10, A13, A14			todo
-B-VIEW-185	VIEW	A10, A13, A14			todo
-B-VIEW-186	VIEW	A10, A13, A14			todo
+B-VIEW-185	VIEW	A10, A13, A14	followsEachWindowFromFolderToFolderAndStopsWhenAsked		done
+B-VIEW-186	VIEW	A10, A13, A14	dropsAChangeStillSettlingWhenTheWindowMovesOn		done
 B-VIEW-187	VIEW	A10, A13, A14			todo
-B-VIEW-188	VIEW	A10, A13, A14			todo
+B-VIEW-188	VIEW	A10, A13, A14	saysAnythingMayHaveChangedWhenAChangeHasNoName, saysAnythingMayHaveChangedWhenMoreThanAThousandItemsChanged, tellsOfABurstOfChangesOnceWhenItSettlesNamingWhatChanged		done
 B-VIEW-189	VIEW	A10, A13, A14			todo
 B-VIEW-190	VIEW	A10, A13, A14			todo
 B-VIEW-191	VIEW	A10, A13, A14			todo
