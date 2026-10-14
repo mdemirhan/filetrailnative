@@ -1,0 +1,1415 @@
+{
+  "suite": "kind-strings",
+  "referenceCommit": "e4d0872",
+  "seed": 1260191748,
+  "generator": "tools/parity/golden/kind-strings.ts",
+  "cases": [
+    {
+      "name": "/",
+      "input": {
+        "path": "/"
+      },
+      "output": "Volume"
+    },
+    {
+      "name": "/Applications",
+      "input": {
+        "path": "/Applications"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "/System/Library",
+      "input": {
+        "path": "/System/Library"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "/etc/hosts",
+      "input": {
+        "path": "/etc/hosts"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "/nonexistent-filetrail-path",
+      "input": {
+        "path": "/nonexistent-filetrail-path"
+      },
+      "output": null
+    },
+    {
+      "name": "lighthouse",
+      "input": {
+        "path": "lighthouse"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/.fixture-version",
+      "input": {
+        "path": "lighthouse/.fixture-version"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse",
+      "input": {
+        "path": "lighthouse/Lighthouse"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/CHANGELOG.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/CHANGELOG.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/CONTRIBUTING.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/CONTRIBUTING.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/LICENSE",
+      "input": {
+        "path": "lighthouse/Lighthouse/LICENSE"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/Makefile",
+      "input": {
+        "path": "lighthouse/Lighthouse/Makefile"
+      },
+      "output": "Makefile"
+    },
+    {
+      "name": "lighthouse/Lighthouse/README.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/README.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app",
+      "input": {
+        "path": "lighthouse/Lighthouse/app"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/dist",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/dist/assets",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/assets"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/dist/assets/index.css",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/assets/index.css"
+      },
+      "output": "CSS style sheet"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/dist/assets/index.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/assets/index.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/dist/index.html",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/index.html"
+      },
+      "output": "HTML document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/eslint",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/eslint/index.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/index.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/eslint/lib",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/lib"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/eslint/lib/bundle.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/lib/bundle.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/eslint/package.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/package.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react-dom",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react-dom/index.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/index.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react-dom/lib",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/lib"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react-dom/lib/bundle.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/lib/bundle.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react-dom/package.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/package.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react/index.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/index.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react/lib",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/lib"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react/lib/bundle.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/lib/bundle.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/react/package.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/package.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/typescript",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/typescript/index.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/index.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/typescript/lib",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/lib"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/typescript/lib/bundle.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/lib/bundle.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/typescript/package.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/package.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/vite",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/vite/index.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/index.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/node_modules/vite/package.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/package.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/Avatar.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/Avatar.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/DatePicker.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/DatePicker.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/PlacePicker.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/PlacePicker.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/SearchField.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/SearchField.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/SearchField.test.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/SearchField.test.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/Toast.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/Toast.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripCard.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripCard.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripCard.test.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripCard.test.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripList.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripList.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripList.test.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripList.test.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripMap.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripMap.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripMap.test.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripMap.test.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripTimeline.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripTimeline.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/components/TripTimeline.test.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripTimeline.test.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/lib",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/lib/api.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/api.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/lib/format.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/format.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/lib/geo.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/geo.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/lib/storage.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/storage.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/main.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/main.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/pages",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/pages/Home.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/Home.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/pages/Settings.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/Settings.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/pages/Trip.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/Trip.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/src/pages/Trips.jsx",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/Trips.jsx"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/tests",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/tests/e2e",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/e2e"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/tests/e2e/login.spec.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/e2e/login.spec.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/tests/e2e/trips.spec.js",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/e2e/trips.spec.js"
+      },
+      "output": "JavaScript"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/tests/fixtures",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/fixtures"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/tests/fixtures/trips.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/fixtures/trips.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/app/tests/fixtures/user.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/fixtures/user.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/bun.lock",
+      "input": {
+        "path": "lighthouse/Lighthouse/bun.lock"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/data",
+      "input": {
+        "path": "lighthouse/Lighthouse/data"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/data/exports",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/exports"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/data/exports/trips-2025.csv",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/exports/trips-2025.csv"
+      },
+      "output": "CSV Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/data/exports/trips-2026.csv",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/exports/trips-2026.csv"
+      },
+      "output": "CSV Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/data/exports/users.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/exports/users.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/data/schema.sql",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/schema.sql"
+      },
+      "output": "SQL Source"
+    },
+    {
+      "name": "lighthouse/Lighthouse/data/seed.sql",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/seed.sql"
+      },
+      "output": "SQL Source"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design",
+      "input": {
+        "path": "lighthouse/Lighthouse/design"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/brand.fig",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/brand.fig"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/palette.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/palette.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/screens",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/screens/home.png",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/home.png"
+      },
+      "output": "PNG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/screens/map.png",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/map.png"
+      },
+      "output": "PNG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/screens/onboarding.png",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/onboarding.png"
+      },
+      "output": "PNG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/screens/settings.png",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/settings.png"
+      },
+      "output": "PNG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/design/screens/trip.png",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/trip.png"
+      },
+      "output": "PNG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/docker-compose.yml",
+      "input": {
+        "path": "lighthouse/Lighthouse/docker-compose.yml"
+      },
+      "output": "YAML Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/docs",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/docs/api.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs/api.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/docs/architecture.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs/architecture.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/docs/setup.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs/setup.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/infra",
+      "input": {
+        "path": "lighthouse/Lighthouse/infra"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/infra/main.tf",
+      "input": {
+        "path": "lighthouse/Lighthouse/infra/main.tf"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/infra/variables.tf",
+      "input": {
+        "path": "lighthouse/Lighthouse/infra/variables.tf"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/mobile",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/mobile/README.md",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/README.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/mobile/android",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/android"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/mobile/android/app-release.apk",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/android/app-release.apk"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/mobile/ios",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj"
+      },
+      "output": "Xcode Project"
+    },
+    {
+      "name": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj/project.pbxproj",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj/project.pbxproj"
+      },
+      "output": "Xcode Project Data"
+    },
+    {
+      "name": "lighthouse/Lighthouse/package.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/package.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Alpine lake.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Alpine lake.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Arrabida coast.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Arrabida coast.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Biwa shore.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Biwa shore.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Cape Point.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Cape Point.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Coast road.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Coast road.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Contact sheet.pdf",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Contact sheet.pdf"
+      },
+      "output": "PDF document"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Desert dusk.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Desert dusk.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Douro valley.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Douro valley.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Fjord morning.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Fjord morning.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Fuji at dawn.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Fuji at dawn.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Glenorchy road.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Glenorchy road.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Harbor sunrise.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Harbor sunrise.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Island noon.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Island noon.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Lake Wanaka.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Lake Wanaka.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Milford Sound.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Milford Sound.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Night ridge.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Night ridge.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Old town evening.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Old town evening.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Sintra hills.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Sintra hills.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Table Mountain dusk.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Table Mountain dusk.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Thingvellir.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Thingvellir.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Valley mist.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Valley mist.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/Vik beach.jpg",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Vik beach.jpg"
+      },
+      "output": "JPEG image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/raw",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/raw"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/raw/IMG_0412.dng",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/raw/IMG_0412.dng"
+      },
+      "output": "Adobe RAW image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/raw/IMG_0413.dng",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/raw/IMG_0413.dng"
+      },
+      "output": "Adobe RAW image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/raw/IMG_0414.dng",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/raw/IMG_0414.dng"
+      },
+      "output": "Adobe RAW image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/photos/raw/IMG_0415.dng",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/raw/IMG_0415.dng"
+      },
+      "output": "Adobe RAW image"
+    },
+    {
+      "name": "lighthouse/Lighthouse/scripts",
+      "input": {
+        "path": "lighthouse/Lighthouse/scripts"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "lighthouse/Lighthouse/scripts/deploy.sh",
+      "input": {
+        "path": "lighthouse/Lighthouse/scripts/deploy.sh"
+      },
+      "output": "Shell Script"
+    },
+    {
+      "name": "lighthouse/Lighthouse/scripts/seed.sh",
+      "input": {
+        "path": "lighthouse/Lighthouse/scripts/seed.sh"
+      },
+      "output": "Shell Script"
+    },
+    {
+      "name": "lighthouse/Lighthouse/tsconfig.json",
+      "input": {
+        "path": "lighthouse/Lighthouse/tsconfig.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "names",
+      "input": {
+        "path": "names"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/.fixture-version",
+      "input": {
+        "path": "names/.fixture-version"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "names/dots",
+      "input": {
+        "path": "names/dots"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/dots/..double",
+      "input": {
+        "path": "names/dots/..double"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "names/dots/.config",
+      "input": {
+        "path": "names/dots/.config"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/dots/.config/settings.json",
+      "input": {
+        "path": "names/dots/.config/settings.json"
+      },
+      "output": "JSON Document"
+    },
+    {
+      "name": "names/dots/.hidden",
+      "input": {
+        "path": "names/dots/.hidden"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "names/dots/visible.txt",
+      "input": {
+        "path": "names/dots/visible.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/emoji",
+      "input": {
+        "path": "names/emoji"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/emoji/🇳🇴 flag.txt",
+      "input": {
+        "path": "names/emoji/🇳🇴 flag.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/emoji/🎉 party 🎈.txt",
+      "input": {
+        "path": "names/emoji/🎉 party 🎈.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/emoji/👩‍👩‍👧‍👦 family.txt",
+      "input": {
+        "path": "names/emoji/👩‍👩‍👧‍👦 family.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/icons",
+      "input": {
+        "path": "names/icons"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/icons/custom icon.txt",
+      "input": {
+        "path": "names/icons/custom icon.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/links",
+      "input": {
+        "path": "names/links"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/links/alias to file",
+      "input": {
+        "path": "names/links/alias to file"
+      },
+      "output": "Alias"
+    },
+    {
+      "name": "names/links/broken link",
+      "input": {
+        "path": "names/links/broken link"
+      },
+      "output": "Alias"
+    },
+    {
+      "name": "names/links/link to file",
+      "input": {
+        "path": "names/links/link to file"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/links/link to folder",
+      "input": {
+        "path": "names/links/link to folder"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/links/target folder",
+      "input": {
+        "path": "names/links/target folder"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/links/target folder/inside.txt",
+      "input": {
+        "path": "names/links/target folder/inside.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/links/target.txt",
+      "input": {
+        "path": "names/links/target.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/localized",
+      "input": {
+        "path": "names/localized"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/localized/Applications",
+      "input": {
+        "path": "names/localized/Applications"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/localized/Applications/.localized",
+      "input": {
+        "path": "names/localized/Applications/.localized"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "names/localized/Applications/readme.txt",
+      "input": {
+        "path": "names/localized/Applications/readme.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/locked",
+      "input": {
+        "path": "names/locked"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/locked/locked file.txt",
+      "input": {
+        "path": "names/locked/locked file.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/long",
+      "input": {
+        "path": "names/long"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/long/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+      "input": {
+        "path": "names/long/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/long/ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.md",
+      "input": {
+        "path": "names/long/ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "names/nfc",
+      "input": {
+        "path": "names/nfc"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/nfc/Café Zoë Ångström.txt",
+      "input": {
+        "path": "names/nfc/Café Zoë Ångström.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/nfd",
+      "input": {
+        "path": "names/nfd"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/nfd/Café Zoë Ångström.txt",
+      "input": {
+        "path": "names/nfd/Café Zoë Ångström.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/packages",
+      "input": {
+        "path": "names/packages"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/packages/Sample.app",
+      "input": {
+        "path": "names/packages/Sample.app"
+      },
+      "output": "Application"
+    },
+    {
+      "name": "names/packages/Sample.app/Contents",
+      "input": {
+        "path": "names/packages/Sample.app/Contents"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/packages/Sample.app/Contents/Info.plist",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/Info.plist"
+      },
+      "output": "Property List"
+    },
+    {
+      "name": "names/packages/Sample.app/Contents/MacOS",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/MacOS"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/packages/Sample.app/Contents/MacOS/Sample",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/MacOS/Sample"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "names/packages/Sample.app/Contents/Resources",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/Resources"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/packages/Sample.app/Contents/Resources/readme.txt",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/Resources/readme.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/packages/Slides.key",
+      "input": {
+        "path": "names/packages/Slides.key"
+      },
+      "output": "Keynote Presentation"
+    },
+    {
+      "name": "names/packages/Slides.key/Data",
+      "input": {
+        "path": "names/packages/Slides.key/Data"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/packages/Slides.key/Data/image-1.png",
+      "input": {
+        "path": "names/packages/Slides.key/Data/image-1.png"
+      },
+      "output": "PNG image"
+    },
+    {
+      "name": "names/packages/Slides.key/Index",
+      "input": {
+        "path": "names/packages/Slides.key/Index"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/packages/Slides.key/Index/Document.iwa",
+      "input": {
+        "path": "names/packages/Slides.key/Index/Document.iwa"
+      },
+      "output": "Document"
+    },
+    {
+      "name": "names/packages/Slides.key/metadata.plist",
+      "input": {
+        "path": "names/packages/Slides.key/metadata.plist"
+      },
+      "output": "Property List"
+    },
+    {
+      "name": "names/similar",
+      "input": {
+        "path": "names/similar"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/similar/README.txt",
+      "input": {
+        "path": "names/similar/README.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/similar/Readme.md",
+      "input": {
+        "path": "names/similar/Readme.md"
+      },
+      "output": "Markdown Document"
+    },
+    {
+      "name": "names/similar/readme 2.txt",
+      "input": {
+        "path": "names/similar/readme 2.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/spaces",
+      "input": {
+        "path": "names/spaces"
+      },
+      "output": "Folder"
+    },
+    {
+      "name": "names/spaces/ leading space.txt",
+      "input": {
+        "path": "names/spaces/ leading space.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/spaces/a  double  space.txt",
+      "input": {
+        "path": "names/spaces/a  double  space.txt"
+      },
+      "output": "Plain Text Document"
+    },
+    {
+      "name": "names/spaces/trailing space .txt",
+      "input": {
+        "path": "names/spaces/trailing space .txt"
+      },
+      "output": "Plain Text Document"
+    }
+  ]
+}
