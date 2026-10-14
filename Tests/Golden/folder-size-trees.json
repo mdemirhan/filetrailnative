@@ -1,0 +1,5551 @@
+{
+  "suite": "folder-size-trees",
+  "referenceCommit": "e4d0872",
+  "seed": 1330765826,
+  "generator": "tools/parity/golden/folder-size-trees.ts",
+  "cases": [
+    {
+      "name": "fixture names",
+      "input": {
+        "kind": "fixture",
+        "path": "names"
+      },
+      "output": {
+        "total": 3971,
+        "diskTotal": 241664,
+        "fileCount": 34,
+        "folderCount": 22,
+        "dirs": {
+          "dots": [
+            9,
+            16384,
+            4,
+            1
+          ],
+          "dots/.config": [
+            3,
+            4096,
+            1,
+            0
+          ],
+          "emoji": [
+            6,
+            12288,
+            3,
+            0
+          ],
+          "icons": [
+            2,
+            122880,
+            1,
+            0
+          ],
+          "links": [
+            1101,
+            12288,
+            6,
+            1
+          ],
+          "links/target folder": [
+            2,
+            4096,
+            1,
+            0
+          ],
+          "localized": [
+            2,
+            4096,
+            2,
+            1
+          ],
+          "localized/Applications": [
+            2,
+            4096,
+            2,
+            0
+          ],
+          "locked": [
+            2,
+            4096,
+            1,
+            0
+          ],
+          "long": [
+            4,
+            8192,
+            2,
+            0
+          ],
+          "nfc": [
+            2,
+            4096,
+            1,
+            0
+          ],
+          "nfd": [
+            2,
+            4096,
+            1,
+            0
+          ],
+          "packages": [
+            2827,
+            24576,
+            6,
+            7
+          ],
+          "packages/Sample.app": [
+            258,
+            12288,
+            3,
+            3
+          ],
+          "packages/Sample.app/Contents": [
+            258,
+            12288,
+            3,
+            2
+          ],
+          "packages/Sample.app/Contents/MacOS": [
+            10,
+            4096,
+            1,
+            0
+          ],
+          "packages/Sample.app/Contents/Resources": [
+            2,
+            4096,
+            1,
+            0
+          ],
+          "packages/Slides.key": [
+            2569,
+            12288,
+            3,
+            2
+          ],
+          "packages/Slides.key/Data": [
+            512,
+            4096,
+            1,
+            0
+          ],
+          "packages/Slides.key/Index": [
+            2048,
+            4096,
+            1,
+            0
+          ],
+          "similar": [
+            6,
+            12288,
+            3,
+            0
+          ],
+          "spaces": [
+            6,
+            12288,
+            3,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "fixture lighthouse",
+      "input": {
+        "kind": "fixture",
+        "path": "lighthouse"
+      },
+      "output": {
+        "total": 435710963,
+        "diskTotal": 3051520,
+        "fileCount": 103,
+        "folderCount": 35,
+        "dirs": {
+          "Lighthouse": [
+            435710961,
+            3047424,
+            102,
+            34
+          ],
+          "Lighthouse/app": [
+            140248160,
+            196608,
+            45,
+            20
+          ],
+          "Lighthouse/app/dist": [
+            4238420,
+            45056,
+            3,
+            1
+          ],
+          "Lighthouse/app/dist/assets": [
+            4238000,
+            40960,
+            2,
+            0
+          ],
+          "Lighthouse/app/node_modules": [
+            136006500,
+            40960,
+            15,
+            10
+          ],
+          "Lighthouse/app/node_modules/eslint": [
+            9001300,
+            8192,
+            3,
+            1
+          ],
+          "Lighthouse/app/node_modules/eslint/lib": [
+            9000000,
+            0,
+            1,
+            0
+          ],
+          "Lighthouse/app/node_modules/react": [
+            6001300,
+            8192,
+            3,
+            1
+          ],
+          "Lighthouse/app/node_modules/react-dom": [
+            28001300,
+            8192,
+            3,
+            1
+          ],
+          "Lighthouse/app/node_modules/react-dom/lib": [
+            28000000,
+            0,
+            1,
+            0
+          ],
+          "Lighthouse/app/node_modules/react/lib": [
+            6000000,
+            0,
+            1,
+            0
+          ],
+          "Lighthouse/app/node_modules/typescript": [
+            62001300,
+            8192,
+            3,
+            1
+          ],
+          "Lighthouse/app/node_modules/typescript/lib": [
+            62000000,
+            0,
+            1,
+            0
+          ],
+          "Lighthouse/app/node_modules/vite": [
+            31001300,
+            8192,
+            3,
+            1
+          ],
+          "Lighthouse/app/node_modules/vite/lib": [
+            31000000,
+            0,
+            1,
+            0
+          ],
+          "Lighthouse/app/src": [
+            2232,
+            94208,
+            23,
+            3
+          ],
+          "Lighthouse/app/src/components": [
+            818,
+            57344,
+            14,
+            0
+          ],
+          "Lighthouse/app/src/lib": [
+            444,
+            16384,
+            4,
+            0
+          ],
+          "Lighthouse/app/src/pages": [
+            840,
+            16384,
+            4,
+            0
+          ],
+          "Lighthouse/app/tests": [
+            1008,
+            16384,
+            4,
+            2
+          ],
+          "Lighthouse/app/tests/e2e": [
+            400,
+            8192,
+            2,
+            0
+          ],
+          "Lighthouse/app/tests/fixtures": [
+            608,
+            8192,
+            2,
+            0
+          ],
+          "Lighthouse/data": [
+            154200000,
+            0,
+            5,
+            1
+          ],
+          "Lighthouse/data/exports": [
+            121400000,
+            0,
+            3,
+            0
+          ],
+          "Lighthouse/design": [
+            24084984,
+            102400,
+            7,
+            1
+          ],
+          "Lighthouse/design/screens": [
+            84764,
+            98304,
+            5,
+            0
+          ],
+          "Lighthouse/docs": [
+            3088,
+            12288,
+            3,
+            0
+          ],
+          "Lighthouse/infra": [
+            84,
+            8192,
+            2,
+            0
+          ],
+          "Lighthouse/mobile": [
+            91000120,
+            4096,
+            3,
+            3
+          ],
+          "Lighthouse/mobile/android": [
+            40000000,
+            0,
+            1,
+            0
+          ],
+          "Lighthouse/mobile/ios": [
+            51000000,
+            0,
+            1,
+            1
+          ],
+          "Lighthouse/mobile/ios/Lighthouse.xcodeproj": [
+            51000000,
+            0,
+            1,
+            0
+          ],
+          "Lighthouse/photos": [
+            25841000,
+            2682880,
+            26,
+            1
+          ],
+          "Lighthouse/photos/raw": [
+            23200000,
+            0,
+            4,
+            0
+          ],
+          "Lighthouse/scripts": [
+            132,
+            8192,
+            2,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "fixture bench/files-300",
+      "input": {
+        "kind": "fixture",
+        "path": "bench/files-300"
+      },
+      "output": {
+        "total": 8910,
+        "diskTotal": 245760,
+        "fileCount": 300,
+        "folderCount": 0,
+        "dirs": {}
+      }
+    },
+    {
+      "name": "fixture bench/files-3000",
+      "input": {
+        "kind": "fixture",
+        "path": "bench/files-3000"
+      },
+      "output": {
+        "total": 298906,
+        "diskTotal": 2457600,
+        "fileCount": 3000,
+        "folderCount": 0,
+        "dirs": {}
+      }
+    },
+    {
+      "name": "generated tree 1",
+      "input": {
+        "kind": "generated",
+        "entries": [
+          {
+            "path": "docs-0",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/f3.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/f3.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/two words-4",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/two words-4/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/two words-4/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/two words-4/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/.hidden-5",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/.hidden-5/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/Résumé-7",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/Résumé-7/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/two words-8",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/two words-8/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/two words-8/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/docs-9",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/docs-9/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/docs-9/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-6/docs-9/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/x\ny-11",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/x\ny-11/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/x\ny-11/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/x\ny-11/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/two words-12",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/two words-12/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/two words-12/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/a-10/two words-12/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/.hidden-13",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/.hidden-13/x\ny-14",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/.hidden-13/.hidden-15",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/.hidden-13/.hidden-15/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/.hidden-13/.hidden-15/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/.hidden-13/.hidden-15/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18/Résumé-19",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18/Tool.app-20",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18/Tool.app-20/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/docs-18/Tool.app-20/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/b-22",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/b-22/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/b-22/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/b-22/f2.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/b-22/f3.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/Résumé-23",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/Résumé-23/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/Résumé-23/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/Tool.app-24",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/x\ny-21/Tool.app-24/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/Résumé-25",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/Résumé-25/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/Résumé-25/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/Résumé-25/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/Résumé-25/f3.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/Résumé-25/b-26",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/Résumé-25/Résumé-27",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-29",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-29/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-29/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/.hidden-30",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/.hidden-30/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/.hidden-30/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-31",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-31/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/a-34",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/a-34/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/a-34/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/a-34/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/two words-35",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/two words-35/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/two words-35/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/two words-35/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/two words-35/f3.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/b-36",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/b-36/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/b-36/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/f3.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/Résumé-38",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/Résumé-38/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/Résumé-38/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/Résumé-38/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-37/Résumé-38/f3.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/f3.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/a-40",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/Tool.app-41",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/Tool.app-41/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/Résumé-42",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/docs-39/Résumé-42/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/docs-44",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/docs-44/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/docs-44/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/docs-44/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/docs-44/f3.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/b-45",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/.hidden-46",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/.hidden-46/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/.hidden-46/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/.hidden-46/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/Résumé-49",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/Résumé-49/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/x\ny-50",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/x\ny-50/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/Tool.app-51",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/Tool.app-51/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Résumé-48/Tool.app-51/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/docs-52",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/docs-52/Résumé-53",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/docs-52/Résumé-53/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/docs-52/Résumé-53/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54/docs-55",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54/docs-55/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54/docs-55/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54/.hidden-56",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/Tool.app-54/.hidden-56/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/two words-57",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/two words-57/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/two words-57/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/two words-57/docs-58",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/two words-57/b-59",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Résumé-47/two words-57/b-59/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/link-0",
+            "type": "symlink",
+            "target": "../../../docs-0/a-16/Tool.app-17/x\ny-21/Tool.app-24/f0.dat"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/Tool.app-33/two words-35/link-1",
+            "type": "symlink",
+            "target": "../../../../../docs-0/a-16/Tool.app-17/Résumé-25/b-26"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/.hidden-30/link-2",
+            "type": "symlink",
+            "target": "../../../../../docs-0/a-16/Tool.app-17/docs-18/f0.dat"
+          },
+          {
+            "path": "docs-0/a-16/link-3",
+            "type": "symlink",
+            "target": "../../docs-0/a-16/.hidden-32/Tool.app-37"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/locked-0",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/locked-0/secret.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "docs-0/a-16/.hidden-32/two words-43/locked-0",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-31/locked-1",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-31/locked-1/secret.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-31/locked-1/inner",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/a-16/Tool.app-17/.hidden-28/a-31/locked-1",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/.hidden-5/locked-2",
+            "type": "dir"
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/.hidden-5/locked-2/secret.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "docs-0/b-1/Tool.app-2/Résumé-3/.hidden-5/locked-2",
+            "type": "locked",
+            "mode": 64
+          }
+        ]
+      },
+      "output": {
+        "total": 973204,
+        "diskTotal": 1228800,
+        "fileCount": 119,
+        "folderCount": 63,
+        "dirs": {
+          "docs-0": [
+            973204,
+            1228800,
+            119,
+            62
+          ],
+          "docs-0/a-16": [
+            703345,
+            897024,
+            86,
+            45
+          ],
+          "docs-0/a-16/.hidden-32": [
+            191560,
+            286720,
+            36,
+            15
+          ],
+          "docs-0/a-16/.hidden-32/Tool.app-33": [
+            106640,
+            131072,
+            12,
+            3
+          ],
+          "docs-0/a-16/.hidden-32/Tool.app-33/a-34": [
+            4096,
+            8192,
+            3,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/Tool.app-33/b-36": [
+            4097,
+            8192,
+            2,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/Tool.app-33/two words-35": [
+            24350,
+            32768,
+            5,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/Tool.app-37": [
+            12400,
+            36864,
+            8,
+            1
+          ],
+          "docs-0/a-16/.hidden-32/Tool.app-37/Résumé-38": [
+            8195,
+            20480,
+            4,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/docs-39": [
+            20111,
+            36864,
+            6,
+            3
+          ],
+          "docs-0/a-16/.hidden-32/docs-39/Résumé-42": [
+            9,
+            4096,
+            1,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/docs-39/Tool.app-41": [
+            20000,
+            20480,
+            1,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/docs-39/a-40": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/two words-43": [
+            32400,
+            57344,
+            8,
+            4
+          ],
+          "docs-0/a-16/.hidden-32/two words-43/.hidden-46": [
+            110,
+            12288,
+            3,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/two words-43/b-45": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "docs-0/a-16/.hidden-32/two words-43/docs-44": [
+            28195,
+            40960,
+            4,
+            0
+          ],
+          "docs-0/a-16/Résumé-47": [
+            158439,
+            200704,
+            19,
+            12
+          ],
+          "docs-0/a-16/Résumé-47/Résumé-48": [
+            114115,
+            131072,
+            7,
+            3
+          ],
+          "docs-0/a-16/Résumé-47/Résumé-48/Résumé-49": [
+            9,
+            4096,
+            1,
+            0
+          ],
+          "docs-0/a-16/Résumé-47/Résumé-48/Tool.app-51": [
+            4105,
+            8192,
+            2,
+            0
+          ],
+          "docs-0/a-16/Résumé-47/Résumé-48/x\ny-50": [
+            20000,
+            20480,
+            1,
+            0
+          ],
+          "docs-0/a-16/Résumé-47/Tool.app-54": [
+            20118,
+            32768,
+            5,
+            2
+          ],
+          "docs-0/a-16/Résumé-47/Tool.app-54/.hidden-56": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "docs-0/a-16/Résumé-47/Tool.app-54/docs-55": [
+            109,
+            8192,
+            2,
+            0
+          ],
+          "docs-0/a-16/Résumé-47/docs-52": [
+            10,
+            8192,
+            2,
+            1
+          ],
+          "docs-0/a-16/Résumé-47/docs-52/Résumé-53": [
+            10,
+            8192,
+            2,
+            0
+          ],
+          "docs-0/a-16/Résumé-47/two words-57": [
+            100,
+            4096,
+            3,
+            2
+          ],
+          "docs-0/a-16/Résumé-47/two words-57/b-59": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "docs-0/a-16/Résumé-47/two words-57/docs-58": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17": [
+            353197,
+            401408,
+            27,
+            15
+          ],
+          "docs-0/a-16/Tool.app-17/.hidden-28": [
+            106445,
+            118784,
+            8,
+            4
+          ],
+          "docs-0/a-16/Tool.app-17/.hidden-28/.hidden-30": [
+            4157,
+            8192,
+            3,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/.hidden-28/a-29": [
+            74096,
+            77824,
+            2,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/.hidden-28/a-31": [
+            20000,
+            20480,
+            1,
+            1
+          ],
+          "docs-0/a-16/Tool.app-17/Résumé-25": [
+            94097,
+            102400,
+            4,
+            2
+          ],
+          "docs-0/a-16/Tool.app-17/Résumé-25/Résumé-27": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/Résumé-25/b-26": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/docs-18": [
+            74205,
+            86016,
+            5,
+            2
+          ],
+          "docs-0/a-16/Tool.app-17/docs-18/Résumé-19": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/docs-18/Tool.app-20": [
+            9,
+            4096,
+            2,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/x\ny-21": [
+            78392,
+            94208,
+            8,
+            3
+          ],
+          "docs-0/a-16/Tool.app-17/x\ny-21/Résumé-23": [
+            101,
+            8192,
+            2,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/x\ny-21/Tool.app-24": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "docs-0/a-16/Tool.app-17/x\ny-21/b-22": [
+            78291,
+            86016,
+            4,
+            0
+          ],
+          "docs-0/b-1": [
+            269859,
+            331776,
+            33,
+            15
+          ],
+          "docs-0/b-1/Tool.app-2": [
+            265762,
+            323584,
+            32,
+            14
+          ],
+          "docs-0/b-1/Tool.app-2/.hidden-13": [
+            4204,
+            12288,
+            3,
+            2
+          ],
+          "docs-0/b-1/Tool.app-2/.hidden-13/.hidden-15": [
+            4204,
+            12288,
+            3,
+            0
+          ],
+          "docs-0/b-1/Tool.app-2/.hidden-13/x\ny-14": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "docs-0/b-1/Tool.app-2/Résumé-3": [
+            28202,
+            45056,
+            8,
+            3
+          ],
+          "docs-0/b-1/Tool.app-2/Résumé-3/.hidden-5": [
+            9,
+            4096,
+            1,
+            1
+          ],
+          "docs-0/b-1/Tool.app-2/Résumé-3/two words-4": [
+            4096,
+            8192,
+            3,
+            0
+          ],
+          "docs-0/b-1/Tool.app-2/a-10": [
+            118673,
+            131072,
+            9,
+            2
+          ],
+          "docs-0/b-1/Tool.app-2/a-10/two words-12": [
+            28193,
+            32768,
+            3,
+            0
+          ],
+          "docs-0/b-1/Tool.app-2/a-10/x\ny-11": [
+            78193,
+            86016,
+            3,
+            0
+          ],
+          "docs-0/b-1/Tool.app-2/a-6": [
+            106484,
+            122880,
+            8,
+            3
+          ],
+          "docs-0/b-1/Tool.app-2/a-6/Résumé-7": [
+            4095,
+            4096,
+            1,
+            0
+          ],
+          "docs-0/b-1/Tool.app-2/a-6/docs-9": [
+            8292,
+            16384,
+            3,
+            0
+          ],
+          "docs-0/b-1/Tool.app-2/a-6/two words-8": [
+            74097,
+            81920,
+            2,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "generated tree 2",
+      "input": {
+        "kind": "generated",
+        "entries": [
+          {
+            "path": "Tool.app-0",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/f3.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/f3.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/.hidden-4",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/.hidden-4/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/.hidden-4/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/.hidden-4/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/.hidden-4/f3.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/two words-5",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/two words-5/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/two words-5/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/Résumé-6",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/Résumé-6/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/a-7",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/a-7/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/a-7/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/a-7/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/docs-9",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/docs-9/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/docs-9/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/two words-10",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/two words-10/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/docs-11",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/docs-12",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/docs-12/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/x\ny-8/docs-12/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/a-13",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/a-13/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/a-13/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/a-13/a-14",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/a-13/a-14/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/f3.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/.hidden-16",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/.hidden-16/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/.hidden-16/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/docs-17",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/.hidden-15/docs-17/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/f3.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/.hidden-20",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/.hidden-20/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/.hidden-20/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/.hidden-20/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/x\ny-21",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/x\ny-21/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/x\ny-21/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/.hidden-19/x\ny-21/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/two words-22",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/two words-22/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/two words-22/Résumé-23",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/two words-22/Résumé-23/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/two words-22/Résumé-23/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/two words-22/Résumé-23/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-1/two words-18/two words-22/Résumé-23/f3.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/f3.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/.hidden-26",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/.hidden-26/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/Résumé-27",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28/x\ny-29",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28/x\ny-29/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28/x\ny-29/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28/x\ny-29/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/two words-28/b-30",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/two words-32",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/two words-32/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/two words-32/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/two words-32/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/two words-32/f3.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/b-33",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/b-33/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/b-31/b-33/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/f3.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/f3.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/Résumé-37",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/docs-38",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/docs-38/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/docs-38/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/docs-39",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/docs-39/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/a-36/a-40",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/f3.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/docs-44",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/docs-44/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/docs-44/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/a-45",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/a-45/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/b-43/Tool.app-46",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47/a-48",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47/a-48/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47/a-48/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/a-47/a-48/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/Résumé-49",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/Résumé-49/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/Résumé-49/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/Résumé-49/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/Résumé-49/.hidden-50",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/Résumé-49/.hidden-50/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-41/a-42/Résumé-49/.hidden-50/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/f3.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52/two words-53",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52/two words-53/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52/two words-53/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52/two words-53/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/Résumé-52/two words-53/f3.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/a-54",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/a-54/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/a-54/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/a-54/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/a-54/f3.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/a-54/a-55",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/a-54/a-55/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/.hidden-56",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/.hidden-56/a-57",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/.hidden-51/.hidden-56/a-57/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/f3.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/link-0",
+            "type": "symlink",
+            "target": "../../../../Tool.app-0/two words-41/a-42/b-43/docs-44/f0.dat"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/Résumé-6/link-1",
+            "type": "symlink",
+            "target": "../../../../../Tool.app-0/Tool.app-34/.hidden-35/a-36/Résumé-37"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/a-13/a-14/link-2",
+            "type": "symlink",
+            "target": "../../../../../Tool.app-0"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-2/b-3/link-3",
+            "type": "symlink",
+            "target": "../../../../Tool.app-0/two words-41/.hidden-51/Résumé-52/f1.dat"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/.hidden-26/locked-0",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/.hidden-26/locked-0/secret.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "Tool.app-0/two words-1/docs-24/x\ny-25/.hidden-26/locked-0",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/locked-1",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/locked-1/secret.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/locked-1/inner",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/Tool.app-34/.hidden-35/locked-1",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/locked-2",
+            "type": "dir"
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/locked-2/secret.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "Tool.app-0/two words-41/two words-58/Résumé-59/locked-2",
+            "type": "locked",
+            "mode": 64
+          }
+        ]
+      },
+      "output": {
+        "total": 841063,
+        "diskTotal": 1146880,
+        "fileCount": 128,
+        "folderCount": 63,
+        "dirs": {
+          "Tool.app-0": [
+            841063,
+            1146880,
+            128,
+            62
+          ],
+          "Tool.app-0/Tool.app-34": [
+            24804,
+            57344,
+            12,
+            7
+          ],
+          "Tool.app-0/Tool.app-34/.hidden-35": [
+            20598,
+            40960,
+            8,
+            6
+          ],
+          "Tool.app-0/Tool.app-34/.hidden-35/a-36": [
+            20589,
+            36864,
+            7,
+            4
+          ],
+          "Tool.app-0/Tool.app-34/.hidden-35/a-36/Résumé-37": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "Tool.app-0/Tool.app-34/.hidden-35/a-36/a-40": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "Tool.app-0/Tool.app-34/.hidden-35/a-36/docs-38": [
+            4195,
+            8192,
+            2,
+            0
+          ],
+          "Tool.app-0/Tool.app-34/.hidden-35/a-36/docs-39": [
+            4096,
+            4096,
+            1,
+            0
+          ],
+          "Tool.app-0/two words-1": [
+            446010,
+            610304,
+            69,
+            33
+          ],
+          "Tool.app-0/two words-1/docs-2": [
+            164037,
+            241664,
+            32,
+            15
+          ],
+          "Tool.app-0/two words-1/docs-2/.hidden-15": [
+            16496,
+            36864,
+            7,
+            2
+          ],
+          "Tool.app-0/two words-1/docs-2/.hidden-15/.hidden-16": [
+            9,
+            4096,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/.hidden-15/docs-17": [
+            4097,
+            8192,
+            1,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/a-13": [
+            8317,
+            12288,
+            4,
+            1
+          ],
+          "Tool.app-0/two words-1/docs-2/a-13/a-14": [
+            4121,
+            4096,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/b-3": [
+            16727,
+            49152,
+            12,
+            4
+          ],
+          "Tool.app-0/two words-1/docs-2/b-3/.hidden-4": [
+            8196,
+            24576,
+            4,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/b-3/Résumé-6": [
+            4160,
+            4096,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/b-3/a-7": [
+            4197,
+            12288,
+            3,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/b-3/two words-5": [
+            109,
+            8192,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/x\ny-8": [
+            118391,
+            131072,
+            7,
+            4
+          ],
+          "Tool.app-0/two words-1/docs-2/x\ny-8/docs-11": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/x\ny-8/docs-12": [
+            40000,
+            40960,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/x\ny-8/docs-9": [
+            70100,
+            77824,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-2/x\ny-8/two words-10": [
+            100,
+            4096,
+            1,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-24": [
+            123095,
+            167936,
+            18,
+            10
+          ],
+          "Tool.app-0/two words-1/docs-24/b-31": [
+            78303,
+            98304,
+            6,
+            2
+          ],
+          "Tool.app-0/two words-1/docs-24/b-31/b-33": [
+            4196,
+            8192,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-24/b-31/two words-32": [
+            74107,
+            90112,
+            4,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-24/two words-28": [
+            8308,
+            20480,
+            5,
+            2
+          ],
+          "Tool.app-0/two words-1/docs-24/two words-28/b-30": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-24/two words-28/x\ny-29": [
+            8199,
+            12288,
+            3,
+            0
+          ],
+          "Tool.app-0/two words-1/docs-24/x\ny-25": [
+            32389,
+            45056,
+            5,
+            3
+          ],
+          "Tool.app-0/two words-1/docs-24/x\ny-25/.hidden-26": [
+            20000,
+            20480,
+            1,
+            1
+          ],
+          "Tool.app-0/two words-1/docs-24/x\ny-25/Résumé-27": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "Tool.app-0/two words-1/two words-18": [
+            146587,
+            176128,
+            15,
+            5
+          ],
+          "Tool.app-0/two words-1/two words-18/.hidden-19": [
+            52490,
+            69632,
+            10,
+            2
+          ],
+          "Tool.app-0/two words-1/two words-18/.hidden-19/.hidden-20": [
+            20101,
+            28672,
+            3,
+            0
+          ],
+          "Tool.app-0/two words-1/two words-18/.hidden-19/x\ny-21": [
+            4197,
+            12288,
+            3,
+            0
+          ],
+          "Tool.app-0/two words-1/two words-18/two words-22": [
+            94097,
+            106496,
+            5,
+            1
+          ],
+          "Tool.app-0/two words-1/two words-18/two words-22/Résumé-23": [
+            94096,
+            102400,
+            4,
+            0
+          ],
+          "Tool.app-0/two words-41": [
+            362055,
+            462848,
+            43,
+            19
+          ],
+          "Tool.app-0/two words-41/.hidden-51": [
+            248411,
+            278528,
+            16,
+            6
+          ],
+          "Tool.app-0/two words-41/.hidden-51/.hidden-56": [
+            20000,
+            20480,
+            1,
+            1
+          ],
+          "Tool.app-0/two words-41/.hidden-51/.hidden-56/a-57": [
+            20000,
+            20480,
+            1,
+            0
+          ],
+          "Tool.app-0/two words-41/.hidden-51/Résumé-52": [
+            98392,
+            110592,
+            6,
+            1
+          ],
+          "Tool.app-0/two words-41/.hidden-51/Résumé-52/two words-53": [
+            94196,
+            102400,
+            4,
+            0
+          ],
+          "Tool.app-0/two words-41/.hidden-51/a-54": [
+            70019,
+            86016,
+            5,
+            1
+          ],
+          "Tool.app-0/two words-41/.hidden-51/a-54/a-55": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "Tool.app-0/two words-41/a-42": [
+            85392,
+            147456,
+            21,
+            8
+          ],
+          "Tool.app-0/two words-41/a-42/Résumé-49": [
+            12299,
+            24576,
+            5,
+            1
+          ],
+          "Tool.app-0/two words-41/a-42/Résumé-49/.hidden-50": [
+            8193,
+            12288,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-41/a-42/a-47": [
+            8313,
+            32768,
+            6,
+            1
+          ],
+          "Tool.app-0/two words-41/a-42/a-47/a-48": [
+            4206,
+            16384,
+            3,
+            0
+          ],
+          "Tool.app-0/two words-41/a-42/b-43": [
+            20683,
+            40960,
+            7,
+            3
+          ],
+          "Tool.app-0/two words-41/a-42/b-43/Tool.app-46": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "Tool.app-0/two words-41/a-42/b-43/a-45": [
+            4096,
+            4096,
+            1,
+            0
+          ],
+          "Tool.app-0/two words-41/a-42/b-43/docs-44": [
+            8194,
+            16384,
+            2,
+            0
+          ],
+          "Tool.app-0/two words-41/two words-58": [
+            28252,
+            36864,
+            6,
+            2
+          ],
+          "Tool.app-0/two words-41/two words-58/Résumé-59": [
+            28251,
+            32768,
+            5,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "name": "generated tree 3",
+      "input": {
+        "kind": "generated",
+        "entries": [
+          {
+            "path": ".hidden-0",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/Résumé-1/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/Résumé-1/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/Résumé-4",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-5",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-5/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-5/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-5/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-5/f3.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-6",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-6/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-6/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/x\ny-7",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/x\ny-7/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/x\ny-7/f1.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/Résumé-3/x\ny-7/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8/f3.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8/a-9",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8/a-9/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-2/two words-8/b-10",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/x\ny-12",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/x\ny-12/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/x\ny-12/x\ny-13",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/docs-16",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/docs-16/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/b-17",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/b-17/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/f3.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/Tool.app-20",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/Tool.app-20/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/a-21",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/a-21/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/a-21/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/a-21/f2.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/.hidden-22",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/.hidden-22/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/.hidden-22/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Tool.app-24",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Tool.app-24/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Tool.app-24/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Tool.app-24/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Tool.app-24/f3.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Résumé-25",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Résumé-25/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Résumé-25/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/b-26",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/b-26/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/b-26/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/b-26/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/b-26/f3.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Résumé-27",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/.hidden-28",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/.hidden-28/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/.hidden-28/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/.hidden-28/two words-29",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/.hidden-28/two words-29/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/.hidden-28/two words-29/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/.hidden-28/two words-29/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-32",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-32/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-32/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-32/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-33",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-33/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-33/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-33/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-33/f3.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/x\ny-34",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/x\ny-34/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/x\ny-34/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/x\ny-34/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/x\ny-34/f3.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/Tool.app-35",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/Tool.app-35/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/Tool.app-35/x\ny-36",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/Tool.app-35/x\ny-36/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/Tool.app-35/x\ny-36/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/Tool.app-35/x\ny-36/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/b-38",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/b-38/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/x\ny-39",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/x\ny-39/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/x\ny-39/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/.hidden-37/x\ny-39/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/two words-40",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/f2.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-43",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/two words-44",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/two words-44/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/two words-44/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/two words-44/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/a-45",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/a-45/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/a-45/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/a-45/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-46",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-46/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-46/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-46/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/.hidden-47",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/.hidden-47/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/.hidden-47/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/.hidden-47/a-48",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/.hidden-47/a-48/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/Résumé-51",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/Résumé-51/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/Résumé-51/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/Résumé-51/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/docs-52",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/docs-52/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/docs-52/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/docs-52/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/docs-52/f3.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/b-53",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/b-53/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/b-53/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/.hidden-54",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/.hidden-54/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/.hidden-54/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/.hidden-49/b-50/.hidden-54/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/x\ny-57",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/x\ny-57/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/docs-58",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/docs-58/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/docs-58/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/docs-58/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": ".hidden-0/two words-40/docs-55/.hidden-56/x\ny-59",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/x\ny-12/x\ny-13/link-0",
+            "type": "symlink",
+            "target": "../../../../../.hidden-0/Résumé-1/Résumé-2/Résumé-3/Résumé-4"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/Tool.app-19/link-1",
+            "type": "symlink",
+            "target": "../../../../.hidden-0/Résumé-1/a-30/Tool.app-35/f0.dat"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/a-30/docs-31/b-32/link-2",
+            "type": "symlink",
+            "target": "../../../../../.hidden-0/two words-40/docs-55/.hidden-56/x\ny-57"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/b-18/a-23/Tool.app-24/link-3",
+            "type": "symlink",
+            "target": "../../../../../.hidden-0/Résumé-1/a-30/Tool.app-35"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/locked-0",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/locked-0/secret.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/locked-0",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/locked-1",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/locked-1/secret.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/locked-1/inner",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15/locked-1",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-43/locked-2",
+            "type": "dir"
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-43/locked-2/secret.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": ".hidden-0/two words-40/a-41/Tool.app-42/b-43/locked-2",
+            "type": "locked",
+            "mode": 64
+          }
+        ]
+      },
+      "output": {
+        "total": 1052240,
+        "diskTotal": 1335296,
+        "fileCount": 131,
+        "folderCount": 63,
+        "dirs": {
+          ".hidden-0": [
+            1052240,
+            1335296,
+            131,
+            62
+          ],
+          ".hidden-0/Résumé-1": [
+            679861,
+            856064,
+            84,
+            40
+          ],
+          ".hidden-0/Résumé-1/Résumé-11": [
+            82382,
+            98304,
+            9,
+            8
+          ],
+          ".hidden-0/Résumé-1/Résumé-11/Résumé-14": [
+            78219,
+            94208,
+            7,
+            5
+          ],
+          ".hidden-0/Résumé-1/Résumé-11/Résumé-14/Résumé-15": [
+            4105,
+            8192,
+            3,
+            2
+          ],
+          ".hidden-0/Résumé-1/Résumé-11/Résumé-14/b-17": [
+            70000,
+            73728,
+            1,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-11/Résumé-14/docs-16": [
+            9,
+            4096,
+            1,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-11/x\ny-12": [
+            4163,
+            4096,
+            2,
+            1
+          ],
+          ".hidden-0/Résumé-1/Résumé-11/x\ny-12/x\ny-13": [
+            68,
+            0,
+            1,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-2": [
+            168707,
+            204800,
+            16,
+            8
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/Résumé-3": [
+            148229,
+            180224,
+            11,
+            4
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/Résumé-3/Résumé-4": [
+            0,
+            0,
+            0,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-5": [
+            4114,
+            16384,
+            4,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/Résumé-3/two words-6": [
+            70000,
+            73728,
+            2,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/Résumé-3/x\ny-7": [
+            4106,
+            12288,
+            3,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/two words-8": [
+            20478,
+            24576,
+            5,
+            2
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/two words-8/a-9": [
+            4096,
+            4096,
+            1,
+            0
+          ],
+          ".hidden-0/Résumé-1/Résumé-2/two words-8/b-10": [
+            0,
+            0,
+            0,
+            0
+          ],
+          ".hidden-0/Résumé-1/a-30": [
+            179055,
+            225280,
+            24,
+            9
+          ],
+          ".hidden-0/Résumé-1/a-30/.hidden-37": [
+            44108,
+            61440,
+            7,
+            2
+          ],
+          ".hidden-0/Résumé-1/a-30/.hidden-37/b-38": [
+            4096,
+            4096,
+            1,
+            0
+          ],
+          ".hidden-0/Résumé-1/a-30/.hidden-37/x\ny-39": [
+            20002,
+            28672,
+            3,
+            0
+          ],
+          ".hidden-0/Résumé-1/a-30/Tool.app-35": [
+            8292,
+            12288,
+            4,
+            1
+          ],
+          ".hidden-0/Résumé-1/a-30/Tool.app-35/x\ny-36": [
+            4196,
+            8192,
+            3,
+            0
+          ],
+          ".hidden-0/Résumé-1/a-30/docs-31": [
+            122560,
+            147456,
+            12,
+            3
+          ],
+          ".hidden-0/Résumé-1/a-30/docs-31/b-32": [
+            40163,
+            45056,
+            4,
+            0
+          ],
+          ".hidden-0/Résumé-1/a-30/docs-31/b-33": [
+            8301,
+            20480,
+            4,
+            0
+          ],
+          ".hidden-0/Résumé-1/a-30/docs-31/x\ny-34": [
+            74096,
+            81920,
+            4,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18": [
+            241514,
+            307200,
+            32,
+            11
+          ],
+          ".hidden-0/Résumé-1/b-18/.hidden-28": [
+            82295,
+            90112,
+            5,
+            1
+          ],
+          ".hidden-0/Résumé-1/b-18/.hidden-28/two words-29": [
+            8200,
+            12288,
+            3,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18/Tool.app-19": [
+            102453,
+            122880,
+            10,
+            3
+          ],
+          ".hidden-0/Résumé-1/b-18/Tool.app-19/.hidden-22": [
+            4095,
+            4096,
+            2,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18/Tool.app-19/Tool.app-20": [
+            9,
+            4096,
+            1,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18/Tool.app-19/a-21": [
+            74195,
+            81920,
+            3,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18/a-23": [
+            32668,
+            61440,
+            13,
+            4
+          ],
+          ".hidden-0/Résumé-1/b-18/a-23/Résumé-25": [
+            4097,
+            8192,
+            2,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18/a-23/Résumé-27": [
+            0,
+            0,
+            0,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18/a-23/Tool.app-24": [
+            4357,
+            16384,
+            5,
+            0
+          ],
+          ".hidden-0/Résumé-1/b-18/a-23/b-26": [
+            20018,
+            28672,
+            4,
+            0
+          ],
+          ".hidden-0/two words-40": [
+            348183,
+            450560,
+            44,
+            20
+          ],
+          ".hidden-0/two words-40/.hidden-49": [
+            188884,
+            233472,
+            18,
+            5
+          ],
+          ".hidden-0/two words-40/.hidden-49/b-50": [
+            180592,
+            217088,
+            15,
+            4
+          ],
+          ".hidden-0/two words-40/.hidden-49/b-50/.hidden-54": [
+            8292,
+            16384,
+            3,
+            0
+          ],
+          ".hidden-0/two words-40/.hidden-49/b-50/Résumé-51": [
+            2,
+            8192,
+            3,
+            0
+          ],
+          ".hidden-0/two words-40/.hidden-49/b-50/b-53": [
+            74096,
+            77824,
+            2,
+            0
+          ],
+          ".hidden-0/two words-40/.hidden-49/b-50/docs-52": [
+            94097,
+            102400,
+            4,
+            0
+          ],
+          ".hidden-0/two words-40/a-41": [
+            114892,
+            147456,
+            17,
+            8
+          ],
+          ".hidden-0/two words-40/a-41/.hidden-47": [
+            28190,
+            28672,
+            3,
+            1
+          ],
+          ".hidden-0/two words-40/a-41/.hidden-47/a-48": [
+            4095,
+            4096,
+            1,
+            0
+          ],
+          ".hidden-0/two words-40/a-41/Tool.app-42": [
+            12597,
+            36864,
+            11,
+            5
+          ],
+          ".hidden-0/two words-40/a-41/Tool.app-42/a-45": [
+            4195,
+            8192,
+            3,
+            0
+          ],
+          ".hidden-0/two words-40/a-41/Tool.app-42/b-43": [
+            0,
+            0,
+            0,
+            1
+          ],
+          ".hidden-0/two words-40/a-41/Tool.app-42/b-46": [
+            4195,
+            8192,
+            3,
+            0
+          ],
+          ".hidden-0/two words-40/a-41/Tool.app-42/two words-44": [
+            11,
+            12288,
+            3,
+            0
+          ],
+          ".hidden-0/two words-40/docs-55": [
+            44307,
+            65536,
+            8,
+            4
+          ],
+          ".hidden-0/two words-40/docs-55/.hidden-56": [
+            20210,
+            36864,
+            6,
+            3
+          ],
+          ".hidden-0/two words-40/docs-55/.hidden-56/docs-58": [
+            20200,
+            28672,
+            3,
+            0
+          ],
+          ".hidden-0/two words-40/docs-55/.hidden-56/x\ny-57": [
+            9,
+            4096,
+            1,
+            0
+          ],
+          ".hidden-0/two words-40/docs-55/.hidden-56/x\ny-59": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "generated tree 4",
+      "input": {
+        "kind": "generated",
+        "entries": [
+          {
+            "path": "x\ny-0",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/f3.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/two words-1",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/two words-1/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/two words-1/f2.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/a-4",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/docs-5",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/docs-5/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/docs-5/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/docs-5/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/Tool.app-3/docs-5/f3.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/a-6",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/a-6/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/a-6/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/a-6/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/two words-1/a-2/a-6/docs-7",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-10",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-10/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-10/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-10/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-11",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-11/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-11/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-11/f2.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/two words-1/x\ny-8/docs-9/.hidden-12",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/two words-16",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/two words-16/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/.hidden-17",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/.hidden-17/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/a-18",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/a-18/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/a-18/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/a-18/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/f3.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/x\ny-20",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/x\ny-20/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/x\ny-20/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/x\ny-20/Résumé-21",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/x\ny-20/Résumé-21/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/x\ny-20/Résumé-21/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-13/b-19/x\ny-20/Résumé-21/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/f3.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/docs-25",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/two words-26",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/two words-26/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/two words-26/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/b-27",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/b-27/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/b-27/a-28",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/b-27/a-28/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/b-27/a-28/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/b-27/a-28/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/b-27/a-28/f3.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/two words-30",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/two words-30/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/Tool.app-31",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/Tool.app-31/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/Tool.app-31/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/Tool.app-31/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-29/.hidden-32",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33/docs-34",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33/Tool.app-35",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33/docs-36",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33/docs-36/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33/docs-36/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33/docs-36/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/two words-33/docs-36/f3.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/f1.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/f2.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/f3.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/a-39",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/.hidden-40",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/Résumé-41",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/Résumé-41/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/Résumé-41/f1.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/x\ny-22/two words-37/docs-38/Résumé-41/f2.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/f2.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/f3.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/f2.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/f3.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/Tool.app-44",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/Tool.app-44/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/Tool.app-44/f1.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/.hidden-43/x\ny-45",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/f3.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/b-47",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/b-47/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/b-47/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/b-47/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/Tool.app-46/b-47/f3.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/f0.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/f1.dat",
+            "type": "file",
+            "size": 9
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/f2.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/f3.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/two words-49",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/two words-49/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-50",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-50/f0.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-51",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-51/f0.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-51/f1.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-51/f2.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-51/f3.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/.hidden-52",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/.hidden-52/f0.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/f0.dat",
+            "type": "file",
+            "size": 4096
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/f1.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/docs-54",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/Résumé-55",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/.hidden-56",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/.hidden-56/f0.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/.hidden-56/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/.hidden-56/f2.dat",
+            "type": "file",
+            "size": 100
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/x\ny-57",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/x\ny-57/f0.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/x\ny-53/x\ny-57/f1.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/f0.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/b-59",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/b-59/f0.dat",
+            "type": "file",
+            "size": 1
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/b-59/f1.dat",
+            "type": "file",
+            "size": 4097
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/b-59/f2.dat",
+            "type": "file",
+            "size": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/b-59/f3.dat",
+            "type": "file",
+            "size": 20000
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-50/link-0",
+            "type": "symlink",
+            "target": "../../../../../x\ny-0/x\ny-22/two words-37/docs-38/Résumé-41/f1.dat"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/a-23/a-24/two words-26/link-1",
+            "type": "symlink",
+            "target": "../../../../../x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-11"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/docs-50/link-2",
+            "type": "symlink",
+            "target": "../../../../../x\ny-0/x\ny-22/b-42/Tool.app-46/f0.dat"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/b-42/docs-48/two words-49/link-3",
+            "type": "symlink",
+            "target": "../../../../../x\ny-0/two words-1/a-2/f0.dat"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/two words-16/locked-0",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/two words-16/locked-0/secret.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/x\ny-13/docs-14/Tool.app-15/two words-16/locked-0",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": "x\ny-0/two words-1/locked-1",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/locked-1/secret.dat",
+            "type": "file",
+            "size": 70000
+          },
+          {
+            "path": "x\ny-0/two words-1/locked-1/inner",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/two words-1/locked-1",
+            "type": "locked",
+            "mode": 0
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/locked-2",
+            "type": "dir"
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/locked-2/secret.dat",
+            "type": "file",
+            "size": 4095
+          },
+          {
+            "path": "x\ny-0/x\ny-22/.hidden-58/locked-2",
+            "type": "locked",
+            "mode": 64
+          }
+        ]
+      },
+      "output": {
+        "total": 1471534,
+        "diskTotal": 1748992,
+        "fileCount": 121,
+        "folderCount": 63,
+        "dirs": {
+          "x\ny-0": [
+            1471534,
+            1748992,
+            121,
+            62
+          ],
+          "x\ny-0/two words-1": [
+            380827,
+            442368,
+            24,
+            12
+          ],
+          "x\ny-0/two words-1/a-2": [
+            118521,
+            155648,
+            13,
+            5
+          ],
+          "x\ny-0/two words-1/a-2/Tool.app-3": [
+            24314,
+            40960,
+            7,
+            2
+          ],
+          "x\ny-0/two words-1/a-2/Tool.app-3/a-4": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/two words-1/a-2/Tool.app-3/docs-5": [
+            4205,
+            12288,
+            4,
+            0
+          ],
+          "x\ny-0/two words-1/a-2/a-6": [
+            24098,
+            32768,
+            3,
+            1
+          ],
+          "x\ny-0/two words-1/a-2/a-6/docs-7": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/two words-1/x\ny-8": [
+            188202,
+            204800,
+            8,
+            4
+          ],
+          "x\ny-0/two words-1/x\ny-8/docs-9": [
+            184105,
+            196608,
+            6,
+            3
+          ],
+          "x\ny-0/two words-1/x\ny-8/docs-9/.hidden-12": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-10": [
+            74105,
+            81920,
+            3,
+            0
+          ],
+          "x\ny-0/two words-1/x\ny-8/docs-9/Tool.app-11": [
+            110000,
+            114688,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-13": [
+            314885,
+            348160,
+            18,
+            9
+          ],
+          "x\ny-0/x\ny-13/b-19": [
+            36693,
+            53248,
+            9,
+            2
+          ],
+          "x\ny-0/x\ny-13/b-19/x\ny-20": [
+            12488,
+            20480,
+            5,
+            1
+          ],
+          "x\ny-0/x\ny-13/b-19/x\ny-20/Résumé-21": [
+            4296,
+            12288,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-13/docs-14": [
+            278192,
+            294912,
+            9,
+            5
+          ],
+          "x\ny-0/x\ny-13/docs-14/Tool.app-15": [
+            184095,
+            192512,
+            6,
+            4
+          ],
+          "x\ny-0/x\ny-13/docs-14/Tool.app-15/.hidden-17": [
+            4095,
+            4096,
+            1,
+            0
+          ],
+          "x\ny-0/x\ny-13/docs-14/Tool.app-15/a-18": [
+            90000,
+            94208,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-13/docs-14/Tool.app-15/two words-16": [
+            20000,
+            20480,
+            1,
+            1
+          ],
+          "x\ny-0/x\ny-22": [
+            767531,
+            946176,
+            75,
+            38
+          ],
+          "x\ny-0/x\ny-22/.hidden-58": [
+            28195,
+            40960,
+            5,
+            2
+          ],
+          "x\ny-0/x\ny-22/.hidden-58/b-59": [
+            24098,
+            32768,
+            4,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23": [
+            309078,
+            376832,
+            23,
+            13
+          ],
+          "x\ny-0/x\ny-22/a-23/a-24": [
+            8367,
+            24576,
+            7,
+            2
+          ],
+          "x\ny-0/x\ny-22/a-23/a-24/docs-25": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/a-24/two words-26": [
+            4161,
+            8192,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/a-29": [
+            78293,
+            90112,
+            5,
+            3
+          ],
+          "x\ny-0/x\ny-22/a-23/a-29/.hidden-32": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/a-29/Tool.app-31": [
+            70100,
+            77824,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/a-29/two words-30": [
+            4097,
+            8192,
+            1,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/b-27": [
+            74207,
+            94208,
+            5,
+            1
+          ],
+          "x\ny-0/x\ny-22/a-23/b-27/a-28": [
+            74206,
+            90112,
+            4,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/two words-33": [
+            144106,
+            159744,
+            4,
+            3
+          ],
+          "x\ny-0/x\ny-22/a-23/two words-33/Tool.app-35": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/two words-33/docs-34": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/a-23/two words-33/docs-36": [
+            144106,
+            159744,
+            4,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42": [
+            331953,
+            401408,
+            39,
+            15
+          ],
+          "x\ny-0/x\ny-22/b-42/.hidden-43": [
+            8392,
+            16384,
+            6,
+            2
+          ],
+          "x\ny-0/x\ny-22/b-42/.hidden-43/Tool.app-44": [
+            4096,
+            4096,
+            2,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/.hidden-43/x\ny-45": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/Tool.app-46": [
+            28301,
+            45056,
+            8,
+            1
+          ],
+          "x\ny-0/x\ny-22/b-42/Tool.app-46/b-47": [
+            4205,
+            16384,
+            4,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/docs-48": [
+            102665,
+            122880,
+            14,
+            4
+          ],
+          "x\ny-0/x\ny-22/b-42/docs-48/.hidden-52": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/docs-48/docs-50": [
+            218,
+            4096,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/docs-48/docs-51": [
+            78291,
+            86016,
+            4,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/docs-48/two words-49": [
+            4138,
+            4096,
+            2,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/x\ny-53": [
+            172386,
+            184320,
+            7,
+            4
+          ],
+          "x\ny-0/x\ny-22/b-42/x\ny-53/.hidden-56": [
+            74195,
+            81920,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/x\ny-53/Résumé-55": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/x\ny-53/docs-54": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/b-42/x\ny-53/x\ny-57": [
+            90000,
+            94208,
+            2,
+            0
+          ],
+          "x\ny-0/x\ny-22/two words-37": [
+            98305,
+            126976,
+            8,
+            4
+          ],
+          "x\ny-0/x\ny-22/two words-37/docs-38": [
+            98205,
+            122880,
+            7,
+            3
+          ],
+          "x\ny-0/x\ny-22/two words-37/docs-38/.hidden-40": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "x\ny-0/x\ny-22/two words-37/docs-38/Résumé-41": [
+            4107,
+            16384,
+            3,
+            0
+          ],
+          "x\ny-0/x\ny-22/two words-37/docs-38/a-39": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}
