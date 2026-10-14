@@ -173,6 +173,28 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.readNode("/target/file.txt")?.size == 5)
     }
 
+    // The destination-mutation step of the case whose other steps are in Execution/CopyPasteExecutionEdgeTests.swift:
+    // a destination changed after the review, answered with Replace.
+    // T-706c8576 F-339
+    @Test func replacesADestinationChangedAfterTheReviewOnceAnswered() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
+            ("/target/file.txt", .file(size: 1)),
+        ])
+        fileSystem.enableTrash()
+        let operation = try createResolvedOperation(
+            fileSystem, sources: ["/source/file.txt"], into: "/target", policy: overwriteFiles)
+        fileSystem.mutateNode("/target/file.txt") { $0.size += 10 }
+        let recorder = PasteRecorder()
+
+        await execute(
+            fileSystem, operation, operationId: "copy-op-2", policy: overwriteFiles, recorder: recorder,
+            requestResolution: { _ in .immediate(.overwrite) })
+
+        #expect(recorder.conflicts.map(\.reason) == [.destinationChanged])
+        #expect(fileSystem.readNode("/target/file.txt")?.size == 5)
+    }
+
     // MARK: Per-file cut flow
 
     // T-c889312f
