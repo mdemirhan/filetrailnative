@@ -1,4 +1,4 @@
-import FTFileSystem
+@testable import FTFileSystem
 import FTTestSupport
 import Foundation
 import Testing
