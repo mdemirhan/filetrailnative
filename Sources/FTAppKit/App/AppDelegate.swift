@@ -50,12 +50,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         startServices()
         buildMenus()
 
-        let flagValues = Set(["--snapshot", "--automation", "--out", "--elements", "--user-data-dir"].compactMap {
-            Self.value(after: $0, in: arguments)
-        })
+        let flagValues = Set(
+            ["--snapshot", "--automation", "--out", "--elements", "--user-data-dir"].compactMap {
+                Self.value(after: $0, in: arguments)
+            })
         let launchArguments = arguments.filter { !flagValues.contains($0) }
         let requested = LaunchContext.resolveStartupFolderPath(
-            argv: launchArguments, cwd: LaunchContext.resolveWorkingDirectory(
+            argv: launchArguments,
+            cwd: LaunchContext.resolveWorkingDirectory(
                 envPWD: ProcessInfo.processInfo.environment["PWD"], cwd: FileManager.default.currentDirectoryPath),
             argvOffset: 0, homePath: home.path, appPath: Bundle.main.bundlePath)
 
@@ -100,7 +102,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// One File Trail runs at a time: LaunchServices keeps it so for the bundle, and a copy started by hand hands over to
     /// the one running. The second launch ignores its arguments and only brings a window forward.
     private func handOverToRunningInstance(_ arguments: [String]) -> Bool {
-        let driven = arguments.contains { ["--automation", "--bench", "--bench-launch", "--bench-scroll"].contains($0) }
+        let driven = arguments.contains {
+            ["--automation", "--bench", "--bench-launch", "--bench-scroll"].contains($0)
+        }
         guard !driven, ProcessInfo.processInfo.environment["FILETRAIL_ALLOW_MULTIPLE"] != "1",
             let bundleID = Bundle.main.bundleIdentifier,
             let running = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
@@ -144,7 +148,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             .app(cache: directoryService.cache) { [weak self] windowID, change in
                 self?.onFolderChanged?(windowID, change)
             })
-        diskImages = DiskImageOpener(onMounted: {}, logError: { [weak logger] message in logger?.error(.text(message)) })
+        diskImages = DiskImageOpener(
+            onMounted: {}, logError: { [weak logger] message in logger?.error(.text(message)) })
 
         quit.hooks.activeOperation = { nil }
         quit.hooks.anyWindowOpen = { NSApp.windows.contains { $0.isVisible || $0.isMiniaturized } }
@@ -181,11 +186,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu = menu
         windowHost.onWindowsChanged = { [weak menu] in menu?.sync.windowsChanged() }
 
-        let dock = NSMenu()
-        let newWindow = NSMenuItem(title: "New Window", action: #selector(dockNewWindow(_:)), keyEquivalent: "")
-        newWindow.target = self
-        dock.addItem(newWindow)
-        dockMenu = dock
+        dockMenu = ShellActions.makeDockMenu(target: self, action: #selector(dockNewWindow(_:)))
     }
 
     // MARK: The app's lifetime
@@ -202,13 +203,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             .context([
                 "explorerWindowCount": .number(Double(host.windows.count)), "hasVisibleWindows": .bool(flag),
             ]))
-        if QuitWhileBusy.shouldOpenWindowOnActivate(
-            shutdownInProgress: quit.shutdownInProgress, explorerWindowCount: host.windows.count)
-        {
-            host.openDefaultWindow(initialCommand: nil)
-        } else if !flag, !quit.shutdownInProgress {
-            host.bringToFront()
-        }
+        ShellActions.activate(hasVisibleWindows: flag, shutdownInProgress: quit.shutdownInProgress, host: host)
         return false
     }
 
@@ -246,21 +241,19 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// The window in front takes a disk image. With no window open it is mounted here and its disk opens in a window of
     /// its own; an error is shown on its own, with no window to show it in.
     private func openDiskImageFromOtherApp(_ path: String) {
-        if quit.shutdownInProgress || host.openFromOtherApp(path) { return }
         guard let diskImages else { return }
         Task { @MainActor in
-            let response = await diskImages.open(path)
-            if response.status == .opened, let volumePath = response.volumePath {
-                host.openWindowOnFolder(volumePath)
-            } else if response.status == .failed {
-                let notice = DiskImageNames.describeFailure(path: path, reason: response.reason)
-                let alert = NSAlert()
-                alert.alertStyle = .warning
-                alert.messageText = notice.title
-                alert.informativeText = notice.message
-                alert.addButton(withTitle: "OK")
-                alert.runModal()
-            }
+            await ShellActions.openDiskImage(
+                path, shutdownInProgress: quit.shutdownInProgress, host: host,
+                mount: { await diskImages.open($0) },
+                showFailure: { title, message in
+                    let alert = NSAlert()
+                    alert.alertStyle = .warning
+                    alert.messageText = title
+                    alert.informativeText = message
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
+                })
         }
     }
 

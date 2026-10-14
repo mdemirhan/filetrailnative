@@ -10,7 +10,9 @@ public final class QuitCoordinator {
         /// The kind of the running write operation, if one runs (P3-05's write coordinator).
         public var activeOperation: () -> BusyOperationKind? = { nil }
         /// Shows the question and answers the index of the button chosen. `parent` is the window it hangs from.
-        public var showStopQuestion: (StopQuestion, NSWindow?) async -> Int = { _, _ in QuitWhileBusy.keepWorkingButtonIndex }
+        public var showStopQuestion: (StopQuestion, NSWindow?) async -> Int = { _, _ in
+            QuitWhileBusy.keepWorkingButtonIndex
+        }
         public var anyWindowOpen: () -> Bool = { false }
         public var frontWindow: () -> NSWindow? = { nil }
         /// A second ⌘Q while the question is open: the question comes forward, to be answered first.
