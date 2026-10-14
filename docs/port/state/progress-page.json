@@ -1,0 +1,5 @@
+{
+  "url": "https://claude.ai/artifact/7ZcTNrmgGHQhSgoPAFmhw3",
+  "generator": "tools/orchestrator/progress_data.py",
+  "files": {"summary": "build/progress/summary.json", "phases": "build/progress/phases.json", "work_packages": "build/progress/work_packages.json", "batches": "build/progress/batches.json", "parity": "build/progress/parity.json", "usage": "build/progress/usage.json"}
+}
