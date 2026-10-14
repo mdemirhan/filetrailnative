@@ -227,13 +227,13 @@ The spike's `--bench` grows into `tools/bench`. It runs fixed scenarios against 
   - Shortcut parsing and resolution, preference sanitizing, visited-folder scoring.
   - Relative-date and size formatting, list filter, icon-label middle truncation.
 - **Analysis reports.** A scenario tree is generated on disk, both engines analyze the same paste, and the conflict trees, classes, issues and choices are compared.
-- **Execution.** Each engine gets an identical fresh fixture and runs a scenario script (paste with a policy and overrides, runtime-conflict answers, stops at chosen points). The comparison covers:
+- **Execution.** Each engine gets an identical fresh fixture and runs a scenario script (paste with a policy and overrides, runtime-conflict answers). The comparison covers:
   - the resulting tree: names, kinds, sizes, content hashes, flags, ACLs;
   - Trash contents;
   - the journal file;
   - the undo log;
   - the ordered event and question stream, normalized.
-- **Crash recovery.** A crash is injected at each journal step (a kill hook), then each engine runs its own recovery and the results are compared.
+- **Crash recovery** is not injected (decided on 2026-10-14): the journal and recovery are ported as the original has them and tested by the original's own `writeJournal` and `copyPasteRecovery` tests. Stops are likewise covered by the original's tests, not by stop injection.
 
 ### 5.4 UI validation (native controls, matched metrics)
 
@@ -299,7 +299,7 @@ Each WP is passed to the workflow in `args`:
   "reference": ["packages/core/src/fs/copyPasteExecution.ts:1443-2400", "apps/desktop/src/main/bootstrap/writeJournal.ts"],
   "owns": ["Sources/FTOperations/Replace/", "Tests/FTOperationsTests/Replace/"],
   "tests": ["tests.tsv rows: core/copyPasteConflictSafety.realfs.*, copyPasteRecovery.*, writeJournal.*"],
-  "features": ["F-210..F-236"], "differential": ["exec:replace-*", "crash:replace-*"],
+  "features": ["F-210..F-236"], "differential": ["exec:replace-*"],
   "depends": ["OPS-01", "OPS-03"], "budgets": ["copy throughput"],
   "risk": "high", "model": "opus" }
 ```
@@ -430,7 +430,7 @@ The orchestrator commits the state files to `main` after every change ("port: ch
 Within the same session, a stopped workflow can also continue with Workflow `resumeFromRunId`, which returns the agents that already finished from cache at no cost. Across sessions, the state files and branches do the same job.
 
 What is **not** cut, because a mistake there can lose files:
-- the write engine's differential and crash-injection tests;
+- the write engine's differential tests;
 - its safety lens;
 - the one-for-one port of its L and FS tests;
 - the real-disk checks.
@@ -509,7 +509,7 @@ This is the highest-risk phase. Every WP is **high · Opus**, the WPs run in dep
 
 **Gate:**
 - every A–N checklist item and all core/bootstrap FS rows passing;
-- the execution and crash differential clean on HFS+, APFS, APFS case-sensitive, FAT32 and exFAT images;
+- the execution differential clean on HFS+, APFS, APFS case-sensitive, FAT32 and exFAT images;
 - the safety lens with no open findings above the risk bar.
 
 ### P4. App shell (FTAppKit)
@@ -570,7 +570,7 @@ All P8 work is low · Sonnet.
 
 | Risk | Mitigation |
 |---|---|
-| Copy engine (3k lines of TS, safety-critical) reimplemented with a subtle difference | Differential execution and crash-injection testing on 5 file systems; mandatory safety lens; the original's 700 FS tests ported; human real-disk pass |
+| Copy engine (3k lines of TS, safety-critical) reimplemented with a subtle difference | Differential execution testing on 5 file systems; mandatory safety lens; the original's 700 FS tests ported; human real-disk pass |
 | Native tabs can't do some original tab behaviors | Mapped in §3.4; remaining differences logged and approved at a gate |
 | "Pixel perfect" vs native rendering | Geometry is the hard gate (±1 pt); pixels are a soft gate with masks; vision review covers the rest |
 | Workflows produce plausible but unverified work | Every WP is gated on executable checks (tests, differential, geometry); a reviewer's finding counts only with a failing test or a diff |

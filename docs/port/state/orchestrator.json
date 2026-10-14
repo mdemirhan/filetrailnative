@@ -2694,6 +2694,7 @@
       "Compact density screenshots at wave gates",
       "scripts-only parity sweep at every wave gate"
     ],
-    "fileOperations": "User, 2026-10-14: file operations and Undo/Redo keep the original File Trail's bar: port its tests and the planned differential goldens (PLAN §5.3) as they are, no extra seeds, sequences, injection or real-disk cases beyond the original's, and no requirement that every operation be undoable. Cases the original declines to undo stay declined."
+    "fileOperations": "User, 2026-10-14: file operations and Undo/Redo keep the original File Trail's bar: port its tests and the planned differential goldens (PLAN §5.3) as they are, no extra seeds, sequences, injection or real-disk cases beyond the original's, and no requirement that every operation be undoable. Cases the original declines to undo stay declined.",
+    "crashStop": "User, 2026-10-14: keep Stop and the crash journal/recovery as the original has them, tested only by the original's tests; no crash or stop injection in the differential (exec-crash, exec-stop and exec-crash-volumes are not required)."
   }
 }
