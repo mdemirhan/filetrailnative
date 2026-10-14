@@ -177,6 +177,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     private let infoPanel = InfoPanelView()
     /// Customize Toolbar, while it is on.
     private(set) var customizer: ToolbarCustomizer?
+    /// The folder a search runs from while the tab shows its results (P5-07 starts and ends searches).
+    var searchRootPath: String? {
+        didSet {
+            if searchRootPath != oldValue { notify(.search) }
+        }
+    }
     /// Services of its own, instead of the app's (a window in a test).
     var servicesOverride: ExplorerServices?
     private var observers: [(token: Weak<ExplorerWindowObservation>, handler: (ExplorerWindowChange) -> Void)] = []
@@ -828,8 +834,10 @@ extension MainWindowController: ExplorerWindowContext {
     }
 
     func canPerform(_ command: RendererCommand) -> Bool {
+        // Customizing the toolbar is a sheet over the window (`sheetOpen`): the commands wait for it to end.
         let context = CommandAvailabilityContext(
-            currentPath: folder.path, selectedPathsInViewOrder: selectedPaths, canGoBack: canGoBack,
+            shortcutContext: ShortcutContext(locationSheetOpen: customizer != nil), currentPath: folder.path,
+            selectedPathsInViewOrder: selectedPaths, isSearchMode: searchRootPath != nil, canGoBack: canGoBack,
             canGoForward: canGoForward, tabCount: group?.tabs.count ?? 1,
             homePath: FileManager.default.homeDirectoryForCurrentUser.path)
         return CommandAvailability.canRun(command, context)

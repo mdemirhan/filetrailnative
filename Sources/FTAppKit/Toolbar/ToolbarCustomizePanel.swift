@@ -435,8 +435,11 @@ final class PaletteLabelView: NSView, TextStyleSource {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: font, .foregroundColor: field.textColor ?? NSColor.secondaryLabelColor, .paragraphStyle: style,
         ]
-        // A little room on each side, so a line exactly as wide as the box does not wrap.
+        // A label laid out on more than one line wraps at its box's width, as `.toolbar-customize-label` does; one on
+        // a single line gets a little room on each side, so a line exactly as wide as the box does not wrap.
+        let multiline = bounds.height > line * 1.5
         (field.stringValue as NSString).draw(
-            with: bounds.insetBy(dx: -2, dy: 0), options: [.usesLineFragmentOrigin], attributes: attributes)
+            with: multiline ? bounds : bounds.insetBy(dx: -2, dy: 0), options: [.usesLineFragmentOrigin],
+            attributes: attributes)
     }
 }

@@ -53,6 +53,13 @@ final class ToolbarSlotView: NSView {
         content.frame = bounds
     }
 
+    /// A right-click on an item is left alone (`handleToolbarContextMenu`): only the title offers Customize Toolbar…,
+    /// and Back and Forward their history. The » button is not an item: its right-click reaches the toolbar.
+    override func rightMouseDown(with event: NSEvent) {
+        guard slot.key == TopToolbarRow.overflowKey else { return }
+        super.rightMouseDown(with: event)
+    }
+
     override func draw(_ dirtyRect: NSRect) {
         guard placeholder else { return }
         let accent = ChromeColors.accent(for: self)
@@ -110,7 +117,8 @@ final class ToolbarSeparatorView: NSView {
 /// `.toolbar-title-block`: the folder's name in 15 pt semibold, cut short with an ellipsis, its full path as the
 /// tooltip. It drags the window, and a right-click on it offers Customize Toolbar….
 final class ToolbarTitleView: NSView, TextStyleSource {
-    let field = NSTextField(labelWithString: "")
+    /// The `.toolbar-title` box: its text starts at the block's padding.
+    let field = FlushTextField(labelWithString: "")
     var onRightClick: ((NSEvent) -> Void)?
     var isInert = false
     static let lineHeight = 1.2
@@ -426,16 +434,21 @@ final class ToolbarSearchField: NSSearchField {
 }
 
 final class ToolbarSearchFieldCell: NSSearchFieldCell {
-    /// `.window-toolbar .toolbar-search-row`: 8 pt in from the 1 pt border; the options button (13 pt magnifier,
-    /// 1 pt gap, 8 pt chevron, 3 pt padding, −3 pt margins) then a 6 pt gap before the text.
-    static let leading = 1 + 8 + (13 + 1 + 8) + 6.0
+    /// `.window-toolbar .toolbar-search-row`: 8 pt in from the 1 pt border; the options button (the magnifier, 1 pt
+    /// gap, 8 pt chevron, 3 pt padding, −3 pt margins) then a 6 pt gap before the text.
+    static let leading = 1 + 8 + (iconSize + 1 + 8) + 6.0
     static let trailing = 1 + 8.0
+    /// `.window-toolbar .toolbar-icon` comes after `.toolbar-search-icon .toolbar-icon` in the stylesheet, so the
+    /// magnifier is a toolbar icon: 17 pt, stroke 1.7 (not the 13 pt, 2.4 its own rule asks for).
+    static var iconSize: Double { DesignTokens.toolbar.iconSize }
 
     override func searchTextRect(forBounds rect: NSRect) -> NSRect {
         let height = (font?.boundingRectForFont.height ?? 16).rounded(.up)
+        // The field draws its text 2 pt inside this rect: it starts that much sooner, so the text starts at `leading`.
+        let inset = FlushTextFieldCell.inset
         return NSRect(
-            x: rect.minX + Self.leading, y: rect.midY - height / 2,
-            width: max(0, rect.width - Self.leading - Self.trailing - 16), height: height)
+            x: rect.minX + Self.leading - inset, y: rect.midY - height / 2,
+            width: max(0, rect.width - Self.leading - Self.trailing - 16 + 2 * inset), height: height)
     }
 
     override func searchButtonRect(forBounds rect: NSRect) -> NSRect { .zero }
@@ -461,10 +474,12 @@ final class ToolbarSearchFieldCell: NSSearchFieldCell {
         // The Search Options button: the magnifier and its chevron.
         let iconColor = ChromeColors.color(palette.searchIcon)
         let flipped = controlView.isFlipped
-        let iconSize = 13.0
+        let iconSize = Self.iconSize
         let x = cellFrame.minX + 1 + 8
         let iconRect = NSRect(x: x, y: cellFrame.midY - iconSize / 2, width: iconSize, height: iconSize)
-        ToolbarGlyph.draw(.search, in: iconRect, strokeWidth: 2.4, color: iconColor, flipped: flipped)
+        ToolbarGlyph.draw(
+            .search, in: iconRect, strokeWidth: DesignTokens.toolbar.iconStrokeWidth, color: iconColor,
+            flipped: flipped)
         let chevron = NSRect(x: iconRect.maxX + 1, y: cellFrame.midY - 4, width: 8, height: 8)
         let path = SVGPath.path("M2 3l2 2 2-2")
         var transform = AffineTransform(translationByX: chevron.minX, byY: flipped ? chevron.minY : chevron.maxY)

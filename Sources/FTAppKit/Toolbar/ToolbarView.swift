@@ -29,6 +29,8 @@ final class ToolbarView: NSView {
     private(set) var rowKeys: [String] = []
     private(set) var overflowSlots: [TopToolbarSlot] = []
     private(set) var visibleOptionalCount = Int.max
+    /// The items in the row when the toolbar was last used (not customized): their change closes the Sort menu.
+    private var lastVisibleKeys: [String] = []
     private var clipboardCount = 0
     private var clipboardCut = false
     private var observation: ExplorerWindowObservation?
@@ -181,9 +183,13 @@ final class ToolbarView: NSView {
         overflowButton.isInert = inert
     }
 
-    /// `ExplorerTabs.folderDisplayName`: "Macintosh HD" for `/`.
+    /// `ExplorerTabs.folderDisplayName`: "Macintosh HD" for `/`; while searching, "Searching “…”" with the folder the
+    /// search runs from (`toolbarTitle`).
     static func title(of context: ExplorerWindowContext) -> String {
-        ExplorerTabs.folderDisplayName(context.currentFolder.path)
+        if let root = context.searchRootPath {
+            return "Searching “\(ExplorerTabs.folderDisplayName(root))”"
+        }
+        return ExplorerTabs.folderDisplayName(context.currentFolder.path)
     }
 
     static func sortLabel(_ sortBy: SortByPreference) -> String {
@@ -416,6 +422,7 @@ final class ToolbarView: NSView {
         }
         rowKeys = rowSlots.map(\.key)
         needsDisplay = true
+        updateSortMenu(visibleKeys: TopToolbarLayout.select(all, optionalCount: visibleOptionalCount).map(\.key))
         customizer?.toolbarDidLayout()
     }
 
@@ -467,6 +474,7 @@ final class ToolbarView: NSView {
         window?.performDrag(with: event)
     }
 
+    /// A right-click on the empty room (or the » button, which is not one of the items); the items keep theirs.
     override func rightMouseDown(with event: NSEvent) {
         if customizing { return }
         showCustomizeMenu(event)
@@ -481,7 +489,8 @@ final class ToolbarView: NSView {
                 AppMenuItem(title: "Customize Toolbar…", checked: false, action: { [weak self] in self?.onCustomize() })
             ],
             style: .standard, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item")
-        AppMenuPresenter.shared.show(menu, in: window, at: point, owner: nil)
+        // Its original closes on Escape, a press elsewhere and blur, not on a resize.
+        AppMenuPresenter.shared.show(menu, in: window, at: point, owner: nil, closesOnResize: false)
     }
 
     // MARK: Menus
@@ -501,13 +510,42 @@ final class ToolbarView: NSView {
         make()
     }
 
-    private func present(_ menu: AppMenuView, from button: ToolbarButton, at origin: NSPoint? = nil) {
+    /// Opens `menu` for `button`. Only the menus whose original listens for a resize close on one (Theme, », the
+    /// history menus); Sort follows its button, View Options stays where it opened.
+    private func present(
+        _ menu: AppMenuView, from button: ToolbarButton, at origin: NSPoint? = nil, closesOnResize: Bool
+    ) {
         button.menuOpen = true
         let close = { [weak button] () -> Void in button?.menuOpen = false }
         if let origin, let window {
-            AppMenuPresenter.shared.show(menu, in: window, at: origin, owner: button, onClose: close)
+            AppMenuPresenter.shared.show(
+                menu, in: window, at: origin, owner: button, closesOnResize: closesOnResize, onClose: close)
         } else {
-            AppMenuPresenter.shared.drop(menu, from: button, onClose: close)
+            AppMenuPresenter.shared.drop(menu, from: button, closesOnResize: closesOnResize, onClose: close)
+        }
+    }
+
+    private var sortButton: ToolbarButton? { slotViews[ToolbarItemID.sort.rawValue]?.content as? ToolbarButton }
+
+    /// The Sort menu's place: 8 below the button, its left edge kept 12 inside the window.
+    private func sortMenuOrigin(_ anchor: ToolbarButton) -> NSPoint? {
+        guard let rect = frameInContent(anchor), let host = window?.contentView else { return nil }
+        let width = Self.sortMenuWidth
+        return NSPoint(x: max(12, min(rect.minX, host.bounds.width - width - 12)), y: rect.maxY + 8)
+    }
+
+    static let sortMenuWidth = 200.0
+
+    /// After a layout: the Sort menu follows its button (`resize` and `scroll` listeners), and closes when the items
+    /// in the row change, as its button may have moved or gone (`sortMenuResetKey`).
+    private func updateSortMenu(visibleKeys: [String]) {
+        let changed = visibleKeys != lastVisibleKeys
+        lastVisibleKeys = visibleKeys
+        guard let sortButton, AppMenuPresenter.shared.isOpen(from: sortButton) else { return }
+        if changed {
+            AppMenuPresenter.shared.close()
+        } else if let origin = sortMenuOrigin(sortButton) {
+            AppMenuPresenter.shared.move(to: origin)
         }
     }
 
@@ -538,11 +576,12 @@ final class ToolbarView: NSView {
         let menu = AppMenuView(
             items: items, style: .keyboard, identifier: "historyMenu", rowIdentifier: "historyMenu.item",
             maxWidth: min(420, host.bounds.width - 16))
-        present(menu, from: button, at: NSPoint(x: rect.minX, y: rect.maxY + MenuPlacement.dropGap))
+        present(
+            menu, from: button, at: NSPoint(x: rect.minX, y: rect.maxY + MenuPlacement.dropGap), closesOnResize: true)
     }
 
     private func sortMenu(anchor: ToolbarButton) {
-        guard let context, let rect = frameInContent(anchor), let host = window?.contentView else { return }
+        guard let context, let origin = sortMenuOrigin(anchor) else { return }
         let view = context.viewState
         var items = SortByPreference.menuOrder.map { value in
             AppMenuItem(
@@ -560,13 +599,10 @@ final class ToolbarView: NSView {
                         if direction != view.sortDirection { self?.context?.perform(Self.sortCommand(view.sortBy)) }
                     }))
         }
-        let width = 200.0
         let menu = AppMenuView(
             items: items, style: .standard, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item",
-            minWidth: width)
-        // 8 below the button, its left edge kept 12 inside the window.
-        let left = max(12, min(rect.minX, host.bounds.width - width - 12))
-        present(menu, from: anchor, at: NSPoint(x: left, y: rect.maxY + 8))
+            minWidth: Self.sortMenuWidth)
+        present(menu, from: anchor, at: origin, closesOnResize: false)
     }
 
     static func sortCommand(_ value: SortByPreference) -> RendererCommand {
@@ -603,7 +639,7 @@ final class ToolbarView: NSView {
         ]
         present(
             AppMenuView(items: items, style: .standard, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item"),
-            from: anchor)
+            from: anchor, closesOnResize: false)
     }
 
     private func themeMenu(anchor: ToolbarButton) {
@@ -616,7 +652,7 @@ final class ToolbarView: NSView {
         }
         present(
             AppMenuView(items: items, style: .standard, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item"),
-            from: anchor)
+            from: anchor, closesOnResize: true)
     }
 
     private func toggleOverflowMenu() {
@@ -693,6 +729,6 @@ final class ToolbarView: NSView {
         }
         present(
             AppMenuView(items: items, style: .standard, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item"),
-            from: overflowButton)
+            from: overflowButton, closesOnResize: true)
     }
 }

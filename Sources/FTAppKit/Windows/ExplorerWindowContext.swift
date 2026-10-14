@@ -38,6 +38,8 @@ enum ExplorerWindowChange: Equatable, Sendable {
     case panels
     case preferences
     case clipboard
+    /// A search started or ended (`searchRootPath`).
+    case search
 }
 
 /// What the panes of an explorer window use of the services the app runs.
@@ -163,6 +165,12 @@ protocol ExplorerWindowContext: AnyObject {
     func updatePreferences(_ patch: [String: JSONNode])
 
     var services: ExplorerServices { get }
+
+    // MARK: Search
+
+    /// While the tab shows search results, the folder the search runs from (`searchRootPath` in search mode);
+    /// nil otherwise. P5-07 starts and ends searches.
+    var searchRootPath: String? { get }
 
     /// Tells `handler` of every change until the token goes.
     func observe(_ handler: @escaping @MainActor (ExplorerWindowChange) -> Void) -> ExplorerWindowObservation

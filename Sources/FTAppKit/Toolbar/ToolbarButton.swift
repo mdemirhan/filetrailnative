@@ -3,8 +3,9 @@
 import AppKit
 import FTFoundation
 
-/// An icon-only toolbar button: 32 × 32, a 17 pt stroke icon in the secondary text color, a hover fill, an "on" fill
-/// for a toggle (or a menu button with its menu open), dimmed when it can't be used. On a capsule its fills are round.
+/// An icon-only toolbar button: 32 × 32, a 17 pt stroke icon in the secondary text color, a hover fill, the primary
+/// text color for a toggle that is on (or a menu button with its menu open), dimmed when it can't be used. On a capsule
+/// its fill is round.
 class ToolbarButton: NSView, TooltipAnchor {
     let icon: ToolbarIconView
     /// A click: a press released over the button.
@@ -120,14 +121,21 @@ class ToolbarButton: NSView, TooltipAnchor {
         return true
     }
 
-    /// The fill behind the icon, and the icon's color, as the toolbar's rules choose them.
+    /// The fill behind the icon, as the toolbar's rules choose it: the hover fill, and nothing for a button that is on.
+    /// `.tb-btn-icon.active` asks for `--toolbar-toggle-on-bg` (and `--toolbar-toggle-on-hover-bg` under the pointer),
+    /// which the shipped stylesheet never defines: the background resolves to nothing, hovered or not.
+    var backgroundFill: RGBA? {
+        let palette = ChromeColors.palette(for: self)
+        if isOn || menuOpen { return nil }
+        return isHovered && isEnabled && !isInert ? palette.bgHover : nil
+    }
+
+    /// The fill behind the icon, and the icon's color: the primary text color when on or hovered.
     override func draw(_ dirtyRect: NSRect) {
         let palette = ChromeColors.palette(for: self)
         let on = isOn || menuOpen
         let hover = isHovered && isEnabled && !isInert
-        let fill: RGBA? =
-            on ? (hover ? palette.toolbarToggleOnHoverBg : palette.toolbarToggleOnBg) : hover ? palette.bgHover : nil
-        if let fill {
+        if let fill = backgroundFill {
             let radius = onCapsule ? bounds.height / 2 : DesignTokens.radii.control
             ChromeColors.color(fill).setFill()
             NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()

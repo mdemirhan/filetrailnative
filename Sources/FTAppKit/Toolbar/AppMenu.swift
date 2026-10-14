@@ -192,9 +192,10 @@ final class AppMenuView: NSView {
 /// A row of an app-drawn menu: the check column, the label (and a detail), and the shortcut.
 final class AppMenuRow: NSView, TextStyleSource {
     let item: AppMenuItem
-    let label = NSTextField(labelWithString: "")
-    private let detail = NSTextField(labelWithString: "")
-    private let shortcut = NSTextField(labelWithString: "")
+    // Their frames are the original's text boxes: the text starts at the frame's edge.
+    let label = FlushTextField(labelWithString: "")
+    let detail = FlushTextField(labelWithString: "")
+    let shortcut = FlushTextField(labelWithString: "")
     private let keyboard: Bool
     /// The tick of an item that is on.
     private(set) var checkMark: MenuCheckView?
@@ -222,6 +223,7 @@ final class AppMenuRow: NSView, TextStyleSource {
         detail.lineBreakMode = .byTruncatingTail
         shortcut.stringValue = item.shortcut ?? ""
         shortcut.font = ChromeColors.font(size: body)
+        shortcut.alignment = .right
         for field in [label, detail, shortcut] { addSubview(field) }
         if item.checked == true {
             let mark = MenuCheckView()
@@ -270,15 +272,20 @@ final class AppMenuRow: NSView, TextStyleSource {
             x: AppMenuView.rowPaddingLeading + (AppMenuView.checkColumn - box) / 2, y: (bounds.height - box) / 2,
             width: box, height: box)
         if item.detail != nil {
-            let nameWidth = min(220, Self.textWidth(label) + 4)
+            // `.history-menu-item`: the name (at most 220) 10 in, the folder 10 after it, 10 from the end.
+            let nameWidth = min(220, Self.textWidth(label))
+            let detailX = 10 + nameWidth + 10
             place(label, x: 10, width: nameWidth)
-            place(detail, x: 10 + nameWidth + 10, width: bounds.width - nameWidth - 30)
+            place(detail, x: detailX, width: bounds.width - detailX - 10)
             return
         }
         let start = AppMenuView.rowPaddingLeading + AppMenuView.checkColumn + AppMenuView.rowGap
-        let shortcutWidth = item.shortcut == nil ? 0 : shortcut.intrinsicContentSize.width
+        let shortcutWidth = item.shortcut == nil ? 0 : Self.textWidth(shortcut)
         let end = bounds.width - AppMenuView.rowPaddingTrailing
-        if item.shortcut != nil { place(shortcut, x: end - shortcutWidth, width: shortcutWidth) }
+        // Right-aligned: the shortcut ends at the row's padding, whatever its measure rounds to.
+        if item.shortcut != nil {
+            place(shortcut, x: end - shortcutWidth.rounded(.up), width: shortcutWidth.rounded(.up))
+        }
         let labelEnd = item.shortcut == nil ? end : end - shortcutWidth - AppMenuView.shortcutGap - AppMenuView.rowGap
         place(label, x: start, width: labelEnd - start)
     }
@@ -364,8 +371,8 @@ final class MenuCheckView: NSView {
 }
 
 /// Shows one app-drawn menu at a time in a window, over everything else, and closes it as the original's menus close:
-/// a press anywhere else (the button that opened it toggles it), Escape, the window going to the back, and for the
-/// toolbar's menus a resize.
+/// a press anywhere else (the button that opened it toggles it), Escape, the window going to the back, and a resize
+/// for the menus whose original listens for one (Theme, », the history menus).
 @MainActor
 final class AppMenuPresenter {
     private(set) var menu: AppMenuView?
@@ -390,12 +397,7 @@ final class AppMenuPresenter {
         self.menu = menu
         self.owner = owner
         self.onClose = onClose
-        let size = menu.fittingMenuSize
-        let place = MenuPlacement.keepInViewport(
-            left: origin.x, top: origin.y, width: size.width, height: size.height,
-            viewportWidth: host.bounds.width, viewportHeight: host.bounds.height)
-        let y = host.isFlipped ? place.top : host.bounds.height - place.top - size.height
-        menu.frame = NSRect(x: place.left, y: y, width: size.width, height: size.height)
+        place(menu, in: host, at: origin)
         menu.onChoose = { [weak self, weak menu] index in
             guard let item = menu?.items[index] else { return }
             self?.close()
@@ -419,8 +421,29 @@ final class AppMenuPresenter {
         }
     }
 
+    /// Moves the open menu's top left corner to `origin` (window content, from the top left): a menu that follows its
+    /// button as the window is resized (the Sort menu).
+    func move(to origin: NSPoint) {
+        guard let menu, let host = menu.superview else { return }
+        place(menu, in: host, at: origin)
+    }
+
+    private func place(_ menu: AppMenuView, in host: NSView, at origin: NSPoint) {
+        let size = menu.fittingMenuSize
+        let place = MenuPlacement.keepInViewport(
+            left: origin.x, top: origin.y, width: size.width, height: size.height,
+            viewportWidth: host.bounds.width, viewportHeight: host.bounds.height)
+        let y = host.isFlipped ? place.top : host.bounds.height - place.top - size.height
+        menu.frame = NSRect(x: place.left, y: y, width: size.width, height: size.height)
+        // `position: fixed` from the top left: a resize leaves it there.
+        menu.autoresizingMask = host.isFlipped ? [] : [.minYMargin]
+    }
+
     /// Below `anchor`, from the edge of it that leaves the most room (`placeDropdownMenu`).
-    func drop(_ menu: AppMenuView, from anchor: NSView, owner: NSView? = nil, onClose: (() -> Void)? = nil) {
+    func drop(
+        _ menu: AppMenuView, from anchor: NSView, owner: NSView? = nil, closesOnResize: Bool = true,
+        onClose: (() -> Void)? = nil
+    ) {
         guard let window = anchor.window, let host = window.contentView else { return }
         let rect = anchor.convert(anchor.bounds, to: host)
         let top = host.isFlipped ? rect.minY : host.bounds.height - rect.maxY
@@ -428,7 +451,9 @@ final class AppMenuPresenter {
         let place = MenuPlacement.dropdown(
             anchorLeft: rect.minX, anchorRight: rect.maxX, anchorBottom: top + rect.height, menuWidth: size.width,
             menuHeight: size.height, viewportWidth: host.bounds.width, viewportHeight: host.bounds.height)
-        show(menu, in: window, at: NSPoint(x: place.left, y: place.top), owner: owner ?? anchor, onClose: onClose)
+        show(
+            menu, in: window, at: NSPoint(x: place.left, y: place.top), owner: owner ?? anchor,
+            closesOnResize: closesOnResize, onClose: onClose)
     }
 
     func close() {

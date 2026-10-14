@@ -131,6 +131,8 @@ final class ToolbarCustomizer {
             self.focusKey = nil
             toolbar.window?.makeFirstResponder(handle)
         }
+        // The handle that came to be under the pointer where a drag was let go is the hovered one.
+        if let point = editLayer.releasePoint { editLayer.hover(at: point) }
         if let flashKey {
             self.flashKey = nil
             toolbar.slotViews[flashKey]?.flash(duration: DesignTokens.motion.flashSlow)
@@ -182,7 +184,9 @@ final class ToolbarCustomizer {
         placeGhost(at: point)
     }
 
-    func pointerUp() {
+    /// The pointer was let go, at `point` (window coordinates) when it is known.
+    func pointerUp(at point: NSPoint? = nil) {
+        editLayer.releasePoint = drag == nil ? nil : point
         endDrag(commit: true)
         // The click that may follow a palette drag comes right after the pointer is let go.
         DispatchQueue.main.async { [weak self] in self?.suppressPaletteClick = false }
@@ -252,6 +256,13 @@ final class ToolbarCustomizer {
     // MARK: Keys
 
     private func intercept(_ event: NSEvent) -> Bool {
+        // `:focus-visible`: a handle given the keyboard by a key shows the focus ring, one pressed with the pointer
+        // does not.
+        switch event.type {
+        case .keyDown: editLayer.focusVisible = true
+        case .leftMouseDown, .rightMouseDown: editLayer.focusVisible = false
+        default: break
+        }
         switch event.type {
         case .keyDown where event.keyCode == 53:
             if drag != nil {
@@ -311,6 +322,20 @@ final class ToolbarCustomizer {
 final class ToolbarEditLayer: NSView {
     weak var customizer: ToolbarCustomizer?
     private var handles: [String: ToolbarHandleView] = [:]
+    /// The keyboard came to the handles by a key, not the pointer (`:focus-visible`).
+    var focusVisible = false {
+        didSet { for handle in handles.values { handle.needsDisplay = true } }
+    }
+    /// Where the last drag was let go (window coordinates), until the pointer is next seen entering or leaving a
+    /// handle: the items slid under it, and the one there now is hovered.
+    var releasePoint: NSPoint?
+
+    /// Marks the handle under `point` (window coordinates) hovered, and no other.
+    func hover(at point: NSPoint) {
+        for handle in handles.values {
+            handle.hovered = handle.bounds.contains(handle.convert(point, from: nil))
+        }
+    }
 
     override var isFlipped: Bool { true }
 
@@ -353,8 +378,20 @@ final class ToolbarHandleView: NSView, TooltipAnchor {
         didSet { setAccessibilityLabel(label) }
     }
     var tooltip = ""
-    private var hovered = false {
+    var hovered = false {
         didSet { needsDisplay = true }
+    }
+
+    /// The ring drawn around it: the focus ring while it has the keyboard from a key, the thin accent ring under the
+    /// pointer (none while an item is dragged).
+    enum Ring {
+        case none, hover, focus
+    }
+
+    var ring: Ring {
+        if window?.firstResponder === self, owner?.focusVisible == true { return .focus }
+        if hovered, owner?.customizer?.drag == nil { return .hover }
+        return .none
     }
 
     init(key: String) {
@@ -389,15 +426,19 @@ final class ToolbarHandleView: NSView, TooltipAnchor {
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
             NSTrackingArea(
-                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+                rect: bounds,
+                options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect, .enabledDuringMouseDrag],
+                owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) {
+        owner?.releasePoint = nil
         hovered = true
         if let window { TooltipController.of(window).hover(self) }
     }
 
     override func mouseExited(with event: NSEvent) {
+        owner?.releasePoint = nil
         hovered = false
         if let window { TooltipController.of(window).hover(nil) }
     }
@@ -411,7 +452,7 @@ final class ToolbarHandleView: NSView, TooltipAnchor {
     }
 
     override func mouseUp(with event: NSEvent) {
-        owner?.customizer?.pointerUp()
+        owner?.customizer?.pointerUp(at: event.locationInWindow)
     }
 
     override func keyDown(with event: NSEvent) {
@@ -421,16 +462,19 @@ final class ToolbarHandleView: NSView, TooltipAnchor {
     override func draw(_ dirtyRect: NSRect) {
         let accent = ChromeColors.accent(for: self)
         let radius = bounds.height / 2
-        if window?.firstResponder === self {
-            let ring = NSBezierPath(roundedRect: bounds.insetBy(dx: 1.5, dy: 1.5), xRadius: radius, yRadius: radius)
-            ring.lineWidth = DesignTokens.focusRingWidth
+        switch ring {
+        case .focus:
+            let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 1.5, dy: 1.5), xRadius: radius, yRadius: radius)
+            path.lineWidth = DesignTokens.focusRingWidth
             ChromeColors.color(accent.solid.withAlpha(0.5)).setStroke()
-            ring.stroke()
-        } else if hovered, owner?.customizer?.drag == nil {
-            let ring = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: radius, yRadius: radius)
-            ring.lineWidth = 1
+            path.stroke()
+        case .hover:
+            let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: radius, yRadius: radius)
+            path.lineWidth = 1
             ChromeColors.color(accent.solid.withAlpha(0.45)).setStroke()
-            ring.stroke()
+            path.stroke()
+        case .none:
+            break
         }
     }
 }
