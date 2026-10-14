@@ -65,7 +65,14 @@ for (const item of items) {
   lines.push(`        HelpShortcutItem(group: .${item.group}, ${source}, ${swiftString(item.description)}),`);
 }
 lines.push("    ]", "}", "");
-const text = lines.join("\n");
+// Written as swift-format writes it, so the file passes the lint in scripts/ci.sh.
+const raw = lines.join("\n");
+const formatted = Bun.spawnSync(["xcrun", "swift-format", "format"], { stdin: new TextEncoder().encode(raw) });
+if (formatted.exitCode !== 0) {
+  console.error(`swift-format failed: ${formatted.stderr.toString()}`);
+  process.exit(1);
+}
+const text = formatted.stdout.toString();
 
 if (process.argv.includes("--check")) {
   if (!existsSync(OUT) || readFileSync(OUT, "utf8") !== text) {

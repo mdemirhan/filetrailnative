@@ -104,7 +104,9 @@ import Testing
         return problems
     }
 
-    // F-588 F-651 F-931 B-DLG-240 B-DLG-241 B-DLG-242 B-DLG-243: N/A D-005 (zoom is not ported); every other metric is checked here
+    // N/A B-DLG-240 B-DLG-241 B-DLG-242 B-DLG-243 D-005: zoom is not ported
+    // N/A F-588 F-651 F-931 D-005: zoom is not ported (nor is the zoom part of any other row: the About window is not
+    // scaled and no zoom change resizes anything). Every other metric is checked here, Compact included.
     @Test(arguments: Density.allCases)
     func everyMetricIsTheOriginalValue(density: Density) {
         let metrics = Metrics(density: density)

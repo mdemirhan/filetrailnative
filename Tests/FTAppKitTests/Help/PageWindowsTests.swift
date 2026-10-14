@@ -53,7 +53,8 @@ import Testing
         let pages = PageWindows(model: AppearanceModel(), preferences: { box.preferences })
         pages.aboutActions = AboutActions()
         pages.readAboutInfo = {
-            AboutInfo(version: "0.1.0", commit: nil, macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10.5.0")
+            AboutInfo(
+                version: "0.1.0", commit: nil, macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10.5.0")
         }
         pages.readAcknowledgements = { [] }
         return (pages, box)
@@ -101,7 +102,8 @@ import Testing
     @Test func aTopicAskedForShowsInTheOpenWindow() {
         _ = NSApplication.shared
         let controller = HelpWindowController(
-            shortcuts: .defaults, topic: .navigation, onTopicChange: { _ in }, onCustomize: {}, model: AppearanceModel())
+            shortcuts: .defaults, topic: .navigation, onTopicChange: { _ in }, onCustomize: {}, model: AppearanceModel()
+        )
         controller.show(topic: .shortcuts)
         #expect(controller.helpView.activeTopic == .shortcuts)
     }
@@ -125,7 +127,7 @@ import Testing
         #expect(pages.helpWindow == nil)
     }
 
-    // F-639 B-DLG-246 B-DLG-259: one window of each kind; asking again shows the one open. Puts windows on screen.
+    // F-639 F-648 B-DLG-246 B-DLG-259: one window of each kind; asking again shows the one open. Puts windows on screen.
     @Test(.enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
     func opensOneWindowOfEachKindAndRemembersHelpsPage() {
         let (pages, _) = make()

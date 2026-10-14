@@ -95,7 +95,11 @@ import Testing
         let theme = Theme(appearance: .light, accentHex: "#ffc600")
         let system = NSColor.controlAccentColor.usingColorSpace(.sRGB)
         let selection = theme.selection(paneFocused: true, windowActive: true).background
-        #expect(selection != RGBA(red: Double(system?.redComponent ?? 0), green: Double(system?.greenComponent ?? 0), blue: Double(system?.blueComponent ?? 0)))
+        #expect(
+            selection
+                != RGBA(
+                    red: Double(system?.redComponent ?? 0), green: Double(system?.greenComponent ?? 0),
+                    blue: Double(system?.blueComponent ?? 0)))
         #expect(selection == theme.accent.selectionBg)
     }
 }

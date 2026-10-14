@@ -23,8 +23,3 @@ public enum ThemeFonts {
         NSFont.monospacedSystemFont(ofSize: CGFloat(size), weight: .regular)
     }
 }
-
-/// Text sizes of the type scale (`--font-size-*`).
-public enum ThemeText {
-    public static let type = DesignTokens.typeScale
-}

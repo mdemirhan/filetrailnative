@@ -118,7 +118,9 @@ public final class AboutView: ThemedView {
         name.setAccessibilityIdentifier("about.title")
         tagline.setAccessibilityIdentifier("about.tagline")
         copyright.setAccessibilityIdentifier("about.copyright")
-        for (button, id) in [(copyButton, "about.button"), (gitHubButton, "about.button"), (issuesButton, "about.button")] {
+        for (button, id) in [
+            (copyButton, "about.button"), (gitHubButton, "about.button"), (issuesButton, "about.button"),
+        ] {
             button.setAccessibilityIdentifier(id)
             addSubview(button)
         }
@@ -189,7 +191,8 @@ public final class AboutView: ThemedView {
         let textLeft = Self.sidePadding + Self.iconSize + 16
         let blockTop = iconTop + (Self.iconSize - blockHeight) / 2
         // The column is as wide as its wider line.
-        let textWidth = min(width - textLeft - Self.sidePadding, max(ceil(name.naturalWidth), ceil(tagline.naturalWidth)))
+        let textWidth = min(
+            width - textLeft - Self.sidePadding, max(ceil(name.naturalWidth), ceil(tagline.naturalWidth)))
         name.frame = NSRect(x: textLeft, y: blockTop, width: textWidth, height: nameHeight)
         tagline.frame = NSRect(x: textLeft, y: blockTop + nameHeight + 3, width: textWidth, height: taglineHeight)
 

@@ -86,7 +86,10 @@ final class ThemedTextCell: NSTextFieldCell {
         area.origin.x += leadingInset
         area.size.width = max(0, area.width - leadingInset)
         if verticallyCentered {
-            let height = ceil(attributedStringValue.boundingRect(with: NSSize(width: 10_000, height: 10_000), options: [.usesFontLeading]).height)
+            let height = ceil(
+                attributedStringValue.boundingRect(
+                    with: NSSize(width: 10_000, height: 10_000), options: [.usesFontLeading]
+                ).height)
             area.origin.y += ((area.height - height) / 2).rounded()
             area.size.height = height
         }
@@ -116,7 +119,9 @@ public final class ThemedText: NSTextField, ThemeApplying {
         didSet { applyTheme(AppearanceModel.shared.theme) }
     }
 
-    public init(wrapping: Bool = false, selectable: Bool = false, content: @escaping @MainActor (Theme) -> NSAttributedString) {
+    public init(
+        wrapping: Bool = false, selectable: Bool = false, content: @escaping @MainActor (Theme) -> NSAttributedString
+    ) {
         self.content = content
         super.init(frame: .zero)
         isEditable = false
@@ -151,7 +156,8 @@ public final class ThemedText: NSTextField, ThemeApplying {
     /// The height the text takes at this width, as CSS lays it out (a line of 19.5 stays 19.5).
     public func height(forWidth width: CGFloat) -> CGFloat {
         let size = attributedStringValue.boundingRect(
-            with: NSSize(width: max(1, width), height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin])
+            with: NSSize(width: max(1, width), height: CGFloat.greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin])
         return size.height
     }
 
@@ -211,7 +217,8 @@ public struct TextStyle {
         }
         let wanted = color(theme)
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: font, .foregroundColor: NSColor(wanted.alpha < 1 ? wanted.flattened(over: background(theme)) : wanted),
+            .font: font,
+            .foregroundColor: NSColor(wanted.alpha < 1 ? wanted.flattened(over: background(theme)) : wanted),
             .paragraphStyle: paragraph, .reportedColor: NSColor(wanted),
         ]
         if kern != 0 { attributes[.kern] = kern }
@@ -239,4 +246,3 @@ extension ThemedText {
         self.init(wrapping: wrapping, selectable: selectable) { style.string(text, $0) }
     }
 }
-

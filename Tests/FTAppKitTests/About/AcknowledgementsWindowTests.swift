@@ -53,7 +53,8 @@ import Testing
         view.entries[0].toggle()
         view.layoutSubtreeIfNeeded()
         #expect(view.entries[0].isOpen)
-        #expect((views("acknowledgements.link", in: view).first as? NSTextField)?.stringValue == "github.com/sharkdp/fd")
+        #expect(
+            (views("acknowledgements.link", in: view).first as? NSTextField)?.stringValue == "github.com/sharkdp/fd")
         #expect(texts("acknowledgements.licenseText", in: view) == ["MIT License\n\nCopyright (c) the fd developers"])
         view.entries[0].link.perform()
         #expect(opened.urls.map(\.absoluteString) == ["https://github.com/sharkdp/fd"])

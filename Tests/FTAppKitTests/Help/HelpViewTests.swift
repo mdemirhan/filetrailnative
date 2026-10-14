@@ -75,17 +75,19 @@ import Testing
         #expect(font?.isFixedPitch == true)
         #expect(texts("help.row.description", in: view).contains("Any of several endings"))
         // Backticks in the text become inline code.
-        let inline = (views("help.row.description", in: view) + views("help.note", in: view)).compactMap { $0 as? ThemedText }
-            .contains { field in
-                var found = false
-                let text = field.attributedStringValue
-                text.enumerateAttribute(.font, in: NSRange(location: 0, length: text.length)) { value, range, _ in
-                    if (value as? NSFont)?.isFixedPitch == true, text.attributedSubstring(from: range).string == "**/" {
-                        found = true
-                    }
+        let inline = (views("help.row.description", in: view) + views("help.note", in: view)).compactMap {
+            $0 as? ThemedText
+        }
+        .contains { field in
+            var found = false
+            let text = field.attributedStringValue
+            text.enumerateAttribute(.font, in: NSRange(location: 0, length: text.length)) { value, range, _ in
+                if (value as? NSFont)?.isFixedPitch == true, text.attributedSubstring(from: range).string == "**/" {
+                    found = true
                 }
-                return found
             }
+            return found
+        }
         #expect(inline)
         // The topic's own shortcuts close the page; others stay on their topics.
         #expect(headings(view).last == "Shortcuts")
@@ -105,7 +107,9 @@ import Testing
 
     // T-2e306242 F-665 F-667 B-DLG-253 B-DLG-254 B-DLG-255
     @Test func showsTheKeysChosenInSettingsAndLeadsThereToChangeThem() {
-        let overrides: JSONNode = .object(["duplicateSelection": .array([.string("Cmd+Shift+D")]), "newTab": .array([])])
+        let overrides: JSONNode = .object([
+            "duplicateSelection": .array([.string("Cmd+Shift+D")]), "newTab": .array([]),
+        ])
         let display = ShortcutDisplay(shortcuts: ShortcutCommands.resolve(overrides))
         let view = make(topic: .shortcuts, shortcuts: display)
         var customized = 0

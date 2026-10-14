@@ -14,7 +14,8 @@ import Testing
         var change: PreferencesChange
     }
 
-    // F-610 B-DLG-233: the theme and accent chosen in a window are stored, and the appearance follows
+    // F-610 B-DLG-233 B-DLG-244: the theme and accent chosen in a window (the toolbar's Theme menu, Settings) are
+    // stored, and the appearance follows
     @Test func aChangeOfThemeAndAccentReachesTheAppearance() throws {
         _ = NSApplication.shared
         let store = try makeStore()
@@ -55,7 +56,8 @@ import Testing
         let model = AppearanceModel(
             theme: .dark, accent: "#007aff", systemPrefersDark: { false }, setNativeAppearance: { _ in })
         // An unrelated change leaves the look alone.
-        model.preferencesChanged(store.preferences(), PreferencesChange(patch: ["treeWidth": .number(300)], senderID: nil))
+        model.preferencesChanged(
+            store.preferences(), PreferencesChange(patch: ["treeWidth": .number(300)], senderID: nil))
         #expect(model.theme.appearance == .dark)
     }
 
@@ -65,7 +67,8 @@ import Testing
         let model = AppearanceModel(
             theme: .light, accent: "#007aff", systemPrefersDark: { false }, setNativeAppearance: { _ in })
         let controller = AboutWindowController(
-            info: AboutInfo(version: "1", commit: nil, macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10"),
+            info: AboutInfo(
+                version: "1", commit: nil, macosVersion: "27.0", architecture: "Apple silicon", fdVersion: "10"),
             actions: AboutActions(), model: model)
         let view = controller.aboutView
         #expect(view.theme.appearance == .light)

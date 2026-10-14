@@ -47,10 +47,12 @@ enum HelpTopicIcon {
             ellipse(11, 11, 6.5)
             line([(16, 16), (20.5, 20.5)])
         case .views:
-            path.append(NSBezierPath(roundedRect: NSRect(x: 3.5, y: 5, width: 17, height: 14), xRadius: 2.5, yRadius: 2.5))
+            path.append(
+                NSBezierPath(roundedRect: NSRect(x: 3.5, y: 5, width: 17, height: 14), xRadius: 2.5, yRadius: 2.5))
             line([(9.5, 5), (9.5, 19)])
         case .shortcuts:
-            path.append(NSBezierPath(roundedRect: NSRect(x: 2.5, y: 6.5, width: 19, height: 11), xRadius: 2.5, yRadius: 2.5))
+            path.append(
+                NSBezierPath(roundedRect: NSRect(x: 2.5, y: 6.5, width: 19, height: 11), xRadius: 2.5, yRadius: 2.5))
             for x in [6.5, 10, 13.5, 17] { line([(x, 10.5), (x + 0.01, 10.5)]) }
             line([(8, 14), (16, 14)])
         }
@@ -116,7 +118,8 @@ final class HelpTopicButton: TextControl {
 
     /// padding 0 8; the icon, 8 of gap, the title.
     var preferredWidth: CGFloat {
-        8 + CGFloat(Self.iconSize) + 8 + ceil((topic.title as NSString).size(withAttributes: [.font: titleFont]).width) + 8
+        8 + CGFloat(Self.iconSize) + 8 + ceil((topic.title as NSString).size(withAttributes: [.font: titleFont]).width)
+            + 8
     }
 
     override func applyTheme(_ theme: Theme) {

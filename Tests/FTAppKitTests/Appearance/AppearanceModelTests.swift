@@ -81,6 +81,58 @@ import Testing
         #expect(red.accent.solid.hexString == "#e8729a")
     }
 
+    // B-DLG-235 F-646: the accents to choose from, and each one is painted as itself
+    @Test func paintsEachAccentOptionAsItself() {
+        #expect(
+            AppPreferenceLimits.accentOptions.map(\.label) == [
+                "Blue", "Purple", "Pink", "Red", "Orange", "Yellow", "Green", "Graphite", "Copper",
+            ])
+        #expect(AppPreferenceLimits.accentOptions.first?.value == AppPreferenceLimits.defaultAccent)
+        for option in AppPreferenceLimits.accentOptions {
+            #expect(Theme(appearance: .light, accentHex: option.value).accent.solid.hexString == option.value)
+        }
+    }
+
+    // B-DLG-236 F-646: a picked color is accepted only as #rrggbb, trimmed and kept in lower case
+    @Test func acceptsAPickedAccentOnlyAsAHexColor() {
+        let (model, _) = make()
+        model.apply(accent: " #D84A4A ")
+        #expect(model.accentHex == "#d84a4a")
+        for rejected in ["", "d84a4a", "#d84a4", "#d84a4a5", "rgb(1,2,3)", "#ggg000"] {
+            model.apply(accent: rejected)
+            #expect(model.accentHex == "#d84a4a", "\(rejected)")
+        }
+    }
+
+    // B-DLG-237 F-646: the tokens derived from the accent are the reference's (a deep shade 18% darker, a 30% border,
+    // alphas that differ for light and dark)
+    @Test func derivesTheAccentTokensAsTheReferenceDoes() {
+        let light = Theme(appearance: .light, accentHex: "#007aff").accent
+        let dark = Theme(appearance: .dark, accentHex: "#007aff").accent
+        #expect(light.solidDark.hexString == "#0064d1")
+        #expect(light.border.alpha == 0.3)
+        #expect(light.hoverBg.alpha == 0.14)
+        #expect(dark.hoverBg.alpha == 0.12)
+        #expect(light.focusBorder.alpha == 0.5)
+        #expect(dark.focusBorder.alpha == 0.4)
+    }
+
+    // B-DLG-238 F-646: the default button is the accent with white text, or black text on a light accent
+    @Test func drawsTheDefaultButtonWithTheAccentAndReadableText() {
+        let blue = Theme(appearance: .light, accentHex: "#007aff")
+        let button = PushButton(title: "OK", theme: blue)
+        button.isDefault = true
+        #expect(button.textColor == NSColor(blue.accent.onSolid))
+        #expect(blue.accent.onSolid == .white)
+        let yellow = Theme(appearance: .light, accentHex: "#ffc600")
+        #expect(yellow.accent.onSolid == .black)
+        #expect(yellow.accent.solidButton == yellow.accent.solid)
+        button.applyTheme(yellow)
+        #expect(button.textColor == NSColor(RGBA.black))
+        button.isDefault = false
+        #expect(button.textColor == NSColor(yellow.palette.textPrimary))
+    }
+
     // T-bede3752 F-646 B-DLG-233
     @Test func ignoresAccentsThatAreNotHexColors() {
         let (model, _) = make()
@@ -117,7 +169,8 @@ import Testing
         model.preferencesChanged(preferences, PreferencesChange(patch: ["viewMode": .string("icons")], senderID: 1))
         #expect(model.preference == .auto)
         model.preferencesChanged(
-            preferences, PreferencesChange(patch: ["theme": .string("dark"), "accent": .string("#a550a7")], senderID: nil))
+            preferences,
+            PreferencesChange(patch: ["theme": .string("dark"), "accent": .string("#a550a7")], senderID: nil))
         #expect(model.theme.appearance == .dark)
         #expect(model.accentHex == "#a550a7")
     }
@@ -167,13 +220,16 @@ import Testing
         // Pinned: macOS is asked in the defaults, which a test cannot change; the answer is only a Bool.
         _ = AppearanceModel.macOSIsDark()
         NSApp.appearance = nil
-        #expect(AppearanceModel.macOSIsDark() == (NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua))
+        #expect(
+            AppearanceModel.macOSIsDark()
+                == (NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua))
     }
 
     // T-3f0d78e0 F-646: everything is drawn in the system font
     @Test func drawsEverythingInTheSystemFont() {
         #expect(
-            DesignTokens.sansFontStack == #"-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif"#)
+            DesignTokens.sansFontStack
+                == #"-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif"#)
         #expect(DesignTokens.monoFontStack == #""SF Mono", "SFMono-Regular", ui-monospace, Menlo, monospace"#)
         #expect(ThemeFonts.sans(13) == NSFont.systemFont(ofSize: 13))
         #expect(ThemeFonts.sans(13, .semibold) == NSFont.systemFont(ofSize: 13, weight: .semibold))
@@ -197,7 +253,7 @@ import Testing
         #expect(ThemePalette.light != ThemePalette.dark)
     }
 
-    // N/A T-38688505 T-479129a0 mounting the renderer's root element (React); T-d914b204 is Settings' (P6-04)
+    // N/A T-38688505 T-479129a0 mounting the renderer root element (React); the Settings window case belongs to P6-04
     @Test func hasNoRootElementToMount() {
         #expect(true)
     }

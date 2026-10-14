@@ -158,7 +158,9 @@ public enum HelpContent {
     /// JavaScript's `\w`.
     private static func isWordCharacter(_ character: Character) -> Bool {
         character.unicodeScalars.count == 1
-            && character.unicodeScalars.allSatisfy { $0.isASCII && ($0.properties.isAlphabetic || ("0"..."9").contains($0) || $0 == "_") }
+            && character.unicodeScalars.allSatisfy {
+                $0.isASCII && ($0.properties.isAlphabetic || ("0"..."9").contains($0) || $0 == "_")
+            }
     }
 
     /// What the "Search help" field looks through: every row and every shortcut, by the words on screen (and the
@@ -180,12 +182,15 @@ public enum HelpContent {
             let shortcuts = shown.filter {
                 $0.group.topicID == topic.id && matches($0.description, writeForReading($0.shortcut))
             }
-            return rows.isEmpty && shortcuts.isEmpty ? nil : HelpSearchResult(topic: topic, rows: rows, shortcuts: shortcuts)
+            return rows.isEmpty && shortcuts.isEmpty
+                ? nil : HelpSearchResult(topic: topic, rows: rows, shortcuts: shortcuts)
         }
     }
 
     /// Pieces of a sentence for display: the plain text between `backticks` and the code inside them.
-    public static func inlineParts(_ text: String, _ display: ShortcutDisplay = .defaults) -> [(text: String, isCode: Bool)] {
+    public static func inlineParts(_ text: String, _ display: ShortcutDisplay = .defaults) -> [(
+        text: String, isCode: Bool
+    )] {
         fillShortcutMentions(text, display).components(separatedBy: "`").enumerated()
             .map { (text: $0.element, isCode: $0.offset % 2 == 1) }
     }

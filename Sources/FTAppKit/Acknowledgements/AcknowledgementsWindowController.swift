@@ -141,7 +141,10 @@ final class AcknowledgementList: NSView, ThemeApplying {
         }
         for component in components {
             let entry = AcknowledgementEntryView(component: component, openURL: openURL, theme: theme)
-            entry.onToggle = { [weak self] in self?.needsLayout = true; self?.layoutForWidth(self?.frame.width ?? 0) }
+            entry.onToggle = { [weak self] in
+                self?.needsLayout = true
+                self?.layoutForWidth(self?.frame.width ?? 0)
+            }
             entries.append(entry)
             addSubview(entry)
         }
@@ -307,7 +310,11 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
     }
 
     public override func keyDown(with event: NSEvent) {
-        if event.charactersIgnoringModifiers == " " || event.keyCode == 36 { toggle() } else { super.keyDown(with: event) }
+        if event.charactersIgnoringModifiers == " " || event.keyCode == 36 {
+            toggle()
+        } else {
+            super.keyDown(with: event)
+        }
     }
 
     // MARK: Layout

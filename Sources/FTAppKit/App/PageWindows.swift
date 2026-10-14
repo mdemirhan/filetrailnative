@@ -52,7 +52,8 @@ public final class PageWindows {
         }
         let controller = HelpWindowController(
             shortcuts: shortcutDisplay(preferences()), topic: topic ?? lastHelpTopic ?? .navigation,
-            onTopicChange: { [weak self] in self?.lastHelpTopic = $0 }, onCustomize: { [weak self] in
+            onTopicChange: { [weak self] in self?.lastHelpTopic = $0 },
+            onCustomize: { [weak self] in
                 self?.openSettingsOnShortcuts()
             }, model: model)
         controller.onClose = { [weak self] in self?.help = nil }

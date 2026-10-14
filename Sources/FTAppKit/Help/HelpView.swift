@@ -34,7 +34,8 @@ public final class HelpView: ThemedView {
     public var isSearching: Bool { !searchField.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 
     public init(
-        shortcuts: ShortcutDisplay = .defaults, layoutMode: SinglePanelLayout? = nil, initialTopic: HelpTopicID = .navigation,
+        shortcuts: ShortcutDisplay = .defaults, layoutMode: SinglePanelLayout? = nil,
+        initialTopic: HelpTopicID = .navigation,
         topInset: CGFloat? = nil, theme: Theme = AppearanceModel.shared.theme
     ) {
         self.shortcuts = shortcuts
@@ -122,7 +123,8 @@ public final class HelpView: ThemedView {
     private func rebuildPage() {
         page?.removeFromSuperview()
         let kind: HelpPageKind =
-            isSearching ? .results(searchField.text.trimmingCharacters(in: .whitespacesAndNewlines)) : .topic(activeTopic)
+            isSearching
+            ? .results(searchField.text.trimmingCharacters(in: .whitespacesAndNewlines)) : .topic(activeTopic)
         let next = HelpPageView(kind: kind, display: shortcuts, theme: theme, onCustomize: onCustomizeShortcuts)
         document.addSubview(next)
         page = next
@@ -150,7 +152,9 @@ public final class HelpView: ThemedView {
 
     public override func layout() {
         super.layout()
-        if automaticLayout, bounds.width > 0 { layoutMode = ResponsiveLayout.resolveSinglePanelLayout(width: bounds.width) }
+        if automaticLayout, bounds.width > 0 {
+            layoutMode = ResponsiveLayout.resolveSinglePanelLayout(width: bounds.width)
+        }
         let compact = layoutMode == .compact
         let sidebarTop = topInset ?? 12
         let padding: CGFloat = 10
@@ -188,7 +192,8 @@ public final class HelpView: ThemedView {
                 button.frame = NSRect(x: padding, y: y, width: contentWidth, height: CGFloat(HelpTopicButton.height))
                 y += CGFloat(HelpTopicButton.height) + 1
             }
-            scroll.frame = NSRect(x: sidebarWidth, y: 0, width: max(0, bounds.width - sidebarWidth), height: bounds.height)
+            scroll.frame = NSRect(
+                x: sidebarWidth, y: 0, width: max(0, bounds.width - sidebarWidth), height: bounds.height)
         }
         arrangePage(compact: compact)
     }

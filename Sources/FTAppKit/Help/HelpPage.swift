@@ -109,9 +109,11 @@ final class HelpRowView: ThemedView {
                 x: 0, y: top + labelHeight + 2, width: width, height: detail.height(forWidth: width))
         } else {
             let detailWidth = width - Self.labelColumn - Self.columnGap
-            label.frame = NSRect(x: 0, y: top, width: Self.labelColumn, height: label.height(forWidth: Self.labelColumn))
+            label.frame = NSRect(
+                x: 0, y: top, width: Self.labelColumn, height: label.height(forWidth: Self.labelColumn))
             detail.frame = NSRect(
-                x: Self.labelColumn + Self.columnGap, y: top, width: detailWidth, height: detail.height(forWidth: detailWidth))
+                x: Self.labelColumn + Self.columnGap, y: top, width: detailWidth,
+                height: detail.height(forWidth: detailWidth))
         }
     }
 }
@@ -157,7 +159,8 @@ final class HelpShortcutRowView: ThemedView {
         let detailWidth = width - keysWidth - 14
         let inner = height(forWidth: width) - border - 16
         let detailHeight = detail.height(forWidth: detailWidth)
-        detail.frame = NSRect(x: 0, y: border + 8 + (inner - detailHeight) / 2, width: detailWidth, height: detailHeight)
+        detail.frame = NSRect(
+            x: 0, y: border + 8 + (inner - detailHeight) / 2, width: detailWidth, height: detailHeight)
         var x = width - keysWidth
         for keycap in keycaps {
             let keyWidth = keycap.preferredWidth

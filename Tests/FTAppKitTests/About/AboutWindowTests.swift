@@ -65,7 +65,10 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(texts("about.row.label", in: view) == ["Version", "macOS", "Search"])
         #expect(texts("about.row.value", in: view) == ["0.1.0 (df11088)", "27.0, Apple silicon", "fd 10.5.0"])
         #expect(texts("about.copyright", in: view) == ["© 2026 Mustafa Demirhan"])
-        #expect(views("about.button", in: view).compactMap { ($0 as? NSTextField)?.stringValue } == ["Copy Details", "GitHub", "Report an Issue"])
+        #expect(
+            views("about.button", in: view).compactMap { ($0 as? NSTextField)?.stringValue } == [
+                "Copy Details", "GitHub", "Report an Issue",
+            ])
         #expect(controller.window?.title == "About File Trail")
     }
 
@@ -122,9 +125,10 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         let view = make(info, recorder).aboutView
         view.gitHubButton.perform()
         view.issuesButton.perform()
-        #expect(recorder.opened.map(\.absoluteString) == [
-            "https://github.com/mdemirhan/filetrail", "https://github.com/mdemirhan/filetrail/issues",
-        ])
+        #expect(
+            recorder.opened.map(\.absoluteString) == [
+                "https://github.com/mdemirhan/filetrail", "https://github.com/mdemirhan/filetrail/issues",
+            ])
         view.acknowledgementsLink.perform()
         #expect(recorder.acknowledgements == 1)
     }

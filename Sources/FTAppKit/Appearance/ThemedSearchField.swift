@@ -189,7 +189,10 @@ public final class ThemedSearchField: NSView, ThemeApplying, NSTextFieldDelegate
             NSColor(theme.accent.solid.withAlpha(0.5)).setStroke()
             ring.stroke()
         }
-        drawIcon(in: NSRect(x: 8, y: (bounds.height - CGFloat(Self.iconSize)) / 2, width: CGFloat(Self.iconSize), height: CGFloat(Self.iconSize)))
+        drawIcon(
+            in: NSRect(
+                x: 8, y: (bounds.height - CGFloat(Self.iconSize)) / 2, width: CGFloat(Self.iconSize),
+                height: CGFloat(Self.iconSize)))
     }
 
     /// The magnifier (a 24 by 24 drawing: a circle of 6.5 at 11,11 and a line to 20.5,20.5), stroked 2 wide.
@@ -198,7 +201,8 @@ public final class ThemedSearchField: NSView, ThemeApplying, NSTextFieldDelegate
         func point(_ x: Double, _ y: Double) -> NSPoint {
             NSPoint(x: rect.minX + CGFloat(x) * scale, y: rect.minY + CGFloat(y) * scale)
         }
-        let path = NSBezierPath(ovalIn: NSRect(origin: point(4.5, 4.5), size: NSSize(width: 13 * scale, height: 13 * scale)))
+        let path = NSBezierPath(
+            ovalIn: NSRect(origin: point(4.5, 4.5), size: NSSize(width: 13 * scale, height: 13 * scale)))
         path.move(to: point(16, 16))
         path.line(to: point(20.5, 20.5))
         path.lineWidth = 2 * scale

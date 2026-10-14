@@ -120,7 +120,9 @@ public final class PushButton: TextControl {
     static let horizontalPadding = 12.0
     private static let font = ThemeFonts.sans(DesignTokens.typeScale.body)
 
-    public init(title: String, theme: Theme = AppearanceModel.shared.theme, target: AnyObject? = nil, action: Selector? = nil) {
+    public init(
+        title: String, theme: Theme = AppearanceModel.shared.theme, target: AnyObject? = nil, action: Selector? = nil
+    ) {
         super.init(text: title, theme: theme)
         self.target = target
         self.action = action

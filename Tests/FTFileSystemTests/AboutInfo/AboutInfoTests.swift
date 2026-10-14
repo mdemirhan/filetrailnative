@@ -38,12 +38,16 @@ import Testing
     @Test func readsTheVersionTheBuildRecordedAndDoesWithoutOne() {
         #expect(BuildInfo.version(from: nil) == nil)
         #expect(BuildInfo.version(from: ["FTCommit": "df11088"]) == nil)
-        #expect(BuildInfo.version(from: ["CFBundleShortVersionString": "0.1.0+dev.4", "FTCommit": "df11088"]) == "0.1.0+dev.4")
+        #expect(
+            BuildInfo.version(from: ["CFBundleShortVersionString": "0.1.0+dev.4", "FTCommit": "df11088"])
+                == "0.1.0+dev.4")
     }
 
     // T-deff515e F-640
     @Test func namesAMacOSVersionTheWayMacOSDoes() {
-        #expect(AboutInfoReader.versionString(OperatingSystemVersion(majorVersion: 27, minorVersion: 0, patchVersion: 0)) == "27.0.0")
+        #expect(
+            AboutInfoReader.versionString(OperatingSystemVersion(majorVersion: 27, minorVersion: 0, patchVersion: 0))
+                == "27.0.0")
         let info = AboutInfoReader.read(
             info: ["CFBundleShortVersionString": "0.2.0", "FTCommit": "abc1234"],
             systemVersion: OperatingSystemVersion(majorVersion: 27, minorVersion: 0, patchVersion: 0),
@@ -85,7 +89,8 @@ import Testing
 
     // F-921 the list the repository ships is what the generator writes: fd and its two licenses
     @Test func theCheckedInListHasFdWithBothLicenses() throws {
-        let list = try Acknowledgements.read(Acknowledgements.Locations(resources: nil, sourceTree: Acknowledgements.Locations.standard.sourceTree))
+        let list = try Acknowledgements.read(
+            Acknowledgements.Locations(resources: nil, sourceTree: Acknowledgements.Locations.standard.sourceTree))
         #expect(list.map(\.id) == ["fd"])
         #expect(list.first?.version == FdBinary.manifest.version)
         #expect(list.first?.text.contains("MIT License") == true)
