@@ -135,6 +135,15 @@ enum NativePaste {
     }
 }
 
+/// A copy that takes its time: waits until `stop` is stopped (or `timeout` passes), as a copy still running when
+/// Stop is pressed does, whatever the machine's load.
+func waitUntilStopped(_ stop: StopSignal?, timeout: TimeInterval = 10) {
+    let deadline = Date().addingTimeInterval(timeout)
+    while stop?.isStopped == false && Date() < deadline {
+        usleep(1000)
+    }
+}
+
 /// What a test paste did: its review, its result (nil when the review refused it), the questions it asked and
 /// its events.
 struct PasteRun {

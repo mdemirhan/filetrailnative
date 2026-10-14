@@ -113,7 +113,7 @@ struct CopyPasteExecutionTests {
             ("/source", .directory()), ("/source/slow.txt", .file(size: 5)), ("/target", .directory()),
         ])
         fileSystem.copyFileImpl = { _, destination, stop, _ in
-            Thread.sleep(forTimeInterval: 0.02)
+            waitUntilStopped(stop)
             try stop?.throwIfStopped()
             fileSystem.addFile(destination, .file(size: 5))
         }

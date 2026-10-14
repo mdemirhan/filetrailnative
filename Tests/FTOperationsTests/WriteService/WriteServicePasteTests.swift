@@ -194,7 +194,7 @@ struct WriteServicePasteTests {
             if source.hasSuffix("one.txt") {
                 return
             }
-            Thread.sleep(forTimeInterval: 0.25)
+            waitUntilStopped(stop)
             try stop?.throwIfStopped()
         }
         let service = WriteService(.init(fileSystem: fileSystem, createOperationId: { "cancel-op" }))
@@ -216,9 +216,10 @@ struct WriteServicePasteTests {
         let fileSystem = PathSetWriteFileSystem(
             existingPaths: ["/target", "/source/one.txt", "/source/two.txt"], directoryPaths: ["/target"],
             fileSizes: ["/source/one.txt": 5, "/source/two.txt": 7])
+        // The first paste is still copying when the second is asked for.
         fileSystem.copyFileImpl = { source, _, stop in
             if source.hasSuffix("one.txt") {
-                Thread.sleep(forTimeInterval: 0.25)
+                waitUntilStopped(stop)
                 try stop?.throwIfStopped()
             }
         }
@@ -243,6 +244,7 @@ struct WriteServicePasteTests {
         } catch {
             #expect(errorMessage(error) == WriteServiceMessages.writeOperationBusy)
         }
+        service.cancelOperation("op-1")
     }
 
     // T-1dd3b541 F-447

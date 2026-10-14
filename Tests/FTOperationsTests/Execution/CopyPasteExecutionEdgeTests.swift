@@ -46,7 +46,7 @@ struct CopyPasteExecutionEdgeTests {
         ])
         partialCancel.copyFileImpl = { source, destination, stop, _ in
             if source.hasSuffix("two.txt") {
-                Thread.sleep(forTimeInterval: 0.02)
+                waitUntilStopped(stop)
                 try stop?.throwIfStopped()
             }
             partialCancel.addFile(destination, .file(size: source.hasSuffix("two.txt") ? 2 : 1))
