@@ -19,15 +19,13 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// One directory service for the app, and the one folder watch the windows share (P2-01).
     public let directoryService = DirectoryService()
     public private(set) var folderWatches: FolderWatches?
-    /// Told of a change a folder watch saw; P4-02's windows listen here.
-    public var onFolderChanged: (@MainActor (_ windowID: Int, _ change: FolderChange) -> Void)?
 
     /// Quit and close while busy. P3-05's write coordinator fills `quit.hooks.activeOperation` and `shutDown`.
     public let quit = QuitCoordinator()
 
-    let windowHost = MainWindowHost()
-    /// The explorer windows. P4-02's controller conforms to `ExplorerWindowHost` and takes this place.
-    var host: any ExplorerWindowHost { windowHost }
+    /// The explorer windows, made once the state store is open.
+    private(set) var explorerWindows: ExplorerWindows!
+    var host: any ExplorerWindowHost { explorerWindows }
 
     private var openFiles: OpenFileEntryPoint!
     private var diskImages: DiskImageOpener?
@@ -63,7 +61,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
         #if DEBUG
             let automation = AutomationRunner.options(from: arguments).map { options in
-                AutomationRunner(options: options) { [weak self] in self?.windowHost.controllers.last }
+                AutomationRunner(options: options) { [weak self] in
+                    self?.explorerWindows.front as? MainWindowController
+                }
             }
             _ = automation?.load()
             let start = automation?.startFolder ?? requested.map { URL(fileURLWithPath: $0) } ?? home
@@ -71,10 +71,12 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             let start = requested.map { URL(fileURLWithPath: $0) } ?? home
         #endif
 
-        let controller = windowHost.openWindow(at: start)
+        // The windows open as they were at quit; the folder File Trail was launched with goes to the one in front.
+        explorerWindows.openStartupWindows(folder: requested == nil && start == home ? nil : start.path)
         // Disk images File Trail was launched to open go to the window in front.
         openFiles.startupWindowsOpened()
         NSApp.activate()
+        guard let controller = explorerWindows.front as? MainWindowController else { return }
 
         #if DEBUG
             if let automation {
@@ -117,9 +119,15 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func startLogger(_ arguments: [String]) {
+        // A run driven by a script (automation, benchmarks) starts from nothing, not from the windows of the last.
+        let driven = arguments.contains {
+            ["--automation", "--bench", "--bench-launch", "--bench-scroll", "--snapshot"].contains($0)
+        }
+        let scratch = FileManager.default.temporaryDirectory.appendingPathComponent(
+            "filetrail-driven-\(ProcessInfo.processInfo.processIdentifier)")
         let userData =
             Self.value(after: "--user-data-dir", in: arguments).map { URL(fileURLWithPath: $0) }
-            ?? AppStatePaths.userDataDirectory()
+            ?? (driven ? scratch : AppStatePaths.userDataDirectory())
         let logger = AppLogger(filePath: AppStatePaths.appLog(in: userData).path)
         self.logger = logger
         logger.info(
@@ -144,17 +152,32 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func startServices() {
-        folderWatches = FolderWatches(
-            .app(cache: directoryService.cache) { [weak self] windowID, change in
-                self?.onFolderChanged?(windowID, change)
+        let store = store ?? AppStateStore(filePath: AppStatePaths.appState(in: AppStatePaths.userDataDirectory()).path)
+        let windows = ExplorerWindows(store: store, quit: quit)
+        explorerWindows = windows
+        let folderWatches = FolderWatches(
+            .app(cache: directoryService.cache) { [weak windows] windowID, change in
+                windows?.folderChanged(windowID: windowID, change)
             })
-        diskImages = DiskImageOpener(
+        self.folderWatches = folderWatches
+        windows.folderWatches = folderWatches
+        windows.log = { [weak logger] message in logger?.info(.text("[filetrail] \(message)")) }
+        let diskImages = DiskImageOpener(
             onMounted: {}, logError: { [weak logger] message in logger?.error(.text(message)) })
+        self.diskImages = diskImages
+        windows.mountDiskImage = { await diskImages.open($0) }
 
         quit.hooks.activeOperation = { nil }
         quit.hooks.anyWindowOpen = { NSApp.windows.contains { $0.isVisible || $0.isMiniaturized } }
         quit.hooks.frontWindow = { [weak self] in self?.host.windows.front?.window }
-        quit.hooks.recordAllBounds = {}
+        quit.hooks.recordAllBounds = { [weak windows] in windows?.controller.recordAllBounds() }
+        quit.hooks.bringStopQuestionForward = { [weak self, weak windows] in
+            // The question hangs from an explorer window, or from the window in front when quitting.
+            if windows?.controller.bringStopQuestionForward() == true { return }
+            guard let parent = self?.quit.stopQuestionParent else { return }
+            if parent.isMiniaturized { parent.deminiaturize(nil) }
+            parent.makeKeyAndOrderFront(nil)
+        }
         quit.hooks.flushStore = { [weak self] in self?.store?.flush() }
         quit.hooks.shutDown = { [weak self] in
             self?.folderWatches?.stopAll()
@@ -184,7 +207,10 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.build()
         menu.observeFocus()
         mainMenu = menu
-        windowHost.onWindowsChanged = { [weak menu] in menu?.sync.windowsChanged() }
+        explorerWindows.onWindowsChanged = { [weak menu] in menu?.sync.windowsChanged() }
+        explorerWindows.onMenuState = { [weak menu] windowID, state in
+            menu?.sync.setWindowState(windowID: windowID, state)
+        }
 
         dockMenu = ShellActions.makeDockMenu(target: self, action: #selector(dockNewWindow(_:)))
     }
@@ -257,20 +283,11 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    // MARK: Menu actions the window controllers send
+    // MARK: Windows the automation opens
 
+    /// New Window on `url`, from the tab in front; the new window's tab.
     @discardableResult
-    func openWindow(at url: URL) -> MainWindowController {
-        windowHost.openWindow(at: url)
-    }
-
-    func openTab(at url: URL, nextTo existing: MainWindowController) {
-        windowHost.openTab(at: url, nextTo: existing)
-    }
-
-    /// File > New Window opens the front window's folder.
-    @objc func newWindow(_ sender: Any?) {
-        let front = NSApp.keyWindow?.windowController as? MainWindowController
-        windowHost.openWindow(at: front?.folder ?? home)
+    func openWindow(at url: URL) -> MainWindowController? {
+        explorerWindows.openWindow(at: url)
     }
 }

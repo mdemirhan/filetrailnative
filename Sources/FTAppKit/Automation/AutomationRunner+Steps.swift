@@ -180,7 +180,7 @@
         func newWindow() -> Outcome {
             guard let delegate = NSApp.delegate as? AppDelegate else { return Outcome(.failed, "no app delegate") }
             let folder = currentController?.folder ?? FileManager.default.homeDirectoryForCurrentUser
-            let opened = delegate.openWindow(at: folder)
+            guard let opened = delegate.openWindow(at: folder) else { return Outcome(.failed, "no window opened") }
             current = opened.window
             return Outcome(.ok)
         }

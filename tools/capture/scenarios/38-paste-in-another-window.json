@@ -1,0 +1,27 @@
+{
+  "name": "38-paste-in-another-window",
+  "description": "Copied in one window, pasted in another: Avatar.jsx copied in app/src/components and pasted into app/src/lib, open in a window of its own (e2e windows.spec.ts: pastes in one window what was copied in another)",
+  "features": ["F-638"],
+  "behaviors": ["B-VIEW-171"],
+  "tier": ["wp","wave","final"],
+  "setup": {"scratch":true},
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src"},
+    {"step":"select","names":["lib"]},
+    {"step":"command","id":"openSelectionInNewWindow"},
+    {"step":"selectWindow","index":0},
+    {"step":"open","path":"app/src/components"},
+    {"step":"select","names":["Avatar.jsx"]},
+    {"step":"key","key":"c","modifiers":["cmd"]},
+    {"step":"selectWindow","index":1},
+    {"step":"expect","element":"title","text":"lib"},
+    {"step":"key","key":"v","modifiers":["cmd"]},
+    {"step":"wait","ms":1500},
+    {"step":"expect","element":{"name":"list row","text":"Avatar.jsx"},"visible":true},
+    {"step":"snapshot","name":"main"}
+  ]
+}

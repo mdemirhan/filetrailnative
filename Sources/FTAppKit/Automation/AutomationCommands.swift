@@ -1,6 +1,7 @@
 // Port of apps/desktop/src/shared/rendererCommands.ts (the command ids), mapped to what the spike has.
 #if DEBUG
     import AppKit
+    import FTFoundation
 
     /// Runs a scenario's `command` step. Ids are the original's renderer command types
     /// (`docs/port/inventory/app-shell-and-tests.md` §1); the ones the spike has no counterpart for are
@@ -29,7 +30,9 @@
             "goBack", "goForward", "goEnclosingFolder", "openSelection", "viewAsIcons", "viewAsDetails", "newTab",
             "toggleFolderTree", "editSelectAll", "focusFileSearch", "focusContentPane", "focusTreePane",
             "sortByName", "sortByModified", "sortBySize", "sortByKind", "goHomeRootTree", "goDocuments",
-            "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD", "goApplications", "goTrash",
+            "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD", "goApplications", "goTrash", "newWindow",
+            "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
+            "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows",
         ]
 
         static func run(_ id: String, controller: MainWindowController, window: NSWindow) -> AutomationRunner.Outcome {
@@ -76,6 +79,11 @@
                 "goApplications", "goTrash":
                 guard let url = place(id) else { return .init(.failed, "no folder for \(id)") }
                 controller.go(to: url)
+            case "newWindow", "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab",
+                "openSelectionInNewTab", "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows":
+                // The window and tab commands, as the menu sends them (P4-02).
+                guard let command = RendererCommand(rawValue: id) else { return .init(.failed, "no command \(id)") }
+                controller.perform(command)
             default:
                 return .init(.unsupported, "the spike has no \(id)")
             }
