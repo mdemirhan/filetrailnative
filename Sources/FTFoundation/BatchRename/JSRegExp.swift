@@ -24,13 +24,17 @@ struct JSMatch: Equatable {
 /// - `$` is the end of the text only (ICU also matches before a final line break): written `\z`.
 /// - `.` leaves out `\n \r U+2028 U+2029` only (ICU also leaves out U+0085, U+000B, U+000C).
 /// - `\d \w \s \b` are ASCII digits and word characters and JavaScript's white space (ICU's are Unicode ones).
-/// - Every literal is its own `\x{..}` atom: ICU folds a run of literals as a string with *full* case folding, so
-///   "ss" would find "ß" under the `i` flag; JavaScript folds one character at a time (simple folding).
+/// - Under the `i` flag every literal is a one-character set `[\x{..}]`: ICU folds a run of literals (and a lone "ß")
+///   as a string with *full* case folding, so "ss" would find "ß"; a set closes over *simple* case folding, which is
+///   what JavaScript's unicode mode does.
 /// - Capture groups are numbered; their names are kept here and `\k<name>` is rewritten as a number.
 /// - Syntax JavaScript's unicode mode refuses and ICU accepts is refused here: unknown escapes (`\Q`, `\A`, `\h`, `\-`
 ///   outside a class), a lone `{`, `}` or `]`, `*+` possessive and `(?i)` style groups, a quantified lookahead.
-/// - Known gaps, left as ICU has them: a back reference to a group that took no part fails the match (JavaScript matches
-///   the empty string), and look-behinds must be of bounded length.
+/// - Known gaps, left as ICU has them (none is reachable from a name typed in the sheet in practice): a back reference
+///   to a group that took no part fails the match (JavaScript matches the empty string); look-behinds must be of
+///   bounded length; `\P{Lu}` under `i` leaves the capitals out (JavaScript's does not); what a group captures in a
+///   loop that matched the empty string (`(a*)*`, `(|a)+`) can differ; a ligature such as "ﬁ" inside a class also
+///   finds "fi".
 struct JSRegExp {
     let regex: NSRegularExpression
     /// The name of each capture group, in order (nil for an unnamed one).
@@ -136,8 +140,19 @@ struct JSRegExpTranslator {
         "\\x{\(String(scalar.value, radix: 16, uppercase: true))}"
     }
 
+    /// Characters whose full case folding is several characters and has no simple folding (ligatures such as "ﬁ",
+    /// "ŉ", "İ"): even in a set, ICU lets them match the folded text ("fi"), which JavaScript's unicode mode does not.
+    private static let foldsToSeveral: Set<UInt32> = [
+        0x130, 0x149, 0x1F0, 0x587, 0x1E96, 0x1E97, 0x1E98, 0x1E99, 0x1E9A, 0x1F50, 0x1F52, 0x1F54, 0x1F56, 0x1FB2,
+        0x1FB4, 0x1FB6, 0x1FB7, 0x1FC2, 0x1FC4, 0x1FC6, 0x1FC7, 0x1FD2, 0x1FD6, 0x1FD7, 0x1FE2, 0x1FE4, 0x1FE6,
+        0x1FE7, 0x1FF2, 0x1FF4, 0x1FF6, 0x1FF7, 0xFB00, 0xFB01, 0xFB02, 0xFB03, 0xFB04, 0xFB13, 0xFB14, 0xFB15,
+        0xFB16, 0xFB17,
+    ]
+
     static func literal(_ scalar: Unicode.Scalar, ignoreCase: Bool) -> String {
-        ignoreCase ? "(?:\(hex(scalar)))" : hex(scalar)
+        guard ignoreCase else { return hex(scalar) }
+        // Those characters have no other case form, so they are matched as they are.
+        return foldsToSeveral.contains(scalar.value) ? "(?-i:\(hex(scalar)))" : "[\(hex(scalar))]"
     }
 
     init(source: String, ignoreCase: Bool) throws {
