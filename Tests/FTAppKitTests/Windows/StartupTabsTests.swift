@@ -158,7 +158,7 @@ import Testing
             preferences, homePath: Self.home, startupFolderPath: startupFolder, restoreTabs: restoreTabs)
     }
 
-    // T-d8fbdd46 B-NAV-179 B-NAV-181 B-VIEW-175
+    // T-d8fbdd46 B-NAV-179 B-NAV-181
     @Test func bringsEveryTabBackAtItsOwnFolderWithItsOwnView() {
         let resolved = resolve(Self.preferences)
         #expect(resolved.activeIndex == 1)
