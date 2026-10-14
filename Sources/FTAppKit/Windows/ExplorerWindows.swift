@@ -198,7 +198,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// A preference changed in any window: every explorer window that follows preferences is told.
     func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
         for tab in allTabs {
-            (tab as AnyObject as? any PreferenceChangeReceiver)?.preferencesChanged(preferences, change)
+            tab.preferencesChanged(change)
         }
     }
 
