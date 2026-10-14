@@ -73,7 +73,7 @@ function scanSwift(): Citation[] {
     const tests: { start: number; end: number; test: SwiftTest }[] = [];
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i] ?? "";
-      if (!/^\s*@Test\b/.test(line)) continue;
+      if (!/^\s*(?:@\w+\s+)*@Test\b/.test(line)) continue;
       let display: string | undefined;
       const d = /@Test\(\s*"((?:[^"\\]|\\.)*)"/.exec(line);
       if (d) display = d[1];
