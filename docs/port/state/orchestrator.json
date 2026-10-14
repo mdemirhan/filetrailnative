@@ -3076,7 +3076,8 @@
       "history": "P5-01 (6b6a9d9) removed the window's NSSplitViewController and replaced NSToolbar (PLAN §3.5's choice) with a custom toolbar view under a transparent title bar. Its reasons: the unified NSToolbar band measured 66 pt (compact 40), not the original's 52; NSToolbar's insets, overflow and sidebar separator couldn't match; and Customize Toolbar edits in place as the original does. Removing the split view controller is what put the tab bar over the sidebar. In the 2026-10-14 spike, a unified, icon-only NSToolbar with a sidebar split measured 52 pt (NSToolbarView 448..500 in a 500 pt window), so the follow-up WP should re-check the 66 pt claim before keeping the custom toolbar. Either way, the tab bar placement needs only the NSSplitViewController with a sidebar item; a custom toolbar band inside the content item still works.",
       "alsoInThatWP": [
         "Move SidebarLayout's constants (Sources/FTFoundation/Sidebar/SidebarLayout.swift) into DesignTokens/Layouts (P5-02 request, not done by the integrator)."
-      ]
+      ],
+      "userDecision": "2026-10-14 (user): use NSToolbar (not the custom toolbar view) together with the NSSplitViewController fix for the tab bar. Finder uses NSToolbar fine, so it must work here. If NSToolbar cannot reach the original's 52 pt band, still go with NSToolbar and change the band height to the nearest value NSToolbar supports; record the value actually reached here and in the P5-01 tokens. The 2026-10-14 spike measured 52 pt for a unified, icon-only NSToolbar with a sidebar split, so 52 may be reachable."
     },
     {
       "at": "2026-10-14",
