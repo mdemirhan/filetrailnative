@@ -14,6 +14,17 @@ final class DetailsRowView: NSTableRowView {
 
     var cellView: DetailsCellView? { subviews.compactMap { $0 as? DetailsCellView }.first }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
+
+    override func layout() {
+        super.layout()
+        // The cell fills its row, which is as wide as the pane (`.details-row { width: 100% }`).
+        if let cell = cellView, cell.frame != bounds { cell.frame = bounds }
+    }
+
     override var isSelected: Bool {
         didSet {
             if isSelected != oldValue { cellView?.bar.setSelected(isSelected) }
@@ -45,6 +56,11 @@ final class DetailsCellView: NSTableCellView {
     override var isFlipped: Bool { true }
 
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
 
     override func layout() {
         super.layout()
@@ -128,6 +144,8 @@ final class SizeCellView: NSView {
         super.init(frame: .zero)
         addSubview(bar)
         addSubview(label)
+        // The bar's overhang and its right-hand rounding are cut at the cell's edge (styles.css:2883-2888).
+        clipsToBounds = true
         setAccessibilityIdentifier("list.row.sizeCell")
     }
 
@@ -297,6 +315,11 @@ final class DetailsBarView: NSView {
         NSColor(background).setFill()
         let radius = CGFloat(layoutMetrics.rowRadius)
         NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
+    }
+
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
     }
 
     override func layout() {

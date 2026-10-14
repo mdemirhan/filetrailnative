@@ -199,7 +199,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     private var forwardStack: [URL] = []
     private var navigationToken = 0
     private var isNavigating = false
-    private var pendingChange: PendingChange?
+    private(set) var pendingChange: PendingChange?
     private var quietReadInFlight = false
     /// A tab brought back, or merged in, waits unread until it is first shown.
     private(set) var loaded = false

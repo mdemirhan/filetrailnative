@@ -98,6 +98,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var filter = ""
     private var metadata: [String: EntryMetadata] = [:]
     private var metadataInflight = Set<String>()
+    /// Items that changed on disk: they keep what is shown until their details are read again.
+    private(set) var staleMetadata = Set<String>()
     private var metadataQueue: [String] = []
     private var metadataFlushQueued = false
     private var showsLoading = false
@@ -270,14 +272,15 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if !sameFolder {
             filter = ""
             metadata = [:]
+            staleMetadata = []
             metadataInflight = []
             metadataQueue = []
             hiddenItemCount = 0
         } else if let changedPaths {
             // The items that changed have their details read again (B-NAV-134).
-            for changed in changedPaths { metadata[changed] = nil }
+            staleMetadata.formUnion(changedPaths.filter { metadata[$0] != nil })
         } else {
-            metadata = [:]
+            staleMetadata = Set(metadata.keys)
         }
         folderPath = path
         loadState = .loaded
@@ -505,7 +508,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     // MARK: Details of the rows on screen
 
     func requestMetadata(for paths: [String]) {
-        for path in paths where metadata[path] == nil && !metadataInflight.contains(path) {
+        for path in paths
+        where (metadata[path] == nil || staleMetadata.contains(path)) && !metadataInflight.contains(path) {
             metadataInflight.insert(path)
             metadataQueue.append(path)
         }
@@ -525,7 +529,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             let items = await self.loaders.metadata(folder, batch)
             for path in batch { self.metadataInflight.remove(path) }
             guard folder == self.folderPath else { return }
-            for item in items { self.metadata[item.path] = item }
+            for item in items {
+                self.metadata[item.path] = item
+                self.staleMetadata.remove(item.path)
+            }
             self.pane?.refresh(paths: Set(items.map(\.path)))
             self.updateStatus()
         }

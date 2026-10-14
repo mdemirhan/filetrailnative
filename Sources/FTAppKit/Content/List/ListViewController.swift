@@ -38,6 +38,11 @@ final class ListRootView: NSView {
 
     override var isFlipped: Bool { true }
 
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        needsLayout = true
+    }
+
     override func layout() {
         super.layout()
         pane?.layoutPane()
@@ -190,12 +195,14 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         guard let paths else {
             forEachVisibleBar { $0.refreshCells() }
             updateMinuteHold()
+            requestMetadata()
             return
         }
         for path in paths {
             if let row = rowByPath[path], let bar = bar(atRow: row) { bar.refreshCells() }
         }
         updateMinuteHold()
+        requestMetadata()
     }
 
     func syncSelection() {
