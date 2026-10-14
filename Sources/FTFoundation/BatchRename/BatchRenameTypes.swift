@@ -21,12 +21,19 @@ public enum BatchRenameOnConflict: String, Codable, Sendable, CaseIterable { cas
 
 /// Between the name and its number or date.
 public enum BatchRenameSeparator: String, Codable, Sendable, CaseIterable {
-    case space = " ", hyphen = "-", underscore = "_", none = ""
+    case space = " "
+    case hyphen = "-"
+    case underscore = "_"
+    case none = ""
 }
 
 /// Between the parts of a date.
 public enum BatchRenameDateSeparator: String, Codable, Sendable, CaseIterable {
-    case hyphen = "-", underscore = "_", dot = ".", space = " ", none = ""
+    case hyphen = "-"
+    case underscore = "_"
+    case dot = "."
+    case space = " "
+    case none = ""
 }
 
 public enum BatchRenameDateFormat: String, Codable, Sendable, CaseIterable {
@@ -55,7 +62,13 @@ public enum BatchRenameDateFormat: String, Codable, Sendable, CaseIterable {
 }
 
 public enum BatchRenameDateToken: String, Sendable, CaseIterable {
-    case year4 = "YYYY", year2 = "YY", month = "MM", day = "DD", hour = "HH", minute = "mm", second = "ss"
+    case year4 = "YYYY"
+    case year2 = "YY"
+    case month = "MM"
+    case day = "DD"
+    case hour = "HH"
+    case minute = "mm"
+    case second = "ss"
 }
 
 /// Counter only: how many digits, or as many as the last number needs.

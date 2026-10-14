@@ -128,7 +128,9 @@ struct BatchRenameGoldenTests {
         let result = BatchRename.planBatchRename(
             BatchRenamePlanInput(
                 settings: input.settings, items: input.items.map(\.item),
-                folders: input.folders.mapValues { BatchRenameFolder(names: $0.names, caseSensitive: $0.caseSensitive) },
+                folders: input.folders.mapValues {
+                    BatchRenameFolder(names: $0.names, caseSensitive: $0.caseSensitive)
+                },
                 cannotRename: input.cannotRename, now: input.now))
         let items = result.items.map { planItem -> WirePlanItem in
             switch planItem {

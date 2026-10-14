@@ -363,12 +363,24 @@ struct JSRegExpTranslator {
         guard position + 1 < scalars.count else { throw Self.fail("\\ at end of pattern") }
         let next = scalars[position + 1]
         switch next {
-        case "d": position += 1; atom("[\(Self.digits)]")
-        case "D": position += 1; atom("[^\(Self.digits)]")
-        case "w": position += 1; atom("[\(Self.wordCharacters)]")
-        case "W": position += 1; atom("[^\(Self.wordCharacters)]")
-        case "s": position += 1; atom("[\(Self.whiteSpace)]")
-        case "S": position += 1; atom("[^\(Self.whiteSpace)]")
+        case "d":
+            position += 1
+            atom("[\(Self.digits)]")
+        case "D":
+            position += 1
+            atom("[^\(Self.digits)]")
+        case "w":
+            position += 1
+            atom("[\(Self.wordCharacters)]")
+        case "W":
+            position += 1
+            atom("[^\(Self.wordCharacters)]")
+        case "s":
+            position += 1
+            atom("[\(Self.whiteSpace)]")
+        case "S":
+            position += 1
+            atom("[^\(Self.whiteSpace)]")
         case "b":
             output += Self.wordBoundary
             previous = .assertion
@@ -572,13 +584,27 @@ struct JSRegExpTranslator {
         }
         guard position + 1 < scalars.count else { throw Self.fail("\\ at end of pattern") }
         switch scalars[position + 1] {
-        case "d": position += 2; return .set(Self.digits)
-        case "D": position += 2; return .set("[^\(Self.digits)]")
-        case "w": position += 2; return .set(Self.wordCharacters)
-        case "W": position += 2; return .set("[^\(Self.wordCharacters)]")
-        case "s": position += 2; return .set(Self.whiteSpace)
-        case "S": position += 2; return .set("[^\(Self.whiteSpace)]")
-        case "b": position += 2; return .scalar("\u{08}")
+        case "d":
+            position += 2
+            return .set(Self.digits)
+        case "D":
+            position += 2
+            return .set("[^\(Self.digits)]")
+        case "w":
+            position += 2
+            return .set(Self.wordCharacters)
+        case "W":
+            position += 2
+            return .set("[^\(Self.wordCharacters)]")
+        case "s":
+            position += 2
+            return .set(Self.whiteSpace)
+        case "S":
+            position += 2
+            return .set("[^\(Self.whiteSpace)]")
+        case "b":
+            position += 2
+            return .scalar("\u{08}")
         case "0":
             position += 2
             if position < scalars.count, ("0"..."9").contains(scalars[position]) {

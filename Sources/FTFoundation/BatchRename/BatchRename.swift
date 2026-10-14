@@ -302,7 +302,8 @@ public enum BatchRename {
         let base = settings.keepNames ? split.stem : settings.customName
         let baseSegment = NameSegment(text: base, changed: !settings.keepNames)
         let tagSegment = NameSegment(
-            text: settings.formatWhere == .after ? "\(settings.separator.rawValue)\(tag)" : "\(tag)\(settings.separator.rawValue)",
+            text: settings.formatWhere == .after
+                ? "\(settings.separator.rawValue)\(tag)" : "\(tag)\(settings.separator.rawValue)",
             changed: true)
         var segments = settings.formatWhere == .after ? [baseSegment, tagSegment] : [tagSegment, baseSegment]
         if let ext = split.extension {

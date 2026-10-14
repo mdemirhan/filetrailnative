@@ -113,7 +113,8 @@ extension BatchRename {
                     let skip = input.settings.onConflict == .skip
                     plan[index] = .problem(
                         proposedName: name, segments: segments,
-                        problem: skip ? .skippedTaken(byItemInBatch: byItemInBatch) : .taken(byItemInBatch: byItemInBatch)
+                        problem: skip
+                            ? .skippedTaken(byItemInBatch: byItemInBatch) : .taken(byItemInBatch: byItemInBatch)
                     )
                     if skip { skipped.append(index) }
                 }
@@ -177,7 +178,8 @@ extension BatchRename {
         }
         let numbered = candidate(number)
         return (
-            numbered.name, mergeSegments(
+            numbered.name,
+            mergeSegments(
                 splitSegments(segments, at: numbered.keptStemLength).before
                     + [NameSegment(text: "\(separator)\(number)", changed: true)]
                     + splitSegments(segments, at: numbered.stemLength).after),
