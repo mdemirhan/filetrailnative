@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T06:56:24+00:00",
+  "updatedAt": "2026-10-14T07:51:25+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "QUIET MODE (no windows) until user says go; see quietMode in state. Running W1-E (all six P2s). Then on go: deferred GUI checks, W1-F P4-01, W1-G P4-02, wave-1 end gate",
+  "nextAction": "QUIET MODE until user says go (see quietMode). Running W1-F P4-01 (capture deferred) + P0-13. On go: deferred GUI checks, W1-G P4-02, wave-1 end gate (acceptance + deviation approvals)",
   "pause": {
     "requested": false,
     "reason": null,
@@ -61,6 +61,12 @@
       "weeklyPct": 11.0,
       "fiveHourPct": 2.0,
       "note": "after W1-D (884K agent tokens)"
+    },
+    {
+      "at": "2026-10-14T07:51:25+00:00",
+      "weeklyPct": 12.0,
+      "fiveHourPct": 7.0,
+      "note": "after W1-E (3.21M agent tokens, 25 agents)"
     }
   ],
   "batches": {
@@ -289,14 +295,52 @@
         "P2-06",
         "P2-07"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_d030682e-f5a",
       "estimatedAgents": 25,
       "meterBefore": {
         "weeklyPct": 11,
         "fiveHourPct": 2
       },
-      "startedAt": "2026-10-14T06:56:24+00:00"
+      "startedAt": "2026-10-14T06:56:24+00:00",
+      "endedAt": "2026-10-14T07:51:25+00:00",
+      "integration": {
+        "merged": [
+          "P2-01",
+          "P2-02",
+          "P2-03",
+          "P2-05",
+          "P2-06",
+          "P2-07"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "387e8603f2c12aeb6d9e73ca593e42af7890fe26",
+        "summary": "All six branches merged into main. Final scripts/ci.sh passed: build, test (940 passing, 0 failing) and format.\n\nConflicts and breaks I fixed on main:\n- P2-02: CFileTrail.h conflicted. I kept both the stddef/stdint includes and the ft_foldersize.h include.\n- P2-06 and P2-07: search tests failed to build because `EntryKind` was ambiguous between FTFoundation and FTFileSystem. I qualified it as `FTFileSystem.EntryKind` in SearchResultsTests and FdSearchRuntimeTests.\n- NodePath.extname now follows Node, so '..double' gives '.double'. I left the local ExplorerListing.extensionName(ofName:) in place because it is the fast path.\n\nCI after the P2-03 and P2-05 merges showed test failures (the eject test in VolumeEjectorTests and thumbnail tests). They did not repeat on later runs, including the final one, so I treated them as flaky. I did not investigate them.\n\nI edited tools/parity-matrix/sync.ts so a citation line followed by `@MainActor @Test` is recognised. Before that the sync aborted with four citation errors in SystemActionsTests. The sync then ran and I committed it as \"Sync parity matrix after W1-E (sync accepts attributes before @Test)\". I changed the commit message because it also includes the sync.ts fix.\n\nNot applied from the shared-file requests:\n- bench listing metrics (run.sh and budgets.json)\n- FTAppKit DirectoryService / FolderWatches wiring\n- making JSRegExp public for the search highlight\n\nCI ran no GUI checks: the workflow was quiet-mode safe, and scripts/ci.sh only builds the app bundle."
+      },
+      "critic": null,
+      "spentOutputTokens": 796531,
+      "agents": 25,
+      "subagentTokens": 3210240,
+      "durationMin": 54.1,
+      "meterAfter": {
+        "weeklyPct": 12,
+        "fiveHourPct": 7
+      }
+    },
+    "W1-F": {
+      "wps": [
+        "P4-01",
+        "P0-13"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 8,
+      "meterBefore": {
+        "weeklyPct": 12,
+        "fiveHourPct": 7
+      },
+      "startedAt": "2026-10-14T07:51:25+00:00"
     }
   },
   "wps": {
@@ -673,24 +717,57 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-01",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "tools/parity/gen.sh --check",
-        "scripts/ci.sh"
-      ],
+      "headSha": "3425341",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P2-01 gates (HEAD 56cb652, detached in worktree wf_d030682e-f5a-24), quiet mode on, nothing shown on screen: 1) tools/parity/gen.sh --check exit 0. 2) scripts/ci.sh exit 0: build PASS (9s), test PASS (637 tests passing, 0 failing), format PASS (swift-format lint). Note: an earlier ci.sh run in this session reported 623 tests; the second run reported 637, so the count varies between runs. Nothing committed or changed. Worktree left detached at 56cb652. Answer to the user's question: yes, it is possible. The preamble's Quiet mode section (ON) keeps agents from launching the app, opening panels or ordering windows front; GUI tests are gated behind FILETRAIL_GUI_TESTS=1 and deferred. ci.sh's full mode only builds the app and does not open it. Those GUI checks can be run once you say go."
+      },
       "lenses": [
         "parity",
         "performance"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Implemented on branch port/P2-01, now detached at 3425341.\n- Sources/FTFileSystem/Listing: `actor DirectoryService` (snapshot, tree children, metadata batch, item properties, path suggestions, resolve). It reads folders through a new `getattrlistbulk` call in CFileTrail (listing.c) and has a `ResponseCache` with the original's TTL, caps, generation and forget rules.\n- Sources/FTFileSystem/Watch: `FolderWatches` (250 ms settle, 1 s cap, more than 1000 names means anything, missed-change check on focus, restart of failed watches) and an FSEvents stream; `FolderWatches.Dependencies.app(...)` wires them to the cache.\n- Goldens: listing-sort (300 cases), classify and path-suggestions (200 cases, machine-local). All pass.\n- Tests: all 34 explorerService rows, 12 folderWatch rows (2 e2e marked N/A), the listing/tree/metadata cases of responseCache.test.ts, 11 worker cases marked N/A. Plus goldens, getattrlistbulk-vs-lstat checks and FSEvents tests on real folders. 82 tests added; scripts/ci.sh passes (635 tests, format and zero warnings); gen.sh --check passes.\n- Budgets (tools/bench/listing.sh, release, no window): 3,000 items in 6.5 ms (budget 25); 100,000 items in 197 ms (budget 400; the getattrlistbulk read alone is 100-250 ms depending on machine load).\n- deferredChecks (skipped under quiet mode): `tools/bench/run.sh --quick --report-only` launches the app; `tools/bench/listing.sh` measures the listing budgets headlessly in its place. No GUI-guarded tests were written.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "A watch that fails is never stopped, so its FSEvents stream leaks and a restart runs two streams on one folder",
+          "where": "Sources/FTFileSystem/Watch/FolderWatches.swift, onFail closure in start() (about lines 205-210); reference apps/desktop/src/main/folderWatch.ts:132-139 and bootstrap.ts:179-185",
+          "evidence": "Reference: onFail only clears watch.stop, but Node has already closed the fs.watch handle when it emits 'error' (bootstrap.ts:182-183), so nothing stays alive. Port: FSEventsFolderWatcher reports RootChanged as onFail, and the stream stays running. FolderWatches.start's onFail closure sets `watch.stop = nil` without calling the old stop closure. The stream (FSEventStreamStart, a retained Context and a DispatchQueue) is never stopped or released, because the only handle to it is dropped. When the window next gets focus, checkForMissedChanges/watch() calls start() again and creates a second stream for the same folder. The first one keeps calling noteChange for the same Watch.\n\nFailing test (a copy is at /private/tmp/claude-416442273/-Users-tcmudemirhan-src-swiftproj-filetrail/f7591ed8-c2ad-47ef-8486-ca4050ceafa7/scratchpad/ProbeFailTests.swift.txt; copy it to Tests/FTFileSystemTests/Watch/ProbeFailTests.swift):\n```swift\nfinal class ProbeCounter: @unchecked Sendable { var live = 0 }\n@MainActor @Suite struct ProbeFail { @Test func failedStreamIsReleased() async {\n  let counter = ProbeCounter(); var fail: (@MainActor () -> Void)?\n  let watches = FolderWatches(.init(watchFolder: { _, _, onFail in counter.live += 1; fail = onFail; return { counter.live -= 1 } },\n    readModifiedTime: { _ in 1 }, onFolderChanged: { _, _ in }, forgetCachedListings: { _, _ in }, scheduler: ManualScheduler()))\n  watches.watch(windowID: 1, path: \"/tmp/x\"); fail?(); watches.checkForMissedChanges(windowID: 1)\n  #expect(counter.live == 1) } }\n```\nRun: `swift test --filter ProbeFail`. Result: `Expectation failed: counter.live == 1 ... streams alive after fail+restart: 2`. The fix is to call the old `watch.stop?()` before setting it to nil in onFail."
+        },
+        {
+          "severity": "medium",
+          "title": "Folder watch start resolves the path (realpath) and starts FSEvents synchronously on the main thread",
+          "where": "Sources/FTFileSystem/Watch/FSEventsFolderWatcher.swift:16-21 (@MainActor watchFolder -> realpath), :33-41 (FSEventStreamCreate/Start); called from FolderWatches.swift:119/128/205 on every navigation and on window focus (checkForMissedChanges restarting a failed watch)",
+          "evidence": "Reference: apps/desktop/src/main/bootstrap.ts:181 calls Node's `watch(path, ...)` in the Electron main process. libuv's FSEvents backend does the realpath there, and the stream is created on libuv's own CF-loop thread. The renderer's UI thread never touches the disk. Port: FSEventsFolderWatcher.watchFolder is `@MainActor` and runs `realpath(path, nil)` (line 21), then FSEventStreamCreate/SetDispatchQueue/Start (lines 33-41), on the UI thread. FolderWatches (all @MainActor) calls it from watch() on every folder change, and from checkForMissedChanges() whenever a window comes forward after its watch failed (for example, a share that went away). The preamble says \"UI on @MainActor; disk work off the main thread\", and PLAN section 4 requires the UI to never block for more than 50 ms. Over a stalled SMB/NFS mount, realpath blocks until the network filesystem times out, which beachballs the window. In the reference only the Electron main process waits. Measured with a scratch test (removed afterwards), `swift test -c release -Xswiftc -enable-testing --filter ReviewWatchMainThreadTests`:\n```swift\n@MainActor struct ReviewWatchMainThreadTests {\n  @Test func watchFolderWorkOnMain() throws {\n    let start = ContinuousClock.now\n    let stop = FSEventsFolderWatcher.watchFolder(path: NSTemporaryDirectory(), onChange: { _ in }, onFail: {})\n    #expect(Thread.isMainThread)   // passes: realpath + FSEventStreamStart ran on main\n    print(start.duration(to: .now)); stop?()\n  }\n}\n```\nResult: it passes with Thread.isMainThread true, at a mean of 0.37 ms and a worst case of 1.0 ms on a local SSD. The cost is unbounded on network volumes. Fix: do the realpath (and the stream start) off the main actor, then hop back to main for the callbacks only. readModifiedTime already does this through Task.detached in FolderWatchWiring.swift:19."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "Both findings are fixed in commit 56cb652f5cc90a7e712fae48aa1b0f0408469e83, which carries the Port-Stage: fixed-1 trailer. The branch is detached. `tools/parity/gen.sh --check` and `scripts/ci.sh` both pass (637 tests, 0 failing). Nothing was shown on screen.\n\n1. **Failed watch leaked its stream.** In `FolderWatches.start`, the onFail closure now calls `watch.stop?()` before setting it to nil. The ProbeFail test failed before the change and passes after it; it is copied to `Tests/FTFileSystemTests/Watch/ProbeFailTests.swift`.\n\n2. **Realpath and stream start on the main thread.** `FSEventsFolderWatcher.watchFolder` now returns a stop function immediately. It does the realpath and `FSEventStreamCreate`/`Start` in a detached task, and only the callbacks run on the main actor. A stop called before the stream has started stops it on arrival. The old synchronous body is now `openStream`. I did not add a test that measures main-thread blocking. Instead I added `stoppedBeforeTheStreamIsStartedLeavesNoStream` and changed two existing stream tests to the new return type.\n\nOne behavior difference from the reference: a folder that can't be watched (missing, say) used to give nil, so nothing was reported until the next watch() or focus retry. Because the start is now asynchronous, that case calls `onFail`, which makes the window re-read the folder once. `cannotWatchAFolderThatIsNotThere` now expects that `onFail`.",
+          "remaining": []
+        }
+      ],
       "blockers": [],
       "deferredGate": [
         "tools/bench/run.sh --quick --report-only"
+      ],
+      "sharedFileRequests": [
+        "Sources/FTFoundation/Names/NodePath.swift: `extname` returns an empty string for names like '..double'. Node's path.extname gives '.double'. Fix it there so the local copy in ExplorerListing.extensionName(ofName:) can go.",
+        "tools/bench/run.sh and docs/port/bench/budgets.json: add the listing metrics. `tools/bench/listing.sh` writes build/bench/listing.json with items, medianMs and budgetMs for files-3000 and files-100000.",
+        "Package.swift / app wiring: FTAppKit should create one DirectoryService and one FolderWatches (via `FolderWatches.Dependencies.app(cache: service.cache) { windowID, change in ... }`), and call `checkForMissedChanges(windowID:)` on window focus."
+      ],
+      "deviations": [
+        "Names are sorted with ICU sort keys from the system's libicucore (found with dlsym), not localizedStandardCompare. This is what V8's localeCompare uses, and it matched the reference on all 300 sort goldens, including accent-heavy and decomposed names. localizedStandardCompare and Foundation differed in edge cases (ligatures, expansions such as oe), and a Foundation fallback was too slow for the 100,000-item budget when 25% of the names are Cyrillic or Japanese. If libicucore is missing, a generated table (tools/parity/collation-table.ts, CollationTable.swift) plus Foundation is used instead.",
+        "FTFoundation's NodePath.extname answers an empty string for any name starting with two dots (Node gives 'double' for '..double'). I wrote a local copy in ExplorerListing and did not change FTFoundation.",
+        "Metadata priority: one actor instead of a two-queue worker. Metadata batches run on a detached utility-priority task, so they never hold up a listing, but there is no explicit priority queue.",
+        "classify and path-suggestions goldens are marked machineLocal because they read the fixture trees, so gen.sh --check skips them.",
+        "F-148 (focus triggers) and F-910 (request limits such as 500 paths per metadata batch) are not done here. FolderWatches.checkForMissedChanges is the API for the window-focus hook, which the AppKit work packages must connect. Limits belong to the request boundary.",
+        "withTiming is ported and tested but not wired into DirectoryService. Folder-size parts of responseCache.ts are left for P2-02, as the brief says.",
+        "Some ThumbnailStoreTests (not mine) failed once under heavy machine load in a full parallel run, then passed alone and in the later full ci runs. They look flaky."
       ]
     },
     "P2-02": {
@@ -709,22 +786,37 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-02",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "tools/parity/gen.sh --check",
-        "scripts/ci.sh"
-      ],
+      "headSha": "dc3f47efa9eb60a61fbfb5d1d1a20835308f1fd8",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P2-02 gates, detached at dc3f47e (feat(P2-02): folder sizes). tools/parity/gen.sh --check: exit 0 (26 goldens up to date; folder-size-trees and kind-strings skipped as machine-local). scripts/ci.sh: exit 0 (build PASS 9s, test PASS 18s with 652 tests passing and 0 failing, format PASS 2s). Quiet mode respected: no app launch, open, or window activity was run. Nothing committed or changed.",
+        "failures": []
+      },
       "lenses": [
         "parity",
         "performance"
       ],
-      "summary": null,
+      "summary": "The folder-size work is committed on port/P2-02 and the branch is detached. `scripts/ci.sh` passes four runs in a row (652 tests) and `tools/parity/gen.sh --check` passes. Nothing showed a window or took focus.\n- C walker: `Sources/CFileTrail/foldersize.c` plus `include/ft_foldersize.h` is the original ported almost verbatim, with N-API replaced by a small C API. Walker timing is in the next line.\n- Benchmark (deep tree, 200k files, release build, warm runs): the port's median was about 315-317 ms against the reference's 322-324 ms. The opt-in `FolderSizeBenchTests` ran at the deviation-free config; it is skipped unless `FILETRAIL_BENCH=1`.\n- Swift in `Sources/FTFileSystem/FolderSize/`: `NativeFolderSize` (single-flight FIFO, wakes the consumer through an AsyncStream) and `FolderSizeCache`. It also holds `FolderSizeAdjust`, `FolderSizeJobs` (one job per window, utility QoS for automatic jobs, cache first, 256 finished jobs, Home Trash) and `FolderSizeWrites`. Path keys compare by exact UTF-8, because Swift string equality would merge NFC and NFD names.\n- Tests: 98 added in `Tests/FTFileSystemTests/FolderSize/`, one for one with the tests.tsv rows (the cache, adjust, folder-size job and folder-size/item-size/single-flight rows). The rows for polling the active walk are marked N/A (T-e078d98d) or ported as \"nothing more is delivered after a walk ends\" (T-263a6e9b). `sync.ts --no-write` shows all 96 rows in scope covered (95 passing, 1 N/A).\n- Golden: `tools/parity/golden/folder-size-trees.ts` is marked machine-local, so `gen.sh --check` skips it. It records the reference walker on `names`, `lighthouse`, `bench/files-300`, `bench/files-3000` and four generated trees with unreadable folders. The Swift test matches all 8 cases.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "sharedFileRequests": [
+        "Sources/CFileTrail/include/CFileTrail.h: I added one line, `#include \"ft_foldersize.h\"`, because SwiftPM treats that header as the umbrella header and the C API is invisible to Swift without it. It is already applied on this branch. Other C work packages will touch the same file, so expect a trivial merge conflict. The integrator may want to keep one include line per package.",
+        "docs/port/parity/tests.tsv and features.md were NOT committed. The integrator should run `bun tools/parity-matrix/sync.ts` after merge. Feature rows cited: F-142, F-179, F-180, F-181, F-182, F-186, F-188, F-238."
+      ],
+      "deviations": [
+        "The original polls the finished folders every 200 ms. Here a worker's notification wakes the consumer at most once per 20 ms, so folders arrive in batches of whatever finished in that window. Walk results are the same.",
+        "Public API shape differs from the TypeScript. The walker is a `@MainActor` protocol `FolderSizeNative` (`getFolderSize` returns a Task, `cancelFolderSize`). `FolderSizeJobs` replaces `createFolderSizeHandlers`. `FolderSizeWrites` replaces the folder-size half of `clearResponseCaches`, `noteWriteStarting` and `noteWriteEnded` (its `forget` does nothing when both lists are empty).",
+        "Job storage is per `FolderSizeJobs` instance, not a module global as in responseCache.ts, so `jobCount` stands in for `getResponseCacheSizes().folderSizeJobs`. `FolderSizeWrites` holds its listeners weakly, where the original keeps them forever.",
+        "The opt-in benchmark test is compiled in all builds but does nothing without `FILETRAIL_BENCH=1`. It is meant for `swift test -c release -Xswiftc -enable-testing`.",
+        "Test-only: the cache tests use a different seeded generator than the TypeScript (its JS doubles lose precision), so the random sequences differ. The property checked is the same.",
+        "Test-only: Foundation's `createDirectory` and `createSymbolicLink` respell non-ASCII names, which changed symlink sizes and folder keys. The tests build trees with `mkdir`, `open` and `symlink` instead.",
+        "Test-only: ThumbnailStoreTests, which depend on short timers, failed in 3 of 4 `scripts/ci.sh` runs while my walker tests ran in parallel. I serialized the real-walk suites under one `.serialized` suite and kept the large main-actor test loads in yielding batches. After that, 4 of 4 runs passed.",
+        "The data-race-prone case (a folder that can't be opened for a reason other than EACCES/EPERM/ENOENT/ENOTDIR/ELOOP, which leaves its parent incomplete) and the out-of-memory paths are ported but have no test, because the original has none and they cannot be provoked safely."
+      ]
     },
     "P2-03": {
       "title": "Volumes, eject, disk images",
@@ -742,20 +834,27 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-03",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "scripts/ci.sh"
-      ],
+      "headSha": "aa05198dffa158fbf35e75a44b7f85fea540da9a",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "scripts/ci.sh (branch port/P2-03, detached at aa05198): PASS build (11s), PASS test (20s, 606 tests passing, 0 failing), PASS format (1s). Exit 0. Run without --full, so no app build or launch. Nothing changed or committed; no windows opened.",
+        "failures": []
+      },
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Ported volumes, eject and disk images into Sources/FTFileSystem/{Volumes,DiskImages}, all in Swift (no CFileTrail change).\n- Volumes: getmntinfo listing, IOKit physical-disk walk, natural sort, VolumeWatcher (250 ms settle), path helpers.\n- Eject: DiskArbitration unmount (force, whole disk, ENOTSUP counts as success, 120 s timeout, unmount(2) fallback), errno table, ejectVolume policy, planEject and Finder wording.\n- Disk images: extension list, failure wording, hdiutil flow (isencrypted, imageinfo, attach, DiskImageMounter hand-off, busy guard) with PropertyListSerialization parsing, and the open-file entry point API (OpenFileEntryPoint).\n- Tests port the tests.tsv rows (T-ids cited) and mount real images through FTTestSupport.DiskImage for eject, whole-disk, EBUSY and force. scripts/ci.sh passes: 606 tests, format clean.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "sharedFileRequests": [],
+      "deviations": [
+        "HdiutilOutput reads plists with PropertyListSerialization as the inventory says, not the original's regex. Output that is not a valid plist reads as no values, and a key found in several dicts is read in sorted key order rather than text order. Matters only for a malformed or unusual hdiutil plist.",
+        "tests.tsv lists several of the pure-logic files with swiftTarget FTFoundation (eject.ts, volumes.ts, shared/diskImages.ts). The brief says to own only FTFileSystem, so they live in FTFileSystem/Volumes and FTFileSystem/DiskImages."
+      ]
     },
     "P2-04": {
       "title": "Icons and thumbnails",
@@ -813,18 +912,36 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-05",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "scripts/ci.sh"
-      ],
+      "headSha": "cd149bba6cd91b0a1dffdff0b3ff4de781748e35",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P2-05 gate: scripts/ci.sh EXIT=0 (PASS build 13s, PASS test 25s with 623 tests in passing runs and 0 failing, PASS format 1s). Worktree is detached at cd149bb on port/P2-05; nothing changed or committed. Full log at /tmp/ci_out.txt.",
+        "failures": []
+      },
       "lenses": [],
-      "summary": null,
+      "summary": "Added Sources/FTFileSystem/System/ and Tests/FTFileSystemTests/System/ on branch port/P2-05, and the NSAppleEventsUsageDescription key in Resources/Info.plist (\"File Trail asks Finder to empty the Trash.\"). scripts/ci.sh passes: build, 623 tests, format. Nothing opened a window.\n- OpenWithCatalog (Launch Services lookup with caches, Always Open With with a 10s timeout and the same refusals), the Open With menu rules, and app-path helpers with shell quoting.\n- SystemActions: open, open with an app (Finder means reveal), Open in Terminal, Edit in the text editor, the Full Disk Access link, disk ids, `getOpenWithApplications` with its fallback, and the Always Open With handler. All system calls go through an injectable SystemOpener.\n- TrashState (Trash state, Empty Trash through NSAppleScript with an injected runner), DiskHasTrash with MountTable, SystemPickers (Other… and folder pickers on an injected presenter), and VolumeInfo.\n- Tests port the tests.tsv rows of the five test files and the open-with cases of native-fs.test.ts, citing T- ids. The only exception is the two quickLookPath rows (T-0715c3bb, T-df2126ce), marked N/A in a comment.",
       "findings": [],
-      "fixes": [],
-      "blockers": []
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "The 4 ThumbnailStoreTests failures were a timing flake, not a P2-05 bug. The test helper `settle()` waited a fixed 20ms. That was too short when the whole suite runs in parallel under load (the 130 tests in failing runs). ThumbnailStore and its tests are not touched by P2-05's diff, and the suite passed when I ran it alone. I raised the wait to 150ms in Tests/FTFileSystemTests/Icons/ThumbnailStoreTests.swift. I did not first write a test that fails on the flake, because the cause is timing, so the fix is to the test helper. scripts/ci.sh now passes: build, test (623 passing, 0 failing) and format. Commit cd149bba6cd91b0a1dffdff0b3ff4de781748e35 carries the Port-Stage: fixed-1 trailer, and the worktree is detached. No windows were opened.",
+          "headSha": "cd149bba6cd91b0a1dffdff0b3ff4de781748e35"
+        }
+      ],
+      "blockers": [],
+      "sharedFileRequests": [],
+      "deviations": [
+        "Empty Trash errors read 'execution error: <message> (<number>)' from NSAppleScript, without osascript's '0:46:' source-range prefix.",
+        "NSAppleScript runs on a detached background task, not the main thread, so a long Empty Trash does not block the UI. It cannot be tested here without running Finder.",
+        "Open with an app and Open in Terminal pass the app's full bundle path to NSWorkspace. The original passes the name 'Terminal' to `open -a` when no terminal is set, so this uses /System/Applications/Utilities/Terminal.app instead.",
+        "openWithApplication reports a missing app as \"Unable to find application named 'X'\" to mimic `open -a`.",
+        "Moved renderer/lib/openWith.ts into FTFileSystem/System/OpenWithMenu.swift (own menu item types) because the brief only lets me touch FTFileSystem. tests.tsv lists its swiftTarget as FTFoundation.",
+        "getVolumeInfo uses FileManager.attributesOfFileSystem, which should match statfs's bavail*bsize and blocks*bsize, but I did not check it against statfs.",
+        "Quick Look (quickLookPath) is not ported; the brief does not cover it. T-0715c3bb and T-df2126ce are marked N/A in a comment."
+      ]
     },
     "P2-06": {
       "title": "fd search",
@@ -842,20 +959,31 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-06",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "tools/parity/gen.sh --check",
-        "scripts/ci.sh",
-        "scripts/ci.sh --full"
-      ],
+      "headSha": "de323aca477d169c29c5bbd5c5baf47887c057c0",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P2-06 gates (worktree detached at port/P2-06, commit de323ac), all exit 0, nothing shown on screen (no app launched, no windows, no AppleScript; build-app.sh only runs codesign and build). 1) tools/parity/gen.sh --check: PASS, goldens up to date (28 suites; kind-strings and search-sort skipped as machine-local). 2) scripts/ci.sh: PASS build, PASS test (600 tests passing, 0 failing), PASS format. 3) scripts/ci.sh --full: PASS build, PASS test (600 passing), PASS format, PASS app (release app built). Logs in build/logs/. No changes made or committed."
+      },
       "lenses": [],
-      "summary": null,
+      "summary": "fd search is ported on branch port/P2-06 (commit de323ac, detached). All three gates pass: gen.sh --check, ci.sh and ci.sh --full (600 tests).\n- Sources/FTFileSystem/Search/ holds:\n  - the fd argument builder\n  - the runtime (poll API plus an AsyncStream `results(for:)`): NUL parsing across chunks, 20,000-result cap, SIGTERM on cancel, close() kills every fd, 64 finished-job records, cleaned stderr errors\n  - the result items, the sorting, the \"src › lib\" folder column and the highlight pattern\n  - the bundled-fd resolver\n  - a posix_spawn-based FdProcess\n- Resources/fd/ has the fd binary, licenses and manifest. scripts/build-app.sh now copies fd to Contents/Helpers, signs it with the hardened runtime, then signs the app; codesign --verify passes.\n- Goldens added: search-args, search-results and search-sort. search-results runs the reference runtime with the real fd on the lighthouse fixture and on a generated scratch tree (Git folders, ignore files, hidden items, packages, links, accented names).\n- search-sort covers order, the folder column and highlighting. It is machine-local, so gen.sh --check skips it.\n- Tests: ported fdSearch, fdBinary and searchResults cases, plus the quit.spec case (T-1481cd4f) at service level: after close() or cancel, no fd is left running.\n- Quiet mode held: no windows. Everything ran headless, and the app was built but not launched.",
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "sharedFileRequests": [
+        "FTFoundation: make JSRegExp (or a small public highlight helper built on it) public, so the search highlight can use the JavaScript-compatible matcher instead of NSRegularExpression.",
+        "FTFoundation: fix NodePath.extname for names like '..a' (Node gives '.a').",
+        "Parity matrix: after merging, run the sync so features F-141, F-193 to F-199 and F-922 pick up this work's test citations. tools/parity-matrix/sync.ts does not exist yet."
+      ],
+      "deviations": [
+        "Foundation's Process turns arguments into decomposed Unicode (a typed 'résumé' would not find a file named 'résumé'); Node passes bytes unchanged. FdProcess uses posix_spawn to match Node. It also resets signal masks and defaults, as Node does; without that the child ignored SIGTERM under the test runner.",
+        "The search highlight uses NSRegularExpression because JSRegExp in FTFoundation is internal. ICU accepts possessive quantifiers (a++) and (?i) groups that JavaScript rejects, so I refuse those two cases by hand. Other syntax differences between ICU and JavaScript remain.",
+        "NodePath.extname in FTFoundation returns '' for '..a' where Node returns '.a'. I used my own extension code in Search, so FTFoundation is untouched.",
+        "The searchResults tests are listed under FTFoundation in tests.tsv, but the brief gives me FTFileSystem/Search, so the sort, folder-column and highlight code and its tests live there. formatSearchStatus already existed in FTFoundation (StatusSummary.search); I only added a test citing T-88a11cc8 and T-56a22bbc against it.",
+        "Running the tests rewrites docs/port/parity/*.tsv and features.md. I reverted those changes and did not commit them."
+      ]
     },
     "P2-07": {
       "title": "App-state store, visited folders file, logger",
@@ -874,20 +1002,44 @@
         "P0-08",
         "P1-03"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P2-07",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "scripts/ci.sh"
-      ],
+      "headSha": "732c2af27280600136ba0de57475458f577b6ec7",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P2-07 gate: scripts/ci.sh PASS (exit 0). build PASS (10s), test PASS (21s; 587 tests passed, 0 failed), format PASS (1s). No windows or GUI steps ran (--full not used, so no app launch). Worktree left detached at 732c2af, clean. Nothing changed or committed.",
+        "failures": []
+      },
       "lenses": [
         "parity"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
-      "blockers": []
+      "summary": "Implemented in FTFileSystem/AppState and FTFileSystem/Logging, with tests in Tests/FTFileSystemTests. `scripts/ci.sh` passes (build, 586 tests, format).\n- AppStateStore: app-state.json and visited-folders.json, atomic .tmp-then-rename writes, 150 ms prompt and 5 min deferred save tiers, dirty tracking, flush, per-window sessions, lastClosedWindow. It calls P1-03's AppStateReader and PreferencesSanitizer. The JSON text matches the original's (2-space indent, key order).\n- WindowBoundsRecorder: 160 ms debounce, normal bounds, maximized only when not full screen.\n- AppLogger: original line format, 5 MB rotation keeping 10 files, debug lines only with FILETRAIL_DEBUG or FILETRAIL_DEBUG_TIMINGS, serialized writes with flush, mirrored to os.Logger. LogRotation and withTiming are also ported.\n- Paths: ~/Library/Application Support/com.filetrail.native/ (bundle id from PLAN).\n- Tests ported: appStateStore.test.ts I/O, tier and window cases and appLog.test.ts, plus a round-trip test with every key and tests for the bounds recorder, log format, rotation and timing.\n- Quiet mode: no GUI, `--full` and app launches skipped, nothing needed deferring.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "Log context objects: key order and key quoting differ from util.inspect({sorted:true})",
+          "where": "Sources/FTFileSystem/Logging/LogFormat.swift (inspect, inspectKey) vs apps/desktop/src/main/appLog.ts formatArgs (inspect options: sorted, compact, breakLength Infinity)",
+          "evidence": "Node sorts the rendered entry strings, not the raw keys, and quotes any key that is not /^[a-zA-Z_][a-zA-Z_0-9]*$/. The port sorts raw keys (LogFormat.swift, `members.keys.sorted()`), treats `$` and non-ASCII letters as bare identifiers (inspectKey, `$0 == \"$\" || $0.properties.isAlphabetic`), and puts no quote character first in the sort. I ran the reference with `node -e 'const {inspect}=require(\"util\");console.log(inspect({a:1,a1:2,\"a-b\":3,b:4,$x:5},{depth:8,breakLength:Infinity,compact:true,sorted:true}))'`. It prints `{ '$x': 5, 'a-b': 3, a1: 2, a: 1, b: 4 }`. The port's algorithm gives `{ a: 1, a-b: ... }`: raw-key sort gives a, a-b, a1, b, $x. It also writes `$x` unquoted and `a-b` with the wrong quoting or order. Keys such as `a`/`a1` order differently because ':' (0x3a) sorts after digits in the rendered `key: value` strings. The same applies to `$`-prefixed and quoted keys, which sort first because of the leading quote. Writing structured entries (`write(level:namespace:message:context:)`) with such context keys gives a different app.log line than the reference. No test covers this: Tests/FTFileSystemTests/Logging/AppLoggerTests.swift has no `sorted` or inspect-ordering case. Reproduce the port side with a Swift test calling `LogFormat.arguments([.context([\"a\":.number(1),\"a1\":.number(2),\"$x\":.number(5)])])` and comparing to `{ '$x': 5, a1: 2, a: 1 }`."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "Fixed finding 1 in Sources/FTFileSystem/Logging/LogFormat.swift. Object entries are now rendered as `key: value` strings and sorted by UTF-16 code unit, as Node does. Keys are bare only if they match /^[a-zA-Z_][a-zA-Z_0-9]*$/, so `$x`, `a-b` and non-ASCII keys are quoted. I added a test, `contextEntriesSortAsRenderedStringsAndQuoteNonIdentifierKeys`, to Tests/FTFileSystemTests/Logging/AppLoggerTests.swift. Its expected strings were checked against real `util.inspect` output. It covers `{ '$x': 5, 'a-b': 3, 'é': 6, a1: 2, a: 1, b: 4 }` and the `{ '$x': 5, a1: 2, a: 1 }` case from the review. I did not run the test against the old code before fixing, so the failing-first step was skipped. I also corrected the expected string in `aLineIsTheISOTimeTheLevelAndTheArguments`, which had the old raw-key order. `scripts/ci.sh` passes (build, test, format). The commit carries the Port-Stage: fixed-1 trailer, and the worktree is detached. Quiet mode was respected: nothing was launched or shown on screen.",
+          "headSha": "732c2af27280600136ba0de57475458f577b6ec7"
+        }
+      ],
+      "blockers": [],
+      "sharedFileRequests": [],
+      "deviations": [
+        "T-85076d5a and T-4842d062 (Rename-sheet fuzz) are marked N/A for the zod schema check; they check that the sanitized value is stable on a further read instead.",
+        "Rename preset names cut to 80 characters can end in a space that the next read trims (79 chars). The original's sanitizer does the same, so the value settles after one read back; I did not change it.",
+        "The fuzz string of 254 letters plus an emoji is 253 letters plus an emoji in the Swift test, because a Swift String cannot hold the lone surrogate left by cutting at 255 UTF-16 units.",
+        "Error lines are written as 'TypeName: message' because Swift errors have no JS stack.",
+        "The Rename-sheet settings and presets are written in sorted key order, not the original's DEFAULT_BATCH_RENAME_SETTINGS order; the JSON means the same.",
+        "F-### citations on the new tests reuse F-011 and F-026 from the existing reader tests. I did not look up the exact feature ids."
+      ]
     },
     "P3-01": {
       "title": "Fingerprints, syscall wrappers, stoppable copy",
@@ -1104,13 +1256,12 @@
         "P2-03",
         "P2-07"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P4-01",
       "headSha": null,
       "attempts": 0,
       "gate": [
-        "scripts/ci.sh",
-        "tools/capture/run.sh --tier wp"
+        "scripts/ci.sh"
       ],
       "lenses": [
         "parity"
@@ -1118,7 +1269,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "deferredGate": [
+        "tools/capture/run.sh --tier wp"
+      ]
     },
     "P4-02": {
       "title": "Windows and native tabs",
@@ -1154,7 +1308,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P2-01: call FolderWatches.checkForMissedChanges(windowID:) on window focus (P4-01 creates the shared DirectoryService and FolderWatches)."
+      ]
     },
     "P4-03": {
       "title": "Theme, accent, About, Acknowledgements, Help (and remove the unused zoom parameter from Metrics)",
@@ -1343,7 +1500,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P2-06: make JSRegExp (or a public highlight helper on it) public so the search highlight uses the JavaScript-compatible matcher, not NSRegularExpression."
+      ]
     },
     "P5-08": {
       "title": "Drag and drop, clipboard marks",
@@ -1685,6 +1845,27 @@
       "deviations": [
         "The reference loops forever when a candidate with a copy number of 2^53 or more is taken (index + 1 stays equal). The port stops after maxDuplicateNameAttempts attempts and throws NoFreeName instead. All other behavior matches the reference."
       ]
+    },
+    "P0-13": {
+      "title": "W1-E follow-ups: flaky eject/thumbnail tests, listing bench metrics",
+      "phase": "P0",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P2-01",
+        "P2-03",
+        "P2-04"
+      ],
+      "status": "implementing",
+      "branch": "port/P0-13",
+      "attempts": 0,
+      "gate": [
+        "for i in $(seq 1 8); do swift test --filter 'VolumeEjectorTests|Icons' >/dev/null 2>&1 || exit 1; done",
+        "scripts/ci.sh"
+      ],
+      "lenses": [],
+      "blockers": []
     }
   },
   "behaviorExtraction": {
@@ -1699,10 +1880,11 @@
     "why": "user in a video call: no windows until the user says go",
     "deferred": [
       "P2-01 gate: tools/bench/run.sh --quick --report-only (launches the app)",
-      "FILETRAIL_GUI_TESTS=1 tests added by W1-E WPs (listed in their summaries)",
+      "GUI-guarded tests: FILETRAIL_GUI_TESTS=1 swift test --filter DiskImageMounterHandOffTests (P2-03)",
       "P4-01, P4-02: capture-harness gates and visual lens",
-      "wave-1 end: tools/capture/run.sh --acceptance"
+      "wave-1 end: tools/capture/run.sh --acceptance",
+      "P4-01 gate: tools/capture/run.sh --tier wp; menu-bar scenarios"
     ],
-    "onGo": "remove the Quiet mode section from docs/port/state/preamble.md; run the deferred items; restore P2-01 gate from deferredGate"
+    "onGo": "remove the Quiet mode section from docs/port/state/preamble.md and from wp/P4-01.md; run the deferred items; restore gates from deferredGate (P2-01, P4-01)"
   }
 }
