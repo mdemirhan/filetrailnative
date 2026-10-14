@@ -1,58 +1,82 @@
 import AppKit
+import FTFileSystem
 import QuickLookThumbnailing
 
-/// The Icon view: a grid that stretches to fill the width, with Quick Look thumbnails.
-final class IconViewController: NSViewController, FolderPane, NSCollectionViewDataSource {
-    var onOpen: (([FileItem]) -> Void)?
+/// The Icon view: a grid that stretches to fill the width, with Quick Look thumbnails. The spike's view, kept working until
+/// the Icons package (P5-04) registers its own.
+final class IconViewController: NSViewController, FolderPane, NSCollectionViewDataSource, NSCollectionViewDelegate {
+    var host: (any ContentPaneHost)?
 
     private let collection = IconCollectionView()
-    private var items: [FileItem] = []
+    private var items: [DirectoryEntry] = []
+    private var isSyncing = false
 
     var focusView: NSView { collection }
-
-    var selectedItems: [FileItem] {
-        collection.selectionIndexPaths.map(\.item).sorted().compactMap {
-            items.indices.contains($0) ? items[$0] : nil
-        }
-    }
 
     override func loadView() {
         collection.collectionViewLayout = Self.makeLayout()
         collection.isSelectable = true
         collection.allowsMultipleSelection = true
         collection.allowsEmptySelection = true
-        collection.backgroundColors = [.controlBackgroundColor]
+        collection.backgroundColors = [.clear]
         collection.dataSource = self
+        collection.delegate = self
         collection.register(IconItem.self, forItemWithIdentifier: IconItem.identifier)
         collection.onDoubleClick = { [weak self] in
-            guard let self, !self.selectedItems.isEmpty else { return }
-            self.onOpen?(self.selectedItems)
+            guard let self, !self.selectedEntries.isEmpty else { return }
+            self.host?.activate(self.selectedEntries, newTab: NSEvent.modifierFlags.contains(.command))
         }
+        collection.backgroundMenu = { [weak self] in self?.host?.contextMenu(for: nil) }
 
         let scroll = NSScrollView()
         scroll.documentView = collection
+        scroll.drawsBackground = false
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
         view = scroll
     }
 
-    func show(_ items: [FileItem], sort: NSSortDescriptor, scrollToTop: Bool) {
-        self.items = items
-        collection.reloadData()
-        if scrollToTop { collection.scroll(.zero) }
+    private var selectedEntries: [DirectoryEntry] {
+        collection.selectionIndexPaths.map(\.item).sorted().compactMap { items.indices.contains($0) ? items[$0] : nil }
     }
 
-    func select(_ urls: [URL]) {
-        guard !urls.isEmpty || !collection.selectionIndexPaths.isEmpty else { return }
-        // Listed URLs are already standard; normalizing 3,000 of them costs ~30 ms.
-        let paths = Set(urls.map(\.comparablePath))
+    func reload(scrollToTop: Bool) {
+        items = host?.entries ?? []
+        collection.reloadData()
+        if scrollToTop { collection.scroll(.zero) }
+        syncSelection()
+    }
+
+    func syncSelection() {
+        guard let host else { return }
+        let paths = Set(host.selection.paths)
         let selection = Set(
-            items.indices.filter { paths.contains(items[$0].url.path) }
-                .map { IndexPath(item: $0, section: 0) })
+            items.indices.filter { paths.contains(items[$0].path) }.map { IndexPath(item: $0, section: 0) })
+        guard selection != collection.selectionIndexPaths else { return }
+        isSyncing = true
         collection.selectionIndexPaths = selection
-        if let first = selection.min() {
-            collection.scrollToItems(at: [first], scrollPosition: .nearestHorizontalEdge)
+        isSyncing = false
+    }
+
+    func reveal(paths: [String]) {
+        let wanted = Set(paths)
+        if let first = items.indices.first(where: { wanted.contains(items[$0].path) }) {
+            collection.scrollToItems(at: [IndexPath(item: first, section: 0)], scrollPosition: .nearestHorizontalEdge)
         }
+    }
+
+    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
+        selectionDidChange()
+    }
+
+    func collectionView(_ collectionView: NSCollectionView, didDeselectItemsAt indexPaths: Set<IndexPath>) {
+        selectionDidChange()
+    }
+
+    private func selectionDidChange() {
+        guard !isSyncing else { return }
+        let entries = selectedEntries
+        host?.selectionChanged(ContentSelection.of(entries.map(\.path)))
     }
 
     private static func makeLayout() -> NSCollectionViewLayout {
@@ -87,6 +111,11 @@ final class IconViewController: NSViewController, FolderPane, NSCollectionViewDa
 
 final class IconCollectionView: NSCollectionView {
     var onDoubleClick: (() -> Void)?
+    var backgroundMenu: () -> NSMenu? = { nil }
+
+    override func menu(for event: NSEvent) -> NSMenu? {
+        backgroundMenu()
+    }
 
     override func mouseDown(with event: NSEvent) {
         super.mouseDown(with: event)
@@ -156,12 +185,12 @@ final class IconItem: NSCollectionViewItem {
         cancelThumbnail()
     }
 
-    func configure(_ item: FileItem) {
+    func configure(_ item: DirectoryEntry) {
         cancelThumbnail()
         representedURL = item.url
         label.stringValue = item.name
-        icon.image = FileIcons.icon(for: item.url)
-        if !item.isDirectory { requestThumbnail(for: item.url) }
+        icon.image = IconWorkspace.icon(for: item.url)
+        if item.kind == .file || item.kind == .symlinkFile { requestThumbnail(for: item.url) }
         updateSelection()
     }
 
@@ -190,5 +219,19 @@ final class IconItem: NSCollectionViewItem {
     private func cancelThumbnail() {
         if let thumbnailRequest { QLThumbnailGenerator.shared.cancel(thumbnailRequest) }
         thumbnailRequest = nil
+    }
+}
+
+/// The icons macOS has for files, as the spike's view draws them.
+@MainActor
+enum IconWorkspace {
+    private static let cache = NSCache<NSString, NSImage>()
+
+    static func icon(for url: URL) -> NSImage {
+        let key = url.path as NSString
+        if let cached = cache.object(forKey: key) { return cached }
+        let image = NSWorkspace.shared.icon(forFile: url.path)
+        cache.setObject(image, forKey: key)
+        return image
     }
 }

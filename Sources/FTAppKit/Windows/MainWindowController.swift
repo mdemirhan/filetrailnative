@@ -1,5 +1,6 @@
 // Port of a tab of apps/desktop/src/renderer/hooks/useExplorerTabs.ts: one tab of an explorer window, as a native window tab
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 struct NavigationTiming: Sendable {
@@ -139,6 +140,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         case push, back, forward, none
         /// A jump within the history (the Back and Forward hold menus): to `index` of `paths`, adding nothing.
         case jump(paths: [String], index: Int)
+
+        /// A folder that is not there is told of, unless the window is only looking for the nearest one that is.
+        var alertsWhenGone: Bool {
+            if case .none = self { return false }
+            return true
+        }
     }
 
     static let logsTimings = ProcessInfo.processInfo.environment["FILETRAIL_TIMING"] != nil
@@ -171,7 +178,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     var onReady: (() -> Void)?
 
     private let sidebar = SidebarViewController()
-    private let browser = BrowserViewController()
+    private let content: ContentPaneController
+    /// What this window knows of folder sizes (`useFolderSizeCache`).
+    let folderSizes: WindowFolderSizes
     /// The window's grid: sidebar, content, Info panel and the toolbar.
     let workspace: WorkspaceView
     private let infoPanel = InfoPanelView()
@@ -189,6 +198,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     private var backStack: [URL] = []
     private var forwardStack: [URL] = []
     private var navigationToken = 0
+    private var isNavigating = false
+    private var pendingChange: PendingChange?
+    private var quietReadInFlight = false
     /// A tab brought back, or merged in, waits unread until it is first shown.
     private(set) var loaded = false
     /// The tab was sent to another folder while in the background (its folder moved, or its disk went): the folder
@@ -200,6 +212,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     init(tab: StartupTab, history: (paths: [String], index: Int)? = nil, frame: NSRect? = nil, loadNow: Bool = true) {
         windowID = Self.nextWindowID
         Self.nextWindowID += 1
+        let sizes = FolderSizeService.shared.sizes(for: windowID)
+        folderSizes = sizes
+        content = ContentPaneController(mode: tab.viewMode, folderSizes: sizes, loaders: .placeholder)
         folder = URL(fileURLWithPath: tab.path)
         treeRootPath = tab.rootPath
         favoritePath = tab.favoritePath
@@ -233,7 +248,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
         window.contentView = workspace
         workspace.sidebarCell.content = sidebar.view
-        workspace.mainCell.content = browser.view
+        workspace.mainCell.content = content.view
         workspace.inspectorCell.content = infoPanel
         workspace.onWidthsChosen = { [weak self] panes in
             self?.updatePanels {
@@ -250,10 +265,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
 
         sidebar.onSelect = { [weak self] url in self?.go(to: url) }
-        browser.onOpen = { [weak self] items in self?.open(items) }
-        browser.onSortChanged = { [weak self] sort in self?.sortChangedInList(sort) }
-        browser.setMode(viewMode == .icons ? .icons : .list)
-        browser.setSort(key: Self.sortKey(sortBy), ascending: sortDirection == .asc)
+        wireContent()
         workspace.toolbar.attach(self)
         connectSearchField()
         #if DEBUG
@@ -386,11 +398,86 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// Reads the folder on screen again: something changed in it.
-    func reload() {
+    /// Reads the folder on screen again, quietly: something changed in it. `changedPaths` are the items the change
+    /// touched (nil: anything in it may have).
+    func reload(changedPaths: [String]? = nil) {
         guard loaded else { return }
-        go(to: folder, history: .none)
+        pendingChange = PendingChange.merging(pendingChange, changedPaths)
+        flushPendingChange()
     }
+
+    /// Changes made outside the app wait while something the list changing under would upset is going on: a name being
+    /// typed, a menu or a sheet open, a file operation running, a drag (B-VIEW-187).
+    var folderChangesHeld = false {
+        didSet {
+            if !folderChangesHeld { flushPendingChange() }
+        }
+    }
+
+    /// The changes waiting to be read, merged: the set of changed items is the union, or nil (a full read) if any change
+    /// did not say which items changed, or there are more than 1,000 (B-VIEW-188).
+    struct PendingChange {
+        var changedPaths: Set<String>?
+
+        @MainActor static func merging(_ pending: PendingChange?, _ paths: [String]?) -> PendingChange {
+            guard let pending else { return PendingChange(changedPaths: paths.map(Set.init)) }
+            guard let existing = pending.changedPaths, let paths else { return PendingChange(changedPaths: nil) }
+            let union = existing.union(paths)
+            return PendingChange(changedPaths: union.count > FolderWatches.maxChangedPaths ? nil : union)
+        }
+    }
+
+    private func flushPendingChange() {
+        guard let pending = pendingChange, !folderChangesHeld, !quietReadInFlight else { return }
+        // A folder still being opened is tried again shortly (B-VIEW-189).
+        if isNavigating {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.retryDelay) { [weak self] in
+                MainActor.assumeIsolated { self?.flushPendingChange() }
+            }
+            return
+        }
+        pendingChange = nil
+        quietReadInFlight = true
+        Task {
+            await quietRead(pending.changedPaths.map { Array($0) })
+            quietReadInFlight = false
+            flushPendingChange()
+        }
+    }
+
+    /// A folder read again in place: the selection, scroll and details stay; the error clears when the answer arrives
+    /// (B-NAV-115, B-NAV-134).
+    private func quietRead(_ changedPaths: [String]?) async {
+        let url = folder
+        let result = await readFolder(url)
+        // The folder was left meanwhile: the user's folder wins (B-VIEW-195).
+        guard url == folder, !isNavigating else { return }
+        switch result.snapshot {
+        case .success(let snapshot):
+            content.show(
+                folder: url.path, entries: snapshot.entries, selecting: nil, keepingScroll: true,
+                changedPaths: changedPaths)
+            notify(.folder)
+        case .failure(let error):
+            if FolderReadFailure.isGone(error) {
+                await openNearestExistingFolder(above: url)
+            } else {
+                content.showError(folder: url.path, message: FolderReadFailure.message(error))
+            }
+        }
+    }
+
+    /// The folder on screen is gone: the nearest folder above it that still exists is opened in its place, and the
+    /// selection is not carried over (B-VIEW-194).
+    private func openNearestExistingFolder(above url: URL) async {
+        var candidate = url
+        while candidate.path != "/" {
+            candidate = candidate.deletingLastPathComponent()
+            if await navigate(to: candidate, history: .none) != nil { return }
+        }
+    }
+
+    private static let retryDelay = 0.25
 
     private func updateTitle() {
         // The window title is the folder name, which the toolbar shows; the tab bar and the Window menu have the
@@ -406,35 +493,63 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         Task { await navigate(to: url, history: history) }
     }
 
-    /// Reads `url` off the main thread, then shows it. Returns nil when a later
-    /// navigation replaced this one or the folder couldn't be read.
+    /// What a read of a folder gave, and how long it took.
+    struct FolderRead {
+        var snapshot: Result<DirectorySnapshot, any Error>
+        var duration: Duration
+    }
+
+    /// Reads a folder through the directory service: in the order the tab keeps, with hidden files and folders first
+    /// as the tab has them.
+    private func readFolder(_ url: URL) async -> FolderRead {
+        let service = services.directoryService
+        let path = url.path
+        let key = DirectorySortKey(rawValue: sortBy.rawValue) ?? .name
+        let direction: SortDirection = sortDirection == .asc ? .ascending : .descending
+        let hidden = includeHidden
+        let first = foldersFirst
+        let clock = ContinuousClock()
+        let started = clock.now
+        let snapshot = await Result {
+            try await service.snapshot(
+                path: path, includeHidden: hidden, sortBy: key, sortDirection: direction, foldersFirst: first)
+        }
+        return FolderRead(snapshot: snapshot, duration: clock.now - started)
+    }
+
+    /// Reads `url`, then shows it. Returns nil when a later navigation replaced this one or the folder is gone.
+    /// The listing in front stays on screen until the new one arrives (B-NAV-113).
     @discardableResult
     func navigate(to url: URL, history: HistoryMove = .push) async -> NavigationTiming? {
         self.loaded = true
         navigationToken += 1
         let token = navigationToken
+        isNavigating = true
+        defer { if token == navigationToken { isNavigating = false } }
         let clock = ContinuousClock()
         let started = clock.now
-        let (result, read) = await Task.detached(priority: .userInitiated) {
-            let clock = ContinuousClock()
-            let started = clock.now
-            let result = Result { try FolderLoader.load(url) }
-            return (result, clock.now - started)
-        }.value
+        content.beginLoading(quiet: false)
+        let read = await readFolder(url)
         guard token == navigationToken else { return nil }
         let readAt = clock.now
 
-        let listing: FolderListing
-        switch result {
-        case .success(let value):
-            listing = value
+        let previous = folder
+        var entries: [DirectoryEntry] = []
+        switch read.snapshot {
+        case .success(let snapshot):
+            entries = snapshot.entries
         case .failure(let error):
-            if let window { NSAlert(error: error).beginSheetModal(for: window, completionHandler: nil) }
-            sidebar.select(folder)
-            return nil
+            if FolderReadFailure.isGone(error) {
+                // A folder that is not there opens nothing (`persistOnError: "unlessGone"`).
+                content.cancelLoading()
+                if history.alertsWhenGone, let window {
+                    NSAlert(error: error).beginSheetModal(for: window, completionHandler: nil)
+                }
+                sidebar.select(folder)
+                return nil
+            }
         }
 
-        let previous = folder
         switch history {
         case .push:
             if url.comparablePath != previous.comparablePath {
@@ -460,7 +575,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         let cameFromChild = previous.deletingLastPathComponent().comparablePath == url.comparablePath
         updateTitle()
         searchField?.stringValue = ""
-        browser.show(listing, selecting: cameFromChild ? [previous] : [])
+        switch read.snapshot {
+        case .success:
+            content.show(
+                folder: url.path, entries: entries, selecting: cameFromChild ? [previous.path] : [],
+                keepingScroll: false)
+        case .failure(let error):
+            content.showError(folder: url.path, message: FolderReadFailure.message(error))
+        }
         sidebar.select(url)
         updateNavigationItems()
         notify(.folder)
@@ -471,15 +593,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             callback()
         }
         group?.tabChanged(self)
-        Task {
-            let capacity = await Task.detached(priority: .utility) {
-                FolderLoader.availableCapacity(at: url)
-            }.value
-            if token == navigationToken { browser.setAvailableCapacity(capacity) }
-        }
 
         let timing = NavigationTiming(
-            folder: url, itemCount: listing.items.count, read: read, load: readAt - started,
+            folder: url, itemCount: entries.count, read: read.duration, load: readAt - started,
             display: clock.now - readAt)
         if Self.logsTimings {
             FileHandle.standardError.write(
@@ -493,16 +609,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return timing
     }
 
-    private func open(_ items: [FileItem]) {
-        if items.count == 1, let target = FolderLoader.folderTarget(of: items[0]) {
-            go(to: target)
+    /// Opens items: a folder in place (or in a new tab with command), the rest with the system.
+    private func open(_ entries: [DirectoryEntry], inNewTab: Bool = false) {
+        if entries.count == 1, entries[0].isDirectoryLike, !inNewTab {
+            go(to: entries[0].url)
             return
         }
-        for item in items {
-            if let target = FolderLoader.folderTarget(of: item) {
-                group?.openTab(path: target.path, from: self)
+        for entry in entries {
+            if entry.isDirectoryLike {
+                group?.openTab(path: entry.path, from: self)
             } else {
-                NSWorkspace.shared.open(item.url)
+                NSWorkspace.shared.open(entry.url)
             }
         }
     }
@@ -513,9 +630,68 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// The folder Open in New Tab and Open in New Window open: the one folder selected.
     private var selectedFolder: URL? {
-        let items = browser.selectedItems
-        guard items.count == 1 else { return nil }
-        return FolderLoader.folderTarget(of: items[0])
+        let items = content.selectedEntries
+        guard items.count == 1, items[0].isDirectoryLike else { return nil }
+        return items[0].url
+    }
+
+    // MARK: The content pane
+
+    /// Connects the content pane to the window: what it reads from the services, and what it reports.
+    private func wireContent() {
+        content.loaders = ContentLoaders(
+            metadata: { [weak self] folder, paths in
+                guard let service = self?.services.directoryService else { return [] }
+                return (try? await service.metadata(directoryPath: folder, paths: paths).items) ?? []
+            },
+            hiddenCount: { [weak self] folder in
+                guard let service = self?.services.directoryService else { return 0 }
+                return (try? await service.snapshot(path: folder, includeHidden: true).entries.count) ?? 0
+            },
+            iconStore: { [weak self] in self?.services.iconStore },
+            homePath: FileManager.default.homeDirectoryForCurrentUser.path,
+            openPrivacySettings: {
+                guard
+                    let url = URL(
+                        string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")
+                else { return }
+                NSWorkspace.shared.open(url)
+            })
+        content.onActivate = { [weak self] entries, newTab in self?.open(entries, inNewTab: newTab) }
+        content.onSortRequested = { [weak self] field in self?.sort(by: field) }
+        content.onSortSetFromOutside = { [weak self] field, ascending in
+            self?.setSort(field, ascending ? .asc : .desc)
+        }
+        content.onSelectionChanged = { [weak self] _ in self?.notify(.selection) }
+        content.onColumnWidthsChanged = { [weak self] widths in self?.saveColumnWidths(widths) }
+        content.setView(sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
+        content.setColumns(ListColumnState(preferences: preferences))
+        content.setMode(viewMode)
+    }
+
+    /// The widths the List keeps are the window's own (`detailColumnWidths` is a window session key).
+    private func saveColumnWidths(_ widths: [DetailColumn: Double]) {
+        func width(_ column: DetailColumn) -> JSONNode {
+            .number(DetailsColumns.clamp(widths[column] ?? 0, column: column, search: false))
+        }
+        updatePreferences([
+            "detailColumnWidths": .object([
+                "name": width(.name), "modified": width(.modified), "size": width(.size), "kind": width(.kind),
+                "created": width(.created), "permissions": width(.permissions),
+            ])
+        ])
+    }
+
+    /// The columns and the density again, from the preferences (Settings changed them, or a scenario did).
+    func refreshColumns() {
+        content.setColumns(ListColumnState(preferences: preferences))
+    }
+
+    /// Refresh: the caches of the listing are let go of, and the folder is read again with the selection kept
+    /// (B-NAV-124).
+    func refresh() {
+        services.directoryService.cache.clear()
+        reload()
     }
 
     // MARK: Menu state
@@ -563,7 +739,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     @objc func openSelection(_ sender: Any?) {
-        open(browser.selectedItems)
+        open(content.selectedEntries)
     }
 
     @objc func showAsIcons(_ sender: Any?) { setMode(.icons) }
@@ -571,7 +747,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     @objc func showAsList(_ sender: Any?) { setMode(.details) }
 
     @objc private func searchChanged(_ sender: NSSearchField) {
-        browser.setFilter(sender.stringValue)
+        content.setFilter(sender.stringValue)
     }
 
     /// The toolbar's search field: what it holds narrows the list (the spike's filter; searching is P5-07's).
@@ -591,40 +767,35 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     private func setMode(_ mode: ExplorerViewMode) {
         viewMode = mode
-        browser.setMode(mode == .icons ? .icons : .list)
+        content.setMode(mode)
         notify(.view)
         group?.tabChanged(self)
     }
 
-    static func sortKey(_ sortBy: SortByPreference) -> String {
-        switch sortBy {
-        case .name: "name"
-        case .modified: "modified"
-        case .size: "size"
-        case .kind: "kind"
-        }
-    }
-
-    /// The sort commands: the field already in use reverses the direction; another sorts by it, ascending.
+    /// The sort commands and the column headers (`handleSortChange`): the field already in use reverses the direction;
+    /// another sorts by it, descending for Date Modified and Size and ascending for Name and Kind.
     private func sort(by field: SortByPreference) {
-        if field == sortBy {
-            sortDirection = sortDirection == .asc ? .desc : .asc
-        } else {
-            sortBy = field
-            sortDirection = .asc
-        }
-        browser.setSort(key: Self.sortKey(sortBy), ascending: sortDirection == .asc)
-        notify(.view)
-        group?.tabChanged(self)
+        let next = DetailsSorting.next(current: sortBy, direction: sortDirection, requested: field)
+        setSort(next.sortBy, next.direction)
     }
 
-    /// A column header changed the sort.
-    private func sortChangedInList(_ sort: NSSortDescriptor) {
-        guard let key = sort.key, let field = SortByPreference(rawValue: key) else { return }
+    /// Puts the folder in this order: it is read again ("replace"), and the selection is not kept (B-NAV-127,
+    /// B-NAV-132).
+    func setSort(_ field: SortByPreference, _ direction: SortDirectionPreference) {
         sortBy = field
-        sortDirection = sort.ascending ? .asc : .desc
+        sortDirection = direction
+        viewChanged()
+    }
+
+    /// The tab's order, Folders First or hidden files changed: the content pane shows it, the folder is read again in
+    /// place and the choice is saved with the tab.
+    private func viewChanged() {
+        content.setView(
+            sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
         notify(.view)
         group?.tabChanged(self)
+        guard loaded else { return }
+        Task { await navigate(to: folder, history: .none) }
     }
 
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
@@ -632,12 +803,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         case #selector(goBack(_:)): return !backStack.isEmpty
         case #selector(goForward(_:)): return !forwardStack.isEmpty
         case #selector(goToEnclosingFolder(_:)): return folder.comparablePath != "/"
-        case #selector(openSelection(_:)): return !browser.selectedItems.isEmpty
+        case #selector(openSelection(_:)): return !content.selectedEntries.isEmpty
         case #selector(showAsIcons(_:)):
-            menuItem.state = browser.mode == .icons ? .on : .off
+            menuItem.state = viewMode == .icons ? .on : .off
             return true
         case #selector(showAsList(_:)):
-            menuItem.state = browser.mode == .list ? .on : .off
+            menuItem.state = viewMode == .details ? .on : .off
             return true
         default: return true
         }
@@ -678,6 +849,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         finishCustomizingToolbar()
         group?.tabWillClose(self)
         if let window { WindowEventRouting.forget(window) }
+        FolderSizeService.shared.forget(windowID: windowID)
         onClose?()
     }
 
@@ -726,6 +898,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     func preferencesChanged(_ change: PreferencesChange) {
+        refreshColumns()
         notify(.preferences)
         if let customizer { customizer.refreshPanel() }
     }
@@ -756,13 +929,11 @@ extension MainWindowController: ExplorerWindowHandle {
         case .sortBySize: sort(by: .size)
         case .toggleFoldersFirst:
             foldersFirst.toggle()
-            notify(.view)
-            group?.tabChanged(self)
+            viewChanged()
         case .toggleHiddenFiles:
             includeHidden.toggle()
-            notify(.view)
-            group?.tabChanged(self)
-        case .refreshOrApplySearchSort: reload()
+            viewChanged()
+        case .refreshOrApplySearchSort: refresh()
         case .customizeToolbar: beginCustomizingToolbar()
         case .goDocuments: place(fileManager.urls(for: .documentDirectory, in: .userDomainMask).first)
         case .goDesktop: place(fileManager.urls(for: .desktopDirectory, in: .userDomainMask).first)
@@ -788,7 +959,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleFolderTree: updatePanels { $0.folderTreeOpen.toggle() }
         case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
         case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
-        case .focusContentPane: window?.makeFirstResponder(browser.view.subviews.first)
+        case .focusContentPane: content.focusList()
         default:
             if let selector = MenuCommandRouter.nativeEditSelector(command) {
                 NSApp.sendAction(selector, to: nil, from: nil)
@@ -805,7 +976,7 @@ extension MainWindowController: ExplorerWindowHandle {
             workspace.restore(treeWidth: Double(panels.treeWidth), inspectorWidth: Double(panels.inspectorWidth))
         }
         workspace.show(folderTree: panels.folderTreeOpen, infoPanel: panels.propertiesOpen)
-        browser.setInfoRowOpen(panels.detailRowOpen)
+        content.setInfoRowOpen(panels.detailRowOpen)
         if !workspace.isReady { workspace.becomeReady() }
         notify(.panels)
     }
@@ -843,11 +1014,11 @@ extension MainWindowController: ExplorerWindowContext {
         return CommandAvailability.canRun(command, context)
     }
 
-    var selectedPaths: [String] { browser.selectedItems.map(\.url.path) }
+    var selectedPaths: [String] { content.selection.paths }
 
     var focusedPane: ExplorerPane? {
         guard let responder = window?.firstResponder as? NSView else { return nil }
-        if responder.isDescendant(of: browser.view) { return .content }
+        if responder.isDescendant(of: content.view) { return .content }
         if responder.isDescendant(of: sidebar.view) { return .tree }
         return nil
     }

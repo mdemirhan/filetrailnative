@@ -1,0 +1,22 @@
+{
+  "comment": "P5-03: the content pane and the List view: header, titles, sort chevron, separators, rows, stripes, selection bars, cells per column, size bars, and the empty, loading and error states. Merged into elements.json by run.sh.",
+  "elements": {
+    "list header cell box": {"electron":{"selector":".details-header .details-header-cell"},"swift":"list.header.cell"},
+    "list header title": {"electron":{"selector":".details-header .details-header-cell .details-header-text, .details-header .details-header-cell .details-header-label"},"swift":"list.header.title","text":true},
+    "list sort chevron": {"electron":{"selector":".details-header .sort-indicator"},"swift":"list.header.chevron"},
+    "list column separator": {"electron":{"selector":".details-header .details-column-resizer"},"swift":"list.header.separator"},
+    "list odd row": {"electron":{"selector":".details-row[data-row-parity=\"odd\"]"},"swift":"list.row.odd"},
+    "list selected bar": {"electron":{"selector":".details-row.active","textSelector":".details-name-label"},"swift":"list.row.selected","text":true},
+    "list modified cell": {"electron":{"selector":".details-row > span:nth-child(2)"},"swift":"list.row.cell.modified"},
+    "list kind cell": {"electron":{"selector":".details-row > span:nth-child(4)"},"swift":"list.row.cell.kind"},
+    "list created cell": {"electron":{"selector":".details-row > span:nth-child(5)"},"swift":"list.row.cell.created"},
+    "list permissions cell": {"electron":{"selector":".details-row > .details-permissions"},"swift":"list.row.cell.permissions"},
+    "list size cell": {"electron":{"selector":".details-row > .details-size"},"swift":"list.row.sizeCell"},
+    "list size text": {"electron":{"selector":".details-row .details-size-text"},"swift":"list.row.size","text":true},
+    "content state": {"electron":{"selector":".content-state"},"swift":"content.state"},
+    "content state title": {"electron":{"selector":".content-state strong"},"swift":"content.state.title","text":true},
+    "content state message": {"electron":{"selector":".content-state.content-error > span"},"swift":"content.state.message","text":true},
+    "content empty message": {"electron":{"selector":".content-state .empty-state-message"},"swift":"content.state.empty","text":true},
+    "content state button": {"electron":{"selector":".content-state .push-button"},"swift":"content.state.button","text":true}
+  }
+}
