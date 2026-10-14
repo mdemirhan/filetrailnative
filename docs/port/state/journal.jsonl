@@ -70,3 +70,4 @@
 {"at": "2026-10-14T08:37:26+00:00", "event": "add-batch", "batch": "W1-G", "wps": ["P4-02", "P0-14"], "estimatedAgents": 8}
 {"at": "2026-10-14T08:37:26+00:00", "event": "next", "text": "Running W1-G P4-02 + P0-14 (quiet mode lifted). Then wave-1 end: tools/capture/run.sh --acceptance, phase critic, collect deviations into DEVIATIONS.md, ask user for approvals and PLAN §8 checkpoints"}
 {"at": "2026-10-14T08:37:26+00:00", "event": "set-batch", "batch": "W1-G", "status": "running", "runId": null}
+{"at": "2026-10-14T08:37:48+00:00", "event": "set-batch", "batch": "W1-G", "status": "running", "runId": "wf_a5b1f015-ee4"}
