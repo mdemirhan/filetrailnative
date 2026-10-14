@@ -31,6 +31,17 @@ private func isMounted(_ path: String) -> Bool {
     VolumeListing.mounts().contains { $0.path == path }
 }
 
+/// The device node (`/dev/disk5s1`) mounted at `path`. After an eject a path alone says nothing: another
+/// process attaching a clone of the same blank image can take the freed `/Volumes/<name>`, so tests ask
+/// whether this device is still mounted.
+private func source(of path: String) throws -> String {
+    try #require(VolumeListing.mounts().first { $0.path == path }).source
+}
+
+private func isMounted(source: String) -> Bool {
+    VolumeListing.mounts().contains { $0.source == source }
+}
+
 private func wholeDevice(of path: String) throws -> String {
     let record = try #require(VolumeListing.mounts().first { $0.path == path })
     let disk = try #require(VolumeListing.deviceDisk(of: record, PhysicalDisk.lookup(bsdName:)))
@@ -42,10 +53,11 @@ private func wholeDevice(of path: String) throws -> String {
     @Test(.tags(.diskImage), .diskImages) func unmountsTheVolumeAndEjectsItsDiskDetachingADiskImage() async throws {
         try await DiskImage.withVolume(.apfs) { folder in
             let device = try wholeDevice(of: folder.path)
+            let source = try source(of: folder.path)
             #expect(isMounted(folder.path))
             #expect(try attachedDevices().contains(device))
             try await VolumeEjector.eject(path: folder.path, wholeDisk: true)
-            #expect(!isMounted(folder.path))
+            #expect(!isMounted(source: source))
             #expect(try !attachedDevices().contains(device))
         }
     }
@@ -56,8 +68,9 @@ private func wholeDevice(of path: String) throws -> String {
     {
         try await DiskImage.withVolume(.apfs) { folder in
             let device = try wholeDevice(of: folder.path)
+            let source = try source(of: folder.path)
             try await VolumeEjector.eject(path: folder.path)
-            #expect(!isMounted(folder.path))
+            #expect(!isMounted(source: source))
             #expect(try attachedDevices().contains(device))
         }
     }
@@ -78,9 +91,10 @@ private func wholeDevice(of path: String) throws -> String {
                 #expect(error.code == "EBUSY")
                 #expect(error.path == folder.path)
             }
-            #expect(isMounted(folder.path))
+            let source = try source(of: folder.path)
+            #expect(isMounted(source: source))
             try await VolumeEjector.eject(path: folder.path, force: true, wholeDisk: true)
-            #expect(!isMounted(folder.path))
+            #expect(!isMounted(source: source))
         }
     }
 
@@ -102,9 +116,10 @@ private func wholeDevice(of path: String) throws -> String {
 
     @Test(.tags(.diskImage), .diskImages) func aVolumeAlreadyEjectedCountsAsEjected() async throws {
         try await DiskImage.withVolume(.apfs) { folder in
+            let source = try source(of: folder.path)
             let request = EjectRequest(path: folder.path, wholeDisk: true, force: false)
             #expect(await EjectOutcome.ejectVolume(request).status == .ejected)
-            #expect(!isMounted(folder.path))
+            #expect(!isMounted(source: source))
             // The second press of the button finds nothing mounted.
             #expect(await EjectOutcome.ejectVolume(request).status == .ejected)
         }
