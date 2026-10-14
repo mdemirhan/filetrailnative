@@ -1,0 +1,194 @@
+{
+  "comment": "P5-06: the path bar row, the path editor's suggestions, the Info Row and the Info panel. Merged into elements.json by run.sh.",
+  "elements": {
+    "path editor suggestions": {
+      "electron": {
+        "selector": ".pathbar-suggestions"
+      },
+      "swift": "pathEditor.suggestions"
+    },
+    "path editor suggestion": {
+      "electron": {
+        "selector": ".pathbar-suggestion",
+        "textSelector": ".pathbar-suggestion-name"
+      },
+      "swift": "pathEditor.suggestion",
+      "text": true
+    },
+    "path editor suggestion path": {
+      "electron": {
+        "selector": ".pathbar-suggestion .pathbar-suggestion-path"
+      },
+      "swift": "pathEditor.suggestion.path",
+      "text": true
+    },
+    "info row icon": {
+      "electron": {
+        "selector": ".info-row-icon"
+      },
+      "swift": "infoRow.icon"
+    },
+    "info row name": {
+      "electron": {
+        "selector": ".info-row-name"
+      },
+      "swift": "infoRow.name",
+      "text": true
+    },
+    "info row fact": {
+      "electron": {
+        "selector": ".info-row-fact"
+      },
+      "swift": "infoRow.fact",
+      "text": true
+    },
+    "info row folder size calculate": {
+      "electron": {
+        "selector": ".info-row .folder-size-calculate-btn"
+      },
+      "swift": "infoRow.folderSize.calculate",
+      "text": true
+    },
+    "info row folder size refresh": {
+      "electron": {
+        "selector": ".info-row .folder-size-refresh-btn"
+      },
+      "swift": "infoRow.folderSize.refresh"
+    },
+    "info panel header": {
+      "electron": {
+        "selector": ".get-info-header"
+      },
+      "swift": "infoPanel.header"
+    },
+    "info panel title": {
+      "electron": {
+        "selector": ".get-info-header strong"
+      },
+      "swift": "infoPanel.title",
+      "text": true
+    },
+    "info panel close": {
+      "electron": {
+        "selector": ".get-info-close"
+      },
+      "swift": "infoPanel.close"
+    },
+    "info panel hero icon": {
+      "electron": {
+        "selector": ".get-info-hero-icon"
+      },
+      "swift": "infoPanel.heroIcon"
+    },
+    "info panel name": {
+      "electron": {
+        "selector": ".get-info-name"
+      },
+      "swift": "infoPanel.name",
+      "text": true
+    },
+    "info panel subtitle": {
+      "electron": {
+        "selector": ".get-info-subtitle"
+      },
+      "swift": "infoPanel.subtitle",
+      "text": true
+    },
+    "info panel open": {
+      "electron": {
+        "selector": ".get-info-open-main",
+        "textSelector": ".get-info-open-label"
+      },
+      "swift": "infoPanel.open",
+      "text": true
+    },
+    "info panel open with": {
+      "electron": {
+        "selector": ".get-info-open-with-button"
+      },
+      "swift": "infoPanel.openWith"
+    },
+    "info panel section title": {
+      "electron": {
+        "selector": ".get-info-section-title"
+      },
+      "swift": "infoPanel.section.title",
+      "text": true
+    },
+    "info panel row label": {
+      "electron": {
+        "selector": ".get-info-meta-label"
+      },
+      "swift": "infoPanel.row.label",
+      "text": true
+    },
+    "info panel row value": {
+      "electron": {
+        "selector": ".get-info-meta-value"
+      },
+      "swift": "infoPanel.row.value",
+      "text": true
+    },
+    "info panel permissions code": {
+      "electron": {
+        "selector": ".get-info-permissions-code"
+      },
+      "swift": "infoPanel.row.code",
+      "text": true
+    },
+    "info panel opens with": {
+      "electron": {
+        "selector": ".get-info-opens-with-button"
+      },
+      "swift": "infoPanel.opensWith"
+    },
+    "info panel action": {
+      "electron": {
+        "selector": ".get-info-action"
+      },
+      "swift": "infoPanel.action"
+    },
+    "info panel empty": {
+      "electron": {
+        "selector": ".get-info-empty"
+      },
+      "swift": "infoPanel.empty",
+      "text": true
+    },
+    "info panel folder size calculate": {
+      "electron": {
+        "selector": ".get-info-panel .folder-size-calculate-btn"
+      },
+      "swift": "infoPanel.folderSize.calculate",
+      "text": true
+    },
+    "info panel folder size refresh": {
+      "electron": {
+        "selector": ".get-info-panel .folder-size-refresh-btn"
+      },
+      "swift": "infoPanel.folderSize.refresh"
+    },
+    "info panel folder size line": {
+      "electron": {
+        "selector": ".get-info-panel .folder-size-detail > span:first-child"
+      },
+      "swift": "infoPanel.folderSize.size",
+      "text": true
+    },
+    "info panel folder size items": {
+      "electron": {
+        "selector": ".get-info-panel .folder-size-items"
+      },
+      "swift": "infoPanel.folderSize.items",
+      "text": true
+    },
+    "info panel open with menu item": {
+      "electron": {
+        "selector": ".pull-down-menu .context-submenu-item",
+        "textSelector": ".context-submenu-item-label"
+      },
+      "swift": "infoPanel.openWithMenu.item",
+      "text": true
+    }
+  }
+}

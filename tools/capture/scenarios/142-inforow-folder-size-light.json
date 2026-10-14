@@ -1,0 +1,71 @@
+{
+  "name": "142-inforow-folder-size-light",
+  "description": "A folder's calculated size in the Info Row, with its counts and the refresh button",
+  "features": [
+    "F-749",
+    "F-824"
+  ],
+  "behaviors": [
+    "B-INFO-042",
+    "B-INFO-043"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "detailRowOpen": true,
+        "autoCalculateFolderSizes": false
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "select",
+      "names": [
+        "components"
+      ]
+    },
+    {
+      "step": "command",
+      "id": "calculateSize"
+    },
+    {
+      "step": "wait",
+      "ms": 1500
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

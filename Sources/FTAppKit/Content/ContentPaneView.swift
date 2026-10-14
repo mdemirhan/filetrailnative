@@ -28,6 +28,7 @@ final class ContentPaneView: NSView {
         setAccessibilityIdentifier("contentPane")
         addSubview(infoRow)
         addSubview(pathBarRow)
+        infoRow.onHeightChange = { [weak self] in self?.needsLayout = true }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }

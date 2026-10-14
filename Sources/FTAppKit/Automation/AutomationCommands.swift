@@ -34,7 +34,7 @@
             "sortByName", "sortByModified", "sortBySize", "sortByKind", "goHomeRootTree", "goDocuments",
             "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD", "goApplications", "goTrash", "newWindow",
             "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
-            "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows",
+            "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows", "calculateSize",
         ]
 
         static func run(_ id: String, controller: MainWindowController, window: NSWindow) -> AutomationRunner.Outcome {
@@ -75,7 +75,9 @@
                 let key = String(id.dropFirst("sortBy".count)).lowercased()
                 // Choosing the field sorted by again reverses the direction, as the original's Sort menu does.
                 let current = currentSort(in: window)
-                let ascending = current?.key == key ? !(current?.ascending ?? true) : true
+                // Size and Date Modified sort descending first, as the original's Sort menu does.
+                let first = !(key == "size" || key == "modified")
+                let ascending = current?.key == key ? !(current?.ascending ?? first) : first
                 guard sort(by: key, ascending: ascending, controller: controller, window: window) else {
                     return .init(.failed, "could not sort by \(key)")
                 }
@@ -87,7 +89,8 @@
                 guard let url = place(id) else { return .init(.failed, "no folder for \(id)") }
                 controller.go(to: url)
             case "newWindow", "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab",
-                "openSelectionInNewTab", "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows":
+                "openSelectionInNewTab", "openSelectionInNewWindow", "moveTabToNewWindow", "mergeAllWindows",
+                "calculateSize":
                 // The window and tab commands, as the menu sends them (P4-02).
                 guard let command = RendererCommand(rawValue: id) else { return .init(.failed, "no command \(id)") }
                 controller.perform(command)

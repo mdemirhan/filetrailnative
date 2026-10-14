@@ -83,6 +83,8 @@ final class ExplorerTabWindow: NSWindow {
     private func forwardToolbarBand(_ event: NSEvent) -> Bool {
         switch event.type {
         case .leftMouseDown, .rightMouseDown, .otherMouseDown:
+            // A press whose release never came (a right-click that was only resolved) must not take the next release.
+            bandTarget = nil
             guard let content = contentView, let frameView = content.superview,
                 let hit = frameView.hitTest(frameView.convert(event.locationInWindow, from: nil)),
                 hit.isDescendant(of: content)
@@ -193,6 +195,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// The right-click menus of the tab (P5-09).
     lazy var contextMenus = ContextMenuCoordinator(tab: self)
     private let infoPanel = InfoPanelView()
+    /// What the Info panel and the Info Row describe (P5-06).
+    private(set) var infoController: InfoController?
     /// Customize Toolbar, while it is on.
     private(set) var customizer: ToolbarCustomizer?
     /// The folder a search runs from while the tab shows its results (P5-07 starts and ends searches).
@@ -276,6 +280,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
         wireContent()
         installMenusAndNotifications()
+        wirePathBar()
+        infoController = InfoController(host: self, panel: infoPanel, row: content.contentShell.infoRow)
         workspace.toolbar.attach(self)
         connectSearchField()
         #if DEBUG
@@ -283,6 +289,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             AutomationSidebarPrefs.registerOnce()
             AutomationContentPrefs.registerOnce()
             AutomationNotificationPrefs.registerOnce()
+            AutomationInfoPrefs.registerOnce()
         #endif
         updateTitle()
         if loadNow { ensureLoaded() }
@@ -603,6 +610,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         if let sidebarKeyboard { window?.makeFirstResponder(sidebarKeyboard) }
         sidebar.folderOpened(url, open)
         updateNavigationItems()
+        updatePathBar()
         notify(.folder)
         window?.contentView?.layoutSubtreeIfNeeded()
         window?.displayIfNeeded()
@@ -1090,6 +1098,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
         case .focusContentPane: content.focusList()
         case .quickLookSelection: quickLookSelection()
+        case .calculateSize: infoController?.calculateSizeCommand()
         default:
             if let selector = MenuCommandRouter.nativeEditSelector(command) {
                 NSApp.sendAction(selector, to: nil, from: nil)
@@ -1106,7 +1115,7 @@ extension MainWindowController: ExplorerWindowHandle {
             workspace.restore(treeWidth: Double(panels.treeWidth), inspectorWidth: Double(panels.inspectorWidth))
         }
         workspace.show(folderTree: panels.folderTreeOpen, infoPanel: panels.propertiesOpen)
-        content.setInfoRowOpen(panels.detailRowOpen)
+        content.setInfoRowOpen(panels.detailRowOpen, animated: workspace.isReady)
         if !workspace.isReady { workspace.becomeReady() }
         notify(.panels)
     }
