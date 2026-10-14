@@ -46,8 +46,12 @@ public enum DiskImage {
     /// One volume of a kind at a time, also across test processes: clones of one blank image carry the
     /// same volume UUID, and while one is attached, attaching another fails with "no mountable file
     /// systems" or mounts it under a different name.
+    ///
+    /// `ownMountPoint` mounts it in a folder of its own instead of `/Volumes/<name>`, which the next
+    /// clone mounted anywhere on the Mac takes once this one is unmounted: for tests that still act on
+    /// the path after that.
     public static func withVolume<T>(
-        _ kind: Kind, isolation: isolated (any Actor)? = #isolation,
+        _ kind: Kind, ownMountPoint: Bool = false, isolation: isolated (any Actor)? = #isolation,
         _ body: (URL) async throws -> T
     ) async throws -> T {
         let lock = try await acquireLock(for: kind)
@@ -56,7 +60,13 @@ public enum DiskImage {
         defer { work.remove() }
         let image = work.appending("volume.sparseimage")
         try clone(kind, to: image)
-        let attached = try attach(image)
+        var mountPoint: URL?
+        if ownMountPoint {
+            let folder = work.appending("mount")
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            mountPoint = folder
+        }
+        let attached = try attach(image, at: mountPoint)
         defer { detach(attached, image: image) }
         return try await body(attached.mount)
     }
@@ -115,18 +125,27 @@ public enum DiskImage {
         let device: String
     }
 
-    private static func attach(_ image: URL) throws -> Attached {
+    private static func attach(_ image: URL, at mountPoint: URL?) throws -> Attached {
         let output = try run(
-            "/usr/bin/hdiutil", ["attach", "-nobrowse", "-noautoopen", "-plist", image.path])
+            "/usr/bin/hdiutil",
+            ["attach", "-nobrowse", "-noautoopen", "-plist"] + (mountPoint.map { ["-mountpoint", $0.path] } ?? [])
+                + [image.path])
         guard
             let plist = try PropertyListSerialization.propertyList(from: output, format: nil) as? [String: Any],
             let entities = plist["system-entities"] as? [[String: Any]],
             let mountPoint = entities.compactMap({ $0["mount-point"] as? String }).first,
             let slice = entities.first(where: { $0["mount-point"] != nil })?["dev-entry"] as? String
         else { throw Failure(description: "hdiutil attach reported no mount point for \(image.path)") }
-        // realpath'd, so paths the code under test reports match ours.
-        return Attached(
-            mount: URL(fileURLWithPath: mountPoint).resolvingSymlinksInPath(), device: wholeDisk(of: slice))
+        // realpath'd, so paths the code under test reports match ours. Not with resolvingSymlinksInPath,
+        // which takes /private off a mount point of its own (/private/var/folders/...), where the volume
+        // is mounted.
+        return Attached(mount: URL(fileURLWithPath: realPath(mountPoint)), device: wholeDisk(of: slice))
+    }
+
+    private static func realPath(_ path: String) -> String {
+        guard let resolved = Darwin.realpath(path, nil) else { return path }
+        defer { free(resolved) }
+        return String(cString: resolved)
     }
 
     /// `/dev/disk4s1` -> `/dev/disk4`.
@@ -136,33 +155,45 @@ public enum DiskImage {
     }
 
     /// Detaches by device (a path can be busy), forcing on the retries, and returns once the image
-    /// is no longer attached and its mount point is gone, so the clone can be deleted.
+    /// is no longer attached, so the clone can be deleted.
+    ///
+    /// Only while the image is still attached: once it is detached (a test may eject it itself), its
+    /// `/dev/diskN` is the next attach's, in any process on the Mac, and detaching it would take another
+    /// test's disk away. For the same reason it waits on the image, not on its mount point: the hfs and
+    /// apfs images all mount at `/Volumes/FileTrailTest`, which another process's attach may take.
     private static func detach(_ attached: Attached, image: URL) {
         for attempt in 0..<3 {
+            guard isAttached(image, device: attached.device) != false else { return }
             let force = attempt > 0
             _ = try? run("/usr/bin/hdiutil", ["detach"] + (force ? ["-force"] : []) + [attached.device])
-            if waitUntilGone(attached, image: image, timeout: 30) { return }
+            if waitUntilDetached(image, timeout: 30) { return }
         }
     }
 
-    private static func waitUntilGone(_ attached: Attached, image: URL, timeout: TimeInterval) -> Bool {
+    private static func waitUntilDetached(_ image: URL, timeout: TimeInterval) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
-            if !isAttached(image) && !FileManager.default.fileExists(atPath: attached.mount.path) { return true }
+            if isAttached(image) == false { return true }
             Thread.sleep(forTimeInterval: 0.05)
         } while Date() < deadline
         return false
     }
 
-    private static func isAttached(_ image: URL) -> Bool {
+    /// Whether `image` is attached (with `device` among its devices, when given); nil when hdiutil
+    /// couldn't say.
+    private static func isAttached(_ image: URL, device: String? = nil) -> Bool? {
         guard let data = try? run("/usr/bin/hdiutil", ["info", "-plist"]),
             let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
             let images = plist["images"] as? [[String: Any]]
-        else { return false }
+        else { return nil }
         let real = image.resolvingSymlinksInPath().path
         return images.contains { entry in
-            guard let path = entry["image-path"] as? String else { return false }
-            return URL(fileURLWithPath: path).resolvingSymlinksInPath().path == real
+            guard let path = entry["image-path"] as? String,
+                URL(fileURLWithPath: path).resolvingSymlinksInPath().path == real
+            else { return false }
+            guard let device else { return true }
+            let entities = entry["system-entities"] as? [[String: Any]] ?? []
+            return entities.contains { $0["dev-entry"] as? String == device }
         }
     }
 
