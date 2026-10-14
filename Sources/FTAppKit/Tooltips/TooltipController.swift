@@ -94,9 +94,14 @@ final class TooltipController {
 /// `.app-tooltip`: 11 pt text on the menu background, 3/8 padding, a hairline edge, radius 6, a soft shadow.
 final class TooltipBubble: NSView {
     private let label = NSTextField(labelWithString: "")
-    private static let padding = NSEdgeInsets(top: 3, left: 8, bottom: 3, right: 8)
-    private static let maxWidth = 420.0
-    private static let lineHeight = 1.35
+    private static var padding: NSEdgeInsets {
+        let layout = DesignTokens.tooltip
+        return NSEdgeInsets(
+            top: layout.paddingTop, left: layout.paddingLeading, bottom: layout.paddingBottom,
+            right: layout.paddingTrailing)
+    }
+    private static var maxWidth: Double { DesignTokens.tooltip.maxWidth }
+    private static var lineHeight: Double { DesignTokens.tooltip.lineHeight }
 
     var text: String {
         get { label.stringValue }

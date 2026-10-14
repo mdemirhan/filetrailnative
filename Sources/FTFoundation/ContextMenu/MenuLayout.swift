@@ -90,7 +90,53 @@ public struct ProgressCardLayout: Equatable, Sendable {
     }
 }
 
+/// `.toolbar-customize-panel` (styles.css) and its push buttons.
+public struct CustomizePanelLayout: Equatable, Sendable {
+    public var maxWidth: Double
+    public var sideMargin: Double
+    public var gapBelowToolbar: Double
+    public var paddingTop: Double
+    public var paddingLeading: Double
+    public var paddingBottom: Double
+    public var paddingTrailing: Double
+    public var columnMin: Double
+    public var rowGap: Double
+    public var columnGap: Double
+    public var chip: Double
+    public var itemPaddingVertical: Double
+    public var itemPaddingHorizontal: Double
+    public var itemGap: Double
+    public var labelLineHeight: Double
+    public var buttonHeight: Double
+    public var buttonMinWidth: Double
+    public var buttonPaddingInline: Double
+
+    static func make() -> CustomizePanelLayout {
+        CustomizePanelLayout(
+            maxWidth: 760, sideMargin: 16, gapBelowToolbar: 8, paddingTop: 16, paddingLeading: 18, paddingBottom: 14,
+            paddingTrailing: 18, columnMin: 76, rowGap: 8, columnGap: 4, chip: 32, itemPaddingVertical: 4,
+            itemPaddingHorizontal: 2, itemGap: 4, labelLineHeight: 1.2, buttonHeight: 24, buttonMinWidth: 76,
+            buttonPaddingInline: 12)
+    }
+}
+
+/// `.app-tooltip` (styles.css).
+public struct TooltipLayout: Equatable, Sendable {
+    public var paddingTop: Double
+    public var paddingLeading: Double
+    public var paddingBottom: Double
+    public var paddingTrailing: Double
+    public var maxWidth: Double
+    public var lineHeight: Double
+
+    static func make() -> TooltipLayout {
+        TooltipLayout(paddingTop: 3, paddingLeading: 8, paddingBottom: 3, paddingTrailing: 8, maxWidth: 420, lineHeight: 1.35)
+    }
+}
+
 extension DesignTokens {
+    public static let customizePanel = CustomizePanelLayout.make()
+    public static let tooltip = TooltipLayout.make()
     public static let menu = MenuLayout.make()
     public static let toast = ToastLayout.make()
     public static let progressCard = ProgressCardLayout.make()

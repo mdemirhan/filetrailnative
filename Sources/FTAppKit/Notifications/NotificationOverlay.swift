@@ -16,7 +16,6 @@ final class NotificationOverlay: NSView {
     private var themeObservation: AppearanceModel.Observation?
     private var cards: [String: ToastCardView] = [:]
     private let card: ProgressCardView
-    private var restBottomKey: String?
 
     static func install(in host: NSView, bars: @escaping () -> [NSView], isEnabled: @escaping () -> Bool)
         -> NotificationOverlay
@@ -66,7 +65,7 @@ final class NotificationOverlay: NSView {
     override func hitTest(_ point: NSPoint) -> NSView? {
         // Only the card's Stop button takes the mouse.
         guard !card.isHidden else { return nil }
-        let hit = card.hitTest(convert(point, to: card.superview))
+        let hit = card.hitTest(convert(point, from: superview))
         return hit === card ? nil : hit
     }
 
@@ -84,8 +83,7 @@ final class NotificationOverlay: NSView {
         } else {
             card.isHidden = true
         }
-        needsLayout = true
-        // The notifications rest above the card: measured again when it comes or goes.
+        // The notifications rest above the card: placed again when it comes or goes.
         needsLayout = true
     }
 
@@ -102,7 +100,6 @@ final class NotificationOverlay: NSView {
             addSubview(view)
             if entry.id == arrived { added = view }
         }
-        layoutSubtreeIfNeeded()
         needsLayout = true
         layoutSubtreeIfNeeded()
         if let added { slideIn(added) }
@@ -129,9 +126,7 @@ final class NotificationOverlay: NSView {
 
     /// `offsetAboveBars`: the gap from the window's bottom edge to just above the bars on screen.
     func offsetAboveBars() -> Double {
-        let tops = bars().filter { $0.window === window && !$0.isHidden && $0.frame.height > 0 }
-            .map { Double(convert($0.bounds, from: $0).minY) }
-        return BottomStack.offsetAboveBars(windowHeight: Double(bounds.height), barTops: tops)
+        BottomStack.offsetAboveBars(windowHeight: Double(bounds.height), barTops: barTops())
     }
 
     override func layout() {
