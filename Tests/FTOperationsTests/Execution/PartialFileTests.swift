@@ -46,7 +46,8 @@ struct PartialFileTests {
     ) async throws -> Run {
         let report = try buildCopyPasteAnalysisReport(
             analysisId: "analysis-1",
-            request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: [Self.source], destinationDirectoryPath: "/target"),
+            request: CopyPasteAnalysisRequest(
+                mode: mode, sourcePaths: [Self.source], destinationDirectoryPath: "/target"),
             fileSystem: fileSystem,
             thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1_000_000_000_000))
         let resolvedNodes = try resolveAnalysisWithPolicy(report: report, policy: Self.skip, fileSystem: fileSystem)
@@ -209,7 +210,8 @@ struct FailedFileInsideAFolderTests {
             }
         }
         let policy = CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
-        let operation = try createResolvedOperation(fileSystem, sources: ["/source/dir"], into: "/target", policy: policy)
+        let operation = try createResolvedOperation(
+            fileSystem, sources: ["/source/dir"], into: "/target", policy: policy)
         let events = await execute(fileSystem, operation, operationId: "op-1", policy: policy)
         let result = try #require(events.last?.result, "The paste didn't finish.")
         return (fileSystem, result, written.all)

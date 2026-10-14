@@ -35,7 +35,8 @@ struct SwiftExecEngine: ExecEngine {
                 fileSystem: fileSystem, writeJournal: journal, createOperationId: { "op-test" },
                 createAnalysisId: { "analysis-test" },
                 // No large-batch warnings: they don't change what is pasted.
-                thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100_000, largeBatchByteThreshold: 1_000_000_000_000)))
+                thresholds: CopyPasteThresholds(
+                    largeBatchItemThreshold: 100_000, largeBatchByteThreshold: 1_000_000_000_000)))
 
         // The review.
         let mode = try Self.mode(scenario.paste.mode)
@@ -50,7 +51,8 @@ struct SwiftExecEngine: ExecEngine {
             update = try service.getCopyPasteAnalysisUpdate(analysisId)
         }
         if update.status != .complete || update.report == nil {
-            log.append(.object(["kind": .string("error"), "message": .string(update.error ?? "analysis \(update.status)")]))
+            log.append(
+                .object(["kind": .string("error"), "message": .string(update.error ?? "analysis \(update.status)")]))
             return try outcome(before, log, places)
         }
         if let report = update.report, !report.issues.isEmpty {

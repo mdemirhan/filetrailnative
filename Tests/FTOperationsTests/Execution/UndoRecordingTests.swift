@@ -393,7 +393,8 @@ struct OtherDiskUndoRecordingTests {
                 let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
                 fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EACCES", "EACCES: permission denied") }
 
-                let run = try await runPaste(mode: .cut, sources: [src + "/a.txt"], into: volume.path, fileSystem: fileSystem)
+                let run = try await runPaste(
+                    mode: .cut, sources: [src + "/a.txt"], into: volume.path, fileSystem: fileSystem)
 
                 #expect(run.result?.status == .failed)
                 #expect(!Disk.list(volume.path).contains("a.txt"))

@@ -44,7 +44,8 @@ func copyFileContents(
         journal != nil && ((try? fileSystem.lstat(sourcePath))?.size ?? 0) >= journaledFileBytes
         ? randomHex(bytes: 8) : nil
     if let journal, let journalId {
-        try journal.add(.partialFile(PartialFileJournalEntry(id: journalId, partialPath: partialPath, finalPath: targetPath)))
+        try journal.add(
+            .partialFile(PartialFileJournalEntry(id: journalId, partialPath: partialPath, finalPath: targetPath)))
     }
     defer {
         // Complete under its name, or cleared away: nothing is left to recover. A part that couldn't be cleared

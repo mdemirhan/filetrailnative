@@ -151,7 +151,8 @@ struct FileWriteJournalTests {
                     ReplaceJournalEntry(
                         id: "0011223344556677", stagingPath: "/d/.f.filetrail-0a1b2c3d", finalPath: "/d/f",
                         sourcePath: "/s/f", moved: false, staged: false, movingCopy: true)))
-            try journal.add(.partialFile(PartialFileJournalEntry(id: "8899aabbccddeeff", partialPath: "/d/.b", finalPath: "/d/b")))
+            try journal.add(
+                .partialFile(PartialFileJournalEntry(id: "8899aabbccddeeff", partialPath: "/d/.b", finalPath: "/d/b")))
 
             #expect(
                 Disk.read(filePath)

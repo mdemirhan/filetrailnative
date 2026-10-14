@@ -122,9 +122,10 @@ struct CopyPasteMoveCleanupTests {
 
         let result = try await move(fileSystem, report, recorder: recorder, answer: .overwrite)
 
-        #expect(recorder.conflicts.map { "\($0.reason.rawValue) \($0.sourcePath)" } == [
-            "source_changed /source/dir/a.txt"
-        ])
+        #expect(
+            recorder.conflicts.map { "\($0.reason.rawValue) \($0.sourcePath)" } == [
+                "source_changed /source/dir/a.txt"
+            ])
         #expect(result.status == .completed)
         #expect(fileSystem.readNode("/target/dir/a.txt")?.size == 50)
         #expect(!fileSystem.exists("/source/dir"))
@@ -146,9 +147,10 @@ struct CopyPasteMoveCleanupTests {
 
         let result = try await move(fileSystem, report, recorder: recorder, answer: .overwrite)
 
-        #expect(recorder.conflicts.map { "\($0.reason.rawValue) \($0.sourcePath)" } == [
-            "source_changed /source/dir/sub"
-        ])
+        #expect(
+            recorder.conflicts.map { "\($0.reason.rawValue) \($0.sourcePath)" } == [
+                "source_changed /source/dir/sub"
+            ])
         #expect(result.status == .completed)
         #expect(fileSystem.readNode("/target/dir/sub/c.txt")?.size == 3)
         #expect(fileSystem.readNode("/target/dir/sub/added.txt")?.size == 4)

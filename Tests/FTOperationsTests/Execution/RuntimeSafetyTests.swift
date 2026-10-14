@@ -358,7 +358,8 @@ struct AddedAfterTheReviewTests {
             #expect(run.result?.status == .partial)
             #expect(
                 run.result?.items.first { $0.sourcePath == f.src + "/F" }?.error
-                    == "\u{201C}late.txt\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn't copied.")
+                    == "\u{201C}late.txt\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn't copied."
+            )
             #expect(Disk.list(f.dst + "/F") == ["a.txt"])
         }
     }
@@ -483,7 +484,8 @@ struct WhatIsPickedTests {
             #expect(run.result?.status == .failed)
             #expect(
                 run.result?.items.map(\.error) == [
-                    "The folder \u{201C}dst\u{201D} no longer exists.", "The folder \u{201C}dst\u{201D} no longer exists.",
+                    "The folder \u{201C}dst\u{201D} no longer exists.",
+                    "The folder \u{201C}dst\u{201D} no longer exists.",
                 ])
             #expect(!Disk.list(f.root).contains("dst"))
         }

@@ -105,7 +105,8 @@ struct CopyPasteExecutionRealFSTests {
                 // The source changes once it is copied.
                 try Disk.write(from, "modified after copy")
             }
-            let operation = try realOperation(fileSystem, mode: .cut, sources: [source + "/data.txt"], into: destination)
+            let operation = try realOperation(
+                fileSystem, mode: .cut, sources: [source + "/data.txt"], into: destination)
 
             await execute(fileSystem, operation, operationId: "realfs-cut-preserve-1")
 
@@ -122,7 +123,8 @@ struct CopyPasteExecutionRealFSTests {
             try Disk.makeDirectories(destination)
             let originalIno = Disk.lstat(source + "/data.txt")?.ino
             let fileSystem = NativeWriteFileSystem()
-            let operation = try realOperation(fileSystem, mode: .cut, sources: [source + "/data.txt"], into: destination)
+            let operation = try realOperation(
+                fileSystem, mode: .cut, sources: [source + "/data.txt"], into: destination)
 
             await execute(fileSystem, operation, operationId: "realfs-rename-1")
 
@@ -143,7 +145,8 @@ struct CopyPasteExecutionRealFSTests {
             let target = 1_592_217_000_000.0
             try setDate(source + "/timed.txt", target)
             let fileSystem = NativeWriteFileSystem()
-            let operation = try realOperation(fileSystem, mode: .cut, sources: [source + "/timed.txt"], into: destination)
+            let operation = try realOperation(
+                fileSystem, mode: .cut, sources: [source + "/timed.txt"], into: destination)
 
             await execute(fileSystem, operation, operationId: "realfs-rename-mtime-1")
 
@@ -197,7 +200,8 @@ struct CopyPasteExecutionRealFSTests {
             let copied = Flag()
             let fileSystem = TestFileSystem()
             fileSystem.copyFileImpl = { _, _, _, _ in copied.set() }
-            let operation = try realOperation(fileSystem, mode: .cut, sources: [source + "/atom.txt"], into: destination)
+            let operation = try realOperation(
+                fileSystem, mode: .cut, sources: [source + "/atom.txt"], into: destination)
 
             await execute(fileSystem, operation, operationId: "realfs-integration-rename-cut")
 
@@ -214,7 +218,8 @@ struct CopyPasteExecutionRealFSTests {
             try Disk.write(source + "/keep.txt", "keep me")
             try Disk.makeDirectories(destination)
             let fileSystem = NativeWriteFileSystem()
-            let operation = try realOperation(fileSystem, mode: .copy, sources: [source + "/keep.txt"], into: destination)
+            let operation = try realOperation(
+                fileSystem, mode: .copy, sources: [source + "/keep.txt"], into: destination)
 
             await execute(fileSystem, operation, operationId: "realfs-integration-copy-utimes")
 

@@ -14,7 +14,8 @@ struct CopyPasteExecutionEdgeTests {
         let deletedSource = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
         ])
-        let deletedOperation = try createResolvedOperation(deletedSource, sources: ["/source/file.txt"], into: "/target")
+        let deletedOperation = try createResolvedOperation(
+            deletedSource, sources: ["/source/file.txt"], into: "/target")
         try deletedSource.rm("/source/file.txt", recursive: false, force: false)
         let deletedRecorder = PasteRecorder()
 
@@ -141,7 +142,8 @@ struct CopyPasteExecutionEdgeTests {
                 fileSystem.mutateNode("/source/Folder") { _ in }
             }
         }
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/Folder"], into: "/target")
+        let operation = try createResolvedOperation(
+            fileSystem, mode: .cut, sources: ["/source/Folder"], into: "/target")
 
         await execute(fileSystem, operation, operationId: "copy-op-3")
 
@@ -161,7 +163,8 @@ struct CopyPasteExecutionEdgeTests {
                 fileSystem.mutateNode("/source/Folder") { $0.mode = 0o700 }
             }
         }
-        let operation = try createResolvedOperation(fileSystem, mode: .cut, sources: ["/source/Folder"], into: "/target")
+        let operation = try createResolvedOperation(
+            fileSystem, mode: .cut, sources: ["/source/Folder"], into: "/target")
 
         await execute(fileSystem, operation)
 

@@ -101,7 +101,8 @@ struct WholeFolderTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}Talk.key\u{201D} wasn't copied because some items in it were skipped or couldn't be copied.")
+                    == "\u{201C}Talk.key\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
+            )
             #expect(Disk.list(f.dst) == [])
         }
     }
@@ -181,7 +182,8 @@ struct WholeFolderTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "\u{201C}Talk.key\u{201D} wasn't copied because some items in it were skipped or couldn't be copied.")
+                    == "\u{201C}Talk.key\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
+            )
             #expect(Disk.list(f.dst) == [])
         }
     }
@@ -222,7 +224,8 @@ struct WholeFolderTests {
             #expect(Disk.list(f.dst + "/F") == ["readme.txt"])
             #expect(
                 run.result?.items.first { $0.sourcePath == f.src + "/F/Tool.app" }?.error
-                    == "\u{201C}Tool.app\u{201D} wasn't copied because some items in it were skipped or couldn't be copied.")
+                    == "\u{201C}Tool.app\u{201D} wasn't copied because some items in it were skipped or couldn't be copied."
+            )
         }
     }
 
@@ -385,7 +388,8 @@ struct LargeFileBeingCopiedTests {
             fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("ENOSPC", "ENOSPC: no space left on device") }
 
             let run = try await runPaste(
-                mode: .copy, sources: [f.src + "/movie.mov"], into: f.dst, fileSystem: fileSystem, writeJournal: journal)
+                mode: .copy, sources: [f.src + "/movie.mov"], into: f.dst, fileSystem: fileSystem, writeJournal: journal
+            )
 
             #expect(run.result?.status == .failed)
             #expect(journal.entries.isEmpty)
@@ -468,7 +472,8 @@ struct AppleDoubleLookalikeTests {
 
             #expect(
                 run.result?.items.first { $0.sourcePath == f.src + "/F" }?.error
-                    == "\u{201C}._new\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn't copied.")
+                    == "\u{201C}._new\u{201D} was added to \u{201C}F\u{201D} after the copy began, so it wasn't copied."
+            )
         }
     }
 
@@ -531,7 +536,8 @@ struct SmallerCasesTests {
             try Disk.write(f.dst + "/a.txt", "a")
             try Disk.write(f.src + "/x/a copy.txt", "other")
 
-            let run = try await runPaste(mode: .copy, sources: [f.dst + "/a.txt", f.src + "/x/a copy.txt"], into: f.dst)
+            let run = try await runPaste(
+                mode: .copy, sources: [f.dst + "/a.txt", f.src + "/x/a copy.txt"], into: f.dst)
 
             #expect(run.report.issues.isEmpty)
             #expect(run.result?.status == .completed)
@@ -578,7 +584,8 @@ struct SmallerCasesTests {
 
             #expect(
                 run.result?.items.first?.error
-                    == "Its items were moved, but the original \u{201C}F\u{201D} changed during the move, so it was kept.")
+                    == "Its items were moved, but the original \u{201C}F\u{201D} changed during the move, so it was kept."
+            )
             #expect(Disk.list(f.dst + "/F") == ["a.txt"])
         }
     }
@@ -597,7 +604,8 @@ struct SmallerCasesTests {
                 try base.copyFile(from, to, stop: stop, onProgress: progress)
             }
 
-            let run = try await runPaste(mode: .copy, sources: [f.src + "/report.pdf"], into: f.dst, fileSystem: fileSystem)
+            let run = try await runPaste(
+                mode: .copy, sources: [f.src + "/report.pdf"], into: f.dst, fileSystem: fileSystem)
 
             #expect(run.result?.status == .completed)
             #expect(writtenAs.all.count == 1)

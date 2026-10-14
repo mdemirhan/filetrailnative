@@ -119,10 +119,12 @@ struct CopyPasteExecutionIntegrationTests {
         fileSystem.addFile("/target/a.txt", .file(size: 7))
         let hidden = OSAllocatedUnfairLock(initialState: true)
         fileSystem.lstatImpl = { path in
-            let hide = path == "/target/a.txt" && hidden.withLock { value in
-                defer { value = false }
-                return value
-            }
+            let hide =
+                path == "/target/a.txt"
+                && hidden.withLock { value in
+                    defer { value = false }
+                    return value
+                }
             if hide {
                 throw codedError("ENOENT", "ENOENT: \(path)")
             }

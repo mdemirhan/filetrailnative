@@ -76,8 +76,9 @@ private func runServicePaste(
     afterAnalysis?()
     let operationId = try service.startCopyPaste(
         CopyPasteExecutionRequest(
-            analysisId: analysisId, policy: policy, overrides: report.flatMap { report in overrides?(report) }))
-        .operationId
+            analysisId: analysisId, policy: policy, overrides: report.flatMap { report in overrides?(report) })
+    )
+    .operationId
     func result() -> CopyPasteOperationResult? {
         log.events.first { $0.operationId == operationId && $0.result != nil }?.result
     }
@@ -335,7 +336,8 @@ struct WriteServiceRuntimeCoordinationTests {
             }
         }
         _ = try service.startCopyPasteAnalysis(
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
+            CopyPasteAnalysisRequest(
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
         #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
         fileSystem.addFile("/target/file.txt", .file(size: 99))
 
@@ -360,7 +362,8 @@ struct WriteServiceRuntimeCoordinationTests {
         _ = service.subscribe { log.record($0) }
 
         _ = try service.startCopyPasteAnalysis(
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
+            CopyPasteAnalysisRequest(
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
         #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
         _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: "analysis-1", policy: .defaultCopyPaste))
 

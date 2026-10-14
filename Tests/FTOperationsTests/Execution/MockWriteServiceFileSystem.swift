@@ -74,8 +74,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     private var nextMtimeMs: Double = 1_000
 
     var realpathOverrides: [String: String] = [:]
-    var copyFileImpl:
-        ((String, String, StopSignal?, (@Sendable (Int64) -> Void)?) throws -> Void)?
+    var copyFileImpl: ((String, String, StopSignal?, (@Sendable (Int64) -> Void)?) throws -> Void)?
     var utimesImpl: ((String, Double, Double) throws -> Void)?
     var chmodImpl: ((String, UInt32) throws -> Void)?
     /// Every rename goes through it, the exclusive ones included (see renameExclusive).
@@ -349,7 +348,8 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
             }
             for (path, node) in moving {
                 guard let node else { continue }
-                let rest = String(String.UnicodeScalarView(path.unicodeScalars.dropFirst(normalizedOld.unicodeScalars.count)))
+                let rest = String(
+                    String.UnicodeScalarView(path.unicodeScalars.dropFirst(normalizedOld.unicodeScalars.count)))
                 set(sameText(path, normalizedOld) ? normalizedNew : normalizedNew + rest, node)
             }
         }
@@ -509,8 +509,8 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         let prefix = normalized == "/" ? "/" : normalized + "/"
         var children: [String] = []
         var seen = Set<NameKeys.Exact>()
-        for candidate in order.compactMap({ $0 }) where !sameText(candidate, normalized) && startsWith(candidate, prefix)
-        {
+        for candidate in order.compactMap({ $0 })
+        where !sameText(candidate, normalized) && startsWith(candidate, prefix) {
             let rest = String(String.UnicodeScalarView(candidate.unicodeScalars.dropFirst(prefix.unicodeScalars.count)))
             if let name = rest.split(separator: "/", omittingEmptySubsequences: false).first.map(String.init),
                 !name.isEmpty, seen.insert(NameKeys.Exact(name)).inserted

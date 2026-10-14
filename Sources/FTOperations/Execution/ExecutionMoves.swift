@@ -200,7 +200,8 @@ private func describeLeftInMovedFolder(
     let folder = NodePath.basename(sourcePath)
     let named = newItems.count == 1 ? "\u{201C}\(newItems[0])\u{201D} was" : "\(newItems.count) items were"
     let left = newItems.count == 1 ? "it was" : "they were"
-    return "\(named) added to \u{201C}\(folder)\u{201D} while it was being moved, so \(left) left in the original \u{201C}\(folder)\u{201D}."
+    return
+        "\(named) added to \u{201C}\(folder)\u{201D} while it was being moved, so \(left) left in the original \u{201C}\(folder)\u{201D}."
 }
 
 /// Items put into a folder after the review were never part of the copy: they are named, as for a move, so

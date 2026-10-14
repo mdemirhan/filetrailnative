@@ -132,7 +132,8 @@ struct CopyPasteExecutionTests {
         let moved = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
         ])
-        let moveOperation = try createResolvedOperation(moved, mode: .cut, sources: ["/source/file.txt"], into: "/target")
+        let moveOperation = try createResolvedOperation(
+            moved, mode: .cut, sources: ["/source/file.txt"], into: "/target")
 
         await execute(moved, moveOperation, operationId: "cut-op-1")
 
@@ -273,7 +274,8 @@ struct CopyPasteExecutionTests {
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/file.txt", .file(size: 5)),
             ("/target", .directory()), ("/target/Folder", .directory()), ("/target/Folder/file.txt", .file(size: 1)),
         ])
-        let cutOperation = try createResolvedOperation(cutFolder, mode: .cut, sources: ["/source/Folder"], into: "/target")
+        let cutOperation = try createResolvedOperation(
+            cutFolder, mode: .cut, sources: ["/source/Folder"], into: "/target")
 
         await execute(cutFolder, cutOperation, operationId: "copy-op-2")
 

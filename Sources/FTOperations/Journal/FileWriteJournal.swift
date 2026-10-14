@@ -91,8 +91,9 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
 
     static func readEntries(_ filePath: String) -> [WriteJournalEntry] {
         guard let data = FileManager.default.contents(atPath: filePath) else { return [] }
-        if let text = String(data: data, encoding: .utf8), let parsed = try? JSONSerialization.jsonObject(
-            with: Data(text.utf8), options: [.fragmentsAllowed]), let list = parsed as? [Any]
+        if let text = String(data: data, encoding: .utf8),
+            let parsed = try? JSONSerialization.jsonObject(
+                with: Data(text.utf8), options: [.fragmentsAllowed]), let list = parsed as? [Any]
         {
             return list.compactMap { WriteJournalEntry(json: $0) }
         }

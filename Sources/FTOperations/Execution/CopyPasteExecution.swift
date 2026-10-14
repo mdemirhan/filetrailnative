@@ -315,7 +315,8 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
                         context.getFlags, rootError(error),
                         [
                             currentNode.node.sourcePath, currentNode.destinationPath,
-                            NodePath.dirname(currentNode.destinationPath), NodePath.dirname(currentNode.node.sourcePath),
+                            NodePath.dirname(currentNode.destinationPath),
+                            NodePath.dirname(currentNode.node.sourcePath),
                         ]) ?? error
                 throw PlacedError.placed(explained, at: currentNode.destinationPath)
             }

@@ -226,7 +226,8 @@ func createResolvedOperation(
 /// `executeCopyPasteFromAnalysis` on a reviewed paste, with the test's answers; returns its events.
 @discardableResult
 func execute(
-    _ fileSystem: any WriteServiceFileSystem, _ operation: (report: CopyPasteAnalysisReport, resolvedNodes: [ResolvedCopyPasteNode]),
+    _ fileSystem: any WriteServiceFileSystem,
+    _ operation: (report: CopyPasteAnalysisReport, resolvedNodes: [ResolvedCopyPasteNode]),
     mode: CopyPasteMode? = nil, operationId: String = "copy-op-1",
     policy: CopyPastePolicy = CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip),
     overrides: [CopyPasteNodeOverride] = [], signal: StopSignal = StopSignal(),
