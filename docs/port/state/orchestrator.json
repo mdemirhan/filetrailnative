@@ -7,7 +7,7 @@
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Paused by the user. On resume, before any batch: UI test reduction steps 3-5 (userRequests, 2026-10-14), with the user's approval of the keep/convert/drop list; then the first UI checkpoint run (covers P5-06/P5-09's pending window checks); resume P5-05 from port/P5-05; decide on port/capture-once; then schedule.py ready.",
+  "nextAction": "Paused by the user. On resume, before any batch: UI test reduction steps 3-7 (userRequests, 2026-10-14), with the user's approval of the keep/convert/drop list; then the first UI checkpoint run (covers P5-06/P5-09's pending window checks); resume P5-05 from port/P5-05; decide on port/capture-once; then schedule.py ready.",
   "pause": {
     "requested": true,
     "reason": "stopped by user: no more batches; needs the machine for other work",
@@ -3179,8 +3179,8 @@
     },
     {
       "at": "2026-10-14",
-      "request": "UI test policy: no window runs during development; window checks only at checkpoints (done 2026-10-14: batch.js has no window runs; ui-check.js at phase ends). On resume, before any batch: (3) cut the ~400 window tests to an e2e-sized set of about 30-50 by turning layout/model ones into windowless tests; (4) cut the capture scenarios to about 15-20 representative ones for checkpoints, the full set for the final parity sweep, original-app captures once; (5) an agent proposes the list (keep / make windowless / drop) and the user approves it before anything is deleted. Don't resume batches until the user says so.",
-      "status": "steps 1-2 done; 3-5 on resume"
+      "request": "UI test policy: no window runs during development; window checks only at checkpoints (done 2026-10-14: batch.js has no window runs; ui-check.js at phase ends). On resume, before any batch: (3) cut the ~400 window tests to an e2e-sized set of about 30-50 by turning layout/model ones into windowless tests; (4) cut the capture scenarios to about 15-20 representative ones for checkpoints, the full set for the final parity sweep, original-app captures once; (5) an agent proposes the list (keep / make windowless / drop) and the user approves it before anything is deleted. Don't resume batches until the user says so. Also on resume (user 2026-10-14): (6) while iterating, agents run only the tests of the area they change (scripts/ci.sh --scope <target or suite>) and the full windowless suite once before they finish; put this in batch.js and the preamble. (7) in the same review as (5), an agent flags near-duplicate ported tests (cases that check the same behavior with another value) for the user to decide; nothing is removed without approval, and the bar stays the original's test coverage.",
+      "status": "steps 1-2 done; 3-7 on resume"
     }
   ],
   "acceptance": {
