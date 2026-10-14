@@ -107,6 +107,30 @@ public final class WriteService: Sendable {
         return "analysis-\(state.analysisSequence)"
     }
 
+    /// Room for walking what is pasted, which goes one call deeper for each folder level: a path of 1,024 bytes
+    /// can be 500 folders deep, more than a task's own stack takes.
+    static let deepWalkStackSize = 16 * 1024 * 1024
+
+    /// Runs `body` on a thread of its own, off the caller's, with room for deep folders.
+    static func runWithRoomForDepth(name: String, _ body: @escaping @Sendable () -> Void) {
+        let thread = Thread(block: body)
+        thread.stackSize = deepWalkStackSize
+        thread.name = name
+        thread.qualityOfService = .userInitiated
+        thread.start()
+    }
+
+    /// `body`'s result, worked out on a thread with room for deep folders.
+    static func withRoomForDepth<T: Sendable>(name: String, _ body: @escaping @Sendable () throws -> T) async throws
+        -> T
+    {
+        try await withCheckedThrowingContinuation { continuation in
+            runWithRoomForDepth(name: name) {
+                continuation.resume(with: Result { try body() })
+            }
+        }
+    }
+
     static func unknownAnalysis(_ analysisId: String) -> OperationError {
         OperationError("Unknown copy/paste analysis job: \(analysisId)")
     }

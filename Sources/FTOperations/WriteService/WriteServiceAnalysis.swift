@@ -4,9 +4,6 @@ import FTFoundation
 import Foundation
 
 extension WriteService {
-    /// Room for the review's walk, which goes one call deeper for each folder level of what is pasted.
-    static let analysisStackSize = 16 * 1024 * 1024
-
     /// Starts reviewing a paste. Starting drops the finished analyses, except those in `keep`: reviews still open
     /// in other windows, which can still be pasted from. Refused while a write runs or another analysis does.
     public func startCopyPasteAnalysis(_ request: CopyPasteAnalysisRequest, keep: Set<String> = [])
@@ -58,7 +55,7 @@ extension WriteService {
     private func runAnalysisJob(_ job: AnalysisJob) {
         let fileSystem = fileSystem
         let thresholds = thresholds
-        let thread = Thread { [self] in
+        Self.runWithRoomForDepth(name: "FileTrail paste review") { [self] in
             let outcome = Result {
                 try buildCopyPasteAnalysisReport(
                     analysisId: job.analysisId, request: job.request, fileSystem: fileSystem, thresholds: thresholds,
@@ -66,10 +63,6 @@ extension WriteService {
             }
             finishAnalysisJob(job, outcome)
         }
-        thread.stackSize = Self.analysisStackSize
-        thread.name = "FileTrail paste review"
-        thread.qualityOfService = .userInitiated
-        thread.start()
     }
 
     private func finishAnalysisJob(_ job: AnalysisJob, _ outcome: Result<CopyPasteAnalysisReport, any Error>) {

@@ -76,8 +76,11 @@ extension WriteService {
             guard job.status == .complete, let report = job.report else {
                 throw OperationError("Copy/paste analysis is not ready.")
             }
-            let resolvedNodes = try resolveAnalysisWithPolicy(
-                report: report, policy: request.policy, overrides: request.overrides ?? [], fileSystem: fileSystem)
+            let fileSystem = fileSystem
+            let resolvedNodes = try await Self.withRoomForDepth(name: "FileTrail paste plan") {
+                try resolveAnalysisWithPolicy(
+                    report: report, policy: request.policy, overrides: request.overrides ?? [], fileSystem: fileSystem)
+            }
             try await executeCopyPaste(
                 CopyPasteExecution(
                     operationId: operationId, analysisId: request.analysisId, report: report, policy: request.policy,
