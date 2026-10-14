@@ -44,11 +44,11 @@ You are part of a team porting File Trail, a macOS file browser, from Electron/T
 Anything that launches the app or puts a window on screen (`tools/capture/*`, `tools/bench/run.sh`, `FILETRAIL_GUI_TESTS=1` tests, a built app) must run under the shared lock, so only one such run happens at a time on this Mac:
 `lockf -k ~/Library/Caches/filetrail-port/gui.lock <command>`
 
-Keep window runs few and narrow. The lock is shared by every agent on this Mac, and each full run puts dozens of windows on the user's screen.
-- Run the full `FTAppKitTests` GUI suite, a full `tools/capture/run.sh --tier wp` or `--acceptance` set, or the bench only when your role's prompt lists that exact command for you to run (the window checker, and the gate runners of batches started before 2026-10-14 evening). Builders and fixers otherwise run none of them, and run each listed one once, at the end.
-- While you work, run only what you changed: your own GUI suites (`swift test --filter FTAppKitTests.<YourSuite>`) and your own scenarios (`tools/capture/run.sh <scenario> …`), each once when it's ready rather than after every edit.
-- Don't rerun anything to see whether a flake goes away; rerun the one test.
-- Take the lock once per run, never around a loop or a sweep of many runs, so other agents can get in between. One hold should last minutes, not tens of minutes.
+No window runs during development (user, 2026-10-14). The original runs its UI tests only in CI; the port runs its window checks only at checkpoints (phase ends, before the user's hands-on checks) through `tools/orchestrator/workflows/ui-check.js`.
+- Builders, fixers, gate runners, reviewers and integrators never run the full `FTAppKitTests` GUI suite, `tools/capture/run.sh` (any tier, scenario set or `--acceptance`) or the bench, whatever a gate list or brief says. Your gate is the windowless commands.
+- If you changed window code, you may run the one or two GUI tests you touched (`swift test --filter FTAppKitTests.<Suite>/<test>`), once, under the lock. New scenarios and GUI tests you add are first run at the next checkpoint.
+- A fixer working on a checkpoint failure reruns only that one test or scenario, under the lock.
+- Take the lock once per run, never around a loop. Don't rerun anything to see whether a flake goes away.
 
 ## Messages during your run
 

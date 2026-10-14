@@ -7,7 +7,7 @@
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Stopped by the user. On resume: settle the UI test policy first (the user asked to reconsider the 80 capture scenarios and when UI tests run), then run the pending window checks of P5-06/P5-09, resume P5-05 from port/P5-05, finish or drop port/capture-once and the flaky-test fix, then schedule.py ready.",
+  "nextAction": "Paused by the user. On resume, before any batch: UI test reduction steps 3-5 (userRequests, 2026-10-14), with the user's approval of the keep/convert/drop list; then the first UI checkpoint run (covers P5-06/P5-09's pending window checks); resume P5-05 from port/P5-05; decide on port/capture-once; then schedule.py ready.",
   "pause": {
     "requested": true,
     "reason": "stopped by user: no more batches; needs the machine for other work",
@@ -3153,7 +3153,7 @@
       "at": "2026-10-14",
       "seenIn": "W2-U2 stop (user)",
       "issue": "TODO: P5-06 and P5-09 merged without their window checks: the FTAppKitTests GUI suite, their capture scenarios (P5-06: path bar/status/Info; P5-09: 15x-159 context menu, toasts, Quick Look), acceptance a08-path-bar-history and a11-folder-sizes, and the visual review. P5-06 was mid-build (its last GUI fixes were unverified; ToolbarGUITests togglesSayWhatAClickWillDo... was failing when stopped). P5-09's fix 1 (4266725) fixed that ToolbarGUITests failure but its window gate was not rerun. Run these in the next UI test pass and fix what fails.",
-      "owner": "next UI test pass (see the UI test policy discussion)",
+      "owner": "first UI checkpoint run (ui-check.js), at the P5 phase end or on resume",
       "closed": false
     },
     {
@@ -3176,6 +3176,11 @@
     {
       "at": "2026-10-14",
       "request": "Wave-1 gate: approved D-006..D-014; run follow-ups now as W1-H; divider line fixed in P5-01."
+    },
+    {
+      "at": "2026-10-14",
+      "request": "UI test policy: no window runs during development; window checks only at checkpoints (done 2026-10-14: batch.js has no window runs; ui-check.js at phase ends). On resume, before any batch: (3) cut the ~400 window tests to an e2e-sized set of about 30-50 by turning layout/model ones into windowless tests; (4) cut the capture scenarios to about 15-20 representative ones for checkpoints, the full set for the final parity sweep, original-app captures once; (5) an agent proposes the list (keep / make windowless / drop) and the user approves it before anything is deleted. Don't resume batches until the user says so.",
+      "status": "steps 1-2 done; 3-5 on resume"
     }
   ],
   "acceptance": {
