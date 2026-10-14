@@ -39,8 +39,21 @@ extension ExplorerWindowGUITests {
         func rooted(_ tab: MainWindowController, _ harness: ExplorerHarness) async {
             tab.perform(.rootTreeAtSelection)
             await settle()
-            _ = await waitUntil { self.sidebar(tab).treeRootPath == harness.folder.path }
+            _ = await waitUntil { self.sidebar(tab).treeRootPath == listed(harness, "") }
             harness.layout(tab)
+        }
+
+        /// The folder as the tree names it: the listing resolves the temporary folder's symlinked `/var`.
+        func listed(_ harness: ExplorerHarness, _ name: String) -> String {
+            let path = name.isEmpty ? harness.folder.path : harness.folder.path + "/" + name
+            guard let resolved = realpath(path, nil) else { return path }
+            defer { free(resolved) }
+            return String(cString: resolved)
+        }
+
+        /// Whether a favorite row is on screen (the tree may hold a folder named like one).
+        func hasFavorites(_ controller: SidebarViewController) -> Bool {
+            cells(controller).contains { $0.state?.item.kind == .favorite }
         }
 
         func label(_ cell: SidebarItemCell) -> String { cell.state?.item.label ?? "" }
@@ -67,7 +80,7 @@ extension ExplorerWindowGUITests {
         // T-cdf3463c T-2caf696c T-9aa3fb64 T-01d458a9 F-728 F-729 B-TREE-001 B-TREE-004
         @Test func drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree() async throws {
             let harness = try ExplorerHarness()
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await setPlacement(tab, "separate", harness)
             let controller = sidebar(tab)
             #expect(labels(controller).prefix(3) == ["Applications", "Desktop", "Documents"])
@@ -83,20 +96,20 @@ extension ExplorerWindowGUITests {
         // T-69575bf4 F-733 B-TREE-007 B-TREE-008
         @Test func rowsHaveTheOriginalsHeightIndentAndPadding() async throws {
             let harness = try ExplorerHarness()
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await setPlacement(tab, "integrated", harness)
             let controller = sidebar(tab)
             let layout = controller.layout
             let all = cells(controller)
             let favorite = try #require(all.first { $0.state?.item.kind == .favorite })
             let heading = try #require(all.first { $0.state?.item.kind == .favoritesRoot })
-            #expect(favorite.box.frame.height == layout.rowHeight)
-            #expect(favorite.box.frame.minX == layout.rowMarginX)
+            #expect(Double(favorite.box.frame.height) == layout.rowHeight)
+            #expect(Double(favorite.box.frame.minX) == layout.rowMarginX)
             // A favorite is a level below its heading: one indent further to the right.
             let favoriteIcon = favorite.box.subviews.first { $0.accessibilityIdentifier() == "sidebar.row.icon" }
             let headingIcon = heading.box.subviews.first { $0.accessibilityIdentifier() == "sidebar.row.icon" }
             let difference = (favoriteIcon?.frame.minX ?? 0) - (headingIcon?.frame.minX ?? 0)
-            #expect(difference == layout.indent)
+            #expect(Double(difference) == layout.indent)
             #expect(layout.rowHeight == 26)
             await harness.close()
         }
@@ -104,7 +117,7 @@ extension ExplorerWindowGUITests {
         // T-8722d999 T-945f8c88 F-736 B-TREE-070 B-TREE-012
         @Test func theChevronExpandsAFolderAndAnAliasHasNone() async throws {
             let harness = try ExplorerHarness()
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await rooted(tab, harness)
             let controller = sidebar(tab)
             #expect(await waitUntil { self.labels(controller).contains("Alpha") })
@@ -118,37 +131,39 @@ extension ExplorerWindowGUITests {
         // T-9f474d2b T-fc0da8c2 T-6625a938 F-740 B-TREE-108 B-TREE-111 B-TREE-113
         @Test func theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar() async throws {
             let harness = try ExplorerHarness()
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await rooted(tab, harness)
             let controller = sidebar(tab)
             #expect(await waitUntil { self.labels(controller).contains("Alpha") })
             tab.perform(.focusTreePane)
             #expect(controller.isFocused)
-            controller.model.selectItem(.filesystem(harness.folder.path + "/Alpha"))
+            controller.model.selectItem(.filesystem(listed(harness, "Alpha")))
+            // The click's own navigation finishes reading the folder before a key comes after it.
+            await settle()
             key(124, "\u{F703}", in: tab.window)  // →
             #expect(await waitUntil { self.labels(controller).contains("Inner") })
             key(125, "\u{F701}", in: tab.window)  // ↓
-            #expect(controller.model.selected == .filesystem(harness.folder.path + "/Alpha/Inner"))
+            #expect(controller.model.selected == .filesystem(listed(harness, "Alpha/Inner")))
             key(123, "\u{F702}", in: tab.window)  // ←
-            #expect(controller.model.selected == .filesystem(harness.folder.path + "/Alpha"))
+            #expect(controller.model.selected == .filesystem(listed(harness, "Alpha")))
             await harness.close()
         }
 
         // T-8cb3e771 T-764e53b9 F-730 B-TREE-006 B-TREE-066
         @Test func aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed() async throws {
             let harness = try ExplorerHarness()
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await setPlacement(tab, "separate", harness)
             let controller = sidebar(tab)
-            #expect(labels(controller).contains("Applications"))
+            #expect(hasFavorites(controller))
             controller.model.toggleFavorites()
             await settle()
             harness.layout(tab)
-            #expect(!labels(controller).contains("Applications"))
+            #expect(!hasFavorites(controller))
             #expect(tab.favoritesExpanded == false)
             controller.model.toggleFavorites()
             await settle()
-            #expect(labels(controller).contains("Applications"))
+            #expect(hasFavorites(controller))
             await harness.close()
         }
 
@@ -164,7 +179,7 @@ extension ExplorerWindowGUITests {
                     canEject: false, disk: nil),
             ]
             defer { SidebarVolumes.shared.override = nil }
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await setPlacement(tab, "separate", harness)
             let controller = sidebar(tab)
             let rows = cells(controller)
@@ -186,7 +201,7 @@ extension ExplorerWindowGUITests {
         // T-ace3a16c T-263ef807 T-5ac955ab B-TREE-064 B-TREE-065
         @Test func aRightClickRingsOnlyThatRowAndLeavesTheSelection() async throws {
             let harness = try ExplorerHarness()
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await rooted(tab, harness)
             let controller = sidebar(tab)
             #expect(await waitUntil { self.labels(controller).contains("Beta") })
@@ -207,7 +222,7 @@ extension ExplorerWindowGUITests {
             #expect(outline.menu(for: event) != nil)
             #expect(asked == ["Beta"])
             #expect(controller.model.selected == selected)
-            #expect(controller.model.menuTarget?.path == harness.folder.path + "/Beta")
+            #expect(controller.model.menuTarget?.path == listed(harness, "Beta"))
             controller.model.menuTarget = nil
             await harness.close()
         }
@@ -215,7 +230,7 @@ extension ExplorerWindowGUITests {
         // T-04cd2bf4 T-54e05341 T-11c34a3c B-TREE-060 B-TREE-061
         @Test func pressingEmptySpaceClearsTheSelection() async throws {
             let harness = try ExplorerHarness()
-            let tab = try await harness.open()
+            let tab = try await harness.open(listed(harness, ""))
             await rooted(tab, harness)
             let controller = sidebar(tab)
             #expect(await waitUntil { self.labels(controller).contains("Alpha") })
