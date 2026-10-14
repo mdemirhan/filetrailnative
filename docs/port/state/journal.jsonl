@@ -125,3 +125,4 @@
 {"at": "2026-10-14T17:45:33+00:00", "event": "next", "text": "Paused (user): W2-U2 (P5-05, P5-06, P5-09) finishing; then stop. On resume: P3-05 (P3 track); UI [P5-04] after P5-05, P5-07 after P5-04, P5-08 after P3-05; wave-3 briefs once P3-05 and P5-05 merge; tab-bar/NSToolbar WP after this phase."}
 {"at": "2026-10-14T17:51:19+00:00", "event": "add-batch", "batch": "W2-U3", "wps": ["P5-05"], "estimatedAgents": 6}
 {"at": "2026-10-14T17:51:19+00:00", "event": "set-batch", "batch": "W2-U3", "status": "running", "runId": null}
+{"at": "2026-10-14T17:51:40+00:00", "event": "set-batch", "batch": "W2-U3", "status": "running", "runId": "wf_037c29df-c80"}
