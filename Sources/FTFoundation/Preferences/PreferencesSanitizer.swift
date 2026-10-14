@@ -33,9 +33,6 @@ public struct BatchRenameSanitizers: Sendable {
                     .object(["name": .string(preset.name), "settings": BatchRename.node(of: preset.settings)])
                 })
         })
-
-    /// The name the readers' default arguments use; it is the real checks now.
-    public static let passthrough = standard
 }
 
 /// Checks everything a saved state holds: a value that is missing or invalid takes its default.
@@ -193,7 +190,7 @@ public enum PreferencesSanitizer {
     /// `sanitizePreferences`: every saved value is checked; one that is missing or invalid takes its default from
     /// `defaults` (what a new install starts with, or the preferences a change is applied to).
     public static func sanitize(
-        _ value: JSONNode?, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .passthrough
+        _ value: JSONNode?, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .standard
     ) -> AppPreferences {
         guard let record = value?.object else { return defaults }
         let global = AppPreferences.defaults()

@@ -66,7 +66,7 @@ public enum AppStateReader {
     /// empty for anything that is not an object; a file that is not JSON is the caller's to treat the same way
     /// (`read(data:)` throws for it).
     public static func read(
-        _ parsed: JSONNode, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .passthrough
+        _ parsed: JSONNode, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .standard
     ) -> AppState {
         guard let file = parsed.object else { return AppState() }
         let preferences = PreferencesSanitizer.sanitize(
@@ -94,7 +94,7 @@ public enum AppStateReader {
 
     /// `readState` for the file's bytes: throws when they are not JSON.
     public static func read(
-        data: Data, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .passthrough
+        data: Data, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .standard
     ) throws -> AppState {
         read(try JSONNode.parse(data), defaults: defaults, batchRename: batchRename)
     }
@@ -152,7 +152,7 @@ extension PreferencesSanitizer {
     /// is not valid for its key gives the key's default from `defaults`, as in the original's `updatePreferences`.
     public static func apply(
         _ patch: [String: JSONNode], to current: AppPreferences, defaults: AppPreferences,
-        batchRename: BatchRenameSanitizers = .passthrough
+        batchRename: BatchRenameSanitizers = .standard
     ) -> AppPreferences {
         var record = (try? JSONNode.of(current))?.object ?? [:]
         for (key, value) in patch {

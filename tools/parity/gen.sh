@@ -27,6 +27,18 @@ if ((check == 0)); then
   exit 0
 fi
 
+# Machine-local suites (kind strings, folder sizes) differ per machine, so --check does not compare them.
+checked=()
+for suite in "${suites[@]}"; do
+  if grep -qE '^export const machineLocal = true' "tools/parity/golden/$suite.ts" 2>/dev/null; then
+    echo "skip $suite (machine-local)"
+  else
+    checked+=("$suite")
+  fi
+done
+suites=(${checked[@]+"${checked[@]}"})
+if ((${#suites[@]} == 0)); then echo "no checkable suites"; exit 0; fi
+
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 bun tools/parity/lib/golden.ts --out "$tmp" "${suites[@]}"
