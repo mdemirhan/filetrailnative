@@ -38,7 +38,7 @@ final class SidebarViewController: NSViewController, NSOutlineViewDataSource, NS
         scroll.drawsBackground = false
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
-        scroll.setAccessibilityIdentifier("sidebar")
+        // The window's sidebar cell is "sidebar" (P5-01): the tree pane from the window's top to its bottom.
         view = scroll
 
         let center = NSWorkspace.shared.notificationCenter

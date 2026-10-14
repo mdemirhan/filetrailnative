@@ -13,12 +13,6 @@ struct NavigationTiming: Sendable {
     let display: Duration
 }
 
-extension NSToolbarItem.Identifier {
-    static let navigation = Self("navigation")
-    static let viewMode = Self("viewMode")
-    static let search = Self("search")
-}
-
 /// The window of one tab. Its close button and Close Window close the whole explorer window, as the original's close
 /// button does; the close button of a tab in the tab bar closes the tab.
 final class ExplorerTabWindow: NSWindow {
@@ -71,6 +65,13 @@ final class ExplorerTabWindow: NSWindow {
         }
     }
 
+    /// The app's own menus, tooltips and the toolbar's customizing see the window's events first, whether they come
+    /// from the system or are sent to the window directly.
+    override func sendEvent(_ event: NSEvent) {
+        if WindowEventRouting.intercept(event, in: self) { return }
+        super.sendEvent(event)
+    }
+
     // The system's tab commands go through the app's own, so the busy, sheet and 100-tab rules hold.
     override func moveTabToNewWindow(_ sender: Any?) {
         explorerTab?.perform(.moveTabToNewWindow)
@@ -83,11 +84,11 @@ final class ExplorerTabWindow: NSWindow {
 
 /// One tab of an explorer window (the original's tab): sidebar, toolbar, current folder and its history, and how it
 /// shows its folder. Each tab is a window of its own, in the native tab group of its explorer window.
-final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolbarDelegate,
-    NSMenuItemValidation
-{
+final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuItemValidation {
     enum HistoryMove {
         case push, back, forward, none
+        /// A jump within the history (the Back and Forward hold menus): to `index` of `paths`, adding nothing.
+        case jump(paths: [String], index: Int)
     }
 
     static let logsTimings = ProcessInfo.processInfo.environment["FILETRAIL_TIMING"] != nil
@@ -121,6 +122,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
 
     private let sidebar = SidebarViewController()
     private let browser = BrowserViewController()
+    /// The window's grid: sidebar, content, Info panel and the toolbar.
+    let workspace: WorkspaceView
+    private let infoPanel = InfoPanelView()
+    /// Customize Toolbar, while it is on.
+    private(set) var customizer: ToolbarCustomizer?
+    private var observers: [(token: Weak<ExplorerWindowObservation>, handler: (ExplorerWindowChange) -> Void)] = []
     private var backStack: [URL] = []
     private var forwardStack: [URL] = []
     private var navigationToken = 0
@@ -129,11 +136,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     /// The tab was sent to another folder while in the background (its folder moved, or its disk went): the folder
     /// is read when the tab is next shown.
     private(set) var stale = false
-
-    private var backItem: NSToolbarItem?
-    private var forwardItem: NSToolbarItem?
-    private var viewModeItem: NSToolbarItemGroup?
-    private var searchItem: NSSearchToolbarItem?
 
     /// A tab on `tab`'s folder, with `history` (none: just the folder). It reads its folder when it is first shown,
     /// or at once with `loadNow`.
@@ -159,22 +161,29 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
             contentRect: NSRect(origin: .zero, size: Self.defaultContentSize),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered, defer: false)
-        window.toolbarStyle = .unified
+        WindowChrome.configure(window)
         window.tabbingIdentifier = "FileTrailBrowser"
         window.minSize = Self.minimumSize
         window.isReleasedWhenClosed = false
+        let layout = WindowMetrics.standard.explorer
+        workspace = WorkspaceView(
+            panes: PaneWidths(
+                treeWidth: layout.defaultTreeWidth, inspectorWidth: layout.defaultInspectorWidth, layout: layout))
         super.init(window: window)
         window.explorerTab = self
         window.delegate = self
 
-        let split = NSSplitViewController()
-        let sidebarItem = NSSplitViewItem(sidebarWithViewController: sidebar)
-        sidebarItem.minimumThickness = CGFloat(AppPreferenceLimits.treeWidthRange.lowerBound)
-        sidebarItem.maximumThickness = CGFloat(AppPreferenceLimits.treeWidthRange.upperBound)
-        split.addSplitViewItem(sidebarItem)
-        split.addSplitViewItem(NSSplitViewItem(viewController: browser))
-        window.contentViewController = split
-        split.view.setAccessibilityIdentifier("window.content")
+        window.contentView = workspace
+        workspace.sidebarCell.content = sidebar.view
+        workspace.mainCell.content = browser.view
+        workspace.inspectorCell.content = infoPanel
+        workspace.onWidthsChosen = { [weak self] panes in
+            self?.updatePanels {
+                $0.treeWidth = Int(panes.preferredTreeWidth)
+                $0.inspectorWidth = Int(panes.preferredInspectorWidth)
+            }
+        }
+        workspace.toolbar.onCustomize = { [weak self] in self?.perform(.customizeToolbar) }
         if let frame {
             window.setFrame(frame, display: false)
         } else {
@@ -182,15 +191,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
             window.center()
         }
 
-        let toolbar = NSToolbar(identifier: "Main")
-        toolbar.delegate = self
-        toolbar.displayMode = .iconOnly
-        toolbar.allowsUserCustomization = true
-        window.toolbar = toolbar
-
         sidebar.onSelect = { [weak self] url in self?.go(to: url) }
         browser.onOpen = { [weak self] items in self?.open(items) }
+        browser.onSortChanged = { [weak self] sort in self?.sortChangedInList(sort) }
         browser.setMode(viewMode == .icons ? .icons : .list)
+        browser.setSort(key: Self.sortKey(sortBy), ascending: sortDirection == .asc)
+        workspace.toolbar.attach(self)
+        connectSearchField()
+        #if DEBUG
+            AutomationLayoutPrefs.registerOnce()
+        #endif
         updateTitle()
         if loadNow { ensureLoaded() }
     }
@@ -381,6 +391,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
             backStack.append(previous)
         case .none:
             break
+        case .jump(let paths, let index):
+            backStack = paths[..<index].map { URL(fileURLWithPath: $0) }
+            forwardStack = paths[(index + 1)...].reversed().map { URL(fileURLWithPath: $0) }
         }
         folder = url
         if favoritePath != url.path { favoritePath = nil }
@@ -388,10 +401,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         // Coming back up to a parent selects the folder you came from, as Finder does.
         let cameFromChild = previous.deletingLastPathComponent().comparablePath == url.comparablePath
         updateTitle()
-        searchItem?.searchField.stringValue = ""
+        searchField?.stringValue = ""
         browser.show(listing, selecting: cameFromChild ? [previous] : [])
         sidebar.select(url)
         updateNavigationItems()
+        notify(.folder)
         window?.contentView?.layoutSubtreeIfNeeded()
         window?.displayIfNeeded()
         if let callback = onFirstDraw {
@@ -436,9 +450,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     }
 
     private func updateNavigationItems() {
-        backItem?.isEnabled = !backStack.isEmpty
-        forwardItem?.isEnabled = !forwardStack.isEmpty
-        viewModeItem?.selectedIndex = browser.mode.rawValue
+        notify(.history)
     }
 
     /// The folder Open in New Tab and Open in New Window open: the one folder selected.
@@ -500,12 +512,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
 
     @objc func showAsList(_ sender: Any?) { setMode(.details) }
 
-    @objc private func viewModeChanged(_ sender: NSToolbarItemGroup) {
-        setMode(sender.selectedIndex == BrowserViewController.Mode.icons.rawValue ? .icons : .details)
-    }
-
     @objc private func searchChanged(_ sender: NSSearchField) {
         browser.setFilter(sender.stringValue)
+    }
+
+    /// The toolbar's search field: what it holds narrows the list (the spike's filter; searching is P5-07's).
+    private var searchField: ToolbarSearchField? {
+        workspace.toolbar.slotViews[ToolbarItemID.search.rawValue]?.content as? ToolbarSearchField
+    }
+
+    private func connectSearchField() {
+        searchField?.target = self
+        searchField?.action = #selector(searchChanged(_:))
     }
 
     /// The tab bar's "+" button, and New Tab: a tab on this folder.
@@ -516,7 +534,38 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     private func setMode(_ mode: ExplorerViewMode) {
         viewMode = mode
         browser.setMode(mode == .icons ? .icons : .list)
-        updateNavigationItems()
+        notify(.view)
+        group?.tabChanged(self)
+    }
+
+    static func sortKey(_ sortBy: SortByPreference) -> String {
+        switch sortBy {
+        case .name: "name"
+        case .modified: "modified"
+        case .size: "size"
+        case .kind: "kind"
+        }
+    }
+
+    /// The sort commands: the field already in use reverses the direction; another sorts by it, ascending.
+    private func sort(by field: SortByPreference) {
+        if field == sortBy {
+            sortDirection = sortDirection == .asc ? .desc : .asc
+        } else {
+            sortBy = field
+            sortDirection = .asc
+        }
+        browser.setSort(key: Self.sortKey(sortBy), ascending: sortDirection == .asc)
+        notify(.view)
+        group?.tabChanged(self)
+    }
+
+    /// A column header changed the sort.
+    private func sortChangedInList(_ sort: NSSortDescriptor) {
+        guard let key = sort.key, let field = SortByPreference(rawValue: key) else { return }
+        sortBy = field
+        sortDirection = sort.ascending ? .asc : .desc
+        notify(.view)
         group?.tabChanged(self)
     }
 
@@ -536,6 +585,31 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         }
     }
 
+    // MARK: Customize Toolbar
+
+    /// Edits the toolbar in place (View ▸ Customize Toolbar…, View Options, the toolbar's right-click).
+    func beginCustomizingToolbar() {
+        guard customizer == nil else { return }
+        AppMenuPresenter.shared.close()
+        let customizer = ToolbarCustomizer(toolbar: workspace.toolbar)
+        customizer.onCommit = { [weak self] items in
+            self?.updatePreferences(["topToolbarItems": .array(items.map { .string($0.rawValue) })])
+        }
+        customizer.onFinish = { [weak self] in self?.finishCustomizingToolbar() }
+        self.customizer = customizer
+        workspace.setCustomizing(customizer.panel)
+        customizer.begin()
+        workspace.needsLayout = true
+    }
+
+    func finishCustomizingToolbar() {
+        guard let customizer else { return }
+        self.customizer = nil
+        customizer.end()
+        workspace.setCustomizing(nil)
+        window?.makeFirstResponder(nil)
+    }
+
     // MARK: Window events
 
     func windowShouldClose(_ sender: NSWindow) -> Bool {
@@ -543,7 +617,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     }
 
     func windowWillClose(_ notification: Notification) {
+        finishCustomizingToolbar()
         group?.tabWillClose(self)
+        if let window { WindowEventRouting.forget(window) }
         onClose?()
     }
 
@@ -552,12 +628,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         group?.tabBecameKey(self)
     }
 
+    func windowDidResignKey(_ notification: Notification) {
+        customizer?.cancelDrag()
+    }
+
     func windowDidMove(_ notification: Notification) {
         group?.tabBoundsChanged(self)
     }
 
     func windowDidResize(_ notification: Notification) {
         group?.tabBoundsChanged(self)
+        if let customizer { workspace.setCustomizing(customizer.panel) }
     }
 
     func windowDidExitFullScreen(_ notification: Notification) {
@@ -572,72 +653,27 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         group?.tabVisibilityChanged(self)
     }
 
-    // MARK: Toolbar
+    // MARK: Observers
 
-    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        [.sidebarTrackingSeparator, .navigation, .flexibleSpace, .viewMode, .search]
+    fileprivate func notify(_ change: ExplorerWindowChange) {
+        observers.removeAll { $0.token.value?.isValid != true }
+        for observer in observers { observer.handler(change) }
     }
 
-    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        toolbarDefaultItemIdentifiers(toolbar) + [.space, .toggleSidebar]
-    }
-
-    func toolbar(
-        _ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier,
-        willBeInsertedIntoToolbar flag: Bool
-    ) -> NSToolbarItem? {
-        switch itemIdentifier {
-        case .navigation:
-            let back = makeButton("back", label: "Back", symbol: "chevron.left", action: #selector(goBack(_:)))
-            let forward = makeButton(
-                "forward", label: "Forward", symbol: "chevron.right", action: #selector(goForward(_:)))
-            let group = NSToolbarItemGroup(itemIdentifier: itemIdentifier)
-            group.subitems = [back, forward]
-            group.label = "Back/Forward"
-            group.isNavigational = true
-            backItem = back
-            forwardItem = forward
-            updateNavigationItems()
-            return group
-        case .viewMode:
-            let images = ["square.grid.2x2", "list.bullet"].compactMap {
-                NSImage(systemSymbolName: $0, accessibilityDescription: nil)
-            }
-            let group = NSToolbarItemGroup(
-                itemIdentifier: itemIdentifier, images: images, selectionMode: .selectOne,
-                labels: ["Icons", "List"], target: self, action: #selector(viewModeChanged(_:)))
-            group.label = "View"
-            group.selectedIndex = browser.mode.rawValue
-            viewModeItem = group
-            return group
-        case .search:
-            let item = NSSearchToolbarItem(itemIdentifier: itemIdentifier)
-            item.searchField.target = self
-            item.searchField.action = #selector(searchChanged(_:))
-            item.searchField.sendsSearchStringImmediately = true
-            item.searchField.setAccessibilityIdentifier("toolbar.search")
-            searchItem = item
-            return item
-        default:
-            return nil
-        }
-    }
-
-    private func makeButton(_ id: String, label: String, symbol: String, action: Selector) -> NSToolbarItem {
-        let item = NSToolbarItem(itemIdentifier: .init(id))
-        item.label = label
-        item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: label)
-        item.target = self
-        item.action = action
-        item.isBordered = true
-        item.autovalidates = false
-        return item
+    /// A preference change from any window (`onPreferencesChanged`): the keys the whole app shares.
+    func preferencesChanged(_ change: PreferencesChange) {
+        notify(.preferences)
+        if let customizer { customizer.refreshPanel() }
     }
 }
 
 extension MainWindowController: ExplorerWindowHandle {
     /// Carries out a menu command in this tab, or in its explorer window.
     func perform(_ command: RendererCommand) {
+        // While the toolbar is customized the window waits, as under a sheet: only editing still works.
+        if customizer != nil, MenuCommandRouter.nativeEditSelector(command) == nil, command != .customizeToolbar {
+            return
+        }
         let fileManager = FileManager.default
         func place(_ url: URL?) {
             if let url { go(to: url) }
@@ -650,6 +686,20 @@ extension MainWindowController: ExplorerWindowHandle {
         case .viewAsIcons: setMode(.icons)
         case .viewAsDetails: setMode(.details)
         case .viewAsList: setMode(.list)
+        case .sortByName: sort(by: .name)
+        case .sortByKind: sort(by: .kind)
+        case .sortByModified: sort(by: .modified)
+        case .sortBySize: sort(by: .size)
+        case .toggleFoldersFirst:
+            foldersFirst.toggle()
+            notify(.view)
+            group?.tabChanged(self)
+        case .toggleHiddenFiles:
+            includeHidden.toggle()
+            notify(.view)
+            group?.tabChanged(self)
+        case .refreshOrApplySearchSort: reload()
+        case .customizeToolbar: beginCustomizingToolbar()
         case .goDocuments: place(fileManager.urls(for: .documentDirectory, in: .userDomainMask).first)
         case .goDesktop: place(fileManager.urls(for: .desktopDirectory, in: .userDomainMask).first)
         case .goDownloads: place(fileManager.urls(for: .downloadsDirectory, in: .userDomainMask).first)
@@ -671,9 +721,10 @@ extension MainWindowController: ExplorerWindowHandle {
             if let target = selectedFolder { group?.openNewWindow(from: self, path: target.path) }
         case .moveTabToNewWindow: group?.moveTabToNewWindow(self)
         case .mergeAllWindows: group?.mergeAllWindows(into: self)
-        case .toggleFolderTree: group?.session.update { $0.folderTreeOpen.toggle() }
-        case .toggleInfoPanel: group?.session.update { $0.propertiesOpen.toggle() }
-        case .toggleInfoRow: group?.session.update { $0.detailRowOpen.toggle() }
+        case .toggleFolderTree: updatePanels { $0.folderTreeOpen.toggle() }
+        case .toggleInfoPanel: updatePanels { $0.propertiesOpen.toggle() }
+        case .toggleInfoRow: updatePanels { $0.detailRowOpen.toggle() }
+        case .focusContentPane: window?.makeFirstResponder(browser.view.subviews.first)
         default:
             if let selector = MenuCommandRouter.nativeEditSelector(command) {
                 NSApp.sendAction(selector, to: nil, from: nil)
@@ -683,12 +734,93 @@ extension MainWindowController: ExplorerWindowHandle {
 
     /// The panels the explorer window shows, as every one of its tabs shows them.
     func showPanels(_ panels: TabGroupSession.Panels) {
-        guard let split = window?.contentViewController as? NSSplitViewController,
-            let sidebarItem = split.splitViewItems.first
-        else { return }
-        if sidebarItem.isCollapsed == panels.folderTreeOpen {
-            sidebarItem.isCollapsed = !panels.folderTreeOpen
+        let widths = workspace.panes
+        if Int(widths.preferredTreeWidth) != panels.treeWidth
+            || Int(widths.preferredInspectorWidth) != panels.inspectorWidth
+        {
+            workspace.restore(treeWidth: Double(panels.treeWidth), inspectorWidth: Double(panels.inspectorWidth))
         }
+        workspace.show(folderTree: panels.folderTreeOpen, infoPanel: panels.propertiesOpen)
+        browser.setInfoRowOpen(panels.detailRowOpen)
+        if !workspace.isReady { workspace.becomeReady() }
+        notify(.panels)
+    }
+}
+
+extension MainWindowController: ExplorerWindowContext {
+    var currentFolder: URL { folder }
+
+    func navigate(to url: URL, target: NavigationTarget) {
+        switch target {
+        case .push: go(to: url)
+        case .newTab: group?.openTab(path: url.path, from: self)
+        case .newWindow: group?.openNewWindow(from: self, path: url.path)
+        }
+    }
+
+    var historyPaths: [String] { (backStack + [folder] + forwardStack.reversed()).map(\.path) }
+    var historyIndex: Int { backStack.count }
+    var canGoBack: Bool { !backStack.isEmpty }
+    var canGoForward: Bool { !forwardStack.isEmpty }
+
+    func goToHistoryIndex(_ index: Int) {
+        let paths = historyPaths
+        guard paths.indices.contains(index), index != historyIndex else { return }
+        go(to: URL(fileURLWithPath: paths[index]), history: .jump(paths: paths, index: index))
+    }
+
+    func canPerform(_ command: RendererCommand) -> Bool {
+        let context = CommandAvailabilityContext(
+            currentPath: folder.path, selectedPathsInViewOrder: selectedPaths, canGoBack: canGoBack,
+            canGoForward: canGoForward, tabCount: group?.tabs.count ?? 1,
+            homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+        return CommandAvailability.canRun(command, context)
+    }
+
+    var selectedPaths: [String] { browser.selectedItems.map(\.url.path) }
+
+    var focusedPane: ExplorerPane? {
+        guard let responder = window?.firstResponder as? NSView else { return nil }
+        if responder.isDescendant(of: browser.view) { return .content }
+        if responder.isDescendant(of: sidebar.view) { return .tree }
+        return nil
+    }
+
+    var viewState: ExplorerViewState {
+        ExplorerViewState(
+            viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
+            includeHidden: includeHidden, foldersFirst: foldersFirst)
+    }
+
+    var panels: TabGroupSession.Panels {
+        group?.session.panels ?? TabGroupSession.Panels(preferences.windowSession)
+    }
+
+    func updatePanels(_ change: (inout TabGroupSession.Panels) -> Void) {
+        if let group {
+            group.session.update(change)
+        } else {
+            var next = panels
+            change(&next)
+            showPanels(next)
+        }
+    }
+
+    var preferences: AppPreferences {
+        services.preferences?.preferences(for: windowID) ?? AppPreferences.defaults()
+    }
+
+    func updatePreferences(_ patch: [String: JSONNode]) {
+        guard let channel = services.preferences else { return }
+        channel.update(patch, from: windowID)
+    }
+
+    var services: ExplorerServices { ExplorerServices.current }
+
+    func observe(_ handler: @escaping @MainActor (ExplorerWindowChange) -> Void) -> ExplorerWindowObservation {
+        let token = ExplorerWindowObservation()
+        observers.append((Weak(token), handler))
+        return token
     }
 }
 

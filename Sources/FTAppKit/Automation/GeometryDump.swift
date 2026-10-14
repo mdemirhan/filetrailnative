@@ -120,6 +120,10 @@
         }
 
         static func text(of view: NSView) -> Text? {
+            // A view drawn around a text field (a menu row, a button with a label) shows that field's text.
+            if let source = view as? TextStyleSource, let field = source.styleTextField, field !== view {
+                return text(of: field)
+            }
             if let field = view as? NSTextField {
                 let string = field.stringValue.isEmpty ? (field.placeholderString ?? "") : field.stringValue
                 return Text(

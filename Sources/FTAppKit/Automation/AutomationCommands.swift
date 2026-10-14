@@ -28,7 +28,8 @@
         /// The ids `run` carries out.
         static let supported: Set<String> = [
             "goBack", "goForward", "goEnclosingFolder", "openSelection", "viewAsIcons", "viewAsDetails", "newTab",
-            "toggleFolderTree", "editSelectAll", "focusFileSearch", "focusContentPane", "focusTreePane",
+            "toggleFolderTree", "toggleInfoPanel", "toggleInfoRow", "toggleFoldersFirst", "toggleHiddenFiles",
+            "customizeToolbar", "viewAsList", "refreshOrApplySearchSort", "editSelectAll", "focusFileSearch", "focusContentPane", "focusTreePane",
             "sortByName", "sortByModified", "sortBySize", "sortByKind", "goHomeRootTree", "goDocuments",
             "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD", "goApplications", "goTrash", "newWindow",
             "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
@@ -45,8 +46,11 @@
             case "viewAsIcons": controller.showAsIcons(nil)
             case "viewAsDetails": controller.showAsList(nil)
             case "newTab": controller.newWindowForTab(nil)
-            case "toggleFolderTree":
-                (window.contentViewController as? NSSplitViewController)?.toggleSidebar(nil)
+            case "toggleFolderTree", "toggleInfoPanel", "toggleInfoRow", "toggleFoldersFirst", "toggleHiddenFiles",
+                "customizeToolbar", "viewAsList", "refreshOrApplySearchSort":
+                // The window's own commands (P5-01).
+                guard let command = RendererCommand(rawValue: id) else { return .init(.failed, "no command \(id)") }
+                controller.perform(command)
             case "editSelectAll":
                 guard let responder = window.firstResponder,
                     responder.responds(to: #selector(NSResponder.selectAll(_:)))
