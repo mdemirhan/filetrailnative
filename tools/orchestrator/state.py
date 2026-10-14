@@ -99,10 +99,11 @@ def apply_report(state: dict[str, Any], report: dict[str, Any]) -> list[str]:
             continue
         wp = state["wps"][wp_report["id"]]
         wp["status"] = wp_report.get("status", wp["status"])
+        if wp_report.get("gate") is not None:
+            wp["gateResult"] = wp_report["gate"]
         for key in (
             "headSha",
             "summary",
-            "gate",
             "findings",
             "fixes",
             "sharedFileRequests",

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T08:37:05+00:00",
+  "updatedAt": "2026-10-14T08:37:26+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -359,7 +359,28 @@
         "summary": "Both branches merged without conflicts. I added the two Info.plist requests from P4-01 (LSMultipleInstancesProhibited, and a Disk Image CFBundleDocumentTypes entry) in one commit on main. I skipped the Package.swift request because the build isn't strict about it. CI passed after each merge and after the parity sync (1019 tests passing, 0 failing). The sync was committed as \"Sync parity matrix after W1-F\"."
       },
       "critic": null,
-      "spentOutputTokens": 155208
+      "spentOutputTokens": 155208,
+      "agents": 9,
+      "subagentTokens": 846786,
+      "durationMin": 44.9,
+      "meterAfter": {
+        "weeklyPct": 12,
+        "fiveHourPct": 9
+      }
+    },
+    "W1-G": {
+      "wps": [
+        "P4-02",
+        "P0-14"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 8,
+      "meterBefore": {
+        "weeklyPct": 12,
+        "fiveHourPct": 9
+      },
+      "startedAt": "2026-10-14T08:37:26+00:00"
     }
   },
   "wps": {
@@ -694,10 +715,6 @@
       "branch": "port/P1-04",
       "headSha": "158de4759f0cfd178735cc982b8cef9ebb0297f6",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P1-04 gates: `tools/parity/gen.sh --check` exit 0 (goldens up to date, 26 suites). `scripts/ci.sh` exit 0 (build PASS, test PASS 499 tests in passing runs / 0 failing, format PASS). Worktree detached at 158de47 (port/P1-04). Nothing changed or committed."
-      },
       "lenses": [
         "parity"
       ],
@@ -718,6 +735,14 @@
         "A saved text setting cut at 255 UTF-16 units inside a surrogate pair leaves U+FFFD here, where JavaScript keeps half the pair, because a Swift String cannot hold a lone surrogate.",
         "The reference runs on Bun's JavaScriptCore, not V8, so the goldens record JSC's regex behaviour. The two engines are not known to differ on the tested patterns, but I did not check against V8.",
         "The golden JSON files are large (4.2 MB together)."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P1-04 gates: `tools/parity/gen.sh --check` exit 0 (goldens up to date, 26 suites). `scripts/ci.sh` exit 0 (build PASS, test PASS 499 tests in passing runs / 0 failing, format PASS). Worktree detached at 158de47 (port/P1-04). Nothing changed or committed."
+      },
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
       ]
     },
     "P2-01": {
@@ -740,10 +765,6 @@
       "branch": "port/P2-01",
       "headSha": "3425341",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P2-01 gates (HEAD 56cb652, detached in worktree wf_d030682e-f5a-24), quiet mode on, nothing shown on screen: 1) tools/parity/gen.sh --check exit 0. 2) scripts/ci.sh exit 0: build PASS (9s), test PASS (637 tests passing, 0 failing), format PASS (swift-format lint). Note: an earlier ci.sh run in this session reported 623 tests; the second run reported 637, so the count varies between runs. Nothing committed or changed. Worktree left detached at 56cb652. Answer to the user's question: yes, it is possible. The preamble's Quiet mode section (ON) keeps agents from launching the app, opening panels or ordering windows front; GUI tests are gated behind FILETRAIL_GUI_TESTS=1 and deferred. ci.sh's full mode only builds the app and does not open it. Those GUI checks can be run once you say go."
-      },
       "lenses": [
         "parity",
         "performance"
@@ -771,9 +792,6 @@
         }
       ],
       "blockers": [],
-      "deferredGate": [
-        "tools/bench/run.sh --quick --report-only"
-      ],
       "sharedFileRequests": [
         "Sources/FTFoundation/Names/NodePath.swift: `extname` returns an empty string for names like '..double'. Node's path.extname gives '.double'. Fix it there so the local copy in ExplorerListing.extensionName(ofName:) can go.",
         "tools/bench/run.sh and docs/port/bench/budgets.json: add the listing metrics. `tools/bench/listing.sh` writes build/bench/listing.json with items, medianMs and budgetMs for files-3000 and files-100000.",
@@ -787,6 +805,15 @@
         "F-148 (focus triggers) and F-910 (request limits such as 500 paths per metadata batch) are not done here. FolderWatches.checkForMissedChanges is the API for the window-focus hook, which the AppKit work packages must connect. Limits belong to the request boundary.",
         "withTiming is ported and tested but not wired into DirectoryService. Folder-size parts of responseCache.ts are left for P2-02, as the brief says.",
         "Some ThumbnailStoreTests (not mine) failed once under heavy machine load in a full parallel run, then passed alone and in the later full ci runs. They look flaky."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P2-01 gates (HEAD 56cb652, detached in worktree wf_d030682e-f5a-24), quiet mode on, nothing shown on screen: 1) tools/parity/gen.sh --check exit 0. 2) scripts/ci.sh exit 0: build PASS (9s), test PASS (637 tests passing, 0 failing), format PASS (swift-format lint). Note: an earlier ci.sh run in this session reported 623 tests; the second run reported 637, so the count varies between runs. Nothing committed or changed. Worktree left detached at 56cb652. Answer to the user's question: yes, it is possible. The preamble's Quiet mode section (ON) keeps agents from launching the app, opening panels or ordering windows front; GUI tests are gated behind FILETRAIL_GUI_TESTS=1 and deferred. ci.sh's full mode only builds the app and does not open it. Those GUI checks can be run once you say go."
+      },
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/bench/run.sh --quick --report-only"
       ]
     },
     "P2-02": {
@@ -809,11 +836,6 @@
       "branch": "port/P2-02",
       "headSha": "dc3f47efa9eb60a61fbfb5d1d1a20835308f1fd8",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P2-02 gates, detached at dc3f47e (feat(P2-02): folder sizes). tools/parity/gen.sh --check: exit 0 (26 goldens up to date; folder-size-trees and kind-strings skipped as machine-local). scripts/ci.sh: exit 0 (build PASS 9s, test PASS 18s with 652 tests passing and 0 failing, format PASS 2s). Quiet mode respected: no app launch, open, or window activity was run. Nothing committed or changed.",
-        "failures": []
-      },
       "lenses": [
         "parity",
         "performance"
@@ -835,6 +857,15 @@
         "Test-only: Foundation's `createDirectory` and `createSymbolicLink` respell non-ASCII names, which changed symlink sizes and folder keys. The tests build trees with `mkdir`, `open` and `symlink` instead.",
         "Test-only: ThumbnailStoreTests, which depend on short timers, failed in 3 of 4 `scripts/ci.sh` runs while my walker tests ran in parallel. I serialized the real-walk suites under one `.serialized` suite and kept the large main-actor test loads in yielding batches. After that, 4 of 4 runs passed.",
         "The data-race-prone case (a folder that can't be opened for a reason other than EACCES/EPERM/ENOENT/ENOTDIR/ELOOP, which leaves its parent incomplete) and the out-of-memory paths are ported but have no test, because the original has none and they cannot be provoked safely."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P2-02 gates, detached at dc3f47e (feat(P2-02): folder sizes). tools/parity/gen.sh --check: exit 0 (26 goldens up to date; folder-size-trees and kind-strings skipped as machine-local). scripts/ci.sh: exit 0 (build PASS 9s, test PASS 18s with 652 tests passing and 0 failing, format PASS 2s). Quiet mode respected: no app launch, open, or window activity was run. Nothing committed or changed.",
+        "failures": []
+      },
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
       ]
     },
     "P2-03": {
@@ -857,11 +888,6 @@
       "branch": "port/P2-03",
       "headSha": "aa05198dffa158fbf35e75a44b7f85fea540da9a",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "scripts/ci.sh (branch port/P2-03, detached at aa05198): PASS build (11s), PASS test (20s, 606 tests passing, 0 failing), PASS format (1s). Exit 0. Run without --full, so no app build or launch. Nothing changed or committed; no windows opened.",
-        "failures": []
-      },
       "lenses": [
         "parity"
       ],
@@ -873,6 +899,14 @@
       "deviations": [
         "HdiutilOutput reads plists with PropertyListSerialization as the inventory says, not the original's regex. Output that is not a valid plist reads as no values, and a key found in several dicts is read in sorted key order rather than text order. Matters only for a malformed or unusual hdiutil plist.",
         "tests.tsv lists several of the pure-logic files with swiftTarget FTFoundation (eject.ts, volumes.ts, shared/diskImages.ts). The brief says to own only FTFileSystem, so they live in FTFileSystem/Volumes and FTFileSystem/DiskImages."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "scripts/ci.sh (branch port/P2-03, detached at aa05198): PASS build (11s), PASS test (20s, 606 tests passing, 0 failing), PASS format (1s). Exit 0. Run without --full, so no app build or launch. Nothing changed or committed; no windows opened.",
+        "failures": []
+      },
+      "gate": [
+        "scripts/ci.sh"
       ]
     },
     "P2-04": {
@@ -895,10 +929,6 @@
       "branch": "port/P2-04",
       "headSha": "854c9e7f38a7ab3b641653613e38909bc3a24270",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P2-04 gate: PASS. Checked out port/P2-04 detached at 854c9e7. `tools/parity/gen.sh --check` exit 0 (\"goldens up to date (25 suite(s))\"). `scripts/ci.sh` exit 0: build PASS, test PASS (482 tests in passing runs, 0 failing), format PASS. Nothing changed or committed. Logs: scratchpad gen.log and ci.log."
-      },
       "lenses": [],
       "summary": "Branch port/P2-04, head 854c9e7. Both gates pass (gen.sh --check and scripts/ci.sh, 482 tests, build and format clean). I ran the FTFileSystemTests suite 10 more times with no failures, after fixing one order-dependent assertion.\nAdded to Sources/FTFileSystem/Icons/:\n- IconCacheKey: the ext:/kind:/path: keys, special folder names and volume roots.\n- FileIconStore: LRU of 2048, de-duplicated requests, 80 ms deferral, folder and file preloads.\n- IconSamples: the generic-kind sample items in $TMPDIR/filetrail-icon-samples.\n- FileKind: kMDItemKind, then LSCopyKindStringForURL (looked up with dlsym to avoid the deprecation warning), then the localized type description.\n- FileThumbnailService: QLThumbnailGenerator with iconMode off for images and audiovisual files, and an \"mtimeMs:size\" version.\n- ThumbnailStore: LRU of 500, one check per listing.\n- ThumbnailLoadQueue: at most 4 loads at once, with cancel.\nAdded the kind-strings golden (tools/parity/golden/kind-strings.ts and Tests/Golden/kind-strings.json), and ported tests in Tests/FTFileSystemTests/Icons/ citing T- and F- ids (F-147, 156, 157, 223 to 227, 762).",
       "findings": [],
@@ -913,6 +943,14 @@
         "The Swift test for kind-strings is skipped (via .enabled(if:)) when ~/Library/Caches/filetrail-port/fixtures/names is missing.",
         "I did not port the favorite-icons row T-fe3f2758 from fileIcons.test.tsx, since it is SVG drawing belonging to the sidebar work package. The integrator should mark it N/A or covered-by-feature.",
         "The original's known gaps are copied: custom folder icons on non-special folders are not shown, and symlink icons come from the path."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P2-04 gate: PASS. Checked out port/P2-04 detached at 854c9e7. `tools/parity/gen.sh --check` exit 0 (\"goldens up to date (25 suite(s))\"). `scripts/ci.sh` exit 0: build PASS, test PASS (482 tests in passing runs, 0 failing), format PASS. Nothing changed or committed. Logs: scratchpad gen.log and ci.log."
+      },
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
       ]
     },
     "P2-05": {
@@ -935,11 +973,6 @@
       "branch": "port/P2-05",
       "headSha": "cd149bba6cd91b0a1dffdff0b3ff4de781748e35",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P2-05 gate: scripts/ci.sh EXIT=0 (PASS build 13s, PASS test 25s with 623 tests in passing runs and 0 failing, PASS format 1s). Worktree is detached at cd149bb on port/P2-05; nothing changed or committed. Full log at /tmp/ci_out.txt.",
-        "failures": []
-      },
       "lenses": [],
       "summary": "Added Sources/FTFileSystem/System/ and Tests/FTFileSystemTests/System/ on branch port/P2-05, and the NSAppleEventsUsageDescription key in Resources/Info.plist (\"File Trail asks Finder to empty the Trash.\"). scripts/ci.sh passes: build, 623 tests, format. Nothing opened a window.\n- OpenWithCatalog (Launch Services lookup with caches, Always Open With with a 10s timeout and the same refusals), the Open With menu rules, and app-path helpers with shell quoting.\n- SystemActions: open, open with an app (Finder means reveal), Open in Terminal, Edit in the text editor, the Full Disk Access link, disk ids, `getOpenWithApplications` with its fallback, and the Always Open With handler. All system calls go through an injectable SystemOpener.\n- TrashState (Trash state, Empty Trash through NSAppleScript with an injected runner), DiskHasTrash with MountTable, SystemPickers (Other… and folder pickers on an injected presenter), and VolumeInfo.\n- Tests port the tests.tsv rows of the five test files and the open-with cases of native-fs.test.ts, citing T- ids. The only exception is the two quickLookPath rows (T-0715c3bb, T-df2126ce), marked N/A in a comment.",
       "findings": [],
@@ -960,6 +993,14 @@
         "Moved renderer/lib/openWith.ts into FTFileSystem/System/OpenWithMenu.swift (own menu item types) because the brief only lets me touch FTFileSystem. tests.tsv lists its swiftTarget as FTFoundation.",
         "getVolumeInfo uses FileManager.attributesOfFileSystem, which should match statfs's bavail*bsize and blocks*bsize, but I did not check it against statfs.",
         "Quick Look (quickLookPath) is not ported; the brief does not cover it. T-0715c3bb and T-df2126ce are marked N/A in a comment."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P2-05 gate: scripts/ci.sh EXIT=0 (PASS build 13s, PASS test 25s with 623 tests in passing runs and 0 failing, PASS format 1s). Worktree is detached at cd149bb on port/P2-05; nothing changed or committed. Full log at /tmp/ci_out.txt.",
+        "failures": []
+      },
+      "gate": [
+        "scripts/ci.sh"
       ]
     },
     "P2-06": {
@@ -982,10 +1023,6 @@
       "branch": "port/P2-06",
       "headSha": "de323aca477d169c29c5bbd5c5baf47887c057c0",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P2-06 gates (worktree detached at port/P2-06, commit de323ac), all exit 0, nothing shown on screen (no app launched, no windows, no AppleScript; build-app.sh only runs codesign and build). 1) tools/parity/gen.sh --check: PASS, goldens up to date (28 suites; kind-strings and search-sort skipped as machine-local). 2) scripts/ci.sh: PASS build, PASS test (600 tests passing, 0 failing), PASS format. 3) scripts/ci.sh --full: PASS build, PASS test (600 passing), PASS format, PASS app (release app built). Logs in build/logs/. No changes made or committed."
-      },
       "lenses": [],
       "summary": "fd search is ported on branch port/P2-06 (commit de323ac, detached). All three gates pass: gen.sh --check, ci.sh and ci.sh --full (600 tests).\n- Sources/FTFileSystem/Search/ holds:\n  - the fd argument builder\n  - the runtime (poll API plus an AsyncStream `results(for:)`): NUL parsing across chunks, 20,000-result cap, SIGTERM on cancel, close() kills every fd, 64 finished-job records, cleaned stderr errors\n  - the result items, the sorting, the \"src › lib\" folder column and the highlight pattern\n  - the bundled-fd resolver\n  - a posix_spawn-based FdProcess\n- Resources/fd/ has the fd binary, licenses and manifest. scripts/build-app.sh now copies fd to Contents/Helpers, signs it with the hardened runtime, then signs the app; codesign --verify passes.\n- Goldens added: search-args, search-results and search-sort. search-results runs the reference runtime with the real fd on the lighthouse fixture and on a generated scratch tree (Git folders, ignore files, hidden items, packages, links, accented names).\n- search-sort covers order, the folder column and highlighting. It is machine-local, so gen.sh --check skips it.\n- Tests: ported fdSearch, fdBinary and searchResults cases, plus the quit.spec case (T-1481cd4f) at service level: after close() or cancel, no fd is left running.\n- Quiet mode held: no windows. Everything ran headless, and the app was built but not launched.",
       "findings": [],
@@ -1002,6 +1039,15 @@
         "NodePath.extname in FTFoundation returns '' for '..a' where Node returns '.a'. I used my own extension code in Search, so FTFoundation is untouched.",
         "The searchResults tests are listed under FTFoundation in tests.tsv, but the brief gives me FTFileSystem/Search, so the sort, folder-column and highlight code and its tests live there. formatSearchStatus already existed in FTFoundation (StatusSummary.search); I only added a test citing T-88a11cc8 and T-56a22bbc against it.",
         "Running the tests rewrites docs/port/parity/*.tsv and features.md. I reverted those changes and did not commit them."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P2-06 gates (worktree detached at port/P2-06, commit de323ac), all exit 0, nothing shown on screen (no app launched, no windows, no AppleScript; build-app.sh only runs codesign and build). 1) tools/parity/gen.sh --check: PASS, goldens up to date (28 suites; kind-strings and search-sort skipped as machine-local). 2) scripts/ci.sh: PASS build, PASS test (600 tests passing, 0 failing), PASS format. 3) scripts/ci.sh --full: PASS build, PASS test (600 passing), PASS format, PASS app (release app built). Logs in build/logs/. No changes made or committed."
+      },
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh",
+        "scripts/ci.sh --full"
       ]
     },
     "P2-07": {
@@ -1025,11 +1071,6 @@
       "branch": "port/P2-07",
       "headSha": "732c2af27280600136ba0de57475458f577b6ec7",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P2-07 gate: scripts/ci.sh PASS (exit 0). build PASS (10s), test PASS (21s; 587 tests passed, 0 failed), format PASS (1s). No windows or GUI steps ran (--full not used, so no app launch). Worktree left detached at 732c2af, clean. Nothing changed or committed.",
-        "failures": []
-      },
       "lenses": [
         "parity"
       ],
@@ -1058,6 +1099,14 @@
         "Error lines are written as 'TypeName: message' because Swift errors have no JS stack.",
         "The Rename-sheet settings and presets are written in sorted key order, not the original's DEFAULT_BATCH_RENAME_SETTINGS order; the JSON means the same.",
         "F-### citations on the new tests reuse F-011 and F-026 from the existing reader tests. I did not look up the exact feature ids."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P2-07 gate: scripts/ci.sh PASS (exit 0). build PASS (10s), test PASS (21s; 587 tests passed, 0 failed), format PASS (1s). No windows or GUI steps ran (--full not used, so no app launch). Worktree left detached at 732c2af, clean. Nothing changed or committed.",
+        "failures": []
+      },
+      "gate": [
+        "scripts/ci.sh"
       ]
     },
     "P3-01": {
@@ -1279,11 +1328,6 @@
       "branch": "port/P4-01",
       "headSha": "b25fe1af8271e1e9ce3898897d96439f1dfcd317",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "scripts/ci.sh: EXIT=0 (PASS build 16s, PASS test 84s with 1019 tests in passing runs and 0 failing, PASS format 6s). Gate passes for P4-01 at b25fe1a. Worktree left clean and detached. Full log: scratchpad ci_out.txt.",
-        "failures": []
-      },
       "lenses": [
         "parity"
       ],
@@ -1300,9 +1344,6 @@
         }
       ],
       "blockers": [],
-      "deferredGate": [
-        "tools/capture/run.sh --tier wp"
-      ],
       "sharedFileRequests": [
         "Resources/Info.plist: add LSMultipleInstancesProhibited = true for LaunchServices single instance (F-612).",
         "Resources/Info.plist: add CFBundleDocumentTypes with Disk Image (com.apple.disk-image, role Viewer, rank Alternate) so Finder's Open With reaches application(_:open:) (F-135).",
@@ -1314,6 +1355,15 @@
         "Escape on the stop question is a local key monitor on the first button, because NSAlert only maps Escape to a button titled Cancel.",
         "The single-instance guard also hands over to a running copy by bundle id, and is skipped for automation, bench and FILETRAIL_ALLOW_MULTIPLE=1 runs. LSMultipleInstancesProhibited is the real LaunchServices mechanism (see sharedFileRequests).",
         "The interim MainWindowHost returns false from openFromOtherApp, so with a window open a Finder disk image mounts here and opens in a new window instead of a tab. P4-02 supplies the real behavior."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "scripts/ci.sh: EXIT=0 (PASS build 16s, PASS test 84s with 1019 tests in passing runs and 0 failing, PASS format 6s). Gate passes for P4-01 at b25fe1a. Worktree left clean and detached. Full log: scratchpad ci_out.txt.",
+        "failures": []
+      },
+      "gate": [
+        "scripts/ci.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
       ]
     },
     "P4-02": {
@@ -1335,13 +1385,13 @@
         "P2-07",
         "P4-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P4-02",
       "headSha": null,
       "attempts": 0,
       "gate": [
         "scripts/ci.sh",
-        "tools/capture/run.sh --tier wp"
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
       ],
       "lenses": [
         "parity",
@@ -1350,10 +1400,7 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": [],
-      "carryOver": [
-        "From P2-01: call FolderWatches.checkForMissedChanges(windowID:) on window focus (P4-01 creates the shared DirectoryService and FolderWatches)."
-      ]
+      "blockers": []
     },
     "P4-03": {
       "title": "Theme, accent, About, Acknowledgements, Help (and remove the unused zoom parameter from Metrics)",
@@ -1874,10 +1921,6 @@
       "branch": "port/P1-05",
       "headSha": "81413bcead379eeceaee1d90cfbb911b64f50b6b",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "PASS. Checked out detached at port/P1-05 (HEAD 81413bc). gen.sh --check: exit 0 (\"goldens up to date (24 suite(s))\"). scripts/ci.sh: exit 0 (build PASS, test PASS with 430 tests in passing runs and 0 failing, format PASS). No files changed or committed; worktree clean."
-      },
       "lenses": [],
       "summary": "Keep Both copy numbers are now Doubles printed with JSText.integerText, as in the reference. This fixes both findings:\n- \"x copy 9223372036854775807.txt\" gives \"x copy 9223372036854776000.txt\" instead of trapping.\n- \"x copy 99999999999999999999.txt\" gives \"x copy 100000000000000000000.txt\".\n- Past 2^53 adding one changes nothing, so the loop follows the reference's double arithmetic. I added an attempts counter so it can't spin forever (the reference would hang on a taken name there).\n- Removed the \"too long for Int counts as no match\" doc comment.\n- The keep-both-names golden gained 34 huge-number cases (digit runs of 15-25, 2^53 boundary, Int.max). They are free-name cases only, because a taken name would hang the reference.\n- Added a Swift test, copyNumbersBeyondIntKeepCounting.\n- Gate: gen.sh --check and ci.sh both pass (430 tests).",
       "findings": [],
@@ -1886,6 +1929,14 @@
       "sharedFileRequests": [],
       "deviations": [
         "The reference loops forever when a candidate with a copy number of 2^53 or more is taken (index + 1 stays equal). The port stops after maxDuplicateNameAttempts attempts and throws NoFreeName instead. All other behavior matches the reference."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "PASS. Checked out detached at port/P1-05 (HEAD 81413bc). gen.sh --check: exit 0 (\"goldens up to date (24 suite(s))\"). scripts/ci.sh: exit 0 (build PASS, test PASS with 430 tests in passing runs and 0 failing, format PASS). No files changed or committed; worktree clean."
+      },
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
       ]
     },
     "P0-13": {
@@ -1902,11 +1953,6 @@
       "status": "merged",
       "branch": "port/P0-13",
       "attempts": 1,
-      "gate": {
-        "pass": true,
-        "summary": "P0-13 gates, worktree detached at port/P0-13 (56ae0de). Filtered swift test loop (VolumeEjectorTests|Icons), 8/8 runs exit 0. scripts/ci.sh exit 0: build PASS (10s), test PASS (22s, 940 tests passing, 0 failing), format PASS (2s). Nothing changed or committed.",
-        "failures": []
-      },
       "lenses": [],
       "blockers": [],
       "headSha": "9608332c59f1be5819db422fc34a138f0041fb44",
@@ -1927,7 +1973,38 @@
         "The eject-test flake was not reproduced at realistic load; the fix targets the disk-image attach race seen in DiskImageSelfTests, which shares the helper with VolumeEjectorTests.",
         "At 16 CPU spinners, VolumeEjectorTests' forced eject once failed with EBUSY from DADiskEject on the whole disk after a forced unmount; left unfixed since it only appears under extreme load and mirrors the original's behavior.",
         "Timing-budget tests in other suites (WriteEffectsTests, ResponseCacheTests, CommandAvailabilityTests) fail under 12 to 16 CPU spinners; not in this package's ownership."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P0-13 gates, worktree detached at port/P0-13 (56ae0de). Filtered swift test loop (VolumeEjectorTests|Icons), 8/8 runs exit 0. scripts/ci.sh exit 0: build PASS (10s), test PASS (22s, 940 tests passing, 0 failing), format PASS (2s). Nothing changed or committed.",
+        "failures": []
+      },
+      "gate": [
+        "for i in $(seq 1 8); do swift test --filter 'VolumeEjectorTests|Icons' >/dev/null 2>&1 || exit 1; done",
+        "scripts/ci.sh"
       ]
+    },
+    "P0-14": {
+      "title": "Run the checks postponed by quiet mode (bench, disk-image hand-off, menu-bar captures)",
+      "phase": "P0",
+      "wave": 1,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [
+        "P2-01",
+        "P2-03",
+        "P4-01",
+        "P0-13"
+      ],
+      "status": "implementing",
+      "branch": "port/P0-14",
+      "attempts": 0,
+      "gate": [
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter DiskImageMounterHandOffTests",
+        "scripts/ci.sh"
+      ],
+      "lenses": [],
+      "blockers": []
     }
   },
   "behaviorExtraction": {
@@ -1937,16 +2014,8 @@
     "rules": 1708
   },
   "quietMode": {
-    "on": true,
-    "since": "2026-10-14",
-    "why": "user in a video call: no windows until the user says go",
-    "deferred": [
-      "P2-01 gate: tools/bench/run.sh --quick --report-only (launches the app)",
-      "GUI-guarded tests: FILETRAIL_GUI_TESTS=1 swift test --filter DiskImageMounterHandOffTests (P2-03)",
-      "P4-01, P4-02: capture-harness gates and visual lens",
-      "wave-1 end: tools/capture/run.sh --acceptance",
-      "P4-01 gate: tools/capture/run.sh --tier wp; menu-bar scenarios"
-    ],
-    "onGo": "remove the Quiet mode section from docs/port/state/preamble.md and from wp/P4-01.md; run the deferred items; restore gates from deferredGate (P2-01, P4-01)"
+    "on": false,
+    "endedAt": "2026-10-14",
+    "note": "lifted on user go; deferred checks moved to P0-14; GUI runs serialized with lockf gui.lock"
   }
 }
