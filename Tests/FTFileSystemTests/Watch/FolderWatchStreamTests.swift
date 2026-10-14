@@ -92,18 +92,20 @@ struct FolderWatchStreamTests {
     }
 
     @Test func cannotWatchAFolderThatIsNotThere() async throws {
+        let failed = Told()
         let stop = FSEventsFolderWatcher.watchFolder(
-            path: "/nonexistent-filetrail-folder", onChange: { _ in }, onFail: {})
-        #expect(stop == nil)
+            path: "/nonexistent-filetrail-folder", onChange: { _ in },
+            onFail: { failed.changes.append(FolderChange(path: "", changedPaths: nil)) })
+        defer { stop() }
+        #expect(await wait { !failed.changes.isEmpty })
     }
 
     @Test func stopsWatchingWhenAsked() async throws {
         try await withTemporaryDirectory { directory in
             let told = Told()
-            let started = FSEventsFolderWatcher.watchFolder(
+            let stop = FSEventsFolderWatcher.watchFolder(
                 path: directory.path, onChange: { _ in told.changes.append(FolderChange(path: "", changedPaths: nil)) },
                 onFail: {})
-            let stop = try #require(started)
             try await Task.sleep(for: .milliseconds(300))
             stop()
             stop()
@@ -124,5 +126,19 @@ struct FolderWatchStreamTests {
         try await Task.sleep(for: .milliseconds(300))
         try FileManager.default.removeItem(atPath: directory.path)
         #expect(await wait { told.changes.contains { $0.changedPaths == nil } })
+    }
+
+    @Test func stoppedBeforeTheStreamIsStartedLeavesNoStream() async throws {
+        try await withTemporaryDirectory { directory in
+            let told = Told()
+            let stop = FSEventsFolderWatcher.watchFolder(
+                path: directory.path, onChange: { _ in told.changes.append(FolderChange(path: "", changedPaths: nil)) },
+                onFail: {})
+            stop()
+            try await Task.sleep(for: .milliseconds(300))
+            try "x".write(toFile: directory.path + "/late.txt", atomically: false, encoding: .utf8)
+            try await Task.sleep(for: .milliseconds(800))
+            #expect(told.changes.isEmpty)
+        }
     }
 }

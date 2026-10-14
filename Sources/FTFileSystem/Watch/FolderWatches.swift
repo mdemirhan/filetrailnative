@@ -212,6 +212,8 @@ public final class FolderWatches {
                 guard let self, let watch else { return }
                 // Started again when the window next asks for the folder or comes to the front; meanwhile
                 // it reads the folder again, which may be gone.
+                // The stream is let go of first: FSEvents does not close it by itself.
+                watch.stop?()
                 watch.stop = nil
                 self.noteChange(windowID, watch, name: nil)
             })

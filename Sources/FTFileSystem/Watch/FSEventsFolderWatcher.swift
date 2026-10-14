@@ -11,10 +11,57 @@ public enum FSEventsFolderWatcher {
     /// How long FSEvents may collect events before handing them over: the watches settle on their own.
     static let latencySeconds = 0.05
 
-    /// Starts watching `path`; the callbacks run on the main actor. Returns a function that stops, or nil
-    /// when the folder can't be watched (it isn't there, say).
+    /// Starts watching `path` without blocking the caller: the path is resolved and the stream started off the
+    /// main actor (either can stall on a network volume), and the callbacks run on the main actor. Returns at
+    /// once a function that stops, also when the stream is not started yet. `onFail` is called as well when
+    /// the stream can't be started (the folder isn't there, say).
     @MainActor
     public static func watchFolder(
+        path: String, onChange: @escaping @MainActor (String?) -> Void, onFail: @escaping @MainActor () -> Void
+    ) -> @Sendable () -> Void {
+        let start = DeferredStart()
+        Task.detached(priority: .utility) {
+            if let stop = openStream(path: path, onChange: onChange, onFail: onFail) {
+                start.attach(stop)
+            } else if !start.isCancelled {
+                DispatchQueue.main.async { MainActor.assumeIsolated { if !start.isCancelled { onFail() } } }
+            }
+        }
+        return { start.cancel() }
+    }
+
+    /// The stop function of a stream being started elsewhere: stopping before it is there stops it on arrival.
+    private final class DeferredStart: @unchecked Sendable {
+        private let lock = NSLock()
+        private var cancelled = false
+        private var stop: (@Sendable () -> Void)?
+
+        var isCancelled: Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return cancelled
+        }
+
+        func attach(_ stop: @escaping @Sendable () -> Void) {
+            lock.lock()
+            let late = cancelled
+            if !late { self.stop = stop }
+            lock.unlock()
+            if late { stop() }
+        }
+
+        func cancel() {
+            lock.lock()
+            cancelled = true
+            let stop = stop
+            self.stop = nil
+            lock.unlock()
+            stop?()
+        }
+    }
+
+    /// Starts the stream on the calling thread; nil when the folder can't be watched.
+    static func openStream(
         path: String, onChange: @escaping @MainActor (String?) -> Void, onFail: @escaping @MainActor () -> Void
     ) -> (@Sendable () -> Void)? {
         // The events carry real paths.
