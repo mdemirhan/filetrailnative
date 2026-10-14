@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T08:37:48+00:00",
+  "updatedAt": "2026-10-14T10:13:54+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "Running W1-G P4-02 + P0-14 (quiet mode lifted). Then wave-1 end: tools/capture/run.sh --acceptance, phase critic, collect deviations into DEVIATIONS.md, ask user for approvals and PLAN §8 checkpoints",
+  "nextAction": "W1-G running. After it: record; merge check; delete all port/* branches + worktrees (user request); acceptance run; wave-1 gate (deviations, PLAN §8)",
   "pause": {
     "requested": false,
     "reason": null,
@@ -2025,7 +2025,14 @@
       "seenIn": "W1-G P4-02 capture gate",
       "issue": "Automation app hung after finishing scenario 02-list-components-dark: NSApp.terminate stuck in _shouldTerminate; applicationShouldTerminate returns .terminateLater and the QuitCoordinator Task never replied (AppDelegate.swift ~220, P4-01 code on main). Sample: AutomationRunner.finish -> terminate -> _shouldTerminate -> nextEventMatchingMask, idle 9+ min. Not every run hangs (01-light exited fine). tools/capture/run.sh has no per-scenario timeout, so a hang holds the GUI lock forever.",
       "also": "A DiskImageMounter was launched ~50 min earlier during quiet mode (W1-F, likely P4-01 or P0-13 tests) and left running; killed by orchestrator.",
-      "owner": "check W1-G results; else new WP (quit hang + run.sh scenario timeout + find what launched DiskImageMounter)"
+      "owner": "check W1-G results; else new WP (quit hang + run.sh scenario timeout + find what launched DiskImageMounter)",
+      "status": "cause: NSApp.terminate called inside a main-actor Task/main-queue job deadlocks with applicationShouldTerminate -> .terminateLater + Task reply. Fixed: capture run.sh timeout 120 s (a697205); Benchmark quit via run loop (main); AutomationRunner fixed on both port/P4-02 and port/P0-14 (integrator picks one). Remaining: find what launched DiskImageMounter during quiet mode."
+    }
+  ],
+  "userRequests": [
+    {
+      "at": "2026-10-14",
+      "request": "Once W1-G is done: everything merged to main, then delete all port/* branches and all worktrees before moving to the next phase."
     }
   ]
 }
