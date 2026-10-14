@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T07:51:32+00:00",
+  "updatedAt": "2026-10-14T08:37:05+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "QUIET MODE until user says go (see quietMode). Running W1-F P4-01 (capture deferred) + P0-13. On go: deferred GUI checks, W1-G P4-02, wave-1 end gate (acceptance + deviation approvals)",
+  "nextAction": "Running W1-G P4-02 + P0-14 (quiet mode lifted). Then wave-1 end: tools/capture/run.sh --acceptance, phase critic, collect deviations into DEVIATIONS.md, ask user for approvals and PLAN §8 checkpoints",
   "pause": {
     "requested": false,
     "reason": null,
@@ -67,6 +67,12 @@
       "weeklyPct": 12.0,
       "fiveHourPct": 7.0,
       "note": "after W1-E (3.21M agent tokens, 25 agents)"
+    },
+    {
+      "at": "2026-10-14T08:37:05+00:00",
+      "weeklyPct": 12.0,
+      "fiveHourPct": 9.0,
+      "note": "after W1-F (847K agent tokens)"
     }
   ],
   "batches": {
@@ -333,14 +339,27 @@
         "P4-01",
         "P0-13"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_dbf217e2-90c",
       "estimatedAgents": 8,
       "meterBefore": {
         "weeklyPct": 12,
         "fiveHourPct": 7
       },
-      "startedAt": "2026-10-14T07:51:32+00:00"
+      "startedAt": "2026-10-14T07:51:32+00:00",
+      "endedAt": "2026-10-14T08:36:27+00:00",
+      "integration": {
+        "merged": [
+          "P4-01",
+          "P0-13"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "707a0182105df364db8f433e3e7a73ddf8fbe930",
+        "summary": "Both branches merged without conflicts. I added the two Info.plist requests from P4-01 (LSMultipleInstancesProhibited, and a Disk Image CFBundleDocumentTypes entry) in one commit on main. I skipped the Package.swift request because the build isn't strict about it. CI passed after each merge and after the parity sync (1019 tests passing, 0 failing). The sync was committed as \"Sync parity matrix after W1-F\"."
+      },
+      "critic": null,
+      "spentOutputTokens": 155208
     }
   },
   "wps": {
@@ -1256,22 +1275,45 @@
         "P2-03",
         "P2-07"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P4-01",
-      "headSha": null,
-      "attempts": 0,
-      "gate": [
-        "scripts/ci.sh"
-      ],
+      "headSha": "b25fe1af8271e1e9ce3898897d96439f1dfcd317",
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "scripts/ci.sh: EXIT=0 (PASS build 16s, PASS test 84s with 1019 tests in passing runs and 0 failing, PASS format 6s). Gate passes for P4-01 at b25fe1a. Worktree left clean and detached. Full log: scratchpad ci_out.txt.",
+        "failures": []
+      },
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Branch port/P4-01. scripts/ci.sh passes (build, 1019 tests, format). The first ci run hit two timing-limit failures in other packages' tests under machine load; they passed on rerun.\n- Menus/ (new): MenuKeyEquivalent, ApplicationMenuBuilder, MenuCommandRouter and ApplicationMenuSync, which hosts the P1-03 states (ApplicationMenu.itemStates/apply) and Undo labels. The menu is built from the command table. Keys follow the first-⌘-or-⌃ rule, and Undo/Redo come as files and text-field pairs. Window targeting follows the original's rules, including none while all windows are minimized. Edit commands use the responder chain for other windows and for text fields. Menu rebuilds happen only when Undo/Redo labels change.\n- App/ (moved and new): AppDelegate and MainMenu. AppDelegate handles launch arguments, `~` expansion, a single-instance guard, the Dock menu and reopen, `application(_:open:)` into OpenFileEntryPoint, theme at launch, the logger and state store, and one DirectoryService plus FolderWatches. New: LaunchContext, QuitWhileBusy, QuitCoordinator, ShellActions, and the ExplorerWindowHost/Handle/Listing protocols P4-02 plugs into.\n- MainWindowHost is a stand-in over the existing MainWindowController until P4-02 replaces it. It reports no per-window menu state yet.\n- 66 Swift Testing cases in Tests/FTAppKitTests/{App,Menus}, with T-/F- citations. Citations were checked with bun sync.ts, and I reverted the parity files it rewrote.\n- 14 menu-bar scenarios, 21-34 in tools/capture/scenarios, each menu in light and dark, with feature tags. They choose an item rather than showing the open menu, because a native menu can't be captured.\n- Quiet mode: I skipped `tools/capture/run.sh --tier wp`, didn't launch the app, and wrote no GUI-guarded tests.\n- Hooks for later packages:\n  - P3-05: `AppDelegate.quit.hooks.activeOperation` returns a BusyOperationKind, and `.shutDown` stops the coordinator.\n  - P4-02: `onFolderChanged`, plus replacing MainWindowHost with a type conforming to ExplorerWindowHost.",
       "findings": [],
-      "fixes": [],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "The only reported failure was DiskImageSelfTests.mountsWritesAndDetaches, which failed on an hdiutil attach error (\"no mountable file systems\") in the exfat helper. That is an environment problem, not port code, so I added no test and changed no code. Re-running scripts/ci.sh on port/P4-01 passed with no changes: build, test (1019 passing, 0 failing) and format. I made an empty commit b25fe1a with the Port-Stage: fixed-1 trailer and ran git checkout --detach. The commit has no Co-Authored-By line, per the global git rule.",
+          "headSha": "b25fe1af8271e1e9ce3898897d96439f1dfcd317",
+          "remaining": [
+            "Finding 'DiskImageSelfTests hdiutil attach failed' is environmental, not a port defect. Evidence: the unchanged branch passes scripts/ci.sh on re-run (1019 passing, 0 failing). The disk image helper may be flaky in some environments."
+          ]
+        }
+      ],
       "blockers": [],
       "deferredGate": [
         "tools/capture/run.sh --tier wp"
+      ],
+      "sharedFileRequests": [
+        "Resources/Info.plist: add LSMultipleInstancesProhibited = true for LaunchServices single instance (F-612).",
+        "Resources/Info.plist: add CFBundleDocumentTypes with Disk Image (com.apple.disk-image, role Viewer, rank Alternate) so Finder's Open With reaches application(_:open:) (F-135).",
+        "Package.swift: FTAppKitTests imports FTFileSystem, which compiles through the transitive dependency; add FTFileSystem to the test target's dependencies if that becomes strict."
+      ],
+      "deviations": [
+        "No hidden full-screen menu item (the original keeps ⌃⌘F that way); AppKit adds its own Enter Full Screen to the View menu with that key. T-22d10b77 (Developer Tools) is marked N/A under F-914. No Zoom items, per D-005.",
+        "T-b4b74d32 (performEditAction) is marked N/A: edit commands go through the responder chain instead of webContents.",
+        "Escape on the stop question is a local key monitor on the first button, because NSAlert only maps Escape to a button titled Cancel.",
+        "The single-instance guard also hands over to a running copy by bundle id, and is skipped for automation, bench and FILETRAIL_ALLOW_MULTIPLE=1 runs. LSMultipleInstancesProhibited is the real LaunchServices mechanism (see sharedFileRequests).",
+        "The interim MainWindowHost returns false from openFromOtherApp, so with a window open a Finder disk image mounts here and opens in a new window instead of a tab. P4-02 supplies the real behavior."
       ]
     },
     "P4-02": {
@@ -1857,15 +1899,35 @@
         "P2-03",
         "P2-04"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-13",
-      "attempts": 0,
-      "gate": [
-        "for i in $(seq 1 8); do swift test --filter 'VolumeEjectorTests|Icons' >/dev/null 2>&1 || exit 1; done",
-        "scripts/ci.sh"
-      ],
+      "attempts": 1,
+      "gate": {
+        "pass": true,
+        "summary": "P0-13 gates, worktree detached at port/P0-13 (56ae0de). Filtered swift test loop (VolumeEjectorTests|Icons), 8/8 runs exit 0. scripts/ci.sh exit 0: build PASS (10s), test PASS (22s, 940 tests passing, 0 failing), format PASS (2s). Nothing changed or committed.",
+        "failures": []
+      },
       "lenses": [],
-      "blockers": []
+      "blockers": [],
+      "headSha": "9608332c59f1be5819db422fc34a138f0041fb44",
+      "summary": "Causes found and fixed in tests only. Thumbnail tests (ThumbnailStoreTests, ThumbnailLoadQueueTests) used fixed yields plus a 150 ms sleep, so they raced main-actor tasks under load; they now wait on queue idle or the expected call count. DiskImage.withVolume now holds a per-kind flock, because parallel clones of one blank image share a UUID and the second attach failed with \"no mountable file systems\"; detach wait raised to 30 s. Listing bench: tools/bench/run.sh runs listing.sh, report.py reads build/bench/listing.json, budgets.json gains list_3000_ms (25) and list_100000_ms (400); listing.sh gave 7.6 ms and 280 ms.\nFailure rates (full swift test under CPU load): before, 1 in 4 at 12 spinners (thumbnail), 1 in 8 at 16 spinners (DiskImageSelfTests attach); after, 0 in 8 at 8 spinners. The 16-spinner run after the fix still failed 3 in 10, in other suites' timing tests, one forced-eject EBUSY, and one attach failure before the detach timeout was raised. Unloaded, the gate loop passed 8 of 8 both before and after, and scripts/ci.sh passed. The eject flake itself did not reproduce unloaded, and the forced-eject EBUSY on DADiskEject under extreme load is unresolved.",
+      "findings": [],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "Fixed at 56ae0deed1174953dbc646ef868a9763280181fa on port/P0-13. The intermittent failure never reproduced for me, so the cause is inferred and the new test is not a failing-first test. Both gates pass: 8 filtered iterations, then scripts/ci.sh (940 tests, 0 failures). I also ran scripts/ci.sh six times beforehand with no failure.\n\nLikely cause: the test checked `!isMounted(folder.path)`, a mount-path check. Between the eject and that check, another process can attach a clone of the same blank image and take the freed `/Volumes/<name>`. Candidates are another worktree's test run on older code without the cross-process lock, or ExecPlaces' unlocked attaches. The path then shows mounted even though our volume is gone.\n\nThe fix is in `Tests/FTFileSystemTests/Volumes/VolumeEjectorTests.swift`. The tests now record the volume's device node (`/dev/diskNsM`) before ejecting and assert that device is no longer mounted. The same change applies to the other three eject tests that checked the path.\n\nEarlier commits on the branch already cover the thumbnail flakiness, the per-kind disk-image `flock`, and the listing bench metrics.",
+          "remaining": [
+            "Did not reproduce the failure, so the cause above is not confirmed, and I have no before/after failure rates under a parallel `swift build` load.",
+            "ExecDiskImages in `Tests/FTTestSupport/ExecPlaces.swift` still attaches clones of the same blank images without the per-kind lock. It holds them until process exit, so locking it would hang `DiskImage.withVolume`. If the flake returns, look there first."
+          ]
+        }
+      ],
+      "sharedFileRequests": [],
+      "deviations": [
+        "The eject-test flake was not reproduced at realistic load; the fix targets the disk-image attach race seen in DiskImageSelfTests, which shares the helper with VolumeEjectorTests.",
+        "At 16 CPU spinners, VolumeEjectorTests' forced eject once failed with EBUSY from DADiskEject on the whole disk after a forced unmount; left unfixed since it only appears under extreme load and mirrors the original's behavior.",
+        "Timing-budget tests in other suites (WriteEffectsTests, ResponseCacheTests, CommandAvailabilityTests) fail under 12 to 16 CPU spinners; not in this package's ownership."
+      ]
     }
   },
   "behaviorExtraction": {

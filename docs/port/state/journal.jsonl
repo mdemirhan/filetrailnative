@@ -64,3 +64,6 @@
 {"at": "2026-10-14T07:51:25+00:00", "event": "next", "text": "QUIET MODE until user says go (see quietMode). Running W1-F P4-01 (capture deferred) + P0-13. On go: deferred GUI checks, W1-G P4-02, wave-1 end gate (acceptance + deviation approvals)"}
 {"at": "2026-10-14T07:51:25+00:00", "event": "set-batch", "batch": "W1-F", "status": "running", "runId": null}
 {"at": "2026-10-14T07:51:32+00:00", "event": "set-batch", "batch": "W1-F", "status": "running", "runId": "wf_dbf217e2-90c"}
+{"at": "2026-10-14T08:36:27+00:00", "event": "apply-report", "batch": "W1-F", "wps": ["P4-01", "P0-13"]}
+{"at": "2026-10-14T08:37:05+00:00", "event": "meter", "weeklyPct": 12.0, "fiveHourPct": 9.0, "note": "after W1-F (847K agent tokens)"}
+{"at": "2026-10-14T08:37:05+00:00", "event": "next", "text": "Running W1-G P4-02 + P0-14 (quiet mode lifted). Then wave-1 end: tools/capture/run.sh --acceptance, phase critic, collect deviations into DEVIATIONS.md, ask user for approvals and PLAN §8 checkpoints"}
