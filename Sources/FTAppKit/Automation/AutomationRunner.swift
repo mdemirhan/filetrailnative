@@ -119,9 +119,9 @@
                 Data(
                     "automation \(current.scenario): \(current.steps.count) steps, \(current.unsupportedCount) unsupported, \(current.failedCount) failed, \(current.failedChecks) expectations unmet\n"
                         .utf8))
-            // Quitting waits for the quit coordinator's task on the main actor, which can't run inside this task's
-            // turn: terminate from the run loop instead, as ⌘Q does.
-            NSApp.perform(#selector(NSApplication.terminate(_:)), with: nil, afterDelay: 0)
+            // Not from inside this task or a main-queue block: terminate waits in a nested event loop for the quit
+            // coordinator's reply, a main-actor task that cannot run while the main queue is busy with this call.
+            RunLoop.main.perform(inModes: [.common]) { NSApp.terminate(nil) }
         }
 
         // MARK: Watchdogs
