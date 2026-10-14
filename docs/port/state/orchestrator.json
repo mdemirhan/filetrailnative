@@ -2914,11 +2914,12 @@
     },
     {
       "at": "2026-10-14",
-      "seenIn": "user, looking at the running app (W2-U1)",
+      "seenIn": "user, looking at the running app (W2-U1); spike in scratchpad tabspike/main.swift",
       "issue": "The tab bar runs across the full window width, over the sidebar. In the original the tab strip sits only above the content column (ui.md §1 rows: toolbar, tab strip, panes; §1.3 custom TabStrip.tsx), and the sidebar runs from the top of the window down. Not the original design.",
-      "cause": "D-001 (native window tabs): the system NSWindow tab bar always spans the whole window and can't be confined to the content column. P5-02 also set the sidebar's contentTop to WindowChrome.tabBarHeight (WorkspaceView.swift:170), so the sidebar starts under the system tab bar.",
-      "owner": "user decision: keep native tabs (D-001) and accept it as a D-001 consequence, or replace the system tab bar with a custom in-window tab strip in the content column (new WP; reopens D-001..D-003 and D-013 and touches P4-02's tab model and P5-08). Raise with the wave-2 gate deviations if not decided earlier.",
-      "closed": false
+      "cause": "A layout issue, not native tabs (D-001 stays). Spike 2026-10-14: a window whose contentViewController is an NSSplitViewController with an NSSplitViewItem(sidebarWithViewController:) gets its NSTabBar placed over the content column only (sidebar 200 pt -> NSTabBar x=200, width 700 of 900), as Finder does. This holds with or without an NSToolbar, with or without .sidebarTrackingSeparator, and with or without allowsFullHeightLayout. The port lays the window out in its own WorkspaceView grid (Layout/WorkspaceView.swift, no NSSplitViewController), so AppKit doesn't know where the sidebar is and draws the tab bar across the whole window. WindowChrome.apply also grows the titlebar container to the toolbar band plus the tab bar; P5-02 set sidebarCell.contentTop = tabBarHeight (WorkspaceView.swift:170).",
+      "owner": "new UI work package after this phase (user 2026-10-14: note it, don't solve it in this phase). It touches P5-01 (Layout/WindowChrome) and P5-02 (sidebar), so schedule it after P5-02 merges and not alongside a UI WP that owns Layout/.",
+      "closed": false,
+      "fix": "Make the window's content an NSSplitViewController: a sidebar split item holding the sidebar, the content item holding the toolbar band, the content and the Info panel. Keep the original's sidebar width, resizer and collapse behavior and the toolbar band's geometry (P5-01 tokens). Rework WindowChrome.apply and the sidebar's contentTop so the sidebar runs full height, with nothing between it and the top of the window. Check against Finder and the original: tab bar only above the content column, light and dark, one tab and several, full screen. Run the geometry captures and P4-02's tab tests."
     }
   ],
   "userRequests": [
