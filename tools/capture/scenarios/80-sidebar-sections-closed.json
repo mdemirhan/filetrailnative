@@ -1,0 +1,81 @@
+{
+  "name": "80-sidebar-sections-closed",
+  "description": "Favorites and Locations closed with their headers: the chevron stays visible on a closed header",
+  "features": [
+    "F-730"
+  ],
+  "behaviors": [
+    "B-TREE-006",
+    "B-TREE-066",
+    "B-TREE-067"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "command",
+      "id": "rootTreeAtSelection"
+    },
+    {
+      "step": "click",
+      "element": {
+        "name": "sidebar section headers",
+        "text": "Favorites"
+      }
+    },
+    {
+      "step": "click",
+      "element": {
+        "name": "sidebar section headers",
+        "text": "Locations"
+      }
+    },
+    {
+      "step": "expect",
+      "element": {
+        "name": "collapsed section header",
+        "text": "Favorites"
+      },
+      "visible": true
+    },
+    {
+      "step": "wait",
+      "ms": 600
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

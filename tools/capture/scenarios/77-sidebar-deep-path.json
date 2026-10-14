@@ -1,0 +1,74 @@
+{
+  "name": "77-sidebar-deep-path",
+  "description": "A path opened four folders deep in a tree rooted above it: every folder on the way open, the last one selected",
+  "features": [
+    "F-727",
+    "F-728",
+    "F-729",
+    "F-730",
+    "F-731",
+    "F-732",
+    "F-733",
+    "F-734",
+    "F-735",
+    "F-736",
+    "F-737",
+    "F-740"
+  ],
+  "behaviors": [
+    "B-TREE-073",
+    "B-TREE-075",
+    "B-TREE-097"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "."
+    },
+    {
+      "step": "command",
+      "id": "rootTreeAtSelection"
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 600
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

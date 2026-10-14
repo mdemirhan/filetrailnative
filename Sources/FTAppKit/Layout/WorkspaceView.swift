@@ -167,7 +167,8 @@ final class WorkspaceView: NSView {
         sidebarBackdrop.frame = NSRect(x: 0, y: 0, width: tree + resizer / 2, height: height)
         sidebarTint.frame = sidebarBackdrop.bounds
         sidebarCell.frame = NSRect(x: 0, y: 0, width: tree, height: height)
-        sidebarCell.contentTop = panesTop
+        // The sidebar draws its own 52 pt strip under the traffic lights; only the system tab bar is above it.
+        sidebarCell.contentTop = tabBarHeight
         treeResizer.frame = NSRect(x: tree, y: 0, width: resizer, height: height)
 
         toolbar.frame = NSRect(x: contentX, y: 0, width: width - contentX, height: bandHeight)

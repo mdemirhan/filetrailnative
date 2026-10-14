@@ -1,5 +1,6 @@
 // Port of a tab of apps/desktop/src/renderer/hooks/useExplorerTabs.ts: one tab of an explorer window, as a native window tab
 import AppKit
+import FTFileSystem
 import FTFoundation
 
 struct NavigationTiming: Sendable {
@@ -152,17 +153,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// The explorer window it is a tab of.
     weak var group: ExplorerTabGroup?
     private(set) var folder: URL
-    /// How the tab shows its folder, kept between launches with its folder.
-    private(set) var treeRootPath: String
-    private(set) var favoritePath: String?
+    /// How the tab shows its folder, kept between launches with its folder. The sidebar keeps its tree and sections.
+    var treeRootPath: String { sidebar.treeRootPath }
+    var favoritePath: String? { sidebar.favoritePath }
     private(set) var viewMode: ExplorerViewMode
     private(set) var searchViewMode: ExplorerViewMode
     private(set) var sortBy: SortByPreference
     private(set) var sortDirection: SortDirectionPreference
     private(set) var includeHidden: Bool
     private(set) var foldersFirst: Bool
-    private(set) var favoritesExpanded: Bool
-    private(set) var locationsExpanded: Bool
+    var favoritesExpanded: Bool { sidebar.favoritesExpanded }
+    var locationsExpanded: Bool { sidebar.locationsExpanded }
 
     var onClose: (() -> Void)?
     /// Called once, after the first folder has been drawn (used by the launch benchmark).
@@ -171,6 +172,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     var onReady: (() -> Void)?
 
     private let sidebar = SidebarViewController()
+    /// Eject, from a disk's button in the sidebar, its menu and File ▸ Eject.
+    private let ejectCoordinator = EjectCoordinator(volumes: { SidebarVolumes.shared.volumes })
+    private lazy var ejectPresenter = AlertEjectPresenter(window: { [weak self] in self?.window })
+    /// The pane that last had the keyboard, for the commands that act on it when none does.
+    private var lastFocusedPane: ExplorerPane?
+    /// The sidebar, for the parts of the window that put a menu on a row or follow its selection.
+    var sidebarController: SidebarViewController { sidebar }
     private let browser = BrowserViewController()
     /// The window's grid: sidebar, content, Info panel and the toolbar.
     let workspace: WorkspaceView
@@ -201,16 +209,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         windowID = Self.nextWindowID
         Self.nextWindowID += 1
         folder = URL(fileURLWithPath: tab.path)
-        treeRootPath = tab.rootPath
-        favoritePath = tab.favoritePath
         viewMode = tab.viewMode
         searchViewMode = tab.searchViewMode
         sortBy = tab.sortBy
         sortDirection = tab.sortDirection
         includeHidden = tab.includeHidden
         foldersFirst = tab.foldersFirst
-        favoritesExpanded = tab.favoritesExpanded
-        locationsExpanded = tab.locationsExpanded
         if let history, history.paths.indices.contains(history.index) {
             backStack = history.paths[..<history.index].map { URL(fileURLWithPath: $0) }
             forwardStack = history.paths[(history.index + 1)...].reversed().map { URL(fileURLWithPath: $0) }
@@ -232,6 +236,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         window.delegate = self
 
         window.contentView = workspace
+        configureSidebar()
+        sidebar.restore(
+            rootPath: tab.rootPath, folder: tab.path, favoritePath: tab.favoritePath,
+            favoritesExpanded: tab.favoritesExpanded, locationsExpanded: tab.locationsExpanded,
+            includeHidden: tab.includeHidden)
         workspace.sidebarCell.content = sidebar.view
         workspace.mainCell.content = browser.view
         workspace.inspectorCell.content = infoPanel
@@ -249,7 +258,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             window.center()
         }
 
-        sidebar.onSelect = { [weak self] url in self?.go(to: url) }
         browser.onOpen = { [weak self] items in self?.open(items) }
         browser.onSortChanged = { [weak self] sort in self?.sortChangedInList(sort) }
         browser.setMode(viewMode == .icons ? .icons : .list)
@@ -258,6 +266,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         connectSearchField()
         #if DEBUG
             AutomationLayoutPrefs.registerOnce()
+            AutomationSidebarPrefs.registerOnce()
         #endif
         updateTitle()
         if loadNow { ensureLoaded() }
@@ -357,13 +366,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
         let moved = folder.path != snapshot.currentPath
         folder = URL(fileURLWithPath: snapshot.currentPath)
-        treeRootPath = snapshot.treeRootPath
         let favoritePrefix = "favorite:"
-        if let item = snapshot.selectedTreeItemID, item.hasPrefix(favoritePrefix) {
-            favoritePath = String(item.dropFirst(favoritePrefix.count))
-        } else {
-            favoritePath = nil
+        let favorite = snapshot.selectedTreeItemID.flatMap {
+            $0.hasPrefix(favoritePrefix) ? String($0.dropFirst(favoritePrefix.count)) : nil
         }
+        sidebar.restore(
+            rootPath: snapshot.treeRootPath, folder: snapshot.currentPath, favoritePath: favorite,
+            favoritesExpanded: sidebar.favoritesExpanded, locationsExpanded: sidebar.locationsExpanded,
+            includeHidden: includeHidden)
         if moved, loaded { stale = true }
         updateTitle()
         updateNavigationItems()
@@ -402,14 +412,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     // MARK: Navigation
 
-    func go(to url: URL, history: HistoryMove = .push) {
-        Task { await navigate(to: url, history: history) }
+    func go(to url: URL, history: HistoryMove = .push, open: SidebarOpen = .other) {
+        Task { await navigate(to: url, history: history, open: open) }
     }
 
     /// Reads `url` off the main thread, then shows it. Returns nil when a later
-    /// navigation replaced this one or the folder couldn't be read.
+    /// navigation replaced this one or the folder couldn't be read. `open` says how the sidebar reached it, which
+    /// decides how the sidebar's tree follows and which of its rows is selected.
     @discardableResult
-    func navigate(to url: URL, history: HistoryMove = .push) async -> NavigationTiming? {
+    func navigate(to url: URL, history: HistoryMove = .push, open: SidebarOpen = .other) async -> NavigationTiming? {
         self.loaded = true
         navigationToken += 1
         let token = navigationToken
@@ -430,11 +441,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             listing = value
         case .failure(let error):
             if let window { NSAlert(error: error).beginSheetModal(for: window, completionHandler: nil) }
-            sidebar.select(folder)
+            sidebar.openFailed()
             return nil
         }
 
         let previous = folder
+        let history = open.pushesHistory ? history : HistoryMove.none
         switch history {
         case .push:
             if url.comparablePath != previous.comparablePath {
@@ -454,14 +466,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             forwardStack = paths[(index + 1)...].reversed().map { URL(fileURLWithPath: $0) }
         }
         folder = url
-        if favoritePath != url.path { favoritePath = nil }
 
         // Coming back up to a parent selects the folder you came from, as Finder does.
         let cameFromChild = previous.deletingLastPathComponent().comparablePath == url.comparablePath
         updateTitle()
         searchField?.stringValue = ""
+        // A folder opened from the sidebar leaves the keyboard there.
+        let sidebarKeyboard = open.origin != .other && sidebar.isFocused ? window?.firstResponder : nil
         browser.show(listing, selecting: cameFromChild ? [previous] : [])
-        sidebar.select(url)
+        if let sidebarKeyboard { window?.makeFirstResponder(sidebarKeyboard) }
+        sidebar.folderOpened(url, open)
         updateNavigationItems()
         notify(.folder)
         window?.contentView?.layoutSubtreeIfNeeded()
@@ -511,11 +525,97 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         notify(.history)
     }
 
-    /// The folder Open in New Tab and Open in New Window open: the one folder selected.
+    /// The folder Open in New Tab and Open in New Window open: the one folder selected, or with the sidebar focused its
+    /// selected folder (B-TREE-155).
     private var selectedFolder: URL? {
+        if focusedPane == .tree { return sidebar.selectedTreeTargetPath.map { URL(fileURLWithPath: $0) } }
         let items = browser.selectedItems
         guard items.count == 1 else { return nil }
         return FolderLoader.folderTarget(of: items[0])
+    }
+
+    /// The folder selected in the file list, if it is the one item selected and a folder.
+    private var selectedContentFolder: URL? {
+        let items = browser.selectedItems
+        guard items.count == 1 else { return nil }
+        return FolderLoader.folderTarget(of: items[0])
+    }
+
+    /// The pane that last had the keyboard (`lastExplorerFocusPaneRef`).
+    private func noteFocusedPane() {
+        if let pane = focusedPane { lastFocusedPane = pane }
+    }
+
+    /// What the command rules look at of the selection in the file list.
+    private var commandEntries: [CommandEntry] {
+        browser.selectedItems.map {
+            CommandEntry(path: $0.url.path, kind: $0.opensAsFolder ? .directory : .file)
+        }
+    }
+
+    /// The folder File ▸ Add to Favorites acts on (`resolveFavoriteTargetPath`).
+    var favoriteTargetPath: String? {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        return CommandAvailability.favoriteTargetPath(
+            .init(
+                currentPath: folder.path, selectedPathsInViewOrder: selectedPaths, activeContentEntries: commandEntries,
+                selectedTreeTargetPath: sidebar.selectedTreeTargetPath, isSearchMode: searchRootPath != nil,
+                trashPath: FavoriteLabel.trashPath(homePath: home), focusedPane: commandPane))
+    }
+
+    private var commandPane: FTFoundation.FocusedPane? {
+        switch focusedPane {
+        case .tree: .tree
+        case .content: .content
+        case nil: nil
+        }
+    }
+
+    /// The disk File ▸ Eject ejects: the sidebar's selected disk row.
+    private var ejectTargetPath: String? {
+        EjectPlanning.resolveEjectTargetPath(
+            focusedPane: focusedPane == .content ? .content : (focusedPane == .tree ? .tree : nil),
+            selectedTreeItemId: sidebar.selectedTreeItemID, volumes: SidebarVolumes.shared.volumes)
+    }
+
+    /// Opens the Sidebar's closures: what it needs of the window.
+    private func configureSidebar() {
+        sidebar.preferences = { [weak self] in self?.preferences ?? AppPreferences.defaults() }
+        sidebar.updatePreferences = { [weak self] patch in self?.updatePreferences(patch) }
+        sidebar.directoryService = { [weak self] in
+            self?.services.directoryService ?? ExplorerServices.current.directoryService
+        }
+        sidebar.openInNewTab = { [weak self] path in
+            guard let self else { return }
+            self.group?.openTab(path: path, from: self)
+        }
+        sidebar.focusContent = { [weak self] in self?.perform(.focusContentPane) }
+        sidebar.stateChanged = { [weak self] in
+            guard let self else { return }
+            self.group?.tabChanged(self)
+        }
+        sidebar.selectionChanged = { [weak self] in
+            self?.noteFocusedPane()
+            self?.notify(.selection)
+            self?.notify(.focusedPane)
+        }
+        sidebar.model.openFolder = { [weak self] url, open in
+            guard let self else { return }
+            self.go(to: url, open: open)
+        }
+        sidebar.model.releaseFolder = { [weak self] in self?.releaseFolder() }
+        sidebar.eject = { [weak self] path in self?.ejectCoordinator.requestEject(path: path) }
+        sidebar.ejectingPaths = { [weak self] in self?.ejectCoordinator.ejectingPaths ?? [] }
+        ejectCoordinator.presenter = ejectPresenter
+        ejectCoordinator.onChange = { [weak self] in self?.sidebar.refresh() }
+        ejectCoordinator.didFinish = { SidebarVolumes.shared.refresh() }
+    }
+
+    /// The folder on screen is let go of: the file list shows nothing (B-TREE-059, B-TREE-060).
+    private func releaseFolder() {
+        browser.show(FolderListing(folder: folder, items: []), selecting: [])
+        sidebar.focusTree()
+        notify(.selection)
     }
 
     // MARK: Menu state
@@ -534,7 +634,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         var state = ApplicationMenuState.build(
             viewMode: viewMode, sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: includeHidden,
             folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
-            infoRowOpen: panels?.detailRowOpen ?? false, favoriteIsSet: false, textEditing: false
+            infoRowOpen: panels?.detailRowOpen ?? false,
+            favoriteIsSet: favoriteTargetPath.map { sidebar.isFavorite($0) } ?? false, textEditing: false
         ) { CommandAvailability.canRun($0, context) }
         state.disabledCommands = state.disabledCommands.filter(Self.tabCommands.contains)
         return state
@@ -726,6 +827,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     func preferencesChanged(_ change: PreferencesChange) {
+        sidebar.applyPreferences()
         notify(.preferences)
         if let customizer { customizer.refreshPanel() }
     }
@@ -745,8 +847,15 @@ extension MainWindowController: ExplorerWindowHandle {
         switch command {
         case .goBack: goBack(nil)
         case .goForward: goForward(nil)
-        case .goEnclosingFolder: goToEnclosingFolder(nil)
-        case .openSelection: openSelection(nil)
+        case .goEnclosingFolder:
+            // With the sidebar focused, the parent row of the selected folder.
+            if focusedPane == .tree {
+                _ = sidebar.selectParent()
+            } else {
+                goToEnclosingFolder(nil)
+            }
+        case .openSelection:
+            if focusedPane == .tree { _ = sidebar.openSelection() } else { openSelection(nil) }
         case .viewAsIcons: setMode(.icons)
         case .viewAsDetails: setMode(.details)
         case .viewAsList: setMode(.list)
@@ -760,6 +869,7 @@ extension MainWindowController: ExplorerWindowHandle {
             group?.tabChanged(self)
         case .toggleHiddenFiles:
             includeHidden.toggle()
+            sidebar.hiddenFilesChanged(includeHidden)
             notify(.view)
             group?.tabChanged(self)
         case .refreshOrApplySearchSort: reload()
@@ -767,11 +877,24 @@ extension MainWindowController: ExplorerWindowHandle {
         case .goDocuments: place(fileManager.urls(for: .documentDirectory, in: .userDomainMask).first)
         case .goDesktop: place(fileManager.urls(for: .desktopDirectory, in: .userDomainMask).first)
         case .goDownloads: place(fileManager.urls(for: .downloadsDirectory, in: .userDomainMask).first)
-        case .goHomeRootTree: place(fileManager.homeDirectoryForCurrentUser)
+        case .goHomeRootTree: sidebar.rootTree(at: fileManager.homeDirectoryForCurrentUser.path)
         case .goLibrary: place(fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first)
-        case .goMacintoshHD: place(URL(fileURLWithPath: "/"))
+        // Macintosh HD and the Trash act exactly as a click on their Locations rows.
+        case .goMacintoshHD: sidebar.openLocation("/")
         case .goApplications: place(fileManager.urls(for: .applicationDirectory, in: .localDomainMask).first)
-        case .goTrash: place(fileManager.homeDirectoryForCurrentUser.appendingPathComponent(".Trash"))
+        case .goTrash: sidebar.openLocation(fileManager.homeDirectoryForCurrentUser.path + "/.Trash")
+        case .rootTreeAtSelection:
+            if let target = sidebar.rootTreeTarget(
+                focusedPane: focusedPane, lastFocusedPane: lastFocusedPane,
+                selectedContentFolder: selectedContentFolder?.path, currentPath: folder.path)
+            {
+                sidebar.rootTree(at: target)
+            }
+        case .toggleFavorite:
+            if let target = favoriteTargetPath { sidebar.toggleFavorite(target) }
+        case .focusTreePane: sidebar.focusTree()
+        case .ejectVolume:
+            if let target = ejectTargetPath { ejectCoordinator.requestEject(path: target) }
         case .newTab: group?.openNewTab(from: self)
         case .closeTab: group?.closeTab(self)
         case .reopenClosedTab: group?.reopenClosedTab(from: self)
@@ -835,11 +958,15 @@ extension MainWindowController: ExplorerWindowContext {
 
     func canPerform(_ command: RendererCommand) -> Bool {
         // Customizing the toolbar is a sheet over the window (`sheetOpen`): the commands wait for it to end.
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
         let context = CommandAvailabilityContext(
-            shortcutContext: ShortcutContext(locationSheetOpen: customizer != nil), currentPath: folder.path,
-            selectedPathsInViewOrder: selectedPaths, isSearchMode: searchRootPath != nil, canGoBack: canGoBack,
-            canGoForward: canGoForward, tabCount: group?.tabs.count ?? 1,
-            homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+            shortcutContext: ShortcutContext(
+                focusedPane: commandPane, locationSheetOpen: customizer != nil,
+                selectedTreeTargetKind: sidebar.selectedTreeTargetKind),
+            currentPath: folder.path, selectedPathsInViewOrder: selectedPaths, activeContentEntries: commandEntries,
+            selectedTreeTargetPath: sidebar.selectedTreeTargetPath, isSearchMode: searchRootPath != nil,
+            canGoBack: canGoBack, canGoForward: canGoForward, tabCount: group?.tabs.count ?? 1,
+            trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home, ejectTargetPath: ejectTargetPath)
         return CommandAvailability.canRun(command, context)
     }
 

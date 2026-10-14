@@ -4,6 +4,11 @@ import Foundation
 /// Which folders the sidebar's tree holds, where it is rooted, and which hidden folders and packages stay on the way
 /// to the folder on screen.
 public enum TreePaths {
+    /// Two paths are the same when their code units are (`===` of strings): the NFC and NFD spellings of a name differ.
+    public static func same(_ first: String, _ second: String) -> Bool {
+        JSString.equals(first, second)
+    }
+
     // MARK: Tree root
 
     /// `isPathWithinRoot`.
