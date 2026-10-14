@@ -24,6 +24,40 @@ extension NSToolbarItem.Identifier {
 final class ExplorerTabWindow: NSWindow {
     weak var explorerTab: MainWindowController?
 
+    /// What the Window menu calls the window: its tab's label, as the original's window title is. The title itself
+    /// stays the folder's name, which the toolbar shows.
+    var windowsMenuTitle: String? {
+        didSet { syncWindowsMenuItem() }
+    }
+
+    override var title: String {
+        didSet { syncWindowsMenuItem() }
+    }
+
+    override var representedURL: URL? {
+        didSet { syncWindowsMenuItem() }
+    }
+
+    // AppKit puts the window in the Window menu, under its title, as it comes on screen.
+    override func order(_ place: NSWindow.OrderingMode, relativeTo otherWin: Int) {
+        super.order(place, relativeTo: otherWin)
+        syncWindowsMenuItem()
+    }
+
+    override func becomeKey() {
+        super.becomeKey()
+        syncWindowsMenuItem()
+    }
+
+    /// Renames the window's Window menu item, once AppKit has made one.
+    private func syncWindowsMenuItem() {
+        guard let label = windowsMenuTitle, !isExcludedFromWindowsMenu,
+            let item = NSApp.windowsMenu?.items.first(where: { $0.target as? NSWindow === self }),
+            item.title != label
+        else { return }
+        NSApp.changeWindowsItem(self, title: label, filename: false)
+    }
+
     override func performClose(_ sender: Any?) {
         guard let tab = explorerTab, let group = tab.group else {
             super.performClose(sender)
@@ -167,6 +201,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
                 .tabs[0])
     }
 
+    /// A tab as `snapshot` kept it: its folder, tree, view and history (Reopen Closed Tab, Duplicate Tab).
+    convenience init(snapshot: TabSnapshot, frame: NSRect?) {
+        let startup = StartupTab(
+            path: snapshot.currentPath, rootPath: snapshot.treeRootPath,
+            favoritePath: snapshot.selectedTreeItemID?.hasPrefix("favorite:") == true ? snapshot.currentPath : nil,
+            viewMode: snapshot.viewMode, searchViewMode: snapshot.searchViewMode, sortBy: snapshot.sortBy,
+            sortDirection: snapshot.sortDirection, includeHidden: snapshot.includeHidden,
+            foldersFirst: snapshot.foldersFirst, favoritesExpanded: snapshot.favoritesExpanded,
+            locationsExpanded: snapshot.locationsExpanded)
+        self.init(tab: startup, history: (snapshot.historyPaths, snapshot.historyIndex), frame: frame)
+    }
+
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     // MARK: The tab
@@ -228,7 +274,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     }
 
     private func updateTitle() {
-        // The window title stays the folder name, for the Window menu; the tab bar has the tab's label.
+        // The window title is the folder name, which the toolbar shows; the tab bar and the Window menu have the
+        // tab's label (ExplorerTabGroup.refreshTitles).
         let name = ExplorerTabs.folderDisplayName(folder.path)
         window?.title = name.isEmpty ? "File Trail" : name
         window?.representedURL = folder
@@ -413,6 +460,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     /// The tab bar's "+" button, and New Tab: a tab on this folder.
     override func newWindowForTab(_ sender: Any?) {
         group?.openNewTab(from: self)
+    }
+
+    /// Duplicate Tab (File menu): a copy of this tab, with its history, right after it.
+    @objc func duplicateTab(_ sender: Any?) {
+        group?.duplicateTab(self)
     }
 
     private func setMode(_ mode: ExplorerViewMode) {

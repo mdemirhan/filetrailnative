@@ -280,16 +280,16 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         guard !session.closedTabs.isEmpty, !isBlocked, hasRoomForTab(), let snapshot = session.takeClosedTab() else {
             return
         }
-        let startup = StartupTab(
-            path: snapshot.currentPath, rootPath: snapshot.treeRootPath,
-            favoritePath: snapshot.selectedTreeItemID?.hasPrefix("favorite:") == true ? snapshot.currentPath : nil,
-            viewMode: snapshot.viewMode, searchViewMode: snapshot.searchViewMode, sortBy: snapshot.sortBy,
-            sortDirection: snapshot.sortDirection, includeHidden: snapshot.includeHidden,
-            foldersFirst: snapshot.foldersFirst, favoritesExpanded: snapshot.favoritesExpanded,
-            locationsExpanded: snapshot.locationsExpanded)
-        let reopened = MainWindowController(
-            tab: startup, history: (snapshot.historyPaths, snapshot.historyIndex), frame: tabFrame)
-        insert(reopened, after: tab, select: true)
+        insert(MainWindowController(snapshot: snapshot, frame: tabFrame), after: tab, select: true)
+    }
+
+    /// `duplicateTab` (Duplicate Tab, in the File menu): a copy of `tab` right after it and in front, on the same
+    /// folder with the same tree, history and view. Its search is not copied.
+    func duplicateTab(_ tab: MainWindowController) {
+        guard tabs.contains(where: { $0 === tab }), !isBlocked, hasRoomForTab() else { return }
+        var snapshot = tab.snapshot
+        snapshot.search = nil
+        insert(MainWindowController(snapshot: snapshot, frame: tabFrame), after: tab, select: true)
     }
 
     /// Merge All Windows: the other windows' tabs join this window's, after them, waiting unread until they are
@@ -455,15 +455,18 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         host?.tabNavigated(tab)
     }
 
-    /// `describeTab` and `disambiguateTabLabels`: the tab bar's labels and tooltips. The window title stays the
-    /// folder's name, for the Window menu.
+    /// `describeTab` and `disambiguateTabLabels`: the tab bar's labels and tooltips, and what the Window menu calls
+    /// each tab's window: its label, as the original titles its window (`App.tsx`, `document.title`). The window title
+    /// stays the folder's name, which the toolbar shows as the original's toolbar does.
     func refreshTitles() {
         let descriptions = tabs.map(\.tabDescription)
         let labels = ExplorerTabs.disambiguate(
             zip(tabs, descriptions).map { TabLabel(label: $1.label, kind: $1.kind, path: $0.folder.path) })
         for (index, tab) in tabs.enumerated() {
-            tab.window?.tab.title = labels[index].label
+            let label = labels[index].label
+            tab.window?.tab.title = label
             tab.window?.tab.toolTip = descriptions[index].tooltip
+            (tab.window as? ExplorerTabWindow)?.windowsMenuTitle = label.isEmpty ? "File Trail" : label
         }
     }
 

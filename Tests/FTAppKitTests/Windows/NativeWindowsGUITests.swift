@@ -186,6 +186,115 @@ struct NativeWindowsGUITests {
         await closeAll(relaunched)
     }
 
+    // F-675 B-VIEW-158 B-TREE-183 B-VIEW-155 T-ed89ad6e T-c5b59b87
+    @Test func duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit() async throws {
+        let folder = try folders()
+        defer { folder.remove() }
+        let app = launch(folder.appending("app-state.json").path)
+        var notices: [WindowNotice] = []
+        app.windows.showNotice = { notice, _ in notices.append(notice) }
+        app.windows.openStartupWindows(folder: folder.path)
+        let first = try #require(frontTab(app))
+        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
+        first.go(to: folder.appending("Sub"))
+        #expect(await waitUntil { first.folder.lastPathComponent == "Sub" })
+        first.perform(.newTab)
+        let group = try #require(first.group)
+        #expect(await waitUntil { group.tabs.count == 2 })
+        group.select(first)
+        #expect(await waitUntil { group.selected === first })
+
+        // Duplicate Tab (the File menu's, which sends `duplicateTab:` to the tab in front).
+        first.duplicateTab(nil)
+        #expect(await waitUntil { group.tabs.count == 3 })
+        let copy = group.tabs[1]
+        #expect(copy !== first)
+        #expect(group.selected === copy)
+        #expect(await waitUntil { copy.folder.path == folder.appending("Sub").path })
+        #expect(copy.snapshot.historyPaths == [folder.path, folder.appending("Sub").path])
+        #expect(copy.snapshot.historyIndex == 1)
+        #expect(copy.treeRootPath == first.treeRootPath)
+        #expect(copy.viewMode == first.viewMode)
+
+        // No copy past the limit; a notice says why.
+        group.addTabs(Array(repeating: first.openTab, count: 120))
+        #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
+        copy.duplicateTab(nil)
+        #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
+        #expect(notices == [.tabLimit])
+        await closeAll(app)
+    }
+
+    /// The Window menu's entry for `window`.
+    private func windowsMenuTitle(of window: NSWindow?) -> String? {
+        NSApp.windowsMenu?.items.first { $0.target as? NSWindow === window }?.title
+    }
+
+    // F-652 T-40d16427
+    @Test func namesEachWindowInTheWindowMenuAfterItsTabsLabelAndTheToolbarAfterItsFolder() async throws {
+        let folder = try folders()
+        defer { folder.remove() }
+        let other = try TemporaryDirectory(prefix: "filetrail-windows-gui-other")
+        defer { other.remove() }
+        try FileManager.default.createDirectory(at: other.appending("Sub"), withIntermediateDirectories: false)
+        let app = launch(folder.appending("app-state.json").path)
+        let menu = MainMenu(windows: app.windows)
+        menu.build()
+        defer { NSApp.mainMenu = nil }
+        app.windows.openStartupWindows(folder: folder.appending("Sub").path)
+        let first = try #require(frontTab(app))
+        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
+        #expect(await waitUntil { windowsMenuTitle(of: first.window) == "Sub" })
+
+        first.perform(.newTab)
+        let group = try #require(first.group)
+        #expect(await waitUntil { group.tabs.count == 2 })
+        let second = group.tabs[1]
+        second.go(to: other.appending("Sub"))
+        #expect(await waitUntil { second.folder.path == other.appending("Sub").path })
+        let firstLabel = "Sub — \(folder.url.lastPathComponent)"
+        let secondLabel = "Sub — \(other.url.lastPathComponent)"
+        #expect(await waitUntil { windowsMenuTitle(of: second.window) == secondLabel })
+        #expect(windowsMenuTitle(of: first.window) == firstLabel)
+        #expect(second.window?.tab.title == secondLabel)
+        // The toolbar keeps the folder's own name, as the original's toolbar does.
+        #expect(second.window?.title == "Sub")
+
+        // Bringing the other tab to the front leaves the names as they are.
+        group.select(first)
+        #expect(await waitUntil { group.selected === first })
+        #expect(windowsMenuTitle(of: first.window) == firstLabel)
+        #expect(windowsMenuTitle(of: second.window) == secondLabel)
+        await closeAll(app)
+    }
+
+    #if DEBUG
+        // F-593
+        @Test func automationStepsActOnTheTabInFrontAfterTheTabsChange() async throws {
+            let folder = try folders()
+            defer { folder.remove() }
+            let app = launch(folder.appending("app-state.json").path)
+            app.windows.openStartupWindows(folder: folder.path)
+            let first = try #require(frontTab(app))
+            #expect(await waitUntil { first.window?.isVisible == true })
+            let windows = app.windows
+            let runner = AutomationRunner(
+                options: .init(scenario: folder.appending("none.json"), out: folder.url, elements: nil)
+            ) { windows.front as? MainWindowController }
+            first.perform(.newTab)
+            let group = try #require(first.group)
+            #expect(await waitUntil { group.tabs.count == 2 && group.selected === group.tabs[1] })
+            runner.current = group.tabs[1].window
+
+            // Show Previous Tab, sent by the menu or a key, puts the tab `current` was on behind.
+            group.tabs[1].perform(.selectPreviousTab)
+            #expect(await waitUntil { group.selected === first })
+            #expect(runner.currentWindow === first.window)
+            #expect(runner.currentController === first)
+            await closeAll(app)
+        }
+    #endif
+
     // F-672 B-VIEW-155
     @Test func opensNoMoreThanAHundredTabsAndSaysSo() async throws {
         let folder = try folders()
