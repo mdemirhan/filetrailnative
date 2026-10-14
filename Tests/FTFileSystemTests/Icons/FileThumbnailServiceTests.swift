@@ -32,9 +32,8 @@ private func service(_ renderer: FakeRenderer, version: String?) -> FileThumbnai
 
 private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, height: 1)), isOpaque: true)
 
-// F-147 F-226
 @Suite struct FileThumbnailServiceTests {
-    // T-e57f3c9f
+    // T-e57f3c9f F-147 F-226
     @Test func returnsThePreviewWithTheFilesVersion() async {
         let renderer = FakeRenderer(result: sample)
         let response = await service(renderer, version: "1700:42").response(
@@ -109,14 +108,13 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
     }
 }
 
-// F-157
 @Suite struct QuickLookThumbnailTests {
     /// A one-pixel PNG.
     static let png = Data(
         base64Encoded:
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
 
-    // T-8b85b255
+    // T-8b85b255 F-157
     @Test func returnsAPictureOfAnImageFile() async throws {
         let png = try #require(Self.png)
         try await withTemporaryDirectory { directory in

@@ -156,12 +156,12 @@ T-1b7582f5	apps/desktop/src/main/bootstrap.test.ts	openPathsWithApplication	show
 T-ac8a9c09	apps/desktop/src/main/bootstrap.test.ts	openPathsWithApplication	returns the launch error when opening with an application fails	it	L	main	FTAppKit	todo		
 T-cd79ef68	apps/desktop/src/main/bootstrap.test.ts	openPathsWithApplication	rejects application paths that are not absolute .app bundles	it	L	main	FTAppKit	todo		
 T-58a29428	apps/desktop/src/main/bootstrap.test.ts	openPathsWithApplication	rejects application paths containing parent directory segments	it	L	main	FTAppKit	todo		
-T-e57f3c9f	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	returns the preview as a data URL with the file's version	it	L	main	FTAppKit	todo		
-T-b9916804	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	labels a preview with transparency as PNG	it	L	main	FTAppKit	todo		
-T-b5bd0c66	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	does not make the preview again for a version the caller already holds	it	L	main	FTAppKit	todo		
-T-b6b84124	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	makes a new preview when the file has changed since	it	L	main	FTAppKit	todo		
-T-22414abc	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	reports no preview for a file Quick Look cannot draw, keeping its version	it	L	main	FTAppKit	todo		
-T-7d2e2494	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	reports nothing for a file that cannot be read	it	L	main	FTAppKit	todo		
+T-e57f3c9f	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	returns the preview as a data URL with the file's version	it	L	main	FTAppKit	passing	FTFileSystemTests/returnsThePreviewWithTheFilesVersion	
+T-b9916804	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	labels a preview with transparency as PNG	it	L	main	FTAppKit	passing	FTFileSystemTests/passesOnWhetherThePreviewHasTransparency	
+T-b5bd0c66	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	does not make the preview again for a version the caller already holds	it	L	main	FTAppKit	passing	FTFileSystemTests/doesNotMakeThePreviewAgainForAVersionTheCallerAlreadyHolds	
+T-b6b84124	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	makes a new preview when the file has changed since	it	L	main	FTAppKit	passing	FTFileSystemTests/makesANewPreviewWhenTheFileHasChangedSince	
+T-22414abc	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	reports no preview for a file Quick Look cannot draw, keeping its version	it	L	main	FTAppKit	passing	FTFileSystemTests/reportsNoPreviewForAFileQuickLookCannotDrawKeepingItsVersion	
+T-7d2e2494	apps/desktop/src/main/bootstrap.test.ts	getFileThumbnailHandler	reports nothing for a file that cannot be read	it	L	main	FTAppKit	passing	FTFileSystemTests/reportsNothingForAFileThatCannotBeRead	
 T-b4b74d32	apps/desktop/src/main/bootstrap.test.ts	performEditAction	dispatches native edit actions to webContents	it	L	main	FTAppKit	todo		
 T-ab6035f3	apps/desktop/src/main/bootstrap/batchRenameExecution.fuzz.test.ts	renaming several items, at random	never loses an item, and says where each one is, for items in folders side by side	it	L	main/bootstrap	FTOperations	todo		
 T-0a6d6bd4	apps/desktop/src/main/bootstrap/batchRenameExecution.fuzz.test.ts	renaming several items, at random	never loses an item, and says where each one is, when folders are renamed with items inside them	it	L	main/bootstrap	FTOperations	todo		
@@ -216,15 +216,15 @@ T-761e9009	apps/desktop/src/main/bootstrap/batchRenameInspect.test.ts	what the R
 T-64776c2c	apps/desktop/src/main/bootstrap/batchRenameInspect.test.ts	what the Rename sheet checks	leaves out dates the disk doesn't really have, and names it can't read	it	FS	main/bootstrap	FTOperations	todo		
 T-da7f5d79	apps/desktop/src/main/bootstrap/batchRenameInspect.test.ts	what the Rename sheet checks, on a real disk	reads names, dates and the date a photo was taken	it	FS	main/bootstrap	FTOperations	todo		
 T-807fc7d3	apps/desktop/src/main/bootstrap/batchRenameInspect.test.ts	what the Rename sheet checks, on a real disk	finds locked items and folders that can't be written to	it	FS	main/bootstrap	FTOperations	todo		
-T-a966a460	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	number a taken name alike when Format has no separator	it	L	main/bootstrap	FTOperations	todo		
-T-5fb53308	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	number a taken name alike with Format's separator	it	L	main/bootstrap	FTOperations	todo		
-T-2c22d4ff	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	swap two names, and pass names along a chain, without numbers	it	L	main/bootstrap	FTOperations	todo		
-T-bfffc022	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	give items in several folders the names planned for each folder	it	L	main/bootstrap	FTOperations	todo		
-T-661d40ce	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	change only the case of a name in place, and number it on a disk that minds case	it	L	main/bootstrap	FTOperations	todo		
-T-669eb707	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	treat a name with its accents typed another way as taken, as the disk does	it	L	main/bootstrap	FTOperations	todo		
-T-988f1c26	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	leave the items Skip leaves, and give the rest their planned names	it	L	main/bootstrap	FTOperations	todo		
-T-20addbaa	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	leave an item alone when the numbered name it gets is the one it has	it	L	main/bootstrap	FTOperations	todo		
-T-107fe08c	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	agree at random, for names that clash in every way	it	L	main/bootstrap	FTOperations	todo		
+T-a966a460	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	number a taken name alike when Format has no separator	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/numbersATakenNameAlikeWhenFormatHasNoSeparator	
+T-5fb53308	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	number a taken name alike with Format's separator	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/numbersATakenNameAlikeWithFormatsSeparator	
+T-2c22d4ff	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	swap two names, and pass names along a chain, without numbers	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/swapsTwoNamesAndPassesNamesAlongAChainWithoutNumbers	
+T-bfffc022	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	give items in several folders the names planned for each folder	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/givesItemsInSeveralFoldersTheNamesPlannedForEachFolder	
+T-661d40ce	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	change only the case of a name in place, and number it on a disk that minds case	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/changesOnlyTheCaseOfANameInPlaceAndNumbersItOnADiskThatMindsCase	
+T-669eb707	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	treat a name with its accents typed another way as taken, as the disk does	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/treatsANameWithItsAccentsTypedAnotherWayAsTakenAsTheDiskDoes	
+T-988f1c26	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	leave the items Skip leaves, and give the rest their planned names	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/leavesTheItemsSkipLeavesAndGivesTheRestTheirPlannedNames	
+T-20addbaa	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	leave an item alone when the numbered name it gets is the one it has	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/leavesAnItemAloneWhenTheNumberedNameItGetsIsTheOneItHas	
+T-107fe08c	apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts	the plan shown and the rename done	agree at random, for names that clash in every way	it	L	main/bootstrap	FTOperations	passing	FTFoundationTests/plansNamesThatClashInEveryWayWithoutGivingAnyNameTwice	
 T-71566c6c	apps/desktop/src/main/bootstrap/diskHasTrash.test.ts	createDiskHasTrash	takes a network share to have no Trash, in it or at its top	it	FS	main/bootstrap	FTFileSystem	todo		
 T-c3107dcb	apps/desktop/src/main/bootstrap/diskHasTrash.test.ts	createDiskHasTrash	takes any other disk to have one	it	FS	main/bootstrap	FTFileSystem	todo		
 T-8a6058bb	apps/desktop/src/main/bootstrap/diskHasTrash.test.ts	createDiskHasTrash	doesn't mistake a disk whose name starts like a share's for the share	it	FS	main/bootstrap	FTFileSystem	todo		
@@ -367,10 +367,10 @@ T-ec032101	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	openInTer
 T-6070e895	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	openInTerminal	opens the folder an item that is gone was in	it	FS	main/bootstrap	FTFileSystem	todo		
 T-7cc2e265	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	openInTerminal	uses Terminal when the chosen terminal has no path	it	FS	main/bootstrap	FTFileSystem	todo		
 T-a5abde8c	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	openInTerminal	reports why the terminal didn't open	it	FS	main/bootstrap	FTFileSystem	todo		
-T-77887acd	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	getFileIconHandler	returns the item's own icon as PNG data	it	FS	main/bootstrap	FTFileSystem	todo		
-T-f0300b75	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	getFileIconHandler	returns the ordinary icon of a kind from a sample item of that kind	it	FS	main/bootstrap	FTFileSystem	todo		
+T-77887acd	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	getFileIconHandler	returns the item's own icon as PNG data	it	FS	main/bootstrap	FTFileSystem	passing	FTFileSystemTests/theWorkspaceGivesAnItemItsOwnIcon	
+T-f0300b75	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	getFileIconHandler	returns the ordinary icon of a kind from a sample item of that kind	it	FS	main/bootstrap	FTFileSystem	passing	FTFileSystemTests/samplesAreAnEmptyFolderAPlainFileAndAnExecutable	
 T-7a3e2fb1	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	getFileIconHandler	returns no icon when there is none or it can't be made	it	FS	main/bootstrap	FTFileSystem	todo		
-T-be9407bf	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	getFileThumbnailHandler	returns no picture for a file Quick Look can't draw, or that is gone	it	FS	main/bootstrap	FTFileSystem	todo		
+T-be9407bf	apps/desktop/src/main/bootstrap/systemHandlers.apps.test.ts	getFileThumbnailHandler	returns no picture for a file Quick Look can't draw, or that is gone	it	FS	main/bootstrap	FTFileSystem	passing	FTFileSystemTests/reportsNoPreviewForAFileQuickLookCannotDrawKeepingItsVersion, FTFileSystemTests/reportsNothingForAFileThatCannotBeRead, FTFileSystemTests/theRealServiceReportsNothingForAGoneFile	
 T-e7e0eab4	apps/desktop/src/main/bootstrap/systemHandlers.test.ts	emptyTrash	asks Finder with a wait of a day, not AppleScript's two minutes	it	L	main/bootstrap	FTFileSystem	todo		
 T-8442c436	apps/desktop/src/main/bootstrap/systemHandlers.test.ts	emptyTrash	reports osascript's own error line, not the command that ran	it	L	main/bootstrap	FTFileSystem	todo		
 T-64afef80	apps/desktop/src/main/bootstrap/systemHandlers.test.ts	getTrashState	is empty when no Trash holds anything but Finder's .DS_Store	it	L	main/bootstrap	FTFileSystem	todo		
@@ -2184,22 +2184,22 @@ T-e19ec635	apps/desktop/src/renderer/lib/fileDragImages.test.ts	measureFileDragI
 T-cc5858e2	apps/desktop/src/renderer/lib/fileDragImages.test.ts	measureFileDragImages	leaves out items scrolled out of sight, or not on the page	it	L	renderer/lib	FTAppKit	todo		
 T-e23caeac	apps/desktop/src/renderer/lib/fileDragImages.test.ts	measureFileDragImages	centers names in Icon view, and sends the picture shown for an icon	it	L	renderer/lib	FTAppKit	todo		
 T-d52aa58c	apps/desktop/src/renderer/lib/fileDragImages.test.ts	measureFileDragImages	looks through the page once, however many items are dragged	it	L	renderer/lib	FTAppKit	todo		
-T-30abdbfb	apps/desktop/src/renderer/lib/fileIcons.test.tsx	fileIcons	shows a plain folder or document until the icon from macOS arrives	it	L	renderer/lib	FTFoundation	todo		
+T-30abdbfb	apps/desktop/src/renderer/lib/fileIcons.test.tsx	fileIcons	shows a plain folder or document until the icon from macOS arrives	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/anIconIsMissingUntilItArrivesAndNoneWhenMacOSHasNone	
 T-db352e37	apps/desktop/src/renderer/lib/fileIcons.test.tsx	fileIcons	draws a tree folder without a path	it	L	renderer/lib	FTFoundation	todo		
-T-046b5caf	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	asks for an icon once and reuses it	it	L	renderer/lib	FTFoundation	todo		
-T-308244dc	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	shares one icon among executables without an extension and another among the rest	it	L	renderer/lib	FTFoundation	todo		
-T-4a26a2f9	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	has the plain folder and document icons ready before any item asks for them	it	L	renderer/lib	FTFoundation	todo		
-T-0be0c077	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	does nothing when the icons cannot be asked for	it	L	renderer/lib	FTFoundation	todo		
-T-41333069	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	asks for each symlink by path, since macOS draws it as what it points to	it	L	renderer/lib	FTFoundation	todo		
-T-4a058765	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	waits before asking when deferred, so items passed quickly are never asked for	it	L	renderer/lib	FTFoundation	todo		
+T-046b5caf	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	asks for an icon once and reuses it	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/asksForAnIconOnceAndReusesIt	
+T-308244dc	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	shares one icon among executables without an extension and another among the rest	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/executablesWithoutAnExtensionShareAnIconAndSoDoTheOtherFiles, FTFileSystemTests/filesWithoutAnExtensionShareOneIconOfTwoKinds	
+T-4a26a2f9	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	has the plain folder and document icons ready before any item asks for them	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/thePlainFolderAndDocumentIconsAreReadyBeforeAnyItemAsksForThem	
+T-0be0c077	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	does nothing when the icons cannot be asked for	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/doesNothingWhenTheIconsCannotBeMade	
+T-41333069	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	asks for each symlink by path, since macOS draws it as what it points to	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/asksForEachSymlinkByPathSinceMacOSDrawsItAsWhatItPointsTo, FTFileSystemTests/symlinksBundlesAndOtherItemsAreAskedForByPath	
+T-4a058765	apps/desktop/src/renderer/lib/fileIcons.test.tsx	native icons	waits before asking when deferred, so items passed quickly are never asked for	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/waitsBeforeAskingWhenDeferredSoItemsPassedQuicklyAreNeverAskedFor	
 T-fe3f2758	apps/desktop/src/renderer/lib/fileIcons.test.tsx	favorite icons	draws each favorite as a line icon	it	L	renderer/lib	FTFoundation	todo		
-T-0dec6037	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	shows the file's icon until its preview arrives, then the preview	it	L	renderer/lib	FTFoundation	todo		
-T-116cbc3d	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	keeps the icon for a file Quick Look has no preview for	it	L	renderer/lib	FTFoundation	todo		
-T-7bbee55b	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	outlines a photo, but not a picture that brings its own outline or has none	it	L	renderer/lib	FTFoundation	todo		
-T-07b0947c	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	asks for previews of files only	it	L	renderer/lib	FTFoundation	todo		
-T-60dc09cd	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	shows a cached preview at once and does not ask again for the same listing	it	L	renderer/lib	FTFoundation	todo		
-T-ddc3b1bd	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	checks a cached preview against the file when the folder is read again	it	L	renderer/lib	FTFoundation	todo		
-T-ab9b358d	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	loads a few previews at a time and drops queued ones that are no longer shown	it	L	renderer/lib	FTFoundation	todo		
+T-0dec6037	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	shows the file's icon until its preview arrives, then the preview	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/givesNothingUntilThePreviewArrivesThenThePreview	
+T-116cbc3d	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	keeps the icon for a file Quick Look has no preview for	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/keepsTheIconForAFileQuickLookHasNoPreviewFor	
+T-7bbee55b	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	outlines a photo, but not a picture that brings its own outline or has none	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/tellsAPhotoFromAPictureWithTransparency	
+T-07b0947c	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	asks for previews of files only	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/asksForPreviewsOfFilesOnly	
+T-60dc09cd	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	shows a cached preview at once and does not ask again for the same listing	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/givesACachedPreviewAtOnceAndDoesNotAskAgainForTheSameListing	
+T-ddc3b1bd	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	checks a cached preview against the file when the folder is read again	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/checksACachedPreviewAgainstTheFileWhenTheFolderIsReadAgain	
+T-ab9b358d	apps/desktop/src/renderer/lib/fileThumbnails.test.tsx	FileThumbnail	loads a few previews at a time and drops queued ones that are no longer shown	it	L	renderer/lib	FTFoundation	passing	FTFileSystemTests/loadsAFewPreviewsAtATimeAndDropsQueuedOnesThatAreNoLongerShown	
 T-93ea8c06	apps/desktop/src/renderer/lib/filetrailClient.test.tsx	filetrailClient	prefers an injected provider client over the preload bridge	it	L	renderer/lib	FTFoundation	todo		
 T-49548a8c	apps/desktop/src/renderer/lib/filetrailClient.test.tsx	filetrailClient	falls back to the preload bridge and keeps that client stable across rerenders	it	L	renderer/lib	FTFoundation	todo		
 T-76af86ac	apps/desktop/src/renderer/lib/filetrailClient.test.tsx	filetrailClient	uses a missing-client fallback when the preload bridge is absent or invalid	it	L	renderer/lib	FTFoundation	todo		
@@ -2608,64 +2608,64 @@ T-23ddd45d	apps/desktop/src/shared/appPreferences.test.ts	appPreferences helpers
 T-d4a12946	apps/desktop/src/shared/appPreferences.test.ts	appPreferences helpers	defaults to blue, the first accent offered	it	L	shared	FTFoundation	passing	FTFoundationTests/defaultsToBlueTheFirstAccentOffered	
 T-b6a18486	apps/desktop/src/shared/appPreferences.test.ts	appPreferences helpers	ships expected defaults for the persisted preference shape	it	L	shared	FTFoundation	passing	FTFoundationTests/shipsExpectedDefaultsForThePersistedPreferenceShape	
 T-83f9c734	apps/desktop/src/shared/appPreferences.test.ts	appPreferences helpers	resolves auto to light or dark from the macOS appearance	it	L	shared	FTFoundation	passing	FTFoundationTests/resolvesAutoToLightOrDarkFromTheMacOSAppearance	
-T-74733b5f	apps/desktop/src/shared/batchRename.test.ts	splitting a name	takes what follows the last dot as the extension	it	L	shared	FTFoundation	todo		
-T-5ee14ea6	apps/desktop/src/shared/batchRename.test.ts	splitting a name	finds no extension in a folder, a dotfile, a name ending in a dot or without one	it	L	shared	FTFoundation	todo		
-T-5934ce13	apps/desktop/src/shared/batchRename.test.ts	Replace Text	finds accented letters however they are written, and leaves an unmatched name as it is	it	L	shared	FTFoundation	todo		
-T-76b8b755	apps/desktop/src/shared/batchRename.test.ts	Replace Text	replaces every match in the name, ignoring case unless asked not to	it	L	shared	FTFoundation	todo		
-T-75a95bf0	apps/desktop/src/shared/batchRename.test.ts	Replace Text	leaves an item without a match, and every item with nothing to find	it	L	shared	FTFoundation	todo		
-T-d533cb5e	apps/desktop/src/shared/batchRename.test.ts	Replace Text	takes plain text as typed: dots, dollars and brackets are just characters	it	L	shared	FTFoundation	todo		
-T-e7a0d107	apps/desktop/src/shared/batchRename.test.ts	Replace Text	works in a name, an extension, or both, as Apply To says	it	L	shared	FTFoundation	todo		
-T-9f8c3140	apps/desktop/src/shared/batchRename.test.ts	Replace Text	uses a regular expression's groups in the replacement	it	L	shared	FTFoundation	todo		
-T-07bf6eb8	apps/desktop/src/shared/batchRename.test.ts	Replace Text	matches case only when asked, with a regular expression too	it	L	shared	FTFoundation	todo		
-T-1fa13a17	apps/desktop/src/shared/batchRename.test.ts	Replace Text	says when a pattern is broken, and changes nothing	it	L	shared	FTFoundation	todo		
-T-37a0c5e2	apps/desktop/src/shared/batchRename.test.ts	Replace Text	marks the replaced parts for the preview	it	L	shared	FTFoundation	todo		
-T-a3131847	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	expands groups, the match, and what is around it	it	L	shared	FTFoundation	todo		
-T-d61b8aae	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	keeps what names no group as typed	it	L	shared	FTFoundation	todo		
-T-ec26c831	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	puts nothing for a group that matched nothing or a name that isn't a group	it	L	shared	FTFoundation	todo		
-T-28dfaa5a	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	reads two digits only when there are that many groups	it	L	shared	FTFoundation	todo		
-T-c0dadf59	apps/desktop/src/shared/batchRename.test.ts	Add Text	adds before or after the name, or the extension	it	L	shared	FTFoundation	todo		
-T-dcbfaa1f	apps/desktop/src/shared/batchRename.test.ts	Add Text	drops spaces it would leave at either end, and changes nothing with no text	it	L	shared	FTFoundation	todo		
-T-c19b419a	apps/desktop/src/shared/batchRename.test.ts	Add Text	treats a folder's whole name as its name	it	L	shared	FTFoundation	todo		
-T-abaeae71	apps/desktop/src/shared/batchRename.test.ts	Change Case	changes the case of the name, the extension, or both	it	L	shared	FTFoundation	todo		
-T-08679956	apps/desktop/src/shared/batchRename.test.ts	Change Case	leaves names already in that case	it	L	shared	FTFoundation	todo		
-T-602119f6	apps/desktop/src/shared/batchRename.test.ts	Change Case	raises the first letter of each word for Title Case and leaves the rest	it	L	shared	FTFoundation	todo		
-T-43fc6af1	apps/desktop/src/shared/batchRename.test.ts	Format	numbers items as Finder does: File 1, File 2, keeping each extension	it	L	shared	FTFoundation	todo		
-T-fccc7149	apps/desktop/src/shared/batchRename.test.ts	Format	starts, steps, and puts the number before the name when asked	it	L	shared	FTFoundation	todo		
-T-73b2b448	apps/desktop/src/shared/batchRename.test.ts	Format	pads a counter to its digits, or to the last number's	it	L	shared	FTFoundation	todo		
-T-b69c0b48	apps/desktop/src/shared/batchRename.test.ts	Format	joins with the separator chosen, or none	it	L	shared	FTFoundation	todo		
-T-c741268c	apps/desktop/src/shared/batchRename.test.ts	Format	keeps each item's own name and adds the number to it	it	L	shared	FTFoundation	todo		
-T-4ad60edf	apps/desktop/src/shared/batchRename.test.ts	Format	puts in the date chosen, in the format chosen	it	L	shared	FTFoundation	todo		
-T-427c1a29	apps/desktop/src/shared/batchRename.test.ts	Format	uses the date created for an item with no date taken, and says so	it	L	shared	FTFoundation	todo		
-T-76a59b72	apps/desktop/src/shared/batchRename.test.ts	Format	follows a custom date pattern, keeping what isn't a token	it	L	shared	FTFoundation	todo		
-T-06f36ee3	apps/desktop/src/shared/batchRename.test.ts	Format	keeps text in square brackets as typed, even letters that are tokens	it	L	shared	FTFoundation	todo		
-T-69341c53	apps/desktop/src/shared/batchRename.test.ts	Format	asks for a token in a custom date pattern that has none	it	L	shared	FTFoundation	todo		
-T-0ecdc468	apps/desktop/src/shared/batchRename.test.ts	Format	leaves an item without the date asked for as it is	it	L	shared	FTFoundation	todo		
-T-fb9e458e	apps/desktop/src/shared/batchRename.test.ts	Format	ignores Apply To: the extension is always kept	it	L	shared	FTFoundation	todo		
-T-7f47336e	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	writes every offered format with every separator	it	L	shared	FTFoundation	todo		
-T-0869c080	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	describes a format with its separator	it	L	shared	FTFoundation	todo		
-T-1fe6d27f	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	numbers by start and step	it	L	shared	FTFoundation	todo		
-T-a63efd63	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	reads a date it can't make sense of as all zeros rather than failing	it	L	shared	FTFoundation	todo		
-T-44b184db	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	reads a moment on this Mac's clock	it	L	shared	FTFoundation	todo		
-T-a67cdf09	apps/desktop/src/shared/batchRename.test.ts	saved settings and presets	keeps what is valid and puts the default in place of anything else	it	L	shared	FTFoundation	todo		
-T-15bdf632	apps/desktop/src/shared/batchRename.test.ts	saved settings and presets	takes the default for numbers that aren't numbers, and keeps long text short	it	L	shared	FTFoundation	todo		
-T-003a9362	apps/desktop/src/shared/batchRename.test.ts	saved settings and presets	drops presets without a name or with one already used, and keeps at most the limit	it	L	shared	FTFoundation	todo		
-T-ba89cb89	apps/desktop/src/shared/batchRename.test.ts	the plan	renames what changes and counts what doesn't	it	L	shared	FTFoundation	todo		
-T-e3b3448b	apps/desktop/src/shared/batchRename.test.ts	the plan	numbers a name taken by something else in the folder, and the next free number	it	L	shared	FTFoundation	todo		
-T-cd7d8070	apps/desktop/src/shared/batchRename.test.ts	the plan	numbers repeats inside the batch in order, with Format's separator	it	L	shared	FTFoundation	todo		
-T-ec74d627	apps/desktop/src/shared/batchRename.test.ts	the plan	numbers thousands of items wanting one name without looking from 2 for each	it	L	shared	FTFoundation	todo		
-T-2d7333cf	apps/desktop/src/shared/batchRename.test.ts	the plan	counts names as the disk does: case and accents, unless the disk tells case apart	it	L	shared	FTFoundation	todo		
-T-5a9b05b3	apps/desktop/src/shared/batchRename.test.ts	the plan	lets items swap names and change only the case of their own	it	L	shared	FTFoundation	todo		
-T-8e703ba3	apps/desktop/src/shared/batchRename.test.ts	the plan	leaves a clashing item as it is with Skip, and settles the rest around its name	it	L	shared	FTFoundation	todo		
-T-c909ed2e	apps/desktop/src/shared/batchRename.test.ts	the plan	skips a whole batch whose names each wait on the next one's, at once	it	L	shared	FTFoundation	todo		
-T-ec7ff9f5	apps/desktop/src/shared/batchRename.test.ts	the plan	settles clashes as settling the folder again until nothing more is skipped would	it	L	shared	FTFoundation	todo		
-T-463e5c4b	apps/desktop/src/shared/batchRename.test.ts	the plan	holds the rename with Don't Rename until the clash is fixed	it	L	shared	FTFoundation	todo		
-T-e8c4e7ae	apps/desktop/src/shared/batchRename.test.ts	the plan	never renames to an invalid name, whatever the setting	it	L	shared	FTFoundation	todo		
-T-ef371b87	apps/desktop/src/shared/batchRename.test.ts	the plan	skips an item that can't be renamed and keeps its name taken	it	L	shared	FTFoundation	todo		
-T-f1d7401f	apps/desktop/src/shared/batchRename.test.ts	the plan	shortens a name that a number makes too long, and holds one that can't be	it	L	shared	FTFoundation	todo		
-T-1b9a33e7	apps/desktop/src/shared/batchRename.test.ts	the plan	warns when a new name starts with a dot	it	L	shared	FTFoundation	todo		
-T-3c4e8603	apps/desktop/src/shared/batchRename.test.ts	the plan	settles each folder on its own: search results may share names across folders	it	L	shared	FTFoundation	todo		
-T-94430ddd	apps/desktop/src/shared/batchRename.test.ts	the plan	takes a folder it knows nothing of to hold only the items being renamed	it	L	shared	FTFoundation	todo		
-T-477d48d3	apps/desktop/src/shared/batchRename.test.ts	the plan	holds nothing back when the settings themselves are broken: nothing is renamed	it	L	shared	FTFoundation	todo		
+T-74733b5f	apps/desktop/src/shared/batchRename.test.ts	splitting a name	takes what follows the last dot as the extension	it	L	shared	FTFoundation	passing	FTFoundationTests/takesWhatFollowsTheLastDotAsTheExtension	
+T-5ee14ea6	apps/desktop/src/shared/batchRename.test.ts	splitting a name	finds no extension in a folder, a dotfile, a name ending in a dot or without one	it	L	shared	FTFoundation	passing	FTFoundationTests/findsNoExtensionInAFolderADotfileANameEndingInADotOrWithoutOne	
+T-5934ce13	apps/desktop/src/shared/batchRename.test.ts	Replace Text	finds accented letters however they are written, and leaves an unmatched name as it is	it	L	shared	FTFoundation	passing	FTFoundationTests/findsAccentedLettersHoweverTheyAreWritten	
+T-76b8b755	apps/desktop/src/shared/batchRename.test.ts	Replace Text	replaces every match in the name, ignoring case unless asked not to	it	L	shared	FTFoundation	passing	FTFoundationTests/replacesEveryMatchIgnoringCaseUnlessAskedNotTo	
+T-75a95bf0	apps/desktop/src/shared/batchRename.test.ts	Replace Text	leaves an item without a match, and every item with nothing to find	it	L	shared	FTFoundation	passing	FTFoundationTests/leavesAnItemWithoutAMatchAndEveryItemWithNothingToFind	
+T-d533cb5e	apps/desktop/src/shared/batchRename.test.ts	Replace Text	takes plain text as typed: dots, dollars and brackets are just characters	it	L	shared	FTFoundation	passing	FTFoundationTests/takesPlainTextAsTypedDotsDollarsAndBracketsAreJustCharacters	
+T-e7a0d107	apps/desktop/src/shared/batchRename.test.ts	Replace Text	works in a name, an extension, or both, as Apply To says	it	L	shared	FTFoundation	passing	FTFoundationTests/worksInANameAnExtensionOrBothAsApplyToSays	
+T-9f8c3140	apps/desktop/src/shared/batchRename.test.ts	Replace Text	uses a regular expression's groups in the replacement	it	L	shared	FTFoundation	passing	FTFoundationTests/usesARegularExpressionsGroupsInTheReplacement	
+T-07bf6eb8	apps/desktop/src/shared/batchRename.test.ts	Replace Text	matches case only when asked, with a regular expression too	it	L	shared	FTFoundation	passing	FTFoundationTests/matchesCaseOnlyWhenAskedWithARegularExpressionToo	
+T-1fa13a17	apps/desktop/src/shared/batchRename.test.ts	Replace Text	says when a pattern is broken, and changes nothing	it	L	shared	FTFoundation	passing	FTFoundationTests/saysWhenAPatternIsBrokenAndChangesNothing	
+T-37a0c5e2	apps/desktop/src/shared/batchRename.test.ts	Replace Text	marks the replaced parts for the preview	it	L	shared	FTFoundation	passing	FTFoundationTests/marksTheReplacedPartsForThePreview	
+T-a3131847	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	expands groups, the match, and what is around it	it	L	shared	FTFoundation	passing	FTFoundationTests/expandsGroupsTheMatchAndWhatIsAroundIt	
+T-d61b8aae	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	keeps what names no group as typed	it	L	shared	FTFoundation	passing	FTFoundationTests/keepsWhatNamesNoGroupAsTyped	
+T-ec26c831	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	puts nothing for a group that matched nothing or a name that isn't a group	it	L	shared	FTFoundation	passing	FTFoundationTests/putsNothingForAGroupThatMatchedNothingOrANameThatIsntAGroup	
+T-28dfaa5a	apps/desktop/src/shared/batchRename.test.ts	the replacement of a regular expression	reads two digits only when there are that many groups	it	L	shared	FTFoundation	passing	FTFoundationTests/readsTwoDigitsOnlyWhenThereAreThatManyGroups	
+T-c0dadf59	apps/desktop/src/shared/batchRename.test.ts	Add Text	adds before or after the name, or the extension	it	L	shared	FTFoundation	passing	FTFoundationTests/addsBeforeOrAfterTheNameOrTheExtension	
+T-dcbfaa1f	apps/desktop/src/shared/batchRename.test.ts	Add Text	drops spaces it would leave at either end, and changes nothing with no text	it	L	shared	FTFoundation	passing	FTFoundationTests/dropsSpacesItWouldLeaveAtEitherEndAndChangesNothingWithNoText	
+T-c19b419a	apps/desktop/src/shared/batchRename.test.ts	Add Text	treats a folder's whole name as its name	it	L	shared	FTFoundation	passing	FTFoundationTests/treatsAFoldersWholeNameAsItsName	
+T-abaeae71	apps/desktop/src/shared/batchRename.test.ts	Change Case	changes the case of the name, the extension, or both	it	L	shared	FTFoundation	passing	FTFoundationTests/changesTheCaseOfTheNameTheExtensionOrBoth	
+T-08679956	apps/desktop/src/shared/batchRename.test.ts	Change Case	leaves names already in that case	it	L	shared	FTFoundation	passing	FTFoundationTests/leavesNamesAlreadyInThatCase	
+T-602119f6	apps/desktop/src/shared/batchRename.test.ts	Change Case	raises the first letter of each word for Title Case and leaves the rest	it	L	shared	FTFoundation	passing	FTFoundationTests/raisesTheFirstLetterOfEachWordForTitleCaseAndLeavesTheRest	
+T-43fc6af1	apps/desktop/src/shared/batchRename.test.ts	Format	numbers items as Finder does: File 1, File 2, keeping each extension	it	L	shared	FTFoundation	passing	FTFoundationTests/numbersItemsAsFinderDoes	
+T-fccc7149	apps/desktop/src/shared/batchRename.test.ts	Format	starts, steps, and puts the number before the name when asked	it	L	shared	FTFoundation	passing	FTFoundationTests/startsStepsAndPutsTheNumberBeforeTheNameWhenAsked	
+T-73b2b448	apps/desktop/src/shared/batchRename.test.ts	Format	pads a counter to its digits, or to the last number's	it	L	shared	FTFoundation	passing	FTFoundationTests/padsACounterToItsDigitsOrToTheLastNumbers	
+T-b69c0b48	apps/desktop/src/shared/batchRename.test.ts	Format	joins with the separator chosen, or none	it	L	shared	FTFoundation	passing	FTFoundationTests/joinsWithTheSeparatorChosenOrNone	
+T-c741268c	apps/desktop/src/shared/batchRename.test.ts	Format	keeps each item's own name and adds the number to it	it	L	shared	FTFoundation	passing	FTFoundationTests/keepsEachItemsOwnNameAndAddsTheNumberToIt	
+T-4ad60edf	apps/desktop/src/shared/batchRename.test.ts	Format	puts in the date chosen, in the format chosen	it	L	shared	FTFoundation	passing	FTFoundationTests/putsInTheDateChosenInTheFormatChosen	
+T-427c1a29	apps/desktop/src/shared/batchRename.test.ts	Format	uses the date created for an item with no date taken, and says so	it	L	shared	FTFoundation	passing	FTFoundationTests/usesTheDateCreatedForAnItemWithNoDateTakenAndSaysSo	
+T-76a59b72	apps/desktop/src/shared/batchRename.test.ts	Format	follows a custom date pattern, keeping what isn't a token	it	L	shared	FTFoundation	passing	FTFoundationTests/followsACustomDatePatternKeepingWhatIsntAToken	
+T-06f36ee3	apps/desktop/src/shared/batchRename.test.ts	Format	keeps text in square brackets as typed, even letters that are tokens	it	L	shared	FTFoundation	passing	FTFoundationTests/keepsTextInSquareBracketsAsTypedEvenLettersThatAreTokens	
+T-69341c53	apps/desktop/src/shared/batchRename.test.ts	Format	asks for a token in a custom date pattern that has none	it	L	shared	FTFoundation	passing	FTFoundationTests/asksForATokenInACustomDatePatternThatHasNone	
+T-0ecdc468	apps/desktop/src/shared/batchRename.test.ts	Format	leaves an item without the date asked for as it is	it	L	shared	FTFoundation	passing	FTFoundationTests/leavesAnItemWithoutTheDateAskedForAsItIs	
+T-fb9e458e	apps/desktop/src/shared/batchRename.test.ts	Format	ignores Apply To: the extension is always kept	it	L	shared	FTFoundation	passing	FTFoundationTests/ignoresApplyToTheExtensionIsAlwaysKept	
+T-7f47336e	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	writes every offered format with every separator	it	L	shared	FTFoundation	passing	FTFoundationTests/writesEveryOfferedFormatWithEverySeparator	
+T-0869c080	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	describes a format with its separator	it	L	shared	FTFoundation	passing	FTFoundationTests/describesAFormatWithItsSeparator	
+T-1fe6d27f	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	numbers by start and step	it	L	shared	FTFoundation	passing	FTFoundationTests/numbersByStartAndStep	
+T-a63efd63	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	reads a date it can't make sense of as all zeros rather than failing	it	L	shared	FTFoundation	passing	FTFoundationTests/readsADateItCantMakeSenseOfAsAllZerosRatherThanFailing	
+T-44b184db	apps/desktop/src/shared/batchRename.test.ts	dates and numbers	reads a moment on this Mac's clock	it	L	shared	FTFoundation	passing	FTFoundationTests/readsAMomentOnThisMacsClock	
+T-a67cdf09	apps/desktop/src/shared/batchRename.test.ts	saved settings and presets	keeps what is valid and puts the default in place of anything else	it	L	shared	FTFoundation	passing	FTFoundationTests/keepsWhatIsValidAndPutsTheDefaultInPlaceOfAnythingElse	
+T-15bdf632	apps/desktop/src/shared/batchRename.test.ts	saved settings and presets	takes the default for numbers that aren't numbers, and keeps long text short	it	L	shared	FTFoundation	passing	FTFoundationTests/takesTheDefaultForNumbersThatArentNumbersAndKeepsLongTextShort	
+T-003a9362	apps/desktop/src/shared/batchRename.test.ts	saved settings and presets	drops presets without a name or with one already used, and keeps at most the limit	it	L	shared	FTFoundation	passing	FTFoundationTests/dropsPresetsWithoutANameOrWithOneAlreadyUsedAndKeepsAtMostTheLimit	
+T-ba89cb89	apps/desktop/src/shared/batchRename.test.ts	the plan	renames what changes and counts what doesn't	it	L	shared	FTFoundation	passing	FTFoundationTests/renamesWhatChangesAndCountsWhatDoesnt	
+T-e3b3448b	apps/desktop/src/shared/batchRename.test.ts	the plan	numbers a name taken by something else in the folder, and the next free number	it	L	shared	FTFoundation	passing	FTFoundationTests/numbersANameTakenBySomethingElseInTheFolderAndTheNextFreeNumber	
+T-cd7d8070	apps/desktop/src/shared/batchRename.test.ts	the plan	numbers repeats inside the batch in order, with Format's separator	it	L	shared	FTFoundation	passing	FTFoundationTests/numbersRepeatsInsideTheBatchInOrderWithFormatsSeparator	
+T-ec74d627	apps/desktop/src/shared/batchRename.test.ts	the plan	numbers thousands of items wanting one name without looking from 2 for each	it	L	shared	FTFoundation	passing	FTFoundationTests/numbersThousandsOfItemsWantingOneNameWithoutLookingFromTwoForEach	
+T-2d7333cf	apps/desktop/src/shared/batchRename.test.ts	the plan	counts names as the disk does: case and accents, unless the disk tells case apart	it	L	shared	FTFoundation	passing	FTFoundationTests/countsNamesAsTheDiskDoesCaseAndAccentsUnlessTheDiskTellsCaseApart	
+T-5a9b05b3	apps/desktop/src/shared/batchRename.test.ts	the plan	lets items swap names and change only the case of their own	it	L	shared	FTFoundation	passing	FTFoundationTests/letsItemsSwapNamesAndChangeOnlyTheCaseOfTheirOwn	
+T-8e703ba3	apps/desktop/src/shared/batchRename.test.ts	the plan	leaves a clashing item as it is with Skip, and settles the rest around its name	it	L	shared	FTFoundation	passing	FTFoundationTests/leavesAClashingItemAsItIsWithSkipAndSettlesTheRestAroundItsName	
+T-c909ed2e	apps/desktop/src/shared/batchRename.test.ts	the plan	skips a whole batch whose names each wait on the next one's, at once	it	L	shared	FTFoundation	passing	FTFoundationTests/skipsAWholeBatchWhoseNamesEachWaitOnTheNextOnesAtOnce	
+T-ec7ff9f5	apps/desktop/src/shared/batchRename.test.ts	the plan	settles clashes as settling the folder again until nothing more is skipped would	it	L	shared	FTFoundation	passing	FTFoundationTests/settlesClashesAsSettlingTheFolderAgainUntilNothingMoreIsSkippedWould	
+T-463e5c4b	apps/desktop/src/shared/batchRename.test.ts	the plan	holds the rename with Don't Rename until the clash is fixed	it	L	shared	FTFoundation	passing	FTFoundationTests/holdsTheRenameWithDontRenameUntilTheClashIsFixed	
+T-e8c4e7ae	apps/desktop/src/shared/batchRename.test.ts	the plan	never renames to an invalid name, whatever the setting	it	L	shared	FTFoundation	passing	FTFoundationTests/neverRenamesToAnInvalidNameWhateverTheSetting	
+T-ef371b87	apps/desktop/src/shared/batchRename.test.ts	the plan	skips an item that can't be renamed and keeps its name taken	it	L	shared	FTFoundation	passing	FTFoundationTests/skipsAnItemThatCantBeRenamedAndKeepsItsNameTaken	
+T-f1d7401f	apps/desktop/src/shared/batchRename.test.ts	the plan	shortens a name that a number makes too long, and holds one that can't be	it	L	shared	FTFoundation	passing	FTFoundationTests/shortensANameThatANumberMakesTooLongAndHoldsOneThatCant	
+T-1b9a33e7	apps/desktop/src/shared/batchRename.test.ts	the plan	warns when a new name starts with a dot	it	L	shared	FTFoundation	passing	FTFoundationTests/warnsWhenANewNameStartsWithADot	
+T-3c4e8603	apps/desktop/src/shared/batchRename.test.ts	the plan	settles each folder on its own: search results may share names across folders	it	L	shared	FTFoundation	passing	FTFoundationTests/settlesEachFolderOnItsOwnSearchResultsMayShareNamesAcrossFolders	
+T-94430ddd	apps/desktop/src/shared/batchRename.test.ts	the plan	takes a folder it knows nothing of to hold only the items being renamed	it	L	shared	FTFoundation	passing	FTFoundationTests/takesAFolderItKnowsNothingOfToHoldOnlyTheItemsBeingRenamed	
+T-477d48d3	apps/desktop/src/shared/batchRename.test.ts	the plan	holds nothing back when the settings themselves are broken: nothing is renamed	it	L	shared	FTFoundation	passing	FTFoundationTests/holdsNothingBackWhenTheSettingsThemselvesAreBrokenNothingIsRenamed	
 T-283a48d5	apps/desktop/src/shared/diskImages.test.ts	describeDiskImageFailure	names the image and gives hdiutil's reason as a sentence	it	L	shared	FTFoundation	todo		
 T-82f5a19e	apps/desktop/src/shared/diskImages.test.ts	describeDiskImageFailure	says an unexpected error occurred without a reason	it	L	shared	FTFoundation	todo		
 T-9e5c81d0	apps/desktop/src/shared/diskImages.test.ts	isDiskImagePath	knows disk images by the extensions DiskImageMounter opens, in any case	it	L	shared	FTFoundation	todo		
@@ -3356,8 +3356,8 @@ T-eee4b3f2	packages/native-fs/src/native-fs.test.ts	nativeCopyMetadata	names the
 T-6de0bf0d	packages/native-fs/src/native-fs.test.ts	nativeRenameExclusive	moves an item without replacing anything (%s)	each	FS	native-fs	FTFileSystem	todo		
 T-13d0fdf4	packages/native-fs/src/native-fs.test.ts	nativeIsCaseSensitive	answers for the volume holding a path	it	FS	native-fs	FTFileSystem	todo		
 T-2fbea9df	packages/native-fs/src/native-fs.test.ts	nativeIsCaseSensitive	rejects a path that doesn't exist	it	FS	native-fs	FTFileSystem	todo		
-T-8b85b255	packages/native-fs/src/native-fs.test.ts	nativeGetFileThumbnail	returns a picture of an image file as JPEG or PNG data	it	FS	native-fs	FTFileSystem	todo		
-T-96f815d3	packages/native-fs/src/native-fs.test.ts	nativeGetFileThumbnail	resolves null for a folder and for a file that does not exist	it	FS	native-fs	FTFileSystem	todo		
+T-8b85b255	packages/native-fs/src/native-fs.test.ts	nativeGetFileThumbnail	returns a picture of an image file as JPEG or PNG data	it	FS	native-fs	FTFileSystem	passing	FTFileSystemTests/returnsAPictureOfAnImageFile	
+T-96f815d3	packages/native-fs/src/native-fs.test.ts	nativeGetFileThumbnail	resolves null for a folder and for a file that does not exist	it	FS	native-fs	FTFileSystem	passing	FTFileSystemTests/givesNothingForAFolderAndForAFileThatDoesNotExist	
 T-5e050894	packages/native-fs/src/native-fs.test.ts	nativeCopyFile stop flag	copies normally while the flag is clear	it	FS	native-fs	FTFileSystem	todo		
 T-5a6dbafe	packages/native-fs/src/native-fs.test.ts	nativeCopyFile stop flag	doesn't start a copy whose flag is already set	it	FS	native-fs	FTFileSystem	todo		
 T-0c9bb001	packages/native-fs/src/native-fs.test.ts	nativeCopyFile stop flag	refuses a flag that isn't an Int32Array	it	FS	native-fs	FTFileSystem	todo		

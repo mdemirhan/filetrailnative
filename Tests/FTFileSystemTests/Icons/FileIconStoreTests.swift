@@ -58,7 +58,6 @@ private func entry(
         isExecutable: executable)
 }
 
-// F-224
 @MainActor @Suite struct FileIconStoreTests {
     // T-30abdbfb F-224
     @Test func anIconIsMissingUntilItArrivesAndNoneWhenMacOSHasNone() async throws {
@@ -254,7 +253,6 @@ private func entry(
     }
 }
 
-// F-223
 @Suite struct IconSamplesTests {
     // T-f0300b75 F-223
     @Test func samplesAreAnEmptyFolderAPlainFileAndAnExecutable() throws {

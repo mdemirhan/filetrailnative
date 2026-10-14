@@ -70,9 +70,8 @@ private func request(
     store.load(path: path, kind: kind, listing: listing) { receiver.answers.append($0) }
 }
 
-// F-227 F-226
 @MainActor @Suite struct ThumbnailStoreTests {
-    // T-0dec6037 F-227
+    // T-0dec6037 F-227 F-226
     @Test func givesNothingUntilThePreviewArrivesThenThePreview() async {
         let provider = ScriptedProvider()
         let store = ThumbnailStore(provider: provider)

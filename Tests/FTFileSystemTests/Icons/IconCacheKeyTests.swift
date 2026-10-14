@@ -2,7 +2,6 @@ import Testing
 
 @testable import FTFileSystem
 
-// F-225
 @Suite struct IconCacheKeyTests {
     private func key(
         _ path: String, name: String = "", extension fileExtension: String = "", kind: IconEntryKind = .file,
@@ -12,6 +11,7 @@ import Testing
             for: IconEntry(path: path, name: name, extension: fileExtension, kind: kind, isExecutable: executable))
     }
 
+    // F-225
     @Test func filesShareOneIconPerExtensionIgnoringCase() {
         #expect(key("/a/one.txt", extension: "txt") == "ext:txt")
         #expect(key("/a/ONE.TXT", extension: "TXT") == "ext:txt")
