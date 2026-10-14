@@ -99,6 +99,8 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     var setAclImpl: ((String, String?) throws -> Void)?
     /// The macOS default; tests of case-sensitive volumes set this to true.
     var caseSensitive = false
+    /// How the volume takes two names for one, when not as APFS does.
+    var foldImpl: ((String) -> String)?
     private(set) var trashEnabled = false
     private(set) var utimesEnabled = false
     /// What went to the Trash, each said to be at "/.Trash/<n>-<name>" (nothing is kept there).
@@ -574,7 +576,8 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     }
 
     private func fold(_ path: String) -> String {
-        caseSensitive ? path.decomposedStringWithCanonicalMapping : NameKeys.placeKey(path)
+        if let foldImpl { return foldImpl(path) }
+        return caseSensitive ? path.decomposedStringWithCanonicalMapping : NameKeys.placeKey(path)
     }
 
     private func nodeOrThrow(_ path: String) throws -> Node {
