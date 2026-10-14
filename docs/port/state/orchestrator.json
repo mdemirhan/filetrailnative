@@ -1281,12 +1281,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+      ]
     },
     "P3-02": {
       "title": "Analysis report and policy",
@@ -1309,12 +1313,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+      ]
     },
     "P3-03": {
       "title": "Copy/move execution and runtime conflicts",
@@ -1338,12 +1346,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+      ]
     },
     "P3-04": {
       "title": "Replace staging, journal, recovery",
@@ -1367,12 +1379,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+      ]
     },
     "P3-05": {
       "title": "Write coordinator",
@@ -1395,14 +1411,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing."
+        "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing.",
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
       ]
     },
     "P3-06": {
@@ -1428,12 +1446,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+      ]
     },
     "P3-07": {
       "title": "Undo",
@@ -1458,12 +1480,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+      ]
     },
     "P3-08": {
       "title": "Batch-rename execution",
@@ -1488,12 +1514,16 @@
       "lenses": [
         "parity",
         "safety",
-        "performance"
+        "performance",
+        "safety-adversarial"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+      ]
     },
     "P4-01": {
       "title": "App delegate, commands and menus",
@@ -1662,7 +1692,9 @@
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
       ],
-      "lenses": [],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -1860,7 +1892,9 @@
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --acceptance acceptance/a08-path-bar-history acceptance/a11-folder-sizes"
       ],
-      "lenses": [],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -1959,7 +1993,9 @@
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
       ],
-      "lenses": [],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -1982,7 +2018,9 @@
       "headSha": null,
       "attempts": 0,
       "gate": [],
-      "lenses": [],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -2052,7 +2090,9 @@
       "headSha": null,
       "attempts": 0,
       "gate": [],
-      "lenses": [],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -2075,7 +2115,9 @@
       "headSha": null,
       "attempts": 0,
       "gate": [],
-      "lenses": [],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -2095,7 +2137,9 @@
       "headSha": null,
       "attempts": 0,
       "gate": [],
-      "lenses": [],
+      "lenses": [
+        "parity"
+      ],
       "summary": null,
       "findings": [],
       "fixes": [],
@@ -2545,6 +2589,11 @@
       "owner": "check W1-G results; else new WP (quit hang + run.sh scenario timeout + find what launched DiskImageMounter)",
       "status": "cause: NSApp.terminate called inside a main-actor Task/main-queue job deadlocks with applicationShouldTerminate -> .terminateLater + Task reply. Fixed: capture run.sh timeout 120 s (a697205); Benchmark quit via run loop (main); AutomationRunner fixed on both port/P4-02 and port/P0-14 (integrator picks one). Remaining: find what launched DiskImageMounter during quiet mode. DiskImageMounter launch -> P0-16. Resolved by P0-16: only DiskImageMounterHandOffTests (gated) calls the real hand-off; it now quits the DiskImageMounter it starts.",
       "closed": true
+    },
+    {
+      "at": "2026-10-14",
+      "issue": "P3-01 (W2-A) launched before the assurance raise: no adversarial safety review, base seed count.",
+      "owner": "P3-02 brief: extend seeds/stop injection to the P3-01 layer; the batch reviewer for P3-02 covers it."
     }
   ],
   "userRequests": [
@@ -2653,6 +2702,19 @@
       [
         "P5-08"
       ]
+    ]
+  },
+  "assurance": {
+    "decided": "2026-10-14",
+    "by": "user",
+    "changes": [
+      "parity loop uncapped, with a no-progress guard",
+      "all five critic angles every round",
+      "low-risk WPs get a parity reviewer",
+      "vision review of every scenario at wave gates",
+      "Compact density screenshots at wave gates",
+      "P3: 4x differential seeds, crash/stop injection per write step, second adversarial safety review",
+      "scripts-only parity sweep at every wave gate"
     ]
   }
 }
