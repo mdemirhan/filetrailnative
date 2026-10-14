@@ -42,6 +42,18 @@ for f in sorted(glob.glob(f"{raw}/open-*.txt")):
 if backs:
     metrics["back_ms"] = statistics.median(backs)
 
+# Listing (tools/bench/listing.sh, no app): DirectoryService read and sort of the 3,000 and 100,000 folders.
+try:
+    listing_text = open("build/bench/listing.json").read()
+except OSError:
+    listing_text = ""
+for line in listing_text.splitlines():
+    try:
+        r = json.loads(line)
+        metrics[f"list_{r['folder'].split('-')[1]}_ms"] = r["medianMs"]
+    except (ValueError, KeyError, IndexError):
+        pass
+
 for r in bench_lines(f"{raw}/scroll.txt"):
     if "frame_max_ms" in r:
         metrics["scroll_max_ms"] = r["frame_max_ms"]

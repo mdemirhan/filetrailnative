@@ -1,4 +1,5 @@
 // Port of packages/core/src/fs/testDiskImage.ts (attach and detach approach)
+import Darwin
 import Foundation
 import Testing
 
@@ -41,10 +42,16 @@ public enum DiskImage {
 
     /// Mounts a fresh clone of the blank image of `kind`, runs `body` with the volume's folder, and
     /// detaches (with force) and deletes the clone afterwards, also when `body` throws.
+    ///
+    /// One volume of a kind at a time, also across test processes: clones of one blank image carry the
+    /// same volume UUID, and while one is attached, attaching another fails with "no mountable file
+    /// systems" or mounts it under a different name.
     public static func withVolume<T>(
         _ kind: Kind, isolation: isolated (any Actor)? = #isolation,
         _ body: (URL) async throws -> T
     ) async throws -> T {
+        let lock = try await acquireLock(for: kind)
+        defer { releaseLock(lock) }
         let work = try TemporaryDirectory(prefix: "ft-disk")
         defer { work.remove() }
         let image = work.appending("volume.sparseimage")
@@ -52,6 +59,30 @@ public enum DiskImage {
         let attached = try attach(image)
         defer { detach(attached, image: image) }
         return try await body(attached.mount)
+    }
+
+    /// Takes an exclusive `flock` on a file next to the blank images, polling so no thread is blocked.
+    private static func acquireLock(for kind: Kind) async throws -> Int32 {
+        try FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
+        let path = cacheDirectory.appendingPathComponent("\(kind.imageName).lock").path
+        let descriptor = open(path, O_CREAT | O_RDWR | O_CLOEXEC, 0o644)
+        guard descriptor >= 0 else { throw Failure(description: "cannot open \(path): errno \(errno)") }
+        while flock(descriptor, LOCK_EX | LOCK_NB) != 0 {
+            guard errno == EWOULDBLOCK else {
+                close(descriptor)
+                throw Failure(description: "cannot lock \(path): errno \(errno)")
+            }
+            do { try await Task.sleep(for: .milliseconds(50)) } catch {
+                close(descriptor)
+                throw error
+            }
+        }
+        return descriptor
+    }
+
+    private static func releaseLock(_ descriptor: Int32) {
+        flock(descriptor, LOCK_UN)
+        close(descriptor)
     }
 
     private static var repositoryRoot: URL {
@@ -110,7 +141,7 @@ public enum DiskImage {
         for attempt in 0..<3 {
             let force = attempt > 0
             _ = try? run("/usr/bin/hdiutil", ["detach"] + (force ? ["-force"] : []) + [attached.device])
-            if waitUntilGone(attached, image: image, timeout: 5) { return }
+            if waitUntilGone(attached, image: image, timeout: 30) { return }
         }
     }
 

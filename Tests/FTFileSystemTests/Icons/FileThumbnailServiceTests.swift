@@ -180,6 +180,13 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
     }
 }
 
+/// Waits until `condition` holds; the queue's tasks take as long as the machine's load makes them.
+@MainActor
+private func waitUntil(_ condition: @MainActor () -> Bool) async {
+    let deadline = ContinuousClock.now + .seconds(30)
+    while !condition(), ContinuousClock.now < deadline { await Task.yield() }
+}
+
 @MainActor @Suite struct ThumbnailLoadQueueTests {
     @Test func startsFourAtATimeAndStartsTheNextWhenOneEnds() async {
         let queue = ThumbnailLoadQueue()
@@ -191,10 +198,10 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
                 await gate.wait()
             }
         }
-        for _ in 0..<20 { await Task.yield() }
+        await waitUntil { started.count == 4 }
         #expect(started.count == 4 && queue.activeCount == 4 && queue.queuedCount == 2)
         gate.open()
-        for _ in 0..<50 { await Task.yield() }
+        await waitUntil { started.count == 6 }
         #expect(started.count == 6)
     }
 
@@ -207,11 +214,11 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
             await gate.wait()
         }
         let dropped = queue.enqueue { ran.count += 100 }
-        for _ in 0..<20 { await Task.yield() }
+        await waitUntil { ran.count == 1 }
         dropped.cancel()
         running.cancel()  // already started: no effect
         gate.open()
-        for _ in 0..<50 { await Task.yield() }
+        await waitUntil { queue.activeCount == 0 && queue.queuedCount == 0 }
         #expect(ran.count == 1)
         #expect(queue.activeCount == 0 && queue.queuedCount == 0)
     }
