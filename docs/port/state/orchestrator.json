@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T06:56:07+00:00",
+  "updatedAt": "2026-10-14T06:56:24+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -290,13 +290,13 @@
         "P2-07"
       ],
       "status": "running",
-      "runId": null,
+      "runId": "wf_d030682e-f5a",
       "estimatedAgents": 25,
       "meterBefore": {
         "weeklyPct": 11,
         "fiveHourPct": 2
       },
-      "startedAt": "2026-10-14T06:56:07+00:00"
+      "startedAt": "2026-10-14T06:56:24+00:00"
     }
   },
   "wps": {
