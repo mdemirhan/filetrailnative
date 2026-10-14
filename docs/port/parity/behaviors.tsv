@@ -636,12 +636,12 @@ B-INFO-172	INFO	A8, A11			todo
 B-INFO-173	INFO	A8, A11			todo
 B-INFO-174	INFO	A8, A11			todo
 B-INFO-175	INFO	A8, A11			todo
-B-INFO-176	INFO	A8, A11			todo
+B-INFO-176	INFO	A8, A11	barsAreAShareOfTheLargestSize		done
 B-INFO-177	INFO	A8, A11			todo
-B-INFO-178	INFO	A8, A11			todo
+B-INFO-178	INFO	A8, A11	barsAreAShareOfTheLargestSize		done
 B-INFO-179	INFO	A8, A11			todo
 B-INFO-180	INFO	A8, A11			todo
-B-INFO-181	INFO	A8, A11			todo
+B-INFO-181	INFO	A8, A11	foldersAreOrderedByTheirCalculatedSizeWithUnknownSizesLast		done
 B-INFO-182	INFO	A8, A11			todo
 B-INFO-183	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	53-info-panel-open	partial
 B-INFO-184	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent		partial
@@ -777,7 +777,7 @@ B-NAV-112	NAV	A8, A14			todo
 B-NAV-113	NAV	A8, A14			todo
 B-NAV-114	NAV	A8, A14			todo
 B-NAV-115	NAV	A8, A14			todo
-B-NAV-116	NAV	A8, A14			todo
+B-NAV-116	NAV	A8, A14	theEmptyStateTexts		done
 B-NAV-117	NAV	A8, A14			todo
 B-NAV-118	NAV	A8, A14			todo
 B-NAV-119	NAV	A8, A14			todo
@@ -788,7 +788,7 @@ B-NAV-123	NAV	A8, A14			todo
 B-NAV-124	NAV	A8, A14			todo
 B-NAV-125	NAV	A8, A14			todo
 B-NAV-126	NAV	A8, A14			todo
-B-NAV-127	NAV	A8, A14			todo
+B-NAV-127	NAV	A8, A14	headerClicksSortLikeTheOriginal		done
 B-NAV-128	NAV	A8, A14			todo
 B-NAV-129	NAV	A8, A14			todo
 B-NAV-130	NAV	A8, A14			todo
@@ -1065,9 +1065,9 @@ B-SEL-174	SEL	A7			todo
 B-SEL-175	SEL	A7			todo
 B-SEL-176	SEL	A7			todo
 B-SEL-177	SEL	A7			todo
-B-SEL-178	SEL	A7			todo
+B-SEL-178	SEL	A7	theEmptyStateTexts		done
 B-SEL-179	SEL	A7			todo
-B-SEL-180	SEL	A7			todo
+B-SEL-180	SEL	A7	theEmptyStateTexts		done
 B-SEL-181	SEL	A7			todo
 B-SEL-182	SEL	A7			todo
 B-SEL-183	SEL	A7			todo
@@ -1267,25 +1267,25 @@ B-SRCH-193	SRCH	A1			todo
 B-SRCH-194	SRCH	A1			todo
 B-SRCH-195	SRCH	A1			todo
 B-SRCH-196	SRCH	A1			todo
-B-TREE-001	TREE	A2, A16			todo
-B-TREE-002	TREE	A2, A16			todo
+B-TREE-001	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-002	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
 B-TREE-003	TREE	A2, A16			todo
-B-TREE-004	TREE	A2, A16			todo
+B-TREE-004	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
 B-TREE-005	TREE	A2, A16			todo
-B-TREE-006	TREE	A2, A16			todo
-B-TREE-007	TREE	A2, A16			todo
-B-TREE-008	TREE	A2, A16			todo
-B-TREE-009	TREE	A2, A16			todo
+B-TREE-006	TREE	A2, A16	aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed	80-sidebar-sections-closed	partial
+B-TREE-007	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-008	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-009	TREE	A2, A16	keepsFavoritesFlatEvenWhenTheFilesystemTreeContainsDescendants		done
 B-TREE-010	TREE	A2, A16			todo
 B-TREE-011	TREE	A2, A16			todo
-B-TREE-012	TREE	A2, A16			todo
-B-TREE-013	TREE	A2, A16			todo
+B-TREE-012	TREE	A2, A16	theChevronExpandsAFolderAndAnAliasHasNone		partial
+B-TREE-013	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
 B-TREE-014	TREE	A2, A16			todo
 B-TREE-015	TREE	A2, A16			todo
 B-TREE-016	TREE	A2, A16			todo
 B-TREE-017	TREE	A2, A16			todo
 B-TREE-018	TREE	A2, A16			todo
-B-TREE-019	TREE	A2, A16			todo
+B-TREE-019	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
 B-TREE-020	TREE	A2, A16			todo
 B-TREE-021	TREE	A2, A16			todo
 B-TREE-022	TREE	A2, A16	listsOnlyBrowsableMountsDirectlyUnderVolumes		done
@@ -1296,12 +1296,12 @@ B-TREE-026	TREE	A2, A16	findsADiskTheWatchMissedWhenAskedToLookAgain, stopsWatch
 B-TREE-027	TREE	A2, A16	comparesTheVolumesOfTwoPaths, putsEverythingElseOnTheStartupVolume, putsPathsUnderVolumesOnThatVolume		done
 B-TREE-028	TREE	A2, A16			todo
 B-TREE-029	TREE	A2, A16			todo
-B-TREE-030	TREE	A2, A16			todo
+B-TREE-030	TREE	A2, A16	recognizesMacOSRefusingToListTheTrash		done
 B-TREE-031	TREE	A2, A16			todo
 B-TREE-032	TREE	A2, A16			todo
-B-TREE-033	TREE	A2, A16			todo
+B-TREE-033	TREE	A2, A16	infersCuratedIconsForCommonAddedFolders		done
 B-TREE-034	TREE	A2, A16			todo
-B-TREE-035	TREE	A2, A16			todo
+B-TREE-035	TREE	A2, A16	addsAtTheEndRemovesThatPathOnlyAndRefusesTheTrash		done
 B-TREE-036	TREE	A2, A16			todo
 B-TREE-037	TREE	A2, A16			todo
 B-TREE-038	TREE	A2, A16			todo
@@ -1309,99 +1309,99 @@ B-TREE-039	TREE	A2, A16			todo
 B-TREE-040	TREE	A2, A16			todo
 B-TREE-041	TREE	A2, A16			todo
 B-TREE-042	TREE	A2, A16			todo
-B-TREE-043	TREE	A2, A16			todo
-B-TREE-044	TREE	A2, A16			todo
+B-TREE-043	TREE	A2, A16	reorderingFavoritesSavesOnlyWhenTheOrderChanges		done
+B-TREE-044	TREE	A2, A16	reorderingFavoritesSavesOnlyWhenTheOrderChanges		done
 B-TREE-045	TREE	A2, A16			todo
 B-TREE-046	TREE	A2, A16			todo
 B-TREE-047	TREE	A2, A16			todo
 B-TREE-048	TREE	A2, A16			todo
 B-TREE-049	TREE	A2, A16			todo
 B-TREE-050	TREE	A2, A16			todo
-B-TREE-051	TREE	A2, A16			todo
+B-TREE-051	TREE	A2, A16	aPressedRowShowsSelectedAtOnceAndNotOnceItsFolderFailsToOpen	78-sidebar-click-selection	partial
 B-TREE-052	TREE	A2, A16			todo
-B-TREE-053	TREE	A2, A16			todo
+B-TREE-053	TREE	A2, A16		78-sidebar-click-selection	partial
 B-TREE-054	TREE	A2, A16			todo
-B-TREE-055	TREE	A2, A16			todo
-B-TREE-056	TREE	A2, A16			todo
+B-TREE-055	TREE	A2, A16		78-sidebar-click-selection	partial
+B-TREE-056	TREE	A2, A16	aPressedRowShowsSelectedAtOnceAndNotOnceItsFolderFailsToOpen		done
 B-TREE-057	TREE	A2, A16			todo
 B-TREE-058	TREE	A2, A16			todo
-B-TREE-059	TREE	A2, A16			todo
-B-TREE-060	TREE	A2, A16			todo
-B-TREE-061	TREE	A2, A16			todo
+B-TREE-059	TREE	A2, A16	clearingTheSelectionLetsGoOfTheFolderOnScreen		done
+B-TREE-060	TREE	A2, A16	clearingTheSelectionLetsGoOfTheFolderOnScreen, pressingEmptySpaceClearsTheSelection		partial
+B-TREE-061	TREE	A2, A16	pressingEmptySpaceClearsTheSelection		partial
 B-TREE-062	TREE	A2, A16			todo
 B-TREE-063	TREE	A2, A16			todo
-B-TREE-064	TREE	A2, A16			todo
-B-TREE-065	TREE	A2, A16			todo
-B-TREE-066	TREE	A2, A16			todo
-B-TREE-067	TREE	A2, A16			todo
-B-TREE-068	TREE	A2, A16			todo
+B-TREE-064	TREE	A2, A16	aRightClickRingsOnlyThatRowAndLeavesTheSelection		partial
+B-TREE-065	TREE	A2, A16	aRightClickRingsOnlyThatRowAndLeavesTheSelection		partial
+B-TREE-066	TREE	A2, A16	aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed, closingTheFavoritesListSwitchesTheKeyboardToTheTree	80-sidebar-sections-closed	partial
+B-TREE-067	TREE	A2, A16	closingTheFavoritesListSwitchesTheKeyboardToTheTree	80-sidebar-sections-closed	partial
+B-TREE-068	TREE	A2, A16	closingTheFavoritesListSwitchesTheKeyboardToTheTree		done
 B-TREE-069	TREE	A2, A16			todo
-B-TREE-070	TREE	A2, A16			todo
+B-TREE-070	TREE	A2, A16	theChevronExpandsAFolderAndAnAliasHasNone		partial
 B-TREE-071	TREE	A2, A16			todo
 B-TREE-072	TREE	A2, A16			todo
-B-TREE-073	TREE	A2, A16			todo
+B-TREE-073	TREE	A2, A16	keepsAHandPickedRootWhileFoldersOpenInsideItAndMovesItForAFolderOutside	77-sidebar-deep-path	partial
 B-TREE-074	TREE	A2, A16			todo
-B-TREE-075	TREE	A2, A16			todo
+B-TREE-075	TREE	A2, A16	opensTheTreeDownToAFolderSelectingItsRowAndLeavingItClosed	77-sidebar-deep-path	partial
 B-TREE-076	TREE	A2, A16			todo
 B-TREE-077	TREE	A2, A16			todo
-B-TREE-078	TREE	A2, A16			todo
-B-TREE-079	TREE	A2, A16			todo
-B-TREE-080	TREE	A2, A16			todo
-B-TREE-081	TREE	A2, A16			todo
+B-TREE-078	TREE	A2, A16	keepsAHandPickedRootWhileFoldersOpenInsideItAndMovesItForAFolderOutside		done
+B-TREE-079	TREE	A2, A16	aFavoriteKeepsItsRowSelectedAndALocationRootsTheTreeAtItsTop		done
+B-TREE-080	TREE	A2, A16	aFavoriteKeepsItsRowSelectedAndALocationRootsTheTreeAtItsTop		done
+B-TREE-081	TREE	A2, A16	theCommandsOfTheSidebarRowSelection, theTrashOpenedFromTheSidebarLeavesTheTreeAlone		done
 B-TREE-082	TREE	A2, A16			todo
 B-TREE-083	TREE	A2, A16			todo
-B-TREE-084	TREE	A2, A16			todo
-B-TREE-085	TREE	A2, A16			todo
-B-TREE-086	TREE	A2, A16			todo
-B-TREE-087	TREE	A2, A16			todo
-B-TREE-088	TREE	A2, A16			todo
-B-TREE-089	TREE	A2, A16			todo
-B-TREE-090	TREE	A2, A16			todo
-B-TREE-091	TREE	A2, A16			todo
+B-TREE-084	TREE	A2, A16	hiddenFoldersShowOnlyWithShowHiddenExceptTheOneOnThePathToTheFolderOnScreen, keepsTheOneHiddenChildOnTheWayToTheFolderOnScreen		done
+B-TREE-085	TREE	A2, A16	aPackageOnThePathIsAddedInOrderAndVolumesLeavesMacintoshHDUnlessHiddenShow, addsAnOpenPackageToItsParentsChildrenInNameOrder		done
+B-TREE-086	TREE	A2, A16	aPackageOnThePathIsAddedInOrderAndVolumesLeavesMacintoshHDUnlessHiddenShow		done
+B-TREE-087	TREE	A2, A16	aFolderLoadedOrLoadingIsNotReadTwiceButAForcedReloadAlwaysReads		done
+B-TREE-088	TREE	A2, A16	aFailedReadLeavesTheFolderUnreadAndShowsWhyAndTheLoadingLineWaits		done
+B-TREE-089	TREE	A2, A16	aFailedReadLeavesTheFolderUnreadAndShowsWhyAndTheLoadingLineWaits		done
+B-TREE-090	TREE	A2, A16	aFailedReadLeavesTheFolderUnreadAndShowsWhyAndTheLoadingLineWaits		done
+B-TREE-091	TREE	A2, A16	hiddenFoldersShowOnlyWithShowHiddenExceptTheOneOnThePathToTheFolderOnScreen		done
 B-TREE-092	TREE	A2, A16			todo
 B-TREE-093	TREE	A2, A16			todo
 B-TREE-094	TREE	A2, A16			todo
 B-TREE-095	TREE	A2, A16			todo
 B-TREE-096	TREE	A2, A16			todo
-B-TREE-097	TREE	A2, A16			todo
+B-TREE-097	TREE	A2, A16	opensTheTreeDownToAFolderSelectingItsRowAndLeavingItClosed	77-sidebar-deep-path, 78-sidebar-click-selection	partial
 B-TREE-098	TREE	A2, A16			todo
 B-TREE-099	TREE	A2, A16			todo
-B-TREE-100	TREE	A2, A16			todo
-B-TREE-101	TREE	A2, A16			todo
+B-TREE-100	TREE	A2, A16	aLinkKeepsItsRowAndDoesNotMoveOrReadTheTree		done
+B-TREE-101	TREE	A2, A16	aFavoriteKeepsItsRowSelectedAndALocationRootsTheTreeAtItsTop		done
 B-TREE-102	TREE	A2, A16			todo
-B-TREE-103	TREE	A2, A16			todo
+B-TREE-103	TREE	A2, A16	theCommandsOfTheSidebarRowSelection		done
 B-TREE-104	TREE	A2, A16			todo
 B-TREE-105	TREE	A2, A16			todo
 B-TREE-106	TREE	A2, A16			todo
-B-TREE-107	TREE	A2, A16			todo
-B-TREE-108	TREE	A2, A16			todo
-B-TREE-109	TREE	A2, A16			todo
+B-TREE-107	TREE	A2, A16	movesThroughTheRowsAndSkipsTheHeadings		done
+B-TREE-108	TREE	A2, A16	movesThroughTheRowsAndSkipsTheHeadings, theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar	82-sidebar-keyboard-expand	partial
+B-TREE-109	TREE	A2, A16	withNothingSelectedDownTakesTheSecondRowAndUpTheFirst		done
 B-TREE-110	TREE	A2, A16			todo
-B-TREE-111	TREE	A2, A16			todo
-B-TREE-112	TREE	A2, A16			todo
-B-TREE-113	TREE	A2, A16			todo
-B-TREE-114	TREE	A2, A16			todo
-B-TREE-115	TREE	A2, A16			todo
-B-TREE-116	TREE	A2, A16			todo
-B-TREE-117	TREE	A2, A16			todo
+B-TREE-111	TREE	A2, A16	opensABranchWithRightGoesIntoItAndComesBackOutWithLeft, theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar, theArrowKeysOpenABranchGoIntoItAndComeBackOut	82-sidebar-keyboard-expand	partial
+B-TREE-112	TREE	A2, A16	leftAndRightDoNothingOnAFavoriteOrALocation		done
+B-TREE-113	TREE	A2, A16	opensABranchWithRightGoesIntoItAndComesBackOutWithLeft, theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar, theArrowKeysOpenABranchGoIntoItAndComeBackOut		partial
+B-TREE-114	TREE	A2, A16	leftAndRightDoNothingOnAFavoriteOrALocation		done
+B-TREE-115	TREE	A2, A16	returnOpensAFavoriteAgainReadsAnUnreadFolderAndTogglesTheOthers		done
+B-TREE-116	TREE	A2, A16	returnOpensAFavoriteAgainReadsAnUnreadFolderAndTogglesTheOthers		done
+B-TREE-117	TREE	A2, A16	commandUpSelectsTheParentFolderButNotForAFavoriteALocationOrADiskRoot		done
 B-TREE-118	TREE	A2, A16			todo
 B-TREE-119	TREE	A2, A16			todo
 B-TREE-120	TREE	A2, A16			todo
 B-TREE-121	TREE	A2, A16			todo
-B-TREE-122	TREE	A2, A16			todo
-B-TREE-123	TREE	A2, A16			todo
-B-TREE-124	TREE	A2, A16			todo
-B-TREE-125	TREE	A2, A16			todo
+B-TREE-122	TREE	A2, A16	goesUpFromTheTopOfTheTreeIntoFavoritesAndDownAgain		done
+B-TREE-123	TREE	A2, A16	goesUpFromTheTopOfTheTreeIntoFavoritesAndDownAgain, goesUpIntoFavoritesFromAnEmptyTree		done
+B-TREE-124	TREE	A2, A16	goesUpFromTheTopOfTheTreeIntoFavoritesAndDownAgain		done
+B-TREE-125	TREE	A2, A16	leftAndRightDoNothingOnAFavoriteOrALocation		done
 B-TREE-126	TREE	A2, A16			todo
 B-TREE-127	TREE	A2, A16			todo
-B-TREE-128	TREE	A2, A16			todo
-B-TREE-129	TREE	A2, A16			todo
-B-TREE-130	TREE	A2, A16			todo
-B-TREE-131	TREE	A2, A16			todo
-B-TREE-132	TREE	A2, A16			todo
-B-TREE-133	TREE	A2, A16			todo
-B-TREE-134	TREE	A2, A16			todo
-B-TREE-135	TREE	A2, A16			todo
+B-TREE-128	TREE	A2, A16	typingBuildsAPrefixForASecondAndSelectsTheFirstMatch	81-sidebar-jump-to	partial
+B-TREE-129	TREE	A2, A16	typingBuildsAPrefixForASecondAndSelectsTheFirstMatch		done
+B-TREE-130	TREE	A2, A16	selectsTheFirstRowWhoseNameStartsWithWhatIsTyped, typingBuildsAPrefixForASecondAndSelectsTheFirstMatch	81-sidebar-jump-to	partial
+B-TREE-131	TREE	A2, A16	selectsTheFirstRowWhoseNameStartsWithWhatIsTyped		done
+B-TREE-132	TREE	A2, A16	selectsTheFirstRowWhoseNameStartsWithWhatIsTyped		done
+B-TREE-133	TREE	A2, A16	typingBuildsAPrefixForASecondAndSelectsTheFirstMatch	81-sidebar-jump-to	partial
+B-TREE-134	TREE	A2, A16	pagesByTheRowsOnScreenAndStopsAtTheEnds		done
+B-TREE-135	TREE	A2, A16	pagesByTheRowsOnScreenAndStopsAtTheEnds		done
 B-TREE-136	TREE	A2, A16			todo
 B-TREE-137	TREE	A2, A16			todo
 B-TREE-138	TREE	A2, A16			todo
@@ -1429,20 +1429,20 @@ B-TREE-159	TREE	A2, A16			todo
 B-TREE-160	TREE	A2, A16			todo
 B-TREE-161	TREE	A2, A16			todo
 B-TREE-162	TREE	A2, A16			todo
-B-TREE-163	TREE	A2, A16			todo
-B-TREE-164	TREE	A2, A16			todo
-B-TREE-165	TREE	A2, A16	asksFirstAboutAVolumeWhoseDiskHoldsOthersNamingThem, ejectsADiskOfItsOwnAtOnce, neverGroupsNetworkSharesWhichHaveNoDisk		done
+B-TREE-163	TREE	A2, A16	aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone	83-sidebar-volume-eject	partial
+B-TREE-164	TREE	A2, A16	aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone		partial
+B-TREE-165	TREE	A2, A16	asksFirstAboutAVolumeWhoseDiskHoldsOthersNamingThem, ejectsADiskOfItsOwnAtOnce, ejectsADiskOfItsOwnWithItsWholeDiskAtOnce, neverGroupsNetworkSharesWhichHaveNoDisk		done
 B-TREE-166	TREE	A2, A16			todo
-B-TREE-167	TREE	A2, A16	doesNothingForADiskThatCantBeEjectedOrIsGone		done
+B-TREE-167	TREE	A2, A16	doesNothingForADiskThatCantBeEjectedOrIsGone, doesNothingForAPathThatIsNotAListedVolume		done
 B-TREE-168	TREE	A2, A16	targetIsNoneWithTheFileListInFrontOrForAnythingButAnEjectableDisk, targetIsTheDiskSelectedInTheSidebarItsLocationsRowOrTheTopOfTheTree		done
 B-TREE-169	TREE	A2, A16			todo
-B-TREE-170	TREE	A2, A16	asksAboutAllTheVolumesOfTheDisk		done
-B-TREE-171	TREE	A2, A16			todo
-B-TREE-172	TREE	A2, A16			todo
-B-TREE-173	TREE	A2, A16	namesTheVolumeInUseWhichMayBeAnotherOnTheSameDisk, saysWhichDiskIsInUseAndCallsAServerAVolume		done
-B-TREE-174	TREE	A2, A16			todo
+B-TREE-170	TREE	A2, A16	asksAboutAllTheVolumesOfTheDisk, asksAboutTheOtherVolumesOfTheDiskThenEjectsAllOrOnlyThisOne		done
+B-TREE-171	TREE	A2, A16	asksAboutTheOtherVolumesOfTheDiskThenEjectsAllOrOnlyThisOne		done
+B-TREE-172	TREE	A2, A16	ejectsADiskOfItsOwnWithItsWholeDiskAtOnce, ignoresARequestForADiskAlreadyBeingEjectedAndReleasesIt		done
+B-TREE-173	TREE	A2, A16	asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced, namesTheVolumeInUseWhichMayBeAnotherOnTheSameDisk, saysWhichDiskIsInUseAndCallsAServerAVolume		done
+B-TREE-174	TREE	A2, A16	asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced		done
 B-TREE-175	TREE	A2, A16	aVolumeAlreadyEjectedCountsAsEjected, countsAVolumeAlreadyGoneAsEjected, givesAnyOtherFailureWithDiskArbitrationsSentence		done
-B-TREE-176	TREE	A2, A16	namesTheDiskAskedForWhenTheDiskItselfFailedWithDiskArbitrationsReason, otherFailureWording		done
+B-TREE-176	TREE	A2, A16	namesTheDiskAskedForWhenTheDiskItselfFailedWithDiskArbitrationsReason, otherFailureWording, tellsOfAnyOtherFailureInANotice		done
 B-TREE-177	TREE	A2, A16			todo
 B-TREE-178	TREE	A2, A16	sendsATabOnAnUnmountedDiskHomeKeepingItsHistoryElsewhere		done
 B-TREE-179	TREE	A2, A16			todo
@@ -1509,14 +1509,14 @@ B-VIEW-038	VIEW	A10, A13, A14			todo
 B-VIEW-039	VIEW	A10, A13, A14			todo
 B-VIEW-040	VIEW	A10, A13, A14			todo
 B-VIEW-041	VIEW	A10, A13, A14			todo
-B-VIEW-042	VIEW	A10, A13, A14			todo
+B-VIEW-042	VIEW	A10, A13, A14	aFittedWidthStaysWithinTheColumnsLimits		done
 B-VIEW-043	VIEW	A10, A13, A14			todo
 B-VIEW-044	VIEW	A10, A13, A14			todo
 B-VIEW-045	VIEW	A10, A13, A14			todo
 B-VIEW-046	VIEW	A10, A13, A14			todo
 B-VIEW-047	VIEW	A10, A13, A14			todo
-B-VIEW-048	VIEW	A10, A13, A14			todo
-B-VIEW-049	VIEW	A10, A13, A14			todo
+B-VIEW-048	VIEW	A10, A13, A14	headerClicksSortLikeTheOriginal		done
+B-VIEW-049	VIEW	A10, A13, A14	headerClicksSortLikeTheOriginal		done
 B-VIEW-050	VIEW	A10, A13, A14			todo
 B-VIEW-051	VIEW	A10, A13, A14			todo
 B-VIEW-052	VIEW	A10, A13, A14			todo
@@ -1524,14 +1524,14 @@ B-VIEW-053	VIEW	A10, A13, A14			todo
 B-VIEW-054	VIEW	A10, A13, A14			todo
 B-VIEW-055	VIEW	A10, A13, A14			todo
 B-VIEW-056	VIEW	A10, A13, A14			todo
-B-VIEW-057	VIEW	A10, A13, A14			todo
+B-VIEW-057	VIEW	A10, A13, A14	barsAreAShareOfTheLargestSize		done
 B-VIEW-058	VIEW	A10, A13, A14			todo
 B-VIEW-059	VIEW	A10, A13, A14			todo
 B-VIEW-060	VIEW	A10, A13, A14			todo
 B-VIEW-061	VIEW	A10, A13, A14			todo
-B-VIEW-062	VIEW	A10, A13, A14			todo
-B-VIEW-063	VIEW	A10, A13, A14			todo
-B-VIEW-064	VIEW	A10, A13, A14			todo
+B-VIEW-062	VIEW	A10, A13, A14	theStates		partial
+B-VIEW-063	VIEW	A10, A13, A14	theEmptyStateTexts, theStates		partial
+B-VIEW-064	VIEW	A10, A13, A14	theStates		partial
 B-VIEW-065	VIEW	A10, A13, A14			todo
 B-VIEW-066	VIEW	A10, A13, A14			todo
 B-VIEW-067	VIEW	A10, A13, A14			todo
