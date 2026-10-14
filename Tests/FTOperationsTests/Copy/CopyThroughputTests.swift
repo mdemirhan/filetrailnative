@@ -9,7 +9,8 @@ import Testing
 struct CopyThroughputTests {
     // A 150 MB file copied to another volume (a real copy, not a clone) with the stoppable copy, its stop flag and
     // progress, and with a bare copyfile call of the same flags and no callback. Other builds load the machine
-    // meanwhile: the two alternate, and their medians are compared, so one scheduling spike can't decide it.
+    // meanwhile: the two alternate, 15 runs each (one copy takes a fifth of a second, so a few runs are noisy), and
+    // their medians are compared, so one scheduling spike can't decide it.
     // F-404 F-410
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func theStoppableCopyKeepsWithinFivePercentOfABareCopyfile() async throws {
@@ -42,7 +43,7 @@ struct CopyThroughputTests {
                 _ = try timed(stoppableCopy)
                 var bareTimes: [Double] = []
                 var stoppableTimes: [Double] = []
-                for index in 0..<7 {
+                for index in 0..<15 {
                     if index % 2 == 0 {
                         bareTimes.append(try timed(bare))
                         stoppableTimes.append(try timed(stoppableCopy))
