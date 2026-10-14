@@ -44,6 +44,8 @@ public enum RendererCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case newWindow
     case newTab
     case reopenClosedTab
+    /// Not a command of the original, whose Duplicate Tab is in the tab strip's menu only (DEVIATIONS D-001).
+    case duplicateTab
     case closeTab
     case selectNextTab
     case selectPreviousTab

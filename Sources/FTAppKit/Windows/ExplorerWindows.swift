@@ -83,7 +83,11 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     var showNotice: (WindowNotice, NSWindow?) -> Void = { _, _ in NSSound.beep() }
     var log: (String) -> Void = { _ in }
 
-    private var home: String { FileManager.default.homeDirectoryForCurrentUser.path }
+    /// Where a tab with nowhere else to go opens.
+    var home = FileManager.default.homeDirectoryForCurrentUser.path
+    /// Which disk a path is on (`getVolumeRootPath`): `/Volumes/<name>`, or `/`.
+    var volumeRoot: (String) -> String = { ExplorerTabs.volumeRootPath($0) }
+    private var observers: [any NSObjectProtocol] = []
 
     init(store: AppStateStore, quit: QuitCoordinator) {
         self.store = store
@@ -97,6 +101,42 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         host.windowsChanged = { [unowned self] in onWindowsChanged() }
         host.log = { [unowned self] in log($0) }
         controller = ExplorerWindowController(host: host, quit: quit)
+        observers.append(
+            NSWorkspace.shared.notificationCenter.addObserver(
+                forName: NSWorkspace.didUnmountNotification, object: nil, queue: .main
+            ) { [weak self] notification in
+                let volume = notification.userInfo?[NSWorkspace.volumeURLUserInfoKey] as? URL
+                MainActor.assumeIsolated {
+                    guard let path = volume?.standardizedFileURL.path else { return }
+                    self?.disksUnmounted([path])
+                }
+            })
+    }
+
+    // MARK: Tabs that follow the disk
+
+    /// Disks just unmounted, by the folders they were mounted at: every window lets go of them (B-VIEW-173).
+    func disksUnmounted(_ mountPaths: Set<String>) {
+        guard !mountPaths.isEmpty else { return }
+        for group in groups where !group.isDestroyed {
+            group.disksUnmounted(mountPaths, homePath: home, volumeRoot: volumeRoot)
+        }
+    }
+
+    /// A file operation's progress, from whichever window ran it, as the original's `onWriteOperationProgress` reaches
+    /// every window: once one that renamed or moved folders has ended, every window's tabs follow them (B-VIEW-172).
+    /// The write coordinator sends every progress event here. Until it exists (P3-05; FTOperations runs no file
+    /// operation yet) nothing in the app renames or moves an item, so nothing calls this.
+    func writeOperationProgress(_ event: WriteOperationProgress) {
+        itemsMoved(ExplorerTabs.followedMoves(event))
+    }
+
+    /// Folders renamed or moved: every window's tabs follow them.
+    private func itemsMoved(_ moves: [PathMove]) {
+        guard !moves.isEmpty else { return }
+        for group in groups where !group.isDestroyed {
+            group.followMovedItems(moves)
+        }
     }
 
     // MARK: ExplorerWindowHost

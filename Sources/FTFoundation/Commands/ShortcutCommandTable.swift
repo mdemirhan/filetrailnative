@@ -45,6 +45,8 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case halfPageDown
     case newWindow
     case newTab
+    /// Not in the original's table: its Duplicate Tab is in the tab strip's menu only (DEVIATIONS D-001).
+    case duplicateTab
     case closeTab
     case reopenClosedTab
     case selectNextTab
@@ -153,6 +155,8 @@ extension ShortcutCommands {
             id: .newWindow, label: "New Window", group: .tabs, defaults: ["Cmd+N"], menuPath: "File > New Window"),
         ShortcutCommandDefinition(
             id: .newTab, label: "New Tab", group: .tabs, defaults: ["Cmd+T"], menuPath: "File > New Tab"),
+        ShortcutCommandDefinition(
+            id: .duplicateTab, label: "Duplicate Tab", group: .tabs, defaults: [], menuPath: "File > Duplicate Tab"),
         ShortcutCommandDefinition(
             id: .closeTab, label: "Close Tab", group: .tabs, defaults: ["Cmd+W"], menuPath: "File > Close Tab"),
         ShortcutCommandDefinition(

@@ -335,6 +335,60 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         select(target)
     }
 
+    // MARK: Tabs that follow the disk
+
+    /// A folder renamed or moved, by this window or another (`followMovedItems`): the tabs in the background showing it,
+    /// or a folder inside it, go along to its new place, history, tree root and all; the tab on screen reads it there.
+    func followMovedItems(_ moves: [PathMove]) {
+        guard !moves.isEmpty, !isDestroyed else { return }
+        let front = selected
+        for tab in tabs {
+            if tab === front {
+                tab.followOnScreen(moves)
+                continue
+            }
+            let snapshot = tab.snapshot
+            let followed = ExplorerTabs.followMovedItems(snapshot, moves)
+            if followed != snapshot { tab.takePlace(followed) }
+        }
+    }
+
+    /// Disks were unmounted (`closeTabsOnUnmountedDisks`): the tabs showing one close, as Finder's do, and Reopen
+    /// Closed Tab doesn't offer them; when they are all the window's tabs, the window closes. While the tabs can't
+    /// change (a sheet or an alert is open), the tabs in the background go Home instead, and the tab on screen opens
+    /// Home. `volumeRoot` says which disk a path is on.
+    func disksUnmounted(_ unmounted: Set<String>, homePath: String, volumeRoot: (String) -> String) {
+        guard !unmounted.isEmpty, !isDestroyed else { return }
+        func isGone(_ path: String) -> Bool { !path.isEmpty && unmounted.contains(volumeRoot(path)) }
+        let gone = tabs.filter { isGone($0.folder.path) || isGone($0.treeRootPath) }
+        guard !gone.isEmpty else { return }
+        let front = selected
+        if isBlocked {
+            for tab in tabs where tab !== front {
+                let snapshot = tab.snapshot
+                let left = ExplorerTabs.leaveUnmountedDisks(
+                    snapshot, unmounted: unmounted, homePath: homePath, volumeRoot: volumeRoot)
+                if left != snapshot { tab.takePlace(left) }
+            }
+            if let front, isGone(front.folder.path), !homePath.isEmpty {
+                front.go(to: URL(fileURLWithPath: homePath))
+            }
+            return
+        }
+        if gone.count == tabs.count {
+            closeAsCloseButton()
+            return
+        }
+        for tab in gone where tab !== front {
+            prepareToClose(tab, remember: false)
+            tab.window?.close()
+        }
+        if let front, gone.contains(where: { $0 === front }) {
+            prepareToClose(front, remember: false)
+            front.window?.close()
+        }
+    }
+
     // MARK: Windows
 
     /// New Window (⌘N) on the folder on screen, or Open in New Window on `path`, with this tab's view and tree root.
