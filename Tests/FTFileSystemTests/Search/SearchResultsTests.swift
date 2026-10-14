@@ -6,7 +6,7 @@ import Testing
 
 @testable import FTFileSystem
 
-private func result(_ path: String, kind: EntryKind = .file) -> SearchResultItem {
+private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> SearchResultItem {
     let name = String(path.split(separator: "/", omittingEmptySubsequences: false).last ?? "")
     let slash = path.lastIndex(of: "/")
     let parent = slash.map { String(path[..<$0]) }.flatMap { $0.isEmpty ? nil : $0 } ?? "/"
@@ -157,7 +157,7 @@ private struct SortInput: Codable {
         var path: String
         var name: String
         var `extension`: String
-        var kind: EntryKind
+        var kind: FTFileSystem.EntryKind
     }
     struct Folder: Codable {
         var path: String

@@ -43,7 +43,8 @@ private func demo(_ query: String = "app", mode: SearchPatternModePreference = .
 }
 
 private func item(
-    _ path: String, name: String, ext: String = "", kind: EntryKind = .file, hidden: Bool = false, parent: String,
+    _ path: String, name: String, ext: String = "", kind: FTFileSystem.EntryKind = .file, hidden: Bool = false,
+    parent: String,
     relative: String
 ) -> SearchResultItem {
     SearchResultItem(
