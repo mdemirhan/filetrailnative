@@ -1,0 +1,66 @@
+{
+  "name": "151-menu-folder-open-in-new-tab",
+  "description": "Open in New Tab chosen from a folder's context menu",
+  "features": [
+    "F-810",
+    "F-815"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "contextMenu",
+      "element": "list row",
+      "text": "components",
+      "choose": "Open in New Tab"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "expect",
+      "element": "tab",
+      "count": 2
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

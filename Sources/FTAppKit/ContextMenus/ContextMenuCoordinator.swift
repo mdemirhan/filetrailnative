@@ -136,7 +136,15 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     func contextMenuDidClose() {
         tab.folderChangesHeld = false
+        // The right-clicked row's ring goes with the menu.
+        tab.sidebarController.model.menuTarget = nil
         current = nil
+    }
+
+    func contextMenu(openedSubmenu id: ContextMenuActionID) {
+        #if DEBUG
+            AutomationSubmenuMarker.show(in: tab.window)
+        #endif
     }
 
     func contextMenu(setViewMode mode: ExplorerViewMode) {

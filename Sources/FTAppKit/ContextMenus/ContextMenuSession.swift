@@ -25,6 +25,9 @@ protocol ContextMenuResponder: AnyObject {
     func contextMenu(open paths: [String], with choice: OpenWithAction, kind: OpenWithKind?)
     func contextMenu(setViewMode mode: ExplorerViewMode)
     func contextMenu(sortBy field: SortByPreference)
+    /// An item with a submenu was chosen: the menu only opens it. (A capture scenario chooses it to look at the
+    /// submenu, which a native menu can't show in a capture.)
+    func contextMenu(openedSubmenu id: ContextMenuActionID)
     func contextMenuDidOpen()
     func contextMenuDidClose()
 }
@@ -163,8 +166,13 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
 
     @objc private func choose(_ item: NSMenuItem) {
         guard let raw = item.identifier?.rawValue else { return }
-        // The item with a submenu opens it; the alternate is the same item.
-        guard let id = ContextMenuActionID(rawValue: raw), !id.isSubmenu else { return }
+        guard let id = ContextMenuActionID(rawValue: raw) else { return }
+        // The item with a submenu opens it (a capture scenario "chooses" it to see the submenu); the alternate is the
+        // same item.
+        if id.isSubmenu {
+            responder?.contextMenu(openedSubmenu: id)
+            return
+        }
         responder?.contextMenu(perform: id, subject: request.subject)
     }
 

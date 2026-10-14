@@ -1,0 +1,78 @@
+{
+  "name": "156-toasts-three-stacked",
+  "description": "Three notifications stacked at the bottom right: Copy Path chosen from the menus of three files",
+  "features": [
+    "F-696",
+    "F-817"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "contextMenu",
+      "element": "list row",
+      "text": "Avatar.jsx",
+      "choose": "Copy Path"
+    },
+    {
+      "step": "contextMenu",
+      "element": "list row",
+      "text": "Toast.jsx",
+      "choose": "Copy Path"
+    },
+    {
+      "step": "contextMenu",
+      "element": "list row",
+      "text": "DatePicker.jsx",
+      "choose": "Copy Path"
+    },
+    {
+      "step": "expect",
+      "element": "toast",
+      "count": 3
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

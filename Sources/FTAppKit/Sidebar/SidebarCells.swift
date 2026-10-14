@@ -106,6 +106,7 @@ final class SidebarItemCell: NSTableCellView {
     private let treeRowTag = SidebarTagView()
     private let favoriteTag = SidebarTagView()
     private let selectedTag = SidebarTagView()
+    private let menuTargetTag = SidebarTagView()
     private let expandedTag = SidebarTagView()
     private let kindTag = SidebarTagView()
     private(set) var state: SidebarRowState?
@@ -134,11 +135,12 @@ final class SidebarItemCell: NSTableCellView {
         }
         favoriteTag.setAccessibilityIdentifier("sidebar.favorite")
         selectedTag.setAccessibilityIdentifier("sidebar.row.selected")
+        menuTargetTag.setAccessibilityIdentifier("sidebar.row.menuTarget")
         expandedTag.setAccessibilityIdentifier("sidebar.row.expanded")
-        for tag in [treeRowTag, favoriteTag, selectedTag, expandedTag, kindTag] { tag.source = label }
+        for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] { tag.source = label }
         for view in [
-            chevron, icon, label, badge, eject, dropBadge, dropLine, treeRowTag, favoriteTag, selectedTag, expandedTag,
-            kindTag,
+            chevron, icon, label, badge, eject, dropBadge, dropLine, treeRowTag, favoriteTag, selectedTag, menuTargetTag,
+            expandedTag, kindTag,
         ] as [NSView] {
             box.addSubview(view)
         }
@@ -303,6 +305,7 @@ final class SidebarItemCell: NSTableCellView {
         // Tags for the scenarios
         favoriteTag.isHidden = item.kind != .favorite
         selectedTag.isHidden = state.selection == .none && !state.isCurrentRow
+        menuTargetTag.isHidden = !state.menuTarget
         expandedTag.isHidden = !(item.canExpand && item.expanded)
         switch item.kind {
         case .filesystem: kindTag.setAccessibilityIdentifier("sidebar.folder")
@@ -407,7 +410,7 @@ final class SidebarItemCell: NSTableCellView {
                 y: position == .before ? y : rowHeight - layout.dropLineHeight - layout.dropLineOffset,
                 width: width - 2 * layout.dropLineInset, height: layout.dropLineHeight)
         }
-        for tag in [treeRowTag, favoriteTag, selectedTag, expandedTag, kindTag] { tag.frame = box.bounds }
+        for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] { tag.frame = box.bounds }
 
         // Notes under the row
         var noteY = rowHeight
