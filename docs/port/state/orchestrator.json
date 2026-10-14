@@ -2018,5 +2018,14 @@
     "on": false,
     "endedAt": "2026-10-14",
     "note": "lifted on user go; deferred checks moved to P0-14; GUI runs serialized with lockf gui.lock"
-  }
+  },
+  "openIssues": [
+    {
+      "at": "2026-10-14",
+      "seenIn": "W1-G P4-02 capture gate",
+      "issue": "Automation app hung after finishing scenario 02-list-components-dark: NSApp.terminate stuck in _shouldTerminate; applicationShouldTerminate returns .terminateLater and the QuitCoordinator Task never replied (AppDelegate.swift ~220, P4-01 code on main). Sample: AutomationRunner.finish -> terminate -> _shouldTerminate -> nextEventMatchingMask, idle 9+ min. Not every run hangs (01-light exited fine). tools/capture/run.sh has no per-scenario timeout, so a hang holds the GUI lock forever.",
+      "also": "A DiskImageMounter was launched ~50 min earlier during quiet mode (W1-F, likely P4-01 or P0-13 tests) and left running; killed by orchestrator.",
+      "owner": "check W1-G results; else new WP (quit hang + run.sh scenario timeout + find what launched DiskImageMounter)"
+    }
+  ]
 }
