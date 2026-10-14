@@ -462,7 +462,7 @@ B-DLG-261	DLG	A6, A9, A12, A15	copiesTheDetailsAndSaysSoFor1500Milliseconds		don
 B-DLG-262	DLG	A6, A9, A12, A15	linksToTheProjectAndOpensAcknowledgements		done
 B-DLG-263	DLG	A6, A9, A12, A15	closesWithEscape		done
 B-INFO-001	INFO	A8, A11			todo
-B-INFO-002	INFO	A8, A11			todo
+B-INFO-002	INFO	A8, A11		145-infopanel-folder-light	partial
 B-INFO-003	INFO	A8, A11			todo
 B-INFO-004	INFO	A8, A11			todo
 B-INFO-005	INFO	A8, A11			todo
@@ -484,58 +484,58 @@ B-INFO-020	INFO	A8, A11			todo
 B-INFO-021	INFO	A8, A11			todo
 B-INFO-022	INFO	A8, A11			todo
 B-INFO-023	INFO	A8, A11			todo
-B-INFO-024	INFO	A8, A11			todo
-B-INFO-025	INFO	A8, A11			todo
+B-INFO-024	INFO	A8, A11	pendingValuesKeepTheirRowsWithADash		done
+B-INFO-025	INFO	A8, A11	pendingValuesKeepTheirRowsWithADash		done
 B-INFO-026	INFO	A8, A11			todo
-B-INFO-027	INFO	A8, A11			todo
+B-INFO-027	INFO	A8, A11		143-infopanel-file-light, 147-infopanel-file-dark	partial
 B-INFO-028	INFO	A8, A11			todo
-B-INFO-029	INFO	A8, A11			todo
-B-INFO-030	INFO	A8, A11			todo
-B-INFO-031	INFO	A8, A11			todo
+B-INFO-029	INFO	A8, A11	aFilesRowsAreInTheDocumentedOrder	143-infopanel-file-light, 147-infopanel-file-dark	partial
+B-INFO-030	INFO	A8, A11	aFilesRowsAreInTheDocumentedOrder		done
+B-INFO-031	INFO	A8, A11	aFilesRowsAreInTheDocumentedOrder	143-infopanel-file-light	partial
 B-INFO-032	INFO	A8, A11			todo
 B-INFO-033	INFO	A8, A11			todo
-B-INFO-034	INFO	A8, A11			todo
-B-INFO-035	INFO	A8, A11			todo
-B-INFO-036	INFO	A8, A11			todo
-B-INFO-037	INFO	A8, A11			todo
+B-INFO-034	INFO	A8, A11	aFilesRowsAreInTheDocumentedOrder		done
+B-INFO-035	INFO	A8, A11	aFolderGetsTheFolderSizeCellAndAPackageToo		done
+B-INFO-036	INFO	A8, A11	aFolderGetsTheFolderSizeCellAndAPackageToo		done
+B-INFO-037	INFO	A8, A11	aFolderGetsTheFolderSizeCellAndAPackageToo	141-inforow-folder-light, 145-infopanel-folder-light	partial
 B-INFO-038	INFO	A8, A11			todo
 B-INFO-039	INFO	A8, A11			todo
 B-INFO-040	INFO	A8, A11			todo
-B-INFO-041	INFO	A8, A11			todo
-B-INFO-042	INFO	A8, A11			todo
-B-INFO-043	INFO	A8, A11			todo
-B-INFO-044	INFO	A8, A11			todo
-B-INFO-045	INFO	A8, A11			todo
+B-INFO-041	INFO	A8, A11	theFolderSizeLines	144-infopanel-folder-size-light	partial
+B-INFO-042	INFO	A8, A11		142-inforow-folder-size-light	partial
+B-INFO-043	INFO	A8, A11		142-inforow-folder-size-light, 144-infopanel-folder-size-light	partial
+B-INFO-044	INFO	A8, A11	aFolderGetsTheFolderSizeCellAndAPackageToo		done
+B-INFO-045	INFO	A8, A11	aFolderGetsTheFolderSizeCellAndAPackageToo		done
 B-INFO-046	INFO	A8, A11			todo
-B-INFO-047	INFO	A8, A11			todo
-B-INFO-048	INFO	A8, A11			todo
+B-INFO-047	INFO	A8, A11	aVolumeRootShowsCapacityAvailableAndUsed		done
+B-INFO-048	INFO	A8, A11	aVolumeRootShowsCapacityAvailableAndUsed		done
 B-INFO-049	INFO	A8, A11			todo
-B-INFO-050	INFO	A8, A11			todo
-B-INFO-051	INFO	A8, A11			todo
+B-INFO-050	INFO	A8, A11		146-infopanel-several-light	partial
+B-INFO-051	INFO	A8, A11	severalItemsAreSummedUp	146-infopanel-several-light	partial
 B-INFO-052	INFO	A8, A11			todo
 B-INFO-053	INFO	A8, A11			todo
-B-INFO-054	INFO	A8, A11			todo
-B-INFO-055	INFO	A8, A11			todo
-B-INFO-056	INFO	A8, A11			todo
+B-INFO-054	INFO	A8, A11	severalItemsAreSummedUp	146-infopanel-several-light	partial
+B-INFO-055	INFO	A8, A11	quickActionsDependOnTheItem		done
+B-INFO-056	INFO	A8, A11	quickActionsDependOnTheItem		done
 B-INFO-057	INFO	A8, A11			todo
 B-INFO-058	INFO	A8, A11			todo
-B-INFO-059	INFO	A8, A11			todo
-B-INFO-060	INFO	A8, A11			todo
+B-INFO-059	INFO	A8, A11		143-infopanel-file-light	partial
+B-INFO-060	INFO	A8, A11		149-infopanel-open-with-menu-light	partial
 B-INFO-061	INFO	A8, A11			todo
 B-INFO-062	INFO	A8, A11			todo
-B-INFO-063	INFO	A8, A11			todo
+B-INFO-063	INFO	A8, A11		149-infopanel-open-with-menu-light	partial
 B-INFO-064	INFO	A8, A11			todo
 B-INFO-065	INFO	A8, A11			todo
-B-INFO-066	INFO	A8, A11			todo
+B-INFO-066	INFO	A8, A11		139-inforow-one-item-light	partial
 B-INFO-067	INFO	A8, A11			todo
-B-INFO-068	INFO	A8, A11			todo
-B-INFO-069	INFO	A8, A11			todo
+B-INFO-068	INFO	A8, A11		141-inforow-folder-light	partial
+B-INFO-069	INFO	A8, A11	theInfoRowLeavesOutWhatIsNotKnown	139-inforow-one-item-light, 148-pathbar-inforow-dark	partial
 B-INFO-070	INFO	A8, A11			todo
-B-INFO-071	INFO	A8, A11			todo
-B-INFO-072	INFO	A8, A11			todo
-B-INFO-073	INFO	A8, A11			todo
-B-INFO-074	INFO	A8, A11			todo
-B-INFO-075	INFO	A8, A11			todo
+B-INFO-071	INFO	A8, A11	theInfoRowLeavesOutWhatIsNotKnown		done
+B-INFO-072	INFO	A8, A11		139-inforow-one-item-light	partial
+B-INFO-073	INFO	A8, A11	theInfoRowLeavesOutWhatIsNotKnown	141-inforow-folder-light	partial
+B-INFO-074	INFO	A8, A11		139-inforow-one-item-light	partial
+B-INFO-075	INFO	A8, A11	theInfoRowLeavesOutWhatIsNotKnown	140-inforow-several-light	partial
 B-INFO-076	INFO	A8, A11			todo
 B-INFO-077	INFO	A8, A11			todo
 B-INFO-078	INFO	A8, A11			todo
@@ -544,7 +544,7 @@ B-INFO-080	INFO	A8, A11			todo
 B-INFO-081	INFO	A8, A11			todo
 B-INFO-082	INFO	A8, A11			todo
 B-INFO-083	INFO	A8, A11			todo
-B-INFO-084	INFO	A8, A11			todo
+B-INFO-084	INFO	A8, A11		140-inforow-several-light	partial
 B-INFO-085	INFO	A8, A11			todo
 B-INFO-086	INFO	A8, A11			todo
 B-INFO-087	INFO	A8, A11			todo
@@ -552,8 +552,8 @@ B-INFO-088	INFO	A8, A11			todo
 B-INFO-089	INFO	A8, A11			todo
 B-INFO-090	INFO	A8, A11			todo
 B-INFO-091	INFO	A8, A11			todo
-B-INFO-092	INFO	A8, A11			todo
-B-INFO-093	INFO	A8, A11			todo
+B-INFO-092	INFO	A8, A11		135-pathbar-collapsed-light	partial
+B-INFO-093	INFO	A8, A11		135-pathbar-collapsed-light	partial
 B-INFO-094	INFO	A8, A11			todo
 B-INFO-095	INFO	A8, A11			todo
 B-INFO-096	INFO	A8, A11			todo
@@ -562,34 +562,34 @@ B-INFO-098	INFO	A8, A11			todo
 B-INFO-099	INFO	A8, A11			todo
 B-INFO-100	INFO	A8, A11			todo
 B-INFO-101	INFO	A8, A11			todo
-B-INFO-102	INFO	A8, A11			todo
+B-INFO-102	INFO	A8, A11		135-pathbar-collapsed-light, 148-pathbar-inforow-dark	partial
 B-INFO-103	INFO	A8, A11			todo
 B-INFO-104	INFO	A8, A11			todo
-B-INFO-105	INFO	A8, A11			todo
-B-INFO-106	INFO	A8, A11			todo
-B-INFO-107	INFO	A8, A11			todo
+B-INFO-105	INFO	A8, A11		135-pathbar-collapsed-light	partial
+B-INFO-106	INFO	A8, A11		136-pathbar-expanded-light	partial
+B-INFO-107	INFO	A8, A11		136-pathbar-expanded-light	partial
 B-INFO-108	INFO	A8, A11			todo
 B-INFO-109	INFO	A8, A11			todo
-B-INFO-110	INFO	A8, A11			todo
+B-INFO-110	INFO	A8, A11		137-pathbar-editor-suggestions-light	partial
 B-INFO-111	INFO	A8, A11			todo
-B-INFO-112	INFO	A8, A11			todo
+B-INFO-112	INFO	A8, A11		137-pathbar-editor-suggestions-light	partial
 B-INFO-113	INFO	A8, A11			todo
 B-INFO-114	INFO	A8, A11			todo
-B-INFO-115	INFO	A8, A11			todo
-B-INFO-116	INFO	A8, A11			todo
+B-INFO-115	INFO	A8, A11		137-pathbar-editor-suggestions-light	partial
+B-INFO-116	INFO	A8, A11		137-pathbar-editor-suggestions-light	partial
 B-INFO-117	INFO	A8, A11			todo
 B-INFO-118	INFO	A8, A11			todo
 B-INFO-119	INFO	A8, A11			todo
-B-INFO-120	INFO	A8, A11			todo
-B-INFO-121	INFO	A8, A11			todo
+B-INFO-120	INFO	A8, A11		138-pathbar-folder-menu-light	partial
+B-INFO-121	INFO	A8, A11		138-pathbar-folder-menu-light	partial
 B-INFO-122	INFO	A8, A11			todo
-B-INFO-123	INFO	A8, A11			todo
+B-INFO-123	INFO	A8, A11		138-pathbar-folder-menu-light	partial
 B-INFO-124	INFO	A8, A11			todo
-B-INFO-125	INFO	A8, A11			todo
+B-INFO-125	INFO	A8, A11	aLetterJumpsToTheNextFolderStartingWithItAndWraps		done
 B-INFO-126	INFO	A8, A11			todo
 B-INFO-127	INFO	A8, A11			todo
 B-INFO-128	INFO	A8, A11			todo
-B-INFO-129	INFO	A8, A11			todo
+B-INFO-129	INFO	A8, A11	menuListsAtMost300FoldersCenteredOnTheTickedOne		done
 B-INFO-130	INFO	A8, A11			todo
 B-INFO-131	INFO	A8, A11			todo
 B-INFO-132	INFO	A8, A11			todo
@@ -627,8 +627,8 @@ B-INFO-163	INFO	A8, A11			todo
 B-INFO-164	INFO	A8, A11			todo
 B-INFO-165	INFO	A8, A11			todo
 B-INFO-166	INFO	A8, A11			todo
-B-INFO-167	INFO	A8, A11			todo
-B-INFO-168	INFO	A8, A11			todo
+B-INFO-167	INFO	A8, A11	onlyAFolderInsideHomeIsMeasuredAutomatically		done
+B-INFO-168	INFO	A8, A11	onlyAFolderInsideHomeIsMeasuredAutomatically		done
 B-INFO-169	INFO	A8, A11			todo
 B-INFO-170	INFO	A8, A11			todo
 B-INFO-171	INFO	A8, A11			todo
@@ -652,11 +652,11 @@ B-INFO-188	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHid
 B-INFO-189	INFO	A8, A11	squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths, widensAPaneFromTheKeyboardAndKeepsThatWidth		partial
 B-INFO-190	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, hidesTheFolderTreeGivingItsRoomToTheListAndTheToolbar	52-tree-hidden	partial
 B-INFO-191	INFO	A8, A11			todo
-B-INFO-192	INFO	A8, A11			todo
-B-INFO-193	INFO	A8, A11			todo
+B-INFO-192	INFO	A8, A11	aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp		done
+B-INFO-193	INFO	A8, A11	aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp		done
 B-INFO-194	INFO	A8, A11			todo
 B-INFO-195	INFO	A8, A11			todo
-B-INFO-196	INFO	A8, A11			todo
+B-INFO-196	INFO	A8, A11	pendingValuesKeepTheirRowsWithADash		done
 B-INFO-197	INFO	A8, A11			todo
 B-INFO-198	INFO	A8, A11			todo
 B-INFO-199	INFO	A8, A11			todo
