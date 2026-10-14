@@ -121,7 +121,7 @@
                         .utf8))
             // Not from inside this task or a main-queue block: terminate waits in a nested event loop for the quit
             // coordinator's reply, a main-actor task that cannot run while the main queue is busy with this call.
-            RunLoop.main.perform(inModes: [.common]) { NSApp.terminate(nil) }
+            RunLoop.main.perform(inModes: [.common]) { MainActor.assumeIsolated { NSApp.terminate(nil) } }
         }
 
         // MARK: Watchdogs
