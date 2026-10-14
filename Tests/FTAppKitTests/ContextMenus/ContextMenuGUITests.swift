@@ -148,7 +148,8 @@ extension ExplorerWindowGUITests {
                 #expect(entry.image?.isTemplate == true)
             }
             let trash = try #require(item(menu, "Move to Trash"))
-            let color = try #require(trash.attributedTitle?.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor)
+            let color = try #require(
+                trash.attributedTitle?.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor)
             #expect(color.usingColorSpace(.sRGB)?.redComponent ?? 0 > 0.8)
             #expect(item(menu, "Open")?.attributedTitle == nil)
             await harness.close()
@@ -159,7 +160,8 @@ extension ExplorerWindowGUITests {
             let harness = try ExplorerHarness()
             let tab = try await opened(harness)
             let file = tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")])
-            #expect(item(file, "Copy")?.keyEquivalent == "c" && item(file, "Copy")?.keyEquivalentModifierMask == .command)
+            #expect(
+                item(file, "Copy")?.keyEquivalent == "c" && item(file, "Copy")?.keyEquivalentModifierMask == .command)
             #expect(item(file, "Move to Trash")?.keyEquivalent.isEmpty == false)
             // From the tree, Paste and Open in New Tab name the right-clicked folder, not the selected one: no badge.
             let row = SidebarContextMenuRequest(
@@ -255,7 +257,8 @@ extension ExplorerWindowGUITests {
             tab.contextMenus.opener = spy.opener
             let note = try entry(tab, "note.txt")
             let subject = ContextMenuSubject(
-                surface: .content, paths: [note.path], targetPath: note.path, entries: [CommandEntry(path: note.path, kind: .file)])
+                surface: .content, paths: [note.path], targetPath: note.path,
+                entries: [CommandEntry(path: note.path, kind: .file)])
             tab.contextMenus.contextMenu(perform: .showInFinder, subject: subject)
             tab.contextMenus.contextMenu(perform: .terminal, subject: subject)
             #expect(await waitUntil { spy.all.count == 2 })

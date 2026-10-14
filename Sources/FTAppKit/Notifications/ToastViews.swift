@@ -123,7 +123,8 @@ final class ToastCardView: NSView, ThemeApplying {
     /// each side. The detail is shortened when they do not fit; the title stays whole.
     func fittingSize(availableWidth: CGFloat) -> NSSize {
         let limit = min(metrics.maxWidth, Double(availableWidth) - metrics.windowMargin)
-        let chrome = 2 * metrics.borderWidth + metrics.paddingLeading + metrics.paddingTrailing + metrics.iconSize
+        let chrome =
+            2 * metrics.borderWidth + metrics.paddingLeading + metrics.paddingTrailing + metrics.iconSize
             + metrics.bodyGap
         let titleWidth = Double(title.naturalWidth)
         let detailWidth = detail.map { Double($0.naturalWidth) } ?? 0
@@ -141,7 +142,8 @@ final class ToastCardView: NSView, ThemeApplying {
         let body = max(metrics.iconSize, Double(lineHeight))
         let top = border + metrics.paddingTop
         var x = border + metrics.paddingLeading
-        icon.frame = NSRect(x: x, y: top + (body - metrics.iconSize) / 2, width: metrics.iconSize, height: metrics.iconSize)
+        icon.frame = NSRect(
+            x: x, y: top + (body - metrics.iconSize) / 2, width: metrics.iconSize, height: metrics.iconSize)
         x += metrics.iconSize + metrics.bodyGap
         let line = lineHeight
         let textY = top + (CGFloat(body) - line) / 2

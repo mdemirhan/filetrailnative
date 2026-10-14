@@ -68,7 +68,8 @@ enum ContextMenuGlyph {
             ]
         case .copy:
             shapes = [
-                .rect(x: 9, y: 9, width: 13, height: 13, radius: 2), .path("M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"),
+                .rect(x: 9, y: 9, width: 13, height: 13, radius: 2),
+                .path("M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"),
             ]
         case .cut:
             shapes = [
@@ -84,10 +85,13 @@ enum ContextMenuGlyph {
         case .move:
             shapes = [.path("M3 12h8M8 9l3 3-3 3M14 8h6l2 2v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2")]
         case .rename:
-            shapes = [.path("M5 5.5h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2zM8.5 9v6M7 9h3M7 15h3")]
+            shapes = [
+                .path("M5 5.5h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2zM8.5 9v6M7 9h3M7 15h3")
+            ]
         case .duplicate:
             shapes = [
-                .rect(x: 8, y: 8, width: 13, height: 13, radius: 2), .path("M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"),
+                .rect(x: 8, y: 8, width: 13, height: 13, radius: 2),
+                .path("M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"),
                 .path("M14.5 11.5v6M11.5 14.5h6"),
             ]
         case .newFolder:

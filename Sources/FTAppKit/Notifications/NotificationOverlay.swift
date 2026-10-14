@@ -143,8 +143,11 @@ final class NotificationOverlay: NSView {
             cardHeight = Double(size.height)
         }
         // The notifications stack upward from just above the card (or the bars), the newest at the bottom.
-        var y = bounds.height - CGFloat(BottomStack.offsetAboveBarsAndCard(
-            windowHeight: Double(bounds.height), barTops: barTops(), cardHeight: cardHeight))
+        var y =
+            bounds.height
+            - CGFloat(
+                BottomStack.offsetAboveBarsAndCard(
+                    windowHeight: Double(bounds.height), barTops: barTops(), cardHeight: cardHeight))
         for entry in toasts.entries.reversed() {
             guard let view = cards[entry.id] else { continue }
             let size = view.fittingSize(availableWidth: bounds.width)

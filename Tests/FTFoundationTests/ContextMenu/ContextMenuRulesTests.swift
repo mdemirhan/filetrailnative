@@ -9,7 +9,8 @@ struct ContextMenuRulesTests {
     static let trash = "/Users/me/.Trash"
 
     func world(
-        current: String = "/Users/me/Documents", search: Bool = false, favorites: [String] = [], trashEmpty: Bool? = nil,
+        current: String = "/Users/me/Documents", search: Bool = false, favorites: [String] = [],
+        trashEmpty: Bool? = nil,
         locked: Bool = false, canPaste: Bool = false, pasteDestination: Bool = false
     ) -> ContextMenuWorld {
         ContextMenuWorld(
@@ -70,7 +71,8 @@ struct ContextMenuRulesTests {
         let file = hidden(subject(.content, [("/a/b.txt", .file)]), world(pasteDestination: true))
         #expect(file.contains(.paste) && file.contains(.newFolder))
         #expect(file.contains(.openInNewTab) && file.contains(.openInNewWindow))
-        let two = hidden(subject(.content, [("/a/F", .directory), ("/a/G", .directory)]), world(pasteDestination: true))
+        let two = hidden(
+            subject(.content, [("/a/F", .directory), ("/a/G", .directory)]), world(pasteDestination: true))
         #expect(two.contains(.paste) && two.contains(.newFolder) && two.contains(.openInNewTab))
     }
 
@@ -78,8 +80,9 @@ struct ContextMenuRulesTests {
     @Test func whileAWriteRunsTheMenuLeavesOutWhatWouldStartAnotherButPasteIsOnlyDimmed() {
         let folder = subject(.content, [("/a/Folder", .directory)])
         let locked = hidden(folder, world(locked: true, pasteDestination: true))
-        for action in [ContextMenuActionID.move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash]
-        {
+        for action in [
+            ContextMenuActionID.move, .rename, .duplicate, .newFolder, .trash, .deleteImmediately, .emptyTrash,
+        ] {
             #expect(locked.contains(action), "\(action)")
         }
         #expect(!locked.contains(.paste))
@@ -105,7 +108,8 @@ struct ContextMenuRulesTests {
     @Test func theFavoriteToggleReadsAddOrRemoveAndIsLeftOutWhereItDoesNotApply() {
         let folder = subject(.content, [("/a/Folder", .directory)])
         #expect(ContextMenuRules.favoriteToggleLabel(folder, world()) == "Add to Favorites")
-        #expect(ContextMenuRules.favoriteToggleLabel(folder, world(favorites: ["/a/Folder"])) == "Remove from Favorites")
+        #expect(
+            ContextMenuRules.favoriteToggleLabel(folder, world(favorites: ["/a/Folder"])) == "Remove from Favorites")
         // A file, several items, search results and the background have none.
         #expect(ContextMenuRules.favoriteToggleLabel(subject(.content, [("/a/b.txt", .file)]), world()) == nil)
         #expect(
@@ -119,7 +123,8 @@ struct ContextMenuRulesTests {
         #expect(ContextMenuRules.favoriteToggleLabel(trash, world(favorites: [Self.trash])) == "Remove from Favorites")
         // A favorite row offers to remove it.
         let favorite = subject(.favorite, [("/a/Folder", .directory)])
-        #expect(ContextMenuRules.favoriteToggleLabel(favorite, world(favorites: ["/a/Folder"])) == "Remove from Favorites")
+        #expect(
+            ContextMenuRules.favoriteToggleLabel(favorite, world(favorites: ["/a/Folder"])) == "Remove from Favorites")
         #expect(ContextMenuRules.favoriteToggleLabel(favorite, world()) == "Add to Favorites")
         // A search result never does.
         #expect(
@@ -149,7 +154,8 @@ struct ContextMenuRulesTests {
                 "Open", "Open With", "Quick Look", "Edit in TextEdit", "Show Info", "Cut", "Copy", "Copy Path",
                 "Rename", "Duplicate", "Move to…", "Open in Terminal", "Show in Finder", "Move to Trash",
             ])
-        let folder = labels(subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))
+        let folder = labels(
+            subject(.content, [("/a/F", .directory)]), world(favorites: ["/a/F"], pasteDestination: true))
         #expect(
             folder == [
                 "Open", "Open in New Tab", "Open in New Window", "Open With", "Quick Look", "Show Info",
@@ -189,7 +195,9 @@ struct ContextMenuRulesTests {
         #expect(!result.contains(.deleteImmediately))
         // The Trash itself is only emptied, and stays where it is.
         let theTrash = hidden(subject(.treeFolder, [(Self.trash, .directory)]), world())
-        for action in [ContextMenuActionID.deleteImmediately, .cut, .move, .rename] { #expect(theTrash.contains(action)) }
+        for action in [ContextMenuActionID.deleteImmediately, .cut, .move, .rename] {
+            #expect(theTrash.contains(action))
+        }
     }
 
     // F-813
@@ -247,8 +255,10 @@ struct ContextMenuRulesTests {
         #expect(ContextMenuRules.pasteDestination(folder, world(search: true), clipboardSourcePaths: []) == nil)
         // The background pastes into the folder on screen, the sidebar into its row, and nothing into the Trash.
         let background = subject(.background, [], scope: .background)
-        #expect(ContextMenuRules.pasteDestination(background, world(), clipboardSourcePaths: []) == "/Users/me/Documents")
-        #expect(ContextMenuRules.pasteDestination(background, world(current: Self.trash), clipboardSourcePaths: []) == nil)
+        #expect(
+            ContextMenuRules.pasteDestination(background, world(), clipboardSourcePaths: []) == "/Users/me/Documents")
+        #expect(
+            ContextMenuRules.pasteDestination(background, world(current: Self.trash), clipboardSourcePaths: []) == nil)
         let tree = subject(.treeFolder, [("/a/Tree", .directory)])
         #expect(ContextMenuRules.pasteDestination(tree, world(), clipboardSourcePaths: ["/a/Tree"]) == "/a/Tree")
     }

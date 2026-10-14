@@ -51,6 +51,14 @@
     {
       "step": "key",
       "key": "Escape"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
     }
   ]
 }

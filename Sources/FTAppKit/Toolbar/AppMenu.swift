@@ -66,7 +66,8 @@ final class AppMenuView: NSView {
     var onChoose: (Int) -> Void = { _ in }
 
     init(
-        items: [AppMenuItem], style: AppMenuStyle, identifier: String, rowIdentifier: String, minWidth: Double = DesignTokens.menu.minWidth,
+        items: [AppMenuItem], style: AppMenuStyle, identifier: String, rowIdentifier: String,
+        minWidth: Double = DesignTokens.menu.minWidth,
         maxWidth: Double? = nil
     ) {
         self.items = items

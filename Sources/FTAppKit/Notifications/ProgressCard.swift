@@ -115,7 +115,10 @@ final class SmallPushButton: TextControl {
             edge.lineWidth = CGFloat(layer.spread)
             edge.stroke()
         }
-        if isHovering { NSColor(palette.bgHover).setFill(); shape.fill() }
+        if isHovering {
+            NSColor(palette.bgHover).setFill()
+            shape.fill()
+        }
         if isPressed {
             NSColor.black.withAlphaComponent(CGFloat(1 - palette.pushButtonPressed)).setFill()
             shape.fill()
@@ -156,8 +159,10 @@ final class ProgressTrackView: NSView, ThemeApplying {
         let width = bounds.width * CGFloat(min(1, max(0, fraction)))
         guard width > 0 else { return }
         NSColor(theme.accent.solid).setFill()
-        NSBezierPath(roundedRect: NSRect(x: 0, y: 0, width: width, height: bounds.height), xRadius: radius, yRadius: radius)
-            .fill()
+        NSBezierPath(
+            roundedRect: NSRect(x: 0, y: 0, width: width, height: bounds.height), xRadius: radius, yRadius: radius
+        )
+        .fill()
     }
 }
 
@@ -178,7 +183,9 @@ final class ProgressCardView: NSView, ThemeApplying {
 
     private var metrics: ProgressCardLayout { DesignTokens.progressCard }
 
-    private static func styles(_ theme: Theme) -> (title: TextStyle, percent: TextStyle, small: TextStyle, value: TextStyle) {
+    private static func styles(_ theme: Theme) -> (
+        title: TextStyle, percent: TextStyle, small: TextStyle, value: TextStyle
+    ) {
         let scale = DesignTokens.typeScale
         return (
             TextStyle(font: ThemeFonts.sans(scale.body, .semibold), color: { $0.palette.textPrimary }),
@@ -246,7 +253,8 @@ final class ProgressCardView: NSView, ThemeApplying {
         let line = title.height(forWidth: 10_000)
         let small = detailLabel.height(forWidth: 10_000)
         let footer = max(small, CGFloat(metrics.stopHeight))
-        let height = 2 * metrics.borderWidth + metrics.paddingTop + metrics.paddingBottom + Double(line)
+        let height =
+            2 * metrics.borderWidth + metrics.paddingTop + metrics.paddingBottom + Double(line)
             + 3 * metrics.rowGap + metrics.trackHeight + Double(small) + Double(footer)
         return NSSize(width: width, height: height)
     }

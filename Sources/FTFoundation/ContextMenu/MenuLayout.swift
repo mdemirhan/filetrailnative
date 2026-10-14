@@ -57,7 +57,8 @@ public struct ToastLayout: Equatable, Sendable {
     static func make() -> ToastLayout {
         ToastLayout(
             rightInset: 12, maxWidth: 420, windowMargin: 24, stackGap: 6,
-            paddingTop: 6, paddingLeading: 10, paddingBottom: 6, paddingTrailing: 14, bodyGap: 8, iconSize: 18, borderWidth: 0.5,
+            paddingTop: 6, paddingLeading: 10, paddingBottom: 6, paddingTrailing: 14, bodyGap: 8, iconSize: 18,
+            borderWidth: 0.5,
             slideDistance: 8, iconSignStrokeWidth: 1.6)
     }
 }
@@ -130,7 +131,8 @@ public struct TooltipLayout: Equatable, Sendable {
     public var lineHeight: Double
 
     static func make() -> TooltipLayout {
-        TooltipLayout(paddingTop: 3, paddingLeading: 8, paddingBottom: 3, paddingTrailing: 8, maxWidth: 420, lineHeight: 1.35)
+        TooltipLayout(
+            paddingTop: 3, paddingLeading: 8, paddingBottom: 3, paddingTrailing: 8, maxWidth: 420, lineHeight: 1.35)
     }
 }
 

@@ -46,7 +46,8 @@ struct ContextMenuGoldenTests {
     static func context(_ node: JSONNode?) -> ShortcutContext {
         guard case .object(let members) = node else { return ShortcutContext() }
         return ShortcutContext(
-            actionNoticeOpen: flag(members["actionNoticeOpen"]), copyPasteModalOpen: flag(members["copyPasteModalOpen"]),
+            actionNoticeOpen: flag(members["actionNoticeOpen"]),
+            copyPasteModalOpen: flag(members["copyPasteModalOpen"]),
             focusedPane: string(members["focusedPane"]).flatMap { FocusedPane(rawValue: $0) },
             locationSheetOpen: flag(members["locationSheetOpen"]),
             mainView: string(members["mainView"]).flatMap { MainView(rawValue: $0) } ?? .explorer,

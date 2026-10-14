@@ -139,7 +139,8 @@ final class SidebarItemCell: NSTableCellView {
         expandedTag.setAccessibilityIdentifier("sidebar.row.expanded")
         for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] { tag.source = label }
         for view in [
-            chevron, icon, label, badge, eject, dropBadge, dropLine, treeRowTag, favoriteTag, selectedTag, menuTargetTag,
+            chevron, icon, label, badge, eject, dropBadge, dropLine, treeRowTag, favoriteTag, selectedTag,
+            menuTargetTag,
             expandedTag, kindTag,
         ] as [NSView] {
             box.addSubview(view)
@@ -410,7 +411,9 @@ final class SidebarItemCell: NSTableCellView {
                 y: position == .before ? y : rowHeight - layout.dropLineHeight - layout.dropLineOffset,
                 width: width - 2 * layout.dropLineInset, height: layout.dropLineHeight)
         }
-        for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] { tag.frame = box.bounds }
+        for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] {
+            tag.frame = box.bounds
+        }
 
         // Notes under the row
         var noteY = rowHeight

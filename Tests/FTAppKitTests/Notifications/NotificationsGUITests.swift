@@ -163,7 +163,9 @@ extension ExplorerWindowGUITests {
             func text(_ id: String) -> String? {
                 var found: String?
                 func walk(_ view: NSView) {
-                    if view.accessibilityIdentifier() == id, let field = view as? NSTextField { found = field.stringValue }
+                    if view.accessibilityIdentifier() == id, let field = view as? NSTextField {
+                        found = field.stringValue
+                    }
                     view.subviews.forEach(walk)
                 }
                 walk(card)
@@ -217,7 +219,8 @@ extension ExplorerWindowGUITests {
                 guard let window = tab.window,
                     let event = NSEvent.keyEvent(
                         with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
-                        windowNumber: window.windowNumber, context: nil, characters: " ", charactersIgnoringModifiers: " ",
+                        windowNumber: window.windowNumber, context: nil, characters: " ",
+                        charactersIgnoringModifiers: " ",
                         isARepeat: false, keyCode: 49)
                 else { return }
                 window.sendEvent(event)

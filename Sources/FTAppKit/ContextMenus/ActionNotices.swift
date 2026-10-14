@@ -16,7 +16,8 @@ enum ActionNoticeText {
     /// `createOpenItemLimitMessage`.
     static func openItemLimit(_ action: String, selected: Int, limit: Int) -> String {
         let verb = action == "Open" ? "opens" : "edits"
-        return "File Trail \(verb) up to \(limit) item\(limit == 1 ? "" : "s") at a time, and \(selected) are selected. You can change this in Settings."
+        return
+            "File Trail \(verb) up to \(limit) item\(limit == 1 ? "" : "s") at a time, and \(selected) are selected. You can change this in Settings."
     }
 
     static func alwaysOpenWithTitle(appName: String) -> String {
@@ -25,7 +26,8 @@ enum ActionNoticeText {
 
     static func alwaysOpenWithMessage(kindName: String?) -> String {
         if let kindName, !kindName.isEmpty {
-            return "This change will apply to every “\(kindName)” file, opened from File Trail, Finder or any other app."
+            return
+                "This change will apply to every “\(kindName)” file, opened from File Trail, Finder or any other app."
         }
         return "This change will apply to every file of this kind, opened from File Trail, Finder or any other app."
     }

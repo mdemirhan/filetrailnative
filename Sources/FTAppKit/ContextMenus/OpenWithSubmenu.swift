@@ -57,7 +57,8 @@ final class OpenWithLookupModel {
             case .separator:
                 menu.addItem(.separator())
             case .action(let action):
-                let row = NSMenuItem(title: action.label, action: #selector(OpenWithSubmenuDelegate.choose(_:)), keyEquivalent: "")
+                let row = NSMenuItem(
+                    title: action.label, action: #selector(OpenWithSubmenuDelegate.choose(_:)), keyEquivalent: "")
                 row.target = menu.delegate
                 row.representedObject = OpenWithChoice(action: action)
                 if case .application(_, _, let appPath, _, _) = action {

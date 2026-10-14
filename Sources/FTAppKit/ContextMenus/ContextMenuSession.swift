@@ -79,7 +79,8 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 entry.image = ContextMenuGlyph.image(icon)
                 if destructive {
                     entry.attributedTitle = NSAttributedString(
-                        string: label, attributes: [.foregroundColor: ChromeColors.color(palette.contextMenuDestructive)])
+                        string: label,
+                        attributes: [.foregroundColor: ChromeColors.color(palette.contextMenuDestructive)])
                 }
                 if hasSubmenu {
                     attachSubmenu(id, to: entry)
@@ -129,7 +130,8 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         case .sortBy:
             let submenu = NSMenu(title: entry.title)
             for field in SortByPreference.menuOrder {
-                let item = NSMenuItem(title: Self.sortLabel(field), action: #selector(chooseSort(_:)), keyEquivalent: "")
+                let item = NSMenuItem(
+                    title: Self.sortLabel(field), action: #selector(chooseSort(_:)), keyEquivalent: "")
                 item.target = self
                 item.representedObject = field.rawValue
                 item.state = request.sortBy == field ? .on : .off

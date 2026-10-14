@@ -128,8 +128,9 @@ public enum ContextMenuRules {
 
     /// `contextMenuHiddenActionIds`: a right-click menu lists only what can be done to its items, there and then, as
     /// Apple asks of context menus and Finder does; anything else is left out rather than dimmed.
-    public static func hiddenActions(_ subject: ContextMenuSubject, _ world: ContextMenuWorld) -> Set<ContextMenuActionID>
-    {
+    public static func hiddenActions(_ subject: ContextMenuSubject, _ world: ContextMenuWorld) -> Set<
+        ContextMenuActionID
+    > {
         var hidden = Set<ContextMenuActionID>()
         let surface = subject.surface
         let entries = subject.entries

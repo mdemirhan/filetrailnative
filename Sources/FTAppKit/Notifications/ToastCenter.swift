@@ -68,10 +68,13 @@ final class ToastCenter {
             timers[entry.id]?.cancel.cancel()
             let delay = max(0, entry.expiresAt - now()) / 1000
             let id = entry.id
-            timers[id] = (entry.expiresAt, schedule(delay) { [weak self] in
-                self?.timers[id] = nil
-                self?.dismiss(id)
-            })
+            timers[id] = (
+                entry.expiresAt,
+                schedule(delay) { [weak self] in
+                    self?.timers[id] = nil
+                    self?.dismiss(id)
+                }
+            )
         }
     }
 }

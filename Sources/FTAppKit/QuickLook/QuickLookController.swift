@@ -42,7 +42,9 @@ final class SystemQuickLookPanel: QuickLookPanelControlling {
 /// Quick Look: the system's preview panel for one item (the original previews a single file, PLAN.md §3.3), opened
 /// with Space, the menu and the Info panel's button, zooming out of the item's row.
 @MainActor
-final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSource, @preconcurrency QLPreviewPanelDelegate {
+final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSource,
+    @preconcurrency QLPreviewPanelDelegate
+{
     static let shared = QuickLookController()
 
     /// The item the panel previews.
@@ -112,7 +114,8 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     }
 
     func previewPanel(
-        _ panel: QLPreviewPanel!, transitionImageFor item: (any QLPreviewItem)!, contentRect: UnsafeMutablePointer<NSRect>!
+        _ panel: QLPreviewPanel!, transitionImageFor item: (any QLPreviewItem)!,
+        contentRect: UnsafeMutablePointer<NSRect>!
     ) -> Any! {
         guard let url else { return nil }
         return NSWorkspace.shared.icon(forFile: url.path)

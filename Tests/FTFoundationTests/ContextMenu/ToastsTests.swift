@@ -98,7 +98,8 @@ struct ProgressCardTextTests {
 
     @Test func theCardNamesTheItemItIsOnAndHowManyAreDone() {
         let text = ProgressCardText(
-            state(.copyTo, done: 2, total: 1_204, bytes: 1_200_000_000, totalBytes: 3_000_000_000, current: "/a/b/c.txt"),
+            state(
+                .copyTo, done: 2, total: 1_204, bytes: 1_200_000_000, totalBytes: 3_000_000_000, current: "/a/b/c.txt"),
             currentPath: "/folder")
         #expect(text.title == "Copying…")
         #expect(text.metaStart == "2 of 1,204 items")
