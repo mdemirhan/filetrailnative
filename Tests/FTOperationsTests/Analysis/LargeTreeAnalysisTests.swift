@@ -10,7 +10,7 @@ import os
 
 /// A disk in memory that looks items up by their exact path: the mock that folds names scans every item for a name
 /// it doesn't have, which is far too slow for this many.
-private final class LargeTreeFileSystem: AnalysisFileSystem, @unchecked Sendable {
+private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sendable {
     private struct Node {
         var isDirectory: Bool
         var ino: UInt64

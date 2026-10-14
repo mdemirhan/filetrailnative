@@ -151,7 +151,9 @@ public struct ReferenceReplayEngine: ExecEngine, ExecAnalysisEngine {
 public enum ExecHarness {
     public typealias Case = GoldenCase<ExecScenario, JSONValue>
 
-    public static let executionSuites = ["exec-copy", "exec-cut", "exec-runtime", "exec-stop", "exec-crash"]
+    public static let executionSuites = [
+        "exec-copy", "exec-cut", "exec-runtime", "exec-stop", "exec-crash", "exec-volumes",
+    ]
     public static let analysisSuites = ["analysis-cases", "analysis-random", "analysis-volumes"]
 
     public static func cases(suite: String, in filePath: String = #filePath) throws -> [Case] {

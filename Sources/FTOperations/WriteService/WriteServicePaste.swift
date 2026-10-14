@@ -1,5 +1,6 @@
 // Port of startCopyPaste and executeActiveOperation (packages/core/src/fs/writeService.ts): the write slot a paste
-// claims, and the service's own events around it. The paste itself is `WriteServiceDependencies.executeCopyPaste`.
+// claims, the service's own events around it, and the paste itself (`executeCopyPasteFromAnalysis`, unless
+// `WriteServiceDependencies.executeCopyPaste` stands in for it).
 import FTFoundation
 import Foundation
 
@@ -14,15 +15,28 @@ public struct CopyPasteExecution: Sendable {
     public var signal: StopSignal
     /// Sends a progress event to the service's listeners.
     public var emit: @Sendable (CopyPasteProgressEvent) -> Void
+    public var fileSystem: any WriteServiceFileSystem
+    public var writeJournal: (any WriteJournal)?
+    public var now: @Sendable () -> Date
+    /// Registers a question (before the event announcing it goes out) and returns its answer to come.
+    public var requestResolution: @Sendable (CopyPasteRuntimeConflict) -> RuntimeAnswer
+    /// An answer given for the rest of the operation that suits this conflict, or nil.
+    public var autoResolve: @Sendable (CopyPasteRuntimeConflict) -> CopyPasteChoice?
 }
 
 /// Runs a paste (`executeCopyPasteFromAnalysis`): its events go out through `emit`, the last with the result.
 /// Throwing makes the service report the whole paste as failed (or cancelled, once stopped).
 public typealias CopyPasteExecutor = @Sendable (CopyPasteExecution) async throws -> Void
 
-/// Until the engine is plugged in, every paste fails as a whole, the way one that throws does.
-let unavailableCopyPasteExecutor: CopyPasteExecutor = { _ in
-    throw OperationError("Pasting isn't available yet.")
+/// The engine itself.
+let engineCopyPasteExecutor: CopyPasteExecutor = { execution in
+    await executeCopyPasteFromAnalysis(
+        CopyPasteRun(
+            operationId: execution.operationId, report: execution.report, mode: execution.report.mode,
+            policy: execution.policy, overrides: execution.overrides ?? [], fileSystem: execution.fileSystem,
+            now: execution.now, signal: execution.signal, resolvedNodes: execution.resolvedNodes,
+            emit: execution.emit, requestResolution: execution.requestResolution,
+            autoResolve: execution.autoResolve, writeJournal: execution.writeJournal))
 }
 
 extension WriteService {
@@ -64,6 +78,8 @@ extension WriteService {
     {
         defer {
             state.withLock { state in
+                state.pendingResolutions[operationId] = nil
+                state.standingResolutions[operationId] = nil
                 state.signals[operationId] = nil
                 state.analysisJobs[request.analysisId] = nil
                 if state.activeOperationId == operationId {
@@ -87,9 +103,14 @@ extension WriteService {
                 CopyPasteExecution(
                     operationId: operationId, analysisId: request.analysisId, report: report, policy: request.policy,
                     overrides: request.overrides, resolvedNodes: resolvedNodes, signal: signal,
-                    emit: { [weak self] in self?.emit($0) }))
+                    emit: { [weak self] in self?.emit($0) }, fileSystem: fileSystem, writeJournal: writeJournal,
+                    now: now,
+                    requestResolution: { [weak self] conflict in
+                        self?.registerQuestion(operationId, conflict) ?? .immediate(nil)
+                    },
+                    autoResolve: { [weak self] conflict in self?.standingAnswer(operationId, conflict) }))
         } catch {
-            emit(failureEvent(operationId, request, error: error, cancelled: error is StopError || signal.isStopped))
+            emit(failureEvent(operationId, request, error: error, cancelled: isAbortError(error) || signal.isStopped))
         }
     }
 

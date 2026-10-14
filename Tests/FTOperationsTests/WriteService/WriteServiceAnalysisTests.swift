@@ -225,7 +225,7 @@ struct WriteServiceAnalysisTests {
 }
 
 /// Port of createMockFileSystem (packages/core/src/fs/writeService.test.ts): items by path, with no ids or dates.
-private struct PathSetFileSystem: AnalysisFileSystem {
+private struct PathSetFileSystem: ReadOnlyWriteFileSystem {
     var existingPaths: Set<String>
     var directoryPaths: Set<String> = []
     var fileSizes: [String: Int64] = [:]
@@ -273,7 +273,7 @@ struct WriteServiceReviewTests {
 
     // T-8ccc2f06 F-241
     @Test func staysUsableAfterBeingAskedToStartAnUnknownAnalysis() throws {
-        let service = WriteService(.init(fileSystem: PosixFileSystem()))
+        let service = WriteService(.init(fileSystem: NativeWriteFileSystem()))
         #expect(
             message {
                 _ = try service.startCopyPaste(
