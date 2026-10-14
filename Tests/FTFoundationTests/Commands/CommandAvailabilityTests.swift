@@ -1,4 +1,5 @@
 // Port of apps/desktop/src/renderer/lib/rendererCommandAvailability.test.ts
+import FTTestSupport
 import Foundation
 import Testing
 
