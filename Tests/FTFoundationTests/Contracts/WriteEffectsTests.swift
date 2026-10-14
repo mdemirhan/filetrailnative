@@ -156,11 +156,13 @@ struct WriteEffectsTests {
     @Test func answersForManyPathsAgainstManyChangesQuickly() {
         let changed = (0..<5_000).map { "/Users/demo/Projects/p\($0 % 50)/src/file\($0).ts" }
         let cached = (0..<50_000).map { "/Users/demo/Library/Caches/c\($0 % 500)/d\($0)/e" }
-        let started = Date()
-        let matcher = ChangeMatcher(changedPaths: changed)
-        let affected = cached.filter { matcher.isAffected($0) }
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (affected, seconds) = CPUTime.measureThread {
+            let matcher = ChangeMatcher(changedPaths: changed)
+            return cached.filter { matcher.isAffected($0) }
+        }
         // Well under 100 ms on a laptop; the bound only catches going back to every pair.
-        #expect(Date().timeIntervalSince(started) < 2)
+        #expect(seconds < 2)
         #expect(affected.isEmpty)
     }
 

@@ -1,3 +1,4 @@
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -212,10 +213,12 @@ struct ResponseCacheTests {
             _ = await cache.metadata(for: paths) { $0.map(detail) }
         }
         for _ in 0..<10 { await batch() }
-        let started = ContinuousClock.now
-        for _ in 0..<200 { await batch() }
+        // CPU time of the process, not wall time, so waiting for a turn on a busy machine does not fail it.
+        let (_, seconds) = await CPUTime.measureProcess {
+            for _ in 0..<200 { await batch() }
+        }
         // A few ms on a laptop; the bound only catches looking through all of them for each.
-        #expect(started.duration(to: .now) < .seconds(1))
+        #expect(seconds < 1)
         #expect(cache.sizes.directoryMetadata == 5_000)
     }
 
