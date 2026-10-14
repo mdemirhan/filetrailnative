@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T11:39:30+00:00",
+  "updatedAt": "2026-10-14T11:45:39+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "W2-A planned, NOT launched: waiting for user direction on the wave-2 briefs",
+  "nextAction": "Running W2-A P3-01+P4-03+P5-01 (all 18 wave-2 briefs reviewed). Plan in wavePlan.2",
   "pause": {
     "requested": false,
     "reason": null,
@@ -522,14 +522,14 @@
         "P4-03",
         "P5-01"
       ],
-      "status": "planned",
+      "status": "running",
       "runId": null,
       "estimatedAgents": 15,
       "meterBefore": {
-        "weeklyPct": 15,
-        "fiveHourPct": 18
+        "weeklyPct": 16,
+        "fiveHourPct": 3
       },
-      "startedAt": "2026-10-14T11:39:23+00:00"
+      "startedAt": "2026-10-14T11:45:39+00:00"
     }
   },
   "wps": {
@@ -1269,7 +1269,7 @@
         "P1-01",
         "P2-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P3-01",
       "headSha": null,
       "attempts": 0,
@@ -1412,8 +1412,9 @@
       "risk": "high",
       "model": "opus",
       "depends": [
+        "P2-05",
         "P3-05",
-        "P2-05"
+        "P5-05"
       ],
       "status": "todo",
       "branch": "port/P3-06",
@@ -1651,7 +1652,7 @@
         "P4-01",
         "P0-06"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P4-03",
       "headSha": null,
       "attempts": 0,
@@ -1672,14 +1673,14 @@
       "phase": "P5",
       "wave": 2,
       "risk": "medium",
-      "model": "sonnet",
+      "model": "opus",
       "depends": [
         "P0-06",
         "P0-10",
         "P4-01",
         "P4-02"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P5-01",
       "headSha": null,
       "attempts": 0,
@@ -1721,7 +1722,8 @@
       "gate": [
         "scripts/ci.sh",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
-        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --acceptance acceptance/a02-folder-tree acceptance/a16-favorites"
       ],
       "lenses": [
         "parity",
@@ -1732,7 +1734,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
+        "From brief review: the layoutTokens.test.ts row \"pages the sidebar tree by the row heights\" is sidebar behavior and yours."
       ]
     },
     "P5-03": {
@@ -1742,8 +1745,9 @@
       "risk": "medium",
       "model": "sonnet",
       "depends": [
-        "P5-01",
-        "P2-01"
+        "P2-01",
+        "P4-03",
+        "P5-01"
       ],
       "status": "todo",
       "branch": "port/P5-03",
@@ -1776,8 +1780,9 @@
       "risk": "medium",
       "model": "sonnet",
       "depends": [
+        "P2-04",
         "P5-03",
-        "P2-04"
+        "P5-05"
       ],
       "status": "todo",
       "branch": "port/P5-04",
@@ -1831,7 +1836,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
+        "From brief review: the selection, keyboard and rename cases of components/ContentPane.test.tsx are yours (P5-03 takes the List and shell cases, P5-04 Icons and Compact List)."
       ]
     },
     "P5-06": {
@@ -1841,7 +1847,8 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [
-        "P5-01"
+        "P5-01",
+        "P5-03"
       ],
       "status": "todo",
       "branch": "port/P5-06",
@@ -1850,7 +1857,8 @@
       "gate": [
         "scripts/ci.sh",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
-        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --acceptance acceptance/a08-path-bar-history acceptance/a11-folder-sizes"
       ],
       "lenses": [],
       "summary": null,
@@ -1868,8 +1876,10 @@
       "risk": "medium",
       "model": "sonnet",
       "depends": [
+        "P2-06",
         "P5-03",
-        "P2-06"
+        "P5-04",
+        "P5-05"
       ],
       "status": "todo",
       "branch": "port/P5-07",
@@ -1902,8 +1912,9 @@
       "risk": "medium",
       "model": "opus",
       "depends": [
+        "P3-05",
         "P5-05",
-        "P3-05"
+        "P5-09"
       ],
       "status": "todo",
       "branch": "port/P5-08",
@@ -1934,8 +1945,9 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [
-        "P5-03",
-        "P2-05"
+        "P2-05",
+        "P5-02",
+        "P5-03"
       ],
       "status": "todo",
       "branch": "port/P5-09",
@@ -2558,5 +2570,43 @@
       ],
       "note": "first baseline; all other flows fail expectations because their UI is wave 2-3 (P5/P6). No regression possible yet."
     }
+  },
+  "wavePlan": {
+    "2": [
+      [
+        "P3-01",
+        "P4-03",
+        "P5-01"
+      ],
+      [
+        "P3-02",
+        "P5-02",
+        "P5-03"
+      ],
+      [
+        "P3-03",
+        "P5-05",
+        "P5-06"
+      ],
+      [
+        "P3-04",
+        "P5-04",
+        "P5-09"
+      ],
+      [
+        "P3-05",
+        "P5-07"
+      ],
+      [
+        "P3-06",
+        "P5-08"
+      ],
+      [
+        "P3-07"
+      ],
+      [
+        "P3-08"
+      ]
+    ]
   }
 }
