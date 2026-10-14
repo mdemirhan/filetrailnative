@@ -9,11 +9,6 @@ struct ExplorerCommandTarget {
     var focused: Bool
 }
 
-/// The help topics a menu item opens the Help window on.
-enum HelpTopic: Equatable {
-    case shortcuts
-}
-
 /// The target of every menu item of the application menu. A chosen item is sent to the explorer window it acts on, or
 /// handled natively by the window that has the keyboard.
 @MainActor
@@ -33,7 +28,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
     var onOpenAbout: (() -> Void)?
     var onOpenSettings: (() -> Void)?
     /// Help is a window too, opened from whichever window has the focus.
-    var onOpenHelp: ((HelpTopic?) -> Void)?
+    var onOpenHelp: ((HelpTopicID?) -> Void)?
     /// Called after an item has sent its command. macOS flips a checkmark on its own when the item is chosen; the host
     /// puts back what the window last reported, so the marks only ever show what is really on.
     var onCommandSent: (() -> Void)?

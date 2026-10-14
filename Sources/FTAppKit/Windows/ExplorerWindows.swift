@@ -193,6 +193,15 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         allTabs.first { $0.windowID == windowID }
     }
 
+    // MARK: Preferences
+
+    /// A preference changed in any window: every explorer window that follows preferences is told.
+    func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
+        for tab in allTabs {
+            (tab as AnyObject as? any PreferenceChangeReceiver)?.preferencesChanged(preferences, change)
+        }
+    }
+
     // MARK: Running operations
 
     /// The explorer window a tab is in: an operation belongs to the window that started it.

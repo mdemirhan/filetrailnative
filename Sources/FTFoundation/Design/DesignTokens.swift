@@ -38,13 +38,13 @@ public struct Motion: Equatable, Sendable {
     }()
 }
 
-/// Everything the UI draws with, at 100% zoom. `Metrics` is the same set scaled for zoom and density.
+/// Everything the UI draws with, (no zoom, D-005). `Metrics` is the same set for a density.
 public enum DesignTokens {
-    public static let typeScale = TypeScale.make(.identity)
-    public static let radii = Radii.make(.identity)
-    public static let controlHeights = ControlHeights.make(.identity)
-    public static let toolbar = ToolbarLayout.make(.identity)
-    public static let tabStrip = TabStripLayout.make(.identity)
+    public static let typeScale = TypeScale.make()
+    public static let radii = Radii.make()
+    public static let controlHeights = ControlHeights.make()
+    public static let toolbar = ToolbarLayout.make()
+    public static let tabStrip = TabStripLayout.make()
     public static let motion = Motion()
 
     /// `--font-sans` and `--font-mono`; the native UI uses the system fonts they name.
@@ -73,13 +73,13 @@ public enum DesignTokens {
         ThemePalette.palette(for: appearance)
     }
 
-    public static func explorer(density: Density) -> ExplorerLayout { .make(density: density, .identity) }
-    public static func iconGrid(density: Density) -> IconGridLayout { .make(density: density, .identity) }
-    public static func details(density: Density) -> DetailsLayout { .make(density: density, .identity) }
-    public static func flowList(density: Density) -> FlowListLayout { .make(density: density, .identity) }
+    public static func explorer(density: Density) -> ExplorerLayout { .make(density: density) }
+    public static func iconGrid(density: Density) -> IconGridLayout { .make(density: density) }
+    public static func details(density: Density) -> DetailsLayout { .make(density: density) }
+    public static func flowList(density: Density) -> FlowListLayout { .make(density: density) }
 
     /// Column widths of the folder's List view, or of search results' (`search`).
     public static func columnWidths(_ column: DetailColumn, search: Bool = false) -> ColumnWidths {
-        .make(column, search: search, .identity)
+        .make(column, search: search)
     }
 }

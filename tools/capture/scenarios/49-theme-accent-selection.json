@@ -1,0 +1,31 @@
+{
+  "name": "49-theme-accent-selection",
+  "description": "Light, Dark and Auto with a Purple accent over a list with a selection, in the focused and the unfocused pane",
+  "features": ["F-646", "F-932", "F-610", "F-649"],
+  "tier": ["wp", "wave", "final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#a550a7","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"select","names":["Avatar.jsx"]},
+    {"step":"command","id":"focusContentPane"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"light-active"},
+    {"step":"command","id":"focusTreePane"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"light-inactive"},
+    {"step":"prefs","prefs":{"theme":"dark"}},
+    {"step":"command","id":"focusContentPane"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"dark-active"},
+    {"step":"command","id":"focusTreePane"},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"dark-inactive"},
+    {"step":"prefs","prefs":{"theme":"auto"}},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

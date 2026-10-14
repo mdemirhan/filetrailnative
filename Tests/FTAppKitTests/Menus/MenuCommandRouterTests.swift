@@ -252,7 +252,7 @@ import Testing
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
         routeTo(router, explorer)
-        var topics: [HelpTopic?] = []
+        var topics: [HelpTopicID?] = []
         router.onOpenHelp = { topics.append($0) }
         let help = submenu(built.menu, "Help")
         router.focusedWindow = { makeOffscreenWindow() }

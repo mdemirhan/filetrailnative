@@ -29,7 +29,7 @@ public final class MainMenu {
     /// The window actions of the menu: About, Settings, Help and the windows the Go menu and New Window open with
     /// none open. P4-03's windows and P4-02's controller plug in here.
     func connect(
-        openAbout: (() -> Void)? = nil, openSettings: (() -> Void)? = nil, openHelp: ((HelpTopic?) -> Void)? = nil,
+        openAbout: (() -> Void)? = nil, openSettings: (() -> Void)? = nil, openHelp: ((HelpTopicID?) -> Void)? = nil,
         openWindowFor: @escaping (RendererCommand) -> Void, openNewWindowFromFront: @escaping () -> Void
     ) {
         router.onOpenAbout = openAbout

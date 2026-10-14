@@ -20,6 +20,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     public let directoryService = DirectoryService()
     public private(set) var folderWatches: FolderWatches?
 
+    /// The theme and accent every window draws with, followed live (B-DLG-232, 233).
+    public let appearance = AppearanceModel.shared
+    /// Help, About and Acknowledgements.
+    public private(set) var pageWindows: PageWindows!
+    /// What a window changes of the preferences goes through here: it is stored, and told to the appearance, to every
+    /// explorer window and to the menu. P5-01's toolbar and P6-04's Settings change the look through it.
+    public private(set) var preferenceChannel: WindowPreferenceChannel?
+
     /// Quit and close while busy. P3-05's write coordinator fills `quit.hooks.activeOperation` and `shutDown`.
     public let quit = QuitCoordinator()
 
@@ -44,9 +52,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         guard !handOverToRunningInstance(arguments) else { return }
 
         startLogger(arguments)
-        applyAppearance(store?.preferences().theme ?? .auto)
+        let preferences = store?.preferences() ?? AppPreferences.defaults(theme: .auto)
+        appearance.apply(theme: preferences.theme, accent: preferences.accent)
+        appearance.startFollowingSystem()
         startServices()
         buildMenus()
+        #if DEBUG
+            registerAutomationPreferences()
+        #endif
 
         let flagValues = Set(
             ["--snapshot", "--automation", "--out", "--elements", "--user-data-dir"].compactMap {
@@ -144,17 +157,22 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Native parts of the window (title bar, scroll bars, pickers) follow the app's theme rather than the macOS
     /// appearance: Light or Dark pins them, Auto follows the system.
     public func applyAppearance(_ theme: ThemePreference) {
-        switch theme {
-        case .auto: NSApp.appearance = nil
-        case .light: NSApp.appearance = NSAppearance(named: .aqua)
-        case .dark: NSApp.appearance = NSAppearance(named: .darkAqua)
-        }
+        appearance.apply(theme: theme)
     }
 
     private func startServices() {
         let store = store ?? AppStateStore(filePath: AppStatePaths.appState(in: AppStatePaths.userDataDirectory()).path)
         let windows = ExplorerWindows(store: store, quit: quit)
         explorerWindows = windows
+        let pages = PageWindows(preferences: { [weak self] in self?.store?.preferences() ?? .defaults() })
+        pages.openSettingsOnShortcuts = { [weak self] in self?.host.windows.front?.perform(.openSettings) }
+        pageWindows = pages
+        preferenceChannel = WindowPreferenceChannel(
+            store: store,
+            explorerWindowID: { [weak windows] senderID in
+                senderID.flatMap { windows?.tab(windowID: $0)?.group?.recordID }
+            },
+            onPreferencesChanged: { [weak self] preferences, change in self?.preferencesChanged(preferences, change) })
         let folderWatches = FolderWatches(
             .app(cache: directoryService.cache) { [weak windows] windowID, change in
                 windows?.folderChanged(windowID: windowID, change)
@@ -194,6 +212,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private func buildMenus() {
         let menu = MainMenu(windows: host.windows)
         menu.connect(
+            openAbout: { [weak self] in self?.pageWindows.openAbout() },
+            openHelp: { [weak self] topic in self?.pageWindows.openHelp(topic: topic) },
             openWindowFor: { [weak self] command in
                 // A window opened with none open runs the place chosen once it has opened.
                 self?.host.openDefaultWindow(initialCommand: command == .newWindow ? nil : command)
@@ -214,6 +234,41 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
         dockMenu = ShellActions.makeDockMenu(target: self, action: #selector(dockNewWindow(_:)))
     }
+
+    /// A preference changed in a window (`app:updatePreferences`): the appearance follows a new theme or accent, every
+    /// explorer window and Help are told, and the menu is built again with new keys or a new text editor (B-DLG-233).
+    private func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
+        appearance.preferencesChanged(preferences, change)
+        explorerWindows.preferencesChanged(preferences, change)
+        pageWindows.preferencesChanged(preferences, change)
+        if change.patch["shortcutOverrides"] != nil || change.patch["defaultTextEditor"] != nil {
+            mainMenu?.build()
+        }
+    }
+
+    #if DEBUG
+        /// What a scenario's `prefs` step does with the look: through the appearance, as Settings does. The zoom is read
+        /// and ignored (D-005).
+        private func registerAutomationPreferences() {
+            AutomationPrefs.register("theme") { [appearance] value, _ in
+                guard let theme = value.string.flatMap(ThemePreference.init(rawValue:)) else {
+                    return .failed("theme \(value)")
+                }
+                appearance.apply(theme: theme)
+                return .applied
+            }
+            AutomationPrefs.register("accent") { [appearance] value, _ in
+                guard let accent = value.string.flatMap(AppPreferenceLimits.normalizeAccentColor) else {
+                    return .failed("accent \(value)")
+                }
+                appearance.apply(accent: accent)
+                return .applied
+            }
+            AutomationPrefs.register("zoomPercent") { value, _ in
+                value.number == nil ? .failed("zoomPercent \(value)") : .applied
+            }
+        }
+    #endif
 
     // MARK: The app's lifetime
 
