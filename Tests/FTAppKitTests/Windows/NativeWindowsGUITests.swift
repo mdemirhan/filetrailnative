@@ -55,7 +55,7 @@ struct NativeWindowsGUITests {
         await settle()
     }
 
-    // T-a9d9c6ee F-620 F-673 F-630 F-628 F-629 B-VIEW-178 B-VIEW-179
+    // T-a9d9c6ee F-620 F-673 F-630 F-628 F-629 B-VIEW-178 B-VIEW-179 B-VIEW-162
     @Test func opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -76,6 +76,8 @@ struct NativeWindowsGUITests {
         // Move Tab to New Window: the tab leaves for a window of its own.
         group.tabs[1].perform(.moveTabToNewWindow)
         #expect(await waitUntil { groupCount(app) == 2 && group.tabs.count == 1 })
+        // A tab moved to a window of its own is not offered by Reopen Closed Tab.
+        #expect(group.session.closedTabs.isEmpty)
         let moved = try #require(frontTab(app))
         #expect(await waitUntil { moved.window?.isVisible == true && moved.window?.title == "Sub" })
         #expect(moved.group !== group)
@@ -204,8 +206,11 @@ struct NativeWindowsGUITests {
         group.select(first)
         #expect(await waitUntil { group.selected === first })
 
-        // Duplicate Tab (the File menu's, which sends `duplicateTab:` to the tab in front).
-        first.duplicateTab(nil)
+        // File › Duplicate Tab, from the menu, to the tab in front.
+        let menu = menuBar(app)
+        defer { NSApp.mainMenu = nil }
+        menu.router.focusedWindow = { first.window }
+        menu.router.choose(itemID: RendererCommand.duplicateTab.rawValue)
         #expect(await waitUntil { group.tabs.count == 3 })
         let copy = group.tabs[1]
         #expect(copy !== first)
@@ -219,7 +224,7 @@ struct NativeWindowsGUITests {
         // No copy past the limit; a notice says why.
         group.addTabs(Array(repeating: first.openTab, count: 120))
         #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
-        copy.duplicateTab(nil)
+        copy.perform(.duplicateTab)
         #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
         #expect(notices == [.tabLimit])
         await closeAll(app)
@@ -364,9 +369,10 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { groupCount(app) == 3 && frontTab(app)?.window?.title == "Sub" })
         let sub = try #require(frontTab(app))
         #expect(
-            app.windows.allTabs.map { $0.window?.title ?? "" }.sorted() == [
-                folder.url.lastPathComponent, folder.url.lastPathComponent, "Sub",
-            ].sorted())
+            app.windows.allTabs.map { $0.window?.title ?? "" }.sorted()
+                == [
+                    folder.url.lastPathComponent, folder.url.lastPathComponent, "Sub",
+                ].sorted())
 
         // Closing a window that isn't the last leaves the others, and it doesn't come back.
         sub.group?.closeAsCloseButton()
@@ -526,7 +532,7 @@ struct NativeWindowsGUITests {
         await closeAll(app)
     }
 
-    // F-676 B-VIEW-173
+    // F-676 B-VIEW-173 B-VIEW-154 B-VIEW-180 B-NAV-189
     @Test func tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -549,6 +555,16 @@ struct NativeWindowsGUITests {
         alert.beginSheetModal(for: window, completionHandler: nil)
         #expect(await waitUntil { window.attachedSheet != nil })
 
+        // While the sheet is open the tabs don't change, and Merge All Windows hears the window is busy.
+        first.perform(.newTab)
+        first.perform(.selectNextTab)
+        first.perform(.closeTab)
+        await settle()
+        #expect(group.tabs.count == 2)
+        #expect(group.selected === first)
+        #expect(group.mergeAnswer.busy)
+        #expect(group.mergeAnswer.tabs.map(\.path) == [disk, disk + "/Inner"])
+
         app.windows.disksUnmounted([disk])
 
         // The tabs stay; the one in the background goes Home, dropping what of its history was on the disk, and the
@@ -561,6 +577,103 @@ struct NativeWindowsGUITests {
         #expect(first.snapshot.historyPaths == [disk, folder.path])
         window.endSheet(alert.window)
         #expect(await waitUntil { window.attachedSheet == nil })
+        await closeAll(app)
+    }
+
+    // MARK: The tab bar
+
+    // The rules of the original's own tab strip that the system tab bar takes over (DEVIATIONS D-001 to D-003):
+    // N/A B-VIEW-145 the system tab bar owns clicks, keys and focus on tabs; middle-click is not available (D-002)
+    // N/A B-VIEW-147 the system tab bar keeps the tab in front in view
+    // N/A B-VIEW-148 the system tab bar owns tab drags (D-013)
+    // N/A B-VIEW-150 no tab menu of the app's on the system tab bar; Duplicate Tab is in the File menu (D-001)
+    // N/A B-VIEW-151 no tab menu of the app's on the system tab bar (D-001)
+    // N/A B-VIEW-152 the system tab bar takes no file drags (D-003)
+    // N/A B-VIEW-153 the system tab bar takes no file drops and has no spring-loaded tabs (D-003)
+
+    // F-673 B-VIEW-142 B-VIEW-146 B-VIEW-156 B-VIEW-157
+    @Test func showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen() async throws {
+        let folder = try folders()
+        defer { folder.remove() }
+        let app = launch(folder.appending("app-state.json").path)
+        app.windows.openStartupWindows(folder: folder.path)
+        let first = try #require(frontTab(app))
+        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
+        let group = try #require(first.group)
+        first.perform(.viewAsDetails)
+        #expect(first.window?.tabGroup?.isTabBarVisible != true)
+
+        // The tab bar's "+" button: a tab on this folder, right after it, with a history of its own and its view.
+        first.newWindowForTab(nil)
+        #expect(await waitUntil { group.tabs.count == 2 && first.window?.tabGroup?.isTabBarVisible == true })
+        let added = group.tabs[1]
+        #expect(group.selected === added)
+        #expect(added.folder.path == folder.path)
+        #expect(added.snapshot.historyPaths == [folder.path])
+        #expect(added.viewMode == .details)
+        #expect(added.treeRootPath == first.treeRootPath)
+
+        // Open in New Tab: the folder in a tab right after the one on screen, as a visit of its own.
+        group.select(first)
+        #expect(await waitUntil { group.selected === first })
+        group.openTab(path: folder.appending("Sub").path, from: first)
+        #expect(await waitUntil { group.tabs.count == 3 })
+        let opened = group.tabs[1]
+        #expect(opened.folder.path == folder.appending("Sub").path)
+        #expect(opened.snapshot.historyPaths == [folder.appending("Sub").path])
+        #expect(group.selected === opened)
+
+        // Back to one tab: no tab bar.
+        opened.perform(.closeTab)
+        #expect(await waitUntil { group.tabs.count == 2 })
+        group.selected?.perform(.closeTab)
+        #expect(await waitUntil { group.tabs.count == 1 })
+        #expect(await waitUntil { group.tabs[0].window?.tabGroup?.isTabBarVisible != true })
+        await closeAll(app)
+    }
+
+    // F-615 B-VIEW-149
+    @Test func savesTheTabsInTheOrderOfTheTabBar() async throws {
+        let folder = try folders()
+        defer { folder.remove() }
+        let app = launch(folder.appending("app-state.json").path)
+        app.windows.openStartupWindows(folder: folder.path)
+        let first = try #require(frontTab(app))
+        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
+        let group = try #require(first.group)
+        group.openTab(path: folder.appending("Sub").path, from: first)
+        #expect(await waitUntil { group.tabs.count == 2 })
+
+        // The system tab bar has the tabs in another order (a tab dragged along it).
+        group.replaceTabs(group.tabs.reversed())
+        #expect(
+            app.store.windowPreferences(group.recordID).openTabs.map(\.path) == [
+                folder.appending("Sub").path, folder.path,
+            ])
+        await closeAll(app)
+    }
+
+    // F-616 B-VIEW-175 B-NAV-187 B-NAV-188
+    @Test func restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped() async throws {
+        let folder = try folders()
+        defer { folder.remove() }
+        let statePath = folder.appending("app-state.json").path
+        let app = launch(statePath)
+        add(
+            app.store,
+            storedWindow(
+                app.store, "window-1",
+                [folder.path, folder.appending("Gone").path, folder.appending("Sub").path]))
+        app.windows.openStartupWindows(folder: nil)
+        #expect(await waitUntil { frontTab(app)?.loaded == true })
+        let front = try #require(frontTab(app))
+        let group = try #require(front.group)
+        #expect(group.tabs.map(\.folder.path) == [folder.path, folder.appending("Sub").path])
+        #expect(front.folder.path == folder.path)
+        let waiting = group.tabs[1]
+        #expect(!waiting.loaded)
+        group.select(waiting)
+        #expect(await waitUntil { waiting.loaded && waiting.window?.title == "Sub" })
         await closeAll(app)
     }
 }

@@ -8,7 +8,7 @@ import Testing
 @Suite struct ExplorerTabsTests {
     private let tabs = ["a", "b", "c"]
 
-    // T-e787702a F-068
+    // T-e787702a F-068 B-VIEW-144
     @Test func namesATabAfterItsFolderOrAfterItsSearchWhileResultsAreShowing() {
         func describe(
             _ path: String, visible: Bool = false, query: String = "", root: String = "", running: Bool = false
@@ -155,7 +155,7 @@ import Testing
         #expect(!running.interrupted)
     }
 
-    // T-84234a52 F-068
+    // T-84234a52 F-068 B-VIEW-144
     @Test func tellsTabsOnFoldersOfTheSameNameApartByTheFolderEachIsIn() {
         func tab(_ label: String, _ path: String, _ kind: TabDescription.Kind = .folder) -> TabLabel {
             TabLabel(label: label, kind: kind, path: path)

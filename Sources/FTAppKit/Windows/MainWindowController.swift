@@ -513,11 +513,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         group?.openNewTab(from: self)
     }
 
-    /// Duplicate Tab (File menu): a copy of this tab, with its history, right after it.
-    @objc func duplicateTab(_ sender: Any?) {
-        group?.duplicateTab(self)
-    }
-
     private func setMode(_ mode: ExplorerViewMode) {
         viewMode = mode
         browser.setMode(mode == .icons ? .icons : .list)
