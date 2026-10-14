@@ -2911,6 +2911,14 @@
       "at": "2026-10-14",
       "issue": "Flaky under full-suite load: FTFileSystemTests FolderSizeJobsTests.dropsTheFinishedJobsItKeepsTooManyOfWhenItMeasuresAgainAtOnce (expected jobCount == 301) failed once in W2-P1, passed 5x alone.",
       "owner": "next P0 follow-up or P7"
+    },
+    {
+      "at": "2026-10-14",
+      "seenIn": "user, looking at the running app (W2-U1)",
+      "issue": "The tab bar runs across the full window width, over the sidebar. In the original the tab strip sits only above the content column (ui.md §1 rows: toolbar, tab strip, panes; §1.3 custom TabStrip.tsx), and the sidebar runs from the top of the window down. Not the original design.",
+      "cause": "D-001 (native window tabs): the system NSWindow tab bar always spans the whole window and can't be confined to the content column. P5-02 also set the sidebar's contentTop to WindowChrome.tabBarHeight (WorkspaceView.swift:170), so the sidebar starts under the system tab bar.",
+      "owner": "user decision: keep native tabs (D-001) and accept it as a D-001 consequence, or replace the system tab bar with a custom in-window tab strip in the content column (new WP; reopens D-001..D-003 and D-013 and touches P4-02's tab model and P5-08). Raise with the wave-2 gate deviations if not decided earlier.",
+      "closed": false
     }
   ],
   "userRequests": [
