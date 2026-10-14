@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T17:09:51+00:00",
+  "updatedAt": "2026-10-14T17:35:57+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -9,8 +9,8 @@
   "phase": "P3/P4-03/P5",
   "nextAction": "W2-P3 (P3-04) and W2-U2 (P5-05, P5-06, P5-09) running. Next UI: [P5-04] after P5-05; P5-07 after P5-04; P5-08 after P3-05. Wave-3 briefs once P3-05 and P5-05 merge. Tab-bar layout WP after this phase (openIssues).",
   "pause": {
-    "requested": false,
-    "reason": null,
+    "requested": true,
+    "reason": "requested by user: stop after the running batches (W2-P3, W2-U2) finish and are recorded",
     "until": null
   },
   "meter": [
