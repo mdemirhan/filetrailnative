@@ -253,6 +253,7 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
         box.borderColor = { $0.palette.border }
         box.cornerRadius = CGFloat(DesignTokens.radii.control)
         box.setAccessibilityIdentifier("acknowledgements.text")
+        licenseBody.setAccessibilityIdentifier("acknowledgements.licenseText")
         licenseDocument.addSubview(licenseBody)
         boxScroll.documentView = licenseDocument
         boxScroll.drawsBackground = false

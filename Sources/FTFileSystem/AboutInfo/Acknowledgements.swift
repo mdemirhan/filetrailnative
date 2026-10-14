@@ -10,6 +10,15 @@ public struct Acknowledgement: Equatable, Sendable {
     public var license: String
     public var url: String
     public var text: String
+
+    public init(id: String, name: String, version: String?, license: String, url: String, text: String) {
+        self.id = id
+        self.name = name
+        self.version = version
+        self.license = license
+        self.url = url
+        self.text = text
+    }
 }
 
 public enum Acknowledgements {
