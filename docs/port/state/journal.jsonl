@@ -101,3 +101,5 @@
 {"at": "2026-10-14T13:55:36+00:00", "event": "next", "text": "Two tracks running: W2-P1 (P3-02) and W2-U1 (P5-02, P5-03). Each track launches its next batch when its own merges (tracks in state)."}
 {"at": "2026-10-14T13:55:36+00:00", "event": "set-batch", "batch": "W2-P1", "status": "running", "runId": null}
 {"at": "2026-10-14T13:55:36+00:00", "event": "set-batch", "batch": "W2-U1", "status": "running", "runId": null}
+{"at": "2026-10-14T13:55:48+00:00", "event": "set-batch", "batch": "W2-P1", "status": "running", "runId": "wf_12f9359a-59e"}
+{"at": "2026-10-14T13:55:48+00:00", "event": "set-batch", "batch": "W2-U1", "status": "running", "runId": "wf_e9630182-67a"}

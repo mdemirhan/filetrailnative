@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T13:55:36+00:00",
+  "updatedAt": "2026-10-14T13:55:48+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -563,9 +563,9 @@
         "P3-02"
       ],
       "status": "running",
-      "runId": null,
+      "runId": "wf_12f9359a-59e",
       "estimatedAgents": 8,
-      "startedAt": "2026-10-14T13:55:36+00:00"
+      "startedAt": "2026-10-14T13:55:48+00:00"
     },
     "W2-U1": {
       "wps": [
@@ -573,9 +573,9 @@
         "P5-03"
       ],
       "status": "running",
-      "runId": null,
+      "runId": "wf_e9630182-67a",
       "estimatedAgents": 11,
-      "startedAt": "2026-10-14T13:55:36+00:00"
+      "startedAt": "2026-10-14T13:55:48+00:00"
     }
   },
   "wps": {
