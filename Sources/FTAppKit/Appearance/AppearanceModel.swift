@@ -117,7 +117,7 @@ public final class AppearanceModel {
     }
 
     /// Follows the macOS appearance while the app runs (`nativeTheme`'s update event).
-    public func startFollowingSystem(_ application: NSApplication = NSApp) {
+    public func startFollowingSystem(_ application: NSApplication = NSApplication.shared) {
         systemObservation = application.observe(\.effectiveAppearance, options: []) { [weak self] _, _ in
             DispatchQueue.main.async { MainActor.assumeIsolated { self?.systemAppearanceChanged() } }
         }
@@ -183,17 +183,17 @@ public final class AppearanceModel {
     /// Native parts follow the app's theme rather than macOS: Light or Dark pins them, Auto follows the system.
     public static func setAppAppearance(_ theme: ThemePreference) {
         switch theme {
-        case .auto: NSApp.appearance = nil
-        case .light: NSApp.appearance = NSAppearance(named: .aqua)
-        case .dark: NSApp.appearance = NSAppearance(named: .darkAqua)
+        case .auto: NSApplication.shared.appearance = nil
+        case .light: NSApplication.shared.appearance = NSAppearance(named: .aqua)
+        case .dark: NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
         }
     }
 
     /// Whether macOS is in dark mode, whatever the app pins its own windows to.
     public static func macOSIsDark() -> Bool {
         // With the app following the system its own appearance says so, and is current as soon as macOS switches.
-        if NSApp.appearance == nil {
-            return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        if NSApplication.shared.appearance == nil {
+            return NSApplication.shared.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
         }
         return UserDefaults.standard.string(forKey: "AppleInterfaceStyle")?.lowercased() == "dark"
     }
