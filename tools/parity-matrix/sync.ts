@@ -3,6 +3,7 @@
 //
 //   bun tools/parity-matrix/sync.ts            run the tests, then update both files
 //   bun tools/parity-matrix/sync.ts --no-run   use the last result in build/logs/ instead of running
+//   bun tools/parity-matrix/sync.ts --no-write  validate citations and report what would change; no test run, no writes
 //   bun tools/parity-matrix/sync.ts --check    change nothing; exit 1 if a file would change or a citation is invalid
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
@@ -21,7 +22,8 @@ const XUNIT_SWIFT_TESTING = join(ROOT, "build/logs/parity-xunit-swift-testing.xm
 
 const args = new Set(process.argv.slice(2));
 const CHECK = args.has("--check");
-const NO_RUN = args.has("--no-run") || CHECK;
+const NO_WRITE = args.has("--no-write");
+const NO_RUN = args.has("--no-run") || CHECK || NO_WRITE;
 
 const COLUMNS = ["id", "file", "describe", "title", "form", "class", "area", "swiftTarget", "status", "swiftTest", "note"] as const;
 type Row = Record<(typeof COLUMNS)[number], string>;
@@ -188,12 +190,12 @@ function splitCells(line: string): string[] {
   return body.split(/(?<!\\)\|/).map((c) => c.trim());
 }
 
-function scenarioIds(key: "features" | "behaviors"): Map<string, string[]> {
+function scenarioIds(key: "features" | "behaviors" | "tests"): Map<string, string[]> {
   const byFeature = new Map<string, string[]>();
   if (!existsSync(SCENARIOS)) return byFeature;
   for (const name of readdirSync(SCENARIOS).sort()) {
     if (!name.endsWith(".json")) continue;
-    const data = JSON.parse(readFileSync(join(SCENARIOS, name), "utf8")) as { features?: string[]; behaviors?: string[] };
+    const data = JSON.parse(readFileSync(join(SCENARIOS, name), "utf8")) as { features?: string[]; behaviors?: string[]; tests?: string[] };
     for (const f of data[key] ?? []) byFeature.set(f, [...(byFeature.get(f) ?? []), name.replace(/\.json$/, "")]);
   }
   return byFeature;
@@ -313,6 +315,8 @@ function main(): void {
   }
   const scenarioB = scenarioIds("behaviors");
   for (const [id, names] of scenarioB) if (!behaviorIds.has(id)) errors.push(`scenario ${names.join(", ")}: unknown behavior id ${id}`);
+  const scenarioT = scenarioIds("tests");
+  for (const [id, names] of scenarioT) if (!ID_T.test(id) || !byId.has(id)) errors.push(`scenario ${names.join(", ")}: unknown test id ${id}`);
   if (errors.length) {
     console.error(errors.join("\n"));
     if (CHECK) process.exit(1);
@@ -374,6 +378,13 @@ function main(): void {
       const wasPassing = r.status === "passing";
       const allPass = outcomes.every((o) => o === "pass" || (o === "unknown" && wasPassing));
       next.status = allPass ? "passing" : "ported";
+    } else if (scenarioT.has(r.id) && !MANUAL(r.status)) {
+      // An e2e row closed by the scenarios that list it in their `tests` field.
+      const names = scenarioT.get(r.id) ?? [];
+      next.swiftTest = names.map((n) => `scenario/${n}`).join(", ");
+      const wasPassing = r.status === "passing";
+      const outcomes = names.map(scenarioOutcome);
+      next.status = outcomes.every((o) => o === "pass" || (o === "unknown" && wasPassing)) ? "passing" : "ported";
     } else if (!MANUAL(r.status)) {
       next.status = "todo";
       next.swiftTest = "";
@@ -449,6 +460,10 @@ function main(): void {
   const btsvOld = existsSync(BEHAVIORS_TSV) ? readFileSync(BEHAVIORS_TSV, "utf8") : "";
 
   const changed = [tsv !== readFileSync(TESTS_TSV, "utf8") ? "tests.tsv" : "", md !== featureText ? "features.md" : "", btsv !== btsvOld ? "behaviors.tsv" : ""].filter(Boolean);
+  if (NO_WRITE) {
+    console.log(`parity matrix: ${citations.length} citations valid; would update ${changed.join(", ") || "nothing"}`);
+    return;
+  }
   if (CHECK) {
     if (changed.length) {
       console.error(`out of date: ${changed.join(", ")} (run bun tools/parity-matrix/sync.ts)`);

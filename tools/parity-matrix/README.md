@@ -26,6 +26,7 @@ An id that doesn't exist in `tests.tsv` / `features.md` is an error, reported as
 ```
 bun tools/parity-matrix/sync.ts            # runs `swift test --parallel --xunit-output build/logs/parity-xunit.xml`, then updates
 bun tools/parity-matrix/sync.ts --no-run   # uses the last result in build/logs/
+bun tools/parity-matrix/sync.ts --no-write # validates citations, prints what would change; no test run
 bun tools/parity-matrix/sync.ts --check    # gate: no writes, no test run; fails on invalid citations or stale files
 ```
 
@@ -44,3 +45,7 @@ Tests come from `B-` citations in Swift tests, scenarios from the top-level `"be
 `todo`, `partial` or `done` by the same rules as features; `N/A` for a rule cited as `// N/A B-... reason`. An unknown `B-` id is an error.
 The `Behaviors` column of `features.md` is generated: an F row lists up to 8 rules that share identifiers (camelCase names, file names) with it;
 it stays empty where no match is clear. `report.ts` prints a behaviors summary per area.
+
+Scenarios close e2e rows: the top-level `"tests": ["T-..."]` key of a scenario JSON lists the `tests.tsv` cases it proves
+(unknown ids are errors). Such a row gets `swiftTest` `scenario/<name>` and is `passing` when every listed scenario passes
+(`ported` otherwise). A Swift citation, N/A or covered-by-feature on the same row wins.
