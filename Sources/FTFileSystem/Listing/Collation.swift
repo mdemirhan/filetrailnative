@@ -34,7 +34,7 @@ enum Collation {
     }
 
     /// The text-only form of `compareNumericBase`, for names of which one is not ASCII.
-    static func compareNumericBase(_ left: String, _ right: String) -> Int {
+    public static func compareNumericBase(_ left: String, _ right: String) -> Int {
         foldedCompare(foldingKnown(left), foldingKnown(right), numeric: true, strength: .base)
     }
 

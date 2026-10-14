@@ -318,6 +318,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// A tab closed: its folder is no longer watched, and the menu forgets what it said.
     func tabGone(_ tab: MainWindowController) {
         folderWatches?.watch(windowID: tab.windowID, path: nil)
+        FolderSizeService.shared.forget(windowID: tab.windowID)
     }
 
     /// The tab got the keyboard: a change its folder's watch could not see is looked for.

@@ -181,7 +181,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         windows.folderWatches = folderWatches
         ExplorerServices.installed = ExplorerServices(
             directoryService: directoryService, folderWatches: folderWatches, iconStore: FileIconStore(),
-            volumeWatcher: nil,
+            volumeWatcher: SidebarVolumes.shared.watcher,
             clipboard: windows.clipboard, preferences: preferenceChannel)
         windows.log = { [weak logger] message in logger?.info(.text("[filetrail] \(message)")) }
         let diskImages = DiskImageOpener(
