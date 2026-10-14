@@ -279,11 +279,12 @@ extension ExplorerWindowGUITests {
             #expect(titles(menu) == ["Name", "Kind", "Date Modified", "Size", "-", "Ascending", "Descending"])
             #expect(menu?.minWidth == 200)
             choose("Size")
-            #expect(tab.viewState.sortBy == .size && tab.viewState.sortDirection == .asc)
+            // A new Size order starts descending (B-NAV-127).
+            #expect(tab.viewState.sortBy == .size && tab.viewState.sortDirection == .desc)
             _ = sort.accessibilityPerformPress()
-            choose("Descending")
-            #expect(tab.viewState.sortDirection == .desc)
-            #expect(sort.tooltip == "Sort By: Size, Descending")
+            choose("Ascending")
+            #expect(tab.viewState.sortDirection == .asc)
+            #expect(sort.tooltip == "Sort By: Size, Ascending")
             // Pressing the button again closes its menu.
             _ = sort.accessibilityPerformPress()
             _ = sort.accessibilityPerformPress()

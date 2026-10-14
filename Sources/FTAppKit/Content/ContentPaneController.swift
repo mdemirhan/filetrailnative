@@ -103,7 +103,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var showsLoading = false
     private var loadingTimer: DispatchWorkItem?
     private var windowActive = true
-    private var rowsByPath: [String: DirectoryEntry] = [:]
+    /// The listed entries by path, made when a selection or a lookup needs it (not for every folder opened).
+    private var rowsCache: [String: DirectoryEntry]?
+    private var rowsByPath: [String: DirectoryEntry] {
+        if let rowsCache { return rowsCache }
+        let made = Dictionary(listed.map { ($0.path, $0) }, uniquingKeysWith: { first, _ in first })
+        rowsCache = made
+        return made
+    }
     private var barScaleCache: (listedCount: Int, version: Int, scale: Int64?)?
     private var observation: AppearanceModel.Observation?
     private var windowObservers: [any NSObjectProtocol] = []
@@ -153,6 +160,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         container.stateView.onSearchSubfolders = onSearchSubfolders
         shell.onMovedToWindow = { [weak self] window in self?.observeWindow(window) }
         loaders.iconStore()?.preloadGenericIcons()
+        // The date formatters take a few milliseconds to make: they are made off the main thread, before a row needs them.
+        Task.detached(priority: .utility) {
+            _ = DateText.shared
+            _ = ISODate.parse("2026-01-01T00:00:00.000Z")
+        }
         view = shell
         installPane()
         observation = AppearanceModel.shared.observe { [weak self] _ in self?.lookChanged() }
@@ -272,14 +284,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         // The same listing read again as it was keeps what is on screen as it is (B-NAV-133).
         let unchanged = sameFolder && newEntries == listed
         listed = newEntries
-        rowsByPath = Dictionary(newEntries.map { ($0.path, $0) }, uniquingKeysWith: { first, _ in first })
+        rowsCache = nil
         reorder()
-        let existing = Set(newEntries.map(\.path))
         // Nil keeps the selection that still exists (a quiet read); a list of paths is the new selection.
         if let paths {
-            setSelection(ContentSelection.of(paths.filter { existing.contains($0) }), notify: true)
-        } else {
-            setSelection(selection.keeping(existing: existing), notify: true)
+            let lookup = paths.isEmpty ? [:] : rowsByPath
+            setSelection(ContentSelection.of(paths.filter { lookup[$0] != nil }), notify: true)
+        } else if !selection.isEmpty {
+            setSelection(selection.keeping(existing: Set(newEntries.map(\.path))), notify: true)
         }
         if !unchanged || !keepingScroll {
             pane?.reload(scrollToTop: !keepingScroll)
@@ -301,7 +313,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         folderPath = path
         listed = []
         entries = []
-        rowsByPath = [:]
+        rowsCache = nil
         metadata = [:]
         loadState = .failed(message: message)
         setSelection(.empty, notify: true)

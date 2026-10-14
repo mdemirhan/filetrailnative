@@ -81,7 +81,14 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     private let column = NSTableColumn(identifier: DetailsCellView.identifier)
 
     private var entries: [DirectoryEntry] = []
-    private var rowByPath: [String: Int] = [:]
+    /// Rows by path, made when a selection or a lookup needs it.
+    private var rowsCache: [String: Int]?
+    private var rowByPath: [String: Int] {
+        if let rowsCache { return rowsCache }
+        let made = Dictionary(entries.enumerated().map { ($1.path, $0) }, uniquingKeysWith: { first, _ in first })
+        rowsCache = made
+        return made
+    }
     private var fitted = DetailsColumnSet(columns: [.name], widths: [:])
     private var layoutMetrics = DesignTokens.details(density: .comfortable)
     private var isSyncing = false
@@ -164,7 +171,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     func reload(scrollToTop: Bool) {
         entries = host?.entries ?? []
-        rowByPath = Dictionary(entries.enumerated().map { ($1.path, $0) }, uniquingKeysWith: { first, _ in first })
+        rowsCache = nil
         layoutMetrics = metrics
         table.rowHeight = CGFloat(layoutMetrics.rowHeight)
         fitColumns()
@@ -331,15 +338,12 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         return cell
     }
 
-    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        CGFloat(layoutMetrics.rowHeight)
-    }
-
     // MARK: Selection
 
     private func applySelection() {
         guard let host else { return }
         var rows = IndexSet()
+        if host.selection.paths.isEmpty, table.selectedRowIndexes.isEmpty { return }
         for path in host.selection.paths {
             if let row = rowByPath[path] { rows.insert(row) }
         }
@@ -351,6 +355,8 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     func tableViewSelectionDidChange(_ notification: Notification) {
         guard !isSyncing, let host else { return }
+        // A click in the list gives it the keyboard.
+        if table.window?.firstResponder !== table { table.window?.makeFirstResponder(table) }
         let rows = table.selectedRowIndexes
         let paths = rows.compactMap { entries.indices.contains($0) ? entries[$0].path : nil }
         let old = Set(host.selection.paths)
