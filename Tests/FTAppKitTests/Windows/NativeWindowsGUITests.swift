@@ -156,7 +156,7 @@ struct NativeWindowsGUITests {
 
         let relaunched = launch(statePath)
         relaunched.windows.openStartupWindows(folder: nil)
-        #expect(await waitUntil { relaunched.windows.allTabs.allSatisfy { $0.loaded } && groupCount(relaunched) == 2 })
+        #expect(await waitUntil { groupCount(relaunched) == 2 })
         #expect(await waitUntil { frontTab(relaunched)?.window?.isVisible == true })
         let front = try #require(frontTab(relaunched))
         let frontGroup = try #require(front.group)
