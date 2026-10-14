@@ -150,7 +150,21 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
 
     func lstat(_ path: String) throws -> WriteServiceStats {
         if let lstatImpl { return try lstatImpl(path) }
-        return try locked { Self.stats(try nodeOrThrow(path)) }
+        return try lstatDirectly(path)
+    }
+
+    /// `lstat` as the mock does it, for an `lstatImpl` that changes only some looks.
+    func lstatDirectly(_ path: String) throws -> WriteServiceStats {
+        try locked { Self.stats(try nodeOrThrow(path)) }
+    }
+
+    /// `readdir` as the mock does it.
+    func readdirDirectly(_ path: String) throws -> [String] {
+        try locked {
+            let node = try nodeOrThrow(path)
+            guard node.kind == .directory else { throw Self.error("ENOTDIR", path) }
+            return listChildren(path)
+        }
     }
 
     func stat(_ path: String) throws -> WriteServiceStats {
