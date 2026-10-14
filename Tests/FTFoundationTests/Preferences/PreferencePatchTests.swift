@@ -32,6 +32,32 @@ struct PreferencePatchTests {
         #expect(Set(Self.defaultsJSON.keys) == Set(AppPreferences.keys))
     }
 
+    // T-1f095054 T-7f92bce5 T-53d8323d T-e6f6decc T-ef11b04e T-09050d18 T-c8cd6ef9 T-1bd1f865
+    @Test func carriesEachGroupOfPreferencesTheOriginalListsAsSent() {
+        let groups = [
+            #"{"theme": "dark", "returnKeyAction": "open", "shortcutOverrides": {"newTab": ["Cmd+Option+N"]}}"#,
+            #"{"searchResultsSortBy": "name", "searchResultsSortDirection": "desc"}"#,
+            #"{"restoreSessionOnStartup": false, "markClipboardItems": false}"#,
+            """
+            {"compactDetailsView": true,
+             "detailColumns": {"size": true, "modified": false, "permissions": true, "kind": true, "created": false},
+             "detailColumnWidths": {"name": 360, "size": 120, "modified": 180, "permissions": 160, "kind": 148, "created": 168}}
+            """,
+            #"{"terminalApp": {"appPath": "/Applications/iTerm.app", "appName": "iTerm"}}"#,
+            #"{"topToolbarItems": ["back", "search", "copyPath"]}"#,
+            """
+            {"defaultTextEditor": {"appPath": "/Applications/Zed.app", "appName": "Zed"},
+             "fileActivationAction": "edit", "openItemLimit": 9}
+            """,
+            #"{"openWithApplications": [{"id": "zed", "appPath": "/Applications/Zed.app", "appName": "Zed"}]}"#,
+        ]
+        for text in groups {
+            let sent = (try? JSONNode.parse(Data(text.utf8)))?.object ?? [:]
+            #expect(!sent.isEmpty, "\(text)")
+            #expect(Self.receive(text) == sent, "\(text)")
+        }
+    }
+
     // T-39ae895f
     @Test func carriesEachPreferenceByItselfAndNothingElse() {
         for key in AppPreferences.keys {

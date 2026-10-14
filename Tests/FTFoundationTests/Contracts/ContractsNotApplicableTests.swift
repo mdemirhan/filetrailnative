@@ -9,6 +9,7 @@ import Testing
 // IPC schema validation; replaced by Swift types. The name rules T-4ac8d32f and T-67c58c14 check live in ItemNames,
 // tested by ItemNamesTests, and the 100,000-path bound is Limits.maxPathsPerRequest.
 struct ContractsNotApplicableTests {
+    // F-910
     @Test func theContractLimitsStayAsTheOriginals() {
         #expect(Limits.maxPathsPerRequest == 100_000)
         #expect(ItemNames.maxBytes == 255)

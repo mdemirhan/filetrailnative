@@ -33,7 +33,7 @@ struct AppLoggerTests {
 
     func read(_ path: String) -> String { (try? readAppLogFile(path)) ?? "" }
 
-    // T-191ab8cb F-001
+    // T-191ab8cb F-001 F-234
     @Test func persistsRegularLogLinesToDisk() throws {
         try withLogFolder { _, path in
             let sink = RecordingSink()
@@ -54,7 +54,7 @@ struct AppLoggerTests {
         }
     }
 
-    // T-67340d39 F-001
+    // T-67340d39 F-001 F-151 F-234
     @Test func skipsDebugLogsUnlessDebugModeIsEnabled() throws {
         try withLogFolder { _, path in
             let sink = RecordingSink()
@@ -70,7 +70,7 @@ struct AppLoggerTests {
         }
     }
 
-    // T-37334d5f F-001
+    // T-37334d5f F-001 F-151 F-234
     @Test func persistsDebugLogsWhenDebugModeIsEnabled() throws {
         try withLogFolder { _, path in
             let sink = RecordingSink()
@@ -83,7 +83,7 @@ struct AppLoggerTests {
         }
     }
 
-    // T-84c5ec86 F-001
+    // T-84c5ec86 F-001 F-150 F-234
     @Test func rotatesThePersistedAppLogWhenTheFileExceedsTheSizeLimit() throws {
         try withLogFolder { folder, path in
             let logger = AppLogger(filePath: path, maxBytes: 140, maxFiles: 3, sink: RecordingSink())
@@ -100,6 +100,7 @@ struct AppLoggerTests {
         }
     }
 
+    // F-150 F-234
     @Test func keepsTenFilesAtMostAndNamesThemAppNLog() throws {
         try withLogFolder { folder, path in
             #expect(AppLogger.defaultMaxBytes == 5 * 1024 * 1024)
@@ -118,6 +119,7 @@ struct AppLoggerTests {
         }
     }
 
+    // F-150
     @Test func rotationMovesEachFileUpAndADropsTheOldest() throws {
         try StateTestKit.withFolder { folder in
             let path = folder + "/app.log"
@@ -134,6 +136,7 @@ struct AppLoggerTests {
     }
 
     // util.inspect sorted:true sorts the rendered entries; keys outside /^[a-zA-Z_][a-zA-Z_0-9]*$/ are quoted.
+    // F-149
     @Test func contextEntriesSortAsRenderedStringsAndQuoteNonIdentifierKeys() {
         let context = LogArg.context([
             "a": .number(1), "a1": .number(2), "a-b": .number(3), "b": .number(4), "$x": .number(5), "é": .number(6),
@@ -145,6 +148,7 @@ struct AppLoggerTests {
                 == "{ '$x': 5, a1: 2, a: 1 }")
     }
 
+    // F-149 F-234
     @Test func aLineIsTheISOTimeTheLevelAndTheArguments() {
         let date = Date(timeIntervalSince1970: 1_800_000_000.123)
         #expect(LogFormat.timestamp(date) == "2027-01-15T08:00:00.123Z")
@@ -160,6 +164,7 @@ struct AppLoggerTests {
         #expect(LogFormat.arguments([.value(.string("raw")), .value(.object([:])), .value(.array([]))]) == "raw {} []")
     }
 
+    // F-151
     @Test func debugFlagsAreOnlyOnForOne() {
         #expect(AppLogger.isDebugLoggingEnabled(environment: ["FILETRAIL_DEBUG": "1"]))
         #expect(AppLogger.isDebugLoggingEnabled(environment: ["FILETRAIL_DEBUG_TIMINGS": "1"]))
@@ -169,6 +174,7 @@ struct AppLoggerTests {
         #expect(!Timing.timingsEnabled(environment: ["FILETRAIL_DEBUG": "1"]))
     }
 
+    // F-913
     @Test func structuredEntriesAreNamespaceMessageErrorContext() throws {
         try withLogFolder { _, path in
             let logger = AppLogger(filePath: path, debugEnabled: false, sink: RecordingSink())
@@ -183,6 +189,7 @@ struct AppLoggerTests {
         }
     }
 
+    // F-152
     @Test func slowCallsAreLoggedAtDebugLevelAndFastOnesOnlyWithTheTimingsFlag() async throws {
         let sink = RecordingSink()
         let folder = try TemporaryFolder()

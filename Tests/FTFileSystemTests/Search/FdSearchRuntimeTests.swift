@@ -87,7 +87,7 @@ private func item(
             ])
     }
 
-    // T-c5416c0d
+    // T-c5416c0d F-141 F-197
     @Test func streamsNullDelimitedResultsInIncrementalBatches() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.tsx", mode: .glob))
@@ -116,7 +116,7 @@ private func item(
                     error: nil))
     }
 
-    // T-f6427548
+    // T-f6427548 F-141 F-197
     @Test func keepsGetUpdateIdempotentAfterACompletedJobHasBeenDrained() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.tsx", mode: .glob))
@@ -160,7 +160,7 @@ private func item(
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).items.map(\.name) == ["日本語.txt"])
     }
 
-    // T-b00e33ee
+    // T-b00e33ee F-141
     @Test func terminatesCancelledJobsAndAnswersLaterPollsWithACancelledTerminalState() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.ts", mode: .glob))
@@ -287,6 +287,7 @@ private func item(
         #expect(update.error == nil)
     }
 
+    // F-197
     @Test func remembersAtMostSixtyFourFinishedJobs() throws {
         let runtime = FdSearchRuntime(fdBinaryPath: "/tmp/fd") { _, _, _, _ in MockSearchProcess() }
         let ids = (0..<70).map { _ in runtime.startSearch(demo()).jobId }
@@ -295,6 +296,7 @@ private func item(
         #expect(try runtime.getUpdate(jobId: ids[69], cursor: 0).status == .cancelled)
     }
 
+    // F-141
     @Test func streamsBatchesUntilTheJobIsDone() async throws {
         let (runtime, process) = make()
         let stream = runtime.results(for: demo(), interval: .milliseconds(5))

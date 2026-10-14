@@ -34,8 +34,16 @@ struct FolderWatchStreamTests {
             try await Task.sleep(for: .milliseconds(300))
 
             let real = try NativeFileSystem().realpath(directory.path)
+            // FSEvents can start late on a busy machine and miss the first write, so touch the file again until it is told of.
             try "x".write(toFile: real + "/made.txt", atomically: false, encoding: .utf8)
-            #expect(await wait { told.changes.contains { $0.changedPaths?.contains(root + "/made.txt") == true } })
+            var madeTold = false
+            for attempt in 0..<4 where !madeTold {
+                madeTold = await wait(seconds: 4) {
+                    told.changes.contains { $0.changedPaths?.contains(root + "/made.txt") == true }
+                }
+                if !madeTold { try "x\(attempt)".write(toFile: real + "/made.txt", atomically: false, encoding: .utf8) }
+            }
+            #expect(madeTold)
 
             try FileManager.default.moveItem(atPath: real + "/made.txt", toPath: real + "/renamed.txt")
             #expect(

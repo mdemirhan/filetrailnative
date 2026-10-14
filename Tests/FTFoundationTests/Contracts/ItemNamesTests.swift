@@ -5,7 +5,7 @@ import Testing
 @testable import FTFoundation
 
 struct ItemNamesTests {
-    // T-fb9f513a
+    // T-fb9f513a F-107
     @Test func acceptsOrdinaryNamesIncludingDotsAndColons() {
         #expect(ItemNames.error(for: "report.pdf") == nil)
         #expect(ItemNames.error(for: ".env") == nil)
@@ -15,21 +15,21 @@ struct ItemNamesTests {
         #expect(ItemNames.error(for: "C:\\notes.txt") == nil)
     }
 
-    // T-76e896d6
+    // T-76e896d6 F-107
     @Test func rejectsEmptyAndDotSegmentNames() {
         #expect(ItemNames.error(for: "   ") == "Enter a name.")
         #expect(ItemNames.error(for: ".") == "\".\" is not a valid name.")
         #expect(ItemNames.error(for: " .. ") == "\"..\" is not a valid name.")
     }
 
-    // T-2d8f899d
+    // T-2d8f899d F-107
     @Test func rejectsNamesContainingPathSeparatorsOrNul() {
         #expect(ItemNames.error(for: "../escape") != nil)
         #expect(ItemNames.error(for: "sub/child") == "Names can\u{2019}t contain \u{201C}/\u{201D}.")
         #expect(ItemNames.error(for: "nul\0byte") != nil)
     }
 
-    // T-9277bcb1
+    // T-9277bcb1 F-028 F-106 F-107
     @Test func limitsNamesTo255BytesOfUTF8NotCharacters() {
         let tooLong = "The name is too long."
         #expect(ItemNames.error(for: String(repeating: "a", count: 255)) == nil)
@@ -44,7 +44,7 @@ struct ItemNamesTests {
         #expect(ItemNames.error(for: " \(String(repeating: "a", count: 255))") == nil)
     }
 
-    // T-13af55fb
+    // T-13af55fb F-034 F-108
     @Test func knowsAPackageByItsExtensionInAnyCase() {
         #expect(ItemNames.isMacOSPackageName("Safari.app"))
         #expect(ItemNames.isMacOSPackageName("Foo.FRAMEWORK"))

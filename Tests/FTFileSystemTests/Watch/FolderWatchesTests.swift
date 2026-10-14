@@ -113,7 +113,7 @@ private final class Harness {
 
 @MainActor
 struct FolderWatchesTests {
-    // T-929e8af9 F-200
+    // T-929e8af9 F-200 B-VIEW-185
     @Test func followsEachWindowFromFolderToFolderAndStopsWhenAsked() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -133,7 +133,7 @@ struct FolderWatchesTests {
         #expect(harness.watched.isEmpty)
     }
 
-    // T-2ae9187d F-201 F-202
+    // T-2ae9187d F-201 F-202 B-VIEW-188
     @Test func tellsOfABurstOfChangesOnceWhenItSettlesNamingWhatChanged() {
         let harness = Harness()
         harness.watches.watch(windowID: 7, path: "/a")
@@ -166,7 +166,7 @@ struct FolderWatchesTests {
         #expect(harness.changes.count == 2)
     }
 
-    // T-fb04b248 F-201
+    // T-fb04b248 F-201 B-NAV-137 B-VIEW-188
     @Test func saysAnythingMayHaveChangedWhenAChangeHasNoName() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -181,6 +181,7 @@ struct FolderWatchesTests {
         #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: ["/a/two.txt"]))
     }
 
+    // B-NAV-137 B-VIEW-188
     @Test func saysAnythingMayHaveChangedWhenMoreThanAThousandItemsChanged() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -193,7 +194,7 @@ struct FolderWatchesTests {
         #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: nil))
     }
 
-    // T-8b92b0be
+    // T-8b92b0be B-NAV-135 B-VIEW-186
     @Test func dropsAChangeStillSettlingWhenTheWindowMovesOn() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")

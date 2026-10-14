@@ -8,14 +8,14 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
 }
 
 @Suite struct EjectPlanningTests {
-    // T-d8671ef9
+    // T-d8671ef9 B-TREE-165
     @Test func ejectsADiskOfItsOwnAtOnce() {
         #expect(
             EjectPlanning.planEject([volume("USB"), volume("Backup")], path: "/Volumes/USB")
                 == .eject(path: "/Volumes/USB"))
     }
 
-    // T-3bd103be
+    // T-3bd103be F-212 B-TREE-165
     @Test func asksFirstAboutAVolumeWhoseDiskHoldsOthersNamingThem() {
         let volumes = [volume("Photos", disk: "disk7"), volume("USB"), volume("Video", disk: "disk7")]
         #expect(
@@ -23,7 +23,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
                 == .askWhichVolumes(path: "/Volumes/Photos", name: "Photos", otherNames: ["Video"]))
     }
 
-    // T-a8912768
+    // T-a8912768 B-TREE-165
     @Test func neverGroupsNetworkSharesWhichHaveNoDisk() {
         let volumes = [
             volume("Shared", isLocal: false, disk: .some(nil)), volume("Media", isLocal: false, disk: .some(nil)),
@@ -31,7 +31,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
         #expect(EjectPlanning.planEject(volumes, path: "/Volumes/Shared") == .eject(path: "/Volumes/Shared"))
     }
 
-    // T-21da80a1
+    // T-21da80a1 B-TREE-167
     @Test func doesNothingForADiskThatCantBeEjectedOrIsGone() {
         #expect(EjectPlanning.planEject([volume("Data", canEject: false)], path: "/Volumes/Data") == nil)
         #expect(EjectPlanning.planEject([], path: "/Volumes/USB") == nil)
@@ -39,7 +39,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
 
     private let volumes = [volume("USB"), volume("Data", canEject: false)]
 
-    // T-b3821aa9
+    // T-b3821aa9 B-TREE-168
     @Test func targetIsTheDiskSelectedInTheSidebarItsLocationsRowOrTheTopOfTheTree() {
         for id in ["location:/Volumes/USB", "fs:/Volumes/USB"] {
             #expect(
@@ -51,7 +51,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
         }
     }
 
-    // T-e835ed63
+    // T-e835ed63 B-TREE-168
     @Test func targetIsNoneWithTheFileListInFrontOrForAnythingButAnEjectableDisk() {
         #expect(
             EjectPlanning.resolveEjectTargetPath(
@@ -71,7 +71,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
         #expect(!EjectPlanning.isEjectablePath(volumes, path: nil))
     }
 
-    // T-2a218da2
+    // T-2a218da2 B-TREE-170
     @Test func asksAboutAllTheVolumesOfTheDisk() {
         let notice = EjectPlanning.describeWhichVolumesQuestion(name: "Photos", otherNames: ["Video"])
         #expect(notice.title == "Do you want to eject \u{201C}Photos\u{201D} only, or all 2 volumes on its disk?")
@@ -87,7 +87,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
                 .contains("\u{201C}B\u{201D} and \u{201C}C\u{201D}"))
     }
 
-    // T-890fe2c5
+    // T-890fe2c5 B-TREE-173
     @Test func saysWhichDiskIsInUseAndCallsAServerAVolume() {
         let all = [volume("USB"), volume("Shared", isLocal: false, disk: .some(nil))]
         #expect(
@@ -103,7 +103,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
         )
     }
 
-    // T-ab270936
+    // T-ab270936 B-TREE-176
     @Test func namesTheDiskAskedForWhenTheDiskItselfFailedWithDiskArbitrationsReason() {
         let all = [volume("USB")]
         let failed = EjectPlanning.describeEjectFailure(
@@ -116,6 +116,7 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
             ).message == "The disk didn\u{2019}t answer in time. Try again in a moment.")
     }
 
+    // B-TREE-176
     @Test func otherFailureWording() {
         let all = [volume("USB")]
         func message(_ code: String?) -> String {

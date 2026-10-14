@@ -136,7 +136,7 @@ import Testing
 
     // N/A T-e48c6be2 a native window has no page to load again: it is given its launch folder and command once, when it is made
     // N/A T-29244b8d a native window has no page to load again, so the Go menu's command can't run twice
-    // F-642
+    // F-642 B-NAV-175
     @Test func givesTheLaunchFolderToTheWindowAsItIsMade() throws {
         let store = try makeStore()
         add(store, storedWindow(store, "window-a", ["/Users/demo/a"]))

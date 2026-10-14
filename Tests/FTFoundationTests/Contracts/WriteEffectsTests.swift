@@ -40,7 +40,7 @@ struct WriteEffectsTests {
 
     // MARK: pathsChangedByWrite
 
-    // T-8699fb80
+    // T-8699fb80 F-122
     @Test func listsTheFolderWrittenIntoAndEveryItemMovedMadeOrRemoved() {
         let paths = Self.changed(
             [("/Users/demo/a.txt", "/Users/demo/Dest/a.txt"), ("/Users/demo/Old", nil)],
@@ -48,7 +48,7 @@ struct WriteEffectsTests {
         #expect(paths.sorted() == ["/Users/demo/Dest", "/Users/demo/Old", "/Users/demo/a.txt"])
     }
 
-    // T-d0291da8
+    // T-d0291da8 F-122
     @Test func listsWhereInTheTrashTheItemsAReplaceMovedOutOfTheWayWent() {
         let paths = Self.changed(
             [("/Users/demo/a.txt", "/Users/demo/Dest/a.txt")], directory: "/Users/demo/Dest",
@@ -56,7 +56,7 @@ struct WriteEffectsTests {
         #expect(paths.sorted() == ["/Users/demo/.Trash/a.txt", "/Users/demo/Dest", "/Users/demo/a.txt"])
     }
 
-    // T-f361383c
+    // T-f361383c F-122
     @Test func leavesOutAPathInsideAnotherWhichChangesNothingItCovers() {
         for seed in 1...200 {
             let all = Self.randomPaths(seed: seed, count: 1 + seed % 9)
@@ -73,7 +73,7 @@ struct WriteEffectsTests {
         }
     }
 
-    // T-28acaf45
+    // T-28acaf45 F-122
     @Test func keepsOnlyTheFolderOfACopyOfManyFiles() {
         var items: [(String?, String?)] = (0..<100_000).map {
             ("/Users/demo/Photos/\($0 % 100)/IMG_\($0).jpg", "/Volumes/Backup/Photos/\($0 % 100)/IMG_\($0).jpg")
@@ -90,7 +90,7 @@ struct WriteEffectsTests {
 
     // MARK: isAffectedByChange
 
-    // T-831c2592
+    // T-831c2592 F-122
     @Test func coversTheItemWhatHoldsItAndWhatIsInsideIt() {
         let changed = ["/Users/demo/Projects/app"]
         #expect(WriteEffects.isAffectedByChange("/Users/demo/Projects/app", changedPaths: changed))
@@ -138,7 +138,7 @@ struct WriteEffectsTests {
         }
     }
 
-    // T-37d2531e
+    // T-37d2531e F-122
     @Test func coversTheChangeWhatHoldsItAndWhatIsInsideItAndNothingBesideIt() {
         let matcher = ChangeMatcher(changedPaths: ["/Users/demo/Projects/app"])
         #expect(matcher.holdsChange("/Users/demo/Projects"))
@@ -170,7 +170,7 @@ struct WriteEffectsTests {
         Item(sourcePath: source, destinationPath: destination, status: status)
     }
 
-    // T-754ce4b0
+    // T-754ce4b0 F-122
     @Test func leavesOutAnItemInAFolderAlreadyKnownToHoldWhatChanged() {
         let items = [
             Self.item("/a/F", "/b/F"), Self.item("/a/F/x", "/b/F/x"), Self.item("/a/F/y", "/b/F/y"),
@@ -186,7 +186,7 @@ struct WriteEffectsTests {
         #expect(WriteEffects.itemsForOtherWindows(action: "trash", targetPath: "/b/", items: items) == [])
     }
 
-    // T-f59648a8
+    // T-f59648a8 F-122
     @Test func keepsAnItemATabWouldFollowOnItsOwn() {
         let items = [Self.item("/a/F", "/b/F", "failed"), Self.item("/a/F/x", "/b/F/x")]
         #expect(WriteEffects.itemsForOtherWindows(action: "move_to", items: items) == items)

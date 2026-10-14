@@ -66,7 +66,7 @@ private func segmentsOf(_ planItem: BatchRenamePlanItem) -> [NameSegment] {
 private func seg(_ text: String, _ changed: Bool) -> NameSegment { NameSegment(text: text, changed: changed) }
 
 struct BatchRenameSplitTests {
-    // T-74733b5f
+    // T-74733b5f F-049 F-110
     @Test func takesWhatFollowsTheLastDotAsTheExtension() {
         #expect(NumberedNames.splitItemName("photo.jpg", isFolder: false) == .init(stem: "photo", extension: "jpg"))
         #expect(
@@ -75,7 +75,7 @@ struct BatchRenameSplitTests {
         #expect(NumberedNames.splitItemName("Tool.app", isFolder: false) == .init(stem: "Tool", extension: "app"))
     }
 
-    // T-5ee14ea6
+    // T-5ee14ea6 F-049 F-110
     @Test func findsNoExtensionInAFolderADotfileANameEndingInADotOrWithoutOne() {
         #expect(
             NumberedNames.splitItemName("photos.2026", isFolder: true) == .init(stem: "photos.2026", extension: nil))
@@ -88,7 +88,7 @@ struct BatchRenameSplitTests {
 }
 
 struct ReplaceTextTests {
-    // T-5934ce13
+    // T-5934ce13 F-050 F-111
     @Test func findsAccentedLettersHoweverTheyAreWritten() {
         let decomposed = "Cafe\u{301} menu.pdf"
         let cafe = BatchRenameSettings(find: "Caf\u{E9}", replaceWith: "Bistro")
@@ -102,7 +102,7 @@ struct ReplaceTextTests {
         #expect(names(BatchRenameSettings(find: "\u{E9}", replaceWith: "e\u{301}"), [decomposed]) == [nil])
     }
 
-    // T-76b8b755
+    // T-76b8b755 F-044 F-050 F-111
     @Test func replacesEveryMatchIgnoringCaseUnlessAskedNotTo() {
         #expect(
             names(BatchRenameSettings(find: "img_", replaceWith: "Lisbon "), ["IMG_2041.jpg"]) == ["Lisbon 2041.jpg"])
@@ -111,21 +111,21 @@ struct ReplaceTextTests {
         #expect(names(BatchRenameSettings(find: "a", replaceWith: "o"), ["banana.txt"]) == ["bonono.txt"])
     }
 
-    // T-75a95bf0
+    // T-75a95bf0 F-111
     @Test func leavesAnItemWithoutAMatchAndEveryItemWithNothingToFind() {
         #expect(
             names(BatchRenameSettings(find: "copy", replaceWith: ""), ["a copy.txt", "b.txt"]) == ["a.txt", nil])
         #expect(names(BatchRenameSettings(find: "", replaceWith: "x"), ["a.txt"]) == [nil])
     }
 
-    // T-d533cb5e
+    // T-d533cb5e F-050 F-111
     @Test func takesPlainTextAsTypedDotsDollarsAndBracketsAreJustCharacters() {
         #expect(names(BatchRenameSettings(find: ".", replaceWith: "$1"), ["a.b.c.txt"]) == ["a$1b$1c.txt"])
         #expect(
             names(BatchRenameSettings(find: "(1)", replaceWith: "[one]"), ["report (1).pdf"]) == ["report [one].pdf"])
     }
 
-    // T-e7a0d107
+    // T-e7a0d107 F-056
     @Test func worksInANameAnExtensionOrBothAsApplyToSays() {
         #expect(
             names(BatchRenameSettings(find: "jpg", replaceWith: "png"), ["jpg photo.jpg"]) == ["png photo.jpg"])
@@ -157,7 +157,7 @@ struct ReplaceTextTests {
         #expect(names(regex("^", "2026 "), ["notes.txt"]) == ["2026 notes.txt"])
     }
 
-    // T-07bf6eb8
+    // T-07bf6eb8 F-044
     @Test func matchesCaseOnlyWhenAskedWithARegularExpressionToo() {
         #expect(
             names(BatchRenameSettings(find: "^a", replaceWith: "x", useRegex: true), ["Apple.txt"]) == ["xpple.txt"])
@@ -167,7 +167,7 @@ struct ReplaceTextTests {
                 == [nil])
     }
 
-    // T-1fa13a17
+    // T-1fa13a17 F-052
     @Test func saysWhenAPatternIsBrokenAndChangesNothing() {
         let result = proposed(
             BatchRenameSettings(find: "(unclosed", replaceWith: "x", useRegex: true), [item("a.txt")])
@@ -195,7 +195,7 @@ struct ExpandReplacementTests {
         BatchRename.expandReplacement(template, match: found, subject: subject)
     }
 
-    // T-a3131847
+    // T-a3131847 F-051 F-112
     @Test func expandsGroupsTheMatchAndWhatIsAroundIt() throws {
         let found = try match("(b)(c)", "abcd")
         #expect(expand("$2$1", found, "abcd") == "cb")
@@ -204,7 +204,7 @@ struct ExpandReplacementTests {
         #expect(expand("$$1", found, "abcd") == "$1")
     }
 
-    // T-d61b8aae
+    // T-d61b8aae F-051 F-112
     @Test func keepsWhatNamesNoGroupAsTyped() throws {
         let found = try match("(b)", "abc")
         #expect(expand("$3", found, "abc") == "$3")
@@ -213,7 +213,7 @@ struct ExpandReplacementTests {
         #expect(expand("$x", found, "abc") == "$x")
     }
 
-    // T-ec26c831
+    // T-ec26c831 F-051 F-112
     @Test func putsNothingForAGroupThatMatchedNothingOrANameThatIsntAGroup() throws {
         let either = try match("(a)|(b)", "b")
         #expect(expand("[$1][$2]", either, "b") == "[][b]")
@@ -222,7 +222,7 @@ struct ExpandReplacementTests {
         #expect(expand("$<word", named, "hi") == "$<word")
     }
 
-    // T-28dfaa5a
+    // T-28dfaa5a F-051 F-112
     @Test func readsTwoDigitsOnlyWhenThereAreThatManyGroups() throws {
         let eleven = try match("(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)", "abcdefghijk")
         #expect(expand("$11", eleven, "abcdefghijk") == "k")
@@ -232,7 +232,7 @@ struct ExpandReplacementTests {
 }
 
 struct AddTextTests {
-    // T-c0dadf59
+    // T-c0dadf59 F-044 F-113
     @Test func addsBeforeOrAfterTheNameOrTheExtension() {
         #expect(names(BatchRenameSettings(mode: .add, addText: " (edited)"), ["a.txt"]) == ["a (edited).txt"])
         #expect(
@@ -245,7 +245,7 @@ struct AddTextTests {
                 == ["a.txtx", nil])
     }
 
-    // T-dcbfaa1f
+    // T-dcbfaa1f F-056 F-113
     @Test func dropsSpacesItWouldLeaveAtEitherEndAndChangesNothingWithNoText() {
         #expect(
             names(BatchRenameSettings(mode: .add, addText: " draft", addWhere: .before), ["a.txt"]) == ["drafta.txt"])
@@ -253,7 +253,7 @@ struct AddTextTests {
         #expect(names(BatchRenameSettings(mode: .add, addText: ""), ["a.txt"]) == [nil])
     }
 
-    // T-c19b419a
+    // T-c19b419a F-113
     @Test func treatsAFoldersWholeNameAsItsName() {
         let result = proposed(BatchRenameSettings(mode: .add, addText: " old"), [item("photos.2026", isFolder: true)])
         #expect(renamedName(result.names[0]) == "photos.2026 old")
@@ -265,19 +265,19 @@ struct ChangeCaseTests {
         BatchRenameSettings(mode: .changeCase, caseStyle: style, applyTo: applyTo)
     }
 
-    // T-abaeae71
+    // T-abaeae71 F-047 F-114
     @Test func changesTheCaseOfTheNameTheExtensionOrBoth() {
         #expect(names(caseSettings(.lower), ["My Photo.JPG"]) == ["my photo.JPG"])
         #expect(names(caseSettings(.upper, .both), ["a.txt"]) == ["A.TXT"])
         #expect(names(caseSettings(.lower, .extensionPart), ["A.JPG"]) == ["A.jpg"])
     }
 
-    // T-08679956
+    // T-08679956 F-114
     @Test func leavesNamesAlreadyInThatCase() {
         #expect(names(caseSettings(.lower), ["done.txt"]) == [nil])
     }
 
-    // T-602119f6
+    // T-602119f6 F-053 F-114
     @Test func raisesTheFirstLetterOfEachWordForTitleCaseAndLeavesTheRest() {
         #expect(BatchRename.changeCase("readMe file", .title) == "ReadMe File")
         #expect(BatchRename.changeCase("my-project_notes (draft)", .title) == "My-Project_Notes (Draft)")
@@ -305,19 +305,19 @@ struct FormatTests {
             customDatePattern: customDatePattern, applyTo: applyTo)
     }
 
-    // T-43fc6af1
+    // T-43fc6af1 F-045 F-115
     @Test func numbersItemsAsFinderDoes() {
         #expect(names(format(), ["a.jpg", "b.png", "c"]) == ["File 1.jpg", "File 2.png", "File 3"])
     }
 
-    // T-fccc7149
+    // T-fccc7149 F-045 F-054 F-115
     @Test func startsStepsAndPutsTheNumberBeforeTheNameWhenAsked() {
         #expect(
             names(format(formatWhere: .before, customName: "Trip", startAt: 10, step: 5), ["a.jpg", "b.jpg"])
                 == ["10 Trip.jpg", "15 Trip.jpg"])
     }
 
-    // T-73b2b448
+    // T-73b2b448 F-054 F-115
     @Test func padsACounterToItsDigitsOrToTheLastNumbers() {
         #expect(names(format(nameFormat: .counter), ["a", "b"]) == ["File 00001", "File 00002"])
         #expect(names(format(nameFormat: .counter, digits: .fixed(2)), ["a"]) == ["File 01"])
@@ -326,20 +326,20 @@ struct FormatTests {
         #expect(names(format(nameFormat: .counter, digits: .auto), ["a", "b"])[1] == "File 2")
     }
 
-    // T-b69c0b48
+    // T-b69c0b48 F-115
     @Test func joinsWithTheSeparatorChosenOrNone() {
         #expect(names(format(separator: .underscore), ["a.jpg"]) == ["File_1.jpg"])
         #expect(names(format(separator: .none), ["a.jpg"]) == ["File1.jpg"])
         #expect(names(format(formatWhere: .before, separator: .hyphen), ["a.jpg"]) == ["1-File.jpg"])
     }
 
-    // T-c741268c
+    // T-c741268c F-045 F-115
     @Test func keepsEachItemsOwnNameAndAddsTheNumberToIt() {
         #expect(
             names(format(keepNames: true), ["IMG_2041.jpg", "notes.txt"]) == ["IMG_2041 1.jpg", "notes 2.txt"])
     }
 
-    // T-4ad60edf
+    // T-4ad60edf F-046 F-054 F-115
     @Test func putsInTheDateChosenInTheFormatChosen() {
         let photo = item("IMG_2041.HEIC", takenAt: "2026-05-14T18:02:11")
         func date(_ settings: BatchRenameSettings) -> String? {
@@ -361,7 +361,7 @@ struct FormatTests {
         #expect(date(dated(.taken, .dmyy, .underscore)) == "Lisbon 14_05_26.HEIC")
     }
 
-    // T-427c1a29
+    // T-427c1a29 F-046 F-055
     @Test func usesTheDateCreatedForAnItemWithNoDateTakenAndSaysSo() {
         let result = proposed(format(nameFormat: .date, dateSource: .taken), [item("notes.txt")])
         guard case .renamed(let name, _, let usedCreated, _) = result.names[0] else {
@@ -372,14 +372,14 @@ struct FormatTests {
         #expect(usedCreated)
     }
 
-    // T-76a59b72
+    // T-76a59b72 F-054 F-116
     @Test func followsACustomDatePatternKeepingWhatIsntAToken() {
         let settings = format(
             nameFormat: .date, dateSource: .modified, dateFormat: .custom, customDatePattern: "YYYY-DD-MM at HH.mm.ss")
         #expect(names(settings, ["a.jpg"]) == ["File 2026-01-10 at 08.30.15.jpg"])
     }
 
-    // T-06f36ee3
+    // T-06f36ee3 F-054
     @Test func keepsTextInSquareBracketsAsTypedEvenLettersThatAreTokens() {
         func pattern(_ customDatePattern: String) -> [String?] {
             names(
@@ -397,7 +397,7 @@ struct FormatTests {
         #expect(bracketed.settingsError?.contains("at least one of YYYY") == true)
     }
 
-    // T-69341c53
+    // T-69341c53 F-055
     @Test func asksForATokenInACustomDatePatternThatHasNone() {
         func error(_ pattern: String) -> String? {
             proposed(format(nameFormat: .date, dateFormat: .custom, customDatePattern: pattern), [item("a.jpg")])
@@ -409,21 +409,21 @@ struct FormatTests {
         #expect(error("YYYY") == nil)
     }
 
-    // T-0ecdc468
+    // T-0ecdc468 F-055
     @Test func leavesAnItemWithoutTheDateAskedForAsItIs() {
         let result = proposed(
             format(nameFormat: .date, dateSource: .modified), [item("a.jpg", modifiedAt: nil)])
         #expect(result.names == [.unchanged])
     }
 
-    // T-fb9e458e
+    // T-fb9e458e F-047
     @Test func ignoresApplyToTheExtensionIsAlwaysKept() {
         #expect(names(format(applyTo: .both), ["a.jpg"]) == ["File 1.jpg"])
     }
 }
 
 struct DatesAndNumbersTests {
-    // T-7f47336e
+    // T-7f47336e F-046 F-116
     @Test func writesEveryOfferedFormatWithEverySeparator() {
         let date = "2026-05-04T08:09:07"
         func formatted(_ format: BatchRenameDateFormat, _ separator: BatchRenameDateSeparator = .hyphen) -> String {
@@ -440,14 +440,14 @@ struct DatesAndNumbersTests {
         #expect(BatchRename.formatDate("2009-01-02T00:00:00", BatchRenameSettings(dateFormat: .dmyy)) == "02-01-09")
     }
 
-    // T-0869c080
+    // T-0869c080 F-116
     @Test func describesAFormatWithItsSeparator() {
         #expect(BatchRename.describeDateFormat(.ymd, separator: .hyphen) == "YYYY-MM-DD")
         #expect(BatchRename.describeDateFormat(.dmyy, separator: .none) == "DDMMYY")
         #expect(BatchRename.describeDateFormat(.ymdHM, separator: .space) == "YYYY MM DD HH mm")
     }
 
-    // T-1fe6d27f
+    // T-1fe6d27f F-054 F-116
     @Test func numbersByStartAndStep() {
         #expect(BatchRename.formatNumber(BatchRenameSettings(startAt: 0, step: 10), index: 3, count: 4) == "30")
         #expect(
@@ -458,12 +458,12 @@ struct DatesAndNumbersTests {
                 BatchRenameSettings(nameFormat: .counter, digits: .fixed(2)), index: 199, count: 200) == "200")
     }
 
-    // T-a63efd63
+    // T-a63efd63 F-116
     @Test func readsADateItCantMakeSenseOfAsAllZerosRatherThanFailing() {
         #expect(BatchRename.formatDate("not a date", BatchRenameSettings(dateFormat: .ymd)) == "0000-00-00")
     }
 
-    // T-44b184db
+    // T-44b184db F-116
     @Test func readsAMomentOnThisMacsClock() throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone.current
@@ -474,7 +474,7 @@ struct DatesAndNumbersTests {
 }
 
 struct SavedSettingsTests {
-    // T-a67cdf09
+    // T-a67cdf09 F-048 F-117
     @Test func keepsWhatIsValidAndPutsTheDefaultInPlaceOfAnythingElse() {
         #expect(BatchRename.sanitizeSettings(nil) == BatchRenameSettings.defaults)
         let read = BatchRename.sanitizeSettings(
@@ -499,7 +499,7 @@ struct SavedSettingsTests {
         #expect(read.applyTo == .name)
     }
 
-    // T-15bdf632
+    // T-15bdf632 F-048 F-117
     @Test func takesTheDefaultForNumbersThatArentNumbersAndKeepsLongTextShort() {
         let read = BatchRename.sanitizeSettings(
             .object([
@@ -516,7 +516,7 @@ struct SavedSettingsTests {
         #expect(BatchRename.sanitizeSettings(.object(["startAt": .number(2e12)])).startAt == 999_999_999)
     }
 
-    // T-003a9362
+    // T-003a9362 F-048 F-117
     @Test func dropsPresetsWithoutANameOrWithOneAlreadyUsedAndKeepsAtMostTheLimit() {
         let presets = BatchRename.sanitizePresets(
             .array([
@@ -548,7 +548,7 @@ struct SavedSettingsTests {
 }
 
 struct PlanTests {
-    // T-ba89cb89
+    // T-ba89cb89 F-062 F-118
     @Test func renamesWhatChangesAndCountsWhatDoesnt() {
         let result = plan(BatchRenameSettings(find: "IMG_", replaceWith: "Lisbon "), ["IMG_1.jpg", "notes.txt"])
         #expect(result.items.map(outcome) == ["Lisbon 1.jpg", "unchanged"])
@@ -556,7 +556,7 @@ struct PlanTests {
             (result.renameCount, result.unchangedCount, result.skippedCount, result.blockingCount) == (1, 1, 0, 0))
     }
 
-    // T-e3b3448b
+    // T-e3b3448b F-061 F-118
     @Test func numbersANameTakenBySomethingElseInTheFolderAndTheNextFreeNumber() {
         let result = plan(
             BatchRenameSettings(find: "IMG_", replaceWith: "Lisbon "), ["IMG_1.jpg"],
@@ -570,7 +570,7 @@ struct PlanTests {
         #expect(segments == [seg("Lisbon ", true), seg("1", false), seg(" 3", true), seg(".jpg", false)])
     }
 
-    // T-cd7d8070
+    // T-cd7d8070 F-061 F-118
     @Test func numbersRepeatsInsideTheBatchInOrderWithFormatsSeparator() {
         let result = plan(
             BatchRenameSettings(mode: .format, nameFormat: .date, customName: "Trip", separator: .underscore),
@@ -578,7 +578,7 @@ struct PlanTests {
         #expect(result.items.map(outcome) == ["Trip_2026-09-30.jpg", "Trip_2026-09-30_2.jpg", "Trip_2026-09-30.png"])
     }
 
-    // T-ec74d627
+    // T-ec74d627 F-061 F-118
     @Test func numbersThousandsOfItemsWantingOneNameWithoutLookingFromTwoForEach() {
         let itemNames = (0..<20_000).map { "IMG_\($0).jpg" }
         // A taken number in the middle is still passed over.
@@ -594,7 +594,7 @@ struct PlanTests {
         #expect(Set(given).count == 20_000)
     }
 
-    // T-2d7333cf
+    // T-2d7333cf F-043 F-058
     @Test func countsNamesAsTheDiskDoesCaseAndAccentsUnlessTheDiskTellsCaseApart() {
         let removeX = BatchRenameSettings(find: "x", replaceWith: "")
         #expect(plan(removeX, ["Ax.txt"], folderNames: ["Ax.txt", "a.TXT"]).items.map(outcome) == ["A 2.txt"])
@@ -610,7 +610,7 @@ struct PlanTests {
                 == BatchRename.nameKey("caf\u{E9}", caseSensitive: false))
     }
 
-    // T-5a9b05b3
+    // T-5a9b05b3 F-060
     @Test func letsItemsSwapNamesAndChangeOnlyTheCaseOfTheirOwn() {
         // On a disk that minds case, "A" is free for "a" while "A.TXT" stays as it is.
         let minded = plan(
@@ -627,7 +627,7 @@ struct PlanTests {
         #expect(reorder.items.map(outcome) == ["File 1", "File 2"])
     }
 
-    // T-8e703ba3
+    // T-8e703ba3 F-061
     @Test func leavesAClashingItemAsItIsWithSkipAndSettlesTheRestAroundItsName() {
         // "b" can't take "c" (taken outside the batch), so it stays "b"; "a" wanted "b" and now finds it taken too.
         let both = plan(
@@ -685,7 +685,7 @@ struct PlanTests {
         }
     }
 
-    // T-463e5c4b
+    // T-463e5c4b F-061
     @Test func holdsTheRenameWithDontRenameUntilTheClashIsFixed() {
         let result = plan(
             BatchRenameSettings(find: "IMG_", replaceWith: "Lisbon ", onConflict: .block), ["IMG_1.jpg", "IMG_2.jpg"],
@@ -707,7 +707,7 @@ struct PlanTests {
         #expect(second == .taken(byItemInBatch: true))
     }
 
-    // T-e8c4e7ae
+    // T-e8c4e7ae F-059
     @Test func neverRenamesToAnInvalidNameWhateverTheSetting() {
         let slash = plan(BatchRenameSettings(find: "-", replaceWith: "/"), ["a-b.txt"])
         #expect(slash.items.map(outcome) == ["invalid:a/b.txt"])
@@ -729,7 +729,7 @@ struct PlanTests {
         #expect(empty == .invalid(message: "The name can\u{2019}t be only an extension."))
     }
 
-    // T-ef371b87
+    // T-ef371b87 F-059
     @Test func skipsAnItemThatCantBeRenamedAndKeepsItsNameTaken() {
         let locked = ["/trip/locked.txt": "The item is locked."]
         let result = plan(
@@ -743,7 +743,7 @@ struct PlanTests {
         #expect(wanted.items.map(outcome) == ["unchanged", "locked 2.txt"])
     }
 
-    // T-f1d7401f
+    // T-f1d7401f F-063
     @Test func shortensANameThatANumberMakesTooLongAndHoldsOneThatCant() {
         let long = String(repeating: "a", count: 251) + ".txt"
         let shortened = plan(
@@ -760,7 +760,7 @@ struct PlanTests {
         #expect(held.blockingCount == 1)
     }
 
-    // T-1b9a33e7
+    // T-1b9a33e7 F-062
     @Test func warnsWhenANewNameStartsWithADot() {
         let result = plan(BatchRenameSettings(mode: .add, addText: ".", addWhere: .before), ["config"])
         guard case .rename(let name, _, _, _, _, let hidden) = result.items[0] else {
@@ -787,7 +787,7 @@ struct PlanTests {
         #expect(result.items.map(outcome) == ["notes.txt", "notes 2.txt"])
     }
 
-    // T-94430ddd
+    // T-94430ddd F-058
     @Test func takesAFolderItKnowsNothingOfToHoldOnlyTheItemsBeingRenamed() {
         let result = BatchRename.planBatchRename(
             BatchRenamePlanInput(
@@ -850,7 +850,7 @@ struct PlanShownTests {
         #expect(result.items.map(outcome) == ["File_1_2.jpg", "File_2.jpg"])
     }
 
-    // T-2c22d4ff
+    // T-2c22d4ff F-060
     @Test func swapsTwoNamesAndPassesNamesAlongAChainWithoutNumbers() {
         // Listed in reverse: the second becomes "File 1" and the first "File 2".
         let swapped = planned(
@@ -908,7 +908,7 @@ struct PlanShownTests {
         #expect(result.items.map(outcome) == ["File 1.jpg", "skippedTaken:File 2.jpg", "File 3.jpg"])
     }
 
-    // T-20addbaa
+    // T-20addbaa F-061
     @Test func leavesAnItemAloneWhenTheNumberedNameItGetsIsTheOneItHas() {
         // "File 1 2.jpg" asks for "File 1.jpg", which is taken, and would be numbered " 2": its own name.
         var settings = format

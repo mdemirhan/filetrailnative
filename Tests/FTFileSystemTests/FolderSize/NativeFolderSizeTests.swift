@@ -440,7 +440,7 @@ extension RealWalks {
             }
         }
 
-        // T-565fcaf8 F-179
+        // T-565fcaf8 F-179 F-183
         @Test func keepsOnlyWholeFoldersWhenCancelledPartWay() async throws {
             try await withTree { root, expected in
                 let native = NativeFolderSize()
@@ -484,7 +484,7 @@ extension RealWalks {
             }
         }
 
-        // T-29115a15 F-179
+        // T-29115a15 F-179 F-183
         @Test func handsWhatACancelledWalkFinishedToTheCallbackBeforeRejecting() async throws {
             try await withTree { root, expected in
                 let native = NativeFolderSize()
@@ -514,7 +514,7 @@ extension RealWalks {
         }
 
         // What the folders that hold an item lose when it is removed must be what measuring them counted for it.
-        // T-178462e6 F-238
+        // T-178462e6 F-238 F-185
         @Test func countsEachItemAsMeasuringItsFolderDoes() async throws {
             try await withItems { root in
                 let walk = try await measure(NativeFolderSize(), root)
@@ -534,7 +534,7 @@ extension RealWalks {
             }
         }
 
-        // T-3a72b2f0
+        // T-3a72b2f0 F-185
         @Test func failsForAnItemThatIsGone() async throws {
             try await withItems { root in
                 let error = await #expect(throws: FolderSizeError.self) {
@@ -556,7 +556,7 @@ extension RealWalks {
             return directory
         }
 
-        // T-9066937b F-179
+        // T-9066937b F-179 F-184
         @Test func serializesConcurrentCallsAndReturnsCorrectPerCallResults() async throws {
             let rootA = try makeFiles("native-fs-sf-a", count: 3, size: 10)
             let rootB = try makeFiles("native-fs-sf-b", count: 5, size: 20)
@@ -576,7 +576,7 @@ extension RealWalks {
             #expect(resultB.total == 100)
         }
 
-        // T-bccc0229 F-179
+        // T-bccc0229 F-179 F-184
         @Test func cancelThenImmediateRestartCancelsOnlyTheActiveCall() async throws {
             let root = try makeFiles("native-fs-sf-c", count: 4, size: 25)
             defer { root.remove() }
@@ -593,7 +593,7 @@ extension RealWalks {
             #expect(result.total == 100)
         }
 
-        // T-07ad13e5 F-179
+        // T-07ad13e5 F-179 F-184
         @Test func queuesManyConcurrentCallsWithoutCorruptingResults() async throws {
             let root = try makeFiles("native-fs-sf-q", count: 2, size: 7)
             defer { root.remove() }

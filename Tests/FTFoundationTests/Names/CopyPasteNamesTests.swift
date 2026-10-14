@@ -30,6 +30,7 @@ struct CopyPasteNamesTests {
     }
 
     // Not in the reference's own tests: copy numbers are doubles there, so they never trap.
+    // F-038 F-099
     @Test func copyNumbersBeyondIntKeepCounting() throws {
         #expect(
             try Self.duplicate("x copy 9223372036854775807.txt") == "/target/x copy 9223372036854776000.txt")
@@ -48,7 +49,7 @@ struct CopyPasteNamesTests {
         }
     }
 
-    // T-27257761
+    // T-27257761 F-098
     @Test func resolvesKeepBothPathsFromTheSourceBasename() throws {
         let disk = Disk("report copy.txt")
         let path = try CopyPasteNames.resolveKeepBothDestinationPath(
@@ -56,14 +57,14 @@ struct CopyPasteNamesTests {
         #expect(path == "/target/report copy 2.txt")
     }
 
-    // T-475241a4
+    // T-475241a4 F-098
     @Test func generatesDuplicateNamesForFilesWithAndWithoutExtensions() throws {
         let disk = Disk("notes copy.txt", "archive copy")
         #expect(try Self.duplicate("notes.txt", disk) == "/target/notes copy 2.txt")
         #expect(try Self.duplicate("archive", disk) == "/target/archive copy 2")
     }
 
-    // T-93af3adf
+    // T-93af3adf F-038 F-099
     @Test func numbersACopyOfACopyInsteadOfAddingAnotherCopy() throws {
         let disk = Disk("notes copy.txt", "notes copy 2.txt", "plan copy 2.md")
         #expect(try Self.duplicate("notes copy.txt", disk) == "/target/notes copy 3.txt")
@@ -72,7 +73,7 @@ struct CopyPasteNamesTests {
         #expect(try Self.duplicate("big copy 99999", disk) == "/target/big copy 100000")
     }
 
-    // T-58e31428
+    // T-58e31428 F-038 F-100
     @Test func keepsNamesThatOnlyLookALittleLikeCopies() throws {
         // A file called "copy", a "copy 1" (Finder never makes one) and "copycat".
         #expect(try Self.duplicate("copy.txt") == "/target/copy copy.txt")
@@ -80,25 +81,25 @@ struct CopyPasteNamesTests {
         #expect(try Self.duplicate("a copycat.txt") == "/target/a copycat copy.txt")
     }
 
-    // T-0b9ea230
+    // T-0b9ea230 F-101
     @Test func usesTheFirstCopySuffixWhenTheDestinationIsStillFree() throws {
         #expect(try Self.duplicate("fresh.txt") == "/target/fresh copy.txt")
     }
 
-    // T-8db3141c
+    // T-8db3141c F-037 F-102
     @Test func keepsFolderNamesWholeExceptForBundles() throws {
         #expect(try Self.duplicate("Photos 2024.v2", isDirectory: true) == "/target/Photos 2024.v2 copy")
         #expect(try Self.duplicate("Tool.app", isDirectory: true) == "/target/Tool copy.app")
         #expect(try Self.duplicate("report.v2") == "/target/report copy.v2")
     }
 
-    // T-940505a6
+    // T-940505a6 F-102
     @Test func keepsTheExtensionAtTheEndForDocumentPackagesToo() throws {
         #expect(try Self.duplicate("Talk.key", isDirectory: true) == "/target/Talk copy.key")
         #expect(try Self.duplicate("Trip.photoslibrary", isDirectory: true) == "/target/Trip copy.photoslibrary")
     }
 
-    // T-0635b28a
+    // T-0635b28a F-102
     @Test func goesByWhatItIsToldAboutAFolderBeingAPackageBeforeItsExtension() throws {
         #expect(
             try Self.duplicate("Model.custompkg", isDirectory: true, isPackage: true) == "/target/Model copy.custompkg")
@@ -109,6 +110,7 @@ struct CopyPasteNamesTests {
             try Self.duplicate("Backup.sparsebundle", isDirectory: true) == "/target/Backup copy.sparsebundle")
     }
 
+    // F-102
     @Test func askedForAFolderThePackageAnswerWinsOverTheExtension() throws {
         func keepBoth(_ answer: Bool?) throws -> String {
             try CopyPasteNames.resolveKeepBothDestinationPath(
@@ -120,7 +122,7 @@ struct CopyPasteNamesTests {
         #expect(try keepBoth(nil) == "/target/Movie copy.fcpxbundle")
     }
 
-    // T-4e1e808c
+    // T-4e1e808c F-037 F-103
     @Test func treatsCompressedTarArchivesAsHavingOneExtension() throws {
         for ext in [".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".TAR.GZ"] {
             #expect(try Self.duplicate("backup\(ext)") == "/target/backup copy\(ext)")
@@ -147,13 +149,14 @@ struct CopyPasteNamesTests {
         #expect(!kept.isEmpty)
     }
 
-    // T-3430b9a8
+    // T-3430b9a8 F-040 F-104
     @Test func treatsANameAsTakenWhenLookingItUpFailsForAnyReasonOtherThanItMissing() throws {
         var disk = Disk()
         disk.failing = ["/target/a copy.txt"]
         #expect(try Self.duplicate("a.txt", disk) == "/target/a copy 2.txt")
     }
 
+    // F-039
     @Test func throwsAfterTenThousandTakenNames() {
         let error = #expect(throws: CopyPasteNames.NoFreeName.self) {
             try CopyPasteNames.resolveDuplicateName(sourceName: "x.txt", in: "/target", exists: { _ in true })
@@ -161,6 +164,7 @@ struct CopyPasteNamesTests {
         #expect(error?.description == "Couldn't find a free name for \u{201C}x.txt\u{201D}.")
     }
 
+    // F-040
     @Test func skipsNamesTheSamePasteHasClaimed() throws {
         let reserved: Set<NameKeys.Exact> = [NameKeys.exactDestinationKey("/target/A copy.txt")]
         let name = try CopyPasteNames.resolveDuplicateName(
@@ -175,7 +179,7 @@ struct CopyPasteNamesTests {
         #expect(sensitive == "/target/a copy.txt")
     }
 
-    // T-63722dce
+    // T-63722dce F-043 F-105
     @Test func foldsLetterCaseOnlyOnCaseInsensitiveVolumes() {
         let key = NameKeys.destinationPathKey
         #expect(key("/T/Caf\u{E9}.TXT", false) == key("/t/cafe\u{301}.txt", false))
@@ -185,6 +189,7 @@ struct CopyPasteNamesTests {
         #expect(NameKeys.Exact(key("/t/caf\u{E9}", true)) != NameKeys.Exact("/t/caf\u{E9}"))
     }
 
+    // F-043
     @Test func otherPlacesHaveTheirOwnKeys() {
         #expect(NameKeys.looseKey("CAF\u{C9}") == NameKeys.looseKey("cafe\u{301}"))
         #expect(NameKeys.placeKey("/A/\u{C9}") == NameKeys.placeKey("/a/e\u{301}"))
@@ -216,7 +221,7 @@ struct CopyPasteNamesTests {
         }
     }
 
-    // T-7cad0254
+    // T-7cad0254 F-105
     @Test func findsOutWhetherAVolumeIsCaseSensitiveByLookingUpASwappedName() {
         var sensitive = Volume(answer: true, caseSensitive: true, files: ["/target/Readme"])
         #expect(CopyPasteNames.detectCaseSensitivity(sensitive, in: "/target"))
@@ -251,6 +256,7 @@ struct CopyPasteNamesTests {
         #expect(CopyPasteNames.swapLetterCase("Readme.\u{DF}1") == "rEADME.\u{DF}1")
     }
 
+    // F-108
     @Test func recognizesPackageNamesAndSideFiles() {
         #expect(CopyPasteNames.isPackageName("Tool.APP"))
         #expect(!CopyPasteNames.isPackageName(".app"))
@@ -279,6 +285,7 @@ struct CopyPasteNamesTests {
         var error: String?
     }
 
+    // F-038 F-106
     @Test func keepBothNamesMatchTheReference() throws {
         let cases: [GoldenCase<KeepBothInput, KeepBothOutput>] = try Golden.load(suite: "keep-both-names")
         #expect(cases.count >= 500)
@@ -307,6 +314,7 @@ struct CopyPasteNamesTests {
         let `extension`: String
     }
 
+    // F-041 F-106
     @Test func fitNameMatchesTheReference() throws {
         let cases: [GoldenCase<FitInput, String>] = try Golden.load(suite: "fit-name")
         #expect(cases.count >= 300)

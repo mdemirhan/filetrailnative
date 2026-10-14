@@ -22,7 +22,7 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-6bdc54b6 F-011
+    // T-6bdc54b6 F-011 F-126
     @Test func persistsThroughATempFileSoAFailedWriteKeepsThePreviousState() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -52,7 +52,7 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-20da35cd F-011
+    // T-20da35cd F-011 F-127
     @Test func writesADeliberateChangePromptly() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -74,7 +74,7 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-46ebfbd8 F-011
+    // T-46ebfbd8 F-011 F-128 B-NAV-190
     @Test func keepsWhereTheUserIsForTheQuitTimeWrite() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -120,7 +120,7 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-15a224c9 F-011
+    // T-15a224c9 F-011 B-NAV-190
     @Test func keepsTheOpenTabsForTheQuitTimeWriteButWritesTheSettingAtOnce() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -167,7 +167,7 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-1ddc673f F-011
+    // T-1ddc673f F-011 F-128 F-129
     @Test func writesNavigationAlongWithTheNextDeliberateChangeAndNothingForNoChange() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -282,7 +282,7 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-51e0a908 F-011
+    // T-51e0a908 F-011 F-129
     @Test func writesAWindowsPanelsAtOnceAndWhereItIsAtQuit() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)

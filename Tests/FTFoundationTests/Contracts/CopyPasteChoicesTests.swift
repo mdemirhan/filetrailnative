@@ -4,7 +4,7 @@ import Testing
 @testable import FTFoundation
 
 struct CopyPasteChoicesTests {
-    // T-ac4bf5f6
+    // T-ac4bf5f6 F-035
     @Test func offersMergeOnlyForTwoFolders() {
         #expect(CopyPasteChoices.isChoiceAllowed(for: .directoryConflict, .merge))
         #expect(!CopyPasteChoices.isChoiceAllowed(for: .fileConflict, .merge))
@@ -12,7 +12,7 @@ struct CopyPasteChoicesTests {
         #expect(CopyPasteChoices.isChoiceAllowed(for: .fileConflict, .overwrite))
     }
 
-    // T-de383202
+    // T-de383202 F-035
     @Test func offersOnlySkipWhenTheSourceDisappeared() {
         #expect(
             CopyPasteChoices.runtimeConflictChoices(reason: .sourceDeleted, conflictClass: .directoryConflict)
@@ -25,7 +25,7 @@ struct CopyPasteChoicesTests {
                 == [.overwrite, .keepBoth, .skip])
     }
 
-    // T-036007a2
+    // T-036007a2 F-035
     @Test func offersOnlyGoingAheadOrSkippingWhenNothingIsAtTheDestinationAnyMore() {
         #expect(
             CopyPasteChoices.runtimeConflictChoices(
@@ -36,7 +36,7 @@ struct CopyPasteChoicesTests {
                 == [.overwrite, .skip])
     }
 
-    // T-d6e0523d
+    // T-d6e0523d F-036
     @Test func scopesStandingAnswersToTheSameKindOfConflict() {
         let sourceChanged = CopyPasteChoices.runtimeConflictScope(
             reason: .sourceChanged, conflictClass: .fileConflict, destinationExists: false)
@@ -55,7 +55,7 @@ struct CopyPasteChoicesTests {
                 == "trash_unavailable")
     }
 
-    // T-5550b8c2
+    // T-5550b8c2 F-036
     @Test func givesAnItemReplaceCantTakeTheSafeChoice() {
         let replaceAll = CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite)
         func blocked(_ conflictClass: ConflictClass, _ override: CopyPasteChoice? = nil) -> CopyPasteChoice {
