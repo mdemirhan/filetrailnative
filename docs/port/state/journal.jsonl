@@ -63,3 +63,4 @@
 {"at": "2026-10-14T07:51:25+00:00", "event": "add-batch", "batch": "W1-F", "wps": ["P4-01", "P0-13"], "estimatedAgents": 8}
 {"at": "2026-10-14T07:51:25+00:00", "event": "next", "text": "QUIET MODE until user says go (see quietMode). Running W1-F P4-01 (capture deferred) + P0-13. On go: deferred GUI checks, W1-G P4-02, wave-1 end gate (acceptance + deviation approvals)"}
 {"at": "2026-10-14T07:51:25+00:00", "event": "set-batch", "batch": "W1-F", "status": "running", "runId": null}
+{"at": "2026-10-14T07:51:32+00:00", "event": "set-batch", "batch": "W1-F", "status": "running", "runId": "wf_dbf217e2-90c"}
