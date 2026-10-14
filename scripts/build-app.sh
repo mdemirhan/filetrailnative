@@ -23,6 +23,12 @@ cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
 if [ "$config" = release ]; then
     strip -rSTx "$app/Contents/MacOS/FileTrail"
 fi
+# The bundled fd (search): the helper is signed first, then the app seals it.
+mkdir -p "$app/Contents/Helpers" "$app/Contents/Resources/fd"
+cp Resources/fd/darwin-arm64/fd "$app/Contents/Helpers/fd"
+cp Resources/fd/manifest.json "$app/Contents/Resources/fd/manifest.json"
+cp -R Resources/fd/licenses "$app/Contents/Resources/fd/licenses"
+codesign --force --sign - --options runtime "$app/Contents/Helpers/fd" >/dev/null 2>&1
 codesign --force --sign - "$app" >/dev/null 2>&1
 
 echo "Built $app ($(du -sh "$app" | cut -f1))"
