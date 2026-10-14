@@ -1,0 +1,21 @@
+a01-search                    geometry: 13 off, 5 missing (swift) of 19 (max 914.5pt)  pixels: 0.27  unsupported: 0 steps  failed: 12 steps  expect: 18 unmet (swift)
+a02-folder-tree               geometry: 13 off, 2 missing (swift) of 16 (max 928.3pt)  pixels: 0.22  unsupported: 0 steps  expect: 5 unmet (swift)
+a03-visible-clipboard         geometry: 13 off, 8 missing (swift) of 22 (max 840pt)  pixels: 0.32  unsupported: 0 steps  failed: 2 steps  expect: 9 unmet (swift)
+a04-paste-never-destroys      geometry: 13 off, 9 missing (swift) of 23 (max 928.3pt)  pixels: 0.96  unsupported: 0 steps  failed: 7 steps  expect: 9 unmet (swift)
+a05-undo-redo                 geometry: 13 off, 2 missing (swift) of 16 (max 847pt)  pixels: 0.14  unsupported: 4 steps  failed: 1 steps  expect: 4 unmet (swift)
+a06-go-to                     geometry: 13 off, 6 missing (swift) of 20 (max 921.3pt)  pixels: 0.93  unsupported: 0 steps  failed: 4 steps  expect: 10 unmet (swift)
+a07-type-to-filter            geometry: 13 off, 4 missing (swift) of 18 (max 847pt)  pixels: 0.13  unsupported: 0 steps  failed: 3 steps  expect: 12 unmet (swift)
+a08-path-bar-history          geometry: 13 off, 4 missing (swift) of 18 (max 928.3pt)  pixels: 0.12  unsupported: 1 steps  failed: 10 steps  expect: 9 unmet (swift)
+a09-shortcuts                 geometry: 0 off, 6 missing (swift), 14 missing (electron) of 20  pixels: 0.15  unsupported: 0 steps  failed: 8 steps  expect: 9 unmet (swift)
+a10-customize-toolbar         geometry: 13 off, 4 missing (swift) of 18 (max 921.3pt)  pixels: 0.20  unsupported: 0 steps  failed: 5 steps  expect: 6 unmet (swift)
+a11-folder-sizes              geometry: 13 off, 3 missing (swift) of 17 (max 870.5pt)  pixels: 0.12  unsupported: 1 steps  expect: 2 unmet (swift)
+a12-batch-rename              geometry: 13 off, 7 missing (swift) of 21 (max 840pt)  pixels: 0.81  unsupported: 0 steps  failed: 16 steps  expect: 13 unmet (swift)
+a13-views                     geometry: 11 off, 2 missing (swift), 3 missing (electron) of 15 (max 1068pt)  pixels: 0.13  unsupported: 2 steps  expect: 5 unmet (swift)
+a14-tabs-and-windows          geometry: 13 off, 3 missing (swift) of 17 (max 928.3pt)  pixels: 0.24  unsupported: 0 steps
+a15-make-it-yours             geometry: 13 off, 4 missing (swift) of 18 (max 847pt)  pixels: 0.99  unsupported: 0 steps  failed: 4 steps  expect: 2 unmet (swift)
+a16-favorites                 geometry: 13 off, 2 missing (swift) of 16 (max 881.1pt)  pixels: 0.30  unsupported: 1 steps  failed: 6 steps  expect: 3 unmet (swift)
+a17-outside-changes           geometry: 13 off, 2 missing (swift) of 16 (max 921.3pt)  pixels: 0.12  unsupported: 1 steps  expect: 4 unmet (swift)
+contact sheet: tools/capture/out/contact.html
+exit=0
+
+[exited with code 0]

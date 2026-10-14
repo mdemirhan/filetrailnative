@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T10:26:14+00:00",
+  "updatedAt": "2026-10-14T10:30:56+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "W1-G recorded; all branches and worktrees deleted. Running wave-1 acceptance; then wave-1 gate: user approves deviations, PLAN §8 checkpoints; critic gaps become WPs",
+  "nextAction": "WAVE-1 GATE: waiting for user: approve D-006..D-014, PLAN §8 checkpoints; then W1-H (P4-04, P0-15, P2-08, P0-16) before wave 2",
   "pause": {
     "requested": false,
     "reason": null,
@@ -1377,8 +1377,9 @@
       "risk": "high",
       "model": "opus",
       "depends": [
-        "P3-07",
-        "P1-04"
+        "P1-04",
+        "P2-08",
+        "P3-07"
       ],
       "status": "todo",
       "branch": "port/P3-08",
@@ -1589,7 +1590,9 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P1-02: titleTooltips DOM-timing rows T-9e960311, T-cc926cf5, T-1849bac0, T-91fc6643, T-4e5d4df9, T-34663665, T-6005952a, T-16801ecd, T-5c9514b8, T-bea514b5, T-f8d9bae2 (AppKit tooltip delay and placement)."
+        "From P1-02: titleTooltips DOM-timing rows T-9e960311, T-cc926cf5, T-1849bac0, T-91fc6643, T-4e5d4df9, T-34663665, T-6005952a, T-16801ecd, T-5c9514b8, T-bea514b5, T-f8d9bae2 (AppKit tooltip delay and placement).",
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
+        "User report (2026-10-14, screenshot of ~/tmp in Icons view): an extra line over the left pane makes the layout look uneven; the original sidebar runs smoothly up to the title bar. Check the window chrome (unified toolbar, sidebar split item, titlebar separator, tab bar band) against the original and remove lines the original does not have. Found on main (in-app snapshot of ~/tmp, 2026-10-14): the sidebar split divider is a hard vertical line that runs the full window height, through the title bar and toolbar band; the original's sidebar meets the content with no line there, and its toolbar hairline spans only the content side. Likely NSSplitViewItem(sidebarWithViewController:) + unified toolbar + fullSizeContentView drawing the divider in the titlebar; check NSSplitView.dividerStyle, the sidebar item's titlebarSeparatorStyle and window.titlebarSeparatorStyle. The user's screenshot also shows a dark band at the very top that the snapshot can't show; check the real window."
       ]
     },
     "P5-02": {
@@ -1614,7 +1617,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+      ]
     },
     "P5-03": {
       "title": "List view",
@@ -1638,7 +1644,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+      ]
     },
     "P5-04": {
       "title": "Icon view and Compact List",
@@ -1662,7 +1671,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+      ]
     },
     "P5-05": {
       "title": "Selection, keyboard, filter, rename, navigation",
@@ -1685,7 +1697,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+      ]
     },
     "P5-06": {
       "title": "Path bar, status bar, Info Row, Info panel",
@@ -1705,7 +1720,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+      ]
     },
     "P5-07": {
       "title": "Search UI",
@@ -1731,7 +1749,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P2-06: make JSRegExp (or a public highlight helper on it) public so the search highlight uses the JavaScript-compatible matcher, not NSRegularExpression."
+        "From P2-06: make JSRegExp (or a public highlight helper on it) public so the search highlight uses the JavaScript-compatible matcher, not NSRegularExpression.",
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
       ]
     },
     "P5-08": {
@@ -1777,7 +1796,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+      ]
     },
     "P6-01": {
       "title": "Go To / Move To, alerts",
@@ -2161,6 +2183,88 @@
       "deviations": [
         "Touched Sources/FTAppKit/Automation/AutomationRunner.swift (outside the listed owned paths) to fix the quit hang that made every capture scenario time out; P4-02 may hit the same hang and should take this commit."
       ]
+    },
+    "P4-04": {
+      "title": "Window and tab follow-ups: Duplicate Tab menu, tabs follow the disk, menu state, startup rows, relaunch/Dock flows",
+      "risk": "medium",
+      "model": "opus",
+      "lenses": [
+        "parity",
+        "visual"
+      ],
+      "depends": [
+        "P4-02"
+      ],
+      "gate": [
+        "scripts/ci.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
+      "phase": "P4",
+      "wave": 1,
+      "status": "todo",
+      "branch": "port/P4-04",
+      "attempts": 0,
+      "blockers": []
+    },
+    "P0-15": {
+      "title": "Parity bookkeeping for P1/P2/P4: uncited rows, F- and B- citations, scenarios close e2e rows",
+      "risk": "low",
+      "model": "sonnet",
+      "lenses": [],
+      "depends": [
+        "P4-02"
+      ],
+      "gate": [
+        "bun tools/parity-matrix/sync.ts --no-write",
+        "scripts/ci.sh"
+      ],
+      "phase": "P0",
+      "wave": 1,
+      "status": "todo",
+      "branch": "port/P0-15",
+      "attempts": 0,
+      "blockers": []
+    },
+    "P2-08": {
+      "title": "Dates taken (ImageIO)",
+      "risk": "low",
+      "model": "sonnet",
+      "lenses": [
+        "parity"
+      ],
+      "depends": [
+        "P2-01"
+      ],
+      "gate": [
+        "tools/parity/gen.sh --check",
+        "scripts/ci.sh"
+      ],
+      "phase": "P2",
+      "wave": 1,
+      "status": "todo",
+      "branch": "port/P2-08",
+      "attempts": 0,
+      "blockers": []
+    },
+    "P0-16": {
+      "title": "Bench baseline and budgets, timing tests under load, stray DiskImageMounter",
+      "risk": "low",
+      "model": "sonnet",
+      "lenses": [],
+      "depends": [
+        "P4-02"
+      ],
+      "gate": [
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/bench/run.sh --quick --report-only",
+        "scripts/ci.sh"
+      ],
+      "phase": "P0",
+      "wave": 1,
+      "status": "todo",
+      "branch": "port/P0-16",
+      "attempts": 0,
+      "blockers": []
     }
   },
   "behaviorExtraction": {
@@ -2181,13 +2285,27 @@
       "issue": "Automation app hung after finishing scenario 02-list-components-dark: NSApp.terminate stuck in _shouldTerminate; applicationShouldTerminate returns .terminateLater and the QuitCoordinator Task never replied (AppDelegate.swift ~220, P4-01 code on main). Sample: AutomationRunner.finish -> terminate -> _shouldTerminate -> nextEventMatchingMask, idle 9+ min. Not every run hangs (01-light exited fine). tools/capture/run.sh has no per-scenario timeout, so a hang holds the GUI lock forever.",
       "also": "A DiskImageMounter was launched ~50 min earlier during quiet mode (W1-F, likely P4-01 or P0-13 tests) and left running; killed by orchestrator.",
       "owner": "check W1-G results; else new WP (quit hang + run.sh scenario timeout + find what launched DiskImageMounter)",
-      "status": "cause: NSApp.terminate called inside a main-actor Task/main-queue job deadlocks with applicationShouldTerminate -> .terminateLater + Task reply. Fixed: capture run.sh timeout 120 s (a697205); Benchmark quit via run loop (main); AutomationRunner fixed on both port/P4-02 and port/P0-14 (integrator picks one). Remaining: find what launched DiskImageMounter during quiet mode."
+      "status": "cause: NSApp.terminate called inside a main-actor Task/main-queue job deadlocks with applicationShouldTerminate -> .terminateLater + Task reply. Fixed: capture run.sh timeout 120 s (a697205); Benchmark quit via run loop (main); AutomationRunner fixed on both port/P4-02 and port/P0-14 (integrator picks one). Remaining: find what launched DiskImageMounter during quiet mode. DiskImageMounter launch -> P0-16."
     }
   ],
   "userRequests": [
     {
       "at": "2026-10-14",
       "request": "Once W1-G is done: everything merged to main, then delete all port/* branches and all worktrees before moving to the next phase."
+    },
+    {
+      "at": "2026-10-14",
+      "request": "UI metrics (fonts, icon sizes, padding, margins) must match the original defaults; covered by P5 (wave 2) with the geometry gate; recorded as carryOver on P5 WPs."
     }
-  ]
+  ],
+  "acceptance": {
+    "w1": {
+      "at": "2026-10-14",
+      "file": "docs/port/state/acceptance-w1.txt",
+      "passing": [
+        "a14-tabs-and-windows"
+      ],
+      "note": "first baseline; all other flows fail expectations because their UI is wave 2-3 (P5/P6). No regression possible yet."
+    }
+  }
 }

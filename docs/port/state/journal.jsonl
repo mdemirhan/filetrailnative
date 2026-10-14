@@ -76,3 +76,4 @@
 {"at": "2026-10-14T10:25:26+00:00", "event": "apply-report", "batch": "W1-G", "wps": ["P4-02", "P0-14"]}
 {"at": "2026-10-14T10:25:34+00:00", "event": "meter", "weeklyPct": 14.0, "fiveHourPct": 15.0, "note": "after W1-G (1.54M agent tokens)"}
 {"at": "2026-10-14T10:26:14+00:00", "event": "next", "text": "W1-G recorded; all branches and worktrees deleted. Running wave-1 acceptance; then wave-1 gate: user approves deviations, PLAN §8 checkpoints; critic gaps become WPs"}
+{"at": "2026-10-14T10:30:56+00:00", "event": "next", "text": "WAVE-1 GATE: waiting for user: approve D-006..D-014, PLAN §8 checkpoints; then W1-H (P4-04, P0-15, P2-08, P0-16) before wave 2"}
