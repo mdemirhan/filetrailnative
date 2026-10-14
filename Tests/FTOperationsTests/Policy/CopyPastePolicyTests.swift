@@ -14,14 +14,16 @@ func makeNode(
         id: id, sourcePath: sourcePath, destinationPath: destinationPath, sourceKind: sourceKind,
         destinationKind: destinationKind, disposition: conflictClass == nil ? .new : .conflict,
         conflictClass: conflictClass,
-        sourceFingerprint: NodeFingerprint(exists: true, kind: sourceKind, size: 1, mtimeMs: 1, mode: 0o644, ino: 1, dev: 1),
+        sourceFingerprint: NodeFingerprint(
+            exists: true, kind: sourceKind, size: 1, mtimeMs: 1, mode: 0o644, ino: 1, dev: 1),
         destinationFingerprint: NodeFingerprint(exists: destinationKind != .missing, kind: destinationKind),
         children: children, totalNodeCount: 1, conflictNodeCount: conflictClass == nil ? 0 : 1)
 }
 
 func makeReport(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport {
     CopyPasteAnalysisReport(
-        analysisId: "analysis-1", mode: .copy, sourcePaths: nodes.map(\.sourcePath), destinationDirectoryPath: "/target",
+        analysisId: "analysis-1", mode: .copy, sourcePaths: nodes.map(\.sourcePath),
+        destinationDirectoryPath: "/target",
         nodes: nodes, issues: [], warnings: [],
         summary: CopyPasteAnalysisSummary(
             topLevelItemCount: nodes.count, totalNodeCount: nodes.count, totalBytes: 1,
@@ -114,7 +116,8 @@ struct CopyPastePolicyTests {
     @Test func usesMismatchPolicyForTypeConflicts() throws {
         let fileSystem = MockAnalysisFileSystem([("/target", .directory())])
         let node = makeNode(
-            id: "mismatch", sourcePath: "/source/readme", destinationPath: "/target/readme", destinationKind: .directory,
+            id: "mismatch", sourcePath: "/source/readme", destinationPath: "/target/readme",
+            destinationKind: .directory,
             conflictClass: .typeMismatch)
 
         let resolved = try resolveAnalysisWithPolicy(
@@ -136,7 +139,8 @@ struct CopyPastePolicyTests {
         let fileSystem = MockAnalysisFileSystem([("/target", .directory())])
         let node = makeNode(
             id: "missing-\(conflictClass.rawValue)", sourcePath: "/source/folder/item",
-            destinationPath: "/target/folder/item", sourceKind: conflictClass == .directoryConflict ? .directory : .file,
+            destinationPath: "/target/folder/item",
+            sourceKind: conflictClass == .directoryConflict ? .directory : .file,
             destinationKind: conflictClass == .typeMismatch ? .directory : .file, conflictClass: conflictClass)
         let folder = makeNode(
             id: "folder", sourcePath: "/source/folder", destinationPath: "/target/folder", sourceKind: .directory,
@@ -175,7 +179,8 @@ struct CopyPastePolicyTests {
             id: "runtime", sourcePath: "/source/file.txt", destinationPath: "/target/file.txt", destinationKind: .file,
             conflictClass: .fileConflict)
 
-        let resolved = try resolveSingleNodeWithAction(node: node, action: .keepBoth, policy: nil, fileSystem: fileSystem)
+        let resolved = try resolveSingleNodeWithAction(
+            node: node, action: .keepBoth, policy: nil, fileSystem: fileSystem)
 
         #expect(resolved.action == .keepBoth)
         #expect(resolved.destinationPath == "/target/file copy 2.txt")
@@ -200,7 +205,8 @@ struct CopyPastePolicyTests {
                     ])
             ])
 
-        let resolved = try resolveSingleNodeWithAction(node: node, action: .overwrite, policy: nil, fileSystem: fileSystem)
+        let resolved = try resolveSingleNodeWithAction(
+            node: node, action: .overwrite, policy: nil, fileSystem: fileSystem)
 
         #expect(resolved.action == .overwrite)
         #expect(resolved.children.first?.action == .create)

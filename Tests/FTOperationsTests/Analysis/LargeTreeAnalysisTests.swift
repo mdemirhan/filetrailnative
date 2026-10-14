@@ -99,7 +99,8 @@ struct LargeTreeAnalysisTests {
 
         let report = try await review(
             fileSystem,
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target"))
+            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target")
+        )
 
         #expect(report?.summary.totalNodeCount == Self.fileCount + 2)
         #expect(report?.summary.totalBytes == Int64(Self.fileCount))

@@ -19,7 +19,8 @@ private func analyze(_ sourcePaths: [String], into destination: String) throws -
     try buildCopyPasteAnalysisReport(
         analysisId: "analysis-review",
         request: CopyPasteAnalysisRequest(mode: .copy, sourcePaths: sourcePaths, destinationDirectoryPath: destination),
-        fileSystem: PosixFileSystem(), thresholds: .init(largeBatchItemThreshold: 1000, largeBatchByteThreshold: 1_000_000_000))
+        fileSystem: PosixFileSystem(),
+        thresholds: .init(largeBatchItemThreshold: 1000, largeBatchByteThreshold: 1_000_000_000))
 }
 
 private func findNode(_ nodes: [CopyPasteAnalysisNode], _ name: String) -> CopyPasteAnalysisNode? {
@@ -54,7 +55,8 @@ struct CopyPasteAnalysisRealFSTests {
                 analysisId: "analysis-1",
                 request: CopyPasteAnalysisRequest(
                     mode: .copy, sourcePaths: [directory.path + "/A"], destinationDirectoryPath: destination),
-                fileSystem: PosixFileSystem(), thresholds: .init(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1000))
+                fileSystem: PosixFileSystem(),
+                thresholds: .init(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1000))
 
             #expect(report.issues.map(\.code) == [.parentIntoChild])
             #expect(report.nodes.isEmpty)

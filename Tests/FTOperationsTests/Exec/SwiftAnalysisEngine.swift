@@ -71,7 +71,8 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
     // MARK: The review sheet
 
     private static func choicesFor(_ conflictClass: ConflictClass) -> [String] {
-        conflictClass == .directoryConflict ? ["merge", "keep_both", "overwrite", "skip"] : ["keep_both", "overwrite", "skip"]
+        conflictClass == .directoryConflict
+            ? ["merge", "keep_both", "overwrite", "skip"] : ["keep_both", "overwrite", "skip"]
     }
 
     private static func policyForAllConflicts(_ button: String) -> CopyPastePolicy {

@@ -137,7 +137,8 @@ public struct CopyPasteAnalysisNode: Codable, Equatable, Sendable {
 
     public init(
         id: String, sourcePath: String, destinationPath: String, sourceKind: CopyPasteNodeKind,
-        destinationKind: CopyPasteNodeKind, disposition: CopyPasteAnalysisNodeDisposition, conflictClass: ConflictClass?,
+        destinationKind: CopyPasteNodeKind, disposition: CopyPasteAnalysisNodeDisposition,
+        conflictClass: ConflictClass?,
         sourceFingerprint: NodeFingerprint, destinationFingerprint: NodeFingerprint, children: [CopyPasteAnalysisNode],
         issueCode: CopyPastePlanIssueCode? = nil, issueMessage: String? = nil, totalNodeCount: Int,
         conflictNodeCount: Int, destinationTotalNodeCount: Int? = nil, keepBothDestinationPath: String? = nil,

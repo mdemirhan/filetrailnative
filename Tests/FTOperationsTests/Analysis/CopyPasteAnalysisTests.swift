@@ -111,7 +111,10 @@ struct CopyPasteAnalysisTests {
             ("/workspace", .directory()), ("/workspace/file.txt", .file(size: 3)), ("/not-a-dir", .file(size: 1)),
         ])
 
-        #expect(try analyze(fileSystem, ["/workspace/file.txt"], into: "/missing").issues.map(\.code) == [.destinationMissing])
+        #expect(
+            try analyze(fileSystem, ["/workspace/file.txt"], into: "/missing").issues.map(\.code) == [
+                .destinationMissing
+            ])
         #expect(
             try analyze(fileSystem, ["/workspace/file.txt"], into: "/not-a-dir").issues.map(\.code)
                 == [.destinationNotDirectory])
@@ -123,7 +126,8 @@ struct CopyPasteAnalysisTests {
     // T-7c7cd228 F-421 F-310
     @Test func rejectsCopyingADirectoryIntoItsOwnDescendant() throws {
         let fileSystem = MockAnalysisFileSystem([
-            ("/workspace", .directory()), ("/workspace/folder", .directory()), ("/workspace/folder/child", .directory()),
+            ("/workspace", .directory()), ("/workspace/folder", .directory()),
+            ("/workspace/folder/child", .directory()),
         ])
         fileSystem.setRealpath("/workspace/folder", "/workspace/folder")
         fileSystem.setRealpath("/workspace/folder/child", "/workspace/folder/child")
@@ -191,7 +195,8 @@ struct CopyPasteAnalysisTests {
     // T-622ce2f9 F-424
     @Test func fallsBackToASourceMissingIssueWhenParentChildRealpathChecksFail() throws {
         let fileSystem = MockAnalysisFileSystem([
-            ("/workspace", .directory()), ("/workspace/folder", .directory()), ("/workspace/folder/child", .directory()),
+            ("/workspace", .directory()), ("/workspace/folder", .directory()),
+            ("/workspace/folder/child", .directory()),
             ("/target", .directory()),
         ])
         fileSystem.realpathImpl = { path in
@@ -333,7 +338,8 @@ struct CopyPasteAnalysisTests {
     @Test func countsSymlinksAsItemsInTheDestination() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/f.txt", .file(size: 1)),
-            ("/target", .directory()), ("/target/folder", .directory()), ("/target/folder/link", .symlink("/elsewhere")),
+            ("/target", .directory()), ("/target/folder", .directory()),
+            ("/target/folder/link", .symlink("/elsewhere")),
         ])
 
         let report = try analyze(fileSystem, ["/source/folder"], into: "/target", bytes: 10000)
@@ -458,7 +464,8 @@ struct CopyPasteAnalysisTests {
     @Test func propagatesAbortsWhileCountingDestinationItems() {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/file.txt", .file(size: 1)),
-            ("/target", .directory()), ("/target/folder", .directory()), ("/target/folder/existing.txt", .file(size: 1)),
+            ("/target", .directory()), ("/target/folder", .directory()),
+            ("/target/folder/existing.txt", .file(size: 1)),
         ])
         let signal = StopSignal()
         signal.stop()
@@ -560,7 +567,8 @@ struct CopyPasteAnalysisTests {
 
     // MARK: A disk mounted inside a folder
 
-    private static func withMountedDisk(_ seed: [(String, MockAnalysisFileSystem.Seed)] = []) -> MockAnalysisFileSystem {
+    private static func withMountedDisk(_ seed: [(String, MockAnalysisFileSystem.Seed)] = []) -> MockAnalysisFileSystem
+    {
         MockAnalysisFileSystem(
             [
                 ("/Users/me/project", .directory(dev: 1)), ("/Users/me/project/notes.txt", .file(size: 1)),
@@ -578,7 +586,8 @@ struct CopyPasteAnalysisTests {
             report.issues == [
                 CopyPasteAnalysisIssue(
                     code: .sourceUnreadable,
-                    message: "\u{201C}project\u{201D} can't be moved because a disk is mounted inside it (\u{201C}mnt\u{201D}).",
+                    message:
+                        "\u{201C}project\u{201D} can't be moved because a disk is mounted inside it (\u{201C}mnt\u{201D}).",
                     sourcePath: "/Users/me/project", destinationPath: "/Volumes/Other/project")
             ])
         #expect(report.nodes.isEmpty)

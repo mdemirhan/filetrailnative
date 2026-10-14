@@ -9,9 +9,9 @@ import Testing
 
 private let replaceAll = CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite)
 
-private func analyze(_ fileSystem: MockAnalysisFileSystem, _ mode: CopyPasteMode, _ sources: [String], into destination: String)
-    throws -> CopyPasteAnalysisReport
-{
+private func analyze(
+    _ fileSystem: MockAnalysisFileSystem, _ mode: CopyPasteMode, _ sources: [String], into destination: String
+) throws -> CopyPasteAnalysisReport {
     try buildCopyPasteAnalysisReport(
         analysisId: "analysis-1",
         request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),

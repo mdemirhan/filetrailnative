@@ -57,7 +57,9 @@ extension WriteService {
         return CopyPasteOperationHandle(operationId: operationId, status: .queued)
     }
 
-    private func executeActiveOperation(_ operationId: String, _ request: CopyPasteExecutionRequest, _ signal: StopSignal)
+    private func executeActiveOperation(
+        _ operationId: String, _ request: CopyPasteExecutionRequest, _ signal: StopSignal
+    )
         async
     {
         defer {
