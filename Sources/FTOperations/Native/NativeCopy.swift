@@ -91,31 +91,30 @@ extension timespec {
 public enum FolderMetadata {
     /// `applyDirectoryMetadata`: copies the folder's own metadata from `source` (copyfile), and on a move
     /// puts back the date `sourceMtimeMs` it had before its items went out (only the date is lost if that
-    /// fails). When copyfile fails (a volume that refuses some attribute), carries over the mode and the date
-    /// alone (`chmod` + `utimes`, each skipped on ENOTSUP) and returns false for a move, whose original folder
-    /// is then kept with what its copy couldn't take; true otherwise.
-    @discardableResult
+    /// fails). When copyfile fails (a volume that refuses some attribute), a move first reports it through
+    /// `onNotCopied` (its original folder is then kept with what its copy couldn't take), and then the mode and
+    /// the date alone are carried over (`chmod` + `utimes`, each skipped on ENOTSUP). The report comes before
+    /// the fallback, so it stands even when the fallback throws.
     public static func apply(
         source: String, destination: String, sourceMode: UInt32?, sourceMtimeMs: Double?, moving: Bool,
+        onNotCopied: () -> Void,
         copyMetadata: (String, String) throws -> Void = NativeFS.copyMetadata,
         chmod: (String, UInt32) throws -> Void = NativeFS.chmod,
         utimes: (String, Double, Double) throws -> Void = { try NativeFS.utimes($0, atimeMs: $1, mtimeMs: $2) }
-    ) throws -> Bool {
-        var copied = true
+    ) throws {
         do {
             try copyMetadata(source, destination)
             if moving {
                 try? preserveTimestamps(destination, sourceMtimeMs, utimes)
             }
-            return true
+            return
         } catch {
             if moving {
-                copied = false
+                onNotCopied()
             }
         }
         try preserveMode(destination, sourceMode, chmod)
         try preserveTimestamps(destination, sourceMtimeMs, utimes)
-        return copied
     }
 
     /// `preserveModeIfSupported`.
