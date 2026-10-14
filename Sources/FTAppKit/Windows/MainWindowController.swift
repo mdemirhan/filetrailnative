@@ -69,7 +69,53 @@ final class ExplorerTabWindow: NSWindow {
     /// from the system or are sent to the window directly.
     override func sendEvent(_ event: NSEvent) {
         if WindowEventRouting.intercept(event, in: self) { return }
+        if forwardToolbarBand(event) { return }
         super.sendEvent(event)
+    }
+
+    /// The view a press in the toolbar band went to, which gets the drags and the release that follow.
+    private var bandTarget: NSView?
+
+    /// A press in the toolbar band goes straight to the app's view under it: the title bar's container covers the
+    /// band's top, and AppKit would otherwise take a press there as one on the title bar (in a window in the back,
+    /// for one). The traffic lights and the system tab bar keep theirs.
+    private func forwardToolbarBand(_ event: NSEvent) -> Bool {
+        switch event.type {
+        case .leftMouseDown, .rightMouseDown, .otherMouseDown:
+            guard let content = contentView, let frameView = content.superview,
+                let hit = frameView.hitTest(frameView.convert(event.locationInWindow, from: nil)),
+                hit.isDescendant(of: content)
+            else { return false }
+            let band = WindowMetrics.standard.toolbar.minHeight
+            let top = content.convert(event.locationInWindow, from: nil)
+            let fromTop = content.isFlipped ? top.y : content.bounds.height - top.y
+            guard fromTop < band else { return false }
+            if !isKeyWindow { makeKey() }
+            bandTarget = hit
+            switch event.type {
+            case .leftMouseDown:
+                if hit.acceptsFirstResponder { makeFirstResponder(hit) }
+                hit.mouseDown(with: event)
+            case .rightMouseDown: hit.rightMouseDown(with: event)
+            default: hit.otherMouseDown(with: event)
+            }
+            return true
+        case .leftMouseDragged, .rightMouseDragged:
+            guard let target = bandTarget else { return false }
+            if event.type == .leftMouseDragged { target.mouseDragged(with: event) } else { target.rightMouseDragged(with: event) }
+            return true
+        case .leftMouseUp, .rightMouseUp, .otherMouseUp:
+            guard let target = bandTarget else { return false }
+            bandTarget = nil
+            switch event.type {
+            case .leftMouseUp: target.mouseUp(with: event)
+            case .rightMouseUp: target.rightMouseUp(with: event)
+            default: target.otherMouseUp(with: event)
+            }
+            return true
+        default:
+            return false
+        }
     }
 
     // The system's tab commands go through the app's own, so the busy, sheet and 100-tab rules hold.
@@ -518,7 +564,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// The toolbar's search field: what it holds narrows the list (the spike's filter; searching is P5-07's).
     private var searchField: ToolbarSearchField? {
-        workspace.toolbar.slotViews[ToolbarItemID.search.rawValue]?.content as? ToolbarSearchField
+        (workspace.toolbar.slotViews[ToolbarItemID.search.rawValue]?.content as? ToolbarSearchSlot)?.field
     }
 
     private func connectSearchField() {
@@ -597,8 +643,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
         customizer.onFinish = { [weak self] in self?.finishCustomizingToolbar() }
         self.customizer = customizer
-        workspace.setCustomizing(customizer.panel)
         customizer.begin()
+        workspace.setCustomizing(customizer.panel)
         workspace.needsLayout = true
     }
 
@@ -629,7 +675,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     func windowDidResignKey(_ notification: Notification) {
-        customizer?.cancelDrag()
+        // The window going to the back ends a drag; a window of an app in the background has no focus to lose.
+        if NSApp.isActive { customizer?.cancelDrag() }
     }
 
     func windowDidMove(_ notification: Notification) {

@@ -136,6 +136,7 @@ final class BrowserViewController: NSViewController {
             text += ", \(Formatting.size(capacity)) available"
         }
         status.stringValue = text
+        shell.pathBarRow.needsLayout = true
     }
 
     private func itemCount(_ count: Int) -> String {

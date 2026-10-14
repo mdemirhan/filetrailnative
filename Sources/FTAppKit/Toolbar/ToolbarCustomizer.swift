@@ -114,6 +114,7 @@ final class ToolbarCustomizer {
         panel.removing = removing
         panel.restoreEnabled = !isDefault
         panel.needsLayout = true
+        panel.superview?.needsLayout = true
     }
 
     /// The toolbar laid its row out: a handle over each item.
@@ -364,6 +365,8 @@ final class ToolbarHandleView: NSView, TooltipAnchor {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
     override var acceptsFirstResponder: Bool { true }
     var tooltipText: String { tooltip }
     var tooltipIsQuiet: Bool { false }

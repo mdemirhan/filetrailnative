@@ -1,0 +1,105 @@
+{
+  "name": "54-narrow-overflow",
+  "description": "A narrow window: the removable items nearest the end go to the » menu",
+  "features": [
+    "F-716"
+  ],
+  "behaviors": [
+    "B-VIEW-114",
+    "B-VIEW-115",
+    "B-VIEW-116",
+    "B-VIEW-117",
+    "B-VIEW-118"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 800,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "topToolbarItems": [
+          "folderTree",
+          "back",
+          "forward",
+          "up",
+          "title",
+          "view",
+          "sort",
+          "search",
+          "viewOptions",
+          "infoPanel",
+          "hidden",
+          "newTab",
+          "refresh"
+        ]
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    },
+    {
+      "step": "click",
+      "element": "overflow button"
+    },
+    {
+      "step": "expectSheet",
+      "name": "toolbar menu"
+    },
+    {
+      "step": "expect",
+      "element": {
+        "name": "toolbar menu item",
+        "text": "Hidden Files"
+      },
+      "visible": true
+    },
+    {
+      "step": "snapshot",
+      "name": "menu"
+    },
+    {
+      "step": "geometry",
+      "name": "menu"
+    },
+    {
+      "step": "key",
+      "key": "Escape"
+    },
+    {
+      "step": "expect",
+      "element": "toolbar menu",
+      "visible": false
+    }
+  ]
+}

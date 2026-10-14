@@ -1,0 +1,107 @@
+{
+  "name": "56-view-options-menu",
+  "description": "The View Options menu with its keys: turn the Info Row on",
+  "features": [
+    "F-715"
+  ],
+  "behaviors": [
+    "B-VIEW-127"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "click",
+      "element": "view options button"
+    },
+    {
+      "step": "expectSheet",
+      "name": "toolbar menu"
+    },
+    {
+      "step": "expect",
+      "element": "toolbar menu item",
+      "count": 5
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    },
+    {
+      "step": "click",
+      "element": "toolbar menu item",
+      "text": "Info Row"
+    },
+    {
+      "step": "wait",
+      "ms": 400
+    },
+    {
+      "step": "click",
+      "element": "view options button"
+    },
+    {
+      "step": "expectSheet",
+      "name": "toolbar menu"
+    },
+    {
+      "step": "expect",
+      "element": {
+        "name": "checked toolbar menu item",
+        "text": "Info Row"
+      },
+      "visible": true
+    },
+    {
+      "step": "key",
+      "key": "Escape"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "info-row"
+    },
+    {
+      "step": "geometry",
+      "name": "info-row"
+    }
+  ]
+}

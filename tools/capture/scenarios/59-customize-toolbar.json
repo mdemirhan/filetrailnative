@@ -1,0 +1,76 @@
+{
+  "name": "59-customize-toolbar",
+  "description": "Customize Toolbar: the scrim, a handle over each item and the panel",
+  "features": [
+    "F-717",
+    "F-718",
+    "F-719",
+    "F-720"
+  ],
+  "behaviors": [
+    "B-VIEW-132",
+    "B-VIEW-133",
+    "B-VIEW-139",
+    "B-VIEW-140"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "command",
+      "id": "customizeToolbar"
+    },
+    {
+      "step": "expectSheet",
+      "name": "toolbar customize panel"
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    },
+    {
+      "step": "key",
+      "key": "Escape"
+    },
+    {
+      "step": "expect",
+      "element": "toolbar customize panel",
+      "visible": false
+    }
+  ]
+}

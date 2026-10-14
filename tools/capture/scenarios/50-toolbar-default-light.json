@@ -1,0 +1,72 @@
+{
+  "name": "50-toolbar-default-light",
+  "description": "The window grid and the default toolbar, light (smoke: the explorer shell)",
+  "features": [
+    "F-698",
+    "F-699",
+    "F-701",
+    "F-702",
+    "F-704",
+    "F-707",
+    "F-708",
+    "F-709",
+    "F-710",
+    "F-711",
+    "F-830",
+    "F-930"
+  ],
+  "behaviors": [
+    "B-VIEW-107",
+    "B-VIEW-109",
+    "B-VIEW-110",
+    "B-VIEW-111",
+    "B-VIEW-112",
+    "B-VIEW-119"
+  ],
+  "tests": [
+    "T-01d79486"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

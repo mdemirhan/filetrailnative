@@ -163,6 +163,7 @@ final class WorkspaceView: NSView {
             width: infoPanelOpen ? inspector : panes.inspectorWidth, height: height - panesTop)
         if slide == nil { inspectorCell.contentOffset = 0 }
         scrim.frame = bounds
+        placeCustomizePanel()
         applyColors()
     }
 
@@ -214,15 +215,22 @@ final class WorkspaceView: NSView {
     /// The rest of the window waits under a veil while the toolbar is customized.
     func setCustomizing(_ panel: ToolbarCustomizePanel?) {
         scrim.isHidden = panel == nil
-        if let panel {
-            let width = ToolbarCustomizePanel.width(forToolbarWidth: toolbar.bounds.width)
-            let height = panel.height(forWidth: width)
-            let toolbarFrame = toolbar.frame
-            panel.frame = NSRect(
-                x: toolbarFrame.midX - width / 2,
-                y: toolbarFrame.maxY - 1 + ToolbarCustomizePanel.gapBelowToolbar, width: width, height: height)
-            if panel.superview !== self { addSubview(panel) }
-        }
+        customizePanel = panel
+        if let panel, panel.superview !== self { addSubview(panel) }
+        placeCustomizePanel()
+    }
+
+    private weak var customizePanel: ToolbarCustomizePanel?
+
+    /// The panel hangs 8 pt under the toolbar (from its line), centered on it, `min(760, toolbar − 32)` wide.
+    private func placeCustomizePanel() {
+        guard let panel = customizePanel else { return }
+        let width = ToolbarCustomizePanel.width(forToolbarWidth: toolbar.frame.width)
+        let height = panel.height(forWidth: width)
+        let toolbarFrame = toolbar.frame
+        panel.frame = NSRect(
+            x: toolbarFrame.midX - width / 2, y: toolbarFrame.maxY - 1 + ToolbarCustomizePanel.gapBelowToolbar,
+            width: width, height: height)
     }
 }
 

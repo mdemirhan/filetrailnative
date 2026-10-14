@@ -320,6 +320,9 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
         formatter.locale = Locale(identifier: "en_US")
         count.stringValue = formatter.string(from: NSNumber(value: value)) ?? String(value)
         count.isHidden = value == 0
+        // With nothing copied it is only a stand-in, drawn while customizing so it can be moved.
+        setAccessibilityIdentifier(value == 0 ? "toolbar.clipboard.standIn" : "toolbar.clipboard")
+        icon.alphaValue = value == 0 ? DesignTokens.disabledOpacity : 1
     }
 
     var naturalWidth: Double {
@@ -345,6 +348,26 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     }
 }
 
+/// `.toolbar-search-slot`: the search field with the inset it keeps on each side.
+final class ToolbarSearchSlot: NSView {
+    let field = ToolbarSearchField()
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        addSubview(field)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+
+    override func layout() {
+        super.layout()
+        let inset = DesignTokens.toolbar.edgedItemInset
+        field.frame = bounds.insetBy(dx: inset, dy: 0)
+    }
+}
+
 /// The toolbar's search field (`.toolbar-search`): a round capsule on the search surface, the magnifier with its small
 /// chevron (the Search Options button, P5-07), 13 pt text and the placeholder "Search". What it searches is P5-07's.
 final class ToolbarSearchField: NSSearchField {
@@ -367,6 +390,12 @@ final class ToolbarSearchField: NSSearchField {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    /// The placeholder's words, also when it is drawn from `placeholderAttributedString`.
+    override var placeholderString: String? {
+        get { placeholderAttributedString?.string ?? super.placeholderString }
+        set { super.placeholderString = newValue }
+    }
 
     func applyColors() {
         let palette = ChromeColors.palette(for: self)

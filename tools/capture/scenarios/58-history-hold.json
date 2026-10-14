@@ -1,0 +1,135 @@
+{
+  "name": "58-history-hold",
+  "description": "Back held down lists the folders behind, nearest first; a right-click on Forward lists those ahead",
+  "features": [
+    "F-698"
+  ],
+  "behaviors": [
+    "B-NAV-025",
+    "B-NAV-026",
+    "B-NAV-028",
+    "B-NAV-032",
+    "B-NAV-033",
+    "B-NAV-034",
+    "B-NAV-035",
+    "B-NAV-037"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app"
+    },
+    {
+      "step": "open",
+      "path": "app/src"
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "click",
+      "element": "back button",
+      "holdMs": 600
+    },
+    {
+      "step": "expectSheet",
+      "name": "history menu"
+    },
+    {
+      "step": "expect",
+      "element": "history menu item",
+      "count": 2
+    },
+    {
+      "step": "expect",
+      "element": {
+        "name": "history menu item",
+        "index": 0
+      },
+      "text": "src"
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    },
+    {
+      "step": "click",
+      "element": "history menu item",
+      "text": "app"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "expect",
+      "element": "title",
+      "text": "app"
+    },
+    {
+      "step": "click",
+      "element": "forward button",
+      "button": "right"
+    },
+    {
+      "step": "expectSheet",
+      "name": "history menu"
+    },
+    {
+      "step": "expect",
+      "element": "history menu item",
+      "count": 2
+    },
+    {
+      "step": "snapshot",
+      "name": "forward"
+    },
+    {
+      "step": "geometry",
+      "name": "forward"
+    },
+    {
+      "step": "key",
+      "key": "Escape"
+    },
+    {
+      "step": "expect",
+      "element": "history menu",
+      "visible": false
+    }
+  ]
+}

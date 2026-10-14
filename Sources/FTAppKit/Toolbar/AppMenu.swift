@@ -91,7 +91,11 @@ final class AppMenuView: NSView {
             rows.append(row)
             addSubview(row)
         }
-        if style == .keyboard, !rows.isEmpty { activeIndex = 0 }
+        if style == .keyboard, !rows.isEmpty {
+            activeIndex = 0
+            // Observers don't run in an initializer.
+            rows[0].isActive = true
+        }
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -111,7 +115,7 @@ final class AppMenuView: NSView {
         }
         for row in rows { width = max(width, row.naturalWidth + 2 * Self.padding + 1) }
         if let maxWidth { width = min(width, maxWidth) }
-        return NSSize(width: width.rounded(.up), height: height)
+        return NSSize(width: width, height: height)
     }
 
     override func layout() {
@@ -236,16 +240,20 @@ final class AppMenuRow: NSView, TextStyleSource {
     override var isFlipped: Bool { true }
 
     /// The row's width when nothing is cut short.
+    private static func textWidth(_ field: NSTextField) -> Double {
+        (field.stringValue as NSString).size(withAttributes: [.font: field.font as Any]).width
+    }
+
     var naturalWidth: Double {
-        let titleWidth = label.intrinsicContentSize.width
+        let titleWidth = Self.textWidth(label)
         if item.detail != nil {
             // `.history-menu-item`: padding 0 10, a gap of 10, the name at most 220 wide.
-            return 10 + min(220, titleWidth) + 10 + detail.intrinsicContentSize.width + 10
+            return 10 + min(220, titleWidth) + 10 + Self.textWidth(detail) + 10
         }
         var width =
             AppMenuView.rowPaddingLeading + AppMenuView.checkColumn + AppMenuView.rowGap + titleWidth
             + AppMenuView.rowPaddingTrailing
-        if item.shortcut != nil { width += AppMenuView.rowGap + AppMenuView.shortcutGap + shortcut.intrinsicContentSize.width }
+        if item.shortcut != nil { width += AppMenuView.rowGap + AppMenuView.shortcutGap + Self.textWidth(shortcut) }
         return width
     }
 
@@ -260,7 +268,7 @@ final class AppMenuRow: NSView, TextStyleSource {
             x: AppMenuView.rowPaddingLeading + (AppMenuView.checkColumn - box) / 2, y: (bounds.height - box) / 2,
             width: box, height: box)
         if item.detail != nil {
-            let nameWidth = min(220, label.intrinsicContentSize.width)
+            let nameWidth = min(220, Self.textWidth(label) + 4)
             place(label, x: 10, width: nameWidth)
             place(detail, x: 10 + nameWidth + 10, width: bounds.width - nameWidth - 30)
             return
@@ -320,6 +328,8 @@ final class AppMenuRow: NSView, TextStyleSource {
     override func mouseExited(with event: NSEvent) {
         isHovered = false
     }
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     override func mouseDown(with event: NSEvent) {}
 
@@ -388,10 +398,14 @@ final class AppMenuPresenter {
         }
         host.addSubview(menu)
         TooltipController.of(window).scheduler.dismiss()
-        observers.append(
-            NotificationCenter.default.addObserver(
-                forName: NSWindow.didResignKeyNotification, object: window, queue: .main
-            ) { [weak self] _ in MainActor.assumeIsolated { self?.close() } })
+        // The window going to the back closes it. A window that isn't the active app's (a run in the background)
+        // has no focus to lose.
+        if NSApp.isActive {
+            observers.append(
+                NotificationCenter.default.addObserver(
+                    forName: NSWindow.didResignKeyNotification, object: window, queue: .main
+                ) { [weak self] _ in MainActor.assumeIsolated { self?.close() } })
+        }
         if closesOnResize {
             observers.append(
                 NotificationCenter.default.addObserver(

@@ -118,6 +118,10 @@ final class ToolbarCustomizePanel: NSView {
         return Double(lines) * Self.lineHeight(font)
     }
 
+    static func lineCount(_ text: String, font: NSFont, width: Double) -> Int {
+        lines(text, font: font, width: width)
+    }
+
     private static func lines(_ text: String, font: NSFont, width: Double) -> Int {
         let storage = NSTextStorage(string: text, attributes: [.font: font])
         let container = NSTextContainer(size: NSSize(width: width, height: .greatestFiniteMagnitude))
@@ -268,6 +272,8 @@ final class ToolbarPaletteItemView: NSView, TextStyleSource {
 
     override var isFlipped: Bool { true }
 
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
     override func hitTest(_ point: NSPoint) -> NSView? {
         frame.contains(point) ? self : nil
     }
@@ -282,9 +288,15 @@ final class ToolbarPaletteItemView: NSView, TextStyleSource {
             x: (chipSize - iconSize) / 2, y: (chipSize - iconSize) / 2, width: iconSize, height: iconSize)
         let labelTop = top + chipSize + ToolbarCustomizePanel.itemGap
         let side = ToolbarCustomizePanel.itemPadding.horizontal
-        let width = bounds.width - 2 * side
-        let height = label.sizeThatFits(NSSize(width: width, height: .greatestFiniteMagnitude)).height
-        label.frame = NSRect(x: side, y: labelTop, width: width, height: height)
+        // The label is as wide as its text (up to the column), centered, 1.2 lines high per line.
+        let room = bounds.width - 2 * side
+        let font = label.font ?? .systemFont(ofSize: DesignTokens.typeScale.small)
+        let textWidth = (label.stringValue as NSString).size(withAttributes: [.font: font]).width
+        let lines = ToolbarCustomizePanel.lineCount(label.stringValue, font: font, width: room)
+        let width = lines > 1 ? room : min(room, textWidth)
+        label.frame = NSRect(
+            x: (bounds.width - width) / 2, y: labelTop, width: width,
+            height: Double(lines) * font.pointSize * ToolbarCustomizePanel.labelLineHeight)
         let palette = ChromeColors.palette(for: self)
         chip.layer?.backgroundColor = ChromeColors.color(palette.toolbarToggleBg).cgColor
         chip.layer?.cornerRadius = chipSize / 2
@@ -348,8 +360,11 @@ final class PanelPushButton: NSView, TextStyleSource {
 
     override var isFlipped: Bool { true }
 
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
     var naturalWidth: Double {
-        max(Self.minWidth, (label.intrinsicContentSize.width + 2 * Self.paddingInline).rounded(.up))
+        let text = (label.stringValue as NSString).size(withAttributes: [.font: label.font as Any]).width
+        return max(Self.minWidth, text + 2 * Self.paddingInline)
     }
 
     override func layout() {

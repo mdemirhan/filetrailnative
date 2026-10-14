@@ -167,7 +167,7 @@ final class ToolbarView: NSView {
                 title.isInert = inert
             } else if let separator = slotView.content as? ToolbarSeparatorView {
                 separator.customizing = inert
-            } else if let search = slotView.content as? ToolbarSearchField {
+            } else if let search = (slotView.content as? ToolbarSearchSlot)?.field {
                 search.isEnabled = !inert
             }
         }
@@ -211,7 +211,7 @@ final class ToolbarView: NSView {
             }
             return switcher
         case .search:
-            return ToolbarSearchField()
+            return ToolbarSearchSlot()
         case .clipboard:
             return ToolbarClipboardButton()
         default:
