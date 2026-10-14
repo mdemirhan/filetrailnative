@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T13:55:48+00:00",
+  "updatedAt": "2026-10-14T14:44:25+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Two tracks running: W2-P1 (P3-02) and W2-U1 (P5-02, P5-03). Each track launches its next batch when its own merges (tracks in state).",
+  "nextAction": "Tracks: W2-P2 (P3-03) running; W2-U1 (P5-02, P5-03) running.",
   "pause": {
     "requested": false,
     "reason": null,
@@ -562,10 +562,25 @@
       "wps": [
         "P3-02"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_12f9359a-59e",
       "estimatedAgents": 8,
-      "startedAt": "2026-10-14T13:55:48+00:00"
+      "startedAt": "2026-10-14T13:55:48+00:00",
+      "endedAt": "2026-10-14T14:44:04+00:00",
+      "integration": {
+        "merged": [
+          "P3-02"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "83b80f8e9f9f35d96b6ba977e27f2f25e947c2cc",
+        "summary": "Merged port/P3-02 cleanly with no conflicts. CI passed after the merge and again after the parity sync (1462 tests, 0 failures). Parity matrix synced and committed as \"Sync parity matrix after W2-P1\". No fixes were needed. The merge lock is released."
+      },
+      "critic": null,
+      "spentOutputTokens": 760163,
+      "agents": 8,
+      "subagentTokens": 1153889,
+      "durationMin": 48.2
     },
     "W2-U1": {
       "wps": [
@@ -576,6 +591,15 @@
       "runId": "wf_e9630182-67a",
       "estimatedAgents": 11,
       "startedAt": "2026-10-14T13:55:48+00:00"
+    },
+    "W2-P2": {
+      "wps": [
+        "P3-03"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 8,
+      "startedAt": "2026-10-14T14:44:25+00:00"
     }
   },
   "wps": {
@@ -1372,10 +1396,10 @@
       "depends": [
         "P3-01"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P3-02",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "ad94eedbdf7c441488e2573dada913a78b5c4d8d",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check",
@@ -1386,11 +1410,41 @@
         "safety",
         "performance"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Branch port/P3-02 (detached at the end). All three gates pass: ci.sh (1460 tests), gen.sh --check and exec/selftest.sh.\n- Analysis/: buildCopyPasteAnalysisReport, normalizeCopyPasteAnalysisRequest, analyzeItemAgain and classifyConflict. AnalysisFileSystem adds the optional isCaseSensitive, isPackage and isAppleDouble to IdentityFileSystem; PosixFileSystem conforms through native calls. Disk-backed isPackageFolder, resolveDuplicateName, resolveKeepBothDestinationPath and detectCaseSensitivity wrap FTFoundation CopyPasteNames.\n- Policy/: resolveAnalysisWithPolicy, resolveSingleNodeWithAction (reservedPaths passed inout), collectDestinationPathKeys and ResolvedCopyPasteNode.\n- WriteService/: the writeServiceTypes types. WriteService is lock-based and its methods are synchronous; analysis jobs start, cancel, prune with keep and refuse while busy, and live in WriteServiceAnalysis.swift. The analysis and the policy resolution run on a dedicated thread with a 16 MB stack.\n- WriteServicePaste.swift: startCopyPaste claims the write slot and emits the queued and failure events. The paste itself is the injectable `executeCopyPaste` seam, which by default throws \"Pasting isn't available yet.\"; P3-03 replaces it.\n- Differential: Exec/SwiftAnalysisEngine conforms to ExecAnalysisEngine. ExecGoldenTests.analysisMatchesItsRecording (renamed from replayedAnalysisMatchesItsRecording) uses it; every analysis-cases, analysis-random and analysis-volumes case matches.\n- Tests: all assigned rows ported except T-248b9b50. Also added a 150,000-item review test (each file read once) and a review-plus-resolve test of a tree 508 folders deep.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "Paste review spends 77-82% of its time building child paths with NodePath.join, so it is no faster than the JS original on a real disk and 5x slower in memory",
+          "where": "Sources/FTOperations/Analysis/CopyPasteAnalysis.swift:377-378 (NodeWalker.analyzeNode, childSourcePath/childDestinationPath), which calls Sources/FTFoundation/Names/NodePath.swift:84-117 (join -> normalize: an Array of Unicode.Scalar per path component, then a rebuilt String)",
+          "evidence": "Benchmark on the same input: a 150,000-file folder (\"/source/project/files/file-N-with-a-longer-name.txt\") copied to \"/target\", each tool called directly, in release builds.\n\nIn memory (an exact-path mock like Tests/FTOperationsTests/Analysis/LargeTreeAnalysisTests.swift:13):\n- Reference: ~/Library/Caches/filetrail-port/reference/electron/packages/core/src/fs/copyPasteAnalysis.ts buildCopyPasteAnalysisReport, run with `bun run scratchpad/bench.ts`, prints \"TS analysis ms 270\".\n- Port: buildCopyPasteAnalysisReport compiled with `swiftc -O` against .build/release FTOperations.o, FTFoundation.o, FTFileSystem.o and CFileTrail.o, prints \"Swift release analysis 1.34 seconds\" (3 runs: 1.36, 1.34, 1.32).\n\nOn a real APFS disk (the same 150k files written in the scratchpad):\n- Port with PosixFileSystem(): 4.16, 4.09, 4.17 s.\n- Reference with node:fs/promises lstat, stat, realpath, readdir and readlink: 4.46, 3.75, 3.82 s.\n\n`sample` of the port during the real-disk run:\n- ReportBuilder.build: 3248 samples in total.\n- CopyPasteAnalysis.swift:377 NodePath.join: 1302 samples.\n- CopyPasteAnalysis.swift:378 NodePath.join: 1216 samples.\n- Together that is 2518 of 3248 (77%), nearly all at NodePath.swift:86 normalize (String.UnicodeScalarView.append, Array allocation and free).\n- lstat in captureFingerprint at lines 346 and 348 is only about 330 samples.\n- The in-memory run shows the same split: 3354 of 4062 samples (82%) are in these two joins.\n\nThe reference's per-child cost is node:path.join, which is a cheap native string operation. Here every one of the 150k items allocates about 2 x (components + 2) arrays. The child name comes from readdir and the parent is already normalized, so `parent + \"/\" + name` (with \"/\" as the special case, as joinChildDestinationPath in CopyPasteResolution.swift:213 already does) would give the same output.\n\nImpact:\n- The port reviews a large paste no faster than the Electron app, and slightly slower than the reference running under bun, though the plan expects native to be faster.\n- The report also costs CPU on the review thread in proportion to the item count.\n- Analysis runs off the main thread, so no UI budget is broken. The cost is review latency and CPU."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "headSha": "ad94eedbdf7c441488e2573dada913a78b5c4d8d",
+          "summary": "Finding 1 is fixed in Sources/FTOperations/Analysis/CopyPasteAnalysis.swift. A new internal helper, joinChildPath(folder, name), puts the folder and name together with a \"/\" between them (just \"/\" + name when the folder is \"/\"). It does this only when the folder is a normalized absolute path (no empty, \".\" or \"..\" parts and no trailing \"/\") and the name is plain (not empty, not \".\" or \"..\", no \"/\"). Every other input still goes through NodePath.join. The helper replaces NodePath.join at each place the walk joins a folder with a listed name: the source and destination child paths in analyzeNode, the claimed-name collision path, the AppleDouble check, collectDestinationOnly and countDirectoryItems. FTFoundation's NodePath is unchanged because this package doesn't own it.\n\nTwo tests were added to Tests/FTOperationsTests/Analysis/LargeTreeAnalysisTests.swift:\n- reviewsABigFolderInFewTimesTheCostOfLookingUpItsItems (F-434): reviews 50,000 files and requires the review to take less than 12 times the cost of two mock lstat calls per item, taking the fastest of 3 runs of each. With the old join forced back in, the ratio was about 20 and the test failed. With the fix it is about 5.8 and the test passes.\n- joinsAChildPathAsPathJoinDoes: checks that joinChildPath gives the same result as NodePath.join for 25 folders and 16 names, including non-normalized folders, relative paths, \".\" and \"..\", names with \"/\", combining marks and emoji.\n\nRelease benchmark, in memory, 150,000 files with the reviewer's names: before 1.34 s, after 0.29 s (reference under bun: 0.27 s). A sample shows NodePath.join is no longer in the review. The remaining time is spread over the mock's lookups, the AppleDouble filter, NameKeys.exactDestinationKey and building dictionaries.\n\nGates: scripts/ci.sh passed (1,462 tests). Its first run failed once in FolderSizeJobsTests.dropsTheFinishedJobsItKeepsTooManyOfWhenItMeasuresAgainAtOnce, an FTFileSystem test this package doesn't own; it passed 5 runs on its own and on the CI rerun. tools/parity/gen.sh --check reports goldens up to date. tools/parity/exec/selftest.sh exits 0 with no FAIL. The commit carries the Port-Stage: fixed-1 trailer, and the worktree is detached.",
+          "remaining": [
+            "Not fixed here: FolderSizeJobsTests.dropsTheFinishedJobsItKeepsTooManyOfWhenItMeasuresAgainAtOnce (FTFileSystem, not owned by P3-02) failed once under full-suite load (expected jobs.jobCount == 301), then passed 5 runs on its own and on the CI rerun. It is probably flaky; its owner should look at it."
+          ]
+        }
+      ],
       "blockers": [],
-      "carryOver": []
+      "carryOver": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "P3-02 gates (detached at ad94eed, port/P3-02): scripts/ci.sh exit 0 (build PASS, test PASS 1462 passing/0 failing, format PASS); tools/parity/gen.sh --check exit 0 (32 goldens up to date, 5 machine-local skipped); tools/parity/exec/selftest.sh exit 0 (all PASS). Nothing changed or committed; worktree clean."
+      },
+      "sharedFileRequests": [
+        "Already applied on this branch, needed for the gate: Tests/FTTestSupport/ExecScenario.swift now makes folders with mkdir(2) (new makeDirectories helper) and symlinks with symlink(2), instead of FileManager.createDirectory and createSymbolicLink. FileManager stored names like 'Café' decomposed, which broke 5 analysis-random cases; the exec suites will need the same fix. Please keep it when merging.",
+        "Rows of the files named in the brief that were left for later packages. P3-03: T-248b9b50 (copyPasteReviewData, answers through the write service), T-aa0802fe (copyPasteLargeTree), T-f21a582c, T-384a8f35, T-986eb932, T-4b4ee729 (writeService.analysis), T-726a5109, T-63458da3, T-e5058a23, T-124863ab, T-bc27ba96, T-dc846056, T-2838f1c8, T-96aa43f3 (copyPastePackages), T-4ca2bce9, T-37ddd66b, T-170d73ea, T-430afe8c, T-6adcf405, T-1dd3b541, T-8227d576, T-250a2e62, T-3e4b85d5, T-12a18238, T-e7e30fd5 (writeService.test). P3-04: T-b743943a (copyPasteBlockedReplace).",
+        "Note for P3-03: WriteServiceDependencies.fileSystem is `any AnalysisFileSystem`; the write calls belong in a WriteServiceFileSystem that refines it. Replace the `executeCopyPaste` default in WriteServicePaste.swift and add resolveRuntimeConflict, cancelOperation and the standing answers beside it. WriteService.runWithRoomForDepth and withRoomForDepth run recursive walks on a 16 MB stack; resolving a 508-deep tree overflowed a task's own stack."
+      ],
+      "deviations": [
+        "The recordings were made under Bun, whose fs.promises.realpath fails with EACCES on an item its owner can't read. Node (the real app) and realpath(3) succeed there. The analysis-cases case 'an unreadable folder picked itself' records source_missing; the app's behaviour (Node) is to go on and fail the folder as source_unreadable at paste time. The port keeps realpath(3). Only the differential's file system, RecordedFileSystem in Tests/FTOperationsTests/Exec/SwiftAnalysisEngine.swift, opens the item first to reproduce the recording. Re-recording that suite under Node would remove the need for it.",
+        "The original's 'rejects incomplete %s conflict policy' (T-e505f05f) can't be written as is, because CopyPastePolicy is a complete Swift struct. The same 'Missing <kind> conflict policy.' rule is tested where Swift can still reach it: a runtime Merge with no policy.",
+        "Review-only halves: T-394e8556, T-a0bdac5b and T-6d3f7e31 check the analysis and the resolved actions only. The paste that follows (files written, Replace refused by the engine) needs P3-03/P3-04's engine. T-8cb73442 asserts only the report, which is all the original asserts."
+      ]
     },
     "P3-03": {
       "title": "Copy/move execution and runtime conflicts",
@@ -1401,7 +1455,7 @@
       "depends": [
         "P3-02"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P3-03",
       "headSha": null,
       "attempts": 0,
@@ -1420,7 +1474,10 @@
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": []
+      "carryOver": [
+        "From P3-02: test rows left for you: T-248b9b50 (copyPasteReviewData, answers through the write service), T-aa0802fe (copyPasteLargeTree), T-f21a582c, T-384a8f35, T-986eb932, T-4b4ee729 (writeService.analysis), T-726a5109, T-63458da3, T-e5058a23, T-124863ab, T-bc27ba96, T-dc846056, T-2838f1c8, T-96aa43f3 (copyPastePackages), T-4ca2bce9, T-37ddd66b, T-170d73ea, T-430afe8c, T-6adcf405, T-1dd3b541, T-8227d576, T-250a2e62, T-3e4b85d5, T-12a18238, T-e7e30fd5 (writeService.test).",
+        "From P3-02: WriteServiceDependencies.fileSystem is `any AnalysisFileSystem`; put the write calls in a WriteServiceFileSystem that refines it. Replace the `executeCopyPaste` default in WriteServicePaste.swift and add resolveRuntimeConflict, cancelOperation and the standing answers beside it. Recursive walks must use WriteService.runWithRoomForDepth/withRoomForDepth (16 MB stack): a 508-deep tree overflowed a task stack. Tests/FTTestSupport/ExecScenario.swift now builds folders with mkdir(2) and symlinks with symlink(2) (FileManager decomposed names like \"Café\"); keep that for the exec suites."
+      ]
     },
     "P3-04": {
       "title": "Replace staging, journal, recovery",
@@ -1450,7 +1507,9 @@
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": []
+      "carryOver": [
+        "From P3-02: T-b743943a (copyPasteBlockedReplace) is yours."
+      ]
     },
     "P3-05": {
       "title": "Write coordinator",
@@ -2788,6 +2847,11 @@
       "owner": "P3-02 brief: extend seeds/stop injection to the P3-01 layer; the batch reviewer for P3-02 covers it.",
       "closed": true,
       "status": "moot: the P3 assurance raise was withdrawn by the user"
+    },
+    {
+      "at": "2026-10-14",
+      "issue": "Flaky under full-suite load: FTFileSystemTests FolderSizeJobsTests.dropsTheFinishedJobsItKeepsTooManyOfWhenItMeasuresAgainAtOnce (expected jobCount == 301) failed once in W2-P1, passed 5x alone.",
+      "owner": "next P0 follow-up or P7"
     }
   ],
   "userRequests": [
