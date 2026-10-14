@@ -53,7 +53,8 @@ final class PaneResizerView: NSView {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) { hovered = true }

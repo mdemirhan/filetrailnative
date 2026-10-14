@@ -14,7 +14,8 @@ struct ToolbarIconTests {
             switch shape {
             case .path(let data, _): combined.append(SVGPath.path(data))
             case .rect(let x, let y, let w, let h, let r):
-                combined.append(NSBezierPath(roundedRect: NSRect(x: x, y: y, width: w, height: h), xRadius: r, yRadius: r))
+                combined.append(
+                    NSBezierPath(roundedRect: NSRect(x: x, y: y, width: w, height: h), xRadius: r, yRadius: r))
             case .circle(let x, let y, let r):
                 combined.append(NSBezierPath(ovalIn: NSRect(x: x - r, y: y - r, width: 2 * r, height: 2 * r)))
             case .line(let x1, let y1, let x2, let y2):

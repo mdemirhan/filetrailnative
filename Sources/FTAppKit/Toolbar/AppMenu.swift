@@ -63,9 +63,10 @@ final class AppMenuView: NSView {
     }
     var onChoose: (Int) -> Void = { _ in }
 
-    init(items: [AppMenuItem], style: AppMenuStyle, identifier: String, rowIdentifier: String, minWidth: Double = 220,
-        maxWidth: Double? = nil)
-    {
+    init(
+        items: [AppMenuItem], style: AppMenuStyle, identifier: String, rowIdentifier: String, minWidth: Double = 220,
+        maxWidth: Double? = nil
+    ) {
         self.items = items
         self.style = style
         self.minWidth = minWidth
@@ -261,7 +262,8 @@ final class AppMenuRow: NSView, TextStyleSource {
         super.layout()
         func place(_ field: NSTextField, x: Double, width: Double) {
             let height = field.intrinsicContentSize.height
-            field.frame = NSRect(x: x, y: ((bounds.height - height) / 2).rounded(), width: max(0, width), height: height)
+            field.frame = NSRect(
+                x: x, y: ((bounds.height - height) / 2).rounded(), width: max(0, width), height: height)
         }
         let box = 11.0
         checkMark?.frame = NSRect(
@@ -294,8 +296,11 @@ final class AppMenuRow: NSView, TextStyleSource {
         detail.textColor = ChromeColors.color(highlighted ? accent.onSolid : palette.textSecondary)
         detail.alphaValue = highlighted ? 0.8 : 1
         shortcut.textColor = ChromeColors.color(
-            highlighted ? accent.onSolid.withAlpha(0.85) : item.enabled ? palette.contextMenuShortcut
-                : palette.contextMenuDisabled)
+            highlighted
+                ? accent.onSolid.withAlpha(0.85)
+                : item.enabled
+                    ? palette.contextMenuShortcut
+                    : palette.contextMenuDisabled)
         needsDisplay = true
     }
 

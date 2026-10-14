@@ -32,7 +32,9 @@
                     return .applied
                 }
             }
-            width("treeWidth") { $0.treeWidth = AppPreferenceLimits.clampPaneWidth(Double($1), AppPreferenceLimits.treeWidthRange) }
+            width("treeWidth") {
+                $0.treeWidth = AppPreferenceLimits.clampPaneWidth(Double($1), AppPreferenceLimits.treeWidthRange)
+            }
             width("inspectorWidth") {
                 $0.inspectorWidth = AppPreferenceLimits.clampPaneWidth(
                     Double($1), AppPreferenceLimits.inspectorWidthRange)

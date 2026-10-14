@@ -108,7 +108,8 @@ final class ToolbarCustomizePanel: NSView {
     /// The panel's height at `width`.
     func height(forWidth width: Double) -> Double {
         let inner = width - Self.padding.left - Self.padding.right
-        return Self.padding.top + Self.lineHeight(title.font) + 2 + noteHeight(inner) + 12 + gridHeight(inner) + 14 + 0.5
+        return Self.padding.top + Self.lineHeight(title.font) + 2 + noteHeight(inner) + 12 + gridHeight(inner) + 14
+            + 0.5
             + 12 + PanelPushButton.height + Self.padding.bottom
     }
 
@@ -150,7 +151,8 @@ final class ToolbarCustomizePanel: NSView {
         var heights: [Double] = []
         for start in stride(from: 0, to: items.count, by: count) {
             let row = items[start..<min(items.count, start + count)]
-            let tallest = row.map { Self.lines(ToolbarItems.definition($0).label, font: font, width: labelWidth) }.max() ?? 1
+            let tallest =
+                row.map { Self.lines(ToolbarItems.definition($0).label, font: font, width: labelWidth) }.max() ?? 1
             heights.append(2 * Self.itemPadding.vertical + Self.chip + Self.itemGap + Double(tallest) * line)
         }
         return heights
@@ -369,7 +371,8 @@ final class PanelPushButton: NSView, TextStyleSource {
     override func layout() {
         super.layout()
         let size = label.intrinsicContentSize
-        label.frame = NSRect(x: 0, y: ((bounds.height - size.height) / 2).rounded(), width: bounds.width, height: size.height)
+        label.frame = NSRect(
+            x: 0, y: ((bounds.height - size.height) / 2).rounded(), width: bounds.width, height: size.height)
     }
 
     override func draw(_ dirtyRect: NSRect) {

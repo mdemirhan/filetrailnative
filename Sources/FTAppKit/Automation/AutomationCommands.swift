@@ -29,7 +29,8 @@
         static let supported: Set<String> = [
             "goBack", "goForward", "goEnclosingFolder", "openSelection", "viewAsIcons", "viewAsDetails", "newTab",
             "toggleFolderTree", "toggleInfoPanel", "toggleInfoRow", "toggleFoldersFirst", "toggleHiddenFiles",
-            "customizeToolbar", "viewAsList", "refreshOrApplySearchSort", "editSelectAll", "focusFileSearch", "focusContentPane", "focusTreePane",
+            "customizeToolbar", "viewAsList", "refreshOrApplySearchSort", "editSelectAll", "focusFileSearch",
+            "focusContentPane", "focusTreePane",
             "sortByName", "sortByModified", "sortBySize", "sortByKind", "goHomeRootTree", "goDocuments",
             "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD", "goApplications", "goTrash", "newWindow",
             "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",

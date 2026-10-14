@@ -48,7 +48,9 @@ class ToolbarButton: NSView, TooltipAnchor {
 
     init(icon name: ToolbarIconName, label: String, identifier: String) {
         icon = ToolbarIconView(name)
-        super.init(frame: NSRect(x: 0, y: 0, width: DesignTokens.toolbar.buttonWidth, height: DesignTokens.toolbar.controlHeight))
+        super.init(
+            frame: NSRect(
+                x: 0, y: 0, width: DesignTokens.toolbar.buttonWidth, height: DesignTokens.toolbar.controlHeight))
         addSubview(icon)
         setAccessibilityElement(true)
         setAccessibilityRole(.button)

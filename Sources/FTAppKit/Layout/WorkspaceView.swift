@@ -67,7 +67,8 @@ final class WorkspaceView: NSView {
             }
             resizer.onDrag = { [weak self] x in
                 guard let self, let start = self.dragStart else { return }
-                self.panes.drag(from: start, to: x, viewportWidth: self.bounds.width, inspectorVisible: self.infoPanelOpen)
+                self.panes.drag(
+                    from: start, to: x, viewportWidth: self.bounds.width, inspectorVisible: self.infoPanelOpen)
                 self.needsLayout = true
             }
             resizer.onDragEnd = { [weak self] in
@@ -177,7 +178,8 @@ final class WorkspaceView: NSView {
         layer?.backgroundColor = ChromeColors.color(palette.bgBase).cgColor
         sidebarTint.layer?.backgroundColor = ChromeColors.color(palette.sidebarBg, percent: 62).cgColor
         mainCell.layer?.backgroundColor = ChromeColors.color(palette.bgBase).cgColor
-        scrim.layer?.backgroundColor = ChromeColors.color(palette.scrim, percent: DesignTokens.toolbarScrimAlpha * 100)
+        scrim.layer?.backgroundColor =
+            ChromeColors.color(palette.scrim, percent: DesignTokens.toolbarScrimAlpha * 100)
             .cgColor
     }
 

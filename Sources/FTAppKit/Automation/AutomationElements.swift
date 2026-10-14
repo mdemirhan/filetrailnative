@@ -26,6 +26,19 @@
             return AutomationElements(identifiers: identifiers)
         }
 
+        /// `file`, with the names each work package keeps in `elements.d/*.json` beside it, as `run.sh` merges them.
+        static func load(_ file: URL) throws -> AutomationElements {
+            var merged = try parse(Data(contentsOf: file))
+            let folder = file.deletingLastPathComponent().appendingPathComponent("elements.d")
+            let extras =
+                (try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil)) ?? []
+            for extra in extras.filter({ $0.pathExtension == "json" }).sorted(by: { $0.path < $1.path }) {
+                let more = try parse(Data(contentsOf: extra))
+                merged.identifiers.merge(more.identifiers) { first, _ in first }
+            }
+            return merged
+        }
+
         /// `elements.json` next to the scenarios: the scenario's folder or one of the folders above it.
         static func locate(near scenario: URL) -> URL? {
             var folder = scenario.deletingLastPathComponent()

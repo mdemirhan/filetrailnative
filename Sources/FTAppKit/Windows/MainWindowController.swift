@@ -102,7 +102,11 @@ final class ExplorerTabWindow: NSWindow {
             return true
         case .leftMouseDragged, .rightMouseDragged:
             guard let target = bandTarget else { return false }
-            if event.type == .leftMouseDragged { target.mouseDragged(with: event) } else { target.rightMouseDragged(with: event) }
+            if event.type == .leftMouseDragged {
+                target.mouseDragged(with: event)
+            } else {
+                target.rightMouseDragged(with: event)
+            }
             return true
         case .leftMouseUp, .rightMouseUp, .otherMouseUp:
             guard let target = bandTarget else { return false }

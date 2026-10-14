@@ -245,7 +245,8 @@ final class ToolbarCustomizer {
         ghost.configure(drag.itemID, title: toolbar.context.map(ToolbarView.title(of:)) ?? "", removing: removing)
         let size = ghost.fittingGhostSize
         let local = host.convert(point, from: nil)
-        ghost.frame = NSRect(x: local.x - size.width / 2, y: local.y - size.height / 2, width: size.width, height: size.height)
+        ghost.frame = NSRect(
+            x: local.x - size.width / 2, y: local.y - size.height / 2, width: size.width, height: size.height)
     }
 
     // MARK: Keys
@@ -319,13 +320,15 @@ final class ToolbarEditLayer: NSView {
         var keep = Set<String>()
         for entry in entries {
             keep.insert(entry.key)
-            let handle = handles[entry.key] ?? {
-                let made = ToolbarHandleView(key: entry.key)
-                made.owner = self
-                addSubview(made)
-                handles[entry.key] = made
-                return made
-            }()
+            let handle =
+                handles[entry.key]
+                ?? {
+                    let made = ToolbarHandleView(key: entry.key)
+                    made.owner = self
+                    addSubview(made)
+                    handles[entry.key] = made
+                    return made
+                }()
             let label = ToolbarItems.definition(entry.id).label
             handle.frame = entry.frame
             handle.label = label
@@ -385,7 +388,8 @@ final class ToolbarHandleView: NSView, TooltipAnchor {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) {

@@ -22,7 +22,8 @@ final class ToolbarView: NSView {
 
     private(set) var savedItems: [ToolbarItemID] = ToolbarItems.defaultTopItems
     private(set) var slotViews: [String: ToolbarSlotView] = [:]
-    private let overflowButton = ToolbarButton(icon: .overflow, label: "More Toolbar Items", identifier: "toolbar.overflow")
+    private let overflowButton = ToolbarButton(
+        icon: .overflow, label: "More Toolbar Items", identifier: "toolbar.overflow")
     private let overflowSlot: ToolbarSlotView
     /// The keys of the items in the row now, in order.
     private(set) var rowKeys: [String] = []
@@ -398,7 +399,8 @@ final class ToolbarView: NSView {
                 view.placeholder = customizer?.placeholderIndex == index
                 // A separator has nothing on screen to compare outside customizing.
                 view.setAccessibilityIdentifier(
-                    slot.id == .topSeparator && !customizing ? "" : view.edges != nil ? "toolbar.capsuleItem" : "toolbar.slot")
+                    slot.id == .topSeparator && !customizing
+                        ? "" : view.edges != nil ? "toolbar.capsuleItem" : "toolbar.slot")
             }
         }
         customizer?.animatesNextLayout = false
@@ -475,7 +477,9 @@ final class ToolbarView: NSView {
         guard !customizing, let window, let host = window.contentView else { return }
         let point = host.convert(event.locationInWindow, from: nil)
         let menu = AppMenuView(
-            items: [AppMenuItem(title: "Customize Toolbar…", checked: false, action: { [weak self] in self?.onCustomize() })],
+            items: [
+                AppMenuItem(title: "Customize Toolbar…", checked: false, action: { [weak self] in self?.onCustomize() })
+            ],
             style: .standard, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item")
         AppMenuPresenter.shared.show(menu, in: window, at: point, owner: nil)
     }
@@ -511,7 +515,8 @@ final class ToolbarView: NSView {
     private func frameInContent(_ view: NSView) -> NSRect? {
         guard let host = window?.contentView else { return nil }
         let rect = view.convert(view.bounds, to: host)
-        return host.isFlipped ? rect : NSRect(x: rect.minX, y: host.bounds.height - rect.maxY, width: rect.width, height: rect.height)
+        return host.isFlipped
+            ? rect : NSRect(x: rect.minX, y: host.bounds.height - rect.maxY, width: rect.width, height: rect.height)
     }
 
     /// Back's or Forward's menu: the folders that way, nearest first, under the button's left edge.
@@ -520,7 +525,8 @@ final class ToolbarView: NSView {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let entries =
             back
-            ? HistoryMenu.backEntries(historyPaths: context.historyPaths, historyIndex: context.historyIndex, homePath: home)
+            ? HistoryMenu.backEntries(
+                historyPaths: context.historyPaths, historyIndex: context.historyIndex, homePath: home)
             : HistoryMenu.forwardEntries(
                 historyPaths: context.historyPaths, historyIndex: context.historyIndex, homePath: home)
         guard !entries.isEmpty, let rect = frameInContent(button), let host = window?.contentView else { return }
@@ -654,13 +660,17 @@ final class ToolbarView: NSView {
                             }))
                 }
             case .foldersFirst:
-                items.append(AppMenuItem(title: "Folders First", checked: view.foldersFirst, action: run(.toggleFoldersFirst)))
+                items.append(
+                    AppMenuItem(title: "Folders First", checked: view.foldersFirst, action: run(.toggleFoldersFirst)))
             case .hidden:
-                items.append(AppMenuItem(title: "Hidden Files", checked: view.includeHidden, action: run(.toggleHiddenFiles)))
+                items.append(
+                    AppMenuItem(title: "Hidden Files", checked: view.includeHidden, action: run(.toggleHiddenFiles)))
             case .folderTree:
-                items.append(AppMenuItem(title: "Folder Tree", checked: panels.folderTreeOpen, action: run(.toggleFolderTree)))
+                items.append(
+                    AppMenuItem(title: "Folder Tree", checked: panels.folderTreeOpen, action: run(.toggleFolderTree)))
             case .infoPanel:
-                items.append(AppMenuItem(title: "Info Panel", checked: panels.propertiesOpen, action: run(.toggleInfoPanel)))
+                items.append(
+                    AppMenuItem(title: "Info Panel", checked: panels.propertiesOpen, action: run(.toggleInfoPanel)))
             case .infoRow:
                 items.append(AppMenuItem(title: "Info Row", checked: panels.detailRowOpen, action: run(.toggleInfoRow)))
             case .theme:

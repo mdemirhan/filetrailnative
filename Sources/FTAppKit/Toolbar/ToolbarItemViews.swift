@@ -238,7 +238,8 @@ final class ToolbarViewSwitch: NSView {
         track.layer?.backgroundColor = ChromeColors.color(ChromeColors.palette(for: self).segmentedTrackBg).cgColor
         for (index, segment) in segments.enumerated() {
             segment.frame = NSRect(
-                x: toolbar.segmentedTrackPadding + Double(index) * (toolbar.segmentWidth + toolbar.segmentedTrackPadding),
+                x: toolbar.segmentedTrackPadding + Double(index)
+                    * (toolbar.segmentWidth + toolbar.segmentedTrackPadding),
                 y: (bounds.height - toolbar.segmentHeight) / 2, width: toolbar.segmentWidth,
                 height: toolbar.segmentHeight)
         }
@@ -289,8 +290,12 @@ final class ToolbarSegmentButton: ToolbarButton {
             NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
             NSGraphicsContext.restoreGraphicsState()
         }
-        let color = isSelected ? palette.segmentedSelectedText : isHovered && isEnabled ? palette.textPrimary
-            : palette.textSecondary
+        let color =
+            isSelected
+            ? palette.segmentedSelectedText
+            : isHovered && isEnabled
+                ? palette.textPrimary
+                : palette.textSecondary
         icon.color = ChromeColors.color(color)
     }
 }

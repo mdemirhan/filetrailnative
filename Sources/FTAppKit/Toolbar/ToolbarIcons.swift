@@ -124,7 +124,8 @@ enum ToolbarGlyph {
         case .hidden:
             "M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M14.12 14.12A3 3 0 0 1 9.88 9.88M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"
         case .refresh: "M1 4v6h6M3.51 15a9 9 0 1 0 2.13-9.36L1 10"
-        case .edit: "M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"
+        case .edit:
+            "M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"
         case .theme:
             "M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 16a4 4 0 1 0 0-8a4 4 0 0 0 0 8"
         case .chevron: "M9.5 7l5 5-5 5"
@@ -161,7 +162,8 @@ enum ToolbarGlyph {
                 path = SVGPath.path(data)
                 if let override { width = override }
             case .rect(let x, let y, let w, let h, let radius):
-                path = NSBezierPath(roundedRect: NSRect(x: x, y: y, width: w, height: h), xRadius: radius, yRadius: radius)
+                path = NSBezierPath(
+                    roundedRect: NSRect(x: x, y: y, width: w, height: h), xRadius: radius, yRadius: radius)
             case .circle(let x, let y, let radius):
                 path = NSBezierPath(ovalIn: NSRect(x: x - radius, y: y - radius, width: 2 * radius, height: 2 * radius))
             case .line(let x1, let y1, let x2, let y2):
