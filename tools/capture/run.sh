@@ -8,6 +8,7 @@
 #   --acceptance runs only the acceptance flows (scenarios/acceptance, PLAN.md §3.4a).
 #   --selftest compares a native capture and an Electron capture each with itself (no difference
 #   allowed), and a hand-made pair of geometry dumps with known offsets (report.ts selftest).
+#   FILETRAIL_CAPTURE_TIMEOUT (seconds, default 120) kills an app run that takes longer.
 # Exit codes: 0 done, 1 geometry miss (wave/final only), 2 usage, 3 pipeline failure.
 set -uo pipefail
 cd "$(dirname "$0")/../.."
@@ -32,7 +33,7 @@ while [ $# -gt 0 ]; do
         shift
         ;;
     -h | --help)
-        sed -n '2,11p' "$0"
+        sed -n '2,12p' "$0"
         exit 0
         ;;
     -*)
@@ -92,7 +93,10 @@ for file in "${scenarios[@]}"; do
 done
 if [ "$selftest" = 1 ]; then scenarios=("${scenarios[0]}"); fi
 
-# Runs a command with a time limit (seconds), without coreutils.
+# Seconds one scenario may take in either app (the longest takes about 20 s); a stuck app is killed after it.
+timeout="${FILETRAIL_CAPTURE_TIMEOUT:-120}"
+
+# Runs a command with a time limit (seconds), without coreutils. Exit status 142 means the limit was hit.
 limit() {
     local seconds="$1"
     shift
@@ -144,7 +148,7 @@ capture_swift() { # <scenario> <dir> <now> <scratch>
     rm -rf "$2"
     mkdir -p "$2"
     fresh_scratch "$1" "$4"
-    FILETRAIL_NOW="$3" FILETRAIL_SCENARIO_ROOT="$4" limit 600 "$app" --automation "$1" --out "$2" \
+    FILETRAIL_NOW="$3" FILETRAIL_SCENARIO_ROOT="$4" limit "$timeout" "$app" --automation "$1" --out "$2" \
         --elements "$elements" >>"$logs/capture-swift.log" 2>&1
 }
 
@@ -162,7 +166,7 @@ capture_electron() { # <scenario> <dir> <now> <scratch>
         rm -rf "$tmp"
         mkdir -p "$tmp"
         fresh_scratch "$1" "$4"
-        if ! FILETRAIL_NOW="$3" FILETRAIL_SCENARIO_ROOT="$4" limit 600 bun tools/capture/electron/driver.ts \
+        if ! FILETRAIL_NOW="$3" FILETRAIL_SCENARIO_ROOT="$4" limit "$timeout" bun tools/capture/electron/driver.ts \
             --scenario "$1" --out "$tmp" --elements "$elements" >>"$logs/capture-electron.log" 2>&1; then
             rm -rf "$2"
             mv "$tmp" "$2"
@@ -202,7 +206,13 @@ for file in "${scenarios[@]}"; do
         [ -n "$now" ] && touch -t "$(echo "$now" | sed -E 's/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2}).*/\1\2\3\4\5.\6/')" "$folder"
     done < <(field "$file" setup.emptyFolders)
 
-    if ! capture_swift "$file" "$dir/swift" "$now" "$scratch"; then
+    capture_swift "$file" "$dir/swift" "$now" "$scratch"
+    result=$?
+    if [ "$result" -eq 142 ]; then
+        echo "$name  PIPELINE: the native app was killed after ${timeout} s (FILETRAIL_CAPTURE_TIMEOUT)"
+        status=3
+        continue
+    elif [ "$result" -ne 0 ]; then
         echo "$name  PIPELINE: the native app did not finish (see $logs/capture-swift.log)"
         status=3
         continue
