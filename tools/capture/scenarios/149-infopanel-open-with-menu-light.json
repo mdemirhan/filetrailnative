@@ -59,7 +59,7 @@
     },
     {
       "step": "expectSheet",
-      "name": "info panel open with menu"
+      "name": "context submenu"
     },
     {
       "step": "wait",

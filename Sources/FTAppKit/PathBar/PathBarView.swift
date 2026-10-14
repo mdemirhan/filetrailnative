@@ -330,7 +330,7 @@ final class PathBarView: NSView {
             $0.element + ($0.offset > 0 ? PathSeparatorView.width + InfoMetrics.itemGap : 0)
         }
         let shrinkBase = basis.reduce(0, +)
-        for (index, item) in items.enumerated() {
+        for index in items.indices {
             if index > 0, let separator = views.popFirst() {
                 separator.frame = NSRect(
                     x: x, y: separatorTop, width: PathSeparatorView.width, height: InfoMetrics.separatorHeight)
