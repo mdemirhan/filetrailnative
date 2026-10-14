@@ -9,19 +9,26 @@ import Testing
 @testable import FTOperations
 
 /// The Replace entries a paste writes down, by id, as the journal holds them now.
+/// `refuseAdd` makes a write fail (before it is kept); `onAdd` is told of each Replace entry kept.
 final class ReplaceEntriesJournal: WriteJournal, @unchecked Sendable {
     private let lock = NSLock()
     private var entries: [String: ReplaceJournalEntry] = [:]
     private var order: [String] = []
+    var refuseAdd: (() -> (any Error)?)?
+    var onAdd: ((ReplaceJournalEntry) -> Void)?
 
     func add(_ entry: WriteJournalEntry) throws {
+        if let error = refuseAdd?() {
+            throw error
+        }
         guard case .replace(let replace) = entry else { return }
         lock.lock()
-        defer { lock.unlock() }
         if entries[replace.id] == nil {
             order.append(replace.id)
         }
         entries[replace.id] = replace
+        lock.unlock()
+        onAdd?(replace)
     }
 
     func remove(_ id: String) throws {
