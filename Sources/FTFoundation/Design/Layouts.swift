@@ -95,13 +95,39 @@ public struct DetailsLayout: Equatable, Sendable {
     public var separatorHeight: Double
     public var separatorHitWidth: Double
     public var columnKeyboardStep: Double
+    /// The file icon in a Name cell (`.file-icon`) and its gap to the name (`.details-name`).
+    public var iconSize: Double
+    public var nameIconGap: Double
+    /// Left and right padding of one row (half of `rowPadding`).
+    public var rowPaddingInline: Double
+    /// The gap between a header title and its sort chevron, and the chevron's margin before the column's end.
+    public var headerButtonGap: Double
+    public var sortChevronTrailingMargin: Double
+    /// The line under the header (`.details-header-shell` border-bottom).
+    public var headerBorderWidth: Double
+    /// How far a separator's hit area reaches beyond the header cell, above and to the right.
+    public var separatorHitOverhang: Double
+    /// Room kept free for the vertical scroller when the columns are fitted (`DETAILS_SCROLLBAR_WIDTH`).
+    public var scrollbarAllowance: Double
+    /// Size bars (`.details-size-bar`): inset from the cell's top and bottom, reach past its right edge, the least
+    /// width and the share of the colour (accent; the selection text on a selected row).
+    public var sizeBarInsetVertical: Double
+    public var sizeBarOverhang: Double
+    public var sizeBarMinWidth: Double
+    public var sizeBarAlpha: Double
+    public var sizeBarSelectedAlpha: Double
+    /// Pixels of slack added to a fitted column (`FIT_SLACK`).
+    public var fitSlack: Double
 
     static func make(density: Density) -> DetailsLayout {
         DetailsLayout(
             rowHeight: density.isCompact ? 24 : 28, columnGap: 12, rowPadding: 24, rowInset: 10,
             rowRadius: 6, nameFloorWidth: 160, nameMinWidth: 96, cellFontSize: density.isCompact ? 13 : 14,
             headerHeight: 28, headerFontSize: 11, sortChevronWidth: 9, sortChevronHeight: 6,
-            separatorWidth: 1, separatorHeight: 14, separatorHitWidth: 12, columnKeyboardStep: 12)
+            separatorWidth: 1, separatorHeight: 14, separatorHitWidth: 12, columnKeyboardStep: 12, iconSize: 18,
+            nameIconGap: 8, rowPaddingInline: 12, headerButtonGap: 6, sortChevronTrailingMargin: 6,
+            headerBorderWidth: 1, separatorHitOverhang: 6, scrollbarAllowance: 8, sizeBarInsetVertical: 3,
+            sizeBarOverhang: 4, sizeBarMinWidth: 2, sizeBarAlpha: 0.2, sizeBarSelectedAlpha: 0.28, fitSlack: 2)
     }
 }
 

@@ -34,6 +34,14 @@ final class ContentPaneView: NSView {
 
     override var isFlipped: Bool { true }
 
+    /// Told when the pane is put in a window or taken out of one, to follow the window's focus.
+    var onMovedToWindow: ((NSWindow?) -> Void)?
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        onMovedToWindow?(window)
+    }
+
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
         needsLayout = true

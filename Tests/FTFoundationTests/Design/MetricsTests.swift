@@ -52,6 +52,11 @@ import Testing
             "rowRadius": 6, "nameFloorWidth": 160, "nameMinWidth": 96, "cellFontSize": density == .compact ? 13 : 14,
             "headerHeight": 28, "headerFontSize": 11, "sortChevronWidth": 9, "sortChevronHeight": 6,
             "separatorWidth": 1, "separatorHeight": 14, "separatorHitWidth": 12, "columnKeyboardStep": 12,
+            "iconSize": 18, "nameIconGap": 8, "rowPaddingInline": 12, "headerButtonGap": 6,
+            "sortChevronTrailingMargin": 6,
+            "headerBorderWidth": 1, "separatorHitOverhang": 6, "scrollbarAllowance": 8, "sizeBarInsetVertical": 3,
+            "sizeBarOverhang": 4, "sizeBarMinWidth": 2, "sizeBarAlpha": 0.2, "sizeBarSelectedAlpha": 0.28,
+            "fitSlack": 2,
         ]
     }
 

@@ -1,0 +1,59 @@
+{
+  "name": "89-list-size-bars-selected",
+  "description": "Sorted by size with two items selected: the bars",
+  "features": [
+    "F-772",
+    "F-773",
+    "F-774"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "size",
+        "sortDirection": "desc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "photos"
+    },
+    {
+      "step": "select",
+      "names": [
+        "Alpine lake.jpg",
+        "Cape Point.jpg"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

@@ -344,7 +344,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     /// A folder a window watches changed.
     func folderChanged(windowID: Int, _ change: FolderChange) {
-        tab(windowID: windowID)?.reload()
+        tab(windowID: windowID)?.reload(changedPaths: change.changedPaths)
     }
 
     // MARK: Tabs the system moved
