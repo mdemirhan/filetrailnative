@@ -1449,7 +1449,7 @@ B-TREE-179	TREE	A2, A16			todo
 B-TREE-180	TREE	A2, A16			todo
 B-TREE-181	TREE	A2, A16			todo
 B-TREE-182	TREE	A2, A16			todo
-B-TREE-183	TREE	A2, A16			todo
+B-TREE-183	TREE	A2, A16	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit		partial
 B-TREE-184	TREE	A2, A16			todo
 B-TREE-185	TREE	A2, A16			todo
 B-TREE-186	TREE	A2, A16			todo
@@ -1622,15 +1622,15 @@ B-VIEW-151	VIEW	A10, A13, A14			todo
 B-VIEW-152	VIEW	A10, A13, A14			todo
 B-VIEW-153	VIEW	A10, A13, A14			todo
 B-VIEW-154	VIEW	A10, A13, A14			todo
-B-VIEW-155	VIEW	A10, A13, A14			todo
+B-VIEW-155	VIEW	A10, A13, A14	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit, opensNoMoreThanAHundredTabsAndSaysSo		partial
 B-VIEW-156	VIEW	A10, A13, A14			todo
 B-VIEW-157	VIEW	A10, A13, A14			todo
-B-VIEW-158	VIEW	A10, A13, A14			todo
-B-VIEW-159	VIEW	A10, A13, A14			todo
+B-VIEW-158	VIEW	A10, A13, A14	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit		partial
+B-VIEW-159	VIEW	A10, A13, A14	closesAndReopensTabsAndStepsThroughThem		partial
 B-VIEW-160	VIEW	A10, A13, A14			todo
-B-VIEW-161	VIEW	A10, A13, A14			todo
+B-VIEW-161	VIEW	A10, A13, A14	closesAndReopensTabsAndStepsThroughThem		partial
 B-VIEW-162	VIEW	A10, A13, A14			todo
-B-VIEW-163	VIEW	A10, A13, A14			todo
+B-VIEW-163	VIEW	A10, A13, A14	closesAndReopensTabsAndStepsThroughThem		partial
 B-VIEW-164	VIEW	A10, A13, A14			todo
 B-VIEW-165	VIEW	A10, A13, A14			todo
 B-VIEW-166	VIEW	A10, A13, A14			todo
@@ -1638,15 +1638,15 @@ B-VIEW-167	VIEW	A10, A13, A14			todo
 B-VIEW-168	VIEW	A10, A13, A14			todo
 B-VIEW-169	VIEW	A10, A13, A14			todo
 B-VIEW-170	VIEW	A10, A13, A14			todo
-B-VIEW-171	VIEW	A10, A13, A14			todo
+B-VIEW-171	VIEW	A10, A13, A14		38-paste-in-another-window	partial
 B-VIEW-172	VIEW	A10, A13, A14			todo
 B-VIEW-173	VIEW	A10, A13, A14			todo
 B-VIEW-174	VIEW	A10, A13, A14			todo
 B-VIEW-175	VIEW	A10, A13, A14			todo
-B-VIEW-176	VIEW	A10, A13, A14			todo
-B-VIEW-177	VIEW	A10, A13, A14			todo
-B-VIEW-178	VIEW	A10, A13, A14			todo
-B-VIEW-179	VIEW	A10, A13, A14			todo
+B-VIEW-176	VIEW	A10, A13, A14	bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch		partial
+B-VIEW-177	VIEW	A10, A13, A14		35-new-window, 36-open-in-new-window	partial
+B-VIEW-178	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
+B-VIEW-179	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
 B-VIEW-180	VIEW	A10, A13, A14			todo
 B-VIEW-181	VIEW	A10, A13, A14			todo
 B-VIEW-182	VIEW	A10, A13, A14			todo
