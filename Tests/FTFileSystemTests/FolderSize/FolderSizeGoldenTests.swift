@@ -101,7 +101,8 @@ private func measureTree(_ root: String) async throws -> TreeOutput {
             }
         }
         Golden.expectMatches(cases) { input in
-            measured[Golden.render(input)] ?? TreeOutput(total: -1, diskTotal: -1, fileCount: -1, folderCount: -1, dirs: [:])
+            measured[Golden.render(input)]
+                ?? TreeOutput(total: -1, diskTotal: -1, fileCount: -1, folderCount: -1, dirs: [:])
         }
     }
 }

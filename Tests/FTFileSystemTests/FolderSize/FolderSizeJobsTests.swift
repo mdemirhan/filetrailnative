@@ -77,7 +77,8 @@ private func folders(_ dirs: [String: [Int64]]) -> [FinishedFolders.Folder] {
 }
 
 private let sampleResult = FolderSizeResult(
-    total: 1000, diskTotal: 1200, fileCount: 42, folderCount: 7, dev: nil, dirs: folders(["/test/sub": [500, 600, 20, 3]]))
+    total: 1000, diskTotal: 1200, fileCount: 42, folderCount: 7, dev: nil,
+    dirs: folders(["/test/sub": [500, 600, 20, 3]]))
 
 private func result(
     _ total: Int64, _ disk: Int64, _ files: Int, _ folderCount: Int, dev: Int64 = 16,
@@ -113,14 +114,16 @@ private func settle() async {
         FolderSizeJobs(native: native, homePath: homePath, onSettled: onSettled)
     }
 
-    private func start(_ jobs: FolderSizeJobs, _ path: String, owner: Int? = nil, recalculate: Bool = false, automatic: Bool = false)
+    private func start(
+        _ jobs: FolderSizeJobs, _ path: String, owner: Int? = nil, recalculate: Bool = false, automatic: Bool = false
+    )
         -> FolderSizeStartResponse
     {
         jobs.start(FolderSizeStartRequest(path: path, recalculate: recalculate, automatic: automatic), owner: owner)
     }
 
     // The window that asked hears when its measurement ends, whichever way, and only once.
-    // T-67a01e63
+    // T-67a01e63 F-188
     @Test func tellsTheWindowThatAskedWhenItsMeasurementHasEnded() async {
         let native = MockNative()
         var settled: [(Int?, String)] = []
@@ -150,7 +153,7 @@ private func settle() async {
         #expect(settled.last?.0 == 7 && settled.last?.1 == running.jobId)
     }
 
-    // T-3e688ab6
+    // T-3e688ab6 F-142
     @Test func startReturnsRunningAndJobTransitionsToReadyWithAllThreeFields() async {
         let native = MockNative()
         let jobs = make(native)
@@ -170,7 +173,7 @@ private func settle() async {
         #expect(status.error == nil)
     }
 
-    // T-9ebf15ce
+    // T-9ebf15ce F-142
     @Test func startWithCacheHitReturnsReadyImmediatelyWithAllFields() async {
         let native = MockNative()
         let jobs = make(native)
@@ -191,7 +194,7 @@ private func settle() async {
         #expect(status.folderCount == 7)
     }
 
-    // T-3e7ee95c
+    // T-3e7ee95c F-142 F-188
     @Test func answersAProbeWithTheSizesItKnowsMeasuringNothing() async {
         let native = MockNative()
         let jobs = make(native)
@@ -212,7 +215,7 @@ private func settle() async {
 
     // Each probe made a job, and over 256 of them between a window's polls pushed out the finished job it was
     // about to read: "Unknown folder size job."
-    // T-9b2a9606
+    // T-9b2a9606 F-142 F-188
     @Test func makesNoJobForAProbeSoProbesNeverPushOutAJobAWindowWaitsOn() async {
         let native = MockNative()
         let jobs = make(native)
@@ -231,7 +234,7 @@ private func settle() async {
     }
 
     // A trashed 5 GB folder replaced by an empty one of the same name showed 5 GB.
-    // T-e1732b0f
+    // T-e1732b0f F-142
     @Test func forgetsTheSizesOfTheFoldersAWriteTouchedAndKeepsTheOthers() async {
         let native = MockNative()
         let jobs = make(native)
@@ -248,7 +251,7 @@ private func settle() async {
     }
 
     // 100,000 cached sizes against 10,000 changed paths took 55 s, asked one pair at a time.
-    // T-6232afa5
+    // T-6232afa5 F-142
     @Test func forgetsTheSizesALargeWriteTouchedQuicklyHoweverManyAreKept() async {
         let native = MockNative()
         let jobs = make(native)
@@ -258,7 +261,8 @@ private func settle() async {
         }
         _ = start(jobs, "/Users/demo/Library")
         native.resolveActive(
-            FolderSizeResult(total: 1000, diskTotal: 1200, fileCount: 42, folderCount: 7, dev: nil, dirs: folders(dirs)))
+            FolderSizeResult(total: 1000, diskTotal: 1200, fileCount: 42, folderCount: 7, dev: nil, dirs: folders(dirs))
+        )
         await settle()
         let changed = (0..<5_000).map { "/Users/demo/Library/c7/d\($0 * 500 + 7)/new.txt" }
 
@@ -274,7 +278,7 @@ private func settle() async {
 
     // A home folder's walk stores far more sizes than a limit of 100,000 kept, and the first finished, often
     // folders directly in the home folder, showed no size afterwards.
-    // T-0387868c
+    // T-0387868c F-186
     @Test func keepsEverySizeAMeasurementStoresTheFirstFinishedToo() async {
         let native = MockNative()
         let jobs = make(native)
@@ -293,7 +297,7 @@ private func settle() async {
         #expect(jobs.cachedSize("/test") == 1000)
     }
 
-    // T-20c6d192
+    // T-20c6d192 F-142
     @Test func measuresAtALowerPriorityWhatTheAppMeasuresByItself() async {
         let native = MockNative()
         let jobs = make(native)
@@ -320,7 +324,7 @@ private func settle() async {
         return (native, jobs)
     }
 
-    // T-5dddca5b
+    // T-5dddca5b F-142
     @Test func takesWhatWentToTheTrashOffTheFoldersThatHeldItAsMeasured() async {
         let readable = await measureHome(trashReadable: true)
         FolderSizeWrites.forget(removedItems: [trashedZip])
@@ -335,7 +339,7 @@ private func settle() async {
         #expect(unreadable.jobs.cachedSize("/Users/demo") == 800)
     }
 
-    // T-356dcb8e
+    // T-356dcb8e F-142
     @Test func learnsThatTheTrashCantBeReadFromMeasuringTheTrashItself() async {
         let native = MockNative()
         let jobs = make(native, homePath: "/Users/demo")
@@ -356,7 +360,7 @@ private func settle() async {
 
     // Folder 100 MB holding Inner 50 MB; Inner grew to 80 MB and was measured again by itself. Moving Inner to the
     // Trash took 80 MB off Folder: 20 MB, where 50 MB remained.
-    // T-debd8940
+    // T-debd8940 F-142
     @Test func forgetsAFolderRatherThanTakeOffWhatWasMeasuredAgainInsideIt() async {
         let native = MockNative()
         let jobs = make(native, homePath: "/Users/demo")
@@ -370,14 +374,15 @@ private func settle() async {
         FolderSizeWrites.forget(
             removedItems: [
                 RemovedItem(
-                    path: "/Users/demo/Folder/Inner", item: ItemSize(kind: .folder, sizeBytes: 0, diskBytes: 0, dev: 16),
+                    path: "/Users/demo/Folder/Inner",
+                    item: ItemSize(kind: .folder, sizeBytes: 0, diskBytes: 0, dev: 16),
                     intoHomeTrash: false)
             ])
 
         #expect(jobs.cachedSize("/Users/demo/Folder") == nil)
     }
 
-    // T-ef1e8709
+    // T-ef1e8709 F-142
     @Test func measuresAgainAFolderAWriteChangedWhileItWasBeingMeasured() async {
         let native = MockNative()
         let jobs = make(native, homePath: "/Users/demo")
@@ -400,7 +405,7 @@ private func settle() async {
         #expect(jobs.cachedSize("/Users/demo/Project") == 1000)
     }
 
-    // T-8eb241c9
+    // T-8eb241c9 F-142
     @Test func stopsAMeasurementAWriteHasOutdatedRatherThanLetItFinishForNothing() {
         let native = MockNative()
         let jobs = make(native)
@@ -414,7 +419,7 @@ private func settle() async {
         #expect(native.cancelCount == 1)
     }
 
-    // T-a8f8c8e4
+    // T-a8f8c8e4 F-142
     @Test func measuresAgainUnderTheSameJobOneStoppedBecauseAWriteOutdatedIt() async {
         let native = MockNative()
         let jobs = make(native)
@@ -432,7 +437,7 @@ private func settle() async {
     }
 
     // It was left "running" for good: the window showed Calculating… and polled forever.
-    // T-916feea7
+    // T-916feea7 F-142
     @Test func measuresAnOutdatedMeasurementAgainAfterAnotherWindowsWaitingOne() async {
         let native = MockNative()
         let jobs = make(native)
@@ -458,7 +463,7 @@ private func settle() async {
         #expect(status.status == .ready && status.sizeBytes == 1000)
     }
 
-    // T-3e1383e0
+    // T-3e1383e0 F-142
     @Test func takesAWaitingMeasurementOffTheQueueWhenItIsStopped() async {
         let native = MockNative()
         let jobs = make(native)
@@ -473,7 +478,7 @@ private func settle() async {
         #expect(native.calls.count == 1)
     }
 
-    // T-82cdae2b
+    // T-82cdae2b F-142
     @Test func learnsTheTrashWasReadFromMeasuringTheTrashItself() async {
         let native = MockNative()
         let jobs = make(native, homePath: "/Users/demo")
@@ -490,7 +495,7 @@ private func settle() async {
         #expect(jobs.cachedSize("/Users/demo/Downloads") == 400)
     }
 
-    // T-23802c3f
+    // T-23802c3f F-142
     @Test func letsStopEndAMeasurementAWriteHadOutdated() async {
         let native = MockNative()
         let jobs = make(native)
@@ -505,7 +510,7 @@ private func settle() async {
     }
 
     // Only a running one was marked: a stopped walk that finished all the same kept what it had seen of the change.
-    // T-4883170d
+    // T-4883170d F-142
     @Test func keepsNothingOfAStoppedMeasurementThatAWriteOutdatesBeforeItEnds() async {
         let native = MockNative()
         let jobs = make(native)
@@ -524,7 +529,7 @@ private func settle() async {
         #expect(jobs.getStatus(jobId: started.jobId).status == .cancelled)
     }
 
-    // T-d372879d
+    // T-d372879d F-142
     @Test func dropsTheFinishedJobsItKeepsTooManyOfWhenItMeasuresAgainAtOnce() async {
         let native = MockNative()
         let jobs = make(native)
@@ -544,7 +549,7 @@ private func settle() async {
 
     // A walk of the home folder stores hundreds of thousands of sizes, a take of 10,000 folders at a time: each take
     // must be stored in a moment.
-    // T-2cdd29eb
+    // T-2cdd29eb F-186
     @Test func keepsUpWithAWalkThatStoresHundredsOfThousandsOfSizes() {
         let native = MockNative()
         let jobs = make(native)
@@ -564,7 +569,7 @@ private func settle() async {
     }
 
     @MainActor @Suite struct AWindowThatGoesAway {
-        // T-2b5eb9b3
+        // T-2b5eb9b3 F-142
         @Test func stopsItsMeasurementUnderWayAndDoesntMeasureItAgain() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -582,7 +587,7 @@ private func settle() async {
             #expect(jobs.getStatus(jobId: started.jobId).status == .cancelled)
         }
 
-        // T-8a42956f
+        // T-8a42956f F-142
         @Test func takesItsWaitingMeasurementsOffTheQueueAndLeavesTheOthersAlone() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -601,7 +606,7 @@ private func settle() async {
             #expect(native.calls.last?.path == "/test/c")
         }
 
-        // T-f8372e10
+        // T-f8372e10 F-142
         @Test func stopsOneMeasuredAgainForItWaitingBehindAnotherWindowsOne() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -623,7 +628,7 @@ private func settle() async {
     }
 
     @MainActor @Suite struct TheAppQuitting {
-        // T-e6221bff
+        // T-e6221bff F-142
         @Test func stopsTheWalkUnderWayAndRunsNoneOfThoseWaiting() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -640,7 +645,7 @@ private func settle() async {
             #expect(jobs.getStatus(jobId: waiting.jobId).status == .cancelled)
         }
 
-        // T-6b917767
+        // T-6b917767 F-142
         @Test func doesntMeasureAgainAWalkAWriteOutdated() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -654,7 +659,7 @@ private func settle() async {
             #expect(native.calls.count == 1)
         }
 
-        // T-7c63c265
+        // T-7c63c265 F-142
         @Test func measuresNothingAskedForAfterwards() {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -669,7 +674,7 @@ private func settle() async {
     }
 
     @MainActor @Suite struct FoldersFinishedWhileMeasuring {
-        // T-d141735c
+        // T-d141735c F-186
         @Test func keepsEachFolderAsItIsFinishedAndCountsThemForTheWindow() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -691,7 +696,7 @@ private func settle() async {
             #expect(jobs.cachedSize("/test/a") == 150)
         }
 
-        // T-3ce960c3
+        // T-3ce960c3 F-186
         @Test func keepsTheFoldersFinishedBeforeACancel() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -710,7 +715,7 @@ private func settle() async {
             #expect(jobs.cachedSize("/test/b") == 70)
         }
 
-        // T-b388a294
+        // T-b388a294 F-142
         @Test func stopsKeepingFoldersOnceAWriteHasOutdatedTheMeasurementUntilItRunsAgain() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native)
@@ -737,7 +742,7 @@ private func settle() async {
 
         // A folder finished after a delete removed something from it already leaves it out: taking it off again
         // when the delete ends would count it twice.
-        // T-3b12318f
+        // T-3b12318f F-142
         @Test func measuresAgainRatherThanAdjustsAFolderStoredWhileADeleteWasRunning() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native, homePath: "/Users/demo")
@@ -767,7 +772,7 @@ private func settle() async {
         }
 
         // Every size stored after a write started was noted until the next one started.
-        // T-e95334ab
+        // T-e95334ab F-142
         @Test func adjustsAFolderStoredWhileAWriteRanOnceThatWritesEndIsCleared() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native, homePath: "/Users/demo")
@@ -784,7 +789,7 @@ private func settle() async {
             #expect(jobs.cachedSize("/Users/demo/Projects") == 700)
         }
 
-        // T-67c839c9
+        // T-67c839c9 F-142
         @Test func learnsWhetherTheTrashWasReadFromTheFoldersAsTheyAreFinished() async {
             let native = MockNative()
             let jobs = FolderSizeJobs(native: native, homePath: "/Users/demo")
@@ -802,7 +807,7 @@ private func settle() async {
         }
     }
 
-    // T-c59e8970
+    // T-c59e8970 F-142
     @Test func startWithRecalculateClearsCache() async {
         let native = MockNative()
         let jobs = make(native)
@@ -817,7 +822,7 @@ private func settle() async {
         #expect(again.status == .running)
     }
 
-    // T-94e1d120
+    // T-94e1d120 F-142
     @Test func cancelMarksJobAsCancelledAndCallsNativeCancel() {
         let native = MockNative()
         let jobs = make(native)
@@ -829,7 +834,7 @@ private func settle() async {
         #expect(jobs.getStatus(jobId: started.jobId).status == .cancelled)
     }
 
-    // T-702422e8
+    // T-702422e8 F-142
     @Test func getStatusReturnsCorrectFieldsForUnknownJob() {
         let native = MockNative()
         let jobs = make(native)
@@ -843,7 +848,7 @@ private func settle() async {
         #expect(status.error == "Unknown folder size job.")
     }
 
-    // T-cef0a829
+    // T-cef0a829 F-142
     @Test func newStartWhileActiveCancelsPreviousAndQueues() {
         let native = MockNative()
         let jobs = make(native)
@@ -859,7 +864,7 @@ private func settle() async {
         #expect(jobs.getStatus(jobId: first.jobId).status == .cancelled)
     }
 
-    // T-f81a9629
+    // T-f81a9629 F-142
     @Test func leavesAnotherWindowsWalkRunningAndQueuesBehindIt() async {
         let native = MockNative()
         let jobs = make(native)
@@ -887,7 +892,7 @@ private func settle() async {
         #expect(native.cancelCount == 0)
     }
 
-    // T-fdee27bd
+    // T-fdee27bd F-186
     @Test func subFolderCachePopulationFromWalkResults() async {
         let native = MockNative()
         let jobs = make(native)
@@ -907,7 +912,7 @@ private func settle() async {
         #expect(status.folderCount == 3)
     }
 
-    // T-702383ad
+    // T-702383ad F-142
     @Test func queuedJobStartsAfterActiveFinishes() async {
         let native = MockNative()
         let jobs = make(native)
@@ -926,7 +931,7 @@ private func settle() async {
         #expect(native.calls.last?.background == false)
     }
 
-    // T-d553078d
+    // T-d553078d F-142
     @Test func errorJobHasNullDiskBytesAndCounts() async {
         let native = MockNative()
         let jobs = make(native)
@@ -944,7 +949,7 @@ private func settle() async {
         #expect(status.error == "ENOENT: not found")
     }
 
-    // T-8372d0d7
+    // T-8372d0d7 F-186
     @Test func clearCacheEmptiesTheFolderSizeCache() async {
         let native = MockNative()
         let jobs = make(native)
@@ -958,7 +963,7 @@ private func settle() async {
         #expect(jobs.cachedSize("/test") == nil)
     }
 
-    // T-e5c55810
+    // T-e5c55810 F-142
     @Test func keepsOnlyTheMostRecentFinishedJobsSoRepeatedCalculationsDoNotGrowWithoutBound() async {
         let native = MockNative()
         let jobs = make(native)

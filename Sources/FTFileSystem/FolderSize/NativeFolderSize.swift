@@ -1,6 +1,7 @@
 // Port of packages/native-fs/index.js (the single-flight wrapper) over the walker of native_foldersize.c
 import CFileTrail
 import Foundation
+import os
 
 /// What the folder size jobs need of a walker: the original's `getFolderSize` and `cancelFolderSize`.
 @MainActor
@@ -122,24 +123,43 @@ public final class NativeFolderSize: FolderSizeNative {
                     default: .other
                     }
                 continuation.resume(
-                    returning: ItemSize(kind: kind, sizeBytes: item.size_bytes, diskBytes: item.disk_bytes, dev: item.dev))
+                    returning: ItemSize(
+                        kind: kind, sizeBytes: item.size_bytes, diskBytes: item.disk_bytes, dev: item.dev))
             }
         }
     }
 }
 
-/// Tells the consumer the finished list stopped being empty. Called from a worker thread.
+/// Tells the consumer the finished list stopped being empty. Called from a worker thread, as often as folders finish:
+/// the consumer is woken at most once per `interval`, so it takes folders in batches (as the original's polling did,
+/// but only when there are some) and the workers pay almost nothing for being watched.
 private final class FolderWalkNotifier: @unchecked Sendable {
+    static let interval: DispatchTimeInterval = .milliseconds(20)
+
     let continuation: AsyncStream<Void>.Continuation
+    private let scheduled = OSAllocatedUnfairLock(initialState: false)
 
     init(_ continuation: AsyncStream<Void>.Continuation) {
         self.continuation = continuation
+    }
+
+    func notify() {
+        let schedule = scheduled.withLock { scheduled in
+            if scheduled { return false }
+            scheduled = true
+            return true
+        }
+        guard schedule else { return }
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + Self.interval) { [self] in
+            scheduled.withLock { $0 = false }
+            continuation.yield()
+        }
     }
 }
 
 private func notifyFolderWalk(_ context: UnsafeMutableRawPointer?) {
     guard let context else { return }
-    Unmanaged<FolderWalkNotifier>.fromOpaque(context).takeUnretainedValue().continuation.yield()
+    Unmanaged<FolderWalkNotifier>.fromOpaque(context).takeUnretainedValue().notify()
 }
 
 /// One walk of the C walker.

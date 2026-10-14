@@ -187,7 +187,8 @@ public enum FolderSizeAdjust {
     }
 
     private static func isInside(_ path: String, _ folder: String) -> Bool {
-        let prefix = folder.utf8.last == UInt8(ascii: "/") ? Array(folder.utf8) : Array(folder.utf8) + [UInt8(ascii: "/")]
+        let prefix =
+            folder.utf8.last == UInt8(ascii: "/") ? Array(folder.utf8) : Array(folder.utf8) + [UInt8(ascii: "/")]
         return path.utf8.starts(with: prefix)
     }
 

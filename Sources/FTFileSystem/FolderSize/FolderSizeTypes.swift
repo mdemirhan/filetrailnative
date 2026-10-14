@@ -15,7 +15,8 @@ struct PathKey: Hashable, Sendable {
         var rhs = rhs.value
         return lhs.withUTF8 { left in
             rhs.withUTF8 { right in
-                left.count == right.count && (left.isEmpty || memcmp(left.baseAddress, right.baseAddress, left.count) == 0)
+                left.count == right.count
+                    && (left.isEmpty || memcmp(left.baseAddress, right.baseAddress, left.count) == 0)
             }
         }
     }

@@ -71,7 +71,7 @@ private struct RandomCache {
 }
 
 @Suite struct FolderSizeCacheTests {
-    // T-c40c6dc9
+    // T-c40c6dc9 F-186
     @Test func forgetsWhatAChangeTouchedAsLookingAtEverySizeDoes() {
         for seed in 1...300 {
             var random = RandomCache(seed: seed)
@@ -84,7 +84,7 @@ private struct RandomCache {
         }
     }
 
-    // T-7079a4e2
+    // T-7079a4e2 F-186
     @Test func forgetsWhatIsAtOrInsidePathsAsLookingAtEverySizeDoes() {
         for seed in 1...300 {
             var random = RandomCache(seed: seed)
@@ -97,7 +97,7 @@ private struct RandomCache {
         }
     }
 
-    // T-963f544d
+    // T-963f544d F-186
     @Test func findsWhatIsInsideAFolderAgainAfterSizesComeAndGo() {
         let cache = FolderSizeCache()
         cache.store("/Users/demo/a/b/c", stats(1))
@@ -118,7 +118,7 @@ private struct RandomCache {
     // A home folder's walk stores 176,000 sizes. With a limit of 100,000, the folders it finished first (small
     // ones directly in the home folder among them) were let go, and showed no size until the home folder was
     // measured again.
-    // T-ac9e4e45
+    // T-ac9e4e45 F-186
     @Test func keepsEverySizeStoredQuickly() {
         let cache = FolderSizeCache()
         let started = ContinuousClock.now
@@ -146,7 +146,7 @@ private struct RandomCache {
     }
 
     @Suite struct WhileAWriteRuns {
-        // T-a3935b15
+        // T-a3935b15 F-186
         @Test func forgetsOfTheSizesStoredMeanwhileThoseOfTheFoldersHoldingWhatItRemoved() {
             let cache = FolderSizeCache()
             cache.store("/Users/demo/Work", stats(1))
@@ -163,7 +163,7 @@ private struct RandomCache {
         }
 
         // Every size stored after the first write was noted until the next one started: 70 MB for a million.
-        // T-765710f6
+        // T-765710f6 F-186
         @Test func notesOnlyWhatIsStoredUntilItEndsAndLetsGoOfWhatGoes() {
             let cache = FolderSizeCache()
             cache.store("/before", stats(1))
