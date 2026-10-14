@@ -123,9 +123,16 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         }
     }
 
-    /// Folders a file operation renamed or moved, from whichever window ran it: every window's tabs follow them
-    /// (B-VIEW-172). P3-05's write coordinator calls it as an operation that moved items ends (`collectFollowedMoves`).
-    func itemsMoved(_ moves: [PathMove]) {
+    /// A file operation's progress, from whichever window ran it, as the original's `onWriteOperationProgress` reaches
+    /// every window: once one that renamed or moved folders has ended, every window's tabs follow them (B-VIEW-172).
+    /// The write coordinator sends every progress event here. Until it exists (P3-05; FTOperations runs no file
+    /// operation yet) nothing in the app renames or moves an item, so nothing calls this.
+    func writeOperationProgress(_ event: WriteOperationProgress) {
+        itemsMoved(ExplorerTabs.followedMoves(event))
+    }
+
+    /// Folders renamed or moved: every window's tabs follow them.
+    private func itemsMoved(_ moves: [PathMove]) {
         guard !moves.isEmpty else { return }
         for group in groups where !group.isDestroyed {
             group.followMovedItems(moves)

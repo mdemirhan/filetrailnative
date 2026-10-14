@@ -177,6 +177,33 @@ public struct PathMove: Equatable, Sendable {
     }
 }
 
+/// A file operation's result, as far as the windows' tabs look at it (`WriteOperationResult`).
+public struct WriteOperationOutcome: Equatable, Sendable {
+    /// `WriteOperationAction`: "paste", "move_to", "rename", "batch_rename", "undo" and the like.
+    public var action: String
+    /// For a paste, whether what it pasted was copied or cut.
+    public var mode: CopyPasteMode?
+    public var items: [WriteEffectItem]
+
+    public init(action: String, mode: CopyPasteMode?, items: [WriteEffectItem]) {
+        self.action = action
+        self.mode = mode
+        self.items = items
+    }
+}
+
+/// A file operation's progress, as every window hears it (`WriteOperationProgressEvent`).
+public struct WriteOperationProgress: Equatable, Sendable {
+    /// "queued", "running", "awaiting_resolution", or how it ended: "completed", "failed", "cancelled", "partial".
+    public var status: String
+    public var result: WriteOperationOutcome?
+
+    public init(status: String, result: WriteOperationOutcome?) {
+        self.status = status
+        self.result = result
+    }
+}
+
 public enum ExplorerTabs {
     /// How many closed tabs Reopen Closed Tab can bring back, most recent first (CLOSED_TABS_LIMIT).
     public static let closedTabsLimit = 10
@@ -366,6 +393,35 @@ public enum ExplorerTabs {
         if path.utf16.elementsEqual(deepest.from.utf16) { return deepest.to }
         let rest = path.utf16.index(path.utf16.startIndex, offsetBy: deepest.from.utf16.count)
         return deepest.to + path[rest...]
+    }
+
+    /// `isRenameOrMove` (explorerAppUtils.ts).
+    public static func isRenameOrMove(_ action: String) -> Bool {
+        ["rename", "batch_rename", "move_to", "undo", "redo"].contains(action)
+    }
+
+    /// `movedItems`: a write that gave items new paths, a rename or move, or a paste that moved what was cut.
+    public static func movedItems(_ result: WriteOperationOutcome) -> Bool {
+        isRenameOrMove(result.action) || result.mode == .cut
+    }
+
+    /// `collectFollowedMoves`: where the operation took each item that really moved (`isFollowedMove`).
+    public static func collectFollowedMoves(_ result: WriteOperationOutcome) -> [PathMove] {
+        result.items.compactMap { item in
+            guard WriteEffects.isFollowedMove(item, action: result.action), let from = item.sourcePath,
+                let to = item.destinationPath
+            else { return nil }
+            return PathMove(from: from, to: to)
+        }
+    }
+
+    /// The moves a window's tabs follow on hearing `event` (the `onWriteOperationProgress` listener of
+    /// useExplorerTabs.ts): none until the operation has ended, and only from one that moved items.
+    public static func followedMoves(_ event: WriteOperationProgress) -> [PathMove] {
+        guard !["queued", "running", "awaiting_resolution"].contains(event.status), let result = event.result,
+            movedItems(result)
+        else { return [] }
+        return collectFollowedMoves(result)
     }
 
     /// `followMovedItems`: a background tab on a folder that was renamed or moved follows it, as a Finder window does.

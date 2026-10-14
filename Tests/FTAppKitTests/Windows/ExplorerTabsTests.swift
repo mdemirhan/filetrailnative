@@ -210,6 +210,59 @@ import Testing
             ExplorerTabs.followMovedItems(tab, [PathMove(from: "/Users/demo/Projects", to: "/Users/demo/Work")]) == tab)
     }
 
+    // MARK: collectFollowedMoves (explorerAppUtils.test.ts)
+
+    private func result(_ action: String, mode: CopyPasteMode? = nil) -> WriteOperationOutcome {
+        WriteOperationOutcome(
+            action: action, mode: mode,
+            items: [
+                WriteEffectItem(sourcePath: "/a", destinationPath: "/b", status: "completed"),
+                WriteEffectItem(sourcePath: "/c", destinationPath: "/c 2", status: "failed"),
+                WriteEffectItem(sourcePath: "/d", destinationPath: nil, status: "failed"),
+                WriteEffectItem(sourcePath: "/e", destinationPath: "/e", status: "completed"),
+            ])
+    }
+
+    // T-b0dde00f
+    @Test func followsWhatWasRenamedAndAnItemOfSeveralPutBackUnderAnotherName() {
+        #expect(
+            ExplorerTabs.collectFollowedMoves(result("batch_rename")) == [
+                PathMove(from: "/a", to: "/b"), PathMove(from: "/c", to: "/c 2"),
+            ])
+    }
+
+    // T-52ae9489
+    @Test func followsOnlyWhatAMoveFinishedAFailedItemStayedWhereItWas() {
+        #expect(ExplorerTabs.collectFollowedMoves(result("move_to")) == [PathMove(from: "/a", to: "/b")])
+    }
+
+    // The filter of the original's `onWriteOperationProgress` listener (useExplorerTabs.ts): only a finished
+    // operation that gave items new paths moves the tabs.
+    // F-676 B-VIEW-172
+    @Test func followsTheMovesOfAFinishedRenameMoveOrCutPasteOnly() {
+        func moves(_ status: String, _ result: WriteOperationOutcome?) -> [PathMove] {
+            ExplorerTabs.followedMoves(WriteOperationProgress(status: status, result: result))
+        }
+        let moved = [PathMove(from: "/a", to: "/b")]
+        for status in ["queued", "running", "awaiting_resolution"] {
+            #expect(moves(status, result("rename")).isEmpty)
+        }
+        #expect(moves("completed", nil).isEmpty)
+        for action in ["rename", "move_to", "undo", "redo"] {
+            #expect(moves("completed", result(action)) == moved)
+        }
+        // A paste moves items only when they were cut; a copy, a trash or a new folder moves none.
+        #expect(moves("completed", result("paste", mode: .cut)) == moved)
+        #expect(moves("completed", result("paste", mode: .copy)).isEmpty)
+        #expect(moves("completed", result("copy_to")).isEmpty)
+        #expect(moves("completed", result("trash")).isEmpty)
+        #expect(moves("completed", result("new_folder")).isEmpty)
+        // What partly worked, or stopped, still moved what it finished.
+        for status in ["partial", "cancelled", "failed"] {
+            #expect(moves(status, result("move_to")) == moved)
+        }
+    }
+
     // MARK: leaveUnmountedDisks
 
     private func onDisk(_ currentPath: String, _ history: [String], root: String = "/Volumes/Backup") -> TabSnapshot {
