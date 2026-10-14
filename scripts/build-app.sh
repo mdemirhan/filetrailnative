@@ -20,6 +20,9 @@ mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary" "$app/Contents/MacOS/FileTrail"
 cp Resources/Info.plist "$app/Contents/Info.plist"
 cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
+cp -R Resources/Acknowledgements "$app/Contents/Resources/Acknowledgements"
+/usr/libexec/PlistBuddy -c "Delete :FTCommit" "$app/Contents/Info.plist" 2>/dev/null || true
+/usr/libexec/PlistBuddy -c "Add :FTCommit string $(git rev-parse --short HEAD)" "$app/Contents/Info.plist"
 if [ "$config" = release ]; then
     strip -rSTx "$app/Contents/MacOS/FileTrail"
 fi
