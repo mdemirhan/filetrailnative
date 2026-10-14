@@ -19,6 +19,15 @@
             }
             // A right click opens a native menu, whose tracking loop would hold the run: the menu is
             // resolved and not shown, as contextMenu does.
+            // The app's own right-click menus (Back and Forward's history) are drawn in the window: the press is sent.
+            if button == .right, let target = match.view.window,
+                let pressed = target.contentView?.superview?.hitTest(MouseEvents.center(of: match.view)),
+                pressed is ToolbarButton || pressed.superview is ToolbarButton,
+                let event = MouseEvents.event(.rightMouseDown, at: MouseEvents.center(of: match.view), in: target)
+            {
+                target.sendEvent(event)
+                return Outcome(.ok)
+            }
             if button == .right { return contextMenu(match, choose: [], ref: ref) }
             guard let target = match.view.window else { return Outcome(.failed, "\(ref) is in no window") }
             if holdMilliseconds > 0 {

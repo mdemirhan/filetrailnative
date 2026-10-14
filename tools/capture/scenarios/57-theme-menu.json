@@ -1,0 +1,106 @@
+{
+  "name": "57-theme-menu",
+  "description": "The Theme button's menu: choose Dark",
+  "features": [
+    "F-806"
+  ],
+  "behaviors": [
+    "B-DLG-244",
+    "B-VIEW-130"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "topToolbarItems": [
+          "folderTree",
+          "topSeparator",
+          "back",
+          "forward",
+          "title",
+          "clipboard",
+          "view",
+          "sort",
+          "search",
+          "viewOptions",
+          "theme",
+          "infoPanel"
+        ]
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "click",
+      "element": "theme button"
+    },
+    {
+      "step": "expectSheet",
+      "name": "toolbar menu"
+    },
+    {
+      "step": "expect",
+      "element": "toolbar menu item",
+      "count": 3
+    },
+    {
+      "step": "expect",
+      "element": {
+        "name": "checked toolbar menu item",
+        "text": "Light"
+      },
+      "visible": true
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    },
+    {
+      "step": "click",
+      "element": "toolbar menu item",
+      "text": "Dark"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "snapshot",
+      "name": "dark"
+    },
+    {
+      "step": "geometry",
+      "name": "dark"
+    }
+  ]
+}

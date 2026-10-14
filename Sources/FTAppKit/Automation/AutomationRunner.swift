@@ -57,7 +57,7 @@
                 scenario = parsed
                 report.update { $0.scenario = parsed.name }
                 if let file = options.elements ?? AutomationElements.locate(near: options.scenario) {
-                    elements = try AutomationElements.parse(Data(contentsOf: file))
+                    elements = try AutomationElements.load(file)
                 }
                 return parsed
             } catch {

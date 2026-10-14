@@ -64,6 +64,11 @@ first.
 
 ## Elements
 
+Work packages that run side by side keep their names in `elements.d/<WP id>.json` (the same format); `run.sh`
+merges them into `elements.json` (a name given twice is an error) and passes the merged file to both sides
+(`build/capture/elements.json`), and the native automation merges them the same way when it finds
+`elements.json` itself.
+
 `elements.json` maps a logical name to the original's CSS selector (with the child holding the text, or
 `textAttribute` for an icon button named by its `aria-label`) and the Swift `accessibilityIdentifier`
 (text matched against the view's text, its text fields, or its accessibility label). `first` compares only

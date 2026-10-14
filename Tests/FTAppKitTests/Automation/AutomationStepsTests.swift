@@ -162,8 +162,7 @@
         }
 
         @Test func everyScenarioIsTaggedAndNamesKnownElements() throws {
-            let elements = try AutomationElements.parse(
-                Data(contentsOf: Self.capture.appendingPathComponent("elements.json")))
+            let elements = try AutomationElements.load(Self.capture.appendingPathComponent("elements.json"))
             let files = try Self.scenarioFiles(in: "scenarios")
             #expect(files.count >= 20)
             for file in files {
@@ -180,8 +179,7 @@
         }
 
         @Test func thereIsOneAcceptanceFlowPerImprovement() throws {
-            let elements = try AutomationElements.parse(
-                Data(contentsOf: Self.capture.appendingPathComponent("elements.json")))
+            let elements = try AutomationElements.load(Self.capture.appendingPathComponent("elements.json"))
             let files = try Self.scenarioFiles(in: "scenarios/acceptance")
             #expect(
                 files.map { String($0.lastPathComponent.prefix(3)) } == (1...17).map { String(format: "a%02d", $0) })
@@ -199,8 +197,7 @@
         }
 
         @Test func elementsNameOneIdentifierEach() throws {
-            let elements = try AutomationElements.parse(
-                Data(contentsOf: Self.capture.appendingPathComponent("elements.json")))
+            let elements = try AutomationElements.load(Self.capture.appendingPathComponent("elements.json"))
             #expect(elements.identifiers["list row"] == "list.row")
             #expect(elements.identifiers["review sheet"] == "reviewSheet")
             #expect(throws: AutomationElements.LoadError.self) {

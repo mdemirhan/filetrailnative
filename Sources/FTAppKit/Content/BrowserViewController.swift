@@ -1,3 +1,5 @@
+// Port of the content pane shell of apps/desktop/src/renderer/components/ContentPane.tsx (its rows) around the
+// spike's folder views
 import AppKit
 
 /// What the List and Icon views share, so the browser can swap them.
@@ -22,7 +24,6 @@ final class BrowserViewController: NSViewController {
     private let listPane = ListViewController()
     private let iconPane = IconViewController()
     private let container = NSView()
-    private let status = NSTextField(labelWithString: "")
     private var listing: FolderListing?
     private var availableCapacity: Int64?
     private var shown: [FileItem] = []
@@ -39,32 +40,21 @@ final class BrowserViewController: NSViewController {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    override func loadView() {
-        let root = NSView()
-        let separator = NSBox()
-        separator.boxType = .separator
-        status.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
-        status.textColor = .secondaryLabelColor
-        status.alignment = .center
-        status.setAccessibilityIdentifier("statusBar")
-        container.setAccessibilityIdentifier("content")
+    /// The rows of the content pane (`.content-pane`): the search header (P5-07), the list, the Info Row and the
+    /// path bar row (P5-06).
+    let shell = ContentPaneView()
+    private var status: NSTextField { shell.pathBarRow.status }
 
-        for view in [container, separator, status] as [NSView] {
-            view.translatesAutoresizingMaskIntoConstraints = false
-            root.addSubview(view)
-        }
-        NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: root.topAnchor),
-            container.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: separator.topAnchor),
-            separator.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            separator.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            separator.bottomAnchor.constraint(equalTo: root.bottomAnchor, constant: -24),
-            status.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 8),
-            status.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -8),
-            status.centerYAnchor.constraint(equalTo: root.bottomAnchor, constant: -12),
-        ])
+    /// Opens or closes the Info Row.
+    func setInfoRowOpen(_ open: Bool) {
+        shell.infoRow.isOpen = open
+        shell.needsLayout = true
+    }
+
+    override func loadView() {
+        let root = shell
+        container.setAccessibilityIdentifier("content")
+        shell.list = container
 
         for child in [listPane, iconPane] as [NSViewController & FolderPane] {
             addChild(child)
@@ -75,6 +65,7 @@ final class BrowserViewController: NSViewController {
             let selection = self.selectedItems.map(\.url)
             self.sort = sort
             self.refresh(selecting: selection, scrollToTop: false)
+            self.onSortChanged?(sort)
         }
         view = root
         install()
@@ -92,6 +83,17 @@ final class BrowserViewController: NSViewController {
     func setAvailableCapacity(_ capacity: Int64?) {
         availableCapacity = capacity
         updateStatus()
+    }
+
+    /// Told when a column header changes the sort.
+    var onSortChanged: ((NSSortDescriptor) -> Void)?
+
+    /// Sorts by `key` (name, modified, size, kind), as the toolbar's Sort menu and the View menu do.
+    func setSort(key: String, ascending: Bool) {
+        guard key != sort.key || ascending != sort.ascending else { return }
+        let selection = selectedItems.map(\.url)
+        sort = NSSortDescriptor(key: key, ascending: ascending)
+        refresh(selecting: selection, scrollToTop: false)
     }
 
     func setFilter(_ text: String) {
@@ -134,6 +136,7 @@ final class BrowserViewController: NSViewController {
             text += ", \(Formatting.size(capacity)) available"
         }
         status.stringValue = text
+        shell.pathBarRow.needsLayout = true
     }
 
     private func itemCount(_ count: Int) -> String {

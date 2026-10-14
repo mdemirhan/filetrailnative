@@ -57,8 +57,27 @@ export FILETRAIL_FIXTURES="${FILETRAIL_FIXTURES:-$cache/fixtures}"
 commit="$(grep -o '"referenceCommit": *"[^"]*"' docs/port/state/orchestrator.json | sed 's/.*: *"\(.*\)"/\1/')"
 out=tools/capture/out
 logs=build/logs
-elements="$repo/tools/capture/elements.json"
-mkdir -p "$logs"
+mkdir -p "$logs" build/capture
+# The element names: elements.json, plus each work package's own in elements.d/*.json (a name given twice is an
+# error), merged into one file both sides read.
+elements="$repo/build/capture/elements.json"
+if ! bun -e '
+const fs = require("fs");
+const [base, dir, out] = process.argv.slice(1);
+const merged = JSON.parse(fs.readFileSync(base, "utf8"));
+const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")).sort() : [];
+for (const file of files) {
+  const extra = JSON.parse(fs.readFileSync(`${dir}/${file}`, "utf8")).elements ?? {};
+  for (const [name, spec] of Object.entries(extra)) {
+    if (name in merged.elements) throw new Error(`elements.d/${file}: "${name}" is already named`);
+    merged.elements[name] = spec;
+  }
+}
+fs.writeFileSync(out, JSON.stringify(merged, null, 2) + "\n");
+' tools/capture/elements.json tools/capture/elements.d "$elements"; then
+    echo "could not merge tools/capture/elements.d into elements.json" >&2
+    exit 3
+fi
 
 # A value from a scenario file: field <file> <key> (lists print one item per line).
 field() {
@@ -154,7 +173,7 @@ capture_swift() { # <scenario> <dir> <now> <scratch>
 
 capture_electron() { # <scenario> <dir> <now> <scratch>
     local hash cached tmp
-    hash="$(cat "$1" tools/capture/elements.json tools/capture/preferences.json tools/capture/electron/driver.ts |
+    hash="$(cat "$1" "$elements" tools/capture/preferences.json tools/capture/electron/driver.ts |
         shasum -a 256 | cut -c1-16)"
     cached="$cache/captures/$commit/$hash"
     if [ ! -f "$cached/.complete" ]; then
