@@ -1281,16 +1281,13 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
-      ]
+      "carryOver": []
     },
     "P3-02": {
       "title": "Analysis report and policy",
@@ -1313,16 +1310,13 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
-      ]
+      "carryOver": []
     },
     "P3-03": {
       "title": "Copy/move execution and runtime conflicts",
@@ -1346,16 +1340,13 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
-      ]
+      "carryOver": []
     },
     "P3-04": {
       "title": "Replace staging, journal, recovery",
@@ -1379,16 +1370,13 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
-      ]
+      "carryOver": []
     },
     "P3-05": {
       "title": "Write coordinator",
@@ -1411,16 +1399,14 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing.",
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
+        "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing."
       ]
     },
     "P3-06": {
@@ -1446,16 +1432,13 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
-      ]
+      "carryOver": []
     },
     "P3-07": {
       "title": "Undo",
@@ -1480,16 +1463,13 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
-      ]
+      "carryOver": []
     },
     "P3-08": {
       "title": "Batch-rename execution",
@@ -1514,16 +1494,13 @@
       "lenses": [
         "parity",
         "safety",
-        "performance",
-        "safety-adversarial"
+        "performance"
       ],
       "summary": null,
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [
-        "Assurance raised on 2026-10-14 (user): run the exec differential with at least 4x the seeds the brief names and add crash- and stop-injection cases for every write step you port; a second, independent adversarial safety review checks this package."
-      ]
+      "carryOver": []
     },
     "P4-01": {
       "title": "App delegate, commands and menus",
@@ -2593,7 +2570,9 @@
     {
       "at": "2026-10-14",
       "issue": "P3-01 (W2-A) launched before the assurance raise: no adversarial safety review, base seed count.",
-      "owner": "P3-02 brief: extend seeds/stop injection to the P3-01 layer; the batch reviewer for P3-02 covers it."
+      "owner": "P3-02 brief: extend seeds/stop injection to the P3-01 layer; the batch reviewer for P3-02 covers it.",
+      "closed": true,
+      "status": "moot: the P3 assurance raise was withdrawn by the user"
     }
   ],
   "userRequests": [
@@ -2713,9 +2692,8 @@
       "low-risk WPs get a parity reviewer",
       "vision review of every scenario at wave gates",
       "Compact density screenshots at wave gates",
-      "P3: 4x differential seeds, crash/stop injection per write step, second adversarial safety review",
-      "scripts-only parity sweep at every wave gate",
-      "Undo/Redo (user): exec-undo covers every undoable op (>=120 cases each), exec-undo-sequences (>=200 random op/undo/redo sequences, compared after every step), stop/crash injection during undo and redo, real-disk undo; sixth P7 critic angle \"file operations and Undo/Redo\"; P3-gate human checklist includes undo after cross-disk move and unplug."
-    ]
+      "scripts-only parity sweep at every wave gate"
+    ],
+    "fileOperations": "User, 2026-10-14: file operations and Undo/Redo keep the original File Trail's bar: port its tests and the planned differential goldens (PLAN §5.3) as they are, no extra seeds, sequences, injection or real-disk cases beyond the original's, and no requirement that every operation be undoable. Cases the original declines to undo stay declined."
   }
 }

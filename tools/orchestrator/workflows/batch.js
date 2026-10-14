@@ -95,7 +95,6 @@ const CRITIC = {
 const LENSES = {
   parity: 'PARITY: read the cited reference TypeScript and inventory sections and list behavior the Swift code lacks or changes.',
   safety: 'SAFETY: look for data loss, destructive steps the user was not shown, and races above the bar in the reference repo docs/FILE_OPERATION_RISKS.md. Accepted risks listed there are not findings.',
-  'safety-adversarial': 'SAFETY, SECOND AND INDEPENDENT REVIEW: assume the first safety review missed something. Attack the change: stop it, crash it, fill the disk, change the source or target while it runs, use odd file systems (FAT32, exFAT, SMB, case-sensitive APFS), locks, ACLs, symlinks, packages and long names. Prove each finding with a failing test, ideally a crash- or stop-injection case in the exec differential. Accepted risks in the reference docs/FILE_OPERATION_RISKS.md are not findings.',
   performance: 'PERFORMANCE: look for main-thread disk access, needless allocations or copies, and anything that breaks the budgets in docs/port/PLAN.md section 4.',
   visual: 'VISUAL: build the app, capture the scenarios this work package touches with the capture harness, compare against the reference captures, and list material differences.',
 }
@@ -139,7 +138,7 @@ function lensesFor(wp) {
   // Every work package gets at least a parity review (the low-risk "no reviewer" cut was undone on 2026-10-14).
   if (wp.lenses && wp.lenses.length) return wp.lenses
   if (wp.risk === 'low') return ['parity']
-  return wp.risk === 'high' ? ['parity', 'safety', 'safety-adversarial', 'performance'] : ['parity', 'performance']
+  return wp.risk === 'high' ? ['parity', 'safety', 'performance'] : ['parity', 'performance']
 }
 
 function review(wp, lens) {
