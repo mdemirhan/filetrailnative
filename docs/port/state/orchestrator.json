@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T11:23:25+00:00",
+  "updatedAt": "2026-10-14T11:39:23+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Wave 1 done and cleaned up. Wave 2: waiting for the wave-2 brief drafts (agent), then W2-A",
+  "nextAction": "Running W2-A P3-01+P4-03+P5-01; then W2-B P3-02+P5-02+P5-03+P5-06",
   "pause": {
     "requested": false,
     "reason": null,
@@ -515,6 +515,21 @@
         "weeklyPct": 15,
         "fiveHourPct": 18
       }
+    },
+    "W2-A": {
+      "wps": [
+        "P3-01",
+        "P4-03",
+        "P5-01"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 15,
+      "meterBefore": {
+        "weeklyPct": 15,
+        "fiveHourPct": 18
+      },
+      "startedAt": "2026-10-14T11:39:23+00:00"
     }
   },
   "wps": {
@@ -1254,11 +1269,15 @@
         "P1-01",
         "P2-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P3-01",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1282,7 +1301,11 @@
       "branch": "port/P3-02",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "tools/parity/exec/selftest.sh"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1306,7 +1329,12 @@
       "branch": "port/P3-03",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "tools/parity/exec/selftest.sh",
+        "FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1330,7 +1358,12 @@
       "branch": "port/P3-04",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "tools/parity/exec/selftest.sh",
+        "FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --scope FTOperationsTests"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1354,7 +1387,11 @@
       "branch": "port/P3-05",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1382,7 +1419,11 @@
       "branch": "port/P3-06",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1406,7 +1447,13 @@
       "branch": "port/P3-07",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "tools/parity/exec/selftest.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1432,7 +1479,11 @@
       "branch": "port/P3-08",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "tools/parity/exec/selftest.sh"
+      ],
       "lenses": [
         "parity",
         "safety",
@@ -1600,11 +1651,16 @@
         "P4-01",
         "P0-06"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P4-03",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/acknowledgements/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -1623,11 +1679,16 @@
         "P4-01",
         "P4-02"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P5-01",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [
         "parity",
         "visual"
@@ -1657,7 +1718,11 @@
       "branch": "port/P5-02",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [
         "parity",
         "visual"
@@ -1684,7 +1749,13 @@
       "branch": "port/P5-03",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/bench/run.sh --quick --report-only"
+      ],
       "lenses": [
         "parity",
         "visual"
@@ -1712,7 +1783,13 @@
       "branch": "port/P5-04",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/bench/run.sh --quick --report-only"
+      ],
       "lenses": [
         "parity",
         "visual"
@@ -1738,7 +1815,13 @@
       "branch": "port/P5-05",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/bench/run.sh --quick --report-only"
+      ],
       "lenses": [
         "parity",
         "performance"
@@ -1764,7 +1847,11 @@
       "branch": "port/P5-06",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
@@ -1788,7 +1875,13 @@
       "branch": "port/P5-07",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/bench/run.sh --quick --report-only"
+      ],
       "lenses": [
         "parity",
         "visual"
@@ -1816,7 +1909,12 @@
       "branch": "port/P5-08",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [
         "parity",
         "safety"
@@ -1843,7 +1941,12 @@
       "branch": "port/P5-09",
       "headSha": null,
       "attempts": 0,
-      "gate": [],
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
+        "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
+      ],
       "lenses": [],
       "summary": null,
       "findings": [],
