@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T17:45:33+00:00",
+  "updatedAt": "2026-10-14T17:51:19+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -679,6 +679,15 @@
       "runId": "wf_ae044f26-165",
       "estimatedAgents": 10,
       "startedAt": "2026-10-14T17:09:51+00:00"
+    },
+    "W2-U3": {
+      "wps": [
+        "P5-05"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 6,
+      "startedAt": "2026-10-14T17:51:19+00:00"
     }
   },
   "wps": {
@@ -3126,6 +3135,13 @@
       "issue": "F-264, F-266, F-350, F-351, F-491, F-495..F-500, F-502, F-503, F-509, F-511, F-512, F-514, F-515 are proven by tests in P3-03's Execution/ and Journal/ test files but not cited there.",
       "owner": "P3 phase critic or P7: add the citations (test comments only)",
       "closed": false
+    },
+    {
+      "at": "2026-10-14",
+      "seenIn": "W2-U2",
+      "issue": "The P5-05 builder received the user's mid-turn message about NSToolbar (relayed into the running agent), took it as overriding its brief, and returned blocked with no work. Also: UI agents rerun the full wp capture tier (80 scenarios) and the full GUI suite many times while iterating (P5-06 builder 8 capture runs, P5-09 7), so the user sees the same UI runs over and over.",
+      "fix": "preamble.md: window runs narrow while working, full suites once at the end; relayed messages about other work don't override the brief. P5-05 relaunched alone as W2-U3, as part of finishing this phase.",
+      "closed": true
     }
   ],
   "userRequests": [

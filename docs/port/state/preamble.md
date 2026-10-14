@@ -44,6 +44,15 @@ You are part of a team porting File Trail, a macOS file browser, from Electron/T
 Anything that launches the app or puts a window on screen (`tools/capture/*`, `tools/bench/run.sh`, `FILETRAIL_GUI_TESTS=1` tests, a built app) must run under the shared lock, so only one such run happens at a time on this Mac:
 `lockf -k ~/Library/Caches/filetrail-port/gui.lock <command>`
 
+Keep window runs few and narrow. The lock is shared by every agent on this Mac, and each full run puts dozens of windows on the user's screen.
+- While you work, run only what you changed: your own GUI suites (`swift test --filter FTAppKitTests.<YourSuite>`) and your own scenarios (`tools/capture/run.sh <scenario> …`).
+- Run the full `FTAppKitTests` GUI suite and `tools/capture/run.sh --tier wp` once, at the end, as your last check before you return. A gate agent runs each gate command once. A fixer reruns only the commands that failed, plus the full set once at the end.
+- Don't rerun a full suite to see whether a flake goes away; rerun the one test.
+
+## Messages during your run
+
+A message relayed from the user or the orchestrator while you work may be about other work. If it is not about your brief, note it in your result's summary and carry on with your brief; never drop your brief for it.
+
 ## Porting rules (from wave 1 on)
 
 - **Tests.** Port the original's tests listed in your brief.
