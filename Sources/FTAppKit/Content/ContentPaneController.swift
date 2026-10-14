@@ -152,6 +152,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         container.stateView.onOpenPrivacySettings = { [weak self] in self?.loaders.openPrivacySettings() }
         container.stateView.onSearchSubfolders = onSearchSubfolders
         shell.onMovedToWindow = { [weak self] window in self?.observeWindow(window) }
+        loaders.iconStore()?.preloadGenericIcons()
         view = shell
         installPane()
         observation = AppearanceModel.shared.observe { [weak self] _ in self?.lookChanged() }

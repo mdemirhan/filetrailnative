@@ -178,7 +178,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     var onReady: (() -> Void)?
 
     private let sidebar = SidebarViewController()
-    private let content: ContentPaneController
+    let content: ContentPaneController
     /// What this window knows of folder sizes (`useFolderSizeCache`).
     let folderSizes: WindowFolderSizes
     /// The window's grid: sidebar, content, Info panel and the toolbar.
@@ -270,6 +270,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         connectSearchField()
         #if DEBUG
             AutomationLayoutPrefs.registerOnce()
+            AutomationContentPrefs.registerOnce()
         #endif
         updateTitle()
         if loadNow { ensureLoaded() }

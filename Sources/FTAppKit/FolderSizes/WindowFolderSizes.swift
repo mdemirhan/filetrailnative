@@ -3,18 +3,60 @@ import FTFileSystem
 import FTFoundation
 import Foundation
 
+/// A size the jobs know of a folder.
+struct SizeProbe: Equatable {
+    var path: String
+    var sizeBytes: Int64
+    var diskBytes: Int64
+    var fileCount: Int
+    var folderCount: Int
+}
+
+/// How a measurement stands.
+struct JobState: Equatable {
+    var status: FolderSizeJobStatus
+    var sizeBytes: Int64?
+    var diskBytes: Int64?
+    var fileCount: Int?
+    var folderCount: Int?
+    var measuredFolderCount = 0
+    var error: String?
+}
+
+struct JobStart: Equatable {
+    var jobId: String
+    var status: FolderSizeJobStatus
+}
+
 /// What a window asks of the folder size jobs (the original's `folderSize:*` channels).
 @MainActor
 protocol FolderSizeBackend: AnyObject {
-    func probeMany(_ paths: [String]) -> [FolderSizeProbe]
-    func start(_ request: FolderSizeStartRequest, owner: Int) -> FolderSizeStartResponse
-    func getStatus(jobId: String) -> FolderSizeStatus
+    func probeMany(_ paths: [String]) -> [SizeProbe]
+    func start(_ request: FolderSizeStartRequest, owner: Int) -> JobStart
+    func state(jobId: String) -> JobState
     func cancel(jobId: String)
 }
 
 extension FolderSizeJobs: FolderSizeBackend {
-    func start(_ request: FolderSizeStartRequest, owner: Int) -> FolderSizeStartResponse {
-        start(request, owner: Optional(owner))
+    func probeMany(_ paths: [String]) -> [SizeProbe] {
+        let probes: [FolderSizeProbe] = probeMany(paths)
+        return probes.map {
+            SizeProbe(
+                path: $0.path, sizeBytes: $0.sizeBytes, diskBytes: $0.diskBytes, fileCount: $0.fileCount,
+                folderCount: $0.folderCount)
+        }
+    }
+
+    func start(_ request: FolderSizeStartRequest, owner: Int) -> JobStart {
+        let response: FolderSizeStartResponse = start(request, owner: Optional(owner))
+        return JobStart(jobId: response.jobId, status: response.status)
+    }
+
+    func state(jobId: String) -> JobState {
+        let job = getStatus(jobId: jobId)
+        return JobState(
+            status: job.status, sizeBytes: job.sizeBytes, diskBytes: job.diskBytes, fileCount: job.fileCount,
+            folderCount: job.folderCount, measuredFolderCount: job.measuredFolderCount, error: job.error)
     }
 }
 
@@ -296,7 +338,7 @@ final class WindowFolderSizes {
     private func look(_ path: String, _ jobId: String, _ poll: Poll) {
         // Another calculation of this folder took over meanwhile.
         guard polls[path] === poll else { return }
-        let result = backend.getStatus(jobId: jobId)
+        let result = backend.state(jobId: jobId)
         switch result.status {
         case .ready where result.sizeBytes != nil:
             stopPolling(path)
@@ -345,7 +387,7 @@ final class WindowFolderSizes {
         let response = backend.start(
             FolderSizeStartRequest(path: path, recalculate: recalculate, automatic: automatic), owner: owner)
         if response.status == .ready {
-            let status = backend.getStatus(jobId: response.jobId)
+            let status = backend.state(jobId: response.jobId)
             if status.status == .ready, let size = status.sizeBytes {
                 updateEntry(
                     path,
