@@ -8,8 +8,10 @@ import Testing
     // T-3056a773
     @Test func tellsAPackageFromAPlainFolderAndFailsForAMissingFolder() throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("folder-loader-\(UUID().uuidString)")
-        try FileManager.default.createDirectory(at: root.appendingPathComponent("Tool.app"), withIntermediateDirectories: true)
-        try FileManager.default.createDirectory(at: root.appendingPathComponent("plain"), withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(
+            at: root.appendingPathComponent("Tool.app"), withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(
+            at: root.appendingPathComponent("plain"), withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: root) }
 
         let items = try FolderLoader.load(root).items
