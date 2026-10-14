@@ -714,6 +714,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// A preference change from any window (`onPreferencesChanged`): the keys the whole app shares.
+    /// What Copy or Cut put on the app's clipboard changed (P5-08 calls this from the shared clipboard).
+    func clipboardChanged() {
+        notify(.clipboard)
+    }
+
     func preferencesChanged(_ change: PreferencesChange) {
         notify(.preferences)
         if let customizer { customizer.refreshPanel() }

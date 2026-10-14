@@ -92,6 +92,21 @@ final class WorkspaceView: NSView {
 
     override var isFlipped: Bool { true }
 
+    private var titlebarObserver: (any NSObjectProtocol)?
+
+    /// The title bar's container changes height when the system tab bar shows or goes, and AppKit sets it back on
+    /// its own layouts: the band and the panes are laid out again each time.
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        if let titlebarObserver { NotificationCenter.default.removeObserver(titlebarObserver) }
+        titlebarObserver = nil
+        guard let container = window?.standardWindowButton(.closeButton)?.superview?.superview else { return }
+        container.postsFrameChangedNotifications = true
+        titlebarObserver = NotificationCenter.default.addObserver(
+            forName: NSView.frameDidChangeNotification, object: container, queue: .main
+        ) { [weak self] _ in MainActor.assumeIsolated { self?.needsLayout = true } }
+    }
+
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
         needsLayout = true
