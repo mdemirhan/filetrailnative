@@ -2714,7 +2714,8 @@
       "vision review of every scenario at wave gates",
       "Compact density screenshots at wave gates",
       "P3: 4x differential seeds, crash/stop injection per write step, second adversarial safety review",
-      "scripts-only parity sweep at every wave gate"
+      "scripts-only parity sweep at every wave gate",
+      "Undo/Redo (user): exec-undo covers every undoable op (>=120 cases each), exec-undo-sequences (>=200 random op/undo/redo sequences, compared after every step), stop/crash injection during undo and redo, real-disk undo; sixth P7 critic angle \"file operations and Undo/Redo\"; P3-gate human checklist includes undo after cross-disk move and unplug."
     ]
   }
 }

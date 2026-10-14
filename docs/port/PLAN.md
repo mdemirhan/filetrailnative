@@ -351,12 +351,13 @@ The workflow returns a structured report for each WP: status, tests ported and p
 After phase 7 starts, the orchestrator repeats the following until one round finds nothing new, every matrix row is passing or N/A with a reason, every scenario passes geometry (and vision review where its tier asks for it), and every budget holds:
 
 1. Run the full parity sweep. This is scripts only and costs no agent tokens: tests, differential, scenarios, e2e, bench. Its failures are the first work list.
-2. Run critic agents (Sonnet) with all five angles every round:
+2. Run critic agents (Sonnet) with all six angles every round:
    - by inventory section;
    - by menu command and preference;
    - by the edge-case checklist A–N;
    - by "a Finder user's first hour";
-   - by the deviations log.
+   - by the deviations log;
+   - by file operation and its Undo and Redo: every operation kind, in sequences, with outside changes, stops and crashes in between (added on 2026-10-14).
 3. Dedupe findings against everything already seen (plain code, not an agent).
 4. Keep only findings that come with a failing test or a diff.
 5. Turn confirmed gaps into work packages and run them.
