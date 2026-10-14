@@ -128,24 +128,30 @@ public final class NativeFolderSize: FolderSizeNative {
     }
 }
 
+/// Tells the consumer the finished list stopped being empty. Called from a worker thread.
+private final class FolderWalkNotifier: @unchecked Sendable {
+    let continuation: AsyncStream<Void>.Continuation
+
+    init(_ continuation: AsyncStream<Void>.Continuation) {
+        self.continuation = continuation
+    }
+}
+
+private func notifyFolderWalk(_ context: UnsafeMutableRawPointer?) {
+    guard let context else { return }
+    Unmanaged<FolderWalkNotifier>.fromOpaque(context).takeUnretainedValue().continuation.yield()
+}
+
 /// One walk of the C walker.
 @MainActor
 private final class FolderWalk {
-    /// Tells the consumer the finished list stopped being empty. Called from a worker thread.
-    private final class Notifier: @unchecked Sendable {
-        let continuation: AsyncStream<Void>.Continuation
-
-        init(_ continuation: AsyncStream<Void>.Continuation) {
-            self.continuation = continuation
-        }
-    }
 
     private nonisolated(unsafe) let walk: OpaquePointer
     private let path: String
     private let background: Bool
     private let signals: AsyncStream<Void>
     private let signalContinuation: AsyncStream<Void>.Continuation
-    private let notifier: Unmanaged<Notifier>
+    private let notifier: Unmanaged<FolderWalkNotifier>
 
     init?(path: String, background: Bool) {
         self.path = path
@@ -153,13 +159,8 @@ private final class FolderWalk {
         let (signals, continuation) = AsyncStream.makeStream(of: Void.self, bufferingPolicy: .bufferingNewest(1))
         self.signals = signals
         signalContinuation = continuation
-        let notifier = Unmanaged.passRetained(Notifier(continuation))
-        let created = ft_folder_walk_create(
-            path, background ? 1 : 0,
-            { context in
-                guard let context else { return }
-                Unmanaged<Notifier>.fromOpaque(context).takeUnretainedValue().continuation.yield()
-            }, notifier.toOpaque())
+        let notifier = Unmanaged.passRetained(FolderWalkNotifier(continuation))
+        let created = ft_folder_walk_create(path, background ? 1 : 0, notifyFolderWalk, notifier.toOpaque())
         guard let created else {
             notifier.release()
             return nil
