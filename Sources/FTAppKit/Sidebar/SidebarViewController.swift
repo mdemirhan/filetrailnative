@@ -138,7 +138,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             capture = CommandLine.arguments.contains("--automation")
         #endif
         let alwaysActive = capture
-        let activity = WindowActivity(hasFocus: { [weak window] in alwaysActive || window?.isKeyWindow == true }, window: window)
+        let activity = WindowActivity(
+            hasFocus: { [weak window] in alwaysActive || window?.isKeyWindow == true }, window: window)
         activity.onChange = { [weak self] _ in
             self?.reloadAll()
             SidebarVolumes.shared.refresh()
@@ -334,7 +335,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     private func revealSelectionIfNeeded() {
         let signature = [
             model.placement.rawValue, model.favoritesExpanded ? "f" : "-", model.locationsExpanded ? "l" : "-",
-            model.includeHidden ? "h" : "-", model.treePresentation.visibleItemIDs.map(\.rawValue).joined(separator: "\0"),
+            model.includeHidden ? "h" : "-",
+            model.treePresentation.visibleItemIDs.map(\.rawValue).joined(separator: "\0"),
             model.selected?.rawValue ?? "",
         ].joined(separator: "|")
         guard signature != revealSignature else { return }
@@ -397,7 +399,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             foldersHeader.frame = NSRect(x: 0, y: y, width: width, height: headerHeight)
             foldersTitle.frame = NSRect(
                 x: padding.left, y: padding.top + (content - line) / 2,
-                width: min(SidebarText.width(foldersTitle.stringValue, font: font), max(0, width - padding.left - padding.right)),
+                width: min(
+                    SidebarText.width(foldersTitle.stringValue, font: font),
+                    max(0, width - padding.left - padding.right)),
                 height: line)
             y += headerHeight
         }
@@ -407,7 +411,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             let size = pill.fittingSize(maxWidth: width - 24)
             let region = NSRect(x: 0, y: layout.titlebarHeight, width: width, height: available)
             pill.frame = NSRect(
-                x: ((region.width - size.width) / 2).rounded(), y: (region.minY + (region.height - size.height) / 2).rounded(),
+                x: ((region.width - size.width) / 2).rounded(),
+                y: (region.minY + (region.height - size.height) / 2).rounded(),
                 width: size.width, height: size.height)
         }
     }

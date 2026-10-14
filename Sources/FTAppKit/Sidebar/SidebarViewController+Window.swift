@@ -73,8 +73,10 @@ extension SidebarViewController {
     func focusTree() -> Bool {
         guard let window = view.window else { return false }
         model.clearTypeahead()
-        let favoritesVisible = !sections.isHidden && (model.favoritesExpanded && !model.favoriteRows.isEmpty
-            || model.locationsExpanded)
+        let favoritesVisible =
+            !sections.isHidden
+            && (model.favoritesExpanded && !model.favoriteRows.isEmpty
+                || model.locationsExpanded)
         let subview: SidebarSubview = model.placement == .separate && favoritesVisible ? model.subview : .tree
         let target = outline(for: subview)
         window.makeFirstResponder(target)
@@ -156,7 +158,8 @@ extension SidebarViewController {
     /// Opens or closes Favorites or Locations (a capture scenario sets what a person clicks).
     func setSection(favorites: Bool, open: Bool) {
         model.setSections(
-            favorites: favorites ? open : model.favoritesExpanded, locations: favorites ? model.locationsExpanded : open)
+            favorites: favorites ? open : model.favoritesExpanded, locations: favorites ? model.locationsExpanded : open
+        )
         updatePreferences([
             "favoritesExpanded": .bool(model.favoritesExpanded), "locationsExpanded": .bool(model.locationsExpanded),
         ])

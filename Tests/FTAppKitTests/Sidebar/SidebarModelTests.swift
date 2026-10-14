@@ -176,7 +176,9 @@ struct SidebarModelTests {
         rig.model.hiddenFilesChanged()
         await settleModel()
         #expect(!rig.visible().contains("fs:/Users/demo/.config"))
-        #expect(rig.model.nodes["/Users/demo/Documents"] == nil || rig.model.nodes["/Users/demo/Documents"]?.expanded == false)
+        #expect(
+            rig.model.nodes["/Users/demo/Documents"] == nil
+                || rig.model.nodes["/Users/demo/Documents"]?.expanded == false)
     }
 
     // T-223415d5 T-4becddde T-38c52395 B-TREE-085 B-TREE-086
@@ -184,7 +186,10 @@ struct SidebarModelTests {
         let rig = Rig(home: "")
         rig.disk.folder("/Applications", ["Alpha", "Zed"])
         await rig.model.folderOpened("/Applications/Mail.app/Contents", .other)
-        #expect(rig.model.nodes["/Applications"]?.childPaths == ["/Applications/Alpha", "/Applications/Mail.app", "/Applications/Zed"])
+        #expect(
+            rig.model.nodes["/Applications"]?.childPaths == [
+                "/Applications/Alpha", "/Applications/Mail.app", "/Applications/Zed",
+            ])
         // /Volumes is left out of Macintosh HD's children, where the other disks are under Locations.
         #expect(rig.model.nodes["/"]?.childPaths.contains("/Volumes") == false)
     }

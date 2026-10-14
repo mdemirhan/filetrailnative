@@ -41,7 +41,8 @@ private final class Harness {
             eject: { request in
                 await MainActor.run {
                     box?.requests.append(request)
-                    return box?.responses.isEmpty == false ? box!.responses.removeFirst() : EjectResponse(status: .ejected)
+                    return box?.responses.isEmpty == false
+                        ? box!.responses.removeFirst() : EjectResponse(status: .ejected)
                 }
             })
         box = self

@@ -94,7 +94,8 @@ final class EjectCoordinator {
         case .failed:
             presenter?.show(
                 EjectPlanning.describeEjectFailure(
-                    volumes(), path: path, failedPath: response.failedPath, code: response.code, reason: response.reason))
+                    volumes(), path: path, failedPath: response.failedPath, code: response.code, reason: response.reason
+                ))
         }
         didFinish()
     }

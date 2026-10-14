@@ -7,7 +7,9 @@ import Testing
 struct SidebarKeyboardTests {
     static let home = "/Users/demo"
 
-    private func node(_ path: String, expanded: Bool = false, loaded: Bool = false, children: [String] = [], alias: Bool = false)
+    private func node(
+        _ path: String, expanded: Bool = false, loaded: Bool = false, children: [String] = [], alias: Bool = false
+    )
         -> TreeNodeState
     {
         var node = TreeNodeState(path: path, name: String(path.split(separator: "/").last ?? "/"), expanded: expanded)
@@ -19,7 +21,9 @@ struct SidebarKeyboardTests {
 
     private var nodes: TreeNodes {
         TreeNodes([
-            node("/Users/demo", expanded: true, loaded: true, children: ["/Users/demo/a", "/Users/demo/b", "/Users/demo/link"]),
+            node(
+                "/Users/demo", expanded: true, loaded: true,
+                children: ["/Users/demo/a", "/Users/demo/b", "/Users/demo/link"]),
             node("/Users/demo/a", expanded: true, loaded: true, children: ["/Users/demo/a/deep"]),
             node("/Users/demo/a/deep", loaded: true),
             node("/Users/demo/b"),
@@ -39,7 +43,9 @@ struct SidebarKeyboardTests {
         let nodes = override ?? self.nodes
         let locations = Favorites.locations(volumes: [], homePath: Self.home)
         let list =
-            favorites.map { (id: TreeItemID.favorite($0.path), label: FavoriteLabel.label(for: $0.path, homePath: Self.home)) }
+            favorites.map {
+                (id: TreeItemID.favorite($0.path), label: FavoriteLabel.label(for: $0.path, homePath: Self.home))
+            }
             + (locationsOpen ? locations.map { (id: TreeItemID.location($0.path), label: $0.label) } : [])
         let presentation = Favorites.presentation(
             .init(
@@ -150,15 +156,21 @@ struct SidebarKeyboardTests {
     @Test func returnOpensAFavoriteAgainReadsAnUnreadFolderAndTogglesTheOthers() {
         let favorite = context(separate: false, selected: .favorite("/Applications"))
         #expect(SidebarKeyboard.decideOpen(favorite) == .select(.favorite("/Applications"), subview: nil))
-        #expect(SidebarKeyboard.decideOpen(context(separate: false, selected: .filesystem("/Users/demo/b"))) == .load(path: "/Users/demo/b"))
-        #expect(SidebarKeyboard.decideOpen(context(separate: false, selected: .filesystem("/Users/demo/a"))) == .toggle(path: "/Users/demo/a"))
+        #expect(
+            SidebarKeyboard.decideOpen(context(separate: false, selected: .filesystem("/Users/demo/b")))
+                == .load(path: "/Users/demo/b"))
+        #expect(
+            SidebarKeyboard.decideOpen(context(separate: false, selected: .filesystem("/Users/demo/a")))
+                == .toggle(path: "/Users/demo/a"))
         // A link to a folder opens its folder, without expanding or reading it.
         #expect(
             SidebarKeyboard.decideOpen(context(separate: false, selected: .filesystem("/Users/demo/link")))
                 == .select(.filesystem("/Users/demo/link"), subview: nil))
         // Headings do nothing; in the Favorites list only a favorite or a location opens.
         #expect(SidebarKeyboard.decideOpen(context(separate: false, selected: .favoritesRoot)) == .none)
-        #expect(SidebarKeyboard.decideOpen(context(separate: true, subview: .favorites, selected: .filesystem("/Users/demo/a"))) == .none)
+        #expect(
+            SidebarKeyboard.decideOpen(
+                context(separate: true, subview: .favorites, selected: .filesystem("/Users/demo/a"))) == .none)
         #expect(SidebarKeyboard.decideOpen(context(separate: false, selected: nil)) == .none)
     }
 
@@ -167,12 +179,17 @@ struct SidebarKeyboardTests {
         #expect(
             SidebarKeyboard.decideParent(context(separate: false, selected: .filesystem("/Users/demo/a")))
                 == .select(.filesystem("/Users/demo"), subview: nil))
-        #expect(SidebarKeyboard.decideParent(context(separate: false, selected: .filesystem("/Users/demo"))) == .select(.filesystem("/Users"), subview: nil))
+        #expect(
+            SidebarKeyboard.decideParent(context(separate: false, selected: .filesystem("/Users/demo")))
+                == .select(.filesystem("/Users"), subview: nil))
         #expect(SidebarKeyboard.decideParent(context(separate: false, selected: .favorite("/Applications"))) == .none)
         #expect(SidebarKeyboard.decideParent(context(separate: false, selected: .location("/"))) == .none)
         #expect(SidebarKeyboard.decideParent(context(separate: false, selected: .filesystem("/"))) == .none)
-        #expect(SidebarKeyboard.decideParent(context(separate: false, selected: .filesystem("/Volumes/Backup"))) == .none)
-        #expect(SidebarKeyboard.decideParent(context(separate: true, subview: .favorites, selected: .filesystem("/Users/demo/a"))) == .none)
+        #expect(
+            SidebarKeyboard.decideParent(context(separate: false, selected: .filesystem("/Volumes/Backup"))) == .none)
+        #expect(
+            SidebarKeyboard.decideParent(
+                context(separate: true, subview: .favorites, selected: .filesystem("/Users/demo/a"))) == .none)
     }
 
     // T-e976a231 T-faee0026 T-df5c84b6 B-TREE-130 B-TREE-131 B-TREE-132

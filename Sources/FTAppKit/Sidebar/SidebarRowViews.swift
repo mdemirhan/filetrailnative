@@ -54,7 +54,8 @@ final class SidebarIconView: SidebarPlainView {
             SidebarIcons.drawFavorite(icon, in: bounds, color: color)
         case .folder(let image):
             if let image {
-                image.draw(in: bounds, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
+                image.draw(
+                    in: bounds, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
             } else {
                 Self.drawFolderStandIn(in: bounds)
             }
@@ -132,7 +133,10 @@ final class SidebarEjectView: SidebarPlainView {
     var iconSize = 14.0
     var strokeWidth = 1.8
     var isEnabled = true {
-        didSet { alphaValue = isEnabled ? 1 : DesignTokens.disabledOpacity; needsDisplay = true }
+        didSet {
+            alphaValue = isEnabled ? 1 : DesignTokens.disabledOpacity
+            needsDisplay = true
+        }
     }
     var onClick: (() -> Void)?
     var onRightClick: ((NSEvent) -> Void)?

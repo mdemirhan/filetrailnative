@@ -7,7 +7,7 @@
   "behaviors": [
     "B-TREE-163"
   ],
-  "tier": [],
+  "tier": ["final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

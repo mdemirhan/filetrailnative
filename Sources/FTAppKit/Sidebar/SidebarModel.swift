@@ -63,7 +63,8 @@ final class SidebarModel {
     /// A section was opened or closed by hand, or the sub-view used last changed.
     var onSectionsChanged: () -> Void = {}
     /// Schedules `fire` after `milliseconds`; the returned function cancels it.
-    var schedule: (_ milliseconds: Int, _ fire: @escaping @MainActor () -> Void) -> (() -> Void) = { milliseconds, fire in
+    var schedule: (_ milliseconds: Int, _ fire: @escaping @MainActor () -> Void) -> (() -> Void) = {
+        milliseconds, fire in
         let item = DispatchWorkItem { MainActor.assumeIsolated { fire() } }
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(milliseconds), execute: item)
         return { item.cancel() }
@@ -228,7 +229,8 @@ final class SidebarModel {
         let activePath = activePath ?? currentPath
         let current = nodes[path]
         let forcedHidden =
-            includeHidden || rootPath.isEmpty ? nil : TreePaths.forcedVisibleHiddenChild(of: path, activePath: activePath)
+            includeHidden || rootPath.isEmpty
+            ? nil : TreePaths.forcedVisibleHiddenChild(of: path, activePath: activePath)
         let forcedPackage =
             rootPath.isEmpty ? nil : TreePaths.forcedVisiblePackageChild(of: path, activePath: activePath)
         if current?.loading == true, !forceReload { return }
@@ -297,8 +299,9 @@ final class SidebarModel {
             let known = nodes[child.path]
             nodes[child.path] = TreeNodeState(
                 path: child.path, name: child.name, isHidden: child.isHidden, isSymlink: child.isSymlink,
-                expanded: known?.expanded == true && (known?.loaded == true || known?.loading == true
-                    || !(known?.childPaths.isEmpty ?? true)),
+                expanded: known?.expanded == true
+                    && (known?.loaded == true || known?.loading == true
+                        || !(known?.childPaths.isEmpty ?? true)),
                 loading: known?.loading ?? false, loaded: known?.loaded ?? false,
                 loadedIncludeHidden: known?.loadedIncludeHidden ?? false,
                 forcedVisibleHiddenChildPath: known?.forcedVisibleHiddenChildPath,

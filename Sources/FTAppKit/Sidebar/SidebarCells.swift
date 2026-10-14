@@ -30,7 +30,8 @@ final class SidebarRowBox: SidebarPlainView, TextStyleSource {
         }
         if let border, borderWidth > 0 {
             let inset = NSBezierPath(
-                roundedRect: bounds.insetBy(dx: borderWidth / 2, dy: borderWidth / 2), xRadius: radius - borderWidth / 2,
+                roundedRect: bounds.insetBy(dx: borderWidth / 2, dy: borderWidth / 2),
+                xRadius: radius - borderWidth / 2,
                 yRadius: radius - borderWidth / 2)
             inset.lineWidth = borderWidth
             border.setStroke()
@@ -138,8 +139,7 @@ final class SidebarItemCell: NSTableCellView {
         for view in [
             chevron, icon, label, badge, eject, dropBadge, dropLine, treeRowTag, favoriteTag, selectedTag, expandedTag,
             kindTag,
-        ] as [NSView]
-        {
+        ] as [NSView] {
             box.addSubview(view)
         }
         addSubview(box)
@@ -219,14 +219,18 @@ final class SidebarItemCell: NSTableCellView {
             !canExpand
             ? (isHeadingKind ? "No favorites" : "No subfolders")
             : isHeadingKind
-                ? "\(item.expanded ? "Collapse" : "Expand") \(item.label)" : (item.expanded ? "Collapse Folder" : "Expand Folder")
+                ? "\(item.expanded ? "Collapse" : "Expand") \(item.label)"
+                : (item.expanded ? "Collapse Folder" : "Expand Folder")
         chevron.setAccessibilityLabel(
-            isHeadingKind ? "\(item.expanded ? "Collapse" : "Expand") \(item.label)" : (item.expanded ? "Collapse Folder" : "Expand Folder"))
+            isHeadingKind
+                ? "\(item.expanded ? "Collapse" : "Expand") \(item.label)"
+                : (item.expanded ? "Collapse Folder" : "Expand Folder"))
 
         // The icon
         switch item.kind {
         case .favorite, .favoritesRoot, .locationsRoot:
-            icon.content = .favorite(item.icon ?? .folder, color: selectedFocused ? onSelection : ChromeColors.color(accent.solid))
+            icon.content = .favorite(
+                item.icon ?? .folder, color: selectedFocused ? onSelection : ChromeColors.color(accent.solid))
         case .location:
             icon.content = .favorite(
                 item.icon ?? .folder, color: selectedFocused ? onSelection : ChromeColors.color(palette.iconNeutral))
@@ -340,7 +344,8 @@ final class SidebarItemCell: NSTableCellView {
         let layout = SidebarLayout(density: state.density)
         let item = state.item
         let rowHeight = layout.rowHeight
-        let boxFrame = NSRect(x: layout.rowMarginX, y: 0, width: bounds.width - 2 * layout.rowMarginX, height: rowHeight)
+        let boxFrame = NSRect(
+            x: layout.rowMarginX, y: 0, width: bounds.width - 2 * layout.rowMarginX, height: rowHeight)
         box.frame = boxFrame
         let width = boxFrame.width
         let leading = layout.contentLeading(depth: item.depth)
@@ -353,7 +358,8 @@ final class SidebarItemCell: NSTableCellView {
         var limit = width - layout.rowPaddingRight
         if !eject.isHidden {
             let ejectX = width - layout.rowPaddingRight - layout.ejectBox - layout.ejectMarginRight
-            eject.frame = NSRect(x: ejectX, y: (rowHeight - layout.ejectBox) / 2, width: layout.ejectBox, height: layout.ejectBox)
+            eject.frame = NSRect(
+                x: ejectX, y: (rowHeight - layout.ejectBox) / 2, width: layout.ejectBox, height: layout.ejectBox)
             limit = ejectX - layout.rowGap
         }
         if !dropBadge.isHidden {
@@ -362,7 +368,8 @@ final class SidebarItemCell: NSTableCellView {
             let pillWidth = textWidth + 20
             let pillHeight = SidebarText.lineHeight(font) + 8
             dropBadge.frame = NSRect(
-                x: limit - pillWidth + layout.rowGap, y: (rowHeight - pillHeight) / 2, width: pillWidth, height: pillHeight)
+                x: limit - pillWidth + layout.rowGap, y: (rowHeight - pillHeight) / 2, width: pillWidth,
+                height: pillHeight)
             limit = dropBadge.frame.minX - layout.rowGap
         }
         // The icon, the name, and the badge
@@ -371,10 +378,15 @@ final class SidebarItemCell: NSTableCellView {
         var textLimit = limit
         if !badge.isHidden {
             let badgeWidth = badge.fittingWidth(layout: layout)
-            let badgeHeight = SidebarText.lineHeight(ChromeColors.font(size: layout.badgeFontSize)) + 2 * layout.badgePaddingY
+            let badgeHeight =
+                SidebarText.lineHeight(ChromeColors.font(size: layout.badgeFontSize)) + 2 * layout.badgePaddingY
             textLimit -= badgeWidth + layout.labelGap
             badge.frame = NSRect(
-                x: max(textX, min(textX + SidebarText.width(label.stringValue, font: label.font ?? .systemFont(ofSize: 14)) + layout.labelGap, textLimit + layout.labelGap)),
+                x: max(
+                    textX,
+                    min(
+                        textX + SidebarText.width(label.stringValue, font: label.font ?? .systemFont(ofSize: 14))
+                            + layout.labelGap, textLimit + layout.labelGap)),
                 y: (rowHeight - badgeHeight) / 2, width: badgeWidth, height: badgeHeight)
         }
         let font = label.font ?? ChromeColors.font(size: layout.labelFontSize)
@@ -386,9 +398,13 @@ final class SidebarItemCell: NSTableCellView {
         textLimit = 0
         // The favorites' drop line sits on the row's top or bottom edge.
         if let position = state.dropLine {
-            let y = position == .before ? layout.dropLineOffset : rowHeight + layout.dropLineOffset - layout.dropLineHeight + layout.dropLineHeight
+            let y =
+                position == .before
+                ? layout.dropLineOffset
+                : rowHeight + layout.dropLineOffset - layout.dropLineHeight + layout.dropLineHeight
             dropLine.frame = NSRect(
-                x: layout.dropLineInset, y: position == .before ? y : rowHeight - layout.dropLineHeight - layout.dropLineOffset,
+                x: layout.dropLineInset,
+                y: position == .before ? y : rowHeight - layout.dropLineHeight - layout.dropLineOffset,
                 width: width - 2 * layout.dropLineInset, height: layout.dropLineHeight)
         }
         for tag in [treeRowTag, favoriteTag, selectedTag, expandedTag, kindTag] { tag.frame = box.bounds }
@@ -408,7 +424,8 @@ final class SidebarItemCell: NSTableCellView {
             noteY += layout.notePadding.top
             let height = (error.stringValue as NSString).boundingRect(
                 with: NSSize(width: noteWidth, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin],
-                attributes: [.font: noteFont]).height
+                attributes: [.font: noteFont]
+            ).height
             let lines = max(1, (height / (noteFont.ascender - noteFont.descender + noteFont.leading)).rounded())
             error.frame = NSRect(x: noteX, y: noteY, width: noteWidth, height: lines * line)
         }
@@ -515,7 +532,8 @@ final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
         title.textColor = ChromeColors.color(theme.palette.textSecondary)
         title.stringValue = state.title
         toolTip = state.expanded ? "Hide \(state.title)" : "Show \(state.title)"
-        stateTag.setAccessibilityIdentifier(state.expanded ? "sidebar.sectionHeader.expanded" : "sidebar.sectionHeader.collapsed")
+        stateTag.setAccessibilityIdentifier(
+            state.expanded ? "sidebar.sectionHeader.expanded" : "sidebar.sectionHeader.collapsed")
         setAccessibilityLabel(toolTip)
         needsLayout = true
         needsDisplay = true
@@ -532,7 +550,10 @@ final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
             x: layout.sectionHeaderPaddingLeft, y: (bounds.height - height) / 2,
             width: min(
                 SidebarText.width(title.stringValue, font: font),
-                max(0, bounds.width - layout.sectionHeaderPaddingLeft - layout.sectionHeaderPaddingRight - layout.sectionChevron)),
+                max(
+                    0,
+                    bounds.width - layout.sectionHeaderPaddingLeft - layout.sectionHeaderPaddingRight
+                        - layout.sectionChevron)),
             height: height)
     }
 

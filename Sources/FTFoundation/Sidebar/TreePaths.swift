@@ -83,7 +83,8 @@ public enum TreePaths {
     public static func hasHiddenSegment(_ path: String, withinRoot rootPath: String) -> Bool {
         guard isWithinRoot(path, rootPath) else { return false }
         if JSString.equals(rootPath, path) { return segmentName(path).hasPrefix(".") }
-        let relative = JSString.equals(rootPath, "/") ? String(path.dropFirst()) : String(path.dropFirst(rootPath.count + 1))
+        let relative =
+            JSString.equals(rootPath, "/") ? String(path.dropFirst()) : String(path.dropFirst(rootPath.count + 1))
         return JSString.components(relative, separator: 0x2F).contains { $0.hasPrefix(".") }
     }
 
@@ -91,7 +92,8 @@ public enum TreePaths {
     static func childPath(of parentPath: String, towards activePath: String) -> String? {
         guard isWithinRoot(activePath, parentPath), !JSString.equals(activePath, parentPath) else { return nil }
         let relative =
-            JSString.equals(parentPath, "/") ? String(activePath.dropFirst()) : String(activePath.dropFirst(parentPath.count + 1))
+            JSString.equals(parentPath, "/")
+            ? String(activePath.dropFirst()) : String(activePath.dropFirst(parentPath.count + 1))
         guard let next = JSString.components(relative, separator: 0x2F).first else { return nil }
         return JSString.equals(parentPath, "/") ? "/\(next)" : "\(parentPath)/\(next)"
     }

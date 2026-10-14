@@ -16,7 +16,8 @@ public enum Favorites {
         }
         places.append(SidebarLocation(path: "/", label: "Macintosh HD", icon: .drive))
         if !homePath.isEmpty {
-            places.append(SidebarLocation(path: FavoriteLabel.trashPath(homePath: homePath), label: "Trash", icon: .trash))
+            places.append(
+                SidebarLocation(path: FavoriteLabel.trashPath(homePath: homePath), label: "Trash", icon: .trash))
         }
         for volume in volumes {
             places.append(

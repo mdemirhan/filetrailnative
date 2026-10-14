@@ -17,7 +17,9 @@ extension ExplorerWindowGUITests {
             controller.view.window?.contentView?.layoutSubtreeIfNeeded()
             var found: [SidebarItemCell] = []
             func walk(_ view: NSView) {
-                if let cell = view as? SidebarItemCell, let outline = enclosingOutline(cell), outline.row(for: cell) >= 0 {
+                if let cell = view as? SidebarItemCell, let outline = enclosingOutline(cell),
+                    outline.row(for: cell) >= 0
+                {
                     cell.layoutSubtreeIfNeeded()
                     found.append(cell)
                 }
@@ -168,7 +170,8 @@ extension ExplorerWindowGUITests {
             let rows = cells(controller)
             let backup = try #require(rows.first { label($0) == "Backup" })
             let shared = try #require(rows.first { label($0) == "Shared" })
-            let home = try #require(rows.first { $0.state?.item.kind == .location && $0.state?.item.path == NSHomeDirectory() })
+            let home = try #require(
+                rows.first { $0.state?.item.kind == .location && $0.state?.item.path == NSHomeDirectory() })
             func ejectButton(_ cell: SidebarItemCell) -> NSView? {
                 cell.box.subviews.first { $0.accessibilityIdentifier() == "sidebar.row.eject" }
             }

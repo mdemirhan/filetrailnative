@@ -133,7 +133,8 @@ extension SidebarViewController {
     func sidebarList(_ list: SidebarListView, menuFor state: SidebarRowState, event: NSEvent) -> NSMenu? {
         // Headings have no context menu.
         if state.item.id.isHeading { return nil }
-        let kind: SidebarMenuTarget.Kind = state.item.kind == .favorite || state.item.kind == .location ? .favorite : .treeFolder
+        let kind: SidebarMenuTarget.Kind =
+            state.item.kind == .favorite || state.item.kind == .location ? .favorite : .treeFolder
         guard let provider = contextMenuProvider,
             let menu = provider(SidebarContextMenuRequest(item: state.item, subview: state.subview, kind: kind))
         else { return nil }
@@ -256,7 +257,9 @@ extension SidebarViewController {
         refresh()
     }
 
-    func sidebarList(_ list: SidebarListView, favoriteDragOver target: (path: String, position: Favorites.DropPosition)?) {
+    func sidebarList(
+        _ list: SidebarListView, favoriteDragOver target: (path: String, position: Favorites.DropPosition)?
+    ) {
         let changed = dropTarget?.path != target?.path || dropTarget?.position != target?.position
         guard changed else { return }
         dropTarget = target

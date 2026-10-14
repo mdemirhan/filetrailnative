@@ -22,7 +22,8 @@ protocol SidebarListDelegate: AnyObject {
     func sidebarList(_ list: SidebarListView, focusChanged focused: Bool)
     func sidebarList(_ list: SidebarListView, rowArrived state: SidebarRowState)
     func sidebarList(_ list: SidebarListView, favoriteDragStarted path: String)
-    func sidebarList(_ list: SidebarListView, favoriteDragOver target: (path: String, position: Favorites.DropPosition)?)
+    func sidebarList(
+        _ list: SidebarListView, favoriteDragOver target: (path: String, position: Favorites.DropPosition)?)
     func sidebarList(_ list: SidebarListView, favoriteDropped path: String)
     func sidebarListFavoriteDragEnded(_ list: SidebarListView)
 }
@@ -331,7 +332,8 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
                 + layout.sectionHeaderHeight
         case .item(let state):
             let layout = SidebarLayout(density: state.density)
-            return layout.rowHeight + SidebarItemCell.noteHeight(state, width: max(1, Double(bounds.width - scroll.gutter)))
+            return layout.rowHeight
+                + SidebarItemCell.noteHeight(state, width: max(1, Double(bounds.width - scroll.gutter)))
         }
     }
 
@@ -375,7 +377,9 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool { false }
 
     func outlineView(_ outlineView: NSOutlineView, heightOfRowByItem item: Any) -> CGFloat {
-        guard let item = item as? SidebarListItem, let index = items.firstIndex(where: { $0 === item }) else { return 0 }
+        guard let item = item as? SidebarListItem, let index = items.firstIndex(where: { $0 === item }) else {
+            return 0
+        }
         return CGFloat(heights.indices.contains(index) ? heights[index] : rowHeight(item.row))
     }
 
@@ -383,11 +387,12 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
 
     func outlineView(_ outlineView: NSOutlineView, rowViewForItem item: Any) -> NSTableRowView? {
         let id = NSUserInterfaceItemIdentifier("SidebarRow")
-        return outlineView.makeView(withIdentifier: id, owner: nil) as? SidebarRowShell ?? {
-            let made = SidebarRowShell()
-            made.identifier = id
-            return made
-        }()
+        return outlineView.makeView(withIdentifier: id, owner: nil) as? SidebarRowShell
+            ?? {
+                let made = SidebarRowShell()
+                made.identifier = id
+                return made
+            }()
     }
 
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
@@ -395,11 +400,12 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
         switch item.row {
         case .spacer:
             let id = NSUserInterfaceItemIdentifier("SidebarSpacer")
-            return outlineView.makeView(withIdentifier: id, owner: nil) ?? {
-                let made = SidebarPlainView()
-                made.identifier = id
-                return made
-            }()
+            return outlineView.makeView(withIdentifier: id, owner: nil)
+                ?? {
+                    let made = SidebarPlainView()
+                    made.identifier = id
+                    return made
+                }()
         case .header(let state):
             let cell =
                 outlineView.makeView(withIdentifier: SidebarHeaderCell.identifier, owner: nil) as? SidebarHeaderCell
@@ -427,7 +433,8 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
                 self.delegate?.sidebarList(self, eject: state)
             }
             cell.onMenu = { [weak self, weak cell] event in
-                guard let self, let state = cell?.state, let menu = self.delegate?.sidebarList(self, menuFor: state, event: event)
+                guard let self, let state = cell?.state,
+                    let menu = self.delegate?.sidebarList(self, menuFor: state, event: event)
                 else { return }
                 NSMenu.popUpContextMenu(menu, with: event, for: self.outline)
             }
