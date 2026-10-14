@@ -133,6 +133,18 @@ struct AppLoggerTests {
         }
     }
 
+    // util.inspect sorted:true sorts the rendered entries; keys outside /^[a-zA-Z_][a-zA-Z_0-9]*$/ are quoted.
+    @Test func contextEntriesSortAsRenderedStringsAndQuoteNonIdentifierKeys() {
+        let context = LogArg.context([
+            "a": .number(1), "a1": .number(2), "a-b": .number(3), "b": .number(4), "$x": .number(5), "é": .number(6),
+        ])
+        #expect(
+            LogFormat.arguments([context]) == "{ '$x': 5, 'a-b': 3, 'é': 6, a1: 2, a: 1, b: 4 }")
+        #expect(
+            LogFormat.arguments([.context(["a": .number(1), "a1": .number(2), "$x": .number(5)])])
+                == "{ '$x': 5, a1: 2, a: 1 }")
+    }
+
     @Test func aLineIsTheISOTimeTheLevelAndTheArguments() {
         let date = Date(timeIntervalSince1970: 1_800_000_000.123)
         #expect(LogFormat.timestamp(date) == "2027-01-15T08:00:00.123Z")
@@ -144,7 +156,7 @@ struct AppLoggerTests {
                     .value(.object(["b": .array([.number(1), .string("it's")]), "a": .null, "c-d": .bool(true)])),
                 ],
                 at: date)
-                == "2027-01-15T08:00:00.123Z WARN [x] a { a: null, b: [ 1, \"it's\" ], 'c-d': true }")
+                == "2027-01-15T08:00:00.123Z WARN [x] a { 'c-d': true, a: null, b: [ 1, \"it's\" ] }")
         #expect(LogFormat.arguments([.value(.string("raw")), .value(.object([:])), .value(.array([]))]) == "raw {} []")
     }
 

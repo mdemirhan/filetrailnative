@@ -76,9 +76,9 @@ public enum LogFormat {
         case .object(let members):
             if members.isEmpty { return "{}" }
             if depth > maxDepth { return "[Object]" }
-            let entries = members.keys.sorted().compactMap { key in
-                members[key].map { "\(inspectKey(key)): \(inspect($0, depth: depth + 1))" }
-            }
+            // Node sorts the rendered `key: value` strings by UTF-16 code unit, not the raw keys.
+            let entries = members.map { "\(inspectKey($0.key)): \(inspect($0.value, depth: depth + 1))" }
+                .sorted { $0.utf16.lexicographicallyPrecedes($1.utf16) }
             return "{ " + entries.joined(separator: ", ") + " }"
         }
     }
@@ -91,12 +91,15 @@ public enum LogFormat {
         return "\(value)"
     }
 
+    // Bare only when it matches /^[a-zA-Z_][a-zA-Z_0-9]*$/.
     private static func inspectKey(_ key: String) -> String {
+        let bytes = Array(key.utf8)
+        func isLetter(_ byte: UInt8) -> Bool {
+            (65...90).contains(byte) || (97...122).contains(byte) || byte == 95
+        }
         let identifier =
-            !key.isEmpty && !(key.first?.isNumber ?? true)
-            && key.unicodeScalars.allSatisfy {
-                $0 == "_" || $0 == "$" || $0.properties.isAlphabetic || ("0"..."9").contains($0)
-            }
+            bytes.first.map(isLetter) ?? false
+            && bytes.allSatisfy { isLetter($0) || (48...57).contains($0) }
         return identifier ? key : quote(key)
     }
 
