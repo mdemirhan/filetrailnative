@@ -30,7 +30,7 @@
             "goBack", "goForward", "goEnclosingFolder", "openSelection", "viewAsIcons", "viewAsDetails", "newTab",
             "toggleFolderTree", "toggleInfoPanel", "toggleInfoRow", "toggleFoldersFirst", "toggleHiddenFiles",
             "customizeToolbar", "viewAsList", "refreshOrApplySearchSort", "editSelectAll", "focusFileSearch",
-            "focusContentPane", "focusTreePane",
+            "focusContentPane", "focusTreePane", "rootTreeAtSelection", "toggleFavorite", "ejectVolume",
             "sortByName", "sortByModified", "sortBySize", "sortByKind", "goHomeRootTree", "goDocuments",
             "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD", "goApplications", "goTrash", "newWindow",
             "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab", "openSelectionInNewTab",
@@ -67,11 +67,10 @@
                     Views.folderTable(in: window) ?? Views.first(NSCollectionView.self, in: window.contentView)
                 guard let pane else { return .init(.failed, "no folder view") }
                 window.makeFirstResponder(pane)
-            case "focusTreePane":
-                guard let outline = Views.first(NSOutlineView.self, in: window.contentView) else {
-                    return .init(.failed, "no sidebar")
-                }
-                window.makeFirstResponder(outline)
+            case "focusTreePane", "rootTreeAtSelection", "toggleFavorite", "ejectVolume":
+                // The sidebar's commands (P5-02).
+                guard let command = RendererCommand(rawValue: id) else { return .init(.failed, "no command \(id)") }
+                controller.perform(command)
             case "sortByName", "sortByModified", "sortBySize", "sortByKind":
                 let key = String(id.dropFirst("sortBy".count)).lowercased()
                 // Choosing the field sorted by again reverses the direction, as the original's Sort menu does.
@@ -80,8 +79,11 @@
                 guard sort(by: key, ascending: ascending, controller: controller, window: window) else {
                     return .init(.failed, "could not sort by \(key)")
                 }
-            case "goHomeRootTree", "goDocuments", "goDesktop", "goDownloads", "goLibrary", "goMacintoshHD",
-                "goApplications", "goTrash":
+            case "goHomeRootTree", "goMacintoshHD", "goTrash":
+                // Home roots the tree; Macintosh HD and the Trash act as their Locations rows (P5-02).
+                guard let command = RendererCommand(rawValue: id) else { return .init(.failed, "no command \(id)") }
+                controller.perform(command)
+            case "goDocuments", "goDesktop", "goDownloads", "goLibrary", "goApplications":
                 guard let url = place(id) else { return .init(.failed, "no folder for \(id)") }
                 controller.go(to: url)
             case "newWindow", "reopenClosedTab", "closeTab", "selectNextTab", "selectPreviousTab",

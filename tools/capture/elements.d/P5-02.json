@@ -1,0 +1,156 @@
+{
+  "comment": "P5-02: the sidebar. Every part it draws: the title bar strip, the sections, the Folders label, the rows and what is in them. Merged into elements.json by run.sh.",
+  "elements": {
+    "sidebar titlebar": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-titlebar"
+      },
+      "swift": "sidebar.titlebar"
+    },
+    "sidebar sections area": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-sections"
+      },
+      "swift": "sidebar.sections"
+    },
+    "sidebar folders header": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-header"
+      },
+      "swift": "sidebar.foldersHeader"
+    },
+    "sidebar folders title": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-header .sidebar-title"
+      },
+      "swift": "sidebar.foldersTitle",
+      "text": true
+    },
+    "sidebar tree area": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-tree"
+      },
+      "swift": "sidebar.tree"
+    },
+    "sidebar section title": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-section-title"
+      },
+      "swift": "sidebar.sectionHeader.title",
+      "text": true
+    },
+    "sidebar tree row": {
+      "electron": {
+        "selector": ".tree-pane .tree-row",
+        "textSelector": ".tree-label-text"
+      },
+      "swift": "sidebar.treeRow",
+      "text": true
+    },
+    "sidebar row chevron": {
+      "electron": {
+        "selector": ".tree-pane .tree-row .tree-expand"
+      },
+      "swift": "sidebar.row.chevron"
+    },
+    "sidebar row icon": {
+      "electron": {
+        "selector": ".tree-pane .tree-row .tree-label .file-icon"
+      },
+      "swift": "sidebar.row.icon"
+    },
+    "sidebar row label": {
+      "electron": {
+        "selector": ".tree-pane .tree-row .tree-label-text"
+      },
+      "swift": "sidebar.row.label",
+      "text": true
+    },
+    "sidebar row alias badge": {
+      "electron": {
+        "selector": ".tree-pane .tree-row .tree-label-badge"
+      },
+      "swift": "sidebar.row.badge",
+      "text": true
+    },
+    "sidebar row eject button": {
+      "electron": {
+        "selector": ".tree-pane .tree-row .tree-eject"
+      },
+      "swift": "sidebar.row.eject"
+    },
+    "sidebar row loading line": {
+      "electron": {
+        "selector": ".tree-pane .tree-loading"
+      },
+      "swift": "sidebar.row.loading",
+      "text": true
+    },
+    "sidebar row error line": {
+      "electron": {
+        "selector": ".tree-pane .tree-error"
+      },
+      "swift": "sidebar.row.error",
+      "text": true
+    },
+    "sidebar row drop pill": {
+      "electron": {
+        "selector": ".tree-pane .tree-drop-target-badge"
+      },
+      "swift": "sidebar.row.dropBadge",
+      "text": true
+    },
+    "favorite drop line": {
+      "electron": {
+        "selector": ".tree-pane .favorite-drop-line"
+      },
+      "swift": "sidebar.favorite.dropLine"
+    },
+    "jump to pill": {
+      "electron": {
+        "selector": ".tree-pane .pane-typeahead"
+      },
+      "swift": "sidebar.typeahead"
+    },
+    "expanded section header": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-section-header[aria-expanded=\"true\"]",
+        "textSelector": ".sidebar-section-title"
+      },
+      "swift": "sidebar.sectionHeader.expanded",
+      "geometry": false
+    },
+    "collapsed section header": {
+      "electron": {
+        "selector": ".tree-pane .sidebar-section-header[aria-expanded=\"false\"]",
+        "textSelector": ".sidebar-section-title"
+      },
+      "swift": "sidebar.sectionHeader.collapsed",
+      "geometry": false
+    },
+    "location row": {
+      "electron": {
+        "selector": ".tree-pane .tree-row[data-tree-kind=\"location\"]",
+        "textSelector": ".tree-label-text"
+      },
+      "swift": "sidebar.location",
+      "geometry": false
+    },
+    "folder row": {
+      "electron": {
+        "selector": ".tree-pane .tree-row[data-tree-kind=\"filesystem\"]",
+        "textSelector": ".tree-label-text"
+      },
+      "swift": "sidebar.folder",
+      "geometry": false
+    },
+    "sidebar heading row": {
+      "electron": {
+        "selector": ".tree-pane .tree-row[data-tree-kind=\"favorites-root\"], .tree-pane .tree-row[data-tree-kind=\"locations-root\"]",
+        "textSelector": ".tree-label-text"
+      },
+      "swift": "sidebar.heading",
+      "geometry": false
+    }
+  }
+}

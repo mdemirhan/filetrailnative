@@ -1,0 +1,74 @@
+{
+  "name": "79-sidebar-separate-compact-dark",
+  "description": "The sidebar with Favorites in their own section, compact rows, dark theme, the tree rooted at the folder on screen",
+  "features": [
+    "F-727",
+    "F-728",
+    "F-729",
+    "F-730",
+    "F-731",
+    "F-732",
+    "F-733",
+    "F-734",
+    "F-735",
+    "F-736",
+    "F-737",
+    "F-740"
+  ],
+  "behaviors": [
+    "B-TREE-001",
+    "B-TREE-002",
+    "B-TREE-004",
+    "B-TREE-007",
+    "B-TREE-008",
+    "B-TREE-013",
+    "B-TREE-019"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "dark",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "compact",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "command",
+      "id": "rootTreeAtSelection"
+    },
+    {
+      "step": "wait",
+      "ms": 600
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}

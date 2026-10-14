@@ -1,0 +1,75 @@
+{
+  "name": "81-sidebar-jump-to",
+  "description": "Typing in the focused sidebar shows the Jump to pill and selects the first folder starting with it",
+  "features": [
+    "F-740"
+  ],
+  "behaviors": [
+    "B-TREE-128",
+    "B-TREE-130",
+    "B-TREE-133"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "command",
+      "id": "rootTreeAtSelection"
+    },
+    {
+      "step": "command",
+      "id": "focusTreePane"
+    },
+    {
+      "step": "key",
+      "key": "c"
+    },
+    {
+      "step": "key",
+      "key": "o"
+    },
+    {
+      "step": "key",
+      "key": "m"
+    },
+    {
+      "step": "wait",
+      "ms": 100
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    }
+  ]
+}

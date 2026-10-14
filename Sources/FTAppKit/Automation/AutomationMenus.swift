@@ -47,6 +47,23 @@
             return item.title == title || plain(item.title) == plain(title)
         }
 
+        /// The item whose key equivalent is this key press exactly: the letter and every modifier of ⌘, ⇧, ⌥ and ⌃.
+        /// AppKit's own lookup lets ⌘R take a ⌘⇧R press, so a press with Shift looks for its exact item first.
+        static func item(forKey event: NSEvent, in menu: NSMenu) -> (NSMenu, NSMenuItem)? {
+            let wanted = event.modifierFlags.intersection([.command, .shift, .option, .control])
+            let key = (event.charactersIgnoringModifiers ?? "").lowercased()
+            guard !key.isEmpty else { return nil }
+            for item in menu.items where !item.isHidden {
+                if let submenu = item.submenu, let found = Self.item(forKey: event, in: submenu) { return found }
+                if !item.keyEquivalent.isEmpty, item.keyEquivalent.lowercased() == key,
+                    item.keyEquivalentModifierMask.intersection([.command, .shift, .option, .control]) == wanted
+                {
+                    return (menu, item)
+                }
+            }
+            return nil
+        }
+
         /// Validates the item as AppKit would and sends its action.
         static func perform(_ item: NSMenuItem, in menu: NSMenu, window: NSWindow) -> AutomationRunner.Outcome {
             guard let action = item.action else {

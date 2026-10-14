@@ -1,0 +1,82 @@
+{
+  "name": "78-sidebar-click-selection",
+  "description": "A click on a folder row of the tree selects it and opens its folder",
+  "features": [
+    "F-737",
+    "F-734"
+  ],
+  "behaviors": [
+    "B-TREE-051",
+    "B-TREE-053",
+    "B-TREE-055",
+    "B-TREE-097"
+  ],
+  "tier": [
+    "wp",
+    "wave",
+    "final"
+  ],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1200,
+      "height": 760
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate"
+      }
+    },
+    {
+      "step": "open",
+      "path": "app"
+    },
+    {
+      "step": "command",
+      "id": "rootTreeAtSelection"
+    },
+    {
+      "step": "click",
+      "element": {
+        "name": "folder row",
+        "text": "src"
+      }
+    },
+    {
+      "step": "wait",
+      "ms": 600
+    },
+    {
+      "step": "expect",
+      "element": "title",
+      "text": "src"
+    },
+    {
+      "step": "expect",
+      "element": "selected sidebar row",
+      "text": "src"
+    },
+    {
+      "step": "wait",
+      "ms": 600
+    },
+    {
+      "step": "snapshot",
+      "name": "main"
+    },
+    {
+      "step": "geometry",
+      "name": "main"
+    }
+  ]
+}
