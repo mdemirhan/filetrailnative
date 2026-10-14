@@ -110,7 +110,7 @@ final class PathFolderMenuView: NSView {
     }
 
     private func applyLook() {
-        let palette = AppearanceModel.shared.theme.palette
+        let palette = infoTheme.palette
         layer?.backgroundColor = ChromeColors.color(palette.contextMenuBg).cgColor
         layer?.borderColor = ChromeColors.color(palette.contextMenuBorder).cgColor
         layer?.borderWidth = 0.5

@@ -3,6 +3,11 @@
 import AppKit
 import FTFoundation
 
+extension NSView {
+    /// The palette of the view's own appearance (light or dark) with the app's accent.
+    var infoTheme: Theme { Theme(appearance: ChromeColors.appearance(of: self), accentHex: AppearanceModel.shared.accentHex) }
+}
+
 /// The height of a line of text in the font, as the browser's `line-height: normal` rounds it.
 func lineBox(_ font: NSFont?) -> Double {
     let font = font ?? .systemFont(ofSize: 12)
@@ -135,7 +140,7 @@ final class InfoIconButton: NSView, TooltipAnchor {
     var tooltipIsQuiet: Bool { false }
 
     override func draw(_ dirtyRect: NSRect) {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         let hover = isHovered && isEnabled
         if hover {
             NSColor(theme.palette.bgHover).setFill()
@@ -202,7 +207,7 @@ final class InfoSpinnerView: NSView {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 
     override func draw(_ dirtyRect: NSRect) {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         let rect = bounds.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
         let ring = NSBezierPath(ovalIn: rect)
         ring.lineWidth = lineWidth

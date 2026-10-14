@@ -127,7 +127,7 @@ final class InfoPanelView: NSView {
             height: max(0, bounds.height - InfoMetrics.panelHeaderHeight))
         content.frame.size.width = scroll.contentSize.width
         content.relayout()
-        layer?.backgroundColor = ChromeColors.color(AppearanceModel.shared.theme.palette.bgBase).cgColor
+        layer?.backgroundColor = ChromeColors.color(infoTheme.palette.bgBase).cgColor
     }
 
     override func viewDidChangeEffectiveAppearance() {
@@ -171,11 +171,12 @@ final class InfoPanelHeader: NSView {
     override var isFlipped: Bool { true }
 
     func applyColors() {
-        title.textColor = NSColor(AppearanceModel.shared.theme.palette.textSecondary)
+        title.textColor = NSColor(infoTheme.palette.textSecondary)
     }
 
     override func layout() {
         super.layout()
+        applyColors()
         let inset = InfoMetrics.panelInset
         let side = InfoMetrics.closeButton
         close.frame = NSRect(x: bounds.width - inset - side, y: (bounds.height - side) / 2, width: side, height: side)
@@ -279,13 +280,13 @@ final class SplitOpenButton: NSView, TextStyleSource {
         let start = (mainWidth - (icon + shown)) / 2
         let height = lineBox(label.font)
         label.frame = NSRect(x: start + icon, y: (bounds.height - height) / 2, width: shown, height: height)
-        label.textColor = NSColor(AppearanceModel.shared.theme.accent.onSolid)
+        label.textColor = NSColor(infoTheme.accent.onSolid)
         setAccessibilityLabel(title)
         needsDisplay = true
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         let radius = DesignTokens.radii.control
         let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
         NSGraphicsContext.saveGraphicsState()
@@ -430,11 +431,11 @@ final class OpensWithPopupView: NSView {
         let width = max(0, bounds.width - textX - Self.gap - Self.chevron - Self.paddingTrailing)
         let height = lineBox(name.font)
         name.frame = NSRect(x: textX, y: (bounds.height - height) / 2, width: width, height: height)
-        name.textColor = NSColor(AppearanceModel.shared.theme.palette.textPrimary)
+        name.textColor = NSColor(infoTheme.palette.textPrimary)
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         if isHovered || menuOpen {
             NSColor(theme.palette.bgHover).setFill()
             NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control).fill()
@@ -656,6 +657,7 @@ final class InfoPanelContentView: NSView {
                 cell.isHidden = false
                 value = cell
                 box = RowValueBox()
+                box?.sample.stringValue = "Calculate"
             case .permissions(let words, let octal, let symbolic):
                 let field = FlushTextField(labelWithString: words)
                 field.alignment = .right
@@ -709,7 +711,7 @@ final class InfoPanelContentView: NSView {
     // MARK: Colors
 
     func applyColors() {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         let palette = theme.palette
         name.textColor = NSColor(palette.textPrimary)
         subtitle.textColor = NSColor(palette.textSecondary)
@@ -753,6 +755,7 @@ final class InfoPanelContentView: NSView {
 
     override func layout() {
         super.layout()
+        applyColors()
         let inset = InfoMetrics.panelInset
         let width = max(0, bounds.width - 2 * inset)
         var y = 0.0
@@ -780,12 +783,9 @@ final class InfoPanelContentView: NSView {
         // The hero: padding 8 8 14, a 6 gap.
         let heroPad = 8.0
         y += heroPad
-        var boxSide = InfoMetrics.heroIconBox
+        let boxSide = InfoMetrics.heroIconBox
         var iconSide = 96.0
-        if case .selection = body {
-            boxSide = InfoMetrics.heroStackBox
-            iconSide = boxSide
-        }
+        if case .selection = body { iconSide = InfoMetrics.heroStackBox }
         heroIcon.inset = (boxSide - iconSide) / 2
         heroIcon.frame = NSRect(x: inset + (width - boxSide) / 2, y: y, width: boxSide, height: boxSide)
         y += boxSide + InfoMetrics.heroGap
@@ -800,7 +800,7 @@ final class InfoPanelContentView: NSView {
         name.attributedStringValue = NSAttributedString(
             string: name.stringValue,
             attributes: [
-                .font: nameFont, .foregroundColor: NSColor(AppearanceModel.shared.theme.palette.textPrimary),
+                .font: nameFont, .foregroundColor: NSColor(infoTheme.palette.textPrimary),
                 .paragraphStyle: nameParagraph,
             ])
         let measured = (name.stringValue as NSString).boundingRect(
@@ -911,7 +911,7 @@ final class InfoPanelContentView: NSView {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let palette = AppearanceModel.shared.theme.palette
+        let palette = infoTheme.palette
         ChromeColors.color(palette.borderLight).setFill()
         for y in dividers {
             NSRect(x: InfoMetrics.panelInset, y: y, width: bounds.width - 2 * InfoMetrics.panelInset, height: 1).fill()

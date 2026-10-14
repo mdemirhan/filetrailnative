@@ -62,13 +62,14 @@ final class InfoRowFactView: NSView, TextStyleSource {
     }
 
     func applyColors() {
-        let palette = AppearanceModel.shared.theme.palette
+        let palette = infoTheme.palette
         text.textColor = NSColor(palette.textSecondary)
         dot.textColor = NSColor(palette.textDim)
     }
 
     override func layout() {
         super.layout()
+        applyColors()
         let line = lineBox(text.font)
         let space = dotSpace
         if hasDot {
@@ -278,13 +279,13 @@ final class InfoRowView: NSView {
     }
 
     private func applyColors() {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         name.textColor = NSColor(theme.palette.textPrimary)
         for view in factViews { view.applyColors() }
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let palette = AppearanceModel.shared.theme.palette
+        let palette = infoTheme.palette
         ChromeColors.color(palette.bgBase).setFill()
         bounds.fill()
         ChromeColors.color(palette.border).setFill()

@@ -42,7 +42,7 @@ final class TextLinkView: NSView, TextStyleSource {
     var naturalHeight: Double { lineBox(font) }
 
     func applyStyle() {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         let ink = NSColor(color(theme))
         label.font = font
         label.textColor = ink
@@ -215,7 +215,7 @@ final class FolderSizeCellView: NSView {
     }
 
     private func applyColors() {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         sizeLine.textColor = NSColor(style == .panel ? theme.palette.textPrimary : theme.palette.textSecondary)
         itemsLine.textColor = NSColor(theme.palette.textSecondary)
     }
@@ -245,8 +245,11 @@ final class FolderSizeCellView: NSView {
             let heights = lineHeight
             if style == .panel {
                 itemsLine.isHidden = false
-                sizeLine.frame = NSRect(x: 0, y: 0, width: textWidth, height: heights.size)
-                itemsLine.frame = NSRect(x: 0, y: heights.size + 1, width: textWidth, height: heights.items)
+                // Right-aligned, each line as wide as its text.
+                let top = min(textWidth, width(sizeLine))
+                let below = min(textWidth, width(itemsLine))
+                sizeLine.frame = NSRect(x: textWidth - top, y: 0, width: top, height: heights.size)
+                itemsLine.frame = NSRect(x: textWidth - below, y: heights.size + 1, width: below, height: heights.items)
             } else {
                 sizeLine.frame = NSRect(x: 0, y: (bounds.height - heights.size) / 2, width: textWidth, height: heights.size)
             }

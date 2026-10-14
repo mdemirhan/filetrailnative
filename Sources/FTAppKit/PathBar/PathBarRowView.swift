@@ -164,14 +164,14 @@ final class PathBarRowView: NSView {
                 x: left + split.path + spacing, y: contentTop + ((contentHeight - size.height) / 2), width: split.status,
                 height: size.height)
         }
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         status.textColor = ChromeColors.color(theme.palette.textSecondary)
         layer?.backgroundColor = ChromeColors.color(theme.palette.bgBase).cgColor
         needsDisplay = true
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        ChromeColors.color(AppearanceModel.shared.theme.palette.border).setFill()
+        ChromeColors.color(infoTheme.palette.border).setFill()
         NSRect(x: 0, y: 0, width: bounds.width, height: 1).fill()
     }
 

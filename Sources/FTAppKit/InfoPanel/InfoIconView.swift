@@ -65,8 +65,9 @@ final class InfoIconView: NSView {
         if let stack {
             // `.clipboard-items-icon > .file-icon`: the first at the top left, the last at the bottom right.
             let side = InfoMetrics.heroStackIcon
-            let backRect = NSRect(x: 0, y: 0, width: side, height: side)
-            let frontRect = NSRect(x: bounds.width - side, y: bounds.height - side, width: side, height: side)
+            let area = bounds.insetBy(dx: inset, dy: inset)
+            let backRect = NSRect(x: area.minX, y: area.minY, width: side, height: side)
+            let frontRect = NSRect(x: area.maxX - side, y: area.maxY - side, width: side, height: side)
             for (kind, rect) in [(stack.back, backRect), (stack.front, frontRect)] {
                 stackImages[kind]?.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
             }

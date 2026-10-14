@@ -4,7 +4,8 @@ import AppKit
 import FTFoundation
 
 /// One row of the suggestions: the folder's name over (beside) its full path.
-final class PathSuggestionRowView: NSView {
+final class PathSuggestionRowView: NSView, TextStyleSource {
+    var styleTextField: NSTextField? { name }
     let name = FlushTextField(labelWithString: "")
     let path = FlushTextField(labelWithString: "")
     var isActive = false { didSet { applyColors() } }
@@ -51,7 +52,7 @@ final class PathSuggestionRowView: NSView {
     }
 
     func applyColors() {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         let on = isActive
         name.textColor = NSColor(on ? theme.accent.onSolid : theme.palette.textPrimary)
         path.textColor = NSColor(on ? theme.accent.onSolid : theme.palette.textSecondary)
@@ -74,7 +75,7 @@ final class PathSuggestionRowView: NSView {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         if isActive {
             NSColor(theme.accent.solidButton).setFill()
         } else if isHovered {
@@ -89,10 +90,12 @@ final class PathSuggestionRowView: NSView {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self))
+            NSTrackingArea(rect: bounds, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self))
     }
 
-    override func mouseEntered(with event: NSEvent) {
+    // A row under a pointer that has not moved is not hovered, as in a browser (mouseenter follows a move).
+    override func mouseMoved(with event: NSEvent) {
+        guard !isHovered else { return }
         isHovered = true
         onHover()
     }
@@ -179,7 +182,7 @@ final class PathSuggestionsView: NSView {
     }
 
     func applyLook() {
-        let palette = AppearanceModel.shared.theme.palette
+        let palette = infoTheme.palette
         layer?.backgroundColor = ChromeColors.color(palette.dropdownBg).cgColor
         layer?.borderColor = ChromeColors.color(palette.border).cgColor
         layer?.borderWidth = 1
@@ -205,7 +208,8 @@ final class PathEditorField: NSTextField {
 
 /// The inline path editor that replaces the segments: a field, and its suggestions opening upward.
 @MainActor
-final class PathEditorView: NSView, NSTextFieldDelegate {
+final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
+    var styleTextField: NSTextField? { field }
     let field = PathEditorField()
     private let suggestionsView = PathSuggestionsView()
     private(set) var state = PathSuggestionState(draft: "")
@@ -231,9 +235,10 @@ final class PathEditorView: NSView, NSTextFieldDelegate {
         field.delegate = self
         field.cell?.isScrollable = true
         field.cell?.usesSingleLineMode = true
-        field.setAccessibilityIdentifier("pathBar.editor")
+        field.setAccessibilityIdentifier("pathBar.editor.field")
         field.setAccessibilityLabel("Current folder path")
         addSubview(field)
+        setAccessibilityIdentifier("pathBar.editor")
         suggestionsView.onHover = { [weak self] index in self?.previewFromList(index) }
         suggestionsView.onChoose = { [weak self] index in self?.acceptRow(index) }
     }
@@ -428,7 +433,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate {
     // MARK: Look
 
     func applyColors() {
-        field.textColor = NSColor(AppearanceModel.shared.theme.palette.textPrimary)
+        field.textColor = NSColor(infoTheme.palette.textPrimary)
         needsDisplay = true
     }
 
@@ -440,7 +445,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         let radius = DesignTokens.radii.control
         let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
         NSColor(theme.palette.fieldBg).setFill()

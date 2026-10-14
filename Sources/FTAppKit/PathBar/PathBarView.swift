@@ -54,6 +54,7 @@ final class PathSegmentView: NSView, TextStyleSource {
 
     override func layout() {
         super.layout()
+        applyColors()
         let height = lineBox(Self.font)
         label.frame = NSRect(
             x: InfoMetrics.segmentPaddingInline, y: (bounds.height - height) / 2,
@@ -61,7 +62,7 @@ final class PathSegmentView: NSView, TextStyleSource {
     }
 
     func applyColors() {
-        let theme = AppearanceModel.shared.theme
+        let theme = infoTheme
         if isHovered && !isDisabled {
             // `color-mix(in srgb, var(--ft-accent-solid) 42%, var(--text-primary))`.
             label.textColor = NSColor(mixColor(theme.accent.solid, 42, with: theme.palette.textPrimary))
@@ -73,7 +74,7 @@ final class PathSegmentView: NSView, TextStyleSource {
 
     override func draw(_ dirtyRect: NSRect) {
         guard isHovered, !isDisabled else { return }
-        NSColor(AppearanceModel.shared.theme.palette.bgHover).setFill()
+        NSColor(infoTheme.palette.bgHover).setFill()
         NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control).fill()
     }
 
@@ -141,13 +142,14 @@ final class PathSeparatorView: NSView, TextStyleSource {
 
     override func layout() {
         super.layout()
+        applyColors()
         let font = label.font ?? .systemFont(ofSize: 12)
         let height = lineBox(font)
         label.frame = NSRect(x: 0, y: (bounds.height - height) / 2, width: bounds.width, height: height)
     }
 
     func applyColors() {
-        let palette = AppearanceModel.shared.theme.palette
+        let palette = infoTheme.palette
         let on = isButton && (isHovered || isActive)
         label.textColor = NSColor(on ? palette.textPrimary : palette.textSecondary)
         needsDisplay = true
@@ -155,7 +157,7 @@ final class PathSeparatorView: NSView, TextStyleSource {
 
     override func draw(_ dirtyRect: NSRect) {
         guard isButton, isHovered || isActive else { return }
-        NSColor(AppearanceModel.shared.theme.palette.bgHover).setFill()
+        NSColor(infoTheme.palette.bgHover).setFill()
         NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control).fill()
     }
 
@@ -317,8 +319,10 @@ final class PathBarView: NSView {
         }
         let separators = Double(max(0, items.count - 1)) * (PathSeparatorView.width + 2 * InfoMetrics.itemGap)
         let total = natural.reduce(0, +) + separators + 0
-        let overflow = expanded ? 0 : total - bounds.width
-        let shrinkBase = natural.reduce(0, +)
+        let overflow = total - bounds.width
+        // Each item (its separator and its segment) shrinks in proportion to its size; the segment gives way.
+        let basis = natural.enumerated().map { $0.element + ($0.offset > 0 ? PathSeparatorView.width + InfoMetrics.itemGap : 0) }
+        let shrinkBase = basis.reduce(0, +)
         for (index, item) in items.enumerated() {
             if index > 0, let separator = views.popFirst() {
                 separator.frame = NSRect(x: x, y: separatorTop, width: PathSeparatorView.width, height: InfoMetrics.separatorHeight)
@@ -326,7 +330,7 @@ final class PathBarView: NSView {
             }
             guard let view = views.popFirst() else { break }
             var width = natural[index]
-            if overflow > 0, shrinkBase > 0, case .segment = item { width = max(0, width - overflow * width / shrinkBase) }
+            if overflow > 0, shrinkBase > 0 { width = max(0, width - overflow * basis[index] / shrinkBase) }
             view.frame = NSRect(x: x, y: segmentTop, width: width, height: InfoMetrics.segmentHeight)
             x += width + InfoMetrics.itemGap
         }

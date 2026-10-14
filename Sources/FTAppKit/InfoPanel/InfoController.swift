@@ -531,6 +531,16 @@ final class InfoController {
     private var openMenuWatcher: Int?
     private var swappingMenu = false
 
+    /// `.pull-down-menu`: under its button, 4 pt below, its right edge on the button's.
+    private func showMenu(_ menu: AppMenuView, anchor: NSView, window: NSWindow, onClose: @escaping () -> Void) {
+        guard let host = window.contentView else { return }
+        let rect = anchor.convert(anchor.bounds, to: host)
+        let top = (host.isFlipped ? rect.maxY : host.bounds.height - rect.minY) + 4
+        let size = menu.fittingMenuSize
+        AppMenuPresenter.shared.show(
+            menu, in: window, at: NSPoint(x: rect.maxX - size.width, y: top), owner: anchor, onClose: onClose)
+    }
+
     private func presentOpenWith(from anchor: NSView, changeDefault: Bool) {
         guard let item = resolved?.item, let window = anchor.window else { return }
         let pinned = host.preferences.openWithApplications
@@ -561,7 +571,7 @@ final class InfoController {
                 }
             }
             let menu = AppMenuView(
-                items: items, style: .keyboard, identifier: "infoPanel.openWithMenu",
+                items: items, style: .keyboard, identifier: "contextMenu.submenu",
                 rowIdentifier: "infoPanel.openWithMenu.item", minWidth: 200)
             menu.activeIndex = nil
             return menu
@@ -575,7 +585,7 @@ final class InfoController {
             if let watcher = self?.openMenuWatcher { WindowEventRouting.remove(watcher, from: window) }
             self?.openMenuWatcher = nil
         }
-        AppMenuPresenter.shared.drop(build(optionHeld: NSEvent.modifierFlags.contains(.option)), from: anchor, onClose: close)
+        showMenu(build(optionHeld: NSEvent.modifierFlags.contains(.option)), anchor: anchor, window: window, onClose: close)
         setOpen(true)
         guard !changeDefault, always else { return }
         // Option swaps the menu to Always Open With while it is open.
@@ -587,7 +597,7 @@ final class InfoController {
             held = now
             MainActor.assumeIsolated {
                 self?.swappingMenu = true
-                AppMenuPresenter.shared.drop(build(optionHeld: now), from: anchor, onClose: close)
+                self?.showMenu(build(optionHeld: now), anchor: anchor, window: window, onClose: close)
                 self?.swappingMenu = false
             }
             return false

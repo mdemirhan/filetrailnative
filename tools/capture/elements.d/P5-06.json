@@ -182,16 +182,10 @@
       "swift": "infoPanel.folderSize.items",
       "text": true
     },
-    "info panel open with menu": {
-      "electron": {
-        "selector": ".pull-down-menu"
-      },
-      "swift": "infoPanel.openWithMenu"
-    },
     "info panel open with menu item": {
       "electron": {
-        "selector": ".pull-down-menu .toolbar-menu-item",
-        "textSelector": ".toolbar-menu-label"
+        "selector": ".pull-down-menu .context-submenu-item",
+        "textSelector": ".context-submenu-item-label"
       },
       "swift": "infoPanel.openWithMenu.item",
       "text": true
