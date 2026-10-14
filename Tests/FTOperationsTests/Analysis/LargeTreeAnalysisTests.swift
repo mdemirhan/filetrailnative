@@ -151,3 +151,67 @@ struct LargeTreeAnalysisTests {
         #expect(resolvedDepth.withLock { $0 } == depth)
     }
 }
+
+/// How long the review of a big folder takes against the least any review must do: look up each item and the
+/// name it would take. Building each item's paths once cost several times the lookups themselves, which made the
+/// review of a large paste no faster than the original's.
+struct LargeTreeAnalysisSpeedTests {
+    private static let fileCount = 50_000
+
+    // F-434
+    @Test func reviewsABigFolderInFewTimesTheCostOfLookingUpItsItems() throws {
+        let fileSystem = LargeTreeFileSystem()
+        for folder in ["/source", "/source/project", "/source/project/files", "/target"] {
+            fileSystem.add(folder, isDirectory: true)
+        }
+        var names: [String] = []
+        for index in 0..<Self.fileCount {
+            let name = "file-\(index)-with-a-longer-name.txt"
+            names.append(name)
+            fileSystem.add("/source/project/files/\(name)", isDirectory: false)
+        }
+        let request = CopyPasteAnalysisRequest(
+            mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target")
+        let clock = ContinuousClock()
+        // The quickest of three runs of each, so a busy machine slows neither one alone.
+        var lookups = Duration.seconds(1_000)
+        var review = Duration.seconds(1_000)
+        for _ in 0..<3 {
+            lookups = min(
+                lookups,
+                clock.measure {
+                    for name in names {
+                        _ = try? fileSystem.lstat("/source/project/files/" + name)
+                        _ = try? fileSystem.lstat("/target/project/files/" + name)
+                    }
+                })
+            review = min(
+                review,
+                try clock.measure {
+                    let report = try buildCopyPasteAnalysisReport(
+                        analysisId: "analysis-1", request: request, fileSystem: fileSystem,
+                        thresholds: .writeService)
+                    #expect(report.summary.totalNodeCount == Self.fileCount + 2)
+                })
+        }
+
+        #expect(review < lookups * 12, "review \(review), lookups \(lookups)")
+    }
+
+    // A child's path is its folder's and its name put together only where `path.join` would give just that.
+    @Test func joinsAChildPathAsPathJoinDoes() {
+        let folders = [
+            "/", "/a", "/a/b", "/a b/c.d", "/.hidden", "/a/..b", "/a/b..", "/...", "/a/...", "/\u{0301}e", "/e\u{0301}",
+            "//", "/a/", "/a//b", "/./a", "/a/.", "/a/..", "/../a", "/a/./b", "/a/../b", ".", "a", "a/b", "./a", "",
+        ]
+        let names = [
+            "x", "x.txt", ".x", "..x", "x..", "...", "._x", "e\u{0301}", "\u{1F600}", " ", ".", "..", "", "a/b", "/x",
+            "x/",
+        ]
+        for folder in folders {
+            for name in names {
+                #expect(joinChildPath(folder, name) == NodePath.join(folder, name), "\(folder) + \(name)")
+            }
+        }
+    }
+}

@@ -374,8 +374,8 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
             var claimedChildNames: [NameKeys.Exact: String] = [:]
             for childName in sourceChildren {
                 try signal?.throwIfStopped()
-                let childSourcePath = NodePath.join(sourcePath, childName)
-                let childDestinationPath = NodePath.join(destinationPath, childName)
+                let childSourcePath = joinChildPath(sourcePath, childName)
+                let childDestinationPath = joinChildPath(destinationPath, childName)
                 // Merging into a folder that has its own view settings (.DS_Store): they are kept, and the pasted
                 // folder's are left out rather than asked about as a clash.
                 if conflictClass == .directoryConflict && !wholePackage
@@ -388,7 +388,7 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
                 if let claimedBy = claimedChildNames[childKey] {
                     cache.nameCollisions.append(
                         .init(
-                            sourcePath: childSourcePath, otherSourcePath: NodePath.join(sourcePath, claimedBy),
+                            sourcePath: childSourcePath, otherSourcePath: joinChildPath(sourcePath, claimedBy),
                             destinationPath: childDestinationPath))
                 } else {
                     claimedChildNames[childKey] = childName
@@ -434,7 +434,7 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
         let siblings = Set(names.map(NameKeys.Exact.init))
         return names.filter { name in
             !(CopyPasteNames.isAppleDoubleCompanionName(name, hasSibling: { siblings.contains(NameKeys.Exact($0)) })
-                && fileSystem.isAppleDouble(NodePath.join(folderPath, name)))
+                && fileSystem.isAppleDouble(joinChildPath(folderPath, name)))
         }
     }
 
@@ -471,7 +471,7 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
             if CopyPasteNames.isFolderViewFile(entry) {
                 continue
             }
-            let entryPath = NodePath.join(destinationPath, entry)
+            let entryPath = joinChildPath(destinationPath, entry)
             let counterpart = sourceByName[cache.pathKey(entry)]
             if let counterpart, counterpart.sourceKind == .directory && counterpart.destinationKind == .directory {
                 // Nested folders are analyzed first; reuse their summary instead of walking again.
@@ -536,7 +536,7 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
             var count = entries.count
             for entry in entries {
                 try signal?.throwIfStopped()
-                let entryPath = NodePath.join(directoryPath, entry)
+                let entryPath = joinChildPath(directoryPath, entry)
                 if try fileSystem.lstat(entryPath).isDirectory {
                     guard let nestedCount = try countDirectoryItems(entryPath) else {
                         cache.counts[key] = .some(nil)
@@ -683,4 +683,52 @@ private func summarizeAnalysis(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAna
     }
     summary.totalBytes = bytesKnown ? totalBytes : nil
     return summary
+}
+
+/// `path.join(folder, name)` for a name a folder listed, as the walk builds one for every item it reads. When the
+/// folder is already normalized and absolute and the name is a plain one, the join is the two put together with a
+/// "/" between, so that is what is built: normalizing every path again cost more than reading the items. Anything
+/// else goes through `NodePath.join`.
+func joinChildPath(_ folder: String, _ name: String) -> String {
+    guard isPlainEntryName(name) && isNormalizedAbsolutePath(folder) else {
+        return NodePath.join(folder, name)
+    }
+    return folder.utf8.count == 1 ? "/" + name : folder + "/" + name
+}
+
+private let slash = UInt8(ascii: "/")
+private let dot = UInt8(ascii: ".")
+
+/// Not empty, not "." or "..", and no "/" in it.
+private func isPlainEntryName(_ name: String) -> Bool {
+    var count = 0
+    var allDots = true
+    for byte in name.utf8 {
+        if byte == slash { return false }
+        allDots = allDots && byte == dot
+        count += 1
+    }
+    return count > 0 && !(allDots && count <= 2)
+}
+
+/// "/" or "/a/b": absolute, and with no empty, "." or ".." part and no "/" at the end.
+private func isNormalizedAbsolutePath(_ path: String) -> Bool {
+    var bytes = path.utf8.makeIterator()
+    guard bytes.next() == slash else { return false }
+    var partLength = 0
+    var partAllDots = true
+    var length = 1
+    while let byte = bytes.next() {
+        length += 1
+        if byte == slash {
+            if partLength == 0 || (partAllDots && partLength <= 2) { return false }
+            partLength = 0
+            partAllDots = true
+        } else {
+            partLength += 1
+            partAllDots = partAllDots && byte == dot
+        }
+    }
+    if length == 1 { return true }
+    return partLength > 0 && !(partAllDots && partLength <= 2)
 }
