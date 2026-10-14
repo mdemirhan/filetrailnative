@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T10:30:56+00:00",
+  "updatedAt": "2026-10-14T10:33:14+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "WAVE-1 GATE: waiting for user: approve D-006..D-014, PLAN §8 checkpoints; then W1-H (P4-04, P0-15, P2-08, P0-16) before wave 2",
+  "nextAction": "Wave-1 gate passed (D-006..D-014 approved). Running W1-H P4-04+P0-15+P2-08+P0-16; then clean up branches/worktrees and start wave 2",
   "pause": {
     "requested": false,
     "reason": null,
@@ -471,6 +471,22 @@
         "weeklyPct": 14,
         "fiveHourPct": 15
       }
+    },
+    "W1-H": {
+      "wps": [
+        "P4-04",
+        "P0-15",
+        "P2-08",
+        "P0-16"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 12,
+      "meterBefore": {
+        "weeklyPct": 14,
+        "fiveHourPct": 15
+      },
+      "startedAt": "2026-10-14T10:33:14+00:00"
     }
   },
   "wps": {
@@ -2202,7 +2218,7 @@
       ],
       "phase": "P4",
       "wave": 1,
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P4-04",
       "attempts": 0,
       "blockers": []
@@ -2221,7 +2237,7 @@
       ],
       "phase": "P0",
       "wave": 1,
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-15",
       "attempts": 0,
       "blockers": []
@@ -2242,7 +2258,7 @@
       ],
       "phase": "P2",
       "wave": 1,
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-08",
       "attempts": 0,
       "blockers": []
@@ -2261,7 +2277,7 @@
       ],
       "phase": "P0",
       "wave": 1,
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-16",
       "attempts": 0,
       "blockers": []
@@ -2296,6 +2312,10 @@
     {
       "at": "2026-10-14",
       "request": "UI metrics (fonts, icon sizes, padding, margins) must match the original defaults; covered by P5 (wave 2) with the geometry gate; recorded as carryOver on P5 WPs."
+    },
+    {
+      "at": "2026-10-14",
+      "request": "Wave-1 gate: approved D-006..D-014; run follow-ups now as W1-H; divider line fixed in P5-01."
     }
   ],
   "acceptance": {
