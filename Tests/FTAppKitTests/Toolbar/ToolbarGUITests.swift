@@ -117,6 +117,11 @@ extension ExplorerWindowGUITests {
             window.sendEvent(event)
         }
 
+        // N/A T-950f5cb5 T-52a1e901 T-31c46dd8 T-e5501fcb T-0d626566 T-af6e6f0a T-a669a0e1 T-9b0b8821 T-91333069 T-3e4a1c9f
+        // T-12547eab T-0a9009c4 T-05bfc5d2 T-5f4a2239 T-4dabc4eb T-1be0c4f9 T-2fd182cd (TabStrip.test.tsx): the tab strip is
+        // the system's tab bar (D-001, D-002, D-003, D-013, P4-02/P4-04); F-721 F-722 F-723 F-725 F-726 likewise.
+        // N/A T-36bede3d (HistoryButton): the toolbar is not measured from a hidden copy; its widths are computed.
+        // covered-by-feature F-718 T-b4ef483c (only a primary press on a handle starts a drag, in its mouseDown)
         // T-88f9e2d3 T-bcb2497c T-e090ff70 F-708 F-709 B-VIEW-107 B-VIEW-108 B-VIEW-109 B-VIEW-110 B-VIEW-112
         @Test func drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton() async throws {
             let harness = try ExplorerHarness()
@@ -212,6 +217,24 @@ extension ExplorerWindowGUITests {
             // Enclosing Folder runs its command.
             _ = button(tab, .up)?.accessibilityPerformPress()
             #expect(await waitUntil { tab.currentFolder.lastPathComponent == harness.folder.url.lastPathComponent })
+            await harness.close()
+        }
+
+        // T-f0cce867 F-711 B-VIEW-234: the View menu switches to icons, the toolbar's view switch back to the list;
+        // the switch's segments say their keys.
+        @Test func switchesTheViewFromTheMenuAndBackFromTheToolbar() async throws {
+            let harness = try ExplorerHarness()
+            let tab = try await harness.open()
+            tab.perform(.viewAsIcons)
+            let switcher = try #require(tab.workspace.toolbar.slotViews["view"]?.content as? ToolbarViewSwitch)
+            #expect(switcher.selected == .icons)
+            #expect(
+                switcher.segments.map(\.tooltip) == [
+                    "View as Icons (⌘1)", "View as List (⌘2)", "View as Compact List (⌘3)",
+                ])
+            _ = switcher.segments[1].accessibilityPerformPress()
+            #expect(tab.viewState.viewMode == .details)
+            #expect(switcher.selected == .details)
             await harness.close()
         }
 
