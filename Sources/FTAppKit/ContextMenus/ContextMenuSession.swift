@@ -37,7 +37,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
     private weak var responder: (any ContextMenuResponder)?
     private(set) var menu = NSMenu()
     private var disabled: Set<ContextMenuActionID> = []
-    private let openWith: OpenWithLookupModel
+    let openWith: OpenWithLookupModel
     private(set) var isOpen = false
 
     private static var sessionKey = 0

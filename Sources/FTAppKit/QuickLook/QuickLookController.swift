@@ -4,6 +4,41 @@ import FTFileSystem
 import FTFoundation
 @preconcurrency import Quartz
 
+/// The preview panel, as the controller drives it (the system's, or a test's).
+@MainActor
+protocol QuickLookPanelControlling: AnyObject {
+    var isVisible: Bool { get }
+    /// The panel shows `controller`'s item, in front.
+    func present(_ controller: QuickLookController)
+    /// The panel shows the item again.
+    func refresh()
+    func dismiss()
+}
+
+/// `QLPreviewPanel`.
+@MainActor
+final class SystemQuickLookPanel: QuickLookPanelControlling {
+    var isVisible: Bool { QLPreviewPanel.sharedPreviewPanelExists() && QLPreviewPanel.shared().isVisible }
+
+    func present(_ controller: QuickLookController) {
+        let panel = QLPreviewPanel.shared()
+        panel?.dataSource = controller
+        panel?.delegate = controller
+        panel?.reloadData()
+        panel?.makeKeyAndOrderFront(nil)
+    }
+
+    func refresh() {
+        QLPreviewPanel.shared()?.reloadData()
+        QLPreviewPanel.shared()?.refreshCurrentPreviewItem()
+    }
+
+    func dismiss() {
+        guard QLPreviewPanel.sharedPreviewPanelExists() else { return }
+        QLPreviewPanel.shared()?.orderOut(nil)
+    }
+}
+
 /// Quick Look: the system's preview panel for one item (the original previews a single file, PLAN.md §3.3), opened
 /// with Space, the menu and the Info panel's button, zooming out of the item's row.
 @MainActor
@@ -18,9 +53,9 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     var onClose: (() -> Void)?
     private weak var owner: NSWindow?
     /// The panel, replaceable in tests.
-    var panelProvider: () -> QLPreviewPanel? = { QLPreviewPanel.shared() }
+    var panel: any QuickLookPanelControlling = SystemQuickLookPanel()
 
-    var isShowing: Bool { panelProvider()?.isVisible == true && url != nil }
+    var isShowing: Bool { panel.isVisible && url != nil }
 
     /// `previewFile`: the panel shows the item. Showing the item it already shows closes the panel, as Space does.
     func toggle(_ path: String, from window: NSWindow?, sourceFrame: @escaping (URL) -> NSRect?) {
@@ -33,27 +68,23 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
     }
 
     func show(_ path: String, from window: NSWindow?, sourceFrame: @escaping (URL) -> NSRect?) {
-        guard let panel = panelProvider() else { return }
         url = URL(fileURLWithPath: path)
         owner = window
         self.sourceFrame = sourceFrame
-        panel.dataSource = self
-        panel.delegate = self
-        panel.reloadData()
         if panel.isVisible {
-            panel.refreshCurrentPreviewItem()
+            panel.refresh()
         } else {
-            panel.makeKeyAndOrderFront(nil)
+            panel.present(self)
         }
     }
 
     func close() {
-        guard let panel = panelProvider(), panel.isVisible else { return }
-        panel.orderOut(nil)
+        guard panel.isVisible else { return }
+        panel.dismiss()
         ended()
     }
 
-    /// The panel is taken from a window that no longer shows its item (the folder changed).
+    /// The window no longer shows its item (the folder changed): the panel closes.
     func windowWillChange(_ window: NSWindow) {
         if owner === window { close() }
     }
