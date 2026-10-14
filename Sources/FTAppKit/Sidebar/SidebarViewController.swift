@@ -46,6 +46,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     let sections = SidebarListView(subview: .favorites)
     private let foldersTitle = SidebarLabelField()
     private let foldersHeader = SidebarPlainView()
+    /// Whether the "Folders" label is out (the integrated layout has none).
+    var foldersHeaderHiddenForTests: Bool { foldersHeader.isHidden }
     let tree = SidebarListView(subview: .tree)
     private let pill = SidebarTypeaheadPill()
     private var volumesToken: SidebarVolumes.Token?

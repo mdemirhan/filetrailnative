@@ -357,6 +357,12 @@
             let events = KeyEvents.events(key, modifiers: modifiers, window: window)
             guard let down = events.first else { return Outcome(.failed, "could not make the key event") }
             // Delivered to the window directly: a run started from a terminal may not make the app active.
+            if modifiers.contains(.shift), !modifiers.intersection([.command, .control]).isEmpty,
+                let bar = NSApp.mainMenu, let (menu, item) = AutomationMenus.item(forKey: down, in: bar),
+                AutomationMenus.perform(item, in: menu, window: window).status == .ok
+            {
+                return Outcome(.ok)
+            }
             if !modifiers.intersection([.command, .control]).isEmpty,
                 NSApp.mainMenu?.performKeyEquivalent(with: down) == true || window.performKeyEquivalent(with: down)
             {

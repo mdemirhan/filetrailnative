@@ -472,7 +472,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         updateTitle()
         searchField?.stringValue = ""
         // A folder opened from the sidebar leaves the keyboard there.
-        let sidebarKeyboard = open.origin != .other && sidebar.isFocused ? window?.firstResponder : nil
+        let sidebarKeyboard = sidebar.isFocused ? window?.firstResponder : nil
         browser.show(listing, selecting: cameFromChild ? [previous] : [])
         if let sidebarKeyboard { window?.makeFirstResponder(sidebarKeyboard) }
         sidebar.folderOpened(url, open)
