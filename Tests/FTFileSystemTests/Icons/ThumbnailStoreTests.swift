@@ -52,7 +52,7 @@ private func picture(opaque: Bool = true) -> ThumbnailPicture {
 
 private func settle() async {
     for _ in 0..<20 { await Task.yield() }
-    try? await Task.sleep(for: .milliseconds(20))
+    try? await Task.sleep(for: .milliseconds(150))
 }
 
 private final class Listing {}

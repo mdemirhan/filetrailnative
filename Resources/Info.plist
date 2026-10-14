@@ -26,6 +26,8 @@
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>File Trail asks Finder to empty the Trash.</string>
 	<key>NSDesktopFolderUsageDescription</key>
 	<string>File Trail shows the files in your Desktop folder.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
