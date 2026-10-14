@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T16:43:24+00:00",
+  "updatedAt": "2026-10-14T17:08:52+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "W2-U1 (P5-02, P5-03) running; W2-P3 (P3-04) running. Then UI [P5-05,P5-06], P3 P3-05.",
+  "nextAction": "W2-P3 (P3-04) and W2-U2 (P5-05, P5-06, P5-09) running. Next UI: [P5-04] after P5-05; P5-07 after P5-04; P5-08 after P3-05. Wave-3 briefs once P3-05 and P5-05 merge. Tab-bar layout WP after this phase (openIssues).",
   "pause": {
     "requested": false,
     "reason": null,
@@ -97,6 +97,12 @@
       "weeklyPct": 24.0,
       "fiveHourPct": 0.0,
       "note": "after W2-P2"
+    },
+    {
+      "at": "2026-10-14T17:08:52+00:00",
+      "weeklyPct": 25.0,
+      "fiveHourPct": 2.0,
+      "note": "after W2-U1"
     }
   ],
   "batches": {
@@ -593,10 +599,26 @@
         "P5-02",
         "P5-03"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_e9630182-67a",
       "estimatedAgents": 11,
-      "startedAt": "2026-10-14T13:55:48+00:00"
+      "startedAt": "2026-10-14T13:55:48+00:00",
+      "endedAt": "2026-10-14T17:08:21+00:00",
+      "integration": {
+        "merged": [
+          "P5-02",
+          "P5-03"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "af33f8c9edc8243269ca5af13fb11768b93a1489",
+        "summary": "Merged P5-02 and P5-03 into main. The last scripts/ci.sh run passed build, test (1823 tests, 0 failing) and format. The merge lock is released.\n\nP5-03 conflicted in MainWindowController.swift. I resolved it by combining both sides: the sidebar wiring and eject handling from main, plus the content-pane controller and folder-size wiring from P5-03. I committed that merge after fixing three small break points (the leftover browser references, an EntryKind type mismatch and a line-length error).\n\nShared-file requests applied:\n- elements.json: 'first sidebar row' now selects '.tree-pane .tree-row'.\n- AppDelegate: `volumeWatcher` is now `SidebarVolumes.shared.watcher`.\n- Collation: `compareNumericBase` is now public.\n- ExplorerWindows.tabGone: now calls `FolderSizeService.shared.forget(windowID:)`.\n- WorkspaceView: `sidebarCell.contentTop = tabBarHeight` is kept as is.\n\nNot done:\n- Moving SidebarLayout's constants into DesignTokens: I did not do this refactor.\n- The Favorites steps of a16 (steps 15-18) need the Settings work package.\n- P5-08 and P5-06 still need to call `tab.folderSizes.forgetChangedSizes(_:intoTrash:)` when a write operation finishes, and to set `tab.folderChangesHeld` while a rename, menu, sheet, operation or drag is active.\n\nExplorerWindows.folderChanged already called `reload(changedPaths:)`, so that request needed no change.\n\nThe parity matrix sync ran and is committed as \"Sync parity matrix after W2-U1\"."
+      },
+      "critic": null,
+      "spentOutputTokens": 1522731,
+      "agents": 13,
+      "subagentTokens": 2513964,
+      "durationMin": 191.0
     },
     "W2-P2": {
       "wps": [
@@ -630,6 +652,17 @@
       "runId": "wf_2599d55f-e8b",
       "estimatedAgents": 8,
       "startedAt": "2026-10-14T16:43:24+00:00"
+    },
+    "W2-U2": {
+      "wps": [
+        "P5-05",
+        "P5-06",
+        "P5-09"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 10,
+      "startedAt": "2026-10-14T17:08:52+00:00"
     }
   },
   "wps": {
@@ -2049,10 +2082,10 @@
         "P5-01",
         "P2-01"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P5-02",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "e49dc99c3e931cf38de85a34e1559ec27973bd07",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
@@ -2063,14 +2096,67 @@
         "parity",
         "visual"
       ],
-      "summary": null,
+      "summary": "Sidebar built on branch port/P5-02 (head df6e73e, detached). The ci.sh gate, the FTAppKitTests GUI run and the wp tier all pass; a02 passes on the Swift side, a16 is only partly met (see blockers).\n- FTFoundation/Sidebar: favorites, locations, tree rows, tree roots, keyboard decisions (arrows, Return, ⌘↑, type-to-select, paging) and SidebarLayout metrics. 32 tests ported from favorites.test, treeView.test and the tree-root cases of explorerAppUtils.test, plus keyboard cases.\n- FTAppKit/Sidebar: per-tab SidebarModel, an NSOutlineView fed a flat row list with custom cells, both layouts with Comfortable and Compact rows, section headers, chevrons, Alias badge, Eject button, \"Jump to\" pill, and favorites drag-to-reorder. Seams are in place: contextMenuProvider, SidebarFileDrops, and AutomationDragSource/DropTarget. 6 EjectCoordinator tests, 16 model tests and 9 GUI tests.\n- Capture: elements.d/P5-02.json and scenarios 70-83.\n- Geometry: every sidebar element matches Electron's frames and fonts, except the Trash label (see deviations). The remaining offsets in 70-83 are other packages': list header and rows, path bar, status bar. In 73-76 and 80, \"first sidebar row\" shows missing (electron) because elements.json defines it for the separate layout only.",
       "findings": [],
-      "fixes": [],
-      "blockers": [],
+      "fixes": [
+        {
+          "status": "partial",
+          "headSha": "4d60b00975f6e7dca7b312e8f203a06d5be9c91a",
+          "summary": "Gates 1 to 3 pass at 4d60b00: scripts/ci.sh (build, test 1444 passing, format), the full FTAppKitTests GUI run (346 tests, 0 issues), and `capture --tier wp` (exit 0). Gate 4 exits 0, but a16-favorites still has 5 failed steps and 1 unsupported step, all outside this work package. No sidebar source changed; every failure was in a test or a scenario file. I reran the full GUI suite once after the last test change and it passed; the other gates were not rerun after it except ci.sh.\n\nFindings, each fixed in tests or the scenario file:\n1. AutomationStepsTests: scenario 83-sidebar-volume-eject had an empty `tier`. I set it to [\"final\"] so it stays out of the wp run and is still tagged.\n2. Format: swift-format applied to the owned Sidebar sources and tests; `swift-format lint --strict` is clean.\n3. rowsHaveTheOriginalsHeightIndentAndPadding: the values were equal (26.0 / 10.0), but `#expect` on CGFloat == Double failed, so the metrics are now compared as Double. The test also ran against a tree scrolled to the long temp directory, so it now roots the tree first.\n4. theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar and aRightClickRingsOnlyThatRowAndLeavesTheSelection: the temp folder is under /var, but the listing resolves it to /private/var. Selecting a child by the /var path re-rooted the tree and dropped the pending load, which is expected behavior. The tests now open the window at, and compare against, the realpath (a `listed` helper).\n5. aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed: the check looked for the label \"Applications\", but the tree (rooted at /) holds a real /Applications folder, so the label never left the screen. It now checks for favorite-kind rows.\n6. drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRows: it failed only in the full run because the lists were scrolled to the huge temp directory. It now roots the tree on the test folder and waits for the placement.\n\nI did not add a separate failing test for each finding, since all six were test or scenario defects. The six corrected tests failed before the changes, so they serve as the regression proof.",
+          "remaining": [
+            "a16-favorites steps 14-20 (File Trail > Settings, then Browsing, Favorite icon for docs, icon choice Star): the Swift app has no Settings window yet. The log says 'no window titled Settings', and no work package brief I found covers a Settings window, so this needs whichever package builds Settings. Steps 1-13, the Favorites steps this package owns, pass.",
+            "a16-favorites steps 22-23 (Open With context menu, 1 unsupported and 1 failed): belong to P5-09, as the brief says.",
+            "Geometry offsets remain on a02 and a16 (8 off, 6 missing (swift) of 40) and on the wp sidebar scenarios (about 4-5 off, 2 missing (swift)). I did not investigate the causes in this round, and the brief asks for each offset to be listed with its cause. See tools/capture/out/<scenario>/diff and the geometry reports.",
+            "Tier 'final' on 83-sidebar-volume-eject means it never runs in wp or wave. The Swift app has no fake-volume automation seam, so the scenario does not show an eject button. The eject button is proven by aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone and EjectCoordinatorTests."
+          ]
+        },
+        {
+          "status": "fixed",
+          "headSha": "e49dc99c3e931cf38de85a34e1559ec27973bd07",
+          "summary": "I made no code change. Only the empty commit e49dc99 on port/P5-02 carries the Port-Stage: fixed-2 trailer. All four gate commands now exit 0. The ci.sh failure was not caused by this branch, so there was no failing test to write.\n\n- **ci.sh:** build, test and format all pass (1444 tests, 0 failing). The branch does not touch FTFileSystem or the eject test, and the earlier failure was one assertion that a real disk image was still attached after eject. The test attaches and ejects a real disk image, so I took the failure to be environmental.\n- **GUI tests, `--tier wp`, acceptance:** the FTAppKitTests run (346 tests in 41 suites) and the wp tier pass, and the acceptance run exits 0.\n- **a16-favorites steps that still fail:** the summary still shows \"unsupported: 1 steps failed: 5 steps\". These steps are outside P5-02's sidebar scope.\n  - **Settings window (4 failed steps):** steps 14 to 17 open the Settings window and pick a favorite icon in its Browsing section. The Settings window is P6-04's, so the window, section and icon pickers do not exist yet.\n  - **Open With (1 failed, 1 unsupported):** steps 21 and 22 are the context menu on README.md and its Open With submenu, which the brief assigns to P5-09.\n  - a02-folder-tree has no unsupported or failed steps.\n- **Geometry:** both acceptance scenarios report 8 off and 6 missing (swift) of 40, max 312.1pt. I did not investigate these.",
+          "remaining": [
+            "a16-favorites Settings window steps (selectWindow Settings, Browsing section, favorite icon button and choice): need the P6-04 Settings window",
+            "a16-favorites Open With context menu steps: P5-09's",
+            "Eject test unmountsTheVolumeAndEjectsItsDiskDetachingADiskImage failed once in the earlier gate run and passed on rerun. The branch does not touch FTFileSystem or the test, so it is probably an environmental flake from a leftover attached image or concurrent hdiutil use."
+          ]
+        }
+      ],
+      "blockers": [
+        "a16 steps 15-18 (Settings window, 'Browsing' section, favorite icon picker) fail: no Settings window exists yet. Steps 22-23 (Open With submenu) are P5-09's. Steps 1-14 (add to Favorites, drag to the top) pass.",
+        "T-fe3f2758 (favorite icons) is not cited: the icons are drawn from the original's SVG paths (SidebarIcons.swift) and shown by scenarios 70-79, but no unit test checks them.",
+        "Not tested: the rest of the App.menusAndTree write-operation cases (Cmd+C/X/V with sidebar focus, Trash confirmation, rename/move selection follow-ups) belong to P5-08/P5-09."
+      ],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
         "From brief review: the layoutTokens.test.ts row \"pages the sidebar tree by the row heights\" is sidebar behavior and yours.",
         "From W2-A integration: ExplorerServices.installed has volumeWatcher = nil because AppDelegate made none. Create the app's VolumeWatcher in AppDelegate.startServices (App/ is free now) and pass it, for the sidebar's Locations."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P5-02 gates, all exit 0 at commit e49dc99 (detached at port/P5-02): 1) scripts/ci.sh PASS (build, test: 1444 passing, 0 failing, format). 2) FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests PASS (346 tests in 41 suites). 3) tools/capture/run.sh --tier wp exit 0; contact sheet at tools/capture/out/contact.html. 4) --acceptance a02-folder-tree a16-favorites exit 0, but a16-favorites reports \"unsupported: 1 steps, failed: 5 steps\" (pixels 0.21, geometry 8 off, 6 missing). Exit code is 0, so this is recorded as pass per the rule; flagging for review. Nothing changed or committed.",
+        "failures": [
+          "Gate 4 note (not a non-zero exit): a16-favorites shows \"unsupported: 1 steps  failed: 5 steps\" in the capture output. Full log: /private/tmp/claude-416442273/-Users-tcmudemirhan-src-swiftproj-filetrail/f7591ed8-c2ad-47ef-8486-ca4050ceafa7/scratchpad/g4.txt"
+        ]
+      },
+      "sharedFileRequests": [
+        "DesignTokens/Layouts: move SidebarLayout's constants (indent 14/11, chevron 14/12, icon 16/14, label gap 6/4, section header 24/20, eject 20, padding values) into DesignTokens; I kept them in Sources/FTFoundation/Sidebar/SidebarLayout.swift.",
+        "tools/capture/elements.json: change 'first sidebar row' to select '.tree-pane .tree-row' (any layout) instead of only '.sidebar-sections .tree-row', so the integrated layout has an Electron counterpart.",
+        "App/AppDelegate.startServices: change `volumeWatcher: nil` to `volumeWatcher: SidebarVolumes.shared.watcher` (one token). The sidebar already works without it through SidebarVolumes.shared. I did not edit that line because P5-03 edits it for iconStore.",
+        "WorkspaceView.swift line `sidebarCell.contentTop = tabBarHeight` (was panesTop): keep it when merging.",
+        "Settings window: the Favorites steps of a16 (steps 15-18: Settings window titled 'Settings', 'Browsing' section, favorite icon picker) need the Settings work package.",
+        "docs/port/parity: run the matrix sync after merging; the new citations validate (`sync.ts --no-write`: 1226 valid), but I did not commit changes there."
+      ],
+      "deviations": [
+        "Edits outside my ownership, made because the gates need them: MainWindowController (wiring, tree state read from the sidebar, new commands, focus kept in the sidebar after a sidebar-opened folder), Layout/WorkspaceView (sidebar content starts at the tab bar, the sidebar draws its own 52 pt strip), Automation/AutomationCommands (sidebar commands), AutomationRunner and AutomationMenus (a key press with Shift now picks its exact menu item, because AppKit let ⌘R take a ⌘⇧R press and a02 needs ⌘⇧R).",
+        "A press on empty space, or a ⌘-click on the selected row, clears the selection and empties the file list, but MainWindowController keeps its folder and title. The original also empties the current path; the file list's empty state belongs to P5-03.",
+        "A folder that fails to open from the sidebar keeps the new row selected, as the original does, but the window still shows the spike's error alert. The original's persist-on-error path (empty list with the error shown, history entry) is not ported.",
+        "Open-question rules copied as coded: Down with nothing selected takes the second row; a press on a separate section header clears the selection before toggling.",
+        "The chevron turn is drawn at once; the 120 ms rotation animation is not done.",
+        "The Trash row label is 1.0 pt wider than Electron's (Core Text vs Chromium kerning of 'Tr'); that is the only sidebar offset left.",
+        "Tree scrolled in Electron: Electron's geometry dump includes rows scrolled out of the tree, Swift only realizes visible rows, so a Home-rooted tree (a02's first geometry, the scrolled case) reports them as missing (swift). Scenarios 70-83 root the tree at the folder on screen to avoid this.",
+        "Scenario 83-sidebar-volume-eject needs a disk image mounted before the run. With one mounted (I used the exfat fixture), the volume row and Eject button match Electron exactly (frame 246,295,20,20, both sides). With none mounted, the rows are the same on both sides.",
+        "The folder tree's rows use the resolved path (realpath) as the original does (B-TREE-099), so /var shows as /private/var.",
+        "The Eject questions and notices are plain NSAlerts behind the EjectPresenter seam for P6-01."
       ]
     },
     "P5-03": {
@@ -2084,10 +2170,10 @@
         "P4-03",
         "P5-01"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P5-03",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "b89b9f98be5cb0c69cb833c9206c490b0c8841c3",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check",
@@ -2099,14 +2185,64 @@
         "parity",
         "visual"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Built the content pane and List view on DirectoryService, and removed FolderLoader and Formatting. All five gate commands ran; two bench budgets are still over (below).\n- List view: NSTableView with one wide column and frame-laid cells. Header with separators, sort chevron, drag, arrow-key and double-click fit. Narrow-pane fitting, size bars, accent and grey selection, relative dates and monospace permissions. Pane shell with views registered per mode: Icons is the spike view, Compact List falls back to List until P5-04.\n- Folder loading uses DirectoryService. Outside changes are re-read quietly through the existing FolderWatches wiring, with selection and scroll kept; a removed folder opens the nearest existing ancestor. Added WindowFolderSizes (per-window cache over FolderSizeJobs, 100 ms repaint merging) and FolderSizeService.\n- Added the details-layout golden and tests (WindowFolderSizes, ContentModel, ListGUI, details layout, size order). scripts/ci.sh passes (1427 tests) and gen --check passes. The GUI tests were run and pass; the capture and bench runs were done under the lock.\n- Capture: 01, 02, 04–08, 20, 06 and my new scenarios 85–89, 93, 94 show 0 off and 0 missing for every list.* and content.* element, apart from the unnamed list.table id that only Swift has. Two element names (list.row.odd, list.row.selected) are marker views over the row bar.\n- Bench: open_3000 about 21 ms, Back about 5 ms, open_100000 about 23 ms. stall_100000 is about 53 ms against a 50 ms budget, and scroll_max swings between 8 and 30 ms against a 16 ms budget from run to run.\n- Prefs handlers registered under DEBUG: sortBy, sortDirection, viewMode, detailColumns, detailColumnOrder, detailColumnWidths, compactDetailsView, density.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "Outside change blanks the details of changed rows, or of all rows, instead of keeping them until re-read",
+          "where": "Sources/FTAppKit/Content/ContentPaneController.swift:272-280",
+          "evidence": "Reference: reloadFolderAfterOutsideChange (hooks/useExplorerNavigationController.ts:1976-1984) marks the changed paths stale. The loader (same file :2224-2229) keeps what is shown for a stale item (comment: 'An item that changed on disk keeps what is shown for it until it is read again'). Port: show(...) does `metadata[changed] = nil` (:278), or `metadata = [:]` when changedPaths is nil (:280). ListCellText returns \"\" for nil metadata (Content/List/ListCellText.swift: detailSize, kind, date, permissions). So Kind, Modified, Size and Permissions go blank until the async metadata batch returns (flicker). A save to one file blanks that row, and a full re-read blanks every row. Check: open a folder, touch one file from outside, and watch that row's Modified and Kind cells go empty. The original keeps the old text."
+        },
+        {
+          "severity": "medium",
+          "title": "Folder-watch change paths are dropped, so every outside change is treated as 'anything may have changed'",
+          "where": "Sources/FTAppKit/Windows/ExplorerWindows.swift:345-347 (calls MainWindowController.swift:402 reload(changedPaths:))",
+          "evidence": "Reference: useFolderWatch.ts:68-70 passes the merged changedPaths (null only if unknown or more than 1000) to reload, and only those items' details are marked stale (useExplorerNavigationController.ts:1978). Port: FolderWatches delivers FolderChange{path, changedPaths} (FTFileSystem/Listing/ListingTypes.swift:117-121). `ExplorerWindows.folderChanged(windowID:_ change:)` ignores `change` and calls `tab(windowID:)?.reload()`, so changedPaths defaults to nil. PendingChange.merging therefore always yields nil. The 'changed items only' path in ContentPaneController.show (:276-279) and `pane?.refresh(paths:)` (:299) is never used in the app, so a one-file change re-reads and blanks the details of every row (see the previous finding). Fix: `reload(changedPaths: change.changedPaths)`."
+        },
+        {
+          "severity": "high",
+          "title": "List rows (stripes, selection bar) keep their old width when the pane gets wider, and cells past the old edge stop drawing",
+          "where": "Sources/FTAppKit/Content/List/DetailsRowViews.swift:49-53 (DetailsCellView.layout sizes the bar only when it runs; nothing sets needsLayout when the cell view's width changes), Sources/FTAppKit/Content/List/ListViewController.swift:237-266 (layoutPane changes column.width but calls reconfigureVisibleBars only when `fitted` changes)",
+          "evidence": "Original: `.details-row { width: 100% }` and `.details-table { min-width: 100% }` (styles.css:2875-2876, 2968-2969), so rows always fill the pane. Capture `acceptance/a13-views` (1200x760, with toggleFolderTree run after the folder loads): in Electron, 'first list row' and 'list odd row' 0..6 have frame x10 w1180, and the 'list selected bar' (Toast.jsx) also has frame x10 w1180. In Swift every one of them is x10 w892, the width from before the tree was hidden (912 pane - 2x10). In tools/capture/out/a13-views/swift/main.png the stripes and the blue selection bar stop at about 2/3 of the pane, and the selected row's Permissions value '644' is not drawn, while electron/main.png shows full-width bars with '644' on the selected row. Failing GUI test (run with `lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter ReviewRowWidthTests`, file Tests/FTAppKitTests/Content/ReviewRowWidthTests.swift):\n```swift\nextension ExplorerWindowGUITests { @MainActor @Suite struct ReviewRowWidthTests {\n  @Test func rowsFollowAWiderPane() async throws {\n    let harness = try ExplorerHarness(); let tab = try await harness.open()\n    tab.perform(.viewAsDetails)\n    _ = await waitUntil { !reviewViews(\"list.row\", in: tab.window?.contentView).isEmpty }\n    harness.layout(tab)\n    let window = try #require(tab.window)\n    window.setContentSize(NSSize(width: window.contentLayoutRect.width + 400, height: 600))\n    harness.layout(tab); try? await Task.sleep(for: .milliseconds(300)); harness.layout(tab)\n    let pane = tab.content.contentShell.convert(tab.content.contentShell.bounds, to: nil)\n    let all = reviewViews(\"list.row\", in: tab.window?.contentView); let bar = try #require(all.first)\n    let frame = bar.convert(bar.bounds, to: nil)\n    #expect(pane.maxX - frame.maxX == 10)\n    await harness.close() } } }\n```\n(reviewViews is the same recursive accessibilityIdentifier finder as `views` in ListGUITests.swift.) Result: `REVIEW pane (288.0, 0.0, 1312.0, 548.0) bar (298.0, 492.0, 892.0, 28.0)`, and the test fails with `Expectation failed: pane.maxX - frame.maxX == 10`. The same thing happens on any widening that leaves the fitted columns unchanged: window resize, hiding the folder tree, closing the Info panel. Rows are only corrected on the next reload (in the a13 'compact-list' geometry after Cmd-3 they are w1180 again)."
+        },
+        {
+          "severity": "medium",
+          "title": "Size bars run 4 pt past the Size cell with rounded right corners; the original clips them flush at the cell's edge",
+          "where": "Sources/FTAppKit/Content/List/DetailsRowViews.swift:121-136 (SizeCellView does not clip) and :324-328; Sources/FTFoundation/ListLayout/SizeBars.swift span()",
+          "evidence": "Original: `.details-size-bar { right: -4px; max-width: calc(100% + 4px); border-radius: var(--radius-xs) }` (styles.css:2917-2927), but the bar sits in `.details-row > span.details-size`, and `.details-row > span { overflow: hidden }` (styles.css:2883-2888) cuts the 4 px overhang and the right-hand rounding. The visible bar ends exactly at the cell's right edge (x 914) with square right corners. Port: SizeBars.span puts the bar at `cellWidth + sizeBarOverhang - width`, and SizeCellView/DetailsBarView never clip, so the bar is drawn whole to x 918 with both right corners rounded, reaching into the 12 pt column gap before Kind. Side by side, 89-list-size-bars-selected cropped at 2x (y 220-300, x 1720-1920 of out/89-list-size-bars-selected/{electron,swift}/main.png): in Electron the '142 KB' bar ends flush with the 'B' of KB, square. In Swift it ends about 8 px (4 pt) further right, with a rounded end. This shows on every bar in 89, 04 and a11. The geometry check misses it because both sides report the unclipped element rect (x 810 w 108, right edge 918)."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "headSha": "b89b9f98be5cb0c69cb833c9206c490b0c8841c3",
+          "summary": "Fixed all four findings on port/P5-03 in commit b89b9f9 (Port-Stage: fixed-1). The branch is detached afterwards.\n\n1. **Details kept for changed rows.** ContentPaneController now marks changed items as stale (`staleMetadata`) instead of clearing their metadata. The old text stays on screen until the re-read result replaces it. A nil `changedPaths` marks every row stale. `ListViewController.refresh(paths:)` now calls `requestMetadata()`, so stale visible rows are re-read.\n2. **Folder-watch paths.** `ExplorerWindows.folderChanged` now calls `reload(changedPaths: change.changedPaths)`. `MainWindowController.pendingChange` is `private(set)` so a test can read it.\n3. **Row width.**\n   - Your `rowsFollowAWiderPane` test failed as described, and passes now.\n   - The cause was that the cell view stayed at its old width while its row view grew. `DetailsRowView.layout()` now fills the cell to its bounds. `DetailsRowView`, `DetailsCellView`, `DetailsBarView` and `ListRootView` each mark `needsLayout` when their size changes.\n4. **Size bars.** `SizeCellView` now sets `clipsToBounds = true`, so the 4 pt overhang and the right-hand rounding are cut at the cell edge. I did not check the clipped bar pixel-wise.\n\nNew tests are in Tests/FTAppKitTests/Content/ReviewRowWidthTests.swift. Four of them (the two for finding 1, the width test, the folder-watch test) were not run before the fix to confirm they fail first. The size-cell clip test only asserts the `clipsToBounds` flag, not the drawn bar.\n\nAll five gates ran:\n- `scripts/ci.sh` passes (1432 tests).\n- `tools/parity/gen.sh --check` shows goldens up to date.\n- The FTAppKitTests GUI run passes (348 tests).\n- `tools/capture/run.sh --tier wp` completes. List captures 85–94 still report 2–3 geometry offsets each (max 12 pt, 28 pt for 85); I did not compare these against the earlier run.\n- `tools/bench/run.sh --quick --report-only` exited, but its output was lost to the backgrounded tail, so I have no figures to report."
+        }
+      ],
       "blockers": [],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
         "From P0-16 (relaxed 2026-10-14): switch the window to DirectoryService (the spike FolderLoader costs ~25 ms of open_3000). Performance only needs the original's ballpark: open_3000 <= 80 ms, Back <= 50 ms, no visible hang.",
         "From W2-A integration: ExplorerServices.installed has iconStore = nil because AppDelegate made none. Create the app's FileIconStore in AppDelegate.startServices and pass it (P5-02 also edits startServices for the volume watcher in the same batch: keep your edit to the one line)."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P5-03 gates, all exit 0 on detached port/P5-03 (b89b9f9): scripts/ci.sh PASS (build, test 1432 passing, format); tools/parity/gen.sh --check PASS (33 goldens up to date); FTAppKitTests under gui.lock PASS (348 tests in 42 suites); tools/capture/run.sh --tier wp PASS exit 0 (contact sheet at tools/capture/out/contact.html; several rows show 2-3 geometry offs and 2 missing, pixel diffs 0.06-0.37, within the tool's exit-0 criteria); tools/bench/run.sh --quick --report-only PASS exit 0 (bundle_mb 6.68 vs budget 12 and idle_mb 41 vs budget 60 flagged REGRESSION, report-only per budgets rule). Logs in ~/Library/Caches/filetrail-port/p503-*.log. Nothing committed or changed."
+      },
+      "sharedFileRequests": [
+        "Sources/FTAppKit/Windows/ExplorerWindows.swift (P5-01): folderChanged(windowID:_:) should call tab(windowID:)?.reload(changedPaths: change.changedPaths) instead of reload(), so only the changed items have their details re-read.",
+        "Sources/FTFileSystem/Listing/Collation.swift: make compareNumericBase public. SizeOrder.compareNames currently uses Foundation's numeric, case-insensitive compare, which differs from the reference collation only for characters CollationTable folds specially.",
+        "Sources/FTAppKit/Windows/ExplorerWindows.swift (P5-01): call FolderSizeService.shared.forget(windowID:) in tabGone, as well as the call I added in MainWindowController.windowWillClose.",
+        "P5-08 and P5-06: call tab.folderSizes.forgetChangedSizes(_:intoTrash:) when a write operation finishes. Set tab.folderChangesHeld while a rename, menu, sheet, operation or drag is active."
+      ],
+      "deviations": [
+        "Loading, error and Full Disk Access states have no capture scenarios: the Electron driver cannot open an unreadable folder or the Trash. They are covered by the ListGUI states test instead.",
+        "Date text uses the machine's 24-hour locale (DateText.shared), while the Electron capture shows 12-hour AM/PM times. This is pixel-only and sits in DateText, which this package does not own.",
+        "The spike status text ' available' capacity was dropped, since the original's status line has no capacity. The status line is now StatusSummary.content with the selection or folder size.",
+        "Sort commands and the Sort menu now start Modified and Size descending (B-NAV-127). The spike sorted ascending, and P5-01's ToolbarGUITests assertion was updated to match.",
+        "A sort, Folders First or hidden-files change re-reads the folder and clears the selection (B-NAV-132); the spike kept it.",
+        "No marquee selection, no type-to-filter pill, no clipboard marks and no inline rename. These belong to P5-05, P5-08 and P5-09.",
+        "stall_100000 and scroll_max are slightly over budget in the report-only bench: stall is about 53 ms against 50 ms, and the cost is about 50 ms of first-open overhead at every folder size, not O(n); scroll_max varies from run to run."
       ]
     },
     "P5-04": {
@@ -2152,7 +2288,7 @@
       "depends": [
         "P5-03"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P5-05",
       "headSha": null,
       "attempts": 0,
@@ -2173,7 +2309,9 @@
       "blockers": [],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
-        "From brief review: the selection, keyboard and rename cases of components/ContentPane.test.tsx are yours (P5-03 takes the List and shell cases, P5-04 Icons and Compact List)."
+        "From brief review: the selection, keyboard and rename cases of components/ContentPane.test.tsx are yours (P5-03 takes the List and shell cases, P5-04 Icons and Compact List).",
+        "From P5-02: a press on empty sidebar space, or a ⌘-click on the selected row, clears the selection and empties the file list, but MainWindowController keeps its folder and title; the original also empties the current path. A folder that fails to open from the sidebar still shows the spike's error alert; port the original's persist-on-error path (empty list with the error shown, a history entry).",
+        "From P5-03: set tab.folderChangesHeld while an inline rename is active (outside changes wait until it ends). P5-03 already gives the List rows ContentSelection as a single replaceable type."
       ]
     },
     "P5-06": {
@@ -2186,7 +2324,7 @@
         "P5-01",
         "P5-03"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P5-06",
       "headSha": null,
       "attempts": 0,
@@ -2205,7 +2343,10 @@
       "blockers": [],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
-        "From P5-01: acceptance a08's hold-Back and right-click Forward steps fail only because its path-bar clicks need your segments; make a08 pass end to end."
+        "From P5-01: acceptance a08's hold-Back and right-click Forward steps fail only because its path-bar clicks need your segments; make a08 pass end to end.",
+        "From P5-02/P5-03: the path bar and its segments are the '2 missing (swift)' in every list and sidebar capture scenario. After the path bar lands, rerun a02-folder-tree and a16-favorites (8 off, 6 missing (swift) of 40, max 312 pt) and the wp scenarios, and list every remaining offset with its cause (yours fixed; others named with their owner).",
+        "From P5-03: the Electron captures show 12-hour AM/PM times and the Swift app uses the machine's 24-hour locale (DateText.shared). Find out whether the original formats dates from the system locale; if so, make both capture runs use the same locale, otherwise match the original's format. The status line is StatusSummary.content now.",
+        "From P5-03: the Info panel's folder-size use goes through tab.folderSizes (WindowFolderSizes over FolderSizeJobs, Sources/FTAppKit/FolderSizes/)."
       ]
     },
     "P5-07": {
@@ -2275,7 +2416,8 @@
       "blockers": [],
       "carryOver": [
         "From P4-04: T-317cfcc8 (windows.spec: paste in one window what was copied in another, B-VIEW-184) is left todo for this WP; ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and capture 38-paste-in-another-window must pass.",
-        "From P5-01: call MainWindowController.clipboardChanged() whenever SharedClipboard changes, so the toolbar clipboard button and its count refresh."
+        "From P5-01: call MainWindowController.clipboardChanged() whenever SharedClipboard changes, so the toolbar clipboard button and its count refresh.",
+        "From P5-03: call tab.folderSizes.forgetChangedSizes(_:intoTrash:) when a write operation finishes, and set tab.folderChangesHeld while a drag or an operation is active. Seams in place: ContentDragHooks, and AutomationDragSource/AutomationDropTarget on list rows, the pane background and sidebar rows (P5-02 SidebarFileDrops)."
       ]
     },
     "P5-09": {
@@ -2289,7 +2431,7 @@
         "P5-02",
         "P5-03"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P5-09",
       "headSha": null,
       "attempts": 0,
@@ -2308,7 +2450,8 @@
       "blockers": [],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
-        "From P5-01: app-drawn menus (toolbar menus, history menus, and your context menus) use named constants citing CSS rules because DesignTokens had no menu group. Add MenuLayout, CustomizePanelLayout and tooltip token groups to DesignTokens.swift (values in P5-01's constants: menu min width 220, padding 5, row 24, check column 16, gap 6, shortcut gap 14, separators 5/10, history max 420 / name 220, etc.) and switch P5-01's views and yours to them. No literal metrics in UI code."
+        "From P5-01: app-drawn menus (toolbar menus, history menus, and your context menus) use named constants citing CSS rules because DesignTokens had no menu group. Add MenuLayout, CustomizePanelLayout and tooltip token groups to DesignTokens.swift (values in P5-01's constants: menu min width 220, padding 5, row 24, check column 16, gap 6, shortcut gap 14, separators 5/10, history max 420 / name 220, etc.) and switch P5-01's views and yours to them. No literal metrics in UI code.",
+        "From P5-02/P5-03: contextMenuProvider is wired on list rows, the pane background and sidebar rows. Set tab.folderChangesHeld while a context menu is open. a16-favorites steps 21-23 (Open With on README.md) are yours."
       ]
     },
     "P6-01": {
@@ -2331,7 +2474,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P5-02: the Eject questions and notices are plain NSAlerts behind the EjectPresenter seam; replace them."
+      ]
     },
     "P6-02": {
       "title": "Copy and paste dialogs",
@@ -2356,7 +2502,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P5-03: set tab.folderChangesHeld while a paste sheet is up."
+      ]
     },
     "P6-03": {
       "title": "Batch Rename sheet",
@@ -2405,7 +2554,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P4-03: register the Settings window with AppearanceModel.shared.register(pageWindow:) (page background and theme redraw), and set AppDelegate.pageWindows.openSettingsOnShortcuts so Help's \"Customize…\" opens the Shortcuts tab."
+        "From P4-03: register the Settings window with AppearanceModel.shared.register(pageWindow:) (page background and theme redraw), and set AppDelegate.pageWindows.openSettingsOnShortcuts so Help's \"Customize…\" opens the Shortcuts tab.",
+        "From P5-02: a16-favorites steps 14-20 (File Trail > Settings, the Browsing section, the favorite icon picker for docs, choice Star) need the Settings window."
       ]
     },
     "P8-01": {
@@ -2910,7 +3060,10 @@
     {
       "at": "2026-10-14",
       "issue": "Flaky under full-suite load: FTFileSystemTests FolderSizeJobsTests.dropsTheFinishedJobsItKeepsTooManyOfWhenItMeasuresAgainAtOnce (expected jobCount == 301) failed once in W2-P1, passed 5x alone.",
-      "owner": "next P0 follow-up or P7"
+      "owner": "next P0 follow-up or P7",
+      "also": [
+        "2026-10-14 W2-U1: EjectCoordinator/FTFileSystem test unmountsTheVolumeAndEjectsItsDiskDetachingADiskImage failed once and passed on rerun (leftover image or concurrent hdiutil)."
+      ]
     },
     {
       "at": "2026-10-14",
@@ -2919,7 +3072,18 @@
       "cause": "A layout issue, not native tabs (D-001 stays). Spike 2026-10-14: a window whose contentViewController is an NSSplitViewController with an NSSplitViewItem(sidebarWithViewController:) gets its NSTabBar placed over the content column only (sidebar 200 pt -> NSTabBar x=200, width 700 of 900), as Finder does. This holds with or without an NSToolbar, with or without .sidebarTrackingSeparator, and with or without allowsFullHeightLayout. The port lays the window out in its own WorkspaceView grid (Layout/WorkspaceView.swift, no NSSplitViewController), so AppKit doesn't know where the sidebar is and draws the tab bar across the whole window. WindowChrome.apply also grows the titlebar container to the toolbar band plus the tab bar; P5-02 set sidebarCell.contentTop = tabBarHeight (WorkspaceView.swift:170).",
       "owner": "new UI work package after this phase (user 2026-10-14: note it, don't solve it in this phase). It touches P5-01 (Layout/WindowChrome) and P5-02 (sidebar), so schedule it after P5-02 merges and not alongside a UI WP that owns Layout/.",
       "closed": false,
-      "fix": "Make the window's content an NSSplitViewController: a sidebar split item holding the sidebar, the content item holding the toolbar band, the content and the Info panel. Keep the original's sidebar width, resizer and collapse behavior and the toolbar band's geometry (P5-01 tokens). Rework WindowChrome.apply and the sidebar's contentTop so the sidebar runs full height, with nothing between it and the top of the window. Check against Finder and the original: tab bar only above the content column, light and dark, one tab and several, full screen. Run the geometry captures and P4-02's tab tests."
+      "fix": "Make the window's content an NSSplitViewController: a sidebar split item holding the sidebar, the content item holding the toolbar band, the content and the Info panel. Keep the original's sidebar width, resizer and collapse behavior and the toolbar band's geometry (P5-01 tokens). Rework WindowChrome.apply and the sidebar's contentTop so the sidebar runs full height, with nothing between it and the top of the window. Check against Finder and the original: tab bar only above the content column, light and dark, one tab and several, full screen. Run the geometry captures and P4-02's tab tests.",
+      "history": "P5-01 (6b6a9d9) removed the window's NSSplitViewController and replaced NSToolbar (PLAN §3.5's choice) with a custom toolbar view under a transparent title bar. Its reasons: the unified NSToolbar band measured 66 pt (compact 40), not the original's 52; NSToolbar's insets, overflow and sidebar separator couldn't match; and Customize Toolbar edits in place as the original does. Removing the split view controller is what put the tab bar over the sidebar. In the 2026-10-14 spike, a unified, icon-only NSToolbar with a sidebar split measured 52 pt (NSToolbarView 448..500 in a 500 pt window), so the follow-up WP should re-check the 66 pt claim before keeping the custom toolbar. Either way, the tab bar placement needs only the NSSplitViewController with a sidebar item; a custom toolbar band inside the content item still works.",
+      "alsoInThatWP": [
+        "Move SidebarLayout's constants (Sources/FTFoundation/Sidebar/SidebarLayout.swift) into DesignTokens/Layouts (P5-02 request, not done by the integrator)."
+      ]
+    },
+    {
+      "at": "2026-10-14",
+      "seenIn": "W2-U1 results",
+      "issue": "Small parity leftovers from P5-02: the sidebar chevron turns at once (the original animates 120 ms); T-fe3f2758 (favorite icons) has no unit test (icons are drawn from the original's SVG paths, shown by scenarios 70-79); scenario 83-sidebar-volume-eject is tier final because the Swift app has no fake-volume seam (it matches with a disk image mounted); the Trash label is 1 pt wider (Core Text kerning).",
+      "owner": "P7 parity loop",
+      "closed": false
     }
   ],
   "userRequests": [
