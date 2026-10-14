@@ -73,6 +73,10 @@ for name in $folders; do
 done
 bench scroll --bench-scroll "$fixtures/$scroll_folder"
 
+# Listing read and sort: runs in a release test build, opens no window; its failure shows in the report.
+rm -f build/bench/listing.json
+tools/bench/listing.sh >/dev/null 2>&1
+
 # Idle memory: one window in Home, physical footprint after 3 s.
 "$bin" >/dev/null 2>&1 &
 pid=$!
