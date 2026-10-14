@@ -380,7 +380,8 @@
         "weeklyPct": 12,
         "fiveHourPct": 9
       },
-      "startedAt": "2026-10-14T08:37:26+00:00"
+      "startedAt": "2026-10-14T08:37:26+00:00",
+      "critic": "Phases P1, P2 and P4 are all merged on main once this batch's integration ends. Review main against docs/port/PLAN.md for those phases and the parity matrix (docs/port/parity/tests.tsv, features.md): list real gaps only, such as tests.tsv rows owned by these phases still unported or uncited, features with no test or scenario, behavior rules in docs/port/behaviors/ for this scope that nothing checks, budgets in PLAN.md section 4 not measured, and work-package deviations in docs/port/state/orchestrator.json (wps.*.deviations) that change user-visible behavior and so need a DEVIATIONS.md entry. For each gap say what it is, where, and which later work package should own it (or 'new WP')."
     }
   },
   "wps": {
