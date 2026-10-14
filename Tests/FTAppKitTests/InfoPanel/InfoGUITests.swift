@@ -82,12 +82,16 @@ extension ExplorerWindowGUITests {
             select(["Alpha", "Beta", "note.txt"], in: tab, harness: harness)
             tab.perform(.focusContentPane)
             tab.perform(.calculateSize)
-            #expect(await waitUntil { tab.folderSizes.readySize(alpha) != nil && tab.folderSizes.readySize(beta) != nil })
+            #expect(
+                await waitUntil { tab.folderSizes.readySize(alpha) != nil && tab.folderSizes.readySize(beta) != nil })
             #expect(tab.folderSizes.readySize(tab.currentFolder.path) == nil)
             tab.content.select(paths: [])
             tab.perform(.calculateSize)
             #expect(await waitUntil { tab.folderSizes.readySize(tab.currentFolder.path) != nil })
-            #expect(await waitUntil { texts("infoRow.folderSize.size", in: tab).contains { $0.contains(" · ") && $0.contains("folder") } })
+            #expect(
+                await waitUntil {
+                    texts("infoRow.folderSize.size", in: tab).contains { $0.contains(" · ") && $0.contains("folder") }
+                })
             await harness.close()
         }
 
@@ -130,7 +134,8 @@ extension ExplorerWindowGUITests {
             #expect(bar.status.isHidden)
             let editor = try #require(bar.editor.field.currentEditor() as? NSTextView)
             #expect(editor.selectedRange.location == harness.folder.path.utf16.count)
-            _ = bar.editor.control(bar.editor.field, textView: editor, doCommandBy: #selector(NSResponder.cancelOperation(_:)))
+            _ = bar.editor.control(
+                bar.editor.field, textView: editor, doCommandBy: #selector(NSResponder.cancelOperation(_:)))
             #expect(!bar.isEditing)
             await harness.close()
         }
@@ -143,9 +148,11 @@ extension ExplorerWindowGUITests {
             bar.beginEditing()
             let target = harness.folder.appending("Gamma").path
             bar.editor.field.stringValue = target
-            bar.editor.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: bar.editor.field))
+            bar.editor.controlTextDidChange(
+                Notification(name: NSControl.textDidChangeNotification, object: bar.editor.field))
             let editor = try #require(bar.editor.field.currentEditor() as? NSTextView)
-            _ = bar.editor.control(bar.editor.field, textView: editor, doCommandBy: #selector(NSResponder.insertNewline(_:)))
+            _ = bar.editor.control(
+                bar.editor.field, textView: editor, doCommandBy: #selector(NSResponder.insertNewline(_:)))
             #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Gamma" })
             #expect(!bar.isEditing)
             await harness.close()

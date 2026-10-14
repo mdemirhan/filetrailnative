@@ -7,7 +7,9 @@ import Testing
 @Suite("path bar")
 struct PathBarModelTests {
     /// A measure that gives every label 8 per character and 12 of padding, like the fallback of the original.
-    static func measure(_ label: String, _ isActive: Bool, _ collapsed: Bool, _ uncapped: Bool) -> Double { Double(label.count) * 8 + 12 }
+    static func measure(_ label: String, _ isActive: Bool, _ collapsed: Bool, _ uncapped: Bool) -> Double {
+        Double(label.count) * 8 + 12
+    }
 
     @Test func rootIsMacintoshHD() {
         #expect(PathBarModel.segments("/") == [PathbarSegment(label: "Macintosh HD", path: "/")])
@@ -39,10 +41,16 @@ struct PathBarModelTests {
         let segments = PathBarModel.segments("/aaaa/bbbb/cccc/dddd/eeee")
         // Roomy enough for the root, the "…" and a tail of two.
         let items = PathBarModel.visibleItems(segments, availableWidth: 330, expanded: false, measure: Self.measure)
-        guard case .segment(let first, false, _) = items.first else { Issue.record("no root"); return }
+        guard case .segment(let first, false, _) = items.first else {
+            Issue.record("no root")
+            return
+        }
         #expect(first.label == "Macintosh HD")
         #expect(items.contains { if case .collapsed = $0 { true } else { false } })
-        guard case .segment(let last, true, _) = items.last else { Issue.record("no active"); return }
+        guard case .segment(let last, true, _) = items.last else {
+            Issue.record("no active")
+            return
+        }
         #expect(last.label == "eeee")
         // Too narrow for the root: it is dropped, and the "…" comes first.
         let narrow = PathBarModel.visibleItems(segments, availableWidth: 200, expanded: false, measure: Self.measure)
@@ -58,7 +66,8 @@ struct PathBarModelTests {
 
     @Test func expandedShowsEverything() {
         let segments = PathBarModel.segments("/aaaa/bbbb/cccc/dddd/eeee")
-        #expect(PathBarModel.visibleItems(segments, availableWidth: 100, expanded: true, measure: Self.measure).count == 6)
+        #expect(
+            PathBarModel.visibleItems(segments, availableWidth: 100, expanded: true, measure: Self.measure).count == 6)
     }
 
     @Test func roomLeftOverGoesBackToCutNames() {
@@ -66,9 +75,15 @@ struct PathBarModelTests {
             let natural = Double(label.count) * 8 + 12
             return uncapped ? natural : min(natural, 100)
         }
-        let segments = [PathbarSegment(label: "x", path: "/x"), PathbarSegment(label: String(repeating: "n", count: 30), path: "/x/n")]
+        let segments = [
+            PathbarSegment(label: "x", path: "/x"),
+            PathbarSegment(label: String(repeating: "n", count: 30), path: "/x/n"),
+        ]
         let items = PathBarModel.resolve(segments, availableWidth: 400, expanded: false, measure: measure)
-        guard case .segment(_, true, let width?) = items.last else { Issue.record("not widened"); return }
+        guard case .segment(_, true, let width?) = items.last else {
+            Issue.record("not widened")
+            return
+        }
         #expect(width > 100 && width <= 252)
     }
 

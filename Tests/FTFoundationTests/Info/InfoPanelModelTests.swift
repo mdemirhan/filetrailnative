@@ -10,7 +10,8 @@ struct InfoPanelModelTests {
 
     static func file(pending: Bool = false, size: Int64? = 2000) -> InfoItem {
         InfoItem(
-            path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file, kindLabel: "Markdown document",
+            path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file,
+            kindLabel: "Markdown document",
             createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: size,
             sizeStatus: size == nil ? .deferred : .ready, permissionMode: 0o644)
     }
@@ -27,7 +28,8 @@ struct InfoPanelModelTests {
     // T-209d6f52 T-4e902491 B-INFO-029 B-INFO-030 B-INFO-031 B-INFO-034
     @Test func aFilesRowsAreInTheDocumentedOrder() {
         let content = Self.content(Self.file(), opens: .available)
-        #expect(content.rows.map(\.label) == ["Kind", "Opens with", "Size", "Created", "Modified", "Permissions", "Where"])
+        #expect(
+            content.rows.map(\.label) == ["Kind", "Opens with", "Size", "Created", "Modified", "Permissions", "Where"])
         #expect(content.subtitle == "Markdown document · 2.0 KB")
         #expect(content.rows[2].value == .text("2.0 KB"))
         #expect(content.rows[3].value == .text("Mar 1, 2026, 9:00 AM"))
@@ -63,7 +65,8 @@ struct InfoPanelModelTests {
         #expect(waiting.rows.map(\.label).contains("Capacity"))
         #expect(!waiting.rows.map(\.label).contains("Size"))
         #expect(waiting.rows.first { $0.label == "Used" }?.value == .text("—"))
-        let known = Self.content(item, volume: InfoVolume(totalBytes: 500_000_000_000, availableBytes: 200_000_000_000), root: true)
+        let known = Self.content(
+            item, volume: InfoVolume(totalBytes: 500_000_000_000, availableBytes: 200_000_000_000), root: true)
         #expect(known.rows.first { $0.label == "Used" }?.value == .text("300 GB"))
         #expect(known.subtitle == "Folder · 200 GB available")
         let over = Self.content(item, volume: InfoVolume(totalBytes: 10, availableBytes: 50), root: true)
@@ -80,7 +83,9 @@ struct InfoPanelModelTests {
         #expect(error.rows.first { $0.label == "Size" }?.muted == true)
         let without = Self.content(folder)
         #expect(without.rows.first { $0.label == "Size" }?.value == .text("--"))
-        let ready = Self.content(folder, folderSize: .ready(sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 4, folderCount: 1))
+        let ready = Self.content(
+            folder, folderSize: .ready(sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 4, folderCount: 1)
+        )
         #expect(ready.subtitle == "Markdown document · 1.2 GB")
         var link = Self.file()
         link.kind = .symlinkDirectory
@@ -96,7 +101,8 @@ struct InfoPanelModelTests {
         #expect(lines.items == "48,611 files, 2,765 folders")
         let same = InfoPanelModel.folderSizeLines(sizeBytes: 100, diskBytes: 100, fileCount: 1, folderCount: 0)
         #expect(same.top == "100 B" && same.items == "1 file")
-        #expect(InfoPanelModel.folderSizeLines(sizeBytes: 0, diskBytes: 0, fileCount: 0, folderCount: 0).items == "Empty")
+        #expect(
+            InfoPanelModel.folderSizeLines(sizeBytes: 0, diskBytes: 0, fileCount: 0, folderCount: 0).items == "Empty")
     }
 
     // T-0033a16b F-826 B-INFO-051 B-INFO-054
@@ -120,19 +126,27 @@ struct InfoPanelModelTests {
 
     // T-0287f845 F-825 B-INFO-055 B-INFO-056
     @Test func quickActionsDependOnTheItem() {
-        func labels(_ item: InfoItem, favorite: Bool = false, canFavorite: Bool = true, copied: InfoPanelModel.QuickAction.ID? = nil) -> [String] {
+        func labels(
+            _ item: InfoItem, favorite: Bool = false, canFavorite: Bool = true,
+            copied: InfoPanelModel.QuickAction.ID? = nil
+        ) -> [String] {
             InfoPanelModel.quickActions(
                 item: item, textEditorName: "Zed", isFavorite: favorite, canFavorite: canFavorite, copied: copied,
                 shortcut: { _ in nil }
             ).map(\.label)
         }
         #expect(
-            labels(Self.file()) == ["Quick Look", "Edit in Zed", "Copy Path", "Copy Name", "Open in Terminal", "Show in Finder"])
+            labels(Self.file()) == [
+                "Quick Look", "Edit in Zed", "Copy Path", "Copy Name", "Open in Terminal", "Show in Finder",
+            ])
         var folder = Self.file()
         folder.kind = .directory
         #expect(
             labels(folder)
-                == ["Quick Look", "Copy Path", "Copy Name", "Open in Terminal", "Show in Finder", "Add to Favorites", "Use as Tree Root"])
+                == [
+                    "Quick Look", "Copy Path", "Copy Name", "Open in Terminal", "Show in Finder", "Add to Favorites",
+                    "Use as Tree Root",
+                ])
         #expect(labels(folder, favorite: true).contains("Remove from Favorites"))
         #expect(!labels(folder, canFavorite: false).contains("Add to Favorites"))
         #expect(labels(Self.file(), copied: .copyPath).contains("Copied"))
@@ -147,12 +161,14 @@ struct InfoPanelModelTests {
         let entry = InfoEntry(path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file)
         let now = ISODateForTests.date("2026-03-02T11:00:00Z")
         let bare = InfoPanelModel.rowFacts(
-            entry: entry, metadata: nil, item: nil, folderSizeKnown: false, now: now, parseDate: ISODateForTests.parse, dates: Self.dates)
+            entry: entry, metadata: nil, item: nil, folderSizeKnown: false, now: now, parseDate: ISODateForTests.parse,
+            dates: Self.dates)
         #expect(bare.kind == "MD File" && bare.size == nil && bare.modified == nil)
         let listed = InfoMetadata(
             kindLabel: "Markdown document", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 2000, sizeStatus: .ready)
         let facts = InfoPanelModel.rowFacts(
-            entry: entry, metadata: listed, item: nil, folderSizeKnown: false, now: now, parseDate: ISODateForTests.parse,
+            entry: entry, metadata: listed, item: nil, folderSizeKnown: false, now: now,
+            parseDate: ISODateForTests.parse,
             dates: Self.dates)
         #expect(facts.kind == "Markdown document" && facts.size == "2.0 KB")
         #expect(facts.modified == "Modified 30 min ago")
@@ -160,22 +176,27 @@ struct InfoPanelModelTests {
         // A folder's size is the cell, never plain text.
         let folder = InfoEntry(path: "/Users/demo/Projects", name: "Projects", kind: .directory)
         let folderFacts = InfoPanelModel.rowFacts(
-            entry: folder, metadata: listed, item: nil, folderSizeKnown: true, now: now, parseDate: ISODateForTests.parse,
+            entry: folder, metadata: listed, item: nil, folderSizeKnown: true, now: now,
+            parseDate: ISODateForTests.parse,
             dates: Self.dates)
         #expect(folderFacts.showsFolderSize && folderFacts.size == nil)
         // Properties of another item are never used.
         let other = Self.file()
         let foreign = InfoPanelModel.rowFacts(
-            entry: InfoEntry(path: "/Users/demo/other.md", name: "other.md", fileExtension: "md", kind: .file), metadata: nil,
+            entry: InfoEntry(path: "/Users/demo/other.md", name: "other.md", fileExtension: "md", kind: .file),
+            metadata: nil,
             item: other, folderSizeKnown: false, now: now, parseDate: ISODateForTests.parse, dates: Self.dates)
         #expect(foreign.kind == "MD File")
     }
 
     // T-df387abe T-b8e9d9c4 B-INFO-167 B-INFO-168
     @Test func onlyAFolderInsideHomeIsMeasuredAutomatically() {
-        func path(open: Bool = true, selected: [String], kind: EntryKind = .directory, home: String = "/Users/demo") -> String? {
+        func path(open: Bool = true, selected: [String], kind: EntryKind = .directory, home: String = "/Users/demo")
+            -> String?
+        {
             AutoFolderSize.path(
-                infoPanelOpen: open, selectedPaths: selected, selected: selected.first.map { ($0, kind) }, homePath: home)
+                infoPanelOpen: open, selectedPaths: selected, selected: selected.first.map { ($0, kind) },
+                homePath: home)
         }
         #expect(path(selected: ["/Users/demo/Projects"]) == "/Users/demo/Projects")
         #expect(path(selected: ["/Users/demo/App.app"], kind: .bundle) == "/Users/demo/App.app")

@@ -53,7 +53,8 @@ final class TextLinkView: NSView, TextStyleSource {
                     .font: font, .foregroundColor: ink, .underlineStyle: NSUnderlineStyle.single.rawValue,
                 ])
         } else {
-            label.attributedStringValue = NSAttributedString(string: label.stringValue, attributes: [.font: font, .foregroundColor: ink])
+            label.attributedStringValue = NSAttributedString(
+                string: label.stringValue, attributes: [.font: font, .foregroundColor: ink])
         }
     }
 
@@ -66,7 +67,8 @@ final class TextLinkView: NSView, TextStyleSource {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) { isHovered = true }
@@ -127,7 +129,8 @@ final class FolderSizeCellView: NSView {
             field.alignment = style == .panel ? .right : .left
         }
         sizeLine.font =
-            style == .row ? tabularFont(DesignTokens.typeScale.callout) : ThemeFonts.sans(DesignTokens.typeScale.callout)
+            style == .row
+            ? tabularFont(DesignTokens.typeScale.callout) : ThemeFonts.sans(DesignTokens.typeScale.callout)
         itemsLine.font = ThemeFonts.sans(DesignTokens.typeScale.small)
         sizeLine.setAccessibilityIdentifier(identifier + ".size")
         itemsLine.setAccessibilityIdentifier(identifier + ".items")
@@ -170,7 +173,8 @@ final class FolderSizeCellView: NSView {
         delay.update(active: calculating, delay: InfoMetrics.calculatingDelay)
         switch entry {
         case .ready(let size, let disk, let files, let folders):
-            let lines = InfoPanelModel.folderSizeLines(sizeBytes: size, diskBytes: disk, fileCount: files, folderCount: folders)
+            let lines = InfoPanelModel.folderSizeLines(
+                sizeBytes: size, diskBytes: disk, fileCount: files, folderCount: folders)
             if style == .panel {
                 sizeLine.stringValue = lines.top
                 itemsLine.stringValue = lines.items
@@ -227,14 +231,17 @@ final class FolderSizeCellView: NSView {
         switch entry {
         case .idle, .error:
             calculate.isHidden = false
-            calculate.frame = NSRect(x: 0, y: (bounds.height - calculate.naturalHeight) / 2, width: bounds.width, height: calculate.naturalHeight)
+            calculate.frame = NSRect(
+                x: 0, y: (bounds.height - calculate.naturalHeight) / 2, width: bounds.width,
+                height: calculate.naturalHeight)
         case .calculating:
             guard delay.value else { return }
             spinner.isHidden = false
             stop.isHidden = false
             spinner.frame = NSRect(x: 0, y: (bounds.height - 12) / 2, width: 12, height: 12)
             stop.frame = NSRect(
-                x: 12 + Self.gap, y: (bounds.height - ClearButton.size) / 2, width: ClearButton.size, height: ClearButton.size)
+                x: 12 + Self.gap, y: (bounds.height - ClearButton.size) / 2, width: ClearButton.size,
+                height: ClearButton.size)
         case .ready:
             sizeLine.isHidden = false
             refresh.isHidden = false
@@ -251,7 +258,8 @@ final class FolderSizeCellView: NSView {
                 sizeLine.frame = NSRect(x: textWidth - top, y: 0, width: top, height: heights.size)
                 itemsLine.frame = NSRect(x: textWidth - below, y: heights.size + 1, width: below, height: heights.items)
             } else {
-                sizeLine.frame = NSRect(x: 0, y: (bounds.height - heights.size) / 2, width: textWidth, height: heights.size)
+                sizeLine.frame = NSRect(
+                    x: 0, y: (bounds.height - heights.size) / 2, width: textWidth, height: heights.size)
             }
         }
     }

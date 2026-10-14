@@ -306,7 +306,9 @@ final class SplitOpenButton: NSView, TextStyleSource {
             NSRect(x: mainWidth, y: 0, width: 1, height: bounds.height).fill()
             let box = 8.0
             InfoGlyph.openChevron.draw(
-                in: NSRect(x: mainWidth + (InfoMetrics.openChevronWidth - box) / 2 + 0.5, y: (bounds.height - box) / 2, width: box, height: box),
+                in: NSRect(
+                    x: mainWidth + (InfoMetrics.openChevronWidth - box) / 2 + 0.5, y: (bounds.height - box) / 2,
+                    width: box, height: box),
                 strokeWidth: 1.6, color: NSColor(theme.accent.onSolid))
         }
         NSGraphicsContext.restoreGraphicsState()
@@ -332,7 +334,8 @@ final class SplitOpenButton: NSView, TextStyleSource {
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
             NSTrackingArea(
-                rect: bounds, options: [.mouseEnteredAndExited, .mouseMoved, .activeInActiveApp, .inVisibleRect], owner: self))
+                rect: bounds, options: [.mouseEnteredAndExited, .mouseMoved, .activeInActiveApp, .inVisibleRect],
+                owner: self))
     }
 
     override func mouseMoved(with event: NSEvent) {
@@ -438,16 +441,20 @@ final class OpensWithPopupView: NSView {
         let theme = infoTheme
         if isHovered || menuOpen {
             NSColor(theme.palette.bgHover).setFill()
-            NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control).fill()
+            NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control)
+                .fill()
         }
         if app != nil, let icon {
             icon.draw(
-                in: NSRect(x: Self.paddingLeading, y: (bounds.height - Self.iconSize) / 2, width: Self.iconSize, height: Self.iconSize),
+                in: NSRect(
+                    x: Self.paddingLeading, y: (bounds.height - Self.iconSize) / 2, width: Self.iconSize,
+                    height: Self.iconSize),
                 from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
         }
         let box = Self.chevron
         InfoGlyph.popupChevron.draw(
-            in: NSRect(x: bounds.width - Self.paddingTrailing - box, y: (bounds.height - box) / 2, width: box, height: box),
+            in: NSRect(
+                x: bounds.width - Self.paddingTrailing - box, y: (bounds.height - box) / 2, width: box, height: box),
             strokeWidth: 2.4, color: NSColor(theme.palette.textSecondary))
     }
 
@@ -455,7 +462,8 @@ final class OpensWithPopupView: NSView {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) { isHovered = true }
@@ -576,7 +584,8 @@ final class InfoPanelContentView: NSView {
             open.isSplit = item.hasOpenWith
             loadOpenIcon(item.openApp)
             sectionTitles = [sectionTitle("Information"), sectionTitle("Quick Actions")]
-            buildRows(item.content.rows, folderSize: item.folderSize, opensWith: item.openApp, kind: item.item.kindLabel)
+            buildRows(
+                item.content.rows, folderSize: item.folderSize, opensWith: item.openApp, kind: item.item.kindLabel)
             for action in item.actions {
                 let button = InfoIconButton(
                     glyph: Self.glyph(action.id, copied: item.copied == action.id), iconSize: InfoMetrics.actionIcon,
@@ -723,13 +732,17 @@ final class InfoPanelContentView: NSView {
             if let box = views.box {
                 let muted = views.row.muted
                 box.sample.textColor = NSColor(
-                    muted ? mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue) : palette.textPrimary)
+                    muted
+                        ? mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue)
+                        : palette.textPrimary)
                 box.sample.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: muted ? 600 : 400)
             }
             if let field = views.value as? NSTextField {
                 let muted = views.row.muted
                 field.textColor = NSColor(
-                    muted ? mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue) : palette.textPrimary)
+                    muted
+                        ? mixColor(palette.getInfoMetaValueMuted, 45, with: palette.getInfoMetaValue)
+                        : palette.textPrimary)
                 field.font = ChromeColors.font(size: DesignTokens.typeScale.callout, weight: muted ? 600 : 400)
             } else if let link = views.value as? TextLinkView {
                 link.applyStyle()
@@ -774,7 +787,8 @@ final class InfoPanelContentView: NSView {
         open.isHidden = true
         if isEmpty {
             // `.get-info-empty`: padding-top 18.
-            let height = ceil(emptyLabel.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: width, height: 1000)).height ?? 0)
+            let height = ceil(
+                emptyLabel.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: width, height: 1000)).height ?? 0)
             emptyLabel.frame = NSRect(x: inset, y: 18, width: width, height: height)
             frame.size.height = max(superview?.bounds.height ?? 0, 18 + height + 18)
             return
@@ -813,7 +827,8 @@ final class InfoPanelContentView: NSView {
         y += nameHeight + InfoMetrics.heroGap
         let subtitleHeight = lineHeight(subtitle.font)
         let subtitleShown = min(nameWidth, textExtent(subtitle.stringValue, subtitle.font))
-        subtitle.frame = NSRect(x: inset + (width - subtitleShown) / 2, y: y, width: subtitleShown, height: subtitleHeight)
+        subtitle.frame = NSRect(
+            x: inset + (width - subtitleShown) / 2, y: y, width: subtitleShown, height: subtitleHeight)
         y += subtitleHeight + 14
 
         if case .item = body {
@@ -868,7 +883,8 @@ final class InfoPanelContentView: NSView {
                     field.frame = NSRect(x: valueX, y: top, width: max(0, valueWidth - 6 - codeWidth), height: bodyLine)
                     // Baselines line up: the code is smaller.
                     let baselineShift = (field.font?.ascender ?? 0) - (extra.font?.ascender ?? 0)
-                    extra.frame = NSRect(x: inset + width - codeWidth, y: top + baselineShift, width: codeWidth, height: codeHeight)
+                    extra.frame = NSRect(
+                        x: inset + width - codeWidth, y: top + baselineShift, width: codeWidth, height: codeHeight)
                 } else {
                     field.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
                 }

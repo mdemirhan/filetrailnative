@@ -33,7 +33,9 @@ final class InfoActions {
             alert.messageText =
                 "Are you sure you want to change all similar documents to open with the application “\(appName)”?"
             alert.informativeText =
-                kindName.map { "This change will apply to every “\($0)” file, opened from File Trail, Finder or any other app." }
+                kindName.map {
+                    "This change will apply to every “\($0)” file, opened from File Trail, Finder or any other app."
+                }
                 ?? "This change will apply to every file of this kind, opened from File Trail, Finder or any other app."
             alert.addButton(withTitle: "Change All")
             alert.addButton(withTitle: "Cancel")

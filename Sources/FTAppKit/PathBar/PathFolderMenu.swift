@@ -231,8 +231,12 @@ final class PathFolderMenuController {
             } else {
                 limited = PathbarFolderMenuModel.limit(folders, activePath: activePath)
                 shown = limited.shown
-                if limited.hiddenBefore > 0 { before = PathbarFolderMenuModel.hiddenLabel(limited.hiddenBefore) + " above" }
-                if limited.hiddenAfter > 0 { after = PathbarFolderMenuModel.hiddenLabel(limited.hiddenAfter) + " below" }
+                if limited.hiddenBefore > 0 {
+                    before = PathbarFolderMenuModel.hiddenLabel(limited.hiddenBefore) + " above"
+                }
+                if limited.hiddenAfter > 0 {
+                    after = PathbarFolderMenuModel.hiddenLabel(limited.hiddenAfter) + " below"
+                }
             }
         } else {
             note = "Loading…"
@@ -245,7 +249,8 @@ final class PathFolderMenuController {
         let buttonTop = host.isFlipped ? rect.minY : host.bounds.height - rect.maxY
         let place = MenuPlacement.keepInViewport(
             left: rect.minX - InfoMetrics.folderMenuGap, top: buttonTop - InfoMetrics.folderMenuGap - size.height,
-            width: size.width, height: size.height, viewportWidth: host.bounds.width, viewportHeight: host.bounds.height)
+            width: size.width, height: size.height, viewportWidth: host.bounds.width, viewportHeight: host.bounds.height
+        )
         let y = host.isFlipped ? place.top : host.bounds.height - place.top - size.height
         view.frame = NSRect(x: place.left, y: y, width: size.width, height: size.height)
         if view.superview !== host { host.addSubview(view) }
@@ -286,12 +291,16 @@ final class PathFolderMenuController {
             MainActor.assumeIsolated { self?.handle(event) ?? false }
         }
         observers.append(
-            NotificationCenter.default.addObserver(forName: NSWindow.didResizeNotification, object: window, queue: .main) {
+            NotificationCenter.default.addObserver(
+                forName: NSWindow.didResizeNotification, object: window, queue: .main
+            ) {
                 [weak self] _ in MainActor.assumeIsolated { self?.close() }
             })
         if NSApp.isActive {
             observers.append(
-                NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: window, queue: .main) {
+                NotificationCenter.default.addObserver(
+                    forName: NSWindow.didResignKeyNotification, object: window, queue: .main
+                ) {
                     [weak self] _ in MainActor.assumeIsolated { self?.close() }
                 })
         }

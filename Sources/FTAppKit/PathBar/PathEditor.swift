@@ -83,14 +83,17 @@ final class PathSuggestionRowView: NSView, TextStyleSource {
         } else {
             return
         }
-        NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control).fill()
+        NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control)
+            .fill()
     }
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self
+            ))
     }
 
     // A row under a pointer that has not moved is not hovered, as in a browser (mouseenter follows a move).
@@ -170,7 +173,8 @@ final class PathSuggestionsView: NSView {
         let rowHeight = PathSuggestionRowView.height()
         var y = Self.padding
         for row in rows {
-            row.frame = NSRect(x: Self.padding, y: y, width: max(0, scroll.bounds.width - 2 * Self.padding), height: rowHeight)
+            row.frame = NSRect(
+                x: Self.padding, y: y, width: max(0, scroll.bounds.width - 2 * Self.padding), height: rowHeight)
             y += rowHeight
         }
         document.frame = NSRect(x: 0, y: 0, width: scroll.bounds.width, height: y + Self.padding)
@@ -397,7 +401,12 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
             guard !suggestions.isEmpty else { return false }
             let down = selector == #selector(NSResponder.moveDown(_:))
             if listFocused {
-                let next = state.highlighted < 0 ? 0 : (down ? (state.highlighted + 1) % suggestions.count : (state.highlighted - 1 + suggestions.count) % suggestions.count)
+                let next =
+                    state.highlighted < 0
+                    ? 0
+                    : (down
+                        ? (state.highlighted + 1) % suggestions.count
+                        : (state.highlighted - 1 + suggestions.count) % suggestions.count)
                 preview(next)
                 return true
             }

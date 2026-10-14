@@ -15,7 +15,9 @@ struct AutoFolderSizeControllerTests {
     let auto: AutoFolderSizeController
 
     init() {
-        sizes = WindowFolderSizes(backend: jobs, owner: 1, homePath: "/Users/demo", scheduler: timers) { [timers] in timers.time }
+        sizes = WindowFolderSizes(backend: jobs, owner: 1, homePath: "/Users/demo", scheduler: timers) { [timers] in
+            timers.time
+        }
         auto = AutoFolderSizeController(sizes: sizes, delay: 0.03)
     }
 

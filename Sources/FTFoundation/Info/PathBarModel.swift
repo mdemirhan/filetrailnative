@@ -85,7 +85,9 @@ public enum PathBarItem: Equatable, Sendable {
 public enum PathBarModel {
     /// `getPathSegmentLabel`.
     public static func label(_ path: String) -> String {
-        path == "/" ? "Macintosh HD" : (path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? path)
+        path == "/"
+            ? "Macintosh HD"
+            : (path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? path)
     }
 
     /// The folder a segment is in ("/" for the folders at the top of the disk).
@@ -126,7 +128,8 @@ public enum PathBarModel {
         }
     }
 
-    private static func collapsedItems(_ segments: [PathbarSegment], includeRoot: Bool, tailCount: Int) -> [PathBarItem] {
+    private static func collapsedItems(_ segments: [PathbarSegment], includeRoot: Bool, tailCount: Int) -> [PathBarItem]
+    {
         var items: [PathBarItem] = []
         let hiddenStart = includeRoot ? 1 : 0
         let tailStart = max(hiddenStart, segments.count - tailCount)
@@ -312,7 +315,8 @@ public struct PathSuggestionState: Equatable, Sendable {
 
     /// Return: the highlighted suggestion's path, else the trimmed text; nil for an empty text.
     public var submission: String? {
-        let text = highlighted >= 0 && suggestions.indices.contains(highlighted)
+        let text =
+            highlighted >= 0 && suggestions.indices.contains(highlighted)
             ? suggestions[highlighted].path : draft.trimmingCharacters(in: .whitespacesAndNewlines)
         return text.isEmpty ? nil : text
     }

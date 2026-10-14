@@ -82,7 +82,8 @@ final class InfoRowFactView: NSView, TextStyleSource {
             cell.frame = NSRect(x: space, y: (bounds.height - size.height) / 2, width: size.width, height: size.height)
             text.frame = cell.frame
         } else {
-            text.frame = NSRect(x: space, y: (bounds.height - line) / 2, width: max(0, bounds.width - space), height: line)
+            text.frame = NSRect(
+                x: space, y: (bounds.height - line) / 2, width: max(0, bounds.width - space), height: line)
         }
     }
 

@@ -75,14 +75,16 @@ final class PathSegmentView: NSView, TextStyleSource {
     override func draw(_ dirtyRect: NSRect) {
         guard isHovered, !isDisabled else { return }
         NSColor(infoTheme.palette.bgHover).setFill()
-        NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control).fill()
+        NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control)
+            .fill()
     }
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) { isHovered = true }
@@ -158,14 +160,16 @@ final class PathSeparatorView: NSView, TextStyleSource {
     override func draw(_ dirtyRect: NSRect) {
         guard isButton, isHovered || isActive else { return }
         NSColor(infoTheme.palette.bgHover).setFill()
-        NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control).fill()
+        NSBezierPath(roundedRect: bounds, xRadius: DesignTokens.radii.control, yRadius: DesignTokens.radii.control)
+            .fill()
     }
 
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) { isHovered = true }
@@ -285,7 +289,8 @@ final class PathBarView: NSView {
             switch item {
             case .segment(let segment, let isActive, _):
                 view.configure(
-                    label: segment.label, path: segment.path, tooltip: segment.path.isEmpty ? segment.label : segment.path,
+                    label: segment.label, path: segment.path,
+                    tooltip: segment.path.isEmpty ? segment.label : segment.path,
                     active: isActive)
                 view.onClick = { [weak self] event in self?.segmentClicked(segment, event) }
                 view.onDoubleClick = { [weak self] in self?.segmentDoubleClicked() }
@@ -321,11 +326,14 @@ final class PathBarView: NSView {
         let total = natural.reduce(0, +) + separators + 0
         let overflow = total - bounds.width
         // Each item (its separator and its segment) shrinks in proportion to its size; the segment gives way.
-        let basis = natural.enumerated().map { $0.element + ($0.offset > 0 ? PathSeparatorView.width + InfoMetrics.itemGap : 0) }
+        let basis = natural.enumerated().map {
+            $0.element + ($0.offset > 0 ? PathSeparatorView.width + InfoMetrics.itemGap : 0)
+        }
         let shrinkBase = basis.reduce(0, +)
         for (index, item) in items.enumerated() {
             if index > 0, let separator = views.popFirst() {
-                separator.frame = NSRect(x: x, y: separatorTop, width: PathSeparatorView.width, height: InfoMetrics.separatorHeight)
+                separator.frame = NSRect(
+                    x: x, y: separatorTop, width: PathSeparatorView.width, height: InfoMetrics.separatorHeight)
                 x += PathSeparatorView.width + InfoMetrics.itemGap
             }
             guard let view = views.popFirst() else { break }
@@ -388,7 +396,8 @@ final class PathBarView: NSView {
 
     override func scrollWheel(with event: NSEvent) {
         guard expanded else { return super.scrollWheel(with: event) }
-        let delta = abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY) ? event.scrollingDeltaX : event.scrollingDeltaY
+        let delta =
+            abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY) ? event.scrollingDeltaX : event.scrollingDeltaY
         scrollOffset = max(0, scrollOffset - delta)
         needsLayout = true
     }

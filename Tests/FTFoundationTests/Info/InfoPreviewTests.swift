@@ -11,7 +11,8 @@ struct InfoPreviewTests {
         sizeStatus: .ready, permissionMode: 0o644)
     static let properties = InfoItem(
         path: entry.path, name: "notes.txt", fileExtension: "txt", kind: .file, kindLabel: "Plain Text Document",
-        createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 12, sizeStatus: .ready,
+        createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 12,
+        sizeStatus: .ready,
         permissionMode: 0o644)
 
     // T-1a0ba4b2
@@ -56,7 +57,8 @@ struct InfoPreviewTests {
             InfoPreview.resolve(
                 path: "/elsewhere/file", currentPath: "/Users/demo", entries: [], metadataByPath: [:], properties: nil)
                 == nil)
-        #expect(InfoPreview.resolve(path: nil, currentPath: "/x", entries: [], metadataByPath: [:], properties: nil) == nil)
+        #expect(
+            InfoPreview.resolve(path: nil, currentPath: "/x", entries: [], metadataByPath: [:], properties: nil) == nil)
     }
 
     // T-714e79e7

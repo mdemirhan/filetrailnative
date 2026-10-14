@@ -62,12 +62,15 @@ struct FolderSizeCellTests {
         stop.sendAction(stop.action, to: stop.target)
         #expect(cancelled == 1)
         view.update(.idle)
-        #expect(view.naturalSize.width > 0 && view.subviews.compactMap { $0 as? InfoSpinnerView }.allSatisfy(\.isHidden) == false || true)
+        #expect(
+            view.naturalSize.width > 0
+                && view.subviews.compactMap { $0 as? InfoSpinnerView }.allSatisfy(\.isHidden) == false || true)
     }
 
     // T-513524fc T-1161c790 T-a9d4fb5b F-824 B-INFO-041 B-INFO-042 B-INFO-043: the size over the counts, or one line in the row.
     @Test func aReadySizeShowsTheSizeAndTheCounts() throws {
-        let entry = FolderSizeEntry.ready(sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 1, folderCount: 0)
+        let entry = FolderSizeEntry.ready(
+            sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 1, folderCount: 0)
         let panel = cell(.panel)
         panel.update(entry)
         _ = laidOut(panel, width: 200, height: panel.naturalSize.height)
@@ -77,7 +80,8 @@ struct FolderSizeCellTests {
         let row = cell(.row)
         row.update(entry)
         _ = laidOut(row, width: 400, height: row.naturalSize.height)
-        #expect(fieldText(try #require(findViews("test.cell.size", in: row).first)) == "1.2 GB (1.3 GB on disk) · 1 file")
+        #expect(
+            fieldText(try #require(findViews("test.cell.size", in: row).first)) == "1.2 GB (1.3 GB on disk) · 1 file")
         #expect(findViews("test.cell.items", in: row).isEmpty)
     }
 }
@@ -85,11 +89,16 @@ struct FolderSizeCellTests {
 @MainActor
 struct InfoPanelViewTests {
     static let file = InfoItem(
-        path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file, kindLabel: "Markdown document",
-        createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 2000, sizeStatus: .ready,
+        path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file,
+        kindLabel: "Markdown document",
+        createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 2000,
+        sizeStatus: .ready,
         permissionMode: 0o644)
 
-    func display(_ item: InfoItem = file, pending: Bool = false, app: InfoOpenApp? = InfoOpenApp(path: "/Applications/Zed.app", name: "Zed"))
+    func display(
+        _ item: InfoItem = file, pending: Bool = false,
+        app: InfoOpenApp? = InfoOpenApp(path: "/Applications/Zed.app", name: "Zed")
+    )
         -> InfoPanelDisplay
     {
         let content = InfoPanelModel.itemContent(
@@ -99,7 +108,10 @@ struct InfoPanelViewTests {
             item: item, textEditorName: "Zed", isFavorite: false, canFavorite: true, copied: nil,
             shortcut: { ShortcutDisplay.defaults.label($0) })
         return InfoPanelDisplay(
-            body: .item(.init(item: item, content: content, folderSize: nil, openApp: app, hasOpenWith: true, actions: actions, copied: nil)),
+            body: .item(
+                .init(
+                    item: item, content: content, folderSize: nil, openApp: app, hasOpenWith: true, actions: actions,
+                    copied: nil)),
             wantsSpinner: pending)
     }
 
@@ -117,7 +129,8 @@ struct InfoPanelViewTests {
         #expect(fieldText(try #require(findViews("infoPanel.title", in: view).first)) == "Info")
         #expect(findViews("infoPanel.close", in: view).first?.frame.size == NSSize(width: 18, height: 18))
         #expect(fieldText(try #require(findViews("infoPanel.name", in: view).first)) == "notes.md")
-        #expect(fieldText(try #require(findViews("infoPanel.subtitle", in: view).first)) == "Markdown document · 2.0 KB")
+        #expect(
+            fieldText(try #require(findViews("infoPanel.subtitle", in: view).first)) == "Markdown document · 2.0 KB")
         let icon = try #require(findViews("infoPanel.heroIcon", in: view).first)
         #expect(icon.frame.size == NSSize(width: 104, height: 104))
         let open = try #require(findViews("infoPanel.open", in: view).first)
@@ -148,7 +161,8 @@ struct InfoPanelViewTests {
     @Test func theCopiedButtonSaysSo() throws {
         let item = Self.file
         let actions = InfoPanelModel.quickActions(
-            item: item, textEditorName: "Zed", isFavorite: false, canFavorite: true, copied: .copyPath, shortcut: { _ in nil })
+            item: item, textEditorName: "Zed", isFavorite: false, canFavorite: true, copied: .copyPath,
+            shortcut: { _ in nil })
         #expect(actions.first { $0.id == .copyPath }?.label == "Copied")
         #expect(actions.first { $0.id == .copyName }?.label == "Copy Name")
     }
@@ -157,11 +171,16 @@ struct InfoPanelViewTests {
     @Test func severalItemsAreSummedUp() throws {
         let summary = InfoSelection(count: 4, folderCount: 1, fileCount: 3, totalBytes: 4000, parentPath: "/Users/demo")
         let selection = InfoPanelDisplay(
-            body: .selection(.init(summary: summary, rows: InfoPanelModel.selectionRows(summary, hasFolderSize: false, folderSize: nil), folderSize: nil)),
+            body: .selection(
+                .init(
+                    summary: summary,
+                    rows: InfoPanelModel.selectionRows(summary, hasFolderSize: false, folderSize: nil), folderSize: nil)
+            ),
             wantsSpinner: false)
         let view = panel(selection)
         #expect(fieldText(try #require(findViews("infoPanel.name", in: view).first)) == "4 items")
-        #expect(fieldText(try #require(findViews("infoPanel.subtitle", in: view).first)) == "1 folder and 3 files · 4.0 KB")
+        #expect(
+            fieldText(try #require(findViews("infoPanel.subtitle", in: view).first)) == "1 folder and 3 files · 4.0 KB")
         #expect(findViews("infoPanel.open", in: view).isEmpty)
         #expect(findViews("infoPanel.action", in: view).isEmpty)
         #expect(findViews("infoPanel.row.label", in: view).map(fieldText) == ["Size", "Where"])
@@ -170,7 +189,9 @@ struct InfoPanelViewTests {
     // B-INFO-022 F-826: with nothing to show the panel says so.
     @Test func theEmptyPanelSaysWhatToDo() throws {
         let view = panel(InfoPanelDisplay(body: .empty, wantsSpinner: false))
-        #expect(fieldText(try #require(findViews("infoPanel.empty", in: view).first)) == "Select a file or folder to show its info.")
+        #expect(
+            fieldText(try #require(findViews("infoPanel.empty", in: view).first))
+                == "Select a file or folder to show its info.")
         let blank = panel(InfoPanelDisplay(body: .blank, wantsSpinner: false))
         #expect(findViews("infoPanel.empty", in: blank).isEmpty && findViews("infoPanel.name", in: blank).isEmpty)
     }
@@ -207,7 +228,10 @@ struct InfoPanelViewTests {
             item: root, pending: false, volume: InfoVolume(totalBytes: 1_000_000_000, availableBytes: 400_000_000),
             isVolumeRoot: true, hasFolderSize: false, folderSize: nil, opensWith: .hidden)
         let state = InfoPanelDisplay(
-            body: .item(.init(item: root, content: content, folderSize: nil, openApp: nil, hasOpenWith: true, actions: [], copied: nil)),
+            body: .item(
+                .init(
+                    item: root, content: content, folderSize: nil, openApp: nil, hasOpenWith: true, actions: [],
+                    copied: nil)),
             wantsSpinner: false)
         let view = panel(state)
         let labels = findViews("infoPanel.row.label", in: view).map(fieldText)
@@ -237,7 +261,10 @@ struct InfoRowViewTests {
                 ]))
         #expect(fieldText(try #require(findViews("infoRow.name", in: view).first)) == "notes.md")
         #expect(findViews("infoRow.name", in: view).first?.toolTip == "notes.md")
-        #expect(findViews("infoRow.fact", in: view).map(fieldText) == ["Markdown document", "2.0 KB", "Modified Today, 9:12 AM"])
+        #expect(
+            findViews("infoRow.fact", in: view).map(fieldText) == [
+                "Markdown document", "2.0 KB", "Modified Today, 9:12 AM",
+            ])
         #expect(findViews("infoRow.dot", in: view).count == 2)
         #expect(findViews("infoRow.icon", in: view).first?.frame.size == NSSize(width: 16, height: 16))
         #expect(view.height == 30)
@@ -257,7 +284,8 @@ struct InfoRowViewTests {
     @Test func severalItemsShowTheCountAndTheFolderSize() throws {
         let view = row(
             InfoRowDisplay(
-                name: "3 items", nameTooltip: nil, icon: nil, facts: [.init(content: .folderSize(.idle), tooltip: nil)]))
+                name: "3 items", nameTooltip: nil, icon: nil, facts: [.init(content: .folderSize(.idle), tooltip: nil)])
+        )
         #expect(fieldText(try #require(findViews("infoRow.name", in: view).first)) == "3 items")
         #expect(findViews("infoRow.folderSize.calculate", in: view).count == 1)
     }
@@ -266,7 +294,10 @@ struct InfoRowViewTests {
     @Test func theFactsGiveWayBeforeTheName() throws {
         let display = InfoRowDisplay(
             name: "a-long-file-name.txt", nameTooltip: nil, icon: nil,
-            facts: [.init(content: .text("Plain Text Document"), tooltip: nil), .init(content: .text("Modified Yesterday, 6:03 PM"), tooltip: nil)])
+            facts: [
+                .init(content: .text("Plain Text Document"), tooltip: nil),
+                .init(content: .text("Modified Yesterday, 6:03 PM"), tooltip: nil),
+            ])
         let wide = row(display)
         let narrow = laidOut(wide, width: 300, height: 30)
         let name = try #require(findViews("infoRow.name", in: narrow).first)
@@ -327,10 +358,12 @@ struct PathBarViewTests {
         let view = bar("/Users/demo/Projects", width: 600)
         var navigated: [String] = []
         view.onNavigate = { navigated.append($0) }
-        let segment = try #require(findViews("pathBar.segment", in: view).first { fieldText($0) == "demo" } as? PathSegmentView)
+        let segment = try #require(
+            findViews("pathBar.segment", in: view).first { fieldText($0) == "demo" } as? PathSegmentView)
         let event = try #require(
             NSEvent.mouseEvent(
-                with: .leftMouseUp, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: 0, context: nil, eventNumber: 0,
+                with: .leftMouseUp, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: 0, context: nil,
+                eventNumber: 0,
                 clickCount: 1, pressure: 0))
         segment.onClick?(event)
         #expect(navigated.isEmpty)
@@ -340,7 +373,8 @@ struct PathBarViewTests {
         view.onOpenInNewTab = { tabs.append($0) }
         let command = try #require(
             NSEvent.mouseEvent(
-                with: .leftMouseUp, location: .zero, modifierFlags: [.command], timestamp: 0, windowNumber: 0, context: nil,
+                with: .leftMouseUp, location: .zero, modifierFlags: [.command], timestamp: 0, windowNumber: 0,
+                context: nil,
                 eventNumber: 0, clickCount: 1, pressure: 0))
         segment.onClick?(command)
         #expect(tabs == ["/Users/demo"])
@@ -365,7 +399,9 @@ struct PathFolderMenuViewTests {
         menu.build(topNote: nil, folders: [], checkedPath: "", bottomNote: nil, note: "No Folders")
         #expect(menu.rows.count == 1 && menu.folderRows.isEmpty)
         let folders = [PathbarFolder(path: "/a", name: "a")]
-        menu.build(topNote: "5 more folders above", folders: folders, checkedPath: "/a", bottomNote: "2 more folders below", note: nil)
+        menu.build(
+            topNote: "5 more folders above", folders: folders, checkedPath: "/a", bottomNote: "2 more folders below",
+            note: nil)
         #expect(menu.rows.count == 3 && menu.folderRows.count == 1)
         let size = menu.fittingSize(maxWidth: 1000, maxHeight: 1000)
         #expect(size.width >= 200 && size.width <= 360)

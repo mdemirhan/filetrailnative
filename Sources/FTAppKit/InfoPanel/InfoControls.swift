@@ -5,7 +5,9 @@ import FTFoundation
 
 extension NSView {
     /// The palette of the view's own appearance (light or dark) with the app's accent.
-    var infoTheme: Theme { Theme(appearance: ChromeColors.appearance(of: self), accentHex: AppearanceModel.shared.accentHex) }
+    var infoTheme: Theme {
+        Theme(appearance: ChromeColors.appearance(of: self), accentHex: AppearanceModel.shared.accentHex)
+    }
 }
 
 /// The height of a line of text in the font, as the browser's `line-height: normal` rounds it.
@@ -50,7 +52,11 @@ enum InfoGlyph {
                 "M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
                 "M14 7h3v3M10 17H7v-3M17 7l-4 4M7 17l4-4",
             ]
-        case .edit: ["M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5", "M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"]
+        case .edit:
+            [
+                "M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5",
+                "M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z",
+            ]
         case .name: ["M4 7V5h16v2", "M12 5v14", "M9 19h6"]
         case .favorite: ["m12 17.27-5.18 3.05 1.39-5.88L3 9.97l6.01-.5L12 4l2.99 5.47 6.01.5-5.21 4.47 1.39 5.88Z"]
         case .rootTree: ["M4 5h8", "M8 5v12h6", "M8 11h6", "M17 9l3 2-3 2", "M17 15l3 2-3 2"]
@@ -117,7 +123,9 @@ final class InfoIconButton: NSView, TooltipAnchor {
     private var isHovered = false { didSet { needsDisplay = true } }
     private var pressed = false
 
-    init(glyph: InfoGlyph, iconSize: Double, strokeWidth: Double, cornerRadius: Double, identifier: String, label: String) {
+    init(
+        glyph: InfoGlyph, iconSize: Double, strokeWidth: Double, cornerRadius: Double, identifier: String, label: String
+    ) {
         self.glyph = glyph
         self.iconSize = iconSize
         self.strokeWidth = strokeWidth
@@ -151,7 +159,8 @@ final class InfoIconButton: NSView, TooltipAnchor {
         super.updateTrackingAreas()
         for area in trackingAreas { removeTrackingArea(area) }
         addTrackingArea(
-            NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
+            NSTrackingArea(
+                rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self))
     }
 
     override func mouseEntered(with event: NSEvent) {

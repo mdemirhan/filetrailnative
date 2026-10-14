@@ -135,7 +135,9 @@ final class PathBarRowView: NSView {
         case .mouseMoved, .leftMouseDown, .rightMouseDown:
             if pathBar.contains(windowPoint: event.locationInWindow) { return false }
             // A separator's menu belongs to the bar, though it is drawn outside it.
-            if let menu = window?.contentView?.hitTest(event.locationInWindow)?.enclosingMenuItemView, menu { return false }
+            if let menu = window?.contentView?.hitTest(event.locationInWindow)?.enclosingMenuItemView, menu {
+                return false
+            }
             pathBar.setExpanded(false)
             return false
         default:
@@ -161,7 +163,8 @@ final class PathBarRowView: NSView {
             let spacing = InfoMetrics.pathRowGap + InfoMetrics.statusMarginLeft
             status.isHidden = natural == nil
             status.frame = NSRect(
-                x: left + split.path + spacing, y: contentTop + ((contentHeight - size.height) / 2), width: split.status,
+                x: left + split.path + spacing, y: contentTop + ((contentHeight - size.height) / 2),
+                width: split.status,
                 height: size.height)
         }
         let theme = infoTheme

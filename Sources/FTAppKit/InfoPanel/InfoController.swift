@@ -228,12 +228,14 @@ final class InfoController {
             }
         }
         lookupPatience = patience
-        DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.openWithDelay + InfoMetrics.openWithPatience, execute: patience)
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + InfoMetrics.openWithDelay + InfoMetrics.openWithPatience, execute: patience)
         let start = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
                 guard let self else { return }
                 Task { @MainActor in
-                    let answer = await SystemActions.openWithApplications(paths: [path], pinnedAppPaths: pinned.map(\.appPath))
+                    let answer = await SystemActions.openWithApplications(
+                        paths: [path], pinnedAppPaths: pinned.map(\.appPath))
                     guard self.lookup?.path == path, self.lookupGeneration == generation else { return }
                     self.lookup = (path, answer, true)
                     self.update()
@@ -288,7 +290,8 @@ final class InfoController {
 
     private func shortcutDisplay(_ preferences: AppPreferences) -> ShortcutDisplay {
         ShortcutDisplay(
-            shortcuts: ShortcutCommands.resolve(preferences.shortcutOverrides), returnKeyAction: preferences.returnKeyAction)
+            shortcuts: ShortcutCommands.resolve(preferences.shortcutOverrides),
+            returnKeyAction: preferences.returnKeyAction)
     }
 
     /// Several selected items: their entries (those shown), the sum of their sizes and the folder size controls.
@@ -316,7 +319,9 @@ final class InfoController {
         return SelectionDetails(entries: entries, size: size)
     }
 
-    private func panelDisplay(_ preferences: AppPreferences, _ shortcuts: ShortcutDisplay, _ selection: SelectionDetails?)
+    private func panelDisplay(
+        _ preferences: AppPreferences, _ shortcuts: ShortcutDisplay, _ selection: SelectionDetails?
+    )
         -> InfoPanelDisplay
     {
         if let selection {
@@ -385,7 +390,8 @@ final class InfoController {
             }
             return InfoRowDisplay(
                 name: InfoPanelModel.selectionName(
-                    InfoSelection(count: selection.entries.count, folderCount: 0, fileCount: 0, totalBytes: nil, parentPath: nil)),
+                    InfoSelection(
+                        count: selection.entries.count, folderCount: 0, fileCount: 0, totalBytes: nil, parentPath: nil)),
                 nameTooltip: nil, icon: lead.iconEntry, facts: facts)
         }
         let single = content.selectedEntries.first
@@ -418,7 +424,9 @@ final class InfoController {
         } else if let size = facts.size {
             list.append(.init(content: .text(size), tooltip: nil))
         }
-        if let modified = facts.modified { list.append(.init(content: .text(modified), tooltip: facts.modifiedTooltip)) }
+        if let modified = facts.modified {
+            list.append(.init(content: .text(modified), tooltip: facts.modifiedTooltip))
+        }
         return InfoRowDisplay(name: active.name, nameTooltip: active.name, icon: iconEntry, facts: list)
     }
 
@@ -561,7 +569,9 @@ final class InfoController {
                     var menuItem = AppMenuItem(title: action.label)
                     menuItem.action = { [weak self] in
                         if changeDefault {
-                            if case .application(_, _, let appPath, _, _) = action, appPath == defaultApp?.path { return }
+                            if case .application(_, _, let appPath, _, _) = action, appPath == defaultApp?.path {
+                                return
+                            }
                             self?.actions.changeDefaultApp(action, kind: kind)
                         } else {
                             self?.actions.runOpenWith(action, paths: [item.path], kind: kind)
@@ -585,7 +595,8 @@ final class InfoController {
             if let watcher = self?.openMenuWatcher { WindowEventRouting.remove(watcher, from: window) }
             self?.openMenuWatcher = nil
         }
-        showMenu(build(optionHeld: NSEvent.modifierFlags.contains(.option)), anchor: anchor, window: window, onClose: close)
+        showMenu(
+            build(optionHeld: NSEvent.modifierFlags.contains(.option)), anchor: anchor, window: window, onClose: close)
         setOpen(true)
         guard !changeDefault, always else { return }
         // Option swaps the menu to Always Open With while it is open.

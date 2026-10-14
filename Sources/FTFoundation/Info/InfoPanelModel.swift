@@ -52,7 +52,8 @@ public struct InfoRow: Equatable, Sendable {
 /// region), so "48,611 files" and "Sep 17, 2026, 2:08 PM" on a machine set to a European region.
 public enum InfoLocale {
     public static let original: Locale = {
-        let language = Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
+        let language =
+            Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
         return Locale(identifier: language)
     }()
 }
@@ -93,7 +94,9 @@ public enum InfoPanelModel {
     }
 
     /// The summary's rows: Size and Where.
-    public static func selectionRows(_ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?) -> [InfoRow] {
+    public static func selectionRows(_ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?)
+        -> [InfoRow]
+    {
         let size = selection.totalBytes.map { SizeText.size($0) }
         let sizeRow: InfoRow
         if hasFolderSize, let folderSize {
@@ -105,7 +108,8 @@ public enum InfoPanelModel {
         }
         let whereRow: InfoRow
         if let parent = selection.parentPath {
-            whereRow = InfoRow(label: "Where", value: .whereLink(label: PathBarModel.label(parent), path: parent), muted: false)
+            whereRow = InfoRow(
+                label: "Where", value: .whereLink(label: PathBarModel.label(parent), path: parent), muted: false)
         } else {
             whereRow = InfoRow(label: "Where", value: .text("Several folders"), muted: true)
         }
@@ -164,8 +168,12 @@ public enum InfoPanelModel {
             let used: Int64? =
                 volume?.totalBytes != nil && volume?.availableBytes != nil
                 ? max(0, (volume?.totalBytes ?? 0) - (volume?.availableBytes ?? 0)) : nil
-            rows.append(InfoRow(label: "Capacity", value: .text(bytes(volume?.totalBytes)), muted: volume?.totalBytes == nil))
-            rows.append(InfoRow(label: "Available", value: .text(bytes(volume?.availableBytes)), muted: volume?.availableBytes == nil))
+            rows.append(
+                InfoRow(label: "Capacity", value: .text(bytes(volume?.totalBytes)), muted: volume?.totalBytes == nil))
+            rows.append(
+                InfoRow(
+                    label: "Available", value: .text(bytes(volume?.availableBytes)),
+                    muted: volume?.availableBytes == nil))
             rows.append(InfoRow(label: "Used", value: .text(bytes(used)), muted: used == nil))
         } else {
             rows.append(InfoRow(label: "Size", value: sizeIsCell ? .folderSize : .text(sizeText), muted: sizeMuted))
@@ -184,7 +192,9 @@ public enum InfoPanelModel {
             rows.append(InfoRow(label: "Permissions", value: .text(isPending ? pending : "Unavailable"), muted: true))
         }
         if let parent = parentPath(item.path) {
-            rows.append(InfoRow(label: "Where", value: .whereLink(label: PathBarModel.label(parent), path: parent), muted: false))
+            rows.append(
+                InfoRow(
+                    label: "Where", value: .whereLink(label: PathBarModel.label(parent), path: parent), muted: false))
         } else {
             rows.append(InfoRow(label: "Where", value: .text("—"), muted: true))
         }
@@ -208,7 +218,9 @@ public enum InfoPanelModel {
 
     /// One of the quick actions.
     public struct QuickAction: Equatable, Sendable {
-        public enum ID: String, Sendable { case quickLook, edit, copyPath, copyName, terminal, finder, favorite, rootTree }
+        public enum ID: String, Sendable {
+            case quickLook, edit, copyPath, copyName, terminal, finder, favorite, rootTree
+        }
         public var id: ID
         public var label: String
         public var shortcut: String?
@@ -222,10 +234,12 @@ public enum InfoPanelModel {
     ) -> [QuickAction] {
         var actions = [QuickAction(id: .quickLook, label: "Quick Look", shortcut: shortcut(.quickLookSelection))]
         if item.kind.isEditableFile {
-            actions.append(QuickAction(id: .edit, label: "Edit in \(textEditorName)", shortcut: shortcut(.editSelection)))
+            actions.append(
+                QuickAction(id: .edit, label: "Edit in \(textEditorName)", shortcut: shortcut(.editSelection)))
         }
         actions.append(
-            QuickAction(id: .copyPath, label: copied == .copyPath ? "Copied" : "Copy Path", shortcut: shortcut(.copyPath)))
+            QuickAction(
+                id: .copyPath, label: copied == .copyPath ? "Copied" : "Copy Path", shortcut: shortcut(.copyPath)))
         actions.append(QuickAction(id: .copyName, label: copied == .copyName ? "Copied" : "Copy Name", shortcut: nil))
         actions.append(QuickAction(id: .terminal, label: "Open in Terminal", shortcut: shortcut(.openInTerminal)))
         actions.append(QuickAction(id: .finder, label: "Show in Finder", shortcut: shortcut(.showInFinder)))
@@ -236,7 +250,8 @@ public enum InfoPanelModel {
                     shortcut: shortcut(.toggleFavorite)))
         }
         if item.kind.isDirectoryLike {
-            actions.append(QuickAction(id: .rootTree, label: "Use as Tree Root", shortcut: shortcut(.rootTreeAtSelection)))
+            actions.append(
+                QuickAction(id: .rootTree, label: "Use as Tree Root", shortcut: shortcut(.rootTreeAtSelection)))
         }
         return actions
     }
@@ -267,7 +282,9 @@ public enum InfoPanelModel {
     ) -> RowFacts {
         let known: (kind: String, size: Int64?, status: SizeStatus, modified: String?)? =
             metadata.map { ($0.kindLabel, $0.sizeBytes, $0.sizeStatus, $0.modifiedAt) }
-            ?? (item?.path == entry.path ? item : nil).map { ($0.kindLabel, $0.sizeBytes, $0.sizeStatus, $0.modifiedAt) }
+            ?? (item?.path == entry.path ? item : nil).map {
+                ($0.kindLabel, $0.sizeBytes, $0.sizeStatus, $0.modifiedAt)
+            }
         let eligible = entry.kind.isFolderSizeEligible
         var size: String?
         if !eligible, let known, known.status == .ready { size = SizeText.size(known.size, status: known.status) }

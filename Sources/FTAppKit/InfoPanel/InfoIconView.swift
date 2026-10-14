@@ -69,7 +69,8 @@ final class InfoIconView: NSView {
             let backRect = NSRect(x: area.minX, y: area.minY, width: side, height: side)
             let frontRect = NSRect(x: area.maxX - side, y: area.maxY - side, width: side, height: side)
             for (kind, rect) in [(stack.back, backRect), (stack.front, frontRect)] {
-                stackImages[kind]?.draw(in: rect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
+                stackImages[kind]?.draw(
+                    in: rect, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
             }
             return
         }
