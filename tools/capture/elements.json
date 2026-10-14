@@ -4,7 +4,7 @@
     "window content": {"electron":{"selector":"main.app-shell"},"swift":"window.content"},
     "sidebar": {"electron":{"selector":"aside.tree-pane"},"swift":"sidebar"},
     "sidebar section headers": {"electron":{"selector":".sidebar-section-header","textSelector":".sidebar-section-title"},"swift":"sidebar.sectionHeader","text":true},
-    "first sidebar row": {"electron":{"selector":".tree-pane .sidebar-sections .tree-row","textSelector":".tree-label-text"},"swift":"sidebar.row","first":true,"text":true},
+    "first sidebar row": {"electron":{"selector":".tree-pane .tree-row","textSelector":".tree-label-text"},"swift":"sidebar.row","first":true,"text":true},
     "sidebar row": {"electron":{"selector":".tree-pane .tree-row","textSelector":".tree-label-text"},"swift":"sidebar.row","geometry":false},
     "selected sidebar row": {"electron":{"selector":".tree-pane .tree-row[aria-selected=\"true\"]","textSelector":".tree-label-text"},"swift":"sidebar.row.selected","geometry":false},
     "expanded sidebar row": {"electron":{"selector":".tree-pane .tree-row[aria-expanded=\"true\"]","textSelector":".tree-label-text"},"swift":"sidebar.row.expanded","geometry":false},
