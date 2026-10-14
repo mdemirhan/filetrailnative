@@ -50,6 +50,7 @@ public final class AboutWindowController: PageWindowController {
         (window as? PageWindow)?.closesOnEscape = true
         window?.contentView = aboutView
         window?.setContentSize(Self.contentSize)
+        themeChanged(model.theme)
     }
 
     public required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }

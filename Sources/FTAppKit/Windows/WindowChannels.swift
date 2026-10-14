@@ -78,6 +78,14 @@ public struct PreferencesChange: Equatable, Sendable {
     public var senderID: Int?
 }
 
+/// A window that follows the app's preferences while it is open: told each change, with only the keys the whole app
+/// shares (`filetrail:preferencesChanged`). An explorer window conforms to redraw with a new theme or accent and to
+/// follow the other settings (P5-01).
+@MainActor
+public protocol PreferenceChangeReceiver: AnyObject {
+    func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange)
+}
+
 /// Preferences as a window sees them: an explorer window sees the app's with its own session on top, and what it
 /// changes of its session stays its own. Other windows (Settings) see and change the app's only. Only the keys the
 /// whole app shares are told to the other windows (`app:getPreferences`, `app:updatePreferences`).

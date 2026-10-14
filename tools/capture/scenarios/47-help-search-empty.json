@@ -1,0 +1,22 @@
+{
+  "name": "47-help-search-empty",
+  "description": "Help with a search nothing matches",
+  "features": ["F-668"],
+  "tier": ["wp", "wave", "final"],
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"menu","path":["Help","File Trail Help"]},
+    {"step":"selectWindow","title":"File Trail Help"},
+    {"step":"expectSheet","name":"help window"},
+    {"step":"click","element":"help search input"},
+    {"step":"type","text":"zzzqq"},
+    {"step":"expect","element":"help intro","text":"Nothing in Help matches. Try a shorter or different word."},
+    {"step":"wait","ms":300},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}
