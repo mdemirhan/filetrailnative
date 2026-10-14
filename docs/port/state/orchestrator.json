@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T10:13:54+00:00",
+  "updatedAt": "2026-10-14T10:26:14+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "W1-G running. After it: record; merge check; delete all port/* branches + worktrees (user request); acceptance run; wave-1 gate (deviations, PLAN §8)",
+  "nextAction": "W1-G recorded; all branches and worktrees deleted. Running wave-1 acceptance; then wave-1 gate: user approves deviations, PLAN §8 checkpoints; critic gaps become WPs",
   "pause": {
     "requested": false,
     "reason": null,
@@ -73,6 +73,12 @@
       "weeklyPct": 12.0,
       "fiveHourPct": 9.0,
       "note": "after W1-F (847K agent tokens)"
+    },
+    {
+      "at": "2026-10-14T10:25:34+00:00",
+      "weeklyPct": 14.0,
+      "fiveHourPct": 15.0,
+      "note": "after W1-G (1.54M agent tokens)"
     }
   ],
   "batches": {
@@ -373,7 +379,7 @@
         "P4-02",
         "P0-14"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_a5b1f015-ee4",
       "estimatedAgents": 8,
       "meterBefore": {
@@ -381,7 +387,90 @@
         "fiveHourPct": 9
       },
       "startedAt": "2026-10-14T08:37:48+00:00",
-      "critic": "Phases P1, P2 and P4 are all merged on main once this batch's integration ends. Review main against docs/port/PLAN.md for those phases and the parity matrix (docs/port/parity/tests.tsv, features.md): list real gaps only, such as tests.tsv rows owned by these phases still unported or uncited, features with no test or scenario, behavior rules in docs/port/behaviors/ for this scope that nothing checks, budgets in PLAN.md section 4 not measured, and work-package deviations in docs/port/state/orchestrator.json (wps.*.deviations) that change user-visible behavior and so need a DEVIATIONS.md entry. For each gap say what it is, where, and which later work package should own it (or 'new WP')."
+      "critic": {
+        "gaps": [
+          {
+            "title": "P4-02 and P0-14 bookkeeping: no recorded result, deviations, findings or gate",
+            "evidence": "orchestrator.json wps.P4-02 is status 'implementing' with summary null, no gate result, no findings and no deviations, although main has c936233 'Merge P4-02'. wps.P0-14 is 'implementing' with an empty record. No lens review (parity/visual) of P4-02 is on file. Its deviations (native-tab labels from document.title, Duplicate Tab as a shared-file menu request, interim host removed) and whether it made the unwired items below are unknown. The 'Carried over' item in P4-02.md, call FolderWatches.checkForMissedChanges on focus, is done (ExplorerWindows.swift:276).",
+            "suggestedWp": "Orchestrator (record P4-02 and P0-14 results); then new WP 'P4-02 review and fixes' to run the parity and visual lenses"
+          },
+          {
+            "title": "DEVIATIONS.md lacks entries for user-visible deviations already recorded in orchestrator.json",
+            "evidence": "DEVIATIONS.md has only D-001..D-005. These wps.*.deviations change what the user sees or gets and need entries: (1) P1-04: the pattern-error text after 'The pattern isn't valid: ' is the port's own wording, plus JSRegExp edge cases that still differ (back reference to an unmatched group, \\P{Lu} under /i, empty-loop captures, unbounded look-behind, ligature in a class). (2) P1-04: a saved text setting cut inside a surrogate pair gives U+FFFD (P2-07 fuzz string is likewise one char shorter). (3) P1-05: a Keep Both candidate at 2^53 or more stops after maxDuplicateNameAttempts and throws NoFreeName where the original loops forever. (4) P2-05: Empty Trash errors read 'execution error: msg (n)' without osascript's range prefix; the default Terminal is opened by full bundle path; a missing app is reported as \"Unable to find application named 'X'\". (5) P2-06: search highlight uses NSRegularExpression (ICU), so syntax JavaScript rejects, and other ICU/JS differences, behave differently. (6) P2-02: folder sizes arrive in 20 ms batches, not 200 ms polls. (7) P4-01: no hidden full-screen item (AppKit's Enter Full Screen carries the key); Escape on the stop question is a local key monitor; the single-instance guard also hands over by bundle id; the interim host opens Finder disk images in a new window. (8) P2-02/P2-04/P2-05: no Quick Look (single-item) yet, no @large icon keys (internal).",
+            "suggestedWp": "Wave-1 gate: integrator adds D-006 onward as 'proposed' for user approval (PLAN section 8). Items 2 and 3 can be approved with the P1-05 fix."
+          },
+          {
+            "title": "startupNavigation.test.ts: 14 rows unported though StartupTabs.swift exists",
+            "evidence": "tests.tsv todo rows T-5c8a8dd9, T-d09ea64b, T-68eb3d87, T-b8580b99, T-b43fba42, T-d612583c, T-ae917c88, T-d3b23be1, T-d0468635 (tree-root and last-folder resolution) and T-d8fbdd46, T-25e74d78, T-ff6743f1, T-bd036e34, T-0a1f16d6 (resolveStartupTabs). Sources/FTAppKit/Windows/StartupTabs.swift is 'Port of startupNavigation.ts' and has no test citing these ids. The P4-02 brief assigned the startup cases to P4-01 and the window cases to P4-02, so nobody took them. Related behavior rules B-NAV section 14 (startup and restoring the session) are all 'todo' in behaviors.tsv.",
+            "suggestedWp": "New WP 'P4-02 follow-up' (can be folded into P4-03), or P5-05 if restore logic moves with navigation"
+          },
+          {
+            "title": "bootstrap.test.ts: 23 rows uncited though the code exists",
+            "evidence": "todo: toPreferencePatch x8 (T-1f095054, T-7f92bce5, T-53d8323d, T-e6f6decc, T-ef11b04e, T-09050d18, T-c8cd6ef9, T-1bd1f865), resolveTerminalApplicationName x4, isValidApplicationBundlePath x4, resolveApplicationDisplayName, openInTerminal, openPathsWithApplication x6 (T-d88d425e, T-1b7582f5, T-ac8a9c09, T-cd79ef68, T-58a29428, ...). Sources/FTFoundation/Preferences/PreferencePatch.swift and Sources/FTFileSystem/System/ApplicationPaths.swift exist; P2-05 and P4-01 did not cite or mark N/A these rows.",
+            "suggestedWp": "P2-05 follow-up (Terminal, application paths, openPathsWithApplication) and P1-03 follow-up (toPreferencePatch); or a small P0-style citation-sweep WP"
+          },
+          {
+            "title": "native-fs and systemHandlers rows for P2 code left uncited",
+            "evidence": "T-ace2aac0 and T-b682efab (nativeSetDefaultApplication refusals) with Always Open With in OpenWithCatalog/SystemActions; T-3056a773 (nativeIsPackage); T-7a3e2fb1 (getFileIconHandler returns no icon, P2-04); T-fe3f2758 (favorite icon, P2-04 asked the integrator to mark N/A or covered-by-feature and nobody did); T-0715c3bb and T-df2126ce (quickLookPath, P2-05 marked N/A in a comment but the sync still shows them todo). Also FTFoundation accent.test.ts T-ab2bf170 T-6af82aa6 T-c06ac759 T-1100e7f2 are todo although the accent golden has 622 cases (P0-06 scope, but P1 gate says all L rows pass).",
+            "suggestedWp": "Citation sweep inside P2-05/P2-04 follow-up; Quick Look rows to P5-09"
+          },
+          {
+            "title": "Date taken (EXIF/ImageIO) reader has no owner and no implementation",
+            "evidence": "PLAN section 3.3 says ImageIO for date taken and A12 lists 'date taken' as a batch-rename source. No Swift source uses CGImageSource/ImageIO. native-fs rows T-f2411f69, T-aa124d90, T-eee6f364, T-5874efa5, T-663d0a15, T-4461d73c (nativeDatesTaken: capital extension, accented path, HEIC, zero or space dates) are todo. P1-04 only models the dateSource value. The P2 table (PLAN section 7) lists no WP for it.",
+            "suggestedWp": "P3-08 (batch-rename execution needs it) or new WP 'datesTaken service' in FTFileSystem, with the six native-fs cases"
+          },
+          {
+            "title": "Most P1 and P2 feature rows show todo or no tests because tests cite T- ids, not F- ids",
+            "evidence": "features.md rows with Tests and Scenario columns empty and status todo: F-028..F-063, F-098..F-122, F-298 (P1-01, P1-04), F-123..F-134, F-138, F-149..F-153, F-234, F-911, F-913 (P2-07), F-137, F-144, F-204..F-218 (P2-03), F-143, F-146, F-154, F-155, F-159..F-162, F-210, F-219..F-222, F-228..F-233, F-236, F-237 (P2-05), F-183..F-192, F-235 (P2-02), F-141, F-197, F-922 (P2-06), F-148 and F-910 (P2-01). Many are plainly tested by passing T- rows (for example 643 L and 130 FS rows pass), but the feature matrix cannot show it. F-148 (focus triggers) and F-910 (request limits) are also unimplemented: P2-01 says the AppKit packages must wire them, and nothing lists the volume refresh and Open With cache forget on focus.",
+            "suggestedWp": "New WP 'feature citation sweep' (add // F-xxx comments on existing tests, mark unproven rows); F-148 to P5-01 or P4-02 follow-up; F-910 to the request boundary in P5/P6"
+          },
+          {
+            "title": "P4-02 behaviors with no code or test: tab follows renamed folders, unmount closes tabs, window title/chrome",
+            "evidence": "Only 11 of the roughly 42 B-VIEW rules in sections 15-17 (B-VIEW-142..183) are partial; the rest, such as B-VIEW-144, 150, 156, 157, 160, 162, 164-170, 172, 173, 175, 180, 181, 183-184, are todo. Specifically: ExplorerTabs.leaveUnmountedDisks exists but nothing calls it (grep shows only its definition), and there is no 'tabs on an unmounted disk close, window closes if all do' (B-VIEW-173) or 'folder renamed/moved by any window moves background tabs' (B-VIEW-172, F-needed) code outside the pure model. F-607 (bounds saved 160 ms after move/resize) is partial: the recorder and scheduler exist but no window-delegate calls were found for didMove/didResize/fullscreen. F-618 and F-650 (min size 760x480, hidden-inset title bar, traffic lights at (14,16), sidebar vibrancy) are todo and window F-632 (render crash) has no native equivalent noted. Close Other Tabs and the tab context menu (B-VIEW-150) are not in Sources.",
+            "suggestedWp": "New WP 'P4-02b tab and window rules' (wire unmount and rename-follow, bounds events, Close Other Tabs, window chrome) before P5-01"
+          },
+          {
+            "title": "windows.spec.ts e2e rows are all todo; two flows have no scenario and scenarios cannot close T- rows",
+            "evidence": "tests.tsv: T-f5fc5b34 (opens windows on the folder on screen and brings back those open at quit), T-959a0c89 (brings back each window's place and front window), T-a9d9c6ee, T-317cfcc8, T-90c6b35c (stays open with no window, Dock reopen) are todo. Scenarios 35-38 cover new window, open in new window, move/merge and paste-in-another-window, but the P4-02 brief also required 'restore after relaunch' and 'no-window Dock reopen' and no scenario for either exists. sync.ts only reads F- and B- keys from scenario JSON, so scenarios never move an e2e T- row. Also T-31189f5f (App.tabOrder, dragged tab order) is todo; D-001 to D-003 may make it N/A.",
+            "suggestedWp": "New WP 'P4-02b' for the two scenarios (relaunch needs a two-launch scenario step in the automation runner, P0-10 follow-up); parity-matrix tool change (accept a top-level 'tests' key) to P0-style fix WP; T-31189f5f to be marked N/A D-001 by the integrator"
+          },
+          {
+            "title": "Budgets in PLAN section 4 not measured or not recorded",
+            "evidence": "docs/port/bench/baseline.json is still the spike's run (open_100000_ms 1420, stall_100000_ms 593, back_ms 17.3, scroll_max_ms 25, bundle 0.42 MB) and holds no list_3000_ms or list_100000_ms. P0-14 was to run 'tools/bench/run.sh --quick --report-only' and compare with budgets, but its state record is empty and build/bench has no latest.json, so no post-P2 launch, idle memory, open or scroll number is on file. budgets.json lists as not_yet_measured: first_search_results_ms (150 ms, fd on Home), copy_throughput (copyfile +-5%) and icons_scroll_max_ms. fd search (P2-06) is done, so first-search latency could be measured now. The only recorded P2 numbers are P2-01's headless ones (3,000 items 6.5 ms, 100,000 items 197 ms) and they come from the summary, not from a committed file. Back to a small folder (10 ms), 'UI never blocks over 50 ms' and cold launch have no passing measurement.",
+            "suggestedWp": "P0-14 follow-up or new WP 'wave-1 bench gate' (run tools/bench/run.sh, update baseline, add a first_search_results_ms scenario); copy throughput to P3-03; Icons scroll to P5-04"
+          },
+          {
+            "title": "Behavior rules for P1/P2 scope not checked by any test",
+            "evidence": "behaviors.tsv: of 1,709 rules only 11 are partial and none is done; all of B-NAV sections 14 (startup) and 16 (visits counted for Go To, Places.swift) and B-NAV 10 (folder re-read after watch events, tied to FolderWatches), B-VIEW 18 (watching the folder on screen, B-VIEW-185..195), and B-TREE rules on volumes and eject have no citations although P2-01, P2-03 and P2-07 implement them. The rule's own Open questions (end of each behaviors/*.md) are unresolved because no scenario of the reference was run for them.",
+            "suggestedWp": "Rules for watch and startup: new citation sweep WP with P5-05 owning the UI-level ones; Open questions to the owning P5/P6 WP as stated in behaviors/README.md"
+          },
+          {
+            "title": "Known test flakiness under load not owned by anyone",
+            "evidence": "P0-13 notes timing-budget tests (WriteEffectsTests, ResponseCacheTests, CommandAvailabilityTests) fail under 12 to 16 CPU spinners, ThumbnailStoreTests failed in 3 of 4 runs while walker tests ran (P2-02, since serialized), and a forced eject once failed with EBUSY under load. orchestrator.json openIssues still lists 'find what launched DiskImageMounter during quiet mode', which was never resolved. W1-G also recorded the quit hang as fixed in two places on different branches ('integrator picks one'); the merge commit 0bdda8a handled it, but there is no regression test for the _shouldTerminate deadlock.",
+            "suggestedWp": "New WP 'test stability' (loosen or isolate timing tests, add a launch-quit automation test with a timeout)"
+          }
+        ],
+        "summary": "Main has P1, P2 and P4-01/02 code, but I found gaps in bookkeeping, citations, deviations and several unwired P4-02 behaviors. Passing evidence is strong for pure logic and FS: 643 L and 130 FS rows pass, and the golden suites and 896 citations sync cleanly. The main risks are these. (1) P4-02 and P0-14 are still 'implementing' in orchestrator.json with no summary, gate result or deviations, so P4-02 had no review. (2) At least eight groups of user-visible deviations are not in DEVIATIONS.md (D-001..D-005 only). (3) Many B-VIEW tab and window rules and F-607/F-618/F-650 are unwired or untested; for example leaveUnmountedDisks has no caller. (4) The windows.spec relaunch and Dock-reopen flows have no scenario, and the matrix cannot close e2e rows from scenarios. (5) startupNavigation (14 rows) and bootstrap.test (23 rows) are uncited despite existing code. (6) The date-taken reader has no owner. (7) The bench baseline is still the spike's and the 150 ms first-search budget is unmeasured. (8) About 200 feature rows in P1/P2 show no tests because tests cite only T- ids. Key files: /Users/tcmudemirhan/src/swiftproj/filetrail/docs/port/parity/{tests.tsv,features.md,behaviors.tsv}, /Users/tcmudemirhan/src/swiftproj/filetrail/docs/port/state/orchestrator.json, /Users/tcmudemirhan/src/swiftproj/filetrail/docs/port/bench/{budgets,baseline}.json, /Users/tcmudemirhan/src/swiftproj/filetrail/Sources/FTAppKit/Windows/."
+      },
+      "endedAt": "2026-10-14T10:25:26+00:00",
+      "integration": {
+        "merged": [
+          "P4-02",
+          "P0-14"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "c0e3f20ea67c3644cc6eb7ae3c6890e7aab3c056",
+        "summary": "Both branches merged. The P4-02 shared-file edits were already in its branch, so I applied nothing extra. P0-14 conflicted with P4-02 in AutomationRunner.swift, where both fixed the automation quit hang. I kept P0-14's RunLoop.main.perform(inModes: [.common]) version and wrapped NSApp.terminate in MainActor.assumeIsolated, because the build failed with an actor-isolation error without it. I then ran the parity sync and committed it as \"Sync parity matrix after W1-G\". The last scripts/ci.sh run passed build, test (1093 tests, none failing) and format."
+      },
+      "spentOutputTokens": 358887,
+      "agents": 10,
+      "subagentTokens": 1541835,
+      "durationMin": 107.3,
+      "meterAfter": {
+        "weeklyPct": 14,
+        "fiveHourPct": 15
+      }
     }
   },
   "wps": {
@@ -1386,10 +1475,10 @@
         "P2-07",
         "P4-01"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P4-02",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "b62cd5dfd1a4fd102f9f450e229f06b061a895d0",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh --tier wp"
@@ -1398,10 +1487,60 @@
         "parity",
         "visual"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
-      "blockers": []
+      "summary": "Sources/FTAppKit/Windows/: ExplorerWindowController.swift (port of explorerWindowController.ts, generic over ExplorerWindowLike: startup restore, show back to front or after 5 s, openDefault/openNewWindowFromFront/openWindowFrom with 22 pt placement, merge, open-file requests, close question through QuitCoordinator, successor hook, bounds 160 ms, lastClosedWindow). ExplorerWindowOrder.swift (explorerWindows.ts), ExplorerTabs.swift (explorerTabs.ts), StartupTabs.swift (resolveStartupTabs), WindowChannels.swift (WindowTabsRequests, WindowPreferenceChannel, SharedClipboard), TabGroupSession.swift (shared panels and Reopen Closed Tab list).\nNative layer: ExplorerTabGroup is one explorer window: an NSWindowTabGroup whose tabs are MainWindowControllers, now in Windows/. Tabs load lazily. It handles tab labels and disambiguation, the 100-tab limit, new/close/reopen/next/previous tab, Move Tab, Merge, and per-tab menu state. ExplorerWindows replaces MainWindowHost as the ExplorerWindowHost. It wires folder watches and checkForMissedChanges on focus, openFromOtherApp, session saves, and reconciles tabs the system tab bar moves.\nTests: tab model, order/placement, channels and 37 controller cases with fakes; 4 GUI-gated real-window flows (tabs/move/merge, close/reopen, restore after relaunch with bounds and front window, 100-tab limit). Crash/reload cases are marked N/A.\nScenarios 35-38 (new window, open in new window, move tab and merge, paste in another window) run on both sides. scripts/ci.sh passes; the wp capture gate exits 0.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "Duplicate Tab is not implemented and not reachable from any menu, although D-001 and PLAN.md section 3.4 promise it in the File menu",
+          "where": "Reference: apps/desktop/src/renderer/hooks/useExplorerTabs.ts:614-633 (duplicateTab), App.tsx:2790 (onDuplicateTab). Port: Sources/FTAppKit/Windows/ExplorerTabGroup.swift (no counterpart)",
+          "evidence": "Side-by-side. Reference: `duplicateTab(tabId)` opens a copy right after the source tab and brings it to the front. The copy has the same folder, tree root, selected row, sub-view and history (`{ ...leftSnapshot, search: null }`). It is gated by canChangeTabs() and hasRoomForTab(). Behavior rows B-VIEW-158 and B-TREE-183 in docs/port/behaviors/ describe it. Port: ExplorerTabGroup has openNewTab, openTab, reopenClosedTab, moveTabToNewWindow and mergeAllWindows. It has no duplicate entry point and no history-copying path, because `startupTab` carries no history. docs/port/DEVIATIONS.md D-001 says Duplicate Tab stays 'in the File menu and its shortcut', and docs/port/PLAN.md:149 says the same. Reproduce with `grep -rniE 'duplicateTab|Duplicate Tab' Sources` on port/P4-02. The only hits are the unrelated duplicateSelection command (File > Duplicate, Cmd+D). There is no tab-duplicating command in RendererCommand, ShortcutCommandTable or ApplicationMenuBuilder. The brief assigns the tab model and the 100-tab/busy/sheet rules to this work package. The feature is silently lost, and the approved deviation (D-001) is not honored, because the user has no way to duplicate a tab. The reference also has no shortcut for it, so the File menu entry the deviation promises is a new one that this package should have added or flagged."
+        },
+        {
+          "severity": "medium",
+          "title": "The window title is the folder name, not the front tab's label, so the Window menu, ⌘` and Mission Control name windows differently from the original",
+          "where": "Sources/FTAppKit/Windows/MainWindowController.swift:230-234; Sources/FTAppKit/Windows/ExplorerTabGroup.swift:458-466",
+          "evidence": "Reference, apps/desktop/src/renderer/App.tsx:1149-1154 (e4d0872): `const activeTabLabel = tabItems.find((tab) => tab.active)?.label ?? \"\"; document.title = activeTabLabel.length > 0 ? activeTabLabel : \"File Trail\";`. tabItems are the disambiguateTabLabels output (useExplorerTabs.ts:1075-1090), so the window takes the tab's full label: \"fixtures — filetrail-port\" when another tab is on a different folder with the same name, “q” in src for a search tab (explorerTabs.ts:151), and \"Favorites\" when currentPath is empty (explorerTabs.ts:158). The original UI test App.windows.test.tsx:353-360 is 'names the window after its front tab'. The toolbar title stays the plain folder name (ExplorerWorkspace.tsx:1620).\nPort, MainWindowController.swift:230-234: `// The window title stays the folder name ... window?.title = name.isEmpty ? \"File Trail\" : name`. Only `tab.title` gets the disambiguated label (ExplorerTabGroup.swift:465).\nProbe capture (scratch scenario z2-dup-labels: open app/tests/fixtures, newTab, open ../..), run with `lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh <scratch>/z2-dup-labels.json`. On the Swift side the tabs read 'fixtures — tests' and 'fixtures — filetrail-port', and both expects pass. The NSWindow title (the toolbar.title element, which AppKit also uses for the Window menu) reads 'fixtures' ('title: text “fixtures”' passed). So the Window menu shows 'fixtures' where the original's window is titled 'fixtures — filetrail-port', and a search tab's window would be titled with its folder, not “query” in folder. Because the native toolbar title and the Window menu both read window.title, this needs a recorded deviation or a separate toolbar title."
+        },
+        {
+          "severity": "medium",
+          "title": "Window-menu captures 26/33 ('Show Previous Tab') snapshot the background tab, so the gate compares the wrong state",
+          "where": "Sources/FTAppKit/Automation/AutomationRunner+Steps.swift:178-236 (menu/command steps leave `current` on the old tab window); tools/capture/scenarios/26-menubar-window-light.json, 33-menubar-window-dark.json",
+          "evidence": "Ran `lockf -k ~/Library/Caches/filetrail-port/gui.lock tools/capture/run.sh 26-menubar-window-light` on port/P4-02. Reference electron/main.png: toolbar title 'components', tab strip with 'components' active, the 14-row components listing. Port swift/main.png: toolbar title 'src', the src listing (components, lib, main.jsx, pages), and an empty tab-bar band, which is how a native tab window looks when it is not the selected tab. The geometry report lists 'tab 0/1 missing (swift)'. With native tabs each tab is its own NSWindow. The menu step's Show Previous Tab does switch: the probe scenario z1-prev-tab (same steps, then selectWindow index 0) passes 'title: text “components”'. But the runner's `current` still points at the src tab's window, so snapshot and geometry dump a hidden window. This branch moved tabs to separate NSWindows and changed only newTab, selectTab and selectWindow to update `current`. Any `menu`, `command` or `key` step that changes the selected tab (Show Previous/Next Tab, closeTab, reopenClosedTab, ⌘1-style tab keys) leaves `current` on a window that is no longer in front. F-593's visual check in the wp tier then reports pixel scores (0.12) for the wrong tab, without flagging the mismatch."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "headSha": "b62cd5dfd1a4fd102f9f450e229f06b061a895d0",
+          "summary": "Round-1 fixes are on port/P4-02. Each fix has a GUI test in Tests/FTAppKitTests/Windows/NativeWindowsGUITests.swift. Each new test failed before its fix and passes now (FILETRAIL_GUI_TESTS=1, run under the GUI lock). (1) Duplicate Tab: added ExplorerTabGroup.duplicateTab(_:). It is gated by sheet/busy and hasRoomForTab, so it gives the 100-tab notice. The copy has the source's folder, tree root, favorite row, view and history, and opens right after the source and in front. The new MainWindowController.init(snapshot:frame:) is shared with Reopen Closed Tab. MainWindowController exposes @objc duplicateTab(_:) for a nil-targeted menu item. (2) Window title: ExplorerTabGroup.refreshTitles gives each ExplorerTabWindow a windowsMenuTitle equal to the disambiguated tab label, or \"File Trail\" when the label is empty. ExplorerTabWindow renames its Window menu item through NSApp.changeWindowsItem whenever AppKit sets its title or represented URL, orders it on screen or makes it key. window.title stays the folder name, so the toolbar matches the original's toolbar title. The test checks the label in the real MainMenu's Window menu for both front and background tabs, and again after switching tabs. (3) Automation: AutomationRunner.currentWindow now follows the native tab group's selected window (tabInFront(of:)). Menu, command and key steps that change tabs now snapshot and dump the tab in front. In 26-menubar-window-light, toolbar.title now reads \"components\" and both tabBar.tab elements are present. Gates: scripts/ci.sh PASS (build, 1093 tests, format). tools/capture/run.sh --tier wp exit 0. Branch left detached.",
+          "remaining": [
+            "Shared-file request (command table and menu, not owned by P4-02): add RendererCommand.duplicateTab, plus a ShortcutCommandTable entry: label 'Duplicate Tab', group .tabs, no default keys (the original has none), menuPath 'File > Duplicate Tab'. Add an ApplicationMenuBuilder File item after 'New Tab', and a `case .duplicateTab: group?.duplicateTab(self)` line in MainWindowController.perform (or send the existing @objc duplicateTab(_:)). Until then Duplicate Tab is implemented but not in any menu. Adding the item will change the File menu captures (22/29) against the original, which has no such item; D-001 allows that.",
+            "Deviation to record (finding 2, partial): Mission Control and the window's accessibility title still show the folder name. Only the Window menu (and the Dock window list built from it) shows the tab label like the original's document.title. With native tabs, the toolbar title and NSWindow.title are the same string. Keeping the toolbar like the original means window.title stays the folder name. PLAN.md §3.4 already says 'window title stays the folder name'. Suggest a DEVIATIONS.md row for the Mission Control and accessibility title."
+          ]
+        }
+      ],
+      "blockers": [],
+      "gateResult": {
+        "pass": true,
+        "summary": "P4-02 (HEAD b62cd5d, detached): scripts/ci.sh exit 0 (build PASS, test PASS 1093 passing runs / 0 failing, format PASS). lockf ... tools/capture/run.sh --tier wp exit 0 (38 scenarios captured; contact sheet at tools/capture/out/contact.html). Note: the capture output lists some \"expect unmet\" and \"failed steps\" entries (e.g. 11-context-menu-file, 12-rename-f2, 13-new-folder, 14-cut-items-marks, 15-clipboard-popover, 16-go-to-folder-typed, 17-review-sheet-conflict, 19-settings-general, 20-outside-file-created, 38-paste-in-another-window). The run's exit code is 0, so the gate passes as specified, but those lines are worth a look. Nothing changed or committed.",
+        "failures": []
+      },
+      "sharedFileRequests": [
+        "Files edited outside Windows/: Sources/FTAppKit/App/AppDelegate.swift (replaced MainWindowHost, as the brief required). A run driven by automation or a benchmark now uses a temporary user-data dir, so restored windows don't leak between capture runs.",
+        "Sources/FTAppKit/Automation/AutomationRunner.swift: finish() now terminates through NSApp.perform(afterDelay:0). The P4-01 quit flow made every capture scenario hang until its 600 s limit, because the quit task could not run inside the automation task's turn.",
+        "Sources/FTAppKit/Automation/AutomationCommands.swift: routes the window and tab commands to MainWindowController.perform.",
+        "Sources/FTAppKit/Automation/AutomationRunner+Steps.swift: newWindow now unwraps the optional window controller that AppDelegate.openWindow(at:) returns.",
+        "Sources/FTAppKit/Automation/AutomationTags.swift: tags NSTabButton as tabBar.tab.",
+        "Added tools/capture/scenarios/35-new-window.json, 36-open-in-new-window.json, 37-move-tab-and-merge.json and 38-paste-in-another-window.json.",
+        "StartupTabs.swift ports startupNavigation.ts's resolveStartupTabs without citing its tests; P5-05 can cite T-5c8a8dd9 and the rest against it rather than port it again."
+      ],
+      "deviations": [
+        "The system tab bar lets a tab be dragged out into a window of its own, or onto another window's tab bar. The original does not allow tab dragging between windows. The port keeps this and reconciles: a tab dragged out becomes an explorer window with its own record and the source window's panels. A window emptied this way closes as a merged window and is not remembered as the window closed last.",
+        "The red close button and File > Close Window close the whole explorer window, as the original's close button does. The close button on a tab in the tab bar closes only that tab (D-002 allows it).",
+        "A disk image opened from another app while a window is open follows the diskImageOpensIn preference: a new window by default, a tab when the preference says so. This is the original's behaviour; the brief said such an image opens in a new tab.",
+        "The 100-tab notice goes through the ExplorerWindows.showNotice hook. Until P5-09's toasts take that hook, it only beeps.",
+        "Copy and paste between windows is not implemented natively yet, so scenario 38 reports an unmet expectation on the Swift side. The SharedClipboard model is in place for P5-08."
+      ]
     },
     "P4-03": {
       "title": "Theme, accent, About, Acknowledgements, Help (and remove the unused zoom parameter from Metrics)",
@@ -1997,15 +2136,31 @@
         "P4-01",
         "P0-13"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-14",
-      "attempts": 0,
+      "attempts": 1,
       "gate": [
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter DiskImageMounterHandOffTests",
         "scripts/ci.sh"
       ],
       "lenses": [],
-      "blockers": []
+      "blockers": [
+        "Menu items disabled in captures 25-27 and 29-34 because the explorer window never reports menu state to ApplicationMenuSync: needs P4-02's window controller.",
+        "bench open_3000_ms 54.58 > 50 budget and scroll_max_ms not produced; depends on the old window stub that P4-02 replaces."
+      ],
+      "headSha": "300c04c",
+      "gateResult": {
+        "pass": true,
+        "summary": "Gate 1: `lockf ... env FILETRAIL_GUI_TESTS=1 swift test --filter DiskImageMounterHandOffTests` exit 0 (1 test passed). Gate 2: `scripts/ci.sh` exit 0 (build PASS, test PASS with 1019 tests in passing runs and 0 failing, format PASS). Worktree detached at port/P0-14 (300c04c); nothing changed or committed.",
+        "failures": []
+      },
+      "summary": "1) Bench (--quick --report-only): FAIL on budgets. open_3000_ms 54.58 vs budget 50 (OVER BUDGET). bundle_mb 5.32 vs baseline 0.42 flagged REGRESSION (budget 12, so within budget). scroll_max_ms has no result (scroll.txt produced, metric not parsed; likely the window is the old stub, P4-02). Others ok: launch 275 ms, idle 32 MB, list_3000 5.7 ms, list_100000 251 ms, back 9.6 ms. Open 3000 cause is not in owned code; not fixed.\n2) DiskImageMounterHandOffTests: PASS. The one image left in hdiutil is a ram:// disk that predates the test (not mounted by it).\n3) Menu-bar captures 21-34: found and fixed a real bug: after the last step, AutomationRunner.finish() called NSApp.terminate inside the runner's main-actor task, so terminate's nested event loop deadlocked on the quit coordinator's reply and every scenario hung to the 600 s limit. It now terminates from a RunLoop.main.perform turn. After that, all 14 run.\n - Pass (chosen item did what the scenario expects): 24 View > as Icons (switches to icon view), 22 File > New Tab (second tab appears), 21 Settings... (step ok; Settings window not in the main snapshot, so not visible).\n - Blocked: 25/32 Go > Enclosing Folder, 26/33 Window > Show Previous Tab, 27/34 Help > Keyboard Shortcuts, 30 Edit > Select All, 29 File > New Tab (dark), 31 as Icons (dark): the menu step fails with \"is disabled\". Menu enablement comes from ApplicationMenuSync, which only gets window state from P4-02's window controller (it never reports, and focus and on-screen state vary between runs). Passes and fails differ between runs for the same item.\nGates: DiskImageMounterHandOffTests passes; scripts/ci.sh passes (1019 tests).",
+      "findings": [],
+      "fixes": [],
+      "sharedFileRequests": [],
+      "deviations": [
+        "Touched Sources/FTAppKit/Automation/AutomationRunner.swift (outside the listed owned paths) to fix the quit hang that made every capture scenario time out; P4-02 may hit the same hang and should take this commit."
+      ]
     }
   },
   "behaviorExtraction": {
