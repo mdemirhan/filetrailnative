@@ -84,7 +84,11 @@ public enum StartupTabs {
             if let startupFolderPath, !startupFolderPath.isEmpty {
                 // Launch targets from the system always win.
                 return (
-                    [tab(startupFolderPath, root: persistedRoot(nil, homePath: homePath, startupPath: startupFolderPath), favorite: nil)],
+                    [
+                        tab(
+                            startupFolderPath,
+                            root: persistedRoot(nil, homePath: homePath, startupPath: startupFolderPath), favorite: nil)
+                    ],
                     0
                 )
             }
@@ -101,7 +105,9 @@ public enum StartupTabs {
                 activeIndex = existing
             } else {
                 tabs.append(
-                    tab(startupFolderPath, root: persistedRoot(nil, homePath: homePath, startupPath: startupFolderPath), favorite: nil))
+                    tab(
+                        startupFolderPath, root: persistedRoot(nil, homePath: homePath, startupPath: startupFolderPath),
+                        favorite: nil))
                 activeIndex = tabs.count - 1
             }
         }

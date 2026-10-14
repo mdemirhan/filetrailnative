@@ -74,8 +74,9 @@ public struct TabTreeNode: Equatable, Sendable {
     public var loaded: Bool
     public var childPaths: [String]
 
-    public init(path: String, expanded: Bool = false, loading: Bool = false, loaded: Bool = false, childPaths: [String] = [])
-    {
+    public init(
+        path: String, expanded: Bool = false, loading: Bool = false, loaded: Bool = false, childPaths: [String] = []
+    ) {
         self.path = path
         self.expanded = expanded
         self.loading = loading

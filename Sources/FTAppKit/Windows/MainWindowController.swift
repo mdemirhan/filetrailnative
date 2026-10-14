@@ -1,4 +1,6 @@
+// Port of a tab of apps/desktop/src/renderer/hooks/useExplorerTabs.ts: one tab of an explorer window, as a native window tab
 import AppKit
+import FTFoundation
 
 struct NavigationTiming: Sendable {
     let folder: URL
@@ -17,7 +19,36 @@ extension NSToolbarItem.Identifier {
     static let search = Self("search")
 }
 
-/// One browser window (or tab): sidebar, toolbar, current folder and its history.
+/// The window of one tab. Its close button and Close Window close the whole explorer window, as the original's close
+/// button does; the close button of a tab in the tab bar closes the tab.
+final class ExplorerTabWindow: NSWindow {
+    weak var explorerTab: MainWindowController?
+
+    override func performClose(_ sender: Any?) {
+        guard let tab = explorerTab, let group = tab.group else {
+            super.performClose(sender)
+            return
+        }
+        let closesWindow = (sender as AnyObject?) === standardWindowButton(.closeButton) || sender is NSMenuItem
+        if closesWindow || group.tabs.count == 1 {
+            group.closeAsCloseButton()
+        } else {
+            super.performClose(sender)
+        }
+    }
+
+    // The system's tab commands go through the app's own, so the busy, sheet and 100-tab rules hold.
+    override func moveTabToNewWindow(_ sender: Any?) {
+        explorerTab?.perform(.moveTabToNewWindow)
+    }
+
+    override func mergeAllWindows(_ sender: Any?) {
+        explorerTab?.perform(.mergeAllWindows)
+    }
+}
+
+/// One tab of an explorer window (the original's tab): sidebar, toolbar, current folder and its history, and how it
+/// shows its folder. Each tab is a window of its own, in the native tab group of its explorer window.
 final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolbarDelegate,
     NSMenuItemValidation
 {
@@ -26,45 +57,93 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     }
 
     static let logsTimings = ProcessInfo.processInfo.environment["FILETRAIL_TIMING"] != nil
+    /// The default size of an explorer window, and the smallest it can be (`main.ts:401-447`).
+    static let defaultContentSize = NSSize(width: 1200, height: 760)
+    static let minimumSize = NSSize(width: 760, height: 480)
+    private static var nextWindowID = 1
 
+    /// The number its folder watch and menu state are filed under.
+    let windowID: Int
+    /// The explorer window it is a tab of.
+    weak var group: ExplorerTabGroup?
     private(set) var folder: URL
+    /// How the tab shows its folder, kept between launches with its folder.
+    private(set) var treeRootPath: String
+    private(set) var favoritePath: String?
+    private(set) var viewMode: ExplorerViewMode
+    private(set) var searchViewMode: ExplorerViewMode
+    private(set) var sortBy: SortByPreference
+    private(set) var sortDirection: SortDirectionPreference
+    private(set) var includeHidden: Bool
+    private(set) var foldersFirst: Bool
+    private(set) var favoritesExpanded: Bool
+    private(set) var locationsExpanded: Bool
+
     var onClose: (() -> Void)?
     /// Called once, after the first folder has been drawn (used by the launch benchmark).
     var onFirstDraw: (() -> Void)?
+    /// Called once the tab has shown its first folder, or found it can't.
+    var onReady: (() -> Void)?
 
     private let sidebar = SidebarViewController()
     private let browser = BrowserViewController()
     private var backStack: [URL] = []
     private var forwardStack: [URL] = []
     private var navigationToken = 0
+    /// A tab brought back, or merged in, waits unread until it is first shown.
+    private(set) var loaded = false
 
     private var backItem: NSToolbarItem?
     private var forwardItem: NSToolbarItem?
     private var viewModeItem: NSToolbarItemGroup?
     private var searchItem: NSSearchToolbarItem?
 
-    init(folder: URL) {
-        self.folder = folder
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 1000, height: 620),
+    /// A tab on `tab`'s folder, with `history` (none: just the folder). It reads its folder when it is first shown,
+    /// or at once with `loadNow`.
+    init(tab: StartupTab, history: (paths: [String], index: Int)? = nil, frame: NSRect? = nil, loadNow: Bool = true) {
+        windowID = Self.nextWindowID
+        Self.nextWindowID += 1
+        folder = URL(fileURLWithPath: tab.path)
+        treeRootPath = tab.rootPath
+        favoritePath = tab.favoritePath
+        viewMode = tab.viewMode
+        searchViewMode = tab.searchViewMode
+        sortBy = tab.sortBy
+        sortDirection = tab.sortDirection
+        includeHidden = tab.includeHidden
+        foldersFirst = tab.foldersFirst
+        favoritesExpanded = tab.favoritesExpanded
+        locationsExpanded = tab.locationsExpanded
+        if let history, history.paths.indices.contains(history.index) {
+            backStack = history.paths[..<history.index].map { URL(fileURLWithPath: $0) }
+            forwardStack = history.paths[(history.index + 1)...].reversed().map { URL(fileURLWithPath: $0) }
+        }
+        let window = ExplorerTabWindow(
+            contentRect: NSRect(origin: .zero, size: Self.defaultContentSize),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered, defer: false)
         window.toolbarStyle = .unified
         window.tabbingIdentifier = "FileTrailBrowser"
-        window.minSize = NSSize(width: 560, height: 320)
+        window.minSize = Self.minimumSize
+        window.isReleasedWhenClosed = false
         super.init(window: window)
+        window.explorerTab = self
         window.delegate = self
 
         let split = NSSplitViewController()
         let sidebarItem = NSSplitViewItem(sidebarWithViewController: sidebar)
-        sidebarItem.minimumThickness = 150
-        sidebarItem.maximumThickness = 320
+        sidebarItem.minimumThickness = CGFloat(AppPreferenceLimits.treeWidthRange.lowerBound)
+        sidebarItem.maximumThickness = CGFloat(AppPreferenceLimits.treeWidthRange.upperBound)
         split.addSplitViewItem(sidebarItem)
         split.addSplitViewItem(NSSplitViewItem(viewController: browser))
         window.contentViewController = split
         split.view.setAccessibilityIdentifier("window.content")
-        window.setContentSize(NSSize(width: 1000, height: 620))
-        window.center()
+        if let frame {
+            window.setFrame(frame, display: false)
+        } else {
+            window.setContentSize(Self.defaultContentSize)
+            window.center()
+        }
 
         let toolbar = NSToolbar(identifier: "Main")
         toolbar.delegate = self
@@ -74,10 +153,86 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
 
         sidebar.onSelect = { [weak self] url in self?.go(to: url) }
         browser.onOpen = { [weak self] items in self?.open(items) }
-        go(to: folder, history: .none)
+        browser.setMode(viewMode == .icons ? .icons : .list)
+        updateTitle()
+        if loadNow { ensureLoaded() }
+    }
+
+    /// A tab on `folder`, as the app's latest values show folders.
+    convenience init(folder: URL) {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let defaults = AppPreferences.defaults()
+        self.init(
+            tab: StartupTabs.resolve(defaults, homePath: home, startupFolderPath: folder.path, restoreTabs: false)
+                .tabs[0])
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    // MARK: The tab
+
+    /// The tab as it is saved between launches (`toOpenTabPreference`).
+    var openTab: OpenTabPreference {
+        let path = folder.path
+        return OpenTabPreference(
+            path: path.isEmpty ? nil : path, treeRootPath: treeRootPath.isEmpty ? nil : treeRootPath,
+            favoritePath: favoritePath == path ? favoritePath : nil, viewMode: viewMode, searchViewMode: searchViewMode,
+            sortBy: sortBy, sortDirection: sortDirection, includeHidden: includeHidden, foldersFirst: foldersFirst,
+            favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded)
+    }
+
+    /// The tab as a new tab or a reopened one starts from it.
+    var startupTab: StartupTab {
+        StartupTab(
+            path: folder.path, rootPath: treeRootPath, favoritePath: favoritePath, viewMode: viewMode,
+            searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
+            includeHidden: includeHidden, foldersFirst: foldersFirst, favoritesExpanded: favoritesExpanded,
+            locationsExpanded: locationsExpanded)
+    }
+
+    /// What the tab keeps of itself (`captureLiveTab`).
+    var snapshot: TabSnapshot {
+        let history = backStack + [folder] + forwardStack.reversed()
+        return TabSnapshot(
+            currentPath: folder.path, historyPaths: history.map(\.path), historyIndex: backStack.count,
+            viewMode: viewMode, searchViewMode: searchViewMode, sortBy: sortBy, sortDirection: sortDirection,
+            treeRootPath: treeRootPath,
+            selectedTreeItemID: favoritePath.map { "favorite:\($0)" } ?? "fs:\(folder.path)",
+            includeHidden: includeHidden, foldersFirst: foldersFirst, favoritesExpanded: favoritesExpanded,
+            locationsExpanded: locationsExpanded)
+    }
+
+    /// What the tab bar calls the tab.
+    var tabDescription: TabDescription {
+        ExplorerTabs.describe(
+            currentPath: folder.path, searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false)
+    }
+
+    /// Reads the tab's folder the first time it is shown.
+    func ensureLoaded() {
+        guard !loaded else { return }
+        loaded = true
+        Task {
+            await navigate(to: folder, history: .none)
+            if let ready = onReady {
+                onReady = nil
+                ready()
+            }
+        }
+    }
+
+    /// Reads the folder on screen again: something changed in it.
+    func reload() {
+        guard loaded else { return }
+        go(to: folder, history: .none)
+    }
+
+    private func updateTitle() {
+        // The window title stays the folder name, for the Window menu; the tab bar has the tab's label.
+        let name = ExplorerTabs.folderDisplayName(folder.path)
+        window?.title = name.isEmpty ? "File Trail" : name
+        window?.representedURL = folder
+    }
 
     // MARK: Navigation
 
@@ -89,6 +244,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     /// navigation replaced this one or the folder couldn't be read.
     @discardableResult
     func navigate(to url: URL, history: HistoryMove = .push) async -> NavigationTiming? {
+        loaded = true
         navigationToken += 1
         let token = navigationToken
         let clock = ContinuousClock()
@@ -120,20 +276,20 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
                 forwardStack.removeAll()
             }
         case .back:
-            backStack.removeLast()
+            if !backStack.isEmpty { backStack.removeLast() }
             forwardStack.append(previous)
         case .forward:
-            forwardStack.removeLast()
+            if !forwardStack.isEmpty { forwardStack.removeLast() }
             backStack.append(previous)
         case .none:
             break
         }
         folder = url
+        if favoritePath != url.path { favoritePath = nil }
 
         // Coming back up to a parent selects the folder you came from, as Finder does.
         let cameFromChild = previous.deletingLastPathComponent().comparablePath == url.comparablePath
-        window?.title = FileManager.default.displayName(atPath: url.path)
-        window?.representedURL = url
+        updateTitle()
         searchItem?.searchField.stringValue = ""
         browser.show(listing, selecting: cameFromChild ? [previous] : [])
         sidebar.select(url)
@@ -144,6 +300,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
             onFirstDraw = nil
             callback()
         }
+        group?.tabChanged(self)
         Task {
             let capacity = await Task.detached(priority: .utility) {
                 FolderLoader.availableCapacity(at: url)
@@ -173,7 +330,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         }
         for item in items {
             if let target = FolderLoader.folderTarget(of: item) {
-                (NSApp.delegate as? AppDelegate)?.openTab(at: target, nextTo: self)
+                group?.openTab(path: target.path, from: self)
             } else {
                 NSWorkspace.shared.open(item.url)
             }
@@ -184,6 +341,35 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         backItem?.isEnabled = !backStack.isEmpty
         forwardItem?.isEnabled = !forwardStack.isEmpty
         viewModeItem?.selectedIndex = browser.mode.rawValue
+    }
+
+    /// The folder Open in New Tab and Open in New Window open: the one folder selected.
+    private var selectedFolder: URL? {
+        let items = browser.selectedItems
+        guard items.count == 1 else { return nil }
+        return FolderLoader.folderTarget(of: items[0])
+    }
+
+    // MARK: Menu state
+
+    /// The commands whose availability the tab knows of itself: history and tabs.
+    private static let tabCommands: [RendererCommand] = [
+        .goBack, .goForward, .goEnclosingFolder, .selectNextTab, .selectPreviousTab, .moveTabToNewWindow,
+    ]
+
+    /// What the application menu shows of this tab.
+    var menuState: ApplicationMenuState {
+        let context = CommandAvailabilityContext(
+            currentPath: folder.path, canGoBack: !backStack.isEmpty, canGoForward: !forwardStack.isEmpty,
+            tabCount: group?.tabs.count ?? 1, homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+        let panels = group?.session.panels
+        var state = ApplicationMenuState.build(
+            viewMode: viewMode, sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: includeHidden,
+            folderTreeOpen: panels?.folderTreeOpen ?? true, infoPanelOpen: panels?.propertiesOpen ?? false,
+            infoRowOpen: panels?.detailRowOpen ?? false, favoriteIsSet: false, textEditing: false
+        ) { CommandAvailability.canRun($0, context) }
+        state.disabledCommands = state.disabledCommands.filter(Self.tabCommands.contains)
+        return state
     }
 
     // MARK: Actions
@@ -214,23 +400,26 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
 
     @objc func showAsIcons(_ sender: Any?) { setMode(.icons) }
 
-    @objc func showAsList(_ sender: Any?) { setMode(.list) }
+    @objc func showAsList(_ sender: Any?) { setMode(.details) }
 
     @objc private func viewModeChanged(_ sender: NSToolbarItemGroup) {
-        setMode(BrowserViewController.Mode(rawValue: sender.selectedIndex) ?? .list)
+        setMode(sender.selectedIndex == BrowserViewController.Mode.icons.rawValue ? .icons : .details)
     }
 
     @objc private func searchChanged(_ sender: NSSearchField) {
         browser.setFilter(sender.stringValue)
     }
 
+    /// The tab bar's "+" button, and New Tab: a tab on this folder.
     override func newWindowForTab(_ sender: Any?) {
-        (NSApp.delegate as? AppDelegate)?.openTab(at: folder, nextTo: self)
+        group?.openNewTab(from: self)
     }
 
-    private func setMode(_ mode: BrowserViewController.Mode) {
-        browser.setMode(mode)
+    private func setMode(_ mode: ExplorerViewMode) {
+        viewMode = mode
+        browser.setMode(mode == .icons ? .icons : .list)
         updateNavigationItems()
+        group?.tabChanged(self)
     }
 
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
@@ -249,8 +438,40 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         }
     }
 
+    // MARK: Window events
+
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        group?.shouldCloseTab(self) ?? true
+    }
+
     func windowWillClose(_ notification: Notification) {
+        group?.tabWillClose(self)
         onClose?()
+    }
+
+    func windowDidBecomeKey(_ notification: Notification) {
+        ensureLoaded()
+        group?.tabBecameKey(self)
+    }
+
+    func windowDidMove(_ notification: Notification) {
+        group?.tabBoundsChanged(self)
+    }
+
+    func windowDidResize(_ notification: Notification) {
+        group?.tabBoundsChanged(self)
+    }
+
+    func windowDidExitFullScreen(_ notification: Notification) {
+        group?.tabBoundsChanged(self)
+    }
+
+    func windowDidMiniaturize(_ notification: Notification) {
+        group?.tabVisibilityChanged(self)
+    }
+
+    func windowDidDeminiaturize(_ notification: Notification) {
+        group?.tabVisibilityChanged(self)
     }
 
     // MARK: Toolbar
@@ -313,6 +534,62 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         item.isBordered = true
         item.autovalidates = false
         return item
+    }
+}
+
+extension MainWindowController: ExplorerWindowHandle {
+    /// Carries out a menu command in this tab, or in its explorer window.
+    func perform(_ command: RendererCommand) {
+        let fileManager = FileManager.default
+        func place(_ url: URL?) {
+            if let url { go(to: url) }
+        }
+        switch command {
+        case .goBack: goBack(nil)
+        case .goForward: goForward(nil)
+        case .goEnclosingFolder: goToEnclosingFolder(nil)
+        case .openSelection: openSelection(nil)
+        case .viewAsIcons: setMode(.icons)
+        case .viewAsDetails: setMode(.details)
+        case .viewAsList: setMode(.list)
+        case .goDocuments: place(fileManager.urls(for: .documentDirectory, in: .userDomainMask).first)
+        case .goDesktop: place(fileManager.urls(for: .desktopDirectory, in: .userDomainMask).first)
+        case .goDownloads: place(fileManager.urls(for: .downloadsDirectory, in: .userDomainMask).first)
+        case .goHomeRootTree: place(fileManager.homeDirectoryForCurrentUser)
+        case .goLibrary: place(fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first)
+        case .goMacintoshHD: place(URL(fileURLWithPath: "/"))
+        case .goApplications: place(fileManager.urls(for: .applicationDirectory, in: .localDomainMask).first)
+        case .goTrash: place(fileManager.homeDirectoryForCurrentUser.appendingPathComponent(".Trash"))
+        case .newTab: group?.openNewTab(from: self)
+        case .closeTab: group?.closeTab(self)
+        case .reopenClosedTab: group?.reopenClosedTab(from: self)
+        case .selectNextTab: group?.selectAdjacentTab(from: self, .next)
+        case .selectPreviousTab: group?.selectAdjacentTab(from: self, .previous)
+        case .openSelectionInNewTab:
+            if let target = selectedFolder { group?.openTab(path: target.path, from: self) }
+        case .newWindow: group?.openNewWindow(from: self, path: nil)
+        case .openSelectionInNewWindow:
+            if let target = selectedFolder { group?.openNewWindow(from: self, path: target.path) }
+        case .moveTabToNewWindow: group?.moveTabToNewWindow(self)
+        case .mergeAllWindows: group?.mergeAllWindows(into: self)
+        case .toggleFolderTree: group?.session.update { $0.folderTreeOpen.toggle() }
+        case .toggleInfoPanel: group?.session.update { $0.propertiesOpen.toggle() }
+        case .toggleInfoRow: group?.session.update { $0.detailRowOpen.toggle() }
+        default:
+            if let selector = MenuCommandRouter.nativeEditSelector(command) {
+                NSApp.sendAction(selector, to: nil, from: nil)
+            }
+        }
+    }
+
+    /// The panels the explorer window shows, as every one of its tabs shows them.
+    func showPanels(_ panels: TabGroupSession.Panels) {
+        guard let split = window?.contentViewController as? NSSplitViewController,
+            let sidebarItem = split.splitViewItems.first
+        else { return }
+        if sidebarItem.isCollapsed == panels.folderTreeOpen {
+            sidebarItem.isCollapsed = !panels.folderTreeOpen
+        }
     }
 }
 

@@ -225,7 +225,8 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         open(
             record,
-            launch: ExplorerLaunchContext(restoreTabs: !record.session.openTabs.isEmpty, initialCommand: initialCommand),
+            launch: ExplorerLaunchContext(
+                restoreTabs: !record.session.openTabs.isEmpty, initialCommand: initialCommand),
             place: .front)
     }
 
@@ -378,11 +379,12 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     /// A window the system made of a tab dragged out of another (the original has no such thing): it becomes an
     /// explorer window of its own, with the panels and the size of the one it came from.
-    public func adopt(_ window: W, from sourceID: Int?, session: WindowSession?) {
+    public func adopt(_ window: W, id: String, from sourceID: Int?, overrides session: [String: JSONNode]) {
         let source = windows.byWindowID(sourceID)
         var overrides = source.map { Self.node(host.store.windowPreferences($0.id).windowSession) } ?? [:]
-        if let session { overrides.merge(Self.node(session)) { _, new in new } }
-        let record = createRecord(Self.stored(window), session: overrides)
+        overrides.merge(session) { _, new in new }
+        let record = StoredExplorerWindow(
+            id: id, bounds: Self.stored(window), session: host.store.createWindowSession(overrides: overrides))
         host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         attach(window, record: record, launch: ExplorerLaunchContext(restoreTabs: true), place: .front)
     }
@@ -430,7 +432,9 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     }
 
     @discardableResult
-    private func open(_ record: StoredExplorerWindow, launch: ExplorerLaunchContext, place: ExplorerWindowOrder<W>.Place)
+    private func open(
+        _ record: StoredExplorerWindow, launch: ExplorerLaunchContext, place: ExplorerWindowOrder<W>.Place
+    )
         -> W
     {
         let window = host.createWindow(record, launch)

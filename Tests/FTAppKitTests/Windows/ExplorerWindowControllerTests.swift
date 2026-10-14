@@ -226,7 +226,8 @@ import Testing
         #expect(front.told == [.openRequestsWaiting, .openRequestsWaiting])
         #expect(back.told.isEmpty)
         #expect(setup.controller.takeOpenRequests(back.windowID).isEmpty)
-        #expect(setup.controller.takeOpenRequests(front.windowID) == ["/Users/demo/Install.dmg", "/Users/demo/Other.dmg"])
+        #expect(
+            setup.controller.takeOpenRequests(front.windowID) == ["/Users/demo/Install.dmg", "/Users/demo/Other.dmg"])
         #expect(setup.controller.takeOpenRequests(front.windowID).isEmpty)
     }
 
@@ -313,7 +314,9 @@ import Testing
     @Test func recordsWhereAWindowIsOnceItStopsMovingAndAsItCloses() throws {
         let setup = try WindowSetup.withWindows(2)
         let window = setup.windows[0]
-        func recorded() -> StoredWindowState? { setup.store.explorerWindows().first { $0.id == window.recordID }?.bounds }
+        func recorded() -> StoredWindowState? {
+            setup.store.explorerWindows().first { $0.id == window.recordID }?.bounds
+        }
 
         window.bounds = WindowBounds(x: 300, y: 200, width: 1000, height: 700)
         window.events.boundsChanged()

@@ -22,7 +22,8 @@ import Testing
         #expect(folder.kind == .folder)
         #expect(describe("/").label == "Macintosh HD")
         #expect(describe("").label == "Favorites")
-        let search = describe("/Users/demo/Documents", visible: true, query: "invoice", root: "/Users/demo", running: true)
+        let search = describe(
+            "/Users/demo/Documents", visible: true, query: "invoice", root: "/Users/demo", running: true)
         #expect(search.label == "“invoice” in demo")
         #expect(search.kind == .search)
         #expect(search.searching)
@@ -134,7 +135,8 @@ import Testing
     @Test func leavesOutResultsThatWereKeptFromTheSearchBefore() {
         var kept = session
         kept.keptResultPaths = ["/Users/demo/a.txt"]
-        let next = ExplorerTabs.applyBackgroundSearchUpdate(kept, update([result("a.txt"), result("b.txt")], done: false))
+        let next = ExplorerTabs.applyBackgroundSearchUpdate(
+            kept, update([result("a.txt"), result("b.txt")], done: false))
         #expect(next.results.map(\.name) == ["a.txt", "b.txt"])
     }
 
@@ -234,9 +236,13 @@ import Testing
     // T-594eb68d F-676
     @Test func leavesATabOnAnotherDiskOrOnAFolderNamedAlikeAsItIs() {
         let onArchive = onDisk("/Volumes/Archive/2025", ["/Volumes/Archive/2025"], root: "/Volumes/Archive")
-        #expect(ExplorerTabs.leaveUnmountedDisks(onArchive, unmounted: ["/Volumes/Backup"], homePath: "/Users/demo") == onArchive)
+        #expect(
+            ExplorerTabs.leaveUnmountedDisks(onArchive, unmounted: ["/Volumes/Backup"], homePath: "/Users/demo")
+                == onArchive)
         let onBackup2 = onDisk("/Volumes/Backup 2", ["/Volumes/Backup 2"], root: "/Volumes/Backup 2")
-        #expect(ExplorerTabs.leaveUnmountedDisks(onBackup2, unmounted: ["/Volumes/Backup"], homePath: "/Users/demo") == onBackup2)
+        #expect(
+            ExplorerTabs.leaveUnmountedDisks(onBackup2, unmounted: ["/Volumes/Backup"], homePath: "/Users/demo")
+                == onBackup2)
     }
 
     // T-7174190f F-676
