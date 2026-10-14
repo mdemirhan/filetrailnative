@@ -390,6 +390,11 @@ struct NativeWindowsGUITests {
         await closeAll(relaunched)
     }
 
+    // Not ported yet: windows.spec.ts "pastes in one window what was copied in another" (T-317cfcc8, B-VIEW-184).
+    // A window copies no file (Copy and Paste reach only text fields; Copy, Cut and the clipboard button are P5-08's)
+    // and nothing pastes one (a paste is a write operation, P3-05's). The app-wide clipboard the windows will share
+    // is `ExplorerWindows.clipboard`; the flow is ported with P5-08, on these windows.
+
     // T-90c6b35c F-622 F-623 F-619
     @Test func staysOpenWithNoWindowAndOpensOneWhereTheLastOneClosed() async throws {
         let folder = try folders()
