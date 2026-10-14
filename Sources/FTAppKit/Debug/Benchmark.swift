@@ -134,7 +134,13 @@ enum Benchmark {
         report("open", allOpens)
         report("back", allBacks)
         emit(["kind": "bench", "folders": perFolder])
-        NSApp.terminate(nil)
+        quit()
+    }
+
+    /// Quits from a run-loop turn. Called inside a main-actor task, `terminate` waits for the quit coordinator's own
+    /// main-actor task, which can't run until this one ends, so the app would hang.
+    private static func quit() {
+        NSApp.perform(#selector(NSApplication.terminate(_:)), with: nil, afterDelay: 0)
     }
 
     /// Prints the time from process start to the first folder being drawn, then quits.
@@ -142,7 +148,7 @@ enum Benchmark {
         controller.onFirstDraw = {
             let milliseconds = (Date().timeIntervalSince1970 - processStart()) * 1000
             emit(["kind": "launch", "launch_ms": milliseconds])
-            NSApp.terminate(nil)
+            quit()
         }
     }
 
@@ -154,7 +160,7 @@ enum Benchmark {
             let scrollView = table.enclosingScrollView
         else {
             emit(["kind": "scroll", "error": "no list view"])
-            NSApp.terminate(nil)
+            quit()
             return
         }
         let stalls = StallMonitor()
@@ -168,7 +174,7 @@ enum Benchmark {
             "kind": "scroll", "rows": Double(table.numberOfRows), "frames": Double(frames.count),
             "frame_max_ms": frames.last ?? 0, "frame_p99_ms": p99, "stall_ms": stalls.worst,
         ])
-        NSApp.terminate(nil)
+        quit()
     }
 
     /// Draws the window (title bar and toolbar included) into a PNG, then quits.
@@ -180,7 +186,7 @@ enum Benchmark {
         else { return }
         frameView.cacheDisplay(in: frameView.bounds, to: bitmap)
         try? bitmap.representation(using: .png, properties: [:])?.write(to: file)
-        NSApp.terminate(nil)
+        quit()
     }
 
     private static func firstView<T: NSView>(ofType type: T.Type, in view: NSView?) -> T? {
