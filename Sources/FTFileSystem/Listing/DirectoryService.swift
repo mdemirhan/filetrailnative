@@ -65,7 +65,9 @@ public actor DirectoryService {
         ExplorerListing.itemProperties(path: path, fileSystem, kinds: kinds)
     }
 
-    public func pathSuggestions(inputPath: String, includeHidden: Bool = false, limit: Int = 12) throws -> PathSuggestions {
+    public func pathSuggestions(inputPath: String, includeHidden: Bool = false, limit: Int = 12) throws
+        -> PathSuggestions
+    {
         try ExplorerListing.pathSuggestions(
             inputPath: inputPath, includeHidden: includeHidden, limit: limit, fileSystem)
     }

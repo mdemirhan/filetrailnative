@@ -1,8 +1,9 @@
+import Foundation
+import Testing
+
 // Port of the getCachedResponse, forgetFolderListings and withTiming cases of
 // apps/desktop/src/main/bootstrap/responseCache.test.ts
 @testable import FTFileSystem
-import Foundation
-import Testing
 
 /// Holds a load until the test lets it go.
 private actor Gate {
@@ -55,7 +56,7 @@ private func detail(_ path: String) -> EntryMetadata {
 }
 
 struct ResponseCacheTests {
-    // T-64ffebfe
+    // T-64ffebfe F-177
     @Test func capsCachedDirectorySnapshotsAndEvictsTheOldestFirst() async throws {
         let cache = ResponseCache()
         for index in 0..<200 {
@@ -77,7 +78,7 @@ struct ResponseCacheTests {
         #expect(loads.count == 1)
     }
 
-    // T-ee081cd1
+    // T-ee081cd1 F-177
     @Test func doesNotKeepAnAnswerThatWasLoadingWhenTheCachesWereCleared() async throws {
         let cache = ResponseCache()
         let gate = Gate()
@@ -272,7 +273,7 @@ struct ResponseCacheTests {
         return kept
     }
 
-    // T-42fbbeb8
+    // T-42fbbeb8 F-178
     @Test func letsGoOfTheFoldersListingsAndTheDetailsOfTheItemsThatChanged() async {
         let cache = ResponseCache()
         await fill(cache)
@@ -300,7 +301,7 @@ struct ResponseCacheTests {
         #expect(loads.count == 1)
     }
 
-    // T-0440a8ed
+    // T-0440a8ed F-178
     @Test func letsGoOfAllInTheFolderAndOfTheListingHoldingItWhenAnythingMayHaveChanged() async {
         let cache = ResponseCache()
         await fill(cache)
@@ -311,7 +312,7 @@ struct ResponseCacheTests {
         #expect(await stillCached(cache) == ["listing /p/b", "children /p/b", "details /p/b/z.txt"])
     }
 
-    // T-2162fd54
+    // T-2162fd54 F-178
     @Test func doesNotKeepAListingOfTheFolderThatWasLoadingWhenItChanged() async {
         let cache = ResponseCache()
         let gate = Gate()
@@ -339,14 +340,13 @@ struct ResponseCacheTests {
     // T-111af243
     @Test func logsOnlyASlowLoadWithItsLabelAndPath() async {
         let lines = Box<[String]>([])
-        let fast = await withTiming("fast", path: "/a", log: { lines.value.append($0) }) { 1 }
+        let fast = await withTiming("fast", path: "/a", log: { lines.value.append($0) }, load: { 1 })
         #expect(fast == 1)
         #expect(lines.value.isEmpty)
 
         let times = Box<[Double]>([0, 150])
         let slow = await withTiming(
-            "slow", path: "/b", now: { times.value.removeFirst() }, log: { lines.value.append($0) }
-        ) { 2 }
+            "slow", path: "/b", now: { times.value.removeFirst() }, log: { lines.value.append($0) }, load: { 2 })
         #expect(slow == 2)
         #expect(lines.value == ["[filetrail] slow /b 150ms"])
     }

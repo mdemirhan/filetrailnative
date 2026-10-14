@@ -1,5 +1,6 @@
-@testable import FTFileSystem
 import Foundation
+
+@testable import FTFileSystem
 
 struct FakeError: Error {}
 

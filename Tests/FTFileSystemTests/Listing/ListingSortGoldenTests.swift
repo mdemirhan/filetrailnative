@@ -1,7 +1,8 @@
-@testable import FTFileSystem
 import FTTestSupport
 import Foundation
 import Testing
+
+@testable import FTFileSystem
 
 /// Tests/Golden/listing-sort.json: listDirectorySnapshot and listTreeChildren of the reference over a fake
 /// file system.
@@ -91,7 +92,8 @@ struct ListingSortGoldenTests {
         let fake = FakeFileSystem()
         let byPath = Dictionary(uniqueKeysWithValues: items.map { ("\(directory)/\($0.name)", $0) })
         @Sendable func stats(_ kind: String, _ item: Item, size: Int64) -> FileStats {
-            let type: FileType = kind == "dir" ? .directory : kind == "file" ? .file : kind == "link" ? .symlink : .other
+            let type: FileType =
+                kind == "dir" ? .directory : kind == "file" ? .file : kind == "link" ? .symlink : .other
             return FileStats(
                 type: type, size: size, birthtimeMs: 1_700_000_000_000, mtimeMs: item.mtimeMs,
                 mode: type == .directory ? 0o755 : item.mode)
@@ -99,13 +101,18 @@ struct ListingSortGoldenTests {
         fake.directory = { _ in
             items.map { item in
                 let type: FileType =
-                    item.type == "dir" ? .directory : item.type == "file" || item.type == "unreadable" ? .file
-                    : item.type == "link" ? .symlink : .other
+                    item.type == "dir"
+                    ? .directory
+                    : item.type == "file" || item.type == "unreadable"
+                        ? .file
+                        : item.type == "link" ? .symlink : .other
                 return DirectoryRecord(name: item.name, type: type)
             }
         }
         fake.statHandler = { path in
-            if path == directory { return stats("dir", Item(name: "", type: "dir", size: 0, mtimeMs: 0, mode: 0o755), size: 0) }
+            if path == directory {
+                return stats("dir", Item(name: "", type: "dir", size: 0, mtimeMs: 0, mode: 0o755), size: 0)
+            }
             guard let item = byPath[path], item.type != "unreadable" else { throw FakeError() }
             if item.type == "link" {
                 guard let target = item.target, target != "missing" else { throw FakeError() }
@@ -149,7 +156,9 @@ struct ListingSortGoldenTests {
             for item in visible { keys.append(item.name) }
             let covered = Set(keys.names.enumerated().filter { keys.hasKey[$0.offset] }.map(\.element))
             let actual = keys.sortedPositions().map { keys.names[$0] }.filter { covered.contains($0) }
-            let expected = testCase.output.entries.filter { $0.kind == "file" }.map(\.name).filter { covered.contains($0) }
+            let expected = testCase.output.entries.filter { $0.kind == "file" }.map(\.name).filter {
+                covered.contains($0)
+            }
             compared += 1
             if actual != expected { failures.append(testCase.name) }
         }

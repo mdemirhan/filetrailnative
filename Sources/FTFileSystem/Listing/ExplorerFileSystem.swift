@@ -80,7 +80,8 @@ public struct NativeFileSystem: ExplorerFileSystem {
                     type: type,
                     lstat: FileStats(
                         type: type, size: entry.size,
-                        birthtimeMs: entry.crtime_valid != 0 ? Self.milliseconds(entry.crtime_sec, entry.crtime_nsec) : nil,
+                        birthtimeMs: entry.crtime_valid != 0
+                            ? Self.milliseconds(entry.crtime_sec, entry.crtime_nsec) : nil,
                         mtimeMs: entry.mtime_valid != 0 ? Self.milliseconds(entry.mtime_sec, entry.mtime_nsec) : nil,
                         mode: entry.mode)))
         }

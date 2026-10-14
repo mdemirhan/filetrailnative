@@ -1,7 +1,8 @@
-@testable import FTFileSystem
 import FTTestSupport
 import Foundation
 import Testing
+
+@testable import FTFileSystem
 
 /// The goldens recorded on the fixture trees (`~/Library/Caches/filetrail-port/fixtures`): skipped where
 /// they aren't.
@@ -43,7 +44,8 @@ struct FixtureGoldenTests {
         for testCase in cases {
             let path = Fixtures.root + "/" + testCase.input.directory
             let byName = try await service.snapshot(path: path, includeHidden: true)
-            let bySize = try await service.snapshot(path: path, includeHidden: true, sortBy: .size, sortDirection: .descending)
+            let bySize = try await service.snapshot(
+                path: path, includeHidden: true, sortBy: .size, sortDirection: .descending)
             let tree = try await service.treeChildren(path: path, includeHidden: true)
             var properties: [JSONValue] = []
             for entry in byName.entries {
@@ -114,7 +116,8 @@ struct FixtureGoldenTests {
                 "resolved": .optional(resolved.resolvedPath.map(Fixtures.relative)),
             ])
             if Golden.render(actual) != Golden.render(testCase.output) {
-                failures.append("\(testCase.name) expected \(Golden.render(testCase.output)) got \(Golden.render(actual))")
+                failures.append(
+                    "\(testCase.name) expected \(Golden.render(testCase.output)) got \(Golden.render(actual))")
             }
         }
         #expect(failures.isEmpty, "\(failures.count) cases differ: \(failures.prefix(3).joined(separator: " | "))")

@@ -1,8 +1,9 @@
-// Port of packages/core/src/fs/explorerService.test.ts
-@testable import FTFileSystem
 import FTTestSupport
 import Foundation
 import Testing
+
+// Port of packages/core/src/fs/explorerService.test.ts
+@testable import FTFileSystem
 
 struct ExplorerServiceTests {
     private func service(_ fileSystem: FakeFileSystem, describer: KindLabeler.Describer? = nil) -> DirectoryService {
@@ -12,7 +13,9 @@ struct ExplorerServiceTests {
     /// A fake whose `stat` says `workspace` is a folder and everything else is what `others` makes of it.
     private func workspace(
         _ records: [DirectoryRecord], stat: @escaping @Sendable (String) throws -> FileStats,
-        lstat: @escaping @Sendable (String) throws -> FileStats = { _ in fakeStats(directory: false, file: true, size: 12) }
+        lstat: @escaping @Sendable (String) throws -> FileStats = { _ in
+            fakeStats(directory: false, file: true, size: 12)
+        }
     ) -> FakeFileSystem {
         let fake = FakeFileSystem()
         fake.directory = { _ in records }
@@ -21,7 +24,7 @@ struct ExplorerServiceTests {
         return fake
     }
 
-    // T-7ec6b6b8
+    // T-7ec6b6b8 F-064 F-065 F-139 F-166 F-174
     @Test func sortsFoldersBeforeFilesAndHidesDotfilesByDefault() async throws {
         let fake = workspace(
             [
@@ -40,7 +43,7 @@ struct ExplorerServiceTests {
         #expect(tree.children.map(\.name) == ["Alpha"])
     }
 
-    // T-c0e9bbe1
+    // T-c0e9bbe1 F-170 F-171
     @Test func saysWhetherAFileWithoutAnExtensionIsExecutableAndLooksAtNoOtherEntry() async throws {
         let fake = workspace(
             [
@@ -65,7 +68,7 @@ struct ExplorerServiceTests {
         #expect(!looked.contains("folder"))
     }
 
-    // T-a5c355cb
+    // T-a5c355cb F-140 F-173
     @Test func readsRealFileProperties() async throws {
         try await withTemporaryDirectory { directory in
             let path = directory.path + "/notes.txt"
@@ -79,7 +82,7 @@ struct ExplorerServiceTests {
         }
     }
 
-    // T-8ae57f6a
+    // T-8ae57f6a F-169 F-173
     @Test func readsThePropertiesOfTheRootFolderNamedMacintoshHD() async {
         let item = await DirectoryService().itemProperties(path: "/")
         #expect(item.path == "/")
@@ -90,7 +93,7 @@ struct ExplorerServiceTests {
         #expect(item.permissionMode != nil)
     }
 
-    // T-ad4406bb
+    // T-ad4406bb F-158
     @Test func namesKindsAsTheSystemDoesAskingOncePerExtension() async throws {
         try await withTemporaryDirectory { directory in
             for name in ["a.md", "b.md", "c.xyz"] {
@@ -112,7 +115,7 @@ struct ExplorerServiceTests {
         }
     }
 
-    // T-271cbd94
+    // T-271cbd94 F-064
     @Test func sortsFilesByModifiedTime() async throws {
         let fake = workspace(
             [fakeDirent("newer.txt", file: true), fakeDirent("older.txt", file: true)],
@@ -122,11 +125,12 @@ struct ExplorerServiceTests {
                     directory: false, file: true, size: 5,
                     mtimeMs: path.hasSuffix("newer.txt") ? 1_706_832_000_000 : 1_704_067_200_000)
             })
-        let snapshot = try await service(fake).snapshot(path: "/workspace", sortBy: .modified, sortDirection: .descending)
+        let snapshot = try await service(fake).snapshot(
+            path: "/workspace", sortBy: .modified, sortDirection: .descending)
         #expect(snapshot.entries.map(\.name) == ["newer.txt", "older.txt"])
     }
 
-    // T-59fe90f1
+    // T-59fe90f1 F-065
     @Test func sortsByKindLabelAndKeepsFoldersAheadOfFiles() async throws {
         let fake = workspace(
             [
@@ -142,7 +146,7 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.name) == ["Folder", "script.ts", "archive.zip"])
     }
 
-    // T-b81f5543
+    // T-b81f5543 F-064 F-171
     @Test func sortsBySizeDescendingForFiles() async throws {
         let fake = workspace(
             [fakeDirent("small.txt", file: true), fakeDirent("large.txt", file: true)],
@@ -155,7 +159,7 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.name) == ["large.txt", "small.txt"])
     }
 
-    // T-57e20151
+    // T-57e20151 F-172
     @Test func sortsALinkToAFolderByTheSizeOfTheLinkItself() async throws {
         let fake = workspace(
             [
@@ -163,7 +167,9 @@ struct ExplorerServiceTests {
                 fakeDirent("note.txt", file: true),
             ],
             stat: { path in
-                fakeStats(directory: !path.hasSuffix(".txt"), file: path.hasSuffix(".txt"), size: path.hasSuffix(".txt") ? 40 : 96)
+                fakeStats(
+                    directory: !path.hasSuffix(".txt"), file: path.hasSuffix(".txt"),
+                    size: path.hasSuffix(".txt") ? 40 : 96)
             },
             lstat: { path in
                 path.hasSuffix("Alias")
@@ -177,7 +183,7 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.sizeBytes) == [40, 16, nil])
     }
 
-    // T-db410023
+    // T-db410023 F-064 F-171
     @Test func reportsFileSizesAndKeepsItemsWithoutASizeLastWhenSortingBySize() async throws {
         let fake = workspace(
             [
@@ -190,10 +196,12 @@ struct ExplorerServiceTests {
                     size: path.hasSuffix("large.txt") ? 100 : 10)
             })
         let service = service(fake)
-        let ascending = try await service.snapshot(path: "/workspace", sortBy: .size, sortDirection: .ascending, foldersFirst: false)
+        let ascending = try await service.snapshot(
+            path: "/workspace", sortBy: .size, sortDirection: .ascending, foldersFirst: false)
         #expect(ascending.entries.map(\.name) == ["small.txt", "large.txt", "Folder"])
         #expect(ascending.entries.map(\.sizeBytes) == [10, 100, nil])
-        let descending = try await service.snapshot(path: "/workspace", sortBy: .size, sortDirection: .descending, foldersFirst: false)
+        let descending = try await service.snapshot(
+            path: "/workspace", sortBy: .size, sortDirection: .descending, foldersFirst: false)
         #expect(descending.entries.map(\.name) == ["large.txt", "small.txt", "Folder"])
         #expect(descending.entries.map(\.sizeBytes) == [100, 10, nil])
         // Sorted by name, no size is given.
@@ -201,19 +209,20 @@ struct ExplorerServiceTests {
         #expect(byName.entries.allSatisfy { $0.sizeBytes == nil })
     }
 
-    // T-c73d0ed0
+    // T-c73d0ed0 F-064
     @Test func combinesFoldersAndFilesWhenFoldersFirstIsOff() async throws {
         let fake = workspace(
             [fakeDirent("zeta", directory: true), fakeDirent("alpha.txt", file: true)],
             stat: { path in
                 fakeStats(
-                    directory: path == "/workspace" || path.hasSuffix("zeta"), file: path.hasSuffix("alpha.txt"), size: 12)
+                    directory: path == "/workspace" || path.hasSuffix("zeta"), file: path.hasSuffix("alpha.txt"),
+                    size: 12)
             })
         let snapshot = try await service(fake).snapshot(path: "/workspace", foldersFirst: false)
         #expect(snapshot.entries.map(\.name) == ["alpha.txt", "zeta"])
     }
 
-    // T-6fad73c0
+    // T-6fad73c0 F-167 F-168 F-174
     @Test func includesSymlinkedDirectoriesInTreeChildrenAndMarksThemAsAliases() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in [fakeDirent("Alias", symbolicLink: true)] }
@@ -222,17 +231,20 @@ struct ExplorerServiceTests {
         let tree = try await service(fake).treeChildren(path: "/workspace", includeHidden: true)
         #expect(
             tree.children == [
-                TreeChild(path: "/workspace/Alias", name: "Alias", kind: .symlinkDirectory, isHidden: false, isSymlink: true)
+                TreeChild(
+                    path: "/workspace/Alias", name: "Alias", kind: .symlinkDirectory, isHidden: false, isSymlink: true)
             ])
     }
 
-    // T-a3b4b5e6
+    // T-a3b4b5e6 F-167
     @Test func keepsDanglingSymlinksInSortedSnapshotsWithoutFailingNavigation() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in [fakeDirent("dangling", symbolicLink: true), fakeDirent("notes.txt", file: true)] }
         fake.statHandler = { path in
             if path == "/workspace" { return fakeStats(directory: true, file: false, size: 0) }
-            if path.hasSuffix("notes.txt") { return fakeStats(directory: false, file: true, size: 12, mtimeMs: 1_706_745_600_000) }
+            if path.hasSuffix("notes.txt") {
+                return fakeStats(directory: false, file: true, size: 12, mtimeMs: 1_706_745_600_000)
+            }
             throw FakeError()
         }
         fake.lstatHandler = { path in
@@ -241,13 +253,16 @@ struct ExplorerServiceTests {
                 : fakeStats(directory: false, file: true, size: 12, mtimeMs: 1_706_745_600_000)
         }
         let service = service(fake)
-        let modified = try await service.snapshot(path: "/workspace", includeHidden: true, sortBy: .modified, foldersFirst: false)
-        let size = try await service.snapshot(path: "/workspace", includeHidden: true, sortBy: .size, foldersFirst: false)
-        #expect(modified.entries.map { [$0.name, $0.kind.rawValue] } == [["dangling", "other"], ["notes.txt", "file"]])
+        let modified = try await service.snapshot(
+            path: "/workspace", includeHidden: true, sortBy: .modified, foldersFirst: false)
+        let size = try await service.snapshot(
+            path: "/workspace", includeHidden: true, sortBy: .size, foldersFirst: false)
+        #expect(
+            modified.entries.map { [$0.name, $0.kind.rawValue] } == [["dangling", "other"], ["notes.txt", "file"]])
         #expect(size.entries.map { [$0.name, $0.kind.rawValue] } == [["notes.txt", "file"], ["dangling", "other"]])
     }
 
-    // T-6da49ddf
+    // T-6da49ddf F-172
     @Test func rejectsMetadataRequestsForPathsOutsideTheRequestedDirectory() async {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 0) }
@@ -271,7 +286,7 @@ struct ExplorerServiceTests {
         return fake
     }
 
-    // T-2ca64a85
+    // T-2ca64a85 F-175
     @Test func returnsDirectoryPathSuggestionsForTheActiveParentFolder() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in
@@ -293,7 +308,9 @@ struct ExplorerServiceTests {
         let response = try await service(fake).pathSuggestions(inputPath: "/Users/demo/")
         #expect(response.basePath == "/Users/demo")
         #expect(
-            response.suggestions.map(\.path) == ["/Users/demo/Applications", "/Users/demo/Desktop", "/Users/demo/Pictures"])
+            response.suggestions.map(\.path) == [
+                "/Users/demo/Applications", "/Users/demo/Desktop", "/Users/demo/Pictures",
+            ])
     }
 
     // T-b2c5d677
@@ -327,7 +344,9 @@ struct ExplorerServiceTests {
         let response = try await service(fake).pathSuggestions(inputPath: "/Users/demo/src/")
         #expect(response.basePath == "/Users/demo/src")
         #expect(
-            response.suggestions.map(\.path) == ["/Users/demo/src/dotnet", "/Users/demo/src/pythonproj", "/Users/demo/src/tsproj"])
+            response.suggestions.map(\.path) == [
+                "/Users/demo/src/dotnet", "/Users/demo/src/pythonproj", "/Users/demo/src/tsproj",
+            ])
     }
 
     // T-1f4a779f
@@ -357,7 +376,7 @@ struct ExplorerServiceTests {
         #expect(childMatches.suggestions.map(\.path) == ["/Users/demo/dotfiles/scripts", "/Users/demo/dotfiles/shell"])
     }
 
-    // T-da9ba256
+    // T-da9ba256 F-140
     @Test func resolvesSymlinkTargetsForActivation() async {
         let fake = FakeFileSystem()
         fake.realpathHandler = { _ in "/resolved/path" }
@@ -365,7 +384,7 @@ struct ExplorerServiceTests {
         #expect(resolved == ResolvedPath(inputPath: "/input/path", resolvedPath: "/resolved/path"))
     }
 
-    // T-2158f121
+    // T-2158f121 F-140
     @Test func fallsBackToTheResolvedInputPathWhenPathActivationCannotResolveAliases() async {
         let fake = FakeFileSystem()
         fake.realpathHandler = { _ in throw FakeError() }
@@ -388,7 +407,7 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.path) == ["/Users/demo/Desktop"])
     }
 
-    // T-6d606cea
+    // T-6d606cea F-173
     @Test func reportsSymlinkDirectoryPropertiesAndDropsInvalidDatesToNull() async {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 0, mtimeMs: nil, birthtimeMs: nil) }
@@ -442,7 +461,7 @@ struct ExplorerServiceTests {
         #expect(response.suggestions.map(\.path) == ["/Users/demo/Desktop"])
     }
 
-    // T-808743d3
+    // T-808743d3 F-172
     @Test func preservesRequestOrderForMetadataBatchesEvenWhenLstatIsUnavailable() async throws {
         let fake = FakeFileSystem()
         fake.statHandler = { path in
@@ -458,7 +477,7 @@ struct ExplorerServiceTests {
         #expect(response.items.map(\.sizeStatus) == [.ready, .ready])
     }
 
-    // T-cb2d45b7
+    // T-cb2d45b7 F-172
     @Test func sizesALinkToAFolderAsTheLinkItselfWhileFoldersWaitToBeCalculated() async throws {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 96) }
@@ -539,7 +558,10 @@ struct ExplorerServiceFixtureTests {
             try FileManager.default.createSymbolicLink(
                 atPath: directory.path + "/Documents Alias", withDestinationPath: "Documents")
             let tree = try await DirectoryService().treeChildren(path: directory.path, includeHidden: false)
-            #expect(tree.children.map { [$0.name, $0.kind.rawValue] } == [["Documents", "directory"], ["Documents Alias", "symlink_directory"]])
+            #expect(
+                tree.children.map { [$0.name, $0.kind.rawValue] } == [
+                    ["Documents", "directory"], ["Documents Alias", "symlink_directory"],
+                ])
         }
     }
 
@@ -553,7 +575,8 @@ struct ExplorerServiceFixtureTests {
             let root = try NativeFileSystem().realpath(directory.path)
             let snapshot = try await service.snapshot(path: directory.path, sortBy: .size, sortDirection: .descending)
             #expect(snapshot.entries.map(\.name) == ["Folder", "beta", "alpha"])
-            let metadata = try await service.metadata(directoryPath: directory.path, paths: [root + "/alpha", root + "/Folder"])
+            let metadata = try await service.metadata(
+                directoryPath: directory.path, paths: [root + "/alpha", root + "/Folder"])
             #expect(metadata.items.map(\.path) == [root + "/alpha", root + "/Folder"])
             #expect(metadata.items.map(\.sizeBytes) == [1, nil])
             #expect(metadata.items.map(\.sizeStatus) == [.ready, .deferred])

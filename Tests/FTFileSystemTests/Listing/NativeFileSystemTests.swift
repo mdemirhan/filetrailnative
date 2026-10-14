@@ -1,12 +1,14 @@
-// The getattrlistbulk read (CFileTrail/listing.c) against lstat, and the workers' cases that the actor replaces
-@testable import FTFileSystem
 import FTTestSupport
 import Foundation
 import Testing
 
+// The getattrlistbulk read (CFileTrail/listing.c) against lstat, and the workers' cases that the actor replaces
+@testable import FTFileSystem
+
 struct NativeFileSystemTests {
     private let native = NativeFileSystem()
 
+    // F-165
     @Test func readsEveryEntryWithWhatLstatSays() throws {
         try withTemporaryDirectory { directory in
             let path = directory.path
@@ -16,16 +18,19 @@ struct NativeFileSystemTests {
             try "x".write(toFile: path + "/.hidden", atomically: true, encoding: .utf8)
             try FileManager.default.createDirectory(atPath: path + "/Folder.app", withIntermediateDirectories: false)
             try FileManager.default.createSymbolicLink(atPath: path + "/link", withDestinationPath: "notes.txt")
-            try FileManager.default.createSymbolicLink(atPath: path + "/dangling", withDestinationPath: "missing/target")
+            try FileManager.default.createSymbolicLink(
+                atPath: path + "/dangling", withDestinationPath: "missing/target")
             try FileManager.default.createSymbolicLink(atPath: path + "/folder link", withDestinationPath: "Folder.app")
             mkfifo(path + "/pipe", 0o644)
             try "é".write(toFile: path + "/Café Zoë 日本語 🎉.txt", atomically: true, encoding: .utf8)
 
             let records = try native.readDirectory(path).sorted { $0.name < $1.name }
             #expect(
-                records.map(\.name) == [
-                    ".hidden", "Café Zoë 日本語 🎉.txt", "Folder.app", "dangling", "folder link", "link", "notes.txt", "pipe", "run",
-                ].sorted())
+                records.map(\.name)
+                    == [
+                        ".hidden", "Café Zoë 日本語 🎉.txt", "Folder.app", "dangling", "folder link", "link", "notes.txt",
+                        "pipe", "run",
+                    ].sorted())
             for record in records {
                 let expected = try native.lstat(path + "/" + record.name)
                 let got = try #require(record.lstat, "\(record.name)")
@@ -46,11 +51,13 @@ struct NativeFileSystemTests {
         }
     }
 
+    // F-176
     @Test func readsAFolderTooBigForOneBuffer() throws {
         try withTemporaryDirectory { directory in
             let count = 6_000
             for index in 0..<count {
-                FileManager.default.createFile(atPath: directory.path + "/file number \(index) with a longer name.txt", contents: nil)
+                FileManager.default.createFile(
+                    atPath: directory.path + "/file number \(index) with a longer name.txt", contents: nil)
             }
             let records = try native.readDirectory(directory.path)
             #expect(records.count == count)
@@ -75,7 +82,8 @@ struct NativeFileSystemTests {
 
     @Test func listsADirectoryItCannotReadAsAnError() async throws {
         try await withTemporaryDirectory { directory in
-            try FileManager.default.createDirectory(atPath: directory.path + "/closed", withIntermediateDirectories: false)
+            try FileManager.default.createDirectory(
+                atPath: directory.path + "/closed", withIntermediateDirectories: false)
             chmod(directory.path + "/closed", 0)
             await #expect(throws: ExplorerError.self) {
                 try await DirectoryService().snapshot(path: directory.path + "/closed")
@@ -92,9 +100,11 @@ struct NativeFileSystemTests {
         }
     }
 
+    // F-165
     @Test func collapsesAnAliasedFolderToItsRealPath() async throws {
         try await withTemporaryDirectory { directory in
-            try FileManager.default.createDirectory(atPath: directory.path + "/real", withIntermediateDirectories: false)
+            try FileManager.default.createDirectory(
+                atPath: directory.path + "/real", withIntermediateDirectories: false)
             try FileManager.default.createSymbolicLink(atPath: directory.path + "/alias", withDestinationPath: "real")
             let snapshot = try await DirectoryService().snapshot(path: directory.path + "/alias")
             let real = try native.realpath(directory.path + "/real")
@@ -110,15 +120,20 @@ struct NativeFileSystemTests {
         #expect(snapshot.entries.contains { $0.path == "/Users" })
     }
 
+    // F-167 F-168
     @Test func treatsABundleAsAnItemInAListingButNotInTheTree() async throws {
         try await withTemporaryDirectory { directory in
             for name in ["Sample.app", "Plain", "Kit.framework", "Slides.key"] {
-                try FileManager.default.createDirectory(atPath: directory.path + "/" + name, withIntermediateDirectories: false)
+                try FileManager.default.createDirectory(
+                    atPath: directory.path + "/" + name, withIntermediateDirectories: false)
             }
             let service = DirectoryService()
             let snapshot = try await service.snapshot(path: directory.path)
             let kinds = Dictionary(uniqueKeysWithValues: snapshot.entries.map { ($0.name, $0.kind) })
-            #expect(kinds == ["Sample.app": .bundle, "Plain": .directory, "Kit.framework": .bundle, "Slides.key": .directory])
+            #expect(
+                kinds == [
+                    "Sample.app": .bundle, "Plain": .directory, "Kit.framework": .bundle, "Slides.key": .directory,
+                ])
             // A bundle sorts with the files, as the original does.
             #expect(snapshot.entries.map(\.name) == ["Plain", "Slides.key", "Kit.framework", "Sample.app"])
             let tree = try await service.treeChildren(path: directory.path)
@@ -126,6 +141,7 @@ struct NativeFileSystemTests {
         }
     }
 
+    // F-166
     @Test func keepsHiddenMeaningALeadingDot() async throws {
         try await withTemporaryDirectory { directory in
             for name in [".config", "visible.txt", "..double"] {
@@ -152,6 +168,7 @@ struct NativeFileSystemTests {
     // N/A T-24de1b66 There is no worker to end.
     // N/A T-0552d741 There is no worker that can fail to answer.
     // N/A T-9d23a3df There is no worker that can have ended.
+    // F-164
     @Test func metadataRunsApartFromListings() async throws {
         try await withTemporaryDirectory { directory in
             try "x".write(toFile: directory.path + "/a.txt", atomically: true, encoding: .utf8)

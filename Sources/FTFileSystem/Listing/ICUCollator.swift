@@ -8,7 +8,8 @@ import Foundation
 struct ICUCollator: @unchecked Sendable {
     private typealias Open = @convention(c) (UnsafePointer<CChar>?, UnsafeMutablePointer<Int32>) -> OpaquePointer?
     private typealias SetAttribute = @convention(c) (OpaquePointer?, Int32, Int32, UnsafeMutablePointer<Int32>) -> Void
-    private typealias GetSortKey = @convention(c) (OpaquePointer?, UnsafePointer<UInt16>?, Int32, UnsafeMutablePointer<UInt8>?, Int32) -> Int32
+    private typealias GetSortKey =
+        @convention(c) (OpaquePointer?, UnsafePointer<UInt16>?, Int32, UnsafeMutablePointer<UInt8>?, Int32) -> Int32
 
     // UCOL_NUMERIC_COLLATION and UCOL_STRENGTH are attributes; UCOL_ON and UCOL_PRIMARY their values.
     private static let numericCollation: Int32 = 7

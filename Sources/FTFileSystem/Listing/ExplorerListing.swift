@@ -303,7 +303,8 @@ enum ExplorerListing {
                     if missing != 0 { return missing < 0 }
                     compared = compareValues(sizes[left], sizes[right])
                 case .kind:
-                    compared = labelRanks[left] == labelRanks[right] ? 0 : (labelRanks[left] < labelRanks[right] ? -1 : 1)
+                    compared =
+                        labelRanks[left] == labelRanks[right] ? 0 : (labelRanks[left] < labelRanks[right] ? -1 : 1)
                 case .name:
                     break
                 }
@@ -523,7 +524,8 @@ enum IsoDate {
         } else {
             yearText = (year < 0 ? "-" : "+") + pad(Int(abs(year)), 6)
         }
-        return "\(yearText)-\(pad(Int(month), 2))-\(pad(Int(day), 2))T\(pad(hours, 2)):\(pad(minutes, 2)):\(pad(seconds, 2)).\(pad(millis, 3))Z"
+        return
+            "\(yearText)-\(pad(Int(month), 2))-\(pad(Int(day), 2))T\(pad(hours, 2)):\(pad(minutes, 2)):\(pad(seconds, 2)).\(pad(millis, 3))Z"
     }
 
     private static func pad(_ value: Int, _ width: Int) -> String {

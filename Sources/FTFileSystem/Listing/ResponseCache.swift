@@ -244,6 +244,10 @@ public final class ResponseCache: @unchecked Sendable {
     }
 
     public var sizes: Sizes {
-        withState { Sizes(directorySnapshots: $0.directory.count, directoryMetadata: $0.metadata.count, treeChildren: $0.tree.count) }
+        withState {
+            Sizes(
+                directorySnapshots: $0.directory.count, directoryMetadata: $0.metadata.count,
+                treeChildren: $0.tree.count)
+        }
     }
 }

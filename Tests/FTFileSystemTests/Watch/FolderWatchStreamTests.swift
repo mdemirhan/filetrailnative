@@ -1,8 +1,9 @@
-// The FSEvents stream and the app's wiring of the folder watch, on real folders (no windows are involved)
-@testable import FTFileSystem
 import FTTestSupport
 import Foundation
 import Testing
+
+// The FSEvents stream and the app's wiring of the folder watch, on real folders (no windows are involved)
+@testable import FTFileSystem
 
 @MainActor
 private final class Told {
@@ -51,7 +52,8 @@ struct FolderWatchStreamTests {
 
     @Test func ignoresChangesDeeperInsideTheFolder() async throws {
         try await withTemporaryDirectory { directory in
-            try FileManager.default.createDirectory(atPath: directory.path + "/inner", withIntermediateDirectories: false)
+            try FileManager.default.createDirectory(
+                atPath: directory.path + "/inner", withIntermediateDirectories: false)
             let told = Told()
             let watches = FolderWatches(.app(cache: ResponseCache()) { _, change in told.changes.append(change) })
             watches.watch(windowID: 1, path: directory.path)

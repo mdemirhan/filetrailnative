@@ -25,7 +25,8 @@ public struct DispatchFolderWatchScheduler: FolderWatchScheduler {
 
     public func now() -> Double { ProcessInfo.processInfo.systemUptime * 1000 }
 
-    public func schedule(afterMilliseconds milliseconds: Double, _ work: @escaping @MainActor () -> Void) -> () -> Void {
+    public func schedule(afterMilliseconds milliseconds: Double, _ work: @escaping @MainActor () -> Void) -> () -> Void
+    {
         let item = DispatchWorkItem { MainActor.assumeIsolated { work() } }
         DispatchQueue.main.asyncAfter(deadline: .now() + milliseconds / 1000, execute: item)
         return { item.cancel() }
@@ -61,7 +62,9 @@ public final class FolderWatches {
         public var scheduler: any FolderWatchScheduler
 
         public init(
-            watchFolder: @escaping @MainActor (String, @escaping @MainActor (String?) -> Void, @escaping @MainActor () -> Void) -> (@Sendable () -> Void)?,
+            watchFolder:
+                @escaping @MainActor (String, @escaping @MainActor (String?) -> Void, @escaping @MainActor () -> Void)
+                -> (@Sendable () -> Void)?,
             readModifiedTime: @escaping @Sendable (String) async -> Double?,
             onFolderChanged: @escaping @MainActor (Int, FolderChange) -> Void,
             forgetCachedListings: @escaping @MainActor (String, [String]?) -> Void,

@@ -131,8 +131,9 @@ public enum FSEventsFolderWatcher {
                 continue
             }
             // Events were lost: anything may have changed.
-            if flags & (kFSEventStreamEventFlagMustScanSubDirs | kFSEventStreamEventFlagUserDropped
-                | kFSEventStreamEventFlagKernelDropped | kFSEventStreamEventFlagEventIdsWrapped) != 0
+            if flags
+                & (kFSEventStreamEventFlagMustScanSubDirs | kFSEventStreamEventFlagUserDropped
+                    | kFSEventStreamEventFlagKernelDropped | kFSEventStreamEventFlagEventIdsWrapped) != 0
             {
                 names.append(nil)
                 continue
