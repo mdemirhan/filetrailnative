@@ -1,5 +1,6 @@
-// The write-engine differential (tools/parity/exec, FTTestSupport.ExecHarness). The Swift engine
-// doesn't exist yet: ReferenceReplayEngine replays the recordings, which proves the decode,
+// The write-engine differential (tools/parity/exec, FTTestSupport.ExecHarness). The analysis suites
+// run through the Swift review (Exec/SwiftAnalysisEngine.swift). The Swift paste engine doesn't
+// exist yet: ReferenceReplayEngine replays the execution recordings, which proves the decode,
 // normalize and compare path, and each scenario's tree is built here and checked against the
 // recorded "before", so the Swift engine will start where the reference did.
 import FTTestSupport
@@ -20,10 +21,14 @@ struct ExecGoldenTests {
         #expect(report == nil, Comment(rawValue: report ?? ""))
     }
 
+    /// The Swift review (SwiftAnalysisEngine) against the reference's, case by case; the disk-image cases where
+    /// the images exist.
+    // F-241 F-309 F-310 F-311 F-312 F-314 F-315 F-316 F-317 F-318 F-319 F-320 F-321 F-322 F-323 F-926
     @Test(arguments: ExecHarness.analysisSuites)
-    func replayedAnalysisMatchesItsRecording(suite: String) async throws {
+    func analysisMatchesItsRecording(suite: String) async throws {
         let cases = try ExecHarness.cases(suite: suite)
-        let engine = ReferenceReplayEngine(cases: cases)
+        #expect(!cases.isEmpty)
+        let engine = SwiftAnalysisEngine()
         for testCase in runnable(cases) {
             let lines = try await ExecHarness.checkAnalysis(testCase, with: engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
