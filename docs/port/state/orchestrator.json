@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-13T20:48:33+00:00",
+  "updatedAt": "2026-10-14T06:32:34+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 1,
   "phase": "P1/P2/P4 + P0 follow-ups",
-  "nextAction": "Paused. On resume: W1-D P1-04+P1-05+P2-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06; W1-H P4-02",
+  "nextAction": "Running W1-D P1-04+P1-05+P2-04; then W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06+P2-05; W1-H P4-02",
   "pause": {
-    "requested": true,
-    "reason": "requested by user: stop after W1-C",
+    "requested": false,
+    "reason": null,
     "until": null
   },
   "meter": [
@@ -237,6 +237,21 @@
       "agents": 10,
       "subagentTokens": 1209497,
       "durationMin": 28.0
+    },
+    "W1-D": {
+      "wps": [
+        "P1-04",
+        "P1-05",
+        "P2-04"
+      ],
+      "status": "running",
+      "runId": null,
+      "estimatedAgents": 10,
+      "meterBefore": {
+        "weeklyPct": 10,
+        "fiveHourPct": 0
+      },
+      "startedAt": "2026-10-14T06:32:34+00:00"
     }
   },
   "wps": {
@@ -567,7 +582,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P1-04",
       "headSha": null,
       "attempts": 0,
@@ -700,7 +715,7 @@
         "P0-07",
         "P0-08"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P2-04",
       "headSha": null,
       "attempts": 0,
@@ -1585,7 +1600,7 @@
       "depends": [
         "P1-01"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P1-05",
       "headSha": null,
       "attempts": 0,

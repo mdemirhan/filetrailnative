@@ -44,3 +44,9 @@
 {"at": "2026-10-13T20:48:12+00:00", "event": "apply-report", "batch": "W1-C", "wps": ["P1-01", "P1-03", "P0-12"]}
 {"at": "2026-10-13T20:48:17+00:00", "event": "meter", "weeklyPct": 10.0, "fiveHourPct": 16.0, "note": "after W1-C (1.21M agent tokens)"}
 {"at": "2026-10-13T20:48:33+00:00", "event": "reconcile", "recover": false, "notes": ["worktree /Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/electron-swift-port-plan-1aed44 (P0-01)"], "recovered": []}
+{"at": "2026-10-14T06:31:46+00:00", "event": "unpause"}
+{"at": "2026-10-14T06:31:54+00:00", "event": "next", "text": ""}
+{"at": "2026-10-14T06:31:59+00:00", "event": "next", "text": "On resume: W1-D P1-04+P1-05+P2-04+P2-05; W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06; W1-H P4-02"}
+{"at": "2026-10-14T06:32:34+00:00", "event": "add-batch", "batch": "W1-D", "wps": ["P1-04", "P1-05", "P2-04"], "estimatedAgents": 10}
+{"at": "2026-10-14T06:32:34+00:00", "event": "next", "text": "Running W1-D P1-04+P1-05+P2-04; then W1-E P2-01+P2-02; W1-F P2-03+P2-07; W1-G P4-01+P2-06+P2-05; W1-H P4-02"}
+{"at": "2026-10-14T06:32:34+00:00", "event": "set-batch", "batch": "W1-D", "status": "running", "runId": null}
