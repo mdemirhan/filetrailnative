@@ -74,28 +74,43 @@ enum HelpTopicIcon {
 }
 
 /// A topic in the sidebar: 28 tall, an icon and the title; the page on screen is marked.
-final class HelpTopicButton: NSControl, ThemeApplying {
+final class HelpTopicButton: TextControl {
     let topic: HelpTopic
-    var isCurrent = false { didSet { needsDisplay = true; setAccessibilityValue(isCurrent ? "page" : nil) } }
-    private(set) var theme: Theme
-    private var isHovering = false { didSet { needsDisplay = true } }
-    private var trackingArea: NSTrackingArea?
+    var isCurrent = false {
+        didSet {
+            applyStyle()
+            setAccessibilityValue(isCurrent ? "page" : nil)
+        }
+    }
 
     static let height = 28.0
     private static let iconSize = 15.0
 
     init(topic: HelpTopic, theme: Theme) {
         self.topic = topic
-        self.theme = theme
-        super.init(frame: .zero)
+        super.init(text: topic.title, theme: theme)
+        (cell as? ThemedTextCell)?.leadingInset = 8 + CGFloat(Self.iconSize) + 8
         setAccessibilityRole(.button)
         setAccessibilityLabel(topic.title)
         setAccessibilityIdentifier("help.topic")
+        applyStyle()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    override var isFlipped: Bool { true }
+    override var isHovering: Bool {
+        get { super.isHovering }
+        set {
+            super.isHovering = newValue
+            applyStyle()
+        }
+    }
+
+    private func applyStyle() {
+        font = titleFont
+        let palette = theme.palette
+        textColor = NSColor(isCurrent || super.isHovering ? palette.textPrimary : palette.textSecondary)
+    }
 
     private var titleFont: NSFont { ThemeFonts.sans(DesignTokens.typeScale.body, isCurrent ? .semibold : .regular) }
 
@@ -104,12 +119,12 @@ final class HelpTopicButton: NSControl, ThemeApplying {
         8 + CGFloat(Self.iconSize) + 8 + ceil((topic.title as NSString).size(withAttributes: [.font: titleFont]).width) + 8
     }
 
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        needsDisplay = true
+    override func applyTheme(_ theme: Theme) {
+        super.applyTheme(theme)
+        applyStyle()
     }
 
-    override func draw(_ dirtyRect: NSRect) {
+    override func drawChrome() {
         let palette = theme.palette
         let radius = CGFloat(DesignTokens.radii.control)
         if isCurrent {
@@ -124,29 +139,9 @@ final class HelpTopicButton: NSControl, ThemeApplying {
         HelpTopicIcon.draw(
             topic.id, at: NSPoint(x: 8, y: (bounds.height - CGFloat(Self.iconSize)) / 2), size: CGFloat(Self.iconSize),
             color: NSColor(iconColor))
-        let attributes: [NSAttributedString.Key: Any] = [.font: titleFont, .foregroundColor: NSColor(textColor)]
-        let size = (topic.title as NSString).size(withAttributes: attributes)
-        (topic.title as NSString).draw(
-            at: NSPoint(x: 8 + CGFloat(Self.iconSize) + 8, y: ((bounds.height - size.height) / 2).rounded()),
-            withAttributes: attributes)
     }
-
-    override func updateTrackingAreas() {
-        super.updateTrackingAreas()
-        if let trackingArea { removeTrackingArea(trackingArea) }
-        let area = NSTrackingArea(
-            rect: bounds, options: [.mouseEnteredAndExited, .activeInKeyWindow, .inVisibleRect], owner: self)
-        addTrackingArea(area)
-        trackingArea = area
-    }
-
-    override func mouseEntered(with event: NSEvent) { isHovering = true }
-    override func mouseExited(with event: NSEvent) { isHovering = false }
 
     override func mouseDown(with event: NSEvent) {
-        sendAction(action, to: target)
+        perform()
     }
-
-    /// Clicks the topic.
-    func perform() { sendAction(action, to: target) }
 }

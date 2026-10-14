@@ -117,8 +117,9 @@ public class PageWindowController: NSWindowController, NSWindowDelegate {
 }
 
 extension ThemeFonts {
-    /// The height of a line of this font with `line-height: normal`: Chromium rounds the ascent and the descent.
+    /// The height of a line of this font with `line-height: normal`, as Chromium measures the system font: the ascent
+    /// (0.952 em) and the descent (0.24 em), each rounded.
     public static func normalLineHeight(_ font: NSFont) -> CGFloat {
-        font.ascender.rounded() + (-font.descender).rounded() + font.leading.rounded()
+        (font.pointSize * 0.952).rounded() + (font.pointSize * 0.24).rounded()
     }
 }

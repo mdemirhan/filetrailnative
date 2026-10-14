@@ -25,6 +25,7 @@ public final class HelpWindowController: PageWindowController {
         super.init(
             spec: PageWindowSpec(title: Self.title, size: Self.size, minSize: Self.minSize), model: model)
         window?.contentView = helpView
+        window?.initialFirstResponder = helpView
         window?.setContentSize(Self.size)
         themeChanged(model.theme)
         helpView.announceTopic()

@@ -61,7 +61,9 @@ public final class AboutWindowController: PageWindowController {
 public final class AboutView: ThemedView {
     private let info: AboutInfo?
     private let actions: AboutActions
-    private let icon = NSImageView()
+    /// The icon's 72 by 72 place; its image is drawn a little larger inside it.
+    private let icon = NSView()
+    private let iconImage = NSImageView()
     private let name: ThemedText
     private let tagline: ThemedText
     private var labels: [ThemedText] = []
@@ -106,8 +108,10 @@ public final class AboutView: ThemedView {
         super.init(frame: NSRect(origin: .zero, size: AboutWindowController.contentSize), theme: theme)
         fill = { $0.palette.bgBase }
 
-        icon.image = NSApp.applicationIconImage
-        icon.imageScaling = .scaleProportionallyUpOrDown
+        iconImage.image = NSApp.applicationIconImage
+        iconImage.imageScaling = .scaleProportionallyUpOrDown
+        iconImage.setAccessibilityElement(false)
+        icon.addSubview(iconImage)
         icon.setAccessibilityElement(false)
         icon.setAccessibilityIdentifier("about.icon")
         name.setAccessibilityIdentifier("about.title")
@@ -167,17 +171,23 @@ public final class AboutView: ThemedView {
         let width = bounds.width
         let contentWidth = width - 2 * Self.sidePadding
         let iconTop = Self.titleStrip + 2
+        // The app's icon file has a margin around its artwork that the original's SVG has not: drawn a little larger so
+        // the artwork is as big as the original's.
+        let iconDraw = Self.iconSize * 1.085
         icon.frame = NSRect(x: Self.sidePadding, y: iconTop, width: Self.iconSize, height: Self.iconSize)
+        iconImage.frame = NSRect(
+            x: -(iconDraw - Self.iconSize) / 2, y: -(iconDraw - Self.iconSize) / 2, width: iconDraw, height: iconDraw)
 
         // The name and the tagline, centered on the icon: 1.25 line height, 3 between, then the tagline's own.
         let nameHeight = ceil(CGFloat(DesignTokens.typeScale.title1) * 1.25)
         let taglineHeight = ThemeFonts.normalLineHeight(ThemeFonts.sans(DesignTokens.typeScale.body))
         let blockHeight = nameHeight + 3 + taglineHeight
         let textLeft = Self.sidePadding + Self.iconSize + 16
-        let blockTop = iconTop + ((Self.iconSize - blockHeight) / 2).rounded()
-        name.frame = NSRect(x: textLeft, y: blockTop, width: width - textLeft - Self.sidePadding, height: nameHeight)
-        tagline.frame = NSRect(
-            x: textLeft, y: blockTop + nameHeight + 3, width: width - textLeft - Self.sidePadding, height: taglineHeight)
+        let blockTop = iconTop + (Self.iconSize - blockHeight) / 2
+        // The column is as wide as its wider line.
+        let textWidth = min(width - textLeft - Self.sidePadding, max(ceil(name.naturalWidth), ceil(tagline.naturalWidth)))
+        name.frame = NSRect(x: textLeft, y: blockTop, width: textWidth, height: nameHeight)
+        tagline.frame = NSRect(x: textLeft, y: blockTop + nameHeight + 3, width: textWidth, height: taglineHeight)
 
         // The details, between hairlines.
         let rowHeight = Self.rowHeight

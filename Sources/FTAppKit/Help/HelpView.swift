@@ -27,6 +27,9 @@ public final class HelpView: ThemedView {
     private let document: NSView
     private(set) var page: HelpPageView?
 
+    /// The view itself takes the keyboard when the window opens, not the search field.
+    public override var acceptsFirstResponder: Bool { true }
+
     public var query: String { searchField.text }
     public var isSearching: Bool { !searchField.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 
@@ -189,12 +192,19 @@ public final class HelpView: ThemedView {
 
     private func arrangePage(compact: Bool) {
         guard let page else { return }
-        let top: CGFloat = (topInset ?? 0) + (compact ? 16 : 22)
+        // padding 22 28 36; 52 above in the window; compact 16 16 28 (which also replaces the window's 52).
+        let top: CGFloat = compact ? 16 : (topInset ?? 22)
         let sidePadding: CGFloat = compact ? 16 : 28
         let bottom: CGFloat = compact ? 28 : 36
         let scrollWidth = scroll.contentSize.width
-        let columnWidth = min(HelpPageView.maxWidth, max(0, scrollWidth - 2 * sidePadding))
-        let height = page.arrange(width: columnWidth, compact: compact)
+        func column(_ width: CGFloat) -> CGFloat { min(HelpPageView.maxWidth, max(0, width - 2 * sidePadding)) }
+        var columnWidth = column(scrollWidth)
+        var height = page.arrange(width: columnWidth, compact: compact)
+        // The original's scroll bar (8 wide) takes room from the page once it has something to scroll.
+        if top + height + bottom > scroll.contentSize.height {
+            columnWidth = column(scrollWidth - 8)
+            height = page.arrange(width: columnWidth, compact: compact)
+        }
         page.frame = NSRect(x: sidePadding, y: top, width: columnWidth, height: height)
         document.frame = NSRect(x: 0, y: 0, width: scrollWidth, height: top + height + bottom)
     }
