@@ -79,6 +79,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var contextMenuProvider: (([DirectoryEntry]?) -> NSMenu?)?
     var dragHooks = ContentDragHooks()
     var onSearchSubfolders: (() -> Void)?
+    /// The selection, its details or a folder size changed: the Info views describe it again (P5-06).
+    var onDetailsChanged: (() -> Void)?
 
     // MARK: State
 
@@ -148,7 +150,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var contentShell: ContentPaneView { shell }
 
     func setInfoRowOpen(_ open: Bool) {
-        shell.infoRow.isOpen = open
+        shell.infoRow.setOpen(open, animated: shell.window != nil)
         shell.needsLayout = true
     }
 
@@ -582,5 +584,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             selectedCount: selection.paths.count,
             size: size)
         shell.pathBarRow.needsLayout = true
+        onDetailsChanged?()
     }
 }
