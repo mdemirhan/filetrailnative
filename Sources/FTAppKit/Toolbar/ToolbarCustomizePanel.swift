@@ -238,14 +238,14 @@ final class ToolbarPaletteItemView: NSView, TextStyleSource {
     let id: ToolbarItemID
     let chip = NSView()
     let icon: ToolbarIconView
-    let label = NSTextField(wrappingLabelWithString: "")
+    let label = PaletteLabelView()
     var onPress: (NSPoint) -> Void = { _ in }
     var onDrag: (NSPoint) -> Void = { _ in }
     /// Let go: whether it was dragged.
     var onRelease: (Bool) -> Void = { _ in }
     private var dragged = false
 
-    var styleTextField: NSTextField? { label }
+    var styleTextField: NSTextField? { label.field }
 
     init(id: ToolbarItemID) {
         self.id = id
@@ -256,10 +256,7 @@ final class ToolbarPaletteItemView: NSView, TextStyleSource {
         chip.setAccessibilityIdentifier("toolbar.customize.chip")
         chip.addSubview(icon)
         addSubview(chip)
-        label.stringValue = definition.label
-        label.font = ChromeColors.font(size: DesignTokens.typeScale.small)
-        label.alignment = .center
-        label.isSelectable = false
+        label.field.stringValue = definition.label
         label.setAccessibilityIdentifier("toolbar.customize.label")
         addSubview(label)
         setAccessibilityElement(true)
@@ -290,9 +287,10 @@ final class ToolbarPaletteItemView: NSView, TextStyleSource {
         let side = ToolbarCustomizePanel.itemPadding.horizontal
         // The label is as wide as its text (up to the column), centered, 1.2 lines high per line.
         let room = bounds.width - 2 * side
-        let font = label.font ?? .systemFont(ofSize: DesignTokens.typeScale.small)
-        let textWidth = (label.stringValue as NSString).size(withAttributes: [.font: font]).width
-        let lines = ToolbarCustomizePanel.lineCount(label.stringValue, font: font, width: room)
+        let font = label.font
+        let text = label.field.stringValue
+        let textWidth = (text as NSString).size(withAttributes: [.font: font]).width
+        let lines = ToolbarCustomizePanel.lineCount(text, font: font, width: room)
         let width = lines > 1 ? room : min(room, textWidth)
         label.frame = NSRect(
             x: (bounds.width - width) / 2, y: labelTop, width: width,
@@ -301,7 +299,8 @@ final class ToolbarPaletteItemView: NSView, TextStyleSource {
         chip.layer?.backgroundColor = ChromeColors.color(palette.toolbarToggleBg).cgColor
         chip.layer?.cornerRadius = chipSize / 2
         icon.color = ChromeColors.color(palette.toolbarNavIconActive)
-        label.textColor = ChromeColors.color(palette.textSecondary)
+        label.field.textColor = ChromeColors.color(palette.textSecondary)
+        label.needsDisplay = true
     }
 
     override func mouseDown(with event: NSEvent) {
@@ -399,5 +398,42 @@ final class PanelPushButton: NSView, TextStyleSource {
         guard isEnabled else { return false }
         onClick()
         return true
+    }
+}
+
+/// `.toolbar-customize-label`: 11 pt secondary text, centered, 1.2 lines high per line, as wide as its text. Drawn
+/// here so its box is the text's own (a text field keeps a margin around its text).
+final class PaletteLabelView: NSView, TextStyleSource {
+    /// Holds the text and its style; it is not drawn.
+    let field = NSTextField(labelWithString: "")
+
+    var font: NSFont { field.font ?? .systemFont(ofSize: DesignTokens.typeScale.small) }
+    var styleTextField: NSTextField? { field }
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        field.font = ChromeColors.font(size: DesignTokens.typeScale.small)
+        setAccessibilityElement(true)
+        setAccessibilityRole(.staticText)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+    override var isFlipped: Bool { true }
+
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
+
+    override func draw(_ dirtyRect: NSRect) {
+        let style = NSMutableParagraphStyle()
+        style.alignment = .center
+        let line = font.pointSize * ToolbarCustomizePanel.labelLineHeight
+        style.minimumLineHeight = line
+        style.maximumLineHeight = line
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font, .foregroundColor: field.textColor ?? NSColor.secondaryLabelColor, .paragraphStyle: style,
+        ]
+        // A little room on each side, so a line exactly as wide as the box does not wrap.
+        (field.stringValue as NSString).draw(
+            with: bounds.insetBy(dx: -2, dy: 0), options: [.usesLineFragmentOrigin], attributes: attributes)
     }
 }
