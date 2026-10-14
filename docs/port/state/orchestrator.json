@@ -2046,7 +2046,7 @@
       "blockers": [],
       "carryOver": [
         "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
-        "From P0-16: open_3000_ms is 58-61 ms against a 50 ms budget because the window still uses the spike FolderLoader (3000 resourceValues calls, ~25 ms) instead of DirectoryService (6-8 ms), plus ~36 ms of table display. Switch the window to DirectoryService and meet open_3000, open_100000, stall_100000, back and scroll_max budgets (tools/bench/run.sh; baseline.json holds the current over-budget values).",
+        "From P0-16 (relaxed 2026-10-14): switch the window to DirectoryService (the spike FolderLoader costs ~25 ms of open_3000). Performance only needs the original's ballpark: open_3000 <= 80 ms, Back <= 50 ms, no visible hang.",
         "From W2-A integration: ExplorerServices.installed has iconStore = nil because AppDelegate made none. Create the app's FileIconStore in AppDelegate.startServices and pass it (P5-02 also edits startServices for the volume watcher in the same batch: keep your edit to the one line)."
       ]
     },
@@ -2974,6 +2974,7 @@
       "scripts-only parity sweep at every wave gate"
     ],
     "fileOperations": "User, 2026-10-14: file operations and Undo/Redo keep the original File Trail's bar: port its tests and the planned differential goldens (PLAN §5.3) as they are, no extra seeds, sequences, injection or real-disk cases beyond the original's, and no requirement that every operation be undoable. Cases the original declines to undo stay declined.",
-    "crashStop": "User, 2026-10-14: keep Stop and the crash journal/recovery as the original has them, tested only by the original's tests; no crash or stop injection in the differential (exec-crash, exec-stop and exec-crash-volumes are not required)."
+    "crashStop": "User, 2026-10-14: keep Stop and the crash journal/recovery as the original has them, tested only by the original's tests; no crash or stop injection in the differential (exec-crash, exec-stop and exec-crash-volumes are not required).",
+    "uiPerformance": "User, 2026-10-14: same ballpark as the original; PLAN §4 budgets are report-only targets; perf tightening is a post-port follow-up if wanted."
   }
 }

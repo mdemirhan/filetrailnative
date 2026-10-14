@@ -201,6 +201,8 @@ P0-10 adds the scenario steps these flows need. The flows themselves are written
 | First search results (`fd`, Home) | — | ≤ 150 ms |
 | Copy throughput | `copyfile` | equal, ±5% |
 
+**Changed on 2026-10-14 (user): these budgets are targets, not gates.** The bar is the same ballpark as the original: no worse than the Electron app's measured value (open a 3,000-item folder ≤ 80 ms, Back ≤ 50 ms), and no visible hang. Where the original has no number, a figure within about 1.5x of the budget passes. `tools/bench` reports; work packages don't spend time optimizing past the original. UI performance tightening, if wanted, is a follow-up after the port.
+
 The spike's `--bench` grows into `tools/bench`. It runs fixed scenarios against generated fixture trees, and each phase gate compares results to the previous run (fail on > 10% regression).
 
 ## 5. Validation system (built first, in phase 0)

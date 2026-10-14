@@ -3,23 +3,85 @@
   "regression_percent": 10,
   "regression_floor": 1.0,
   "metrics": {
-    "bundle_mb": {"unit": "MB", "budget": 12, "note": "app bundle, fd included"},
-    "idle_mb": {"unit": "MB", "budget": 60, "note": "physical footprint, one window in Home, 3 s after launch"},
-    "launch_ms": {"unit": "ms", "budget": 350, "note": "median of 5 (3 with --quick), process start to first folder drawn"},
-    "open_300_ms": {"unit": "ms", "budget": null},
-    "open_3000_ms": {"unit": "ms", "budget": 50, "note": "List view, to drawn"},
-    "open_30000_ms": {"unit": "ms", "budget": null},
-    "open_100000_ms": {"unit": "ms", "budget": 600, "note": "to first rows"},
-    "stall_100000_ms": {"unit": "ms", "budget": 50, "note": "longest main-thread stall while opening"},
-    "list_3000_ms": {"unit": "ms", "budget": 25, "note": "DirectoryService read and sort, median of 15, no window (tools/bench/listing.sh)"},
-    "list_100000_ms": {"unit": "ms", "budget": 400, "note": "DirectoryService read and sort, median of 7, no window (tools/bench/listing.sh)"},
-    "first_search_results_ms": {"unit": "ms", "budget": 150, "note": "fd on Home, recursive name search to first results polled, median of 7, no window (tools/bench/listing.sh)"},
-    "back_ms": {"unit": "ms", "budget": 10, "note": "back to a small folder"},
-    "scroll_max_ms": {"unit": "ms", "budget": 16, "note": "longest frame interval while scrolling the List top to bottom"},
-    "scroll_p99_ms": {"unit": "ms", "budget": null}
+    "bundle_mb": {
+      "unit": "MB",
+      "budget": 12,
+      "note": "app bundle, fd included"
+    },
+    "idle_mb": {
+      "unit": "MB",
+      "budget": 60,
+      "note": "physical footprint, one window in Home, 3 s after launch"
+    },
+    "launch_ms": {
+      "unit": "ms",
+      "budget": 350,
+      "note": "median of 5 (3 with --quick), process start to first folder drawn"
+    },
+    "open_300_ms": {
+      "unit": "ms",
+      "budget": null
+    },
+    "open_3000_ms": {
+      "unit": "ms",
+      "budget": 50,
+      "note": "List view, to drawn",
+      "ballpark": 80
+    },
+    "open_30000_ms": {
+      "unit": "ms",
+      "budget": null
+    },
+    "open_100000_ms": {
+      "unit": "ms",
+      "budget": 600,
+      "note": "to first rows"
+    },
+    "stall_100000_ms": {
+      "unit": "ms",
+      "budget": 50,
+      "note": "longest main-thread stall while opening"
+    },
+    "list_3000_ms": {
+      "unit": "ms",
+      "budget": 25,
+      "note": "DirectoryService read and sort, median of 15, no window (tools/bench/listing.sh)"
+    },
+    "list_100000_ms": {
+      "unit": "ms",
+      "budget": 400,
+      "note": "DirectoryService read and sort, median of 7, no window (tools/bench/listing.sh)"
+    },
+    "first_search_results_ms": {
+      "unit": "ms",
+      "budget": 150,
+      "note": "fd on Home, recursive name search to first results polled, median of 7, no window (tools/bench/listing.sh)"
+    },
+    "back_ms": {
+      "unit": "ms",
+      "budget": 10,
+      "note": "back to a small folder",
+      "ballpark": 50
+    },
+    "scroll_max_ms": {
+      "unit": "ms",
+      "budget": 16,
+      "note": "longest frame interval while scrolling the List top to bottom"
+    },
+    "scroll_p99_ms": {
+      "unit": "ms",
+      "budget": null
+    }
   },
   "not_yet_measured": {
-    "copy_throughput": {"budget": "copyfile, +-5%", "note": "added with the copy work package"},
-    "icons_scroll_max_ms": {"budget": 16, "note": "Icons view scroll; added with the Icons view package"}
-  }
+    "copy_throughput": {
+      "budget": "copyfile, +-5%",
+      "note": "added with the copy work package"
+    },
+    "icons_scroll_max_ms": {
+      "budget": 16,
+      "note": "Icons view scroll; added with the Icons view package"
+    }
+  },
+  "policy": "report-only targets (user, 2026-10-14): the bar is the original Electron app's ballpark; see PLAN.md section 4."
 }

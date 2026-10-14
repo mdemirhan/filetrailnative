@@ -95,7 +95,7 @@ const CRITIC = {
 const LENSES = {
   parity: 'PARITY: read the cited reference TypeScript and inventory sections and list behavior the Swift code lacks or changes.',
   safety: 'SAFETY: look for data loss, destructive steps the user was not shown, and races above the bar in the reference repo docs/FILE_OPERATION_RISKS.md. Accepted risks listed there are not findings.',
-  performance: 'PERFORMANCE: look for main-thread disk access, needless allocations or copies, and anything that breaks the budgets in docs/port/PLAN.md section 4.',
+  performance: 'PERFORMANCE: the bar is the original app\'s ballpark, not PLAN.md section 4\'s targets (user, 2026-10-14). Report only what a user would notice: main-thread disk access or a visible hang, or something clearly slower than the original (about 1.5x or worse, measured). Micro-optimizations are not findings.',
   visual: 'VISUAL: build the app, capture the scenarios this work package touches with the capture harness, compare against the reference captures, and list material differences.',
 }
 
