@@ -1,26 +1,33 @@
 // Port of the WriteService class of packages/core/src/fs/writeService.ts: its dependencies, its state, its one write
-// slot and its listeners. Analysis jobs are in WriteServiceAnalysis.swift, the paste in WriteServicePaste.swift.
+// slot and its listeners. Analysis jobs are in WriteServiceAnalysis.swift, the paste in WriteServicePaste.swift, its
+// questions and Stop in WriteServiceRuntime.swift.
 import FTFoundation
 import Foundation
 import os
 
 public struct WriteServiceDependencies: Sendable {
-    public var fileSystem: any AnalysisFileSystem
+    public var fileSystem: any WriteServiceFileSystem
+    /// Remembers folder copies and large file copies in progress (and Replaces), so an interrupted one can be
+    /// finished or undone at the next start.
+    public var writeJournal: (any WriteJournal)?
     public var now: @Sendable () -> Date
     /// Ids "copy-op-1", "copy-op-2", … when not given.
     public var createOperationId: (@Sendable () -> String)?
     /// Ids "analysis-1", "analysis-2", … when not given.
     public var createAnalysisId: (@Sendable () -> String)?
     public var thresholds: CopyPasteThresholds
-    /// Runs a paste once its analysis is ready (`executeCopyPasteFromAnalysis`); see WriteServicePaste.swift.
+    /// Runs a paste once its analysis is ready; `executeCopyPasteFromAnalysis` when not given (see
+    /// WriteServicePaste.swift).
     public var executeCopyPaste: CopyPasteExecutor?
 
     public init(
-        fileSystem: any AnalysisFileSystem, now: @escaping @Sendable () -> Date = { Date() },
-        createOperationId: (@Sendable () -> String)? = nil, createAnalysisId: (@Sendable () -> String)? = nil,
-        thresholds: CopyPasteThresholds = .writeService, executeCopyPaste: CopyPasteExecutor? = nil
+        fileSystem: any WriteServiceFileSystem, writeJournal: (any WriteJournal)? = nil,
+        now: @escaping @Sendable () -> Date = { Date() }, createOperationId: (@Sendable () -> String)? = nil,
+        createAnalysisId: (@Sendable () -> String)? = nil, thresholds: CopyPasteThresholds = .writeService,
+        executeCopyPaste: CopyPasteExecutor? = nil
     ) {
         self.fileSystem = fileSystem
+        self.writeJournal = writeJournal
         self.now = now
         self.createOperationId = createOperationId
         self.createAnalysisId = createAnalysisId
@@ -43,17 +50,28 @@ public final class WriteService: Sendable {
         var error: String?
     }
 
+    /// A question the paste waits on, and where its answer goes.
+    struct PendingResolution {
+        var conflict: CopyPasteRuntimeConflict
+        var answer: RuntimeAnswer
+    }
+
     struct State {
         var listeners: [(token: Int, listener: Listener)] = []
         var nextListenerToken = 0
         var signals: [String: StopSignal] = [:]
         var analysisJobs: [String: AnalysisJob] = [:]
+        var pendingResolutions: [String: PendingResolution] = [:]
+        /// Answers given "for the rest of this operation", by operation, then by the kind of conflict they
+        /// answered (`runtimeConflictScope`).
+        var standingResolutions: [String: [String: CopyPasteChoice]] = [:]
         var activeOperationId: String?
         var sequence = 0
         var analysisSequence = 0
     }
 
-    let fileSystem: any AnalysisFileSystem
+    let fileSystem: any WriteServiceFileSystem
+    let writeJournal: (any WriteJournal)?
     let now: @Sendable () -> Date
     let thresholds: CopyPasteThresholds
     let executeCopyPaste: CopyPasteExecutor
@@ -63,9 +81,10 @@ public final class WriteService: Sendable {
 
     public init(_ dependencies: WriteServiceDependencies) {
         fileSystem = dependencies.fileSystem
+        writeJournal = dependencies.writeJournal
         now = dependencies.now
         thresholds = dependencies.thresholds
-        executeCopyPaste = dependencies.executeCopyPaste ?? unavailableCopyPasteExecutor
+        executeCopyPaste = dependencies.executeCopyPaste ?? engineCopyPasteExecutor
         operationIds = dependencies.createOperationId
         analysisIds = dependencies.createAnalysisId
     }
