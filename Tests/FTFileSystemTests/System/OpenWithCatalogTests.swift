@@ -104,6 +104,7 @@ import Testing
     // running the tests.
     private let missingApp = "/Applications/File Trail Test Missing.app"
 
+    // T-ace2aac0
     @Test func refusesToChangeWhatOpensFolders() async {
         let error = await #expect(throws: OpenWithCatalog.SetDefaultFailure.self) {
             try await OpenWithCatalog().setDefaultApplication(appPath: missingApp, contentType: "public.folder")
@@ -111,6 +112,7 @@ import Testing
         #expect(error?.message == "Folders, apps and packages keep the app they open in.")
     }
 
+    // T-b682efab
     @Test func refusesAKindMacOSDoesntKnow() async {
         let error = await #expect(throws: OpenWithCatalog.SetDefaultFailure.self) {
             try await OpenWithCatalog().setDefaultApplication(appPath: missingApp, contentType: "")

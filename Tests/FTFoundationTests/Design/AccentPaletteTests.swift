@@ -30,6 +30,7 @@ import Testing
         ("--ft-accent-location-ring", \.locationRing), ("--ft-accent-ring-soft", \.ringSoft),
     ]
 
+    // T-ab2bf170 T-6af82aa6 T-c06ac759 T-1100e7f2
     @Test func everyGoldenCaseMatchesExactly() throws {
         let golden = try GoldenFile.json("accent.json")
         let cases = try #require(golden["cases"] as? [[String: Any]])

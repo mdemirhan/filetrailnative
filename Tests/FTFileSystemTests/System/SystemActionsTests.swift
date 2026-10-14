@@ -108,7 +108,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(info == VolumeInfo.Sizes(availableBytes: nil, totalBytes: nil))
     }
 
-    // T-0715c3bb T-df2126ce N/A: Quick Look is the Quick Look panel's work (QLPreviewPanel), not this package's.
+    // N/A T-0715c3bb T-df2126ce Quick Look is the Quick Look panel's work (QLPreviewPanel), not this package's.
 
     // T-f66c763b
     @MainActor @Test func asksForAnAppInApplicationsAsASheetAndNamesTheOneChosen() async {
@@ -159,7 +159,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(choice == SystemPickers.DirectoryChoice(canceled: true, path: nil))
     }
 
-    // T-fbe12d69
+    // T-fbe12d69 T-d88d425e
     @Test func opensTheItemsWithTheApp() async {
         let system = FakeSystem()
         let result = await SystemActions.openPaths(
@@ -169,7 +169,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(system.calls == [.openWith("/Applications/Zed.app", ["/Users/demo/a.txt", "/Users/demo/b.txt"])])
     }
 
-    // T-46f29828
+    // T-46f29828 T-1b7582f5
     @Test func revealsTheItemsInFinderWhenFinderIsTheApp() async {
         let system = FakeSystem()
         _ = await SystemActions.openPaths(
@@ -177,7 +177,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(system.calls == [.reveal(["/Users/demo/a.txt"])])
     }
 
-    // T-17013eb6
+    // T-17013eb6 T-ac8a9c09
     @Test func reportsWhyOpenFailed() async {
         let system = FakeSystem()
         system.failure = "Unable to find application named 'Gone'"
@@ -186,6 +186,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(result == .failure("Unable to find application named 'Gone'"))
     }
 
+    // T-cd79ef68 T-58a29428
     @Test func refusesAnApplicationPathThatIsNotABundleWithoutOpeningAnything() async {
         let system = FakeSystem()
         for path in ["/bin/sh", "Zed.app", "/Applications/../bin/x.app", "  "] {

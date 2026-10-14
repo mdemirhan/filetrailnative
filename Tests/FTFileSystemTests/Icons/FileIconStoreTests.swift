@@ -59,7 +59,7 @@ private func entry(
 }
 
 @MainActor @Suite struct FileIconStoreTests {
-    // T-30abdbfb F-224
+    // T-30abdbfb F-224 T-7a3e2fb1
     @Test func anIconIsMissingUntilItArrivesAndNoneWhenMacOSHasNone() async throws {
         try await withTemporaryDirectory { directory in
             let store = makeStore(source: RecordingSource { _ in nil }, samples: directory)
@@ -294,6 +294,7 @@ private func entry(
         }
     }
 
+    // N/A T-fe3f2758 the favorites' line icons belong to the sidebar (F-732, P5-02); nothing draws them yet
     // T-77887acd F-156
     @Test @MainActor func theWorkspaceGivesAnItemItsOwnIcon() throws {
         try withTemporaryDirectory { directory in
