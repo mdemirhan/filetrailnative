@@ -7,10 +7,10 @@
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Resumed 2026-10-17. Test reduction audit running (docs/port/test-audit/); no batches until the user approves the keep/convert/drop list. Then: first UI checkpoint, P5-05 from port/P5-05, port/capture-once decision, schedule.py ready.",
+  "nextAction": "On /port resume, first apply the approved test reduction (docs/port/test-audit/approved.json and the five audit reports): (a) window tests: keep 23 on screen, convert 44 to windowless (shared harness that never shows the window, per window-tests.md), drop 11; fix the two bugs found (a test writing the real clipboard, one leaving its harness open) and gate or un-show AutomationStepsTests.findsElementsByNameTextAndPlace; (b) scenarios: a checkpoint tier with the 16 scenarios + 7 acceptance flows, final for 62 + 10, drop 28 after moving their F-/B- tags; ui-check.js runs the checkpoint tier and only the kept window tests (a tag or filter, plus DiskImageMounterHandOffTests); add a progress-UI scenario (gap); (c) remove the approved near-duplicates (7 app, 12 FTFoundation, 11 file system) and update tests.tsv/features.md/behaviors.tsv citations; groups the original keeps separately stay; (d) the 14 faster-fixture changes, each keeping what its test proves. Run these as work packages through schedule.py (windowless gates). Then the first UI checkpoint (covers P5-06/P5-09), P5-05 from port/P5-05, decide port/capture-once, then schedule.py ready.",
   "pause": {
-    "requested": false,
-    "reason": null,
+    "requested": true,
+    "reason": "user 2026-10-18: test reduction approved; checkpoint and wait. Start the work only when the user resumes the port.",
     "until": null
   },
   "meter": [
@@ -3186,7 +3186,7 @@
     {
       "at": "2026-10-14",
       "request": "UI test policy: no window runs during development; window checks only at checkpoints (done 2026-10-14: batch.js has no window runs; ui-check.js at phase ends). On resume, before any batch: (3) cut the ~400 window tests to an e2e-sized set of about 30-50 by turning layout/model ones into windowless tests; (4) cut the capture scenarios to about 15-20 representative ones for checkpoints, the full set for the final parity sweep, original-app captures once; (5) an agent proposes the list (keep / make windowless / drop) and the user approves it before anything is deleted. Don't resume batches until the user says so. Also on resume (user 2026-10-14): (6) while iterating, agents run only the tests of the area they change (scripts/ci.sh --scope <target or suite>) and the full windowless suite once before they finish; put this in batch.js and the preamble. (7) in the same review as (5), an agent flags near-duplicate ported tests (cases that check the same behavior with another value) for the user to decide; nothing is removed without approval, and the bar stays the original's test coverage.",
-      "status": "steps 1-2 done; 3-7 on resume"
+      "status": "steps 1-2 and 6 done; audit approved 2026-10-18 (docs/port/test-audit/approved.json, all sections as proposed); applying 3-5 and 7 (plus the faster fixtures) is the first work on resume"
     }
   ],
   "acceptance": {

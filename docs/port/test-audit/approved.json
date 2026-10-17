@@ -1,0 +1,2485 @@
+{
+ "approvedAt": "2026-10-18",
+ "approvedBy": "user, in chat: all sections approved as proposed (no overrides)",
+ "page": "https://claude.ai/artifact/6YwpK1sgCQk5D1tdEwKuY7",
+ "sections": [
+  {
+   "id": "window",
+   "title": "Tests that open windows",
+   "choices": [
+    "keep",
+    "convert",
+    "drop"
+   ],
+   "items": [
+    {
+     "id": "w1",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack",
+     "decision": "keep",
+     "reason": "Native tab groups: New Tab, Move Tab to New Window, Merge All Windows. Matches the e2e test windows.spec \"moves a tab to a window of its own\".",
+     "covered": ""
+    },
+    {
+     "id": "w2",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "closesAndReopensTabsAndStepsThroughThem",
+     "decision": "keep",
+     "reason": "Native tab selection, ⌘W, and ⇧⌘T on a real tab group.",
+     "covered": ""
+    },
+    {
+     "id": "w3",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch",
+     "decision": "keep",
+     "reason": "Frames on screen, the window in front, quit and relaunch. Matches windows.spec \"brings back each window's place\".",
+     "covered": ""
+    },
+    {
+     "id": "w4",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit",
+     "decision": "keep",
+     "reason": "File › Duplicate Tab through the menu router into a native tab group, with the tab limit.",
+     "covered": ""
+    },
+    {
+     "id": "w5",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "namesEachWindowInTheWindowMenuAfterItsTabsLabelAndTheToolbarAfterItsFolder",
+     "decision": "keep",
+     "reason": "AppKit's Window menu only lists windows that are ordered in.",
+     "covered": ""
+    },
+    {
+     "id": "w6",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "automationStepsActOnTheTabInFrontAfterTheTabsChange (DEBUG)",
+     "decision": "drop",
+     "reason": "Tests the capture harness's runner, not the app.",
+     "covered": "Scenarios 26 and 33 (Window › Show Previous Tab) and acceptance a14 drive the runner across tab changes and fail if it follows the wrong tab."
+    },
+    {
+     "id": "w7",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "opensNoMoreThanAHundredTabsAndSaysSo",
+     "decision": "drop",
+     "reason": "⌘T and Duplicate Tab both go through the same check, `ExplorerTabGroup.hasRoomForTab`.",
+     "covered": "duplicatesATab…PastTheLimit (kept) checks the limit and the notice. NotificationsGUITests.theTabLimitNoticeIsAnInfoToastInTheWindow (converted) checks the text. Scenario 158 also covers it."
+    },
+    {
+     "id": "w8",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "opensWindowsOnTheFolderOnScreenAndBringsBackThoseOpenAtQuit",
+     "decision": "keep",
+     "reason": "File › New Window, Open in New Window, close, quit and relaunch. Matches windows.spec \"opens windows on the folder on screen\".",
+     "covered": ""
+    },
+    {
+     "id": "w9",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "staysOpenWithNoWindowAndOpensOneWhereTheLastOneClosed",
+     "decision": "keep",
+     "reason": "The app with no window, a Dock reopen, and a Go menu item opening a window. Matches windows.spec \"stays open with no window\".",
+     "covered": ""
+    },
+    {
+     "id": "w10",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "tabsFollowAFolderRenamedOrMovedByAnyWindow",
+     "decision": "keep",
+     "reason": "Tabs in two windows follow a move, and the background tab reloads when its native tab is selected. The rules alone are in ExplorerTabsTests.",
+     "covered": ""
+    },
+    {
+     "id": "w11",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "tabsOnAnUnmountedDiskCloseAndAWindowAllOnItCloses",
+     "decision": "keep",
+     "reason": "A disk going away closes tabs and a whole window. This is window management on real groups.",
+     "covered": ""
+    },
+    {
+     "id": "w12",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen",
+     "decision": "keep",
+     "reason": "Needs a sheet attached to an on-screen window (`isBlocked`, the busy answer to a merge).",
+     "covered": ""
+    },
+    {
+     "id": "w13",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen",
+     "decision": "keep",
+     "reason": "The system tab bar showing and hiding, and its \"+\" button (`newWindowForTab`).",
+     "covered": ""
+    },
+    {
+     "id": "w14",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "savesTheTabsInTheOrderOfTheTabBar",
+     "decision": "convert",
+     "reason": "It calls `group.replaceTabs` directly and then reads the store. Run it on a group that is never shown.",
+     "covered": ""
+    },
+    {
+     "id": "w15",
+     "group": "Windows/NativeWindowsGUITests.swift",
+     "name": "restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped",
+     "decision": "keep",
+     "reason": "A restored background tab loads only when its native tab is selected. This is part of the relaunch flow.",
+     "covered": ""
+    },
+    {
+     "id": "w16",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton",
+     "decision": "convert",
+     "reason": "rowKeys, capsule edges and the clipboard count after layout. Use the windowless harness.",
+     "covered": ""
+    },
+    {
+     "id": "w17",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "hidesTheItemsNearestTheEndInANarrowWindowAndListsThemUnderTheOverflowButton",
+     "decision": "convert",
+     "reason": "`setContentSize` with layout, then the » menu view through `accessibilityPerformPress`. Works on a window that is never shown.",
+     "covered": ""
+    },
+    {
+     "id": "w18",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "togglesSayWhatAClickWillDoAndButtonsRunTheirCommands",
+     "decision": "convert",
+     "reason": "Tooltips, isOn and enabled states after `accessibilityPerformPress`. The window is never shown.",
+     "covered": ""
+    },
+    {
+     "id": "w19",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "switchesTheViewFromTheMenuAndBackFromTheToolbar",
+     "decision": "convert",
+     "reason": "`perform` and the segment press, then `viewState`.",
+     "covered": ""
+    },
+    {
+     "id": "w20",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "choosesAutoLightOrDarkFromTheThemeButtonsMenu",
+     "decision": "convert",
+     "reason": "The menu view's titles, then a choose, then the store.",
+     "covered": ""
+    },
+    {
+     "id": "w21",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "listsTheViewOptionsAndSortsFromTheSortMenu",
+     "decision": "keep",
+     "reason": "Toolbar menus opened and closed, Escape sent through the window, choices applied. This is the toolbar's menu flow (scenarios 55 and 56).",
+     "covered": ""
+    },
+    {
+     "id": "w22",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "stepsOnAClickAndListsTheFoldersWhenHeld",
+     "decision": "keep",
+     "reason": "Back held down with real timing, then ↓ and Return in the menu through the window, then a jump through the history (acceptance a08, scenario 58).",
+     "covered": ""
+    },
+    {
+     "id": "w23",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "editsTheToolbarInPlaceFromThePanelAndTheKeyboard",
+     "decision": "convert",
+     "reason": "`customizer.handleKey` and the panel callbacks are direct calls. Use the windowless harness.",
+     "covered": ""
+    },
+    {
+     "id": "w24",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "movesAddsAndTakesOffItemsByDragging",
+     "decision": "convert",
+     "reason": "`pressHandle`, `pointerMoved` and `pointerUp` are direct calls in window coordinates, which works on a window that is never shown. ToolbarState.showsTheFocusRing… (kept) does the real drag.",
+     "covered": ""
+    },
+    {
+     "id": "w25",
+     "group": "Toolbar/ToolbarGUITests.swift",
+     "name": "offersCustomizeToolbarOnARightClickOfTheTitle",
+     "decision": "drop",
+     "reason": "It calls `title.rightMouseDown` directly.",
+     "covered": "ToolbarState.leavesARightClickOnAnItemAlone (kept) right-clicks the title through the window and checks the menu is [\"Customize Toolbar…\"]. Fold this test's `choose` and `customizer != nil` lines into it."
+    },
+    {
+     "id": "w26",
+     "group": "Toolbar/ToolbarStateGUITests.swift",
+     "name": "leavesARightClickOnAnItemAlone",
+     "decision": "keep",
+     "reason": "Real right-click events through `window.sendEvent`, hit-tested across the toolbar's items.",
+     "covered": ""
+    },
+    {
+     "id": "w27",
+     "group": "Toolbar/ToolbarStateGUITests.swift",
+     "name": "titlesTheToolbarWithTheSearchedFolderInSearchMode",
+     "decision": "convert",
+     "reason": "The title text and Sort's enabled state when `searchRootPath` is set.",
+     "covered": ""
+    },
+    {
+     "id": "w28",
+     "group": "Toolbar/ToolbarStateGUITests.swift",
+     "name": "keepsTheSortAndViewOptionsMenusOpenWhileTheWindowIsResized",
+     "decision": "convert",
+     "reason": "`setContentSize` posts `didResizeNotification` without the window on screen. It then checks the menu's frame and whether the menu exists.",
+     "covered": ""
+    },
+    {
+     "id": "w29",
+     "group": "Toolbar/ToolbarStateGUITests.swift",
+     "name": "disablesTheViewSwitchSortAndCommandsWhileCustomizing",
+     "decision": "convert",
+     "reason": "Enabled states only.",
+     "covered": ""
+    },
+    {
+     "id": "w30",
+     "group": "Toolbar/ToolbarStateGUITests.swift",
+     "name": "showsTheFocusRingOnlyForTheKeyboardAndTheHoverRingWhereADragEnds",
+     "decision": "keep",
+     "reason": "A real mouse-down, drag and mouse-up through the window, then the first responder and a key. This is the only real drag in Customize Toolbar (acceptance a10).",
+     "covered": ""
+    },
+    {
+     "id": "w31",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "aFilesMenuListsOnlyWhatCanBeDoneToIt",
+     "decision": "drop",
+     "reason": "Duplicates the menu's item list.",
+     "covered": "FTFoundation ContextMenuGoldenTests.everyMenuListsTheItemsOfTheOriginalInItsOrder, ContextMenuRulesTests.theMenuOfAFileHasTheOriginalsGroups… and aTextFileShowsEdit…. The `NSMenu` build path stays covered by the converted tests below."
+    },
+    {
+     "id": "w32",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "aFolderHasNewTabsAndPasteAndTheBackgroundHasTheFolderOnScreen",
+     "decision": "convert",
+     "reason": "`validateMenuItem` for Paste and New Folder on the session. The tab is loaded but never shown.",
+     "covered": ""
+    },
+    {
+     "id": "w33",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "viewAsTicksTheCurrentViewAndSortByTheCurrentOrderAndPickingOneApplies",
+     "decision": "convert",
+     "reason": "Item states, then `sendAction` to the tab.",
+     "covered": ""
+    },
+    {
+     "id": "w34",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "everyItemHasAFourteenPointTemplateIconAndTheTrashItemIsRed",
+     "decision": "convert",
+     "reason": "Item images and attributes. It's the only check of the icons and the red Trash item.",
+     "covered": ""
+    },
+    {
+     "id": "w35",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "theShortcutsShownAreTheKeysThatWouldDoTheSameNow",
+     "decision": "convert",
+     "reason": "`keyEquivalent`s on the built menus.",
+     "covered": ""
+    },
+    {
+     "id": "w36",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "openWithListsTheDefaultPinnedAndOtherAppsAndOptionTurnsItIntoAlwaysOpenWith",
+     "decision": "convert",
+     "reason": "`menuNeedsUpdate` with a stubbed lookup, the alternate item, then `sendAction`.",
+     "covered": ""
+    },
+    {
+     "id": "w37",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "tooManyItemsAndAFailedLaunchAreToldInANotice",
+     "decision": "convert",
+     "reason": "Coordinator calls with a notice spy.",
+     "covered": ""
+    },
+    {
+     "id": "w38",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "terminalFinderAndCopyPathAreDoneThroughTheSystem",
+     "decision": "convert",
+     "reason": "Calls with an opener spy and the toast entries. When converting, use a private `NSPasteboard`: it now writes to the user's real clipboard.",
+     "covered": ""
+    },
+    {
+     "id": "w39",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "changesOutsideWaitWhileAMenuIsOpen",
+     "decision": "convert",
+     "reason": "The delegate's open and close, then `folderChangesHeld`.",
+     "covered": ""
+    },
+    {
+     "id": "w40",
+     "group": "ContextMenus/ContextMenuGUITests.swift",
+     "name": "aNativeMenuClosesWhenAnotherWindowOrAppIsClickedAsTheSystemDoes",
+     "decision": "drop",
+     "reason": "It doesn't click anywhere. It only calls `menuWillOpen` and `menuDidClose`.",
+     "covered": "changesOutsideWaitWhileAMenuIsOpen (converted) runs the same lifecycle. Add its `contextMenus.current == nil` check there."
+    },
+    {
+     "id": "w41",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree",
+     "decision": "convert",
+     "reason": "The cells' labels after layout. Use the windowless harness.",
+     "covered": ""
+    },
+    {
+     "id": "w42",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "rowsHaveTheOriginalsHeightIndentAndPadding",
+     "decision": "convert",
+     "reason": "Cell frames after layout.",
+     "covered": ""
+    },
+    {
+     "id": "w43",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "theChevronExpandsAFolderAndAnAliasHasNone",
+     "decision": "drop",
+     "reason": "It calls `model.toggleByHand` directly.",
+     "covered": "theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar (kept) opens Alpha and sees Inner. SidebarModelTests.theArrowKeysOpenABranch… also covers it."
+    },
+    {
+     "id": "w44",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar",
+     "decision": "keep",
+     "reason": "Focuses the sidebar, then sends arrow keys through the window to it (acceptance a02, scenario 82).",
+     "covered": ""
+    },
+    {
+     "id": "w45",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed",
+     "decision": "convert",
+     "reason": "A model toggle, then which cells are on screen.",
+     "covered": ""
+    },
+    {
+     "id": "w46",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone",
+     "decision": "convert",
+     "reason": "Subviews and tooltips of cells, with volumes overridden.",
+     "covered": ""
+    },
+    {
+     "id": "w47",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "aRightClickRingsOnlyThatRow",
+     "decision": "convert",
+     "reason": "It calls `outline.menu(for:)` directly, then checks the model's selection and `menuTarget`.",
+     "covered": ""
+    },
+    {
+     "id": "w48",
+     "group": "Sidebar/SidebarGUITests.swift",
+     "name": "pressingEmptySpaceClearsTheSelection",
+     "decision": "drop",
+     "reason": "A one-line delegate call that forwards to the model.",
+     "covered": "SidebarModelTests.clearingTheSelectionLetsGoOfTheFolderOnScreen."
+    },
+    {
+     "id": "w49",
+     "group": "Notifications/NotificationsGUITests.swift",
+     "name": "notificationsStackAtTheBottomRightNewestLowestWithTheirMark",
+     "decision": "convert",
+     "reason": "Card frames in the overlay, measured against the path bar after layout.",
+     "covered": ""
+    },
+    {
+     "id": "w50",
+     "group": "Notifications/NotificationsGUITests.swift",
+     "name": "eachNotificationGoesAfterFourSecondsAndNoMoreThanThreeShow",
+     "decision": "drop",
+     "reason": "Model timing on a clock moved by hand.",
+     "covered": "ToastsTests.dropsTheOldestVisibleToastWhenAFourthToastIsQueued and keepsEveryNotificationOnScreenForFourSeconds. The cards following the entries is covered by the converted noNotificationComes… and the stack test. Scenario 156 also covers it."
+    },
+    {
+     "id": "w51",
+     "group": "Notifications/NotificationsGUITests.swift",
+     "name": "noNotificationComesWhenTheyAreTurnedOffAndThoseShowingGo",
+     "decision": "convert",
+     "reason": "A preference change, then the toast entries and the cards.",
+     "covered": ""
+    },
+    {
+     "id": "w52",
+     "group": "Notifications/NotificationsGUITests.swift",
+     "name": "theTabLimitNoticeIsAnInfoToastInTheWindow",
+     "decision": "convert",
+     "reason": "`showNotice`, then a toast entry. It's the only check of that wiring (the kept window test stubs `showNotice`).",
+     "covered": ""
+    },
+    {
+     "id": "w53",
+     "group": "Notifications/NotificationsGUITests.swift",
+     "name": "theProgressCardComesAfterTheDelayAndShowsWhatRunsAndStops",
+     "decision": "convert",
+     "reason": "The card model, its frames and texts, and the Stop callback.",
+     "covered": ""
+    },
+    {
+     "id": "w54",
+     "group": "Notifications/NotificationsGUITests.swift",
+     "name": "anOperationOverBeforeTheDelayShowsNoCard",
+     "decision": "convert",
+     "reason": "The progress model only, with no window needed.",
+     "covered": ""
+    },
+    {
+     "id": "w55",
+     "group": "Notifications/NotificationsGUITests.swift",
+     "name": "spacePreviewsTheSelectedItemWithQuickLookAndSpaceAgainClosesIt",
+     "decision": "keep",
+     "reason": "Space sent through the window to the focused list, opening and closing Quick Look (scenario 159, acceptance a13).",
+     "covered": ""
+    },
+    {
+     "id": "w56",
+     "group": "InfoPanel/InfoGUITests.swift",
+     "name": "thePanelAndTheRowDescribeTheSelection",
+     "decision": "convert",
+     "reason": "Field texts after selection and layout.",
+     "covered": ""
+    },
+    {
+     "id": "w57",
+     "group": "InfoPanel/InfoGUITests.swift",
+     "name": "severalItemsAreSummedUpInBothViews",
+     "decision": "drop",
+     "reason": "Duplicates the view tests.",
+     "covered": "InfoViewsTests.severalItemsAreSummedUp and severalItemsShowTheCountAndTheFolderSize. The selection wiring is covered by thePanelAndTheRow… (converted). Scenarios 140 and 146 also cover it."
+    },
+    {
+     "id": "w58",
+     "group": "InfoPanel/InfoGUITests.swift",
+     "name": "showInfoPointsThePanelAtAnUnselectedItem",
+     "decision": "convert",
+     "reason": "`showInfo`, then texts. When converting, add the missing `harness.close()`: the test now leaves its window and temporary folder behind.",
+     "covered": ""
+    },
+    {
+     "id": "w59",
+     "group": "InfoPanel/InfoGUITests.swift",
+     "name": "calculateSizeMeasuresTheSelectedFolders",
+     "decision": "convert",
+     "reason": "Commands, then `folderSizes` state and texts (acceptance a11).",
+     "covered": ""
+    },
+    {
+     "id": "w60",
+     "group": "InfoPanel/InfoGUITests.swift",
+     "name": "aSeparatorsMenuStepsSideways",
+     "decision": "convert",
+     "reason": "`onClick` and `onChoose` on the folder menu view, which is in the window, then the folder shown.",
+     "covered": ""
+    },
+    {
+     "id": "w61",
+     "group": "InfoPanel/InfoGUITests.swift",
+     "name": "theEditorOpensOnTheCurrentPathAndEscapeClosesIt",
+     "decision": "keep",
+     "reason": "The path editor takes the first responder and the field editor, with the caret at the end, and Escape closes it.",
+     "covered": ""
+    },
+    {
+     "id": "w62",
+     "group": "InfoPanel/InfoGUITests.swift",
+     "name": "returnGoesToTheTypedPath",
+     "decision": "convert",
+     "reason": "The editor's `control(_:textView:doCommandBy:)` is a direct call. The field editor also works in a window that is never shown. Otherwise call the commit directly.",
+     "covered": ""
+    },
+    {
+     "id": "w63",
+     "group": "Help/PageWindowsTests.swift (gated case only)",
+     "name": "opensOneWindowOfEachKindAndRemembersHelpsPage",
+     "decision": "keep",
+     "reason": "Help, About and Acknowledgements opened and reopened (one window of each), then closed, and Help reopens on its last page. This is window management.",
+     "covered": ""
+    },
+    {
+     "id": "w64",
+     "group": "Content/ListGUITests.swift",
+     "name": "drawsTheRowsAndTheHeader",
+     "decision": "convert",
+     "reason": "Row and header frames and texts after layout.",
+     "covered": ""
+    },
+    {
+     "id": "w65",
+     "group": "Content/ListGUITests.swift",
+     "name": "aNarrowPaneDropsColumnsFromTheRight",
+     "decision": "drop",
+     "reason": "Duplicates the layout tests.",
+     "covered": "DetailsLayoutTests.columnsDropFromTheRightOneAtATime and fittingLeavesTheOtherSavedWidthsAlone. The rows following the pane is covered by rowsFollowAWiderPane (converted). Scenario 87 also covers it."
+    },
+    {
+     "id": "w66",
+     "group": "Content/ListGUITests.swift",
+     "name": "headerClicksSort",
+     "decision": "drop",
+     "reason": "It calls `cell.onSort` directly.",
+     "covered": "DetailsLayoutTests.headerClicksSortLikeTheOriginal (the same order rules, Created and Permissions not sortable). Scenario 94 does a real header click."
+    },
+    {
+     "id": "w67",
+     "group": "Content/ListGUITests.swift",
+     "name": "separatorsResizeTheColumns",
+     "decision": "convert",
+     "reason": "`onBegin`, `onDrag`, `onNudge` and `onFit` are direct calls, followed by checks of the widths and preferences.",
+     "covered": ""
+    },
+    {
+     "id": "w68",
+     "group": "Content/ListGUITests.swift",
+     "name": "aChangeOutsideKeepsTheSelection",
+     "decision": "keep",
+     "reason": "The flow of folderWatch.spec \"shows items made, renamed and removed outside the app, keeping the selection\", in a shown window. It reloads with `tab.refresh()`, not the watcher (see section 3).",
+     "covered": ""
+    },
+    {
+     "id": "w69",
+     "group": "Content/ListGUITests.swift",
+     "name": "theStates",
+     "decision": "convert",
+     "reason": "The empty, error and Full Disk Access state views, through the controller.",
+     "covered": ""
+    },
+    {
+     "id": "w70",
+     "group": "Layout/WorkspaceGUITests.swift",
+     "name": "hidesTheFolderTreeGivingItsRoomToTheListAndTheToolbar",
+     "decision": "convert",
+     "reason": "Workspace cell frames after layout.",
+     "covered": ""
+    },
+    {
+     "id": "w71",
+     "group": "Layout/WorkspaceGUITests.swift",
+     "name": "slidesTheInfoPanelInAndOutOverTheContent",
+     "decision": "convert",
+     "reason": "Slide state and frames. If the slide's completion doesn't fire when the window isn't on screen, keep it instead.",
+     "covered": ""
+    },
+    {
+     "id": "w72",
+     "group": "Layout/WorkspaceGUITests.swift",
+     "name": "squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths",
+     "decision": "convert",
+     "reason": "Widths after `setContentSize`, then `keyDown` called directly on the resizer.",
+     "covered": ""
+    },
+    {
+     "id": "w73",
+     "group": "Layout/WorkspaceGUITests.swift",
+     "name": "drawsNoLinesTheOriginalDoesNotHave",
+     "decision": "keep",
+     "reason": "The window's own frame as the window server shows it: style flags, the traffic lights' place and the title bar band. It's the in-process smoke check of the explorer shell.",
+     "covered": ""
+    },
+    {
+     "id": "w74",
+     "group": "Layout/WorkspaceGUITests.swift",
+     "name": "leavesTheScrollersToTheSystemsOverlayScrollers",
+     "decision": "convert",
+     "reason": "One property check on the scroll views.",
+     "covered": ""
+    },
+    {
+     "id": "w75",
+     "group": "Content/ReviewRowWidthTests.swift (the gated ExplorerWindowGUITests.ReviewRowWidthTests suite)",
+     "name": "rowsFollowAWiderPane",
+     "decision": "convert",
+     "reason": "A row frame after `setContentSize` and layout.",
+     "covered": ""
+    },
+    {
+     "id": "w76",
+     "group": "Content/ReviewRowWidthTests.swift (the gated ExplorerWindowGUITests.ReviewRowWidthTests suite)",
+     "name": "theSizeCellClipsItsBar",
+     "decision": "convert",
+     "reason": "It needs no window at all (`SizeCellView().clipsToBounds`). Move it out of the gated suite.",
+     "covered": ""
+    },
+    {
+     "id": "w77",
+     "group": "Content/ReviewRowWidthTests.swift (the gated ExplorerWindowGUITests.ReviewRowWidthTests suite)",
+     "name": "aFolderWatchChangeKeepsItsChangedPaths",
+     "decision": "convert",
+     "reason": "`folderChanged`, then `pendingChange`. This is state only.",
+     "covered": ""
+    },
+    {
+     "id": "w78",
+     "group": "Outside the list: FTFileSystemTests/DiskImages/DiskImageMounterHandOffTests.swift",
+     "name": "handsAnImageToTheRealDiskImageMounter",
+     "decision": "keep",
+     "reason": "Hands an image to Apple's DiskImageMounter app, which shows a window of its own. It's the only proof of that hand-off. Add it to ui-check's checkpoint command (it is not in `--filter FTAppKitTests`).",
+     "covered": ""
+    }
+   ]
+  },
+  {
+   "id": "scenarios",
+   "title": "Screenshot scenarios and acceptance flows",
+   "choices": [
+    "checkpoint",
+    "final",
+    "drop"
+   ],
+   "items": [
+    {
+     "id": "s1",
+     "group": "Scenarios",
+     "name": "01-list-components-light",
+     "decision": "drop",
+     "reason": "Same root, clock, prefs, window and steps as 50, byte for byte; the capture is identical",
+     "covered": "50"
+    },
+    {
+     "id": "s2",
+     "group": "Scenarios",
+     "name": "02-list-components-dark",
+     "decision": "drop",
+     "reason": "Same as 51, byte for byte",
+     "covered": "51"
+    },
+    {
+     "id": "s3",
+     "group": "Scenarios",
+     "name": "03-icons-components-light",
+     "decision": "checkpoint",
+     "reason": "The only Icons view capture",
+     "covered": ""
+    },
+    {
+     "id": "s4",
+     "group": "Scenarios",
+     "name": "04-list-sorted-size",
+     "decision": "drop",
+     "reason": "Same folder (photos), sort (size, descending) and window as 89; 89 adds two selected rows",
+     "covered": "89"
+    },
+    {
+     "id": "s5",
+     "group": "Scenarios",
+     "name": "05-list-sorted-date",
+     "decision": "drop",
+     "reason": "Date Modified sort indicator and newest-first order; 94 reaches the same sort by a header click",
+     "covered": "94"
+    },
+    {
+     "id": "s6",
+     "group": "Scenarios",
+     "name": "06-list-selection-4",
+     "decision": "drop",
+     "reason": "The same four files selected in the same folder as 140, which also shows the Info Row",
+     "covered": "140"
+    },
+    {
+     "id": "s7",
+     "group": "Scenarios",
+     "name": "07-list-root",
+     "decision": "final",
+     "reason": "Lighthouse root: a folders-first list of mixed kinds, not shown elsewhere",
+     "covered": ""
+    },
+    {
+     "id": "s8",
+     "group": "Scenarios",
+     "name": "08-list-empty-folder",
+     "decision": "final",
+     "reason": "The empty-folder state",
+     "covered": ""
+    },
+    {
+     "id": "s9",
+     "group": "Scenarios",
+     "name": "09-back-after-navigating",
+     "decision": "final",
+     "reason": "Back restores the folder and selection (F-590, F-833); a behaviour check",
+     "covered": ""
+    },
+    {
+     "id": "s10",
+     "group": "Scenarios",
+     "name": "10-search-typed",
+     "decision": "final",
+     "reason": "Search field with text typed; a01 covers search at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s11",
+     "group": "Scenarios",
+     "name": "11-context-menu-file",
+     "decision": "final",
+     "reason": "One Copy Path toast with a selected row; 156 runs the same menu three times at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s12",
+     "group": "Scenarios",
+     "name": "12-rename-f2",
+     "decision": "final",
+     "reason": "Inline rename field and its result; a05 renames with F2 at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s13",
+     "group": "Scenarios",
+     "name": "13-new-folder",
+     "decision": "final",
+     "reason": "New Folder with its name editing (P3-06)",
+     "covered": ""
+    },
+    {
+     "id": "s14",
+     "group": "Scenarios",
+     "name": "14-cut-items-marks",
+     "decision": "drop",
+     "reason": "a03's first snapshot is the same four files cut in the same folder, with marks and the count",
+     "covered": "a03"
+    },
+    {
+     "id": "s15",
+     "group": "Scenarios",
+     "name": "15-clipboard-popover",
+     "decision": "final",
+     "reason": "The popover for copied items (\"2 items copied\"); a03 shows the cut variant",
+     "covered": ""
+    },
+    {
+     "id": "s16",
+     "group": "Scenarios",
+     "name": "16-go-to-folder-typed",
+     "decision": "checkpoint",
+     "reason": "Go To panel with completions (pending P6-01)",
+     "covered": ""
+    },
+    {
+     "id": "s17",
+     "group": "Scenarios",
+     "name": "17-review-sheet-conflict",
+     "decision": "final",
+     "reason": "Review sheet for two conflicts; a04 opens the same sheet at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s18",
+     "group": "Scenarios",
+     "name": "18-second-tab",
+     "decision": "final",
+     "reason": "Tab strip with two tabs; a14 shows the same strip at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s19",
+     "group": "Scenarios",
+     "name": "19-settings-general",
+     "decision": "checkpoint",
+     "reason": "Settings window, General tab (pending P6-04)",
+     "covered": ""
+    },
+    {
+     "id": "s20",
+     "group": "Scenarios",
+     "name": "20-outside-file-created",
+     "decision": "drop",
+     "reason": "a17 creates a file from outside in the same folder and expects it listed",
+     "covered": "a17"
+    },
+    {
+     "id": "s21",
+     "group": "Scenarios",
+     "name": "21-menubar-file-trail-light",
+     "decision": "drop",
+     "reason": "Same menu path (File Trail › Settings…) as 19, but captures only the explorer behind Settings",
+     "covered": "19"
+    },
+    {
+     "id": "s22",
+     "group": "Scenarios",
+     "name": "22-menubar-file-light",
+     "decision": "final",
+     "reason": "File › New Tab through the real menu",
+     "covered": ""
+    },
+    {
+     "id": "s23",
+     "group": "Scenarios",
+     "name": "23-menubar-edit-light",
+     "decision": "final",
+     "reason": "Edit › Select All through the real menu",
+     "covered": ""
+    },
+    {
+     "id": "s24",
+     "group": "Scenarios",
+     "name": "24-menubar-view-light",
+     "decision": "final",
+     "reason": "View › as Icons through the real menu (the native menu and its checkmark aren't captured)",
+     "covered": ""
+    },
+    {
+     "id": "s25",
+     "group": "Scenarios",
+     "name": "25-menubar-go-light",
+     "decision": "final",
+     "reason": "Go › Enclosing Folder through the real menu",
+     "covered": ""
+    },
+    {
+     "id": "s26",
+     "group": "Scenarios",
+     "name": "26-menubar-window-light",
+     "decision": "final",
+     "reason": "Window › Show Previous Tab through the real menu",
+     "covered": ""
+    },
+    {
+     "id": "s27",
+     "group": "Scenarios",
+     "name": "27-menubar-help-light",
+     "decision": "drop",
+     "reason": "Captures the explorer window, not Help; the shortcuts page itself is captured by 45",
+     "covered": "45"
+    },
+    {
+     "id": "s28",
+     "group": "Scenarios",
+     "name": "28-menubar-file-trail-dark",
+     "decision": "drop",
+     "reason": "Dark twin of 21: a menu action doesn't depend on the theme, and 51 captures the dark explorer",
+     "covered": "19 + 51"
+    },
+    {
+     "id": "s29",
+     "group": "Scenarios",
+     "name": "29-menubar-file-dark",
+     "decision": "drop",
+     "reason": "Dark twin of 22",
+     "covered": "22 + 51"
+    },
+    {
+     "id": "s30",
+     "group": "Scenarios",
+     "name": "30-menubar-edit-dark",
+     "decision": "drop",
+     "reason": "Dark twin of 23",
+     "covered": "23 + 51"
+    },
+    {
+     "id": "s31",
+     "group": "Scenarios",
+     "name": "31-menubar-view-dark",
+     "decision": "drop",
+     "reason": "Dark twin of 24",
+     "covered": "24 + 51"
+    },
+    {
+     "id": "s32",
+     "group": "Scenarios",
+     "name": "32-menubar-go-dark",
+     "decision": "drop",
+     "reason": "Dark twin of 25",
+     "covered": "25 + 51"
+    },
+    {
+     "id": "s33",
+     "group": "Scenarios",
+     "name": "33-menubar-window-dark",
+     "decision": "drop",
+     "reason": "Dark twin of 26",
+     "covered": "26 + 51"
+    },
+    {
+     "id": "s34",
+     "group": "Scenarios",
+     "name": "34-menubar-help-dark",
+     "decision": "drop",
+     "reason": "Dark twin of 27",
+     "covered": "45 + 51"
+    },
+    {
+     "id": "s35",
+     "group": "Scenarios",
+     "name": "35-new-window",
+     "decision": "final",
+     "reason": "⌘N: a second window on the same folder, cascaded",
+     "covered": ""
+    },
+    {
+     "id": "s36",
+     "group": "Scenarios",
+     "name": "36-open-in-new-window",
+     "decision": "final",
+     "reason": "Open in New Window on a selected folder",
+     "covered": ""
+    },
+    {
+     "id": "s37",
+     "group": "Scenarios",
+     "name": "37-move-tab-and-merge",
+     "decision": "drop",
+     "reason": "a14 moves a tab to its own window and merges all windows back, with snapshots (move B-VIEW-178/179 to it)",
+     "covered": "a14"
+    },
+    {
+     "id": "s38",
+     "group": "Scenarios",
+     "name": "38-paste-in-another-window",
+     "decision": "final",
+     "reason": "Copy (not cut) across windows; a port of an original e2e flow",
+     "covered": ""
+    },
+    {
+     "id": "s39",
+     "group": "Scenarios",
+     "name": "39-about-light",
+     "decision": "checkpoint",
+     "reason": "About window",
+     "covered": ""
+    },
+    {
+     "id": "s40",
+     "group": "Scenarios",
+     "name": "40-about-dark",
+     "decision": "final",
+     "reason": "About window, dark: the only dark capture of it",
+     "covered": ""
+    },
+    {
+     "id": "s41",
+     "group": "Scenarios",
+     "name": "41-help-getting-around",
+     "decision": "checkpoint",
+     "reason": "Help window",
+     "covered": ""
+    },
+    {
+     "id": "s42",
+     "group": "Scenarios",
+     "name": "42-help-files",
+     "decision": "drop",
+     "reason": "Same Help window and layout as 41, another topic's text",
+     "covered": "41"
+    },
+    {
+     "id": "s43",
+     "group": "Scenarios",
+     "name": "43-help-searching",
+     "decision": "drop",
+     "reason": "Same as 42",
+     "covered": "41"
+    },
+    {
+     "id": "s44",
+     "group": "Scenarios",
+     "name": "44-help-views",
+     "decision": "drop",
+     "reason": "Same as 42",
+     "covered": "41"
+    },
+    {
+     "id": "s45",
+     "group": "Scenarios",
+     "name": "45-help-shortcuts",
+     "decision": "final",
+     "reason": "The keycaps: the one topic that renders differently",
+     "covered": ""
+    },
+    {
+     "id": "s46",
+     "group": "Scenarios",
+     "name": "46-help-search",
+     "decision": "final",
+     "reason": "Help search with results",
+     "covered": ""
+    },
+    {
+     "id": "s47",
+     "group": "Scenarios",
+     "name": "47-help-search-empty",
+     "decision": "final",
+     "reason": "Help search with no match: the empty message",
+     "covered": ""
+    },
+    {
+     "id": "s48",
+     "group": "Scenarios",
+     "name": "48-acknowledgements",
+     "decision": "final",
+     "reason": "Acknowledgements window with an entry expanded",
+     "covered": ""
+    },
+    {
+     "id": "s49",
+     "group": "Scenarios",
+     "name": "49-theme-accent-selection",
+     "decision": "checkpoint",
+     "reason": "Accent, active and inactive selection, Light/Dark/Auto",
+     "covered": ""
+    },
+    {
+     "id": "s50",
+     "group": "Scenarios",
+     "name": "50-toolbar-default-light",
+     "decision": "checkpoint",
+     "reason": "Window chrome, toolbar, List light, path bar, status text",
+     "covered": ""
+    },
+    {
+     "id": "s51",
+     "group": "Scenarios",
+     "name": "51-toolbar-default-dark",
+     "decision": "checkpoint",
+     "reason": "The same, dark",
+     "covered": ""
+    },
+    {
+     "id": "s52",
+     "group": "Scenarios",
+     "name": "52-tree-hidden",
+     "decision": "final",
+     "reason": "Toolbar reaching the corner (76 pt for the traffic lights) with the tree hidden",
+     "covered": ""
+    },
+    {
+     "id": "s53",
+     "group": "Scenarios",
+     "name": "53-info-panel-open",
+     "decision": "drop",
+     "reason": "Panel open with nothing selected in the same folder as 145; same resizer, column and toolbar (move B-INFO-183/185)",
+     "covered": "145"
+    },
+    {
+     "id": "s54",
+     "group": "Scenarios",
+     "name": "54-narrow-overflow",
+     "decision": "final",
+     "reason": "Narrow window: the » overflow menu",
+     "covered": ""
+    },
+    {
+     "id": "s55",
+     "group": "Scenarios",
+     "name": "55-sort-menu",
+     "decision": "checkpoint",
+     "reason": "Toolbar pop-up menu with a ticked item",
+     "covered": ""
+    },
+    {
+     "id": "s56",
+     "group": "Scenarios",
+     "name": "56-view-options-menu",
+     "decision": "final",
+     "reason": "The same toolbar menu as 55 with other items; turns on the Info Row",
+     "covered": ""
+    },
+    {
+     "id": "s57",
+     "group": "Scenarios",
+     "name": "57-theme-menu",
+     "decision": "final",
+     "reason": "The same toolbar menu as 55; switches to Dark",
+     "covered": ""
+    },
+    {
+     "id": "s58",
+     "group": "Scenarios",
+     "name": "58-history-hold",
+     "decision": "drop",
+     "reason": "a08 holds Back for the history list and right-clicks Forward the same way (move B-NAV-026 to a08)",
+     "covered": "a08"
+    },
+    {
+     "id": "s59",
+     "group": "Scenarios",
+     "name": "59-customize-toolbar",
+     "decision": "checkpoint",
+     "reason": "Customize Toolbar mode",
+     "covered": ""
+    },
+    {
+     "id": "s60",
+     "group": "Scenarios",
+     "name": "60-customize-toolbar-dark",
+     "decision": "final",
+     "reason": "Customize Toolbar, dark: the only dark capture of it",
+     "covered": ""
+    },
+    {
+     "id": "s61",
+     "group": "Scenarios",
+     "name": "70-sidebar-separate-comfortable-light",
+     "decision": "final",
+     "reason": "Base sidebar: separate, comfortable, light, tree rooted at the folder",
+     "covered": ""
+    },
+    {
+     "id": "s62",
+     "group": "Scenarios",
+     "name": "71-sidebar-separate-comfortable-dark",
+     "decision": "final",
+     "reason": "Separate layout, dark",
+     "covered": ""
+    },
+    {
+     "id": "s63",
+     "group": "Scenarios",
+     "name": "72-sidebar-separate-compact-light",
+     "decision": "final",
+     "reason": "Separate layout, compact",
+     "covered": ""
+    },
+    {
+     "id": "s64",
+     "group": "Scenarios",
+     "name": "73-sidebar-integrated-comfortable-light",
+     "decision": "final",
+     "reason": "Integrated layout, comfortable",
+     "covered": ""
+    },
+    {
+     "id": "s65",
+     "group": "Scenarios",
+     "name": "74-sidebar-integrated-comfortable-dark",
+     "decision": "final",
+     "reason": "Integrated layout, dark",
+     "covered": ""
+    },
+    {
+     "id": "s66",
+     "group": "Scenarios",
+     "name": "75-sidebar-integrated-compact-light",
+     "decision": "checkpoint",
+     "reason": "Integrated layout and Compact density",
+     "covered": ""
+    },
+    {
+     "id": "s67",
+     "group": "Scenarios",
+     "name": "76-sidebar-integrated-compact-dark",
+     "decision": "drop",
+     "reason": "Compact × dark adds nothing: the compact metrics are 75's, the dark integrated colours 74's",
+     "covered": "75 + 74"
+    },
+    {
+     "id": "s68",
+     "group": "Scenarios",
+     "name": "77-sidebar-deep-path",
+     "decision": "checkpoint",
+     "reason": "Separate layout with the tree expanded four levels deep and the last folder selected",
+     "covered": ""
+    },
+    {
+     "id": "s69",
+     "group": "Scenarios",
+     "name": "78-sidebar-click-selection",
+     "decision": "final",
+     "reason": "A click on a tree row selects it and opens its folder",
+     "covered": ""
+    },
+    {
+     "id": "s70",
+     "group": "Scenarios",
+     "name": "79-sidebar-separate-compact-dark",
+     "decision": "drop",
+     "reason": "Same reasoning as 76",
+     "covered": "72 + 71"
+    },
+    {
+     "id": "s71",
+     "group": "Scenarios",
+     "name": "80-sidebar-sections-closed",
+     "decision": "final",
+     "reason": "Collapsed section headers",
+     "covered": ""
+    },
+    {
+     "id": "s72",
+     "group": "Scenarios",
+     "name": "81-sidebar-jump-to",
+     "decision": "final",
+     "reason": "The Jump to pill",
+     "covered": ""
+    },
+    {
+     "id": "s73",
+     "group": "Scenarios",
+     "name": "82-sidebar-keyboard-expand",
+     "decision": "final",
+     "reason": "Right then Down in the tree; a02 covers Right only",
+     "covered": ""
+    },
+    {
+     "id": "s74",
+     "group": "Scenarios",
+     "name": "83-sidebar-volume-eject",
+     "decision": "final",
+     "reason": "Same steps as 70, but needs a mounted disk image for the Eject button; already final-only and run by name",
+     "covered": ""
+    },
+    {
+     "id": "s75",
+     "group": "Scenarios",
+     "name": "85-list-compact",
+     "decision": "drop",
+     "reason": "72 is the same window state (separate, compact, light, components) plus the tree rooted at the folder",
+     "covered": "72"
+    },
+    {
+     "id": "s76",
+     "group": "Scenarios",
+     "name": "86-list-optional-columns",
+     "decision": "drop",
+     "reason": "a13's first snapshot uses the same `detailColumns` (Created, Permissions) in the same folder",
+     "covered": "a13"
+    },
+    {
+     "id": "s77",
+     "group": "Scenarios",
+     "name": "87-list-narrow-pane",
+     "decision": "final",
+     "reason": "Least window width: Name gives way, columns drop",
+     "covered": ""
+    },
+    {
+     "id": "s78",
+     "group": "Scenarios",
+     "name": "88-list-fitted-column",
+     "decision": "final",
+     "reason": "Double-click on a column separator fits the column",
+     "covered": ""
+    },
+    {
+     "id": "s79",
+     "group": "Scenarios",
+     "name": "89-list-size-bars-selected",
+     "decision": "final",
+     "reason": "Size bars with selected rows",
+     "covered": ""
+    },
+    {
+     "id": "s80",
+     "group": "Scenarios",
+     "name": "93-list-inactive-selection",
+     "decision": "final",
+     "reason": "Grey selection in a window that isn't in front (49 covers an unfocused pane, not an inactive window)",
+     "covered": ""
+    },
+    {
+     "id": "s81",
+     "group": "Scenarios",
+     "name": "94-list-sort-header-click",
+     "decision": "final",
+     "reason": "A header click sorts the list",
+     "covered": ""
+    },
+    {
+     "id": "s82",
+     "group": "Scenarios",
+     "name": "135-pathbar-collapsed-light",
+     "decision": "drop",
+     "reason": "Same steps, prefs and window as 50 (a 100 ms longer wait); the path bar collapses there the same way (move B-INFO-092/093/102/105 to 50)",
+     "covered": "50"
+    },
+    {
+     "id": "s83",
+     "group": "Scenarios",
+     "name": "136-pathbar-expanded-light",
+     "decision": "final",
+     "reason": "… expands the path into a horizontal scroll",
+     "covered": ""
+    },
+    {
+     "id": "s84",
+     "group": "Scenarios",
+     "name": "137-pathbar-editor-suggestions-light",
+     "decision": "final",
+     "reason": "Path editor with suggestions opening upward",
+     "covered": ""
+    },
+    {
+     "id": "s85",
+     "group": "Scenarios",
+     "name": "138-pathbar-folder-menu-light",
+     "decision": "drop",
+     "reason": "a08's `folder-menu` snapshot: the same separator menu, opening upward, with the path's folder ticked",
+     "covered": "a08"
+    },
+    {
+     "id": "s86",
+     "group": "Scenarios",
+     "name": "139-inforow-one-item-light",
+     "decision": "final",
+     "reason": "Info Row for one file, light (148 is its dark twin at checkpoints)",
+     "covered": ""
+    },
+    {
+     "id": "s87",
+     "group": "Scenarios",
+     "name": "140-inforow-several-light",
+     "decision": "final",
+     "reason": "Info Row for several items: count and summed size",
+     "covered": ""
+    },
+    {
+     "id": "s88",
+     "group": "Scenarios",
+     "name": "141-inforow-folder-light",
+     "decision": "final",
+     "reason": "Info Row for the folder on screen, with Calculate size",
+     "covered": ""
+    },
+    {
+     "id": "s89",
+     "group": "Scenarios",
+     "name": "142-inforow-folder-size-light",
+     "decision": "final",
+     "reason": "Info Row with a calculated folder size",
+     "covered": ""
+    },
+    {
+     "id": "s90",
+     "group": "Scenarios",
+     "name": "143-infopanel-file-light",
+     "decision": "checkpoint",
+     "reason": "Info panel for a file",
+     "covered": ""
+    },
+    {
+     "id": "s91",
+     "group": "Scenarios",
+     "name": "144-infopanel-folder-size-light",
+     "decision": "final",
+     "reason": "Info panel with a calculated folder size",
+     "covered": ""
+    },
+    {
+     "id": "s92",
+     "group": "Scenarios",
+     "name": "145-infopanel-folder-light",
+     "decision": "final",
+     "reason": "Info panel for the folder on screen, with Calculate",
+     "covered": ""
+    },
+    {
+     "id": "s93",
+     "group": "Scenarios",
+     "name": "146-infopanel-several-light",
+     "decision": "final",
+     "reason": "Info panel for several items",
+     "covered": ""
+    },
+    {
+     "id": "s94",
+     "group": "Scenarios",
+     "name": "147-infopanel-file-dark",
+     "decision": "final",
+     "reason": "Info panel, dark: the only dark capture of it",
+     "covered": ""
+    },
+    {
+     "id": "s95",
+     "group": "Scenarios",
+     "name": "148-pathbar-inforow-dark",
+     "decision": "checkpoint",
+     "reason": "Path bar and Info Row, dark",
+     "covered": ""
+    },
+    {
+     "id": "s96",
+     "group": "Scenarios",
+     "name": "149-infopanel-open-with-menu-light",
+     "decision": "final",
+     "reason": "The Info panel's Open With menu (a16 opens Open With from a context menu)",
+     "covered": ""
+    },
+    {
+     "id": "s97",
+     "group": "Scenarios",
+     "name": "150-menu-content-show-info",
+     "decision": "final",
+     "reason": "Show Info from a file's context menu",
+     "covered": ""
+    },
+    {
+     "id": "s98",
+     "group": "Scenarios",
+     "name": "151-menu-folder-open-in-new-tab",
+     "decision": "final",
+     "reason": "Open in New Tab from a folder's context menu",
+     "covered": ""
+    },
+    {
+     "id": "s99",
+     "group": "Scenarios",
+     "name": "152-menu-background-copy-path",
+     "decision": "final",
+     "reason": "The background context menu (F-814)",
+     "covered": ""
+    },
+    {
+     "id": "s100",
+     "group": "Scenarios",
+     "name": "153-menu-background-sort-by-submenu",
+     "decision": "final",
+     "reason": "A context submenu",
+     "covered": ""
+    },
+    {
+     "id": "s101",
+     "group": "Scenarios",
+     "name": "154-menu-tree-use-as-root",
+     "decision": "final",
+     "reason": "Use as Tree Root from the tree's context menu (a02 uses ⇧⌘R)",
+     "covered": ""
+    },
+    {
+     "id": "s102",
+     "group": "Scenarios",
+     "name": "155-menu-favorite-use-as-root",
+     "decision": "final",
+     "reason": "Use as Tree Root from a favorite's context menu",
+     "covered": ""
+    },
+    {
+     "id": "s103",
+     "group": "Scenarios",
+     "name": "156-toasts-three-stacked",
+     "decision": "checkpoint",
+     "reason": "Context menu and stacked toasts",
+     "covered": ""
+    },
+    {
+     "id": "s104",
+     "group": "Scenarios",
+     "name": "157-toasts-off",
+     "decision": "final",
+     "reason": "No toast when notifications are off",
+     "covered": ""
+    },
+    {
+     "id": "s105",
+     "group": "Scenarios",
+     "name": "158-toast-tab-limit",
+     "decision": "final",
+     "reason": "101st-tab notice; slow (108 steps), already wave/final only",
+     "covered": ""
+    },
+    {
+     "id": "s106",
+     "group": "Scenarios",
+     "name": "159-quick-look-space",
+     "decision": "checkpoint",
+     "reason": "Quick Look",
+     "covered": ""
+    },
+    {
+     "id": "s107",
+     "group": "Acceptance flows",
+     "name": "a01-search",
+     "decision": "checkpoint",
+     "reason": "A1, the main reason to use the app; the only full capture of the search UI",
+     "covered": ""
+    },
+    {
+     "id": "s108",
+     "group": "Acceptance flows",
+     "name": "a02-folder-tree",
+     "decision": "checkpoint",
+     "reason": "A2, the tree flow; passes on the Swift side today",
+     "covered": ""
+    },
+    {
+     "id": "s109",
+     "group": "Acceptance flows",
+     "name": "a03-visible-clipboard",
+     "decision": "checkpoint",
+     "reason": "A3, data safety; the clipboard popover and cross-window paste",
+     "covered": ""
+    },
+    {
+     "id": "s110",
+     "group": "Acceptance flows",
+     "name": "a04-paste-never-destroys",
+     "decision": "checkpoint",
+     "reason": "A4, data safety; the review sheet and alert",
+     "covered": ""
+    },
+    {
+     "id": "s111",
+     "group": "Acceptance flows",
+     "name": "a05-undo-redo",
+     "decision": "checkpoint",
+     "reason": "A5, data safety; inline rename, Trash, Undo/Redo",
+     "covered": ""
+    },
+    {
+     "id": "s112",
+     "group": "Acceptance flows",
+     "name": "a06-go-to",
+     "decision": "final",
+     "reason": "`16` captures the Go To panel at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s113",
+     "group": "Acceptance flows",
+     "name": "a07-type-to-filter",
+     "decision": "final",
+     "reason": "P5-05 isn't merged; the filter is mostly behaviour, proven windowless",
+     "covered": ""
+    },
+    {
+     "id": "s114",
+     "group": "Acceptance flows",
+     "name": "a08-path-bar-history",
+     "decision": "final",
+     "reason": "`148` captures the path bar; covers the dropped 58 and 138; slowest flow today (29 s Swift)",
+     "covered": ""
+    },
+    {
+     "id": "s115",
+     "group": "Acceptance flows",
+     "name": "a09-shortcuts",
+     "decision": "final",
+     "reason": "Promote when P6-04 merges (the only shortcut recorder capture)",
+     "covered": ""
+    },
+    {
+     "id": "s116",
+     "group": "Acceptance flows",
+     "name": "a10-customize-toolbar",
+     "decision": "final",
+     "reason": "`59` captures the mode at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s117",
+     "group": "Acceptance flows",
+     "name": "a11-folder-sizes",
+     "decision": "final",
+     "reason": "Size bars also captured by `89`",
+     "covered": ""
+    },
+    {
+     "id": "s118",
+     "group": "Acceptance flows",
+     "name": "a12-batch-rename",
+     "decision": "final",
+     "reason": "Promote when P6-03 merges (the only Batch Rename sheet capture)",
+     "covered": ""
+    },
+    {
+     "id": "s119",
+     "group": "Acceptance flows",
+     "name": "a13-views",
+     "decision": "checkpoint",
+     "reason": "A13, the three views and Compact List; covers the dropped 86",
+     "covered": ""
+    },
+    {
+     "id": "s120",
+     "group": "Acceptance flows",
+     "name": "a14-tabs-and-windows",
+     "decision": "checkpoint",
+     "reason": "A14, the tab strip and window management; covers the dropped 37",
+     "covered": ""
+    },
+    {
+     "id": "s121",
+     "group": "Acceptance flows",
+     "name": "a15-make-it-yours",
+     "decision": "final",
+     "reason": "`49` captures the theme and accent at checkpoints",
+     "covered": ""
+    },
+    {
+     "id": "s122",
+     "group": "Acceptance flows",
+     "name": "a16-favorites",
+     "decision": "final",
+     "reason": "Sidebar and Open With surfaces covered by `77` and `143`",
+     "covered": ""
+    },
+    {
+     "id": "s123",
+     "group": "Acceptance flows",
+     "name": "a17-outside-changes",
+     "decision": "final",
+     "reason": "Folder watching, drag, hidden files; covers the dropped 20",
+     "covered": ""
+    }
+   ]
+  },
+  {
+   "id": "dup-appkit",
+   "title": "Near-duplicate tests: app target (windowless)",
+   "choices": [
+    "remove",
+    "keep"
+   ],
+   "items": [
+    {
+     "id": "da1",
+     "group": "Safe to remove",
+     "name": "Help/PageWindowsTests.swift:35 theHelpMenuOpensHelpOnThePageItNames",
+     "decision": "remove",
+     "reason": "Covered by MenuCommandRouterTests.swift:251 (T-6ec0c9ff) and the Help titles at ApplicationMenuLayoutTests.swift:18",
+     "covered": "none"
+    },
+    {
+     "id": "da2",
+     "group": "Safe to remove",
+     "name": "Menus/ApplicationMenuLayoutTests.swift:209 keepsSettingsOnItsFixedKey",
+     "decision": "remove",
+     "reason": "Covered by ApplicationMenuLayoutTests.swift:72 (accelerator) and MenuCommandRouterTests.swift:226 (target and routing)",
+     "covered": "T-96221c32"
+    },
+    {
+     "id": "da3",
+     "group": "Safe to remove",
+     "name": "Appearance/PreferenceChannelTests.swift:46 aChangeOfTheWindowsOwnSessionIsNotToldToTheApp",
+     "decision": "remove",
+     "reason": "Covered by ExplorerWindowOrderTests.swift:108 (T-f1cf1841) and AppearanceModelTests.swift:164",
+     "covered": "none"
+    },
+    {
+     "id": "da4",
+     "group": "Safe to remove",
+     "name": "Automation/ScenarioTests.swift:64 everyCheckedInScenarioParses",
+     "decision": "remove",
+     "reason": "Covered by AutomationStepsTests.swift:164",
+     "covered": "none"
+    },
+    {
+     "id": "da5",
+     "group": "Safe to remove",
+     "name": "App/QuitWhileBusyTests.swift:221 asksBeforeClosingTheLastWindowStopsACopyAndKeepsWorkingWhenToldTo",
+     "decision": "remove",
+     "reason": "Covered by ExplorerWindowControllerTests.swift:364, :489, and QuitWhileBusyTests.swift:70",
+     "covered": "T-0e9eff11"
+    },
+    {
+     "id": "da6",
+     "group": "Safe to remove",
+     "name": "Appearance/AppearanceModelTests.swift:257 hasNoRootElementToMount",
+     "decision": "remove",
+     "reason": "Covered by nothing to cover: the body is #expect(true); keep the N/A comment lines elsewhere",
+     "covered": "T-38688505, T-479129a0 (N/A)"
+    },
+    {
+     "id": "da7",
+     "group": "Safe to remove",
+     "name": "Appearance/AppearanceModelTests.swift:241 theFavoriteIconsAreTheAccent",
+     "decision": "remove",
+     "reason": "Covered by AppearanceModelTests.swift:76 asserts the same value",
+     "covered": "T-a7b14a6b (N/A, tsv says todo)"
+    },
+    {
+     "id": "da8",
+     "group": "Your call (safe for the bar, but each carries a small unique check)",
+     "name": "Appearance/AppearanceModelTests.swift:137 ignoresAccentsThatAreNotHexColors (T-bede3752)",
+     "decision": "keep",
+     "reason": "fold its \"started with a bad accent\" line into `:97` first",
+     "covered": ""
+    },
+    {
+     "id": "da9",
+     "group": "Your call (safe for the bar, but each carries a small unique check)",
+     "name": "Help/HelpViewTests.swift:213 aTopicAskedForReplacesTheSearchAndTheScroll",
+     "decision": "keep",
+     "reason": "same outcome as `:183` (T-edac6214)",
+     "covered": ""
+    },
+    {
+     "id": "da10",
+     "group": "Your call (safe for the bar, but each carries a small unique check)",
+     "name": "Help/PageWindowsTests.swift:102 aTopicAskedForShowsInTheOpenWindow",
+     "decision": "keep",
+     "reason": "the only proof the controller forwards `show(topic:)`",
+     "covered": ""
+    },
+    {
+     "id": "da11",
+     "group": "Your call (safe for the bar, but each carries a small unique check)",
+     "name": "Help/PageWindowsTests.swift:90 customizeOpensSettingsOnTheShortcutsTab",
+     "decision": "keep",
+     "reason": "the only proof the controller forwards the Customize callback",
+     "covered": ""
+    },
+    {
+     "id": "da12",
+     "group": "Your call (safe for the bar, but each carries a small unique check)",
+     "name": "Windows/ExplorerWindowControllerTests.swift:140 givesTheLaunchFolderToTheWindowAsItIsMade",
+     "decision": "keep",
+     "reason": "covers the startup path of `createWindow`, same shape as T-04c9c8d8",
+     "covered": ""
+    },
+    {
+     "id": "da13",
+     "group": "The original keeps these separately",
+     "name": "G1: LaunchContext: a target that is not a usable folder",
+     "decision": "keep",
+     "reason": "Could become one parameterized test with the same T- ids. Keeping them separate matches the original.",
+     "covered": ""
+    },
+    {
+     "id": "da14",
+     "group": "The original keeps these separately",
+     "name": "G2: StartupTabs: the single-view resolution (nine tests, one helper)",
+     "decision": "keep",
+     "reason": "Could become one parameterized test with the same T- ids. Keeping them separate matches the original.",
+     "covered": ""
+    },
+    {
+     "id": "da15",
+     "group": "The original keeps these separately",
+     "name": "G3: ToolbarIcon: \"distinct icons\" pairs",
+     "decision": "keep",
+     "reason": "Could become one parameterized test with the same T- ids. Keeping them separate matches the original.",
+     "covered": ""
+    },
+    {
+     "id": "da16",
+     "group": "The original keeps these separately",
+     "name": "G4: Tooltip scheduler: show and hide on hover",
+     "decision": "keep",
+     "reason": "Could become one parameterized test with the same T- ids. Keeping them separate matches the original.",
+     "covered": ""
+    },
+    {
+     "id": "da17",
+     "group": "The original keeps these separately",
+     "name": "G5: Menu router: another window focused, or no explorer window",
+     "decision": "keep",
+     "reason": "Could become one parameterized test with the same T- ids. Keeping them separate matches the original.",
+     "covered": ""
+    }
+   ]
+  },
+  {
+   "id": "dup-foundation",
+   "title": "Near-duplicate tests: FTFoundation",
+   "choices": [
+    "remove",
+    "keep"
+   ],
+   "items": [
+    {
+     "id": "df1",
+     "group": "Safe to remove",
+     "name": "expandsAndCollapsesTreeNodesOnHorizontalArrows (Sidebar/TreeViewTests.swift:57)",
+     "decision": "remove",
+     "reason": "T-eaf07a43 stays carried by SidebarKeyboardTests:86 (and FTAppKitTests)",
+     "covered": ""
+    },
+    {
+     "id": "df2",
+     "group": "Safe to remove",
+     "name": "navigatesToParentAndRequestsLoadingForUnloadedNodes (Sidebar/TreeViewTests.swift:70)",
+     "decision": "remove",
+     "reason": "T-05d06d43 stays carried by SidebarKeyboardTests:86",
+     "covered": ""
+    },
+    {
+     "id": "df3",
+     "group": "Safe to remove",
+     "name": "pagesTheSidebarTreeByTheRowHeightsTheStylesheetDraws (Layout/PaneWidthsTests.swift:28)",
+     "decision": "remove",
+     "reason": "Swift-added; assertions repeated in SidebarKeyboardTests:218, the golden and MetricsTests",
+     "covered": ""
+    },
+    {
+     "id": "df4",
+     "group": "Safe to remove",
+     "name": "hasTheSizesTheStylesheetLaysTheToolbarOutFrom (Layout/TopToolbarLayoutTests.swift:34)",
+     "decision": "remove",
+     "reason": "T-fc2f1ec9 stays carried by the golden stylesheet test (ToolbarLayoutGoldenTests:54)",
+     "covered": ""
+    },
+    {
+     "id": "df5",
+     "group": "Safe to remove",
+     "name": "numbersBeforeTheExtension (Names/NumberedNamesTests.swift:34)",
+     "decision": "remove",
+     "reason": "covered by the number-names golden",
+     "covered": ""
+    },
+    {
+     "id": "df6",
+     "group": "Safe to remove",
+     "name": "inventoryColourTableSpotChecks (Design/CSSTokenTests.swift:222)",
+     "decision": "remove",
+     "reason": "covered by every token compared to the golden",
+     "covered": ""
+    },
+    {
+     "id": "df7",
+     "group": "Safe to remove",
+     "name": "spacingScaleAndTypeScaleMatchTheInventory (Design/CSSTokenTests.swift:217)",
+     "decision": "remove",
+     "reason": "repeated in MetricsTests",
+     "covered": ""
+    },
+    {
+     "id": "df8",
+     "group": "Safe to remove",
+     "name": "focusRingIsThreePixelsOfAccentAtHalfAlpha (Design/AccentPaletteTests.swift:95)",
+     "decision": "remove",
+     "reason": "covered by the `--focus-ring` token",
+     "covered": ""
+    },
+    {
+     "id": "df9",
+     "group": "Safe to remove",
+     "name": "yellowKeepsBlackButtonTextAndWhiteSelectionText (Design/AccentPaletteTests.swift:82)",
+     "decision": "remove",
+     "reason": "covered by the accent golden",
+     "covered": ""
+    },
+    {
+     "id": "df10",
+     "group": "Safe to remove",
+     "name": "metricsAreTheDesignTokens (Design/MetricsTests.swift:153)",
+     "decision": "remove",
+     "reason": "both sides call the same factory",
+     "covered": ""
+    },
+    {
+     "id": "df11",
+     "group": "Safe to remove",
+     "name": "theContractLimitsStayAsTheOriginals (Contracts/ContractsNotApplicableTests.swift:13)",
+     "decision": "remove",
+     "reason": "repeated in ItemNamesTests:70 and T-9277bcb1",
+     "covered": ""
+    },
+    {
+     "id": "df12",
+     "group": "Safe to remove",
+     "name": "aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp (ContextMenu/ToastsTests.swift:42)",
+     "decision": "remove",
+     "reason": "same branch as the two-bar case at :31 (merge it; update behaviors.tsv)",
+     "covered": ""
+    },
+    {
+     "id": "df13",
+     "group": "The original keeps these separately",
+     "name": "Group 1: T-91126de4 (ShortcutTargetsTests:79), T-6e6ba032 (:106)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    },
+    {
+     "id": "df14",
+     "group": "The original keeps these separately",
+     "name": "Group 2: T-9801160c (ShortcutTargetsTests:29)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    },
+    {
+     "id": "df15",
+     "group": "The original keeps these separately",
+     "name": "Group 3: T-0741865c (ShortcutTargetsTests:88)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    },
+    {
+     "id": "df16",
+     "group": "The original keeps these separately",
+     "name": "Group 4: T-7750e04f, T-1c5474fe, T-1d40ab78 (ResponsiveLayoutTests:8,13,18)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    },
+    {
+     "id": "df17",
+     "group": "The original keeps these separately",
+     "name": "Group 5: T-940505a6 (CopyPasteNamesTests:97)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    },
+    {
+     "id": "df18",
+     "group": "The original keeps these separately",
+     "name": "Group 6: T-0b9ea230 (CopyPasteNamesTests:85)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    },
+    {
+     "id": "df19",
+     "group": "The original keeps these separately",
+     "name": "Group 7: carriesEachGroupOfPreferencesTheOriginalListsAsSent (PreferencePatchTests:36, 8 T- ids), T-8b4cf80b (:75)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    },
+    {
+     "id": "df20",
+     "group": "The original keeps these separately",
+     "name": "Group 8: T-83343b0d (PaneWidthsTests:14), T-6f96314a (DetailsLayoutTests:17)",
+     "decision": "keep",
+     "reason": "The original has these as separate tests; removing them goes below its count.",
+     "covered": ""
+    }
+   ]
+  },
+  {
+   "id": "dup-fs-ops",
+   "title": "Near-duplicate tests: file system and file operations",
+   "choices": [
+    "remove",
+    "keep"
+   ],
+   "items": [
+    {
+     "id": "do1",
+     "group": "Safe to remove",
+     "name": "SmokeTests.swift:5 ftFileSystemModuleLoads (FS)",
+     "decision": "remove",
+     "reason": "empty body",
+     "covered": "Covered by any other test"
+    },
+    {
+     "id": "do2",
+     "group": "Safe to remove",
+     "name": "SmokeTests.swift:5 ftOperationsModuleLoads (OP)",
+     "decision": "remove",
+     "reason": "empty body",
+     "covered": "Covered by any other test"
+    },
+    {
+     "id": "do3",
+     "group": "Safe to remove",
+     "name": "AboutInfo/AboutInfoTests.swift:101 hasNoSeparateNotices",
+     "decision": "remove",
+     "reason": "`#expect(true)`; the five ids are N/A in `tests.tsv` (keep the N/A comment lines)",
+     "covered": ""
+    },
+    {
+     "id": "do4",
+     "group": "Safe to remove",
+     "name": "Icons/FileThumbnailServiceTests.swift:141 theRealServiceReportsNothingForAGoneFile (T-be9407bf)",
+     "decision": "remove",
+     "reason": "same triple as :81, and the missing-path version is asserted in :89 and :130",
+     "covered": "Covered by :81, :89, :130"
+    },
+    {
+     "id": "do5",
+     "group": "Safe to remove",
+     "name": "Icons/FileThumbnailServiceTests.swift:191 startsFourAtATime... (no id)",
+     "decision": "remove",
+     "reason": "first half of T-ab9b358d",
+     "covered": "Covered by Icons/ThumbnailStoreTests.swift:202"
+    },
+    {
+     "id": "do6",
+     "group": "Safe to remove",
+     "name": "Search/FdSearchRuntimeTests.swift:185 aPollOfAnUnknownJobThrows (no id)",
+     "decision": "remove",
+     "reason": "both other tests assert the same thrown `UnknownSearchJob`",
+     "covered": "Covered by :265, :291"
+    },
+    {
+     "id": "do7",
+     "group": "Safe to remove",
+     "name": "Icons/FileIconStoreTests.swift:203 anApplicationHasItsOwnIcon (no id)",
+     "decision": "remove",
+     "reason": "fetch twice, asked once, as :82; the app key is asserted elsewhere",
+     "covered": "Covered by Icons/FileIconStoreTests.swift:82, Icons/IconCacheKeyTests.swift:71"
+    },
+    {
+     "id": "do8",
+     "group": "Safe to remove",
+     "name": "System/SystemActionsTests.swift:271 refusesATerminalThatIsNotAnAppBundle (no id)",
+     "decision": "remove",
+     "reason": "invalid app path through `openInTerminal`, as :58; the rule in :52",
+     "covered": "Covered by System/ApplicationPathsTests.swift:52, :58, :67"
+    },
+    {
+     "id": "do9",
+     "group": "Safe to remove",
+     "name": "Icons/IconCacheKeyTests.swift:23 filesWithoutAnExtensionShareOneIconOfTwoKinds (T-308244dc)",
+     "decision": "remove",
+     "reason": "the original has one test; the store test shows the same through fetches",
+     "covered": "Covered by Icons/FileIconStoreTests.swift:112"
+    },
+    {
+     "id": "do10",
+     "group": "Safe to remove",
+     "name": "Native/ReviewFolderMetadataTests.swift:9 aMoveWhoseFallbackThrowsStillSaysTheMetadataWasNotCopied (no id)",
+     "decision": "remove",
+     "reason": "`onNotCopied` is called before the chmod that throws; the first case of the other test asserts that order",
+     "covered": "Covered by Native/NativeCopyTests.swift:99"
+    },
+    {
+     "id": "do11",
+     "group": "Safe to remove",
+     "name": "Volumes/VolumeEjectorTests.swift:147 aVolumeAlreadyEjectedCountsAsEjected (no id; one APFS mount)",
+     "decision": "remove",
+     "reason": "the second press and the \"gone\" mapping are asserted on mocks and with nothing mounted; only the default-wiring first press is unique (low value)",
+     "covered": "Covered by Volumes/VolumeEjectorTests.swift:131, Volumes/EjectOutcomeTests.swift:38"
+    },
+    {
+     "id": "do12",
+     "group": "Your call: a file operation the original tests once",
+     "name": "Execution/PartialFileTests.swift:159 staysWrittenDownWhenAFailedCopyCantClearItAway (T-93ae7a3b, both copy and cut)",
+     "decision": "keep",
+     "reason": "Also asserted by Recovery/PartialFileRecoveryTests.swift:45, which asserts the same and then the recovery (G24)",
+     "covered": ""
+    },
+    {
+     "id": "do13",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G1: Same-disk cut of one file: renamed, nothing copied (6 tests; go 4)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :31 and :219 (the inode, mode and date check is the only extra observation). Others could go.",
+     "covered": ""
+    },
+    {
+     "id": "do14",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G2: Real-disk cut of one file inside one temp folder (5 tests; go 2)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :119, :139 and the service-level :155 (it exercises the service wiring). Could go: :36, :194.",
+     "covered": ""
+    },
+    {
+     "id": "do15",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G3: Other-disk cut of one file: copy, then delete the original (5 tests; go 3)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :134 and :82. Could go: :30, :259, :50.",
+     "covered": ""
+    },
+    {
+     "id": "do16",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G4: Cut: source file changed after its copy (2 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :312 (add the size line to it). Original: both in \"per-file cut flow\".",
+     "covered": ""
+    },
+    {
+     "id": "do17",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G5: Cut: a skipped child keeps the source folder (2 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :241.",
+     "covered": ""
+    },
+    {
+     "id": "do18",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G6: Cut: source folder changed while its items were copied, so it is kept (2 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :174.",
+     "covered": ""
+    },
+    {
+     "id": "do19",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G7: Hidden files and folders, copy vs cut (2 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :48.",
+     "covered": ""
+    },
+    {
+     "id": "do20",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G8: Cut removes the emptied source folder (3 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :141 and :88. Could go: :134.",
+     "covered": ""
+    },
+    {
+     "id": "do21",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G9: A date or mode that can't be set is ignored (4 tests; go 2)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :165 and :128. Could go: :138, :150.",
+     "covered": ""
+    },
+    {
+     "id": "do22",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G10: A large file is written down in the journal while it is copied (4 tests; go 2)",
+     "decision": "keep",
+     "reason": "If collapsed, keep the mock tests (more exact). Could go: :358, :383.",
+     "covered": ""
+    },
+    {
+     "id": "do23",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G11: A locked file's copy stays locked (2 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :50.",
+     "covered": ""
+    },
+    {
+     "id": "do24",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G12: A package or app with an item skipped or failed is left out whole (3 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :173 and :214. Could go: :234.",
+     "covered": ""
+    },
+    {
+     "id": "do25",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G13: Replace over a folder holding another pasted item: review vs run (2 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :75 with the blocked-reason line added.",
+     "covered": ""
+    },
+    {
+     "id": "do26",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G14: \"Replace blocked\" reason text (5 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep all but :551.",
+     "covered": ""
+    },
+    {
+     "id": "do27",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G15: No Trash: ask, then skip keeps the old item or overwrite deletes it (6 tests; go 1)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :219. Could go: :292.",
+     "covered": ""
+    },
+    {
+     "id": "do28",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G16: The four policy matrices vs the single-policy tests (4 matrix + 6 single; go 6)",
+     "decision": "keep",
+     "reason": "If collapsed, keep the matrix; the six are the ones to decide on.",
+     "covered": ""
+    },
+    {
+     "id": "do29",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G17: destinationTotalNodeCount counts (5 tests; go 2)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :296, :312, :338. Could go: :411, :426. Same describe in the original (\"destinationTotalNodeCount\").",
+     "covered": ""
+    },
+    {
+     "id": "do30",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G18: WriteService analysis vs the analysis function (8 tests; go 4)",
+     "decision": "keep",
+     "reason": "If collapsed, keep the function-level ones. Could go: the four service-level ones.",
+     "covered": ""
+    },
+    {
+     "id": "do31",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G19: WriteService real-disk copy shapes and .asar (4 tests; go 2)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :251, :269. Could go: :305, WriteServiceAnalysisTests.swift:351.",
+     "covered": ""
+    },
+    {
+     "id": "do32",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G20: A symlink is copied as a link (3 tests; go 2)",
+     "decision": "keep",
+     "reason": "If collapsed, keep :98 (and :140 as the real-disk one). Could go: :178.",
+     "covered": ""
+    },
+    {
+     "id": "do33",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G21: Undo twins (10 tests; not counted; Undo keeps exactly the original's bar)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do34",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G22: Recovery of a large file's part: journal level vs function level (5 tests; not counted)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do35",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G23: The item changed kind between the review and the paste (8 tests; not counted)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do36",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G24: One original test ported twice into two files (2 tests; one original test)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do37",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G25: Errno names in the native wrappers (6 tests; not counted)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do38",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G26: Dangling symlinks (3 tests; go 1)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do39",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G27: Explorer mock tests vs real-folder twins (informational)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do40",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G28: Icon cache key vs icon store, same original test (2 + 2 tests)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do41",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G29: Icon store: ask once, reuse (3 tests; go 1)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do42",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G30: Thumbnail service: nothing for a gone file (3 tests; go 1)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do43",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G31: Thumbnail load queue (2 tests; go 1)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do44",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G32: Application path and terminal tests (informational; 1 safe removal)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do45",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G33: Search runtime: error and unknown-job tests (informational; 1 safe removal)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do46",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G34: Real-fd tests vs the mocked runtime (informational; none counted)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do47",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G35: Eject: image-backed vs mock (informational; 1 safe removal)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do48",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G36: Placeholders (3 tests)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    },
+    {
+     "id": "do49",
+     "group": "Groups the original keeps as separate tests (file operations keep the original's bar)",
+     "name": "G37: FolderWatchStream: stop after start vs stop before start (2 tests; speed only)",
+     "decision": "keep",
+     "reason": "Overlapping tests; the original keeps them separately.",
+     "covered": ""
+    }
+   ]
+  },
+  {
+   "id": "speed",
+   "title": "Faster fixtures (no test removed)",
+   "choices": [
+    "do",
+    "skip"
+   ],
+   "items": [
+    {
+     "id": "sp1",
+     "group": "The 10 slowest-looking tests",
+     "name": "Execution/LockedPasteTests.swift:110 stopsALargeCopyAtOnce... (T-97d6fd58, gated)",
+     "decision": "do",
+     "reason": "Slow because: 150 MB file written to the host disk, an APFS image mounted, up to three timed attempts with a 0.5 ms polling thread",
+     "covered": "Cheaper way: The stop-part-way behavior is also asserted on a mock by `Execution/PartialFileTests.swift:89`; for the real disk, one attempt with a smaller file if the copy stays slow enough to stop"
+    },
+    {
+     "id": "sp2",
+     "group": "The 10 slowest-looking tests",
+     "name": "Native/NativeCopyTests.swift:209 failsWithENOSPC... (T-26424164, gated)",
+     "decision": "do",
+     "reason": "Slow because: 80 MB source plus `fillDisk` writing about 256 MB into the image (1 MB files, then 64 KB)",
+     "covered": "Cheaper way: The disk is full before the copy, so the source can be 1 to 2 MB; use a 32 MB image kind for fill tests (the original used 20 MB; `tools/fixtures/disk-images.sh` makes 256 MB)"
+    },
+    {
+     "id": "sp3",
+     "group": "The 10 slowest-looking tests",
+     "name": "Native/NativeCopyTests.swift:173 stopsPartWay... (T-19343d44, gated)",
+     "decision": "skip",
+     "reason": "Slow because: 150 MB file and an image",
+     "covered": "Cheaper way: Needs a copy slow enough to stop: no safe shrink known"
+    },
+    {
+     "id": "sp4",
+     "group": "The 10 slowest-looking tests",
+     "name": "Execution/PasteThroughputTests.swift:21 and Copy/CopyThroughputTests.swift:15 (gated, no id)",
+     "decision": "do",
+     "reason": "Slow because: each writes a 150 MB file and times several copies against a bare copyfile on an image",
+     "covered": "Cheaper way: Both measure the same 5 % bound at two layers; share one file and one mount in one test"
+    },
+    {
+     "id": "sp5",
+     "group": "The 10 slowest-looking tests",
+     "name": "Native/NativeCopyTests.swift:232 failsWithTheWritesErrno...ResourceFork (T-0c2e0a1d, not gated)",
+     "decision": "do",
+     "reason": "Slow because: APFS image, `fillDisk` to full (about 256 MB), then a fork larger than the free space",
+     "covered": "Cheaper way: 32 MB image kind (the comment in the test describes the original's 20 MB disk)"
+    },
+    {
+     "id": "sp6",
+     "group": "The 10 slowest-looking tests",
+     "name": "Native/NativeCopyTests.swift:259 ...SmallResourceFork (T-1c84056e, not gated)",
+     "decision": "do",
+     "reason": "Slow because: FAT32 image, `fillDisk` again",
+     "covered": "Cheaper way: Smallest FAT32 image that mounts, or share the full FAT image with the next test that needs one"
+    },
+    {
+     "id": "sp7",
+     "group": "The 10 slowest-looking tests",
+     "name": "Execution/LargeTreeExecutionTests.swift:135 analyzesAndCopiesEveryItem (T-aa0802fe)",
+     "decision": "do",
+     "reason": "Slow because: 150,000 mock items analyzed, resolved and pasted",
+     "covered": "Cheaper way: The review half repeats `Analysis/LargeTreeAnalysisTests.swift:91`; build the 150,000-item tree once and reuse it (the 125,000 bound belongs to the original's JavaScript argument limit)"
+    },
+    {
+     "id": "sp8",
+     "group": "The 10 slowest-looking tests",
+     "name": "Analysis/LargeTreeAnalysisTests.swift:91 reviewsAFolderOfMoreThan125000Items... (no id)",
+     "decision": "do",
+     "reason": "Slow because: the same 150,000-item tree, with a wait of up to 120 s",
+     "covered": "Cheaper way: as above"
+    },
+    {
+     "id": "sp9",
+     "group": "The 10 slowest-looking tests",
+     "name": "FolderSize/FolderSizeJobsTests.swift:568 keepsUpWithAWalk... (T-2cdd29eb)",
+     "decision": "do",
+     "reason": "Slow because: 200,000 sizes in 20 takes, bound of 6 s; the neighbors `:293` (110,000), `:263` (30,000 plus 3,000 changes) and `FolderSize/FolderSizeCacheTests.swift:122` (400,000 stores, bound 5 s) do the same kind of loop",
+     "covered": "Cheaper way: Only `:293` needs more than 100,000 (the old limit); the three others test complexity and can use a fifth of the size with a proportional bound"
+    },
+    {
+     "id": "sp10",
+     "group": "The 10 slowest-looking tests",
+     "name": "Watch/FolderWatchStreamTests.swift (7 tests, fixed sleeps)",
+     "decision": "do",
+     "reason": "Slow because: 300 ms start wait in six tests, then negative waits of 1,200, 800 and 800 ms, with real FSEvents; about 5 s of fixed sleeping together",
+     "covered": "Cheaper way: FSEvents latency is 0.05 s (`FSEventsFolderWatcher.latencySeconds`); the negative waits can be about 250 ms, and `:111` and `:139` can share one folder"
+    },
+    {
+     "id": "sp11",
+     "group": "Other clusters",
+     "name": "Disk images (42 tests, 47 mounts, 6 mounts gated)",
+     "decision": "do",
+     "reason": "Every test clones a 256 MB image, attaches, detaches, and waits on a lock that allows one volume of a kind at a time, so the 26 APFS mounts of OP (20 of them not gated) run one after another. 15 of them need only a second device number and could use NativePaste.asOnAnotherDisk(source) (already used in Execution/CopyPasteExecutionRealFSTests.swift:64, Execution/RuntimeSafetyTests.swift:31 and four more places): Execution/LockedPasteTests.swift:40, :63, :87; Replace/LockedReplaceTests.swift:89, :115; Execution/UndoRecordingTests.swift:368, :387, :407, :433; Replace/UndoReplaceTests.swift:168, :1",
+     "covered": ""
+    },
+    {
+     "id": "sp12",
+     "group": "Other clusters",
+     "name": "FAT and exFAT run twice (5 tests)",
+     "decision": "do",
+     "reason": "Native/NativeRenameTests.swift:62, :135, Execution/CopyPasteVolumesTests.swift:169, :183, Replace/WriteServiceReplaceTests.swift:265 use arguments: [.fat32, .exfat], so each mounts two images; one kind per test would save 5 mounts, or both kinds could share one mount per suite.",
+     "covered": ""
+    },
+    {
+     "id": "sp13",
+     "group": "Other clusters",
+     "name": "Fill-disk tests (4):",
+     "decision": "do",
+     "reason": "NativeCopyTests.swift:209, :232, :259 and Execution/CopyPasteVolumesTests.swift:141 (T-0e57438e, gated, 8 MB source plus fillDisk). One 32 MB image kind for all four.",
+     "covered": ""
+    },
+    {
+     "id": "sp14",
+     "group": "Other clusters",
+     "name": "Real-folder size",
+     "decision": "do",
+     "reason": "Listing/NativeFileSystemTests.swift:55 readsAFolderTooBigForOneBuffer creates 6,000 files so the listing overruns its 256 KB bulk buffer; a smaller buffer passed in by the test would need far fewer. FolderSize/NativeFolderSizeTests.swift:230 walks /usr/share and :238 walks /System/Volumes (real system trees; no smaller parent contains a firmlink).",
+     "covered": ""
+    },
+    {
+     "id": "sp15",
+     "group": "Other clusters",
+     "name": "Real fd on /",
+     "decision": "do",
+     "reason": "Search/FdSearchProcessTests.swift:175 and :188 search the whole disk for a name that never matches and poll ps until fd shows (up to 5 s) and ends (up to 2 s). A large folder such as /usr would keep fd alive long enough.",
+     "covered": ""
+    }
+   ]
+  }
+ ]
+}
