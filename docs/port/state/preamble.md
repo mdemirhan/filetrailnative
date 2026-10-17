@@ -50,6 +50,10 @@ No window runs during development (user, 2026-10-14). The original runs its UI t
 - A fixer working on a checkpoint failure reruns only that one test or scenario, under the lock.
 - Take the lock once per run, never around a loop. Don't rerun anything to see whether a flake goes away.
 
+## Test runs while you work
+
+While you iterate, run only the tests of the area you change: `scripts/ci.sh --scope <TestTarget or Suite>` (a swift test filter). Run the full windowless gate once, at the end, before your final commit. Gate runners and integrators run the full gate once.
+
 ## Messages during your run
 
 A message relayed from the user or the orchestrator while you work may be about other work. If it is not about your brief, note it in your result's summary and carry on with your brief; never drop your brief for it.

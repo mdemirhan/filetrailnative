@@ -119,6 +119,7 @@ const isWindowCmd = (c) => c.includes('gui.lock')
 const wpGate = (wp) => wp.gate.filter((c) => !isWindowCmd(c))
 const gateList = (wp) => (wpGate(wp).length ? wpGate(wp).map((c) => `- \`${c}\``).join('\n') : '- `scripts/ci.sh`')
 const windowNote = () => `\nNo window runs: the full GUI suite, captures, acceptance flows and the bench run only at checkpoints, not in your work. If you changed window code, you may run the one or two GUI tests you touched (\`--filter\` on the test), once, under the GUI lock.`
+const SCOPED = 'While you iterate, run only the tests of the area you change: `scripts/ci.sh --scope <TestTarget or Suite>` (a swift test filter). Run the full gate commands once, at the end, before your final commit.'
 const FLAKY = 'If a test fails, rerun just that test once (with --filter). If it passes alone, it is flaky: list it under flaky and treat it as passing; don\'t rerun whole suites.'
 
 function modelOpts(wp) {
@@ -139,6 +140,7 @@ You are in your own fresh git worktree (it starts on main).
 3. Do the work in the brief. Commit as you go with messages "wip(${wp.id}): ...".
 4. Run the gate commands below until they all pass:
 ${gateList(wp)}${windowNote()}
+${SCOPED}
 ${FLAKY}
 5. Make the final commit with a message whose last line is the trailer "Port-Stage: implemented". Then run \`git checkout --detach\` so the branch is free for the next agent.
 Return status "blocked" only if the brief cannot be done; list why in blockers, and still commit what you have. Put work you leave for later packages in carryOver, addressed to their ids.`,
@@ -190,6 +192,7 @@ ${problems}
 
 Then run the gate commands until they pass:
 ${gateList(wp)}${windowNote()}
+${SCOPED}
 For a failure that came from a checkpoint's window run, rerun only that GUI test or scenario under the GUI lock to prove the fix.
 ${FLAKY}
 Make the last commit's message end with the trailer "Port-Stage: fixed-${round}", then run \`git checkout --detach\`.`,
