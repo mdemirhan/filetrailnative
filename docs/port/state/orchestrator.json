@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-14T17:51:40+00:00",
+  "updatedAt": "2026-10-17T14:55:08+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "Paused by the user. On resume, before any batch: UI test reduction steps 3-7 (userRequests, 2026-10-14), with the user's approval of the keep/convert/drop list; then the first UI checkpoint run (covers P5-06/P5-09's pending window checks); resume P5-05 from port/P5-05; decide on port/capture-once; then schedule.py ready.",
+  "nextAction": "Resumed 2026-10-17. Test reduction audit running (docs/port/test-audit/); no batches until the user approves the keep/convert/drop list. Then: first UI checkpoint, P5-05 from port/P5-05, port/capture-once decision, schedule.py ready.",
   "pause": {
-    "requested": true,
-    "reason": "stopped by user: no more batches; needs the machine for other work",
+    "requested": false,
+    "reason": null,
     "until": null
   },
   "meter": [
@@ -103,6 +103,12 @@
       "weeklyPct": 25.0,
       "fiveHourPct": 2.0,
       "note": "after W2-U1"
+    },
+    {
+      "at": "2026-10-17T14:55:08+00:00",
+      "weeklyPct": 0.0,
+      "fiveHourPct": 0.0,
+      "note": "resume 2026-10-17"
     }
   ],
   "batches": {
@@ -2333,7 +2339,7 @@
       ],
       "status": "todo",
       "branch": "port/P5-05",
-      "headSha": null,
+      "headSha": "08950bc304de2a044e85158c09312ccbc53f5064",
       "attempts": 0,
       "gate": [
         "scripts/ci.sh",
