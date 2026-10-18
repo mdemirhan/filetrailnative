@@ -37,10 +37,19 @@ struct WriteDialogs {
     /// `WRITE_OPERATION_BUSY_MESSAGE`.
     static let busyMessage = "Another file operation is running. Try again when it has finished."
 
-    /// Shows a notice with `title` and `message` on `window` (or on its own, with none).
+    /// Shows a warning with `title` and `message` on `window` (or on its own, with none).
     var show: (_ title: String, _ message: String, _ window: NSWindow?) -> Void = { title, message, window in
+        WriteDialogs.draw(.warning, title, message, window)
+    }
+
+    /// Shows a notice that only informs (`type: "info"`), the same way.
+    var showInfo: (_ title: String, _ message: String, _ window: NSWindow?) -> Void = { title, message, window in
+        WriteDialogs.draw(.informational, title, message, window)
+    }
+
+    private static func draw(_ style: NSAlert.Style, _ title: String, _ message: String, _ window: NSWindow?) {
         let alert = NSAlert()
-        alert.alertStyle = .warning
+        alert.alertStyle = style
         alert.messageText = title
         alert.informativeText = message
         alert.addButton(withTitle: "OK")

@@ -448,8 +448,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    private func flushPendingChange() {
-        guard let pending = pendingChange, !folderChangesHeld, !quietReadInFlight else { return }
+    func flushPendingChange() {
+        // A file operation running here or in another window holds them too (B-CLIP-147, WriteOperations/).
+        guard let pending = pendingChange, !folderChangesHeld, !isWriteLocked, !quietReadInFlight else { return }
         // A folder still being opened is tried again shortly (B-VIEW-189).
         if isNavigating {
             DispatchQueue.main.asyncAfter(deadline: .now() + Self.retryDelay) { [weak self] in

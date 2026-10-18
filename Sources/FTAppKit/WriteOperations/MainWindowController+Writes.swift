@@ -24,10 +24,16 @@ extension MainWindowController {
         return operations.session(for: group).isWriteLocked
     }
 
+    /// A write started or ended here or in another window: the changes to the folder that waited meanwhile are read.
+    func writeLockChanged() {
+        if !isWriteLocked { flushPendingChange() }
+    }
+
     /// Carries out a write command; false for any other command.
     func performWriteCommand(_ command: RendererCommand) -> Bool {
         guard Self.writeCommands.contains(command) else { return false }
-        guard let actions = writeActions else { return true }
+        // A command the focused pane doesn't take does nothing (Move To with the tree focused, Cut on a favorite).
+        guard Self.canRunWriteCommand(command, writeCommandContext), let actions = writeActions else { return true }
         switch command {
         case .copySelection, .editCopy:
             actions.putOnClipboard(.copy, paths: clipboardSourcePaths)
@@ -68,11 +74,45 @@ extension MainWindowController {
         return true
     }
 
-    /// What Copy and Cut take: the folder selected in the tree while it has the keyboard, else the items selected in
-    /// the list (`resolveClipboardSource`).
+    /// `canHandleRendererCommand`, asked before a write command acts (`runRendererCommand`; Cut, Copy and Paste of
+    /// the Edit menu as `runGenericEditCommand` asks it): the list's commands only with the list focused, Cut and
+    /// Copy from the tree only on a folder of it (a favorite only points to one), Paste also with no pane focused.
+    static func canRunWriteCommand(_ command: RendererCommand, _ context: ShortcutContext) -> Bool {
+        let asked: RendererCommand =
+            switch command {
+            case .editCut: .cutSelection
+            case .editCopy: .copySelection
+            case .editPaste: .pasteSelection
+            default: command
+            }
+        return ShortcutPolicy.canHandle(asked, context)
+    }
+
+    private var writeCommandContext: ShortcutContext {
+        let pane: FTFoundation.FocusedPane? =
+            switch focusedPane {
+            case .tree: .tree
+            case .content: .content
+            case nil: nil
+            }
+        return ShortcutContext(focusedPane: pane, selectedTreeTargetKind: sidebarController.selectedTreeTargetKind)
+    }
+
+    /// What Copy and Cut take (`resolveClipboardSource`): the folder selected in the tree while it has the keyboard
+    /// (nothing for a favorite, which only points to one), else the items selected in the list.
+    static func clipboardSource(
+        focusedPane: ExplorerPane?, treeTargetKind: SelectedTreeTargetKind?, treeTargetPath: String?,
+        selectedPaths: [String]
+    ) -> [String] {
+        guard focusedPane == .tree else { return selectedPaths }
+        guard treeTargetKind == .filesystemFolder, let treeTargetPath else { return [] }
+        return [treeTargetPath]
+    }
+
     private var clipboardSourcePaths: [String] {
-        if focusedPane == .tree, let path = sidebarController.selectedTreeTargetPath { return [path] }
-        return selectedPaths
+        Self.clipboardSource(
+            focusedPane: focusedPane, treeTargetKind: sidebarController.selectedTreeTargetKind,
+            treeTargetPath: sidebarController.selectedTreeTargetPath, selectedPaths: selectedPaths)
     }
 
     /// Move To's folder (the Move To sheet is P5-08's; a folder chooser stands in for it).
@@ -116,12 +156,32 @@ extension MainWindowController {
             sidebarController.reveal(treeSelectionPath)
         }
         if !refresh.treeReloadPaths.isEmpty {
-            sidebarController.refreshBranches()
+            let model = sidebarController.model
+            Task { await model.refreshWriteBranches(refresh.treeReloadPaths) }
         }
         if refresh.path != folder.path {
             go(to: URL(fileURLWithPath: refresh.path), history: .none)
         } else {
             reload()
         }
+    }
+}
+
+extension SidebarModel {
+    /// `extraTreeReloadPaths` (`refreshDirectory`): the tree branches a write touched are read again, each from its
+    /// folder down through its open folders, a folder read once for all of them (`refreshVisibleTreePath`). The rest
+    /// of the tree stays as it is.
+    func refreshWriteBranches(_ paths: [String]) async {
+        var visited = Set<ExactKeyBox>()
+        func refresh(_ path: String) async {
+            guard visited.insert(ExactKeyBox(path)).inserted, !path.isEmpty, TreePaths.isWithinRoot(path, rootPath),
+                nodes[path] != nil
+            else { return }
+            await loadChildren(path, activePath: currentPath, forceReload: true)
+            guard let reloaded = nodes[path], reloaded.expanded else { return }
+            for child in reloaded.childPaths where nodes[child]?.expanded == true { await refresh(child) }
+        }
+        var unique = Set<ExactKeyBox>()
+        for path in paths where unique.insert(ExactKeyBox(path)).inserted { await refresh(path) }
     }
 }

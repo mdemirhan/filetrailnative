@@ -1,5 +1,8 @@
 // Port of the "quitting during an operation", "starting a paste", "writing alone (crash recovery retries)" and
 // "questions during a paste" describes of apps/desktop/src/main/bootstrap/writeOperations.test.ts
+// Handed on, not ported here: T-88f70b42 (a Trash stopped at quit counts every item it never reached) drives the Trash
+// operation, which P3-06 writes; the count is `LocalWriteResults.notStartedItems`, and the stop and the 15 s wait it
+// runs under are ported here.
 import FTFileSystem
 import FTFoundation
 import FTTestSupport

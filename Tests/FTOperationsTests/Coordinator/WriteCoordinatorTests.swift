@@ -2,6 +2,10 @@
 // apps/desktop/src/main/bootstrap/writeOperations.test.ts. The rename, New Folder, Trash and delete operations the
 // original drives these with are P3-06's: the slot, cancel and window cases here run a stand-in local operation
 // through the same entry point (`Coordinators.heldLocalOperation`).
+// Handed on, not ported here: these drive the rename, New Folder, Trash and delete operations themselves, which run
+// through `queueLocalWriteOperation` once P3-06 writes them, and are ported with them there:
+// T-ba2f0985 (rename with progress), T-e868310c (New Folder), T-7ce082ce (Trash past a failure), T-6e5d5f21 (Trash and
+// measured folders), T-f293d4ee (delete immediately, partial), T-a63d0d99 (protected Trash refused).
 import FTFileSystem
 import FTFoundation
 import FTTestSupport

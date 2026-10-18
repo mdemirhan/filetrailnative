@@ -160,16 +160,29 @@ final class AppWriteOperations {
 
     /// Items that waited for their disk and are in place now.
     private func showRecoveryNotices(_ messages: [String]) {
-        guard !messages.isEmpty else { return }
-        dialogs.show("Items Were Put Back", messages.joined(separator: "\n\n"), windows?.front?.window)
+        Self.showRecoveryNotices(messages, dialogs: dialogs, window: windows?.front?.window)
     }
 
     /// What recovery at start says the person must know, once the windows are open.
     func showStartupNotices() {
         let notices = startupNotices
         startupNotices = []
+        Self.showStartupNotices(notices, dialogs: dialogs, window: windows?.front?.window)
+    }
+
+    /// `showRecoveryNotices` (main.ts): an information, on the window in front or on its own.
+    static func showRecoveryNotices(_ messages: [String], dialogs: WriteDialogs, window: NSWindow?) {
+        guard !messages.isEmpty else { return }
+        let title =
+            messages.count == 1
+            ? "An item waiting for its disk is in place now" : "Items waiting for their disk are in place now"
+        dialogs.showInfo(title, messages.joined(separator: "\n\n"), window)
+    }
+
+    /// `showPendingStartupNotices` (main.ts): a warning on the first window.
+    static func showStartupNotices(_ notices: [String], dialogs: WriteDialogs, window: NSWindow?) {
         guard !notices.isEmpty else { return }
-        dialogs.show("Some Items Need Your Attention", notices.joined(separator: "\n\n"), windows?.front?.window)
+        dialogs.show("Work was cut short when File Trail last stopped", notices.joined(separator: "\n\n"), window)
     }
 
     // MARK: Quitting
@@ -215,5 +228,9 @@ extension ExplorerTabGroup: WriteSessionHost {
         selected?.followOnScreen(moves)
     }
 
-    func writeLockChanged() {}
+    /// The folder watch is held while a write is locked (`held: … || isWriteOperationLocked`, B-CLIP-147,
+    /// B-VIEW-187): each tab reads what waited once it is let go.
+    func writeLockChanged() {
+        for tab in tabs { tab.writeLockChanged() }
+    }
 }

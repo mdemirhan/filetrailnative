@@ -71,16 +71,17 @@ final class WindowWriteActions {
         tab?.clipboardChanged()
     }
 
-    /// Paste: what the clipboard holds into `destination` (the folder on screen). A cut is cleared once the paste
-    /// moved something.
+    /// Paste: what the clipboard holds into `destination` (the folder on screen). A cut is a Move To
+    /// (`startMoveToDestination`): its notices, card and result say so; it is cleared once the paste moved something.
     @discardableResult
     func paste(into destination: String) async -> CopyLikeOutcome {
         guard case .ready(let mode, let sources, _, let capturedAt) = session.clipboard?.contents else {
             return .cancelled
         }
+        let isCut = mode == .cut
         return await copyLike(
-            mode: mode == .cut ? .cut : .copy, sources: sources, destination: destination, action: .paste,
-            clearsCutClipboard: mode == .cut ? capturedAt : nil)
+            mode: isCut ? .cut : .copy, sources: sources, destination: destination, action: isCut ? .moveTo : .paste,
+            clearsCutClipboard: isCut ? capturedAt : nil)
     }
 
     /// Copy To (a drag that copies).

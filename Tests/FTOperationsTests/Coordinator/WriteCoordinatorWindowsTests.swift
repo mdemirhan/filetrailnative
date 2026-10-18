@@ -1,7 +1,8 @@
 // Port of apps/desktop/src/main/bootstrap/writeOperations.windows.test.ts: operations and copy analyses with several
 // windows open. Each belongs to the window that started it, and is handed on or cancelled when that window goes away.
 // The rename the original runs some of these with is P3-06's: a stand-in local operation runs through the same entry
-// point. Its no-Trash delete and Undo cases are P3-06's and P3-07's.
+// point. Handed on, not ported here, as they drive operations that aren't written yet: the no-Trash delete cases
+// T-7f27af07, T-3299f715 and T-9fbaceb4 go to P3-06; the Undo cases T-50a814d9 and T-1922e940 go to P3-07.
 import Darwin
 import FTFileSystem
 import FTFoundation
