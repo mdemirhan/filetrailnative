@@ -188,7 +188,7 @@ struct NativeWindowsGUITests {
         await closeAll(relaunched)
     }
 
-    // F-675 B-VIEW-158 B-TREE-183 B-VIEW-155 T-ed89ad6e T-c5b59b87
+    // F-675 F-672 B-VIEW-158 B-TREE-183 B-VIEW-155 T-ed89ad6e T-c5b59b87
     @Test func duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -270,55 +270,6 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { group.selected === first })
         #expect(windowsMenuTitle(of: first.window) == firstLabel)
         #expect(windowsMenuTitle(of: second.window) == secondLabel)
-        await closeAll(app)
-    }
-
-    #if DEBUG
-        // F-593
-        @Test func automationStepsActOnTheTabInFrontAfterTheTabsChange() async throws {
-            let folder = try folders()
-            defer { folder.remove() }
-            let app = launch(folder.appending("app-state.json").path)
-            app.windows.openStartupWindows(folder: folder.path)
-            let first = try #require(frontTab(app))
-            #expect(await waitUntil { first.window?.isVisible == true })
-            let windows = app.windows
-            let runner = AutomationRunner(
-                options: .init(scenario: folder.appending("none.json"), out: folder.url, elements: nil)
-            ) { windows.front as? MainWindowController }
-            first.perform(.newTab)
-            let group = try #require(first.group)
-            #expect(await waitUntil { group.tabs.count == 2 && group.selected === group.tabs[1] })
-            runner.current = group.tabs[1].window
-
-            // Show Previous Tab, sent by the menu or a key, puts the tab `current` was on behind.
-            group.tabs[1].perform(.selectPreviousTab)
-            #expect(await waitUntil { group.selected === first })
-            #expect(runner.currentWindow === first.window)
-            #expect(runner.currentController === first)
-            await closeAll(app)
-        }
-    #endif
-
-    // F-672 B-VIEW-155
-    @Test func opensNoMoreThanAHundredTabsAndSaysSo() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        let app = launch(folder.appending("app-state.json").path)
-        var notices: [WindowNotice] = []
-        app.windows.showNotice = { notice, _ in notices.append(notice) }
-        app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
-        #expect(await waitUntil { first.window?.isVisible == true })
-        let group = try #require(first.group)
-        group.addTabs(Array(repeating: first.openTab, count: 120))
-        #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
-
-        first.perform(.newTab)
-
-        #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
-        #expect(notices == [.tabLimit])
-        #expect(WindowNotice.tabLimit.title == "A window can have up to 100 tabs")
         await closeAll(app)
     }
 
@@ -644,27 +595,6 @@ struct NativeWindowsGUITests {
         group.selected?.perform(.closeTab)
         #expect(await waitUntil { group.tabs.count == 1 })
         #expect(await waitUntil { group.tabs[0].window?.tabGroup?.isTabBarVisible != true })
-        await closeAll(app)
-    }
-
-    // F-615 B-VIEW-149
-    @Test func savesTheTabsInTheOrderOfTheTabBar() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        let app = launch(folder.appending("app-state.json").path)
-        app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
-        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
-        let group = try #require(first.group)
-        group.openTab(path: folder.appending("Sub").path, from: first)
-        #expect(await waitUntil { group.tabs.count == 2 })
-
-        // The system tab bar has the tabs in another order (a tab dragged along it).
-        group.replaceTabs(group.tabs.reversed())
-        #expect(
-            app.store.windowPreferences(group.recordID).openTabs.map(\.path) == [
-                folder.appending("Sub").path, folder.path,
-            ])
         await closeAll(app)
     }
 

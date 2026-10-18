@@ -277,7 +277,7 @@ struct SidebarModelTests {
         #expect(rig.model.typeaheadQuery.isEmpty)
     }
 
-    // T-3612c2bf T-04cd2bf4 T-5203f9f2 B-TREE-059 B-TREE-060
+    // T-3612c2bf T-04cd2bf4 T-5203f9f2 T-54e05341 T-11c34a3c B-TREE-059 B-TREE-060 B-TREE-061
     @Test @MainActor func clearingTheSelectionLetsGoOfTheFolderOnScreen() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", .other)

@@ -236,12 +236,8 @@ import Testing
         #expect(ThemeFonts.mono(12) == NSFont.monospacedSystemFont(ofSize: 12, weight: .regular))
     }
 
-    // T-a7b14a6b N/A the stylesheet rule that colors favorite icons is P5-01's; the accent it draws them with is
+    // N/A T-a7b14a6b the stylesheet rule that colors favorite icons is P5-01's; the accent it draws them with is
     // `AccentPalette.solid`, which the first test above checks
-    @Test func theFavoriteIconsAreTheAccent() {
-        let theme = Theme(appearance: .light, accentHex: "#e8729a")
-        #expect(theme.accent.solid.hexString == "#e8729a")
-    }
 
     // N/A T-c7bb98e0 T-148b5efe T-5140e6c3 T-31b3bab3 T-2020b6b1 T-2b8d85c8 T-2c77ecb5 T-35737f38 T-dc75a2f1 T-22aac744
     // T-6f403fb5 T-0abc3428 T-e61d7669 assertions about the text of styles.css: there is no stylesheet; the palettes
@@ -254,7 +250,5 @@ import Testing
     }
 
     // N/A T-38688505 T-479129a0 mounting the renderer root element (React); the Settings window case belongs to P6-04
-    @Test func hasNoRootElementToMount() {
-        #expect(true)
-    }
+
 }

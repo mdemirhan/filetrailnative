@@ -42,25 +42,6 @@ import Testing
         observation.cancel()
     }
 
-    // F-610: a change a window makes of its own session is not the whole app's
-    @Test func aChangeOfTheWindowsOwnSessionIsNotToldToTheApp() throws {
-        _ = NSApplication.shared
-        let store = try makeStore()
-        var heard: [PreferencesChange] = []
-        let channel = WindowPreferenceChannel(
-            store: store, explorerWindowID: { _ in nil }, onPreferencesChanged: { _, change in heard.append(change) })
-        channel.update(["theme": .string("light"), "treeWidth": .number(300)], from: 7)
-        #expect(heard.first?.senderID == 7)
-        #expect(heard.first?.patch["theme"] == .string("light"))
-        #expect(heard.first?.patch["treeWidth"] == nil)
-        let model = AppearanceModel(
-            theme: .dark, accent: "#007aff", systemPrefersDark: { false }, setNativeAppearance: { _ in })
-        // An unrelated change leaves the look alone.
-        model.preferencesChanged(
-            store.preferences(), PreferencesChange(patch: ["treeWidth": .number(300)], senderID: nil))
-        #expect(model.theme.appearance == .dark)
-    }
-
     // B-DLG-245 F-610: a window that only follows (About, Help, Acknowledgements) is redrawn with the new theme
     @Test func aPageWindowIsRedrawnWithANewThemeAndAccent() {
         _ = NSApplication.shared

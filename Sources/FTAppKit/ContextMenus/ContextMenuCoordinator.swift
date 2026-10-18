@@ -12,6 +12,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     var notices: any ActionNoticePresenting = AlertNoticePresenter()
     var opener: SystemOpener = .workspace
+    /// Where Copy Path puts the paths; tests give it a private pasteboard.
+    var pasteboard: NSPasteboard = .general
     /// A file operation chosen in a menu (cut, copy, paste, move, rename, duplicate, new folder, trash, delete
     /// immediately, empty trash). By default it is sent as the matching command for what the menu acts on, which does
     /// something once P5-08 has the commands; the sidebar's folders are P5-08's to act on.
@@ -378,7 +380,6 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     func copyPath(_ paths: [String]) {
         guard !paths.isEmpty else { return }
         let text = paths.map(formatPathForShell).joined(separator: "\n")
-        let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         guard pasteboard.setString(text, forType: .string) else {
             notices.show(
