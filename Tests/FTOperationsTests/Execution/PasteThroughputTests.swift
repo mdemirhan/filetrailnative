@@ -85,7 +85,9 @@ struct PasteThroughputTests {
                 }
                 let (bareMedian, stoppableMedian) = (median(bareTimes), median(stoppableTimes))
                 let pastedMedian = median(pastedTimes)
-                print("paste throughput: pasted \(pastedMedian)s, stoppable copy \(stoppableMedian)s, bare copyfile \(bareMedian)s")
+                print(
+                    "paste throughput: pasted \(pastedMedian)s, stoppable copy \(stoppableMedian)s,"
+                        + " bare copyfile \(bareMedian)s")
                 #expect(
                     abs(stoppableMedian / bareMedian - 1) <= 0.05,
                     "stoppable \(stoppableMedian)s vs bare \(bareMedian)s (\(stoppableTimes) vs \(bareTimes))")
