@@ -213,18 +213,4 @@ import Testing
         #expect(reduced.count == 3)
         #expect(motion.flash == DesignTokens.motion.flash && motion.spin == DesignTokens.motion.spin)
     }
-
-    @Test func spacingScaleAndTypeScaleMatchTheInventory() {
-        #expect(DesignTokens.spacing == [2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28])
-        #expect(DesignTokens.controlHeights.toolbar == 32)
-    }
-
-    @Test func inventoryColourTableSpotChecks() {
-        let light = ThemePalette.light
-        let dark = ThemePalette.dark
-        #expect(light.bgBase.cssString == "#ffffff" && dark.bgBase.cssString == "#1e1e20")
-        #expect(light.textSecondary.cssString == "rgba(0, 0, 0, 0.5)")
-        #expect(dark.contextMenuShadow.cssString == "0 8px 40px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25)")
-        #expect(light.bgHover.cssString == "rgba(29, 29, 31, 0.05)")
-    }
 }

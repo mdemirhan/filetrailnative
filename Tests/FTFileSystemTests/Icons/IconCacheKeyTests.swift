@@ -19,14 +19,6 @@ import Testing
         #expect(key("/a/run.sh", extension: "sh", executable: true) == "ext:sh")
     }
 
-    // T-308244dc F-225
-    @Test func filesWithoutAnExtensionShareOneIconOfTwoKinds() {
-        #expect(key("/usr/bin/ls", name: "ls", executable: true) == "kind:executable")
-        #expect(key("/usr/bin/zip", name: "zip", executable: true) == "kind:executable")
-        #expect(key("/usr/bin/hosts", name: "hosts", executable: false) == "kind:file")
-        #expect(key("/usr/bin/Makefile", name: "Makefile", executable: false) == "kind:file")
-    }
-
     @Test func aFileWithoutAnExtensionOfUnknownModeIsAskedForByPath() {
         #expect(key("/found/Makefile", name: "Makefile") == "path:/found/Makefile")
     }

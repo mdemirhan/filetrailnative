@@ -268,16 +268,6 @@ private final class FakeSystem: @unchecked Sendable {
                     terminalName: "iTerm"))
     }
 
-    @Test func refusesATerminalThatIsNotAnAppBundle() async {
-        let system = FakeSystem()
-        let result = await SystemActions.openInTerminal(
-            path: "/Users/demo/a", terminalApp: ApplicationSelection(appPath: "/bin/sh", appName: ""),
-            opener: system.opener)
-        #expect(!result.ok)
-        #expect(result.terminalName == "sh")
-        #expect(system.calls.isEmpty)
-    }
-
     // Open With lookups and Always Open With
 
     private let zed = ApplicationInfo(

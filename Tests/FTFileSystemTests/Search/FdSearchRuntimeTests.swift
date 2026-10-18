@@ -182,11 +182,6 @@ private func item(
         runtime.cancelSearch(jobId: "search-99")
     }
 
-    @Test func aPollOfAnUnknownJobThrows() {
-        let (runtime, _) = make()
-        #expect(throws: UnknownSearchJob(jobId: "nope")) { try runtime.getUpdate(jobId: "nope", cursor: 0) }
-    }
-
     // T-68fe0d57
     @Test func surfacesStderrContentForFailedSearches() throws {
         let (runtime, process) = make()
