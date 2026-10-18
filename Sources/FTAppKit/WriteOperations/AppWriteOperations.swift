@@ -47,7 +47,9 @@ final class AppWriteOperations {
                 let said = details.sorted { $0.key < $1.key }.map { "\($0.key)=\($0.value)" }.joined(separator: " ")
                 DispatchQueue.main.async { MainActor.assumeIsolated { log("\(message) \(said)") } }
             },
-            error: { message, error in DispatchQueue.main.async { MainActor.assumeIsolated { log("\(message): \(error)") } } })
+            error: { message, error in
+                DispatchQueue.main.async { MainActor.assumeIsolated { log("\(message): \(error)") } }
+            })
         // A Replace cut short by a crash is finished or undone before anything else is written.
         let recovery = recoverWrites(
             journal, fileSystem, logger: recoveryLog, caches: recoveryCaches, answerWithinMs: recoveryAnswerWithinMs)
@@ -82,7 +84,9 @@ final class AppWriteOperations {
             },
             remainingIds: { Set(journal.entries().map(\.id)) }, isBusy: { coordinator.isBusy },
             onFinished: { messages in
-                DispatchQueue.main.async { MainActor.assumeIsolated { AppWriteOperations.current?.showRecoveryNotices(messages) } }
+                DispatchQueue.main.async {
+                    MainActor.assumeIsolated { AppWriteOperations.current?.showRecoveryNotices(messages) }
+                }
             })
         Self.current = self
     }
@@ -140,7 +144,9 @@ final class AppWriteOperations {
             WriteOperationProgress(
                 status: event.status.rawValue,
                 result: event.result.map {
-                    WriteOperationOutcome(action: $0.action.rawValue, mode: $0.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) }, items: $0.items.map(\.effect))
+                    WriteOperationOutcome(
+                        action: $0.action.rawValue, mode: $0.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
+                        items: $0.items.map(\.effect))
                 }))
         if event.status.isTerminal, let result = event.result {
             let intoTrash = event.action == .trash || event.action == .undo || event.action == .redo

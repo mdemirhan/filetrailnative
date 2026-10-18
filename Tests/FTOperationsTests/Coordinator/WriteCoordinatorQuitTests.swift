@@ -50,7 +50,7 @@ import Testing
         }
     }
 
-    // F-540 T-40e3c699
+    // F-534 F-306 T-40e3c699
     @Test func stopsARunningDeleteAndWaitsForItToFinishBeforeShutdownReturns() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -92,7 +92,7 @@ import Testing
     }
 
     // A disk that stops answering (a network share gone away) mustn't keep the app from quitting.
-    // F-540 T-b3faa88f
+    // F-534 F-306 T-b3faa88f
     @Test func stopsWaitingForAnOperationThatDoesntStop() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -107,7 +107,7 @@ import Testing
         never.open()
     }
 
-    // F-540 T-46aaaf3e
+    // F-534 F-306 T-46aaaf3e
     @Test func cancelsARunningMoveAndWaitsForTheWriteServiceToSayItStopped() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -132,7 +132,7 @@ import Testing
         #expect(window.progress.last?.status == .cancelled)
     }
 
-    // F-540 T-141e46cc
+    // F-534 F-306 T-141e46cc
     @Test func namesACopyAsACopyAndHasNothingToWaitForWhenIdle() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -151,7 +151,7 @@ import Testing
 
     // MARK: starting a paste
 
-    // T-31c51a03
+    // F-535 T-31c51a03
     @Test func doesntHoldTheWriteSlotForAPasteThatEndedBeforeItsStartReturned() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-early-end") { root in
             try Data("a".utf8).write(to: root.appending("a.txt"))
@@ -202,7 +202,7 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-529 T-6341a121
+    // F-535 T-6341a121
     @Test func onlyLetsTheWindowThatStartedAnAnalysisReadCancelOrPasteFromIt() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -228,7 +228,7 @@ import Testing
 
     // MARK: writing alone (crash recovery retries)
 
-    // F-539 T-40d498b2
+    // F-538 T-40d498b2
     @Test func doesntRunWhileAnOperationHoldsTheWriteSlot() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -250,7 +250,7 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-539 T-2cdf8224
+    // F-538 T-2cdf8224
     @Test func doesntRunWhileARenameIsStillBeingChecked() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let gate = TestGate()
@@ -268,7 +268,7 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-539 T-3af7c441
+    // F-538 T-3af7c441
     @Test func holdsTheWriteSlotWhileItRunsSoNoOperationStartsAlongside() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -298,7 +298,7 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-539 T-1ebf7845
+    // F-538 T-1ebf7845
     @Test func freesTheWriteSlotWhenTheWriteFails() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
 
@@ -309,7 +309,7 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-539 T-3fff1534
+    // F-538 T-3fff1534
     @Test func doesntRunOnceTheAppIsQuitting() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         await coordinator.shutDown(maxWaitMs: 0)
@@ -322,7 +322,7 @@ import Testing
 
     // MARK: questions during a paste
 
-    // T-8c83df42
+    // F-539 T-8c83df42
     @Test func passesOnAQuestionAboutAnItemDatedBefore1970() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -341,7 +341,7 @@ import Testing
     }
 
     // A question the window would never see would leave the paste waiting forever.
-    // T-0701fe71
+    // F-539 T-0701fe71
     @Test func answersSkipToAQuestionThatCantBeSentAndGoesOn() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)

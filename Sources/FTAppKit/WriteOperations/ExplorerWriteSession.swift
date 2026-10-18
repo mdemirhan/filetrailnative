@@ -350,7 +350,9 @@ final class ExplorerWriteSession: WriteOperationWindow {
     private func followForeignMoveOnScreen(_ event: WriteOperationEvent) {
         guard let result = event.result, AfterWrite.movedItems(result) else { return }
         let moves = ExplorerTabs.collectFollowedMoves(
-            WriteOperationOutcome(action: result.action.rawValue, mode: result.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) }, items: result.items.map(\.effect)))
+            WriteOperationOutcome(
+                action: result.action.rawValue, mode: result.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
+                items: result.items.map(\.effect)))
         host?.followMovesOnScreen(moves)
     }
 }

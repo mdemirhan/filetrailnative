@@ -31,7 +31,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     // MARK: a paste starting
 
     // The write service says "queued" before startCopyPaste returns, when the paste has no window yet.
-    // F-529 T-bd1a345f
+    // F-542 F-308 T-bd1a345f
     @Test func tellsTheOtherWindowsItIsQueued() async throws {
         let service = StubWriteService()
         service.startCopyPasteImpl = { _ in
@@ -66,7 +66,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     // MARK: a paste ending
 
     // The window follows what a paste after Cut moved, as it follows a Move To.
-    // T-93137f51
+    // F-542 F-308 T-93137f51
     @Test func tellsTheWindowWhetherItCopiedOrMovedTheItems() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -84,7 +84,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     // MARK: the other windows
 
     // A paste of a large folder lists every file in it: each other window used to be sent them all.
-    // F-529 T-8d2377e1
+    // F-542 F-308 T-8d2377e1
     @Test func areToldOfTheItemsAPasteWorkedOnButNotOfEveryItemInsideThem() async throws {
         let service = StubWriteService()
         var broadcasts: [WriteOperationEvent] = []
@@ -113,7 +113,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
 
     // MARK: a window taking over an operation
 
-    // F-530 T-4d4e6a08
+    // F-542 F-240 F-289 T-4d4e6a08
     @Test func isToldTheCutAPasteClearsFromTheClipboardWhenItIsDone() async throws {
         let service = StubWriteService()
         let successor = TestWindow()
@@ -133,7 +133,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-26cbb367
+    // F-542 F-240 T-26cbb367
     @Test func isntShownAQuestionTheWindowThatClosedAlreadyAnswered() async throws {
         let service = StubWriteService()
         let successor = TestWindow()
@@ -154,7 +154,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-927ff6d8
+    // F-542 F-240 T-927ff6d8
     @Test func isStillShownAQuestionThatWasntAnswered() async throws {
         let service = StubWriteService()
         service.resolveAnswer = false
@@ -192,7 +192,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         return (coordinator, service, owner, successor)
     }
 
-    // F-530 T-60e8f3f9
+    // F-542 F-244 T-60e8f3f9
     @Test func isToldItWithTheQuestionItWaitsOnOnce() async throws {
         let (coordinator, service, owner, successor) = try await handedOver(
             clearsCutClipboard: "2026-10-08T10:00:00.000Z")
@@ -212,7 +212,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-b3bb7f82
+    // F-542 F-244 T-b3bb7f82
     @Test func isToldHowItEndedWhenItEndedBeforeTheWindowAsked() async throws {
         let (coordinator, service, owner, successor) = try await handedOver()
         coordinator.windowClosed(owner)
@@ -227,7 +227,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-2060d16e
+    // F-542 F-244 T-2060d16e
     @Test func isToldNothingWhenNothingWasHandedToItOrItWasHandedOnAgain() async throws {
         let service = StubWriteService()
         let second = TestWindow()
@@ -252,7 +252,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
 
     // MARK: telling every window
 
-    // T-acfa02c7
+    // F-542 T-acfa02c7
     @Test func tellsTheOthersWhenOneWindowCantBeTold() {
         let log = LogRecorder()
         let first = TestWindow()
@@ -273,7 +273,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     }
 
     // A window that missed the end of another window's operation asks.
-    // F-531 T-a7d68d1d
+    // F-542 F-244 T-a7d68d1d
     @Test func saysWhichOperationRunsIfAny() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -291,7 +291,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     // MARK: copy analyses and their windows
 
     // The original's "destroyed" and "render-process-gone" are one close here.
-    // T-5983f85b
+    // F-542 F-359 T-5983f85b
     @Test func cancelsAnAnalysisWhenItsWindowCloses() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -306,7 +306,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // T-c719c4b4
+    // F-542 F-359 T-c719c4b4
     @Test func letsAnotherWindowSetUpACopyOnceTheWindowOfAStuckAnalysisCloses() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-windows") { root in
             let release = DispatchSemaphore(value: 0)
@@ -331,7 +331,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         }
     }
 
-    // T-d8ae5e15
+    // F-542 F-359 T-d8ae5e15
     @Test func doesntListenToAWindowForAnAnalysisItReplacedOrPastedFrom() async throws {
         let service = StubWriteService()
         service.analysisIds = ["analysis-1", "analysis-2"]
@@ -352,7 +352,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // T-fad58c67
+    // F-542 F-359 T-fad58c67
     @Test func keepsAWindowsFinishedAnalysisWhenAnotherWindowSetsUpACopy() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-windows") { root in
             let manager = FileManager.default
@@ -365,7 +365,8 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
                 writeService: WriteService(WriteServiceDependencies(fileSystem: NativeWriteFileSystem())))
             let first = TestWindow()
             let second = TestWindow()
-            @MainActor func analyzed(_ window: TestWindow, _ analysisId: String) async throws -> CopyPasteAnalysisUpdate {
+            @MainActor func analyzed(_ window: TestWindow, _ analysisId: String) async throws -> CopyPasteAnalysisUpdate
+            {
                 try await Coordinators.waitFor {
                     (try? coordinator.analysisUpdate(analysisId, window: window)).flatMap { $0.done ? $0 : nil }
                 }
@@ -401,7 +402,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
     // MARK: an operation that stops unexpectedly
 
     // Every window refuses to start an operation while one runs, until it hears the end.
-    // F-531 T-aefca255
+    // F-542 F-360 T-aefca255
     @Test func tellsEveryWindowItFailedWhenItStoppedWithoutSayingSo() async throws {
         let log = LogRecorder()
         var broadcasts: [(WriteOperationEvent, ObjectIdentifier)] = []
@@ -427,7 +428,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // T-98dde4cf
+    // F-542 F-360 T-98dde4cf
     @Test func goesOnWhenTheOtherWindowsCantBeTold() async throws {
         let log = LogRecorder()
         let coordinator = WriteCoordinator(
@@ -446,7 +447,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // T-2270b54d
+    // F-542 F-360 T-2270b54d
     @Test func endsAPasteWhoseDiskCantBeToldToHaveATrashAndCantUndoIt() async throws {
         let service = StubWriteService()
         let log = LogRecorder()
@@ -479,7 +480,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
 
     // A paste the write service refuses to start never ends: the folder sizes stop noting what is stored, as they
     // would at its end.
-    // T-f85a7d91
+    // F-542 F-360 T-f85a7d91
     @Test func tellsTheFolderSizesAPasteThatCouldntStartIsOver() async throws {
         let service = StubWriteService()
         var starting = 0
@@ -504,7 +505,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // T-6410a447
+    // F-542 F-360 T-6410a447
     @Test func endsAPasteAndFreesTheSlotWhenForgettingWhatItChangedGoesWrong() async throws {
         let service = StubWriteService()
         let log = LogRecorder()
@@ -527,7 +528,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // T-02312210
+    // F-542 F-360 T-02312210
     @Test func sendsTheEndOfALocalOperationWhenForgettingWhatItChangedGoesWrong() async throws {
         let coordinator = WriteCoordinator(
             writeService: StubWriteService(),
