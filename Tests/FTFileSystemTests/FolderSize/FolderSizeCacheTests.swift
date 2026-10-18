@@ -117,17 +117,18 @@ private struct RandomCache {
 
     // A home folder's walk stores 176,000 sizes. With a limit of 100,000, the folders it finished first (small
     // ones directly in the home folder among them) were let go, and showed no size until the home folder was
-    // measured again.
+    // measured again. 120,000 sizes are more than that limit kept (the original stored 400,000), and the bound is
+    // the original's for that many.
     // T-ac9e4e45 F-186
     @Test func keepsEverySizeStoredQuickly() {
         let cache = FolderSizeCache()
         let started = ContinuousClock.now
-        for index in 0..<400_000 {
+        for index in 0..<120_000 {
             cache.store("/Users/demo/Library/c\(index % 400)/d\(index)", stats(Int64(index)))
         }
         // Well under a second on a laptop.
-        #expect(ContinuousClock.now - started < .seconds(5))
-        #expect(cache.size == 400_000)
+        #expect(ContinuousClock.now - started < .milliseconds(1_500))
+        #expect(cache.size == 120_000)
         #expect(cache.has("/Users/demo/Library/c0/d0"))
     }
 

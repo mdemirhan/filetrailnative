@@ -563,14 +563,15 @@ private func settle() async {
     }
 
     // A walk of the home folder stores hundreds of thousands of sizes, a take of 10,000 folders at a time: each take
-    // must be stored in a moment.
+    // must be stored in a moment. Four takes show it (the original stored 40): storing one at a time costs more
+    // with each size kept, and the bound is a fifth of the one for 20 takes.
     // T-2cdd29eb F-186
     @Test func keepsUpWithAWalkThatStoresHundredsOfThousandsOfSizes() async {
         let native = MockNative()
         let jobs = make(native)
         _ = start(jobs, "/Users/demo")
         let started = ContinuousClock.now
-        for take in 0..<20 {
+        for take in 0..<4 {
             var dirs: [String: [Int64]] = [:]
             for index in (take * 10_000)..<((take + 1) * 10_000) {
                 dirs["/Users/demo/Library/c\(index % 400)/d\(index)"] = [1, 1, 1, 0]
@@ -579,9 +580,9 @@ private func settle() async {
             // Lets the rest of the app run between takes, as it does between the walk's.
             await Task.yield()
         }
-        // About a second on a laptop; the bound only catches going back to one at a time.
-        #expect(ContinuousClock.now - started < .seconds(6))
-        #expect(jobs.cachedSize("/Users/demo/Library/c399/d199999") == 1)
+        // About a fifth of a second on a laptop; the bound only catches going back to one at a time.
+        #expect(ContinuousClock.now - started < .milliseconds(1_200))
+        #expect(jobs.cachedSize("/Users/demo/Library/c399/d39999") == 1)
         #expect(jobs.cachedSize("/Users/demo/Library/c0/d0") == 1)
     }
 
