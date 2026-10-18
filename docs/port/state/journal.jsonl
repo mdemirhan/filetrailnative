@@ -133,3 +133,4 @@
 {"at": "2026-10-18T13:18:57+00:00", "event": "reconcile", "recover": false, "notes": ["worktree /Users/tcmudemirhan/src/swiftproj/filetrail/.claude/worktrees/wf_037c29df-c80-1 (P5-05) has uncommitted changes"], "recovered": []}
 {"at": "2026-10-18T13:20:00+00:00", "event": "meter", "weeklyPct": 0.0, "fiveHourPct": 0.0, "note": "resume 2026-10-18"}
 {"at": "2026-10-18T13:20:13+00:00", "event": "start", "batches": ["W2-P0-17", "W2-P0-18", "W2-P0-19", "W2-P3-05"]}
+{"at": "2026-10-18T13:20:28+00:00", "event": "run-id", "runs": ["W2-P0-17=wf_a05d28ba-00c", "W2-P0-18=wf_59e31552-124", "W2-P0-19=wf_a2e0f52d-564", "W2-P3-05=wf_a4ce2c65-53c"]}
