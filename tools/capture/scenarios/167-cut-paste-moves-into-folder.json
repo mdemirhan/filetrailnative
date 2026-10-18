@@ -3,7 +3,7 @@
   "description": "TripCard.jsx cut with ⌘X in app/src/components and pasted with ⌘V into app/src/lib: the move takes it out of the old folder and it arrives in the new one",
   "features": ["F-247","F-289"],
   "behaviors": ["B-CLIP-140","B-CLIP-145"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave","final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

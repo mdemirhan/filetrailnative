@@ -3,7 +3,7 @@
   "description": "Avatar.jsx copied with ⌘C in app/src/components and pasted with ⌘V into app/src/lib: the paste goes through the write coordinator, and the copy arrives in the folder it was pasted into",
   "features": ["F-247","F-360"],
   "behaviors": ["B-CLIP-140","B-CLIP-145"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave","final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

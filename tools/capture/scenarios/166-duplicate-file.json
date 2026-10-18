@@ -3,7 +3,7 @@
   "description": "Toast.jsx duplicated with the Duplicate command in app/src/components: the copy is made next to it as “Toast copy.jsx”, through the write coordinator",
   "features": ["F-247"],
   "behaviors": ["B-CLIP-140"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wp","checkpoint","wave","final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
