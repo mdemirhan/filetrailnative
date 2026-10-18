@@ -30,17 +30,6 @@ struct TopToolbarLayoutTests {
         layout.itemGap + layout.overflowButtonWidth + 2 * (layout.capsulePadding + layout.edgedItemInset)
     }
 
-    // T-fc2f1ec9 (the stylesheet's sizes are checked against the reference in ToolbarLayoutGoldenTests)
-    @Test func hasTheSizesTheStylesheetLaysTheToolbarOutFrom() {
-        #expect(layout.itemGap == 2)
-        #expect(layout.edgedItemInset == 5)
-        #expect(layout.capsulePadding == 3)
-        #expect(layout.titleMinWidth == 96)
-        #expect(layout.overflowButtonWidth == 32)
-        #expect(layout.searchWidth == 200)
-        #expect(layout.searchMinWidth == 110)
-    }
-
     // T-d4d1b659 B-VIEW-109
     @Test func keysEachItemByItsIdAndRepeatedSeparatorsByTheirCount() {
         #expect(

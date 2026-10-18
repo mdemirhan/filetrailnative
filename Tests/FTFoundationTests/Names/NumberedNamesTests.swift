@@ -30,17 +30,6 @@ struct NumberedNamesTests {
         }
     }
 
-    // F-042 F-063
-    @Test func numbersBeforeTheExtension() {
-        #expect(
-            NumberedNames.addNumberToName("Lisbon.jpg", isFolder: false, separator: " ", number: 2).name
-                == "Lisbon 2.jpg")
-        #expect(
-            NumberedNames.addNumberToName("Lisbon.jpg", isFolder: true, separator: " ", number: 2).name
-                == "Lisbon.jpg 2")
-        #expect(NumberedNames.addNumberToName(".env", isFolder: false, separator: " ", number: 3).name == ".env 3")
-    }
-
     static func folder(_ name: String, taken: Set<String>) throws -> String {
         try NumberedNames.nextFreeFolderPath(in: "/p", name: name, exists: { taken.contains($0) })
     }

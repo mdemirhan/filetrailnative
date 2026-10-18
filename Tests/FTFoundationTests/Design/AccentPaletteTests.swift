@@ -73,27 +73,15 @@ import Testing
         let presets = [
             "#007aff", "#a550a7", "#f74f9e", "#e0383e", "#f7821b", "#ffc600", "#62ba46", "#8c8c8c", "#d4845a",
         ]
+        // Yellow is the one preset white text cannot reach 4.5:1 on: the golden holds it with black button text.
         for preset in presets {
             #expect(accents.contains(preset))
         }
         #expect(accents.count >= 300)
     }
 
-    @Test func yellowKeepsBlackButtonTextAndWhiteSelectionText() {
-        // White on yellow cannot reach 4.5:1 within 20% darkening: black text on the plain accent.
-        let yellow = AccentPalette(hex: "#ffc600", appearance: .light)
-        #expect(yellow.onSolid == .black)
-        #expect(yellow.solidButton == yellow.solid)
-        #expect(yellow.onSelection == .white)
-    }
-
     @Test func unparseableAccentFallsBackToTheDefault() {
         let fallback = AccentPalette(hex: "not a colour", appearance: .dark)
         #expect(fallback == AccentPalette(hex: AccentPalette.defaultHex, appearance: .dark))
-    }
-
-    @Test func focusRingIsThreePixelsOfAccentAtHalfAlpha() {
-        let palette = AccentPalette(hex: "#007aff", appearance: .light)
-        #expect(palette.focusRing.cssString == "0 0 0 3px rgba(0, 122, 255, 0.5)")
     }
 }

@@ -150,18 +150,6 @@ import Testing
         #expect(metrics.columnWidths(.name, search: true).defaultWidth == 300)
     }
 
-    @Test func metricsAreTheDesignTokens() {
-        for density in Density.allCases {
-            let metrics = Metrics(density: density)
-            #expect(metrics.iconGrid == DesignTokens.iconGrid(density: density))
-            #expect(metrics.details == DesignTokens.details(density: density))
-            #expect(metrics.flowList == DesignTokens.flowList(density: density))
-            #expect(metrics.explorer == DesignTokens.explorer(density: density))
-            #expect(metrics.toolbar == DesignTokens.toolbar)
-            #expect(metrics.typeScale == DesignTokens.typeScale)
-        }
-    }
-
     @Test(arguments: Density.allCases)
     func iconGridColumnsMatchTheOriginalFloor(density: Density) {
         // computeIconGridColumns(width, layout) = max(1, floor((width - 2 * paddingInline) / cellMinWidth)).

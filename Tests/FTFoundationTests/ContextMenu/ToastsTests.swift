@@ -27,20 +27,17 @@ struct ToastsTests {
         #expect(Toasts.entry(id: "a", kind: .success, title: "t", message: "m", now: 0).message == "m")
     }
 
-    // F-797..F-799: where the stack rests (lib/bottomStack.ts)
+    // F-797..F-799 B-INFO-192 B-INFO-193: where the stack rests (lib/bottomStack.ts)
     @Test func theStackRestsTenPointsAboveTheHighestBarAndTwelveFromTheEdgeWithNone() {
         #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: []) == 12)
         // The path bar's top is 33 up from the bottom: 33 + 10.
         #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [727]) == 43)
         // The Info Row is above the path bar: the higher of the two counts.
         #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [727, 697]) == 73)
+        // A 28 pt path bar under a 30 pt Info Row: 58 up from the bottom, plus 10.
+        #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [760 - 28, 760 - 58]) == 68)
         // A bar nearly at the edge never takes the stack below the edge offset.
         #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [759]) == 12)
-    }
-
-    // B-INFO-192 B-INFO-193
-    @Test func aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp() {
-        #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [760 - 28, 760 - 58]) == 68)
     }
 
     @Test func notificationsRestAboveTheCardWhenThereIsOne() {
