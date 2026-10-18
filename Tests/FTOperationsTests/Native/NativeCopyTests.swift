@@ -193,7 +193,7 @@ struct NativeCopyStopFlagTests {
     @Test(.tags(.diskImage), .diskImages)
     func countsTheBytesCopiedAfterTheFlag() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
-            try await DiskImage.withVolume(.apfs) { volume in
+            try await DiskImage.withSharedVolume(.apfs) { volume in
                 let source = root.appending("big.bin").path
                 try Files.makeFile(source, megabytes: 20)
                 let control = CopyControl()
@@ -204,14 +204,15 @@ struct NativeCopyStopFlagTests {
     }
 
     // copyfile asks the status callback what to do when a write fails; answering "continue" there retried the
-    // write forever, so a full disk hung the copy.
+    // write forever, so a full disk hung the copy. The disk is full before the copy starts, so its first write
+    // fails: a source of 2 MB is enough (the original copied 80 MB onto a 32 MB disk).
     // T-26424164 F-404
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func failsWithENOSPCOnAFullDiskInsteadOfRetryingTheWriteForever() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
-            try await DiskImage.withVolume(.apfs) { volume in
+            try await DiskImage.withVolume(.apfsSmall) { volume in
                 let source = root.appending("big.bin").path
-                try Files.makeFile(source, megabytes: 80)
+                try Files.makeFile(source, megabytes: 2)
                 try Files.fillDisk(volume.path)
                 let destination = volume.path + "/big.bin"
                 let started = Date()
@@ -232,13 +233,13 @@ struct NativeCopyStopFlagTests {
     @Test(.tags(.diskImage), .diskImages)
     func failsWithTheWritesErrnoWhenTheResourceForkCantBeWritten() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
-            try await DiskImage.withVolume(.apfs) { volume in
+            try await DiskImage.withVolume(.apfsSmall) { volume in
                 try Files.fillDisk(volume.path)
                 let source = root.appending("old.rsrc").path
                 try Files.write(source, "")
                 // Over 1 MB, which copyfile copies through the fork's own file, in chunks; and more than the space
                 // APFS keeps back on a full disk, which a fork can still take (about 6 MB of a 256 MB disk, where
-                // the original's 20 MB disk kept less than its 2 MB fork).
+                // the original's 20 MB disk kept less than its 2 MB fork; this disk is 32 MB).
                 let forkSize = max(2 * 1024 * 1024, Files.freeBytes(volume.path) + 2 * 1024 * 1024)
                 try Files.write(source + "/..namedfork/rsrc", [UInt8](repeating: 7, count: forkSize))
 
@@ -259,7 +260,7 @@ struct NativeCopyStopFlagTests {
     @Test(.tags(.diskImage), .diskImages)
     func failsWithTheWritesErrnoWhenASmallResourceForkCantBeWritten() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
-            try await DiskImage.withVolume(.fat32) { volume in
+            try await DiskImage.withVolume(.fat32Small) { volume in
                 let fullCode = try Files.fillDisk(volume.path, fullCodes: ["ENOSPC", "EIO"])
                 let source = root.appending("small.rsrc").path
                 try Files.write(source, "")
@@ -283,7 +284,7 @@ struct NativeCopyStopFlagTests {
     @Test(.tags(.diskImage), .diskImages)
     func keepsASparseFileSparseSoItFitsOnADiskSmallerThanItsLength() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
-            try await DiskImage.withVolume(.apfs) { volume in
+            try await DiskImage.withSharedVolume(.apfs) { volume in
                 let source = root.appending("sparse.img").path
                 try Files.write(source, "start")
                 #expect(truncate(source, 1024 * 1024 * 1024) == 0)

@@ -19,8 +19,6 @@ private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sen
 
     private var nodes: [String: Node] = [:]
     private var nextIno: UInt64 = 10
-    private let lock = NSLock()
-    private var readCounts: [String: Int] = [:]
 
     init() {
         add("/", isDirectory: true)
@@ -34,16 +32,10 @@ private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sen
         }
     }
 
-    /// How many times an item under `folder` was looked at, at most.
-    func mostReads(under folder: String) -> Int {
-        lock.withLock { readCounts.filter { $0.key.hasPrefix(folder + "/") }.values.max() ?? 0 }
-    }
-
     private func node(_ path: String) throws -> Node {
         guard let node = nodes[path] else {
             throw codedError("ENOENT", "ENOENT: \(path)")
         }
-        lock.withLock { readCounts[path, default: 0] += 1 }
         return node
     }
 
@@ -71,42 +63,21 @@ private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sen
     }
 }
 
-/// Reviews `request` through the write service, as the app does, and returns its report.
-private func review(_ fileSystem: LargeTreeFileSystem, _ request: CopyPasteAnalysisRequest) async throws
-    -> CopyPasteAnalysisReport?
-{
-    let service = WriteService(.init(fileSystem: fileSystem))
-    let analysisId = try service.startCopyPasteAnalysis(request).analysisId
-    _ = await waitFor(timeout: .seconds(120)) { try service.getCopyPasteAnalysisUpdate(analysisId).done }
-    let update = try service.getCopyPasteAnalysisUpdate(analysisId)
-    #expect(update.status == .complete, Comment(rawValue: update.error ?? ""))
-    return update.report
-}
-
 struct LargeTreeAnalysisTests {
-    // More items than V8 takes as the arguments of one call (from about 124,000).
-    private static let fileCount = 150_000
-
+    // More items than V8 takes as the arguments of one call (from about 124,000): LargeTreeExecutionTests' folder,
+    // reviewed once through the write service for both tests.
     // F-434
     @Test func reviewsAFolderOfMoreThan125000ItemsReadingEachOnlyAFewTimes() async throws {
-        let fileSystem = LargeTreeFileSystem()
-        for folder in ["/source", "/source/project", "/source/project/files", "/target"] {
-            fileSystem.add(folder, isDirectory: true)
-        }
-        for index in 0..<Self.fileCount {
-            fileSystem.add("/source/project/files/file-\(index).txt", isDirectory: false)
-        }
+        let fileCount = LargeFolder.fileCount
+        let reviewed = try await LargeFolder.reviewed.value
+        #expect(reviewed.status == .complete, Comment(rawValue: reviewed.error ?? ""))
+        let report = reviewed.report
 
-        let report = try await review(
-            fileSystem,
-            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target")
-        )
-
-        #expect(report?.summary.totalNodeCount == Self.fileCount + 2)
-        #expect(report?.summary.totalBytes == Int64(Self.fileCount))
-        #expect(report?.nodes.first?.children.first?.children.count == Self.fileCount)
+        #expect(report?.summary.totalNodeCount == fileCount + 2)
+        #expect(report?.summary.totalBytes == Int64(fileCount))
+        #expect(report?.nodes.first?.children.first?.children.count == fileCount)
         // Each file is read once, by the walk.
-        #expect(fileSystem.mostReads(under: "/source/project/files") == 1)
+        #expect(reviewed.mostReadsOfAFile == 1)
     }
 
     // A path names at most 1,024 bytes: "/source" and 508 folders "/d" deep is as deep as one goes. The review goes

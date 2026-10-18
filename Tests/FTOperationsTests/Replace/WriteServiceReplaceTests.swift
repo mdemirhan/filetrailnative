@@ -240,7 +240,7 @@ struct VolumeReplaceTests {
     @Test(.tags(.diskImage), .diskImages)
     func replacesAFileThereRemovingTheOriginalOnlyOnceTheNewOneIsInPlace() async throws {
         try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { volume in
+            try await DiskImage.withSharedVolume(.apfs) { volume in
                 let src = root.path + "/src"
                 try Disk.write(src + "/a.txt", "new")
                 try Disk.write(volume.path + "/a.txt", "old")
@@ -264,7 +264,7 @@ struct VolumeReplaceTests {
     // T-632ee76c F-342
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func replacesEmptyFilesInsideAMergedFolder(kind: DiskImage.Kind) async throws {
-        try await DiskImage.withVolume(kind) { stick in
+        try await DiskImage.withSharedVolume(kind) { stick in
             try Disk.write(stick.path + "/src/pkg/__init__.py", "")
             try Disk.write(stick.path + "/dst/pkg/__init__.py", "")
             try Disk.makeDirectories(stick.path + "/.test-trash")

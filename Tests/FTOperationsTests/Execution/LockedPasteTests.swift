@@ -34,86 +34,91 @@ struct LockedPasteTests {
         }
     }
 
+    /// A source folder that seems to be on a disk of its own (another device number, EXDEV out of it), and a
+    /// destination beside it: a move between them copies and then removes the originals, as one to a real other
+    /// disk does. The engine tells disks apart by device number alone.
+    private func withOtherDisk(
+        _ body: (_ src: String, _ disk: String, _ fileSystem: TestFileSystem) async throws -> Void
+    ) async throws {
+        try await withTemporaryDirectory { root in
+            let (src, disk) = (root.path + "/src", root.path + "/disk")
+            try Disk.makeDirectories(src)
+            try Disk.makeDirectories(disk)
+            try await body(src, disk, NativePaste.asOnAnotherDisk(src))
+        }
+    }
+
     // Across disks a move copies, then removes the original. A locked original can't be removed, so nothing is
     // copied: it would end up in both places.
     // T-936b31e5 F-263 F-474
-    @Test(.tags(.diskImage), .diskImages)
-    func doesntCopyALockedFolderToAnotherDiskItCantThenRemove() async throws {
-        try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { disk in
-                let src = root.path + "/src"
-                try Disk.write(src + "/Vault/a.txt", "a")
-                Disk.lock(src + "/Vault")
+    @Test func doesntCopyALockedFolderToAnotherDiskItCantThenRemove() async throws {
+        try await withOtherDisk { src, disk, fileSystem in
+            try Disk.write(src + "/Vault/a.txt", "a")
+            Disk.lock(src + "/Vault")
 
-                let run = try await runPaste(mode: .cut, sources: [src + "/Vault"], into: disk.path)
+            let run = try await runPaste(mode: .cut, sources: [src + "/Vault"], into: disk, fileSystem: fileSystem)
 
-                #expect(run.result?.items.first?.status == .failed)
-                #expect(
-                    run.result?.items.first?.error
-                        == "\u{201C}Vault\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
-                #expect(Disk.list(src + "/Vault") == ["a.txt"])
-                #expect(made(disk.path) == [])
-            }
+            #expect(run.result?.items.first?.status == .failed)
+            #expect(
+                run.result?.items.first?.error
+                    == "\u{201C}Vault\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+            #expect(Disk.list(src + "/Vault") == ["a.txt"])
+            #expect(made(disk) == [])
         }
     }
 
     // Every file used to be copied, then each reported "copied, but the original couldn't be removed": everything
     // in both places after copying all of it.
     // T-1317a353 F-263 F-335 F-474
-    @Test(.tags(.diskImage), .diskImages)
-    func copiesNothingOutOfAReadOnlyFolderAndSaysWhy() async throws {
-        try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { disk in
-                let docs = root.path + "/src/Docs"
-                try Disk.write(docs + "/a.txt", "a")
-                try Disk.write(docs + "/b.txt", "b")
-                Disk.chmod(docs, 0o555)
-                defer { Disk.chmod(docs, 0o755) }
+    @Test func copiesNothingOutOfAReadOnlyFolderAndSaysWhy() async throws {
+        try await withOtherDisk { src, disk, fileSystem in
+            let docs = src + "/Docs"
+            try Disk.write(docs + "/a.txt", "a")
+            try Disk.write(docs + "/b.txt", "b")
+            Disk.chmod(docs, 0o555)
+            defer { Disk.chmod(docs, 0o755) }
 
-                let run = try await runPaste(mode: .cut, sources: [docs], into: disk.path)
+            let run = try await runPaste(mode: .cut, sources: [docs], into: disk, fileSystem: fileSystem)
 
-                #expect(run.result?.items.first?.status == .failed)
-                #expect(
-                    run.result?.items.first?.error
-                        == "\u{201C}Docs\u{201D} wasn't moved, because you don't have permission to remove what is inside it."
-                )
-                #expect(made(disk.path) == [])
-                #expect(Disk.list(docs) == ["a.txt", "b.txt"])
-            }
+            #expect(run.result?.items.first?.status == .failed)
+            #expect(
+                run.result?.items.first?.error
+                    == "\u{201C}Docs\u{201D} wasn't moved, because you don't have permission to remove what is inside it."
+            )
+            #expect(made(disk) == [])
+            #expect(Disk.list(docs) == ["a.txt", "b.txt"])
         }
     }
 
     // T-335016cf F-263 F-335 F-474
-    @Test(.tags(.diskImage), .diskImages)
-    func doesntMoveAFileOutOfAFolderThatCantBeChanged() async throws {
-        try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { disk in
-                let docs = root.path + "/src/Docs"
-                try Disk.write(docs + "/a.txt", "a")
-                Disk.chmod(docs, 0o555)
-                defer { Disk.chmod(docs, 0o755) }
+    @Test func doesntMoveAFileOutOfAFolderThatCantBeChanged() async throws {
+        try await withOtherDisk { src, disk, fileSystem in
+            let docs = src + "/Docs"
+            try Disk.write(docs + "/a.txt", "a")
+            Disk.chmod(docs, 0o555)
+            defer { Disk.chmod(docs, 0o755) }
 
-                let run = try await runPaste(mode: .cut, sources: [docs + "/a.txt"], into: disk.path)
+            let run = try await runPaste(mode: .cut, sources: [docs + "/a.txt"], into: disk, fileSystem: fileSystem)
 
-                #expect(
-                    run.result?.items.first?.error
-                        == "\u{201C}a.txt\u{201D} wasn't moved, because you don't have permission to remove it from \u{201C}Docs\u{201D}."
-                )
-                #expect(made(disk.path) == [])
-            }
+            #expect(
+                run.result?.items.first?.error
+                    == "\u{201C}a.txt\u{201D} wasn't moved, because you don't have permission to remove it from \u{201C}Docs\u{201D}."
+            )
+            #expect(made(disk) == [])
         }
     }
 
-    // Across disks a copy can't be a clone, so a large file takes long enough to stop. On a busy machine the copy
-    // may finish before the stop is seen; that run proves nothing, so it is tried again.
+    // Across disks a copy can't be a clone, so a large file takes long enough to stop. 32 MB is enough (the original
+    // copied 150 MB): 8 MB was still stopped in each of 80 runs, four at a time. On a busy machine the copy may
+    // finish before the stop is seen; that run proves nothing, so it is tried again.
     // T-97d6fd58 F-257 F-274
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func stopsALargeCopyAtOnceAndLeavesNothingHalfWritten() async throws {
         try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { volume in
+            try await DiskImage.withSharedVolume(.apfs) { volume in
                 let source = root.path + "/src/big.bin"
                 try Disk.makeDirectories(root.path + "/src")
-                try NativeTestFiles.makeFile(source, megabytes: 150)
+                try NativeTestFiles.makeFile(source, megabytes: 32)
                 let destination = volume.path + "/big.bin"
                 var status: CopyPasteOperationStatus? = .completed
                 for _ in 0..<3 where status == .completed {

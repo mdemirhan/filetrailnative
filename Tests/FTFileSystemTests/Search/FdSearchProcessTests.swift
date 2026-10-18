@@ -175,9 +175,10 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
     @Test(.enabled(if: hasFd))
     func quittingWhileASearchRunsLeavesNoFdBehind() async throws {
         let runtime = try makeRuntime()
-        // Matches nothing, so fd searches the whole disk without writing a line.
+        // Matches nothing, so fd searches the system library (some seconds of work) without writing a line. Not all of
+        // "/", which takes in every mounted disk, other tests' disk images too; nor /usr, which fd reads in 0.05 s.
         let query = "filetrail-quit-test-\(UUID().uuidString)"
-        let started = runtime.startSearch(SearchRequest(rootPath: "/", query: query, patternMode: .text))
+        let started = runtime.startSearch(SearchRequest(rootPath: "/System/Library", query: query, patternMode: .text))
         #expect(try await waitUntil(seconds: 5) { !fdProcesses(for: query).isEmpty })
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).done == false)
 
@@ -190,7 +191,7 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         let runtime = try makeRuntime()
         defer { runtime.close() }
         let query = "filetrail-cancel-test-\(UUID().uuidString)"
-        let started = runtime.startSearch(SearchRequest(rootPath: "/", query: query, patternMode: .text))
+        let started = runtime.startSearch(SearchRequest(rootPath: "/System/Library", query: query, patternMode: .text))
         #expect(try await waitUntil(seconds: 5) { !fdProcesses(for: query).isEmpty })
         runtime.cancelSearch(jobId: started.jobId)
         #expect(try await waitUntil(seconds: 2) { fdProcesses(for: query).isEmpty })

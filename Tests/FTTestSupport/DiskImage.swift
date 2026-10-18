@@ -25,9 +25,20 @@ public enum DiskImage {
         case hfs
         case apfs
         case apfsCaseSensitive
+        /// A 32 MB APFS disk, for tests that fill it (the original filled 20 to 32 MB disks).
+        case apfsSmall
+        /// A 40 MB FAT32 disk, about the smallest that is still FAT32, for tests that fill it.
+        case fat32Small
 
         /// The blank image's name in `tools/fixtures/disk-images.sh`.
-        var imageName: String { self == .apfsCaseSensitive ? "apfs-cs" : rawValue }
+        var imageName: String {
+            switch self {
+            case .apfsCaseSensitive: "apfs-cs"
+            case .apfsSmall: "apfs-small"
+            case .fat32Small: "fat32-small"
+            default: rawValue
+            }
+        }
 
         public var isCaseSensitive: Bool { self == .apfsCaseSensitive }
     }
@@ -45,30 +56,150 @@ public enum DiskImage {
     ///
     /// One volume of a kind at a time, also across test processes: clones of one blank image carry the
     /// same volume UUID, and while one is attached, attaching another fails with "no mountable file
-    /// systems" or mounts it under a different name.
+    /// systems" or mounts it under a different name. Each kind has a volume name of its own, so no
+    /// volume of another kind takes this one's `/Volumes` folder while the kind's lock is held.
     ///
     /// `ownMountPoint` mounts it in a folder of its own instead of `/Volumes/<name>`, which the next
-    /// clone mounted anywhere on the Mac takes once this one is unmounted: for tests that still act on
-    /// the path after that.
+    /// clone of the kind mounted anywhere on the Mac takes once this one is unmounted: for tests that
+    /// still act on the path after that.
     public static func withVolume<T>(
         _ kind: Kind, ownMountPoint: Bool = false, isolation: isolated (any Actor)? = #isolation,
         _ body: (URL) async throws -> T
     ) async throws -> T {
-        let lock = try await acquireLock(for: kind)
-        defer { releaseLock(lock) }
-        let work = try TemporaryDirectory(prefix: "ft-disk")
-        defer { work.remove() }
-        let image = work.appending("volume.sparseimage")
-        try clone(kind, to: image)
-        var mountPoint: URL?
-        if ownMountPoint {
-            let folder = work.appending("mount")
-            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-            mountPoint = folder
+        let mounted = try await Mounted.make(kind, ownMountPoint: ownMountPoint)
+        defer { mounted.close() }
+        return try await body(mounted.mount)
+    }
+
+    /// Runs `body` with a fresh folder of its own on a volume of `kind` that the tests of this process
+    /// running at the same time share, and removes the folder afterwards. The first of them mounts the
+    /// volume (in a folder of its own), and the last one to finish detaches it.
+    ///
+    /// For tests that need a real volume of a kind but not a whole one: nothing of the volume's own (its
+    /// root, free space, Trash, mounting or ejecting) and nothing another test does in a folder of its own.
+    public static func withSharedVolume<T>(
+        _ kind: Kind, isolation: isolated (any Actor)? = #isolation, _ body: (URL) async throws -> T
+    ) async throws -> T {
+        let volume = try await SharedVolumes.shared.join(kind)
+        let folder = volume.appendingPathComponent("test-\(UUID().uuidString)", isDirectory: true)
+        let result: Result<T, any Error>
+        do {
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: false)
+            result = .success(try await body(folder))
+        } catch {
+            result = .failure(error)
         }
-        let attached = try attach(image, at: mountPoint)
-        defer { detach(attached, image: image) }
-        return try await body(attached.mount)
+        removeAll(at: folder)
+        if let last = await SharedVolumes.shared.leave(kind) {
+            last.close()
+        }
+        return try result.get()
+    }
+
+    /// A clone of a blank image, attached, with its kind's lock held until `close`.
+    private final class Mounted: Sendable {
+        let mount: URL
+        private let lock: Int32
+        private let work: TemporaryDirectory
+        private let image: URL
+        private let attached: Attached
+
+        private init(lock: Int32, work: TemporaryDirectory, image: URL, attached: Attached) {
+            self.mount = attached.mount
+            self.lock = lock
+            self.work = work
+            self.image = image
+            self.attached = attached
+        }
+
+        static func make(_ kind: Kind, ownMountPoint: Bool) async throws -> Mounted {
+            let lock = try await acquireLock(for: kind)
+            let work: TemporaryDirectory
+            do {
+                work = try TemporaryDirectory(prefix: "ft-disk")
+            } catch {
+                releaseLock(lock)
+                throw error
+            }
+            do {
+                let image = work.appending("volume.sparseimage")
+                try clone(kind, to: image)
+                var mountPoint: URL?
+                if ownMountPoint {
+                    let folder = work.appending("mount")
+                    try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+                    mountPoint = folder
+                }
+                return Mounted(lock: lock, work: work, image: image, attached: try attach(image, at: mountPoint))
+            } catch {
+                work.remove()
+                releaseLock(lock)
+                throw error
+            }
+        }
+
+        /// Detaches the image, deletes the clone and releases the kind's lock.
+        func close() {
+            detach(attached, image: image)
+            work.remove()
+            releaseLock(lock)
+        }
+    }
+
+    /// The volumes `withSharedVolume` lends, one per kind, with how many tests are using each.
+    private actor SharedVolumes {
+        static let shared = SharedVolumes()
+
+        private struct Entry {
+            var users: Int
+            let mounting: Task<Mounted, any Error>
+        }
+
+        private var entries: [Kind: Entry] = [:]
+
+        func join(_ kind: Kind) async throws -> URL {
+            let mounting: Task<Mounted, any Error>
+            if var entry = entries[kind] {
+                entry.users += 1
+                entries[kind] = entry
+                mounting = entry.mounting
+            } else {
+                mounting = Task { try await Mounted.make(kind, ownMountPoint: true) }
+                entries[kind] = Entry(users: 1, mounting: mounting)
+            }
+            do {
+                return try await mounting.value.mount
+            } catch {
+                _ = await leave(kind)
+                throw error
+            }
+        }
+
+        /// The volume for the caller to close when it was its last user.
+        func leave(_ kind: Kind) async -> Mounted? {
+            guard var entry = entries[kind] else { return nil }
+            entry.users -= 1
+            guard entry.users == 0 else {
+                entries[kind] = entry
+                return nil
+            }
+            entries[kind] = nil
+            return try? await entry.mounting.value
+        }
+    }
+
+    /// Clears the Locked flag and gives the owner write access everywhere in `folder`, then removes it.
+    private static func removeAll(at folder: URL) {
+        let path = folder.path
+        let paths = (FileManager.default.subpaths(atPath: path) ?? []).map { path + "/" + $0 }
+        for item in [path] + paths {
+            lchflags(item, 0)
+            var info = stat()
+            if lstat(item, &info) == 0 && info.st_mode & S_IFMT == S_IFDIR {
+                chmod(item, (info.st_mode & 0o7777) | S_IRWXU)
+            }
+        }
+        try? FileManager.default.removeItem(at: folder)
     }
 
     /// Takes an exclusive `flock` on a file next to the blank images, polling so no thread is blocked.
@@ -100,12 +231,14 @@ public enum DiskImage {
             .deletingLastPathComponent()
     }
 
+    /// The blank images of the tests (not the parity goldens' 256 MB ones beside them, which share volume
+    /// names between kinds).
     private static var cacheDirectory: URL {
         let base =
             ProcessInfo.processInfo.environment["FILETRAIL_PORT_CACHE"].map { URL(fileURLWithPath: $0) }
             ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(
                 "Library/Caches/filetrail-port")
-        return base.appendingPathComponent("fixtures/disks")
+        return base.appendingPathComponent("fixtures/disks/tests")
     }
 
     private static func clone(_ kind: Kind, to destination: URL) throws {
@@ -119,7 +252,7 @@ public enum DiskImage {
         try FileManager.default.copyItem(at: source, to: destination)
     }
 
-    private struct Attached {
+    private struct Attached: Sendable {
         let mount: URL
         /// The whole-disk device (`/dev/diskN`), which detaches every volume of the image.
         let device: String
@@ -159,8 +292,8 @@ public enum DiskImage {
     ///
     /// Only while the image is still attached: once it is detached (a test may eject it itself), its
     /// `/dev/diskN` is the next attach's, in any process on the Mac, and detaching it would take another
-    /// test's disk away. For the same reason it waits on the image, not on its mount point: the hfs and
-    /// apfs images all mount at `/Volumes/FileTrailTest`, which another process's attach may take.
+    /// test's disk away. For the same reason it waits on the image, not on its mount point, which the next
+    /// clone of the kind may take.
     private static func detach(_ attached: Attached, image: URL) {
         for attempt in 0..<3 {
             guard isAttached(image, device: attached.device) != false else { return }

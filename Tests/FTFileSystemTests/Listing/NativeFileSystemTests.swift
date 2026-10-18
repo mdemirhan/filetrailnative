@@ -54,10 +54,13 @@ struct NativeFileSystemTests {
     // F-176
     @Test func readsAFolderTooBigForOneBuffer() throws {
         try withTemporaryDirectory { directory in
-            let count = 6_000
+            // The listing reads into a buffer of 256 KB. Each entry takes about 85 bytes and its name: with names of
+            // 200 bytes, one buffer holds fewer than 1,000 entries.
+            let count = 2_000
+            let padding = String(repeating: "n", count: 170)
             for index in 0..<count {
                 FileManager.default.createFile(
-                    atPath: directory.path + "/file number \(index) with a longer name.txt", contents: nil)
+                    atPath: directory.path + "/file number \(index) \(padding).txt", contents: nil)
             }
             let records = try native.readDirectory(directory.path)
             #expect(records.count == count)
