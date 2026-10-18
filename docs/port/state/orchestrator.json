@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T13:33:45+00:00",
+  "updatedAt": "2026-10-18T13:33:50+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -766,6 +766,14 @@
       "status": "running",
       "runId": "wf_a4ce2c65-53c",
       "startedAt": "2026-10-18T13:20:13+00:00"
+    },
+    "W2-P0-20": {
+      "wps": [
+        "P0-20"
+      ],
+      "status": "running",
+      "runId": null,
+      "startedAt": "2026-10-18T13:33:50+00:00"
     }
   },
   "wps": {
@@ -3271,7 +3279,7 @@
       "depends": [
         "P0-19"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-20",
       "headSha": null,
       "attempts": 0,
