@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T13:20:28+00:00",
+  "updatedAt": "2026-10-18T13:31:34+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -717,9 +717,24 @@
       "wps": [
         "P0-18"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_59e31552-124",
-      "startedAt": "2026-10-18T13:20:13+00:00"
+      "startedAt": "2026-10-18T13:20:13+00:00",
+      "endedAt": "2026-10-18T13:31:33+00:00",
+      "integration": {
+        "merged": [
+          "P0-18"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "be21ebfacce16817f8874c09868083231244eb45",
+        "summary": "Merged port/P0-18 with no conflicts. CI passed (build, 2082 tests, format). Parity matrix synced and committed. Merge lock released."
+      },
+      "critic": null,
+      "spentOutputTokens": 161998,
+      "agents": 4,
+      "subagentTokens": 342400,
+      "durationMin": 11.0
     },
     "W2-P0-19": {
       "wps": [
@@ -2504,7 +2519,8 @@
       "carryOver": [
         "From P4-04: T-317cfcc8 (windows.spec: paste in one window what was copied in another, B-VIEW-184) is left todo for this WP; ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and capture 38-paste-in-another-window must pass.",
         "From P5-01: call MainWindowController.clipboardChanged() whenever SharedClipboard changes, so the toolbar clipboard button and its count refresh.",
-        "From P5-03: call tab.folderSizes.forgetChangedSizes(_:intoTrash:) when a write operation finishes, and set tab.folderChangesHeld while a drag or an operation is active. Seams in place: ContentDragHooks, and AutomationDragSource/AutomationDropTarget on list rows, the pane background and sidebar rows (P5-02 SidebarFileDrops)."
+        "From P5-03: call tab.folderSizes.forgetChangedSizes(_:intoTrash:) when a write operation finishes, and set tab.folderChangesHeld while a drag or an operation is active. Seams in place: ContentDragHooks, and AutomationDragSource/AutomationDropTarget on list rows, the pane background and sidebar rows (P5-02 SidebarFileDrops).",
+        "From P0-18: Wire the write coordinator's progress to the ProgressCard. Once the original can be driven to show the progress card (a slow copy plus a snapshot while it runs), add a checkpoint scenario for it. P0-18 found no existing step can do this."
       ]
     },
     "P5-09": {
@@ -2616,7 +2632,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P0-18: When P6-03 merges, promote acceptance/a12-batch-rename from tiers [wave, final] to [checkpoint, wave, final]. It is the only Batch Rename capture."
+      ]
     },
     "P6-04": {
       "title": "Settings and shortcut recorder",
@@ -2642,7 +2661,8 @@
       "blockers": [],
       "carryOver": [
         "From P4-03: register the Settings window with AppearanceModel.shared.register(pageWindow:) (page background and theme redraw), and set AppDelegate.pageWindows.openSettingsOnShortcuts so Help's \"Customize…\" opens the Shortcuts tab.",
-        "From P5-02: a16-favorites steps 14-20 (File Trail > Settings, the Browsing section, the favorite icon picker for docs, choice Star) need the Settings window."
+        "From P5-02: a16-favorites steps 14-20 (File Trail > Settings, the Browsing section, the favorite icon picker for docs, choice Star) need the Settings window.",
+        "From P0-18: When P6-04 merges, promote acceptance/a09-shortcuts to checkpoint, and drop 19-settings-general then (it is covered by a09). The audit's promote-when-built note says the same."
       ]
     },
     "P8-01": {
@@ -3147,23 +3167,37 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-18",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "d242fbd",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh"
       ],
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Added `--tier checkpoint` to run.sh; 16 scenarios (tiers wp, checkpoint, wave, final) and 7 acceptance flows (checkpoint, wave, final) are tagged. 72 items (62 scenarios, 10 flows) are final-only (wave, final). Deleted the 28 dropped scenarios and moved their F-/B- tags to the covering scenario (the first one named for \"x + y\" cases). Moved tags: 01/135 to 50, 02 to 51, 04 to 89, 05 to 94, 06 to 140, 21 to 19, 37 to a14, 53 to 145, 58 to a08, 85 to 72, 86 to a13. The other drops had no new tags to move. No elements were removed from elements.d, because no element was used only by a dropped scenario.\nCheckpoint set: 50, 51, 77, 75, 03, 49, 148, 143, 156, 55, 59, 39, 41, 159, 16, 19, a01, a02, a03, a04, a05, a13, a14.\nFrom port/capture-once I took the once-per-scenario original captures. The cache key is now the scenario file, preferences.json and CAPTURE_FORMAT_VERSION. Failed runs are cached with their exit status. `--refresh-original <scenario...>` is added. The driver records `captured` ids, and report.ts shows a name added later as \"not captured\". I left out `--changed`, changed.ts and smoke.txt. The report.ts selftest passes. README updated.\nProgress scenario: not possible with existing driver steps, so none was added. The original shows the card only after an operation has run 500 ms and while it is still running, and no step can slow or hold a copy. The Swift write coordinator is also not wired yet (P5-08). The README says this.\n`scripts/ci.sh` passes (2082 tests). No window runs.",
       "findings": [],
       "fixes": [],
       "blockers": [],
       "carryOver": [],
       "sharedFileRequests": [],
-      "deviations": []
+      "deviations": [
+        "Edited Tests/FTAppKitTests/Automation/AutomationStepsTests.swift, which is not listed under 'You own'. Its tier checks failed with the new tags (scenarios: wp/checkpoint/wave/final or wave/final; flows: checkpoint/wave/final or wave/final). ci.sh needs that change.",
+        "Checkpoint acceptance flows are not tagged wp, so a plain `--tier wp` run now runs only the 16 checkpoint scenarios.",
+        "The progress-card scenario was not built (see summary)."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P0-18 gate (detached at port/P0-18, tip d242fbd): scripts/ci.sh first run FAILED (exit 1): build PASS, test FAIL (1 issue in 608 tests), format PASS. Failure was DiskImageSelfTests.mountsWritesAndDetaches(kind: .fat32), LargeFileTests.swift:27 \"!FileManager.default.fileExists(atPath: path)\". Reran once with --scope DiskImageSelfTests (suite-level, slightly wider than a single-test filter): all 5 cases passed, exit 0. Classified as flaky, treated as pass. Gate verdict: PASS (with one flaky). Nothing changed or committed; worktree clean and detached.",
+        "flaky": [
+          "DiskImageSelfTests/mountsWritesAndDetaches(kind:) (.fat32 case): failed in the full run at LargeFileTests.swift:27 with a leftover-path assertion; passed on rerun in isolation."
+        ],
+        "failures": [
+          "First full run: scripts/ci.sh exit 1. test step: 'Test mountsWritesAndDetaches(kind:) recorded an issue with 1 argument kind → .fat32 at LargeFileTests.swift:27:9: Expectation failed: !FileManager.default.fileExists(atPath: path)'. Suite DiskImageSelfTests failed with 1 issue. Summary: 'tests: 1474 in passing runs, 609 in failing runs'. Full log: build/logs/test.log."
+        ]
+      }
     },
     "P0-19": {
       "title": "Near-duplicate tests: FTFoundation, file system, file operations",
