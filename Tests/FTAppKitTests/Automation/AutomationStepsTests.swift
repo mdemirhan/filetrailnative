@@ -6,6 +6,11 @@
 
     @testable import FTAppKit
 
+    /// A window that says it shows, never put on screen.
+    private final class ShownWindow: NSWindow {
+        override var isVisible: Bool { true }
+    }
+
     /// The scenario steps P0-10 added, the checked-in scenarios and elements, and the pieces of the runner
     /// that work without a running app.
     @Suite struct AutomationStepsTests {
@@ -326,13 +331,12 @@
 
         @Test @MainActor func findsElementsByNameTextAndPlace() throws {
             _ = NSApplication.shared
-            let window = NSWindow(
+            // The finder looks only in windows that show: this one says it does, and stays off screen.
+            let window = ShownWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 400, height: 300), styleMask: [.borderless],
                 backing: .buffered, defer: true)
             let content = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
             window.contentView = content
-            window.orderBack(nil)
-            defer { window.orderOut(nil) }
             for (index, name) in ["b.txt", "a.txt"].enumerated() {
                 let row = NSTextField(labelWithString: name)
                 row.frame = NSRect(x: 10, y: 250 - 30 * Double(index), width: 100, height: 20)

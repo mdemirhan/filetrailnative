@@ -1,5 +1,6 @@
 // Ports the UI cases of components/ItemContextMenu.test.tsx and the menu, Open With and notice cases of
-// App.menusAndTree.test.tsx, App.openItems.test.tsx and App.windows.test.tsx on a real explorer window
+// App.menusAndTree.test.tsx, App.openItems.test.tsx and App.windows.test.tsx on an explorer window that is never
+// shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -55,9 +56,9 @@ final class NoticeSpy: ActionNoticePresenting {
     }
 }
 
-extension ExplorerWindowGUITests {
+extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct ContextMenuGUITests {
+    @Suite struct ContextMenuTests {
         func opened(_ harness: ExplorerHarness) async throws -> MainWindowController {
             let tab = try await harness.open()
             #expect(await waitUntil { tab.content.entries.count >= 4 })
@@ -77,25 +78,11 @@ extension ExplorerWindowGUITests {
             menu?.items.first { $0.title == title }
         }
 
-        // T-eb3ba6a5 T-0db05884 F-808 F-810 F-815
-        @Test func aFilesMenuListsOnlyWhatCanBeDoneToIt() async throws {
-            let harness = try ExplorerHarness()
-            let tab = try await opened(harness)
-            let menu = tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")])
-            // Edit names the editor; a file has no Paste, New Folder, New Tab, Calculate Size or Package Contents.
-            let editor = tab.preferences.defaultTextEditor.appName
-            #expect(
-                titles(menu) == [
-                    "Open", "Open With", "Quick Look", "Edit in \(editor)", "-", "Show Info", "-", "Cut", "Copy",
-                    "Copy Path", "-", "Rename", "Duplicate", "Move to…", "-", "Open in Terminal", "Show in Finder", "-",
-                    "Move to Trash",
-                ])
-            await harness.close()
-        }
-
         // T-4b2ec48e T-4ace0132 F-812 F-814
+        // covered-by-feature F-808 F-810 F-815 T-eb3ba6a5 T-0db05884 (a file's items, Edit naming the editor and no
+        // Paste for a file: FTFoundation's ContextMenuGoldenTests and ContextMenuRulesTests)
         @Test func aFolderHasNewTabsAndPasteAndTheBackgroundHasTheFolderOnScreen() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let folder = tab.contextMenus.contentMenu(for: [try entry(tab, "Alpha")])
             for title in ["Open in New Tab", "Open in New Window", "Calculate Size", "New Folder", "Add to Favorites"] {
@@ -119,7 +106,7 @@ extension ExplorerWindowGUITests {
 
         // T-42ce73e3 F-814
         @Test func viewAsTicksTheCurrentViewAndSortByTheCurrentOrderAndPickingOneApplies() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let menu = tab.contextMenus.contentMenu(for: nil)
             let viewAs = try #require(item(menu, "View As")?.submenu)
@@ -140,7 +127,7 @@ extension ExplorerWindowGUITests {
 
         // F-808: 14 pt line icons, destructive items red
         @Test func everyItemHasAFourteenPointTemplateIconAndTheTrashItemIsRed() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let menu = tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")])
             for entry in menu?.items ?? [] where !entry.isSeparatorItem {
@@ -157,7 +144,7 @@ extension ExplorerWindowGUITests {
 
         // F-809: the shortcut is shown only where the key would do the same now
         @Test func theShortcutsShownAreTheKeysThatWouldDoTheSameNow() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let file = tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")])
             #expect(
@@ -179,7 +166,7 @@ extension ExplorerWindowGUITests {
 
         // T-4b1b713a T-994f6c5c T-947ce6a8 T-948f8ad2 F-808 F-851
         @Test func openWithListsTheDefaultPinnedAndOtherAppsAndOptionTurnsItIntoAlwaysOpenWith() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let menu = tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")])
             let session = try #require(tab.contextMenus.current)
@@ -224,7 +211,7 @@ extension ExplorerWindowGUITests {
 
         // T-9c23e56d T-d76e20b7 T-c63fddc6
         @Test func tooManyItemsAndAFailedLaunchAreToldInANotice() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let notices = NoticeSpy()
             tab.contextMenus.notices = notices
@@ -251,7 +238,7 @@ extension ExplorerWindowGUITests {
 
         // T-e4395190 T-f34a5b66 T-ef662069 F-696
         @Test func terminalFinderAndCopyPathAreDoneThroughTheSystem() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let spy = OpenSpy()
             tab.contextMenus.opener = spy.opener
@@ -266,7 +253,9 @@ extension ExplorerWindowGUITests {
             #expect(spy.all.contains { $0.hasPrefix("open -a ") && $0.hasSuffix(harness.folder.path) })
 
             // Copy Path: shell-quoted only where there is whitespace, one to a line.
-            let pasteboard = NSPasteboard.general
+            let pasteboard = NSPasteboard.withUniqueName()
+            defer { pasteboard.releaseGlobally() }
+            tab.contextMenus.pasteboard = pasteboard
             tab.contextMenus.copyPath([note.path, "/a b/c.txt"])
             #expect(pasteboard.string(forType: .string) == "\(note.path)\n'/a b/c.txt'")
             #expect(tab.notifications?.toasts.entries.last?.title == "Copied paths")
@@ -275,32 +264,26 @@ extension ExplorerWindowGUITests {
         }
 
         // F-810: the menu holds the folder's reloads while it is open (B-VIEW-187)
+        // T-f0d963ef B-VIEW-182: menus are NSMenus, which the system tracks and ends on a click elsewhere
+        // (didEndTracking); the session ends with it.
+        // N/A T-ebac0af8 T-5b070983 T-9b853d57 T-4d8c727e T-49096868 T-99c41da7 T-b78847a6 (menuPlacement.ts): NSMenu
+        // places itself, keeps itself inside the screen and flips its submenus at an edge.
+        // N/A T-ab4c17e9 T-2a203391 T-85ff21c7 T-510a7d55 (the keyboard, type-select and a disabled row's hover are
+        // NSMenu's).
         @Test func changesOutsideWaitWhileAMenuIsOpen() async throws {
-            let harness = try ExplorerHarness()
-            let tab = try await opened(harness)
-            let menu = tab.contextMenus.contentMenu(for: nil)
-            #expect(tab.folderChangesHeld == false)
-            menu?.delegate?.menuWillOpen?(try #require(menu))
-            #expect(tab.folderChangesHeld)
-            menu?.delegate?.menuDidClose?(try #require(menu))
-            #expect(tab.folderChangesHeld == false)
-            await harness.close()
-        }
-
-        // T-f0d963ef B-VIEW-182; N/A T-ebac0af8 T-5b070983 T-9b853d57 T-4d8c727e T-49096868 T-99c41da7 T-b78847a6
-        // (menuPlacement.ts): NSMenu places itself, keeps itself inside the screen and flips its submenus at an edge.
-        // N/A T-ab4c17e9 T-2a203391 T-85ff21c7 T-510a7d55 (the keyboard, type-select and a disabled row's hover are NSMenu's).
-        @Test func aNativeMenuClosesWhenAnotherWindowOrAppIsClickedAsTheSystemDoes() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let menu = try #require(tab.contextMenus.contentMenu(for: nil))
-            // Menus are NSMenus: the system tracks them and ends them on a click elsewhere (didEndTracking).
             #expect(menu.delegate is ContextMenuSession)
             #expect(tab.contextMenus.current != nil)
+            #expect(tab.folderChangesHeld == false)
             menu.delegate?.menuWillOpen?(menu)
+            #expect(tab.folderChangesHeld)
             menu.delegate?.menuDidClose?(menu)
+            #expect(tab.folderChangesHeld == false)
             #expect(tab.contextMenus.current == nil)
             await harness.close()
         }
+
     }
 }

@@ -247,7 +247,7 @@ import Testing
         #expect(opened == 1)
     }
 
-    // T-6ec0c9ff F-594
+    // T-6ec0c9ff F-594 B-DLG-247
     @Test func opensHelpsWindowFromAnyWindowOnTheKeyboardShortcutsPageForThatItem() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)

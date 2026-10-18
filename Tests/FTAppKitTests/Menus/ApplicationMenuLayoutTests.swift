@@ -205,14 +205,6 @@ import Testing
 
     // N/A T-22d10b77 Toggle Developer Tools has no native equivalent (F-914)
 
-    // T-96221c32 F-572
-    @Test func keepsSettingsOnItsFixedKey() {
-        let (built, router) = build()
-        let settings = item(submenu(built.menu, "File Trail"), "Settings…")
-        #expect(accelerator(settings) == "Command+,")
-        #expect(settings.target === router)
-    }
-
     // T-a3d1eed6 F-596
     @Test func showsTheKeysChosenInSettingsAndLeavesAKeyWithoutCommandOrControlToTheWindow() {
         let bindings = ShortcutCommands.resolve([

@@ -1,5 +1,5 @@
 // Review round 1 of P5-03: rows follow the pane's width, a size bar is cut at its cell, an outside change keeps the
-// details shown, and the folder watch's changed items reach the reload
+// details shown, and the folder watch's changed items reach the reload, on an explorer window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -8,21 +8,15 @@ import Testing
 
 @testable import FTAppKit
 
-@MainActor
-private func reviewViews(_ id: String, in root: NSView?) -> [NSView] {
-    guard let root else { return [] }
-    var found: [NSView] = root.accessibilityIdentifier() == id && !root.isHidden ? [root] : []
-    for child in root.subviews where !child.isHidden { found += reviewViews(id, in: child) }
-    return found
-}
-
-extension ExplorerWindowGUITests {
+extension ExplorerWindowlessTests {
     @MainActor @Suite struct ReviewRowWidthTests {
+        // covered-by-feature F-765 T-bc6fc27c B-VIEW-044 B-VIEW-045 (a narrow pane drops columns from the right and
+        // keeps the saved widths: FTFoundation's DetailsLayoutTests; the rows follow the pane here)
         @Test func rowsFollowAWiderPane() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.perform(.viewAsDetails)
-            _ = await waitUntil { !reviewViews("list.row", in: tab.window?.contentView).isEmpty }
+            _ = await waitUntil { !listViews("list.row", in: tab.window?.contentView).isEmpty }
             harness.layout(tab)
             let window = try #require(tab.window)
             window.setContentSize(NSSize(width: window.contentLayoutRect.width + 400, height: 600))
@@ -30,21 +24,16 @@ extension ExplorerWindowGUITests {
             try? await Task.sleep(for: .milliseconds(300))
             harness.layout(tab)
             let pane = tab.content.contentShell.convert(tab.content.contentShell.bounds, to: nil)
-            let all = reviewViews("list.row", in: tab.window?.contentView)
+            let all = listViews("list.row", in: tab.window?.contentView)
             let bar = try #require(all.first)
             let frame = bar.convert(bar.bounds, to: nil)
             #expect(pane.maxX - frame.maxX == 10)
             await harness.close()
         }
 
-        // The Size cell cuts its bar at the cell's edge (`.details-row > span { overflow: hidden }`).
-        @Test func theSizeCellClipsItsBar() {
-            #expect(SizeCellView().clipsToBounds)
-        }
-
         // The folder watch's changed items reach the reload, not "anything may have changed".
         @Test func aFolderWatchChangeKeepsItsChangedPaths() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             tab.folderChangesHeld = true
             harness.windows.folderChanged(
@@ -53,6 +42,13 @@ extension ExplorerWindowGUITests {
             tab.folderChangesHeld = false
             await harness.close()
         }
+    }
+}
+
+struct ReviewSizeCellTests {
+    // The Size cell cuts its bar at the cell's edge (`.details-row > span { overflow: hidden }`).
+    @MainActor @Test func theSizeCellClipsItsBar() {
+        #expect(SizeCellView().clipsToBounds)
     }
 }
 
