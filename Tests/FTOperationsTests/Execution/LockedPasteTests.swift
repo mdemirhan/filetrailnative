@@ -108,8 +108,9 @@ struct LockedPasteTests {
         }
     }
 
-    // Across disks a copy can't be a clone, so a large file takes long enough to stop. On a busy machine the copy
-    // may finish before the stop is seen; that run proves nothing, so it is tried again.
+    // Across disks a copy can't be a clone, so a large file takes long enough to stop. 32 MB is enough (the original
+    // copied 150 MB): 8 MB was still stopped in each of 80 runs, four at a time. On a busy machine the copy may
+    // finish before the stop is seen; that run proves nothing, so it is tried again.
     // T-97d6fd58 F-257 F-274
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func stopsALargeCopyAtOnceAndLeavesNothingHalfWritten() async throws {
@@ -117,7 +118,7 @@ struct LockedPasteTests {
             try await DiskImage.withSharedVolume(.apfs) { volume in
                 let source = root.path + "/src/big.bin"
                 try Disk.makeDirectories(root.path + "/src")
-                try NativeTestFiles.makeFile(source, megabytes: 150)
+                try NativeTestFiles.makeFile(source, megabytes: 32)
                 let destination = volume.path + "/big.bin"
                 var status: CopyPasteOperationStatus? = .completed
                 for _ in 0..<3 where status == .completed {
