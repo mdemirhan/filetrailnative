@@ -181,9 +181,17 @@ final class AppWriteOperations {
 
     /// Stops the running operation (not Empty Trash) and waits up to 15 s; the retries and the folder sizes stop.
     func shutDown() async {
+        await Self.stopBackgroundWork(coordinator, retry: retry, folderSizes: FolderSizeService.shared.jobs)
+    }
+
+    /// What quitting stops, so that nothing keeps the process alive with no window: the recovery retries, the
+    /// running operation (waited for up to 15 s), and the folder measurements.
+    static func stopBackgroundWork(
+        _ coordinator: WriteCoordinator, retry: RecoveryRetry?, folderSizes: FolderSizeJobs
+    ) async {
         retry?.stop()
         await coordinator.shutDown()
-        FolderSizeService.shared.jobs.stopAll()
+        folderSizes.stopAll()
     }
 }
 
