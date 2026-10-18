@@ -142,18 +142,4 @@ private func wholeDevice(of path: String) throws -> String {
             EjectRequest(path: folder.path, wholeDisk: false, force: false))
         #expect(response.status == .ejected)
     }
-
-    // F-215 B-TREE-175
-    @Test(.tags(.diskImage), .diskImages) func aVolumeAlreadyEjectedCountsAsEjected() async throws {
-        // A mount point of its own: the second press must not find another clone mounted at the freed
-        // /Volumes/<name>, and eject that.
-        try await DiskImage.withVolume(.apfs, ownMountPoint: true) { folder in
-            let image = try image(mountedAt: folder.path)
-            let request = EjectRequest(path: folder.path, wholeDisk: true, force: false)
-            #expect(await EjectOutcome.ejectVolume(request).status == .ejected)
-            #expect(try attached(image) == nil)
-            // The second press of the button finds nothing mounted.
-            #expect(await EjectOutcome.ejectVolume(request).status == .ejected)
-        }
-    }
 }

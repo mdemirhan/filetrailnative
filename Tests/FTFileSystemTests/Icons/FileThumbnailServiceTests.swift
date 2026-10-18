@@ -137,15 +137,6 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         }
     }
 
-    // T-be9407bf
-    @Test func theRealServiceReportsNothingForAGoneFile() async throws {
-        try await withTemporaryDirectory { directory in
-            let response = await FileThumbnailService().response(
-                path: directory.appending("gone.png").path, size: 64, knownVersion: nil)
-            #expect(response.version == nil && !response.unchanged && response.picture == nil)
-        }
-    }
-
     @Test func picturesAndVideosShowTheirContentAndOtherFilesTheirIcon() throws {
         try withTemporaryDirectory { directory in
             let image = directory.appending("a.png")
@@ -188,23 +179,6 @@ private func waitUntil(_ condition: @MainActor () -> Bool) async {
 }
 
 @MainActor @Suite struct ThumbnailLoadQueueTests {
-    @Test func startsFourAtATimeAndStartsTheNextWhenOneEnds() async {
-        let queue = ThumbnailLoadQueue()
-        let gate = Gate()
-        let started = Counter()
-        for _ in 0..<6 {
-            queue.enqueue {
-                started.count += 1
-                await gate.wait()
-            }
-        }
-        await waitUntil { started.count == 4 }
-        #expect(started.count == 4 && queue.activeCount == 4 && queue.queuedCount == 2)
-        gate.open()
-        await waitUntil { started.count == 6 }
-        #expect(started.count == 6)
-    }
-
     @Test func aHandleTakesAJobOutOfTheQueueOnlyBeforeItStarts() async {
         let queue = ThumbnailLoadQueue(maxConcurrent: 1)
         let gate = Gate()

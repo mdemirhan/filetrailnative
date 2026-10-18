@@ -96,9 +96,5 @@ import Testing
         #expect(list.first?.text.contains("MIT License") == true)
         #expect(list.first?.text.contains("Apache License") == true)
     }
-
     // N/A T-725c5857 T-267cd409 T-6a3ab821 T-cf26e7f5 T-c77dd85a Chromium's notices are not in the native bundle
-    @Test func hasNoSeparateNotices() {
-        #expect(true)
-    }
 }
