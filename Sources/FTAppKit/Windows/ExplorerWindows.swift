@@ -84,6 +84,10 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         if !NotificationOverlay.push(.info, title: notice.title, in: window) { NSSound.beep() }
     }
     var log: (String) -> Void = { _ in }
+    /// An explorer window closed, and a tab got the keyboard: the file operations follow (P3-05's
+    /// `AppWriteOperations`).
+    var onExplorerWindowClosed: (ExplorerTabGroup) -> Void = { _ in }
+    var onTabFocused: (MainWindowController) -> Void = { _ in }
     /// Off in tests that check a window without putting it on screen: its tabs are made and read, never shown.
     var presentsWindows = true
 
@@ -129,8 +133,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     /// A file operation's progress, from whichever window ran it, as the original's `onWriteOperationProgress` reaches
     /// every window: once one that renamed or moved folders has ended, every window's tabs follow them (B-VIEW-172).
-    /// The write coordinator sends every progress event here. Until it exists (P3-05; FTOperations runs no file
-    /// operation yet) nothing in the app renames or moves an item, so nothing calls this.
+    /// The write coordinator sends every progress event here (`AppWriteOperations`).
     func writeOperationProgress(_ event: WriteOperationProgress) {
         itemsMoved(ExplorerTabs.followedMoves(event))
     }
@@ -189,6 +192,9 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     func handle(windowID: Int) -> (any ExplorerWindowHandle)? {
         tab(windowID: windowID)
     }
+
+    /// The explorer windows open, front tab groups not yet closed.
+    var liveGroups: [ExplorerTabGroup] { groups.filter { !$0.isDestroyed } }
 
     /// Every open tab, window by window.
     var allTabs: [MainWindowController] { groups.flatMap(\.tabs) }
@@ -317,6 +323,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     func groupClosed(_ group: ExplorerTabGroup) {
         groups.removeAll { $0 === group }
+        // An operation it ran goes on in the window in front, or stops (P3-05).
+        onExplorerWindowClosed(group)
     }
 
     /// A tab closed: its folder is no longer watched, and the menu forgets what it said.
@@ -327,6 +335,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     /// The tab got the keyboard: a change its folder's watch could not see is looked for.
     func tabFocused(_ tab: MainWindowController) {
+        onTabFocused(tab)
         folderWatches?.checkForMissedChanges(windowID: tab.windowID)
         tabNavigated(tab)
     }

@@ -1,0 +1,26 @@
+{
+  "name": "167-cut-paste-moves-into-folder",
+  "description": "TripCard.jsx cut with ⌘X in app/src/components and pasted with ⌘V into app/src/lib: the move takes it out of the old folder and it arrives in the new one",
+  "features": ["F-247","F-289"],
+  "behaviors": ["B-CLIP-140","B-CLIP-145"],
+  "tier": ["wave","final"],
+  "setup": {"scratch":true},
+  "root": "lighthouse/Lighthouse",
+  "now": "2026-10-13T14:38:00",
+  "steps": [
+    {"step":"window","width":1200,"height":760},
+    {"step":"prefs","prefs":{"theme":"light","accent":"#007aff","zoomPercent":100,"density":"comfortable","viewMode":"details","sortBy":"name","sortDirection":"asc","favoritesPlacement":"separate"}},
+    {"step":"open","path":"app/src/components"},
+    {"step":"select","names":["TripCard.jsx"]},
+    {"step":"key","key":"x","modifiers":["cmd"]},
+    {"step":"open","path":"app/src/lib"},
+    {"step":"key","key":"v","modifiers":["cmd"]},
+    {"step":"wait","ms":1500},
+    {"step":"expect","element":{"name":"list row","text":"TripCard.jsx"},"visible":true},
+    {"step":"open","path":"app/src/components"},
+    {"step":"wait","ms":500},
+    {"step":"expect","element":{"name":"list row","text":"TripCard.jsx"},"count":0},
+    {"step":"snapshot","name":"main"},
+    {"step":"geometry","name":"main"}
+  ]
+}

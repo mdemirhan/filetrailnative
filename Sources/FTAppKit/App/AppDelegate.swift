@@ -30,6 +30,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Quit and close while busy. P3-05's write coordinator fills `quit.hooks.activeOperation` and `shutDown`.
     public let quit = QuitCoordinator()
+    /// The file operations: the crash journal's recovery, the write coordinator, each window's side (P3-05).
+    private(set) var writeOperations: AppWriteOperations?
+    private var userDataDirectory: URL?
 
     /// The explorer windows, made once the state store is open.
     private(set) var explorerWindows: ExplorerWindows!
@@ -86,6 +89,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // The windows open as they were at quit; the folder File Trail was launched with goes to the one in front.
         explorerWindows.openStartupWindows(folder: requested == nil && start == home ? nil : start.path)
+        writeOperations?.showStartupNotices()
         // Disk images File Trail was launched to open go to the window in front.
         openFiles.startupWindowsOpened()
         NSApp.activate()
@@ -141,6 +145,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         let userData =
             Self.value(after: "--user-data-dir", in: arguments).map { URL(fileURLWithPath: $0) }
             ?? (driven ? scratch : AppStatePaths.userDataDirectory())
+        userDataDirectory = userData
         let logger = AppLogger(filePath: AppStatePaths.appLog(in: userData).path)
         self.logger = logger
         logger.info(
@@ -189,7 +194,14 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         self.diskImages = diskImages
         windows.mountDiskImage = { await diskImages.open($0) }
 
-        quit.hooks.activeOperation = { nil }
+        // The journal's recovery runs before any window can write (P3-05).
+        let writes = AppWriteOperations(
+            userData: userDataDirectory ?? AppStatePaths.userDataDirectory(), directoryService: directoryService,
+            windows: windows, log: { [weak logger] message in logger?.info(.text(message)) })
+        writeOperations = writes
+        windows.onExplorerWindowClosed = { [weak writes] group in writes?.explorerWindowClosed(group) }
+        windows.onTabFocused = { [weak writes] tab in writes?.tabCameToFront(tab) }
+        quit.hooks.activeOperation = { [weak writes] in writes?.busyKind }
         quit.hooks.anyWindowOpen = { NSApp.windows.contains { $0.isVisible || $0.isMiniaturized } }
         quit.hooks.frontWindow = { [weak self] in self?.host.windows.front?.window }
         quit.hooks.recordAllBounds = { [weak windows] in windows?.controller.recordAllBounds() }
@@ -202,6 +214,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         quit.hooks.flushStore = { [weak self] in self?.store?.flush() }
         quit.hooks.shutDown = { [weak self] in
+            // The running operation stops (not Empty Trash), waited for up to 15 s; the folder sizes stop measuring.
+            await self?.writeOperations?.shutDown()
             self?.folderWatches?.stopAll()
             self?.logger?.info("[filetrail] app stop", .context(["phase": .string("before-quit")]))
             self?.logger?.flush()
