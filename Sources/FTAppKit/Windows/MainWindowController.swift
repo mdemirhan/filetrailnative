@@ -1027,6 +1027,8 @@ extension MainWindowController: ExplorerWindowHandle {
         if customizer != nil, MenuCommandRouter.nativeEditSelector(command) == nil, command != .customizeToolbar {
             return
         }
+        // Cut, Copy, Paste and the file operations go to the write coordinator (WriteOperations/).
+        if customizer == nil, performWriteCommand(command) { return }
         let fileManager = FileManager.default
         func place(_ url: URL?) {
             if let url { go(to: url) }
@@ -1152,8 +1154,9 @@ extension MainWindowController: ExplorerWindowContext {
                 selectedTreeTargetKind: sidebar.selectedTreeTargetKind),
             currentPath: folder.path, selectedPathsInViewOrder: selectedPaths, activeContentEntries: commandEntries,
             selectedTreeTargetPath: sidebar.selectedTreeTargetPath, isSearchMode: searchRootPath != nil,
-            canGoBack: canGoBack, canGoForward: canGoForward, tabCount: group?.tabs.count ?? 1,
-            trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home, ejectTargetPath: ejectTargetPath)
+            writeOperationLocked: isWriteLocked, canGoBack: canGoBack, canGoForward: canGoForward,
+            tabCount: group?.tabs.count ?? 1, trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
+            ejectTargetPath: ejectTargetPath)
         return CommandAvailability.canRun(command, context)
     }
 
