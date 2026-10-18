@@ -42,7 +42,8 @@ extension MainWindowController {
         case .duplicateSelection:
             let paths = selectedPaths
             guard !paths.isEmpty, !actions.refuseWhileBusy(.operation(.duplicate)) else { return true }
-            Task { await actions.duplicate(paths) }
+            let destination = folder.path
+            Task { await actions.duplicate(paths, in: destination) }
         case .moveSelection:
             // Move To says so as soon as pressed, not after a folder was chosen (B-CLIP-107).
             let paths = selectedPaths

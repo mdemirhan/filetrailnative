@@ -95,12 +95,11 @@ final class WindowWriteActions {
         await copyLike(mode: .cut, sources: sources, destination: destination, action: .moveTo)
     }
 
-    /// Duplicate: a copy of each item next to it.
+    /// Duplicate (`startDuplicatePaths`): a copy of each item in `folder`, the folder on screen.
     @discardableResult
-    func duplicate(_ sources: [String]) async -> CopyLikeOutcome {
-        guard let first = sources.first else { return .cancelled }
-        return await copyLike(
-            mode: .copy, sources: sources, destination: NodePath.dirname(first), action: .duplicate)
+    func duplicate(_ sources: [String], in folder: String) async -> CopyLikeOutcome {
+        guard !sources.isEmpty, !folder.isEmpty else { return .cancelled }
+        return await copyLike(mode: .copy, sources: sources, destination: folder, action: .duplicate)
     }
 
     /// `analyzeCopyLikeRequest`: checks what a copy-like write would do; with nothing to review, starts it with the
@@ -128,10 +127,14 @@ final class WindowWriteActions {
             }
             guard update.status == .complete, let report = update.report else {
                 session.applyCard(nil)
-                return .error(message: update.error ?? Self.preparationFailure(action))
+                let message = update.error ?? Self.preparationFailure(action)
+                dialogs.showRefusal(.operation(action), message: message, in: window)
+                return .error(message: message)
             }
             if let issue = report.issues.first {
                 session.applyCard(nil)
+                // P5-08 leaves out the items the issues are about and goes on with the rest.
+                dialogs.showRefusal(.operation(action), message: issue.message, in: window)
                 return .blocked(message: issue.message)
             }
             if Self.hasConflicts(report) {
