@@ -176,6 +176,20 @@ def cleanup(run_id: str | None, merged: list[str]) -> list[str]:
                 shutil.rmtree(wt, ignore_errors=True)
             done.append(wt.name)
         git("worktree", "prune")
+        # Worktree isolation also leaves a "worktree-<name>" base branch per agent; main already contains them.
+        for name in git(
+            "branch", "--list", f"worktree-{run_id}-*", "--format=%(refname:short)"
+        ).split():
+            if (
+                subprocess.run(
+                    ["git", "merge-base", "--is-ancestor", name, "main"],
+                    cwd=ROOT,
+                    check=False,
+                ).returncode
+                == 0
+            ):
+                git("branch", "-D", name, check=False)
+                done.append(name)
     for wp_id in merged:
         if git("branch", "--list", f"port/{wp_id}"):
             git("branch", "-D", f"port/{wp_id}", check=False)
