@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T13:20:00+00:00",
+  "updatedAt": "2026-10-18T13:20:13+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -704,6 +704,38 @@
       "startedAt": "2026-10-14T17:51:40+00:00",
       "endedAt": "2026-10-14T19:01:28+00:00",
       "note": "Stopped by the user while the P5-05 builder was working; port/P5-05 keeps its 6 wip commits, and a rerun continues from them."
+    },
+    "W2-P0-17": {
+      "wps": [
+        "P0-17"
+      ],
+      "status": "running",
+      "runId": null,
+      "startedAt": "2026-10-18T13:20:13+00:00"
+    },
+    "W2-P0-18": {
+      "wps": [
+        "P0-18"
+      ],
+      "status": "running",
+      "runId": null,
+      "startedAt": "2026-10-18T13:20:13+00:00"
+    },
+    "W2-P0-19": {
+      "wps": [
+        "P0-19"
+      ],
+      "status": "running",
+      "runId": null,
+      "startedAt": "2026-10-18T13:20:13+00:00"
+    },
+    "W2-P3-05": {
+      "wps": [
+        "P3-05"
+      ],
+      "status": "running",
+      "runId": null,
+      "startedAt": "2026-10-18T13:20:13+00:00"
     }
   },
   "wps": {
@@ -1664,7 +1696,7 @@
       "depends": [
         "P3-04"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P3-05",
       "headSha": null,
       "attempts": 0,
@@ -3090,7 +3122,7 @@
       "risk": "medium",
       "model": "opus",
       "depends": [],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-17",
       "headSha": null,
       "attempts": 0,
@@ -3115,7 +3147,7 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-18",
       "headSha": null,
       "attempts": 0,
@@ -3140,7 +3172,7 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-19",
       "headSha": null,
       "attempts": 0,
