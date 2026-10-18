@@ -652,8 +652,8 @@ B-INFO-188	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHid
 B-INFO-189	INFO	A8, A11	squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths, widensAPaneFromTheKeyboardAndKeepsThatWidth		partial
 B-INFO-190	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, hidesTheFolderTreeGivingItsRoomToTheListAndTheToolbar	52-tree-hidden	partial
 B-INFO-191	INFO	A8, A11			todo
-B-INFO-192	INFO	A8, A11	aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp		done
-B-INFO-193	INFO	A8, A11	aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp		done
+B-INFO-192	INFO	A8, A11			todo
+B-INFO-193	INFO	A8, A11			todo
 B-INFO-194	INFO	A8, A11			todo
 B-INFO-195	INFO	A8, A11			todo
 B-INFO-196	INFO	A8, A11	pendingValuesKeepTheirRowsWithADash		done
@@ -1441,7 +1441,7 @@ B-TREE-171	TREE	A2, A16	asksAboutTheOtherVolumesOfTheDiskThenEjectsAllOrOnlyThis
 B-TREE-172	TREE	A2, A16	ejectsADiskOfItsOwnWithItsWholeDiskAtOnce, ignoresARequestForADiskAlreadyBeingEjectedAndReleasesIt		done
 B-TREE-173	TREE	A2, A16	asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced, namesTheVolumeInUseWhichMayBeAnotherOnTheSameDisk, saysWhichDiskIsInUseAndCallsAServerAVolume		done
 B-TREE-174	TREE	A2, A16	asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced		done
-B-TREE-175	TREE	A2, A16	aVolumeAlreadyEjectedCountsAsEjected, countsAVolumeAlreadyGoneAsEjected, givesAnyOtherFailureWithDiskArbitrationsSentence		done
+B-TREE-175	TREE	A2, A16	countsAVolumeAlreadyGoneAsEjected, givesAnyOtherFailureWithDiskArbitrationsSentence		done
 B-TREE-176	TREE	A2, A16	namesTheDiskAskedForWhenTheDiskItselfFailedWithDiskArbitrationsReason, otherFailureWording, tellsOfAnyOtherFailureInANotice		done
 B-TREE-177	TREE	A2, A16			todo
 B-TREE-178	TREE	A2, A16	sendsATabOnAnUnmountedDiskHomeKeepingItsHistoryElsewhere		done
