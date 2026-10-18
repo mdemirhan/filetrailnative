@@ -384,7 +384,8 @@ public final class WriteCoordinator {
         let early: CopyPasteProgressEvent?
         do {
             handle = try writeService.startCopyPaste(
-                CopyPasteExecutionRequest(analysisId: start.analysisId, policy: start.policy, overrides: start.overrides),
+                CopyPasteExecutionRequest(
+                    analysisId: start.analysisId, policy: start.policy, overrides: start.overrides),
                 keep: analysesOfOtherWindows(window))
             early = eventsBeforeStart?[handle.operationId]
             eventsBeforeStart = nil
@@ -528,7 +529,8 @@ public final class WriteCoordinator {
         // A stopped copy ends within moments; only a disk that stops answering (a network share gone away) could hold
         // quitting up, and then it goes ahead anyway.
         if !emptyingTrash, await idleOrTimedOut(maxWaitMs) {
-            options.logError("[filetrail] quitting without waiting longer for an operation to stop (\(operationId ?? ""))", nil)
+            options.logError(
+                "[filetrail] quitting without waiting longer for an operation to stop (\(operationId ?? ""))", nil)
         }
         unsubscribe?()
         unsubscribe = nil

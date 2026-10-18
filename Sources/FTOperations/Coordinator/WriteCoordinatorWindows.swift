@@ -128,6 +128,22 @@ extension WriteCoordinator {
         }
     }
 
+    /// `sendToEachWindow`: sends a message to each window. One that can't be sent to (it is going away) doesn't keep
+    /// the others from hearing it: a window that misses the end of an operation would refuse to start another until
+    /// it asks.
+    public static func sendToEachWindow(
+        _ windows: [any WriteOperationWindow], _ message: WriteOperationMessage,
+        logError: (_ message: String, _ error: (any Error)?) -> Void
+    ) {
+        for window in windows where !window.isClosed {
+            do {
+                try window.receive(message)
+            } catch {
+                logError("[filetrail] couldn't send a message to a window", error)
+            }
+        }
+    }
+
     // MARK: Analyses and their windows
 
     /// `watchAnalysisOwner`: an analysis whose window closed is cancelled: nobody can answer its review, and one
