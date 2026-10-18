@@ -16,9 +16,20 @@ public protocol CoordinatorWriteService: AnyObject, Sendable {
         _ operationId: String, conflictId: String, action: CopyPasteChoice, applyToRemaining: Bool
     ) -> Bool
     func cancelOperation(_ operationId: String) -> Bool
+    /// Whether the service has let go of an operation that told its end: it tells it from inside the paste, and lets
+    /// go of its own slot just after.
+    func hasReleased(_ operationId: String) -> Bool
 }
 
-extension WriteService: CoordinatorWriteService {}
+extension CoordinatorWriteService {
+    public func hasReleased(_ operationId: String) -> Bool { true }
+}
+
+extension WriteService: CoordinatorWriteService {
+    public func hasReleased(_ operationId: String) -> Bool {
+        state.withLock { $0.activeOperationId != operationId }
+    }
+}
 
 /// A window an operation answers to (`WriteOperationSender`, the original's WebContents): its progress, its
 /// questions and its end go there. The app tells the coordinator when one closes (`windowClosed`).

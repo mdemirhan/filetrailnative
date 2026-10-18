@@ -81,9 +81,21 @@ public final class WriteCoordinator {
         self.options = options
         // The write service tells from the thread its paste runs on; the coordinator hears it on the main actor, in
         // the order it was told. What it tells on the main thread (a paste's "queued", as it starts) is heard at once.
-        unsubscribe = writeService.subscribe { [weak self] event in
+        // An end is heard once the service has let go of the operation, as the original's is (its finally runs before
+        // the window hears the end): a window reacting to it can start the next write.
+        unsubscribe = writeService.subscribe { [weak self, weak writeService] event in
             if Thread.isMainThread {
                 MainActor.assumeIsolated { self?.writeServiceEvent(event) }
+            } else if event.status.isTerminal, let writeService, !writeService.hasReleased(event.operationId) {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    // Microseconds; a second at most.
+                    var waited = 0
+                    while waited < 20_000, !writeService.hasReleased(event.operationId) {
+                        usleep(50)
+                        waited += 1
+                    }
+                    DispatchQueue.main.async { MainActor.assumeIsolated { self?.writeServiceEvent(event) } }
+                }
             } else {
                 DispatchQueue.main.async { MainActor.assumeIsolated { self?.writeServiceEvent(event) } }
             }
