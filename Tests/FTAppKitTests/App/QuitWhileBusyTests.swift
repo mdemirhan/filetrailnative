@@ -217,23 +217,4 @@ import Testing
         #expect(run.order.filter { $0 == "exit" }.count == 1)
     }
 
-    // T-0e9eff11 F-239 (the question for closing the last window; the hold on the window is P4-02's)
-    @Test func asksBeforeClosingTheLastWindowStopsACopyAndKeepsWorkingWhenToldTo() async {
-        let run = Run()
-        run.operation = .copy
-        let quit = coordinator(run)
-
-        let mayClose = await quit.askToStopOperation(.close, parent: nil)
-
-        #expect(!mayClose)
-        #expect(run.questions.first?.buttons == ["Keep Working", "Stop and Close"])
-        #expect(run.questions.first?.detail.hasPrefix("If you close the window now") == true)
-
-        run.answer = QuitWhileBusy.stopButtonIndex
-        #expect(await quit.askToStopOperation(.close, parent: nil))
-        run.operation = .rename
-        run.questions = []
-        #expect(await quit.askToStopOperation(.close, parent: nil))
-        #expect(run.questions.isEmpty)
-    }
 }

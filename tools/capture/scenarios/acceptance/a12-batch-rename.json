@@ -3,7 +3,7 @@
   "description": "A12: Rename several items: each mode, a name taken, a preset saved, the rename itself, and the preset reused",
   "features": ["F-796","F-873","F-874","F-875","F-876","F-877","F-878","F-879"],
   "behaviors": ["B-DLG-073","B-DLG-078","B-DLG-089","B-DLG-092","B-DLG-093","B-DLG-095","B-DLG-108","B-DLG-109","B-DLG-112","B-DLG-114","B-DLG-115","B-DLG-117","B-DLG-119"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

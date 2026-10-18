@@ -3,7 +3,7 @@
   "description": "A6: Go To (⌘K) by name from favorites, then a typed path completed with Tab and opened with Return",
   "features": ["F-592","F-856","F-857","F-858","F-859","F-860","F-862"],
   "behaviors": ["B-DLG-001","B-DLG-003","B-DLG-005","B-DLG-009","B-DLG-017","B-DLG-021","B-DLG-022","B-DLG-029","B-DLG-031","B-DLG-041","B-DLG-048","B-DLG-049","B-DLG-051"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

@@ -88,6 +88,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     /// `AppWriteOperations`).
     var onExplorerWindowClosed: (ExplorerTabGroup) -> Void = { _ in }
     var onTabFocused: (MainWindowController) -> Void = { _ in }
+    /// Off in tests that check a window without putting it on screen: its tabs are made and read, never shown.
+    var presentsWindows = true
 
     /// Where a tab with nowhere else to go opens.
     var home = FileManager.default.homeDirectoryForCurrentUser.path

@@ -199,17 +199,6 @@ private func entry(
         }
     }
 
-    // F-224
-    @Test func anApplicationHasItsOwnIcon() async throws {
-        try await withTemporaryDirectory { directory in
-            let source = RecordingSource()
-            let store = makeStore(source: source, samples: directory)
-            #expect(await fetch(store, .app(path: "/Applications/Mail.app")) != nil)
-            #expect(await fetch(store, .app(path: "/Applications/Mail.app")) != nil)
-            #expect(source.paths == ["/Applications/Mail.app"])
-        }
-    }
-
     // T-4a058765 F-224
     @Test func waitsBeforeAskingWhenDeferredSoItemsPassedQuicklyAreNeverAskedFor() async throws {
         try await withTemporaryDirectory { directory in

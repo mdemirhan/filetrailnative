@@ -3,7 +3,7 @@
   "description": "A16: add a folder to Favorites, move it to the top by dragging, give it the Star icon in Settings, and the Open With submenu of a file",
   "features": ["F-575","F-732","F-738","F-810","F-886","F-898"],
   "behaviors": ["B-TREE-034","B-TREE-035","B-TREE-036","B-TREE-041","B-TREE-042","B-TREE-043","B-TREE-044","B-TREE-045"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

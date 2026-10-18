@@ -3,7 +3,7 @@
   "description": "A10: Customize Toolbar in place: drag an item in, move it along, drag it out, click one to add it at the end, Esc to finish",
   "features": ["F-718","F-719","F-720"],
   "behaviors": ["B-VIEW-132","B-VIEW-133","B-VIEW-134","B-VIEW-135","B-VIEW-136","B-VIEW-137"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

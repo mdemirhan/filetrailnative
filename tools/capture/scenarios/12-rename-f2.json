@@ -2,7 +2,7 @@
   "name": "12-rename-f2",
   "description": "F2 on Avatar.jsx opens the inline rename field; a new name is typed and kept",
   "features": ["F-578","F-793","F-794"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

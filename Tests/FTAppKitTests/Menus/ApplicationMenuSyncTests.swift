@@ -116,13 +116,20 @@ import Testing
         #expect(fromNone?.focused == true)
     }
 
+    /// A sheet on `parent`, as AppKit reports one, without putting it on a window.
+    private final class SheetWindow: NSWindow {
+        weak var sheetOwner: NSWindow?
+        override var sheetParent: NSWindow? { sheetOwner }
+    }
+
     // A sheet hanging from an explorer window is that window.
     @Test func countsASheetAsItsExplorerWindow() {
         let f = Fixture()
         let a = f.open(1)
-        let sheet = makeOffscreenWindow()
-        a.window?.beginSheet(sheet) { _ in }
-        defer { a.window?.endSheet(sheet) }
+        let sheet = SheetWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 200, height: 100), styleMask: [.borderless], backing: .buffered,
+            defer: true)
+        sheet.sheetOwner = a.window
 
         #expect(f.sync.explorerFor(sheet)?.handle === a)
     }

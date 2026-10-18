@@ -3,7 +3,7 @@
   "description": "A2: the folder tree beside the files: opened down to the folder, expand with the keyboard, Use as Tree Root, Go Home, and hide and show the tree",
   "features": ["F-586","F-591","F-592","F-733","F-736","F-740"],
   "behaviors": ["B-TREE-073","B-TREE-075","B-TREE-076","B-TREE-077","B-TREE-097"],
-  "tier": ["wave","final"],
+  "tier": ["checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

@@ -24,12 +24,6 @@ struct PaneWidthsTests {
         #expect(layout.defaultInspectorWidth == 320)
     }
 
-    // T-13ea5c0d (the stylesheet's heights are checked against the reference in ToolbarLayoutGoldenTests)
-    @Test func pagesTheSidebarTreeByTheRowHeightsTheStylesheetDraws() {
-        #expect(DesignTokens.explorer(density: .comfortable).treeRowHeight == 26)
-        #expect(DesignTokens.explorer(density: .compact).treeRowHeight == 21)
-    }
-
     // T-21dbb5e8 F-703 B-INFO-187
     @Test func resizesTreeAndInspectorPanesWithinBounds() {
         var widths = panes()

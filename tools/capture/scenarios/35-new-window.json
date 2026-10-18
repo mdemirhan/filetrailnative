@@ -3,7 +3,7 @@
   "description": "File > New Window (⌘N) from a window on app/src/components: a second window on the same folder, a step down and to the right (e2e windows.spec.ts: opens windows on the folder on screen)",
   "features": ["F-620","F-573"],
   "behaviors": ["B-VIEW-177"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

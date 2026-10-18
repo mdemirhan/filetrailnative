@@ -3,7 +3,7 @@
   "description": "A7: typing in the list filters it and selects the best match; Backspace edits; Esc restores the list and keeps the selection; no match offers Search Subfolders; ⌘F carries the text into a search",
   "features": ["F-787","F-788","F-753"],
   "behaviors": ["B-SEL-071","B-SEL-072","B-SEL-073","B-SEL-075","B-SEL-076","B-SEL-081","B-SEL-082","B-SEL-083"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

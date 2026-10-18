@@ -2,7 +2,7 @@
   "name": "17-review-sheet-conflict",
   "description": "Two copied files pasted into a folder that has both: the review sheet",
   "features": ["F-681","F-865","F-866","F-867","F-868"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

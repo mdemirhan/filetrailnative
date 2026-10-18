@@ -3,7 +3,7 @@
   "description": "A3: cut four files, see them dimmed and counted, open the clipboard list, remove one, and paste the rest in another window",
   "features": ["F-581","F-643","F-791","F-800","F-801","F-802"],
   "behaviors": ["B-CLIP-005","B-CLIP-011","B-CLIP-013","B-CLIP-015","B-CLIP-019","B-CLIP-020","B-CLIP-021","B-CLIP-031","B-CLIP-033","B-CLIP-054","B-CLIP-062","B-CLIP-078"],
-  "tier": ["wave","final"],
+  "tier": ["checkpoint", "wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

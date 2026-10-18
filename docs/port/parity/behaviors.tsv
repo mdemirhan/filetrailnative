@@ -444,7 +444,7 @@ B-DLG-243	DLG	A6, A9, A12, A15			N/A
 B-DLG-244	DLG	A6, A9, A12, A15	choosesAutoLightOrDarkFromTheThemeButtonsMenu	57-theme-menu	partial
 B-DLG-245	DLG	A6, A9, A12, A15			todo
 B-DLG-246	DLG	A6, A9, A12, A15			todo
-B-DLG-247	DLG	A6, A9, A12, A15			todo
+B-DLG-247	DLG	A6, A9, A12, A15	opensHelpsWindowFromAnyWindowOnTheKeyboardShortcutsPageForThatItem		done
 B-DLG-248	DLG	A6, A9, A12, A15	tellsWhichPageIsOnScreenSoHelpCanOpenOnItAgain		done
 B-DLG-249	DLG	A6, A9, A12, A15			todo
 B-DLG-250	DLG	A6, A9, A12, A15	listsEveryTopicAndOpensOnTheFirstOne		done
@@ -552,8 +552,8 @@ B-INFO-088	INFO	A8, A11			todo
 B-INFO-089	INFO	A8, A11			todo
 B-INFO-090	INFO	A8, A11			todo
 B-INFO-091	INFO	A8, A11			todo
-B-INFO-092	INFO	A8, A11		135-pathbar-collapsed-light	partial
-B-INFO-093	INFO	A8, A11		135-pathbar-collapsed-light	partial
+B-INFO-092	INFO	A8, A11		50-toolbar-default-light	partial
+B-INFO-093	INFO	A8, A11		50-toolbar-default-light	partial
 B-INFO-094	INFO	A8, A11			todo
 B-INFO-095	INFO	A8, A11			todo
 B-INFO-096	INFO	A8, A11			todo
@@ -562,10 +562,10 @@ B-INFO-098	INFO	A8, A11			todo
 B-INFO-099	INFO	A8, A11			todo
 B-INFO-100	INFO	A8, A11			todo
 B-INFO-101	INFO	A8, A11			todo
-B-INFO-102	INFO	A8, A11		135-pathbar-collapsed-light, 148-pathbar-inforow-dark	partial
+B-INFO-102	INFO	A8, A11		148-pathbar-inforow-dark, 50-toolbar-default-light	partial
 B-INFO-103	INFO	A8, A11			todo
 B-INFO-104	INFO	A8, A11			todo
-B-INFO-105	INFO	A8, A11		135-pathbar-collapsed-light	partial
+B-INFO-105	INFO	A8, A11		50-toolbar-default-light	partial
 B-INFO-106	INFO	A8, A11		136-pathbar-expanded-light	partial
 B-INFO-107	INFO	A8, A11		136-pathbar-expanded-light	partial
 B-INFO-108	INFO	A8, A11			todo
@@ -580,10 +580,10 @@ B-INFO-116	INFO	A8, A11		137-pathbar-editor-suggestions-light	partial
 B-INFO-117	INFO	A8, A11			todo
 B-INFO-118	INFO	A8, A11			todo
 B-INFO-119	INFO	A8, A11			todo
-B-INFO-120	INFO	A8, A11		138-pathbar-folder-menu-light	partial
-B-INFO-121	INFO	A8, A11		138-pathbar-folder-menu-light	partial
+B-INFO-120	INFO	A8, A11			todo
+B-INFO-121	INFO	A8, A11			todo
 B-INFO-122	INFO	A8, A11			todo
-B-INFO-123	INFO	A8, A11		138-pathbar-folder-menu-light	partial
+B-INFO-123	INFO	A8, A11			todo
 B-INFO-124	INFO	A8, A11			todo
 B-INFO-125	INFO	A8, A11	aLetterJumpsToTheNextFolderStartingWithItAndWraps		done
 B-INFO-126	INFO	A8, A11			todo
@@ -643,17 +643,17 @@ B-INFO-179	INFO	A8, A11			todo
 B-INFO-180	INFO	A8, A11			todo
 B-INFO-181	INFO	A8, A11	foldersAreOrderedByTheirCalculatedSizeWithUnknownSizesLast		done
 B-INFO-182	INFO	A8, A11			todo
-B-INFO-183	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	53-info-panel-open	partial
-B-INFO-184	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent		partial
-B-INFO-185	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	53-info-panel-open	partial
+B-INFO-183	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	145-infopanel-folder-light	partial
+B-INFO-184	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent		done
+B-INFO-185	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	145-infopanel-folder-light	partial
 B-INFO-186	INFO	A8, A11			todo
-B-INFO-187	INFO	A8, A11	resizesTreeAndInspectorPanesWithinBounds, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		partial
-B-INFO-188	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, givesAPaneBackItsWidthWhenTheWindowIsWidenedAgain, shrinksSidePanesToPreserveCenterContentWhenTheViewportNarrows, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		partial
-B-INFO-189	INFO	A8, A11	squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths, widensAPaneFromTheKeyboardAndKeepsThatWidth		partial
+B-INFO-187	INFO	A8, A11	resizesTreeAndInspectorPanesWithinBounds, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		done
+B-INFO-188	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, givesAPaneBackItsWidthWhenTheWindowIsWidenedAgain, shrinksSidePanesToPreserveCenterContentWhenTheViewportNarrows, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		done
+B-INFO-189	INFO	A8, A11	squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths, widensAPaneFromTheKeyboardAndKeepsThatWidth		done
 B-INFO-190	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, hidesTheFolderTreeGivingItsRoomToTheListAndTheToolbar	52-tree-hidden	partial
 B-INFO-191	INFO	A8, A11			todo
-B-INFO-192	INFO	A8, A11	aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp		done
-B-INFO-193	INFO	A8, A11	aTwentyEightPointPathBarAndAThirtyPointInfoRowPutTheStackSixtyEightUp		done
+B-INFO-192	INFO	A8, A11			todo
+B-INFO-193	INFO	A8, A11			todo
 B-INFO-194	INFO	A8, A11			todo
 B-INFO-195	INFO	A8, A11			todo
 B-INFO-196	INFO	A8, A11	pendingValuesKeepTheirRowsWithADash		done
@@ -686,19 +686,19 @@ B-NAV-021	NAV	A8, A14			todo
 B-NAV-022	NAV	A8, A14			todo
 B-NAV-023	NAV	A8, A14			todo
 B-NAV-024	NAV	A8, A14			todo
-B-NAV-025	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
-B-NAV-026	NAV	A8, A14		58-history-hold	partial
+B-NAV-025	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-026	NAV	A8, A14			todo
 B-NAV-027	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
-B-NAV-028	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-028	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
 B-NAV-029	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
 B-NAV-030	NAV	A8, A14			todo
 B-NAV-031	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
-B-NAV-032	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
-B-NAV-033	NAV	A8, A14		58-history-hold	partial
-B-NAV-034	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
-B-NAV-035	NAV	A8, A14		58-history-hold	partial
+B-NAV-032	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-033	NAV	A8, A14			todo
+B-NAV-034	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-035	NAV	A8, A14			todo
 B-NAV-036	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
-B-NAV-037	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-037	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
 B-NAV-038	NAV	A8, A14			todo
 B-NAV-039	NAV	A8, A14			todo
 B-NAV-040	NAV	A8, A14			todo
@@ -1267,25 +1267,25 @@ B-SRCH-193	SRCH	A1			todo
 B-SRCH-194	SRCH	A1			todo
 B-SRCH-195	SRCH	A1			todo
 B-SRCH-196	SRCH	A1			todo
-B-TREE-001	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
-B-TREE-002	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-001	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
+B-TREE-002	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-003	TREE	A2, A16			todo
-B-TREE-004	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-004	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-005	TREE	A2, A16			todo
 B-TREE-006	TREE	A2, A16	aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed	80-sidebar-sections-closed	partial
-B-TREE-007	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
-B-TREE-008	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-007	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
+B-TREE-008	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-009	TREE	A2, A16	keepsFavoritesFlatEvenWhenTheFilesystemTreeContainsDescendants		done
 B-TREE-010	TREE	A2, A16			todo
 B-TREE-011	TREE	A2, A16			todo
-B-TREE-012	TREE	A2, A16	theChevronExpandsAFolderAndAnAliasHasNone		partial
-B-TREE-013	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-012	TREE	A2, A16			todo
+B-TREE-013	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-014	TREE	A2, A16			todo
 B-TREE-015	TREE	A2, A16			todo
 B-TREE-016	TREE	A2, A16			todo
 B-TREE-017	TREE	A2, A16			todo
 B-TREE-018	TREE	A2, A16			todo
-B-TREE-019	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-019	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-020	TREE	A2, A16			todo
 B-TREE-021	TREE	A2, A16			todo
 B-TREE-022	TREE	A2, A16	listsOnlyBrowsableMountsDirectlyUnderVolumes		done
@@ -1326,17 +1326,17 @@ B-TREE-056	TREE	A2, A16	aPressedRowShowsSelectedAtOnceAndNotOnceItsFolderFailsTo
 B-TREE-057	TREE	A2, A16			todo
 B-TREE-058	TREE	A2, A16			todo
 B-TREE-059	TREE	A2, A16	clearingTheSelectionLetsGoOfTheFolderOnScreen		done
-B-TREE-060	TREE	A2, A16	clearingTheSelectionLetsGoOfTheFolderOnScreen, pressingEmptySpaceClearsTheSelection		partial
-B-TREE-061	TREE	A2, A16	pressingEmptySpaceClearsTheSelection		partial
+B-TREE-060	TREE	A2, A16	clearingTheSelectionLetsGoOfTheFolderOnScreen		done
+B-TREE-061	TREE	A2, A16	clearingTheSelectionLetsGoOfTheFolderOnScreen		done
 B-TREE-062	TREE	A2, A16			todo
 B-TREE-063	TREE	A2, A16			todo
-B-TREE-064	TREE	A2, A16	aRightClickRingsOnlyThatRowAndLeavesTheSelection		partial
-B-TREE-065	TREE	A2, A16	aRightClickRingsOnlyThatRowAndLeavesTheSelection		partial
+B-TREE-064	TREE	A2, A16	aRightClickRingsOnlyThatRowAndLeavesTheSelection		done
+B-TREE-065	TREE	A2, A16	aRightClickRingsOnlyThatRowAndLeavesTheSelection		done
 B-TREE-066	TREE	A2, A16	aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed, closingTheFavoritesListSwitchesTheKeyboardToTheTree	80-sidebar-sections-closed	partial
 B-TREE-067	TREE	A2, A16	closingTheFavoritesListSwitchesTheKeyboardToTheTree	80-sidebar-sections-closed	partial
 B-TREE-068	TREE	A2, A16	closingTheFavoritesListSwitchesTheKeyboardToTheTree		done
 B-TREE-069	TREE	A2, A16			todo
-B-TREE-070	TREE	A2, A16	theChevronExpandsAFolderAndAnAliasHasNone		partial
+B-TREE-070	TREE	A2, A16			todo
 B-TREE-071	TREE	A2, A16			todo
 B-TREE-072	TREE	A2, A16			todo
 B-TREE-073	TREE	A2, A16	keepsAHandPickedRootWhileFoldersOpenInsideItAndMovesItForAFolderOutside	77-sidebar-deep-path	partial
@@ -1430,7 +1430,7 @@ B-TREE-160	TREE	A2, A16			todo
 B-TREE-161	TREE	A2, A16			todo
 B-TREE-162	TREE	A2, A16			todo
 B-TREE-163	TREE	A2, A16	aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone	83-sidebar-volume-eject	partial
-B-TREE-164	TREE	A2, A16	aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone		partial
+B-TREE-164	TREE	A2, A16	aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone		done
 B-TREE-165	TREE	A2, A16	asksFirstAboutAVolumeWhoseDiskHoldsOthersNamingThem, ejectsADiskOfItsOwnAtOnce, ejectsADiskOfItsOwnWithItsWholeDiskAtOnce, neverGroupsNetworkSharesWhichHaveNoDisk		done
 B-TREE-166	TREE	A2, A16			todo
 B-TREE-167	TREE	A2, A16	doesNothingForADiskThatCantBeEjectedOrIsGone, doesNothingForAPathThatIsNotAListedVolume		done
@@ -1441,7 +1441,7 @@ B-TREE-171	TREE	A2, A16	asksAboutTheOtherVolumesOfTheDiskThenEjectsAllOrOnlyThis
 B-TREE-172	TREE	A2, A16	ejectsADiskOfItsOwnWithItsWholeDiskAtOnce, ignoresARequestForADiskAlreadyBeingEjectedAndReleasesIt		done
 B-TREE-173	TREE	A2, A16	asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced, namesTheVolumeInUseWhichMayBeAnotherOnTheSameDisk, saysWhichDiskIsInUseAndCallsAServerAVolume		done
 B-TREE-174	TREE	A2, A16	asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced		done
-B-TREE-175	TREE	A2, A16	aVolumeAlreadyEjectedCountsAsEjected, countsAVolumeAlreadyGoneAsEjected, givesAnyOtherFailureWithDiskArbitrationsSentence		done
+B-TREE-175	TREE	A2, A16	countsAVolumeAlreadyGoneAsEjected, givesAnyOtherFailureWithDiskArbitrationsSentence		done
 B-TREE-176	TREE	A2, A16	namesTheDiskAskedForWhenTheDiskItselfFailedWithDiskArbitrationsReason, otherFailureWording, tellsOfAnyOtherFailureInANotice		done
 B-TREE-177	TREE	A2, A16			todo
 B-TREE-178	TREE	A2, A16	sendsATabOnAnUnmountedDiskHomeKeepingItsHistoryElsewhere		done
@@ -1529,9 +1529,9 @@ B-VIEW-058	VIEW	A10, A13, A14			todo
 B-VIEW-059	VIEW	A10, A13, A14			todo
 B-VIEW-060	VIEW	A10, A13, A14			todo
 B-VIEW-061	VIEW	A10, A13, A14			todo
-B-VIEW-062	VIEW	A10, A13, A14	theStates		partial
-B-VIEW-063	VIEW	A10, A13, A14	theEmptyStateTexts, theStates		partial
-B-VIEW-064	VIEW	A10, A13, A14	theStates		partial
+B-VIEW-062	VIEW	A10, A13, A14	theStates		done
+B-VIEW-063	VIEW	A10, A13, A14	theEmptyStateTexts, theStates		done
+B-VIEW-064	VIEW	A10, A13, A14	theStates		done
 B-VIEW-065	VIEW	A10, A13, A14			todo
 B-VIEW-066	VIEW	A10, A13, A14			todo
 B-VIEW-067	VIEW	A10, A13, A14			todo
@@ -1575,7 +1575,7 @@ B-VIEW-104	VIEW	A10, A13, A14			todo
 B-VIEW-105	VIEW	A10, A13, A14			todo
 B-VIEW-106	VIEW	A10, A13, A14			todo
 B-VIEW-107	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton	50-toolbar-default-light	partial
-B-VIEW-108	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton		partial
+B-VIEW-108	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton		done
 B-VIEW-109	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton, keysEachItemByItsIdAndRepeatedSeparatorsByTheirCount	50-toolbar-default-light	partial
 B-VIEW-110	VIEW	A10, A13, A14	drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton	50-toolbar-default-light	partial
 B-VIEW-111	VIEW	A10, A13, A14		50-toolbar-default-light	partial
@@ -1587,28 +1587,28 @@ B-VIEW-116	VIEW	A10, A13, A14	hidesTheItemsNearestTheEndInANarrowWindowAndListsT
 B-VIEW-117	VIEW	A10, A13, A14	hidesTheItemsNearestTheEndInANarrowWindowAndListsThemUnderTheOverflowButton	54-narrow-overflow	partial
 B-VIEW-118	VIEW	A10, A13, A14		54-narrow-overflow	partial
 B-VIEW-119	VIEW	A10, A13, A14		50-toolbar-default-light	partial
-B-VIEW-120	VIEW	A10, A13, A14	showsAControlsTitleAfterThePointerRestsOnIt, togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
+B-VIEW-120	VIEW	A10, A13, A14	showsAControlsTitleAfterThePointerRestsOnIt, togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		done
 B-VIEW-121	VIEW	A10, A13, A14	rendersAnIconForEverySupportedToolbarGlyphName		done
-B-VIEW-122	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
-B-VIEW-123	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
+B-VIEW-122	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		done
+B-VIEW-123	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		done
 B-VIEW-124	VIEW	A10, A13, A14			todo
 B-VIEW-125	VIEW	A10, A13, A14	listsTheViewOptionsAndSortsFromTheSortMenu	55-sort-menu	partial
 B-VIEW-126	VIEW	A10, A13, A14		55-sort-menu	partial
 B-VIEW-127	VIEW	A10, A13, A14	listsTheViewOptionsAndSortsFromTheSortMenu	56-view-options-menu	partial
-B-VIEW-128	VIEW	A10, A13, A14	offersCustomizeToolbarOnARightClickOfTheTitle		partial
+B-VIEW-128	VIEW	A10, A13, A14			todo
 B-VIEW-129	VIEW	A10, A13, A14			todo
 B-VIEW-130	VIEW	A10, A13, A14	choosesAutoLightOrDarkFromTheThemeButtonsMenu	57-theme-menu	partial
-B-VIEW-131	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		partial
+B-VIEW-131	VIEW	A10, A13, A14	togglesSayWhatAClickWillDoAndButtonsRunTheirCommands		done
 B-VIEW-132	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard	59-customize-toolbar	partial
 B-VIEW-133	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard	59-customize-toolbar	partial
-B-VIEW-134	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		partial
-B-VIEW-135	VIEW	A10, A13, A14	landsADraggedItemAfterEveryItemWhoseMiddleIsLeftOfThePointer, movesAddsAndTakesOffItemsByDragging		partial
-B-VIEW-136	VIEW	A10, A13, A14	movesAddsAndTakesOffItemsByDragging		partial
-B-VIEW-137	VIEW	A10, A13, A14	movesAddsAndTakesOffItemsByDragging		partial
-B-VIEW-138	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		partial
+B-VIEW-134	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		done
+B-VIEW-135	VIEW	A10, A13, A14	landsADraggedItemAfterEveryItemWhoseMiddleIsLeftOfThePointer, movesAddsAndTakesOffItemsByDragging		done
+B-VIEW-136	VIEW	A10, A13, A14	movesAddsAndTakesOffItemsByDragging		done
+B-VIEW-137	VIEW	A10, A13, A14	movesAddsAndTakesOffItemsByDragging		done
+B-VIEW-138	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		done
 B-VIEW-139	VIEW	A10, A13, A14		59-customize-toolbar	partial
 B-VIEW-140	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard	59-customize-toolbar	partial
-B-VIEW-141	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		partial
+B-VIEW-141	VIEW	A10, A13, A14	editsTheToolbarInPlaceFromThePanelAndTheKeyboard		done
 B-VIEW-142	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
 B-VIEW-143	VIEW	A10, A13, A14			todo
 B-VIEW-144	VIEW	A10, A13, A14	namesATabAfterItsFolderOrAfterItsSearchWhileResultsAreShowing, tellsTabsOnFoldersOfTheSameNameApartByTheFolderEachIsIn		done
@@ -1616,13 +1616,13 @@ B-VIEW-145	VIEW	A10, A13, A14			N/A
 B-VIEW-146	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
 B-VIEW-147	VIEW	A10, A13, A14			N/A
 B-VIEW-148	VIEW	A10, A13, A14			N/A
-B-VIEW-149	VIEW	A10, A13, A14	savesTheTabsInTheOrderOfTheTabBar		partial
+B-VIEW-149	VIEW	A10, A13, A14	savesTheTabsInTheOrderOfTheTabBar		done
 B-VIEW-150	VIEW	A10, A13, A14			N/A
 B-VIEW-151	VIEW	A10, A13, A14			N/A
 B-VIEW-152	VIEW	A10, A13, A14			N/A
 B-VIEW-153	VIEW	A10, A13, A14			N/A
 B-VIEW-154	VIEW	A10, A13, A14	tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen		partial
-B-VIEW-155	VIEW	A10, A13, A14	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit, opensNoMoreThanAHundredTabsAndSaysSo		partial
+B-VIEW-155	VIEW	A10, A13, A14	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit		partial
 B-VIEW-156	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
 B-VIEW-157	VIEW	A10, A13, A14	showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen		partial
 B-VIEW-158	VIEW	A10, A13, A14	duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit		partial
@@ -1645,8 +1645,8 @@ B-VIEW-174	VIEW	A10, A13, A14			todo
 B-VIEW-175	VIEW	A10, A13, A14	restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped		partial
 B-VIEW-176	VIEW	A10, A13, A14	bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch, opensASingleViewAtHomeWhenTheLastSessionIsNotReopened		partial
 B-VIEW-177	VIEW	A10, A13, A14	opensWindowsOnTheFolderOnScreenAndBringsBackThoseOpenAtQuit	35-new-window, 36-open-in-new-window	partial
-B-VIEW-178	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
-B-VIEW-179	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
+B-VIEW-178	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack		partial
+B-VIEW-179	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack		partial
 B-VIEW-180	VIEW	A10, A13, A14	tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen		partial
 B-VIEW-181	VIEW	A10, A13, A14	opensTheTabsAWindowWasGivenWhateverTheSettingSays		done
 B-VIEW-182	VIEW	A10, A13, A14			todo

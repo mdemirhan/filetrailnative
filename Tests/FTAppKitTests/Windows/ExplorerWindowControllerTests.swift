@@ -360,7 +360,7 @@ import Testing
         #expect(setup.store.lastClosedWindow() == nil)
     }
 
-    // T-0e9eff11 F-622
+    // T-0e9eff11 F-622 F-239
     @Test func asksBeforeClosingTheLastWindowStopsACopyAndKeepsWorkingWhenToldTo() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.runOperation(.copy)

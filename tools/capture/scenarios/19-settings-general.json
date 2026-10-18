@@ -1,8 +1,8 @@
 {
   "name": "19-settings-general",
   "description": "File Trail > Settings… opens the Settings window on its General tab",
-  "features": ["F-572","F-633","F-887","F-888","F-889","F-892"],
-  "tier": ["wp","wave","final"],
+  "features": ["F-572", "F-633", "F-887", "F-888", "F-889", "F-892", "F-596"],
+  "tier": ["wp", "checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

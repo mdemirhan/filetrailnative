@@ -2,14 +2,15 @@
   "name": "140-inforow-several-light",
   "description": "The Info Row for several selected files: the count and the summed size",
   "features": [
-    "F-749"
+    "F-749",
+    "F-780",
+    "F-828"
   ],
   "behaviors": [
     "B-INFO-075",
     "B-INFO-084"
   ],
   "tier": [
-    "wp",
     "wave",
     "final"
   ],

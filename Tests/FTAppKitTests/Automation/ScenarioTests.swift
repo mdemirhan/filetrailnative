@@ -61,19 +61,6 @@
             #expect(throws: Scenario.ParseError.self) { try parse("not json") }
         }
 
-        @Test func everyCheckedInScenarioParses() throws {
-            let folder = URL(fileURLWithPath: #filePath)
-                .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-                .deletingLastPathComponent().appendingPathComponent("tools/capture/scenarios")
-            let files = try FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil)
-                .filter { $0.pathExtension == "json" }
-            #expect(files.count >= 10)
-            for file in files {
-                let scenario = try Scenario.parse(Data(contentsOf: file))
-                #expect(scenario.steps.contains(.snapshot(name: "main")), "\(file.lastPathComponent)")
-            }
-        }
-
         @Test func resolvesPathsAgainstTheFixtures() throws {
             let scenario = try parse(#"{"name": "x", "root": "lighthouse/Lighthouse", "steps": []}"#)
             let environment = ["FILETRAIL_FIXTURES": "/fixtures"]

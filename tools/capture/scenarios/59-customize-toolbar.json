@@ -15,6 +15,7 @@
   ],
   "tier": [
     "wp",
+    "checkpoint",
     "wave",
     "final"
   ],

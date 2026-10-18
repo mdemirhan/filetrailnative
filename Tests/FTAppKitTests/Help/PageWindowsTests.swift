@@ -31,23 +31,11 @@ import Testing
         }
     }
 
-    // F-594 B-DLG-247: the Help menu opens Help, and Keyboard Shortcuts opens it on its shortcuts page
-    @Test func theHelpMenuOpensHelpOnThePageItNames() {
-        _ = NSApplication.shared
-        let router = MenuCommandRouter()
-        var opened: [HelpTopicID?] = []
-        router.onOpenHelp = { opened.append($0) }
-        let built = ApplicationMenuBuilder.build(target: router)
-        let help = menuItems(built.helpMenu).filter { $0.target === router }
-        #expect(help.map(\.title) == ["File Trail Help", "Keyboard Shortcuts"])
-        for item in help { router.chooseMenuItem(item) }
-        #expect(opened == [nil, .shortcuts])
-    }
 }
 
 @MainActor
 @Suite struct PageWindowsTests {
-    private func make(_ preferences: AppPreferences = .defaults()) -> (PageWindows, Box) {
+    static func make(_ preferences: AppPreferences = .defaults()) -> (PageWindows, Box) {
         _ = NSApplication.shared
         let box = Box(preferences)
         let pages = PageWindows(model: AppearanceModel(), preferences: { box.preferences })
@@ -110,7 +98,7 @@ import Testing
 
     // B-DLG-254 F-610: the keys Help shows are the ones chosen in Settings, and Return renames while Settings says so
     @Test func helpShowsTheKeysChosenInSettings() {
-        let (pages, _) = make()
+        let (pages, _) = Self.make()
         var changed = AppPreferences.defaults()
         var bindings = ShortcutCommands.defaultBindings
         bindings[.newTab] = []
@@ -127,10 +115,15 @@ import Testing
         #expect(pages.helpWindow == nil)
     }
 
+}
+
+/// Puts the Help, About and Acknowledgements windows on screen: only with FILETRAIL_GUI_TESTS=1, under the GUI lock.
+@MainActor
+@Suite(.serialized, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
+struct PageWindowsGUITests {
     // F-639 F-648 B-DLG-246 B-DLG-259: one window of each kind; asking again shows the one open. Puts windows on screen.
-    @Test(.enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
-    func opensOneWindowOfEachKindAndRemembersHelpsPage() {
-        let (pages, _) = make()
+    @Test func opensOneWindowOfEachKindAndRemembersHelpsPage() {
+        let (pages, _) = PageWindowsTests.make()
         pages.openHelp()
         let first = pages.helpWindow
         #expect(first?.helpView.activeTopic == .navigation)

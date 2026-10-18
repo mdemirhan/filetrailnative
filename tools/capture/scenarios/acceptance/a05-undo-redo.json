@@ -3,7 +3,7 @@
   "description": "A5: rename, move and trash, then undo each in turn and redo the rename (Undo and Redo sent as the Edit menu's commands)",
   "features": ["F-579","F-580"],
   "behaviors": ["B-CLIP-184","B-CLIP-187","B-CLIP-193"],
-  "tier": ["wave","final"],
+  "tier": ["checkpoint", "wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

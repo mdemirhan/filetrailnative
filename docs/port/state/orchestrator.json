@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T13:20:28+00:00",
+  "updatedAt": "2026-10-18T13:45:55+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -9,8 +9,8 @@
   "phase": "P3/P4-03/P5",
   "nextAction": "Applying the approved test reduction: P0-17, P0-18, P0-19 running; P0-20 after P0-19. Then the first UI checkpoint (ui-check.js), P5-05 from port/P5-05, then schedule.py ready.",
   "pause": {
-    "requested": false,
-    "reason": null,
+    "requested": true,
+    "reason": "user: finish the running packages (P0-17, P3-05, P0-20), merge, clean up, then wait for the user's signal",
     "until": null
   },
   "meter": [
@@ -709,25 +709,70 @@
       "wps": [
         "P0-17"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_a05d28ba-00c",
-      "startedAt": "2026-10-18T13:20:13+00:00"
+      "startedAt": "2026-10-18T13:20:13+00:00",
+      "endedAt": "2026-10-18T13:45:54+00:00",
+      "integration": {
+        "merged": [
+          "P0-17"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "62fb238db2af98e69a2fd7e7b7eb7a9705df5a12",
+        "summary": "Merged port/P0-17 cleanly. Full scripts/ci.sh passed (build, 2043 tests, format). Parity matrix synced and committed. Merge lock released."
+      },
+      "critic": null,
+      "spentOutputTokens": 334762,
+      "agents": 4,
+      "subagentTokens": 509643,
+      "durationMin": 25.4
     },
     "W2-P0-18": {
       "wps": [
         "P0-18"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_59e31552-124",
-      "startedAt": "2026-10-18T13:20:13+00:00"
+      "startedAt": "2026-10-18T13:20:13+00:00",
+      "endedAt": "2026-10-18T13:31:33+00:00",
+      "integration": {
+        "merged": [
+          "P0-18"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "be21ebfacce16817f8874c09868083231244eb45",
+        "summary": "Merged port/P0-18 with no conflicts. CI passed (build, 2082 tests, format). Parity matrix synced and committed. Merge lock released."
+      },
+      "critic": null,
+      "spentOutputTokens": 161998,
+      "agents": 4,
+      "subagentTokens": 342400,
+      "durationMin": 11.0
     },
     "W2-P0-19": {
       "wps": [
         "P0-19"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_a2e0f52d-564",
-      "startedAt": "2026-10-18T13:20:13+00:00"
+      "startedAt": "2026-10-18T13:20:13+00:00",
+      "endedAt": "2026-10-18T13:33:43+00:00",
+      "integration": {
+        "merged": [
+          "P0-19"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "d8da913d8472e93a5ca6c6901dec964a9a1726a2",
+        "summary": "Merged port/P0-19 with no conflicts. scripts/ci.sh passed (build, test with 2061 passing and 0 failing, format). The parity matrix sync was committed as \"Sync parity matrix after W2-P0-19\". The merge lock is released."
+      },
+      "critic": null,
+      "spentOutputTokens": 179214,
+      "agents": 6,
+      "subagentTokens": 418311,
+      "durationMin": 13.2
     },
     "W2-P3-05": {
       "wps": [
@@ -736,6 +781,14 @@
       "status": "running",
       "runId": "wf_a4ce2c65-53c",
       "startedAt": "2026-10-18T13:20:13+00:00"
+    },
+    "W2-P0-20": {
+      "wps": [
+        "P0-20"
+      ],
+      "status": "running",
+      "runId": "wf_552cbddd-1bb",
+      "startedAt": "2026-10-18T13:33:50+00:00"
     }
   },
   "wps": {
@@ -2504,7 +2557,8 @@
       "carryOver": [
         "From P4-04: T-317cfcc8 (windows.spec: paste in one window what was copied in another, B-VIEW-184) is left todo for this WP; ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and capture 38-paste-in-another-window must pass.",
         "From P5-01: call MainWindowController.clipboardChanged() whenever SharedClipboard changes, so the toolbar clipboard button and its count refresh.",
-        "From P5-03: call tab.folderSizes.forgetChangedSizes(_:intoTrash:) when a write operation finishes, and set tab.folderChangesHeld while a drag or an operation is active. Seams in place: ContentDragHooks, and AutomationDragSource/AutomationDropTarget on list rows, the pane background and sidebar rows (P5-02 SidebarFileDrops)."
+        "From P5-03: call tab.folderSizes.forgetChangedSizes(_:intoTrash:) when a write operation finishes, and set tab.folderChangesHeld while a drag or an operation is active. Seams in place: ContentDragHooks, and AutomationDragSource/AutomationDropTarget on list rows, the pane background and sidebar rows (P5-02 SidebarFileDrops).",
+        "From P0-18: Wire the write coordinator's progress to the ProgressCard. Once the original can be driven to show the progress card (a slow copy plus a snapshot while it runs), add a checkpoint scenario for it. P0-18 found no existing step can do this."
       ]
     },
     "P5-09": {
@@ -2616,7 +2670,10 @@
       "summary": null,
       "findings": [],
       "fixes": [],
-      "blockers": []
+      "blockers": [],
+      "carryOver": [
+        "From P0-18: When P6-03 merges, promote acceptance/a12-batch-rename from tiers [wave, final] to [checkpoint, wave, final]. It is the only Batch Rename capture."
+      ]
     },
     "P6-04": {
       "title": "Settings and shortcut recorder",
@@ -2642,7 +2699,8 @@
       "blockers": [],
       "carryOver": [
         "From P4-03: register the Settings window with AppearanceModel.shared.register(pageWindow:) (page background and theme redraw), and set AppDelegate.pageWindows.openSettingsOnShortcuts so Help's \"Customize…\" opens the Shortcuts tab.",
-        "From P5-02: a16-favorites steps 14-20 (File Trail > Settings, the Browsing section, the favorite icon picker for docs, choice Star) need the Settings window."
+        "From P5-02: a16-favorites steps 14-20 (File Trail > Settings, the Browsing section, the favorite icon picker for docs, choice Star) need the Settings window.",
+        "From P0-18: When P6-04 merges, promote acceptance/a09-shortcuts to checkpoint, and drop 19-settings-general then (it is covered by a09). The audit's promote-when-built note says the same."
       ]
     },
     "P8-01": {
@@ -3122,23 +3180,33 @@
       "risk": "medium",
       "model": "opus",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-17",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "16567be962fcdde8d41bffcfd42ed8606a4ab430",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh"
       ],
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Counts: 23 on screen (22 in FTAppKitTests plus DiskImageMounterHandOffTests), 44 made windowless, 11 dropped, 7 near-duplicates removed (dup-appkit). scripts/ci.sh passes: build, 2064 windowless tests, format.\nNew harness in Tests/FTAppKitTests/Windows/ExplorerHarness.swift: ExplorerHarness.windowless() never shows its tab groups. It waits for the first folder read (via onReady) and workspace.isReady, expects window.isVisible == false, and lays out with layoutSubtreeIfNeeded.\nThe 44 live in a serialized, ungated suite, ExplorerWindowlessTests (new files ToolbarTests, ToolbarStateTests, SidebarTests, NotificationsTests, InfoTests, ListTests, WorkspaceTests, TabGroupTests, plus ContextMenuTests renamed from ContextMenuGUITests and ReviewRowWidthTests). All 43 harness tests passed on the first run. theSizeCellClipsItsBar moved to ReviewSizeCellTests and needs no window; anOperationOverBeforeTheDelayShowsNoCard runs on ProgressCardModel alone.\nThe kept tests are all in suites whose names end in GUITests; the gated PageWindows case moved to the new PageWindowsGUITests. No other suite matches --filter GUITests.\nDrops: both fold-ins are done. Citations moved to the covering tests, or are marked covered-by-feature where the covering test is in FTFoundationTests. Every removed id is still cited somewhere in Tests, and parity sync --no-write reports 1757 citations valid.\nAudit fixes: Copy Path uses a private pasteboard. showInfoPoints closes its harness. findsElementsByNameTextAndPlace uses a window that reports isVisible instead of calling orderBack. countsASheetAsItsExplorerWindow uses an overridden sheetParent instead of beginSheet.\nRun time of the kept on-screen set: not measured. The preamble forbids the full GUI run, whatever a brief says. I ran once under the lock only the 2 GUI tests I touched (leavesARightClickOnAnItemAlone, opensOneWindowOfEachKindAndRemembersHelpsPage): both pass, 0.86 s together.\nSeams in Sources/FTAppKit: ExplorerWindows.presentsWindows (default true; ExplorerTabGroup show/showInactive/focus return early when it is false) and ContextMenuCoordinator.pasteboard (default .general).",
       "findings": [],
       "fixes": [],
       "blockers": [],
       "carryOver": [],
       "sharedFileRequests": [],
-      "deviations": []
+      "deviations": [
+        "Kept on-screen set run time not measured: preamble forbids the full GUI run during development whatever a brief says; only the 2 touched GUI tests were run, once, under the lock.",
+        "Dropped tests whose covering test is in FTFoundationTests (not owned): their ids are cited as covered-by-feature on the converted FTAppKit test the audit names. eachNotificationGoes... ids are on noNotificationComes..., aNarrowPane... ids on rowsFollowAWiderPane, headerClicksSort ids on separatorsResizeTheColumns, aFilesMenu... ids on aFolderHasNewTabsAndPaste...",
+        "aDiskThatCanBeEjected... and aRightClickRingsOnlyThatRow... take about 5 s each in the suite run but under 1 s alone: left-over work from the earlier sidebar tests, whose tree is rooted at /, slows the rows' arrival. Their waits succeed. Left as is."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "scripts/ci.sh on port/P0-17 (detached at 16567be): PASS build (12s), PASS test (91s, 2064 tests in passing runs, 0 failing), PASS format (6s). Exit 0. No reruns, no flaky tests, nothing changed or committed.",
+        "failures": [],
+        "flaky": []
+      }
     },
     "P0-18": {
       "title": "Screenshot scenarios: checkpoint tier, drops, progress scenario, original-app captures once",
@@ -3147,23 +3215,37 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-18",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "d242fbd",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh"
       ],
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Added `--tier checkpoint` to run.sh; 16 scenarios (tiers wp, checkpoint, wave, final) and 7 acceptance flows (checkpoint, wave, final) are tagged. 72 items (62 scenarios, 10 flows) are final-only (wave, final). Deleted the 28 dropped scenarios and moved their F-/B- tags to the covering scenario (the first one named for \"x + y\" cases). Moved tags: 01/135 to 50, 02 to 51, 04 to 89, 05 to 94, 06 to 140, 21 to 19, 37 to a14, 53 to 145, 58 to a08, 85 to 72, 86 to a13. The other drops had no new tags to move. No elements were removed from elements.d, because no element was used only by a dropped scenario.\nCheckpoint set: 50, 51, 77, 75, 03, 49, 148, 143, 156, 55, 59, 39, 41, 159, 16, 19, a01, a02, a03, a04, a05, a13, a14.\nFrom port/capture-once I took the once-per-scenario original captures. The cache key is now the scenario file, preferences.json and CAPTURE_FORMAT_VERSION. Failed runs are cached with their exit status. `--refresh-original <scenario...>` is added. The driver records `captured` ids, and report.ts shows a name added later as \"not captured\". I left out `--changed`, changed.ts and smoke.txt. The report.ts selftest passes. README updated.\nProgress scenario: not possible with existing driver steps, so none was added. The original shows the card only after an operation has run 500 ms and while it is still running, and no step can slow or hold a copy. The Swift write coordinator is also not wired yet (P5-08). The README says this.\n`scripts/ci.sh` passes (2082 tests). No window runs.",
       "findings": [],
       "fixes": [],
       "blockers": [],
       "carryOver": [],
       "sharedFileRequests": [],
-      "deviations": []
+      "deviations": [
+        "Edited Tests/FTAppKitTests/Automation/AutomationStepsTests.swift, which is not listed under 'You own'. Its tier checks failed with the new tags (scenarios: wp/checkpoint/wave/final or wave/final; flows: checkpoint/wave/final or wave/final). ci.sh needs that change.",
+        "Checkpoint acceptance flows are not tagged wp, so a plain `--tier wp` run now runs only the 16 checkpoint scenarios.",
+        "The progress-card scenario was not built (see summary)."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P0-18 gate (detached at port/P0-18, tip d242fbd): scripts/ci.sh first run FAILED (exit 1): build PASS, test FAIL (1 issue in 608 tests), format PASS. Failure was DiskImageSelfTests.mountsWritesAndDetaches(kind: .fat32), LargeFileTests.swift:27 \"!FileManager.default.fileExists(atPath: path)\". Reran once with --scope DiskImageSelfTests (suite-level, slightly wider than a single-test filter): all 5 cases passed, exit 0. Classified as flaky, treated as pass. Gate verdict: PASS (with one flaky). Nothing changed or committed; worktree clean and detached.",
+        "flaky": [
+          "DiskImageSelfTests/mountsWritesAndDetaches(kind:) (.fat32 case): failed in the full run at LargeFileTests.swift:27 with a leftover-path assertion; passed on rerun in isolation."
+        ],
+        "failures": [
+          "First full run: scripts/ci.sh exit 1. test step: 'Test mountsWritesAndDetaches(kind:) recorded an issue with 1 argument kind → .fat32 at LargeFileTests.swift:27:9: Expectation failed: !FileManager.default.fileExists(atPath: path)'. Suite DiskImageSelfTests failed with 1 issue. Summary: 'tests: 1474 in passing runs, 609 in failing runs'. Full log: build/logs/test.log."
+        ]
+      }
     },
     "P0-19": {
       "title": "Near-duplicate tests: FTFoundation, file system, file operations",
@@ -3172,10 +3254,10 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-19",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "04bd7f4ab19f2a2425f0aa6dea057ea3a58f1934",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check"
@@ -3183,13 +3265,35 @@
       "lenses": [
         "parity"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Removed the 12 approved dup-foundation and 11 approved dup-fs-ops tests. All the `keep` items are untouched. scripts/ci.sh passes (2059 tests, 0 failures), `tools/parity/gen.sh --check` passes, and `bun tools/parity-matrix/sync.ts --no-write` reports 1750 citations valid.\n\n@Test counts, before and after:\n- FTFoundationTests: 606 to 594\n- FTFileSystemTests: 465 to 456\n- FTOperationsTests: 575 to 573\n\nWhere the citations went:\n- Foundation removals df1 to df10 needed no re-pointing. The covering tests already cite their T-/F- ids: SidebarKeyboardTests cites T-eaf07a43, T-05d06d43 and F-740, the toolbar golden cites T-fc2f1ec9 and T-13ea5c0d, and the number-names golden cites F-042 and F-063.\n- The 28/30 pt toast case is folded into the two-bar case in `theStackRestsTenPointsAboveTheHighestBarAndTwelveFromTheEdgeWithNone`, which now also cites B-INFO-192 and B-INFO-193.\n- F-910 moved to `ItemNamesTests.limitsAreTheOriginals`. `ContractsNotApplicableTests` lost its struct, and the N/A comment lines stay in that file.\n- A one-line note on yellow went into `goldenCoversPresetsAndRandomColors`.\n- Smoke tests: both `SmokeTests.swift` files are deleted.\n- `hasNoSeparateNotices` is deleted and its N/A comment lines stay in `AboutInfoTests.swift`.\n- `ReviewFolderMetadataTests.swift` is deleted. It held only the removed test, whose F-405 is still cited by `fallsBackToTheModeAndDateWhenTheMetadataCantBeCopied`.\n- The other fs-ops removals needed no re-pointing:\n  - T-be9407bf is still cited at FileThumbnailServiceTests :73 and :80.\n  - T-308244dc is still cited in FileIconStoreTests.\n  - T-ab9b358d is still carried by `loadsAFewPreviewsAtATimeAndDropsQueuedOnesThatAreNoLongerShown`.\n  - F-215 and B-TREE-175 are still carried by `EjectOutcomeTests.countsAVolumeAlreadyGoneAsEjected`.\n\nI checked the covering tests the reports name and they assert the same things. Final commit is d0f96319 with the Port-Stage trailer, and the worktree is detached.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "TreeView.keyboardAction Left/Right branches left with no test; T-eaf07a43 and T-05d06d43 now cited only on tests of a different function",
+          "where": "Tests/FTFoundationTests/Sidebar/TreeViewTests.swift (removed tests) vs Sources/FTFoundation/Sidebar/TreeView.swift:45",
+          "evidence": "The brief says to check that the covering test really asserts the same thing. The report names SidebarKeyboardTests:85 as covering T-eaf07a43 and T-05d06d43. That test calls SidebarKeyboard.decide (Tests/FTFoundationTests/Sidebar/SidebarKeyboardTests.swift:85-117). The removed tests called TreeView.keyboardAction with .right/.left, which ports treeView.test.ts. grep of Sources and Tests shows TreeView.keyboardAction is called only from TreeViewTests.swift:43-52, so Left/Right is no longer exercised. The remaining test movesThroughVisibleTreeRows covers only down/up/home/end. The removed asserts were: right on collapsed loaded /root/b gives .expand; left on expanded /root/a gives .collapse; right on expanded /root/a gives .navigate(/root/a/deep); left on /root/a/deep gives .navigate(/root/a); right on unloaded node gives .load; left on a closed root gives .none. SidebarKeyboard.decide returns different actions (.toggle, .select, .load) for these. The citations were moved to SidebarKeyboard, not to a TreeView test, so a regression in TreeView.keyboardAction's Left/Right logic would pass CI. To check: delete the .left/.right cases from TreeView.keyboardAction and run `swift test --filter FTFoundationTests`; everything passes."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "Restored the two TreeView.keyboardAction Left/Right tests (T-eaf07a43, T-05d06d43) in Tests/FTFoundationTests/Sidebar/TreeViewTests.swift. They were removed as duplicates of SidebarKeyboardTests, which exercises SidebarKeyboard.decide, a different function. The restored tests passed immediately because the source was never wrong, so there was no failing-first step. I did not run the delete-the-branches check from the finding. ci.sh passes (2061 tests, 0 failing) and parity gen --check is up to date. The SidebarKeyboardTests citation line still lists both ids; I left it as is.",
+          "headSha": "04bd7f4ab19f2a2425f0aa6dea057ea3a58f1934"
+        }
+      ],
       "blockers": [],
       "carryOver": [],
       "sharedFileRequests": [],
-      "deviations": []
+      "deviations": [
+        "The brief was not in the worktree (docs/port/state/wp is untracked), so I read it from the main checkout.",
+        "The final commit does not end with the Co-Authored-By line from the attribution reminder, because the task says the last line must be the Port-Stage trailer and your CLAUDE.md says no Co-Authored-By."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P0-19 gate: scripts/ci.sh exit 0 (build PASS 17s, test PASS 65s with 2061 tests in passing runs and 0 failing, format PASS 5s). tools/parity/gen.sh --check exit 0 (goldens up to date, 35 suites; 5 machine-local suites skipped). Worktree left detached at 04bd7f4; nothing changed or committed.",
+        "failures": [],
+        "flaky": []
+      }
     },
     "P0-20": {
       "title": "Faster test fixtures: smaller images, fewer mounts, shorter waits",
@@ -3200,7 +3304,7 @@
       "depends": [
         "P0-19"
       ],
-      "status": "todo",
+      "status": "implementing",
       "branch": "port/P0-20",
       "headSha": null,
       "attempts": 0,
@@ -3214,7 +3318,9 @@
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [],
+      "carryOver": [
+        "From W2-P0-18 gate: Flaky: DiskImageSelfTests.mountsWritesAndDetaches(kind: .fat32) failed once in a full ci.sh run (LargeFileTests.swift:27, a leftover path still existed) and passed alone. You are reworking the disk-image fixtures: find why the path survives under load and fix it, without retries or longer sleeps."
+      ],
       "sharedFileRequests": [],
       "deviations": []
     }
