@@ -2,7 +2,7 @@
   "name": "15-clipboard-popover",
   "description": "Two items copied, then the toolbar clipboard button opens its popover",
   "features": ["F-800","F-801"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

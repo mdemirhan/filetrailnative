@@ -168,8 +168,10 @@
             for file in files {
                 let scenario = try Scenario.parse(Data(contentsOf: file))
                 let name = file.lastPathComponent
+                // A checkpoint scenario runs in every tier; every other one only at wave ends and in the final sweep.
                 #expect(
-                    !scenario.tiers.isEmpty && Set(scenario.tiers).isSubset(of: ["wp", "wave", "final"]), "\(name)")
+                    scenario.tiers == ["wp", "checkpoint", "wave", "final"] || scenario.tiers == ["wave", "final"],
+                    "\(name)")
                 #expect(!scenario.features.isEmpty, "\(name)")
                 #expect(scenario.features.allSatisfy { $0.hasPrefix("F-") }, "\(name)")
                 #expect(scenario.steps.contains(.snapshot(name: "main")), "\(name)")
@@ -186,7 +188,9 @@
             for file in files {
                 let scenario = try Scenario.parse(Data(contentsOf: file))
                 let name = file.lastPathComponent
-                #expect(scenario.tiers == ["wave", "final"], "\(name)")
+                #expect(
+                    scenario.tiers == ["checkpoint", "wave", "final"] || scenario.tiers == ["wave", "final"],
+                    "\(name)")
                 #expect(!scenario.features.isEmpty && !scenario.behaviors.isEmpty, "\(name)")
                 #expect(scenario.behaviors.allSatisfy { $0.hasPrefix("B-") }, "\(name)")
                 #expect(scenario.steps.contains(.snapshot(name: "main")), "\(name)")

@@ -2,7 +2,7 @@
   "name": "13-new-folder",
   "description": "File > New Folder makes “untitled folder” and opens its name for editing",
   "features": ["F-573","F-793"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

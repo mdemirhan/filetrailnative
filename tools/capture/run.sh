@@ -1,14 +1,19 @@
 #!/bin/bash
 # UI capture pipeline (PLAN.md §5.4): runs each scenario in the original Electron app and in the native
 # app, compares geometry and pixels, and writes tools/capture/out/contact.html.
-# Usage: tools/capture/run.sh [--tier wp|wave|final] [--acceptance] [--selftest] [scenario...]
+# Usage: tools/capture/run.sh [--tier wp|checkpoint|wave|final] [--acceptance] [--selftest]
+#          [--refresh-original <scenario...>] [scenario...]
 #   A scenario is a name from tools/capture/scenarios (without .json), acceptance/<name>, or a path.
 #   None means every scenario tagged with the tier (scenarios/ and scenarios/acceptance/).
-#   --tier wp (default) only reports differences; wave and final also fail on a geometry miss.
+#   --tier wp (default) and checkpoint only report differences; wave and final also fail on a geometry miss.
+#   --tier checkpoint runs the scenarios and acceptance flows tagged checkpoint (README: the checkpoint set).
 #   --acceptance runs only the acceptance flows (scenarios/acceptance, PLAN.md §3.4a).
+#   --refresh-original <scenario...> runs those scenarios and captures the original app again for them
+#   (it takes the names after it, up to the next option).
 #   --selftest compares a native capture and an Electron capture each with itself (no difference
 #   allowed), and a hand-made pair of geometry dumps with known offsets (report.ts selftest).
 #   FILETRAIL_CAPTURE_TIMEOUT (seconds, default 120) kills an app run that takes longer.
+# The original's captures are cached per scenario (see capture_electron) and taken once.
 # Exit codes: 0 done, 1 geometry miss (wave/final only), 2 usage, 3 pipeline failure.
 set -uo pipefail
 cd "$(dirname "$0")/../.."
@@ -18,6 +23,7 @@ tier=wp
 selftest=0
 acceptance=0
 names=()
+refresh=()
 while [ $# -gt 0 ]; do
     case "$1" in
     --tier)
@@ -32,8 +38,20 @@ while [ $# -gt 0 ]; do
         acceptance=1
         shift
         ;;
+    --refresh-original)
+        shift
+        [ $# -gt 0 ] && [ "${1:0:1}" != - ] || {
+            echo "--refresh-original takes one or more scenarios" >&2
+            exit 2
+        }
+        while [ $# -gt 0 ] && [ "${1:0:1}" != - ]; do
+            refresh+=("$1")
+            names+=("$1")
+            shift
+        done
+        ;;
     -h | --help)
-        sed -n '2,12p' "$0"
+        sed -n '2,17p' "$0"
         exit 0
         ;;
     -*)
@@ -46,8 +64,8 @@ while [ $# -gt 0 ]; do
         ;;
     esac
 done
-case "$tier" in wp | wave | final) ;; *)
-    echo "--tier takes wp, wave or final" >&2
+case "$tier" in wp | checkpoint | wave | final) ;; *)
+    echo "--tier takes wp, checkpoint, wave or final" >&2
     exit 2
     ;;
 esac
@@ -84,6 +102,11 @@ field() {
     bun -e 'const s = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")); const v = process.argv[2].split(".").reduce((o, k) => o?.[k], s); if (v !== undefined) console.log(Array.isArray(v) ? v.join("\n") : v)' "$1" "$2"
 }
 
+# A scenario name or path as its file.
+scenario_file() {
+    if [ -f "$1" ]; then echo "$1"; else echo "tools/capture/scenarios/$1.json"; fi
+}
+
 scenarios=()
 if [ ${#names[@]} -eq 0 ]; then
     candidates=()
@@ -96,10 +119,10 @@ if [ ${#names[@]} -eq 0 ]; then
         if [ "$acceptance" = 1 ] || field "$file" tier | grep -qx "$tier"; then scenarios+=("$file"); fi
     done
 else
-    for name in "${names[@]}"; do
-        if [ -f "$name" ]; then scenarios+=("$name"); else scenarios+=("tools/capture/scenarios/$name.json"); fi
-    done
+    for name in "${names[@]}"; do scenarios+=("$(scenario_file "$name")"); done
 fi
+refresh_files=" "
+for name in ${refresh[@]+"${refresh[@]}"}; do refresh_files+="$(scenario_file "$name") "; done
 if [ ${#scenarios[@]} -eq 0 ]; then
     echo "no scenario is tagged with tier $tier" >&2
     exit 2
@@ -171,38 +194,58 @@ capture_swift() { # <scenario> <dir> <now> <scratch>
         --elements "$elements" >>"$logs/capture-swift.log" 2>&1
 }
 
+# The original app's captures are taken once per scenario and cached in
+# $cache/captures/<referenceCommit>/<key>/, keyed on what changes its run: the scenario file, preferences.json
+# and CAPTURE_FORMAT_VERSION in electron/driver.ts. Not on elements.json or elements.d: a name added later is
+# in the original's geometry only after --refresh-original (report.ts shows it as not captured until then).
+# A run that failed a step, missed an expectation or ended with a driver error is cached too, with its
+# report and exit status; only a run the time limit killed, or one that wrote no report, is not.
+format="$(grep -Eo '^const CAPTURE_FORMAT_VERSION = [0-9]+' tools/capture/electron/driver.ts | grep -Eo '[0-9]+$')"
+if [ -z "$format" ]; then
+    echo "tools/capture/electron/driver.ts has no CAPTURE_FORMAT_VERSION" >&2
+    exit 3
+fi
+launched=0
+reused=0
+
 capture_electron() { # <scenario> <dir> <now> <scratch>
-    local hash cached tmp
-    hash="$(cat "$1" "$elements" tools/capture/preferences.json tools/capture/electron/driver.ts |
-        shasum -a 256 | cut -c1-16)"
+    local hash cached tmp result
+    hash="$({
+        echo "capture-format $format"
+        cat "$1" tools/capture/preferences.json
+    } | shasum -a 256 | cut -c1-16)"
     cached="$cache/captures/$commit/$hash"
-    if [ ! -f "$cached/.complete" ]; then
+    case "$refresh_files" in *" $1 "*) rm -rf "$cached" ;; esac
+    if [ -f "$cached/.complete" ]; then
+        reused=$((reused + 1))
+        echo "$(basename "$1" .json): original from cache $cached" >>"$logs/capture-electron.log"
+    else
         if [ ! -d "$cache/reference/electron/apps/desktop/dist/main" ]; then
-            echo "the reference app is not built: run tools/reference/setup.sh" >"$logs/capture-electron.log"
+            echo "the reference app is not built: run tools/reference/setup.sh" >>"$logs/capture-electron.log"
             return 1
         fi
         tmp="$cache/captures/$commit/.tmp-$hash-$$"
         rm -rf "$tmp"
         mkdir -p "$tmp"
         fresh_scratch "$1" "$4"
-        if ! FILETRAIL_NOW="$3" FILETRAIL_SCENARIO_ROOT="$4" limit "$timeout" bun tools/capture/electron/driver.ts \
-            --scenario "$1" --out "$tmp" --elements "$elements" >>"$logs/capture-electron.log" 2>&1; then
+        launched=$((launched + 1))
+        echo "$(basename "$1" .json): launching the original app" >>"$logs/capture-electron.log"
+        FILETRAIL_NOW="$3" FILETRAIL_SCENARIO_ROOT="$4" limit "$timeout" bun tools/capture/electron/driver.ts \
+            --scenario "$1" --out "$tmp" --elements "$elements" >>"$logs/capture-electron.log" 2>&1
+        result=$?
+        if [ "$result" -eq 142 ] || [ ! -f "$tmp/report.json" ]; then
             rm -rf "$2"
             mv "$tmp" "$2"
             return 1
         fi
-        # Only a run where every step worked and every expectation held is reused.
-        if grep -qE '"status": "(failed|timeout)"|"passed": false' "$tmp/report.json"; then
-            rm -rf "$2"
-            mv "$tmp" "$2"
-            return 0
-        fi
+        echo "$result" >"$tmp/.exit"
         touch "$tmp/.complete"
         rm -rf "$cached"
         mv "$tmp" "$cached"
     fi
     rm -rf "$2"
     cp -R "$cached" "$2"
+    [ "$(cat "$cached/.exit" 2>/dev/null || echo 0)" = 0 ]
 }
 
 # Whether a compare found no difference at all: compared_clean <summary.json>.
@@ -264,7 +307,7 @@ for file in "${scenarios[@]}"; do
         continue
     fi
     if ! capture_electron "$file" "$dir/electron" "$now" "$scratch"; then
-        echo "$name  PIPELINE: the Electron driver failed (see $logs/capture-electron.log)"
+        echo "$name  PIPELINE: the Electron driver failed (see $logs/capture-electron.log; a cached failure reruns with --refresh-original $name)"
         status=3
         continue
     fi
@@ -279,4 +322,5 @@ done
 
 bun tools/capture/report.ts contact --out "$out" || status=3
 echo "contact sheet: $out/contact.html"
+echo "original app: launched $launched times, $reused captures from the cache" | tee -a "$logs/capture-electron.log"
 exit "$status"

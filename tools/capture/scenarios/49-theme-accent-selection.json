@@ -2,7 +2,7 @@
   "name": "49-theme-accent-selection",
   "description": "Light, Dark and Auto with a Purple accent over a list with a selection, in the focused and the unfocused pane",
   "features": ["F-646", "F-932", "F-610", "F-649"],
-  "tier": ["wp", "wave", "final"],
+  "tier": ["wp", "checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

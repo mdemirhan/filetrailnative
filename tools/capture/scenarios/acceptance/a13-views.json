@@ -1,9 +1,9 @@
 {
   "name": "a13-views",
   "description": "A13: the three views with the List's optional Created and Permissions columns, each view in Compact density, and Quick Look on Space The folder tree is hidden so the List has room for all its columns.",
-  "features": ["F-583","F-686","F-756","F-757","F-764","F-776","F-777","F-896"],
+  "features": ["F-583", "F-686", "F-756", "F-757", "F-764", "F-776", "F-777", "F-896", "F-767", "F-768"],
   "behaviors": ["B-VIEW-001","B-VIEW-002","B-VIEW-004","B-VIEW-005"],
-  "tier": ["wave","final"],
+  "tier": ["checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

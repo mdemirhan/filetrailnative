@@ -110,6 +110,11 @@ interface Found {
 
 const STEP_TIMEOUT_MS = 30_000;
 
+/// What a capture records. run.sh keys the cached captures of the original on it (with the scenario file
+/// and preferences.json, not on this file's text): bump it only when what is written changes (the files,
+/// the dump's fields, the screenshots), which recaptures every scenario once.
+const CAPTURE_FORMAT_VERSION = 1;
+
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(name);
   return index >= 0 ? process.argv[index + 1] : undefined;
@@ -141,9 +146,10 @@ const preferenceKeys = JSON.parse(readFileSync(preferencesFile, "utf8")) as { ke
 const now = argument("--now") ?? process.env.FILETRAIL_NOW ?? scenario.now;
 mkdirSync(outDir, { recursive: true });
 
-const report: { scenario: string; side: string; steps: Entry[]; error?: string } = {
+const report: { scenario: string; side: string; captureFormat: number; steps: Entry[]; error?: string } = {
   scenario: scenario.name,
   side: "electron",
+  captureFormat: CAPTURE_FORMAT_VERSION,
   steps: [],
 };
 function writeReport() {
@@ -1066,6 +1072,9 @@ async function main() {
           side: "electron",
           name,
           window: { width: window.innerWidth, height: window.innerHeight },
+          // The ids this capture looked for: report.ts tells a name added after the capture
+          // (not captured) from one the page doesn't have (missing).
+          captured: [...new Set(specs.map((spec) => spec.id))].sort(),
           elements,
         };
       },

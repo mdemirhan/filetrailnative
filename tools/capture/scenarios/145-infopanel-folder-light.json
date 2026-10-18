@@ -3,14 +3,18 @@
   "description": "The Info panel for the folder on screen, with Calculate",
   "features": [
     "F-823",
-    "F-824"
+    "F-824",
+    "F-698",
+    "F-702",
+    "F-705"
   ],
   "behaviors": [
     "B-INFO-002",
-    "B-INFO-037"
+    "B-INFO-037",
+    "B-INFO-183",
+    "B-INFO-185"
   ],
   "tier": [
-    "wp",
     "wave",
     "final"
   ],

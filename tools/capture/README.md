@@ -4,19 +4,53 @@ The UI comparison pipeline of PLAN.md §5.4 and the in-app flows of §5.5. One s
 Electron app and the native app into the same state, and the two captures are compared.
 
 ```
-tools/capture/run.sh [--tier wp|wave|final] [--acceptance] [--selftest] [scenario...]
+tools/capture/run.sh [--tier wp|checkpoint|wave|final] [--acceptance] [--selftest]
+                     [--refresh-original <scenario...>] [scenario...]
 ```
 
 - No scenario named: every scenario tagged with the tier, from `scenarios/` and `scenarios/acceptance/`.
   `--acceptance` runs only the acceptance flows. A named scenario is `name`, `acceptance/name` or a path.
-- `--tier wp` (the default) only reports differences; `wave` and `final` also exit 1 on a geometry miss
+- `--tier wp` (the default) and `checkpoint` only report differences; `wave` and `final` also exit 1 on a geometry miss
   (an element off, missing on either side, or an unmet expectation). Exit 3 is a pipeline failure: a side
   that didn't finish, a missing capture, a step the original couldn't do, or an expectation the original
   didn't meet.
+- `--refresh-original <scenario...>` captures the original app again for those scenarios (and runs them);
+  see "The two sides".
 - `--selftest` checks the comparison itself: a native capture and an Electron capture are each compared
   with themselves (no difference allowed), and `report.ts selftest` runs a hand-made pair of geometry
   dumps through `compare` (one element 3 pt off, one missing on each side, one unmet expectation), which
   must be reported as exactly that.
+
+## Tiers: when each runs
+
+| Tier | Scenarios | When |
+|---|---|---|
+| `checkpoint` | 16 scenarios + 7 acceptance flows (below) | Every checkpoint (phase ends, before the user's hands-on checks), through `ui-check.js` |
+| `wave` | the checkpoint set + 62 scenarios + 10 acceptance flows | Wave ends |
+| `final` | the same set as `wave` | The final parity sweep |
+| `wp` | the 16 checkpoint scenarios (no flows) | A work package's own run, if one is ever allowed |
+
+A checkpoint scenario is tagged `wp`, `checkpoint`, `wave`, `final`; a checkpoint flow `checkpoint`, `wave`,
+`final`; every other item `wave`, `final` only. With no scenario named, `--tier T` runs the scenarios and flows
+tagged `T`; `--acceptance` runs every flow whatever its tier.
+
+The checkpoint set (23), chosen by the 2026-10-18 test audit (`docs/port/test-audit/scenarios.md`):
+
+- Scenarios: `50-toolbar-default-light`, `51-toolbar-default-dark`, `77-sidebar-deep-path`,
+  `75-sidebar-integrated-compact-light`, `03-icons-components-light`, `49-theme-accent-selection`,
+  `148-pathbar-inforow-dark`, `143-infopanel-file-light`, `156-toasts-three-stacked`, `55-sort-menu`,
+  `59-customize-toolbar`, `39-about-light`, `41-help-getting-around`, `159-quick-look-space`,
+  `16-go-to-folder-typed`, `19-settings-general`.
+- Acceptance flows: `a01-search`, `a02-folder-tree`, `a03-visible-clipboard`, `a04-paste-never-destroys`,
+  `a05-undo-redo`, `a13-views`, `a14-tabs-and-windows`.
+
+The other 72 items (62 scenarios, 10 flows) are final-only. The audit dropped 28 near-duplicate scenarios; the
+`features`/`behaviors` tags of each moved to the scenario that covers it. When a scenario for a new surface is
+added, tag it `checkpoint` only if it is the single capture of that surface. A12 (Batch Rename) and a09
+(shortcut recorder) move to `checkpoint` when P6-03 / P6-04 merge.
+
+No scenario captures the copy/paste progress card: the original shows it only after an operation has run 500 ms
+and while it still runs, and no driver step can slow or hold a copy.
 
 ## Scenarios
 
@@ -24,7 +58,7 @@ A scenario (`scenarios/*.json`, `scenarios/acceptance/*.json`) has:
 
 - `name`, `description`, `root` (relative to the fixtures folder), `now` (the frozen clock, local ISO
   time), `steps`;
-- `features` (the `F-` rows it proves), `tier` (any of `wp`, `wave`, `final`), and for acceptance flows
+- `features` (the `F-` rows it proves), `tier` (any of `wp`, `checkpoint`, `wave`, `final`), and for acceptance flows
   `behaviors` (the `B-` rules of `docs/port/behaviors/` its steps check);
 - `setup.emptyFolders` (folders to make, dated to the clock) and `setup.scratch: true` for a scenario that
   changes files: each side then runs on a fresh copy of `root` at `~/Library/Caches/filetrail-port/work/
@@ -79,10 +113,16 @@ only for steps; it is not compared. Names for dialogs and menus follow `docs/por
 
 - **Swift**: the debug app's `--automation <scenario> --out <dir> --elements <file>` mode
   (`Sources/FTAppKit/Automation/`), with `FILETRAIL_NOW` set from the scenario.
-- **Electron**: `electron/driver.ts`, run with Bun and the reference build's Playwright. Its captures are
-  cached in `~/Library/Caches/filetrail-port/captures/<referenceCommit>/<hash>/` and rerun only when the
-  scenario, `elements.json`, `preferences.json` or the driver changes, and only a run where every step
-  worked and every expectation held is cached.
+- **Electron**: `electron/driver.ts`, run with Bun and the reference build's Playwright. The original is
+  captured once per scenario and cached in `~/Library/Caches/filetrail-port/captures/<referenceCommit>/<hash>/`.
+  The key is the scenario file, `preferences.json` and `CAPTURE_FORMAT_VERSION` in the driver (bump it only
+  when what a capture writes changes; that recaptures every scenario once). It is not keyed on
+  `elements.json`/`elements.d`: the driver records which element ids it looked for, and `report.ts` shows a
+  name added later as `not captured (electron)` instead of comparing it. Run `--refresh-original <scenario...>`
+  to capture the original again for the scenarios that need the new names. Failed runs (a failed step, an unmet
+  expectation, a driver error) are cached too, with their exit status, so the original isn't launched again
+  for a scenario that can't pass; fix the scenario or use `--refresh-original`. A run killed by the time limit,
+  or one that wrote no report, isn't cached. `run.sh` ends with how many times it launched the original.
 
 ## Reports
 
@@ -95,7 +135,7 @@ only for steps; it is not compared. Names for dialogs and menus follow `docs/por
 
 ## Acceptance flows
 
-`scenarios/acceptance/a01…a17` are the improvements A1–A17 of PLAN.md §3.4a, tagged `wave` and `final`,
+`scenarios/acceptance/a01…a17` are the improvements A1–A17 of PLAN.md §3.4a, tagged `wave` and `final` (a01–a05, a13, a14 also `checkpoint`),
 written from the rules in `docs/port/behaviors/` (listed under `behaviors`). They are complete on the
 Electron side; the native app reports what it can't do yet. Parts that can't run here are named in each
 flow's description (Replace's Trash and crash recovery, quit and relaunch, disk images, UI zoom).

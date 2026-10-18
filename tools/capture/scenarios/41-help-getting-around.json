@@ -2,7 +2,7 @@
   "name": "41-help-getting-around",
   "description": "Help > File Trail Help opens Help on its first topic, Getting around",
   "features": ["F-594", "F-634", "F-639", "F-663", "F-665", "F-666", "F-664"],
-  "tier": ["wp", "wave", "final"],
+  "tier": ["wp", "checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

@@ -3,7 +3,7 @@
   "description": "A9: Settings › Shortcuts: a plain letter is refused, a key another command has asks to reassign, a free key is kept and then works in the window",
   "features": ["F-902","F-903","F-904","F-905","F-906"],
   "behaviors": ["B-DLG-210","B-DLG-212","B-DLG-213","B-DLG-219","B-DLG-221","B-DLG-222","B-DLG-229","B-DLG-231"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
