@@ -364,96 +364,91 @@ struct MoveUndoRecordingTests {
         }
     }
 
+    // The source seems to be on a disk of its own (another device number, EXDEV out of it): the engine tells
+    // disks apart by device number alone.
     // T-b03f7dc5 F-467
-    @Test(.tags(.diskImage), .diskImages)
-    func cantBeUndoneWhenItWentToAnotherDisk() async throws {
+    @Test func cantBeUndoneWhenItWentToAnotherDisk() async throws {
         try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { volume in
-                let (src, _, _) = try folders(root)
-                try Disk.write(src + "/a.txt", "a")
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/a.txt", "a")
 
-                let run = try await runPaste(mode: .cut, sources: [src + "/a.txt"], into: volume.path)
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/a.txt"], into: dst, fileSystem: NativePaste.asOnAnotherDisk(src))
 
-                #expect(Disk.read(volume.path + "/a.txt") == "a")
-                #expect(try undoLog(run.result) == .notUndoable(reason: .otherDiskMove))
-            }
+            #expect(Disk.read(dst + "/a.txt") == "a")
+            #expect(try undoLog(run.result) == .notUndoable(reason: .otherDiskMove))
         }
     }
 }
 
-/// A move to another disk, when nothing was changed.
+/// A move to another disk, when nothing was changed. The source seems to be on a disk of its own (another device
+/// number, EXDEV out of it), so the move copies and then removes, as one to a real other disk does.
 struct OtherDiskUndoRecordingTests {
     // T-8e3b55e9 F-467
-    @Test(.tags(.diskImage), .diskImages)
-    func leavesUndoAsItWasWhenTheItemCantBeRead() async throws {
+    @Test func leavesUndoAsItWasWhenTheItemCantBeRead() async throws {
         try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { volume in
-                let (src, _, trash) = try folders(root)
-                try Disk.write(src + "/a.txt", "a")
-                let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
-                fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EACCES", "EACCES: permission denied") }
+            let (src, dst, trash) = try folders(root)
+            try Disk.write(src + "/a.txt", "a")
+            let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
+            fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EACCES", "EACCES: permission denied") }
 
-                let run = try await runPaste(
-                    mode: .cut, sources: [src + "/a.txt"], into: volume.path, fileSystem: fileSystem)
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/a.txt"], into: dst,
+                fileSystem: NativePaste.asOnAnotherDisk(src, fileSystem))
 
-                #expect(run.result?.status == .failed)
-                #expect(!Disk.list(volume.path).contains("a.txt"))
-                #expect(try undoLog(run.result) == .undoable(units: []))
-            }
+            #expect(run.result?.status == .failed)
+            #expect(!Disk.list(dst).contains("a.txt"))
+            #expect(try undoLog(run.result) == .undoable(units: []))
         }
     }
 
     // T-9b6dc618 F-257 F-467
-    @Test(.tags(.diskImage), .diskImages)
-    func leavesUndoAsItWasWhenStoppedBeforeAnythingWasWritten() async throws {
+    @Test func leavesUndoAsItWasWhenStoppedBeforeAnythingWasWritten() async throws {
         try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { volume in
-                let (src, _, _) = try folders(root)
-                try Disk.write(src + "/a.txt", "a")
-                let signal = StopSignal()
-                let fileSystem = TestFileSystem()
-                fileSystem.copyFileImpl = { _, _, _, _ in
-                    signal.stop()
-                    throw StopError()
-                }
-
-                let run = try await runPaste(
-                    mode: .cut, sources: [src + "/a.txt"], into: volume.path, fileSystem: fileSystem, signal: signal)
-
-                #expect(run.result?.status == .cancelled)
-                #expect(Disk.read(src + "/a.txt") == "a")
-                #expect(try undoLog(run.result) == .undoable(units: []))
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/a.txt", "a")
+            let signal = StopSignal()
+            let fileSystem = TestFileSystem()
+            fileSystem.copyFileImpl = { _, _, _, _ in
+                signal.stop()
+                throw StopError()
             }
+
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/a.txt"], into: dst,
+                fileSystem: NativePaste.asOnAnotherDisk(src, fileSystem), signal: signal)
+
+            #expect(run.result?.status == .cancelled)
+            #expect(Disk.read(src + "/a.txt") == "a")
+            #expect(try undoLog(run.result) == .undoable(units: []))
         }
     }
 
     // The folder was being built under a hidden name on the other disk: stopped, it goes, and nothing was changed,
     // so Undo is left as it was.
     // T-9b055e08 F-257 F-262
-    @Test(.tags(.diskImage), .diskImages)
-    func changesNothingWhenStoppedJustAfterMakingTheFolderThere() async throws {
+    @Test func changesNothingWhenStoppedJustAfterMakingTheFolderThere() async throws {
         try await withTemporaryDirectory { root in
-            try await DiskImage.withVolume(.apfs) { volume in
-                let (src, _, _) = try folders(root)
-                try Disk.write(src + "/Folder/a.txt", "a")
-                let signal = StopSignal()
-                let native = NativeWriteFileSystem()
-                let fileSystem = TestFileSystem(native)
-                fileSystem.mkdirImpl = { path in
-                    try native.mkdir(path)
-                    if path.hasPrefix(volume.path) {
-                        signal.stop()
-                    }
+            let (src, dst, _) = try folders(root)
+            try Disk.write(src + "/Folder/a.txt", "a")
+            let signal = StopSignal()
+            let native = NativeWriteFileSystem()
+            let fileSystem = TestFileSystem(native)
+            fileSystem.mkdirImpl = { path in
+                try native.mkdir(path)
+                if path.hasPrefix(dst + "/") {
+                    signal.stop()
                 }
-
-                let run = try await runPaste(
-                    mode: .cut, sources: [src + "/Folder"], into: volume.path, fileSystem: fileSystem, signal: signal)
-
-                #expect(run.result?.status == .cancelled)
-                #expect(Disk.read(src + "/Folder/a.txt") == "a")
-                #expect(Disk.list(volume.path).filter { $0.contains("Folder") } == [])
-                #expect(try undoLog(run.result) == .undoable(units: []))
             }
+
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/Folder"], into: dst,
+                fileSystem: NativePaste.asOnAnotherDisk(src, fileSystem), signal: signal)
+
+            #expect(run.result?.status == .cancelled)
+            #expect(Disk.read(src + "/Folder/a.txt") == "a")
+            #expect(Disk.list(dst).filter { $0.contains("Folder") } == [])
+            #expect(try undoLog(run.result) == .undoable(units: []))
         }
     }
 }

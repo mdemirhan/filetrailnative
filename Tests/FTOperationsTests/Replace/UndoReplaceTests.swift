@@ -164,48 +164,43 @@ struct MoveUndoReplaceTests {
         }
     }
 
+    // The source seems to be on a disk of its own (another device number, EXDEV out of it), so the move copies and
+    // then removes, as one to a real other disk does.
     // T-17121de6
-    @Test(.tags(.diskImage), .diskImages)
-    func leavesUndoAsItWasWhenAReplaceCouldntCopyTheNewItem() async throws {
-        try await withFolders { src, _, trash in
-            try await DiskImage.withVolume(.apfs) { volume in
-                try Disk.write(src + "/a.txt", "new")
-                try Disk.write(volume.path + "/a.txt", "old")
-                let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
-                fileSystem.copyFileImpl = { _, _, _, _ in
-                    throw NativeError(message: "EIO: i/o error", code: "EIO")
-                }
-
-                let run = try await runPaste(
-                    mode: .cut, sources: [src + "/a.txt"], into: volume.path, policy: NativePaste.replaceAll,
-                    fileSystem: fileSystem)
-
-                #expect(run.result?.status == .failed)
-                #expect(Disk.read(volume.path + "/a.txt") == "old")
-                #expect(Disk.list(trash) == [])
-                #expect(try undoLog(run.result) == .undoable(units: []))
+    @Test func leavesUndoAsItWasWhenAReplaceCouldntCopyTheNewItem() async throws {
+        try await withFolders { src, dst, trash in
+            try Disk.write(src + "/a.txt", "new")
+            try Disk.write(dst + "/a.txt", "old")
+            let fileSystem = TestFileSystem(NativePaste.withTrash(trash))
+            fileSystem.copyFileImpl = { _, _, _, _ in
+                throw NativeError(message: "EIO: i/o error", code: "EIO")
             }
+
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/a.txt"], into: dst, policy: NativePaste.replaceAll,
+                fileSystem: NativePaste.asOnAnotherDisk(src, fileSystem))
+
+            #expect(run.result?.status == .failed)
+            #expect(Disk.read(dst + "/a.txt") == "old")
+            #expect(Disk.list(trash) == [])
+            #expect(try undoLog(run.result) == .undoable(units: []))
         }
     }
 
+    // The source seems to be on a disk of its own, as above. The Trash the replaced item goes to is on the disk it
+    // is on, as a real disk's own Trash is.
     // T-4492a990
-    @Test(.tags(.diskImage), .diskImages)
-    func cantBeUndoneOnceAReplacePutTheNewItemInPlace() async throws {
-        try await withFolders { src, _, _ in
-            try await DiskImage.withVolume(.apfs) { volume in
-                try Disk.write(src + "/a.txt", "new")
-                try Disk.write(volume.path + "/a.txt", "old")
-                // The disk's own Trash: an item can't be renamed into a folder on another disk.
-                let volumeTrash = volume.path + "/.Trash"
-                try Disk.makeDirectories(volumeTrash)
+    @Test func cantBeUndoneOnceAReplacePutTheNewItemInPlace() async throws {
+        try await withFolders { src, dst, trash in
+            try Disk.write(src + "/a.txt", "new")
+            try Disk.write(dst + "/a.txt", "old")
 
-                let run = try await runPaste(
-                    mode: .cut, sources: [src + "/a.txt"], into: volume.path, policy: NativePaste.replaceAll,
-                    fileSystem: NativePaste.withTrash(volumeTrash))
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/a.txt"], into: dst, policy: NativePaste.replaceAll,
+                fileSystem: NativePaste.asOnAnotherDisk(src, NativePaste.withTrash(trash)))
 
-                #expect(Disk.read(volume.path + "/a.txt") == "new")
-                #expect(try undoLog(run.result) == .notUndoable(reason: .otherDiskMove))
-            }
+            #expect(Disk.read(dst + "/a.txt") == "new")
+            #expect(try undoLog(run.result) == .notUndoable(reason: .otherDiskMove))
         }
     }
 }

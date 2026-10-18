@@ -84,55 +84,46 @@ struct LockedReplaceTests {
     }
 
     // The Replace stages a plain copy and removes the originals only after the swap: a locked original used to be
-    // found out then, after the old item had gone to the Trash.
+    // found out then, after the old item had gone to the Trash. The source seems to be on a disk of its own
+    // (another device number, EXDEV out of it), so the move copies and then removes, as one to a real other disk.
     // T-d236f420 F-475 F-510
-    @Test(.tags(.diskImage), .diskImages)
-    func refusesALockedFileBeforeAnythingIsReplaced() async throws {
-        try await withPlaces { src, _, _ in
-            try await DiskImage.withVolume(.apfs) { disk in
-                let otherTrash = disk.path + "/.test-trash"
-                try Disk.makeDirectories(otherTrash)
-                try Disk.write(src + "/f.txt", "new")
-                Disk.lock(src + "/f.txt")
-                try Disk.write(disk.path + "/f.txt", "old")
+    @Test func refusesALockedFileBeforeAnythingIsReplaced() async throws {
+        try await withPlaces { src, disk, otherTrash in
+            try Disk.write(src + "/f.txt", "new")
+            Disk.lock(src + "/f.txt")
+            try Disk.write(disk + "/f.txt", "old")
 
-                let run = try await runPaste(
-                    mode: .cut, sources: [src + "/f.txt"], into: disk.path, policy: NativePaste.replaceAll,
-                    fileSystem: NativePaste.withTrash(otherTrash))
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/f.txt"], into: disk, policy: NativePaste.replaceAll,
+                fileSystem: NativePaste.asOnAnotherDisk(src, NativePaste.withTrash(otherTrash)))
 
-                #expect(run.result?.items.first?.status == .failed)
-                #expect(
-                    run.result?.items.first?.error
-                        == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
-                #expect(Disk.read(disk.path + "/f.txt") == "old")
-                #expect(Disk.list(otherTrash) == [])
-                #expect(Disk.list(src) == ["f.txt"])
-            }
+            #expect(run.result?.items.first?.status == .failed)
+            #expect(
+                run.result?.items.first?.error
+                    == "\u{201C}f.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+            #expect(Disk.read(disk + "/f.txt") == "old")
+            #expect(Disk.list(otherTrash) == [])
+            #expect(Disk.list(src) == ["f.txt"])
         }
     }
 
     // T-751f9048 F-475 F-510
-    @Test(.tags(.diskImage), .diskImages)
-    func refusesAFolderHoldingALockedItemBeforeAnythingIsReplaced() async throws {
-        try await withPlaces { src, _, _ in
-            try await DiskImage.withVolume(.apfs) { disk in
-                let otherTrash = disk.path + "/.test-trash"
-                try Disk.makeDirectories(otherTrash)
-                try Disk.write(src + "/Docs/keep.txt", "keep")
-                Disk.lock(src + "/Docs/keep.txt")
-                try Disk.write(disk.path + "/Docs/old.txt", "old")
+    @Test func refusesAFolderHoldingALockedItemBeforeAnythingIsReplaced() async throws {
+        try await withPlaces { src, disk, otherTrash in
+            try Disk.write(src + "/Docs/keep.txt", "keep")
+            Disk.lock(src + "/Docs/keep.txt")
+            try Disk.write(disk + "/Docs/old.txt", "old")
 
-                let run = try await runPaste(
-                    mode: .cut, sources: [src + "/Docs"], into: disk.path, policy: NativePaste.replaceAll,
-                    fileSystem: NativePaste.withTrash(otherTrash))
+            let run = try await runPaste(
+                mode: .cut, sources: [src + "/Docs"], into: disk, policy: NativePaste.replaceAll,
+                fileSystem: NativePaste.asOnAnotherDisk(src, NativePaste.withTrash(otherTrash)))
 
-                #expect(run.result?.items.first?.status == .failed)
-                #expect(
-                    run.result?.items.first?.error
-                        == "\u{201C}keep.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
-                #expect(Disk.list(disk.path + "/Docs") == ["old.txt"])
-                #expect(Disk.list(otherTrash) == [])
-            }
+            #expect(run.result?.items.first?.status == .failed)
+            #expect(
+                run.result?.items.first?.error
+                    == "\u{201C}keep.txt\u{201D} is locked. Unlock it in Finder's Get Info and try again.")
+            #expect(Disk.list(disk + "/Docs") == ["old.txt"])
+            #expect(Disk.list(otherTrash) == [])
         }
     }
 }

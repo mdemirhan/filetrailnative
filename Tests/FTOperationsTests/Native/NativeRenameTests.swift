@@ -61,7 +61,7 @@ struct NativeRenameExclusiveTests {
     // F-348 F-337
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func movesWithoutReplacingOnFATDisks(kind: DiskImage.Kind) async throws {
-        try await DiskImage.withVolume(kind) { volume in
+        try await DiskImage.withSharedVolume(kind) { volume in
             try Files.write(volume.path + "/a.txt", "moved")
             try Files.write(volume.path + "/b.txt", "existing")
             let error = #expect(throws: NativeError.self) {
@@ -95,7 +95,7 @@ struct NativeCaseSensitivityTests {
     // F-333
     @Test(.tags(.diskImage), .diskImages)
     func answersTrueOnACaseSensitiveDisk() async throws {
-        try await DiskImage.withVolume(.apfsCaseSensitive) { volume in
+        try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
             let answer = try NativeFS.isCaseSensitive(volume.path)
             #expect(answer == true)
         }
@@ -134,7 +134,7 @@ struct NativeAppleDoubleTests {
     // F-414
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func tellsADiskThatKeepsAttributesInAppleDoubleFiles(kind: DiskImage.Kind) async throws {
-        try await DiskImage.withVolume(kind) { volume in
+        try await DiskImage.withSharedVolume(kind) { volume in
             #expect(try NativeFS.usesAppleDouble(volume.path) == true)
             try Files.write(volume.path + "/a.txt", "a")
             #expect(Files.setXattr(volume.path + "/a.txt", "com.example.test", "value") == 0)
