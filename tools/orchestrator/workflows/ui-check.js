@@ -8,7 +8,7 @@ export const meta = {
   ],
 }
 
-// args: { checkpoint, repo, scenarios?: string, acceptance?: string, bench?: boolean, wps?: [{ id, title }] }
+// args: { checkpoint, repo, scenarios?: string (run.sh arguments; default --tier checkpoint; --tier wave at wave ends), bench?: boolean, wps?: [{ id, title }] }
 // The only place window checks run (user, 2026-10-14), as the original runs its e2e suite only in CI. Nothing is fixed
 // here: failures and visual findings come back attributed to work packages, and the orchestrator turns them into
 // fix work packages.
@@ -58,9 +58,8 @@ phase('Window run')
 const run = await agent(
   `${PRE}\n\n## Your role: checkpoint UI run "${A.checkpoint}"
 In your own worktree, check out main detached (\`git checkout --detach main\`) and note its sha. Then run each of these once, from the repo root, each under the GUI lock (\`lockf -k ~/Library/Caches/filetrail-port/gui.lock <command>\`, one take per command):
-- \`env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests\`
-- \`tools/capture/run.sh ${A.scenarios || '--tier wp'}\`
-- \`tools/capture/run.sh --acceptance ${A.acceptance || ''}\`${A.bench ? '\n- `tools/bench/run.sh --report-only` (report-only: quote its numbers)' : ''}
+- \`env FILETRAIL_GUI_TESTS=1 swift test --filter 'GUITests|DiskImageMounterHandOffTests'\` (the on-screen end-to-end tests only; the rest run windowless in CI)
+- \`tools/capture/run.sh ${A.scenarios || '--tier checkpoint'}\` (the checkpoint scenarios and acceptance flows; if this tier doesn't exist yet, \`--tier wp\` and then \`--acceptance\`)${A.bench ? '\n- `tools/bench/run.sh --report-only` (report-only: quote its numbers)' : ''}
 If a test fails, rerun just that test once with --filter; if it passes alone, list it under flaky. Don't rerun whole suites.
 For each failure, name the work package that owns it: the one whose brief (docs/port/state/wp/*.md) owns the failing test, scenario, flow or code, using \`git log\` on the files if needed; "unknown" if none does. Fix nothing and commit nothing.
 Finally copy tools/capture/out to ${CAPTURES} (\`rm -rf ${CAPTURES}; mkdir -p $(dirname ${CAPTURES}); cp -R tools/capture/out ${CAPTURES}\`) and return its absolute path in captures.`,

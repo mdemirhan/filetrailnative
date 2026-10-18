@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-17T14:55:08+00:00",
+  "updatedAt": "2026-10-18T13:20:00+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
   "wave": 2,
   "phase": "P3/P4-03/P5",
-  "nextAction": "On /port resume, first apply the approved test reduction (docs/port/test-audit/approved.json and the five audit reports): (a) window tests: keep 23 on screen, convert 44 to windowless (shared harness that never shows the window, per window-tests.md), drop 11; fix the two bugs found (a test writing the real clipboard, one leaving its harness open) and gate or un-show AutomationStepsTests.findsElementsByNameTextAndPlace; (b) scenarios: a checkpoint tier with the 16 scenarios + 7 acceptance flows, final for 62 + 10, drop 28 after moving their F-/B- tags; ui-check.js runs the checkpoint tier and only the kept window tests (a tag or filter, plus DiskImageMounterHandOffTests); add a progress-UI scenario (gap); (c) remove the approved near-duplicates (7 app, 12 FTFoundation, 11 file system) and update tests.tsv/features.md/behaviors.tsv citations; groups the original keeps separately stay; (d) the 14 faster-fixture changes, each keeping what its test proves. Run these as work packages through schedule.py (windowless gates). Then the first UI checkpoint (covers P5-06/P5-09), P5-05 from port/P5-05, decide port/capture-once, then schedule.py ready.",
+  "nextAction": "Applying the approved test reduction: P0-17, P0-18, P0-19 running; P0-20 after P0-19. Then the first UI checkpoint (ui-check.js), P5-05 from port/P5-05, then schedule.py ready.",
   "pause": {
-    "requested": true,
-    "reason": "user 2026-10-18: test reduction approved; checkpoint and wait. Start the work only when the user resumes the port.",
+    "requested": false,
+    "reason": null,
     "until": null
   },
   "meter": [
@@ -109,6 +109,12 @@
       "weeklyPct": 0.0,
       "fiveHourPct": 0.0,
       "note": "resume 2026-10-17"
+    },
+    {
+      "at": "2026-10-18T13:20:00+00:00",
+      "weeklyPct": 0.0,
+      "fiveHourPct": 0.0,
+      "note": "resume 2026-10-18"
     }
   ],
   "batches": {
@@ -3076,6 +3082,109 @@
         "open_3000_ms stays over its 50 ms budget until the app's FolderLoader is replaced by DirectoryService, or the display path is sped up",
         "Several budgets (open_100000, stall_100000, list_100000, back, scroll_max) were over in the baseline run, so the new baseline records over-budget values"
       ]
+    },
+    "P0-17": {
+      "title": "Window tests: keep 23 on screen, make 44 windowless, drop 11; app-target near-duplicates",
+      "phase": "P0",
+      "wave": 2,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [],
+      "status": "todo",
+      "branch": "port/P0-17",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": [],
+      "carryOver": [],
+      "sharedFileRequests": [],
+      "deviations": []
+    },
+    "P0-18": {
+      "title": "Screenshot scenarios: checkpoint tier, drops, progress scenario, original-app captures once",
+      "phase": "P0",
+      "wave": 2,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [],
+      "status": "todo",
+      "branch": "port/P0-18",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": [],
+      "carryOver": [],
+      "sharedFileRequests": [],
+      "deviations": []
+    },
+    "P0-19": {
+      "title": "Near-duplicate tests: FTFoundation, file system, file operations",
+      "phase": "P0",
+      "wave": 2,
+      "risk": "low",
+      "model": "sonnet",
+      "depends": [],
+      "status": "todo",
+      "branch": "port/P0-19",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "scripts/ci.sh",
+        "tools/parity/gen.sh --check"
+      ],
+      "lenses": [
+        "parity"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": [],
+      "carryOver": [],
+      "sharedFileRequests": [],
+      "deviations": []
+    },
+    "P0-20": {
+      "title": "Faster test fixtures: smaller images, fewer mounts, shorter waits",
+      "phase": "P0",
+      "wave": 2,
+      "risk": "medium",
+      "model": "opus",
+      "depends": [
+        "P0-19"
+      ],
+      "status": "todo",
+      "branch": "port/P0-20",
+      "headSha": null,
+      "attempts": 0,
+      "gate": [
+        "FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh"
+      ],
+      "lenses": [
+        "parity"
+      ],
+      "summary": null,
+      "findings": [],
+      "fixes": [],
+      "blockers": [],
+      "carryOver": [],
+      "sharedFileRequests": [],
+      "deviations": []
     }
   },
   "behaviorExtraction": {
