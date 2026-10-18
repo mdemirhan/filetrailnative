@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T13:45:55+00:00",
+  "updatedAt": "2026-10-18T14:17:59+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -786,9 +786,24 @@
       "wps": [
         "P0-20"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_552cbddd-1bb",
-      "startedAt": "2026-10-18T13:33:50+00:00"
+      "startedAt": "2026-10-18T13:33:50+00:00",
+      "endedAt": "2026-10-18T14:17:58+00:00",
+      "integration": {
+        "merged": [
+          "P0-20"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "3dee6f194d6b7e52725396e6559ac7fc494a335b",
+        "summary": "P0-20 merged cleanly. I applied the fixtures README request in a separate commit. scripts/ci.sh passed after the merge (2042 tests, 0 failing). The parity sync ran and its commit is the head. The merge lock is released."
+      },
+      "critic": null,
+      "spentOutputTokens": 440437,
+      "agents": 4,
+      "subagentTokens": 558563,
+      "durationMin": 43.7
     }
   },
   "wps": {
@@ -3304,25 +3319,43 @@
       "depends": [
         "P0-19"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-20",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "f90a452238b3bd7a637b956f710dea3897be7416",
+      "attempts": 1,
       "gate": [
         "FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh"
       ],
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Test step (without compile) 39.6 s -> 29 s (FTOperationsTests process 17.7 -> 9.0 s). FILETRAIL_LARGE_FILE_TESTS=1 FTOperationsTests 46.8 -> 14.5 s. The gate FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh passes: 2060 tests, test step 47 s.\nDiskImage: a volume name per kind, kept in fixtures/disks/tests/ (the parity images are unchanged); apfsSmall (32 MB) and fat32Small (40 MB) kinds for the fill tests; withSharedVolume shares one mount per kind across the tests running at the same time, with a folder per test (self-test in Native/SharedVolumeTests.swift).\n15 move tests changed to NativePaste.asOnAnotherDisk, UndoReplace:192 among them (its Trash is on the destination's disk). Mutating assertRemovableAfterCopy, expectCantUndo, removeMovedSources and tryDeleteMovedSource makes all 15 fail. Each was 9-46 s waiting on the APFS lock; now under 0.1 s.\nFill tests: 2 MB sources on the small disks (ENOSPC 80->2 MB, CopyPasteVolumes 8->2 MB, resource forks on 32/40 MB). Throughput: two tests became one, with one 150 MB file and one shared mount (41.8+28.1 s -> 11.0 s). LockedPaste:110 uses 32 MB on the shared mount (14.8 -> under 1 s). FAT/exFAT and case-sensitive tests share a mount per kind (about 10-12 s -> 2-3 s, lock waits included).\nLarge trees: one 150,000-file tree reviewed once through WriteService for both tests (the analysis test's own 1.9 s is gone). keepsUp 200k -> 40k (bound 1.2 s, 0.70 -> 0.11 s). FolderSizeCache 400k -> 120k (bound 1.5 s, 1.43 -> 0.29 s). A per-store linear-scan mutation still fails both.\nFolder watch: waits for changes that should not come cut to 250 ms; the two stop tests became one sharing a folder (suite 2.9 -> 1.1 s). Mutations of DeferredStart.attach, cancel and the deep-path filter still fail. Fd tests 0.36 -> 0.2 s. The listing test uses 2,000 files with 200-byte names (1.7 -> 0.5 s); stopping after one getattrlistbulk call still fails it.\nThe flaky DiskImageSelfTests fat32 case is fixed. fat32 and exfat both had the volume name FTTEST, each kind with its own lock. So when one detached, another test mounting the other kind took /Volumes/FTTEST, and the self-test found the path still there. The per-kind names fix this without retries or longer sleeps.",
       "findings": [],
       "fixes": [],
       "blockers": [],
       "carryOver": [
         "From W2-P0-18 gate: Flaky: DiskImageSelfTests.mountsWritesAndDetaches(kind: .fat32) failed once in a full ci.sh run (LargeFileTests.swift:27, a leftover path still existed) and passed alone. You are reworking the disk-image fixtures: find why the path survives under load and fix it, without retries or longer sleeps."
       ],
-      "sharedFileRequests": [],
-      "deviations": []
+      "sharedFileRequests": [
+        "tools/fixtures/README.md: disk-images.sh now also makes fixtures/disks/tests/{fat32,exfat,hfs,apfs,apfs-cs}.sparseimage (256 MB, volume names FTFAT32/FTEXFAT/FTHFS/FTAPFS/FTAPFSCS) and apfs-small (32 MB) and fat32-small (40 MB) for DiskImage. The 256 MB parity images in fixtures/disks/ are unchanged.",
+        "docs/port/parity sync after merge: Copy/CopyThroughputTests.swift is deleted. Its test merged into Execution/PasteThroughputTests aPastedLargeFileAndTheStoppableCopyKeepWithinFivePercentOfABareCopyfile (F-404 F-410 F-453). FolderWatchStreamTests stoppedBeforeTheStreamIsStartedLeavesNoStream merged into stopsWatchingWhenAskedAlsoBeforeTheStreamIsStarted."
+      ],
+      "deviations": [
+        "FolderSizeJobsTests:263 (forgets) left as it is. The pairwise mutation takes 11.3 s at the current size, but at a fifth with a proportional bound it passes (0.45 s, under 0.6 s), so the smaller test would not catch its bug.",
+        "FolderSizeCacheTests:122 reduced to 120,000, not a fifth (80,000). Its bug was a 100,000 limit, so it needs more than 100,000, like FolderSizeJobsTests:293.",
+        "LockedPasteTests:110 still has its 3 attempts (the original's). They cost nothing unless the first copy finishes before the stop; only the file went from 150 MB to 32 MB (8 MB was stopped in all of 80 runs).",
+        "Fd tests search /System/Library, not /usr: fd finishes /usr in 0.05 s, too fast for the ps polling. / also took in other tests' mounted disk images.",
+        "NativeFileSystemTests:55: the listing has no buffer-size parameter (BULK_BUFFER_SIZE is fixed in Sources/CFileTrail/listing.c, which this package doesn't own), so the test uses longer names and 2,000 files instead.",
+        "The two large-tree tests now share one review through WriteService: LargeTreeExecutionTests (T-aa0802fe) no longer calls buildCopyPasteAnalysisReport itself with thresholds 100/1000. The paste half is unchanged.",
+        "The start waits of 300 ms in FolderWatchStreamTests are unchanged. They cover the stream opening on a detached utility-priority task, not FSEvents latency, and a late start would make the tests that wait for a change fail.",
+        "NativeTrashTests:30, VolumeEjector, VolumeListing:82 and NativeCopyTests:173 (skip item) keep a volume of their own: they need the volume root, its Trash, or eject/mount."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh: pass (exit 0). build PASS (12s), test PASS (52s, 2060 tests in passing runs, 0 failing), format PASS (5s). No failures, no reruns needed, no flaky tests. Worktree is detached at f90a452 (port/P0-20); nothing changed or committed.",
+        "failures": [],
+        "flaky": []
+      }
     }
   },
   "behaviorExtraction": {
