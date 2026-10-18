@@ -552,8 +552,8 @@ B-INFO-088	INFO	A8, A11			todo
 B-INFO-089	INFO	A8, A11			todo
 B-INFO-090	INFO	A8, A11			todo
 B-INFO-091	INFO	A8, A11			todo
-B-INFO-092	INFO	A8, A11		135-pathbar-collapsed-light	partial
-B-INFO-093	INFO	A8, A11		135-pathbar-collapsed-light	partial
+B-INFO-092	INFO	A8, A11		50-toolbar-default-light	partial
+B-INFO-093	INFO	A8, A11		50-toolbar-default-light	partial
 B-INFO-094	INFO	A8, A11			todo
 B-INFO-095	INFO	A8, A11			todo
 B-INFO-096	INFO	A8, A11			todo
@@ -562,10 +562,10 @@ B-INFO-098	INFO	A8, A11			todo
 B-INFO-099	INFO	A8, A11			todo
 B-INFO-100	INFO	A8, A11			todo
 B-INFO-101	INFO	A8, A11			todo
-B-INFO-102	INFO	A8, A11		135-pathbar-collapsed-light, 148-pathbar-inforow-dark	partial
+B-INFO-102	INFO	A8, A11		148-pathbar-inforow-dark, 50-toolbar-default-light	partial
 B-INFO-103	INFO	A8, A11			todo
 B-INFO-104	INFO	A8, A11			todo
-B-INFO-105	INFO	A8, A11		135-pathbar-collapsed-light	partial
+B-INFO-105	INFO	A8, A11		50-toolbar-default-light	partial
 B-INFO-106	INFO	A8, A11		136-pathbar-expanded-light	partial
 B-INFO-107	INFO	A8, A11		136-pathbar-expanded-light	partial
 B-INFO-108	INFO	A8, A11			todo
@@ -580,10 +580,10 @@ B-INFO-116	INFO	A8, A11		137-pathbar-editor-suggestions-light	partial
 B-INFO-117	INFO	A8, A11			todo
 B-INFO-118	INFO	A8, A11			todo
 B-INFO-119	INFO	A8, A11			todo
-B-INFO-120	INFO	A8, A11		138-pathbar-folder-menu-light	partial
-B-INFO-121	INFO	A8, A11		138-pathbar-folder-menu-light	partial
+B-INFO-120	INFO	A8, A11			todo
+B-INFO-121	INFO	A8, A11			todo
 B-INFO-122	INFO	A8, A11			todo
-B-INFO-123	INFO	A8, A11		138-pathbar-folder-menu-light	partial
+B-INFO-123	INFO	A8, A11			todo
 B-INFO-124	INFO	A8, A11			todo
 B-INFO-125	INFO	A8, A11	aLetterJumpsToTheNextFolderStartingWithItAndWraps		done
 B-INFO-126	INFO	A8, A11			todo
@@ -643,9 +643,9 @@ B-INFO-179	INFO	A8, A11			todo
 B-INFO-180	INFO	A8, A11			todo
 B-INFO-181	INFO	A8, A11	foldersAreOrderedByTheirCalculatedSizeWithUnknownSizesLast		done
 B-INFO-182	INFO	A8, A11			todo
-B-INFO-183	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	53-info-panel-open	partial
+B-INFO-183	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	145-infopanel-folder-light	partial
 B-INFO-184	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent		partial
-B-INFO-185	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	53-info-panel-open	partial
+B-INFO-185	INFO	A8, A11	slidesTheInfoPanelInAndOutOverTheContent	145-infopanel-folder-light	partial
 B-INFO-186	INFO	A8, A11			todo
 B-INFO-187	INFO	A8, A11	resizesTreeAndInspectorPanesWithinBounds, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		partial
 B-INFO-188	INFO	A8, A11	clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden, givesAPaneBackItsWidthWhenTheWindowIsWidenedAgain, shrinksSidePanesToPreserveCenterContentWhenTheViewportNarrows, squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths		partial
@@ -686,19 +686,19 @@ B-NAV-021	NAV	A8, A14			todo
 B-NAV-022	NAV	A8, A14			todo
 B-NAV-023	NAV	A8, A14			todo
 B-NAV-024	NAV	A8, A14			todo
-B-NAV-025	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
-B-NAV-026	NAV	A8, A14		58-history-hold	partial
+B-NAV-025	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-026	NAV	A8, A14			todo
 B-NAV-027	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
-B-NAV-028	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-028	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
 B-NAV-029	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
 B-NAV-030	NAV	A8, A14			todo
 B-NAV-031	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
-B-NAV-032	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
-B-NAV-033	NAV	A8, A14		58-history-hold	partial
-B-NAV-034	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
-B-NAV-035	NAV	A8, A14		58-history-hold	partial
+B-NAV-032	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-033	NAV	A8, A14			todo
+B-NAV-034	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
+B-NAV-035	NAV	A8, A14			todo
 B-NAV-036	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
-B-NAV-037	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld	58-history-hold	partial
+B-NAV-037	NAV	A8, A14	stepsOnAClickAndListsTheFoldersWhenHeld		partial
 B-NAV-038	NAV	A8, A14			todo
 B-NAV-039	NAV	A8, A14			todo
 B-NAV-040	NAV	A8, A14			todo
@@ -1267,25 +1267,25 @@ B-SRCH-193	SRCH	A1			todo
 B-SRCH-194	SRCH	A1			todo
 B-SRCH-195	SRCH	A1			todo
 B-SRCH-196	SRCH	A1			todo
-B-TREE-001	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
-B-TREE-002	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-001	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
+B-TREE-002	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-003	TREE	A2, A16			todo
-B-TREE-004	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-004	TREE	A2, A16	drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-005	TREE	A2, A16			todo
 B-TREE-006	TREE	A2, A16	aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed	80-sidebar-sections-closed	partial
-B-TREE-007	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
-B-TREE-008	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-007	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
+B-TREE-008	TREE	A2, A16	rowsHaveTheOriginalsHeightIndentAndPadding	70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-009	TREE	A2, A16	keepsFavoritesFlatEvenWhenTheFilesystemTreeContainsDescendants		done
 B-TREE-010	TREE	A2, A16			todo
 B-TREE-011	TREE	A2, A16			todo
 B-TREE-012	TREE	A2, A16	theChevronExpandsAFolderAndAnAliasHasNone		partial
-B-TREE-013	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-013	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-014	TREE	A2, A16			todo
 B-TREE-015	TREE	A2, A16			todo
 B-TREE-016	TREE	A2, A16			todo
 B-TREE-017	TREE	A2, A16			todo
 B-TREE-018	TREE	A2, A16			todo
-B-TREE-019	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light, 76-sidebar-integrated-compact-dark, 79-sidebar-separate-compact-dark	partial
+B-TREE-019	TREE	A2, A16		70-sidebar-separate-comfortable-light, 71-sidebar-separate-comfortable-dark, 72-sidebar-separate-compact-light, 73-sidebar-integrated-comfortable-light, 74-sidebar-integrated-comfortable-dark, 75-sidebar-integrated-compact-light	partial
 B-TREE-020	TREE	A2, A16			todo
 B-TREE-021	TREE	A2, A16			todo
 B-TREE-022	TREE	A2, A16	listsOnlyBrowsableMountsDirectlyUnderVolumes		done
@@ -1645,8 +1645,8 @@ B-VIEW-174	VIEW	A10, A13, A14			todo
 B-VIEW-175	VIEW	A10, A13, A14	restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped		partial
 B-VIEW-176	VIEW	A10, A13, A14	bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch, opensASingleViewAtHomeWhenTheLastSessionIsNotReopened		partial
 B-VIEW-177	VIEW	A10, A13, A14	opensWindowsOnTheFolderOnScreenAndBringsBackThoseOpenAtQuit	35-new-window, 36-open-in-new-window	partial
-B-VIEW-178	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
-B-VIEW-179	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack	37-move-tab-and-merge	partial
+B-VIEW-178	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack		partial
+B-VIEW-179	VIEW	A10, A13, A14	opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack		partial
 B-VIEW-180	VIEW	A10, A13, A14	tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen		partial
 B-VIEW-181	VIEW	A10, A13, A14	opensTheTabsAWindowWasGivenWhateverTheSettingSays		done
 B-VIEW-182	VIEW	A10, A13, A14			todo
