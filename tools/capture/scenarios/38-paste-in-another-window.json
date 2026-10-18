@@ -3,7 +3,7 @@
   "description": "Copied in one window, pasted in another: Avatar.jsx copied in app/src/components and pasted into app/src/lib, open in a window of its own (e2e windows.spec.ts: pastes in one window what was copied in another)",
   "features": ["F-638"],
   "behaviors": ["B-VIEW-171"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

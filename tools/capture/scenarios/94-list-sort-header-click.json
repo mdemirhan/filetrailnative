@@ -3,10 +3,10 @@
   "description": "A click on the Date Modified header sorts newest first",
   "features": [
     "F-768",
-    "F-771"
+    "F-771",
+    "F-774"
   ],
   "tier": [
-    "wp",
     "wave",
     "final"
   ],

@@ -3,7 +3,7 @@
   "description": "A17: a drag of files onto a folder moves them; an outside change appears; hidden files show on ⇧⌘.; a new file's date is relative. (Ejecting and opening disk images need a mounted image: the P2 disk tests prove them.)",
   "features": ["F-585","F-683","F-685","F-695","F-774","F-831"],
   "behaviors": ["B-CLIP-173","B-CLIP-176","B-INFO-079","B-NAV-130","B-NAV-134","B-VIEW-190"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "setup": {"scratch":true},
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",

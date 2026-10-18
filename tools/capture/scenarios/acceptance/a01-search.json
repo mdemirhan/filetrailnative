@@ -3,7 +3,7 @@
   "description": "A1: search as you type from the folder on screen, refine, glob and regex, widen the scope and back, filter by folder, switch the results' view, and keep the search in a background tab",
   "features": ["F-582","F-713","F-714","F-724","F-750","F-754","F-775","F-807"],
   "behaviors": ["B-SRCH-001","B-SRCH-020","B-SRCH-022","B-SRCH-024","B-SRCH-048","B-SRCH-058","B-SRCH-059","B-SRCH-078","B-SRCH-080","B-SRCH-083","B-SRCH-090","B-SRCH-094","B-SRCH-095","B-SRCH-097","B-SRCH-115","B-SRCH-155","B-SRCH-164","B-SRCH-165","B-VIEW-003"],
-  "tier": ["wave","final"],
+  "tier": ["checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

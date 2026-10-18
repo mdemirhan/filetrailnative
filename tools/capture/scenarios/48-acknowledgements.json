@@ -2,7 +2,7 @@
   "name": "48-acknowledgements",
   "description": "About > Acknowledgements opens the licenses window, with the first entry expanded",
   "features": ["F-635", "F-671", "F-921", "F-640"],
-  "tier": ["wp", "wave", "final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

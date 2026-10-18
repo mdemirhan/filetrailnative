@@ -2,7 +2,7 @@
   "name": "45-help-shortcuts",
   "description": "Help on Keyboard shortcuts, with its keycaps",
   "features": ["F-594", "F-663", "F-667"],
-  "tier": ["wp", "wave", "final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

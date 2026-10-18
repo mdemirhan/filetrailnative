@@ -2,7 +2,7 @@
   "name": "39-about-light",
   "description": "File Trail > About File Trail opens the About window (light)",
   "features": ["F-635", "F-640", "F-669", "F-670", "F-924", "F-636"],
-  "tier": ["wp", "wave", "final"],
+  "tier": ["wp", "checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

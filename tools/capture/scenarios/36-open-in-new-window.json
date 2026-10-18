@@ -3,7 +3,7 @@
   "description": "Open in New Window on the selected folder components: a window of its own on it, with the first window's view (e2e windows.spec.ts: Open in New Window)",
   "features": ["F-620","F-573"],
   "behaviors": ["B-VIEW-177"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

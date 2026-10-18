@@ -32,6 +32,8 @@ export interface Dump {
   side: string;
   name: string;
   window: { width: number; height: number };
+  /// The ids the capture looked for (the original's driver writes it; the native app doesn't).
+  captured?: string[];
   elements: Element[];
 }
 export interface ElementSpec {
@@ -58,7 +60,7 @@ interface Report {
 export interface Row {
   element: string;
   index: number;
-  status: "ok" | "off" | "style" | "missing-a" | "missing-b" | "absent";
+  status: "ok" | "off" | "style" | "missing-a" | "missing-b" | "absent" | "uncaptured-a" | "uncaptured-b";
   a?: Element;
   b?: Element;
   delta?: number;
@@ -93,11 +95,17 @@ export function frameDelta(a: Frame, b: Frame): number {
 }
 
 /// Pairs each named element of the two dumps and says how far apart they are. An element one
-/// side has and the other doesn't is "missing" on that side, not "off".
+/// side has and the other doesn't is "missing" on that side, not "off". A name a dump's capture didn't
+/// look for (named after a cached capture was taken) is "uncaptured" on that side and not compared.
 export function compareGeometry(a: Dump, b: Dump, specs: Record<string, ElementSpec>): Row[] {
   const rows: Row[] = [];
   for (const [name, spec] of Object.entries(specs)) {
     if (spec.geometry === false) continue;
+    const uncaptured = (dump: Dump) => dump.captured !== undefined && !dump.captured.includes(spec.swift);
+    if (uncaptured(a) || uncaptured(b)) {
+      rows.push({ element: name, index: 0, status: uncaptured(a) ? "uncaptured-a" : "uncaptured-b" });
+      continue;
+    }
     let left = a.elements.filter((e) => e.id === spec.swift).sort(byPosition);
     let right = b.elements.filter((e) => e.id === spec.swift).sort(byPosition);
     if (spec.first) {
@@ -143,6 +151,9 @@ export interface GeometrySummary {
   /// Logical elements with a row only side B has (missing on side A), and the other way round.
   missingA: number;
   missingB: number;
+  /// Logical elements a side's capture didn't look for (named after it was taken; not compared).
+  uncapturedA?: number;
+  uncapturedB?: number;
   /// Logical elements either side has (an element neither side has doesn't count).
   total: number;
   /// The largest frame difference of a pair, in points.
@@ -155,7 +166,9 @@ export function geometrySummary(rows: Row[]): GeometrySummary {
     off: names((r) => r.status === "off" || r.status === "style"),
     missingA: names((r) => r.status === "missing-a"),
     missingB: names((r) => r.status === "missing-b"),
-    total: names((r) => r.status !== "absent"),
+    uncapturedA: names((r) => r.status === "uncaptured-a"),
+    uncapturedB: names((r) => r.status === "uncaptured-b"),
+    total: names((r) => r.status !== "absent" && !r.status.startsWith("uncaptured")),
     max: rows.reduce((worst, r) => Math.max(worst, r.delta ?? 0), 0),
   };
 }
@@ -166,13 +179,18 @@ export function geometryText(g: GeometrySummary, labelA: string, labelB: string)
   if (g.missingB > 0) parts.push(`${g.missingB} missing (${labelB})`);
   if (g.missingA > 0) parts.push(`${g.missingA} missing (${labelA})`);
   const max = g.max > 0 ? ` (max ${Math.round(g.max * 10) / 10}pt)` : "";
-  return `${parts.join(", ")} of ${g.total}${max}`;
+  const later: string[] = [];
+  if (g.uncapturedA) later.push(`${g.uncapturedA} not in the ${labelA} capture`);
+  if (g.uncapturedB) later.push(`${g.uncapturedB} not in the ${labelB} capture`);
+  return `${parts.join(", ")} of ${g.total}${max}${later.length ? `; ${later.join(", ")} (--refresh-original)` : ""}`;
 }
 
 /// A row's status as the contact sheet shows it.
 export function rowStatusText(status: Row["status"], labelA: string, labelB: string): string {
   if (status === "missing-a") return `missing (${labelA})`;
   if (status === "missing-b") return `missing (${labelB})`;
+  if (status === "uncaptured-a") return `not captured (${labelA})`;
+  if (status === "uncaptured-b") return `not captured (${labelB})`;
   return status;
 }
 
@@ -396,6 +414,7 @@ nav a { margin-right: 12px; color: inherit; }
 table { border-collapse: collapse; margin: 8px 0; font-variant-numeric: tabular-nums; } caption { text-align: left; color: var(--muted); }
 td, th { border-bottom: 1px solid var(--line); padding: 2px 8px; text-align: left; white-space: nowrap; }
 tr.off td:nth-child(3), tr.missing-a td:nth-child(3), tr.missing-b td:nth-child(3) { color: var(--bad); } tr.style td:nth-child(3) { color: var(--warn); }
+tr.uncaptured-a td, tr.uncaptured-b td { color: var(--muted); }
 .notes { color: var(--muted); } .problem { color: var(--bad); }
 @media (max-width: 700px) { .row { grid-template-columns: 1fr; } table { display: block; overflow-x: auto; } }
 </style></head><body>
@@ -408,8 +427,9 @@ ${sections.join("\n")}
 }
 
 /// A hand-made pair of captures with known differences, run through `compare` itself: the sidebar 3 pt
-/// to the right, the status bar only on the first side, the list header only on the second, and one
-/// unmet expectation on the second. Checks that the comparison reports exactly that.
+/// to the right, the status bar only on the first side, the list header only on the second, one unmet
+/// expectation on the second, and the sidebar section headers only on the second, named after the first
+/// side was captured (its `captured` list leaves them out). Checks that the comparison reports exactly that.
 function selftest() {
   const out = arg("--out");
   if (!out) {
@@ -438,10 +458,20 @@ function selftest() {
     window: { width: 1200, height: 760 },
     elements: [...shared, element("sidebar", 0, 52, 280, 708), element("statusBar", 280, 736, 920, 24)],
   };
+  const specs = readJSON<{ elements: Record<string, ElementSpec> }>(join(here, "elements.json"))?.elements ?? {};
+  dumpA.captured = Object.values(specs)
+    .filter((spec) => spec.geometry !== false && spec.swift !== "sidebar.sectionHeader")
+    .map((spec) => spec.swift);
   const dumpB: Dump = {
     ...dumpA,
     side: "swift",
-    elements: [...shared, element("sidebar", 3, 52, 280, 708), element("list.header", 280, 52, 920, 28)],
+    captured: undefined,
+    elements: [
+      ...shared,
+      element("sidebar", 3, 52, 280, 708),
+      element("list.header", 280, 52, 920, 28),
+      element("sidebar.sectionHeader", 12, 60, 256, 20),
+    ],
   };
   writeFileSync(join(dirA, "main.json"), JSON.stringify(dumpA));
   writeFileSync(join(dirB, "main.json"), JSON.stringify(dumpB));
@@ -503,17 +533,24 @@ function selftest() {
     if (g.missingB !== 1) failures.push(`${g.missingB} missing (swift), expected 1`);
     if (g.missingA !== 1) failures.push(`${g.missingA} missing (electron), expected 1`);
     if (g.total !== 6) failures.push(`${g.total} elements, expected 6`);
+    if (g.uncapturedA !== 1) failures.push(`${g.uncapturedA} not captured (electron), expected 1`);
     if (summary.unmet !== 1) failures.push(`${summary.unmet} unmet expectations, expected 1`);
     if (summary.problems.length > 0) failures.push(`problems: ${summary.problems.join("; ")}`);
   }
-  if (!line.includes("geometry: 1 off, 1 missing (swift), 1 missing (electron) of 6 (max 3pt)")) {
+  if (
+    !line.includes(
+      "geometry: 1 off, 1 missing (swift), 1 missing (electron) of 6 (max 3pt); 1 not in the electron capture",
+    )
+  ) {
     failures.push(`runner line: ${line}`);
   }
   if (failures.length > 0) {
     console.log(`selftest known offsets: FAILED (${failures.join("; ")})`);
     process.exit(1);
   }
-  console.log("selftest known offsets: passed (1 off by 3 pt, 1 missing on each side, 1 unmet expectation)");
+  console.log(
+    "selftest known offsets: passed (1 off by 3 pt, 1 missing on each side, 1 not captured, 1 unmet expectation)",
+  );
 }
 
 if (import.meta.main) {

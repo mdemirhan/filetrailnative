@@ -3,7 +3,7 @@
   "description": "A15: preference changes take effect in the open window: the Dark theme, a Purple accent (sent to the app as Settings sends them, so P4-03's appearance is checked without the Settings window), and marks for cut items switched off in Settings (P6-04). UI zoom is out of scope, DEVIATIONS D-005.",
   "features": ["F-646","F-891","F-892","F-893","F-895"],
   "behaviors": ["B-CLIP-013"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

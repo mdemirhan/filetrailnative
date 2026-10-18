@@ -3,7 +3,7 @@
   "description": "A11: sorted by size, files get size bars; Calculate Size on the Lighthouse folder sizes every folder in it, so folders get bars too",
   "features": ["F-768","F-772","F-773"],
   "behaviors": ["B-INFO-160","B-INFO-161","B-INFO-175","B-INFO-176","B-INFO-177","B-INFO-180","B-INFO-181","B-INFO-182"],
-  "tier": ["wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

@@ -1,9 +1,9 @@
 {
   "name": "a14-tabs-and-windows",
   "description": "A14: each tab keeps its folder and view; a tab moved to a window of its own; all windows merged back. (Quit and relaunch is proven by the original's e2e flows, which the session-restore work package ports.)",
-  "features": ["F-620","F-628","F-630","F-673","F-834"],
-  "behaviors": ["B-VIEW-003","B-VIEW-176"],
-  "tier": ["wave","final"],
+  "features": ["F-620", "F-628", "F-630", "F-673", "F-834", "F-629"],
+  "behaviors": ["B-VIEW-003", "B-VIEW-176", "B-VIEW-178", "B-VIEW-179"],
+  "tier": ["checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

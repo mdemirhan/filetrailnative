@@ -2,7 +2,7 @@
   "name": "18-second-tab",
   "description": "A second tab (⌘T) moved to app/src: the tab strip with two tabs",
   "features": ["F-573","F-673","F-721","F-722"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

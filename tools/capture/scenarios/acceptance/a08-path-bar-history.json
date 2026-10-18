@@ -1,9 +1,9 @@
 {
   "name": "a08-path-bar-history",
   "description": "A8: the path bar: a click on a folder, the › menu of its subfolders, a double-click to edit the path; Back held down shows the history",
-  "features": ["F-742","F-743","F-745","F-746","F-803","F-804","F-805"],
-  "behaviors": ["B-INFO-109","B-INFO-110","B-INFO-112","B-INFO-114","B-INFO-120","B-INFO-121","B-INFO-123","B-INFO-124","B-NAV-025","B-NAV-028","B-NAV-032","B-NAV-033","B-NAV-034","B-NAV-035","B-NAV-037"],
-  "tier": ["wave","final"],
+  "features": ["F-742", "F-743", "F-745", "F-746", "F-803", "F-804", "F-805", "F-698"],
+  "behaviors": ["B-INFO-109", "B-INFO-110", "B-INFO-112", "B-INFO-114", "B-INFO-120", "B-INFO-121", "B-INFO-123", "B-INFO-124", "B-NAV-025", "B-NAV-028", "B-NAV-032", "B-NAV-033", "B-NAV-034", "B-NAV-035", "B-NAV-037", "B-NAV-026"],
+  "tier": ["wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [

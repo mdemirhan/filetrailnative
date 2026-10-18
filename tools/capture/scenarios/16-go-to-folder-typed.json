@@ -2,7 +2,7 @@
   "name": "16-go-to-folder-typed",
   "description": "Go to Folder (⌘K) with a path typed, listing its completions",
   "features": ["F-592","F-856","F-857","F-860"],
-  "tier": ["wp","wave","final"],
+  "tier": ["wp", "checkpoint", "wave", "final"],
   "root": "lighthouse/Lighthouse",
   "now": "2026-10-13T14:38:00",
   "steps": [
