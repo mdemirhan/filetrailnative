@@ -84,6 +84,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         if !NotificationOverlay.push(.info, title: notice.title, in: window) { NSSound.beep() }
     }
     var log: (String) -> Void = { _ in }
+    /// Off in tests that check a window without putting it on screen: its tabs are made and read, never shown.
+    var presentsWindows = true
 
     /// Where a tab with nowhere else to go opens.
     var home = FileManager.default.homeDirectoryForCurrentUser.path

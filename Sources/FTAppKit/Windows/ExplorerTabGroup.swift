@@ -95,14 +95,17 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     }
 
     func show() {
+        guard host?.presentsWindows != false else { return }
         if !materialize(makeKey: true) { selected?.window?.makeKeyAndOrderFront(nil) }
     }
 
     func showInactive() {
+        guard host?.presentsWindows != false else { return }
         if !materialize(makeKey: false) { selected?.window?.orderFront(nil) }
     }
 
     func focus() {
+        guard host?.presentsWindows != false else { return }
         if !materialize(makeKey: true) { selected?.window?.makeKeyAndOrderFront(nil) }
     }
 
