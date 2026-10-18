@@ -140,3 +140,4 @@
 {"at": "2026-10-18T13:33:50+00:00", "event": "start", "batches": ["W2-P0-20"]}
 {"at": "2026-10-18T13:33:57+00:00", "event": "run-id", "runs": ["W2-P0-20=wf_552cbddd-1bb"]}
 {"at": "2026-10-18T13:38:59+00:00", "event": "pause", "reason": "user: finish the running packages (P0-17, P3-05, P0-20), merge, clean up, then wait for the user's signal", "until": null}
+{"at": "2026-10-18T13:45:55+00:00", "event": "finish", "batch": "W2-P0-17", "merged": ["P0-17"], "carried": []}

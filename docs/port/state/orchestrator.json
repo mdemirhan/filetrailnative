@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T13:38:59+00:00",
+  "updatedAt": "2026-10-18T13:45:55+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -709,9 +709,24 @@
       "wps": [
         "P0-17"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_a05d28ba-00c",
-      "startedAt": "2026-10-18T13:20:13+00:00"
+      "startedAt": "2026-10-18T13:20:13+00:00",
+      "endedAt": "2026-10-18T13:45:54+00:00",
+      "integration": {
+        "merged": [
+          "P0-17"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "62fb238db2af98e69a2fd7e7b7eb7a9705df5a12",
+        "summary": "Merged port/P0-17 cleanly. Full scripts/ci.sh passed (build, 2043 tests, format). Parity matrix synced and committed. Merge lock released."
+      },
+      "critic": null,
+      "spentOutputTokens": 334762,
+      "agents": 4,
+      "subagentTokens": 509643,
+      "durationMin": 25.4
     },
     "W2-P0-18": {
       "wps": [
@@ -3165,23 +3180,33 @@
       "risk": "medium",
       "model": "opus",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-17",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "16567be962fcdde8d41bffcfd42ed8606a4ab430",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh"
       ],
       "lenses": [
         "parity"
       ],
-      "summary": null,
+      "summary": "Counts: 23 on screen (22 in FTAppKitTests plus DiskImageMounterHandOffTests), 44 made windowless, 11 dropped, 7 near-duplicates removed (dup-appkit). scripts/ci.sh passes: build, 2064 windowless tests, format.\nNew harness in Tests/FTAppKitTests/Windows/ExplorerHarness.swift: ExplorerHarness.windowless() never shows its tab groups. It waits for the first folder read (via onReady) and workspace.isReady, expects window.isVisible == false, and lays out with layoutSubtreeIfNeeded.\nThe 44 live in a serialized, ungated suite, ExplorerWindowlessTests (new files ToolbarTests, ToolbarStateTests, SidebarTests, NotificationsTests, InfoTests, ListTests, WorkspaceTests, TabGroupTests, plus ContextMenuTests renamed from ContextMenuGUITests and ReviewRowWidthTests). All 43 harness tests passed on the first run. theSizeCellClipsItsBar moved to ReviewSizeCellTests and needs no window; anOperationOverBeforeTheDelayShowsNoCard runs on ProgressCardModel alone.\nThe kept tests are all in suites whose names end in GUITests; the gated PageWindows case moved to the new PageWindowsGUITests. No other suite matches --filter GUITests.\nDrops: both fold-ins are done. Citations moved to the covering tests, or are marked covered-by-feature where the covering test is in FTFoundationTests. Every removed id is still cited somewhere in Tests, and parity sync --no-write reports 1757 citations valid.\nAudit fixes: Copy Path uses a private pasteboard. showInfoPoints closes its harness. findsElementsByNameTextAndPlace uses a window that reports isVisible instead of calling orderBack. countsASheetAsItsExplorerWindow uses an overridden sheetParent instead of beginSheet.\nRun time of the kept on-screen set: not measured. The preamble forbids the full GUI run, whatever a brief says. I ran once under the lock only the 2 GUI tests I touched (leavesARightClickOnAnItemAlone, opensOneWindowOfEachKindAndRemembersHelpsPage): both pass, 0.86 s together.\nSeams in Sources/FTAppKit: ExplorerWindows.presentsWindows (default true; ExplorerTabGroup show/showInactive/focus return early when it is false) and ContextMenuCoordinator.pasteboard (default .general).",
       "findings": [],
       "fixes": [],
       "blockers": [],
       "carryOver": [],
       "sharedFileRequests": [],
-      "deviations": []
+      "deviations": [
+        "Kept on-screen set run time not measured: preamble forbids the full GUI run during development whatever a brief says; only the 2 touched GUI tests were run, once, under the lock.",
+        "Dropped tests whose covering test is in FTFoundationTests (not owned): their ids are cited as covered-by-feature on the converted FTAppKit test the audit names. eachNotificationGoes... ids are on noNotificationComes..., aNarrowPane... ids on rowsFollowAWiderPane, headerClicksSort ids on separatorsResizeTheColumns, aFilesMenu... ids on aFolderHasNewTabsAndPaste...",
+        "aDiskThatCanBeEjected... and aRightClickRingsOnlyThatRow... take about 5 s each in the suite run but under 1 s alone: left-over work from the earlier sidebar tests, whose tree is rooted at /, slows the rows' arrival. Their waits succeed. Left as is."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "scripts/ci.sh on port/P0-17 (detached at 16567be): PASS build (12s), PASS test (91s, 2064 tests in passing runs, 0 failing), PASS format (6s). Exit 0. No reruns, no flaky tests, nothing changed or committed.",
+        "failures": [],
+        "flaky": []
+      }
     },
     "P0-18": {
       "title": "Screenshot scenarios: checkpoint tier, drops, progress scenario, original-app captures once",
