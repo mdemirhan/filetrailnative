@@ -52,4 +52,31 @@ struct TreeViewTests {
             TreeView.keyboardAction(key: .end, currentPath: "/root", rootPath: "/root", nodes: nodes)
                 == .navigate(path: "/root/loading"))
     }
+
+    // T-eaf07a43 F-740
+    @Test func expandsAndCollapsesTreeNodesOnHorizontalArrows() {
+        #expect(
+            TreeView.keyboardAction(key: .right, currentPath: "/root/b", rootPath: "/root", nodes: nodes)
+                == .expand(path: "/root/b"))
+        #expect(
+            TreeView.keyboardAction(key: .left, currentPath: "/root/a", rootPath: "/root", nodes: nodes)
+                == .collapse(path: "/root/a"))
+        #expect(
+            TreeView.keyboardAction(key: .right, currentPath: "/root/a", rootPath: "/root", nodes: nodes)
+                == .navigate(path: "/root/a/deep"))
+    }
+
+    // T-05d06d43 F-740
+    @Test func navigatesToParentAndRequestsLoadingForUnloadedNodes() {
+        #expect(
+            TreeView.keyboardAction(key: .left, currentPath: "/root/a/deep", rootPath: "/root", nodes: nodes)
+                == .navigate(path: "/root/a"))
+        #expect(
+            TreeView.keyboardAction(key: .right, currentPath: "/root/loading", rootPath: "/root", nodes: nodes)
+                == .load(path: "/root/loading"))
+        // The root has no parent in the tree.
+        var closed = nodes
+        closed["/root"]?.expanded = false
+        #expect(TreeView.keyboardAction(key: .left, currentPath: "/root", rootPath: "/root", nodes: closed) == .none)
+    }
 }
