@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T14:17:59+00:00",
+  "updatedAt": "2026-10-18T14:32:17+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -778,9 +778,24 @@
       "wps": [
         "P3-05"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_a4ce2c65-53c",
-      "startedAt": "2026-10-18T13:20:13+00:00"
+      "startedAt": "2026-10-18T13:20:13+00:00",
+      "endedAt": "2026-10-18T14:32:14+00:00",
+      "integration": {
+        "merged": [
+          "P3-05"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "ac1666f4cc795cfa5e197bd9949e68f02e0128fe",
+        "summary": "Merged P3-05 cleanly. scripts/ci.sh passed: build, test (2135 passing, 0 failing) and format. Parity matrix synced and committed. Merge lock released."
+      },
+      "critic": null,
+      "spentOutputTokens": 660497,
+      "agents": 8,
+      "subagentTokens": 1626686,
+      "durationMin": 71.7
     },
     "W2-P0-20": {
       "wps": [
@@ -1764,10 +1779,10 @@
       "depends": [
         "P3-04"
       ],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P3-05",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "2799137dcac46bb84f6fa35f654310c2dd6931bb",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "lockf -k ~/Library/Caches/filetrail-port/gui.lock env FILETRAIL_GUI_TESTS=1 swift test --filter FTAppKitTests",
@@ -1778,13 +1793,91 @@
         "safety",
         "performance"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Write coordinator ported (Sources/FTOperations/Coordinator/). It holds the app's one write slot, and pastes/Copy To/Move To/Duplicate run through it on the write service. Local operations (P3-06..08) plug in through queueLocalWriteOperation. Also in: prepareWithReservedSlot, runWriteAlone (synchronous, any thread; RunWriteAlone hook), the 100 ms progress throttle, owner-only cancel/answers, hand-over to the successor window carrying clearsCutClipboard and only unanswered questions, getAdopted once, trimmed analysis reports and broadcasts, and terminal ordering (caches → undo → free slot → window). A throw ends the operation as a failed event. Empty Trash runs in the slot, and shutDown waits up to 15 s.\nApp side (Sources/FTAppKit/WriteOperations/): AppWriteOperations opens replace-journal.json and runs recoverWrites before any window can write. It retries every 60 s through RecoveryRetry and fills the quit hooks (activeOperation mapped to BusyOperationKind; shutDown also stops folder sizes).\n- One ExplorerWriteSession per explorer window: busy and foreign lock, missed-end release (also on focus), early events, adoption once, after-write refresh/selection/tree (selection only in the starting tab), and an observe API for P5-08.\n- One WindowWriteActions facade per tab: analysis, paste, Copy To, Move To, Duplicate, cancel and resolveConflict work. Rename, New Folder, Trash, Delete, Empty Trash, Undo, Redo and batch rename throw WriteActionNotAvailable.\n- WriteDialogs draws plain alerts with the original's wording.\n- Write commands (undo, redo, rename, duplicate, newFolder, trash, emptyTrash, cut, copy, paste, moveSelection, plus edit cut/copy/paste) are routed from MainWindowController.perform; canPerform now passes writeOperationLocked.\n- Every event reaches ExplorerWindows.writeOperationProgress and every tab's folderSizes.forgetChangedSizes.\nMain was merged into the branch: one conflict in ExplorerWindows.swift, resolved. Final scripts/ci.sh passes (2127 tests). Parity citations are valid. Scenarios 165-167 were added (166 is a checkpoint scenario) and run at the next checkpoint. No elements.d file was needed: they use existing element names.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "A Cut pasted from the clipboard runs and is refused as action 'paste' instead of 'move_to'",
+          "where": "Sources/FTAppKit/WriteOperations/WindowWriteActions.swift:79-83",
+          "evidence": "Reference useExplorerActions.ts:2304 sets `const action = request.mode === \"cut\" ? \"move_to\" : \"paste\"`, then `showWriteOperationBusyNotice(action)` (2306). Lines 2318-2328 send a cut through startMoveToDestination, and lines 3490/3500 then use `action: \"move_to\"` for the card, the copyPaste:start payload and the result. The port's WindowWriteActions.paste(into:) at lines 79-83 passes `action: .paste` for both modes. A cut paste therefore gets 'Couldn't Paste' in place of 'Couldn't Move' when refused, `.paste` in place of `.moveTo` on its card, events and result (B-CLIP-110 'Moving…'), and in what is recorded for Undo. Failing test, run with `swift test --filter FTAppKitTests.ParityProbeTests`. Put it in Tests/FTAppKitTests/WriteOperations/ParityProbeTests.swift with a minimal CoordinatorWriteService stub and a WriteSessionHost fake (the same shapes as in ExplorerWriteSessionTests). Steps: `clipboard.set(.ready(mode: .cut, sourcePaths: [\"/Users/demo/a.txt\"], sourceEntries: [:], capturedAt: \"2026-10-08T10:00:00.000Z\"), from: nil)`; `session.applyCard(WriteOperationCardState(action: .copyTo, stage: .running, targetPath: \"/x\"))`; `dialogs.show = { title, _, _ in titles.append(title) }`; `_ = await WindowWriteActions(session: session, tab: nil, dialogs: dialogs).paste(into: \"/Users/demo/Folder\")`; `#expect(titles == [\"Couldn\\u{2019}t Move\"])`. Result: 'Expectation failed: shown.titles == [\"Couldn’t Move\"]'. The dialog showed 'Couldn’t Paste'."
+        },
+        {
+          "severity": "medium",
+          "title": "Folder watch is not held while a write is locked (B-CLIP-147 / B-VIEW-187)",
+          "where": "Sources/FTAppKit/WriteOperations/AppWriteOperations.swift:218",
+          "evidence": "In the reference, App.tsx:1397-1408 passes `held: ... || isWriteOperationLocked || dragActive` to useFolderWatch, where `isWriteOperationLocked = writeOperationCardState !== null || foreignWriteOperation !== null` (useExplorerActions.ts:524). So changes to the folder on screen are collected and not read while this window's or another window's operation runs. In the port, ExplorerWriteSession calls `host?.writeLockChanged()` when the lock changes (ExplorerWriteSession.swift:179, 211), but the app's host implements it as `func writeLockChanged() {}` (AppWriteOperations.swift:218). `MainWindowController.folderChangesHeld` is set only by ContextMenuCoordinator.swift:134/138 (`grep -rn folderChangesHeld Sources`). As a result, during a paste the folder watch keeps calling `reload(changedPaths:)` (ExplorerWindows.swift:360-361), which re-reads the list under the user. A quiet read still in flight at the end can also post the `.folder` notification that applyWriteEnd's one-shot selection observer waits for (MainWindowController+Writes.swift:96-108), so the selection of what arrived may be applied to a stale list."
+        },
+        {
+          "severity": "medium",
+          "title": "Startup and recovery notices use made-up titles, not the original's",
+          "where": "Sources/FTAppKit/WriteOperations/AppWriteOperations.swift:164, 172",
+          "evidence": "Reference main.ts:739-760 (showPendingStartupNotices) is a warning dialog with message \"Work was cut short when File Trail last stopped\" and detail notices.join(\"\\n\\n\"). Reference main.ts:188-196 (showRecoveryNotices) is an info dialog titled \"An item waiting for its disk is in place now\" (one notice) or \"Items waiting for their disk are in place now\" (several). The port shows `dialogs.show(\"Some Items Need Your Attention\", …)` at AppWriteOperations.swift:172 and `dialogs.show(\"Items Were Put Back\", …)` at :164, both drawn with `alert.alertStyle = .warning` (WriteDialogs.swift:43). It does not pick the singular or plural title by the number of notices."
+        },
+        {
+          "severity": "medium",
+          "title": "12 FS test rows of the briefed describes are neither ported nor marked",
+          "where": "Tests/FTOperationsTests/Coordinator/",
+          "evidence": "Script: for each tests.tsv row whose file is bootstrap/writeOperations.test.ts (describes createWriteOperationCoordinator, quitting during an operation, writing alone, questions during a paste, starting a paste, folder listings after a write), writeOperations.windows.test.ts, earlyWriteOperationEvents/otherWindowsWriteResult/useWriteOperations.test, grep its id in Tests/FTOperationsTests/Coordinator, Tests/FTAppKitTests/WriteOperations and tools/capture/scenarios/16[5-9]*. These ids are not found: T-ba2f0985, T-e868310c, T-7ce082ce, T-6e5d5f21, T-f293d4ee, T-a63d0d99, T-88f70b42 (writeOperations.test.ts), and T-50a814d9, T-7f27af07, T-3299f715, T-9fbaceb4, T-1922e940 (writeOperations.windows.test.ts). All are class FS, which the preamble says are ported one for one. None has a `// N/A` or deferral comment. The file headers only say that the rename, Trash, Undo and no-Trash cases are P3-06/P3-07's (WriteCoordinatorTests.swift:1-4, WriteCoordinatorWindowsTests.swift:1-4). T-88f70b42 also backs the Goal bullet 'count the Trash items not reached'. The parity sync will report these rows as missing, with nothing recorded to say they were handed on."
+        },
+        {
+          "severity": "medium",
+          "title": "Cut/Copy with a Favorite selected in the sidebar puts the favorite's real folder on the clipboard, so the next Paste moves that folder; the original does nothing",
+          "where": "Sources/FTAppKit/WriteOperations/MainWindowController+Writes.swift:32-35, 73-76 (with Sources/FTAppKit/Sidebar/SidebarModel.swift:171-174)",
+          "evidence": "Port: perform(.editCut) has no check before it (MainWindowController.swift:1030) and goes to performWriteCommand, which calls actions.putOnClipboard(.cut, paths: clipboardSourcePaths) (+Writes.swift:34-35). clipboardSourcePaths returns sidebarController.selectedTreeTargetPath when the tree has focus (+Writes.swift:74). SidebarModel.selectedTreeTargetPath returns `selected.favoritePath ?? selected.filesystemPath` (SidebarModel.swift:173-174), so a Favorite row gives the folder it points to. Paste then calls copyLike(mode: .cut, ...) (WindowWriteActions.swift:77-83), and the real folder is moved. WriteGuards only refuse system and home folders, so a favorite such as ~/Projects/site is moved.\nReference: editCut first runs canHandleRendererCommand(\"cutSelection\") and returns when it is false (apps/desktop/src/renderer/hooks/useExplorerShortcuts.ts:1035-1043). For a tree-focused cut/copy that check needs kind === \"filesystemFolder\", because cut and copy are TREE_FOLDER_ONLY_COMMANDS: \"A favorite is a pointer to a folder, not something to copy or move\" (lib/shortcutPolicy.ts:41-43, 296-300, 420-423). Also, resolveClipboardSource takes the tree path through getFileSystemItemPath(selectedTreeItemId) (hooks/useExplorerActions.ts:1847-1849), and that returns null for a favorite id (lib/favorites.ts:225-226).\nScenario: select a Favorite in the sidebar, press Cmd-X, open another folder, press Cmd-V. The port moves the real folder out of its place without warning. The original ignores the Cmd-X."
+        },
+        {
+          "severity": "medium",
+          "title": "Move To (and Duplicate) from the menu bar or shortcut act on the file list's selection while the folder tree has focus, or when no pane has focus; the original's command check stops them",
+          "where": "Sources/FTAppKit/Windows/MainWindowController.swift:1030; Sources/FTAppKit/WriteOperations/MainWindowController+Writes.swift:42-51",
+          "evidence": "Port: perform() sends every write command to performWriteCommand and only checks `customizer == nil` (MainWindowController.swift:1027-1030). .moveSelection takes `selectedPaths` (the file list's selection) whatever focusedPane is, opens the folder chooser and then calls actions.moveTo(paths, ...) (+Writes.swift:47-51, 79-94). .duplicateSelection does the same (+Writes.swift:42-46). The menu does not dim these items: menuState keeps only the tab commands in disabledCommands (MainWindowController.swift:813-815, 829). ShortcutPolicy.canHandle, which has the contentOnly rule, is reached only from CommandAvailability.canRun, and in FTAppKit that is used only for the toolbar (canPerform) and that filtered menu state.\nReference: runRendererCommand returns early when canHandleRendererCommand(commandType) is false (apps/desktop/src/renderer/hooks/useExplorerShortcuts.ts:1086-1088). moveSelection, duplicateSelection, renameSelection and trashSelection are \"contentOnly\" (lib/shortcutPolicy.ts:92-96). With focusedPane \"tree\" they are not in TREE_SAFE_RENDERER_COMMANDS, and with focusedPane null they also give false (shortcutPolicy.ts:291-305). Even past that check, resolveContentActionPaths returns [] unless the active pane is \"content\" (hooks/useExplorerActions.ts:3362-3368, 3392-3397), so moveSelection does nothing (useExplorerShortcuts.ts:1152-1157).\nScenario: click a folder in the sidebar tree (the tree has focus; the list still has items selected from before), choose File > Move to... (Cmd-Shift-M) and pick a destination. The port moves the list's selected items, which the person did not target and the chooser does not show. The original does nothing."
+        },
+        {
+          "severity": "medium",
+          "title": "After every write, the port re-reads every expanded tree branch from the root. The original re-reads only the branches the write touched.",
+          "where": "Sources/FTAppKit/WriteOperations/MainWindowController+Writes.swift:118-120 (applyWriteEnd), through Sources/FTAppKit/Sidebar/SidebarViewController+Window.swift:65-66 and SidebarModel.swift:533-544",
+          "evidence": "Reference: apps/desktop/src/renderer/hooks/useExplorerNavigationController.ts:1887-1897. refreshDirectory calls refreshVisibleTreePath(path, {recursive:true}) only for each of options.extraTreeReloadPaths, which come from resolveWriteOperationTreeReloadPaths (the parents of the sources and destinations, plus the destination roots). navigateTo's forceTreeReload adds the chain down to the folder on screen. Port: applyWriteEnd ignores the paths in refresh.treeReloadPaths and only checks whether the list is empty (`if !refresh.treeReloadPaths.isEmpty { sidebarController.refreshBranches() }`). refreshBranches() calls model.refreshBranches() with no path, so it starts at rootPath and reloads every expanded node in the tree, one after another (SidebarModel.swift:533-544). Each reload is a forced directory read plus two onChange tree rebuilds on the main thread. Measured with a windowless SidebarModel test (scratch file, removed afterwards; run with `swift test --filter ZZReviewTreeReloadTests`). The tree is rooted at /Users/demo with 20 expanded folders f0..f19 and Documents open. The test simulates a paste of /Users/demo/f0/a into Documents and counts readChildren calls. Port path, `await model.refreshBranches()`: 21 reads. Original path (loadChildren(forceReload:) on [/Users/demo, /Users/demo/Documents], then refreshBranches(from:) on each treeReloadPath [/Users/demo/Documents, /Users/demo/f0, /Users/demo/Documents/a]): 4 reads. Output: `REVIEW port reads 21, original-style reads 4`, and `#expect(port <= original * 3 / 2)` fails. That is about 5x the disk reads per write, all sequential. With a deep or wide expanded tree, or on a network share, the person sees the whole tree reload (rows showing loading spinners) after each paste, duplicate or move. Fix: call `model.refreshBranches(from:)` once for each path in refresh.treeReloadPaths, sharing one visited set as the original does."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "headSha": "2799137dcac46bb84f6fa35f654310c2dd6931bb",
+          "summary": "Fixed all 7 review findings on port/P3-05 in one commit, 2799137, which carries the trailer Port-Stage: fixed-1. The branch is left detached.\n1. Pasting a Cut now runs as action .moveTo, as the original does (WindowWriteActions.paste). A refusal reads \"Couldn’t Move\", and the card, events and result all carry .moveTo.\n2. The folder watch is now held while a write is locked here or in another window. MainWindowController.flushPendingChange checks `!isWriteLocked`. ExplorerTabGroup.writeLockChanged calls each tab's writeLockChanged, which reads the changes that waited once the lock is released.\n3. The notices now use the original's words. WriteDialogs gained `showInfo` (an informational alert). Startup notices are a warning titled \"Work was cut short when File Trail last stopped\". Recovery notices are an information titled \"An item waiting for its disk is in place now\" for one and \"Items waiting for their disk are in place now\" for several.\n4. The 12 FS rows are deferred with comments in the headers of WriteCoordinatorTests, WriteCoordinatorWindowsTests and WriteCoordinatorQuitTests, and handed on through carryOver. `sync --no-write` reports the citations valid.\n5 and 6. performWriteCommand now asks ShortcutPolicy.canHandle first, through MainWindowController.canRunWriteCommand (editCut/Copy/Paste are mapped to cut/copy/pasteSelection). Cut and Copy on a Favorite therefore do nothing, and Move To, Duplicate, Rename, Trash and New Folder do nothing unless the file list has focus. clipboardSource returns nothing for a tree-focused favorite.\n7. applyWriteEnd now reads again only refresh.treeReloadPaths, through SidebarModel.refreshWriteBranches (in MainWindowController+Writes.swift), which shares one visited set as refreshVisibleTreePath does. The test case reads 3 folders, where it read 21 before.\nTests are in Tests/FTAppKitTests/WriteOperations/ParityProbeTests.swift, including a windowless ExplorerWindowlessTests.WriteHoldsFolderChangesTests. No window runs were made. scripts/ci.sh passed except DiskImageSelfTests/mountsWritesAndDetaches(kind: .fat32), which is unrelated and passed when rerun alone (flaky).",
+          "remaining": [
+            "flaky: FTOperationsTests DiskImageSelfTests/mountsWritesAndDetaches(kind: .fat32) failed in the full run (LargeFileTests.swift:27) and passed alone.",
+            "Not a finding, left as is: Duplicate from the keyboard in search mode uses the folder on screen, not resolveDuplicateFolder (and its 'Duplicate items from one folder at a time' toast). P5-08 may want to pick this up."
+          ],
+          "carryOver": [
+            {
+              "wp": "P3-06",
+              "text": "From P3-05 review: port these FS rows of writeOperations.test.ts / writeOperations.windows.test.ts, which P3-05 deferred because they drive the local operations (they run through WriteCoordinator.queueLocalWriteOperation): T-ba2f0985 (rename with progress), T-e868310c (New Folder only when the parent exists and the name is unused), T-7ce082ce (Trash goes on past a failure), T-6e5d5f21 (Trash adjusts measured folders), T-f293d4ee (delete immediately, partial), T-a63d0d99 (protected top-level Trash refused), T-88f70b42 (a Trash stopped at quit counts every item it never reached, via LocalWriteResults.notStartedItems), T-7f27af07, T-3299f715, T-9fbaceb4 (deleting immediately what a no-Trash disk couldn't take belongs to the window that was told; the page-reload case maps to window close). Remove the deferral notes in the headers of Tests/FTOperationsTests/Coordinator/WriteCoordinator{,Windows,Quit}Tests.swift once they are ported."
+            },
+            {
+              "wp": "P3-07",
+              "text": "From P3-05 review: port these FS rows of writeOperations.windows.test.ts, which P3-05 deferred: T-50a814d9 (the end of an Undo is sent when keeping the history goes wrong) and T-1922e940 (looking at what an Undo would ask refuses when a disk doesn't answer, and does nothing more for a press meanwhile). Remove the deferral note in the header of Tests/FTOperationsTests/Coordinator/WriteCoordinatorWindowsTests.swift once they are ported."
+            }
+          ]
+        }
+      ],
       "blockers": [],
       "carryOver": [
         "From P4-04: the app shell must send every write-operation progress event to ExplorerWindows.writeOperationProgress(_:) (all windows), as the original onWriteOperationProgress does, so background tabs follow renamed/moved folders (B-VIEW-172). The window side is done; only the call is missing.",
         "From P3-04: RunWriteAlone is synchronous, (_ write: () -> Void) -> Bool. The coordinator's runWriteAlone must run `write` on the calling thread while it holds the write slot, and return false when it doesn't run it (another write is running). Call recoverWrites at startup before any write service exists, and start RecoveryRetry (recoveryRetryIntervalMs = 60_000, injected timer) only for entries left at start. Caches go in through RecoveryCaches (DirectoryService's cache, FolderSizeAdjust), the log through RecoveryLogger."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "scripts/ci.sh (branch port/P3-05 at 2799137, detached): PASS, exit 0. build PASS (12s); test PASS (88s), 2136 tests passing, 0 failing; format PASS (5s). No reruns needed, no flaky tests.",
+        "failures": [],
+        "flaky": []
+      },
+      "sharedFileRequests": [],
+      "deviations": [
+        "The original listens for a window's page reload ('did-navigate') and renderer crash. Natively, both are the window closing: WriteCoordinator.windowClosed. The 'reload' half of T-14f606ef (an operation the reloaded page starts) is ported as a fresh window's operation.",
+        "The Swift WriteService sends a paste's terminal event before its own slot is freed on the paste thread. The coordinator holds the end until WriteService.hasReleased(operationId), at most 1 s, so a window reacting to the end can start the next write, as in the original. Without this, T-fad58c67 failed intermittently.",
+        "startCopyPaste holds the slot with the preparing stand-in while it calls the write service, so a runWriteAlone from the recovery thread can't take the slot in between. The original is single-threaded and needs no such hold. getActiveOperation still hides the stand-in.",
+        "parseOwnProgressEvent's zod check is ported as a small check of what a Swift type doesn't guarantee (non-negative counts and sizes, non-empty ids and paths). Local events are not checked.",
+        "Move To uses an NSOpenPanel folder chooser as a placeholder until P5-08's Move To sheet. Rename, New Folder, Trash, Empty Trash, Undo and Redo commands give the busy notice when locked, otherwise beep until P3-06 to P3-08 fill them.",
+        "e2e quit.spec.ts T-9b246326/T-cde7943b is ported as a windowless test (QuitBackgroundWorkTests): with a real measurement of /System/Volumes/Data running, AppWriteOperations.stopBackgroundWork returns at once and cancels it. It does not launch and quit a process."
       ]
     },
     "P3-06": {
@@ -1816,7 +1909,11 @@
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": []
+      "carryOver": [
+        "From P3-05: These writeOperations.test.ts rows of my describes need the rename, New Folder, Trash and Delete operations and are left to you: T-ba2f0985, T-e868310c, T-7ce082ce, T-6e5d5f21, T-f293d4ee, T-a63d0d99 (createWriteOperationCoordinator) and T-88f70b42 (quitting: counts every item a stopped Trash never reached). Also writeOperations.windows.test.ts T-7f27af07, T-3299f715 and T-9fbaceb4 (no-Trash delete permission per window, cleared on window close since there is no native reload).",
+        "From P3-05: Entry points:\n- Coordinator: WriteCoordinator.prepareWithReservedSlot { … }, then queueLocalWriteOperation(action:window:execute:). execute gets a LocalWriteOperation with operationId, signal: StopSignal, emit(event, removedItems:, undoLog:) and progress(…). LocalWriteResults has result/terminalStatus/stoppedMessage/notStartedItems.\n- Guards: WriteGuards (assertNotProtectedPath, assertNotIntoTrash, assertNotAlreadyInTrash, assertNotSystemLocation; async variant WriteCoordinator.assertNotSystemLocation).\n- emptyTrash(_:) is ported in the coordinator.\n- App side: fill WindowWriteActions.rename/newFolder/trash/deleteImmediately/emptyTrash, which throw WriteActionNotAvailable now. Use session.applyCard (the lock), session.early.whileStarting and session.adoptWriteOperation, and replace the NSSound.beep() in MainWindowController+Writes.performWriteCommand.",
+        "From P3-05: From P3-05 review: port these FS rows of writeOperations.test.ts / writeOperations.windows.test.ts, which P3-05 deferred because they drive the local operations (they run through WriteCoordinator.queueLocalWriteOperation): T-ba2f0985 (rename with progress), T-e868310c (New Folder only when the parent exists and the name is unused), T-7ce082ce (Trash goes on past a failure), T-6e5d5f21 (Trash adjusts measured folders), T-f293d4ee (delete immediately, partial), T-a63d0d99 (protected top-level Trash refused), T-88f70b42 (a Trash stopped at quit counts every item it never reached, via LocalWriteResults.notStartedItems), T-7f27af07, T-3299f715, T-9fbaceb4 (deleting immediately what a no-Trash disk couldn't take belongs to the window that was told; the page-reload case maps to window close). Remove the deferral notes in the headers of Tests/FTOperationsTests/Coordinator/WriteCoordinator{,Windows,Quit}Tests.swift once they are ported."
+      ]
     },
     "P3-07": {
       "title": "Undo",
@@ -1847,7 +1944,10 @@
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": []
+      "carryOver": [
+        "From P3-05: Undo and Redo plug into WriteCoordinatorOptions.recordUndo (FinishedWrite) and queueLocalWriteOperation. Ported tests left to you: writeOperations.windows.test.ts T-50a814d9 (the end of an Undo is sent when keeping the history fails) and T-1922e940 (Undo prepare timeout refuses, and a press meanwhile does nothing more). Fill WindowWriteActions.undo/redo.",
+        "From P3-05: From P3-05 review: port these FS rows of writeOperations.windows.test.ts, which P3-05 deferred: T-50a814d9 (the end of an Undo is sent when keeping the history goes wrong) and T-1922e940 (looking at what an Undo would ask refuses when a disk doesn't answer, and does nothing more for a press meanwhile). Remove the deferral note in the header of Tests/FTOperationsTests/Coordinator/WriteCoordinatorWindowsTests.swift once they are ported."
+      ]
     },
     "P3-08": {
       "title": "Batch-rename execution",
@@ -1879,7 +1979,8 @@
       "fixes": [],
       "blockers": [],
       "carryOver": [
-        "From P3-04: recovery leaves batch_rename journal entries untouched and writes them back; their put-back is yours, with the two rename-of-several writeJournal cases T-b6cfb45b and T-51361091."
+        "From P3-04: recovery leaves batch_rename journal entries untouched and writes them back; their put-back is yours, with the two rename-of-several writeJournal cases T-b6cfb45b and T-51361091.",
+        "From P3-05: Batch rename runs through queueLocalWriteOperation (action .batchRename). The journal is in WriteCoordinatorOptions.writeJournal (the app passes its FileWriteJournal). Fill WindowWriteActions.batchRename."
       ]
     },
     "P4-01": {
@@ -2537,7 +2638,8 @@
       "blockers": [],
       "carryOver": [
         "From P2-06: make JSRegExp (or a public highlight helper on it) public so the search highlight uses the JavaScript-compatible matcher, not NSRegularExpression.",
-        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code."
+        "User requirement (2026-10-14): font sizes, icon sizes, padding, margins, row heights and spacing must match the original File Trail defaults exactly, from DesignTokens and styles.css (ui.md §2, §5). The geometry check (PLAN §5.4) is the proof: every element this WP draws must be in the geometry dump and match the Electron capture's frame and font tokens; report each remaining offset with its cause. No literal metrics in UI code.",
+        "From P3-05: Quit must end every running fd search (e2e quit.spec.ts 'quitting while a search runs leaves no fd behind'). The app has no search runtime yet. When it does, stop it in AppWriteOperations.stopBackgroundWork or the AppDelegate quit.hooks.shutDown."
       ]
     },
     "P5-08": {
@@ -2573,7 +2675,8 @@
         "From P4-04: T-317cfcc8 (windows.spec: paste in one window what was copied in another, B-VIEW-184) is left todo for this WP; ExplorerWindows.clipboard is a SharedClipboard with a no-op sendToOtherWindows, and capture 38-paste-in-another-window must pass.",
         "From P5-01: call MainWindowController.clipboardChanged() whenever SharedClipboard changes, so the toolbar clipboard button and its count refresh.",
         "From P5-03: call tab.folderSizes.forgetChangedSizes(_:intoTrash:) when a write operation finishes, and set tab.folderChangesHeld while a drag or an operation is active. Seams in place: ContentDragHooks, and AutomationDragSource/AutomationDropTarget on list rows, the pane background and sidebar rows (P5-02 SidebarFileDrops).",
-        "From P0-18: Wire the write coordinator's progress to the ProgressCard. Once the original can be driven to show the progress card (a slow copy plus a snapshot while it runs), add a checkpoint scenario for it. P0-18 found no existing step can do this."
+        "From P0-18: Wire the write coordinator's progress to the ProgressCard. Once the original can be driven to show the progress card (a slow copy plus a snapshot while it runs), add a checkpoint scenario for it. P0-18 found no existing step can do this.",
+        "From P3-05: WindowWriteActions.copyLike shows the first issue's message as a refusal. Still yours:\n- leaving out missing or already-in-place items (collectLeftOutSourcePaths) and getCopyLikeIssueMessage;\n- the review sheet (it gets .review(report); call startCopyPaste(report, policy:, action:, overrides:, clearsCutClipboard:));\n- the progress card and toasts, via WindowWriteActions.observe or ExplorerWriteSession.observe (WindowWriteEvent .card/.progress/.ended/.foreign);\n- the Move To sheet (an NSOpenPanel stands in, in MainWindowController+Writes.chooseMoveDestination);\n- clipboard following through writes (followClipboardThroughWrite);\n- search restart after a write;\n- the paste destination rules (resolvePasteDestinationPath; paste now goes into the folder on screen).\nApplicationMenuState.disabledCommands still keeps only tab commands, so the menu doesn't dim write commands while locked (canPerform does pass writeOperationLocked)."
       ]
     },
     "P5-09": {
