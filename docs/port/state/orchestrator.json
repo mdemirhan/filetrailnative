@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "createdAt": "2026-10-13T17:08:52+00:00",
-  "updatedAt": "2026-10-18T13:31:34+00:00",
+  "updatedAt": "2026-10-18T13:33:45+00:00",
   "referenceCommit": "e4d0872",
   "referenceCache": "~/Library/Caches/filetrail-port/reference",
   "integrationBranch": "main",
@@ -740,9 +740,24 @@
       "wps": [
         "P0-19"
       ],
-      "status": "running",
+      "status": "done",
       "runId": "wf_a2e0f52d-564",
-      "startedAt": "2026-10-18T13:20:13+00:00"
+      "startedAt": "2026-10-18T13:20:13+00:00",
+      "endedAt": "2026-10-18T13:33:43+00:00",
+      "integration": {
+        "merged": [
+          "P0-19"
+        ],
+        "notMerged": [],
+        "ciPass": true,
+        "headSha": "d8da913d8472e93a5ca6c6901dec964a9a1726a2",
+        "summary": "Merged port/P0-19 with no conflicts. scripts/ci.sh passed (build, test with 2061 passing and 0 failing, format). The parity matrix sync was committed as \"Sync parity matrix after W2-P0-19\". The merge lock is released."
+      },
+      "critic": null,
+      "spentOutputTokens": 179214,
+      "agents": 6,
+      "subagentTokens": 418311,
+      "durationMin": 13.2
     },
     "W2-P3-05": {
       "wps": [
@@ -3206,10 +3221,10 @@
       "risk": "low",
       "model": "sonnet",
       "depends": [],
-      "status": "implementing",
+      "status": "merged",
       "branch": "port/P0-19",
-      "headSha": null,
-      "attempts": 0,
+      "headSha": "04bd7f4ab19f2a2425f0aa6dea057ea3a58f1934",
+      "attempts": 1,
       "gate": [
         "scripts/ci.sh",
         "tools/parity/gen.sh --check"
@@ -3217,13 +3232,35 @@
       "lenses": [
         "parity"
       ],
-      "summary": null,
-      "findings": [],
-      "fixes": [],
+      "summary": "Removed the 12 approved dup-foundation and 11 approved dup-fs-ops tests. All the `keep` items are untouched. scripts/ci.sh passes (2059 tests, 0 failures), `tools/parity/gen.sh --check` passes, and `bun tools/parity-matrix/sync.ts --no-write` reports 1750 citations valid.\n\n@Test counts, before and after:\n- FTFoundationTests: 606 to 594\n- FTFileSystemTests: 465 to 456\n- FTOperationsTests: 575 to 573\n\nWhere the citations went:\n- Foundation removals df1 to df10 needed no re-pointing. The covering tests already cite their T-/F- ids: SidebarKeyboardTests cites T-eaf07a43, T-05d06d43 and F-740, the toolbar golden cites T-fc2f1ec9 and T-13ea5c0d, and the number-names golden cites F-042 and F-063.\n- The 28/30 pt toast case is folded into the two-bar case in `theStackRestsTenPointsAboveTheHighestBarAndTwelveFromTheEdgeWithNone`, which now also cites B-INFO-192 and B-INFO-193.\n- F-910 moved to `ItemNamesTests.limitsAreTheOriginals`. `ContractsNotApplicableTests` lost its struct, and the N/A comment lines stay in that file.\n- A one-line note on yellow went into `goldenCoversPresetsAndRandomColors`.\n- Smoke tests: both `SmokeTests.swift` files are deleted.\n- `hasNoSeparateNotices` is deleted and its N/A comment lines stay in `AboutInfoTests.swift`.\n- `ReviewFolderMetadataTests.swift` is deleted. It held only the removed test, whose F-405 is still cited by `fallsBackToTheModeAndDateWhenTheMetadataCantBeCopied`.\n- The other fs-ops removals needed no re-pointing:\n  - T-be9407bf is still cited at FileThumbnailServiceTests :73 and :80.\n  - T-308244dc is still cited in FileIconStoreTests.\n  - T-ab9b358d is still carried by `loadsAFewPreviewsAtATimeAndDropsQueuedOnesThatAreNoLongerShown`.\n  - F-215 and B-TREE-175 are still carried by `EjectOutcomeTests.countsAVolumeAlreadyGoneAsEjected`.\n\nI checked the covering tests the reports name and they assert the same things. Final commit is d0f96319 with the Port-Stage trailer, and the worktree is detached.",
+      "findings": [
+        {
+          "severity": "medium",
+          "title": "TreeView.keyboardAction Left/Right branches left with no test; T-eaf07a43 and T-05d06d43 now cited only on tests of a different function",
+          "where": "Tests/FTFoundationTests/Sidebar/TreeViewTests.swift (removed tests) vs Sources/FTFoundation/Sidebar/TreeView.swift:45",
+          "evidence": "The brief says to check that the covering test really asserts the same thing. The report names SidebarKeyboardTests:85 as covering T-eaf07a43 and T-05d06d43. That test calls SidebarKeyboard.decide (Tests/FTFoundationTests/Sidebar/SidebarKeyboardTests.swift:85-117). The removed tests called TreeView.keyboardAction with .right/.left, which ports treeView.test.ts. grep of Sources and Tests shows TreeView.keyboardAction is called only from TreeViewTests.swift:43-52, so Left/Right is no longer exercised. The remaining test movesThroughVisibleTreeRows covers only down/up/home/end. The removed asserts were: right on collapsed loaded /root/b gives .expand; left on expanded /root/a gives .collapse; right on expanded /root/a gives .navigate(/root/a/deep); left on /root/a/deep gives .navigate(/root/a); right on unloaded node gives .load; left on a closed root gives .none. SidebarKeyboard.decide returns different actions (.toggle, .select, .load) for these. The citations were moved to SidebarKeyboard, not to a TreeView test, so a regression in TreeView.keyboardAction's Left/Right logic would pass CI. To check: delete the .left/.right cases from TreeView.keyboardAction and run `swift test --filter FTFoundationTests`; everything passes."
+        }
+      ],
+      "fixes": [
+        {
+          "status": "fixed",
+          "summary": "Restored the two TreeView.keyboardAction Left/Right tests (T-eaf07a43, T-05d06d43) in Tests/FTFoundationTests/Sidebar/TreeViewTests.swift. They were removed as duplicates of SidebarKeyboardTests, which exercises SidebarKeyboard.decide, a different function. The restored tests passed immediately because the source was never wrong, so there was no failing-first step. I did not run the delete-the-branches check from the finding. ci.sh passes (2061 tests, 0 failing) and parity gen --check is up to date. The SidebarKeyboardTests citation line still lists both ids; I left it as is.",
+          "headSha": "04bd7f4ab19f2a2425f0aa6dea057ea3a58f1934"
+        }
+      ],
       "blockers": [],
       "carryOver": [],
       "sharedFileRequests": [],
-      "deviations": []
+      "deviations": [
+        "The brief was not in the worktree (docs/port/state/wp is untracked), so I read it from the main checkout.",
+        "The final commit does not end with the Co-Authored-By line from the attribution reminder, because the task says the last line must be the Port-Stage trailer and your CLAUDE.md says no Co-Authored-By."
+      ],
+      "gateResult": {
+        "pass": true,
+        "summary": "P0-19 gate: scripts/ci.sh exit 0 (build PASS 17s, test PASS 65s with 2061 tests in passing runs and 0 failing, format PASS 5s). tools/parity/gen.sh --check exit 0 (goldens up to date, 35 suites; 5 machine-local suites skipped). Worktree left detached at 04bd7f4; nothing changed or committed.",
+        "failures": [],
+        "flaky": []
+      }
     },
     "P0-20": {
       "title": "Faster test fixtures: smaller images, fewer mounts, shorter waits",
@@ -3248,7 +3285,9 @@
       "findings": [],
       "fixes": [],
       "blockers": [],
-      "carryOver": [],
+      "carryOver": [
+        "From W2-P0-18 gate: Flaky: DiskImageSelfTests.mountsWritesAndDetaches(kind: .fat32) failed once in a full ci.sh run (LargeFileTests.swift:27, a leftover path still existed) and passed alone. You are reworking the disk-image fixtures: find why the path survives under load and fix it, without retries or longer sleeps."
+      ],
       "sharedFileRequests": [],
       "deviations": []
     }
