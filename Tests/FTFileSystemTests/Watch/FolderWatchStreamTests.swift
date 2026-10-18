@@ -12,6 +12,10 @@ private final class Told {
 
 @MainActor
 struct FolderWatchStreamTests {
+    /// How long a change that should not be told is waited for: FSEvents hands events over after 0.05 s
+    /// (`FSEventsFolderWatcher.latencySeconds`), then the main actor is told.
+    private static let quietWait = Duration.milliseconds(250)
+
     /// Waits up to `seconds` for `condition`.
     private func wait(seconds: Double = 8, until condition: @MainActor () -> Bool) async -> Bool {
         let deadline = ContinuousClock.now + .seconds(seconds)
@@ -69,7 +73,7 @@ struct FolderWatchStreamTests {
             try await Task.sleep(for: .milliseconds(300))
 
             try "x".write(toFile: directory.path + "/inner/deep.txt", atomically: false, encoding: .utf8)
-            try await Task.sleep(for: .milliseconds(1_200))
+            try await Task.sleep(for: Self.quietWait)
             let root = directory.path
             let named = told.changes.compactMap(\.changedPaths).flatMap { $0 }
             #expect(!named.contains(root + "/inner/deep.txt"))
@@ -108,19 +112,28 @@ struct FolderWatchStreamTests {
         #expect(await wait { !failed.changes.isEmpty })
     }
 
-    @Test func stopsWatchingWhenAsked() async throws {
+    // A watch stopped once its stream runs (twice: the second does nothing), and one stopped before its stream is
+    // started, on one folder: neither is told of a change made afterwards.
+    @Test func stopsWatchingWhenAskedAlsoBeforeTheStreamIsStarted() async throws {
         try await withTemporaryDirectory { directory in
             let told = Told()
+            let toldEarly = Told()
+            let stopEarly = FSEventsFolderWatcher.watchFolder(
+                path: directory.path,
+                onChange: { _ in toldEarly.changes.append(FolderChange(path: "", changedPaths: nil)) }, onFail: {})
+            stopEarly()
             let stop = FSEventsFolderWatcher.watchFolder(
                 path: directory.path, onChange: { _ in told.changes.append(FolderChange(path: "", changedPaths: nil)) },
                 onFail: {})
+            // Long enough for both streams to start, had the first not been stopped.
             try await Task.sleep(for: .milliseconds(300))
             stop()
             stop()
             let before = told.changes.count
             try "x".write(toFile: directory.path + "/late.txt", atomically: false, encoding: .utf8)
-            try await Task.sleep(for: .milliseconds(800))
+            try await Task.sleep(for: Self.quietWait)
             #expect(told.changes.count == before)
+            #expect(toldEarly.changes.isEmpty)
         }
     }
 
@@ -134,19 +147,5 @@ struct FolderWatchStreamTests {
         try await Task.sleep(for: .milliseconds(300))
         try FileManager.default.removeItem(atPath: directory.path)
         #expect(await wait { told.changes.contains { $0.changedPaths == nil } })
-    }
-
-    @Test func stoppedBeforeTheStreamIsStartedLeavesNoStream() async throws {
-        try await withTemporaryDirectory { directory in
-            let told = Told()
-            let stop = FSEventsFolderWatcher.watchFolder(
-                path: directory.path, onChange: { _ in told.changes.append(FolderChange(path: "", changedPaths: nil)) },
-                onFail: {})
-            stop()
-            try await Task.sleep(for: .milliseconds(300))
-            try "x".write(toFile: directory.path + "/late.txt", atomically: false, encoding: .utf8)
-            try await Task.sleep(for: .milliseconds(800))
-            #expect(told.changes.isEmpty)
-        }
     }
 }
