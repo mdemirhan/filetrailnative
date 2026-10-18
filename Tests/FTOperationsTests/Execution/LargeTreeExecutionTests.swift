@@ -8,8 +8,8 @@ import os
 @testable import FTOperations
 
 /// A disk in memory that looks items up by their exact path: the mock scans every item for a name it doesn't
-/// have, which is far too slow for this many.
-private final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
+/// have, which is far too slow for this many. It counts how often each item is looked at.
+final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     private struct Node {
         var isDirectory: Bool
         var ino: UInt64
@@ -20,6 +20,7 @@ private final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Se
     private var nodes: [String: Node] = [:]
     private var children: [String: [String]] = [:]
     private var nextIno: UInt64 = 10
+    private var readCounts: [String: Int] = [:]
 
     init(fileCount: Int, fileName: (Int) -> String) {
         for folder in ["/", "/source", "/source/project", "/source/project/files"] {
@@ -44,7 +45,13 @@ private final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Se
 
     private func lookUp(_ path: String) throws -> Node {
         guard let node = nodes[path] else { throw codedError("ENOENT", "ENOENT: \(path)") }
+        readCounts[path, default: 0] += 1
         return node
+    }
+
+    /// How many times an item under `folder` was looked at, at most.
+    func mostReads(under folder: String) -> Int {
+        withLock { readCounts.filter { $0.key.hasPrefix(folder + "/") }.values.max() ?? 0 }
     }
 
     private func create(_ path: String, isDirectory: Bool, size: Int64 = 0) throws {
@@ -120,28 +127,54 @@ private final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Se
     }
 }
 
-/// Copying a folder with more items than one call takes as arguments.
-struct LargeTreeExecutionTests {
-    // More items than V8 takes as the arguments of one call (from about 124,000).
-    private static let fileCount = 150_000
+/// A folder of 150,000 files, more items than V8 takes as the arguments of one call (from about 124,000), built and
+/// reviewed through the write service once for the two tests that need it: LargeTreeAnalysisTests' review and the
+/// paste here.
+enum LargeFolder {
+    static let fileCount = 150_000
 
     /// Padded, so the files come in the order they were made.
-    private static func fileName(_ index: Int) -> String {
+    static func fileName(_ index: Int) -> String {
         let digits = String(index)
         return "file-" + String(repeating: "0", count: max(0, 6 - digits.count)) + digits + ".txt"
     }
 
+    struct Reviewed: Sendable {
+        let fileSystem: LargeFolderFileSystem
+        /// The review of copying "/source/project" into "/target"; nil when it didn't complete.
+        let report: CopyPasteAnalysisReport?
+        let status: CopyPasteAnalysisJobStatus
+        let error: String?
+        /// How many times the review looked at a file, at most.
+        let mostReadsOfAFile: Int
+    }
+
+    static let reviewed = Task<Reviewed, any Error> {
+        let fileSystem = LargeFolderFileSystem(fileCount: fileCount, fileName: fileName)
+        let service = WriteService(.init(fileSystem: fileSystem))
+        let analysisId = try service.startCopyPasteAnalysis(
+            CopyPasteAnalysisRequest(mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target")
+        ).analysisId
+        _ = await waitFor(timeout: .seconds(120)) { try service.getCopyPasteAnalysisUpdate(analysisId).done }
+        let update = try service.getCopyPasteAnalysisUpdate(analysisId)
+        return Reviewed(
+            fileSystem: fileSystem, report: update.report, status: update.status, error: update.error,
+            mostReadsOfAFile: fileSystem.mostReads(under: "/source/project/files"))
+    }
+}
+
+/// Copying a folder with more items than one call takes as arguments.
+struct LargeTreeExecutionTests {
+    private static let fileCount = LargeFolder.fileCount
+    private static func fileName(_ index: Int) -> String { LargeFolder.fileName(index) }
+
+    // The folder is reviewed through the write service, as LargeTreeAnalysisTests' review is (the original called
+    // the review on its own), and pasted on the disk it was reviewed on.
     // T-aa0802fe F-447
     @Test func analyzesAndCopiesEveryItem() async throws {
-        let fileSystem = LargeFolderFileSystem(fileCount: Self.fileCount, fileName: Self.fileName)
-        let report = try await WriteService.withRoomForDepth(name: "test review") {
-            try buildCopyPasteAnalysisReport(
-                analysisId: "analysis-large",
-                request: CopyPasteAnalysisRequest(
-                    mode: .copy, sourcePaths: ["/source/project"], destinationDirectoryPath: "/target"),
-                fileSystem: fileSystem,
-                thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1000))
-        }
+        let reviewed = try await LargeFolder.reviewed.value
+        let fileSystem = reviewed.fileSystem
+        let report = try #require(reviewed.report, Comment(rawValue: reviewed.error ?? ""))
         #expect(report.summary.totalNodeCount == Self.fileCount + 2)
         let resolvedNodes = try resolveAnalysisWithPolicy(report: report, policy: addMissing, fileSystem: fileSystem)
         let clock = ContinuousClock()
