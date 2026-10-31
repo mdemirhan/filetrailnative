@@ -27,6 +27,9 @@ logs=build/logs
 mkdir -p "$logs"
 out="$logs/ci-summary.txt"
 : >"$out"
+# What is newer than this came during the run (the crash reports listed after a failure).
+started="$logs/.ci-started"
+touch "$started"
 failed=0
 
 # In a terminal, each test is shown as it starts and ends, with how long it took; a run with no terminal stays quiet. Ctrl-C
@@ -230,6 +233,18 @@ if [ "$summaries" -lt "$expected_summaries" ] && grep -q '^PASS test ' "$out"; t
     failed=1
     sed -i '' 's/^PASS test /FAIL test /' "$out"
     echo "the test processes ended with $summaries \"Test run with\" summaries, $expected_summaries expected: one stopped silently" >>"$out"
+fi
+# The next run clears these logs, so a failed run's are kept, and the crash reports of the test processes named.
+if grep -q '^FAIL test ' "$out"; then
+    kept="$logs/failed-$(date +%Y%m%d-%H%M%S)"
+    mkdir -p "$kept"
+    cp "$logs/test.log" "$kept/" 2>/dev/null
+    [ -z "$scope" ] && [ -d "$logs/bundles" ] && cp -R "$logs/bundles" "$kept/"
+    echo "logs kept in $kept" >>"$out"
+    find "$HOME/Library/Logs/DiagnosticReports" -name 'swiftpm-testing-helper-*.ips' -newer "$started" 2>/dev/null |
+        sed 's/^/crash report since the run began: /' >>"$out"
+    # The five latest are enough.
+    ls -dt "$logs"/failed-* | tail -n +6 | while IFS= read -r old; do rm -rf "$old"; done
 fi
 passed="$(echo "$clean_log" | grep -E '^✔ Test run with' | grep -oE 'with [0-9]+' | awk '{s += $2} END {print s + 0}')"
 failed_tests="$(echo "$clean_log" | grep -E '^✘ Test run with' | grep -oE 'with [0-9]+' | awk '{s += $2} END {print s + 0}')"

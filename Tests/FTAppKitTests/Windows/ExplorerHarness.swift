@@ -111,13 +111,21 @@ final class ExplorerHarness {
     }
 }
 
+/// Waits by the clock, as a busy Mac can spend seconds on one read: the time only matters to a test that is failing, and
+/// that one says where it gave up.
 @MainActor
-func waitUntil(_ condition: () -> Bool) async -> Bool {
-    for _ in 0..<200 {
+func waitUntil(
+    timeout: Duration = .seconds(30), sourceLocation: SourceLocation = #_sourceLocation, _ condition: () -> Bool
+) async -> Bool {
+    let deadline = ContinuousClock.now + timeout
+    while ContinuousClock.now < deadline {
         if condition() { return true }
         try? await Task.sleep(for: .milliseconds(25))
     }
-    return condition()
+    if condition() { return true }
+    FileHandle.standardError.write(
+        Data("waitUntil gave up after \(timeout) at \(sourceLocation.fileID):\(sourceLocation.line)\n".utf8))
+    return false
 }
 
 /// The explorer window's end-to-end suites: one at a time, as they share the app's menu and the screen. They put

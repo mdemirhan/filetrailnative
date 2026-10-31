@@ -18,7 +18,7 @@ struct PasteThroughputTests {
     // hidden name with its journal entry; by the stoppable copy, with its stop flag and progress; and by a bare
     // copyfile call of the same flags and no callback. Each of the first two keeps within 5 % of the bare call. Other
     // builds load the machine meanwhile: the three take turns, 15 runs each (one copy takes a fifth of a second, so
-    // a few runs are noisy), and their medians are compared, so one scheduling spike can't decide it.
+    // a few runs are noisy), and their fastest runs are compared, as load only ever adds time. Being faster is fine.
     // F-404 F-410 F-453
     // A budget, not a behavior: a busy Mac can miss it, so it runs with the other budgets (tools/bench/listing.sh).
     @Test(
@@ -86,17 +86,18 @@ struct PasteThroughputTests {
                         stoppableTimes.append(try stopped())
                     }
                 }
-                let (bareMedian, stoppableMedian) = (median(bareTimes), median(stoppableTimes))
-                let pastedMedian = median(pastedTimes)
+                let bareFastest = try #require(bareTimes.min())
+                let stoppableFastest = try #require(stoppableTimes.min())
+                let pastedFastest = try #require(pastedTimes.min())
                 print(
-                    "paste throughput: pasted \(pastedMedian)s, stoppable copy \(stoppableMedian)s,"
-                        + " bare copyfile \(bareMedian)s")
+                    "paste throughput: pasted \(pastedFastest)s, stoppable copy \(stoppableFastest)s,"
+                        + " bare copyfile \(bareFastest)s")
                 #expect(
-                    abs(stoppableMedian / bareMedian - 1) <= 0.05,
-                    "stoppable \(stoppableMedian)s vs bare \(bareMedian)s (\(stoppableTimes) vs \(bareTimes))")
+                    stoppableFastest / bareFastest <= 1.05,
+                    "stoppable \(stoppableFastest)s vs bare \(bareFastest)s (\(stoppableTimes) vs \(bareTimes))")
                 #expect(
-                    abs(pastedMedian / bareMedian - 1) <= 0.05,
-                    "pasted \(pastedMedian)s vs bare \(bareMedian)s (\(pastedTimes) vs \(bareTimes))")
+                    pastedFastest / bareFastest <= 1.05,
+                    "pasted \(pastedFastest)s vs bare \(bareFastest)s (\(pastedTimes) vs \(bareTimes))")
             }
         }
     }

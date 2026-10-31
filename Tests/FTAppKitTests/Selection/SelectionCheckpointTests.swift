@@ -105,7 +105,7 @@ extension ExplorerWindowlessTests {
 
         // F-793 B-SEL-122: F2 in the list opens the rename field over the one item selected (through the window's file
         // operations, which the app always has).
-        @Test func f2OpensTheRenameField() async throws {
+        @Test(.windowlessAlone) func f2OpensTheRenameField() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
@@ -120,7 +120,7 @@ extension ExplorerWindowlessTests {
 
         // F-793 F-794 B-SEL-126: a name typed into the field and sent with Return lands: the row shows it, selected, and
         // the file has it. (On screen this is SelectionGUITests/f2RenamesInPlace.)
-        @Test func f2RenameLands() async throws {
+        @Test(.windowlessAlone) func f2RenameLands() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
@@ -131,10 +131,9 @@ extension ExplorerWindowlessTests {
             let original = try #require(path(tab, "note.txt"))
             #expect(tab.content.inlineRename?.path == original)
             tab.content.renameSubmitted("memo.txt")
-            #expect(await waitUntil { list.rowNames.contains("memo.txt") })
-            #expect(!list.rowNames.contains("note.txt"))
-            #expect(list.selectedNames == ["memo.txt"])
-            #expect(tab.content.inlineRename == nil)
+            #expect(await waitUntil { list.rowNames.contains("memo.txt") && !list.rowNames.contains("note.txt") })
+            #expect(await waitUntil { list.selectedNames == ["memo.txt"] })
+            #expect(await waitUntil { tab.content.inlineRename == nil })
             #expect(FileManager.default.fileExists(atPath: harness.folder.appending("memo.txt").path))
             await harness.close()
         }

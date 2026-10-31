@@ -124,9 +124,10 @@
                         toastShown =
                             toastShown
                             || other.notifications?.toasts.entries.contains { $0.title == "Pasted into Gamma" } == true
-                        return toastShown && window.exists("Gamma/note.txt")
-                            && other.content.selectedEntries.map(\.name) == ["note.txt"]
+                        return toastShown
                     })
+                #expect(await waitUntil { window.exists("Gamma/note.txt") })
+                #expect(await waitUntil { other.content.selectedEntries.map(\.name) == ["note.txt"] })
                 await window.close()
             }
 

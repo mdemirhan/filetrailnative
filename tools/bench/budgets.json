@@ -74,10 +74,6 @@
     }
   },
   "not_yet_measured": {
-    "copy_throughput": {
-      "budget": "copyfile, +-5%",
-      "note": "added with the copy work package"
-    },
     "icons_scroll_max_ms": {
       "budget": 16,
       "note": "Icons view scroll; added with the Icons view package"
