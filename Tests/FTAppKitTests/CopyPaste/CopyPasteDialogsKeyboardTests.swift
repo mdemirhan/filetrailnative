@@ -1,5 +1,5 @@
 // Ports the focus cases of components/{CopyPasteReviewDialog,CopyPasteRuntimeConflictDialog,CopyPasteResultDialog}
-// .test.tsx and App.fileOperations.test.tsx ("copy/paste dialogs") on a real explorer window on screen: Tab kept inside
+// .test.tsx and App.fileOperations.test.tsx ("copy/paste dialogs") on an explorer window that is never shown: Tab kept inside
 // the sheet or the alert, and the keyboard given back when it closes
 import AppKit
 import FTFileSystem
@@ -10,13 +10,13 @@ import Testing
 
 @testable import FTAppKit
 
-extension ExplorerWindowGUITests {
+extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct CopyPasteDialogsGUITests {
-        /// A window on screen with the app's file operations.
+    @Suite struct CopyPasteDialogsKeyboardTests {
+        /// A window with the app's file operations.
         private func open() async throws -> (ExplorerHarness, MainWindowController, AppWriteOperations) {
             PreparingSheet.isEnabled = false
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let operations = AppWriteOperations(
                 userData: harness.folder.url, directoryService: DirectoryService(), windows: harness.windows,

@@ -10,31 +10,71 @@ import Testing
 
 @testable import FTAppKit
 
+private func node(_ name: String, conflict: Bool, blocked: String? = nil) -> CopyPasteAnalysisNode {
+    let exists = NodeFingerprint(exists: true, kind: .file, size: 1)
+    return CopyPasteAnalysisNode(
+        id: name, sourcePath: "/src/\(name)", destinationPath: "/dest/\(name)", sourceKind: .file,
+        destinationKind: conflict ? .file : .missing, disposition: conflict ? .conflict : .new,
+        conflictClass: conflict ? .fileConflict : nil, sourceFingerprint: exists,
+        destinationFingerprint: conflict ? exists : NodeFingerprint(exists: false, kind: .missing),
+        children: [], totalNodeCount: 1, conflictNodeCount: conflict ? 1 : 0,
+        keepBothDestinationPath: conflict ? "/dest/\(name) copy" : nil, replaceBlockedReason: blocked)
+}
+
+private func report(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport {
+    CopyPasteAnalysisReport(
+        analysisId: "analysis-1", mode: .copy, sourcePaths: nodes.map(\.sourcePath),
+        destinationDirectoryPath: "/dest", nodes: nodes, issues: [], warnings: [],
+        summary: CopyPasteAnalysisSummary(
+            topLevelItemCount: nodes.count, totalNodeCount: nodes.count, totalBytes: Int64(nodes.count),
+            fileConflictCount: nodes.filter { $0.conflictClass != nil }.count, directoryConflictCount: 0,
+            mismatchConflictCount: 0, blockedCount: 0))
+}
+
+/// The review's limit on the rows it draws, on its model: drawing hundreds of real rows takes a second.
+@MainActor
+@Suite struct ReviewSheetRowLimitTests {
+    private func model(_ count: Int, conflict: Bool) -> ReviewSheetModel {
+        let nodes = (0..<count).map { node("f\($0).txt", conflict: conflict) }
+        return ReviewSheetModel(
+            report: report(nodes), action: .paste, policy: WindowWriteActions.safePolicy, now: 0)
+    }
+
+    // T-f10b2d4f B-CLIP-086: 300 rows, then all of them once asked for.
+    @Test(arguments: [(301, 1), (1_400, 1_100)])
+    func aLongListOfConflictsDrawsItsFirstRows(_ count: Int, _ hidden: Int) {
+        let model = model(count, conflict: true)
+        #expect(model.visibleRows.count == 300)
+        #expect(model.hiddenRowCount == hidden)
+        model.showAllRows = true
+        #expect(model.visibleRows.count == count)
+        #expect(model.hiddenRowCount == 0)
+    }
+
+    @Test func theLinkCountsInThousands() {
+        #expect(ReviewSheetText.showAll(1_400) == "Show all 1,400")
+    }
+
+    // A list of exactly the limit has nothing to show.
+    @Test func aListOfThreeHundredHidesNothing() {
+        let model = model(300, conflict: true)
+        #expect(model.visibleRows.count == 300)
+        #expect(model.hiddenRowCount == 0)
+    }
+
+    // T-15f564ad B-CLIP-086: the list of a large operation without conflicts has the same limit.
+    @Test func aLargeOperationWithoutConflictsHasTheSameLimit() {
+        let model = model(500, conflict: false)
+        #expect(!model.hasConflicts)
+        #expect(model.visibleRows.count == 300)
+        #expect(model.hiddenRowCount == 200)
+    }
+}
+
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ReviewSheetRowsMatrixTests {
         private var reviews: CopyPasteReviewPresenter { CopyPasteReviewPresenter.shared }
-
-        private func node(_ name: String, conflict: Bool, blocked: String? = nil) -> CopyPasteAnalysisNode {
-            let exists = NodeFingerprint(exists: true, kind: .file, size: 1)
-            return CopyPasteAnalysisNode(
-                id: name, sourcePath: "/src/\(name)", destinationPath: "/dest/\(name)", sourceKind: .file,
-                destinationKind: conflict ? .file : .missing, disposition: conflict ? .conflict : .new,
-                conflictClass: conflict ? .fileConflict : nil, sourceFingerprint: exists,
-                destinationFingerprint: conflict ? exists : NodeFingerprint(exists: false, kind: .missing),
-                children: [], totalNodeCount: 1, conflictNodeCount: conflict ? 1 : 0,
-                keepBothDestinationPath: conflict ? "/dest/\(name) copy" : nil, replaceBlockedReason: blocked)
-        }
-
-        private func report(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport {
-            CopyPasteAnalysisReport(
-                analysisId: "analysis-1", mode: .copy, sourcePaths: nodes.map(\.sourcePath),
-                destinationDirectoryPath: "/dest", nodes: nodes, issues: [], warnings: [],
-                summary: CopyPasteAnalysisSummary(
-                    topLevelItemCount: nodes.count, totalNodeCount: nodes.count, totalBytes: Int64(nodes.count),
-                    fileConflictCount: nodes.filter { $0.conflictClass != nil }.count, directoryConflictCount: 0,
-                    mismatchConflictCount: 0, blockedCount: 0))
-        }
 
         private func open(_ nodes: [CopyPasteAnalysisNode], on window: WritingWindow) throws {
             reviews.review(
@@ -47,42 +87,29 @@ extension ExplorerWindowlessTests {
             findViews("reviewSheet.showAll", in: sheet).first as? SheetLink
         }
 
-        // T-f10b2d4f B-CLIP-086: 300 rows are drawn, and "Show all N" draws the rest, once.
-        @Test(arguments: [(301, "Show all 301"), (1_400, "Show all 1,400")])
-        func aLongListOfConflictsDrawsItsFirstRows(_ count: Int, _ label: String) async throws {
+        // T-f10b2d4f B-CLIP-086: the link after the first rows draws the rest, once.
+        @Test func theLinkDrawsTheRestOfALongList() async throws {
             let window = try await WritingWindow.open()
-            try open((0..<count).map { node("f\($0).txt", conflict: true) }, on: window)
+            try open((0..<301).map { node("f\($0).txt", conflict: true) }, on: window)
             let sheet = try #require(reviews.sheet)
             #expect(sheet.rowViewsShown.count == 300)
             let link = try #require(showAll(in: sheet))
-            #expect(link.title == label)
+            #expect(link.title == "Show all 301")
             link.sendAction(link.action, to: link.target)
-            #expect(sheet.rowViewsShown.count == count)
+            #expect(sheet.rowViewsShown.count == 301)
             #expect(showAll(in: sheet) == nil)
             sheet.onClose()
             await window.close()
         }
 
-        // A list of exactly the limit has nothing to show.
-        @Test func aListOfThreeHundredHasNoLink() async throws {
+        // T-15f564ad B-CLIP-086: an operation without conflicts has no "For all", and its rows say "Adds".
+        @Test func anOperationWithoutConflictsListsWhatItAdds() async throws {
             let window = try await WritingWindow.open()
-            try open((0..<300).map { node("f\($0).txt", conflict: true) }, on: window)
-            let sheet = try #require(reviews.sheet)
-            #expect(sheet.rowViewsShown.count == 300)
-            #expect(showAll(in: sheet) == nil)
-            sheet.onClose()
-            await window.close()
-        }
-
-        // T-15f564ad B-CLIP-086: the list of a large operation without conflicts has the same limit, its rows "Adds".
-        @Test func aLargeOperationWithoutConflictsDrawsItsFirstRows() async throws {
-            let window = try await WritingWindow.open()
-            try open((0..<500).map { node("f\($0).txt", conflict: false) }, on: window)
+            try open((0..<2).map { node("f\($0).txt", conflict: false) }, on: window)
             let sheet = try #require(reviews.sheet)
             #expect(sheet.bar == nil)
-            #expect(sheet.rowViewsShown.count == 300)
             #expect(sheet.rowViewsShown.first?.addsLabel.stringValue == "Adds")
-            #expect(showAll(in: sheet)?.title == "Show all 500")
+            #expect(showAll(in: sheet) == nil)
             sheet.onClose()
             await window.close()
         }
@@ -109,7 +136,7 @@ extension ExplorerWindowlessTests {
         }
 
         // T-d7a7c28b: the one item of a paste being one Replace can't take, the alert offers Keep Both and no Replace, and
-        // says nothing of the Trash.
+        // says nothing of the Trash (with Replace possible: CopyPasteDialogsTests).
         @Test func aSingleConflictReplaceCantTakeOffersNoReplace() async throws {
             let window = try await WritingWindow.open()
             try open([node("inside", conflict: true, blocked: "contains the pasted item")], on: window)
@@ -120,13 +147,5 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-d7a7c28b: with Replace possible, the alert has it.
-        @Test func aSingleConflictOffersReplace() async throws {
-            let window = try await WritingWindow.open()
-            try open([node("plain", conflict: true)], on: window)
-            let alert = try #require(reviews.alert)
-            #expect(alert.buttons.map(\.title).contains("Replace"))
-            await window.close()
-        }
     }
 }

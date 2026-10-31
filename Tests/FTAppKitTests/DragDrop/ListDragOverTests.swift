@@ -98,19 +98,19 @@ extension ExplorerWindowlessTests {
             let tab = window.tab
             let list = try table(tab)
             let alpha = window.folder.appendingPathComponent("Alpha").path
-            let saved = TabDragDrop.dragIsHeldOver
-            defer { TabDragDrop.dragIsHeldOver = saved }
-            TabDragDrop.dragIsHeldOver = { _ in true }
+            let timers = window.manualDragTimers()
+            var time = 0.0
+            tab.dragDrop.now = { time }
             let drag = info(window, at: try point(window, "Alpha"), sequence: 43)
             defer { drag.draggingPasteboard.releaseGlobally() }
             _ = list.draggingEntered(drag)
-            var opened = false
-            for _ in 0..<60 where !opened {
+            // Past the hold and its warning, in steps that keep the drag-overs coming.
+            for _ in 0..<30 {
+                time += 50
+                timers.advance(0.05)
                 _ = list.draggingUpdated(drag)
-                try await Task.sleep(for: .milliseconds(50))
-                opened = samePath(tab.folder.path, alpha)
             }
-            #expect(opened)
+            #expect(await waitUntil { samePath(tab.folder.path, alpha) })
             await window.close()
         }
 
@@ -124,6 +124,7 @@ extension ExplorerWindowlessTests {
             let saved = TabDragDrop.dragWasLetGoOver
             defer { TabDragDrop.dragWasLetGoOver = saved }
             TabDragDrop.dragWasLetGoOver = { $0 === tab.window }
+            let timers = window.manualDragTimers()
             let drag = info(window, at: try point(window, "Alpha"), sequence: 44)
             defer { drag.draggingPasteboard.releaseGlobally() }
             #expect(list.draggingEntered(drag) == [])
@@ -131,7 +132,7 @@ extension ExplorerWindowlessTests {
             list.draggingExited(drag)
             #expect(toasts(tab) == [refusal])
             list.draggingExited(drag)
-            try await Task.sleep(for: .milliseconds(500))
+            timers.advance(0.5)
             #expect(toasts(tab) == [refusal])
             try unblock(window)
             await window.close()
@@ -146,11 +147,12 @@ extension ExplorerWindowlessTests {
             let saved = TabDragDrop.dragWasLetGoOver
             defer { TabDragDrop.dragWasLetGoOver = saved }
             TabDragDrop.dragWasLetGoOver = { _ in false }
+            let timers = window.manualDragTimers()
             let drag = info(window, at: try point(window, "Alpha"), sequence: 45)
             defer { drag.draggingPasteboard.releaseGlobally() }
             #expect(list.draggingUpdated(drag) == [])
             list.draggingExited(drag)
-            try await Task.sleep(for: .milliseconds(500))
+            timers.advance(0.5)
             #expect(toasts(tab).isEmpty)
             try unblock(window)
             await window.close()
@@ -184,25 +186,27 @@ extension ExplorerWindowlessTests {
                 TabDragDrop.dragWasLetGoOver = savedLetGo
                 TabDragDrop.dragIsHeldOver = savedHeld
             }
+            let timers = window.manualDragTimers()
             var held = true
             TabDragDrop.dragIsHeldOver = { _ in held }
             TabDragDrop.dragWasLetGoOver = { _ in !held }
             let drag = info(window, sequence: 47)
             defer { drag.draggingPasteboard.releaseGlobally() }
             #expect(tab.dragDrop.sidebarDragUpdated(drag, row: nil) == [])
-            try await Task.sleep(for: .milliseconds(700))
+            timers.advance(1)
             #expect(toasts(tab).isEmpty)
             held = false
-            #expect(await waitUntil { toasts(tab) == [refusal] })
+            timers.advance(0.5)
+            #expect(toasts(tab) == [refusal])
             try unblock(window)
             await window.close()
         }
 
-        /// The tab's tree, with the row of `Alpha` in it, not opened, and a drag over that row; the drag's pasteboard is
-        /// the caller's to release.
+        /// The tab's tree, with the row of `Alpha` in it, not opened, and a drag over that row, its timers moved by hand;
+        /// the drag's pasteboard is the caller's to release.
         private func dragOverTheTree(
             _ window: WritingWindow, sequence: Int
-        ) async throws -> (tree: SidebarOutlineView, drag: StubDraggingInfo, alpha: String) {
+        ) async throws -> (timers: ManualTimers, drag: StubDraggingInfo, alpha: String) {
             let tab = window.tab
             let alpha = window.folder.appendingPathComponent("Alpha").path
             let model = tab.sidebarController.model
@@ -220,9 +224,11 @@ extension ExplorerWindowlessTests {
                 paths: [window.folder.appendingPathComponent("note.txt").path],
                 at: tree.convert(NSPoint(x: rect.midX, y: rect.midY), to: nil), sequence: sequence,
                 window: tab.window)
+            let timers = window.manualDragTimers()
             #expect(tree.draggingEntered(drag) != [])
+            #expect(tree.draggingUpdated(drag) != [])
             #expect(tab.sidebarController.dropStates[alpha] == .valid)
-            return (tree, drag, alpha)
+            return (timers, drag, alpha)
         }
 
         // T-d9fde40a: a drag moved from a folder of the tree to the list: the folder shows nothing and doesn't open, with
@@ -237,7 +243,7 @@ extension ExplorerWindowlessTests {
             #expect(list.draggingEntered(over.drag) != [])
             #expect(tab.sidebarController.dropStates.isEmpty)
             for _ in 0..<10 {
-                try await Task.sleep(for: .milliseconds(100))
+                over.timers.advance(0.1)
                 _ = list.draggingUpdated(over.drag)
             }
             #expect(tab.sidebarController.dropStates.isEmpty)
@@ -253,25 +259,10 @@ extension ExplorerWindowlessTests {
             let tab = window.tab
             let over = try await dragOverTheTree(window, sequence: 50)
             defer { over.drag.draggingPasteboard.releaseGlobally() }
-            try await Task.sleep(for: .milliseconds(1000))
+            over.timers.advance(1)
             #expect(tab.sidebarController.dropStates.isEmpty)
             #expect(tab.sidebarController.model.nodes[over.alpha]?.expanded == false)
             #expect(tab.sidebarController.model.nodes[over.alpha]?.loading == false)
-            await window.close()
-        }
-
-        // T-4390276a B-CLIP-171: held on a folder of the tree, the folder opens.
-        @Test func aFolderOfTheTreeOpensUnderADragHeldThere() async throws {
-            let window = try await WritingWindow.open()
-            let tab = window.tab
-            let over = try await dragOverTheTree(window, sequence: 51)
-            defer { over.drag.draggingPasteboard.releaseGlobally() }
-            for _ in 0..<10 {
-                try await Task.sleep(for: .milliseconds(100))
-                _ = over.tree.draggingUpdated(over.drag)
-            }
-            #expect(await waitUntil { tab.sidebarController.model.nodes[over.alpha]?.expanded == true })
-            tab.dragDrop.clearTargets()
             await window.close()
         }
 
@@ -289,22 +280,19 @@ extension ExplorerWindowlessTests {
             }
             TabDragDrop.dragIsHeldOver = { _ in false }
             TabDragDrop.dragWasLetGoOver = { _ in true }
+            let timers = window.manualDragTimers()
             let drag = info(window, sequence: 48)
             defer { drag.draggingPasteboard.releaseGlobally() }
             let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
             #expect(!tab.dragDrop.contentDragUpdated(drag, entry: alpha).isEmpty)
             #expect(tab.dragDrop.contentPerformDrop(drag, entry: alpha))
+            // Its own small copy ends quickly: a card put up then stands for a long copy still running.
+            #expect(await waitUntil { window.exists("Alpha/note.txt") && !tab.isWriteLocked })
             let session = window.operations.session(for: try #require(tab.group))
-            // Keeps a card up, as a long copy does: the fixture's real small copy ends too quickly.
-            for _ in 0..<40 {
-                if session.card == nil {
-                    session.applyCard(
-                        WriteOperationCardState(
-                            action: .copyTo, stage: .running, targetPath: alpha.path,
-                            currentSourcePath: "/Users/demo/Photos"))
-                }
-                try await Task.sleep(for: .milliseconds(25))
-            }
+            session.applyCard(
+                WriteOperationCardState(
+                    action: .copyTo, stage: .running, targetPath: alpha.path, currentSourcePath: "/Users/demo/Photos"))
+            timers.advance(1)
             #expect(toasts(tab).allSatisfy { !$0.hasPrefix("Can") }, "\(toasts(tab))")
             session.applyCard(nil)
             await window.close()

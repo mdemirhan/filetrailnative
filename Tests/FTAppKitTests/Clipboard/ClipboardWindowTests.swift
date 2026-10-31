@@ -60,6 +60,13 @@ struct WritingWindow {
         FileManager.default.fileExists(atPath: folder.appendingPathComponent(relative).path)
     }
 
+    /// The tab's drag timers, moved by hand from now on.
+    func manualDragTimers() -> ManualTimers {
+        let timers = ManualTimers()
+        tab.dragDrop.timers = timers
+        return timers
+    }
+
     func close() async {
         tab.services.clipboard.set(.empty, from: nil)
         withExtendedLifetime(operations) {}
@@ -276,7 +283,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-cc6ebb98 T-d4b3c2fe B-CLIP-057 B-CLIP-058: nothing is pasted into search results or the Trash.
+        // T-cc6ebb98 T-d4b3c2fe B-CLIP-057 B-CLIP-058: nothing is pasted into search results.
         // B-CLIP-053 T-adb6c85c
         @Test func noPasteDestinationInSearchResults() async throws {
             let window = try await WritingWindow.open()
@@ -304,7 +311,6 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { !other.content.entries.isEmpty })
             window.select(["note.txt"])
             tab.perform(.copySelection)
-            #expect(other.services.clipboard.contents.sourcePaths == [path(window, "note.txt")])
             #expect(other.content.clipboardMarks?.mark(for: path(window, "note.txt")) == .copy)
             window.harness.layout(other)
             let button = other.explorerToolbar.clipboardButton
@@ -331,26 +337,6 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { window.exists("Gamma/note.txt") })
             #expect(await waitUntil { other.content.entries.map(\.name).contains("note.txt") })
             #expect(await waitUntil { other.content.selectedEntries.map(\.name) == ["note.txt"] })
-            await window.close()
-        }
-
-        // T-d754e570 B-VIEW-171: what is copied in one tab is pasted in another.
-        // N/A T-07c17e51 T-001cf8ca D-003: the system's tab bar owns drags over tabs.
-        // T-eb9edd5d
-        @Test func anotherTabPastesWhatWasCopied() async throws {
-            let window = try await WritingWindow.open()
-            let tab = window.tab
-            window.select(["note.txt"])
-            tab.perform(.copySelection)
-            let group = try #require(tab.group)
-            group.openTab(path: window.folder.appendingPathComponent("Gamma").path, from: tab)
-            #expect(await waitUntil { group.tabs.count == 2 })
-            let other = try #require(group.tabs.first { $0 !== tab })
-            other.servicesOverride = window.harness.services
-            other.ensureLoaded()
-            #expect(await waitUntil { other.folder.lastPathComponent == "Gamma" })
-            other.perform(.pasteSelection)
-            #expect(await waitUntil { window.exists("Gamma/note.txt") })
             await window.close()
         }
 

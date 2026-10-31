@@ -288,3 +288,60 @@ extension ExplorerWindowlessTests {
         }
     }
 }
+
+/// Try Again's items, from the end of a rename of several: those not completed, where each is now.
+@MainActor
+@Suite struct BatchRenameRetryTargetsTests {
+    private func ended(_ items: [WriteOperationItem]) -> WriteOperationResult {
+        WriteOperationResult(
+            operationId: "rename-1", action: .batchRename, status: .partial, targetPath: nil, startedAt: Date(),
+            finishedAt: Date(),
+            summary: CopyPasteOperationSummary(
+                topLevelItemCount: items.count, totalItemCount: items.count, completedItemCount: 0, failedItemCount: 0,
+                skippedItemCount: 0, cancelledItemCount: 0, completedByteCount: 0, totalBytes: nil),
+            items: items, error: nil)
+    }
+
+    private func item(
+        _ source: String, _ destination: String?, _ status: CopyPasteItemResult.Status
+    ) -> WriteOperationItem {
+        WriteOperationItem(sourcePath: source, destinationPath: destination, status: status)
+    }
+
+    private func targets(_ items: [WriteOperationItem], folders: [String: Bool] = [:]) -> [BatchRenameTarget] {
+        MainWindowController.retryTargets(ended(items), folders: folders)
+    }
+
+    // B-DLG-094 T-8a768343 T-5360e1dd: what failed is left, what was renamed isn't.
+    @Test func leavesOutWhatWasRenamed() {
+        #expect(
+            targets([item("/t/a.txt", "/t/a-old.txt", .completed), item("/t/b.txt", nil, .failed)]) == [
+                BatchRenameTarget(path: "/t/b.txt", name: "b.txt", isFolder: false)
+            ])
+    }
+
+    // B-DLG-094 T-720c5e50 T-6026c9fd: so are those skipped because their new names were taken, and those not started when
+    // the rename was stopped.
+    @Test(arguments: [CopyPasteItemResult.Status.skipped, .cancelled])
+    func triesAgainItemsNotReached(_ status: CopyPasteItemResult.Status) {
+        #expect(targets([item("/t/b.txt", nil, status)]).map(\.path) == ["/t/b.txt"])
+    }
+
+    // B-DLG-094 T-84fd5b18 T-2534ef40: an item left under another name, a number or a hidden temporary one, is tried again
+    // where it is now, under the name it has now.
+    @Test(arguments: ["b 2.txt", ".filetrail-rename-abc123"])
+    func triesAgainAnItemWhereItIsNow(_ name: String) {
+        #expect(
+            targets([item("/t/b.txt", "/t/\(name)", .failed)]) == [
+                BatchRenameTarget(path: "/t/\(name)", name: name, isFolder: false)
+            ])
+    }
+
+    // B-DLG-074 B-DLG-094 T-cec4474d: a folder as it was asked for, under its old path.
+    @Test func keepsAFolderAFolderUnderItsNewName() {
+        #expect(
+            targets([item("/t/Alpha", "/t/Alpha 2", .failed)], folders: ["/t/Alpha": true]) == [
+                BatchRenameTarget(path: "/t/Alpha 2", name: "Alpha 2", isFolder: true)
+            ])
+    }
+}

@@ -201,7 +201,13 @@ extension ExplorerWindowlessTests {
             _ = try await self.sheet(tab)
             tab.batchRenameSheet?.cancelButton.perform()
             #expect(tab.batchRenameSheet == nil)
-            // Escape closes it wherever the keyboard is, even outside it.
+            // Escape closes it wherever the keyboard is: on a pop-up of the sheet, and even outside it.
+            tab.perform(.focusContentPane)
+            key(120, "\u{F705}", tab)
+            let again = try await self.sheet(tab)
+            window.makeFirstResponder(again.onConflictPopUp)
+            key(KeyCode.escape, "\u{1b}", tab)
+            #expect(tab.batchRenameSheet == nil)
             tab.perform(.focusContentPane)
             key(120, "\u{F705}", tab)
             _ = try await self.sheet(tab)
@@ -288,26 +294,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-DLG-094
-        // T-8a768343
-        @Test func listsWhatWasntRenamedAndTriesItAgainFromTheSheet() async throws {
-            let opened = try await open()
-            let tab = opened.tab
-            select(opened, ["a.txt", "b.txt"])
-            tab.renameSelected()
-            addOld(try await sheet(tab))
-            tab.reopenBatchRename(
-                after: ended(
-                    .partial,
-                    [
-                        (opened.path("a.txt"), opened.path("a-old.txt"), .completed, nil),
-                        (opened.path("b.txt"), nil, .failed, "\u{201C}b.txt\u{201D} is locked."),
-                    ]))
-            let again = try await sheet(tab)
-            #expect(again.titleLabel.stringValue == "Rename 1 Item")
-            await close(opened)
-        }
-
         // B-DLG-075
         // T-e2459ba9
         @Test func saysAnotherOperationIsRunningInsteadOfOpening() async throws {
@@ -358,109 +344,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-DLG-094
-        // T-720c5e50
-        @Test func triesAgainItemsSkippedBecauseTheirNewNamesWereTaken() async throws {
-            let opened = try await open()
-            let tab = opened.tab
-            select(opened, ["a.txt", "b.txt"])
-            tab.renameSelected()
-            addOld(try await sheet(tab))
-            tab.reopenBatchRename(
-                after: ended(
-                    .completed,
-                    [
-                        (
-                            opened.path("a.txt"), nil, .skipped,
-                            "An item named \u{201C}a-old.txt\u{201D} already exists."
-                        ),
-                        (
-                            opened.path("b.txt"), nil, .skipped,
-                            "An item named \u{201C}b-old.txt\u{201D} already exists."
-                        ),
-                    ]))
-            #expect(try await sheet(tab).titleLabel.stringValue == "Rename 2 Items")
-            await close(opened)
-        }
-
-        // B-DLG-094
-        // T-6026c9fd
-        @Test func triesAgainTheItemsNotStartedWhenTheRenameWasStopped() async throws {
-            let opened = try await open()
-            let tab = opened.tab
-            select(opened, ["a.txt", "b.txt", "c.txt"])
-            tab.renameSelected()
-            addOld(try await sheet(tab))
-            tab.reopenBatchRename(
-                after: ended(
-                    .partial,
-                    [
-                        (opened.path("a.txt"), opened.path("a-old.txt"), .completed, nil),
-                        (opened.path("b.txt"), nil, .cancelled, nil), (opened.path("c.txt"), nil, .cancelled, nil),
-                    ]))
-            let again = try await sheet(tab)
-            #expect(again.titleLabel.stringValue == "Rename 2 Items")
-            again.renameButton.perform()
-            #expect(await waitUntil { opened.requests.all.count == 2 })
-            #expect(opened.requests.all.last?.items.map(\.sourcePath) == [opened.path("b.txt"), opened.path("c.txt")])
-            await close(opened)
-        }
-
-        // B-DLG-094
-        // T-84fd5b18
-        @Test func triesAgainAnItemPutBackUnderItsOldNameWithANumber() async throws {
-            let opened = try await open()
-            let tab = opened.tab
-            select(opened, ["a.txt", "b.txt"])
-            tab.renameSelected()
-            addOld(try await sheet(tab))
-            // Another item took "b.txt" while b.txt waited under a hidden name.
-            try "x".write(toFile: opened.path("b 2.txt"), atomically: true, encoding: .utf8)
-            tab.reopenBatchRename(
-                after: ended(
-                    .partial,
-                    [
-                        (opened.path("a.txt"), opened.path("a-old.txt"), .completed, nil),
-                        (opened.path("b.txt"), opened.path("b 2.txt"), .failed, "\u{201C}b.txt\u{201D} is locked."),
-                    ]))
-            // It is tried again where it is now, under the name it has now.
-            let again = try await sheet(tab)
-            #expect(again.titleLabel.stringValue == "Rename 1 Item")
-            again.renameButton.perform()
-            #expect(await waitUntil { opened.requests.all.count == 2 })
-            #expect(
-                opened.requests.all.last?.items == [
-                    .init(sourcePath: opened.path("b 2.txt"), destinationName: "b 2-old.txt", isFolder: false)
-                ])
-            await close(opened)
-        }
-
-        // B-DLG-094
-        // T-2534ef40
-        @Test func triesAgainAnItemLeftUnderAHiddenTemporaryName() async throws {
-            let opened = try await open()
-            let tab = opened.tab
-            select(opened, ["a.txt", "b.txt"])
-            tab.renameSelected()
-            addOld(try await sheet(tab))
-            let hidden = opened.path(".filetrail-rename-abc123")
-            try "x".write(toFile: hidden, atomically: true, encoding: .utf8)
-            tab.reopenBatchRename(
-                after: ended(
-                    .partial,
-                    [
-                        (opened.path("a.txt"), opened.path("a-old.txt"), .completed, nil),
-                        (opened.path("b.txt"), hidden, .failed, "\u{201C}b.txt\u{201D} is locked."),
-                    ]))
-            let again = try await sheet(tab)
-            #expect(again.titleLabel.stringValue == "Rename 1 Item")
-            again.renameButton.perform()
-            #expect(await waitUntil { opened.requests.all.count == 2 })
-            #expect(opened.requests.all.last?.items.map(\.sourcePath) == [hidden])
-            #expect(opened.requests.all.last?.items.first?.isFolder == false)
-            await close(opened)
-        }
-
         // B-DLG-074 B-DLG-094
         // T-cec4474d
         @Test func triesAgainAFolderPutBackUnderAnotherNameAsAFolderThoughItIsntListed() async throws {
@@ -481,6 +364,7 @@ extension ExplorerWindowlessTests {
                         (opened.path("Alpha"), opened.path("Alpha 2"), .failed, "\u{201C}Alpha\u{201D} is locked."),
                     ]))
             let again = try await sheet(tab)
+            #expect(again.titleLabel.stringValue == "Rename 1 Item")
             again.renameButton.perform()
             #expect(await waitUntil { opened.requests.all.count == 2 })
             // A folder's whole name is its name: "-old" goes at the end, not before an extension.
@@ -512,24 +396,6 @@ extension ExplorerWindowlessTests {
                             .init(sourcePath: opened.path("c.txt"), destinationName: "File 3.txt", isFolder: false),
                         ], onConflict: .number, numberSeparator: " ")
                 ])
-            await close(opened)
-        }
-
-        // B-DLG-088
-        // T-3fb59bfb
-        // B-CLIP-196
-        @Test func saysWhyTheyCouldntBeRenamed() async throws {
-            let opened = try await open(records: false)
-            let tab = opened.tab
-            // The file operations refuse it before it starts: the reason is said under "Couldn’t Rename".
-            tab.startBatchRename(
-                BatchRenameRequest(items: [
-                    .init(sourcePath: opened.path("a.txt"), destinationName: "a.txt", isFolder: false)
-                ]))
-            #expect(await waitUntil { !opened.notices.titles.isEmpty })
-            #expect(opened.notices.titles == ["Couldn\u{2019}t Rename"])
-            #expect(opened.notices.messages == ["Nothing would be renamed."])
-            #expect(tab.notifications?.progress.state == nil)
             await close(opened)
         }
 

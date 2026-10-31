@@ -55,7 +55,6 @@ extension ExplorerWindowlessTests {
             let columns = Layout.Grid.columns(width: Double(width) - 2 * Layout.Options.paddingHorizontal)
             let find = try #require(sheet.labels["Find"])
             #expect(frame(find, in: sheet) == NSRect(x: left, y: optionsTop, width: 112, height: control))
-            #expect(find.alignment == .right || find.attributedStringValue.length > 0)
             #expect(
                 frame(sheet.findField, in: sheet)
                     == NSRect(

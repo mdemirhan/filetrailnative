@@ -10,13 +10,18 @@ final class AutoFolderSizeController {
     private let sizes: WindowFolderSizes
     private let delay: Double
     private var path: String?
-    private var timer: DispatchWorkItem?
+    private let scheduler: any TimerScheduling
+    private var timer: TimerToken?
     private var startedPath: String?
     private var startedJob: String?
 
-    init(sizes: WindowFolderSizes, delay: Double = AutoFolderSize.delayMilliseconds / 1000) {
+    init(
+        sizes: WindowFolderSizes, delay: Double = AutoFolderSize.delayMilliseconds / 1000,
+        scheduler: any TimerScheduling = TaskTimerScheduler()
+    ) {
         self.sizes = sizes
         self.delay = delay
+        self.scheduler = scheduler
     }
 
     /// The folder to measure now (nil: none). Called whenever it may have changed; only a change does anything.
@@ -25,11 +30,7 @@ final class AutoFolderSizeController {
         leave()
         path = next
         guard let next else { return }
-        let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated { self?.fire(next) }
-        }
-        timer = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
+        timer = scheduler.schedule(after: delay) { [weak self] in self?.fire(next) }
     }
 
     private func leave() {

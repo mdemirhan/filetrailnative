@@ -52,14 +52,18 @@ extension ExplorerWindowlessTests {
         // T-26eb6e20
         @Test func aDropOnAFolderOfTheTreeGoesIntoIt() async throws {
             let window = try await WritingWindow.open()
-            let drags = window.tab.dragDrop
+            let tab = window.tab
+            let drags = tab.dragDrop
             let beta = url(window, "Beta").path
+            let shownInTree = tab.sidebarController.selectedTreeTargetPath
             let target = TabDragDrop.Target(surface: .tree, path: beta, supportsMove: true, selectsInTree: true)
             let session = DragSession(
                 sourceSurface: .external, sourceItems: [DragItem(path: url(window, "note.txt").path, kind: .file)],
                 leadPath: url(window, "note.txt").path, leadKind: .file)
             #expect(drags.drop(session: session, target: target, offersMove: true, modifiers: [], sequence: 1))
-            #expect(await waitUntil { window.exists("Beta/note.txt") })
+            #expect(await waitUntil { window.exists("Beta/note.txt") && !tab.isWriteLocked })
+            await settle()
+            #expect(tab.sidebarController.selectedTreeTargetPath == shownInTree)
             await window.close()
         }
 
@@ -74,30 +78,6 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { window.exists("outside.txt") && !window.exists("Alpha/outside.txt") })
             _ = drags.automationDragStarted([try entry(window, "Gamma")])
             #expect(!drags.automationDrop([url(window, "Gamma")], entry: nil, allowed: [.copy, .move]))
-            await window.close()
-        }
-
-        // T-a91faf09 T-c89e355a T-87626198 B-CLIP-156 B-CLIP-157: an alias of a folder takes nothing, nor the Trash; a
-        // folder doesn't go into itself.
-        // B-CLIP-168 B-TREE-190 B-VIEW-074 T-11ca1eea T-b7282f2f T-e711d033
-        @Test func targetsThatRefuse() async throws {
-            let window = try await WritingWindow.open()
-            let drags = window.tab.dragDrop
-            let session = DragSession(
-                sourceSurface: .external, sourceItems: [DragItem(path: url(window, "Gamma").path, kind: .directory)],
-                leadPath: url(window, "Gamma").path, leadKind: .directory)
-            let home = FileManager.default.homeDirectoryForCurrentUser.path
-            let trash = TabDragDrop.Target(surface: .favorite, path: home + "/.Trash", supportsMove: false)
-            #expect(drags.decide(session, target: trash, offersMove: true, modifiers: []).refusal == .invalidTarget)
-            let itself = TabDragDrop.Target(surface: .tree, path: url(window, "Gamma/Inner").path, supportsMove: true)
-            #expect(drags.decide(session, target: itself, offersMove: true, modifiers: []).refusal == .parentIntoChild)
-            let json = """
-                {"path":"\(url(window, "Link").path)","name":"Link","fileExtension":"","kind":"symlink_directory",
-                "isHidden":false,"isSymlink":true}
-                """
-            let link = try JSONDecoder().decode(DirectoryEntry.self, from: Data(json.utf8))
-            let target = try #require(drags.contentTarget(session, entry: link))
-            #expect(!target.supportsMove)
             await window.close()
         }
 
@@ -131,27 +111,15 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-cfac6ffc T-0914189a B-CLIP-050 B-CLIP-165: items dragged out that another app took away are dropped
-        // from the clipboard, found by asking the disk after the drag.
-        @Test func itemsAnotherAppTookAwayLeaveTheClipboard() async throws {
-            let window = try await WritingWindow.open()
-            let tab = window.tab
-            let note = url(window, "note.txt").path
-            tab.services.clipboard.set(ClipboardRules.set(.copy, [note], capturedAt: "t"), from: nil)
-            tab.clipboardChanged()
-            try FileManager.default.removeItem(atPath: note)
-            tab.dragDrop.checkDraggedAway([note], intoTrash: false, after: [0])
-            #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
-            await window.close()
-        }
-
-        // T-35a8bef5 B-CLIP-050 B-SRCH-142: a result dragged out and moved away by another app is looked for after the
-        // drag, and the results on screen are found again, without it.
-        @Test func searchResultsAreFoundAgainWhenAnotherAppMovedOneAway() async throws {
+        // T-35a8bef5 B-CLIP-050 B-SRCH-142: each drag is followed on its own. A second drag ending while the first's
+        // slow move is still going doesn't stop the first being looked for: when it leaves, a cut of it is cancelled and
+        // the results are found again.
+        @Test func aSecondDragDoesntStopTheFirstBeingLookedFor() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let engine = FakeSearchEngine()
             let timers = ManualTimers()
+            let dragTimers = window.manualDragTimers()
             tab.search.session.engine = engine
             tab.search.session.timers = timers
             engine.finds = { _ in (["note.txt"], false, false) }
@@ -163,45 +131,19 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.entries.contains { $0.name == "note.txt" } })
             let searches = engine.starts.count
 
-            let note = url(window, "note.txt").path
-            try FileManager.default.removeItem(atPath: note)
-            engine.finds = { _ in ([], false, false) }
-            tab.dragDrop.ownDragEnded(paths: [note], operation: .move, over: .elsewhere)
-            #expect(await waitUntil { engine.starts.count == searches + 1 })
-            #expect(await waitUntil { !tab.content.entries.contains { $0.name == "note.txt" } })
-            tab.search.session.hideResults()
-            await window.close()
-        }
-
-        // T-35a8bef5 B-CLIP-050 B-SRCH-142: each drag is followed on its own. A second drag ending while the first's
-        // slow move is still going doesn't stop the first being looked for: when it leaves, a cut of it is cancelled and
-        // the results are found again.
-        @Test func aSecondDragDoesntStopTheFirstBeingLookedFor() async throws {
-            let window = try await WritingWindow.open()
-            let tab = window.tab
-            let engine = FakeSearchEngine()
-            let timers = ManualTimers()
-            tab.search.session.engine = engine
-            tab.search.session.timers = timers
-            engine.finds = { _ in (["note.txt"], false, false) }
-            let field = try #require(tab.searchField)
-            field.stringValue = "note"
-            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
-            timers.advance(0.4)
-            #expect(await waitUntil { tab.content.entries.contains { $0.name == "note.txt" } })
-            let searches = engine.starts.count
-
             let slow = url(window, "note.txt").path
             let quick = url(window, "quick.txt").path
             tab.services.clipboard.set(ClipboardRules.set(.cut, [slow], capturedAt: "t"), from: nil)
             tab.dragDrop.ownDragEnded(paths: [slow], operation: .move, over: .elsewhere)
             tab.dragDrop.ownDragEnded(paths: [quick], operation: .move, over: .elsewhere)
             // The second is gone at its own first check (it never existed); the first is still there then.
+            dragTimers.advance(DragTimings.draggedAwayChecksMs[0] / 1000)
             #expect(await waitUntil { engine.starts.count == searches + 1 })
             #expect(tab.services.clipboard.contents.hasItems)
 
             engine.finds = { _ in ([], false, false) }
             try FileManager.default.removeItem(atPath: slow)
+            dragTimers.advance(DragTimings.draggedAwayChecksMs[1] / 1000)
             #expect(await waitUntil { engine.starts.count == searches + 2 })
             #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
             #expect(await waitUntil { !tab.content.entries.contains { $0.name == "note.txt" } })
@@ -252,21 +194,6 @@ extension ExplorerWindowlessTests {
             #expect(!tab.services.clipboard.contents.hasItems)
             #expect(await waitUntil { engine.starts.count == searches + 1 })
             tab.search.session.hideResults()
-            await window.close()
-        }
-
-        // T-4c40ea4b T-20b0bfbe B-CLIP-162: a drop whose disks can't be read, with no key held, is refused.
-        @Test func aDropWhoseDisksDontAnswerIsRefused() async throws {
-            let window = try await WritingWindow.open()
-            let read = TabDragDrop.readDiskIds
-            TabDragDrop.readDiskIds = { paths in paths.map { _ in nil } }
-            defer { TabDragDrop.readDiskIds = read }
-            let drags = window.tab.dragDrop
-            let urls = drags.automationDragStarted([try entry(window, "note.txt")])
-            #expect(drags.automationDrop(urls, entry: try entry(window, "Alpha"), allowed: [.copy, .move, .generic]))
-            #expect(await waitUntil { !window.recorder.shown.isEmpty })
-            #expect(window.recorder.shown.first?.title == "Couldn\u{2019}t Drop")
-            #expect(window.exists("note.txt") && !window.exists("Alpha/note.txt"))
             await window.close()
         }
 

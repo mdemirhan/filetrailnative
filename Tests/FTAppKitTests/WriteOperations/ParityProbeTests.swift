@@ -285,6 +285,14 @@ extension ExplorerWindowlessTests {
             #expect(tab.pendingChange?.changedPaths == ["/x/a"])
             session.applyCard(nil)
             #expect(tab.pendingChange == nil)
+            // B-VIEW-187: so they do while another window's runs.
+            session.otherWindowProgress(WriteOperationEvent(operationId: "other", action: .copyTo, status: .running))
+            #expect(tab.isWriteLocked)
+            harness.windows.folderChanged(
+                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: ["/x/b"]))
+            #expect(tab.pendingChange?.changedPaths == ["/x/b"])
+            session.otherWindowProgress(WriteOperationEvent(operationId: "other", action: .copyTo, status: .cancelled))
+            #expect(await waitUntil { tab.pendingChange == nil })
             withExtendedLifetime(operations) {}
             await harness.close()
         }

@@ -28,10 +28,10 @@ extension ExplorerWindowlessTests {
                 leadPath: paths[0], leadKind: kind)
         }
 
-        private func folderEntry(_ path: String) throws -> DirectoryEntry {
+        private func folderEntry(_ path: String, kind: String = "directory") throws -> DirectoryEntry {
             let json = """
                 {"path":"\(path)","name":"\((path as NSString).lastPathComponent)","fileExtension":"",
-                "kind":"directory","isHidden":false,"isSymlink":false}
+                "kind":"\(kind)","isHidden":false,"isSymlink":\(kind != "directory")}
                 """
             return try JSONDecoder().decode(DirectoryEntry.self, from: Data(json.utf8))
         }
@@ -107,7 +107,7 @@ extension ExplorerWindowlessTests {
                 window.tab.dragDrop.drop(
                     session: external(["/Volumes/Backup"], kind: .directory), target: target, offersMove: true,
                     modifiers: [], sequence: 102))
-            try await Task.sleep(for: .milliseconds(300))
+            try await Task.sleep(for: .milliseconds(100))
             withExtendedLifetime(observation) {}
             #expect(cards == 0)
             #expect(window.recorder.shown.isEmpty)
@@ -149,8 +149,11 @@ extension ExplorerWindowlessTests {
             // The same row outside the Trash takes it.
             let elsewhere = try #require(drags.sidebarTarget(row(path(window, "Alpha"), .filesystem)))
             #expect(elsewhere.supportsMove)
-            try await Task.sleep(for: .milliseconds(100))
             #expect(window.exists("note.txt"))
+            // T-a91faf09 B-CLIP-157: an alias of a folder takes nothing.
+            let link = try #require(
+                drags.contentTarget(session, entry: try folderEntry(path(window, "Link"), kind: "symlink_directory")))
+            #expect(!link.supportsMove)
             await window.close()
         }
 
@@ -347,46 +350,58 @@ extension ExplorerWindowlessTests {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let note = path(window, "note.txt")
+            let timers = window.manualDragTimers()
             tab.services.clipboard.set(ClipboardRules.set(.copy, [note], capturedAt: "t"), from: nil)
             tab.dragDrop.checkDraggedAway([note], intoTrash: false, after: [0, 400])
-            try await Task.sleep(for: .milliseconds(100))
+            timers.advance(0.1)
             #expect(tab.services.clipboard.contents.hasItems)
             try FileManager.default.removeItem(atPath: note)
-            #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
+            timers.advance(0.4)
+            #expect(!tab.services.clipboard.contents.hasItems)
             await window.close()
         }
 
-        // T-f76a912e T-687aafe3 B-CLIP-165: nothing is looked for after a copy, a cancel, a drop inside the
-        // window or on another window of the app.
-        @Test(arguments: [
-            (FileDragEnd.copy, FileDragEndedOver.elsewhere), (.none, .elsewhere), (.move, .thisWindow),
-            (.move, .anotherWindow), (.delete, .thisWindow),
-        ])
-        func nothingIsLookedForAfterADragThatLeftItsItemsAlone(
-            _ operation: FileDragEnd, _ over: FileDragEndedOver
-        ) async throws {
+        // T-f76a912e T-687aafe3 B-CLIP-165: only a drag dropped elsewhere with a move or the Dock's Trash may have left its
+        // items with another app: nothing is looked for after a copy, a cancel, a drop inside the window or on another
+        // window of the app.
+        @Test func onlyADragAwayIsLookedFor() {
+            let ends: [FileDragEnd] = [.copy, .none, .move, .delete]
+            let places: [FileDragEndedOver] = [.elsewhere, .thisWindow, .anotherWindow]
+            for end in ends {
+                for over in places {
+                    #expect(
+                        TabDragDrop.looksForDraggedAway(end, over: over)
+                            == (over == .elsewhere && (end == .move || end == .delete)), "\(end) \(over)")
+                }
+            }
+        }
+
+        // The drag's end asks that: after a copy, the item gone stays on the clipboard for as long as the looks would go on.
+        @Test func nothingIsLookedForAfterADragThatLeftItsItemsAlone() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
+            let timers = window.manualDragTimers()
             let note = path(window, "note.txt")
             tab.services.clipboard.set(ClipboardRules.set(.copy, [note], capturedAt: "t"), from: nil)
             try FileManager.default.removeItem(atPath: note)
-            tab.dragDrop.ownDragEnded(paths: [note], operation: operation, over: over)
-            try await Task.sleep(for: .milliseconds(450))
+            tab.dragDrop.ownDragEnded(paths: [note], operation: .copy, over: .elsewhere)
+            timers.advance(120)
             #expect(tab.services.clipboard.contents.sourcePaths == [note])
             await window.close()
         }
 
-        // B-CLIP-165: dropped elsewhere with a move or the Dock's Trash, the first look finds them
-        // gone; the looks come at the waits the original has.
+        // B-CLIP-165: dropped elsewhere with a move or the Dock's Trash, the first look finds them gone.
         @Test(arguments: [FileDragEnd.move, .delete]) func aDragAwayIsLookedFor(_ operation: FileDragEnd) async throws {
-            #expect(DragTimings.draggedAwayChecksMs == [250, 1000, 3000, 6000, 10000, 15000, 25000])
             let window = try await WritingWindow.open()
             let tab = window.tab
+            let timers = window.manualDragTimers()
             let note = path(window, "note.txt")
             tab.services.clipboard.set(ClipboardRules.set(.copy, [note], capturedAt: "t"), from: nil)
             try FileManager.default.removeItem(atPath: note)
             tab.dragDrop.ownDragEnded(paths: [note], operation: operation, over: .elsewhere)
-            #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
+            #expect(tab.services.clipboard.contents.hasItems)
+            timers.advance(DragTimings.draggedAwayChecksMs[0] / 1000)
+            #expect(!tab.services.clipboard.contents.hasItems)
             await window.close()
         }
 
@@ -418,6 +433,7 @@ extension ExplorerWindowlessTests {
             let tab = window.tab
             let tree = try await tree(window)
             let model = tab.sidebarController.model
+            let timers = window.manualDragTimers()
             let drag = StubDraggingInfo(paths: [path(window, "note.txt")], sequence: 112, window: tab.window)
             defer { drag.draggingPasteboard.releaseGlobally() }
             _ = tab.dragDrop.sidebarDragUpdated(drag, row: try row("Alpha", window, in: tree))
@@ -425,7 +441,7 @@ extension ExplorerWindowlessTests {
             _ = tab.dragDrop.sidebarDragUpdated(drag, row: beta)
             #expect(tab.sidebarController.dropStates == [path(window, "Beta"): .valid])
             for _ in 0..<10 {
-                try await Task.sleep(for: .milliseconds(100))
+                timers.advance(0.1)
                 _ = tab.dragDrop.sidebarDragUpdated(drag, row: beta)
             }
             #expect(await waitUntil { model.nodes[path(window, "Beta")]?.expanded == true })
@@ -442,6 +458,7 @@ extension ExplorerWindowlessTests {
             let tree = try await tree(window)
             let model = tab.sidebarController.model
             let alpha = path(window, "Alpha")
+            let timers = window.manualDragTimers()
             let drag = StubDraggingInfo(paths: [path(window, "note.txt")], sequence: 113, window: tab.window)
             defer { drag.draggingPasteboard.releaseGlobally() }
             let real = try row("Alpha", window, in: tree)
@@ -457,7 +474,7 @@ extension ExplorerWindowlessTests {
                 for _ in 0..<9 {
                     _ = tab.dragDrop.sidebarDragUpdated(drag, row: row)
                     #expect(tab.sidebarController.dropStates[alpha] != nil)
-                    try await Task.sleep(for: .milliseconds(100))
+                    timers.advance(0.1)
                 }
                 #expect(model.nodes[alpha]?.expanded == false)
                 #expect(model.nodes[alpha]?.loading == false)

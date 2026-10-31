@@ -61,6 +61,14 @@ final class TabDragDrop {
 
     /// `EXTERNAL_DRAG_GONE_MS`: another app's drag is taken to be gone when its drag-overs stop this long.
     private static let externalDragGoneMs = 400.0
+    /// How long a drop with no keys held waits for the disks (settable for tests).
+    static var diskAnswerWaitMs = DragTimings.diskAnswerWaitMs
+
+    /// The timers of the drag-overs, the tree's hover expand and the looks for items dragged away (a test's own clock
+    /// in tests).
+    var timers: any TimerScheduling = TaskTimerScheduler()
+    /// The time of a drag-over, in milliseconds, for the spring's hold (a test's own clock in tests).
+    var now: () -> Double = { Date().timeIntervalSince1970 * 1000 }
 
     private(set) weak var tab: MainWindowController?
     private var external: (sequence: Int, session: DragSession?)?
@@ -70,10 +78,10 @@ final class TabDragDrop {
     /// background takes the drag's drop.
     private var springStart: (sequence: Int, place: MainWindowController.TabPlace, opened: Bool, arrived: Bool)?
     /// Spring reads not back yet (`opening`): a drag can end with one on its way.
-    private var springsOpening = 0
-    private var externalGone: DispatchWorkItem?
-    private var quiet: DispatchWorkItem?
-    private var hoverExpand: (path: String, work: DispatchWorkItem)?
+    private(set) var springsOpening = 0
+    private var externalGone: TimerToken?
+    private var quiet: TimerToken?
+    private var hoverExpand: (path: String, timer: TimerToken)?
     private var refusedDropToastSequence: Int?
     /// What the disks have said about one drag's folders (`diskAnswersRef`): asked again for each drag.
     private var disks: (session: DragSession, answers: DiskAnswers)?
@@ -165,24 +173,28 @@ final class TabDragDrop {
         clearTargets()
         restoreSprings()
         disks = nil
-        if over == .elsewhere, operation == .move || operation == .delete {
+        if Self.looksForDraggedAway(operation, over: over) {
             checkDraggedAway(paths, intoTrash: operation == .delete, after: DragTimings.draggedAwayChecksMs)
         }
+    }
+
+    /// Whether a drag that ended this way may have left its items with another app: one dropped elsewhere with a move or
+    /// a delete.
+    static func looksForDraggedAway(_ operation: FileDragEnd, over: FileDragEndedOver) -> Bool {
+        over == .elsewhere && (operation == .move || operation == .delete)
     }
 
     /// `followDraggedAway`: asks the disk which dragged items are gone, after each wait in turn; gone ones are told at
     /// once and not asked about again. Each drag is followed on its own, however many end meanwhile, until the tab goes.
     func checkDraggedAway(_ paths: [String], intoTrash: Bool, after waits: [Double]) {
         guard let wait = waits.first, !paths.isEmpty else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + wait / 1000) { [weak self] in
-            MainActor.assumeIsolated {
-                guard let self else { return }
-                let found = FileDrag.findDraggedAway(paths, intoTrash: intoTrash)
-                if !found.gone.isEmpty { self.draggedAway(found.gone, cleared: found.cleared, intoTrash: intoTrash) }
-                let gone = Set(found.gone.map(PathBox.init))
-                let remaining = paths.filter { !gone.contains(PathBox($0)) }
-                self.checkDraggedAway(remaining, intoTrash: intoTrash, after: Array(waits.dropFirst()))
-            }
+        _ = timers.schedule(after: wait / 1000) { [weak self] in
+            guard let self else { return }
+            let found = FileDrag.findDraggedAway(paths, intoTrash: intoTrash)
+            if !found.gone.isEmpty { self.draggedAway(found.gone, cleared: found.cleared, intoTrash: intoTrash) }
+            let gone = Set(found.gone.map(PathBox.init))
+            let remaining = paths.filter { !gone.contains(PathBox($0)) }
+            self.checkDraggedAway(remaining, intoTrash: intoTrash, after: Array(waits.dropFirst()))
         }
     }
 
@@ -326,7 +338,7 @@ final class TabDragDrop {
             let step = spring.over(
                 entry.path,
                 canSpring: canSpring(session, into: entry, target: target, refusal: decision.refusal),
-                at: (Double(point.x), Double(point.y)), now: Date().timeIntervalSince1970 * 1000)
+                at: (Double(point.x), Double(point.y)), now: now())
             switch step {
             case .idle: tab.content.setDropTarget(entry.path, state, background: nil)
             case .warning: tab.content.setDropTarget(entry.path, .springing, background: nil)
@@ -452,19 +464,16 @@ final class TabDragDrop {
     private func hoverExpand(_ path: String) {
         if let hoverExpand, samePath(hoverExpand.path, path) { return }
         cancelHoverExpand()
-        let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated {
-                guard let self, let tab = self.tab else { return }
-                self.hoverExpand = nil
-                tab.sidebarController.model.toggle(path)
-            }
+        let timer = timers.schedule(after: DragTimings.treeHoverExpandMs / 1000) { [weak self] in
+            guard let self, let tab = self.tab else { return }
+            self.hoverExpand = nil
+            tab.sidebarController.model.toggle(path)
         }
-        hoverExpand = (path, work)
-        DispatchQueue.main.asyncAfter(deadline: .now() + DragTimings.treeHoverExpandMs / 1000, execute: work)
+        hoverExpand = (path, timer)
     }
 
     private func cancelHoverExpand() {
-        hoverExpand?.work.cancel()
+        hoverExpand?.timer.cancel()
         hoverExpand = nil
     }
 
@@ -474,17 +483,15 @@ final class TabDragDrop {
     /// targets show nothing.
     private func noteDragOver() {
         quiet?.cancel()
-        let work = DispatchWorkItem { [weak self] in MainActor.assumeIsolated { self?.clearTargets() } }
-        quiet = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + DragTimings.dropTargetsQuietMs / 1000, execute: work)
+        quiet = timers.schedule(after: DragTimings.dropTargetsQuietMs / 1000) { [weak self] in self?.clearTargets() }
         armExternalGone()
     }
 
     private func armExternalGone() {
         externalGone?.cancel()
-        let gone = DispatchWorkItem { [weak self] in MainActor.assumeIsolated { self?.settleExternalDrag() } }
-        externalGone = gone
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.externalDragGoneMs / 1000, execute: gone)
+        externalGone = timers.schedule(after: Self.externalDragGoneMs / 1000) { [weak self] in
+            self?.settleExternalDrag()
+        }
     }
 
     /// AppKit asks for no drop whose last answer was none: it says the drag left, when the button comes up too.
@@ -676,7 +683,7 @@ final class TabDragDrop {
 
     /// Waits up to 1.5 s for the disks; nil when one didn't answer or can't be read.
     private func waitForDisks(_ session: DragSession, _ target: String, answers: DiskAnswers?) async -> Bool? {
-        let deadline = Date().addingTimeInterval(DragTimings.diskAnswerWaitMs / 1000)
+        let deadline = Date().addingTimeInterval(Self.diskAnswerWaitMs / 1000)
         while Date() < deadline {
             if let same = onSameDisk(session, target, answers: answers) { return same }
             try? await Task.sleep(nanoseconds: 20_000_000)

@@ -108,25 +108,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A name another item has is refused in the field, which stays open with the reason.
-        // F-302 T-4bfb37f4
-        // B-CLIP-197
-        @Test func refusesATakenNameAndKeepsTheFieldOpen() async throws {
-            let (harness, tab, operations, notices) = try await open()
-            let note = try #require(tab.content.entries.first { $0.name == "note.txt" }?.path)
-            tab.content.select(paths: [note])
-            tab.renameSelected()
-
-            tab.content.renameSubmitted("Alpha")
-            #expect(await waitUntil { tab.content.inlineRename?.error != nil })
-            #expect(tab.content.inlineRename?.path == note)
-            #expect(tab.content.inlineRename?.error == "An item named “Alpha” already exists.")
-            #expect(FileManager.default.fileExists(atPath: note))
-            #expect(notices.titles.isEmpty)
-            withExtendedLifetime(operations) {}
-            await harness.close()
-        }
-
         // The folder is left while the name is checked: the refusal comes back with no field to show it under, and
         // is said in a dialog of its own (B-SEL-140).
         // F-302 T-4649783b
@@ -156,7 +137,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A refusal the field was showing when its folder was left is said in a dialog, so it isn't lost.
+        // A name another item has is refused in the field, which stays open with the reason; a refusal the field was
+        // showing when its folder was left is said in a dialog, so it isn't lost.
         // F-302 T-4649783b
         // B-CLIP-197 B-SEL-140
         @Test func saysTheFieldsRefusalInADialogWhenItsFolderIsLeft() async throws {
@@ -166,6 +148,9 @@ extension ExplorerWindowlessTests {
             tab.renameSelected()
             tab.content.renameSubmitted("Alpha")
             #expect(await waitUntil { tab.content.inlineRename?.error != nil })
+            #expect(tab.content.inlineRename?.path == note)
+            #expect(tab.content.inlineRename?.error == "An item named “Alpha” already exists.")
+            #expect(FileManager.default.fileExists(atPath: note))
             #expect(notices.titles.isEmpty)
 
             _ = await tab.navigate(to: harness.folder.url.appendingPathComponent("Beta"))

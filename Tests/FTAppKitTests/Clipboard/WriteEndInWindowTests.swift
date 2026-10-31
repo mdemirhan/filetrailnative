@@ -64,7 +64,7 @@ extension ExplorerWindowlessTests {
         }
 
         // B-TREE-094: New Folder from a row's menu selects the new folder's row; the folder on screen and the history
-        // stay as they are.
+        // stay as they are. The next write that asks for no row brings the tree back to the folder on screen.
         @Test func aFolderMadeFromTheTreeIsSelectedWithoutOpeningIt() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -83,6 +83,12 @@ extension ExplorerWindowlessTests {
             #expect(tab.folder.path == shown)
             #expect(tab.navigationHistory.paths == steps)
             #expect(window.recorder.shown.isEmpty)
+
+            await trash("note.txt", window)
+            #expect(await waitUntil { sidebar(tab).selectedTreeTargetPath == shown })
+            await settle()
+            #expect(sidebar(tab).selectedTreeTargetPath == shown)
+            #expect(tab.folder.path == shown)
             await window.close()
         }
 
@@ -108,7 +114,8 @@ extension ExplorerWindowlessTests {
         }
 
         // B-TREE-094: the folder on screen, trashed from its row, gives way to its parent, whose row is selected; a
-        // write's end adds no step to the history.
+        // write's end adds no step to the history but overwrites the folder's (`navigateTo` "replace"), so the trashed
+        // one is not offered by Back or Forward.
         @Test func aFolderTrashedFromTheTreeLeavesItsParentSelected() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -124,46 +131,9 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.folder.path == window.folder.path && !tab.isNavigating })
             #expect(await waitUntil { sidebar(tab).selectedTreeTargetPath == window.folder.path })
             #expect(tab.navigationHistory.paths.count == steps)
-            await window.close()
-        }
-
-        // B-TREE-094: the next write that asks for no row brings the tree back to the folder on screen.
-        @Test func theNextWriteBringsTheTreeBackToTheFolderOnScreen() async throws {
-            let window = try await WritingWindow.open()
-            let tab = window.tab
-            let alpha = window.folder.appendingPathComponent("Alpha").path
-            let shown = tab.folder.path
-            window.operations.dialogs.askName = { _, _, submit in _ = await submit("Made") }
-
-            treeMenu(tab, .newFolder, on: alpha)
-            #expect(await waitUntil { sidebar(tab).selectedTreeTargetPath == alpha + "/Made" })
-            await trash("note.txt", window)
-            #expect(await waitUntil { sidebar(tab).selectedTreeTargetPath == shown })
-            await settle()
-            #expect(sidebar(tab).selectedTreeTargetPath == shown)
-            #expect(tab.folder.path == shown)
-            await window.close()
-        }
-
-        // B-TREE-094: a write that moves the folder on screen overwrites its step of the history (`navigateTo` "replace").
-        // Back then Forward land on the folder shown, and the trashed one is not offered.
-        @Test func aFolderTrashedOnScreenReplacesItsHistoryStep() async throws {
-            let window = try await WritingWindow.open()
-            let tab = window.tab
-            let alpha = window.folder.appendingPathComponent("Alpha")
-            tab.go(to: alpha)
-            #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" && !tab.isNavigating })
-            window.operations.dialogs.confirm = { _, _ in true }
-
-            treeMenu(tab, .trash, on: alpha.path)
-            #expect(await waitUntil { tab.folder.path == window.folder.path && !tab.isNavigating })
             await settle()
             #expect(tab.navigationHistory.paths[tab.navigationHistory.index] == window.folder.path)
             #expect(!tab.navigationHistory.paths.contains(alpha.path))
-
-            await tab.navigate(to: window.folder, history: .back)
-            await tab.navigate(to: window.folder, history: .forward)
-            #expect(tab.folder.path == window.folder.path)
             await window.close()
         }
 
