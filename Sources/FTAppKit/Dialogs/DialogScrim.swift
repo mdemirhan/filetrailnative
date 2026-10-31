@@ -79,6 +79,12 @@ final class DialogScrim: NSView {
     func present(in window: NSWindow) {
         guard let host = window.contentView else { return }
         previousResponder = window.firstResponder
+        // A field being typed in has its field editor as the responder, which leaves the window with the editing.
+        if let editor = window.firstResponder as? NSTextView, editor.isFieldEditor,
+            let field = editor.delegate as? NSView
+        {
+            previousField = (field, editor.selectedRange())
+        }
         frame = host.bounds
         autoresizingMask = [.width, .height]
         host.addSubview(self, positioned: .above, relativeTo: nil)
@@ -119,6 +125,9 @@ final class DialogScrim: NSView {
         }
     }
 
+    /// The field that was being typed in when the dialog opened, and what was selected in it.
+    private var previousField: (view: NSView, selected: NSRange)?
+
     /// Takes the dialog away; the keyboard goes back where it was (`useDialogFocus`).
     func dismiss(restoringFocus: Bool = true) {
         guard !isDismissed else { return }
@@ -130,17 +139,28 @@ final class DialogScrim: NSView {
         titlebarVeil?.removeFromSuperview()
         titlebarVeil = nil
         removeFromSuperview()
-        if restoringFocus, let window, let previous = previousResponder,
-            (previous as? NSView)?.window === window || previous === window
-        {
-            window.makeFirstResponder(previous)
-        }
+        if restoringFocus, let window { restoreKeyboard(in: window) }
         if let pane = heldPane {
             heldPane = nil
             Self.setKeyboard(of: pane, pane.focusView.window?.firstResponder === pane.focusView)
         }
         onDismiss()
         refreshToolbar(of: window)
+    }
+
+    /// To the field that was being typed in, with what was selected in it; else to what had the keyboard. When neither
+    /// is there any more (the opening took the field away) a pane takes it, unless a dialog is still up (B-NAV-223).
+    private func restoreKeyboard(in window: NSWindow) {
+        if let (field, selected) = previousField, field.window === window, !field.isHiddenOrHasHiddenAncestor {
+            window.makeFirstResponder(field)
+            (field as? NSControl)?.currentEditor()?.selectedRange = selected
+        } else if previousField == nil, let previous = previousResponder,
+            (previous as? NSView)?.window === window || previous === window
+        {
+            window.makeFirstResponder(previous)
+        } else if DialogScrim.front(in: window) == nil {
+            (window.windowController as? MainWindowController)?.keyboardBackToPane()
+        }
     }
 
     @objc private func windowWillClose(_ notification: Notification) {

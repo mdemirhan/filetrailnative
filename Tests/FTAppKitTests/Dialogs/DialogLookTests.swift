@@ -116,6 +116,44 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
+        // B-NAV-223: a dialog opened from a text field gives the keyboard back to it, with the same text selected; when
+        // the field has gone, to a pane; and only once no dialog is up.
+        @Test func aDialogOpenedFromATextFieldGivesTheKeyboardBack() async throws {
+            let (harness, tab) = try await open()
+            let window = try #require(tab.window)
+            func alert() -> DialogScrim {
+                InWindowAlerts.present(
+                    AlertContent(
+                        title: "T", message: nil, buttons: [AlertButton(title: "OK", variant: .plain) {}], stacked: nil,
+                        accessory: nil, onEscape: {}), in: window)
+            }
+            tab.perform(.viewAsDetails)
+            tab.content.focusList()
+            tab.perform(.focusFileSearch)
+            let field = try #require(tab.searchField)
+            field.stringValue = "note"
+            tab.perform(.focusFileSearch)
+            let editor = try #require(field.currentEditor())
+            editor.selectedRange = NSRange(location: 1, length: 2)
+            let first = alert()
+            let second = alert()
+            second.dismiss()
+            #expect(!field.isActive)
+            first.dismiss()
+            #expect(field.isActive)
+            #expect(field.currentEditor()?.selectedRange == NSRange(location: 1, length: 2))
+
+            // The path editor ends when the dialog takes the keyboard, and hides.
+            let bar = tab.content.contentShell.pathBarRow
+            bar.beginEditing()
+            #expect(bar.isEditing)
+            let over = alert()
+            #expect(!bar.isEditing)
+            over.dismiss()
+            #expect(window.firstResponder === tab.content.focusView)
+            await close(harness)
+        }
+
         private static func first<T: NSView>(_ type: T.Type, in root: NSView) -> T? {
             if let found = root as? T { return found }
             for child in root.subviews { if let found = first(type, in: child) { return found } }

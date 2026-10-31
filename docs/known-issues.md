@@ -12,7 +12,6 @@ Differences and gaps left when the port from Electron finished. None has been de
 
 ## Keyboard and focus
 
-- **Keyboard lost after a dialog** (`B-NAV-223`): closing a dialog opened from a text field leaves no pane with the keyboard until a click.
 
 ## Lists and panels
 
