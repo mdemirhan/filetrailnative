@@ -334,6 +334,46 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // B-NAV-140 B-SEL-026: what a write took away leaves the selection before the read comes in, keeping its place.
+        @Test func itemsAWriteTookAwayLeaveTheSelectionAtOnce() async throws {
+            let (harness, tab, _) = try await open(.viewAsDetails, files: 10)
+            let gone = tab.content.entries[3].path
+            tab.content.select(paths: [gone])
+            try FileManager.default.removeItem(atPath: gone)
+            tab.services.directoryService.cache.clear()
+            tab.applyWriteEnd(
+                WriteEndRefresh(
+                    path: tab.folder.path, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [],
+                    leftPaths: [gone]))
+            #expect(tab.content.selection.isEmpty)
+            #expect(tab.content.selection.gapIndex == 3)
+            #expect(await waitUntil { tab.content.entries.count == 9 })
+            #expect(tab.content.selection.gapIndex == 3)
+            await harness.close()
+        }
+
+        // A read begun before a write ended can land first, with the old listing: what the write made is still selected
+        // when the read asked for comes in.
+        @Test func aReadOlderThanTheWriteLeavesItsSelectionWaiting() async throws {
+            let (harness, tab, _) = try await open(.viewAsDetails, files: 10)
+            let folder = NodePath.dirname(tab.content.entries[0].path)
+            let made = folder + "/made.txt"
+            var created = false
+            // Heard before the write's own observer: the old read has come in, and then the file is made.
+            let token = tab.observe { change in
+                guard change == .folder, !created else { return }
+                created = true
+                FileManager.default.createFile(atPath: made, contents: Data())
+                tab.services.directoryService.cache.clear()
+            }
+            defer { withExtendedLifetime(token) {} }
+            tab.reload()
+            tab.applyWriteEnd(
+                WriteEndRefresh(path: tab.folder.path, selecting: [made], treeSelectionPath: nil, treeReloadPaths: []))
+            #expect(await waitUntil { tab.content.selection.leadPath == made })
+            await harness.close()
+        }
+
         // B-SEL-064 B-NAV-161: the same lead selected again asks for nothing: a lead scrolled away stays away.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func selectingTheLeadAgainLeavesTheViewWhereItWasScrolled(_ view: RendererCommand) async throws {

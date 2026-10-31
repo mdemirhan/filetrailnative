@@ -198,6 +198,18 @@ private func report(
         #expect(fixture.shown.map(\.message) == [WriteDialogs.busyMessage])
     }
 
+    // B-NAV-140 B-SEL-026: a write's end says what it took out of its folder.
+    @Test func aMovesEndSaysWhatLeft() async throws {
+        let fixture = PasteFixture(.report(report(mode: .cut)), mode: .cut)
+        let outcome = await fixture.actions.pasteFromClipboard(into: PasteFixture.destination)
+        guard case .queued(let operationId) = outcome else {
+            Issue.record("not started: \(outcome)")
+            return
+        }
+        fixture.end(operationId, .completed, mode: .cut, completed: 1)
+        #expect(await waitUntil { fixture.host.refreshes.last?.leftPaths == [PasteFixture.source] })
+    }
+
     // T-e0ffebfc: a drop from another app that went through the review is still one when it starts.
     @Test func aReviewedDropFromAnotherAppIsOneWhenItStarts() async throws {
         let fixture = PasteFixture(.report(report()))

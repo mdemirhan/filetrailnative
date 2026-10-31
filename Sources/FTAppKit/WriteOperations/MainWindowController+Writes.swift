@@ -277,6 +277,9 @@ extension MainWindowController {
             let once = Once()
             once.token = observe { [weak self, once] change in
                 guard change == .folder, let self, let token = once.token, token.isValid else { return }
+                // A read begun before the write ended landed first, with the old listing: the one asked for is still
+                // waiting, and has what the write made.
+                guard self.pendingChange == nil else { return }
                 token.invalidate()
                 once.token = nil
                 if let selecting = refresh.selecting, folder.path == refresh.path {
@@ -290,6 +293,7 @@ extension MainWindowController {
         open.selectingRow = refresh.treeSelectionPath
         var treeFollows = false
         if refresh.path == folder.path {
+            content.dropFromSelection(refresh.leftPaths)
             readAgain()
             treeFollows = treeFollowsReadingAgain && (open.forceTreeReload || open.selectingRow != nil)
         } else {

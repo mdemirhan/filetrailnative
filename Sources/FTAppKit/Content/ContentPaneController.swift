@@ -657,6 +657,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         setSelection(selection.sanitized(entryPaths: entryPaths, previousPaths: previousPaths), notify: true)
     }
 
+    /// Items a write took away leave the selection before the read that follows it comes in, keeping their place for the
+    /// arrow keys (B-NAV-140, B-SEL-026). Selected items the filter hides stay.
+    func dropFromSelection(_ paths: [String]) {
+        let left = Set(paths)
+        guard selection.paths.contains(where: left.contains) else { return }
+        let listed = entryPaths + selection.paths.filter { position(of: $0) == nil }
+        let staying = listed.filter { !left.contains($0) }
+        setSelection(selection.sanitized(entryPaths: staying, previousPaths: entryPaths), notify: true)
+    }
+
     /// Selects the paths that are listed; the view keeps their lead in view (`RevealKeeper`). An item the filter hides is shown: the filter is
     /// cleared (B-SEL-080).
     func select(paths: [String]) {

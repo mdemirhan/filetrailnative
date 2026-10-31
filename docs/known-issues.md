@@ -8,7 +8,6 @@ Differences and gaps left when the port from Electron finished. None has been de
 
 ## Files and drags
 
-- **Items a write took away stay selected** (`B-NAV-140`, `B-SEL-026`): until the next read. `AfterWrite.pathsLeftByWrite` exists and is tested, but nothing calls it.
 - **Preparing sheet** (`T-00e53ea3`): Return does nothing; the focused Cancel took it in Electron. `PasteFlow.swift:70`.
 
 ## Keyboard and focus
@@ -29,4 +28,4 @@ Differences and gaps left when the port from Electron finished. None has been de
 
 ## Tests to watch
 
-These failed only under load and passed alone: `theToolbarDimsWhileANewFolderIsNamed`, `theAppsCatalogForgetsWhenAWindowComesForward`. `FTFileSystemTests` also crashed once in a full run, cause unknown.
+This failed only under load and passed alone: `theAppsCatalogForgetsWhenAWindowComesForward`. `FTFileSystemTests` also crashed once in a full run, cause unknown.

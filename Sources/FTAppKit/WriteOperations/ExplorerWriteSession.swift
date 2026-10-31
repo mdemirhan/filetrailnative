@@ -40,6 +40,8 @@ struct WriteEndRefresh: Equatable, Sendable {
     var treeSelectionPath: String?
     /// The branches of the tree read again.
     var treeReloadPaths: [String]
+    /// What the write took out of its folder, which goes from the selection at once.
+    var leftPaths: [String] = []
 }
 
 /// The explorer window a session belongs to, as the session sees it: its tab on screen, and what a write's end does
@@ -336,7 +338,9 @@ final class ExplorerWriteSession: WriteOperationWindow {
                         result, currentPath: currentPath, isSearching: host.isSearching,
                         selectionChanged: selectionChanged) : nil,
                 treeSelectionPath: completedTreeSelectionPath(event, result),
-                treeReloadPaths: AfterWrite.treeReloadPaths(result))
+                treeReloadPaths: AfterWrite.treeReloadPaths(result),
+                // What a Replace removed has another item at its path, which stays selected.
+                leftPaths: AfterWrite.pathsLeftByWrite(result).filter { !(result.replacedPaths ?? []).contains($0) })
         } else {
             refresh = WriteEndRefresh(path: currentPath, selecting: nil, treeSelectionPath: nil, treeReloadPaths: [])
         }
