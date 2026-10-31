@@ -44,8 +44,10 @@ extension ExplorerWindowlessTests {
             let group = try #require(tab.group)
             group.openTab(path: harness.folder.appending("Alpha").path, from: tab)
             let other = try #require(group.tabs.last)
+            var read = false
+            other.whenFirstReadFinished { _ in read = true }
             other.ensureLoaded()
-            try await Task.sleep(for: .milliseconds(200))
+            #expect(await waitUntil { read })
             tab.sidebarController.model.clearSelection()
             other.sidebarController.model.clearSelection()
             group.refreshTitles()
@@ -68,7 +70,7 @@ extension ExplorerWindowlessTests {
             field.stringValue = "no"
             tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
             timers.advance(0.4)
-            try await Task.sleep(for: .milliseconds(150))
+            await settle()
             #expect(tab.searchRootPath == nil)
             await harness.close()
         }
@@ -109,7 +111,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             tab.sidebarController.model.clearSelection()
             tab.goToEnclosingFolder(nil)
-            try await Task.sleep(for: .milliseconds(200))
+            await settle()
             #expect(tab.shownFolderPath.isEmpty)
             let item = NSMenuItem(
                 title: "", action: #selector(MainWindowController.goToEnclosingFolder(_:)), keyEquivalent: "")
@@ -139,7 +141,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             tab.sidebarController.model.clearSelection()
             tab.applyWriteEnd(WriteEndRefresh(path: "", selecting: nil, treeSelectionPath: nil, treeReloadPaths: []))
-            try await Task.sleep(for: .milliseconds(200))
+            await settle()
             #expect(tab.shownFolderPath.isEmpty)
             #expect(tab.content.entries.isEmpty)
             await harness.close()

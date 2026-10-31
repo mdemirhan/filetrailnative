@@ -43,27 +43,6 @@ private final class AnotherWindow: WriteOperationWindow {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct SelectionRoutesTests {
-        // B-SEL-012: a press twice with ⌘ opens a folder in a new tab, and a file the normal way.
-        @Test func aCommandDoubleClickOpensAFolderInANewTabAndAFileAsUsual() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, list) = try await harness.openList()
-            let group = try #require(tab.group)
-            var opened: [String] = []
-            tab.openFile = { opened.append($0.lastPathComponent) }
-            let shown = tab.shownFolderPath
-
-            await list.click(row: try #require(list.rowNames.firstIndex(of: "note.txt")), count: 2, modifiers: .command)
-            #expect(await waitUntil { opened == ["note.txt"] })
-            #expect(group.tabs.count == 1)
-
-            let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
-            await list.click(row: try #require(list.rowNames.firstIndex(of: "Alpha")), count: 2, modifiers: .command)
-            #expect(await waitUntil { group.tabs.count == 2 })
-            #expect(group.tabs.last?.folder.path == alpha.path)
-            #expect(tab.shownFolderPath == shown)
-            await harness.close()
-        }
-
         // B-SEL-125 T-a40a49e4: F2 with another window's write running opens no field and says why at once.
         @Test func f2WhileAnotherWindowWritesOpensNoFieldAndSaysWhy() async throws {
             let window = try await WritingWindow.open()

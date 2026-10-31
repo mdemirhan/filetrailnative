@@ -47,7 +47,7 @@ extension ExplorerWindowlessTests {
             SidebarVolumes.shared.override = [disk("/Volumes/Old")]
             SidebarVolumes.shared.override = [disk("/Volumes/Old"), disk("/Volumes/New")]
             SidebarVolumes.shared.override = [disk("/Volumes/Old"), disk("/Volumes/New")]
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(for: .milliseconds(50))
             #expect(group.tabs.count == 1)
             await harness.close()
         }

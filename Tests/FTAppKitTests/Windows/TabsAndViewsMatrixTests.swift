@@ -77,34 +77,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-169: hidden files and Folders First belong to the tab; a new one starts with those of the tab it came from.
-        @Test func hiddenFilesAndFoldersFirstArePerTab() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let group = try #require(tab.group)
-            let hidden = tab.includeHidden
-            let first = tab.foldersFirst
-            tab.perform(.toggleHiddenFiles)
-            tab.perform(.toggleFoldersFirst)
-            #expect(await waitUntil { !tab.isNavigating })
-
-            group.openNewTab(from: tab)
-            let other = try #require(group.tabs.last)
-            #expect(other !== tab)
-            #expect(other.includeHidden == !hidden)
-            #expect(other.foldersFirst == !first)
-            #expect(await waitUntil { !other.isNavigating && !other.content.listed.isEmpty })
-
-            other.perform(.toggleHiddenFiles)
-            other.perform(.toggleFoldersFirst)
-            #expect(await waitUntil { !other.isNavigating })
-            #expect(other.includeHidden == hidden)
-            #expect(other.foldersFirst == first)
-            #expect(tab.includeHidden == !hidden)
-            #expect(tab.foldersFirst == !first)
-            await harness.close()
-        }
-
         // T-cc3773a9: the other windows' tabs come after this one's, which stays in front; one whose folder went is left out.
         @Test func mergedTabsComeAfterItsOwnWithoutAGoneFolder() async throws {
             let harness = try ExplorerHarness.windowless()

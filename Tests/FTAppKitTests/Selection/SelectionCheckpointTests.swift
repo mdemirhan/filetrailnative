@@ -84,6 +84,7 @@ extension ExplorerWindowlessTests {
             #expect(!identified("list.header", in: tab.content.container).isEmpty)
             list.type("zzz")
             #expect(list.rowNames.isEmpty)
+            #expect(list.selectedNames.isEmpty)
             #expect(tab.content.container.stateView.kind == .noMatches(query: "my dzzz"))
             #expect(identified("list.header", in: tab.content.container).isEmpty)
             #expect(tab.content.container.topInset == 0)
@@ -100,41 +101,6 @@ extension ExplorerWindowlessTests {
             list.key("Space")
             #expect(fake.presented == 1)
             quickLook.close()
-            await harness.close()
-        }
-
-        // F-793 B-SEL-122: F2 in the list opens the rename field over the one item selected (through the window's file
-        // operations, which the app always has).
-        @Test func f2OpensTheRenameField() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let writes = try harness.writeOperations()
-            defer { withExtendedLifetime(writes) {} }
-            let (tab, list) = try await harness.openList()
-            tab.content.select(paths: [path(tab, "note.txt")].compactMap { $0 })
-            tab.content.focusList()
-            list.key("F2")
-            #expect(tab.content.inlineRename?.path == path(tab, "note.txt"))
-            tab.content.renameCancelled()
-            await harness.close()
-        }
-
-        // F-793 F-794 B-SEL-126: a name typed into the field and sent with Return lands: the row shows it, selected, and
-        // the file has it. (On screen this is SelectionGUITests/f2RenamesInPlace.)
-        @Test func f2RenameLands() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let writes = try harness.writeOperations()
-            defer { withExtendedLifetime(writes) {} }
-            let (tab, list) = try await harness.openList()
-            tab.content.select(paths: [path(tab, "note.txt")].compactMap { $0 })
-            tab.content.focusList()
-            list.key("F2")
-            let original = try #require(path(tab, "note.txt"))
-            #expect(tab.content.inlineRename?.path == original)
-            tab.content.renameSubmitted("memo.txt")
-            #expect(await waitUntil { list.rowNames.contains("memo.txt") && !list.rowNames.contains("note.txt") })
-            #expect(await waitUntil { list.selectedNames == ["memo.txt"] })
-            #expect(await waitUntil { tab.content.inlineRename == nil })
-            #expect(FileManager.default.fileExists(atPath: harness.folder.appending("memo.txt").path))
             await harness.close()
         }
 

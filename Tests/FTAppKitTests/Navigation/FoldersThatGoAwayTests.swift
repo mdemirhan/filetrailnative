@@ -331,16 +331,18 @@ extension ExplorerWindowlessTests {
             let alpha = path(harness, "Alpha")
             let beta = path(harness, "Beta")
             let tab = try await harness.open(inner)
-            tab.servicesOverride = ExplorerServices(
-                directoryService: DirectoryService(fileSystem: SlowFolder(slow: alpha)), folderWatches: nil,
-                iconStore: nil, volumeWatcher: nil, clipboard: harness.windows.clipboard, preferences: harness.channel)
+            let probe = FolderReadProbe()
+            harness.reading(through: probe, in: tab)
+            probe.hold(alpha)
             try FileManager.default.removeItem(atPath: inner)
             tab.reload()
             // The walk is reading Alpha; the user goes elsewhere.
-            try await Task.sleep(for: .milliseconds(100))
+            #expect(await waitUntil { probe.isHolding })
             tab.go(to: URL(fileURLWithPath: beta))
             #expect(await waitUntil { tab.shownFolderPath == beta })
-            try await Task.sleep(for: .milliseconds(1200))
+            probe.letGo()
+            #expect(await waitUntil { probe.reads(of: alpha) >= 1 })
+            try await Task.sleep(for: .milliseconds(50))
             #expect(tab.shownFolderPath == beta)
             await harness.close()
         }
@@ -372,46 +374,6 @@ extension ExplorerWindowlessTests {
     /// The visit hook is the app's one: no other test at the same time.
     @MainActor
     @Suite struct FolderUseTests {
-        // `noteFolderUsed`: a folder used for something before it is left counts as a stay.
-        // B-NAV-071
-        @Test func usingAFolderCountsAsAStay() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let store = harness.store
-            MainWindowController.visitStore = { store }
-            defer { MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store } }
-            let tab = try await harness.open()
-            let alpha = harness.folder.appending("Alpha").path
-            let beta = harness.folder.appending("Beta").path
-            tab.go(to: URL(fileURLWithPath: alpha))
-            #expect(await waitUntil { tab.shownFolderPath == alpha })
-            tab.onFolderUsed?()
-            tab.go(to: URL(fileURLWithPath: beta))
-            #expect(await waitUntil { tab.shownFolderPath == beta })
-            #expect(await waitUntil { store.folders().contains { $0.path == alpha && !$0.visits.isEmpty } })
-            await harness.close()
-        }
-
-        /// Goes to Alpha, does `use`, goes on to Beta: whether Alpha counted as a stay.
-        private func staysAfter(
-            _ use: (MainWindowController) throws -> Void
-        ) async throws -> Bool {
-            let harness = try ExplorerHarness.windowless()
-            let store = harness.store
-            MainWindowController.visitStore = { store }
-            defer { MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store } }
-            let tab = try await harness.open()
-            let alpha = harness.folder.appending("Alpha").path
-            let beta = harness.folder.appending("Beta").path
-            tab.go(to: URL(fileURLWithPath: alpha))
-            #expect(await waitUntil { tab.shownFolderPath == alpha && !tab.isNavigating })
-            try use(tab)
-            tab.go(to: URL(fileURLWithPath: beta))
-            #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
-            let stayed = store.folders().contains { $0.path == alpha && !$0.visits.isEmpty }
-            await harness.close()
-            return stayed
-        }
-
         private func subject(_ tab: MainWindowController, _ name: String) throws -> ContextMenuSubject {
             let path = try #require(tab.content.listed.first { $0.name == name }).path
             return ContextMenuSubject(
@@ -421,64 +383,37 @@ extension ExplorerWindowlessTests {
         private static let zed = OpenWithAction.application(
             id: "zed", label: "Zed", appPath: "/Applications/Zed.app", appName: "Zed", always: false)
 
-        // useExplorerActions.ts `openPathInTerminal`.
-        @Test func theMenusTerminalCountsAsAStay() async throws {
-            let stayed = try await staysAfter { tab in
-                tab.contextMenus.contextMenu(perform: .terminal, subject: try subject(tab, "Inner"))
+        // `noteFolderUsed`, B-NAV-071 T-8a7d2ddb: what the menus and the Info panel open from the folder is a use of it
+        // (`openPathInTerminal`, `openPathsWithApplication`, `editPathInTextEditor`, `openPathExternally`), and asking Finder
+        // directly (`showPathsInFinder`) isn't. The use reaching the store is in FolderVisitMatrixTests.
+        @Test func theMenusAndTheInfoPanelsActionsUseTheFolder() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open(harness.folder.appending("Alpha").path)
+            var uses = 0
+            tab.onFolderUsed = { uses += 1 }
+            let info = try #require(tab.infoController)
+            let folder = tab.shownFolderPath
+            let note = folder + "/note.txt"
+            let inner = try subject(tab, "Inner")
+            let actions: [(String, () -> Void)] = [
+                ("the menu's Terminal", { tab.contextMenus.contextMenu(perform: .terminal, subject: inner) }),
+                (
+                    "the menu's Open With",
+                    { tab.contextMenus.contextMenu(open: [inner.paths[0]], with: Self.zed, kind: nil) }
+                ),
+                ("the Info panel's Terminal", { info.actions.openInTerminal(folder) }),
+                ("the Info panel's Edit", { info.actions.edit(note) }),
+                ("the Info panel's Open With", { info.actions.runOpenWith(Self.zed, paths: [note], kind: nil) }),
+                ("the Info panel's Open", { info.actions.openExternally(note) }),
+            ]
+            for (index, (name, action)) in actions.enumerated() {
+                action()
+                #expect(await waitUntil { uses == index + 1 }, "\(name)")
             }
-            #expect(stayed)
-        }
-
-        // `openPathsWithApplication`: Open With.
-        @Test func theMenusOpenWithCountsAsAStay() async throws {
-            let stayed = try await staysAfter { tab in
-                tab.contextMenus.contextMenu(
-                    open: [try subject(tab, "Inner").paths[0]], with: Self.zed, kind: nil)
-            }
-            #expect(stayed)
-        }
-
-        // `openPathInTerminal`, from the Info panel.
-        @Test func theInfoPanelsTerminalCountsAsAStay() async throws {
-            let stayed = try await staysAfter { tab in
-                try #require(tab.infoController).actions.openInTerminal(tab.shownFolderPath)
-            }
-            #expect(stayed)
-        }
-
-        // `editPathInTextEditor` is `openPathsWithApplication`.
-        // T-8a7d2ddb
-        @Test func theInfoPanelsEditCountsAsAStay() async throws {
-            let stayed = try await staysAfter { tab in
-                try #require(tab.infoController).actions.edit(tab.shownFolderPath + "/note.txt")
-            }
-            #expect(stayed)
-        }
-
-        // `openPathsWithApplication`, from the Info panel's Open With.
-        @Test func theInfoPanelsOpenWithCountsAsAStay() async throws {
-            let stayed = try await staysAfter { tab in
-                try #require(tab.infoController).actions.runOpenWith(
-                    Self.zed, paths: [tab.shownFolderPath + "/note.txt"], kind: nil)
-            }
-            #expect(stayed)
-        }
-
-        // `openPathExternally`, from the Info panel's Open.
-        // B-NAV-071
-        @Test func theInfoPanelsOpenCountsAsAStay() async throws {
-            let stayed = try await staysAfter { tab in
-                try #require(tab.infoController).actions.openExternally(tab.shownFolderPath + "/note.txt")
-            }
-            #expect(stayed)
-        }
-
-        // `showPathsInFinder` asks Finder directly: it is not a use of the folder.
-        @Test func showingInFinderIsNotAStay() async throws {
-            let stayed = try await staysAfter { tab in
-                try #require(tab.infoController).actions.showInFinder(tab.shownFolderPath)
-            }
-            #expect(!stayed)
+            info.actions.showInFinder(folder)
+            await settle()
+            #expect(uses == actions.count)
+            await harness.close()
         }
 
         // useExplorerTabs.ts `openPathInNewTab` (mode "open", so "push"): the folder a new tab opens on is an arrival.
@@ -637,29 +572,10 @@ extension ExplorerWindowlessTests {
             harness.services.directoryService.cache.clear()
             try #require(front.group).select(back)
             #expect(await waitUntil { !back.isNavigating })
-            try await Task.sleep(for: .milliseconds(300))
+            try await Task.sleep(for: .milliseconds(100))
             #expect(back.sidebarController.model.nodes[alpha]?.childPaths.contains(made) == false)
             withExtendedLifetime(operations) {}
             await harness.close()
         }
     }
-}
-
-/// Reads one folder slowly, so a test can do something while it is being read.
-private struct SlowFolder: ExplorerFileSystem {
-    let slow: String
-    private let real = NativeFileSystem()
-
-    func readDirectory(_ path: String) throws -> [DirectoryRecord] {
-        if path == slow { Thread.sleep(forTimeInterval: 0.4) }
-        return try real.readDirectory(path)
-    }
-
-    func stat(_ path: String) throws -> FileStats {
-        if path == slow { Thread.sleep(forTimeInterval: 0.4) }
-        return try real.stat(path)
-    }
-
-    func lstat(_ path: String) throws -> FileStats { try real.lstat(path) }
-    func realpath(_ path: String) throws -> String { try real.realpath(path) }
 }

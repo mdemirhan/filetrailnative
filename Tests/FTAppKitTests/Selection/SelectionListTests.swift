@@ -1,6 +1,6 @@
 // Covers the selection, the keyboard, the type-to-filter and the inline rename of the List in a window, by feature row
 // (App.selection.test.tsx, App.listPaging.test.tsx, ContentPane.dragSelection.test.tsx, ContentPane.rename.test.tsx,
-// InlineRenameField.test.tsx and the open and Return cases of App.openItems.test.tsx)
+// InlineRenameField.test.tsx and the open and Return cases of App.openItems.test.tsx), on a window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -9,9 +9,9 @@ import Testing
 
 @testable import FTAppKit
 
-extension ExplorerWindowGUITests {
+extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct SelectionGUITests {
+    @Suite struct SelectionListTests {
         /// The views with this identifier in the tab's window.
         func shown(_ id: String, _ tab: MainWindowController) -> [NSView] {
             identified(id, in: tab.window?.contentView)
@@ -32,7 +32,7 @@ extension ExplorerWindowGUITests {
         // click on one of several narrows on the click, not on the press.
         // T-40efc5c6
         @Test func clicksSelectExtendAndToggle() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             #expect(list.rowNames == ["Alpha", "Beta", "Gamma", "note.txt"])
             #expect(tab.content.selection.isEmpty)
@@ -63,7 +63,7 @@ extension ExplorerWindowGUITests {
         // still carry the whole selection.
         // T-5b6c37ca
         @Test func pressingASelectedItemKeepsTheSelectionUntilTheClick() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             tab.content.select(paths: tab.content.entries.prefix(3).map(\.path))
             #expect(list.selectedNames.count == 3)
@@ -86,7 +86,7 @@ extension ExplorerWindowGUITests {
         // T-7d7b8def F-783 B-SEL-013 B-SEL-014 B-SEL-021 B-SEL-023: ⌘A selects everything, a press on empty space clears.
         // T-49e9cc0d
         @Test func selectAllAndEmptySpace() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             list.window.makeFirstResponder(list.table)
             // Edit › Select All, as the menu sends it (the test process need not be the active app).
@@ -106,7 +106,7 @@ extension ExplorerWindowGUITests {
         // alone, and on empty space clears the selection.
         // B-VIEW-204 B-VIEW-205 T-a6a86d62
         @Test func aRightClickKeepsOrReplacesTheSelection() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             await list.click(name: "Alpha")
             await list.click(name: "Gamma", modifiers: .shift)
@@ -128,7 +128,7 @@ extension ExplorerWindowGUITests {
         // barely moving only clears; ⇧ adds and ⌘ flips.
         // B-SEL-148 B-SEL-159 B-VIEW-078 B-VIEW-079 B-VIEW-080
         @Test func theMarqueeSelectsTheRowsItTouches() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             let start = list.emptyPoint(belowRows: 4)
             let end = list.center(ofRow: 1)
@@ -155,7 +155,7 @@ extension ExplorerWindowGUITests {
         // select what they land on; ⇧ stretches; Home and End go to the ends; with nothing selected the first item.
         // B-NAV-143 B-NAV-144 B-NAV-148 B-VIEW-060
         @Test func arrowKeysMoveTheSelection() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             list.window.makeFirstResponder(list.table)
             list.key("ArrowDown")
@@ -193,7 +193,7 @@ extension ExplorerWindowGUITests {
         // list scrolls as far as the selection moved only when it lands off screen; ⇧ extends.
         // B-NAV-153 B-NAV-157 B-NAV-158 B-SEL-046 B-SEL-050 B-VIEW-060 T-39bda507
         @Test func pagingMovesByRowsAndScrollsToFollow() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Many", files: 200)
             let (tab, list) = try await harness.openList(folder.path)
             let table = try #require(list.table)
@@ -236,20 +236,15 @@ extension ExplorerWindowGUITests {
 
         // T-74e6332c T-96d467f3 T-0d4539c1 T-36a01e7b F-787 F-788 F-839 B-SEL-071 B-SEL-072 B-SEL-073 B-SEL-075
         // B-SEL-076 B-SEL-077 B-SEL-078 B-SEL-081 B-SEL-082: typing narrows the list and selects the best match;
-        // Backspace edits; Esc brings the list back and keeps the selection; Space is text for a second.
+        // Backspace edits; Esc brings the list back and keeps the selection. (Space, nothing matching and the ✕ are in
+        // SelectionCheckpointTests.)
         // B-NAV-053 B-NAV-169 B-NAV-170 B-NAV-172 B-SEL-084 B-VIEW-007 B-VIEW-067 B-VIEW-068 B-VIEW-239
         @Test func typingFiltersTheList() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Files", files: 0)
             for name in ["Report.txt", "my doc.txt", "Readme.md", "notes.txt", "Amy.txt"] {
                 try "x".write(to: folder.appendingPathComponent(name), atomically: true, encoding: .utf8)
             }
-            // Space must never reach Quick Look here: a real preview panel is never opened by a test.
-            let quickLook = QuickLookController.shared
-            let system = quickLook.panel
-            let fake = FakeQuickLookPanel()
-            quickLook.panel = fake
-            defer { quickLook.panel = system }
             let (tab, list) = try await harness.openList(folder.path)
             list.window.makeFirstResponder(list.table)
             list.type("re")
@@ -271,23 +266,6 @@ extension ExplorerWindowGUITests {
             #expect(list.rowNames.count == 5)
             #expect(list.selectedNames == selected)
             #expect(shown("listFilter", tab).isEmpty)
-            // Space is part of the text just after typing: "my doc" finds "my doc.txt".
-            list.type("my")
-            list.key("Space")
-            list.type("d")
-            #expect(tab.content.filter == "my d")
-            #expect(list.rowNames == ["my doc.txt"])
-            #expect(fake.presented == 0)
-            // Nothing matches: the list says so, and nothing is selected.
-            list.type("zzz")
-            #expect(list.rowNames.isEmpty)
-            #expect(list.selectedNames.isEmpty)
-            #expect(tab.content.container(for: .noMatches(query: "my dzzz")))
-            // The ✕ clears it without taking the keyboard from the list.
-            let clear = try #require(shown("listFilter.clear", tab).first as? ClearButton)
-            clear.perform()
-            #expect(tab.content.filter.isEmpty && list.rowNames.count == 5)
-            #expect(list.hasKeyboard)
             // The filter belongs to the folder: it goes when another folder opens.
             list.type("a")
             #expect(tab.content.filter == "a")
@@ -300,7 +278,7 @@ extension ExplorerWindowGUITests {
         // the name with the stem selected, Return commits once, and the renamed item is selected.
         // B-SEL-032 B-SEL-128 B-SEL-143 B-VIEW-093
         @Test func f2RenamesInPlace() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
             let (tab, list) = try await harness.openList()
@@ -337,7 +315,7 @@ extension ExplorerWindowGUITests {
         // commits a changed one.
         // B-VIEW-093
         @Test func unchangedEmptyAndBlurredNames() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
             let (tab, list) = try await harness.openList()
@@ -365,7 +343,7 @@ extension ExplorerWindowGUITests {
         // red ring and the reason under it; the same name is not sent again; leaving the field gives up.
         // B-VIEW-094
         @Test func aRefusedNameKeepsTheFieldOpen() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
             let (tab, list) = try await harness.openList()
@@ -405,7 +383,7 @@ extension ExplorerWindowGUITests {
         // was typed when its row scrolls away and back, and Escape still gives up.
         // B-SEL-128 B-SEL-143 B-VIEW-091
         @Test func theDraftSurvivesScrolling() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
             let folder = try harness.makeFolder(named: "Long", files: 120)
@@ -434,7 +412,7 @@ extension ExplorerWindowGUITests {
         // T-05cea347 T-efab6cb2 T-7ff56dd9 T-ce3a4ee4 F-793 F-827 B-SEL-106 B-SEL-107 B-SEL-108 B-NAV-064: Return renames,
         // or opens when the Return key setting says; ⌘↓ opens whatever the setting; double-click opens a folder.
         @Test func returnRenamesOrOpensAsTheSettingSays() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             await list.click(name: "Alpha")
             list.key("Enter")
@@ -461,7 +439,7 @@ extension ExplorerWindowGUITests {
         // B-SEL-109 B-NAV-066: more items than "open at most N" shows a notice and opens none.
         // B-DLG-192 B-SEL-170
         @Test func tooManyItemsShowANotice() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             tab.updatePreferences(["openItemLimit": .number(1), "returnKeyAction": .string("open")])
             list.window.makeFirstResponder(list.table)

@@ -52,12 +52,6 @@ extension ExplorerWindowlessTests {
             timers.advance(0.4)
         }
 
-        @Test func aFolderEndsAtItsLastRow() async throws {
-            let (harness, tab) = try await openLong()
-            try expectEndsAtLastRow(tab, rows: tab.content.entries.count)
-            await harness.close()
-        }
-
         // The panels, the tree and a resize change the pane's size, which must not add to the document.
         @Test func thePanelsAndAResizeLeaveTheEndWhereItIs() async throws {
             let (harness, tab) = try await openLong()

@@ -150,40 +150,6 @@ struct NativeWindowsGUITests {
         await closeAll(app)
     }
 
-    // F-673 F-674 F-675 B-VIEW-159 B-VIEW-161 B-VIEW-163
-    // T-5fd895a0 T-c0291740 T-d21e2e6d
-    @Test func closesAndReopensTabsAndStepsThroughThem() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        let app = launch(folder.appending("app-state.json").path)
-        app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
-        #expect(await waitUntil { first.window?.isVisible == true })
-        first.perform(.newTab)
-        let group = try #require(first.group)
-        #expect(await waitUntil { group.tabs.count == 2 })
-        group.tabs[1].go(to: folder.appending("Sub"))
-        #expect(await waitUntil { group.tabs[1].folder.lastPathComponent == "Sub" })
-
-        group.tabs[1].perform(.selectNextTab)
-        #expect(await waitUntil { group.selected === first })
-        first.perform(.selectPreviousTab)
-        #expect(await waitUntil { group.selected === group.tabs[1] })
-
-        // ⌘W on the tab on screen: the one on its left takes over, as it was last.
-        group.tabs[1].perform(.closeTab)
-        #expect(await waitUntil { group.tabs.count == 1 && group.selected === first })
-        #expect(group.session.closedTabs.map(\.currentPath) == [folder.appending("Sub").path])
-
-        // ⇧⌘T brings it back, at its folder, after the tab on screen.
-        first.perform(.reopenClosedTab)
-        #expect(await waitUntil { group.tabs.count == 2 })
-        #expect(group.tabs[1].folder.path == folder.appending("Sub").path)
-        #expect(group.selected === group.tabs[1])
-
-        await closeAll(app)
-    }
-
     // T-959a0c89 F-615 F-616 F-621 F-607 F-622 F-611 B-VIEW-176
     @Test func bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch() async throws {
         let folder = try folders()
@@ -244,49 +210,6 @@ struct NativeWindowsGUITests {
         #expect(ScreenGeometry.bounds(of: reopened) == WindowBounds(x: 60, y: 60, width: 1000, height: 700))
         #expect(frontTab(relaunched)?.folder.path == folder.path)
         await closeAll(relaunched)
-    }
-
-    // F-675 F-672 B-VIEW-158 B-TREE-183 B-VIEW-155 T-ed89ad6e T-c5b59b87
-    // T-31b584e6
-    @Test func duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        let app = launch(folder.appending("app-state.json").path)
-        var notices: [WindowNotice] = []
-        app.windows.showNotice = { notice, _ in notices.append(notice) }
-        app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
-        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
-        first.go(to: folder.appending("Sub"))
-        #expect(await waitUntil { first.folder.lastPathComponent == "Sub" })
-        first.perform(.newTab)
-        let group = try #require(first.group)
-        #expect(await waitUntil { group.tabs.count == 2 })
-        group.select(first)
-        #expect(await waitUntil { group.selected === first })
-
-        // File › Duplicate Tab, from the menu, to the tab in front.
-        let menu = menuBar(app)
-        defer { NSApp.mainMenu = nil }
-        menu.router.focusedWindow = { first.window }
-        menu.router.choose(itemID: RendererCommand.duplicateTab.rawValue)
-        #expect(await waitUntil { group.tabs.count == 3 })
-        let copy = group.tabs[1]
-        #expect(copy !== first)
-        #expect(group.selected === copy)
-        #expect(await waitUntil { copy.folder.path == folder.appending("Sub").path })
-        #expect(copy.snapshot.historyPaths == [folder.path, folder.appending("Sub").path])
-        #expect(copy.snapshot.historyIndex == 1)
-        #expect(copy.treeRootPath == first.treeRootPath)
-        #expect(copy.viewMode == first.viewMode)
-
-        // No copy past the limit; a notice says why.
-        group.addTabs(Array(repeating: first.openTab, count: 120))
-        #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
-        copy.perform(.duplicateTab)
-        #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
-        #expect(notices == [.tabLimit])
-        await closeAll(app)
     }
 
     /// The Window menu's entry for `window`.
@@ -399,11 +322,6 @@ struct NativeWindowsGUITests {
         await closeAll(relaunched)
     }
 
-    // Not ported yet: windows.spec.ts "pastes in one window what was copied in another" (T-317cfcc8, B-VIEW-184).
-    // A window copies no file (Copy and Paste reach only text fields; Copy, Cut and the clipboard button are P5-08's)
-    // and nothing pastes one (a paste is a write operation, P3-05's). The app-wide clipboard the windows will share
-    // is `ExplorerWindows.clipboard`; the flow is ported with P5-08, on these windows.
-
     // T-90c6b35c F-622 F-623 F-619
     @Test func staysOpenWithNoWindowAndOpensOneWhereTheLastOneClosed() async throws {
         let folder = try folders()
@@ -453,158 +371,6 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { groupCount(relaunched) == 1 && frontTab(relaunched)?.loaded == true })
         #expect(await waitUntil { frontTab(relaunched)?.folder.path == "/Applications" })
         await closeAll(relaunched)
-    }
-
-    // MARK: Tabs that follow the disk
-
-    // F-676 B-VIEW-172
-    // B-CLIP-146 B-NAV-196 T-3122bd51 T-f829833f
-    @Test func tabsFollowAFolderRenamedOrMovedByAnyWindow() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        try FileManager.default.createDirectory(at: folder.appending("Sub/Deep"), withIntermediateDirectories: false)
-        let app = launch(folder.appending("app-state.json").path)
-        app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
-        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
-        first.perform(.newTab)
-        let group = try #require(first.group)
-        #expect(await waitUntil { group.tabs.count == 2 })
-        let deep = group.tabs[1]
-        deep.go(to: folder.appending("Sub"))
-        #expect(await waitUntil { deep.folder.lastPathComponent == "Sub" })
-        deep.go(to: folder.appending("Sub/Deep"))
-        #expect(await waitUntil { deep.folder.lastPathComponent == "Deep" })
-        group.select(first)
-        #expect(await waitUntil { group.selected === first })
-        // Another window, on the folder that moves.
-        group.openNewWindow(from: first, path: folder.appending("Sub").path)
-        #expect(await waitUntil { groupCount(app) == 2 && frontTab(app)?.loaded == true })
-        let other = try #require(frontTab(app))
-        #expect(await waitUntil { other.folder.lastPathComponent == "Sub" })
-
-        try FileManager.default.moveItem(at: folder.appending("Sub"), to: folder.appending("Moved"))
-        // Every window hears the operation's progress, as the original's `onWriteOperationProgress`: nothing moves
-        // while it runs, and the tabs follow it once it has finished.
-        let rename = WriteOperationOutcome(
-            action: "rename", mode: nil,
-            items: [
-                WriteEffectItem(
-                    sourcePath: folder.appending("Sub").path, destinationPath: folder.appending("Moved").path)
-            ])
-        app.windows.writeOperationProgress(WriteOperationProgress(status: "running", result: rename))
-        #expect(deep.folder.path == folder.appending("Sub/Deep").path)
-        app.windows.writeOperationProgress(WriteOperationProgress(status: "completed", result: rename))
-
-        // The tab in the background goes along, history and all, and reads its folder when it is shown.
-        #expect(deep.folder.path == folder.appending("Moved/Deep").path)
-        #expect(
-            deep.snapshot.historyPaths == [
-                folder.path, folder.appending("Moved").path, folder.appending("Moved/Deep").path,
-            ])
-        #expect(deep.stale)
-        // A tab elsewhere stays.
-        #expect(first.folder.path == folder.path)
-        // The other window's tab on screen reads the folder at its new place.
-        #expect(await waitUntil { other.folder.path == folder.appending("Moved").path })
-        #expect(await waitUntil { other.window?.title == "Moved" })
-
-        group.select(deep)
-        #expect(await waitUntil { !deep.stale && group.selected === deep })
-        #expect(await waitUntil { deep.window?.title == "Deep" })
-        await closeAll(app)
-    }
-
-    /// A folder of `folder` that the windows take for a disk of its own.
-    private func fakeDisk(_ app: App, _ folder: TemporaryDirectory) throws -> String {
-        let disk = folder.appending("Disk")
-        try FileManager.default.createDirectory(at: folder.appending("Disk/Inner"), withIntermediateDirectories: true)
-        let diskPath = disk.path
-        app.windows.home = folder.path
-        app.windows.volumeRoot = { path in
-            path == diskPath || path.hasPrefix(diskPath + "/") ? diskPath : ExplorerTabs.volumeRootPath(path)
-        }
-        return diskPath
-    }
-
-    // F-676 B-VIEW-173 B-VIEW-162
-    // B-NAV-197 B-TREE-177 T-4d1a03d4 T-d1308c95 T-ec5e59a2
-    @Test func tabsOnAnUnmountedDiskCloseAndAWindowAllOnItCloses() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        let app = launch(folder.appending("app-state.json").path)
-        let disk = try fakeDisk(app, folder)
-        app.windows.openStartupWindows(folder: folder.path)
-        let first = try #require(frontTab(app))
-        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
-        let group = try #require(first.group)
-        group.openTab(path: disk, from: first)
-        #expect(await waitUntil { group.tabs.count == 2 })
-        group.openTab(path: disk + "/Inner", from: group.tabs[1])
-        #expect(await waitUntil { group.tabs.count == 3 && group.selected === group.tabs[2] })
-        group.openNewWindow(from: first, path: disk)
-        #expect(await waitUntil { groupCount(app) == 2 })
-
-        app.windows.disksUnmounted([disk])
-
-        // The window all on the disk closes; in the other the tabs on it close, and Reopen doesn't offer them.
-        #expect(await waitUntil { groupCount(app) == 1 && group.tabs.count == 1 })
-        #expect(group.tabs.first === first)
-        #expect(await waitUntil { group.selected === first })
-        #expect(group.session.closedTabs.isEmpty)
-        // Another disk's going leaves the window as it is.
-        app.windows.disksUnmounted(["/Volumes/FileTrailNoSuchDisk"])
-        #expect(group.tabs.count == 1)
-        await closeAll(app)
-    }
-
-    // F-676 B-VIEW-173 B-VIEW-154 B-VIEW-180 B-NAV-189
-    // B-NAV-197 T-2e942ee8
-    @Test func tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        let app = launch(folder.appending("app-state.json").path)
-        let disk = try fakeDisk(app, folder)
-        app.windows.openStartupWindows(folder: disk)
-        let first = try #require(frontTab(app))
-        #expect(await waitUntil { first.window?.isVisible == true && first.loaded })
-        let group = try #require(first.group)
-        first.perform(.newTab)
-        #expect(await waitUntil { group.tabs.count == 2 })
-        let background = group.tabs[1]
-        background.go(to: URL(fileURLWithPath: disk + "/Inner"))
-        #expect(await waitUntil { background.folder.lastPathComponent == "Inner" })
-        group.select(first)
-        #expect(await waitUntil { group.selected === first })
-        let window = try #require(first.window)
-        let alert = NSAlert()
-        alert.messageText = "Busy"
-        alert.beginSheetModal(for: window, completionHandler: nil)
-        #expect(await waitUntil { window.attachedSheet != nil })
-
-        // While the sheet is open the tabs don't change, and Merge All Windows hears the window is busy.
-        first.perform(.newTab)
-        first.perform(.selectNextTab)
-        first.perform(.closeTab)
-        await settle()
-        #expect(group.tabs.count == 2)
-        #expect(group.selected === first)
-        #expect(group.mergeAnswer.busy)
-        #expect(group.mergeAnswer.tabs.map(\.path) == [disk, disk + "/Inner"])
-
-        app.windows.disksUnmounted([disk])
-
-        // The tabs stay; the one in the background goes Home, dropping what of its history was on the disk, and the
-        // one on screen opens Home.
-        #expect(group.tabs.count == 2)
-        #expect(background.folder.path == folder.path)
-        #expect(background.snapshot.historyPaths == [folder.path])
-        #expect(background.treeRootPath == folder.path)
-        #expect(await waitUntil { first.folder.path == folder.path })
-        #expect(first.snapshot.historyPaths == [disk, folder.path])
-        window.endSheet(alert.window)
-        #expect(await waitUntil { window.attachedSheet == nil })
-        await closeAll(app)
     }
 
     // MARK: The tab bar
@@ -681,27 +447,4 @@ struct NativeWindowsGUITests {
         await closeAll(app)
     }
 
-    // T-116b9db2 T-ba0fcc0a
-    @Test func restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped() async throws {
-        let folder = try folders()
-        defer { folder.remove() }
-        let statePath = folder.appending("app-state.json").path
-        let app = launch(statePath)
-        add(
-            app.store,
-            storedWindow(
-                app.store, "window-1",
-                [folder.path, folder.appending("Gone").path, folder.appending("Sub").path]))
-        app.windows.openStartupWindows(folder: nil)
-        #expect(await waitUntil { frontTab(app)?.loaded == true })
-        let front = try #require(frontTab(app))
-        let group = try #require(front.group)
-        #expect(group.tabs.map(\.folder.path) == [folder.path, folder.appending("Sub").path])
-        #expect(front.folder.path == folder.path)
-        let waiting = group.tabs[1]
-        #expect(!waiting.loaded)
-        group.select(waiting)
-        #expect(await waitUntil { waiting.loaded && waiting.window?.title == "Sub" })
-        await closeAll(app)
-    }
 }

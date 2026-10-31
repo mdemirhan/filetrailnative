@@ -161,6 +161,10 @@ extension ExplorerWindowlessTests {
             let container = tab.content.container
             let inside = NSPoint(x: container.bounds.midX, y: container.bounds.midY)
             #expect(container.hitTest(container.convert(inside, to: container.superview)) === grid)
+            _ = tab.sidebarController.focusTree()
+            #expect(probe.pane?.hasKeyboard == false)
+            probe.press(at: container.convert(inside, to: nil))
+            #expect(probe.pane?.hasKeyboard == true)
             await harness.close()
         }
 

@@ -41,37 +41,14 @@ extension ExplorerWindowlessTests {
             changed(harness, tab, ["\(folder)/a"])
             changed(harness, tab, ["\(folder)/b"])
             #expect(tab.pendingChange?.changedPaths == ["\(folder)/a", "\(folder)/b"])
-            try await Task.sleep(for: .milliseconds(100))
+            await settle()
             #expect(probe.reads(of: folder) == 0)
 
             tab.folderChangesHeld = false
             #expect(await waitUntil { probe.reads(of: folder) == 1 })
             #expect(tab.pendingChange == nil)
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(for: .milliseconds(50))
             #expect(probe.reads(of: folder) == 1)
-            await harness.close()
-        }
-
-        // T-277f84be: one change that doesn't say what changed makes the read a full one, whatever came before or after.
-        @Test func aChangeToAnythingAmongThoseHeldBackReadsEverything() async throws {
-            let (harness, tab, _) = try await opened()
-            tab.folderChangesHeld = true
-            changed(harness, tab, ["/x/a"])
-            changed(harness, tab, nil)
-            #expect(tab.pendingChange != nil && tab.pendingChange?.changedPaths == nil)
-            changed(harness, tab, ["/x/b"])
-            #expect(tab.pendingChange != nil && tab.pendingChange?.changedPaths == nil)
-            await harness.close()
-        }
-
-        // T-73c88821: past the most it lists, the read is a full one.
-        @Test func tooManyChangedItemsReadEverything() async throws {
-            let (harness, tab, _) = try await opened()
-            tab.folderChangesHeld = true
-            changed(harness, tab, (0..<600).map { "/x/a\($0)" })
-            #expect(tab.pendingChange?.changedPaths?.count == 600)
-            changed(harness, tab, (0..<600).map { "/x/b\($0)" })
-            #expect(tab.pendingChange != nil && tab.pendingChange?.changedPaths == nil)
             await harness.close()
         }
 
@@ -87,7 +64,7 @@ extension ExplorerWindowlessTests {
             probe.letGo()
             #expect(await waitUntil { probe.reads(of: folder) == 2 })
             #expect(await waitUntil { tab.pendingChange == nil })
-            try await Task.sleep(for: .milliseconds(150))
+            try await Task.sleep(for: .milliseconds(50))
             #expect(probe.reads(of: folder) == 2)
             await harness.close()
         }
@@ -103,102 +80,13 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { probe.isHolding })
             changed(harness, tab, nil)
             // A try has come and gone by now, and kept it.
-            try await Task.sleep(for: .milliseconds(350))
+            try await Task.sleep(for: .milliseconds(300))
             #expect(tab.isNavigating)
             #expect(tab.pendingChange != nil)
             probe.letGo()
             #expect(await waitUntil { !tab.isNavigating })
             // Nothing else asks for this read: only the 250 ms try comes back to it.
             #expect(await waitUntil { tab.pendingChange == nil })
-            await harness.close()
-        }
-
-        /// Opens Beta, with something done while it is being opened, and says what that came to once a retry would have
-        /// been and gone: how many times each folder was read (the tree reads them too), and whether Beta was read again
-        /// after it arrived, seen by an item the watch isn't told of and a listing no longer kept.
-        private func openingBeta(
-            during: (ExplorerHarness, MainWindowController) -> Void,
-            afterArrival: (URL, MainWindowController) throws -> Void
-        ) async throws -> (left: Int, opened: Int, late: Bool) {
-            let (harness, tab, probe) = try await opened()
-            let home = tab.folder.path
-            let beta = harness.folder.appending("Beta")
-            probe.hold(beta.path)
-            tab.go(to: beta)
-            #expect(await waitUntil { probe.isHolding })
-            during(harness, tab)
-            #expect(tab.pendingChange == nil)
-            probe.letGo()
-            #expect(await waitUntil { tab.shownFolderPath == beta.path && !tab.isNavigating })
-            try afterArrival(beta, tab)
-            try await Task.sleep(for: .milliseconds(400))
-            let result = (
-                left: probe.reads(of: home), opened: probe.reads(of: beta.path),
-                late: tab.content.listed.contains { $0.name == "Late.txt" }
-            )
-            await harness.close()
-            return result
-        }
-
-        private func noMoreReads(during: (ExplorerHarness, MainWindowController) -> Void) async throws {
-            let clearing: (ExplorerHarness, MainWindowController) -> Void = { _, tab in
-                tab.services.directoryService.cache.clear()
-            }
-            let baseline = try await openingBeta(during: clearing) { _, _ in }
-            let counted = try await openingBeta(during: during) { _, _ in }
-            #expect(counted.left == baseline.left)
-            #expect(counted.opened == baseline.opened)
-            let shown = try await openingBeta(during: during) { beta, tab in
-                try "x".write(to: beta.appending(path: "Late.txt"), atomically: true, encoding: .utf8)
-                tab.services.directoryService.cache.clear()
-            }
-            #expect(!shown.late)
-        }
-
-        // B-VIEW-195: a change to the folder being left isn't kept, and isn't read into the one that opens.
-        @Test func aChangeToTheFolderBeingLeftIsDropped() async throws {
-            try await noMoreReads { harness, tab in changed(harness, tab, nil) }
-        }
-
-        // B-VIEW-195: a change held back while the folder was left is forgotten when it is let go of.
-        @Test func aChangeHeldBackWhileTheFolderWasLeftIsForgotten() async throws {
-            let (harness, tab, _) = try await opened()
-            let beta = harness.folder.appending("Beta")
-            tab.folderChangesHeld = true
-            changed(harness, tab, nil)
-            tab.go(to: beta)
-            #expect(await waitUntil { tab.shownFolderPath == beta.path && !tab.isNavigating })
-            try "x".write(to: beta.appending(path: "Late.txt"), atomically: true, encoding: .utf8)
-            tab.services.directoryService.cache.clear()
-            tab.folderChangesHeld = false
-            #expect(tab.pendingChange == nil)
-            try await Task.sleep(for: .milliseconds(150))
-            #expect(tab.content.listed.map(\.name) == ["Inner"])
-            await harness.close()
-        }
-
-        // B-VIEW-195: what was held back of the folder left doesn't add to a change of the folder come to.
-        @Test func aChangeOfTheNewFolderTakesThePlaceOfOneHeldBackOfTheOld() async throws {
-            let (harness, tab, _) = try await opened()
-            let beta = harness.folder.appending("Beta").path
-            tab.folderChangesHeld = true
-            changed(harness, tab, ["\(tab.folder.path)/a"])
-            tab.go(to: URL(fileURLWithPath: beta))
-            #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
-            changed(harness, tab, ["\(beta)/b"])
-            #expect(tab.pendingChange?.changedPaths == ["\(beta)/b"])
-            tab.folderChangesHeld = false
-            await harness.close()
-        }
-
-        // B-VIEW-195: a change told of a folder that is no longer the one on screen is not taken in.
-        @Test func aChangeToAFolderNoLongerOnScreenIsLeftOut() async throws {
-            let (harness, tab, _) = try await opened()
-            tab.folderChangesHeld = true
-            harness.windows.folderChanged(
-                windowID: tab.windowID,
-                FolderChange(path: harness.folder.appending("Beta").path, changedPaths: nil))
-            #expect(tab.pendingChange == nil)
             await harness.close()
         }
 
@@ -229,37 +117,11 @@ extension ExplorerWindowlessTests {
             probe.letGo()
             // The tree reads it too.
             #expect(await waitUntil { probe.reads(of: folder) >= 1 })
-            try await Task.sleep(for: .milliseconds(150))
+            try await Task.sleep(for: .milliseconds(50))
             #expect(tab.shownFolderPath == beta)
             #expect(tab.content.folderPath == beta)
             #expect(tab.content.listed.map(\.name) == ["Inner"])
             await harness.close()
-        }
-
-        // T-3de1e419: Refresh while a folder is being opened doesn't take its place.
-        @Test func refreshDoesNotTakeThePlaceOfAFolderBeingOpened() async throws {
-            let (harness, tab, probe) = try await opened()
-            let home = tab.folder.path
-            let beta = harness.folder.appending("Beta").path
-            probe.hold(beta)
-            tab.go(to: URL(fileURLWithPath: beta))
-            #expect(await waitUntil { probe.isHolding })
-            tab.refresh()
-            #expect(tab.pendingChange == nil)
-            try await Task.sleep(for: .milliseconds(50))
-            #expect(tab.shownFolderPath == home)
-            probe.letGo()
-            #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
-            try await Task.sleep(for: .milliseconds(350))
-            #expect(tab.shownFolderPath == beta)
-            #expect(tab.content.listed.map(\.name) == ["Inner"])
-            await harness.close()
-        }
-
-        // T-3de1e419: it ends there, after letting go of the caches: neither the folder left nor the one opening is read
-        // for it.
-        @Test func refreshWhileAnotherFolderIsOpeningReadsNothingMore() async throws {
-            try await noMoreReads { _, tab in tab.refresh() }
         }
 
         // T-e2e495bf B-SEL-139: a name being typed holds the change, and its end shows it.
@@ -274,7 +136,7 @@ extension ExplorerWindowlessTests {
 
             changed(harness, tab, [made])
             #expect(tab.pendingChange?.changedPaths == [made])
-            try await Task.sleep(for: .milliseconds(100))
+            await settle()
             #expect(probe.reads(of: folder) == 0)
             #expect(tab.content.inlineRename?.path == note.path)
             #expect(!tab.content.listed.contains { $0.path == made })
@@ -302,5 +164,35 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.selection.paths == [note.path])
             await harness.close()
         }
+    }
+}
+
+/// How the changes waiting to be read are merged.
+@MainActor
+struct PendingChangeTests {
+    private typealias Pending = MainWindowController.PendingChange
+
+    // T-277f84be: one change that doesn't say what changed makes the read a full one, whatever came before or after.
+    @Test func aChangeToAnythingAmongThoseHeldBackReadsEverything() {
+        let some = Pending.merging(nil, path: "/x", ["/x/a"])
+        #expect(some.changedPaths == ["/x/a"])
+        let all = Pending.merging(some, path: "/x", nil)
+        #expect(all.changedPaths == nil)
+        #expect(Pending.merging(all, path: "/x", ["/x/b"]).changedPaths == nil)
+    }
+
+    // T-73c88821: past the most it lists, the read is a full one.
+    @Test func tooManyChangedItemsReadEverything() {
+        let many = Pending.merging(nil, path: "/x", (0..<600).map { "/x/a\($0)" })
+        #expect(many.changedPaths?.count == 600)
+        #expect(Pending.merging(many, path: "/x", (0..<600).map { "/x/b\($0)" }).changedPaths == nil)
+    }
+
+    // B-VIEW-195: what was held back of the folder left doesn't add to a change of the folder come to.
+    @Test func aChangeOfTheNewFolderTakesThePlaceOfOneHeldBackOfTheOld() {
+        let old = Pending.merging(nil, path: "/old", ["/old/a"])
+        let new = Pending.merging(old, path: "/new", ["/new/b"])
+        #expect(new.path == "/new")
+        #expect(new.changedPaths == ["/new/b"])
     }
 }

@@ -50,8 +50,9 @@ extension ExplorerWindowlessTests {
             #expect(first.foldersFirst)
             #expect(!first.sidebarController.model.includeHidden)
             // Its next read stays without them too, and the tree's.
+            try "x".write(to: harness.folder.appending("Later.txt"), atomically: true, encoding: .utf8)
             first.perform(.refreshOrApplySearchSort)
-            try await Task.sleep(for: .milliseconds(100))
+            #expect(await waitUntil { self.names(first).contains("Later.txt") })
             #expect(!names(first).contains(".secret"))
             #expect(names(first).first == "Alpha")
             #expect(!first.includeHidden)

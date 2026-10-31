@@ -109,7 +109,7 @@ extension ExplorerWindowlessTests {
             for _ in 0..<2 {
                 tab.perform(.toggleInfoPanel)
                 harness.layout(tab)
-                try? await Task.sleep(for: .milliseconds(400))
+                #expect(await waitUntil { tab.workspace.slide == nil })
                 harness.layout(tab)
                 #expect(!gutters().isEmpty)
                 let after = gutters()

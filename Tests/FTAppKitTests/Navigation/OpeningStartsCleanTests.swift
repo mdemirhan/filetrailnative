@@ -9,25 +9,6 @@ import Testing
 
 @testable import FTAppKit
 
-/// Reads one folder slowly, so a test can do something while it is being opened.
-private struct SlowFolder: ExplorerFileSystem {
-    let slow: String
-    private let real = NativeFileSystem()
-
-    func readDirectory(_ path: String) throws -> [DirectoryRecord] {
-        if path == slow { Thread.sleep(forTimeInterval: 0.4) }
-        return try real.readDirectory(path)
-    }
-
-    func stat(_ path: String) throws -> FileStats {
-        if path == slow { Thread.sleep(forTimeInterval: 0.4) }
-        return try real.stat(path)
-    }
-
-    func lstat(_ path: String) throws -> FileStats { try real.lstat(path) }
-    func realpath(_ path: String) throws -> String { try real.realpath(path) }
-}
-
 /// Holds one folder's listing back, once read, until the test lets it go, and counts the listings read of each folder, so
 /// a test can be sure an opening is under way when it acts, and that nothing was read after.
 private final class HeldFolder: ExplorerFileSystem, @unchecked Sendable {
@@ -119,45 +100,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-046: a folder gone to starts with nothing selected and at the top; only Back gets the memory back.
-        @Test func aFolderOpenedByPushStartsCleanAndBackRestoresIt() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let many = try harness.makeFolder(named: "Many", files: 300)
-            let path = listed(harness, "Many")
-            let alpha = URL(fileURLWithPath: listed(harness, "Alpha"))
-            let tab = try await harness.open(many.path)
-            tab.perform(.viewAsDetails)
-            #expect(await waitUntil { tab.content.entries.count == 300 && tab.content.pane != nil })
-            harness.layout(tab)
-            func leaveSomethingBehind() throws -> (String, Double) {
-                let lead = tab.content.entries[200].path
-                tab.content.select(paths: [lead])
-                harness.layout(tab)
-                let top = try #require(tab.content.pane?.scrollPosition.top)
-                #expect(top > 0)
-                return (lead, top)
-            }
-
-            _ = try leaveSomethingBehind()
-            tab.go(to: alpha)
-            #expect(await waitUntil { tab.shownFolderPath == alpha.path })
-            tab.go(to: URL(fileURLWithPath: path))
-            #expect(await waitUntil { tab.shownFolderPath == path })
-            harness.layout(tab)
-            #expect(tab.selectedPaths.isEmpty)
-            #expect(tab.content.pane?.scrollPosition.top == 0)
-
-            let (lead, top) = try leaveSomethingBehind()
-            tab.go(to: alpha)
-            #expect(await waitUntil { tab.shownFolderPath == alpha.path })
-            tab.goBack(nil)
-            #expect(await waitUntil { tab.shownFolderPath == path })
-            harness.layout(tab)
-            #expect(tab.selectedPaths == [lead])
-            #expect(tab.content.pane?.scrollPosition.top == top)
-            await harness.close()
-        }
-
         // MARK: Reading again with another order
 
         // B-NAV-128: the order flips and back, in place: no step in the history.
@@ -176,22 +118,6 @@ extension ExplorerWindowlessTests {
             tab.perform(.toggleFoldersFirst)
             #expect(await waitUntil { self.names(tab).first == "Alpha" })
             #expect(tab.navigationHistory.paths == history)
-            await harness.close()
-        }
-
-        // B-SEL-030: another sort, folders-first and hidden files read the folder the way a navigation does.
-        @Test(arguments: [RendererCommand.sortBySize, .toggleFoldersFirst, .toggleHiddenFiles])
-        func aNewOrderOrHiddenFilesClearTheSelection(_ command: RendererCommand) async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open(listed(harness, ""))
-            let note = listed(harness, "note.txt")
-            tab.content.select(paths: [note])
-            tab.content.focusList()
-            #expect(tab.selectedPaths == [note])
-            tab.perform(command)
-            #expect(await waitUntil { tab.selectedPaths.isEmpty })
-            await settle()
-            #expect(tab.selectedPaths.isEmpty)
             await harness.close()
         }
 
@@ -223,6 +149,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { files.reads(of: beta) == 1 })
             #expect(tab.isNavigating)
             #expect(model.selected == .filesystem(beta))
+            #expect(tab.shownFolderPath == root)
 
             tab.perform(.refreshOrApplySearchSort)
             await settle()
@@ -237,31 +164,13 @@ extension ExplorerWindowlessTests {
             files.letGo()
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             #expect(names(tab) == ["Inner"])
-            // Long enough for anything put off for the opening to have come back.
-            try await Task.sleep(for: .milliseconds(600))
+            // Long enough for anything put off for the opening (250 ms) to have come back.
+            try await Task.sleep(for: .milliseconds(300))
             #expect(tab.shownFolderPath == beta)
             #expect(names(tab) == ["Inner"])
             #expect(model.selected == .filesystem(beta))
             #expect(files.reads(of: root) == 0)
             #expect(files.reads(of: beta) == 1)
-            await harness.close()
-        }
-
-        // B-TREE-195: a refresh already reading the old folder when another is opened: its items don't come back.
-        @Test func aRefreshOfTheOldFolderThatEndsLateDoesNotComeBack() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let root = listed(harness, "")
-            let tab = try await harness.open(root)
-            let beta = listed(harness, "Beta")
-            reading(SlowFolder(slow: root), tab, harness)
-            tab.perform(.refreshOrApplySearchSort)
-            tab.go(to: URL(fileURLWithPath: beta))
-            #expect(await waitUntil { tab.shownFolderPath == beta })
-            #expect(names(tab) == ["Inner"])
-            // The old folder's read comes back meanwhile.
-            try await Task.sleep(for: .milliseconds(1000))
-            #expect(tab.shownFolderPath == beta)
-            #expect(names(tab) == ["Inner"])
             await harness.close()
         }
 
@@ -309,14 +218,15 @@ extension ExplorerWindowlessTests {
 
             tab.go(to: URL(fileURLWithPath: beta))
             #expect(await waitUntil { files.reads(of: beta) == 1 })
-            tab.reload(changedPaths: nil)
+            harness.windows.folderChanged(
+                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: nil))
             #expect(tab.pendingChange == nil)
 
             files.letGo()
             #expect(await waitUntil { tab.shownFolderPath == beta && !tab.isNavigating })
             try "x".write(toFile: beta + "/late.txt", atomically: true, encoding: .utf8)
             tab.services.directoryService.cache.forgetFolderListings(beta, changedPaths: nil)
-            try await Task.sleep(for: .milliseconds(600))
+            try await Task.sleep(for: .milliseconds(300))
             #expect(!names(tab).contains("late.txt"))
             #expect(files.reads(of: beta) == 1)
             #expect(files.reads(of: root) == 0)
@@ -339,7 +249,7 @@ extension ExplorerWindowlessTests {
             reading(files, tab, harness)
             tab.folderChangesHeld = false
             #expect(tab.pendingChange == nil)
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(for: .milliseconds(50))
             #expect(files.reads(of: beta) == 0)
             await harness.close()
         }

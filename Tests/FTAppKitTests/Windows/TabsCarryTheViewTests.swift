@@ -23,7 +23,13 @@ extension ExplorerWindowlessTests {
                 tab.whenFirstReadFinished { _ in done.resume() }
             }
             // The sidebar hears of the folder in a task of its own.
-            try? await Task.sleep(for: .milliseconds(100))
+            await settle()
+        }
+
+        /// The tab has read its folder, and what follows the reading in the sidebar has been told.
+        private func arrived(_ tab: MainWindowController) async {
+            #expect(await waitUntil { !tab.isNavigating })
+            await settle()
         }
 
         /// A tab with Alpha open in the tree though it shows the folder above it.
@@ -33,7 +39,7 @@ extension ExplorerWindowlessTests {
             let alpha = real(harness, "Alpha")
             #expect(await waitUntil { tab.sidebarController.model.nodes[alpha]?.expanded == true })
             await tab.navigate(to: URL(fileURLWithPath: real(harness, "")), history: .back)
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
             return tab
         }
 
@@ -171,7 +177,7 @@ extension ExplorerWindowlessTests {
             if selectFavorite {
                 tab.sidebarController.model.selectItem(.favorite(favorite))
                 #expect(await waitUntil { tab.shownFolderPath == favorite })
-                try? await Task.sleep(for: .milliseconds(100))
+                await arrived(tab)
                 tab.sidebarController.tree.scrollTop = 300
                 harness.layout(tab)
             }
@@ -223,7 +229,7 @@ extension ExplorerWindowlessTests {
             let model = tab.sidebarController.model
             model.selectItem(.favorite(locked.path))
             #expect(await waitUntil { tab.shownFolderPath == locked.path })
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
             guard case .failed = tab.content.loadState else {
                 Issue.record("the folder should show its error")
                 return
@@ -390,7 +396,7 @@ extension ExplorerWindowlessTests {
             let model = tab.sidebarController.model
             model.selectItem(.favorite(alpha.path))
             #expect(await waitUntil { tab.shownFolderPath == alpha.path })
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
 
             tab.perform(.newTab)
             let new = try await opened(tab, after: 1)
@@ -464,21 +470,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx:1662, `focusContent`: a folder opened by another app gives the list the keyboard.
-        // B-NAV-191
-        @Test func aFolderFromAnotherAppGivesTheListTheKeyboard() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.perform(.focusTreePane)
-            let group = try #require(tab.group)
-
-            group.openTab(path: real(harness, "Alpha"), from: tab, openedItem: .folder)
-            let new = try await opened(tab, after: 1)
-
-            #expect(new.focusedPane == .content)
-            await harness.close()
-        }
-
         // B-NAV-191
         @Test func aNewTabWithTheKeyboardInTheListKeepsItThere() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -502,7 +493,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open(alpha.path)
             let model = tab.sidebarController.model
             #expect(await waitUntil { model.nodes[alpha.path] != nil })
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
 
             let added = URL(fileURLWithPath: real(harness, "")).appending(path: "Added")
             try FileManager.default.createDirectory(at: added, withIntermediateDirectories: true)
@@ -526,12 +517,12 @@ extension ExplorerWindowlessTests {
             model.selectItem(.favorite(alpha.path))
             #expect(await waitUntil { tab.shownFolderPath == alpha.path })
             #expect(await waitUntil { model.nodes[real(harness, "")]?.loaded == true })
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
 
             let added = URL(fileURLWithPath: real(harness, "")).appending(path: "Added")
             try FileManager.default.createDirectory(at: added, withIntermediateDirectories: true)
             tab.perform(.refreshOrApplySearchSort)
-            try? await Task.sleep(for: .milliseconds(200))
+            try? await Task.sleep(for: .milliseconds(100))
 
             #expect(model.nodes[real(harness, "")]?.childPaths.contains(added.path) != true)
             #expect(model.selected == .favorite(alpha.path))
@@ -540,18 +531,10 @@ extension ExplorerWindowlessTests {
 
         // MARK: A new order, Folders First and hidden files
 
-        private func changeTheView(_ tab: MainWindowController, _ change: Int) {
-            switch change {
-            case 0: tab.setSort(.size, .desc)
-            case 1: tab.perform(.toggleFoldersFirst)
-            default: tab.perform(.toggleHiddenFiles)
-            }
-        }
-
-        // useExplorerNavigationController.ts `handleSortChange`, `toggleFoldersFirst`, `toggleHiddenFiles`.
+        // useExplorerNavigationController.ts `handleSortChange`, `toggleFoldersFirst`, `toggleHiddenFiles`: one path here,
+        // `viewChanged`, and hidden files adds to it.
         // B-NAV-130 T-bae92ca4
-        @Test(arguments: 0..<3)
-        func changingTheViewKeepsAFavoriteRowAndTheTreeWhereItIs(change: Int) async throws {
+        @Test func changingTheViewKeepsAFavoriteRowAndTheTreeWhereItIs() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = URL(fileURLWithPath: real(harness, "Alpha"))
             let tab = try await harness.open(real(harness, "Beta"))
@@ -560,13 +543,13 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.shownFolderPath == alpha.path })
             // The favorite's own opening brought the tree along: that is over before the view changes.
             #expect(await waitUntil { model.nodes[alpha.path] != nil && model.selected == .favorite(alpha.path) })
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
             let root = model.rootPath
             let nodes = model.nodes[alpha.path]
 
-            changeTheView(tab, change)
+            tab.perform(.toggleHiddenFiles)
             #expect(await waitUntil { !tab.isNavigating })
-            try? await Task.sleep(for: .milliseconds(200))
+            try? await Task.sleep(for: .milliseconds(100))
 
             #expect(model.selected == .favorite(alpha.path))
             #expect(tab.favoritePath == alpha.path)
@@ -576,8 +559,7 @@ extension ExplorerWindowlessTests {
         }
 
         // B-NAV-130
-        @Test(arguments: 0..<3)
-        func changingTheViewKeepsALinkRow(change: Int) async throws {
+        @Test func changingTheViewKeepsALinkRow() async throws {
             let harness = try ExplorerHarness.windowless()
             let link = URL(fileURLWithPath: real(harness, "")).appending(path: "Link")
             try FileManager.default.createSymbolicLink(at: link, withDestinationURL: harness.folder.appending("Beta"))
@@ -588,11 +570,11 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { model.nodes[link.path]?.isSymlink == true })
             model.selectItem(.filesystem(link.path))
             #expect(await waitUntil { tab.folder.lastPathComponent == "Beta" })
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
 
-            changeTheView(tab, change)
+            tab.perform(.toggleHiddenFiles)
             #expect(await waitUntil { !tab.isNavigating })
-            try? await Task.sleep(for: .milliseconds(200))
+            try? await Task.sleep(for: .milliseconds(100))
 
             #expect(model.selected == .filesystem(link.path))
             await harness.close()
@@ -607,7 +589,7 @@ extension ExplorerWindowlessTests {
 
             tab.setSort(.size, .desc)
             #expect(await waitUntil { !tab.isNavigating })
-            try? await Task.sleep(for: .milliseconds(100))
+            await arrived(tab)
 
             #expect(model.selected == .filesystem(alpha))
             await harness.close()

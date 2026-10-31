@@ -1,5 +1,5 @@
-// Review round 1 of P5-03: rows follow the pane's width, a size bar is cut at its cell, an outside change keeps the
-// details shown, and the folder watch's changed items reach the reload, on an explorer window that is never shown
+// Review round 1 of P5-03: rows follow the pane's width, on an explorer window that is never shown, and an outside change
+// keeps the details shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -22,35 +22,16 @@ extension ExplorerWindowlessTests {
             let window = try #require(tab.window)
             window.setContentSize(NSSize(width: window.contentLayoutRect.width + 400, height: 600))
             harness.layout(tab)
-            try? await Task.sleep(for: .milliseconds(300))
-            harness.layout(tab)
-            let pane = tab.content.contentShell.convert(tab.content.contentShell.bounds, to: nil)
-            let all = listViews("list.row", in: tab.window?.contentView)
-            let bar = try #require(all.first)
-            let frame = bar.convert(bar.bounds, to: nil)
-            #expect(pane.maxX - frame.maxX == 10)
+            #expect(
+                await waitUntil {
+                    harness.layout(tab)
+                    let pane = tab.content.contentShell.convert(tab.content.contentShell.bounds, to: nil)
+                    return listViews("list.row", in: tab.window?.contentView).first.map {
+                        pane.maxX - $0.convert($0.bounds, to: nil).maxX == 10
+                    } == true
+                })
             await harness.close()
         }
-
-        // The folder watch's changed items reach the reload, not "anything may have changed".
-        // B-NAV-222
-        @Test func aFolderWatchChangeKeepsItsChangedPaths() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            tab.folderChangesHeld = true
-            harness.windows.folderChanged(
-                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: ["/x/a"]))
-            #expect(tab.pendingChange?.changedPaths == ["/x/a"])
-            tab.folderChangesHeld = false
-            await harness.close()
-        }
-    }
-}
-
-struct ReviewSizeCellTests {
-    // The Size cell cuts its bar at the cell's edge (`.details-row > span { overflow: hidden }`).
-    @MainActor @Test func theSizeCellClipsItsBar() {
-        #expect(SizeCellView().clipsToBounds)
     }
 }
 

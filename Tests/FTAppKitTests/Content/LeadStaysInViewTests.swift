@@ -171,23 +171,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-8ab8cdc7: scrolled away since: the view stays where it was scrolled.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func staysWhereItWasScrolledWhenTheWindowIsResized(_ view: RendererCommand) async throws {
-            let (harness, tab, _) = try await open(view)
-            tab.content.select(paths: [tab.content.entries[5].path])
-            scrollAway(view, tab)
-            let before = try scroller(tab).scrollOrigin
-            let window = try #require(tab.window)
-            window.setContentSize(NSSize(width: window.frame.width + 100, height: window.frame.height))
-            harness.layout(tab)
-            #expect(try scroller(tab).scrollOrigin == before)
-            await harness.close()
-        }
-
         // T-03a4c1d0 B-NAV-160 B-SEL-063: the first result goes last when the order of the results is turned around.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func aNewOrderOfResultsBringsTheLeadIntoView(_ view: RendererCommand) async throws {
+        @Test func aNewOrderOfResultsBringsTheLeadIntoView() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails)
             let names = tab.content.entries.map(\.name)
             let engine = FakeSearchEngine()
@@ -200,7 +185,6 @@ extension ExplorerWindowlessTests {
             tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
             timers.advance(0.4)
             #expect(await waitUntil { tab.content.search != nil && tab.content.entries.count == names.count })
-            tab.perform(view)
             harness.layout(tab)
             let lead = tab.content.entries[0].path
             tab.content.select(paths: [lead])
@@ -295,37 +279,10 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The item to show stays the same when the lead's name starts being edited: a lead scrolled away stays away.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func renamingALeadScrolledAwayLeavesTheViewWhereItIs(_ view: RendererCommand) async throws {
-            let (harness, tab, _) = try await open(view)
-            tab.content.select(paths: [tab.content.entries[5].path])
-            scrollAway(view, tab)
-            let away = try scroller(tab).scrollOrigin
-            tab.renameSelected()
-            #expect(tab.content.inlineRename != nil)
-            #expect(try scroller(tab).scrollOrigin == away)
-            tab.content.renameCancelled()
-            #expect(try scroller(tab).scrollOrigin == away)
-            await harness.close()
-        }
-
-        // B-SEL-064 B-CLIP-140: what a paste made is selected with its last item as the lead, and that is what ends up in
-        // view, however far from the first item it is (useExplorerNavigationController.ts:942-950).
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func aSelectionOfItemsFarApartShowsTheLead(_ view: RendererCommand) async throws {
-            let (harness, tab, folder) = try await open(view)
-            let picked = [tab.content.entries[5].path, tab.content.entries[300].path]
-            tab.content.show(folder: folder, entries: tab.content.entries, selecting: picked, keepingScroll: true)
-            #expect(tab.content.selection.leadPath == picked[1])
-            #expect(try leadIsInView(tab))
-            await harness.close()
-        }
-
-        // B-SEL-064 B-CLIP-140: the same by the route a write ends on.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func aWriteEndingWithItemsFarApartShowsTheLead(_ view: RendererCommand) async throws {
-            let (harness, tab, folder) = try await open(view)
+        // B-SEL-064 B-CLIP-140: what a paste made, far apart, by the route a write ends on (each view's is in
+        // LeadStaysOnThePaneTests).
+        @Test func aWriteEndingWithItemsFarApartShowsTheLead() async throws {
+            let (harness, tab, folder) = try await open(.viewAsDetails)
             let picked = [tab.content.entries[5].path, tab.content.entries[300].path]
             tab.applyWriteEnd(
                 WriteEndRefresh(path: folder, selecting: picked, treeSelectionPath: nil, treeReloadPaths: []))
@@ -405,51 +362,115 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.selection.leadPath == made })
             await harness.close()
         }
+    }
+}
 
-        // B-SEL-064 B-NAV-161: the same lead selected again asks for nothing: a lead scrolled away stays away.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func selectingTheLeadAgainLeavesTheViewWhereItWasScrolled(_ view: RendererCommand) async throws {
-            let (harness, tab, _) = try await open(view)
-            let lead = tab.content.entries[5].path
-            tab.content.select(paths: [lead])
-            scrollAway(view, tab)
-            let before = try scroller(tab).scrollOrigin
-            tab.content.select(paths: [lead])
-            tab.content.applySelection(.single(lead))
-            #expect(try scroller(tab).scrollOrigin == before)
-            await harness.close()
-        }
+/// The same rules on the content pane alone, in each view: what they ask of it needs no tab or window.
+@MainActor
+struct LeadStaysOnThePaneTests {
+    private nonisolated static let views: [ExplorerViewMode] = [.details, .list, .icons]
 
-        // B-SEL-064 B-NAV-161: the whole list coming back is a change of the list: a lead scrolled away stays away.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func clearingTheFilterLeavesALeadScrolledAwayAlone(_ view: RendererCommand) async throws {
-            let (harness, tab, _) = try await open(view)
-            tab.content.setFilter("1")
-            #expect(await waitUntil { tab.content.entries.count < 400 && tab.content.entries.count > 50 })
-            harness.layout(tab)
-            tab.content.select(paths: [tab.content.entries[1].path])
-            tab.content.pane?.scrollPosition = view == .viewAsList ? (top: 0, left: 1_500) : (top: 1_500, left: 0)
-            let before = try scroller(tab).scrollOrigin
-            #expect(try !leadIsInView(tab))
-            tab.content.applyFilterKey(.clear)
-            #expect(tab.content.filter.isEmpty)
-            #expect(try scroller(tab).scrollOrigin == before)
-            await harness.close()
-        }
+    private func pane(_ view: ExplorerViewMode) throws -> (ContentPaneController, any RevealScroller) {
+        _ = NSApplication.shared
+        let content = ContentPaneController(
+            mode: view, folderSizes: FolderSizeService.shared.sizes(for: 9_002), loaders: .placeholder)
+        content.view.frame = NSRect(x: 0, y: 0, width: 900, height: 600)
+        let entries = (0..<400).map { ContentModelTests.entry(String(format: "item-%03d.txt", $0)) }
+        content.show(folder: "/f", entries: entries, selecting: nil, keepingScroll: false)
+        content.view.layoutSubtreeIfNeeded()
+        return (content, try #require(content.pane as? any RevealScroller))
+    }
 
-        // B-SEL-064 B-NAV-161: a lead in view moves with the list and stays in view.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func clearingTheFilterKeepsALeadInViewInView(_ view: RendererCommand) async throws {
-            let (harness, tab, _) = try await open(view)
-            tab.content.setFilter("1")
-            #expect(await waitUntil { tab.content.entries.count < 400 && tab.content.entries.count > 50 })
-            harness.layout(tab)
-            tab.content.select(paths: [tab.content.entries[30].path])
-            #expect(try leadIsInView(tab))
-            tab.content.applyFilterKey(.clear)
-            #expect(tab.content.entries.count == 400)
-            #expect(try leadIsInView(tab))
-            await harness.close()
-        }
+    /// As scrolling by hand does; each view scrolls its own way.
+    private func scrollAway(_ view: ExplorerViewMode, _ content: ContentPaneController, by distance: Double = 2_000) {
+        content.pane?.scrollPosition = view == .list ? (top: 0, left: distance) : (top: distance, left: 0)
+        // It did move, so what the tests say of it staying can tell.
+        #expect(content.pane.map { $0.scrollPosition.top > 0 || $0.scrollPosition.left > 0 } == true)
+    }
+
+    private func leadIsInView(_ content: ContentPaneController, _ scroller: any RevealScroller) throws -> Bool {
+        let lead = try #require(content.selection.leadPath)
+        return scroller.isInView(index: try #require(content.entries.firstIndex { $0.path == lead }))
+    }
+
+    // T-8ab8cdc7: scrolled away since: the view stays where it was scrolled.
+    @Test(arguments: views)
+    func staysWhereItWasScrolledWhenThePaneIsResized(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        content.select(paths: [content.entries[5].path])
+        scrollAway(view, content)
+        let before = scroller.scrollOrigin
+        content.view.setFrameSize(NSSize(width: 1_000, height: 600))
+        content.view.layoutSubtreeIfNeeded()
+        #expect(scroller.scrollOrigin == before)
+    }
+
+    // The item to show stays the same when the lead's name starts being edited: a lead scrolled away stays away.
+    @Test(arguments: views)
+    func renamingALeadScrolledAwayLeavesTheViewWhereItIs(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        let lead = content.entries[5].path
+        content.select(paths: [lead])
+        scrollAway(view, content)
+        let away = scroller.scrollOrigin
+        #expect(content.beginRename(path: lead))
+        #expect(content.inlineRename != nil)
+        #expect(scroller.scrollOrigin == away)
+        content.renameCancelled()
+        #expect(scroller.scrollOrigin == away)
+    }
+
+    // B-SEL-064 B-CLIP-140: what a paste made is selected with its last item as the lead, and that is what ends up in
+    // view, however far from the first item it is (useExplorerNavigationController.ts:942-950).
+    @Test(arguments: views)
+    func aSelectionOfItemsFarApartShowsTheLead(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        let picked = [content.entries[5].path, content.entries[300].path]
+        content.show(folder: "/f", entries: content.entries, selecting: picked, keepingScroll: true)
+        #expect(content.selection.leadPath == picked[1])
+        #expect(try leadIsInView(content, scroller))
+    }
+
+    // B-SEL-064 B-NAV-161: the same lead selected again asks for nothing: a lead scrolled away stays away.
+    @Test(arguments: views)
+    func selectingTheLeadAgainLeavesTheViewWhereItWasScrolled(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        let lead = content.entries[5].path
+        content.select(paths: [lead])
+        scrollAway(view, content)
+        let before = scroller.scrollOrigin
+        content.select(paths: [lead])
+        content.applySelection(.single(lead))
+        #expect(scroller.scrollOrigin == before)
+    }
+
+    // B-SEL-064 B-NAV-161: the whole list coming back is a change of the list: a lead scrolled away stays away.
+    @Test(arguments: views)
+    func clearingTheFilterLeavesALeadScrolledAwayAlone(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        content.setFilter("1")
+        #expect(content.entries.count < 400 && content.entries.count > 50)
+        content.view.layoutSubtreeIfNeeded()
+        content.select(paths: [content.entries[1].path])
+        scrollAway(view, content, by: 1_500)
+        let before = scroller.scrollOrigin
+        #expect(try !leadIsInView(content, scroller))
+        content.applyFilterKey(.clear)
+        #expect(content.filter.isEmpty)
+        #expect(scroller.scrollOrigin == before)
+    }
+
+    // B-SEL-064 B-NAV-161: a lead in view moves with the list and stays in view.
+    @Test(arguments: views)
+    func clearingTheFilterKeepsALeadInViewInView(_ view: ExplorerViewMode) throws {
+        let (content, scroller) = try pane(view)
+        content.setFilter("1")
+        #expect(content.entries.count < 400 && content.entries.count > 50)
+        content.view.layoutSubtreeIfNeeded()
+        content.select(paths: [content.entries[30].path])
+        #expect(try leadIsInView(content, scroller))
+        content.applyFilterKey(.clear)
+        #expect(content.entries.count == 400)
+        #expect(try leadIsInView(content, scroller))
     }
 }

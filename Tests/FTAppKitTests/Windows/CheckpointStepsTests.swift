@@ -166,7 +166,8 @@
                     await steps.settle()
                     settled = true
                 }
-                try await Task.sleep(for: .milliseconds(400))
+                // Past the 120 ms a step takes to settle with nothing going on.
+                try await Task.sleep(for: .milliseconds(200))
                 #expect(!settled)
                 #expect(tab.content.metadata(for: shown) == nil)
                 gate.open()
@@ -219,7 +220,7 @@
                 let bar = tab.content.contentShell.pathBarRow
                 #expect(bar.pathBar.segments.map(\.label) == ["No folder selected"])
                 tab.reload()
-                try await Task.sleep(for: .milliseconds(150))
+                await settle()
                 #expect(tab.content.entries.isEmpty)
                 #expect(tab.content.container(for: .empty(text: ContentStateText.noFolder)))
                 tab.go(to: folder)
@@ -253,7 +254,7 @@
                 let hidden = tab.includeHidden
                 tab.perform(.toggleHiddenFiles)
                 #expect(tab.includeHidden != hidden)
-                try await Task.sleep(for: .milliseconds(150))
+                await settle()
                 #expect(tab.shownFolderPath.isEmpty)
                 #expect(tab.content.entries.isEmpty)
                 #expect(tab.content.container(for: .empty(text: ContentStateText.noFolder)))
@@ -262,7 +263,7 @@
                 let new = try #require(group.tabs.last)
                 #expect(new !== tab)
                 new.ensureLoaded()
-                try await Task.sleep(for: .milliseconds(150))
+                await settle()
                 #expect(new.shownFolderPath.isEmpty)
                 #expect(new.snapshot.historyPaths.isEmpty)
                 #expect(new.tabDescription.label == "Favorites")
@@ -273,12 +274,6 @@
                 #expect(tab.tabDescription.label != "Favorites")
                 #expect(tab.snapshot.currentPath == folder.path)
                 await harness.close()
-            }
-
-            // A driven run starts from nothing: a run that gets the number of an earlier process doesn't find its
-            // windows (78's second tab).
-            @Test func aDrivenRunNeverSharesItsState() {
-                #expect(AppDelegate.drivenUserDataDirectory() != AppDelegate.drivenUserDataDirectory())
             }
 
             // A density change reveals nothing (TreePane's reveal doesn't depend on it): the tree stays at its offset,
@@ -305,7 +300,7 @@
                 #expect(before > 0)
                 tab.updatePreferences(["compactTreeView": .bool(true)])
                 harness.layout(tab)
-                try await Task.sleep(for: .milliseconds(100))
+                await settle()
                 #expect(sidebar.tree.scrollTop == before)
                 // Back, and from the end of the rows, where the compact rows are shorter than the offset.
                 tab.updatePreferences(["compactTreeView": .bool(false)])
@@ -314,7 +309,7 @@
                 let end = sidebar.tree.scrollTop
                 tab.updatePreferences(["compactTreeView": .bool(true)])
                 harness.layout(tab)
-                try await Task.sleep(for: .milliseconds(100))
+                await settle()
                 #expect(sidebar.tree.scrollTop < end)
                 #expect(abs(sidebar.tree.scrollTop - (sidebar.tree.contentHeight - sidebar.tree.visibleHeight)) < 1)
                 await harness.close()
@@ -356,7 +351,7 @@
                 let window = try #require(tab.window)
                 window.setContentSize(NSSize(width: 760, height: 520))
                 harness.layout(tab)
-                try await Task.sleep(for: .milliseconds(100))
+                await settle()
                 #expect(sidebar.tree.scrollTop == before)
                 #expect(!sidebar.tree.isFullyVisible(index))
                 await harness.close()

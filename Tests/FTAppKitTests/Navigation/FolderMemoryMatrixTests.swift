@@ -55,24 +55,6 @@ extension ExplorerWindowlessTests {
             return selection
         }
 
-        // T-6250e1a8 B-NAV-043 B-NAV-047: what was selected, the anchor, the lead and the scroll come back with Back.
-        @Test func backBringsAFolderBackWithItsSelectionAnchorLeadAndScroll() async throws {
-            let (harness, tab, outer, sub) = try await openLong()
-            let selection = try twoSelected(tab)
-            let position = try scroll(tab)
-            tab.go(to: URL(fileURLWithPath: sub))
-            #expect(await arrive(tab, sub, harness))
-            #expect(tab.content.selection.isEmpty)
-
-            tab.perform(.goBack)
-            #expect(await arrive(tab, outer, harness))
-            #expect(tab.content.selection.paths == selection.paths)
-            #expect(tab.content.selection.anchorPath == selection.anchorPath)
-            #expect(tab.content.selection.leadPath == selection.leadPath)
-            #expect(tab.content.pane?.scrollPosition.top == position.top)
-            await harness.close()
-        }
-
         // T-6250e1a8 B-NAV-059 B-SEL-120: the enclosing folder and any fresh opening start with nothing selected, at the
         // top; Back from there restores the folder left.
         @Test func aFreshOpeningStartsEmptyAtTheTopWhileBackRestores() async throws {
@@ -152,7 +134,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-bcd1990e: each view goes back to where it was scrolled.
+        // T-bcd1990e T-6250e1a8 B-NAV-043 B-NAV-047: each view goes back to where it was scrolled, with what was selected,
+        // the anchor and the lead.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func backPutsEachViewWhereItWasScrolled(view: RendererCommand) async throws {
             let (harness, tab, outer, _) = try await openLong(view)
@@ -164,16 +147,18 @@ extension ExplorerWindowlessTests {
             tab.perform(.goBack)
             #expect(await arrive(tab, outer, harness))
             #expect(tab.content.selection.paths == chosen.paths)
+            #expect(tab.content.selection.anchorPath == chosen.anchorPath)
+            #expect(tab.content.selection.leadPath == chosen.leadPath)
             let back = try #require(tab.content.pane?.scrollPosition)
             #expect(back.top == position.top && back.left == position.left)
             await harness.close()
         }
 
-        // T-6c281f26 (the Compact List's is in CompactListTests): an item more on disk leaves the view where it is.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsIcons])
-        func staysWhereItWasScrolledWhenReadAgainWithAnItemMore(view: RendererCommand) async throws {
-            let (harness, tab, outer, _) = try await openLong(view)
-            let position = try scroll(tab, view)
+        // T-6c281f26 (each view's is in LeadStaysInViewTests): an item more on disk, told by the folder watch, leaves a list
+        // with nothing selected where it is.
+        @Test func staysWhereItWasScrolledWhenReadAgainWithAnItemMore() async throws {
+            let (harness, tab, outer, _) = try await openLong()
+            let position = try scroll(tab)
             try "y".write(toFile: outer + "/item-999.txt", atomically: true, encoding: .utf8)
             tab.services.directoryService.cache.clear()
             harness.windows.folderChanged(
@@ -245,16 +230,18 @@ extension ExplorerWindowlessTests {
             probe.hold(beta)
             tab.go(to: URL(fileURLWithPath: beta))
             #expect(await waitUntil { probe.isHolding })
-            try await Task.sleep(for: .milliseconds(550))
+            // Past the 400 ms a Loading… would wait for.
+            try await Task.sleep(for: .milliseconds(450))
             #expect(!tab.content.container(for: .loading))
             probe.letGo()
             #expect(await waitUntil { !tab.isNavigating })
             await harness.close()
         }
 
-        // B-NAV-132: an order, Folders First, hidden files and Go To the same folder clear the selection; Refresh keeps it.
-        @Test(arguments: 0..<4)
-        func readingAgainWithoutKeepingClearsTheSelection(change: Int) async throws {
+        // B-NAV-132 B-SEL-030: hidden files (an order and Folders First go the same way, `viewChanged`) and Go To the same
+        // folder clear the selection; Refresh keeps it.
+        @Test(arguments: [false, true])
+        func readingAgainWithoutKeepingClearsTheSelection(goToTheSameFolder: Bool) async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let note = try #require(tab.content.listed.first { $0.name == "note.txt" })
@@ -264,13 +251,10 @@ extension ExplorerWindowlessTests {
             await settle()
             #expect(tab.content.selection.paths == [note.path])
 
-            switch change {
-            case 0: tab.perform(.sortBySize)
-            case 1: tab.perform(.toggleFoldersFirst)
-            case 2: tab.perform(.toggleHiddenFiles)
-            default: tab.go(to: tab.folder)
-            }
+            if goToTheSameFolder { tab.go(to: tab.folder) } else { tab.perform(.toggleHiddenFiles) }
             #expect(await waitUntil { tab.content.selection.isEmpty })
+            await settle()
+            #expect(tab.content.selection.isEmpty)
             await harness.close()
         }
     }

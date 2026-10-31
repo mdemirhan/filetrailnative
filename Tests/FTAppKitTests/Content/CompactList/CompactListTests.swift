@@ -108,6 +108,8 @@ extension ExplorerWindowlessTests {
             let items = probe.compactItems
             let alpha = try #require(items["Alpha"])
             let gamma = try #require(items["Gamma"])
+            // F-776 B-VIEW-038: an item names itself in its tooltip (`title={entry.name}`).
+            #expect(alpha.view.toolTip == "Alpha")
             probe.press(at: probe.point(in: alpha.root))
             #expect(probe.selectedNames == ["Alpha"])
             probe.press(at: probe.point(in: gamma.root), modifiers: .shift)
@@ -185,33 +187,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-6c281f26 B-VIEW-014: the folder read again with an item more keeps where the list was scrolled.
-        // B-SEL-067
-        @Test func staysWhereItWasScrolledWhenTheFolderIsReadAgain() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, probe) = try await harness.openGrid(.viewAsList, files: 400)
-            let compact = try #require(probe.compact)
-            compact.scroll.scrollSideways(by: 500)
-            let folder = tab.content.folderPath
-            try "y".write(
-                to: URL(fileURLWithPath: folder).appendingPathComponent("item-999.txt"), atomically: true,
-                encoding: .utf8)
-            let entries = try await DirectoryService().snapshot(path: folder, includeHidden: false).entries
-            tab.content.show(folder: folder, entries: entries, selecting: nil, keepingScroll: true)
-            #expect(tab.content.entries.count == 401)
-            #expect(compact.scroll.contentView.bounds.origin.x == 500)
-            await harness.close()
-        }
-
-        // F-776 B-VIEW-038: an item names itself in its tooltip (`title={entry.name}`).
-        @Test func itemsCarryTheirNameAsTooltip() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (_, probe) = try await harness.openGrid(.viewAsList)
-            let item = try #require(probe.compactItems["note.txt"])
-            #expect(item.view.toolTip == "note.txt")
-            await harness.close()
-        }
-
         // F-776 B-VIEW-037: a lower pane puts fewer items in a column; the lead's column is kept in view.
         @Test func keepsTheLeadInViewWhenTheHeightChanges() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -237,7 +212,8 @@ extension ExplorerWindowlessTests {
         @Test func doesNotReadTheDetailsOfTheItemsOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsList, files: 20)
-            try await Task.sleep(for: .milliseconds(600))
+            await settle()
+            #expect(!tab.content.isReadingDetails)
             #expect(tab.content.entries.allSatisfy { tab.content.metadata(for: $0.path) == nil })
             await harness.close()
         }

@@ -33,6 +33,8 @@ extension ExplorerWindowlessTests {
                 #expect(frame.minY == 10)
                 #expect(item.root.accessibilityLabel() == entry.name)
                 #expect(item.label.stringValue == entry.name)
+                // T-6e87c0bd B-VIEW-020: its tooltip, so a name shortened in the middle can be read whole.
+                #expect(item.view.toolTip == entry.name)
                 #expect(item.tile.frame == NSRect(x: 16, y: 5, width: 72, height: 72))
                 #expect(item.iconBox.frame == NSRect(x: 4, y: 4, width: 64, height: 64))
                 // A short name is one line of 16 on a 1 pt padding, as wide as its text and its 4 pt padding.
@@ -259,16 +261,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-6e87c0bd B-VIEW-020: an item names itself in its tooltip, so a name shortened in the middle can be read
-        // whole (`title={entry.name}`).
-        @Test func itemsCarryTheirNameAsTooltip() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (_, probe) = try await harness.openGrid(.viewAsIcons)
-            let item = try #require(probe.iconItems["note.txt"])
-            #expect(item.view.toolTip == "note.txt")
-            await harness.close()
-        }
-
         // F-758 B-VIEW-028: a change of the layout (a narrower pane, a lower one, the density) keeps the lead in view,
         // unless the grid was scrolled since (useRevealIndex's keepInView).
         // B-NAV-051 B-SEL-065
@@ -311,7 +303,8 @@ extension ExplorerWindowlessTests {
         @Test func doesNotReadTheDetailsOfTheItemsOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsIcons, files: 20)
-            try await Task.sleep(for: .milliseconds(600))
+            await settle()
+            #expect(!tab.content.isReadingDetails)
             #expect(tab.content.entries.allSatisfy { tab.content.metadata(for: $0.path) == nil })
             await harness.close()
         }
