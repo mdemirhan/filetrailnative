@@ -307,10 +307,13 @@ final class ExplorerTabGroup: ExplorerWindowLike {
 
     // MARK: Opening tabs
 
+    /// How many tabs make `hasRoomForTab` say no (test seam: a window at the limit without building its 25 tabs).
+    var tabLimit = AppPreferenceLimits.openTabsLimit
+
     /// `hasRoomForTab`: a window holds no more tabs than it can save, and Merge All Windows can hand over; a notice
     /// says why no tab opened.
     private func hasRoomForTab() -> Bool {
-        if tabs.count < AppPreferenceLimits.openTabsLimit { return true }
+        if tabs.count < tabLimit { return true }
         host?.tellTabLimit(in: selected?.window)
         return false
     }

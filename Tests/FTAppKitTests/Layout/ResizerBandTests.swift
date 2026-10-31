@@ -55,15 +55,8 @@ extension ExplorerWindowlessTests {
             #expect(workspace.frame(of: resizer).maxX == column.maxX)
             #expect(workspace.frame(of: workspace.contentColumn.band).minX == column.maxX)
             #expect(workspace.frame(of: workspace.mainCell).minX == column.maxX)
-            await harness.close()
-        }
-
-        // The rows that used to reach the hairline stop at the edge instead of notching the sidebar.
-        @Test func nothingOfTheContentPassesTheEdge() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            harness.layout(tab)
-            #expect(tab.workspace.mainCell.layer?.masksToBounds == true)
+            // The rows that used to reach the hairline stop at the edge instead of notching the sidebar.
+            #expect(workspace.mainCell.layer?.masksToBounds == true)
             await harness.close()
         }
 
@@ -99,16 +92,10 @@ extension ExplorerWindowlessTests {
         }
 
         // The Info panel's resizer is still the opaque gutter with its hairline.
-        @Test func theInfoPanelsResizerStaysAnOpaqueGutter() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            harness.layout(tab)
+        @Test func theInfoPanelsResizerStaysAnOpaqueGutter() throws {
             let resizer = PaneResizerView(pane: .inspector, identifier: "t", label: "t")
             resizer.frame = NSRect(x: 0, y: 0, width: 8, height: 40)
-            tab.workspace.addSubview(resizer)
             #expect(try Self.pixel(of: resizer, xFraction: 0.1, y: 20).alphaComponent == 1)
-            resizer.removeFromSuperview()
-            await harness.close()
         }
 
         // Finder: no line at rest; the pointer over the band shows one device pixel under it, across the content column.

@@ -200,9 +200,8 @@ struct SystemMenuTrackingGUITests {
         // This task runs while the menu tracks, as the folder menu's answer does.
         menu.markedIndex = 1
         menu.setItems([AppMenuItem(title: "One"), AppMenuItem(title: "Two")])
-        try await Task.sleep(for: .milliseconds(200))
         #expect(menu.nsMenu.items.map(\.title) == ["One", "Two"])
-        #expect(menu.nsMenu.highlightedItem?.title == "Two")
+        #expect(await waitUntil { menu.nsMenu.highlightedItem?.title == "Two" })
         presenter.close()
         #expect(closed)
         #expect(await waitUntil { !menu.isTracking })
@@ -224,14 +223,12 @@ struct SystemMenuTrackingGUITests {
         menu.markedIndex = 1
         presenter.show(menu, in: window, at: NSPoint(x: 40, y: 40), owner: nil)
         #expect(await waitUntil { menu.isTracking })
-        try await Task.sleep(for: .milliseconds(200))
-        #expect(menu.nsMenu.highlightedItem?.title == "Other…")
+        #expect(await waitUntil { menu.nsMenu.highlightedItem?.title == "Other…" })
         // Watched only from here: the app's timer would read the real key and swap back.
         menu.watchOption(held: false) { held in held ? [.heading("Always Open With")] + plain : plain }
         menu.optionChanged(held: true)
-        try await Task.sleep(for: .milliseconds(200))
         #expect(menu.nsMenu.items.count == 3)
-        #expect(menu.nsMenu.highlightedItem === menu.nsMenu.items[2])
+        #expect(await waitUntil { menu.nsMenu.highlightedItem === menu.nsMenu.items[2] })
         presenter.close()
         #expect(await waitUntil { !menu.isTracking })
         window.close()

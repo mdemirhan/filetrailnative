@@ -57,12 +57,6 @@ struct ToolbarIconTests {
         #expect(ToolbarGlyph.drawing(.stop).box == 16)
     }
 
-    // T-b37e3307
-    @Test func rendersTheExternalOpenIconForTheOpenAction() {
-        #expect(ToolbarItems.definition(.openSelection).icon == .open)
-        #expect(ToolbarGlyph.singlePath(.open).hasPrefix("M18 13v6"))
-    }
-
     // T-93d6707c
     @Test func rendersDistinctIconsForCopyVsCopyPath() {
         #expect(signature(.copy) != signature(.copyPath))

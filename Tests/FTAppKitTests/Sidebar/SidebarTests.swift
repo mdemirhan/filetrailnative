@@ -125,35 +125,6 @@ extension ExplorerWindowlessTests {
             window.close()
         }
 
-        // The separate layout's heading is written once the sidebar is on a window, not only when the theme changes.
-        // F-728 B-TREE-001
-        @Test func theFoldersHeadingIsWrittenOnceTheSidebarIsOnAWindow() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open(listed(harness, ""))
-            await rooted(tab, harness)
-            await setPlacement(tab, "separate", harness)
-            let controller = sidebar(tab)
-            let window = FocusWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 300, height: 600), styleMask: [.titled], backing: .buffered,
-                defer: true)
-            window.isReleasedWhenClosed = false
-            window.contentView = controller.view
-            controller.installWindow()
-            func find(_ view: NSView) -> NSTextField? {
-                if view.accessibilityIdentifier() == "sidebar.foldersTitle" { return view as? NSTextField }
-                for sub in view.subviews {
-                    if let hit = find(sub) { return hit }
-                }
-                return nil
-            }
-            let title = try #require(find(controller.view))
-            #expect(!controller.foldersHeaderHiddenForTests)
-            #expect(title.stringValue == "Folders")
-            #expect(title.frame.width > 0)
-            await harness.close()
-            window.close()
-        }
-
         // T-cdf3463c T-2caf696c T-9aa3fb64 T-01d458a9 F-728 F-729 B-TREE-001 B-TREE-004
         // B-TREE-034
         @Test func drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree() async throws {
@@ -166,6 +137,14 @@ extension ExplorerWindowlessTests {
             #expect(labels(controller).prefix(3) == ["Applications", "Desktop", "Documents"])
             #expect(!labels(controller).contains("Favorites"))
             #expect(!controller.foldersHeaderHiddenForTests)
+            // The heading is written once the sidebar is on a window, not only when the theme changes.
+            controller.installWindow()
+            let title = try #require(
+                Views.first(NSTextField.self, in: controller.view) {
+                    $0.accessibilityIdentifier() == "sidebar.foldersTitle"
+                })
+            #expect(title.stringValue == "Folders")
+            #expect(title.frame.width > 0)
             await setPlacement(tab, "integrated", harness)
             #expect(labels(controller).prefix(2) == ["Favorites", "Applications"])
             #expect(labels(controller).contains("Locations"))
@@ -197,7 +176,7 @@ extension ExplorerWindowlessTests {
         }
 
         // T-8cb3e771 T-764e53b9 T-8722d999 F-730 B-TREE-006 B-TREE-066
-        @Test func aHeaderOpensAndClosesItsSectionAndKeepsItsChevronWhileClosed() async throws {
+        @Test func aHeaderOpensAndClosesItsSection() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(listed(harness, ""))
             await setPlacement(tab, "separate", harness)

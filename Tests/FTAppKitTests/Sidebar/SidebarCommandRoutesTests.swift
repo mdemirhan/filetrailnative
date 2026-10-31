@@ -74,7 +74,7 @@ extension ExplorerWindowlessTests {
 
             tab.perform(.goHomeRootTree)
             await settle()
-            try await Task.sleep(for: .milliseconds(100))
+            #expect(await waitUntil { !tab.isNavigating })
             #expect(tab.shownFolderPath == home)
             #expect(controller.model.rootPath == home)
             #expect(tab.navigationHistory.paths.count == steps + 1)

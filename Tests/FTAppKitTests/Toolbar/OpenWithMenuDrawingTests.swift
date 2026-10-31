@@ -43,8 +43,10 @@ import Testing
 
     @Test func theInfoIconIsDrawnFromTheOriginalsPixels() throws {
         let image = NativeIconPixels.image(solidImage())
-        let rep = try #require(image.representations.first)
+        let rep = try #require(image.representations.first as? NSBitmapImageRep)
         #expect(rep.pixelsWide == NativeIconPixels.side)
         #expect(rep.pixelsHigh == NativeIconPixels.side)
+        let drawn = try #require(rep.colorAt(x: NativeIconPixels.side / 2, y: NativeIconPixels.side / 2))
+        #expect(drawn.redComponent > 0.9 && drawn.alphaComponent == 1)
     }
 }

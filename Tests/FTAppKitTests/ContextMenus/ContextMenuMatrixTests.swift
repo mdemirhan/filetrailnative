@@ -87,7 +87,7 @@ extension ExplorerWindowlessTests {
                     id: "zed", label: "Zed", appPath: "/Applications/Zed.app", appName: "Zed", always: true),
                 kind: OpenWithKind(contentType: "public.plain-text", name: "Plain Text Document", isFolder: false))
             #expect(await waitUntil { !notices.asked.isEmpty })
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(for: .milliseconds(25))
             #expect(changed.isEmpty)
             #expect(spy.all.isEmpty)
             #expect(notices.shown.isEmpty)

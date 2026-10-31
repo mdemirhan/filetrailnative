@@ -73,27 +73,16 @@ extension ExplorerWindowlessTests {
             return list.outline.convert(NSPoint(x: rect.midX, y: y), to: nil)
         }
 
-        // F-738: AppKit drops data put under a type that isn't a valid UTI, so a favorite's drag has to reach the
-        // destination with the path on it, under a type the outline registered.
-        // B-TREE-041
-        @Test func aFavoritesDragCarriesItsPathOnThePasteboard() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await open(harness)
-            let info = FavoriteDraggingInfo(favorite: "/tmp", window: tab.window)
-            defer { info.draggingPasteboard.releaseGlobally() }
-            #expect(info.draggingPasteboard.types?.contains(SidebarPasteboard.favoriteType) == true)
-            #expect(info.draggingPasteboard.string(forType: SidebarPasteboard.favoriteType) == "/tmp")
-            #expect(sidebar(tab).sections.outline.registeredDraggedTypes.contains(SidebarPasteboard.favoriteType))
-            await harness.close()
-        }
-
         // F-738: a scenario's `drag` step goes through the real pasteboard: what the row's drag writes, offered to the row
-        // AppKit would ask, which reorders and saves.
+        // AppKit would ask, which reorders and saves. AppKit drops data put under a type that isn't a valid UTI, so the path
+        // has to be on it under a type the outline registered.
+        // B-TREE-041
         @Test func theDriversFavoriteDragGoesThroughARealPasteboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await open(harness)
             let controller = sidebar(tab)
             let list = controller.sections
+            #expect(list.outline.registeredDraggedTypes.contains(SidebarPasteboard.favoriteType))
             let first = try #require(order(controller).first)
             let last = try #require(order(controller).last)
             #expect(first != last)

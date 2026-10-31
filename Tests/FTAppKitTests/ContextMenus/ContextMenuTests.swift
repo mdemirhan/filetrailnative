@@ -375,8 +375,6 @@ extension ExplorerWindowlessTests {
             }
             #expect(await waitUntil { answer != nil })
             await harness.close()
-            // Time for a tab nothing holds to go.
-            for _ in 0..<20 where closedTab != nil { try await Task.sleep(for: .milliseconds(25)) }
             answer?.resume(returning: .failure("macOS refused."))
             #expect(await waitUntil { !notices.shown.isEmpty })
             #expect(notices.shown.first?.title == "Couldn’t Change the App")
@@ -385,7 +383,7 @@ extension ExplorerWindowlessTests {
 
         // T-9c23e56d T-d76e20b7 T-c63fddc6
         // B-DLG-192
-        @Test func tooManyItemsAndAFailedLaunchAreToldInANotice() async throws {
+        @Test func tooManyItemsAreToldInANotice() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let notices = NoticeSpy()
@@ -394,7 +392,6 @@ extension ExplorerWindowlessTests {
             tab.contextMenus.opener = spy.opener
             tab.updatePreferences(["openItemLimit": .number(1)])
             tab.preferencesChanged(PreferencesChange(patch: ["openItemLimit": .number(1)], senderID: nil))
-            let files = tab.content.entries.filter { !$0.isDirectoryLike }
             let two = ContextMenuSubject(
                 surface: .content, paths: ["/a/one.txt", "/a/two.txt"], targetPath: "/a/one.txt",
                 entries: [CommandEntry(path: "/a/one.txt", kind: .file), CommandEntry(path: "/a/two.txt", kind: .file)])
@@ -407,7 +404,6 @@ extension ExplorerWindowlessTests {
                     == "File Trail opens up to 1 item at a time, and 2 are selected. You can change this in Settings.")
             #expect(notices.shown[1].title == "Too Many Items to Edit")
             #expect(spy.all.isEmpty)
-            _ = files
             await harness.close()
         }
 

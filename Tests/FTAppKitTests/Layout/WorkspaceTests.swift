@@ -26,6 +26,15 @@ extension ExplorerWindowlessTests {
             #expect(resizer.minX == 280 && resizer.width == layout.resizerWidth && resizer.minY == 0)
             #expect(workspace.frame(of: workspace.mainCell).minX == 288)
             #expect(workspace.frame(of: workspace.mainCell).minY == 52)
+            // The content column starts at the sidebar's width, with no divider of the split's between them, and the band
+            // the capture names "toolbar" is the original's header over it. covered-by-feature F-707
+            #expect(workspace.split.splitView.dividerThickness == 0)
+            #expect(workspace.split.splitView is WorkspaceSplitView)
+            let column = workspace.frame(of: workspace.contentColumn)
+            #expect(column.minX == 288 && column.width == workspace.bounds.width - 288, "\(column)")
+            let band = workspace.frame(of: workspace.contentColumn.band)
+            #expect(band == NSRect(x: 288, y: 0, width: workspace.bounds.width - 288, height: 52), "\(band)")
+            #expect(workspace.contentColumn.band.accessibilityIdentifier() == "toolbar.band")
             // The toolbar's items over the content only, in the 52 pt band: the system places them.
             let first = try #require(tab.explorerToolbar.button(.folderTree))
             let frame = workspace.frame(of: first)

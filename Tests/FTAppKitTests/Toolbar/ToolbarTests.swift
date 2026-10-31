@@ -229,33 +229,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A press on the magnifier goes through the window, as a real one does: the system's field keeps it from the
-        // button under the mouse unless the toolbar takes it first. A dialog's scrim keeps it from the magnifier.
-        @Test func aPressOnTheMagnifierOpensTheOptions() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let window = try #require(tab.window)
-            window.setContentSize(NSSize(width: 1400, height: 500))
-            setItems(tab, [.back, .forward, .title, .search], harness)
-            let field = tab.explorerToolbar.searchField
-            var presses = 0
-            field.onOptions = { _ in presses += 1 }
-            let magnifier = center(of: field.optionsButton)
-            mouse(.leftMouseDown, at: magnifier, in: window)
-            #expect(presses == 1)
-            mouse(.leftMouseUp, at: magnifier, in: window)
-            // The rest of the field is the field's.
-            let text = field.convert(NSPoint(x: field.bounds.maxX - 40, y: field.bounds.midY), to: nil)
-            mouse(.leftMouseDown, at: text, in: window)
-            mouse(.leftMouseUp, at: text, in: window)
-            #expect(presses == 1)
-            field.isEnabled = false
-            mouse(.leftMouseDown, at: magnifier, in: window)
-            mouse(.leftMouseUp, at: magnifier, in: window)
-            #expect(presses == 1)
-            await harness.close()
-        }
-
         // The list closes on any press outside it, as the original's capture-phase `pointerdown` on the window does, so
         // the magnifier's own press doesn't keep it open beside the options.
         @Test func aPressOnTheMagnifierClosesTheClipboardList() async throws {
@@ -280,9 +253,11 @@ extension ExplorerWindowlessTests {
             await w.close()
         }
 
-        // The press never reaches the step of AppKit that brings a window forward (SearchOptionsMenu.tsx: opened with the
-        // mouse, typing still goes to the search field). A sheet keeps the press, and the keyboard where it is.
-        @Test func aPressOnTheMagnifierBringsABackWindowForwardUnlessASheetIsUp() async throws {
+        // A press on the magnifier goes through the window, as a real one does: the system's field keeps it from the
+        // button under the mouse unless the toolbar takes it first. It never reaches the step of AppKit that brings a window
+        // forward (SearchOptionsMenu.tsx: opened with the mouse, typing still goes to the search field). A sheet keeps the
+        // press, and the keyboard where it is.
+        @Test func aPressOnTheMagnifierOpensTheOptionsAndBringsABackWindowForwardUnlessASheetIsUp() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let window = try #require(tab.window)
@@ -299,6 +274,16 @@ extension ExplorerWindowlessTests {
             mouse(.leftMouseUp, at: magnifier, in: window)
             #expect(presses == 1)
             #expect(forward.count == 1 && forward.first === window)
+            // The rest of the field is the field's.
+            let text = field.convert(NSPoint(x: field.bounds.maxX - 40, y: field.bounds.midY), to: nil)
+            mouse(.leftMouseDown, at: text, in: window)
+            mouse(.leftMouseUp, at: text, in: window)
+            #expect(presses == 1)
+            field.isEnabled = false
+            mouse(.leftMouseDown, at: magnifier, in: window)
+            mouse(.leftMouseUp, at: magnifier, in: window)
+            #expect(presses == 1)
+            field.isEnabled = true
 
             let sheet = NSWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 100, height: 100), styleMask: [.titled], backing: .buffered,
@@ -503,6 +488,15 @@ extension ExplorerWindowlessTests {
             #expect(!toolbar.toolbar.allowsUserCustomization)
             tab.goToBox?.onClose()
             #expect(toolbar.toolbar.allowsUserCustomization)
+            let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
+            tab.content.select(paths: [note.path])
+            #expect(tab.content.beginRename(path: note.path))
+            toolbar.refreshStates()
+            #expect(!toolbar.toolbar.allowsUserCustomization)
+            tab.content.renameCancelled()
+            #expect(await waitUntil { tab.content.inlineRename == nil })
+            toolbar.refreshStates()
+            #expect(toolbar.toolbar.allowsUserCustomization)
             await harness.close()
         }
 
@@ -518,6 +512,110 @@ extension ExplorerWindowlessTests {
             #expect((copy?.view as? ToolbarButton)?.onClick == nil)
             #expect(copy?.view?.accessibilityIdentifier() == "")
             #expect(copy?.paletteLabel == "Back")
+            await harness.close()
+        }
+
+        // T-97a63c67 T-2e1aa716 T-27aa0227 T-e7cc3251 F-712 F-715 B-VIEW-125 B-VIEW-127
+        @Test func listsTheViewOptionsAndSortsFromTheSortMenu() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            _ = button(tab, .viewOptions)?.accessibilityPerformPress()
+            #expect(
+                titles(menu) == [
+                    "Folders First", "Hidden Files", "-", "Info Panel", "Info Row", "-", "Customize Toolbar…",
+                ])
+            #expect(
+                menu?.items.first?.key
+                    == ShortcutDisplay.defaults.written(.toggleFoldersFirst).flatMap(MenuKeyEquivalent.parse))
+            // Escape closes it.
+            key(53, "\u{1b}", in: tab.window)
+            #expect(menu == nil)
+            _ = button(tab, .viewOptions)?.accessibilityPerformPress()
+            choose("Info Row")
+            #expect(await waitUntil { tab.panels.detailRowOpen })
+
+            let sort = try #require(button(tab, .sort))
+            #expect(sort.tooltip == "Sort By: Name, Ascending")
+            _ = sort.accessibilityPerformPress()
+            #expect(titles(menu) == ["Name", "Kind", "Date Modified", "Size", "-", "Ascending", "Descending"])
+            #expect(menu?.nsMenu.minimumWidth == 200)
+            choose("Size")
+            // A new Size order starts descending (B-NAV-127).
+            #expect(tab.viewState.sortBy == .size && tab.viewState.sortDirection == .desc)
+            _ = sort.accessibilityPerformPress()
+            choose("Ascending")
+            #expect(tab.viewState.sortDirection == .asc)
+            #expect(sort.tooltip == "Sort By: Size, Ascending")
+            // Pressing the button again closes its menu.
+            _ = sort.accessibilityPerformPress()
+            _ = sort.accessibilityPerformPress()
+            #expect(menu == nil)
+            await harness.close()
+        }
+
+        // F-715: AppKit routes a right press on the toolbar itself: sent to the window, it reaches Forward, whose menu
+        // lists the folders ahead, and not the toolbar's own menu, whose tracking would hold the window.
+        @Test func aRightPressOnForwardOpensItsHistory() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let root = harness.folder.url
+            let tab = try await harness.open(root.path)
+            for name in ["Alpha", "Alpha/Inner"] {
+                await tab.navigate(to: root.appendingPathComponent(name))
+            }
+            tab.goBack(nil)
+            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Alpha" })
+            tab.goBack(nil)
+            #expect(await waitUntil { tab.currentFolder.lastPathComponent == root.lastPathComponent })
+            harness.layout(tab)
+            let window = try #require(tab.window)
+            let forward = try #require(button(tab, .forward))
+            #expect(await waitUntil { forward.isEnabled })
+            let press = try #require(
+                MouseEvents.event(.rightMouseDown, at: MouseEvents.center(of: forward), in: window))
+            #expect(ToolbarButton.takingRightPress(at: press.locationInWindow, in: window) === forward)
+            window.sendEvent(press)
+            #expect(menu?.identifier == "historyMenu")
+            #expect(titles(menu) == ["Alpha", "Inner"])
+            AppMenuPresenter.shared.close()
+            // A sheet keeps the window's presses from it: no folder is picked behind a question about a write.
+            let sheet = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 200, height: 100), styleMask: [.titled], backing: .buffered,
+                defer: false)
+            window.beginSheet(sheet, completionHandler: nil)
+            #expect(await waitUntil { window.attachedSheet != nil })
+            window.sendEvent(press)
+            #expect(menu == nil)
+            AppMenuPresenter.shared.close()
+            window.endSheet(sheet)
+            await harness.close()
+        }
+
+        // F-807: the system's ✕ says what the original's does, and text of only spaces has none.
+        // B-SRCH-053
+        @Test func theSystemsClearButtonSaysWhatTheOriginalsDoes() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let field = try #require(tab.searchField)
+            field.stringValue = "abc"
+            #expect(await waitUntil { field.clearButton?.isHidden == false })
+            let clear = try #require(field.clearButton)
+            #expect(clear.toolTip == SearchBarText.clearSearchTitle)
+            #expect(clear.accessibilityLabel() == SearchBarText.clearSearchName)
+            #expect(clear.accessibilityIdentifier() == "toolbar.search.clear")
+            #expect(clear.alphaValue == 1 && clear.isEnabled)
+            field.stringValue = "   "
+            #expect(await waitUntil { field.clearButton?.alphaValue == 0 })
+            #expect(field.clearButton?.isEnabled == false)
+            field.stringValue = "abc"
+            #expect(await waitUntil { field.clearButton?.alphaValue == 1 })
+            var cleared = 0
+            let onClear = field.onClear
+            field.onClear = {
+                cleared += 1
+                onClear()
+            }
+            field.clearButton?.performClick(nil)
+            #expect(cleared == 1)
             await harness.close()
         }
     }

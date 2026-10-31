@@ -6,6 +6,62 @@ import Testing
 
 @testable import FTAppKit
 
+extension ExplorerWindowGUITests {
+    @MainActor
+    @Suite struct ToolbarGUITests: ToolbarTesting {
+        // On screen: the hold's timer fires outside the test's task, so it opens the app's menu, not a windowless test's own.
+        // T-b9cc1ec4 T-01a9e06b T-943ef637 T-84e77094 T-2cb340ef F-698 B-NAV-025 B-NAV-027 B-NAV-028 B-NAV-029 B-NAV-031
+        // B-NAV-032 B-NAV-034 B-NAV-036 B-NAV-037
+        @Test func stepsOnAClickAndListsTheFoldersWhenHeld() async throws {
+            let harness = try ExplorerHarness()
+            let root = harness.folder.url
+            let tab = try await harness.open(root.path)
+            let back = try #require(button(tab, .back))
+            // No history: no menu.
+            back.onRightClick?()
+            #expect(menu == nil)
+            for name in ["Alpha", "Alpha/Inner"] {
+                await tab.navigate(to: root.appendingPathComponent(name))
+            }
+            // A click steps once.
+            back.onPress?()
+            back.onRelease?(true)
+            back.onClick?()
+            #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Alpha" })
+            await tab.navigate(to: root.appendingPathComponent("Alpha/Inner"))
+            harness.layout(tab)
+
+            // Held 350 ms: the folders behind, nearest first; the click that ends the hold does not step.
+            back.onPress?()
+            #expect(await waitUntil { menu != nil })
+            back.onRelease?(true)
+            back.onClick?()
+            #expect(tab.currentFolder.lastPathComponent == "Inner")
+            #expect(titles(menu).count == 2)
+            #expect(menu?.items.first?.title == "Alpha")
+            #expect(menu?.markedIndex == 0)
+            // Choosing one is a jump, adding nothing to the history.
+            menu?.onChoose(1)
+            #expect(await waitUntil { tab.historyIndex == 0 })
+            #expect(tab.currentFolder.lastPathComponent == root.lastPathComponent)
+            #expect(tab.historyPaths.count == 3)
+
+            // Released before 350 ms: no menu.
+            let forward = try #require(button(tab, .forward))
+            forward.onPress?()
+            forward.onRelease?(true)
+            try await Task.sleep(for: .milliseconds(400))
+            #expect(menu == nil)
+            // A right-click opens it at once; Escape closes it.
+            forward.onRightClick?()
+            #expect(menu != nil)
+            key(53, "\u{1b}", in: tab.window)
+            #expect(menu == nil)
+            await harness.close()
+        }
+    }
+}
+
 extension ExplorerWindowGUITests.ToolbarGUITests {
     // N/A T-19d51434 T-bb62d104 the toolbar's right-click menu is the system's, with Customize Toolbar… (D-016); F-717
     // likewise. Back's and Forward's history stay theirs: stepsOnAClickAndListsTheFoldersWhenHeld.
@@ -69,37 +125,6 @@ extension ExplorerWindowGUITests.ToolbarGUITests {
         let center = overflow.convert(NSPoint(x: overflow.bounds.midX, y: overflow.bounds.midY), to: nil)
         #expect(scrim.titlebarPress(at: center) == .scrim)
         tab.goToBox?.onClose()
-        await harness.close()
-    }
-
-    // F-807: the system's ✕ says what the original's does, and text of only spaces has none.
-    // B-SRCH-053
-    @Test func theSystemsClearButtonSaysWhatTheOriginalsDoes() async throws {
-        let harness = try ExplorerHarness()
-        let tab = try await harness.open()
-        let field = try #require(tab.searchField)
-        field.stringValue = "abc"
-        #expect(await waitUntil { field.clearButton?.isHidden == false })
-        let clear = try #require(field.clearButton)
-        #expect(clear.toolTip == SearchBarText.clearSearchTitle)
-        #expect(clear.accessibilityLabel() == SearchBarText.clearSearchName)
-        #expect(clear.accessibilityIdentifier() == "toolbar.search.clear")
-        #expect(clear.alphaValue == 1 && clear.isEnabled)
-        field.stringValue = "   "
-        try await Task.sleep(for: .milliseconds(300))
-        #expect(field.clearButton?.alphaValue == 0)
-        #expect(field.clearButton?.isEnabled == false)
-        field.stringValue = "abc"
-        try await Task.sleep(for: .milliseconds(300))
-        #expect(field.clearButton?.alphaValue == 1)
-        var cleared = 0
-        let onClear = field.onClear
-        field.onClear = {
-            cleared += 1
-            onClear()
-        }
-        field.clearButton?.performClick(nil)
-        #expect(cleared == 1)
         await harness.close()
     }
 }

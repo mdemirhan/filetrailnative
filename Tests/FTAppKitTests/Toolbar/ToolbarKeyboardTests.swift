@@ -21,10 +21,22 @@ extension ExplorerWindowlessTests {
 
         // ExplorerWorkspace.tsx:1183-1186: a plain button goes disabled, and nothing focuses the search input. The
         // keyboard goes back to the pane.
+        // T-0d7af669 T-e6c30f5d B-SRCH-062 F-714
+        // App.tsx:2761: only the input's own focus shows cached results, so a finished search stays away.
         @Test func aButtonThatDimsWithTheKeyboardGivesItToThePaneNotTheSearchField() async throws {
             let harness = try ExplorerHarness.windowless()
             let opened = try await harness.open()
             let window = try #require(opened.window)
+            let engine = FakeSearchEngine()
+            let timers = ManualTimers()
+            opened.search.session.engine = engine
+            opened.search.session.timers = timers
+            engine.finds = { _ in (["note.txt"], false, false) }
+            let field = opened.explorerToolbar.searchField
+            field.stringValue = "no"
+            opened.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            timers.advance(0.4)
+            opened.search.session.hideResults()
             window.setContentSize(NSSize(width: 1400, height: 500))
             setItems(opened, [.up, .search], harness)
             opened.content.focusList()
@@ -35,6 +47,7 @@ extension ExplorerWindowlessTests {
             up.isEnabled = false
             #expect(opened.explorerToolbar.searchField.isActive == false)
             #expect(window.firstResponder === opened.content.focusView)
+            #expect(!opened.search.session.isSearchMode)
             await harness.close()
         }
 
@@ -322,16 +335,22 @@ extension ExplorerWindowlessTests {
         }
 
         // HistoryButton.tsx:158-163: a dimmed Back or Forward opens no menu, the toolbar's own included (D-016).
-        @Test func aRightClickOnADimmedHistoryButtonDoesNothing() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let opened = try await harness.open()
-            let window = try #require(opened.window)
-            let back = try #require(opened.explorerToolbar.button(.back))
-            #expect(!back.isEnabled)
-            let down = try #require(MouseEvents.event(.rightMouseDown, at: MouseEvents.center(of: back), in: window))
-            back.rightMouseDown(with: down)
-            #expect(AppMenuPresenter.shared.menu == nil)
-            await harness.close()
+        @Test func aRightClickOnADimmedHistoryButtonDoesNothing() throws {
+            let button = ToolbarButton(icon: .back, label: "Back", identifier: "toolbar.back")
+            var rights = 0
+            button.onRightClick = { rights += 1 }
+            button.frame = NSRect(x: 0, y: 0, width: 36, height: 36)
+            let host = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 100, height: 100), styleMask: [.titled], backing: .buffered,
+                defer: true)
+            host.contentView?.addSubview(button)
+            let down = try #require(MouseEvents.event(.rightMouseDown, at: MouseEvents.center(of: button), in: host))
+            button.isEnabled = false
+            button.rightMouseDown(with: down)
+            #expect(rights == 0)
+            button.isEnabled = true
+            button.rightMouseDown(with: down)
+            #expect(rights == 1)
         }
 
         // aria-haspopup and aria-expanded of the buttons that open a menu; a dimmed history button is a plain button.

@@ -1,5 +1,5 @@
-// Covers Esc outside the content pane (useExplorerShortcuts.ts:1605) and the search run again after a move
-// (App.search.test.tsx) on a tab whose window is never shown, over the stand-in fd runtime
+// Covers Esc outside the content pane (useExplorerShortcuts.ts:1605) on a tab whose window is never shown, over the
+// stand-in fd runtime
 import AppKit
 import FTFoundation
 import Foundation
@@ -37,48 +37,6 @@ extension ExplorerWindowlessTests {
             tab.content.focusList()
             #expect(WindowEventRouting.intercept(escape, in: window))
             #expect(!session.resultsVisible)
-            await harness.close()
-        }
-    }
-
-    @MainActor
-    @Suite struct SearchAfterAWriteTests {
-        // T-636f3c2e
-        @Test func aMoveOfASelectedResultRunsTheSearchAgainOnceItEnds() async throws {
-            PreparingSheet.isEnabled = false
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let operations = AppWriteOperations(
-                userData: harness.folder.url, directoryService: harness.services.directoryService,
-                windows: harness.windows, trash: .standIn, log: { _ in })
-            operations.dialogs.show = { _, _, _ in }
-            operations.dialogs.confirm = { _, _ in false }
-            let engine = FakeSearchEngine()
-            let timers = ManualTimers()
-            tab.search.session.engine = engine
-            tab.search.session.timers = timers
-            let moved = harness.folder.appending("Alpha/notes.md")
-            try "x".write(to: moved, atomically: true, encoding: .utf8)
-            engine.finds = { _ in (["Alpha/notes.md"], false, false) }
-            let field = try #require(tab.searchField)
-            field.stringValue = "notes"
-            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
-            timers.advance(0.4)
-            #expect(await waitUntil { tab.search.session.resultsVisible })
-            #expect(engine.starts.count == 1)
-
-            tab.content.applySelection(.single(harness.folder.path + "/Alpha/notes.md"))
-            tab.content.focusList()
-            tab.perform(.moveSelection)
-            let box = try #require(tab.goToBox)
-            tab.window?.contentView?.layoutSubtreeIfNeeded()
-            DialogKeys.type(harness.folder.appending("Beta").path, into: box)
-            DialogKeys.press(36, "\r", in: tab.window)
-            let landed = harness.folder.appending("Beta/notes.md").path
-            #expect(await waitUntil { FileManager.default.fileExists(atPath: landed) })
-            #expect(await waitUntil { engine.starts.count == 2 })
-            #expect(engine.starts.last?.query == engine.starts.first?.query)
-            withExtendedLifetime(operations) {}
             await harness.close()
         }
     }

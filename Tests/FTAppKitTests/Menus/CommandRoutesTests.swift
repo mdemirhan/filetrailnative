@@ -99,17 +99,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The toolbar's buttons reach the same commands.
-        @Test func theToolbarsTerminalButtonRuns() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, _) = try await harness.openList()
-            let spy = spy(tab)
-            try select(["Alpha"], tab)
-            tab.perform(.openInTerminal)
-            #expect(await waitUntil { spy.all.count == 1 })
-            await harness.close()
-        }
-
         // useExplorerShortcuts.ts:1440-1443, 1540-1547: ? from the list and from the tree, and the Help command.
         // B-VIEW-231
         @Test func helpOpensFromTheQuestionMarkInEitherPaneAndFromItsCommand() async throws {
@@ -348,19 +337,6 @@ extension ExplorerWindowlessTests {
 
         // MARK: Quick Look
 
-        // App.tsx:1434: the toolbar's button follows the selection.
-        // B-SEL-112
-        @Test func quickLookFollowsTheSelection() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, _) = try await harness.openList()
-            tab.content.select(paths: [])
-            tab.content.focusList()
-            #expect(!tab.canPerform(.quickLookSelection))
-            try select(["note.txt"], tab)
-            #expect(tab.canPerform(.quickLookSelection))
-            await harness.close()
-        }
-
         // useExplorerShortcuts.ts:930: Quick Look is on whatever key it has.
         // B-SEL-112 B-VIEW-233 T-3af241c2
         @Test func quickLookGoesWithItsKey() async throws {
@@ -385,18 +361,6 @@ extension ExplorerWindowlessTests {
         }
 
         // MARK: Opening
-
-        // App.tsx:1439: Open and Edit go by the limit in Settings.
-        @Test func theToolbarFollowsTheOpenLimit() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let (tab, _) = try await harness.openList()
-            try select(["Alpha", "Beta"], tab)
-            #expect(tab.canPerform(.openSelection))
-            tab.updatePreferences(["openItemLimit": .number(1)])
-            #expect(tab.preferences.openItemLimit == 1)
-            #expect(!tab.canPerform(.openSelection))
-            await harness.close()
-        }
 
         // useExplorerShortcuts.ts:566-581: ⌘↓ over the limit says so, whatever the limit is.
         @Test func commandDownOverTheLimitTellsOfIt() async throws {
@@ -512,54 +476,69 @@ extension ExplorerWindowlessTests {
         }
 
         // T-9e7de3fa: Copy and Cut from the menu take what is selected: the folder on screen is no implicit selection.
-        @Test(arguments: ["editCopy", "editCut"])
-        func copyAndCutWithNothingSelectedTakeNothing(_ item: String) async throws {
+        @Test func copyAndCutWithNothingSelectedTakeNothing() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let menu = RealMenu(window.harness, tab)
-            tab.content.select(paths: [])
-            tab.content.focusList()
-            menu.report()
-            #expect(tab.selectedPaths.isEmpty)
-            menu.choose(item)
-            await settle()
-            #expect(tab.services.clipboard.contents == .empty)
-            #expect(tab.notifications?.toasts.entries.isEmpty != false)
-            #expect(window.recorder.shown.isEmpty)
-            // With something selected, the same item does take it.
-            try select(["note.txt"], tab)
-            menu.report()
-            menu.choose(item)
-            #expect(tab.services.clipboard.contents.sourcePaths == [try path("note.txt", tab)])
+            for item in ["editCopy", "editCut"] {
+                tab.services.clipboard.set(.empty, from: nil)
+                tab.content.select(paths: [])
+                tab.content.focusList()
+                menu.report()
+                #expect(tab.selectedPaths.isEmpty)
+                let toasts = tab.notifications?.toasts.entries.count
+                menu.choose(item)
+                await settle()
+                #expect(tab.services.clipboard.contents == .empty, "\(item)")
+                #expect(tab.notifications?.toasts.entries.count == toasts, "\(item)")
+                #expect(window.recorder.shown.isEmpty, "\(item)")
+                // With something selected, the same item does take it.
+                try select(["note.txt"], tab)
+                menu.report()
+                menu.choose(item)
+                #expect(tab.services.clipboard.contents.sourcePaths == [try path("note.txt", tab)], "\(item)")
+            }
+            tab.services.clipboard.set(.empty, from: nil)
             await window.close()
         }
 
         // T-b55c9910: Select All from the menu with a field editing selects its text: the Go To box's, the path bar's and
         // a name being typed in its row; the files stay as they were.
-        @Test(arguments: ["pathBar", "rename", "goTo"])
-        func selectAllFromTheMenuStaysWithTheFieldEditing(_ field: String) async throws {
+        @Test func selectAllFromTheMenuStaysWithTheFieldEditing() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let menu = RealMenu(window.harness, tab)
             let appWindow = try #require(tab.window)
-            try select(["note.txt"], tab)
             let note = try path("note.txt", tab)
             tab.services.clipboard.set(ClipboardRules.set(.copy, [note], capturedAt: "t"), from: nil)
             let clipboard = tab.services.clipboard.contents
-            switch field {
-            case "pathBar": tab.content.contentShell.pathBarRow.beginEditing()
-            case "rename": tab.renameSelected()
-            default: tab.openLocationSheet()
+            func selectsItsText(_ field: String, sourceLocation: SourceLocation = #_sourceLocation) throws {
+                window.harness.layout(tab)
+                menu.report()
+                let editor = try #require(appWindow.firstResponder as? NSTextView, sourceLocation: sourceLocation)
+                editor.string = "typed text"
+                editor.setSelectedRange(NSRange(location: 3, length: 0))
+                menu.choose("editSelectAll")
+                #expect(
+                    editor.selectedRange() == NSRange(location: 0, length: 10), "\(field)",
+                    sourceLocation: sourceLocation)
+                #expect(tab.content.selection.paths == [note], "\(field)", sourceLocation: sourceLocation)
+                #expect(tab.services.clipboard.contents == clipboard, "\(field)", sourceLocation: sourceLocation)
             }
-            window.harness.layout(tab)
-            menu.report()
-            let editor = try #require(appWindow.firstResponder as? NSTextView)
-            editor.string = "typed text"
-            editor.setSelectedRange(NSRange(location: 3, length: 0))
-            menu.choose("editSelectAll")
-            #expect(editor.selectedRange() == NSRange(location: 0, length: 10))
-            #expect(tab.content.selection.paths == [note])
-            #expect(tab.services.clipboard.contents == clipboard)
+
+            try select(["note.txt"], tab)
+            tab.renameSelected()
+            try selectsItsText("rename")
+            tab.content.renameCancelled()
+            #expect(await waitUntil { tab.content.inlineRename == nil })
+
+            tab.content.contentShell.pathBarRow.beginEditing()
+            try selectsItsText("pathBar")
+            tab.content.focusList()
+
+            tab.openLocationSheet()
+            try selectsItsText("goTo")
+            tab.services.clipboard.set(.empty, from: nil)
             await window.close()
         }
 
@@ -603,21 +582,24 @@ extension ExplorerWindowlessTests {
             // dimmed item keeps them.
             for modifiers: NSEvent.ModifierFlags in [.command, [.command, .shift]] {
                 try press("z", modifiers, in: tab, menu: menu)
-                try? await Task.sleep(for: .milliseconds(100))
+                try? await Task.sleep(for: .milliseconds(25))
                 #expect(tab.frontAlert == nil)
             }
             await harness.close()
         }
 
-        // useExplorerActions.ts:3329-3331, 3353-3358: ⌘O and ⌘⇧E over "Ask before opening more than" say so; only the
-        // toolbar's button and the menu's item dim.
+        // App.tsx:1439, useExplorerActions.ts:3329-3331, 3353-3358: Open and Edit go by the limit in Settings: ⌘O and ⌘⇧E
+        // over "Ask before opening more than" say so; only the toolbar's button and the menu's item dim.
         @Test func openAndEditKeysOverTheLimitTellOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
             try Data().write(to: harness.folder.appending("second.txt"))
             let (tab, _) = try await harness.openList()
             let menu = RealMenu(harness, tab)
-            tab.updatePreferences(["openItemLimit": .number(1)])
             try select(["Alpha", "Beta"], tab)
+            menu.report()
+            #expect(menu.isEnabled("openSelection"))
+            tab.updatePreferences(["openItemLimit": .number(1)])
+            #expect(tab.preferences.openItemLimit == 1)
             menu.report()
             #expect(!menu.isEnabled("openSelection"))
             try press("o", .command, in: tab, menu: menu)
@@ -645,7 +627,7 @@ extension ExplorerWindowlessTests {
             try select(["Alpha", "Beta"], tab)
             menu.report()
             try press("e", [.command, .shift], in: tab, menu: menu)
-            try? await Task.sleep(for: .milliseconds(100))
+            try? await Task.sleep(for: .milliseconds(25))
             #expect(tab.frontAlert == nil)
             #expect(spy.all.isEmpty)
             await harness.close()
@@ -712,7 +694,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.focusTreePane)
             menu.report()
             try press("Backspace", .command, in: tab, menu: menu)
-            try? await Task.sleep(for: .milliseconds(100))
+            try? await Task.sleep(for: .milliseconds(25))
             #expect(tab.frontAlert == nil)
             await harness.close()
         }

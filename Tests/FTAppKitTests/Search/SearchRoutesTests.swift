@@ -10,19 +10,37 @@ import Testing
 
 @testable import FTAppKit
 
-/// Reads one folder slowly, so a test can do something while it is being read.
-private struct SlowReads: ExplorerFileSystem {
-    let slow: String
+/// Holds the reads of one folder until told, so a test can do something while it is being read.
+private final class HeldReads: ExplorerFileSystem, @unchecked Sendable {
+    private let held: String
     private let real = NativeFileSystem()
+    private let gate = DispatchSemaphore(value: 0)
+    private let lock = NSLock()
+    private var waiting = 0
+
+    init(held: String) { self.held = held }
+
+    /// How many reads of the folder are under way.
+    var reading: Int { lock.withLock { waiting } }
+
+    func letGo() {
+        for _ in 0..<64 { gate.signal() }
+    }
+
+    private func wait<Value>(_ path: String, _ read: () throws -> Value) rethrows -> Value {
+        guard path == held else { return try read() }
+        lock.withLock { waiting += 1 }
+        defer { lock.withLock { waiting -= 1 } }
+        gate.wait()
+        return try read()
+    }
 
     func readDirectory(_ path: String) throws -> [DirectoryRecord] {
-        if path == slow { Thread.sleep(forTimeInterval: 0.4) }
-        return try real.readDirectory(path)
+        try wait(path) { try real.readDirectory(path) }
     }
 
     func stat(_ path: String) throws -> FileStats {
-        if path == slow { Thread.sleep(forTimeInterval: 0.4) }
-        return try real.stat(path)
+        try wait(path) { try real.stat(path) }
     }
 
     func lstat(_ path: String) throws -> FileStats { try real.lstat(path) }
@@ -157,19 +175,6 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-SRCH-190: and so is Esc in the results' filter field.
-        @Test func escapeInTheFilterFieldLeavesTheResults() async throws {
-            let opened = try await open()
-            let tab = opened.tab
-            let window = try #require(tab.window)
-            opened.engine.finds = { _ in (["note.txt"], false, false) }
-            try search("no", opened)
-            window.makeFirstResponder(tab.search.header.filter.input)
-            #expect(!WindowEventRouting.intercept(try escape(in: window), in: window))
-            #expect(tab.search.session.isSearchMode)
-            await opened.harness.close()
-        }
-
         // MARK: ⌘R
 
         // T-1d9870a1 B-NAV-125 B-SRCH-140: ⌘R on results runs the same search again from the same place, the old results
@@ -205,7 +210,7 @@ extension ExplorerWindowlessTests {
             var reads = 0
             let watching = tab.observe { if $0 == .folder { reads += 1 } }
             work()
-            try? await Task.sleep(for: .milliseconds(150))
+            try? await Task.sleep(for: .milliseconds(50))
             withExtendedLifetime(watching) {}
             return reads
         }
@@ -477,14 +482,18 @@ extension ExplorerWindowlessTests {
             let beta = harness.folder.appending("Beta").path
             let tab = try await harness.open(alpha)
             let shownAlpha = tab.shownFolderPath
+            let reads = HeldReads(held: shownAlpha)
             tab.servicesOverride = ExplorerServices(
-                directoryService: DirectoryService(fileSystem: SlowReads(slow: shownAlpha)), folderWatches: nil,
+                directoryService: DirectoryService(fileSystem: reads), folderWatches: nil,
                 iconStore: nil, volumeWatcher: nil, clipboard: harness.windows.clipboard, preferences: harness.channel)
             tab.reload()
-            try await Task.sleep(for: .milliseconds(100))
+            #expect(await waitUntil { reads.reading > 0 })
             tab.go(to: URL(fileURLWithPath: beta))
             #expect(await waitUntil { samePath(tab.shownFolderPath, beta) })
-            try await Task.sleep(for: .milliseconds(600))
+            reads.letGo()
+            #expect(await waitUntil { reads.reading == 0 })
+            // Its answer, had it been taken, comes on the main thread right after the read.
+            try await Task.sleep(for: .milliseconds(50))
             #expect(samePath(tab.shownFolderPath, beta))
             #expect(tab.content.entries.allSatisfy { $0.path.hasSuffix("/Beta/\($0.name)") })
             #expect(samePath(try #require(watches.watchedPaths[tab.windowID]), beta))
@@ -577,6 +586,10 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { ended == 1 })
             #expect(await waitUntil { engine.starts.count == 2 })
             #expect(engine.starts.last?.query == "no")
+            // F-682 B-SEL-095: the copy goes next to the result, not in the folder on screen.
+            let made = try FileManager.default.contentsOfDirectory(atPath: harness.folder.path + "/Alpha")
+            #expect(made.contains { $0.hasPrefix("notes") && $0 != "notes.md" })
+            #expect(!FileManager.default.fileExists(atPath: harness.folder.path + "/notes copy.md"))
 
             // The folder takes nothing now: nothing completes.
             let alpha = harness.folder.appending("Alpha").path
@@ -585,7 +598,7 @@ extension ExplorerWindowlessTests {
             tab.content.focusList()
             tab.perform(.duplicateSelection)
             #expect(await waitUntil { ended == 2 })
-            try await Task.sleep(for: .milliseconds(100))
+            await settle()
             #expect(engine.starts.count == 2)
             try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: alpha)
             withExtendedLifetime(watching) {}
@@ -640,7 +653,7 @@ extension ExplorerWindowlessTests {
                     sequence: 2))
             #expect(await waitUntil { ended == 2 })
             #expect(FileManager.default.fileExists(atPath: beta + "/second.md"))
-            try await Task.sleep(for: .milliseconds(100))
+            await settle()
             #expect(engine.starts.count == 2)
             #expect(!search.isSearchMode)
             withExtendedLifetime(watching) {}

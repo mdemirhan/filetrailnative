@@ -1,5 +1,5 @@
 // Ports by feature the cases of apps/desktop/src/renderer/App.search.test.tsx and SearchOptionsMenu.test.tsx that act
-// on results in a real tab: Reveal in Folder, Duplicate next to the original, the path bar, Settings edits of the
+// on results in a real tab: Reveal in Folder, the path bar, Settings edits of the
 // search defaults, Return in an empty field and the options button from the keyboard, over the stand-in fd runtime
 import AppKit
 import FTFileSystem
@@ -254,46 +254,6 @@ extension ExplorerWindowlessTests {
             field.optionsButton.mouseDown(with: press)
             #expect(AppMenuPresenter.shared.menu?.markedIndex == nil)
             #expect(field.isActive)
-            await harness.close()
-        }
-    }
-
-    /// Duplicate in search results needs the app's file operations.
-    @MainActor
-    @Suite struct SearchResultWriteTests {
-        // F-682 B-SEL-095: Duplicate on a result puts the copy next to it, not in the folder on screen.
-        // T-dc31b764 T-f90496ca
-        @Test func duplicateOfAResultGoesNextToIt() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let operations = AppWriteOperations(
-                userData: harness.folder.url, directoryService: harness.services.directoryService,
-                windows: harness.windows, trash: .standIn, log: { _ in })
-            operations.dialogs.show = { _, _, _ in }
-            operations.dialogs.confirm = { _, _ in false }
-            let engine = FakeSearchEngine()
-            let timers = ManualTimers()
-            tab.search.session.engine = engine
-            tab.search.session.timers = timers
-            try "x".write(to: harness.folder.appending("Alpha/notes.md"), atomically: true, encoding: .utf8)
-            engine.finds = { _ in (["Alpha/notes.md"], false, false) }
-            let field = try #require(tab.searchField)
-            field.stringValue = "notes"
-            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
-            timers.advance(0.4)
-            let result = harness.folder.path + "/Alpha/notes.md"
-            tab.content.applySelection(.single(result))
-            tab.content.focusList()
-            tab.perform(.duplicateSelection)
-            let alpha = harness.folder.path + "/Alpha"
-            #expect(
-                await waitUntil {
-                    ((try? FileManager.default.contentsOfDirectory(atPath: alpha)) ?? []).count == 3
-                })
-            let made = try FileManager.default.contentsOfDirectory(atPath: alpha)
-            #expect(made.contains { $0.hasPrefix("notes") && $0 != "notes.md" })
-            #expect(!FileManager.default.fileExists(atPath: harness.folder.path + "/notes copy.md"))
-            withExtendedLifetime(operations) {}
             await harness.close()
         }
     }

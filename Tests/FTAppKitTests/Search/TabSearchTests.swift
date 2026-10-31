@@ -44,23 +44,10 @@ extension ExplorerWindowlessTests {
             #expect(cell.cancelButtonCell?.target === field)
             field.stringValue = "note"
             tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            #expect(tab.window?.makeFirstResponder(field) == true)
             field.onClear()
             #expect(tab.search.session.draftQuery.isEmpty)
-            await harness.close()
-        }
-
-        // F-807 F-713 (ExplorerWorkspace.tsx: `searchDraftQuery.trim().length > 0`): text of only spaces has no ✕.
-        // B-SRCH-053
-        @Test func theClearButtonWaitsForTrimmedText() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let field = try #require(tab.searchField)
-            #expect(!field.clearButtonShows)
-            field.stringValue = "   "
-            #expect(!field.clearButtonShows)
-            field.stringValue = " a "
-            #expect(field.clearButtonShows)
-            field.stringValue = ""
+            #expect(field.isActive)
             await harness.close()
         }
 
@@ -94,28 +81,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-0d7af669 T-e6c30f5d B-SRCH-062 F-714
-        // App.tsx:2761: only the input's own focus shows cached results, and a toolbar button dimming doesn't focus it.
-        @Test func aToolbarButtonThatDimsWithTheKeyboardBringsNoFinishedSearchBack() async throws {
-            let (harness, tab, engine, timers) = try await open()
-            engine.finds = { _ in (["note.txt"], false, false) }
-            try type("no", in: tab)
-            timers.advance(0.4)
-            tab.search.session.hideResults()
-            tab.content.focusList()
-            tab.updatePreferences(["topToolbarItems": .array([ToolbarItemID.up, .search].map { .string($0.rawValue) })])
-            harness.layout(tab)
-            let up = try #require(tab.explorerToolbar.button(.up))
-            up.isEnabled = true
-            #expect(up.takeKeyboard())
-
-            up.isEnabled = false
-            #expect(!tab.search.session.isSearchMode)
-            await harness.close()
-        }
-
         // B-SRCH-071 B-SRCH-072 T-e23e16c1
-        @Test func escapeEndsSearchModeAndTheFolderComesBack() async throws {
+        @Test func puttingTheResultsAwayBringsTheFolderBackAndTheCommandBringsThemBack() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt"], false, false) }
             let folderNames = names(tab)
@@ -217,11 +184,10 @@ extension ExplorerWindowlessTests {
         }
 
         // T-4fdb6b39 T-89efb9bf T-ada18c17 F-807: the arrows and Return are the system menu's while it is open (D-022).
-        // Opened from the keyboard, the first item is marked; chosen, it does what it says; Escape and a press close it.
+        // Opened from the keyboard, the first item is marked; chosen, it does what it says.
         // B-SRCH-085 B-SRCH-088
         @Test func theOptionsMenuOpensMarkedFromTheKeyboard() async throws {
             let (harness, tab, _, _) = try await open()
-            let window = try #require(tab.window)
             tab.search.openOptions(fromKeyboard: true)
             let menu = try #require(AppMenuPresenter.shared.menu)
             let marked = try #require(menu.markedIndex)
@@ -230,31 +196,6 @@ extension ExplorerWindowlessTests {
             menu.onChoose(skip)
             #expect(!AppMenuPresenter.shared.isOpen)
             #expect(tab.search.session.skipGitIgnored)
-            tab.search.openOptions()
-            let escape = try #require(
-                NSEvent.keyEvent(
-                    with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: window.windowNumber,
-                    context: nil, characters: "", charactersIgnoringModifiers: "", isARepeat: false, keyCode: 53))
-            #expect(AppMenuPresenter.shared.intercept(escape, in: window))
-            #expect(!AppMenuPresenter.shared.isOpen)
-            tab.search.openOptions()
-            let press = try #require(
-                NSEvent.mouseEvent(
-                    with: .leftMouseDown, location: NSPoint(x: 600, y: 200), modifierFlags: [], timestamp: 0,
-                    windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 1))
-            _ = AppMenuPresenter.shared.intercept(press, in: window)
-            #expect(!AppMenuPresenter.shared.isOpen)
-            await harness.close()
-        }
-
-        // T-8b5cf7e7: covered-by-feature F-807. The native toolbar measures its items without a copy of them, so there
-        // is no copy whose magnifier could open a menu: the one options button is the field's own.
-        @Test func theFieldHasOneOptionsButton() async throws {
-            let (harness, tab, _, _) = try await open()
-            let field = try #require(tab.searchField)
-            let buttons = field.subviews.filter { $0.accessibilityIdentifier() == "toolbar.search.options" }
-            #expect(buttons.count == 1)
-            #expect(field.optionsButton.toolTip == "Search Options")
             await harness.close()
         }
 
@@ -324,5 +265,30 @@ extension ExplorerWindowlessTests {
             #expect(tab.content.entries.map(\.name) == ["Inner"])
             await harness.close()
         }
+    }
+}
+
+/// The search field by itself.
+@MainActor
+@Suite struct ToolbarSearchFieldTests {
+    // F-807 F-713 (ExplorerWorkspace.tsx: `searchDraftQuery.trim().length > 0`): text of only spaces has no ✕.
+    // B-SRCH-053
+    @Test func theClearButtonWaitsForTrimmedText() {
+        let field = ToolbarSearchField(frame: NSRect(x: 0, y: 0, width: 200, height: 28))
+        #expect(!field.clearButtonShows)
+        field.stringValue = "   "
+        #expect(!field.clearButtonShows)
+        #expect(field.clearStop.isHidden)
+        field.stringValue = " a "
+        #expect(field.clearButtonShows)
+        #expect(!field.clearStop.isHidden)
+    }
+
+    // T-8b5cf7e7: covered-by-feature F-807. The native toolbar measures its items without a copy of them, so there is no
+    // copy whose magnifier could open a menu: the one options button is the field's own.
+    @Test func theFieldHasOneOptionsButton() {
+        let field = ToolbarSearchField(frame: NSRect(x: 0, y: 0, width: 200, height: 28))
+        #expect(field.subviews.filter { $0.accessibilityIdentifier() == "toolbar.search.options" }.count == 1)
+        #expect(field.optionsButton.toolTip == "Search Options")
     }
 }

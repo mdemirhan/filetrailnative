@@ -262,33 +262,60 @@ extension ExplorerWindowlessTests {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
             let group = try #require(tab.group)
-            group.addTabs(Array(repeating: tab.openTab, count: AppPreferenceLimits.openTabsLimit))
-            #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
+            group.tabLimit = group.tabs.count
             var told: [WindowNotice] = []
             opened.harness.windows.showNotice = { notice, _ in told.append(notice) }
 
             try press(try row(listed(opened.harness, "Beta"), in: controller), modifiers: .command)
-            #expect(group.tabs.count == AppPreferenceLimits.openTabsLimit)
+            #expect(group.tabs.count == group.tabLimit)
             #expect(told == [.tabLimit])
             await opened.harness.close()
         }
 
         // MARK: Empty space
 
-        // T-c0357324: a press in the separate list's empty space lets go of the folder on screen.
-        @Test func aPressBelowTheRowsOfTheSeparateListClearsTheSelection() async throws {
+        // T-c0357324 B-TREE-028 T-6f692b35: a press off the rows lets go of the folder on screen: in the separate list's
+        // empty space and beside a header's button, and on the spacer at the top of the list favorites are rows of.
+        @Test func aPressOffTheRowsClearsTheSelection() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
-            await setPlacement(tab, "separate", opened.harness)
             let alpha = listed(opened.harness, "Alpha")
             controller.toggleFavorite(alpha)
-            controller.model.selectItem(.favorite(alpha))
-            #expect(await waitUntil { tab.shownFolderPath == alpha })
-            opened.harness.layout(tab)
+            func onTheFavorite() async {
+                controller.model.selectItem(.favorite(alpha))
+                #expect(await waitUntil { tab.shownFolderPath == alpha })
+                opened.harness.layout(tab)
+            }
 
-            let outline = controller.sections.outline
+            await setPlacement(tab, "separate", opened.harness)
+            await onTheFavorite()
+            let list = controller.sections
+            let outline = list.outline
             let last = outline.rect(ofRow: outline.numberOfRows - 1)
             try pressOutline(outline, at: NSPoint(x: last.midX, y: last.maxY + 400))
+            #expect(controller.model.selected == nil)
+            #expect(await waitUntil { tab.shownFolderPath.isEmpty })
+
+            await onTheFavorite()
+            let header = try #require(
+                (0..<outline.numberOfRows).first {
+                    if case .header = list.row(at: $0) { return true }
+                    return false
+                })
+            let rect = outline.rect(ofRow: header)
+            try pressOutline(outline, at: NSPoint(x: rect.minX + 1, y: rect.midY))
+            #expect(controller.model.selected == nil)
+
+            await setPlacement(tab, "integrated", opened.harness)
+            await onTheFavorite()
+            let tree = controller.tree
+            tree.scrollTop = 0
+            guard case .spacer? = tree.row(at: 0) else {
+                Issue.record("the list starts with a spacer")
+                return
+            }
+            let spacer = tree.outline.rect(ofRow: 0)
+            try pressOutline(tree.outline, at: NSPoint(x: spacer.midX, y: spacer.midY))
             #expect(controller.model.selected == nil)
             #expect(await waitUntil { tab.shownFolderPath.isEmpty })
             await opened.harness.close()
@@ -336,54 +363,6 @@ extension ExplorerWindowlessTests {
             let wasOpen = row.isAccessibilityDisclosed()
             row.setAccessibilityDisclosed(!wasOpen)
             #expect(await waitUntil { row.isAccessibilityDisclosed() != wasOpen })
-            await opened.harness.close()
-        }
-
-        // B-TREE-028: and a press beside a header's button.
-        @Test func aPressBesideAHeadersButtonClearsTheSelection() async throws {
-            let opened = try await open()
-            let (tab, controller) = (opened.tab, opened.controller)
-            await setPlacement(tab, "separate", opened.harness)
-            let alpha = listed(opened.harness, "Alpha")
-            controller.toggleFavorite(alpha)
-            controller.model.selectItem(.favorite(alpha))
-            #expect(await waitUntil { tab.shownFolderPath == alpha })
-            opened.harness.layout(tab)
-
-            let list = controller.sections
-            let outline = list.outline
-            let header = try #require(
-                (0..<outline.numberOfRows).first {
-                    if case .header = list.row(at: $0) { return true }
-                    return false
-                })
-            let rect = outline.rect(ofRow: header)
-            try pressOutline(outline, at: NSPoint(x: rect.minX + 1, y: rect.midY))
-            #expect(controller.model.selected == nil)
-            await opened.harness.close()
-        }
-
-        // T-6f692b35: and a press on the spacer at the top of the list favorites are rows of.
-        @Test func aPressOnASpacerOfTheListClearsTheSelection() async throws {
-            let opened = try await open()
-            let (tab, controller) = (opened.tab, opened.controller)
-            await setPlacement(tab, "integrated", opened.harness)
-            let alpha = listed(opened.harness, "Alpha")
-            controller.toggleFavorite(alpha)
-            controller.model.selectItem(.favorite(alpha))
-            #expect(await waitUntil { tab.shownFolderPath == alpha })
-            opened.harness.layout(tab)
-
-            let outline = controller.tree.outline
-            controller.tree.scrollTop = 0
-            guard case .spacer? = controller.tree.row(at: 0) else {
-                Issue.record("the list starts with a spacer")
-                return
-            }
-            let spacer = outline.rect(ofRow: 0)
-            try pressOutline(outline, at: NSPoint(x: spacer.midX, y: spacer.midY))
-            #expect(controller.model.selected == nil)
-            #expect(await waitUntil { tab.shownFolderPath.isEmpty })
             await opened.harness.close()
         }
 
@@ -465,6 +444,26 @@ extension ExplorerWindowlessTests {
         }
 
         // MARK: The keyboard
+
+        // T-9f474d2b T-fc0da8c2 T-6625a938 F-740 B-TREE-108 B-TREE-111 B-TREE-113
+        // T-945f8c88 F-736 B-TREE-070 B-TREE-012: a folder opens to show what is inside it
+        // B-NAV-224 B-SEL-099 B-SEL-100 B-SEL-101 B-TREE-106
+        @Test func theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar() async throws {
+            let opened = try await open()
+            let (tab, controller) = (opened.tab, opened.controller)
+            tab.perform(.focusTreePane)
+            #expect(controller.isFocused)
+            controller.model.selectItem(.filesystem(listed(opened.harness, "Alpha")))
+            // The click's own navigation finishes reading the folder before a key comes after it.
+            await settle()
+            key(124, "\u{F703}", in: tab.window)  // →
+            #expect(await waitUntil { self.labels(controller).contains("Inner") })
+            key(125, "\u{F701}", in: tab.window)  // ↓
+            #expect(controller.model.selected == .filesystem(listed(opened.harness, "Alpha/Inner")))
+            key(123, "\u{F702}", in: tab.window)  // ←
+            #expect(controller.model.selected == .filesystem(listed(opened.harness, "Alpha")))
+            await opened.harness.close()
+        }
 
         // T-fda19010
         @Test func theSidebarIsFocusedWhileEitherOfItsListsHasTheKeyboard() async throws {

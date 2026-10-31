@@ -15,25 +15,6 @@ extension ExplorerWindowlessTests {
             tab.workspace.frame(of: view)
         }
 
-        // The content column starts at the sidebar's width, with no divider of the split's between them, and the band
-        // the capture names "toolbar" is the original's header over it.
-        // covered-by-feature F-707
-        @Test func theContentColumnStartsAtTheSidebarsWidth() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            harness.layout(tab)
-            let workspace = tab.workspace
-            #expect(workspace.split.splitView.dividerThickness == 0)
-            #expect(workspace.split.splitView is WorkspaceSplitView)
-            let column = workspace.frame(of: workspace.contentColumn)
-            #expect(column.minX == 288 && column.width == workspace.bounds.width - 288, "\(column)")
-            #expect(workspace.frame(of: workspace.mainCell).minX == 288)
-            let band = workspace.frame(of: workspace.contentColumn.band)
-            #expect(band == NSRect(x: 288, y: 0, width: workspace.bounds.width - 288, height: 52), "\(band)")
-            #expect(workspace.contentColumn.band.accessibilityIdentifier() == "toolbar.band")
-            await harness.close()
-        }
-
         // The system places the items: in the band, over the content column, the title taking the room the others leave.
         // covered-by-feature F-707 F-708
         @Test func theItemsSitInTheBand() async throws {
