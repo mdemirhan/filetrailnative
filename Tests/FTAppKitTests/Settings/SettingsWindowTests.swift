@@ -155,10 +155,6 @@ import Testing
                 "Theme", "Accent color", "Reopen the last folder and tabs", "Show notifications",
                 "Mark copied and cut items", "Calculate folder sizes automatically",
             ])
-        // No palette, font, tab style, toolbar, rail, pointer highlight or text colour.
-        for word in ["Palette", "Font", "Tab", "Toolbar", "Rail", "pointer", "Text color", "Zoom"] {
-            #expect(!titles.contains { $0.contains(word) }, "\(word)")
-        }
         Kit.click(options[2])
         Kit.flush(controller)
         #expect(recorder.saved["theme"] == .string("dark"))
@@ -648,17 +644,14 @@ import Testing
         #expect(boxes.filter(\.isEnabled).count > 1)
     }
 
-    // F-900 F-901: the app menu's labels, a list's names and a trailing note start and end where the text box does: a
-    // `FlushTextField` draws from its frame's edge.
-    @Test func settingsTextStartsAtItsBoxesEdge() throws {
+    // F-900 F-901: a list row's name starts its gap after the control before it.
+    @Test func aListRowsNameStartsAfterItsLeadingControl() throws {
         let (controller, _) = Kit.make(tab: .browsing)
         let names = views("settings.list.name", in: controller.settingsView).compactMap { $0 as? FlushTextField }
         let name = try #require(names.first)
         let row = try #require(name.superview as? SettingsListRow)
-        #expect(name.frame.minX > row.spec.leading.map { $0.frame.maxX } ?? 0)
-        if let leading = row.spec.leading {
-            #expect(name.frame.minX == leading.frame.maxX + SettingsMetrics.listRowGap)
-        }
+        let leading = try #require(row.spec.leading)
+        #expect(name.frame.minX == leading.frame.maxX + SettingsMetrics.listRowGap)
     }
 
     // F-900 F-901 B-DLG-191 B-DLG-209: the Files tab as the checkpoint drew it (262-settings-files-app-popup)

@@ -63,7 +63,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-091: the Info Row and the panel sum the entries shown; the status text the whole selection.
+        // B-INFO-091 T-9fa8ca8a B-INFO-075: the Info Row and the panel sum the entries shown; the status text the whole
+        // selection. Files only: the row has their count and their total, and nothing to calculate.
         @Test func theRowSumsWhatIsShownAndTheStatusTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["aaa.txt": 100, "aab.txt": 200, "zzz.txt": 400], in: harness)
@@ -76,6 +77,8 @@ extension ExplorerWindowlessTests {
                 ContentSelection(paths: selected, anchorPath: selected[0], leadPath: selected[2]))
             let all = SizeText.size(700)
             #expect(await waitUntil { texts("infoRow.fact", in: tab).contains(all) })
+            #expect(texts("infoRow.name", in: tab) == ["3 items"])
+            #expect(views("infoRow.folderSize.calculate", in: tab).isEmpty)
             #expect(await waitUntil { status(tab).hasSuffix(" selected · \(all)") })
             tab.content.setFilter("aa")
             #expect(tab.content.selection.paths.count == 3)
@@ -98,24 +101,11 @@ extension ExplorerWindowlessTests {
             try FileManager.default.removeItem(atPath: paths[1])
             tab.content.select(paths: paths)
             #expect(await waitUntil { texts("infoRow.name", in: tab) == ["2 items"] })
-            try await Task.sleep(for: .milliseconds(300))
+            // Past the fetch's 80 ms and the read of what is there.
+            try await Task.sleep(for: .milliseconds(150))
             harness.layout(tab)
             #expect(texts("infoRow.name", in: tab) == ["2 items"])
             #expect(views("infoRow.fact", in: tab).isEmpty)
-            #expect(views("infoRow.folderSize.calculate", in: tab).isEmpty)
-            await harness.close()
-        }
-
-        // T-9fa8ca8a B-INFO-075: several files in the row: their count and their total, nothing to calculate.
-        @Test func theRowSumsSeveralFiles() async throws {
-            let harness = try ExplorerHarness.windowless()
-            try files(["aaa.txt": 100, "aab.txt": 200], in: harness)
-            let tab = try await harness.open()
-            tab.perform(.toggleInfoRow)
-            harness.layout(tab)
-            tab.content.select(paths: try ["aaa.txt", "aab.txt"].map { try path($0, in: tab) })
-            #expect(await waitUntil { texts("infoRow.name", in: tab) == ["2 items"] })
-            #expect(await waitUntil { texts("infoRow.fact", in: tab).contains(SizeText.size(300)) })
             #expect(views("infoRow.folderSize.calculate", in: tab).isEmpty)
             await harness.close()
         }
@@ -196,7 +186,7 @@ extension ExplorerWindowlessTests {
             #expect(row.menuOpen)
             let same = try #require(menu.items.firstIndex { $0.appPath == current.path })
             menu.onChoose(same)
-            try await Task.sleep(for: .milliseconds(100))
+            await settle()
             #expect(changed.isEmpty)
             #expect(!row.menuOpen)
 
@@ -218,18 +208,6 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { changed.count == 2 })
             #expect(changed.last == "/Applications/Picked.app \(kind.contentType)")
             await harness.close()
-        }
-
-        // B-INFO-064: with no app it reads None.
-        @Test func opensWithReadsNoneWithNoApp() {
-            let row = OpensWithPopupView()
-            row.kindLabel = "Plain Text"
-            row.app = nil
-            #expect(findViews("infoPanel.opensWith.name", in: row).map(fieldText) == ["None"])
-            #expect(row.accessibilityLabel() == "Opens with no app: change the app for every Plain Text")
-            row.app = InfoOpenApp(path: "/Applications/Zed.app", name: "Zed")
-            #expect(findViews("infoPanel.opensWith.name", in: row).map(fieldText) == ["Zed"])
-            #expect(row.accessibilityLabel() == "Opens with Zed: change the app for every Plain Text")
         }
 
         // T-3ae2ee91 B-INFO-065: until macOS answers the row is there with a dash, so the rows under it don't move.

@@ -49,22 +49,6 @@ import Testing
         return (pages, box)
     }
 
-    // F-639 F-648: with windows kept off the screen each one is still made once and asked to show
-    @Test func keepsItsWindowsOffTheScreenWhenAsked() {
-        let (pages, _) = Self.make()
-        pages.openAbout()
-        let about = pages.aboutWindow
-        pages.openAbout()
-        #expect(pages.aboutWindow === about)
-        #expect(about?.wasPresented == true)
-        #expect(about?.window?.isVisible == false)
-        pages.openSettings()
-        #expect(pages.settingsWindow?.wasPresented == true)
-        #expect(pages.settingsWindow?.window?.isVisible == false)
-        pages.openHelp()
-        #expect(pages.helpWindow?.window?.isVisible == false)
-    }
-
     @MainActor
     final class Box {
         var preferences: AppPreferences
@@ -92,25 +76,69 @@ import Testing
     }
 
     // F-667 B-DLG-255: Customize… opens Settings on the shortcuts tab
-    @Test func customizeOpensSettingsOnTheShortcutsTab() {
-        _ = NSApplication.shared
-        var opened = 0
-        let controller = HelpWindowController(
-            shortcuts: .defaults, topic: .shortcuts, onTopicChange: { _ in }, onCustomize: { opened += 1 },
-            model: AppearanceModel())
-        controller.helpView.layoutSubtreeIfNeeded()
-        (views("help.action", in: controller.helpView).first as? SystemButton)?.perform()
-        #expect(opened == 1)
+    @Test func customizeOpensSettingsOnTheShortcutsTab() throws {
+        let (pages, _) = Self.make()
+        pages.settingsServices.schedule = { _, _ in {} }
+        pages.openHelp(topic: .shortcuts)
+        let help = try #require(pages.helpWindow)
+        help.helpView.layoutSubtreeIfNeeded()
+        (views("help.action", in: help.helpView).first as? SystemButton)?.perform()
+        #expect(pages.settingsWindow?.activeTab == .shortcuts)
+        pages.settingsWindow?.close()
+        help.window?.close()
     }
 
-    // B-DLG-249: a topic asked for while Help is open replaces the whole view
-    @Test func aTopicAskedForShowsInTheOpenWindow() {
-        _ = NSApplication.shared
-        let controller = HelpWindowController(
-            shortcuts: .defaults, topic: .navigation, onTopicChange: { _ in }, onCustomize: {}, model: AppearanceModel()
-        )
-        controller.show(topic: .shortcuts)
-        #expect(controller.helpView.activeTopic == .shortcuts)
+    // F-639 F-648 B-DLG-246 B-DLG-249 B-DLG-259: one window of each kind, off the screen here; asking again shows the one
+    // open, on the topic asked for.
+    // B-VIEW-231
+    @Test func opensOneWindowOfEachKindAndRemembersHelpsPage() {
+        let (pages, _) = Self.make()
+        pages.openHelp()
+        let first = pages.helpWindow
+        #expect(first?.helpView.activeTopic == .navigation)
+        #expect(first?.window?.isVisible == false)
+        pages.openHelp(topic: .search)
+        #expect(pages.helpWindow === first)
+        #expect(first?.helpView.activeTopic == .search)
+
+        pages.openAbout()
+        let about = pages.aboutWindow
+        pages.openAbout()
+        #expect(pages.aboutWindow === about)
+        #expect(about?.wasPresented == true)
+        #expect(about?.window?.isVisible == false)
+
+        pages.openAcknowledgements()
+        let acknowledgements = pages.acknowledgementsWindow
+        pages.openAcknowledgements()
+        #expect(pages.acknowledgementsWindow === acknowledgements)
+
+        pages.settingsServices.schedule = { _, _ in {} }
+        pages.openSettings()
+        #expect(pages.settingsWindow?.wasPresented == true)
+        #expect(pages.settingsWindow?.window?.isVisible == false)
+        pages.settingsWindow?.close()
+
+        // While open it follows the keys chosen in Settings.
+        var changed = AppPreferences.defaults()
+        var bindings = ShortcutCommands.defaultBindings
+        bindings[.newTab] = []
+        changed.shortcutOverrides = ShortcutCommands.overrides(for: bindings)
+        pages.preferencesChanged(changed, PreferencesChange(patch: ["shortcutOverrides": .object([:])], senderID: nil))
+        #expect(first?.helpView.shortcuts.written(.newTab) == nil)
+
+        // Help opens on the page it was left on.
+        first?.window?.close()
+        #expect(pages.helpWindow == nil)
+        #expect(pages.lastHelpTopic == .search)
+        pages.openHelp()
+        #expect(pages.helpWindow?.helpView.activeTopic == .search)
+
+        about?.window?.close()
+        acknowledgements?.window?.close()
+        pages.helpWindow?.window?.close()
+        #expect(pages.aboutWindow == nil)
+        #expect(pages.acknowledgementsWindow == nil)
     }
 
     // B-DLG-254 F-610: the keys Help shows are the ones chosen in Settings, and Return renames while Settings says so
@@ -138,48 +166,18 @@ import Testing
 @MainActor
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct PageWindowsGUITests {
-    // F-639 F-648 B-DLG-246 B-DLG-259: one window of each kind; asking again shows the one open. Puts windows on screen.
-    // B-VIEW-231
-    @Test func opensOneWindowOfEachKindAndRemembersHelpsPage() {
+    // F-639 F-648: asked to show, each one comes on screen.
+    @Test func showsItsWindowsOnScreen() {
         let (pages, _) = PageWindowsTests.make()
         pages.presentsWindows = true
         pages.openHelp()
-        let first = pages.helpWindow
-        #expect(first?.helpView.activeTopic == .navigation)
-        pages.openHelp(topic: .search)
-        #expect(pages.helpWindow === first)
-        #expect(first?.helpView.activeTopic == .search)
-
         pages.openAbout()
-        let about = pages.aboutWindow
-        pages.openAbout()
-        #expect(pages.aboutWindow === about)
-        #expect(about?.window?.isVisible == true)
-
         pages.openAcknowledgements()
-        let acknowledgements = pages.acknowledgementsWindow
-        pages.openAcknowledgements()
-        #expect(pages.acknowledgementsWindow === acknowledgements)
-
-        // While open it follows the keys chosen in Settings.
-        var changed = AppPreferences.defaults()
-        var bindings = ShortcutCommands.defaultBindings
-        bindings[.newTab] = []
-        changed.shortcutOverrides = ShortcutCommands.overrides(for: bindings)
-        pages.preferencesChanged(changed, PreferencesChange(patch: ["shortcutOverrides": .object([:])], senderID: nil))
-        #expect(first?.helpView.shortcuts.written(.newTab) == nil)
-
-        // Help opens on the page it was left on.
-        first?.window?.close()
-        #expect(pages.helpWindow == nil)
-        #expect(pages.lastHelpTopic == .search)
-        pages.openHelp()
-        #expect(pages.helpWindow?.helpView.activeTopic == .search)
-
-        about?.window?.close()
-        acknowledgements?.window?.close()
+        #expect(pages.helpWindow?.window?.isVisible == true)
+        #expect(pages.aboutWindow?.window?.isVisible == true)
+        #expect(pages.acknowledgementsWindow?.window?.isVisible == true)
         pages.helpWindow?.window?.close()
-        #expect(pages.aboutWindow == nil)
-        #expect(pages.acknowledgementsWindow == nil)
+        pages.aboutWindow?.window?.close()
+        pages.acknowledgementsWindow?.window?.close()
     }
 }

@@ -223,7 +223,9 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
     private(set) var state = PathSuggestionState(draft: "")
     private var currentPath = ""
     private var requestToken = 0
-    private var debounce: DispatchWorkItem?
+    private var debounce: TimerToken?
+    /// What waits out the debounce; tests move it by hand.
+    var timers: any TimerScheduling = TaskTimerScheduler()
     /// The suggestion list has the "focus" (Tab from the field): ↑↓ move through it.
     private var listFocused = false
     private var editing = false
@@ -288,11 +290,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
 
     private func scheduleRequest(_ input: String) {
         debounce?.cancel()
-        let work = DispatchWorkItem { [weak self] in
-            MainActor.assumeIsolated { self?.request(input) }
-        }
-        debounce = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.suggestionDebounce, execute: work)
+        debounce = timers.schedule(after: InfoMetrics.suggestionDebounce) { [weak self] in self?.request(input) }
     }
 
     private func request(_ input: String) {

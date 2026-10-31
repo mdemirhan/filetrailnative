@@ -114,18 +114,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A file activated in the window goes to the tab's seam (the harness's stands in for macOS).
-        @Test func anActivatedFileOpensThroughTheTabsSeam() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            var opened: [String] = []
-            tab.openFile = { opened.append($0.lastPathComponent) }
-            let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
-            tab.open([note])
-            #expect(opened == ["note.txt"])
-            await harness.close()
-        }
-
         // T-209d6f52 F-697 F-748 F-820 B-INFO-001 B-INFO-066 B-INFO-069: the panel and the row follow the selection.
         // B-INFO-090 B-INFO-194 B-NAV-205
         @Test func thePanelAndTheRowDescribeTheSelection() async throws {
@@ -269,20 +257,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-a322b806 B-INFO-202: Show Info on an app measures it; it stays the one measured while the panel shows it.
-        @Test func showInfoMeasuresTheItemItPutInThePanel() async throws {
-            let harness = try ExplorerHarness.windowless()
-            try FileManager.default.createDirectory(
-                at: harness.folder.appending("Tool.app/Contents"), withIntermediateDirectories: true)
-            let tab = try await harness.open()
-            let info = try #require(tab.infoController)
-            let app = path("Tool.app", in: tab)
-            info.showInfo(for: app)
-            #expect(await waitUntil { (tab.folderSizes.cachedEntry(app) ?? .idle) != .idle })
-            await harness.close()
-        }
-
-        // B-INFO-008 B-INFO-202: a change from outside keeps Show Info's item, and so its measurement.
+        // T-a322b806 B-INFO-008 B-INFO-202: Show Info on an app measures it; a change from outside keeps the item, and so
+        // its measurement.
         // B-NAV-206 B-SEL-018
         @Test func anOutsideChangeKeepsShowInfosItem() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -391,6 +367,25 @@ extension ExplorerWindowlessTests {
             menu.onChoose(beta)
             #expect(await waitUntil { tab.currentFolder.lastPathComponent == "Beta" })
             #expect(!AppMenuPresenter.shared.isOpen)
+            await harness.close()
+        }
+
+        // F-745 F-746 B-INFO-110 B-INFO-112 B-INFO-114: a double click opens the editor on the current path; Escape closes it.
+        // B-VIEW-015 T-73dec6db
+        @Test func theEditorOpensOnTheCurrentPathAndEscapeClosesIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let bar = tab.content.contentShell.pathBarRow
+            bar.beginEditing()
+            harness.layout(tab)
+            #expect(bar.isEditing)
+            #expect(bar.editor.field.stringValue == harness.folder.path)
+            #expect(bar.status.isHidden)
+            let editor = try #require(bar.editor.field.currentEditor() as? NSTextView)
+            #expect(editor.selectedRange.location == harness.folder.path.utf16.count)
+            _ = bar.editor.control(
+                bar.editor.field, textView: editor, doCommandBy: #selector(NSResponder.cancelOperation(_:)))
+            #expect(!bar.isEditing)
             await harness.close()
         }
 

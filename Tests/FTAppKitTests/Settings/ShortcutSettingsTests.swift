@@ -216,30 +216,15 @@ import Testing
         #expect(view.row(.trashSelection)?.arrange(width: width) == 32)
     }
 
-    // A key with ⌘ doesn't turn a click's focus into `:focus-visible` (265); a plain key before it does (a09).
-    // F-904 B-DLG-221
-    @Test func onlyAKeyWithoutCommandDrawsTheRingAfterAClick() throws {
-        let (controller, _, view) = try make()
-        let window = try #require(controller.window)
-        let place = try slot(.newFolder, 1, in: view)
-        window.makeFirstResponder(place)
-        place.perform()
-        #expect(!place.focusIsVisible)
-        press(Kit.letter("d", .command, window: window), in: controller)
-        #expect(notes(view) == ["⌘D is used by Duplicate."])
-        #expect(!place.focusIsVisible)
-        press(Kit.letter("n", window: window), in: controller)
-        #expect(place.focusIsVisible)
-    }
-
     // `.shortcut-slot-key.empty` has opacity 0 unless its row is hovered, it records or it is `:focus-visible`: a click's
-    // focus doesn't lift it, a plain key's does. F-904 B-DLG-221
+    // focus doesn't lift it, nor does a key with ⌘ (265); a plain key's does (a09). F-904 B-DLG-221
     @Test func aClickedEmptyPlaceHidesOffTheRowUntilAKeyMakesItsFocusVisible() throws {
         let (controller, _, view) = try make()
         let window = try #require(controller.window)
         let place = try slot(.newFolder, 1, in: view)
         window.makeFirstResponder(place)
         place.perform()
+        #expect(!place.focusIsVisible)
         press(Kit.letter("d", .command, window: window), in: controller)
         #expect(notes(view) == ["⌘D is used by Duplicate."])
         #expect(window.firstResponder === place)
@@ -326,6 +311,24 @@ import Testing
         empty.perform()
         press(Kit.key(Kit.backspace.0, code: Kit.backspace.1, window: controller.window), in: controller)
         #expect(!empty.isRecording)
+    }
+
+    // F-906 B-DLG-221: ⌘D while the recorder records, with the app's menu (a09, 265). AppKit offers a key equivalent to the
+    // key window before the menu bar; the menu would claim ⌘D (Duplicate), even dimmed, so the recorder only has it when
+    // the window goes first.
+    @Test func theRecorderHasAMenuKeyBeforeTheMenuDoes() throws {
+        let (controller, _, view) = try make()
+        let place = try slot(.newFolder, 1, in: view)
+        place.perform()
+        #expect(controller.window?.firstResponder === place)
+        let commandD = Kit.letter("d", .command, window: controller.window)
+        let router = MenuCommandRouter()
+        router.setItem(RendererCommand.duplicateSelection.rawValue, enabled: false)
+        let built = ApplicationMenuBuilder.build(target: router)
+        #expect(built.menu.performKeyEquivalent(with: commandD))
+        #expect(view.model.note == nil)
+        #expect(controller.window?.performKeyEquivalent(with: commandD) == true)
+        #expect(notes(view) == ["⌘D is used by Duplicate."])
     }
 
     // T-3e1be978 F-904 F-907 B-DLG-226 B-DLG-227

@@ -417,35 +417,6 @@
             #expect(await AutomationDrag.playFiles(urls, over: taker, refused: true, hold: false) == .refused(by: name))
         }
 
-        // T-49bf3581 B-CLIP-175: a field being edited is where the drag goes, and it takes no files.
-        @Test @MainActor func aFieldBeingEditedIsWhereAFileDragGoes() async throws {
-            let harness = try ExplorerHarness.windowless()
-            let tab = try await harness.open()
-            let window = try #require(tab.window)
-            let field = try #require(tab.searchField)
-            let urls = [URL(fileURLWithPath: "/tmp/outside/a.txt")]
-
-            #expect(window.makeFirstResponder(field))
-            let editor = try #require(field.currentEditor())
-            #expect(editor is FileRefusingFieldEditor)
-            let name = String(describing: type(of: editor))
-            let result = await AutomationDrag.playFiles(urls, over: field, refused: true, hold: false)
-            #expect(result == .refused(by: name))
-            #expect(field.stringValue.isEmpty)
-
-            // A drop that gets there anyway types nothing.
-            let info = AutomationDraggingInfo(urls: urls, location: .zero, window: window)
-            defer { info.draggingPasteboard.releaseGlobally() }
-            #expect(!editor.performDragOperation(info))
-            #expect(field.stringValue.isEmpty)
-            // Other drags it leaves alone.
-            #expect(FileRefusingFieldEditor.carriesFiles(info.draggingPasteboard))
-            info.draggingPasteboard.clearContents()
-            info.draggingPasteboard.setString("typed", forType: .string)
-            #expect(!FileRefusingFieldEditor.carriesFiles(info.draggingPasteboard))
-            await harness.close()
-        }
-
         @Test @MainActor func makesClicksAndDragMasks() {
             _ = NSApplication.shared
             let window = NSWindow(

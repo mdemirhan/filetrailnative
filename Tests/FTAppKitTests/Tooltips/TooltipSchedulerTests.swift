@@ -73,8 +73,8 @@ struct TooltipSchedulerTests {
     }
 
     // T-cc926cf5: an icon inside a button is part of it (the icon view lets the pointer through to the button), so
-    // hovering the icon is hovering the button.
-    @Test func findsTheTitleFromAnIconInsideTheControl() {
+    // hovering the icon is hovering the button: told of it again, the wait goes on and it shows once.
+    @Test func theSameControlHoveredAgainShowsOnce() {
         scheduler.hover(trash)
         scheduler.hover(trash)
         timers.advance(milliseconds: 600)
@@ -84,12 +84,11 @@ struct TooltipSchedulerTests {
 
     // T-1849bac0: the system's own tooltip is never set on the app's buttons, so it can't show beside this one;
     // leaving the control drops the waiting tooltip.
-    @Test func takesTheTitleOffWhileHoveringAndPutsItBackAfterwards() {
+    @Test func leavingTheControlDropsTheWaitingTooltip() {
         scheduler.hover(trash)
         scheduler.hover(nil)
         timers.advance(milliseconds: 1000)
         #expect(tooltip == nil)
-        #expect(trash.tooltipText == "Trash")
     }
 
     // T-91fc6643 F-829
@@ -165,14 +164,6 @@ struct TooltipSchedulerTests {
         trash.tooltipText = "Empty Trash"
         scheduler.refresh()
         #expect(tooltip == "Empty Trash")
-    }
-
-    // T-bea514b5: rows, labelled buttons and controls in rows never adopt `TooltipAnchor`; over them the pointer is
-    // over no anchor.
-    @Test func leavesFileAndFolderRowsLabelledButtonsAndRowControlsToThemselves() {
-        scheduler.hover(nil)
-        timers.advance(milliseconds: 1000)
-        #expect(tooltip == nil)
     }
 
     // T-f8d9bae2

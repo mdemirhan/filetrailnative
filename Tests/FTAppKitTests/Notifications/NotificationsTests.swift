@@ -138,18 +138,21 @@ extension ExplorerWindowlessTests {
             #expect(card.isHidden)
             await harness.close()
         }
+    }
+}
 
-        // T-596b528f
-        @Test func anOperationOverBeforeTheDelayShowsNoCard() {
-            let model = ProgressCardModel()
-            var changes = 0
-            model.onChange = { changes += 1 }
-            model.delayMs = 5_000
-            model.state = WriteOperationCardState(action: .trash, stage: .starting)
-            model.state = nil
-            #expect(model.isVisible == false)
-            #expect(model.text == nil)
-            #expect(changes == 0)
-        }
+@MainActor
+struct ProgressCardModelTests {
+    // T-596b528f
+    @Test func anOperationOverBeforeTheDelayShowsNoCard() {
+        let model = ProgressCardModel()
+        var changes = 0
+        model.onChange = { changes += 1 }
+        model.delayMs = 5_000
+        model.state = WriteOperationCardState(action: .trash, stage: .starting)
+        model.state = nil
+        #expect(model.isVisible == false)
+        #expect(model.text == nil)
+        #expect(changes == 0)
     }
 }

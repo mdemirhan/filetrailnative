@@ -97,6 +97,10 @@ import Testing
 
     // AppKit's tab bar has no public type: its parts go by their class names.
     @Test func theTabBarsPartsGoByTheirNames() {
+        final class NSTabBarStandIn: NSView {}
+        final class NSTabButtonStandIn: NSButton {}
+        #expect(ExplorerTabGroup.isTabBarView(NSTabBarStandIn()))
+        #expect(ExplorerTabGroup.isTabBarView(NSTabButtonStandIn()))
         #expect(!ExplorerTabGroup.isTabBarView(NSView()))
         #expect(!ExplorerTabGroup.isTabBarView(NSButton()))
     }

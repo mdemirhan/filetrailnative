@@ -85,6 +85,12 @@
         }
 
         @Test func namesAppKitsToolbarViews() {
+            final class NSToolbarView: NSView {}
+            final class _NSToolbarTitleField: NSView {}
+            final class NSTabButton: NSButton {}
+            #expect(AutomationTags.systemName(of: NSToolbarView()) == "toolbar")
+            #expect(AutomationTags.systemName(of: _NSToolbarTitleField()) == "toolbar.title")
+            #expect(AutomationTags.systemName(of: NSTabButton()) == "tabBar.tab")
             let button = NSButton(image: NSImage(size: .zero), target: nil, action: nil)
             #expect(AutomationTags.systemName(of: button) == nil)
             #expect(AutomationTags.systemName(of: NSView()) == nil)

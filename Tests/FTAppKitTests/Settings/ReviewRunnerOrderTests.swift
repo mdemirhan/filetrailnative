@@ -5,34 +5,22 @@ import Testing
 
 @testable import FTAppKit
 
-extension ExplorerWindowlessTests {
-    @MainActor
-    @Suite struct ReviewRunnerOrderTests {
-        // F-906 B-DLG-221: ⌘D in a key step while the recorder records, with the app's menu claiming ⌘D (Duplicate,
-        // dimmed): the step offers it to the window first, as NSApplication does, so the recorder shows the conflict.
-        @Test func automationKeyStepGivesTheRecorderCommandD() async throws {
-            let harness = try ExplorerHarness.windowless()
-            _ = try await harness.open()
-            let pages = PageWindows(model: AppearanceModel(), preferences: { harness.store.preferences() })
-            pages.presentsWindows = false
-            pages.loadPreferences = { harness.channel.preferences(for: nil) }
-            pages.settingsServices.missingApps = { _ in [] }
-            pages.openSettings(tab: .shortcuts)
-            let settings = try #require(pages.settingsWindow)
-            SettingsTestKit.layout(settings)
-            let view = try #require(settings.settingsView.page?.shortcuts)
-            let place = try #require(view.slotView(ShortcutSlot(id: .newFolder, index: 1)))
-            place.perform()
-            let window = try #require(settings.window)
-            let commandD = SettingsTestKit.letter("d", .command, window: window)
-            let router = MenuCommandRouter()
-            router.setItem(RendererCommand.duplicateSelection.rawValue, enabled: false)
-            let mainMenu: NSMenu? = ApplicationMenuBuilder.build(target: router).menu
-            #expect(KeyEvents.performKeyEquivalent(commandD, window: window, menu: mainMenu))
-            #expect(view.model.note != nil)
-            settings.close()
-            await harness.close()
-        }
+@MainActor
+@Suite struct ReviewRunnerOrderTests {
+    // F-906 B-DLG-221: ⌘D in a key step while the recorder records, with the app's menu claiming ⌘D (Duplicate, dimmed):
+    // the step offers it to the window first, as NSApplication does, so the recorder shows the conflict.
+    @Test func automationKeyStepGivesTheRecorderCommandD() throws {
+        let (settings, _) = SettingsTestKit.make(tab: .shortcuts)
+        let view = try #require(settings.settingsView.page?.shortcuts)
+        let place = try #require(view.slotView(ShortcutSlot(id: .newFolder, index: 1)))
+        place.perform()
+        let window = try #require(settings.window)
+        let commandD = SettingsTestKit.letter("d", .command, window: window)
+        let router = MenuCommandRouter()
+        router.setItem(RendererCommand.duplicateSelection.rawValue, enabled: false)
+        let mainMenu: NSMenu? = ApplicationMenuBuilder.build(target: router).menu
+        #expect(KeyEvents.performKeyEquivalent(commandD, window: window, menu: mainMenu))
+        #expect(view.model.note != nil)
     }
 }
 

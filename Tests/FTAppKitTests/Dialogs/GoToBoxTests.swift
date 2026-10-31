@@ -161,23 +161,24 @@ extension ExplorerWindowlessTests {
 
         // B-DLG-008: the × is a button of the box like the others: with the keyboard on it, Return or Space empties the
         // field, and the keyboard goes back there. With nothing typed it isn't there, so Tab no longer stops on it.
-        @Test(arguments: [(UInt16(36), "\r"), (UInt16(49), " ")])
-        func returnOrSpaceOnTheClearButtonEmptiesTheField(_ key: UInt16, _ characters: String) async throws {
+        @Test func returnOrSpaceOnTheClearButtonEmptiesTheField() async throws {
             let (harness, tab, _) = try await open()
             harness.store.recordFolderVisit(path(harness, "Alpha"), kind: .stay)
             let box = try openBox(tab)
             let window = try #require(tab.window)
-            DialogKeys.type("a", into: box)
-            DialogKeys.press(48, "\t", in: window)
-            #expect(window.firstResponder === box.shell.clearButton)
+            for (key, characters) in [(UInt16(36), "\r"), (UInt16(49), " ")] {
+                DialogKeys.type("a", into: box)
+                DialogKeys.press(48, "\t", in: window)
+                #expect(window.firstResponder === box.shell.clearButton)
 
-            DialogKeys.press(key, characters, in: window)
-            #expect(box.field.stringValue == "")
-            #expect(box.shell.clearButton.isHidden)
-            #expect(box.shell.holdsKeyboard)
-            // The box is still up: the key went to the ×, not to Open.
-            #expect(tab.goToBox === box)
-            #expect(!DialogScrim.focusable(in: box).contains { $0 === box.shell.clearButton })
+                DialogKeys.press(key, characters, in: window)
+                #expect(box.field.stringValue == "")
+                #expect(box.shell.clearButton.isHidden)
+                #expect(box.shell.holdsKeyboard)
+                // The box is still up: the key went to the ×, not to Open.
+                #expect(tab.goToBox === box)
+                #expect(!DialogScrim.focusable(in: box).contains { $0 === box.shell.clearButton })
+            }
             await close(harness)
         }
 
@@ -353,9 +354,10 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // A press on the box itself goes to the box: only the backdrop closes it, and what was typed stays.
+        // A press on the box itself goes to the box: only the backdrop closes it, and what was typed stays. Move To is the
+        // same box under another title, which is the box's too.
         // B-DLG-010
-        @Test func aPressOnTheBoxKeepsItOpen() async throws {
+        @Test func aPressOnTheBoxOrTheMoveToBoxsTitleKeepsItOpen() async throws {
             let (harness, tab, _) = try await open()
             harness.layout(tab)
             let box = try openBox(tab)
@@ -370,23 +372,30 @@ extension ExplorerWindowlessTests {
             #expect(box.field.stringValue == "down")
             DialogKeys.pressMouse(at: NSPoint(x: scrim.panel.frame.minX - 2, y: scrim.panel.frame.midY), in: scrim)
             #expect(tab.goToBox == nil)
+
+            let window = try #require(tab.window)
+            let moveTo = tab.presentGoToBox(.moveTo(currentPath: harness.folder.path, browse: { _ in nil }), in: window)
+            window.contentView?.layoutSubtreeIfNeeded()
+            let moveScrim = try #require(tab.dialogs.first)
+            let title = try #require(moveTo.titleLabel)
+            DialogKeys.pressMouse(at: title.convert(NSPoint(x: 3, y: 3), to: moveScrim), in: moveScrim)
+            #expect(tab.dialogs.first === moveScrim)
+            DialogKeys.pressMouse(
+                at: NSPoint(x: moveScrim.panel.frame.minX - 2, y: moveScrim.panel.frame.midY), in: moveScrim)
+            #expect(tab.dialogs.isEmpty)
             await close(harness)
         }
 
-        // Move To is the same box under another title.
-        // B-DLG-010
-        @Test func aPressOnTheMoveToBoxsTitleKeepsItOpen() async throws {
+        // The keyboard comes back to the field when it falls out of the box.
+        // T-74355cd6 B-DLG-006
+        @Test func theKeyboardComesBackToTheField() async throws {
             let (harness, tab, _) = try await open()
-            harness.layout(tab)
-            let window = try #require(tab.window)
-            let box = tab.presentGoToBox(.moveTo(currentPath: harness.folder.path, browse: { _ in nil }), in: window)
-            window.contentView?.layoutSubtreeIfNeeded()
-            let scrim = try #require(tab.dialogs.first)
-            let title = try #require(box.titleLabel)
-            DialogKeys.pressMouse(at: title.convert(NSPoint(x: 3, y: 3), to: scrim), in: scrim)
-            #expect(tab.dialogs.first === scrim)
-            DialogKeys.pressMouse(at: NSPoint(x: scrim.panel.frame.minX - 2, y: scrim.panel.frame.midY), in: scrim)
-            #expect(tab.dialogs.isEmpty)
+            let box = try openBox(tab)
+            tab.content.focusList()
+            #expect(!box.shell.holdsKeyboard)
+            DialogKeys.press(0, "a", in: tab.window)
+            #expect(box.shell.holdsKeyboard)
+            DialogKeys.press(53, "\u{1b}", in: tab.window)
             await close(harness)
         }
 
@@ -411,27 +420,6 @@ extension ExplorerWindowlessTests {
             DialogKeys.press(53, "\u{1b}", in: tab.window)
             #expect(tab.canPerform(.goEnclosingFolder))
             await close(harness)
-        }
-    }
-}
-
-/// The checks that need a window on screen: real focus moving out of the box.
-extension ExplorerWindowGUITests {
-    @MainActor
-    @Suite struct DialogsGUITests {
-        // The keyboard comes back to the field when it falls out of the box.
-        // T-74355cd6 B-DLG-006
-        @Test func theKeyboardComesBackToTheField() async throws {
-            let harness = try ExplorerHarness()
-            let tab = try await harness.open()
-            tab.perform(.openLocationSheet)
-            let box = try #require(tab.goToBox)
-            tab.content.focusList()
-            #expect(!box.shell.holdsKeyboard)
-            DialogKeys.press(0, "a", in: tab.window)
-            #expect(box.shell.holdsKeyboard)
-            DialogKeys.press(53, "\u{1b}", in: tab.window)
-            await harness.close()
         }
     }
 }

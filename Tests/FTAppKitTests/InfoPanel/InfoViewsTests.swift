@@ -56,8 +56,7 @@ struct FolderSizeCellTests {
         view.update(.calculating(jobID: "j"))
         #expect(view.naturalSize == .zero)
         #expect(view.hitTest(NSPoint(x: 1, y: 1)) == nil)
-        try await Task.sleep(for: .milliseconds(450))
-        #expect(Double(view.naturalSize.width) == 34.0)
+        #expect(await waitUntil { Double(view.naturalSize.width) == 34.0 })
         let stop = try #require(view.subviews.compactMap { $0 as? ClearButton }.first)
         #expect(stop.toolTip == "Stop Calculating")
         stop.sendAction(stop.action, to: stop.target)
@@ -207,9 +206,11 @@ struct InfoPanelViewTests {
         live.show(folderDisplay(.calculating(jobID: "j")))
         live.layoutSubtreeIfNeeded()
         #expect(rowTops(live) == rowTops(file))
-        try await Task.sleep(for: .milliseconds(450))
-        live.layoutSubtreeIfNeeded()
-        #expect(findViews("infoPanel.folderSize.stop", in: live).count == 1)
+        #expect(
+            await waitUntil {
+                live.layoutSubtreeIfNeeded()
+                return findViews("infoPanel.folderSize.stop", in: live).count == 1
+            })
         #expect(rowTops(live) == rowTops(file))
         live.show(folderDisplay(.ready(sizeBytes: 140_000, diskBytes: 143_000, fileCount: 2, folderCount: 1)))
         live.layoutSubtreeIfNeeded()
@@ -299,8 +300,7 @@ struct InfoPanelViewTests {
     @Test func theSpinnerShowsOnlyAfterAMoment() async throws {
         let view = panel(display(pending: true))
         #expect(findViews("infoPanel.spinner", in: view).isEmpty)
-        try await Task.sleep(for: .milliseconds(450))
-        #expect(findViews("infoPanel.spinner", in: view).count == 1)
+        #expect(await waitUntil { findViews("infoPanel.spinner", in: view).count == 1 })
         view.show(display(pending: false))
         #expect(findViews("infoPanel.spinner", in: view).isEmpty)
     }
@@ -337,6 +337,21 @@ struct InfoPanelViewTests {
         let labels = findViews("infoPanel.row.label", in: view).map(fieldText)
         #expect(labels.contains("Capacity") && labels.contains("Available") && labels.contains("Used"))
         #expect(!labels.contains("Size"))
+    }
+}
+
+@MainActor
+struct OpensWithPopupViewTests {
+    // B-INFO-064: with no app it reads None.
+    @Test func opensWithReadsNoneWithNoApp() {
+        let row = OpensWithPopupView()
+        row.kindLabel = "Plain Text"
+        row.app = nil
+        #expect(findViews("infoPanel.opensWith.name", in: row).map(fieldText) == ["None"])
+        #expect(row.accessibilityLabel() == "Opens with no app: change the app for every Plain Text")
+        row.app = InfoOpenApp(path: "/Applications/Zed.app", name: "Zed")
+        #expect(findViews("infoPanel.opensWith.name", in: row).map(fieldText) == ["Zed"])
+        #expect(row.accessibilityLabel() == "Opens with Zed: change the app for every Plain Text")
     }
 }
 
@@ -471,8 +486,7 @@ struct PathBarViewTests {
                 clickCount: 1, pressure: 0))
         segment.onClick?(event)
         #expect(navigated.isEmpty)
-        try await Task.sleep(for: .milliseconds(450))
-        #expect(navigated == ["/Users/demo"])
+        #expect(await waitUntil { navigated == ["/Users/demo"] })
         var tabs: [String] = []
         view.onOpenInNewTab = { tabs.append($0) }
         let command = try #require(

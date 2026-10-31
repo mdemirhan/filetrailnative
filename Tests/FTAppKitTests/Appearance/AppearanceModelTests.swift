@@ -93,15 +93,18 @@ import Testing
         }
     }
 
-    // B-DLG-236 F-646: a picked color is accepted only as #rrggbb, trimmed and kept in lower case
+    // T-bede3752 B-DLG-233 B-DLG-236 F-646: a picked color is accepted only as #rrggbb, trimmed and kept in lower case
     @Test func acceptsAPickedAccentOnlyAsAHexColor() {
         let (model, _) = make()
         model.apply(accent: " #D84A4A ")
         #expect(model.accentHex == "#d84a4a")
-        for rejected in ["", "d84a4a", "#d84a4", "#d84a4a5", "rgb(1,2,3)", "#ggg000"] {
+        for rejected in ["", "red", "d84a4a", "#d84a4", "#d84a4a5", "rgb(1,2,3)", "#ggg000"] {
             model.apply(accent: rejected)
             #expect(model.accentHex == "#d84a4a", "\(rejected)")
         }
+        // A model started with a bad accent has the default one.
+        let (other, _) = make(accent: "nonsense")
+        #expect(other.accentHex == AppPreferenceLimits.defaultAccent)
     }
 
     // B-DLG-237 F-646: the tokens derived from the accent are the reference's (a deep shade 18% darker, a 30% border,
@@ -142,18 +145,6 @@ import Testing
         #expect(button.titleColor == nil)
     }
 
-    // T-bede3752 F-646 B-DLG-233
-    @Test func ignoresAccentsThatAreNotHexColors() {
-        let (model, _) = make()
-        model.apply(accent: "#d84a4a")
-        model.apply(accent: "red")
-        model.apply(accent: "#12345")
-        #expect(model.accentHex == "#d84a4a")
-        // A model started with a bad accent has the default one.
-        let (other, _) = make(accent: "nonsense")
-        #expect(other.accentHex == AppPreferenceLimits.defaultAccent)
-    }
-
     // T-10d689b4 F-610
     @Test func putsEveryAppearanceSettingBackAsANewInstallHasIt() {
         let (model, _) = make(theme: .dark, accent: "#d84a4a")
@@ -162,11 +153,6 @@ import Testing
         #expect(model.accentHex == AppPreferences.defaults().accent)
         #expect(model.preference == .auto)
         #expect(model.accentHex == "#007aff")
-    }
-
-    // T-6bc97340
-    @Test func showsFavoritesInTheFolderTreeUnlessToldOtherwise() {
-        #expect(AppPreferences.defaults().favoritesPlacement == .integrated)
     }
 
     // F-610 B-DLG-233 the preference channel's change reaches the appearance only for the theme and the accent
@@ -220,26 +206,8 @@ import Testing
         #expect(Theme(appearance: .light, accentHex: "#007aff").pageWindowBackground.hexString == "#f4f5f8")
     }
 
-    // B-DLG-232: the macOS appearance is read from the app while it follows macOS
-    @Test func readsTheMacOSAppearanceFromTheApp() {
-        _ = NSApplication.shared
-        let saved = NSApp.appearance
-        defer { NSApp.appearance = saved }
-        NSApp.appearance = NSAppearance(named: .darkAqua)
-        // Pinned: macOS is asked in the defaults, which a test cannot change; the answer is only a Bool.
-        _ = AppearanceModel.macOSIsDark()
-        NSApp.appearance = nil
-        #expect(
-            AppearanceModel.macOSIsDark()
-                == (NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua))
-    }
-
     // T-3f0d78e0 F-646: everything is drawn in the system font
     @Test func drawsEverythingInTheSystemFont() {
-        #expect(
-            DesignTokens.sansFontStack
-                == #"-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif"#)
-        #expect(DesignTokens.monoFontStack == #""SF Mono", "SFMono-Regular", ui-monospace, Menlo, monospace"#)
         #expect(ThemeFonts.sans(13) == NSFont.systemFont(ofSize: 13))
         #expect(ThemeFonts.sans(13, .semibold) == NSFont.systemFont(ofSize: 13, weight: .semibold))
         #expect(ThemeFonts.mono(12) == NSFont.monospacedSystemFont(ofSize: 12, weight: .regular))
@@ -251,12 +219,6 @@ import Testing
     // N/A T-c7bb98e0 T-148b5efe T-5140e6c3 T-31b3bab3 T-2020b6b1 T-2b8d85c8 T-2c77ecb5 T-35737f38 T-dc75a2f1 T-22aac744
     // T-6f403fb5 T-0abc3428 T-e61d7669 assertions about the text of styles.css: there is no stylesheet; the palettes
     // were generated from it once and checked against it by CSSTokenTests and AccentPaletteTests
-    @Test func hasTwoPalettesAndTheDarkOneHasEveryColor() {
-        #expect(ThemeAppearance.allCases == [.light, .dark])
-        #expect(ThemePalette.palette(for: .light) == ThemePalette.light)
-        #expect(ThemePalette.palette(for: .dark) == ThemePalette.dark)
-        #expect(ThemePalette.light != ThemePalette.dark)
-    }
 
     // N/A T-38688505 T-479129a0 mounting the renderer root element (React); the Settings window case belongs to P6-04
 

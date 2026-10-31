@@ -69,16 +69,10 @@ import Testing
                 == "/Users/demo/project")
     }
 
-    // T-6201497f F-613
+    // T-6201497f T-9d38cc4a F-613: a file, or nothing there: both answer no.
     @Test func ignoresNonDirectoryTargets() {
         #expect(
             resolve(["filetrail", "--folder", "/Users/demo/file.txt"], cwd: "/tmp", isDirectory: { _ in false }) == nil)
-    }
-
-    // T-9d38cc4a F-613
-    @Test func ignoresMissingFolderTargets() {
-        #expect(
-            resolve(["filetrail", "--folder", "/Users/demo/missing"], cwd: "/tmp", isDirectory: { _ in false }) == nil)
     }
 
     // F-644: a relative path is resolved against the working directory the app was launched in

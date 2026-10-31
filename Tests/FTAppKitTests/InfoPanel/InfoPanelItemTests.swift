@@ -16,10 +16,13 @@ extension ExplorerWindowlessTests {
             return try #require(findViews("infoPanel.action", in: content).first as? InfoIconButton)
         }
 
-        /// The navigation just asked for has started and finished.
-        private func settle(_ tab: MainWindowController) async throws {
-            try await Task.sleep(for: .milliseconds(150))
-            #expect(await waitUntil { !tab.isNavigating })
+        /// Asks for a navigation, and waits for it to have shown its folder.
+        private func navigating(_ tab: MainWindowController, _ ask: () -> Void) async {
+            var shown = false
+            let watching = tab.observe { if $0 == .folder { shown = true } }
+            ask()
+            #expect(await waitUntil { shown && !tab.isNavigating })
+            withExtendedLifetime(watching) {}
         }
 
         // B-INFO-001: with nothing selected the panel describes the folder on screen, and its button previews that.
@@ -72,8 +75,7 @@ extension ExplorerWindowlessTests {
             tab.go(to: URL(fileURLWithPath: alpha))
             #expect(await waitUntil { tab.folder.path == alpha && tab.historyPaths == [start, alpha] })
             let panel = try #require(tab.infoController?.panel)
-            panel.onNavigate(alpha)
-            try await settle(tab)
+            await navigating(tab) { panel.onNavigate(alpha) }
             #expect(tab.historyPaths == [start, alpha])
             #expect(tab.historyIndex == 1)
             panel.onNavigate(start)
@@ -96,9 +98,8 @@ extension ExplorerWindowlessTests {
                 let subject = ContextMenuSubject(surface: .favorite, paths: [path], targetPath: path, entries: [])
                 tab.contextMenus.contextMenu(perform: .revealInTree, subject: subject)
             }
-            reveal(start)
+            await navigating(tab) { reveal(start) }
             #expect(await waitUntil { model.selected == .filesystem(start) })
-            try await settle(tab)
             #expect(tab.historyPaths == [start, start])
             reveal(alpha)
             #expect(await waitUntil { tab.folder.path == alpha && tab.historyPaths == [start, start, alpha] })

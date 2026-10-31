@@ -95,31 +95,5 @@ extension ExplorerWindowlessTests {
             settings.close()
             await harness.close()
         }
-
-        // F-906 B-DLG-221: ⌘D while the recorder records, with an explorer window and the app's menu (a09, 265).
-        // AppKit offers a key equivalent to the key window before the menu bar; the menu would claim ⌘D (Duplicate),
-        // even dimmed, so the recorder only has it when the window goes first.
-        @Test func theRecorderHasAMenuKeyBeforeTheMenuDoes() async throws {
-            let harness = try ExplorerHarness.windowless()
-            _ = try await harness.open()
-            let pages = pages(harness)
-            pages.openSettings(tab: .shortcuts)
-            let settings = try #require(pages.settingsWindow)
-            SettingsTestKit.layout(settings)
-            let view = try #require(settings.settingsView.page?.shortcuts)
-            let place = try #require(view.slotView(ShortcutSlot(id: .newFolder, index: 1)))
-            place.perform()
-            #expect(settings.window?.firstResponder === place)
-            let commandD = SettingsTestKit.letter("d", .command, window: settings.window)
-            let router = MenuCommandRouter()
-            router.setItem(RendererCommand.duplicateSelection.rawValue, enabled: false)
-            let built = ApplicationMenuBuilder.build(target: router)
-            #expect(built.menu.performKeyEquivalent(with: commandD))
-            #expect(view.model.note == nil)
-            #expect(settings.window?.performKeyEquivalent(with: commandD) == true)
-            #expect(texts("settings.shortcuts.note", in: view) == ["⌘D is used by Duplicate."])
-            settings.close()
-            await harness.close()
-        }
     }
 }

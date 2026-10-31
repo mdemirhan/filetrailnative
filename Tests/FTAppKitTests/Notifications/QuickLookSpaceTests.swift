@@ -1,4 +1,4 @@
-// Ports the Quick Look cases of App.menusAndTree.test.tsx on a real explorer window on screen: Space sent through
+// Ports the Quick Look cases of App.menusAndTree.test.tsx on an explorer window that is never shown: Space sent through
 // the window to the focused list
 import AppKit
 import FTFoundation
@@ -23,9 +23,9 @@ final class FakeQuickLookPanel: QuickLookPanelControlling {
     func dismiss() { isVisible = false }
 }
 
-extension ExplorerWindowGUITests {
+extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct NotificationsGUITests {
+    @Suite struct QuickLookSpaceTests {
         func opened(_ harness: ExplorerHarness) async throws -> MainWindowController {
             let tab = try await harness.open()
             #expect(await waitUntil { tab.content.entries.count >= 4 })
@@ -34,7 +34,7 @@ extension ExplorerWindowGUITests {
 
         // T-0db05884 F-686 F-145: Space previews the selected item, and Space again closes the panel
         @Test func spacePreviewsTheSelectedItemWithQuickLookAndSpaceAgainClosesIt() async throws {
-            let harness = try ExplorerHarness()
+            let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let note = try #require(tab.content.entries.first { $0.name == "note.txt" })
             tab.content.focusList()
@@ -67,6 +67,7 @@ extension ExplorerWindowGUITests {
             // The transition leaves from the item's row.
             let frame = quickLook.sourceFrame?(URL(fileURLWithPath: note.path))
             #expect(frame != nil && frame?.isEmpty == false)
+            quickLook.close()
             await harness.close()
         }
     }

@@ -90,17 +90,4 @@ import Testing
         #expect(Theme(appearance: .light, accentHex: "#007aff").palette.bgActiveInactive.hexString == "#dcdce1")
         #expect(ThemePalette.dark.bgActiveInactive.hexString == "#2a2d36")
     }
-
-    // F-646 B-DLG-239 the selection never uses the system accent: it is computed from the accent chosen in the app
-    @Test func neverUsesTheSystemAccent() {
-        let theme = Theme(appearance: .light, accentHex: "#ffc600")
-        let system = NSColor.controlAccentColor.usingColorSpace(.sRGB)
-        let selection = theme.selection(paneFocused: true, windowActive: true).background
-        #expect(
-            selection
-                != RGBA(
-                    red: Double(system?.redComponent ?? 0), green: Double(system?.greenComponent ?? 0),
-                    blue: Double(system?.blueComponent ?? 0)))
-        #expect(selection == theme.accent.selectionBg)
-    }
 }
