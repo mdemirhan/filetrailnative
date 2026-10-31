@@ -256,7 +256,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
                         guard let self, let window else { return }
                         self.windowActive = window.isKeyWindow
                         self.pane?.refreshLook()
-                        RelativeClock.shared.windowStateDidChange()
+                        // Only coming back: the dates of a window just left are as current as they were.
+                        if window.isKeyWindow { RelativeClock.shared.windowStateDidChange() }
                     }
                 })
         }

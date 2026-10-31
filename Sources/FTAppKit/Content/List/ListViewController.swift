@@ -676,6 +676,12 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     // MARK: The clock
 
     private func clockTicked() {
+        // A tab at the back has no dates to keep current, and reads them again as it comes to the front.
+        if view.window?.isBehindAnotherTab == true {
+            minuteHold?()
+            minuteHold = nil
+            return
+        }
         forEachVisibleBar { $0.refreshCells() }
         updateMinuteHold()
     }

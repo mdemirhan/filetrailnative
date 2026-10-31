@@ -69,7 +69,7 @@ final class InfoController {
         host.content.onDetailsChanged = { [weak self] in self?.queueUpdate() }
         // Something can still hold this controller when its tab has gone, and `host` is unowned.
         relativeRelease = RelativeClock.shared.subscribe { [weak self, weak host] in
-            if host != nil { self?.update() }
+            if let host, host.window?.isBehindAnotherTab != true { self?.update() }
         }
         update()
     }

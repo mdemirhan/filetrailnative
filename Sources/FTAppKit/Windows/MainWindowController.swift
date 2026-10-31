@@ -907,6 +907,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// folder this tab was still being decided on was only passed through; each tab here has a tracker of its own.
     func wentToTheBack(for other: MainWindowController) {
         visitTracker.showing(other.shownFolderPath)
+        if waitingReadAgain == true { treeOutOfDate = true }
+        waitingReadAgain = nil
     }
 
     /// The tab is on screen again after another one, or for the first time (`showSnapshot`). Show Info's item doesn't
@@ -917,6 +919,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         // (useExplorerTabs.ts). A tab just made gives it out when its first folder comes. A dialog open on the tab keeps
         // it (useDialogFocus.ts) and hands it back to the pane when it closes.
         if hasShownFolder, DialogScrim.front(in: window) == nil { keyboardBackToPane() }
+        // Its dates stood still while it was at the back.
+        RelativeClock.shared.windowStateDidChange()
         let refreshingTree = treeOutOfDate
         treeOutOfDate = false
         guard loaded, !stale else {
@@ -925,7 +929,29 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
         // Just made, it is reading its folder already.
         guard hasShownFolder, !isNavigating, !folderLetGo else { return }
-        Task { await reloadFolderInPlace(refreshingTree: refreshingTree) }
+        readAgainAfterDrawing(refreshingTree: refreshingTree)
+    }
+
+    /// The folder is read again once the tab has been drawn, so the switch doesn't wait for it, and not at all if another
+    /// tab has come to the front by then. The value says whether the read covers the tree.
+    private var waitingReadAgain: Bool?
+
+    private func readAgainAfterDrawing(refreshingTree: Bool) {
+        waitingReadAgain = refreshingTree || waitingReadAgain == true
+        // The main queue takes what is added while it runs on its next turn of the run loop, after this turn's drawing.
+        DispatchQueue.main.async { [weak self] in
+            DispatchQueue.main.async {
+                MainActor.assumeIsolated {
+                    guard let self, let refreshingTree = self.waitingReadAgain else { return }
+                    self.waitingReadAgain = nil
+                    guard self.hasShownFolder, !self.isNavigating, !self.folderLetGo else {
+                        if refreshingTree { self.treeOutOfDate = true }
+                        return
+                    }
+                    Task { await self.reloadFolderInPlace(refreshingTree: refreshingTree) }
+                }
+            }
+        }
     }
 
     private static let retryDelay = 0.25

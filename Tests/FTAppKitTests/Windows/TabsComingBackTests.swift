@@ -26,6 +26,26 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A tab only passed through on the way to another isn't read, and still owes its tree a read when it comes back
+        @Test func aTabPassedThroughKeepsItsTreeOutOfDate() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let first = try await harness.open()
+            first.perform(.newTab)
+            let group = try #require(first.group)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            first.treeOutOfDate = true
+            first.cameBack()
+            #expect(!first.treeOutOfDate)
+            first.wentToTheBack(for: group.tabs[1])
+            #expect(first.treeOutOfDate)
+            await settle()
+            #expect(first.treeOutOfDate)
+            first.cameBack()
+            await settle()
+            #expect(!first.treeOutOfDate)
+            await harness.close()
+        }
+
         // The folder is read again with hidden files shown: a folder a move went into keeps the date read before,
         // as `navigateTo` keeps the metadata cache (a17). F-683 B-NAV-130
         @Test func showingHiddenFilesLeavesTheDetailsAlreadyRead() async throws {
