@@ -1,25 +1,20 @@
 # Known issues
 
-Differences and gaps left when the port from Electron finished. None has been decided on yet. IDs are from the port's records, kept in the private archive. Background work that may affect battery is in [battery.md](battery.md).
+Nothing is open from the port from Electron: what was fixed is in the history, and what stays different on purpose is in [differences-from-electron.md](differences-from-electron.md). Background work that may affect battery is in [battery.md](battery.md).
 
-## Files and drags
+## Not yet checked by hand
 
-- **Preparing sheet** (`T-00e53ea3`): Return does nothing; the focused Cancel took it in Electron. `PasteFlow.swift:70`.
+These have tests, which can't show all of what a person gets:
 
-## Keyboard and focus
-
-
-## Lists and panels
-
-- **Outside changes during some dialogs** (`B-NAV-136`, `B-VIEW-187`): the list can change under Go To, Customize Toolbar and notices; only copy-paste dialogs, drags, menus, rename and writes hold changes back.
-- **Sorted search results** (`B-VIEW-083`): sorting by a header doesn't reveal the lead item, and a quiet re-order doesn't keep it in view.
-- **Folder sizes per tab** (`B-INFO-199`): a calculation in one tab shows no progress in another tab on the same folder.
-
-## Small visual details
-
-- **Dimmed Paste** (`B-VIEW-214`): still shows its shortcut.
-- **Selected row behind dialogs** (scenarios 198, 218): gray, where Electron stays blue behind the Undo question and result sheet.
+- **VoiceOver in the sidebar**: rows, levels, disclosure and the lists' names, by listening. The rows are the app's own accessibility elements (`SidebarAccessibility.swift`), not AppKit's.
+- **Always Open With**: holding Option with the menu open, once macOS has answered and while it does.
+- **Scroll wheel in a marquee**: a real wheel and a trackpad.
+- **Drop from another File Trail window**: a real drag, that the target window comes forward for its dialog.
 
 ## Tests to watch
 
-This failed only under load and passed alone: `theAppsCatalogForgetsWhenAWindowComesForward`. `FTFileSystemTests` also crashed once in a full run, cause unknown.
+Crashes of the test processes that happened once and haven't come back, cause unknown; `scripts/ci.sh` now keeps the logs of a failed run and names its crash reports:
+
+- `FTAppKitTests`: `WindowWriteActions.coordinator` read an `unowned` value that had gone (2026-10-30 12:39).
+- `FTAppKitTests`: an exception during view layout, `NSApplication._crashOnException` (2026-10-30 14:59 and 15:01).
+- `FTAppKitTests`: a bad access running a job on the main queue (2026-10-30 20:21).

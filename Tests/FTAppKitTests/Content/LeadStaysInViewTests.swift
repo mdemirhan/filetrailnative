@@ -334,6 +334,38 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // B-VIEW-083: results that arrive ahead of the lead, as a search goes on, leave it in view.
+        @Test func resultsArrivingAheadOfTheLeadKeepItInView() async throws {
+            let (harness, tab, _) = try await open(.viewAsDetails)
+            let names = tab.content.entries.map(\.name)
+            let engine = FakeSearchEngine()
+            let timers = ManualTimers()
+            tab.search.session.engine = engine
+            tab.search.session.timers = timers
+            engine.finds = { _ in (names, true, false) }
+            let field = try #require(tab.searchField)
+            field.stringValue = "item"
+            tab.search.controlTextDidChange(Notification(name: NSControl.textDidChangeNotification, object: field))
+            timers.advance(0.4)
+            #expect(await waitUntil { tab.content.search != nil && tab.content.entries.count == names.count })
+            harness.layout(tab)
+            tab.content.search?.requestSort(.name)
+            let lead = tab.content.entries[200].path
+            tab.content.select(paths: [lead])
+            #expect(try leadIsInView(tab))
+
+            let job = try #require(engine.jobs.keys.first)
+            engine.progress(job, add: (0..<60).map { String(format: "!first-%02d", $0) })
+            #expect(
+                await waitUntil {
+                    timers.advance(1)
+                    return tab.content.entries.count == names.count + 60
+                })
+            #expect(try position(of: lead, tab) == 260)
+            #expect(try leadIsInView(tab))
+            await harness.close()
+        }
+
         // B-NAV-140 B-SEL-026: what a write took away leaves the selection before the read comes in, keeping its place.
         @Test func itemsAWriteTookAwayLeaveTheSelectionAtOnce() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails, files: 10)
