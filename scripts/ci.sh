@@ -40,9 +40,30 @@ fi
 export CI_LIVE
 trap 'echo "stopped" >&2; exit 130' INT
 
+# A test in a slot reports its own time on a ⏱ line (`WindowlessSlots`), the sum of its cases: Swift Testing's counts the
+# wait for the slot, so that time takes its place.
 test_lines() {
     awk '{ gsub(/\033\[[0-9;]*m/, "") }
+        /^⏱ Test / {
+            name = $0
+            sub(/^⏱ Test /, "", name)
+            sub(/ took [0-9.]+ seconds\.$/, "", name)
+            match($0, / took [0-9.]+ /)
+            slot[name] += substr($0, RSTART + 6, RLENGTH - 7)
+            next
+        }
         after_issue { after_issue = 0; if (/^↳/) { print; fflush(); next } }
+        /^(✔|✘) Test .* (passed|failed) after / {
+            name = $0
+            sub(/^(✔|✘) Test /, "", name)
+            sub(/ (passed|failed) after .*$/, "", name)
+            sub(/ with [0-9]+ test cases?$/, "", name)
+            if (name in slot) {
+                match($0, / after [0-9.]+ /)
+                $0 = substr($0, 1, RSTART + 6) sprintf("%.3f", slot[name]) substr($0, RSTART + RLENGTH - 1)
+                delete slot[name]
+            }
+        }
         /^(◇|✔|✘|➜) Test / && !/Test run started/ { print; fflush(); after_issue = /recorded an issue/ }'
 }
 
@@ -182,15 +203,19 @@ full_tests() {
     return "$status"
 }
 
+# What a failed test step reports: not a test that passes with "Fatal" or "error:" in its name, nor the system's
+# sandbox_extension_consume lines.
+test_failures='^error:|: error: |^✘|Fatal error:|: the test process failed$'
+
 if [ -n "$scope" ]; then
     rm -f "$logs/test.log"
     follow_tests "$logs/test.log"
-    step test 'error:|✘|failed|Fatal' swift test --filter "$scope"
+    step test "$test_failures" swift test --filter "$scope"
     stop_following
 else
     export logs windowless_processes
     export -f full_tests run_bundle windowless_groups test_lines follow_tests stop_following
-    step test 'error:|✘|failed|Fatal' bash -c full_tests
+    step test "$test_failures" bash -c full_tests
 fi
 # Test counts, from either Swift Testing or XCTest output.
 clean_log="$(sed $'s/\x1b\\[[0-9;]*m//g' "$logs/test.log")"

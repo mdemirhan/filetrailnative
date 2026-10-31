@@ -157,9 +157,20 @@ struct WindowlessSlots: TestTrait, SuiteTrait, TestScoping {
     ) async throws {
         await MainLoopHold.begin()
         try await Self.slots.run(alone: alone) {
+            let started = ContinuousClock.now
+            defer { Self.report(test, took: started.duration(to: .now)) }
             let presenter = await MainActor.run { AppMenuPresenter() }
             try await AppMenuPresenter.withOwn(presenter) { try await function() }
         }
+    }
+
+    /// Swift Testing's clock starts before the test has a slot, so its "passed after" counts the wait in the queue.
+    /// `scripts/ci.sh` shows this time in its place.
+    private static func report(_ test: Test, took duration: Duration) {
+        let name = test.displayName.map { "\"\($0)\"" } ?? test.name
+        let (seconds, attoseconds) = duration.components
+        let time = String(format: "%.3f", Double(seconds) + Double(attoseconds) / 1e18)
+        FileHandle.standardError.write(Data("⏱ Test \(name) took \(time) seconds.\n".utf8))
     }
 }
 
