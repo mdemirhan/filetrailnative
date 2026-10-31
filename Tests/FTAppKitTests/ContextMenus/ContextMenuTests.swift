@@ -186,9 +186,12 @@ extension ExplorerWindowlessTests {
                         ApplicationInfo(path: "/Applications/BBEdit.app", name: "BBEdit"),
                     ], kinds: [kind], pinnedApps: [])
             }
+            // B-VIEW-223: Option changes nothing before macOS has said the kinds allow it.
+            #expect(menu?.items.first { $0.isAlternate }?.isHidden == true)
             let submenu = try #require(item(menu, "Open With")?.submenu)
             submenu.delegate?.menuNeedsUpdate?(submenu)
             #expect(await waitUntil { submenu.items.count > 2 })
+            #expect(menu?.items.first { $0.isAlternate }?.isHidden == false)
             #expect(
                 submenu.items.map { $0.isSeparatorItem ? "-" : $0.title } == [
                     "TextEdit (default)", "-", "BBEdit", "Zed", "-", "Other…",
@@ -221,6 +224,28 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { !spy.all.isEmpty })
             #expect(notices.asked.first?.app == "Zed" && notices.asked.first?.kind == "Plain Text Document")
             #expect(changed == ["/Applications/Zed.app public.plain-text"])
+            await harness.close()
+        }
+
+        // B-VIEW-223: files of different kinds have no one app to always open with: Option leaves the row as it is. The
+        // answer is asked for when the row is reached, not only when its submenu opens.
+        @Test func optionLeavesOpenWithAsItIsForFilesOfDifferentKinds() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let menu = try #require(tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")]))
+            let session = try #require(tab.contextMenus.current)
+            session.openWith.ask = { _, _ in
+                OpenWithLookup(
+                    defaultApp: nil, apps: [],
+                    kinds: [
+                        OpenWithKind(contentType: "public.plain-text", name: "Plain Text Document", isFolder: false),
+                        OpenWithKind(contentType: "public.png", name: "PNG Image", isFolder: false),
+                    ], pinnedApps: [])
+            }
+            let row = try #require(item(menu, "Open With"))
+            session.menu(menu, willHighlight: row)
+            #expect(await waitUntil { session.openWith.lookup != nil })
+            #expect(menu.items.first { $0.isAlternate }?.isHidden == true)
             await harness.close()
         }
 

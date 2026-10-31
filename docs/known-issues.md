@@ -18,7 +18,6 @@ Differences and gaps left when the port from Electron finished. None has been de
 ## Small visual details
 
 - **Dimmed Paste** (`B-VIEW-214`): still shows its shortcut.
-- **Always Open With** (`B-VIEW-223`): Option relabels the row before macOS has answered, even for files of different kinds.
 - **Selected row behind dialogs** (scenarios 198, 218): gray, where Electron stays blue behind the Undo question and result sheet.
 
 ## Tests to watch

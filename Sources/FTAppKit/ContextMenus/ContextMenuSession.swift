@@ -88,14 +88,16 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 }
                 menu.addItem(entry)
                 if id == .openWith, offersAlwaysOpenWith {
-                    menu.addItem(alwaysOpenWithAlternate(after: entry))
+                    let alternate = alwaysOpenWithAlternate(after: entry)
+                    alwaysOpenWith = alternate
+                    menu.addItem(alternate)
                 }
             }
         }
     }
 
-    /// Option turns Open With into Always Open With: offered for files only, and the answer of macOS decides whether
-    /// the kinds allow it.
+    /// Option turns Open With into Always Open With: offered for files only, and only once macOS has said the kinds
+    /// allow it (B-VIEW-223). Its row stays hidden until then, so Option promises nothing its apps wouldn't do.
     private var offersAlwaysOpenWith: Bool {
         let entries = request.subject.entries
         return !entries.isEmpty && entries.allSatisfy { !$0.kind.isDirectoryLike && $0.kind != .bundle }
@@ -108,8 +110,21 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         item.showImage(parent.image)
         item.isAlternate = true
         item.keyEquivalentModifierMask = .option
+        item.isHidden = true
         item.submenu = openWith.makeSubmenu(always: true, session: self)
         return item
+    }
+
+    private weak var alwaysOpenWith: NSMenuItem?
+
+    func openWithAnswered(_ lookup: OpenWithLookup) {
+        alwaysOpenWith?.isHidden = !OpenWithMenu.canAlwaysOpenWith(lookup)
+    }
+
+    /// Reaching the row is what asks macOS, so Option can work before its submenu opens.
+    func menu(_ menu: NSMenu, willHighlight item: NSMenuItem?) {
+        guard item?.identifier?.rawValue == ContextMenuActionID.openWith.rawValue else { return }
+        openWith.askOnce(session: self)
     }
 
     private func attachSubmenu(_ id: ContextMenuActionID, to entry: NSMenuItem) {

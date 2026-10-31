@@ -3,7 +3,7 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// Asks macOS which apps can open the items once the Open With submenu first opens in a menu, not when the menu
+/// Asks macOS which apps can open the items once the Open With row is first reached in a menu, not when the menu
 /// opens; the submenu fills in when the answer comes (`OpenWithMenu` lists the pinned apps until then). What was
 /// asked for belongs to the menu it was asked in.
 @MainActor
@@ -35,6 +35,11 @@ final class OpenWithLookupModel {
     /// Called as a submenu is about to show.
     func opened(_ menu: NSMenu, always: Bool, session: ContextMenuSession) {
         fill(menu, always: always, session: session)
+        askOnce(session: session)
+    }
+
+    /// Asks macOS, the first time only.
+    func askOnce(session: ContextMenuSession) {
         guard !asked else { return }
         asked = true
         let paths = paths
@@ -45,6 +50,7 @@ final class OpenWithLookupModel {
             guard let self, let session else { return }
             self.lookup = answer
             for entry in self.submenus { self.fill(entry.menu, always: entry.always, session: session) }
+            session.openWithAnswered(answer)
         }
     }
 
