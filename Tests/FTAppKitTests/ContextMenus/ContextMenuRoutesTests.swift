@@ -77,6 +77,23 @@ extension ExplorerWindowlessTests {
             _ = NSApp.sendAction(try #require(item.action), to: item.target, from: item)
         }
 
+        // B-CLIP-060 B-VIEW-215: an item chosen after an operation began says the app is busy, and does nothing.
+        @Test func anItemChosenOnceAnOperationBeganSaysItIsBusy() async throws {
+            let window = try await open()
+            let menu = try contentMenu(window, ["note.txt"])
+            let actions = try #require(window.tab.writeActions)
+            actions.session.applyCard(
+                WriteOperationCardState(
+                    action: .paste, stage: .starting, targetPath: nil, totalItemCount: 1, totalBytes: nil,
+                    currentSourcePath: nil))
+            window.tab.contextMenus.isWriteOperationLocked = true
+            try choose("Move to Trash", in: menu)
+            #expect(window.recorder.shown.map(\.message) == [WriteDialogs.busyMessage])
+            #expect(FileManager.default.fileExists(atPath: path(window, "note.txt")))
+            actions.session.applyCard(nil)
+            await window.close()
+        }
+
         /// A size is known for the folder; then something is added to it that a stored size wouldn't know of.
         private func measured(_ window: WritingWindow, _ path: String) async throws -> Int64 {
             let sizes = window.tab.folderSizes

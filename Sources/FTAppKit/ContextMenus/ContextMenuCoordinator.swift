@@ -164,9 +164,11 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     }
 
     func contextMenu(perform action: ContextMenuActionID, subject: ContextMenuSubject) {
-        // A running operation blocks the others (the menu left them out already; a key can still ask).
+        // A running operation blocks the others (the menu left them out, unless it began after the menu opened; a key
+        // can still ask), and says so (B-CLIP-060, B-VIEW-215). This comes before the actions, some of which ask a
+        // question first. A lock this tab hears of late is no refusal: the action goes ahead.
         if ContextMenuRules.writeLockedActions.contains(action), isWriteOperationLocked {
-            return
+            guard let actions = tab.writeActions, !actions.refuseWhileBusy(busyAction(action, actions)) else { return }
         }
         if subject.surface == .background, ContextMenuRules.backgroundFolderActions.contains(action) {
             backgroundFolderAction(action)
@@ -209,6 +211,22 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             fileOperation(action, subject)
         case .openWith, .viewAs, .sortBy:
             break
+        }
+    }
+
+    /// The operation a blocked item would have started, which the notice is titled for.
+    private func busyAction(_ action: ContextMenuActionID, _ actions: WindowWriteActions) -> WriteStartAction {
+        switch action {
+        case .paste:
+            if case .ready(.cut, _, _, _) = actions.session.clipboard?.contents { return .operation(.moveTo) }
+            return .operation(.paste)
+        case .move: return .operation(.moveTo)
+        case .rename: return .operation(.rename)
+        case .duplicate: return .operation(.duplicate)
+        case .newFolder: return .operation(.newFolder)
+        case .trash: return .operation(.trash)
+        case .deleteImmediately: return .operation(.deleteImmediately)
+        default: return .emptyTrash
         }
     }
 

@@ -25,6 +25,8 @@ private final class ScriptedPasteService: CoordinatorWriteService, @unchecked Se
 
     var analysis: Analysis
     var analyses = 0
+    /// Why the start is refused, if it is.
+    var startRefusal: String?
     private var subscribers: [@Sendable (CopyPasteProgressEvent) -> Void] = []
 
     init(_ analysis: Analysis) {
@@ -67,7 +69,8 @@ private final class ScriptedPasteService: CoordinatorWriteService, @unchecked Se
     func cancelCopyPasteAnalysis(_ analysisId: String) -> Bool { true }
 
     func startCopyPaste(_ start: CopyPasteExecutionRequest, keep: Set<String>) throws -> CopyPasteOperationHandle {
-        CopyPasteOperationHandle(operationId: "copy-op-\(analyses)", status: .queued)
+        if let startRefusal { throw Refused(errorDescription: startRefusal) }
+        return CopyPasteOperationHandle(operationId: "copy-op-\(analyses)", status: .queued)
     }
 
     func resolveRuntimeConflict(
@@ -177,6 +180,38 @@ private func report(
     // T-0a889e91 T-53a1f491 T-0ed7aa96 T-85792b9b B-CLIP-069: the analysis refused, failed with its message or without one
     // or found what can't be pasted: "Couldn't Paste", nothing started, the clipboard kept, and the next paste analyzes
     // again.
+    // B-CLIP-072 T-65506a7d: a paste refused as it starts says so once, in the words every busy notice has.
+    @Test func aPasteRefusedAsItStartsSaysSoOnce() async throws {
+        let busy = WriteServiceMessages.writeOperationBusy
+        let refused = "The disk went away."
+        for (message, shown) in [(busy, WriteDialogs.busyMessage), (refused, refused)] {
+            let fixture = PasteFixture(.report(report()))
+            fixture.service.startRefusal = message
+            let outcome = await fixture.actions.pasteFromClipboard(into: PasteFixture.destination)
+            #expect(outcome == .error(message: shown) || outcome == .blocked(message: shown))
+            #expect(fixture.shown.map(\.message) == [shown])
+            #expect(!fixture.session.isWriteLocked)
+        }
+        // And one the analysis refuses because a write without a card has the slot.
+        let fixture = PasteFixture(.refused(busy))
+        _ = await fixture.actions.pasteFromClipboard(into: PasteFixture.destination)
+        #expect(fixture.shown.map(\.message) == [WriteDialogs.busyMessage])
+    }
+
+    // T-e0ffebfc: a drop from another app that went through the review is still one when it starts.
+    @Test func aReviewedDropFromAnotherAppIsOneWhenItStarts() async throws {
+        let fixture = PasteFixture(.report(report()))
+        let analysisId = "analysis-1"
+        TabDragDrop.externalDropAnalyses.insert(analysisId)
+        let outcome = await fixture.actions.pasteFromClipboard(into: PasteFixture.destination)
+        guard case .queued(let operationId) = outcome else {
+            Issue.record("not started: \(outcome)")
+            return
+        }
+        #expect(!TabDragDrop.externalDropAnalyses.contains(analysisId))
+        #expect(TabDragDrop.externalDropOperations.remove(operationId) != nil)
+    }
+
     @Test func aPasteTheAnalysisCantClearSaysWhyAndCanBeTriedAgain() async throws {
         let refused = "The disk went away."
         let blocked = CopyPasteAnalysisIssue(

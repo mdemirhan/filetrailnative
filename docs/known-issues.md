@@ -8,12 +8,7 @@ Differences and gaps left when the port from Electron finished. None has been de
 
 ## Files and drags
 
-- **Failed spring-loaded drag** (`T-5de0804d`): when a held folder can't be read, the folder on screen still takes drops. An Option-drop on empty space then duplicates the items there instead of being refused. `TabDragDrop.swift:345`.
-- **Busy notice shown twice** (`B-CLIP-072`, `T-65506a7d`): a paste refused at its start shows two stacked alerts. `WindowWriteActions.swift`, `PasteFlow.swift`.
-- **Silent menu action while busy** (`B-CLIP-060`, `B-VIEW-215`): a right-click item chosen after an operation began does nothing and says nothing. `ContextMenuCoordinator.swift:168`.
 - **Items a write took away stay selected** (`B-NAV-140`, `B-SEL-026`): until the next read. `AfterWrite.pathsLeftByWrite` exists and is tested, but nothing calls it.
-- **Drop from another File Trail window** (`T-9c4c006c`): the target window stays behind its dialog. `TabDragDrop.swift:40` checks the app, not the window.
-- **Result text after a reviewed drop** (`T-e0ffebfc`): a drop through the review sheet says "Moved to Target" for the folder on screen, where a direct drop is silent.
 - **Preparing sheet** (`T-00e53ea3`): Return does nothing; the focused Cancel took it in Electron. `PasteFlow.swift:70`.
 
 ## Keyboard and focus

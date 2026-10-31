@@ -32,14 +32,17 @@ final class TabDragDrop {
     static var ownDrag: OwnDrag?
     /// Operations started by a drop from another app: told quietly when they land in the folder on screen.
     static var externalDropOperations: Set<String> = []
+    /// Drops from another app waiting in the review: they join `externalDropOperations` when they start.
+    static var externalDropAnalyses: Set<String> = []
     /// What the drop asks the disks (injectable for tests).
     static var readDiskIds: @Sendable ([String]) -> [Int64?] = { SystemActions.diskIds(paths: $0) }
-    /// Brings the window forward for a question or a result about a drop from another app, when the app isn't
-    /// active (B-CLIP-178; injectable for tests).
+    /// Brings the window forward for a question or a result about a drop from another app or another window, when it
+    /// isn't in front (B-CLIP-178, T-9c4c006c; injectable for tests).
     static var bringForward: (NSWindow?) -> Void = { window in
-        guard !NSApp.isActive else { return }
+        guard needsBringingForward(appActive: NSApp.isActive, windowIsKey: window?.isKeyWindow == true) else { return }
         Task { _ = await FileDrag.bringToFront(window) }
     }
+    static func needsBringingForward(appActive: Bool, windowIsKey: Bool) -> Bool { !(appActive && windowIsKey) }
     /// The modifier keys held now.
     static var modifiers: () -> NSEvent.ModifierFlags = { NSEvent.modifierFlags }
     /// Whether a drag is still held anywhere over the window (injectable for tests). Only the list, the grid and the
@@ -63,7 +66,9 @@ final class TabDragDrop {
     private var external: (sequence: Int, session: DragSession?)?
     private var spring = SpringHold()
     /// Where the tab was before the drag's first spring in it, and whether a folder opened.
-    private var springStart: (sequence: Int, place: MainWindowController.TabPlace, opened: Bool)?
+    /// Where a drag that sprang left the tab. `opened`: a folder was asked for; `arrived`: one is on screen, so the
+    /// background takes the drag's drop.
+    private var springStart: (sequence: Int, place: MainWindowController.TabPlace, opened: Bool, arrived: Bool)?
     /// Spring reads not back yet (`opening`): a drag can end with one on its way.
     private var springsOpening = 0
     private var externalGone: DispatchWorkItem?
@@ -299,7 +304,7 @@ final class TabDragDrop {
 
     private func springOpenedHere(_ session: DragSession) -> Bool {
         guard let start = springStart, let own = Self.ownDrag, own.session === session else { return false }
-        return start.opened
+        return start.arrived
     }
 
     /// A drag-over of the content pane, at the entry under it (nil: a file or empty space).
@@ -348,14 +353,15 @@ final class TabDragDrop {
     func springOpen(_ path: String, sequence: Int) {
         guard let tab else { return }
         if springStart?.sequence != sequence {
-            springStart = (sequence, tab.tabPlace, false)
+            springStart = (sequence, tab.tabPlace, false, false)
         }
         springStart?.opened = true
         springsOpening += 1
         Task { [weak self] in
             // A drag that ended before this began has already sent the tab back.
             if self?.springStart?.sequence == sequence {
-                await tab.navigate(to: URL(fileURLWithPath: path, isDirectory: true))
+                let opened = await tab.navigate(to: URL(fileURLWithPath: path, isDirectory: true))
+                if opened != nil, self?.springStart?.sequence == sequence { self?.springStart?.arrived = true }
             }
             self?.springsOpening -= 1
         }
@@ -608,7 +614,8 @@ final class TabDragDrop {
         switch outcome {
         case .queued(let operationId):
             if session.sourceSurface == .external { Self.externalDropOperations.insert(operationId) }
-        case .review:
+        case .review(let report):
+            if session.sourceSurface == .external { Self.externalDropAnalyses.insert(report.analysisId) }
             actions.reviewIfAsked(outcome, action: action)
             fallthrough
         default:

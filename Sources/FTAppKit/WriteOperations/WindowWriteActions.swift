@@ -174,18 +174,19 @@ final class WindowWriteActions {
                 return .review(report)
             }
             return await startCopyPaste(
-                report, policy: defaultPolicy, action: action, clearsCutClipboard: clearsCutClipboard)
+                report, policy: defaultPolicy, action: action, clearsCutClipboard: clearsCutClipboard,
+                reportsRefusals: reportsRefusals)
         } catch {
             preparing?.dismiss()
             session.applyCard(nil)
-            return reportsRefusals ? refused(.operation(action), error) : .error(message: errorMessage(error))
+            return reportsRefusals ? refused(.operation(action), error) : refusal(error)
         }
     }
 
     /// `executeCopyLikePlan`: starts a paste from a finished analysis, with the review's choices.
     func startCopyPaste(
         _ report: CopyPasteAnalysisReport, policy: CopyPastePolicy, action: WriteOperationAction,
-        overrides: [CopyPasteNodeOverride] = [], clearsCutClipboard: String? = nil
+        overrides: [CopyPasteNodeOverride] = [], clearsCutClipboard: String? = nil, reportsRefusals: Bool = true
     ) async -> CopyLikeOutcome {
         session.applyCard(
             WriteOperationCardState(
@@ -206,6 +207,9 @@ final class WindowWriteActions {
                 session.clearCutAfterMove(operationId: handle.operationId, capturedAt: clears)
             }
             session.noteStarted(analysisId: report.analysisId, operationId: handle.operationId)
+            if TabDragDrop.externalDropAnalyses.remove(report.analysisId) != nil {
+                TabDragDrop.externalDropOperations.insert(handle.operationId)
+            }
             session.adoptWriteOperation(handle.operationId)
             if session.activeOperationId == handle.operationId, session.card?.stage == .starting {
                 session.applyCard(
@@ -217,7 +221,7 @@ final class WindowWriteActions {
             return .queued(operationId: handle.operationId)
         } catch {
             session.applyCard(nil)
-            return refused(.operation(action), error)
+            return reportsRefusals ? refused(.operation(action), error) : refusal(error)
         }
     }
 
@@ -652,12 +656,21 @@ final class WindowWriteActions {
 
     /// A start the coordinator refused: busy says so as every write does, anything else names its reason.
     private func refused(_ action: WriteStartAction, _ error: any Error) -> CopyLikeOutcome {
+        let outcome = refusal(error)
+        switch outcome {
+        case .blocked: dialogs.showBusy(action, in: window)
+        case .error(let message): dialogs.showRefusal(action, message: message, in: window)
+        default: break
+        }
+        return outcome
+    }
+
+    /// What a refused start comes to, for a caller that tells of it itself.
+    private func refusal(_ error: any Error) -> CopyLikeOutcome {
         let message = errorMessage(error)
         if message.contains(WriteServiceMessages.writeOperationBusy) {
-            dialogs.showBusy(action, in: window)
             return .blocked(message: WriteDialogs.busyMessage)
         }
-        dialogs.showRefusal(action, message: message, in: window)
         return .error(message: message)
     }
 

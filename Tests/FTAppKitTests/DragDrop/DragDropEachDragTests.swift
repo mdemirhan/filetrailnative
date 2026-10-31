@@ -217,6 +217,41 @@ extension ExplorerWindowlessTests {
 
         // useExplorerDragAndDrop.ts:1341: a sprung folder that can't be read leaves the tab where it was, with nothing
         // to bring back.
+        @Test func aFolderOnScreenTakesTheDragOnlyOnceItsSpringArrived() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let own = TabDragDrop.OwnDrag(
+                session: DragSession(
+                    sourceSurface: .content, sourceItems: [DragItem(path: path(window, "note.txt"), kind: .file)],
+                    leadPath: path(window, "note.txt"), leadKind: .file),
+                windowNumber: 0, tab: tab)
+            TabDragDrop.ownDrag = own
+            defer { TabDragDrop.ownDrag = nil }
+            // T-5de0804d: one that couldn't be read leaves the folder there, which an Option-drop would duplicate into.
+            tab.dragDrop.springOpen(path(window, "gone"), sequence: 9)
+            #expect(tab.dragDrop.contentTarget(own.session, entry: nil) == nil)
+            #expect(await waitUntil { !tab.isNavigating })
+            try await Task.sleep(for: .milliseconds(50))
+            #expect(tab.dragDrop.contentTarget(own.session, entry: nil) == nil)
+            // One that opens takes it, and still does after a later one fails.
+            tab.dragDrop.springOpen(path(window, "Alpha"), sequence: 9)
+            #expect(await waitUntil { tab.dragDrop.contentTarget(own.session, entry: nil) != nil })
+            tab.dragDrop.springOpen(path(window, "gone"), sequence: 9)
+            #expect(await waitUntil { !tab.isNavigating })
+            try await Task.sleep(for: .milliseconds(50))
+            #expect(tab.dragDrop.contentTarget(own.session, entry: nil) != nil)
+            tab.dragDrop.ownDragEnded(paths: [path(window, "note.txt")], operation: .move, over: .elsewhere)
+            await window.close()
+        }
+
+        // T-9c4c006c: a question about a drop brings forward a window that isn't in front, in another app or this one.
+        @Test func aWindowInFrontOfAnActiveAppIsTheOnlyOneLeftWhereItIs() {
+            #expect(!TabDragDrop.needsBringingForward(appActive: true, windowIsKey: true))
+            #expect(TabDragDrop.needsBringingForward(appActive: true, windowIsKey: false))
+            #expect(TabDragDrop.needsBringingForward(appActive: false, windowIsKey: true))
+            #expect(TabDragDrop.needsBringingForward(appActive: false, windowIsKey: false))
+        }
+
         @Test func aSpringThatCouldntOpenBringsNothingBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
