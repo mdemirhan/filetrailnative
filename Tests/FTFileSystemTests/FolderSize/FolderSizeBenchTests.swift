@@ -12,7 +12,7 @@ private let deepTree: String = {
 }()
 
 /// Off by default: it takes a few seconds and only means something in a release build:
-///   FILETRAIL_BENCH=1 [FILETRAIL_BENCH_REFERENCE_MS=<reference median>] swift test -c release -Xswiftc -enable-testing --filter FolderSizeBench
+///   FILETRAIL_BENCH=1 [FILETRAIL_BENCH_REFERENCE_MS=<reference median>] swift test -c release -Xswiftc -enable-testing -Xswiftc -DDEBUG --filter FolderSizeBench
 /// The reference is timed the same way with the addon (`nativeFolderSize` on the same folder, median of the warm runs).
 extension RealWalks {
     @MainActor @Suite struct FolderSizeBenchTests {

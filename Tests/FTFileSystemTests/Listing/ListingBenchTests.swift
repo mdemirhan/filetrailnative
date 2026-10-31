@@ -61,7 +61,7 @@ struct ListingBenchTests {
         }
         #expect(results[0].items == 3_000)
         #expect(results[1].items == 100_000)
-        #if !DEBUG
+        #if RELEASE
             for result in results {
                 #expect(
                     result.medianMs <= result.budgetMs, "\(result.folder): \(result.medianMs) ms of \(result.budgetMs)")

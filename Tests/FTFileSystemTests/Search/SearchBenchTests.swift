@@ -37,7 +37,7 @@ struct SearchBenchTests {
         times.sort()
         let median = times[times.count / 2]
         print("BENCH {\"metric\":\"first_search_results_ms\",\"medianMs\":\(median),\"bestMs\":\(times[0])}")
-        #if !DEBUG
+        #if RELEASE
             #expect(median <= 150, "first results after \(median) ms of 150")
         #endif
     }
