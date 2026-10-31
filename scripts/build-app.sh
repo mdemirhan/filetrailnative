@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds "build/File Trail.app" from the Swift package, signed ad hoc. Quiet: the build log goes to build/logs/build-app.log.
+# Builds "build/File Trail.app" from the Swift package, signed ad hoc. Says each step; the build log goes to build/logs/build-app.log.
 # Usage: scripts/build-app.sh [release|debug] [--out <folder>]
 # --out names the folder the app goes in (scripts/make-release-app.sh).
 set -euo pipefail
@@ -23,11 +23,22 @@ while [ $# -gt 0 ]; do
 done
 mkdir -p build/logs "$out"
 log=build/logs/build-app.log
-if ! swift build -c "$config" --product FileTrail >"$log" 2>&1; then
+# In a terminal, SwiftPM's latest [done/total] line, rewritten in place. A release build shows a module only when it's
+# finished, and FTAppKit alone takes most of the time.
+show_progress() {
+    if [ -t 1 ]; then
+        awk '/^\[[0-9]+\/[0-9]+\] / { printf "\r\033[K  %s %s %s", $1, $2, $3; fflush() } END { printf "\r\033[K" }'
+    else
+        cat >/dev/null
+    fi
+}
+echo "Compiling ($config)..."
+if ! swift build -c "$config" --product FileTrail 2>&1 | tee "$log" | show_progress; then
     sed $'s/\x1b\\[[0-9;]*m//g' "$log" | grep -E 'error:|warning:' | awk '!seen[$0]++' | cut -c1-300 | head -60
     echo "build failed; full log in $log" >&2
     exit 1
 fi
+echo "Compiled in ${SECONDS}s. Assembling and signing..."
 binary="$(swift build -c "$config" --show-bin-path)/FileTrail"
 
 app="$out/File Trail.app"
@@ -65,4 +76,4 @@ cp -R Resources/fd/licenses "$app/Contents/Resources/fd/licenses"
 codesign --force --sign - --options runtime "$app/Contents/Helpers/fd" >/dev/null 2>&1
 codesign --force --sign - "$app" >/dev/null 2>&1
 
-echo "Built $app, version $version ($(du -sh "$app" | cut -f1))"
+echo "Built $app, version $version ($(du -sh "$app" | cut -f1)) in ${SECONDS}s"
