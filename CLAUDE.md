@@ -21,6 +21,5 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 - Prefer the system's look on current macOS: Liquid Glass for tabs and toolbars, Finder's symbols, font sizes and row heights.
 - A window holds at most 25 tabs.
-- There is no upgrade path from the Electron app; this app starts as a new install.
 
 Open issues are in `docs/known-issues.md` and `docs/battery.md`.
