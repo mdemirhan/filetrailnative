@@ -255,8 +255,13 @@ full_tests() {
     fi
     selected FTAppKitTests && start FTAppKitTests FTAppKitTests --skip 'ExplorerWindowlessTests/'
     selected FTOperationsTests && start FTOperationsTests FTOperationsTests
-    selected FTFileSystemTests && start FTFileSystemTests FTFileSystemTests
     for i in "${!pids[@]}"; do finish "$i"; done
+    # FTFileSystemTests last, with nothing beside it: its folder watches and disk images wait on the system's own daemons,
+    # which fall seconds behind on a Mac kept busy by the others.
+    if selected FTFileSystemTests; then
+        start FTFileSystemTests FTFileSystemTests
+        finish $((${#pids[@]} - 1))
+    fi
     stop_following
     selected FTAppKitTests && record_windowless_times "$dir"
     for name in "${names[@]}"; do

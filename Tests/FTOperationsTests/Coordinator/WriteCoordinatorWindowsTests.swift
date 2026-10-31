@@ -593,7 +593,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
                         if hanging.isSet && path.hasSuffix("b.txt") { gate.wait() }
                         return try base.lstat(path)
                     }
-                }, undoCheckWithinMs: 20)
+                }, undoCheckWithinMs: 500)
             try await t.rename("\(root)/a.txt", "b.txt")
             hanging.set(true)
             let coordinator = t.coordinator

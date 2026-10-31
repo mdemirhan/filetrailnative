@@ -82,6 +82,12 @@ final class ExplorerHarness {
             #expect(await waitUntil { read && tab.workspace.isReady })
             #expect(tab.window?.isVisible == false)
         }
+        // The tree's first read too: it reads the folder itself, and a test that counts reads starts after it.
+        let model = tab.sidebarController.model
+        _ = await waitUntil(timeout: .seconds(5)) {
+            let root = model.nodes[model.rootPath]
+            return root?.loaded == true || root?.error != nil
+        }
         leaveTheMacAlone(tab)
         layout(tab)
         return tab

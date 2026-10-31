@@ -42,8 +42,10 @@ extension ExplorerWindowGUITests {
             #expect(menu?.markedIndex == 0)
             // Choosing one is a jump, adding nothing to the history.
             menu?.onChoose(1)
-            #expect(await waitUntil { tab.historyIndex == 0 })
-            #expect(tab.currentFolder.lastPathComponent == root.lastPathComponent)
+            #expect(
+                await waitUntil {
+                    tab.historyIndex == 0 && tab.currentFolder.lastPathComponent == root.lastPathComponent
+                })
             #expect(tab.historyPaths.count == 3)
 
             // Released before 350 ms: no menu.

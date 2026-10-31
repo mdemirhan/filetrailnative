@@ -37,6 +37,8 @@ There is no Put Back, on any disk.
 
 `detachesWhatAProcessThatIsGoneLeftAttached` failed once in a full run while other builds ran: `hdiutil attach` exited with an error (2026-10-31). Cause unknown; it passed in every other run.
 
+`unmountsOnlyTheVolumeWithoutWholeDiskLeavingItsDiskAttached` failed once in a full run: `hdiutil info` no longer listed the image after its volume was unmounted (2026-11-01). Cause unknown.
+
 Crashes of the test processes that happened once and haven't come back, cause unknown; `scripts/ci.sh` now keeps the logs of a failed run and names its crash reports:
 
 - `FTAppKitTests`: `WindowWriteActions.coordinator` read an `unowned` value that had gone (2026-10-30 12:39).

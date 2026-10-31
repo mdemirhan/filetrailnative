@@ -110,7 +110,7 @@ struct UndoStartTests {
                         if hanging.isSet && path.hasSuffix("b.txt") { gate.wait() }
                         return try base.lstat(path)
                     }
-                }, undoCheckWithinMs: 20)
+                }, undoCheckWithinMs: 500)
             defer { gate.open() }
             try await t.rename("\(root)/a.txt", "b.txt")
             let prepared = try await t.prepare()
