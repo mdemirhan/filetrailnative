@@ -454,7 +454,7 @@ extension ExplorerWindowlessTests {
             group.openTab(path: real(harness, "Alpha"), from: tab)
             let path = try await opened(tab, after: 1)
             #expect(path.focusedPane == .tree)
-            // `view: null`: the tree isn't carried by a tab opened on a folder, and the folder's own row is selected.
+            // A tab opened on a folder starts from the other tab's tree, with the folder's own row selected.
             #expect(path.sidebarController.model.selected == .filesystem(real(harness, "Alpha")))
 
             path.perform(.focusTreePane)

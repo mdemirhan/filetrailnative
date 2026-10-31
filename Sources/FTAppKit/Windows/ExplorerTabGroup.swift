@@ -376,6 +376,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         // yet, and starts with the saved ones (B-SRCH-092).
         if let front = frontSearch { tab.search.session.takeOptions(of: front.session) }
         tab.showPanels(session.panels)
+        tab.giveKeyboardToStartingPane()
         let index = tabs.firstIndex { $0 === anchor }.map { $0 + 1 } ?? tabs.count
         tabs.insert(tab, at: index)
         if isMaterialized, let anchorWindow = anchor.window, let window = tab.window {

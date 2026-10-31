@@ -702,6 +702,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return await attemptNavigation(to: URL(fileURLWithPath: home), history: .replace).didOpen
     }
 
+    /// The keyboard is in the pane the tab starts with before the tab comes to the front: AppKit would give it the
+    /// window's first key view, the sidebar's, whose selected row would then light up until the first folder arrives.
+    func giveKeyboardToStartingPane() {
+        guard !hasShownFolder, let window else { return }
+        if startingPane == .tree, panels.folderTreeOpen { sidebar.focusTree() } else { content.focusList() }
+        window.initialFirstResponder = window.firstResponder as? NSView
+    }
+
     /// Runs `action` once the first read of the tab's folder has finished, with whether it showed the folder.
     func whenFirstReadFinished(_ action: @escaping (Bool) -> Void) {
         if let firstRead {
