@@ -157,8 +157,7 @@ extension ExplorerHarness {
     func openList(_ path: String? = nil) async throws -> (tab: MainWindowController, list: ListProbe) {
         let tab = try await open(path)
         tab.perform(.viewAsDetails)
-        // An empty folder never has rows, so this gives up soon.
-        _ = await waitUntil(timeout: .seconds(5)) { !tab.content.entries.isEmpty }
+        #expect(await waitUntil { !tab.content.entries.isEmpty })
         layout(tab)
         let list = ListProbe(tab: tab)
         _ = await waitUntil { list.table != nil }

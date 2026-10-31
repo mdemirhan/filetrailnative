@@ -9,6 +9,8 @@ import FTFoundation
 @MainActor
 final class InfoController {
     unowned let host: MainWindowController
+    /// Whether `host` is still there: a timer or an answer can outlast the tab while something still holds this controller.
+    private weak var liveHost: MainWindowController?
     let panel: InfoPanelView
     let row: InfoRowView
     let auto: AutoFolderSizeController
@@ -41,6 +43,7 @@ final class InfoController {
 
     init(host: MainWindowController, panel: InfoPanelView, row: InfoRowView) {
         self.host = host
+        liveHost = host
         self.panel = panel
         self.row = row
         auto = AutoFolderSizeController(sizes: host.folderSizes)
@@ -195,6 +198,7 @@ final class InfoController {
     }
 
     private func fetch(_ path: String) {
+        guard liveHost != nil else { return }
         fetchTimer = nil
         let service = host.services.directoryService
         Task { @MainActor [weak self] in
@@ -299,6 +303,7 @@ final class InfoController {
 
     /// Describes the target again (cheap: nothing is read from disk here).
     func update() {
+        guard liveHost != nil else { return }
         let preferences = host.preferences
         let shortcuts = shortcutDisplay(preferences)
         panel.closeTooltip = Tooltips.format("Hide Info Panel", shortcutLabel: shortcuts.label(.toggleInfoPanel))

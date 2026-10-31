@@ -39,9 +39,9 @@ extension SidebarTesting {
 
     /// The tree rooted at the folder on screen, so its rows fit the window.
     func rooted(_ tab: MainWindowController, _ harness: ExplorerHarness) async {
-        tab.perform(.rootTreeAtSelection)
-        await settle()
-        _ = await waitUntil { self.sidebar(tab).treeRootPath == listed(harness, "") }
+        let root = listed(harness, "")
+        let sidebar = sidebar(tab)
+        #expect(await waitUntil { sidebar.treeRootPath == root && sidebar.model.nodes[root]?.loaded == true })
         harness.layout(tab)
     }
 
@@ -215,7 +215,7 @@ extension ExplorerWindowlessTests {
         }
 
         // T-cf9aab91 F-731 B-TREE-163 B-TREE-164
-        @Test(.windowlessAlone) func aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone() async throws {
+        @Test func aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone() async throws {
             let harness = try ExplorerHarness.windowless()
             SidebarVolumes.shared.override = [
                 Volume(

@@ -15,8 +15,6 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let alpha = harness.folder.appending("Alpha").path
             let model = tab.sidebarController.model
-            // Rooted here, so the test doesn't wait for the tree to read its way down from the disk's root.
-            model.rootTree(at: harness.folder.path)
             #expect(await waitUntil { model.nodes[alpha] != nil })
             tab.perform(.focusTreePane)
             model.restoreSelected(.filesystem(alpha))

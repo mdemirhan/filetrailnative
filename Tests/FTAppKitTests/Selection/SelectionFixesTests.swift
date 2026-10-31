@@ -78,7 +78,7 @@ extension ExplorerWindowlessTests {
         // B-SEL-123, App.tsx `copyPasteModalOpen` holds `renameDialogState`: while a name is edited in its row the
         // toolbar's view switch and sort dim, and the window's commands wait. Settings and the field's editing don't.
         // B-NAV-218 T-3baf2a61
-        @Test(.windowlessAlone) func theWindowsCommandsWaitWhileANameIsEdited() async throws {
+        @Test func theWindowsCommandsWaitWhileANameIsEdited() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
@@ -120,7 +120,7 @@ extension ExplorerWindowlessTests {
 
         // App.tsx `copyPasteModalOpen` holds `newFolderDialogState`: a new folder's name is edited in its row, as a
         // rename's.
-        @Test(.windowlessAlone) func theToolbarDimsWhileANewFolderIsNamed() async throws {
+        @Test func theToolbarDimsWhileANewFolderIsNamed() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }

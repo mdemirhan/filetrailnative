@@ -10,7 +10,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct GridDragDropTests {
+    @Suite struct GridDragDropTests {
         private func marks(_ mode: ClipboardMode, _ paths: [String]) -> ClipboardMarks? {
             ClipboardMarks(ClipboardRules.set(mode, paths, capturedAt: "t"), enabled: true)
         }

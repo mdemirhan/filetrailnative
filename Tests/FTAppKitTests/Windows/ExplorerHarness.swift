@@ -37,6 +37,9 @@ final class ExplorerHarness {
             filePath: folder.appending("app-state.json").path, defaultTheme: .light, timer: HeldStateTimer())
         let windows = ExplorerWindows(store: store, quit: quit)
         windows.presentsWindows = onScreen
+        // The tree starts at this folder instead of `/`: following the folders above it is most of what opening a window
+        // costs. A test of the tree above it, or of Home, sets its own.
+        windows.home = folder.path
         self.windows = windows
         // Weakly: the tabs hold the channel through their services, so it mustn't hold the harness's windows.
         channel = WindowPreferenceChannel(
@@ -48,6 +51,11 @@ final class ExplorerHarness {
         services = ExplorerServices(
             directoryService: DirectoryService(), folderWatches: nil, iconStore: nil, volumeWatcher: nil,
             clipboard: windows.clipboard, preferences: channel)
+    }
+
+    /// For a test of the tree above the folder: windows opened after this start it at the disk, as the app's do.
+    func startsTheTreeAtTheDisk() {
+        windows.home = FileManager.default.homeDirectoryForCurrentUser.path
     }
 
     /// A harness whose windows never go on screen.
@@ -134,57 +142,31 @@ func waitUntil(
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct ExplorerWindowGUITests {}
 
-/// The explorer window's windowless suites: real tabs and views on windows that are never shown, a few at a time
-/// (`WindowlessSlots`), each with a menu presenter of its own. A suite or test that replaces one of the app's globals
-/// (a hook of `MainWindowController` or `TabDragDrop`, the app's file operations, the shared presenters) is marked
-/// `.windowlessAlone` and runs with no other.
+/// The explorer window's windowless suites: real tabs and views on windows that are never shown, one test at a time in
+/// a process. Almost all of their time is the main thread's work, so what speeds them up is more processes
+/// (`scripts/ci.sh`), not tests side by side.
 @MainActor
-@Suite(.windowless)
+@Suite(.serialized, .windowless)
 struct ExplorerWindowlessTests {}
 
-/// How the windowless suites' tests take turns: they all run on the main thread, so a few at a time fill the time one
-/// spends waiting on a read or a timer, and more would only make each one's waits run out.
-struct WindowlessSlots: TestTrait, SuiteTrait, TestScoping {
-    /// How many run at once (`FILETRAIL_WINDOWLESS_SLOTS`).
-    static let slots = TestSlots(
-        width: ProcessInfo.processInfo.environment["FILETRAIL_WINDOWLESS_SLOTS"].flatMap { Int($0) } ?? 3)
-
-    let alone: Bool
-
+/// A windowless test: the main loop held, and a menu presenter of its own, as a process run by `swift test` has other
+/// suites beside it.
+struct WindowlessScope: TestTrait, SuiteTrait, TestScoping {
     var isRecursive: Bool { true }
 
     func scopeProvider(for test: Test, testCase: Test.Case?) -> Self? {
-        guard !test.isSuite, testCase != nil else { return nil }
-        // A test marked alone (or in a suite marked so) takes only that scope, not its parent suite's too.
-        if !alone && test.traits.contains(where: { ($0 as? Self)?.alone == true }) { return nil }
-        return self
+        test.isSuite || testCase == nil ? nil : self
     }
 
     func provideScope(
         for test: Test, testCase: Test.Case?, performing function: @Sendable () async throws -> Void
     ) async throws {
         await MainLoopHold.begin()
-        try await Self.slots.run(alone: alone) {
-            let started = ContinuousClock.now
-            defer { Self.report(test, took: started.duration(to: .now)) }
-            let presenter = await MainActor.run { AppMenuPresenter() }
-            try await AppMenuPresenter.withOwn(presenter) { try await function() }
-        }
-    }
-
-    /// Swift Testing's clock starts before the test has a slot, so its "passed after" counts the wait in the queue.
-    /// `scripts/ci.sh` shows this time in its place.
-    private static func report(_ test: Test, took duration: Duration) {
-        let name = test.displayName.map { "\"\($0)\"" } ?? test.name
-        let (seconds, attoseconds) = duration.components
-        let time = String(format: "%.3f", Double(seconds) + Double(attoseconds) / 1e18)
-        FileHandle.standardError.write(Data("⏱ Test \(name) took \(time) seconds.\n".utf8))
+        let presenter = await MainActor.run { AppMenuPresenter() }
+        try await AppMenuPresenter.withOwn(presenter) { try await function() }
     }
 }
 
-extension Trait where Self == WindowlessSlots {
-    /// A windowless test in a slot of the group, with a menu presenter of its own.
-    static var windowless: Self { WindowlessSlots(alone: false) }
-    /// A windowless test that runs with no other: it replaces a global the others would see.
-    static var windowlessAlone: Self { WindowlessSlots(alone: true) }
+extension Trait where Self == WindowlessScope {
+    static var windowless: Self { WindowlessScope() }
 }

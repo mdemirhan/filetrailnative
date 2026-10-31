@@ -132,8 +132,10 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let empty = harness.folder.appending("Empty")
             try FileManager.default.createDirectory(at: empty, withIntermediateDirectories: false)
-            let (tab, list) = try await harness.openList(empty.path)
+            let tab = try await harness.open(empty.path)
+            tab.perform(.viewAsDetails)
             #expect(await waitUntil { tab.content.container.stateView.kind != .none })
+            let list = ListProbe(tab: tab)
             harness.layout(tab)
             let table = try #require(list.table)
             let container = tab.content.container
@@ -232,7 +234,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The items a test trashes go to its stand-in, and Undo puts them back from there.
-        @Test(.windowlessAlone) func aTrashedItemGoesToTheStandIn() async throws {
+        @Test func aTrashedItemGoesToTheStandIn() async throws {
             let name = "stand-in-\(UUID().uuidString).txt"
             let window = try await WritingWindow.open()
             let tab = window.tab

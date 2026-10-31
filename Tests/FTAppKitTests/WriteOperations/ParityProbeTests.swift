@@ -267,7 +267,7 @@ private final class Shown {
 extension ExplorerWindowlessTests {
     /// B-CLIP-147, B-VIEW-187: changes to the folder on screen wait while a write runs in this window or another,
     /// and are read once it is over.
-    @MainActor @Suite(.windowlessAlone) struct WriteHoldsFolderChangesTests {
+    @MainActor @Suite struct WriteHoldsFolderChangesTests {
         // B-CLIP-147
         @Test func changesWaitWhileAWriteIsLocked() async throws {
             let harness = try ExplorerHarness.windowless()

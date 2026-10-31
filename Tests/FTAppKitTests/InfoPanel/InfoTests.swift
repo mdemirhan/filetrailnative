@@ -27,6 +27,21 @@ extension ExplorerWindowlessTests {
 
         // The Info panel's Always Open With asks first, then goes to the actions' own seams: never this Mac's defaults.
         // B-INFO-061 T-8727f2e5
+        // A timer of the panel can fire once the tab has gone, while something still holds the controller.
+        @Test func anUpdateAfterTheTabHasGoneDoesNothing() async throws {
+            let harness = try ExplorerHarness.windowless()
+            var info: InfoController?
+            weak var gone: MainWindowController?
+            do {
+                let tab = try await harness.open()
+                info = tab.infoController
+                gone = tab
+            }
+            await harness.close()
+            #expect(await waitUntil(timeout: .seconds(10)) { gone == nil })
+            info?.update()
+        }
+
         @Test func alwaysOpenWithFromThePanelUsesItsSeams() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -198,7 +213,7 @@ extension ExplorerWindowlessTests {
         }
 
         // B-INFO-049: free space is read again when the folder changes, and when the clock ticks.
-        @Test(.windowlessAlone) func freeSpaceIsReadAgain() async throws {
+        @Test func freeSpaceIsReadAgain() async throws {
             final class Reads: @unchecked Sendable {
                 let lock = NSLock()
                 var count = 0

@@ -52,30 +52,9 @@ fi
 export CI_LIVE
 trap 'echo "stopped" >&2; exit 130' INT
 
-# A test in a slot reports its own time on a ⏱ line (`WindowlessSlots`), the sum of its cases: Swift Testing's counts the
-# wait for the slot, so that time takes its place.
 test_lines() {
     awk '{ gsub(/\033\[[0-9;]*m/, "") }
-        /^⏱ Test / {
-            name = $0
-            sub(/^⏱ Test /, "", name)
-            sub(/ took [0-9.]+ seconds\.$/, "", name)
-            match($0, / took [0-9.]+ /)
-            slot[name] += substr($0, RSTART + 6, RLENGTH - 7)
-            next
-        }
         after_issue { after_issue = 0; if (/^↳/) { print; fflush(); next } }
-        /^(✔|✘) Test .* (passed|failed) after / {
-            name = $0
-            sub(/^(✔|✘) Test /, "", name)
-            sub(/ (passed|failed) after .*$/, "", name)
-            sub(/ with [0-9]+ test cases?$/, "", name)
-            if (name in slot) {
-                match($0, / after [0-9.]+ /)
-                $0 = substr($0, 1, RSTART + 6) sprintf("%.3f", slot[name]) substr($0, RSTART + RLENGTH - 1)
-                delete slot[name]
-            }
-        }
         /^(◇|✔|✘|➜) Test / && !/Test run started/ { print; fflush(); after_issue = /recorded an issue/ }'
 }
 
@@ -174,8 +153,13 @@ fi
 WARN_FAILS=1 step build 'error:|warning:' swift build
 
 # The windowless explorer suites (FTAppKitTests' ExplorerWindowlessTests) spread over this many processes in a full
-# run: they all wait on their process's main thread, so one process is most of the run's time.
-windowless_processes="${FILETRAIL_WINDOWLESS_PROCESSES:-3}"
+# run, two for every three performance cores: each runs one test at a time, and is about a core while it does.
+default_windowless_processes() {
+    local cores
+    cores="$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || sysctl -n hw.physicalcpu)"
+    echo $((cores * 2 / 3 > 3 ? cores * 2 / 3 : 3))
+}
+windowless_processes="${FILETRAIL_WINDOWLESS_PROCESSES:-$(default_windowless_processes)}"
 
 # Each windowless suite's seconds in the last run that had them, for the next run's groups. In build/, so a clean build
 # starts again from the number of tests.
@@ -200,28 +184,14 @@ windowless_groups() {
             END { for (i = 0; i < n; i++) if (names[i] != "") print "ExplorerWindowlessTests/(" names[i] ")/" }'
 }
 
-# record_windowless_times <dir>: each suite's time from the ⏱ lines of the windowless logs there, the results file beside
-# each log saying which suite a test is in.
+# record_windowless_times <dir>: each suite's time, from the results file of each windowless process there.
 record_windowless_times() {
-    local log
-    for log in "$1"/FTAppKitTests-windowless-*.log; do
-        sed $'s/\x1b\\[[0-9;]*m//g' "$log" | awk -v results="${log%.log}.xml" '
-            BEGIN {
-                while ((getline line < results) > 0) if (line ~ /<testcase /) {
-                    split(line, f, "\"")
-                    split(f[2], names, ".")
-                    suite[f[4]] = names[3]
-                }
-            }
-            /^⏱ Test / {
-                name = $0
-                sub(/^⏱ Test /, "", name)
-                sub(/ took [0-9.]+ seconds\.$/, "", name)
-                match($0, / took [0-9.]+ /)
-                if (name in suite) seconds[suite[name]] += substr($0, RSTART + 6, RLENGTH - 7)
-            }
-            END { for (name in seconds) print seconds[name], name }'
-    done >"$windowless_times"
+    awk '/<testcase / {
+            split($0, f, "\"")
+            split(f[2], names, ".")
+            seconds[names[3]] += f[6]
+        }
+        END { for (name in seconds) print seconds[name], name }' "$1"/FTAppKitTests-windowless-*.xml >"$windowless_times"
 }
 
 # run_bundle <test target> <testing helper options...>: one test bundle in a process of its own, as `swift test` runs
@@ -267,8 +237,6 @@ full_tests() {
         pids[$1]=""
     }
     i=0
-    # Two windowless tests at a time in each of these processes (`WindowlessSlots`).
-    export FILETRAIL_WINDOWLESS_SLOTS="${FILETRAIL_WINDOWLESS_SLOTS:-2}"
     if selected FTAppKitTests; then
         while IFS= read -r group; do
             i=$((i + 1))

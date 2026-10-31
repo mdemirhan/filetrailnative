@@ -264,7 +264,7 @@ extension ExplorerWindowlessTests {
 
         // B-VIEW-081: the wheel scrolls the list during a marquee, and the box follows.
         // (A list long enough to scroll has no empty space to start one in; Icons has its margins.)
-        @Test(.windowlessAlone) func theWheelScrollsDuringAMarquee() async throws {
+        @Test func theWheelScrollsDuringAMarquee() async throws {
             let (harness, tab, _) = try await open(.viewAsIcons)
             let window = try #require(tab.window)
             let grid = try #require(tab.content.pane as? ItemGridPane)

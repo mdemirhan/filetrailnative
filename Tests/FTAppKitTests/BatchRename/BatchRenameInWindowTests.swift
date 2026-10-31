@@ -13,7 +13,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct BatchRenameInWindowTests {
+    @Suite struct BatchRenameInWindowTests {
         final class Notices {
             var titles: [String] = []
             var messages: [String] = []

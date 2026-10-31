@@ -55,7 +55,7 @@
 
     extension ExplorerWindowlessTests {
         @MainActor
-        @Suite(.windowlessAlone) struct CheckpointStepsTests {
+        @Suite struct CheckpointStepsTests {
             private static let repo = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
                 .deletingLastPathComponent()
@@ -202,6 +202,7 @@
             // B-INFO-103 B-NAV-117 B-NAV-123
             @Test func aFolderLetGoOfShowsNoFolder() async throws {
                 let harness = try ExplorerHarness.windowless()
+                harness.startsTheTreeAtTheDisk()
                 let tab = try await harness.open()
                 tab.perform(.viewAsDetails)
                 harness.layout(tab)

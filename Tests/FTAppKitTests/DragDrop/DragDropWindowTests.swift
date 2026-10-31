@@ -12,7 +12,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct DragDropWindowTests {
+    @Suite struct DragDropWindowTests {
         private func entry(_ window: WritingWindow, _ name: String) throws -> DirectoryEntry {
             try #require(window.tab.content.entries.first { $0.name == name })
         }

@@ -105,7 +105,7 @@ extension ExplorerWindowlessTests {
 
         // F-793 B-SEL-122: F2 in the list opens the rename field over the one item selected (through the window's file
         // operations, which the app always has).
-        @Test(.windowlessAlone) func f2OpensTheRenameField() async throws {
+        @Test func f2OpensTheRenameField() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
@@ -120,7 +120,7 @@ extension ExplorerWindowlessTests {
 
         // F-793 F-794 B-SEL-126: a name typed into the field and sent with Return lands: the row shows it, selected, and
         // the file has it. (On screen this is SelectionGUITests/f2RenamesInPlace.)
-        @Test(.windowlessAlone) func f2RenameLands() async throws {
+        @Test func f2RenameLands() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }

@@ -12,7 +12,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct DragDropEachDragTests {
+    @Suite struct DragDropEachDragTests {
         private func path(_ window: WritingWindow, _ name: String) -> String {
             window.folder.appendingPathComponent(name).path
         }

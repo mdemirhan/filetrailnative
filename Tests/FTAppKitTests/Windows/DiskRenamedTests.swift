@@ -9,7 +9,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct DiskRenamedTests {
+    @Suite struct DiskRenamedTests {
         private func disk(_ path: String) -> Volume {
             Volume(
                 path: path, name: (path as NSString).lastPathComponent, isLocal: true, isReadOnly: false,

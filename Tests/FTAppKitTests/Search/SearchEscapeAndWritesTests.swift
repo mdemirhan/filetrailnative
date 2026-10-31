@@ -42,7 +42,7 @@ extension ExplorerWindowlessTests {
     }
 
     @MainActor
-    @Suite(.windowlessAlone) struct SearchAfterAWriteTests {
+    @Suite struct SearchAfterAWriteTests {
         // T-636f3c2e
         @Test func aMoveOfASelectedResultRunsTheSearchAgainOnceItEnds() async throws {
             PreparingSheet.isEnabled = false

@@ -12,7 +12,7 @@ import Testing
 @testable import FTOperations
 
 extension ExplorerWindowlessTests {
-    @MainActor @Suite(.windowlessAlone) struct LocalWritesInWindowTests {
+    @MainActor @Suite struct LocalWritesInWindowTests {
         /// A tab on the harness's folder with the app's file operations, its notices kept.
         private func open() async throws -> (ExplorerHarness, MainWindowController, AppWriteOperations, Notices) {
             let harness = try ExplorerHarness.windowless()

@@ -14,7 +14,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct CopyPasteDialogsTests {
+    @Suite struct CopyPasteDialogsTests {
         private var reviews: CopyPasteReviewPresenter { CopyPasteReviewPresenter.shared }
         private var results: CopyPasteResultPresenter { CopyPasteResultPresenter.shared }
 

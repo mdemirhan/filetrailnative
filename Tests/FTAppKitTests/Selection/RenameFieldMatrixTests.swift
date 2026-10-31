@@ -11,7 +11,7 @@ import Testing
 extension ExplorerWindowlessTests {
     /// The file operations' `current` is the app's one: no other test at the same time.
     @MainActor
-    @Suite(.windowlessAlone) struct RenameFieldMatrixTests {
+    @Suite struct RenameFieldMatrixTests {
         private func path(_ tab: MainWindowController, _ name: String) throws -> String {
             try #require(tab.content.listed.first { $0.name == name }?.path)
         }

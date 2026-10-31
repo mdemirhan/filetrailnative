@@ -494,7 +494,7 @@ extension ExplorerWindowlessTests {
 
     /// What replaces a global: the tab on screen last, and the app's file operations.
     @MainActor
-    @Suite(.windowlessAlone) struct SearchAcrossTheWindowTests {
+    @Suite struct SearchAcrossTheWindowTests {
         // B-SRCH-092: a new tab starts with the options and order of the search on screen, and nothing searched.
         @Test func aNewTabTakesTheOptionsOfTheTabOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()

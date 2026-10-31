@@ -371,7 +371,7 @@ extension ExplorerWindowlessTests {
 
     /// The visit hook is the app's one: no other test at the same time.
     @MainActor
-    @Suite(.windowlessAlone) struct FolderUseTests {
+    @Suite struct FolderUseTests {
         // `noteFolderUsed`: a folder used for something before it is left counts as a stay.
         // B-NAV-071
         @Test func usingAFolderCountsAsAStay() async throws {
@@ -560,7 +560,7 @@ extension ExplorerWindowlessTests {
 
     /// The operations' `current` is the app's one: no other test at the same time.
     @MainActor
-    @Suite(.windowlessAlone) struct TreeAfterAWriteTests {
+    @Suite struct TreeAfterAWriteTests {
         /// Two tabs, the one on Beta at the back with Alpha open in its tree; and the window's operations.
         private func twoTabs(
             _ harness: ExplorerHarness

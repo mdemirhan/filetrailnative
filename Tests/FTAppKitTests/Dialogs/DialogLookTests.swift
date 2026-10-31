@@ -11,7 +11,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct DialogLookTests {
+    @Suite struct DialogLookTests {
         private func open() async throws -> (ExplorerHarness, MainWindowController) {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

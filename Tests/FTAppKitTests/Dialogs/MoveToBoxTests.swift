@@ -11,7 +11,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct MoveToBoxTests {
+    @Suite struct MoveToBoxTests {
         private func open() async throws -> WritingWindow {
             let window = try await WritingWindow.open()
             window.tab.updatePreferences(["favorites": .array([])])

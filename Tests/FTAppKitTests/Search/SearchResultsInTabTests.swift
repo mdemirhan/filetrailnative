@@ -260,7 +260,7 @@ extension ExplorerWindowlessTests {
 
     /// Duplicate in search results needs the app's file operations.
     @MainActor
-    @Suite(.windowlessAlone) struct SearchResultWriteTests {
+    @Suite struct SearchResultWriteTests {
         // F-682 B-SEL-095: Duplicate on a result puts the copy next to it, not in the folder on screen.
         // T-dc31b764 T-f90496ca
         @Test func duplicateOfAResultGoesNextToIt() async throws {

@@ -446,7 +446,7 @@ extension ExplorerWindowlessTests {
         // F-290 F-291 F-378 F-550: ⌘⌫ takes the row the click selected and nothing else, and ⌘Z puts it back; also when a
         // new item moved the rows between the click and the key.
         // B-CLIP-184 T-f90496ca
-        @Test(.windowlessAlone) func theTrashKeyTakesTheClickedRowAndUndoPutsItBack() async throws {
+        @Test func theTrashKeyTakesTheClickedRowAndUndoPutsItBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let menu = RealMenu(window.harness, tab)
@@ -481,7 +481,7 @@ extension ExplorerWindowlessTests {
 
         // F-290: rename, duplicate and move, reached by the same keys, take the clicked row too.
         // T-1a31a754 T-56c85e6b T-d889b78c
-        @Test(.windowlessAlone) func theOtherWriteKeysTakeTheClickedRow() async throws {
+        @Test func theOtherWriteKeysTakeTheClickedRow() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let menu = RealMenu(window.harness, tab)
@@ -512,7 +512,7 @@ extension ExplorerWindowlessTests {
         }
 
         // T-9e7de3fa: Copy and Cut from the menu take what is selected: the folder on screen is no implicit selection.
-        @Test(.windowlessAlone, arguments: ["editCopy", "editCut"])
+        @Test(arguments: ["editCopy", "editCut"])
         func copyAndCutWithNothingSelectedTakeNothing(_ item: String) async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -536,7 +536,7 @@ extension ExplorerWindowlessTests {
 
         // T-b55c9910: Select All from the menu with a field editing selects its text: the Go To box's, the path bar's and
         // a name being typed in its row; the files stay as they were.
-        @Test(.windowlessAlone, arguments: ["pathBar", "rename", "goTo"])
+        @Test(arguments: ["pathBar", "rename", "goTo"])
         func selectAllFromTheMenuStaysWithTheFieldEditing(_ field: String) async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -579,7 +579,7 @@ extension ExplorerWindowlessTests {
         // useExplorerShortcuts.ts:1569-1603: the keys don't go by what dims the menu. A write's key during another write
         // reaches the command, which says why it can't start (useExplorerActions.ts:3576, 3662, 3917, 3093, 4292).
         // B-CLIP-007 B-CLIP-186
-        @Test(.windowlessAlone) func theKeysOfWritesSayAnotherIsRunning() async throws {
+        @Test func theKeysOfWritesSayAnotherIsRunning() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
@@ -611,7 +611,7 @@ extension ExplorerWindowlessTests {
 
         // useExplorerActions.ts:3329-3331, 3353-3358: ⌘O and ⌘⇧E over "Ask before opening more than" say so; only the
         // toolbar's button and the menu's item dim.
-        @Test(.windowlessAlone) func openAndEditKeysOverTheLimitTellOfIt() async throws {
+        @Test func openAndEditKeysOverTheLimitTellOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
             try Data().write(to: harness.folder.appending("second.txt"))
             let (tab, _) = try await harness.openList()
@@ -636,7 +636,7 @@ extension ExplorerWindowlessTests {
         // useExplorerActions.ts:3353-3358 `editPaths`: anything but files among the items and it does nothing at all, over
         // the limit too.
         // T-94710962
-        @Test(.windowlessAlone) func theEditKeyLeavesFoldersAlone() async throws {
+        @Test func theEditKeyLeavesFoldersAlone() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
             let menu = RealMenu(harness, tab)
@@ -653,7 +653,7 @@ extension ExplorerWindowlessTests {
 
         // useExplorerActions.ts:3379-3388: ⌘D on search results from several folders says why.
         // B-SRCH-143 B-VIEW-203 T-a39af101
-        @Test(.windowlessAlone) func theDuplicateKeyOnResultsOfSeveralFoldersTellsOfIt() async throws {
+        @Test func theDuplicateKeyOnResultsOfSeveralFoldersTellsOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
@@ -680,7 +680,7 @@ extension ExplorerWindowlessTests {
 
         // useExplorerActions.ts:3081-3087: ⌘⇧⌫ asks to empty the Trash, whatever is known of what is in it.
         // T-e5169248
-        @Test(.windowlessAlone) func theEmptyTrashKeyAsksOfAnEmptyTrash() async throws {
+        @Test func theEmptyTrashKeyAsksOfAnEmptyTrash() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }
@@ -701,7 +701,7 @@ extension ExplorerWindowlessTests {
 
         // `canHandleRawExplorerShortcut`: what the tree doesn't take stays dropped; the dimmed item keeps the key.
         // T-81bf2f83
-        @Test(.windowlessAlone) func aKeyTheTreeDoesNotTakeStaysDropped() async throws {
+        @Test func aKeyTheTreeDoesNotTakeStaysDropped() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
             defer { withExtendedLifetime(writes) {} }

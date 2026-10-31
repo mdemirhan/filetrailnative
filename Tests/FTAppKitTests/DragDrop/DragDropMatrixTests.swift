@@ -13,7 +13,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct DragDropMatrixTests {
+    @Suite struct DragDropMatrixTests {
         private func path(_ window: WritingWindow, _ name: String) -> String {
             window.folder.appendingPathComponent(name).path
         }
@@ -396,7 +396,6 @@ extension ExplorerWindowlessTests {
         private func tree(_ window: WritingWindow) async throws -> SidebarOutlineView {
             let tab = window.tab
             let model = tab.sidebarController.model
-            model.rootTree(at: window.folder.path)
             #expect(await waitUntil { model.nodes[path(window, "Beta")] != nil })
             window.harness.layout(tab)
             return try #require(Views.all(SidebarOutlineView.self, in: tab.workspace).first)

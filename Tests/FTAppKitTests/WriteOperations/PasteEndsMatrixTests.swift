@@ -330,7 +330,7 @@ private func report(
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct WriteEndsInWindowMatrixTests {
+    @Suite struct WriteEndsInWindowMatrixTests {
         private func path(_ window: WritingWindow, _ name: String) -> String {
             window.folder.appendingPathComponent(name).path
         }

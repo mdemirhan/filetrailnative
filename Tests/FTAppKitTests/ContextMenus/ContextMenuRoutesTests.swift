@@ -11,7 +11,7 @@ import Testing
 @testable import FTOperations
 
 extension ExplorerWindowlessTests {
-    @MainActor @Suite(.windowlessAlone) struct ContextMenuRoutesTests: SidebarTesting {
+    @MainActor @Suite struct ContextMenuRoutesTests: SidebarTesting {
         /// A tab with the app's file operations, on the folder as the tree names it, and the tree rooted there.
         private func open() async throws -> WritingWindow {
             PreparingSheet.isEnabled = false

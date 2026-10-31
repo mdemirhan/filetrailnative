@@ -12,7 +12,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct ListDragOverTests {
+    @Suite struct ListDragOverTests {
         private func table(_ tab: MainWindowController) throws -> ListTableView {
             try #require(Views.all(ListTableView.self, in: tab.workspace).first)
         }
@@ -206,8 +206,6 @@ extension ExplorerWindowlessTests {
             let tab = window.tab
             let alpha = window.folder.appendingPathComponent("Alpha").path
             let model = tab.sidebarController.model
-            // Rooted here, so the test doesn't wait for the tree to read its way down from the disk's root.
-            model.rootTree(at: window.folder.path)
             #expect(await waitUntil { model.nodes[alpha] != nil })
             window.harness.layout(tab)
             let tree = try #require(Views.all(SidebarOutlineView.self, in: tab.workspace).first)

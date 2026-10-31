@@ -12,7 +12,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct ReviewSheetRowsMatrixTests {
+    @Suite struct ReviewSheetRowsMatrixTests {
         private var reviews: CopyPasteReviewPresenter { CopyPasteReviewPresenter.shared }
 
         private func node(_ name: String, conflict: Bool, blocked: String? = nil) -> CopyPasteAnalysisNode {

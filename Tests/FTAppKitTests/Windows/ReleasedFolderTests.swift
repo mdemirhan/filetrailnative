@@ -87,6 +87,7 @@ extension ExplorerWindowlessTests {
         // `closeTabsOnUnmountedDisks`: the folder let go of is not the tab's any more, only its tree root counts.
         @Test func aDiskUnderAReleasedFolderLeavesTheTab() async throws {
             let harness = try ExplorerHarness.windowless()
+            harness.startsTheTreeAtTheDisk()
             let tab = try await harness.open()
             let group = try #require(tab.group)
             group.openTab(path: harness.folder.appending("Alpha").path, from: tab)

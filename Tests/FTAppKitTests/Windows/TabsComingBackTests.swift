@@ -9,7 +9,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct TabsComingBackTests: SidebarTesting {
+    @Suite struct TabsComingBackTests: SidebarTesting {
         // A tab shown again gives the keyboard to its pane, not to the search field it was left in (209). F-724 B-SRCH-164
         @Test func aTabComingBackGivesTheKeyboardToItsPaneNotTheSearchField() async throws {
             let harness = try ExplorerHarness.windowless()

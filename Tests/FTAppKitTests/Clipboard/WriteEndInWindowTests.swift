@@ -11,7 +11,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct WriteEndInWindowTests: SidebarTesting {
+    @Suite struct WriteEndInWindowTests: SidebarTesting {
         private func toasts(_ tab: MainWindowController, _ title: String) -> [String?] {
             tab.notifications?.toasts.entries.filter { $0.title == title }.map(\.message) ?? []
         }

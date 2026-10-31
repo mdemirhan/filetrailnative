@@ -277,7 +277,7 @@ extension ExplorerWindowlessTests {
 
     /// The store the visits go to is the app's global: no other test at the same time.
     @MainActor
-    @Suite(.windowlessAlone) struct FolderVisitMatrixTests {
+    @Suite struct FolderVisitMatrixTests {
         // B-DLG-068: only going to a folder counts: Back to it and using it there records nothing.
         @Test func backDoesNotCountAsAVisit() async throws {
             let harness = try ExplorerHarness.windowless()

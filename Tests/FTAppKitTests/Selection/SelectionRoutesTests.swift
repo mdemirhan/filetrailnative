@@ -42,7 +42,7 @@ private final class AnotherWindow: WriteOperationWindow {
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct SelectionRoutesTests {
+    @Suite struct SelectionRoutesTests {
         // B-SEL-012: a press twice with ⌘ opens a folder in a new tab, and a file the normal way.
         @Test func aCommandDoubleClickOpensAFolderInANewTabAndAFileAsUsual() async throws {
             let harness = try ExplorerHarness.windowless()

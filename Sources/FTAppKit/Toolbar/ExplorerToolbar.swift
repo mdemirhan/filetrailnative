@@ -78,6 +78,11 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                             self?.applySavedOrder(sheetEnded: name == NSWindow.didEndSheetNotification)
                             self?.refreshStates()
                         }
+                        // The system's flag is still up as the sheet ends, and nothing else need come along after it.
+                        guard name == NSWindow.didEndSheetNotification else { return }
+                        DispatchQueue.main.async { [weak self] in
+                            MainActor.assumeIsolated { self?.refreshStates() }
+                        }
                     })
             }
         }

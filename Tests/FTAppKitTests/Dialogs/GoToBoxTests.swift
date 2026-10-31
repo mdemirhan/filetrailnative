@@ -45,7 +45,7 @@ enum DialogKeys {
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct GoToBoxTests {
+    @Suite struct GoToBoxTests {
         /// A windowless tab whose opened folders are the harness's, and whose completions wait for timers moved by
         /// hand.
         private func open() async throws -> (ExplorerHarness, MainWindowController, ManualTimers) {

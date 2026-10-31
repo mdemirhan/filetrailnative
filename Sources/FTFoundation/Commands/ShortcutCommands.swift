@@ -207,7 +207,8 @@ public enum ShortcutCommands {
 
     /// `resolveShortcuts` for overrides held as a dictionary.
     public static func resolve(_ overrides: ShortcutOverrides) -> ResolvedShortcuts {
-        resolve(.object(overrides.mapValues { .array($0.map(JSONNode.string)) }))
+        if overrides.isEmpty { return defaultResolved }
+        return resolve(.object(overrides.mapValues { .array($0.map(JSONNode.string)) }))
     }
 
     /// DEFAULT_SHORTCUTS.

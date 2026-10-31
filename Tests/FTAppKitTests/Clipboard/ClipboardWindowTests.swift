@@ -69,7 +69,7 @@ struct WritingWindow {
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite(.windowlessAlone) struct ClipboardWindowTests: ListTesting {
+    @Suite struct ClipboardWindowTests: ListTesting {
         private func path(_ window: WritingWindow, _ name: String) -> String {
             window.folder.appendingPathComponent(name).path
         }
