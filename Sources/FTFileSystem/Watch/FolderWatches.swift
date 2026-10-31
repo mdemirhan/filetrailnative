@@ -130,6 +130,16 @@ public final class FolderWatches {
         Task { await compareModifiedTime(windowID, watch) }
     }
 
+    /// What watching `path` covers changed (a disk came or went, with its part of the Trash): the watches of it start
+    /// again, and the windows read it again.
+    public func restartWatches(of path: String) {
+        for (windowID, watch) in watches where watch.path == path {
+            watch.stop?()
+            start(windowID, watch)
+            noteChange(windowID, watch, name: nil)
+        }
+    }
+
     public func stopAll() {
         for windowID in Array(watches.keys) {
             stop(windowID)

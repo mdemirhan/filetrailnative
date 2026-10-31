@@ -10,16 +10,18 @@ import Foundation
 public actor DirectoryService {
     private let fileSystem: any ExplorerFileSystem
     private let kinds: KindLabeler
+    private let trash: TrashFolders
     /// Shared with the folder watch, which tells it what changed outside the app.
     public nonisolated let cache: ResponseCache
 
     public init(
         fileSystem: any ExplorerFileSystem = NativeFileSystem(), cache: ResponseCache = ResponseCache(),
-        kinds: KindLabeler = .system
+        kinds: KindLabeler = .system, trash: TrashFolders = TrashFolders()
     ) {
         self.fileSystem = fileSystem
         self.cache = cache
         self.kinds = kinds
+        self.trash = trash
     }
 
     /// The children of a folder that are folders (or links to folders), by name.
@@ -30,19 +32,30 @@ public actor DirectoryService {
         }
     }
 
+    /// The Trash is listed as Finder shows it, with what is in the Trash of every disk, and a disk's own Trash is the
+    /// same folder by another name. Without Full Disk Access, when only the home folder's is refused, a disk's own Trash
+    /// can still be opened as itself.
     public func snapshot(
         path: String, includeHidden: Bool = false, sortBy: DirectorySortKey = .name,
         sortDirection: SortDirection = .ascending, foldersFirst: Bool = true
     ) async throws -> DirectorySnapshot {
-        let fileSystem = fileSystem
-        let kinds = kinds
-        let key = ListingKey(
-            path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
-            foldersFirst: foldersFirst)
-        return try await cache.directorySnapshot(key) {
-            try ExplorerListing.snapshot(
+        let listed = trash.listedFolder(for: path)
+        func read(_ path: String, alsoListing: [String]) async throws -> DirectorySnapshot {
+            let fileSystem = fileSystem
+            let kinds = kinds
+            let key = ListingKey(
                 path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
-                foldersFirst: foldersFirst, fileSystem, kinds: kinds)
+                foldersFirst: foldersFirst)
+            return try await cache.directorySnapshot(key) {
+                try ExplorerListing.snapshot(
+                    path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
+                    foldersFirst: foldersFirst, alsoListing: alsoListing, fileSystem, kinds: kinds)
+            }
+        }
+        do {
+            return try await read(listed, alsoListing: trash.listedWith(listed))
+        } catch  where listed != path {
+            return try await read(path, alsoListing: [])
         }
     }
 

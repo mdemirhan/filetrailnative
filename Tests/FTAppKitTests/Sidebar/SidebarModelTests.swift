@@ -136,6 +136,15 @@ struct SidebarModelTests {
 
     // T-8b29ba2d T-ed81b82b B-TREE-081
     // B-NAV-082 B-TREE-083
+    @Test @MainActor func aFolderInADisksTrashLeavesTheTreeAloneAndSelectsTheTrash() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo/src", .other)
+        let root = rig.model.rootPath
+        await rig.model.folderOpened("/Volumes/Photos/.Trashes/501/album", .other)
+        #expect(rig.model.rootPath == root)
+        #expect(rig.model.selected == .location("/Users/demo/.Trash"))
+    }
+
     @Test @MainActor func theTrashOpenedFromTheSidebarLeavesTheTreeAlone() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", .other)

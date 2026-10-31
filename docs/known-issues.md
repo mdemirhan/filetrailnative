@@ -11,6 +11,16 @@ These have tests, which can't show all of what a person gets:
 - **Scroll wheel in a marquee**: a real wheel and a trackpad.
 - **Drop from another File Trail window**: a real drag, that the target window comes forward for its dialog.
 
+## The Trash across disks
+
+The Trash lists what is in the Trash of every local disk (`TrashFolders`), as Finder's does. Three things still see only the home folder's:
+
+- **Its size**: Show Info on the Trash, and the Trash's row with folder sizes on. The status bar leaves the size out while other disks' items are listed.
+- **Search from the Trash**: it searches the home folder's Trash only. A filter of the list covers every disk.
+- **The tree**: a `.Trash` row, with hidden files shown, opens the home folder's alone.
+
+There is no Put Back, on any disk.
+
 ## Tests to watch
 
 `aChangeToTheFolderBeingLeftIsDropped` failed once in a full run on a busy Mac: one more read of the folder being left than its baseline (2026-10-31). Cause unknown.

@@ -134,6 +134,21 @@ struct FolderWatchesTests {
         #expect(harness.watched.isEmpty)
     }
 
+    @Test func aDiskComingOrGoingStartsTheWatchesOfTheTrashAgainAndReadsItAgain() {
+        let harness = Harness()
+        harness.watches.watch(windowID: 1, path: "/trash")
+        harness.watches.watch(windowID: 2, path: "/other")
+        let started = harness.started
+
+        harness.watches.restartWatches(of: "/trash")
+        #expect(harness.stopped == ["/trash"])
+        #expect(harness.started == started + 1)
+        harness.scheduler.advance(by: FolderWatches.settleMilliseconds)
+        #expect(harness.changes.map(\.windowID) == [1])
+        #expect(harness.changes.first?.change.changedPaths == nil)
+        harness.watches.stopAll()
+    }
+
     // T-2ae9187d F-201 F-202 B-VIEW-188
     @Test func tellsOfABurstOfChangesOnceWhenItSettlesNamingWhatChanged() {
         let harness = Harness()

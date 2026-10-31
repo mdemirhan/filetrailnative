@@ -953,12 +953,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let batch = metadataQueue
         metadataQueue = []
         guard !batch.isEmpty else { return }
-        guard searchDisplay != nil else {
-            readMetadata(in: folderPath, batch)
-            return
-        }
-        // Results are spread over many folders: one batch per folder (`directory:getMetadataBatch`), each shown as it
-        // comes, so a slow folder keeps only its own rows waiting (`loadSearchResultMetadata`).
+        // Search results are spread over many folders, and the Trash over the disks: one batch per folder
+        // (`directory:getMetadataBatch`), each shown as it comes, so a slow folder keeps only its own rows waiting
+        // (`loadSearchResultMetadata`).
         var byFolder: [String: [String]] = [:]
         var order: [String] = []
         for path in batch {
@@ -1012,7 +1009,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if selection.isEmpty, searchDisplay != nil {
             size = nil
         } else if selection.isEmpty {
-            size = folderPath.isEmpty ? nil : StatusSummary.folderSize(folderSizes.entry(folderPath))
+            // A folder's size says nothing of a Trash that also lists what is on other disks.
+            let listsOtherFolders =
+                Paths.isTrashFolder(folderPath, homePath: loaders.homePath)
+                && listed.contains { NodePath.dirname($0.path) != folderPath }
+            size =
+                folderPath.isEmpty || listsOtherFolders ? nil : StatusSummary.folderSize(folderSizes.entry(folderPath))
         } else {
             let items = selectedEntries.map {
                 SelectionItem(path: $0.path, isFolderSizeEligible: $0.isFolderSizeEligible)
