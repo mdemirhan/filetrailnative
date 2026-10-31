@@ -102,6 +102,8 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
     private let badge = SidebarBadgeView()
     private let eject = SidebarEjectView()
     private let dropBadge = SidebarBadgeView()
+    private static let dropBadgeTitle = "Drop here"
+    private static var dropBadgeFont: NSFont { ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600) }
     private let dropLine = SidebarPlainView()
     /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
     private let markGlyph = ClipboardMarkGlyph(identifier: "sidebar.row.clipboardMark")
@@ -288,7 +290,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         badge.isHidden = !item.isSymlink
         badge.fill = ChromeColors.color(palette.bgHover)
         badge.textColor = ChromeColors.color(palette.textSecondary)
-        badge.apply(layout: layout)
+        badge.apply(title: "Alias", font: ChromeColors.font(size: layout.badgeFontSize))
 
         // The eject button
         let showsEject = item.kind == .location && item.canEject && item.path != nil && state.drop != .valid
@@ -305,7 +307,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         dropBadge.isHidden = state.drop != .valid
         dropBadge.fill = ChromeColors.color(accent.solidButton)
         dropBadge.textColor = ChromeColors.color(accent.onSolid)
-        dropBadge.apply(layout: layout)
+        dropBadge.apply(title: Self.dropBadgeTitle, font: Self.dropBadgeFont)
         dropLine.isHidden = state.dropLine == nil
         dropLine.layer?.backgroundColor = ChromeColors.color(accent.solid).cgColor
         dropLine.layer?.cornerRadius = 1
@@ -394,8 +396,8 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
             limit = ejectX - layout.rowGap
         }
         if !dropBadge.isHidden {
-            let font = ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600)
-            let textWidth = SidebarText.width("Drop here", font: font)
+            let font = Self.dropBadgeFont
+            let textWidth = SidebarText.width(Self.dropBadgeTitle, font: font)
             let pillWidth = textWidth + 20
             let pillHeight = SidebarText.lineHeight(font) + 8
             dropBadge.frame = NSRect(

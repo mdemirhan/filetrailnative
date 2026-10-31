@@ -307,9 +307,9 @@ final class SidebarEjectView: SidebarPlainView {
     }
 }
 
-/// The "Alias" badge after a link's name (`.tree-label-badge`).
+/// A pill of text in a row: the "Alias" badge after a link's name (`.tree-label-badge`), and "Drop here" on a drop target.
 final class SidebarBadgeView: SidebarPlainView {
-    private let label = TextBoxField(labelWithString: "Alias")
+    private let label = TextBoxField(labelWithString: "")
     var fill = NSColor.clear
     var density = Density.comfortable
 
@@ -335,13 +335,12 @@ final class SidebarBadgeView: SidebarPlainView {
         return ceil(size.width) + 2 * layout.badgePaddingX
     }
 
-    func apply(layout: SidebarLayout) {
-        let font = ChromeColors.font(size: layout.badgeFontSize)
+    func apply(title: String, font: NSFont) {
         label.attributedStringValue = NSAttributedString(
-            string: "Alias",
+            string: title,
             attributes: [
                 .font: font, .foregroundColor: label.textColor ?? .secondaryLabelColor,
-                .kern: layout.badgeFontSize * 0.02,
+                .kern: font.pointSize * 0.02,
             ])
     }
 

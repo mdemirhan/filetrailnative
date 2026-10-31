@@ -500,6 +500,12 @@ extension ExplorerWindowlessTests {
             var invalid = disk
             invalid.drop = .invalid
             #expect(shows("sidebar.row.dropBadge", valid))
+            let pill = findViews("sidebar.row.dropBadge", in: cell(valid)).first as? SidebarBadgeView
+            #expect(pill?.title == "Drop here")
+            var link = real
+            link.item.isSymlink = true
+            let linkBadge = findViews("sidebar.row.badge", in: cell(link)).first as? SidebarBadgeView
+            #expect(linkBadge?.title == "Alias")
             #expect(!shows("sidebar.row.dropBadge", invalid))
             #expect(!shows("sidebar.row.dropBadge", disk))
             #expect(!shows("sidebar.row.eject", valid))
