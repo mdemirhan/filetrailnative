@@ -62,6 +62,8 @@ public struct DirectoryEntry: Sendable, Hashable, Codable {
     public var hasCustomIcon: Bool?
     /// Only for a folder with a colored tag: the color Finder draws it in, its last tag's.
     public var tagColor: FinderTagColor?
+    /// Only for a folder known to hold nothing when listed; Finder draws one without the sheet of paper.
+    public var isEmptyFolder: Bool?
 }
 
 public struct DirectorySnapshot: Sendable, Hashable, Codable {

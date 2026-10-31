@@ -18,10 +18,13 @@ public struct IconEntry: Sendable, Equatable {
     public var hasCustomIcon: Bool
     /// A folder's tag color, which it is drawn in.
     public var tagColor: FinderTagColor?
+    /// A folder known to hold nothing. One not known to is drawn as holding something.
+    public var isEmptyFolder: Bool
 
     public init(
         path: String, name: String = "", extension: String = "", kind: IconEntryKind = .file,
-        isExecutable: Bool? = nil, hasCustomIcon: Bool = false, tagColor: FinderTagColor? = nil
+        isExecutable: Bool? = nil, hasCustomIcon: Bool = false, tagColor: FinderTagColor? = nil,
+        isEmptyFolder: Bool = false
     ) {
         self.path = path
         self.name = name
@@ -30,18 +33,20 @@ public struct IconEntry: Sendable, Equatable {
         self.isExecutable = isExecutable
         self.hasCustomIcon = hasCustomIcon
         self.tagColor = tagColor
+        self.isEmptyFolder = isEmptyFolder
     }
 }
 
 /// The plain icons shared by a whole kind of item, drawn from a sample item of that kind
 /// (`generic` in the original's `system:getFileIcon`).
 public enum GenericIconKind: String, Sendable, CaseIterable {
-    case folder, file, executable
+    case folder, emptyFolder, file, executable
 
     /// The cache key of the kind.
     public var cacheKey: String {
         switch self {
         case .folder: "kind:directory"
+        case .emptyFolder: "kind:directory:empty"
         case .file: "kind:file"
         case .executable: "kind:executable"
         }
@@ -55,20 +60,36 @@ public struct IconRequest: Sendable, Equatable {
     public var generic: GenericIconKind?
     /// Drawn as the plain folder of this tag color, which all such folders share.
     public var tint: FinderTagColor?
+    /// A folder that holds nothing: which sample of a tag color it is drawn from.
+    public var isEmptyFolder: Bool
+    /// A folder asked for by its path, with the picture of its own that Finder draws.
+    public var isFolder: Bool
 
-    public init(cacheKey: String, path: String, generic: GenericIconKind? = nil, tint: FinderTagColor? = nil) {
+    public init(
+        cacheKey: String, path: String, generic: GenericIconKind? = nil, tint: FinderTagColor? = nil,
+        isEmptyFolder: Bool = false, isFolder: Bool = false
+    ) {
         self.cacheKey = cacheKey
         self.path = path
         self.generic = generic
         self.tint = tint
+        self.isEmptyFolder = isEmptyFolder
+        self.isFolder = isFolder
     }
 
     /// The icon of a listing entry. Files share one icon per extension, extension-less files one of two,
-    /// and ordinary folders one; apps, bundles, symlinks, volumes and special folders have their own.
+    /// and ordinary folders one for holding something and one for holding nothing; apps, bundles, symlinks,
+    /// volumes and special folders have their own.
     public init(entry: IconEntry) {
         let key = IconCacheKey.key(for: entry)
-        let tint = entry.tagColor.flatMap { key == IconCacheKey.tintedFolderKey($0) ? $0 : nil }
-        self.init(cacheKey: key, path: entry.path, generic: IconCacheKey.genericKind(forKey: key), tint: tint)
+        let tint = entry.tagColor.flatMap {
+            key == IconCacheKey.tintedFolderKey($0, isEmpty: entry.isEmptyFolder) ? $0 : nil
+        }
+        let generic = IconCacheKey.genericKind(forKey: key)
+        self.init(
+            cacheKey: key, path: entry.path, generic: generic, tint: tint,
+            isEmptyFolder: tint != nil && entry.isEmptyFolder,
+            isFolder: entry.kind == .directory && generic == nil && tint == nil)
     }
 
     /// An application's own icon, for the app pop-ups and lists in Settings.
@@ -99,10 +120,12 @@ public enum IconCacheKey {
                 ? (entry.path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? "")
                 : entry.name
             // A disk's top folder is drawn as the disk: a drive, a disk image, a network share.
+            let isEmpty = entry.isEmptyFolder
             if entry.hasCustomIcon || isVolumeRootPath(entry.path) || specialFolderNames.contains(name) {
-                return "path:\(entry.path)"
+                return isEmpty ? "path:\(entry.path):empty" : "path:\(entry.path)"
             }
-            return entry.tagColor.map(tintedFolderKey) ?? GenericIconKind.folder.cacheKey
+            return entry.tagColor.map { tintedFolderKey($0, isEmpty: isEmpty) }
+                ?? (isEmpty ? GenericIconKind.emptyFolder : .folder).cacheKey
         case .file:
             break
         }
@@ -118,9 +141,9 @@ public enum IconCacheKey {
         return "path:\(entry.path)"
     }
 
-    /// The key the folders of a tag color share.
-    static func tintedFolderKey(_ color: FinderTagColor) -> String {
-        "\(GenericIconKind.folder.cacheKey):\(color.rawValue)"
+    /// The key the folders of a tag color share, those holding nothing apart from the others.
+    static func tintedFolderKey(_ color: FinderTagColor, isEmpty: Bool = false) -> String {
+        "\((isEmpty ? GenericIconKind.emptyFolder : .folder).cacheKey):\(color.rawValue)"
     }
 
     /// The sample kind to draw a shared key from; nil for keys that go with one path.

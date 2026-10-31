@@ -29,7 +29,7 @@ extension DirectoryEntry {
         }
         return IconEntry(
             path: path, name: name, extension: fileExtension, kind: iconKind, isExecutable: isExecutable,
-            hasCustomIcon: hasCustomIcon == true, tagColor: tagColor)
+            hasCustomIcon: hasCustomIcon == true, tagColor: tagColor, isEmptyFolder: isEmptyFolder == true)
     }
 
     var sizeSortKey: SizeSortKey {

@@ -132,16 +132,63 @@ import Testing
         #expect(special.tint == nil)
     }
 
-    @Test func theSystemDrawsATintedSampleUnlikeThePlainFolder() throws {
+    @Test func foldersHoldingNothingHaveTheirOwnKeysAndOneNotKnownToIsDrawnAsHoldingSomething() {
+        let folder = IconRequest(entry: IconEntry(path: "/a/b", name: "b", kind: .directory))
+        #expect(folder.generic == .folder)
+        let empty = IconRequest(entry: IconEntry(path: "/a/c", name: "c", kind: .directory, isEmptyFolder: true))
+        #expect(empty.generic == .emptyFolder)
+        let redFull = IconRequest(entry: IconEntry(path: "/a/d", name: "d", kind: .directory, tagColor: .red))
+        let redEmpty = IconRequest(
+            entry: IconEntry(path: "/a/e", name: "e", kind: .directory, tagColor: .red, isEmptyFolder: true))
+        #expect(redFull.cacheKey != redEmpty.cacheKey)
+        #expect(redEmpty.tint == .red)
+        #expect(redEmpty.isEmptyFolder)
+        #expect(!redFull.isEmptyFolder)
+        // A folder with its own picture is drawn again when that changes.
+        let custom = IconRequest(
+            entry: IconEntry(path: "/a/f", name: "f", kind: .directory, hasCustomIcon: true, isEmptyFolder: true))
+        #expect(custom.cacheKey == "path:/a/f:empty")
+        #expect(custom.isFolder)
+    }
+
+    @Test func quickLookDrawsTheSampleFoldersAsFinderDoes() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
         let samples = IconSamples(root: root)
         let source = WorkspaceIconSource()
-        let plain = source.icon(atPath: try samples.path(for: .folder))?.tiffRepresentation
-        let red = source.icon(atPath: try samples.path(forTint: .red))?.tiffRepresentation
-        let blue = source.icon(atPath: try samples.path(forTint: .blue))?.tiffRepresentation
+        func picture(_ path: String) async -> Data? { await source.folderIcon(atPath: path)?.tiffRepresentation }
+        let plain = await picture(try samples.path(for: .folder))
+        let empty = await picture(try samples.path(for: .emptyFolder))
+        let red = await picture(try samples.path(forTint: .red))
+        let redEmpty = await picture(try samples.path(forTint: .red, isEmpty: true))
+        let blue = await picture(try samples.path(forTint: .blue))
+        #expect(plain != nil)
+        #expect(plain != empty)
         #expect(red != plain)
+        #expect(red != redEmpty)
         #expect(red != blue)
+    }
+
+    @Test func theDiskReadSaysWhichFoldersHoldNothing() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let files = FileManager.default
+        for name in ["empty", "full", "hidden"] {
+            try files.createDirectory(at: root.appendingPathComponent(name), withIntermediateDirectories: true)
+        }
+        try Data().write(to: root.appendingPathComponent("full/item"))
+        try Data().write(to: root.appendingPathComponent("hidden/.DS_Store"))
+        try Data().write(to: root.appendingPathComponent("file"))
+        let records = try NativeFileSystem().readDirectory(root.path)
+        func isEmpty(_ name: String) -> Bool? { records.first { $0.name == name }?.isEmptyFolder }
+        #expect(isEmpty("empty") == true)
+        #expect(isEmpty("full") == false)
+        // The count is all that is read: a hidden item counts.
+        #expect(isEmpty("hidden") == false)
+        #expect(isEmpty("file") == false)
+        // What comes after the count in a record is still read right.
+        #expect(records.first { $0.name == "file" }?.lstat?.size == 0)
+        #expect(records.first { $0.name == "empty" }?.lstat?.type == .directory)
     }
 
     @Test func theDiskReadSaysTheLabelOfATaggedFolder() throws {

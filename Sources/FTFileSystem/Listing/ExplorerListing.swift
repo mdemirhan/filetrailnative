@@ -232,6 +232,7 @@ enum ExplorerListing {
                 if kind == .directory {
                     if record.hasCustomIcon { entry.hasCustomIcon = true }
                     entry.tagColor = record.tagColor
+                    if record.isEmptyFolder { entry.isEmptyFolder = true }
                 }
                 switch sortBy {
                 case .modified:

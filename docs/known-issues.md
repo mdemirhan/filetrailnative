@@ -12,6 +12,15 @@ These have tests, which can't show all of what a person gets:
 - **The row of tag colors in a menu**: pointing at a color and clicking it in a real menu; the tests press it through accessibility, and a capture can't show a native menu.
 - **Drop from another File Trail window**: a real drag, that the target window comes forward for its dialog.
 
+## Folder icons
+
+A folder holding something shows Finder's sheet of paper, read from the folder's count on APFS and HFS+ when the folder around it is listed. That leaves some folders different from Finder:
+
+- **Only hidden items**: a folder with nothing but a `.DS_Store` or a `.git` has the sheet. Finder's draws it as empty, at least as Quick Look does; telling them apart would mean opening every folder.
+- **Other disks**: every folder has the sheet, empty or not, as their counts aren't relied on.
+- **Changes inside a folder**: the icon changes when the folder around it is next read, not as they happen.
+- **The tree, Info for the current folder and the clipboard list**: these don't know the count, so every plain folder has the sheet.
+
 ## The Trash across disks
 
 The Trash lists what is in the Trash of every local disk (`TrashFolders`), as Finder's does. Three things still see only the home folder's:

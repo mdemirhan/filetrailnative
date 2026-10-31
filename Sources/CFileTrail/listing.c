@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/attr.h>
+#include <sys/mount.h>
 #include <sys/stat.h>
 #include <sys/vnode.h>
 #include <unistd.h>
@@ -44,6 +45,13 @@ static int grow_names(FTDirListing *listing, size_t *capacity, size_t needed) {
     return 0;
 }
 
+// APFS and HFS+ keep a folder's count with the folder, so reading it doesn't look inside. Other disks may have to,
+// or may not answer.
+static int stores_folder_counts(int fd) {
+    struct statfs disk;
+    return fstatfs(fd, &disk) == 0 && (strcmp(disk.f_fstypename, "apfs") == 0 || strcmp(disk.f_fstypename, "hfs") == 0);
+}
+
 int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *listing) {
     memset(listing, 0, sizeof(*listing));
     int fd = open(path, O_RDONLY | O_DIRECTORY);
@@ -73,6 +81,9 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
     }
     if (attributes & FT_READ_SIZE) {
         request.fileattr = ATTR_FILE_DATALENGTH;
+    }
+    if ((attributes & FT_READ_EMPTY_FOLDERS) && stores_folder_counts(fd)) {
+        request.dirattr = ATTR_DIR_ENTRYCOUNT;
     }
 
     size_t entry_capacity = 0;
@@ -154,6 +165,10 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
             if (returned.commonattr & ATTR_CMN_ACCESSMASK) {
                 entry.mode = *(uint32_t *)field;
                 entry.mode_valid = 1;
+                field += sizeof(uint32_t);
+            }
+            if (returned.dirattr & ATTR_DIR_ENTRYCOUNT) {
+                entry.is_empty_folder = *(uint32_t *)field == 0;
                 field += sizeof(uint32_t);
             }
             if (entry.type != FT_ENTRY_DIRECTORY && (returned.fileattr & ATTR_FILE_DATALENGTH)) {

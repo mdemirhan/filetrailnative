@@ -1,16 +1,40 @@
 // Port of apps/desktop/src/renderer/lib/fileIcons.tsx (cache, requests, preloads) and getFileIconHandler (apps/desktop/src/main/bootstrap/systemHandlers.ts)
 import AppKit
+import QuickLookThumbnailing
 
 /// Draws the icon macOS has for a path (`nativeGetFileIcon` of the original, minus the PNG round trip).
 public protocol IconSource: Sendable {
     func icon(atPath path: String) -> NSImage?
+    /// The icon of a folder as Finder draws it.
+    func folderIcon(atPath path: String) async -> NSImage?
+}
+
+extension IconSource {
+    public func folderIcon(atPath path: String) async -> NSImage? {
+        icon(atPath: path)
+    }
 }
 
 public struct WorkspaceIconSource: IconSource {
+    /// In points, drawn at twice that in pixels: enough for the largest icon a window shows.
+    static let folderIconSide = 128.0
+
     public init() {}
 
     public func icon(atPath path: String) -> NSImage? {
         NSWorkspace.shared.icon(forFile: path)
+    }
+
+    /// Quick Look's icon, as NSWorkspace's has neither the sheet of paper of a folder holding something nor the color
+    /// of a tag. NSWorkspace's stands in if Quick Look has none.
+    public func folderIcon(atPath path: String) async -> NSImage? {
+        let side = Self.folderIconSide
+        let request = QLThumbnailGenerator.Request(
+            fileAt: URL(fileURLWithPath: path), size: CGSize(width: side, height: side), scale: 2,
+            representationTypes: .icon)
+        guard let representation = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
+        else { return icon(atPath: path) }
+        return NSImage(cgImage: representation.cgImage, size: NSSize(width: side, height: side))
     }
 }
 
@@ -46,7 +70,7 @@ public final class FileIconStore {
     /// key does not ask for the icon of every item passed on the way.
     public nonisolated static let deferredLoadDelay: Duration = .milliseconds(80)
     /// The icons nearly every folder shows, asked for once when the window opens.
-    public nonisolated static let preloadedKinds: [GenericIconKind] = [.folder, .file]
+    public nonisolated static let preloadedKinds: [GenericIconKind] = [.folder, .emptyFolder, .file]
 
     private let source: any IconSource
     private let samples: IconSamples
@@ -105,7 +129,7 @@ public final class FileIconStore {
         cache.remove(request.cacheKey)
     }
 
-    /// Asks for the plain folder and document icons, so the first folder already draws them.
+    /// Asks for the plain folder icons and the document icon, so the first folder already draws them.
     public func preloadGenericIcons() {
         for kind in Self.preloadedKinds {
             let request = IconRequest.generic(kind)
@@ -123,7 +147,7 @@ public final class FileIconStore {
         let samples = self.samples
         let task = Task { [weak self] () -> NSImage? in
             let image = await Task.detached(priority: .userInitiated) {
-                Self.draw(request, source: source, samples: samples)
+                await Self.draw(request, source: source, samples: samples)
             }.value
             self?.finish(request.cacheKey, image)
             return image
@@ -138,17 +162,24 @@ public final class FileIconStore {
     }
 
     /// The generic kinds are drawn from sample items; a sample that can't be made gives no icon.
-    private nonisolated static func draw(_ request: IconRequest, source: any IconSource, samples: IconSamples)
+    private nonisolated static func draw(_ request: IconRequest, source: any IconSource, samples: IconSamples) async
         -> NSImage?
     {
         if let tint = request.tint {
-            let sample = (try? samples.path(forTint: tint)) ?? (try? samples.path(for: .folder))
-            return sample.flatMap(source.icon(atPath:))
+            let plain: GenericIconKind = request.isEmptyFolder ? .emptyFolder : .folder
+            guard
+                let sample = (try? samples.path(forTint: tint, isEmpty: request.isEmptyFolder))
+                    ?? (try? samples.path(for: plain))
+            else { return nil }
+            return await source.folderIcon(atPath: sample)
         }
         guard let kind = request.generic else {
-            return source.icon(atPath: request.path)
+            return request.isFolder ? await source.folderIcon(atPath: request.path) : source.icon(atPath: request.path)
         }
         guard let path = try? samples.path(for: kind) else { return nil }
-        return source.icon(atPath: path)
+        switch kind {
+        case .folder, .emptyFolder: return await source.folderIcon(atPath: path)
+        case .file, .executable: return source.icon(atPath: path)
+        }
     }
 }

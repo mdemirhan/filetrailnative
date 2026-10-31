@@ -143,13 +143,14 @@ private func entry(
 
             store.preloadGenericIcons()
             store.preloadGenericIcons()
-            await waitUntil { store.cachedCount == 2 }
+            await waitUntil { store.cachedCount == 3 }
 
             // Each kind once.
             let folderPath = try samples.path(for: .folder)
+            let emptyFolderPath = try samples.path(for: .emptyFolder)
             let documentPath = try samples.path(for: .file)
-            #expect(Set(source.paths) == [folderPath, documentPath])
-            #expect(source.paths.count == 2)
+            #expect(Set(source.paths) == [folderPath, emptyFolderPath, documentPath])
+            #expect(source.paths.count == 3)
             // Drawn from the first look, with nothing more asked for.
             guard case .image = store.lookup(entry("/a/folder", kind: .directory)) else {
                 Issue.record("no folder icon")
@@ -159,7 +160,7 @@ private func entry(
                 Issue.record("no document icon")
                 return
             }
-            #expect(source.paths.count == 2)
+            #expect(source.paths.count == 3)
         }
     }
 
@@ -244,18 +245,24 @@ private func entry(
 
 @Suite struct IconSamplesTests {
     // T-f0300b75 F-223
-    @Test func samplesAreAnEmptyFolderAPlainFileAndAnExecutable() throws {
+    @Test func samplesAreAFolderWithAnItemAnEmptyFolderAPlainFileAndAnExecutable() throws {
         try withTemporaryDirectory { directory in
             let samples = IconSamples(root: directory.appending("filetrail-icon-samples"))
             let folder = try samples.path(for: .folder)
+            let emptyFolder = try samples.path(for: .emptyFolder)
             let document = try samples.path(for: .file)
             let executable = try samples.path(for: .executable)
-            #expect(Set([folder, document, executable]).count == 3)
+            #expect(Set([folder, emptyFolder, document, executable]).count == 4)
             #expect(folder.contains("filetrail-icon-samples"))
 
             var isFolder: ObjCBool = false
             #expect(FileManager.default.fileExists(atPath: folder, isDirectory: &isFolder) && isFolder.boolValue)
-            #expect(try FileManager.default.contentsOfDirectory(atPath: folder).isEmpty)
+            #expect(try FileManager.default.contentsOfDirectory(atPath: folder) == ["item"])
+            #expect(try FileManager.default.contentsOfDirectory(atPath: emptyFolder).isEmpty)
+            let red = try samples.path(forTint: .red)
+            let redEmpty = try samples.path(forTint: .red, isEmpty: true)
+            #expect(try FileManager.default.contentsOfDirectory(atPath: red) == ["item"])
+            #expect(try FileManager.default.contentsOfDirectory(atPath: redEmpty).isEmpty)
             for (path, mode) in [(document, 0o644), (executable, 0o755)] {
                 let attributes = try FileManager.default.attributesOfItem(atPath: path)
                 #expect(attributes[.size] as? Int == 0)

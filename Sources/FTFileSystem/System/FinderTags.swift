@@ -88,21 +88,6 @@ public enum FinderTags {
         try url.setResourceValues(values)
     }
 
-    /// Customizes a folder as Finder does: what it shows, and the flag in Finder's information that says to look.
-    static func markCustomized(_ path: String, configuration: String) throws {
-        let data = Data(configuration.utf8)
-        var result = data.withUnsafeBytes {
-            setxattr(path, "com.apple.icon.folder#S", $0.baseAddress, data.count, 0, 0)
-        }
-        guard result == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
-        var finderInfo = [UInt8](repeating: 0, count: 32)
-        // What is there stays: the label is in it.
-        _ = getxattr(path, "com.apple.FinderInfo", &finderInfo, 32, 0, 0)
-        finderInfo[8] |= 0x04
-        result = setxattr(path, "com.apple.FinderInfo", finderInfo, 32, 0, 0)
-        guard result == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
-    }
-
     /// Which colors are on the items, for the menu's row.
     public static func states(of paths: [String]) -> [FinderTagColor: FinderTagColorState] {
         var counts: [FinderTagColor: Int] = [:]
