@@ -15,6 +15,8 @@ These have tests, which can't show all of what a person gets:
 
 `aChangeToTheFolderBeingLeftIsDropped` failed once in a full run on a busy Mac: one more read of the folder being left than its baseline (2026-10-31). Cause unknown.
 
+`detachesWhatAProcessThatIsGoneLeftAttached` failed once in a full run while other builds ran: `hdiutil attach` exited with an error (2026-10-31). Cause unknown; it passed in every other run.
+
 Crashes of the test processes that happened once and haven't come back, cause unknown; `scripts/ci.sh` now keeps the logs of a failed run and names its crash reports:
 
 - `FTAppKitTests`: `WindowWriteActions.coordinator` read an `unowned` value that had gone (2026-10-30 12:39).
