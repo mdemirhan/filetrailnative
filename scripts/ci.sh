@@ -1,10 +1,11 @@
 #!/bin/bash
 # Quiet CI: one line per step, failures extracted from the log. Full logs are in build/logs/<step>.log.
-# Usage: scripts/ci.sh [--scope <test filter>] [--full]
+# Usage: scripts/ci.sh [--scope <test filter> | --affected] [--full]
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
 scope=""
+affected=0
 full=0
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -12,16 +13,24 @@ while [ $# -gt 0 ]; do
         scope="${2:-}"
         shift 2
         ;;
+    --affected)
+        affected=1
+        shift
+        ;;
     --full)
         full=1
         shift
         ;;
     *)
-        echo "usage: scripts/ci.sh [--scope <filter>] [--full]" >&2
+        echo "usage: scripts/ci.sh [--scope <filter> | --affected] [--full]" >&2
         exit 2
         ;;
     esac
 done
+if [ -n "$scope" ] && [ "$affected" = 1 ]; then
+    echo "scripts/ci.sh: --scope and --affected don't go together" >&2
+    exit 2
+fi
 
 logs=build/logs
 mkdir -p "$logs"
@@ -110,22 +119,109 @@ step() {
     fi
 }
 
+# The files changed on this branch, committed or not, and in commits not yet on GitHub.
+changed_files() {
+    {
+        git diff --name-only main...HEAD
+        git diff --name-only origin/main...HEAD
+        git diff --name-only HEAD
+        git ls-files --others --exclude-standard
+    } 2>/dev/null | sort -u
+}
+
+# The test bundles that can see the files on stdin, one line of names: "all", or "none". A bundle links only the targets
+# below it (FTFoundation, FTFileSystem, FTOperations, FTAppKit), so a change reaches its target's bundle and those above.
+# What isn't known to reach only some bundles reaches them all: the Golden files and scripts/ are read by the tests.
+affected_bundles() {
+    local all=0 foundation=0 fileSystem=0 operations=0 appKit=0 file names=""
+    while IFS= read -r file; do
+        case "$file" in
+        Sources/FTOperations/*) operations=1 appKit=1 ;;
+        Sources/FTFileSystem/*) fileSystem=1 operations=1 appKit=1 ;;
+        Sources/FTAppKit/* | Sources/FileTrail/*) appKit=1 ;;
+        Tests/FTFoundationTests/*) foundation=1 ;;
+        Tests/FTFileSystemTests/*) fileSystem=1 ;;
+        Tests/FTOperationsTests/*) operations=1 ;;
+        Tests/FTAppKitTests/*) appKit=1 ;;
+        Sources/* | Tests/*) all=1 ;;
+        docs/* | *.md) ;;
+        *) all=1 ;;
+        esac
+    done
+    if [ "$all" = 1 ]; then
+        echo all
+        return
+    fi
+    [ "$foundation" = 1 ] && names="$names FTFoundationTests"
+    [ "$fileSystem" = 1 ] && names="$names FTFileSystemTests"
+    [ "$operations" = 1 ] && names="$names FTOperationsTests"
+    [ "$appKit" = 1 ] && names="$names FTAppKitTests"
+    echo "${names:- none}" | cut -c2-
+}
+
+# Empty runs every bundle.
+bundles=""
+if [ "$affected" = 1 ]; then
+    if git rev-parse --verify -q 'main^{commit}' >/dev/null; then
+        bundles="$(changed_files | affected_bundles)"
+    else
+        bundles=all
+    fi
+    echo "affected: $bundles" >>"$out"
+    [ "$bundles" = all ] && bundles=""
+fi
+
 WARN_FAILS=1 step build 'error:|warning:' swift build
 
 # The windowless explorer suites (FTAppKitTests' ExplorerWindowlessTests) spread over this many processes in a full
 # run: they all wait on their process's main thread, so one process is most of the run's time.
 windowless_processes="${FILETRAIL_WINDOWLESS_PROCESSES:-3}"
 
-# The windowless suites in `windowless_processes` groups of about as many tests each, one filter a line.
+# Each windowless suite's seconds in the last run that had them, for the next run's groups. In build/, so a clean build
+# starts again from the number of tests.
+windowless_times="$logs/windowless-times.txt"
+
+# The windowless suites in `windowless_processes` groups of about the same time each, one filter a line. A suite with
+# no time yet counts as its tests at the others' average.
 windowless_groups() {
     run_bundle FTAppKitTests --list-tests 2>/dev/null |
-        awk -F/ '$1 == "FTAppKitTests.ExplorerWindowlessTests" && NF > 2 { count[$2]++ }
-            END { for (suite in count) print count[suite], suite }' |
+        awk -F/ -v times="$windowless_times" '
+            BEGIN { while ((getline line < times) > 0) { split(line, f, " "); seconds[f[2]] = f[1] } }
+            $1 == "FTAppKitTests.ExplorerWindowlessTests" && NF > 2 { count[$2]++ }
+            END {
+                for (suite in count) if (suite in seconds) { known += seconds[suite]; tests += count[suite] }
+                average = tests ? known / tests : 1
+                for (suite in count) print (suite in seconds ? seconds[suite] : count[suite] * average), suite
+            }' |
         sort -k1,1nr -k2,2 |
         awk -v n="$windowless_processes" '
             { best = 0; for (i = 1; i < n; i++) if (load[i] < load[best]) best = i
               load[best] += $1; names[best] = names[best] (names[best] == "" ? "" : "|") $2 }
             END { for (i = 0; i < n; i++) if (names[i] != "") print "ExplorerWindowlessTests/(" names[i] ")/" }'
+}
+
+# record_windowless_times <dir>: each suite's time from the ⏱ lines of the windowless logs there, the results file beside
+# each log saying which suite a test is in.
+record_windowless_times() {
+    local log
+    for log in "$1"/FTAppKitTests-windowless-*.log; do
+        sed $'s/\x1b\\[[0-9;]*m//g' "$log" | awk -v results="${log%.log}.xml" '
+            BEGIN {
+                while ((getline line < results) > 0) if (line ~ /<testcase /) {
+                    split(line, f, "\"")
+                    split(f[2], names, ".")
+                    suite[f[4]] = names[3]
+                }
+            }
+            /^⏱ Test / {
+                name = $0
+                sub(/^⏱ Test /, "", name)
+                sub(/ took [0-9.]+ seconds\.$/, "", name)
+                match($0, / took [0-9.]+ /)
+                if (name in suite) seconds[suite[name]] += substr($0, RSTART + 6, RLENGTH - 7)
+            }
+            END { for (name in seconds) print seconds[name], name }'
+    done >"$windowless_times"
 }
 
 # run_bundle <test target> <testing helper options...>: one test bundle in a process of its own, as `swift test` runs
@@ -140,9 +236,9 @@ run_bundle() {
         --test-bundle-path ".build/debug/$target.xctest/Contents/MacOS/$target" --testing-library swift-testing "$@"
 }
 
-# A full run: the test bundles side by side, each in its own process, and the windowless suites over several. Each
-# process writes its log and results under build/logs/bundles/; they are put together into test.log and the xunit
-# files the parity sync reads. Known failures are skipped in every process.
+# A full run, or `bundles` if some are named: the test bundles side by side, each in its own process, and the windowless
+# suites over several. Each process writes its log and results under build/logs/bundles/; they are put together into
+# test.log and the xunit files the parity sync reads. Known failures are skipped in every process.
 full_tests() {
     local dir="$logs/bundles" names=() pids=() i name status=0 group
     [ "$CI_LIVE" = 1 ] && echo "Building the tests…" >&9
@@ -151,6 +247,7 @@ full_tests() {
     mkdir -p "$dir"
     # Background processes ignore Ctrl-C, so they are stopped here.
     trap 'kill ${pids[*]-} 2>/dev/null; stop_following; exit 130' INT TERM HUP
+    selected() { [ -z "$bundles" ] || [[ " $bundles " == *" $1 "* ]]; }
     # start <log name> <test target> <testing helper options...>
     start() {
         local name="$1"
@@ -172,28 +269,34 @@ full_tests() {
     i=0
     # Two windowless tests at a time in each of these processes (`WindowlessSlots`).
     export FILETRAIL_WINDOWLESS_SLOTS="${FILETRAIL_WINDOWLESS_SLOTS:-2}"
-    while IFS= read -r group; do
-        i=$((i + 1))
-        start "FTAppKitTests-windowless-$i" FTAppKitTests --filter "$group"
-    done < <(windowless_groups)
-    if [ "$i" -eq 0 ]; then
-        echo "scripts/ci.sh: no windowless suites found (failed)"
-        return 1
+    if selected FTAppKitTests; then
+        while IFS= read -r group; do
+            i=$((i + 1))
+            start "FTAppKitTests-windowless-$i" FTAppKitTests --filter "$group"
+        done < <(windowless_groups)
+        if [ "$i" -eq 0 ]; then
+            echo "scripts/ci.sh: no windowless suites found (failed)"
+            return 1
+        fi
     fi
     # FTFoundationTests first, beside the windowless processes only (about a core each): its timing tests (a filter of
     # 50,000 names within 400 ms) miss their bound on a Mac kept busy by every bundle at once.
-    start FTFoundationTests FTFoundationTests
-    finish $((${#pids[@]} - 1))
-    start FTAppKitTests FTAppKitTests --skip 'ExplorerWindowlessTests/'
-    start FTOperationsTests FTOperationsTests
-    start FTFileSystemTests FTFileSystemTests
+    if selected FTFoundationTests; then
+        start FTFoundationTests FTFoundationTests
+        finish $((${#pids[@]} - 1))
+    fi
+    selected FTAppKitTests && start FTAppKitTests FTAppKitTests --skip 'ExplorerWindowlessTests/'
+    selected FTOperationsTests && start FTOperationsTests FTOperationsTests
+    selected FTFileSystemTests && start FTFileSystemTests FTFileSystemTests
     for i in "${!pids[@]}"; do finish "$i"; done
     stop_following
+    selected FTAppKitTests && record_windowless_times "$dir"
     for name in "${names[@]}"; do
         echo "== $name"
         cat "$dir/$name.log"
     done
-    # One results file, as `swift test` writes it: each process's suite of results in it.
+    # One results file, as `swift test` writes it: each process's suite of results in it. Only a full run's is whole.
+    [ -z "$bundles" ] || return "$status"
     {
         echo '<?xml version="1.0" encoding="UTF-8"?>'
         echo '<testsuites>'
@@ -215,9 +318,13 @@ if [ -n "$scope" ]; then
     follow_tests "$logs/test.log"
     step test "$test_failures" swift test --filter "$scope"
     stop_following
+elif [ "$bundles" = none ]; then
+    rm -rf "$logs/bundles"
+    : >"$logs/test.log"
+    echo "PASS test (nothing affected)" >>"$out"
 else
-    export logs windowless_processes
-    export -f full_tests run_bundle windowless_groups test_lines follow_tests stop_following
+    export logs windowless_processes windowless_times bundles
+    export -f full_tests run_bundle windowless_groups record_windowless_times test_lines follow_tests stop_following
     step test "$test_failures" bash -c full_tests
 fi
 # Test counts, from either Swift Testing or XCTest output.
@@ -229,6 +336,7 @@ expected_summaries=1
 if [ -z "$scope" ] && [ -d "$logs/bundles" ]; then
     expected_summaries="$(find "$logs/bundles" -name '*.log' | wc -l | tr -d ' ')"
 fi
+[ "$bundles" = none ] && expected_summaries=0
 if [ "$summaries" -lt "$expected_summaries" ] && grep -q '^PASS test ' "$out"; then
     failed=1
     sed -i '' 's/^PASS test /FAIL test /' "$out"
@@ -250,12 +358,11 @@ passed="$(echo "$clean_log" | grep -E '^✔ Test run with' | grep -oE 'with [0-9
 failed_tests="$(echo "$clean_log" | grep -E '^✘ Test run with' | grep -oE 'with [0-9]+' | awk '{s += $2} END {print s + 0}')"
 echo "tests: $passed in passing runs, $failed_tests in failing runs" >>"$out"
 
-if [ -n "$scope" ]; then
-    # A scoped run lints only the Swift files changed on this branch (committed or not); a full run lints everything.
+if [ -n "$scope" ] || [ "$affected" = 1 ]; then
+    # A scoped or affected run lints only the Swift files changed on this branch; a full run lints everything.
     changed=()
     while IFS= read -r f; do [ -f "$f" ] && changed+=("$f"); done < <(
-        { git diff --name-only main...HEAD; git diff --name-only HEAD; git ls-files --others --exclude-standard; } 2>/dev/null |
-            grep -E '^(Sources|Tests)/.*\.swift$' | sort -u
+        changed_files | grep -E '^(Sources|Tests)/.*\.swift$'
     )
     if [ "${#changed[@]}" -gt 0 ]; then
         step format 'error:|warning:' xcrun swift-format lint --strict "${changed[@]}"

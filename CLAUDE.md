@@ -4,7 +4,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 ## Commands
 
-- Check changes: `scripts/ci.sh --scope <filter>`, or `scripts/ci.sh` for everything (build with zero warnings, tests, format lint). Logs are in `build/logs/`.
+- Check changes: `scripts/ci.sh --scope <filter>`, `scripts/ci.sh --affected` for the test bundles the changed files can reach, or `scripts/ci.sh` for everything (build with zero warnings, tests, format lint). Logs are in `build/logs/`.
 - Tests that drive real windows: `FILETRAIL_GUI_TESTS=1 swift test --filter GUITests`.
 - Large-file tests: set `FILETRAIL_LARGE_FILE_TESTS=1`. A release runs them.
 - App: `scripts/build-app.sh`, then `open "build/File Trail.app"`.
