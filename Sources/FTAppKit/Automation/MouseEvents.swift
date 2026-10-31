@@ -141,9 +141,12 @@
                 }
             }
             nonisolated(unsafe) let release = up
+            let app = NSApp
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
                 whileHeld()
-                NSApp.postEvent(release, atStart: false)
+                // Off the main thread, which the tracking loop holds and which serves no queue meanwhile; postEvent may
+                // be called from any thread. A nil `atStart` is NO.
+                _ = app?.perform(#selector(NSApplication.postEvent(_:atStart:)), with: release, with: nil)
             }
             NSApp.sendEvent(down)
             return true

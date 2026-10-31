@@ -89,7 +89,7 @@ PY
             --elements "$PWD/tools/capture/elements.json" --user-data-dir "$data" && break
         sleep 2
     done
-    if [ -f "$out/$scene/$scene.png" ] && ! grep -q '"status" *: *"failed"' "$out/$scene/report.json"; then
+    if [ -f "$out/$scene/$scene.png" ] && ! grep -qE '"status" *: *"(failed|timeout)"' "$out/$scene/report.json"; then
         cp "$out/$scene/$scene.png" "docs/screenshots/$scene.png"
         echo "PASS $scene"
     else
