@@ -1,12 +1,31 @@
 # Battery and background work
 
-Nothing here has been measured, so the order is a judgment. Measure with Activity Monitor's Energy tab or Instruments before changing anything.
+Background work costs little, so nothing further is planned here. Measure before adding anything more elaborate.
 
-| Item | What happens | Where | Likely cost |
+## Measured (2026-10-31)
+
+A release build with its own `--user-data-dir`, one window on a folder, 60 s per sample, CPU time from `ps` and power from `top`. The Mac was busy with other work, so small differences mean nothing. A hidden window does the same work as these visible ones, as the watcher doesn't look at visibility.
+
+| Folder watcher latency | Subfolder activity | App CPU per minute | `top` power |
 |---|---|---|---|
-| Folder watcher | The FSEvents stream is recursive and keeps running while the window is hidden or covered. The Electron app did the same. | `Sources/FTFileSystem/Watch/FSEventsFolderWatcher.swift` | Probably the largest, when folders under the watched one are busy |
-| Info panel re-reads | With the panel open, every outside change re-reads its item, even if nothing it shows changed. No flicker. (`B-INFO-018`, `B-VIEW-190`, `T-cb87a875`) | `Sources/FTAppKit/InfoPanel/InfoController.swift` | An extra disk read per change |
-| Details during search | Details of selected files are read during search too, where the Electron app waited. (`B-INFO-089`) | `selectionDetails` in `InfoController.swift` | Small |
-| Date refresh timer | The minute timer keeps ticking while the window is hidden, because `RelativeClock.shared` never gets `isWindowVisible`. The pause logic exists and is tested, only unwired. (`B-INFO-083`, `B-INFO-197`) | `RelativeClock.swift` | Very small |
+| 0.05 s | None | 0.39 s | 0.6 |
+| 0.05 s | 10 writes a second | 0.38 s | 0.6 |
+| 0.25 s | None | 0.37 s | 0.3 |
+| 0.25 s | 10 writes a second | 0.37 s | 0.6 |
+| 0.05 s | 200 files touched in a tight loop | 1.66 s | 2.7 |
+| 0.25 s | 200 files touched in a tight loop | 0.92 s | 1.8 |
+
+Reading the details of 20,000 selected files took under 0.9 s once, in a debug build.
+
+## Decisions
+
+| Item | Decision | Why |
+|---|---|---|
+| Folder watcher | Latency is 0.25 s. It keeps running while the window is hidden or covered. | The longer latency nearly halves the cost under extreme activity, and the first change still arrives at once. Stopping while hidden would save little and force a full read on each return. |
+| Info panel re-reads | Left as is: with the panel open, every outside change re-reads its item. (`B-INFO-018`, `B-VIEW-190`, `T-cb87a875`) | One extra read per settled change, at most a few a second. With nothing selected it has to re-read anyway. |
+| Details during search | Left as is: details of selected files are read during search too, where the Electron app waited. (`B-INFO-089`) | The worst case is a second, once, and waiting would leave the selection's total unknown until the search ends. |
+| Date refresh timer | Rests while no window can be seen. (`B-INFO-083`, `B-INFO-197`) | The pause logic already existed. |
+
+The Info panel's free space is read once a minute while the panel is on a volume, on the same timer.
 
 Other repeating timers run only during an animation, an open menu or a copy.

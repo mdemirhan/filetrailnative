@@ -9,7 +9,7 @@ import Foundation
 /// keeps the events of the folder itself (told of by its own name) and of its direct children.
 public enum FSEventsFolderWatcher {
     /// How long FSEvents may collect events before handing them over: the watches settle on their own.
-    static let latencySeconds = 0.05
+    static let latencySeconds = 0.25
 
     /// Starts watching `path` without blocking the caller: the path is resolved and the stream started off the
     /// main actor (either can stall on a network volume), and the callbacks run on the main actor. Returns at

@@ -47,10 +47,20 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     private var isSecondInstance = false
     private var secondInstanceObserver: (any NSObjectProtocol)?
     private var readyToTerminate = false
+    private var windowVisibility: WindowVisibilityMonitor?
 
     private var home: URL { FileManager.default.homeDirectoryForCurrentUser }
 
     // MARK: Launch
+
+    /// The dates' minute timer rests while no window can be seen, and they are read again on the way back.
+    private func followWindowVisibility() {
+        let clock = RelativeClock.shared
+        clock.isWindowVisible = { WindowVisibilityMonitor.anExplorerWindowCanBeSeen() }
+        windowVisibility = WindowVisibilityMonitor(
+            isVisible: { WindowVisibilityMonitor.anExplorerWindowCanBeSeen() },
+            changed: { clock.windowStateDidChange() })
+    }
 
     public func applicationDidFinishLaunching(_ notification: Notification) {
         AppClock.start()
@@ -62,6 +72,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         appearance.apply(theme: preferences.theme, accent: preferences.accent)
         appearance.startFollowingSystem()
         startServices()
+        followWindowVisibility()
         buildMenus()
         #if DEBUG
             registerAutomationPreferences()

@@ -12,9 +12,9 @@ private final class Told {
 
 @MainActor
 struct FolderWatchStreamTests {
-    /// How long a change that should not be told is waited for: FSEvents hands events over after 0.05 s
+    /// How long a change that should not be told is waited for: FSEvents hands events over after 0.25 s
     /// (`FSEventsFolderWatcher.latencySeconds`), then the main actor is told.
-    private static let quietWait = Duration.milliseconds(250)
+    private static let quietWait = Duration.milliseconds(500)
 
     /// Waits up to `seconds` for `condition`.
     private func wait(seconds: Double = 8, until condition: @MainActor () -> Bool) async -> Bool {

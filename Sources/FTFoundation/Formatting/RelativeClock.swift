@@ -33,7 +33,8 @@ public final class RelativeClock {
     private let clock: () -> Date
     private let calendar: Calendar
     private let scheduler: any TimerScheduling
-    private let isWindowVisible: () -> Bool
+    /// Whether a window can be seen; the app says, as this module knows no windows.
+    public var isWindowVisible: () -> Bool
 
     private var listeners: [(id: Int, listener: Listener)] = []
     private var nextListenerID = 0
