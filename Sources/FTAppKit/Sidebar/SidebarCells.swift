@@ -104,7 +104,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
     private let dropBadge = SidebarBadgeView()
     private static let dropBadgeTitle = "Drop here"
     private static var dropBadgeFont: NSFont { ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600) }
-    private let dropLine = SidebarPlainView()
     /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
     private let markGlyph = ClipboardMarkGlyph(identifier: "sidebar.row.clipboardMark")
     private let loading = SidebarLabelField()
@@ -134,8 +133,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         for (view, name) in [
             (box, "sidebar.row"), (chevron, "sidebar.row.chevron"), (icon, "sidebar.row.icon"),
             (label, "sidebar.row.label"), (badge, "sidebar.row.badge"), (eject, "sidebar.row.eject"),
-            (dropBadge, "sidebar.row.dropBadge"), (dropLine, "sidebar.favorite.dropLine"),
-            (treeRowTag, "sidebar.treeRow"),
+            (dropBadge, "sidebar.row.dropBadge"), (treeRowTag, "sidebar.treeRow"),
         ] as [(NSView, String)] {
             view.setAccessibilityIdentifier(name)
         }
@@ -145,8 +143,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         expandedTag.setAccessibilityIdentifier("sidebar.row.expanded")
         for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] { tag.source = label }
         for view in [
-            chevron, icon, label, badge, eject, dropBadge, dropLine, treeRowTag, favoriteTag, selectedTag,
-            menuTargetTag,
+            chevron, icon, label, badge, eject, dropBadge, treeRowTag, favoriteTag, selectedTag, menuTargetTag,
             expandedTag, kindTag, markGlyph,
         ] as [NSView] {
             box.addSubview(view)
@@ -164,7 +161,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         eject.onClick = { [weak self] in self?.onEject?() }
         eject.onRightClick = { [weak self] event in self?.onMenu?(event) }
         dropBadge.setAccessibilityElement(false)
-        dropLine.wantsLayer = true
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -303,14 +299,11 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         eject.toolTip = "Eject \u{201C}\(item.label)\u{201D}"
         eject.setAccessibilityLabel("Eject \u{201C}\(item.label)\u{201D}")
 
-        // The drop pill and the favorites' drop line
+        // The drop pill
         dropBadge.isHidden = state.drop != .valid
         dropBadge.fill = ChromeColors.color(accent.solidButton)
         dropBadge.textColor = ChromeColors.color(accent.onSolid)
         dropBadge.apply(title: Self.dropBadgeTitle, font: Self.dropBadgeFont)
-        dropLine.isHidden = state.dropLine == nil
-        dropLine.layer?.backgroundColor = ChromeColors.color(accent.solid).cgColor
-        dropLine.layer?.cornerRadius = 1
 
         // Loading and errors under the row
         let noteFont = ChromeColors.font(size: layout.noteFontSize)
@@ -436,17 +429,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         }
         textX = 0
         textLimit = 0
-        // The favorites' drop line sits on the row's top or bottom edge.
-        if let position = state.dropLine {
-            let y =
-                position == .before
-                ? layout.dropLineOffset
-                : rowHeight + layout.dropLineOffset - layout.dropLineHeight + layout.dropLineHeight
-            dropLine.frame = NSRect(
-                x: layout.dropLineInset,
-                y: position == .before ? y : rowHeight - layout.dropLineHeight - layout.dropLineOffset,
-                width: width - 2 * layout.dropLineInset, height: layout.dropLineHeight)
-        }
         for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] {
             tag.frame = box.bounds
         }

@@ -228,6 +228,9 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     private var heights: [Double] = []
     private var width: Double { Double(outline.bounds.width) }
     private let fade = CAGradientLayer()
+    /// Where a dragged favorite will land. It sits on the gap between two rows, so it belongs to the list: a row clips
+    /// what it holds to its own bounds.
+    private let dropLine = SidebarPlainView()
     /// Where the list's content is scrolled to, as `scrollTop` of the original.
     var scrollTop: Double {
         get { Double(scroll.contentView.bounds.origin.y) }
@@ -265,6 +268,13 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
         outline.delegate = self
         outline.registerForDraggedTypes([.fileURL, SidebarPasteboard.favoriteType])
         outline.setDraggingSourceOperationMask(.move, forLocal: true)
+
+        dropLine.setAccessibilityIdentifier("sidebar.favorite.dropLine")
+        dropLine.wantsLayer = true
+        // Above the rows, which the outline adds after this.
+        dropLine.layer?.zPosition = 1
+        dropLine.isHidden = true
+        outline.addSubview(dropLine)
 
         scroll.documentView = outline
         scroll.drawsBackground = false
@@ -340,6 +350,7 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
 
     /// The rows now in the list: one whose state is the same is not drawn again.
     func apply(_ rows: [SidebarListRow]) {
+        defer { placeDropLine() }
         let ids = rows.map(\.id)
         let known = Dictionary(items.map { ($0.row.id, $0) }, uniquingKeysWith: { first, _ in first })
         noteChevronTurns(rows, known: known)
@@ -567,6 +578,29 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
         else { return nil }
         let rect = outline.rect(ofRow: index)
         return (path, point.y < rect.minY + SidebarLayout(density: state.density).rowHeight / 2 ? .before : .after)
+    }
+
+    /// Centered on the gap the row's state names, and kept inside the list at its first and last rows.
+    private func placeDropLine() {
+        let target = items.indices.lazy.compactMap { index -> (index: Int, state: SidebarRowState)? in
+            guard case .item(let state) = self.items[index].row, state.dropLine != nil else { return nil }
+            return (index, state)
+        }.first
+        guard let target, let position = target.state.dropLine else {
+            dropLine.isHidden = true
+            return
+        }
+        let layout = SidebarLayout(density: target.state.density)
+        let rect = outline.rect(ofRow: target.index)
+        let height = layout.dropLineHeight
+        let gap = position == .before ? rect.minY : rect.minY + layout.rowHeight
+        let inset = layout.rowMarginX + layout.dropLineInset
+        dropLine.frame = NSRect(
+            x: inset, y: min(max(0, gap - height / 2), outline.bounds.height - height),
+            width: max(0, outline.bounds.width - 2 * inset), height: height)
+        dropLine.layer?.backgroundColor = ChromeColors.color(SidebarColors.theme(for: self).accent.solid).cgColor
+        dropLine.layer?.cornerRadius = height / 2
+        dropLine.isHidden = false
     }
 
     fileprivate func draggingUpdated(_ info: any NSDraggingInfo, in view: NSView) -> NSDragOperation {

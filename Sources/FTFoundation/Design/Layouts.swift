@@ -351,7 +351,6 @@ public struct SidebarLayout: Equatable, Sendable {
     /// `.favorite-drop-line`.
     public let dropLineHeight = 2.0
     public let dropLineInset = 6.0
-    public let dropLineOffset = -3.0
     public let draggedRowOpacity = 0.45
     /// `.menu-target`: an inset ring.
     public let menuRingWidth = 2.0

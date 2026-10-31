@@ -152,6 +152,49 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The line can be seen, on the gap between the rows: a row clips what it holds, so it can't be the row's.
+        @Test func theDropLineShowsOnTheGapBetweenRows() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await open(harness)
+            let controller = sidebar(tab)
+            let list = controller.sections
+            let line = try #require(
+                list.outline.subviews.first { $0.accessibilityIdentifier() == "sidebar.favorite.dropLine" })
+            #expect(line.isHidden)
+
+            let info = FavoriteDraggingInfo(favorite: "/Applications", window: tab.window)
+            defer { info.draggingPasteboard.releaseGlobally() }
+            controller.sidebarList(list, favoriteDragStarted: "/Applications")
+
+            func expectLine(on gap: CGFloat, sourceLocation: SourceLocation = #_sourceLocation) {
+                _ = list.outline.draggingUpdated(info)
+                #expect(!line.isHidden, sourceLocation: sourceLocation)
+                #expect(line.visibleRect == line.bounds, sourceLocation: sourceLocation)
+                #expect(line.frame.midY == gap, sourceLocation: sourceLocation)
+            }
+            func row(_ path: String) throws -> NSRect {
+                list.outline.rect(ofRow: try #require(list.index(ofItem: .favorite(path))))
+            }
+            info.draggingLocation = try location(of: "/System", .before, in: list)
+            expectLine(on: try row("/System").minY)
+            info.draggingLocation = try location(of: "/System", .after, in: list)
+            expectLine(on: try row("/System").maxY)
+            // The two sides of a gap put it in the same place.
+            info.draggingLocation = try location(of: "/Users", .before, in: list)
+            expectLine(on: try row("/System").maxY)
+
+            // Over the dragged row itself, and once the drag is over, it's gone.
+            info.draggingLocation = try location(of: "/Applications", .after, in: list)
+            _ = list.outline.draggingUpdated(info)
+            #expect(line.isHidden)
+            info.draggingLocation = try location(of: "/System", .before, in: list)
+            _ = list.outline.draggingUpdated(info)
+            #expect(!line.isHidden)
+            controller.sidebarListFavoriteDragEnded(list)
+            #expect(line.isHidden)
+            await harness.close()
+        }
+
         // F-738: over the dragged row itself nothing is marked and nothing moves.
         // B-TREE-042
         @Test func droppingAFavoriteOnItselfChangesNothing() async throws {
