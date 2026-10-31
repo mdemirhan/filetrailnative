@@ -333,6 +333,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         startup.path = path
         startup.favoritePath = nil
         let opened = MainWindowController(tab: startup, frame: tabFrame)
+        opened.startSidebar(like: tab)
         opened.opensAsArrival = true
         // `focusContent`, `selectPath`: an item from another app gives the list the keyboard.
         if openedItem == nil { opened.startingPane = tab.snapshot.focusedPane }

@@ -49,6 +49,13 @@ extension SidebarViewController {
         model.restoreView(nodes: nodes, selected: selectedItem.flatMap(TreeItemID.init(rawValue:)), subview: subview)
     }
 
+    /// A new tab's first layout has the tree and the separate lists scrolled to these places, with the selected row in
+    /// view if `revealsSelection`.
+    func startScrolled(tree treeTop: Double, sections sectionsTop: Double, revealsSelection: Bool = false) {
+        tree.start(at: treeTop, revealing: revealsSelection ? model.selected : nil)
+        sections.start(at: sectionsTop)
+    }
+
     /// The tree and the separate lists scrolled as that tab had them, once their rows are laid out.
     func restoreScroll(tree treeTop: Double, sections sectionsTop: Double) {
         tree.scrollTop = treeTop

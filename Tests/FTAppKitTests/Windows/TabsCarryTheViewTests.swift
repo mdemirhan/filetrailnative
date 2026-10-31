@@ -130,6 +130,86 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        /// A tab on a tree longer than the window, with a favorite on its last folder, scrolled part of the way.
+        private func tabWithLongTree(_ harness: ExplorerHarness) async throws -> (
+            MainWindowController, favorite: String
+        ) {
+            for index in 0..<80 {
+                try FileManager.default.createDirectory(
+                    at: harness.folder.appending(String(format: "f%02d", index)), withIntermediateDirectories: true)
+            }
+            let root = real(harness, "")
+            let tab = try await harness.open(root)
+            tab.perform(.rootTreeAtSelection)
+            let controller = tab.sidebarController
+            let favorite = real(harness, "f79")
+            #expect(await waitUntil { controller.treeRootPath == root && controller.model.nodes[favorite] != nil })
+            controller.toggleFavorite(favorite)
+            harness.layout(tab)
+            controller.tree.scrollTop = 300
+            harness.layout(tab)
+            #expect(controller.tree.scrollTop == 300)
+            return (tab, favorite)
+        }
+
+        /// The tab just opened after `tab`, its first read not yet run, laid out as it is for its first frame.
+        private func justOpened(_ tab: MainWindowController, _ harness: ExplorerHarness) throws -> MainWindowController
+        {
+            let group = try #require(tab.group)
+            let index = try #require(group.tabs.firstIndex { $0 === tab })
+            let new = group.tabs[index + 1]
+            new.servicesOverride = tab.servicesOverride
+            harness.layout(new)
+            return new
+        }
+
+        // The tree is where it goes from the tab's first frame, not at its top until the folder has been read.
+        @Test(arguments: [false, true])
+        func aNewTabOnAFavoriteDrawsTheTreeWhereItWasScrolled(selectFavorite: Bool) async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, favorite) = try await tabWithLongTree(harness)
+            if selectFavorite {
+                tab.sidebarController.model.selectItem(.favorite(favorite))
+                #expect(await waitUntil { tab.shownFolderPath == favorite })
+                try? await Task.sleep(for: .milliseconds(100))
+                tab.sidebarController.tree.scrollTop = 300
+                harness.layout(tab)
+            }
+
+            tab.perform(.newTab)
+            let new = try justOpened(tab, harness)
+            #expect(new.sidebarController.tree.scrollTop == 300)
+
+            await firstRead(new)
+            harness.layout(new)
+            #expect(new.sidebarController.tree.scrollTop == 300)
+            await harness.close()
+        }
+
+        // ⌘-click on a favorite: the tab's first frame has the whole tree, with the folder's row in view.
+        @Test func aFolderOpenedInANewTabDrawsTheTreeWithItsRowInView() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, favorite) = try await tabWithLongTree(harness)
+            let source = tab.sidebarController
+
+            source.openInNewTab(favorite)
+            let new = try justOpened(tab, harness)
+            let controller = new.sidebarController
+            #expect(controller.model.selected == .filesystem(favorite))
+            // By the folders alone: a tab in the harness reads its favorites from the app's until it is given the harness's.
+            #expect(controller.tree.rowCount > 80)
+            let row = try #require(controller.tree.index(ofItem: .filesystem(favorite)))
+            #expect(controller.tree.isFullyVisible(row))
+            let top = controller.tree.scrollTop
+            #expect(top > 0)
+
+            await firstRead(new)
+            harness.layout(new)
+            #expect(new.shownFolderPath == favorite)
+            #expect(controller.tree.scrollTop == top)
+            await harness.close()
+        }
+
         // captureLiveTab's directoryError, openNewTab's and duplicateTab's mode "none": a folder that can't be read (the
         // Trash, without Full Disk Access) stays in the new tab, showing the same error, on the same sidebar row.
         @Test(arguments: [false, true])

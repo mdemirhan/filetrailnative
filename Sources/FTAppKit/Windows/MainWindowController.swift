@@ -484,6 +484,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         sidebar.restoreView(
             nodes: ExplorerTabs.settleTreeNodes(view.treeNodes), selectedItem: snapshot.selectedTreeItemID,
             subview: snapshot.leftPaneSubview == .favorites ? .favorites : .tree)
+        sidebar.startScrolled(tree: view.treeScrollTop, sections: view.sidebarSectionsScrollTop)
+    }
+
+    /// `openPathInNewTab`: the tab starts with the tree of the tab it came from, scrolled as that one is, with its own
+    /// folder's row in view if the tree has it yet. The tree then follows the folder from there.
+    func startSidebar(like source: MainWindowController) {
+        sidebar.holdsScrollPosition = true
+        sidebar.restoreView(
+            nodes: ExplorerTabs.settleTreeNodes(source.sidebar.model.nodes), selectedItem: sidebar.selectedTreeItemID,
+            subview: sidebar.leftPaneSubview)
+        sidebar.startScrolled(
+            tree: source.sidebar.tree.scrollTop, sections: source.sidebar.sections.scrollTop, revealsSelection: true)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -1029,9 +1041,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// The tab's first folder has been shown, as `carried` had it if that was its folder.
     private func finishCarrying(_ carried: TabViewState?) {
+        sidebar.holdsScrollPosition = false
         guard carriedView != nil else { return }
         carriedView = nil
-        sidebar.holdsScrollPosition = false
         if let carried {
             sidebar.restoreScroll(tree: carried.treeScrollTop, sections: carried.sidebarSectionsScrollTop)
         }

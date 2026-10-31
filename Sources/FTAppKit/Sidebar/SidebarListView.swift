@@ -288,6 +288,24 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
         scroll.frame = bounds
         outline.tableColumns.first?.width = max(0, bounds.width - scroll.gutter)
         fade.frame = bounds
+        applyStartingScroll()
+    }
+
+    /// Where the list goes the first time it has a size, and the row to bring into view from there.
+    private var startingScroll: (top: Double, row: TreeItemID?)?
+
+    /// A new tab's list starts here: laid out before the tab first draws, so it doesn't show the top and then move.
+    func start(at top: Double, revealing row: TreeItemID? = nil) {
+        startingScroll = (top, row)
+        needsLayout = true
+    }
+
+    private func applyStartingScroll() {
+        guard let startingScroll, bounds.height > 0 else { return }
+        self.startingScroll = nil
+        scroll.layoutSubtreeIfNeeded()
+        scrollTop = startingScroll.top
+        if let row = startingScroll.row, let index = index(ofItem: row) { reveal(index) }
     }
 
     /// The top 6 pt of the folders tree fade out (`mask-image`), so rows scrolling under the "Folders" label do not
