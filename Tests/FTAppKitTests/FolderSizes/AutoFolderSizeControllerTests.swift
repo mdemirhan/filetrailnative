@@ -18,10 +18,11 @@ struct AutoFolderSizeControllerTests {
         sizes = WindowFolderSizes(backend: jobs, owner: 1, homePath: "/Users/demo", scheduler: timers) { [timers] in
             timers.time
         }
-        auto = AutoFolderSizeController(sizes: sizes, delay: 0.03)
+        // Long enough that a busy Mac doesn't let it pass between two selections 5 ms apart.
+        auto = AutoFolderSizeController(sizes: sizes, delay: 0.3)
     }
 
-    private func wait(_ seconds: Double = 0.12) async {
+    private func wait(_ seconds: Double = 0.6) async {
         try? await Task.sleep(for: .seconds(seconds))
     }
 
