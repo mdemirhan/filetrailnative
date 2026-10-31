@@ -105,6 +105,54 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
+        // A press shows its row selected only until the press ends: let go on another row, nothing opens, and the selection
+        // goes back to the folder on screen.
+        @Test func aPressLetGoOffItsRowLeavesTheRowOfTheFolderOnScreenSelected() async throws {
+            let opened = try await open()
+            let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
+            let root = tab.shownFolderPath
+            let before = controller.model.currentItemID
+            let alpha = listed(opened.harness, "Alpha")
+            let alphaCell = try row(alpha, in: controller)
+            let outline = try #require(enclosingOutline(alphaCell))
+            let window = try #require(outline.window)
+            let down = alphaCell.convert(NSPoint(x: alphaCell.bounds.midX, y: alphaCell.bounds.midY), to: nil)
+            let betaCell = try row(listed(opened.harness, "Beta"), in: controller)
+            let up = betaCell.convert(NSPoint(x: betaCell.bounds.midX, y: betaCell.bounds.midY), to: nil)
+
+            outline.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: down, in: window)))
+            #expect(controller.model.currentItemID == .filesystem(alpha))
+            outline.mouseUp(with: try #require(MouseEvents.event(.leftMouseUp, at: up, in: window)))
+            #expect(controller.model.currentItemID == before)
+            clock.advance(180)
+            await settle()
+            #expect(tab.shownFolderPath == root)
+            #expect(controller.model.currentItemID == before)
+            await opened.harness.close()
+        }
+
+        // A press that becomes a favorite's drag opens nothing, so its row doesn't stay selected, and no mouse-up comes.
+        @Test func aPressThatBecomesAFavoritesDragLeavesTheRowOfTheFolderOnScreenSelected() async throws {
+            let opened = try await open()
+            let (tab, controller) = (opened.tab, opened.controller)
+            let root = tab.shownFolderPath
+            let before = controller.model.currentItemID
+            let alpha = listed(opened.harness, "Alpha")
+            let alphaCell = try row(alpha, in: controller)
+            let outline = try #require(enclosingOutline(alphaCell))
+            let window = try #require(outline.window)
+            let down = alphaCell.convert(NSPoint(x: alphaCell.bounds.midX, y: alphaCell.bounds.midY), to: nil)
+
+            outline.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: down, in: window)))
+            #expect(controller.model.currentItemID == .filesystem(alpha))
+            controller.sidebarList(controller.sections, favoriteDragStarted: alpha)
+            #expect(controller.model.currentItemID == before)
+            controller.sidebarListFavoriteDragEnded(controller.sections)
+            #expect(tab.shownFolderPath == root)
+            #expect(controller.model.currentItemID == before)
+            await opened.harness.close()
+        }
+
         // T-f872fab2
         @Test func aSingleClickExpandsTheFolderOnlyWithTheSettingOn() async throws {
             let opened = try await open()

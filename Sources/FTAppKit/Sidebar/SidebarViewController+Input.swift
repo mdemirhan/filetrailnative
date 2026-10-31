@@ -21,6 +21,10 @@ extension SidebarViewController {
         model.markPressed(state.item.id)
     }
 
+    func sidebarListPressCancelled(_ list: SidebarListView) {
+        model.markPressed(nil)
+    }
+
     func sidebarList(_ list: SidebarListView, click state: SidebarRowState, event: NSEvent, clickCount: Int) {
         model.setSubview(state.subview)
         let item = state.item
@@ -267,6 +271,8 @@ extension SidebarViewController {
     func sidebarList(_ list: SidebarListView, favoriteDragStarted path: String) {
         draggedFavorite = path
         dropTarget = nil
+        // The press that began the drag opens nothing.
+        model.markPressed(nil)
         refresh()
     }
 

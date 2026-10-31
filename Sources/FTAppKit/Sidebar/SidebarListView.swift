@@ -9,6 +9,8 @@ protocol SidebarListDelegate: AnyObject {
     func sidebarList(_ list: SidebarListView, pointerDown state: SidebarRowState, event: NSEvent)
     /// It came up again on the same row; `clickCount` is 2 for the second click of a double-click.
     func sidebarList(_ list: SidebarListView, click state: SidebarRowState, event: NSEvent, clickCount: Int)
+    /// It came up somewhere else: the press opens nothing.
+    func sidebarListPressCancelled(_ list: SidebarListView)
     func sidebarList(_ list: SidebarListView, doubleClick state: SidebarRowState)
     /// The button went down on empty space (not a row, not a scrollbar).
     func sidebarList(_ list: SidebarListView, pressEmptySpaceIn subview: SidebarSubview)
@@ -157,7 +159,10 @@ final class SidebarOutlineView: NSOutlineView {
         guard let list, let index = pressedRow else { return }
         pressedRow = nil
         let point = convert(event.locationInWindow, from: nil)
-        guard row(at: point) == index, case .item(let state)? = list.row(at: index) else { return }
+        guard row(at: point) == index, case .item(let state)? = list.row(at: index) else {
+            list.delegate?.sidebarListPressCancelled(list)
+            return
+        }
         let count = max(1, event.clickCount)
         list.delegate?.sidebarList(list, click: state, event: event, clickCount: count)
         if count >= 2 { list.delegate?.sidebarList(list, doubleClick: state) }
