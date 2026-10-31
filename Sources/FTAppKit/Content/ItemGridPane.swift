@@ -189,6 +189,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         forEachVisibleItem { item, entry in
             if paths == nil || paths?.contains(entry.path) == true { self.refreshLook(of: item, entry: entry) }
         }
+        reportVisiblePaths()
     }
 
     func syncSelection() {
@@ -338,7 +339,8 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
 
     // The details of a folder's items on screen are read only in the List, which shows them
     // (useExplorerNavigationController's `viewMode === "details"`); search results' are read in every view, so sizes
-    // reach the status line and the Info panel (App.tsx onVisiblePathsChange -> loadSearchResultMetadata).
+    // reach the status line and the Info panel (App.tsx onVisiblePathsChange -> loadSearchResultMetadata). Finder tags
+    // are read in every view, which all draw them.
     private func scrolled() {
         // Scrolling moves the item away from the reason a name was refused, so it is dropped until the next try.
         renameField?.hideError()
@@ -346,9 +348,11 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     }
 
     private func reportVisiblePaths() {
-        guard let host, host.search != nil, !entries.isEmpty else { return }
+        guard let host, !entries.isEmpty else { return }
         let visible = collection.indexPathsForVisibleItems().map(\.item).filter { entries.indices.contains($0) }
         guard let lower = visible.min(), let upper = visible.max() else { return }
-        host.requestMetadata(for: entries[lower...upper].map(\.path))
+        let paths = entries[lower...upper].map(\.path)
+        host.requestTags(for: paths)
+        if host.search != nil { host.requestMetadata(for: paths) }
     }
 }

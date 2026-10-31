@@ -163,6 +163,22 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         holdingTheTab { [self] in await openWith(paths: paths, choice: choice, kind: kind) }
     }
 
+    func contextMenu(toggleTag color: FinderTagColor, paths: [String]) {
+        let name = color.systemName
+        holdingTheTab { [self] in
+            let failures = await Task.detached(priority: .userInitiated) {
+                FinderTags.toggle(color, name: name, on: paths)
+            }.value
+            tab.content.tagsChanged(paths)
+            guard let first = failures.first else { return }
+            notices.show(
+                title: "Couldn’t Change the Tag",
+                message: "\(ClipboardSummary.leafName(first.path)): \(first.message)"
+                    + (failures.count > 1 ? " \(failures.count - 1) more couldn’t be changed." : ""),
+                in: tab.window)
+        }
+    }
+
     func contextMenu(perform action: ContextMenuActionID, subject: ContextMenuSubject) {
         // A running operation blocks the others (the menu left them out, unless it began after the menu opened; a key
         // can still ask), and says so (B-CLIP-060, B-VIEW-215). This comes before the actions, some of which ask a

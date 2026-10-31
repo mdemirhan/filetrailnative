@@ -28,7 +28,8 @@ extension DirectoryEntry {
         case .other: iconKind = .other
         }
         return IconEntry(
-            path: path, name: name, extension: fileExtension, kind: iconKind, isExecutable: isExecutable)
+            path: path, name: name, extension: fileExtension, kind: iconKind, isExecutable: isExecutable,
+            hasCustomIcon: hasCustomIcon == true, tagColor: tagColor)
     }
 
     var sizeSortKey: SizeSortKey {

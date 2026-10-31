@@ -58,6 +58,10 @@ public struct DirectoryEntry: Sendable, Hashable, Codable {
     public var isExecutable: Bool?
     /// Only when listed sorted by size, and only for files (nil for the rest).
     public var sizeBytes: Int64?
+    /// Only for a folder Finder has given its own icon (Customize Folder, or a pasted picture).
+    public var hasCustomIcon: Bool?
+    /// Only for a folder with a colored tag: the color Finder draws it in, its last tag's.
+    public var tagColor: FinderTagColor?
 }
 
 public struct DirectorySnapshot: Sendable, Hashable, Codable {

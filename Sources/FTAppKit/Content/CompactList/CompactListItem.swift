@@ -87,6 +87,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
     let selectedMarker = GridMarkerView(id: "compactList.item.selected")
     /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
     let markGlyph = ClipboardMarkGlyph(identifier: "compactList.item.clipboardMark")
+    let tagDots = TagDotsView()
     /// Marks the item a drag would drop into, for the capture.
     let dropMarker = GridMarkerView(id: "compactList.item.dropTarget")
 
@@ -107,6 +108,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         root.addSubview(iconView)
         root.addSubview(label)
         root.addSubview(markGlyph)
+        root.addSubview(tagDots)
         root.addSubview(selectedMarker)
         root.addSubview(dropMarker)
         view = root
@@ -167,7 +169,10 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         root.drop = dropState.map { ($0, host.theme) }
         dropMarker.isHidden = dropState == nil || dropState == .invalid
         DropHighlight.setWiggle(iconView, on: dropState == .springing)
-        if wasMarked != (mark != nil) { layoutParts() }
+        let tagColors = host.tagColors(for: entry.path)
+        let tagsChanged = tagDots.colors != tagColors
+        tagDots.colors = tagColors
+        if wasMarked != (mark != nil) || tagsChanged { layoutParts() }
     }
 
     /// `.flow-item.active:not(.inactive)`: a selected item in the focused list of the window in front; its glyph and
@@ -203,14 +208,22 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         let x = left + icon + layout.iconGap
         let height = label.lineHeight
         var width = max(0, view.bounds.width - x - left)
-        if !markGlyph.isHidden {
-            // The glyph follows the name (the item's 8 pt gap); a name that does not fit is shortened, and the glyph
-            // keeps its size.
-            let size = ClipboardMarkGlyph.size
-            let gap = CGFloat(ClipboardLayout.Mark.gap)
-            width = max(0, min(ceil(label.textWidth), width - gap - size))
-            markGlyph.frame = NSRect(
-                x: x + width + gap, y: (view.bounds.height - size) / 2, width: size, height: size)
+        let dots = tagDots.isHidden ? 0 : tagDots.dotsWidth + TagDotsView.gap
+        let glyph = markGlyph.isHidden ? 0 : ClipboardMarkGlyph.size + CGFloat(ClipboardLayout.Mark.gap)
+        if dots + glyph > 0 {
+            // The tags and the glyph follow the name (the item's 8 pt gap); a name that does not fit is shortened, and
+            // they keep their size.
+            width = max(0, min(ceil(label.textWidth), width - dots - glyph))
+            if dots > 0 {
+                tagDots.frame = NSRect(
+                    x: x + width + TagDotsView.gap, y: 0, width: tagDots.dotsWidth, height: view.bounds.height)
+            }
+            if glyph > 0 {
+                let size = ClipboardMarkGlyph.size
+                markGlyph.frame = NSRect(
+                    x: x + width + dots + CGFloat(ClipboardLayout.Mark.gap), y: (view.bounds.height - size) / 2,
+                    width: size, height: size)
+            }
         }
         label.frame = NSRect(x: x, y: (view.bounds.height - height) / 2, width: width, height: height)
         selectedMarker.frame = view.bounds

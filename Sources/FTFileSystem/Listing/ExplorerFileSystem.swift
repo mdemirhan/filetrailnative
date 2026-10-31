@@ -38,11 +38,20 @@ public struct DirectoryRecord: Sendable, Hashable {
     public var name: String
     public var type: FileType
     public var lstat: FileStats?
+    /// Finder's flags say it has a custom icon, as a folder made with Customize Folder does.
+    public var hasCustomIcon: Bool
+    /// Finder's label: the color of the item's last colored tag, which a folder is drawn in.
+    public var tagColor: FinderTagColor?
 
-    public init(name: String, type: FileType, lstat: FileStats? = nil) {
+    public init(
+        name: String, type: FileType, lstat: FileStats? = nil, hasCustomIcon: Bool = false,
+        tagColor: FinderTagColor? = nil
+    ) {
         self.name = name
         self.type = type
         self.lstat = lstat
+        self.hasCustomIcon = hasCustomIcon
+        self.tagColor = tagColor
     }
 }
 
@@ -62,7 +71,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
         // Each attribute costs next to nothing beside the read itself (an entry costs APFS about 2.4 us),
         // so every one is asked for and the sort modes that need a size or a time have it at once.
         let code = ft_read_directory(
-            path, UInt32(FT_READ_MODE | FT_READ_SIZE | FT_READ_MODIFIED | FT_READ_CREATED),
+            path, UInt32(FT_READ_MODE | FT_READ_SIZE | FT_READ_MODIFIED | FT_READ_CREATED | FT_READ_FINDER_INFO),
             &listing)
         guard code == 0 else { throw ExplorerError.system(code: code, path: path) }
         defer { ft_free_listing(&listing) }
@@ -78,7 +87,9 @@ public struct NativeFileSystem: ExplorerFileSystem {
                 DirectoryRecord(
                     name: String(decoding: bytes, as: UTF8.self),
                     type: type,
-                    lstat: Self.knownStats(entry, type: type)))
+                    lstat: Self.knownStats(entry, type: type),
+                    hasCustomIcon: entry.has_custom_icon != 0,
+                    tagColor: FinderTagColor(rawValue: Int(entry.finder_label))))
         }
         return records
     }

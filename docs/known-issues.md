@@ -9,6 +9,7 @@ These have tests, which can't show all of what a person gets:
 - **VoiceOver in the sidebar**: rows, levels, disclosure and the lists' names, by listening. The rows are the app's own accessibility elements (`SidebarAccessibility.swift`), not AppKit's.
 - **Always Open With**: holding Option with the menu open, once macOS has answered and while it does.
 - **Scroll wheel in a marquee**: a real wheel and a trackpad.
+- **The row of tag colors in a menu**: pointing at a color and clicking it in a real menu; the tests press it through accessibility, and a capture can't show a native menu.
 - **Drop from another File Trail window**: a real drag, that the target window comes forward for its dialog.
 
 ## The Trash across disks

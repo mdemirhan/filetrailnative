@@ -29,6 +29,25 @@ final class IconNameLabel: ListLabel {
     var marksUnderlined = false {
         didSet { needsDisplay = true }
     }
+    /// The tag dots at the start of the first line, centered with it.
+    let tagDots = TagDotsView()
+    var firstLineIndent: CGFloat {
+        tagDots.colors.isEmpty ? 0 : tagDots.dotsWidth + TagDotsView.gap
+    }
+
+    /// Puts the dots before the first line, as centered with them.
+    func placeTagDots() {
+        guard !tagDots.colors.isEmpty, let font, let first = lines.first else { return }
+        let layout = DesignTokens.iconGrid(density: density)
+        let inset = CGFloat(layout.labelPaddingHorizontal)
+        let room = max(0, bounds.width - inset * 2)
+        let indent = firstLineIndent
+        let text = min((first as NSString).size(withAttributes: [.font: font]).width, room - indent)
+        tagDots.frame = NSRect(
+            x: inset + max(0, (room - indent - text) / 2),
+            y: CGFloat(layout.labelPaddingVertical) + (CGFloat(layout.labelLineHeight) - TagDotsView.diameter) / 2,
+            width: tagDots.dotsWidth, height: TagDotsView.diameter)
+    }
 
     override func draw(_ dirtyRect: NSRect) {
         let layout = DesignTokens.iconGrid(density: density)
@@ -59,19 +78,23 @@ final class IconNameLabel: ListLabel {
         for (number, line) in shown.enumerated() {
             let top = CGFloat(layout.labelPaddingVertical) + CGFloat(number) * lineHeight + halfLeading
             defer { lineStart += line.utf16.count }
+            // The first line and the dots before it are centered as one.
+            let indent = number == 0 ? firstLineIndent : 0
+            let lineX = inset + indent
+            let lineRoom = max(0, width - indent)
             let lineMarks = NameHighlight.marks(in: line, ranges: marks, offset: lineStart)
             if !lineMarks.isEmpty {
                 let marked = MarkedName.Line(line, marks: lineMarks, attributes: attributes, padding: 0)
-                let lineWidth = min(width, marked.width)
+                let lineWidth = min(lineRoom, marked.width)
                 MarkedName.draw(
-                    marked, at: NSPoint(x: inset + (width - lineWidth) / 2, y: top), width: lineWidth,
+                    marked, at: NSPoint(x: lineX + (lineRoom - lineWidth) / 2, y: top), width: lineWidth,
                     lineHeight: glyphHeight, font: font, color: textColor ?? .labelColor,
                     underlined: marksUnderlined, truncates: true, in: self)
                 continue
             }
             (line as NSString).draw(
                 with: NSRect(
-                    x: inset, y: TextBaseline.lineTop(top, font: font, in: self), width: width, height: glyphHeight),
+                    x: lineX, y: TextBaseline.lineTop(top, font: font, in: self), width: lineRoom, height: glyphHeight),
                 options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine], attributes: attributes)
         }
     }
@@ -235,6 +258,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         root.addSubview(badge)
         root.addSubview(label)
         label.addSubview(pill)
+        label.addSubview(label.tagDots)
         root.addSubview(dropMarker)
         view = root
         textField = nameField
@@ -263,17 +287,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         root.toolTip = entry.name
         let layout = pane.layout
         let style = pane.style
-        let fitted = IconLabelText.fit(name: entry.name, extension: entry.fileExtension, density: density)
-        label.density = density
-        label.font = IconLabelText.font(layout)
-        label.stringValue = fitted
-        label.lines = IconLabelText.lines(fitted, density: density)
-        // The match is marked in what is left of a name shortened in the middle.
-        label.marks =
-            host.search?.match(in: entry.name).map {
-                NameHighlight.mapToLabel(name: entry.name, label: fitted, match: $0)
-            } ?? []
-        labelTextWidth = IconLabelText.width(fitted, density: density)
+        label.tagDots.colors = host.tagColors(for: entry.path)
+        fitName(entry, host: host, layout: layout)
         tile.radius = CGFloat(style.tileRadius)
         if changed || iconView.image == nil {
             iconRequest?.cancel()
@@ -284,6 +299,23 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         loadThumbnail(entry, pane: pane)
         applyLook(pane: pane, entry: entry)
         layoutParts()
+    }
+
+    /// The name's lines, which go around the tag dots.
+    private func fitName(_ entry: DirectoryEntry, host: any ContentPaneHost, layout: IconGridLayout) {
+        let indent = label.firstLineIndent
+        let fitted = IconLabelText.fit(
+            name: entry.name, extension: entry.fileExtension, density: density, firstLineIndent: indent)
+        label.density = density
+        label.font = IconLabelText.font(layout)
+        label.stringValue = fitted
+        label.lines = IconLabelText.lines(fitted, density: density, firstLineIndent: indent)
+        // The match is marked in what is left of a name shortened in the middle.
+        label.marks =
+            host.search?.match(in: entry.name).map {
+                NameHighlight.mapToLabel(name: entry.name, label: fitted, match: $0)
+            } ?? []
+        labelTextWidth = IconLabelText.width(fitted, density: density) + Double(indent)
     }
 
     private var labelTextWidth = 0.0
@@ -338,6 +370,12 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         } else {
             badge.isHidden = true
         }
+        let tagColors = host.tagColors(for: entry.path)
+        if label.tagDots.colors != tagColors {
+            label.tagDots.colors = tagColors
+            fitName(entry, host: host, layout: pane.layout)
+            layoutParts()
+        }
         // Cut items look taken out already: the name and the picture (not its badge) dimmed (P5-08).
         let cut = host.clipboardMark(for: entry.path) == .cut
         label.alphaValue = cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
@@ -373,6 +411,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         let labelFrame = layout.labelFrame(textWidth: labelTextWidth, lines: label.lines.count)
         label.frame = NSRect(x: labelFrame.x, y: labelFrame.y, width: labelFrame.width, height: labelFrame.height)
         pill.frame = label.bounds
+        label.placeTagDots()
         dropMarker.frame = root.bounds
         let badgeSize = layout.clipboardBadgeSize
         let offset = layout.clipboardBadgeOffset

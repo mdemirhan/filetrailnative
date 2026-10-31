@@ -105,6 +105,110 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        @Test func theRowOfColorsIsOfferedForItemsAndChoosingOneTagsThemAndDrawsTheDots() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let target = try entry(tab, "Alpha")
+            defer { try? FinderTags.write([], to: target.path) }
+            #expect(tab.contextMenus.contentMenu(for: nil)?.items.contains { $0.view is TagColorsMenuRow } == false)
+            let menu = try #require(tab.contextMenus.contentMenu(for: [target]))
+            let row = try #require(menu.items.compactMap { $0.view as? TagColorsMenuRow }.first)
+            #expect(row.buttons.map(\.color) == FinderTagColor.menuOrder)
+            let red = try #require(row.buttons.first { $0.color == .red })
+            #expect(red.accessibilityPerformPress())
+            #expect(await waitUntil { FinderTags.colors(target.path) == [.red] })
+            #expect(await waitUntil { tab.content.tagColors(for: target.path) == [.red] })
+            // A menu opened now marks the color the item has.
+            let again = try #require(tab.contextMenus.contentMenu(for: [target]))
+            let marked = try #require(again.items.compactMap { $0.view as? TagColorsMenuRow }.first)
+            #expect(await waitUntil { marked.buttons.first { $0.color == .red }?.state == .all })
+            await harness.close()
+        }
+
+        /// What the folder watch does on a change: the listing kept of it goes, and the window hears.
+        private func changed(_ harness: ExplorerHarness, _ tab: MainWindowController, _ paths: [String]) {
+            tab.services.directoryService.cache.clear()
+            harness.windows.folderChanged(
+                windowID: tab.windowID, FolderChange(path: tab.folder.path, changedPaths: paths))
+        }
+
+        @Test func aTagChangedDuringAReadOfItIsReadAgain() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let path = try entry(tab, "Gamma").path
+            defer { try? FinderTags.write([], to: path) }
+            let real = tab.content.loaders.tagColors
+            var held: CheckedContinuation<Void, Never>?
+            tab.content.loaders.tagColors = { paths in
+                let colors = await real(paths)
+                if paths.contains(path), held == nil {
+                    await withCheckedContinuation { held = $0 }
+                }
+                return colors
+            }
+            tab.content.tagsChanged([path])
+            #expect(await waitUntil { held != nil })
+            try FinderTags.write([FinderTag(name: "Red", color: .red)], to: path)
+            tab.content.tagsChanged([path])
+            held?.resume()
+            #expect(await waitUntil { tab.content.tagColors(for: path) == [.red] })
+            await harness.close()
+        }
+
+        @Test func aTagChangedOutsideTheAppIsReadWhenTheWatchTellsOfIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let target = try entry(tab, "Alpha")
+            defer { try? FinderTags.write([], to: target.path) }
+            try FinderTags.write([FinderTag(name: "Red", color: .red)], to: target.path)
+            tab.content.tagsChanged([target.path])
+            #expect(await waitUntil { tab.content.tagColors(for: target.path) == [.red] })
+            // As Finder or another app would write it.
+            try (URL(fileURLWithPath: target.path) as NSURL).setResourceValue(["Orange"], forKey: .tagNamesKey)
+            changed(harness, tab, [target.path])
+            #expect(await waitUntil { tab.content.tagColors(for: target.path) == [.orange] })
+            await harness.close()
+        }
+
+        /// What Finder writes for Customize Folder, read from folders it customized.
+        private func customizeFolder(_ path: String, _ configuration: String) {
+            let data = Data(configuration.utf8)
+            _ = data.withUnsafeBytes { setxattr(path, "com.apple.icon.folder#S", $0.baseAddress, data.count, 0, 0) }
+            var finderInfo = [UInt8](repeating: 0, count: 32)
+            finderInfo[8] = 0x04
+            setxattr(path, "com.apple.FinderInfo", &finderInfo, 32, 0, 0)
+        }
+
+        @Test func aFolderCustomizedInFinderGetsItsOwnIconAndAChangeDrawsItAgain() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let path = try entry(tab, "Alpha").path
+            defer {
+                removexattr(path, "com.apple.icon.folder#S", 0)
+                removexattr(path, "com.apple.FinderInfo", 0)
+            }
+            let store = try #require(tab.content.iconStore)
+            customizeFolder(path, #"{"sym":"bird.fill"}"#)
+            changed(harness, tab, [path])
+            #expect(await waitUntil { (try? entry(tab, "Alpha"))?.hasCustomIcon == true })
+            let request = IconRequest(entry: try entry(tab, "Alpha").iconEntry)
+            #expect(request.cacheKey == "path:\(path)")
+            #expect(request.generic == nil)
+            let plain = NSWorkspace.shared.icon(forFile: try entry(tab, "Beta").path).tiffRepresentation
+            #expect(NSWorkspace.shared.icon(forFile: path).tiffRepresentation != plain)
+            let first = await withCheckedContinuation { done in store.load(request) { done.resume(returning: $0) } }
+            #expect(first != nil)
+            // The symbol changes and nothing else does: the icon kept is let go.
+            customizeFolder(path, #"{"emoji":"😀"}"#)
+            changed(harness, tab, [path])
+            #expect(
+                await waitUntil {
+                    if case .image(let image) = store.lookup(request) { return image !== first }
+                    return true
+                })
+            await harness.close()
+        }
+
         // T-42ce73e3 F-814
         // B-VIEW-002 B-VIEW-208 T-7540eb06
         @Test func viewAsTicksTheCurrentViewAndSortByTheCurrentOrderAndPickingOneApplies() async throws {
@@ -132,7 +236,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let menu = tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")])
-            for entry in menu?.items ?? [] where !entry.isSeparatorItem {
+            for entry in menu?.items ?? [] where !entry.isSeparatorItem && entry.view == nil {
                 #expect(entry.image?.size == NSSize(width: 14, height: 14), "\(entry.title)")
                 #expect(entry.image?.isTemplate == true)
                 // From macOS 27 the system hides a menu item's image unless it is asked to show it.

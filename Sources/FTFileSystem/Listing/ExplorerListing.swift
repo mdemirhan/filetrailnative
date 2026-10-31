@@ -229,6 +229,10 @@ enum ExplorerListing {
                 if needsExecutableFlag, let stats {
                     entry.isExecutable = stats.mode & 0o111 != 0
                 }
+                if kind == .directory {
+                    if record.hasCustomIcon { entry.hasCustomIcon = true }
+                    entry.tagColor = record.tagColor
+                }
                 switch sortBy {
                 case .modified:
                     modified.append(stats?.mtimeMs)

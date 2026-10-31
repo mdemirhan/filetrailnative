@@ -34,6 +34,10 @@ struct LRUCache<Key: Hashable, Value> {
         entries[key] = (value, clock)
     }
 
+    mutating func remove(_ key: Key) {
+        entries[key] = nil
+    }
+
     mutating func removeAll() {
         entries.removeAll()
     }

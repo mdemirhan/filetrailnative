@@ -33,6 +33,8 @@ typedef struct {
     int32_t crtime_valid;
     int32_t mode_valid;
     int32_t size_valid;
+    int32_t has_custom_icon;
+    int32_t finder_label;
 } FTDirEntry;
 
 typedef struct {
@@ -44,10 +46,11 @@ typedef struct {
 
 /// What a folder read gives besides each entry's name and type; each costs the disk a little more.
 enum {
-    FT_READ_MODE = 1,     /* permissions */
-    FT_READ_SIZE = 2,     /* the size of a file (not of a folder) */
-    FT_READ_MODIFIED = 4, /* the modification time */
-    FT_READ_CREATED = 8,  /* the creation time */
+    FT_READ_MODE = 1,         /* permissions */
+    FT_READ_SIZE = 2,         /* the size of a file (not of a folder) */
+    FT_READ_MODIFIED = 4,     /* the modification time */
+    FT_READ_CREATED = 8,      /* the creation time */
+    FT_READ_FINDER_INFO = 16, /* Finder's custom-icon flag and label color */
 };
 
 /// Reads a folder with getattrlistbulk(2): every name with its type, and the `attributes` asked for, in a

@@ -25,6 +25,29 @@ struct FolderWatchStreamTests {
         return condition()
     }
 
+    @Test func tellsOfATagOrCustomizationSetOnAnItemWithNothingElseChanged() async throws {
+        try await withTemporaryDirectory { directory in
+            let root = directory.path
+            let item = root + "/item"
+            try FileManager.default.createDirectory(atPath: item, withIntermediateDirectories: true)
+            let told = Told()
+            let watches = FolderWatches(.app(cache: ResponseCache()) { _, change in told.changes.append(change) })
+            watches.watch(windowID: 1, path: root)
+            defer { watches.stopAll() }
+            try await Task.sleep(for: .milliseconds(500))
+            told.changes = []
+            // FSEvents can start late on a busy machine, so the attribute is set again until it is told.
+            var heard = false
+            for attempt in 0..<4 where !heard {
+                try FinderTags.write([FinderTag(name: "Tag\(attempt)", color: .red)], to: item)
+                heard = await wait(seconds: 4) {
+                    told.changes.contains { $0.changedPaths?.contains(item) == true || $0.changedPaths == nil }
+                }
+            }
+            #expect(heard)
+        }
+    }
+
     @Test func tellsOfItemsMadeRenamedAndRemovedInsideTheFolder() async throws {
         try await withTemporaryDirectory { directory in
             // Paths are named as the window gave the folder, whatever FSEvents calls it.

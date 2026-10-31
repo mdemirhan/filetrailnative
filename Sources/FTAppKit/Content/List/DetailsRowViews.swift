@@ -75,6 +75,7 @@ final class NameCellView: NSView, TextStyleSource {
     let label = NameLabel()
     /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
     let markGlyph = ClipboardMarkGlyph(identifier: "list.row.clipboardMark")
+    let tagDots = TagDotsView()
 
     var styleTextField: NSTextField? { label }
 
@@ -85,6 +86,7 @@ final class NameCellView: NSView, TextStyleSource {
         addSubview(iconView)
         addSubview(label)
         addSubview(markGlyph)
+        addSubview(tagDots)
         setAccessibilityIdentifier("list.row.name")
     }
 
@@ -100,14 +102,23 @@ final class NameCellView: NSView, TextStyleSource {
         let x = icon + metrics.nameIconGap
         let height = label.lineHeight
         var width = max(0, bounds.width - x)
-        if !markGlyph.isHidden {
-            // The glyph follows the name; a name that does not fit is shortened, and the glyph keeps its size.
-            let size = ClipboardMarkGlyph.size
-            let gap = CGFloat(ClipboardLayout.Mark.gap)
-            width = max(0, min(ceil(label.textWidth), bounds.width - x - gap - size))
+        let dots = tagDots.isHidden ? 0 : tagDots.dotsWidth + TagDotsView.gap
+        let glyph = markGlyph.isHidden ? 0 : ClipboardMarkGlyph.size + CGFloat(ClipboardLayout.Mark.gap)
+        if dots + glyph > 0 {
+            // The tags and the glyph follow the name; a name that does not fit is shortened, and they keep their size.
+            width = max(0, min(ceil(label.textWidth), bounds.width - x - dots - glyph))
             // After the text itself: the label's frame is whole points wide, the text isn't.
             let textEnd = min(label.textWidth, width)
-            markGlyph.frame = NSRect(x: x + textEnd + gap, y: (bounds.height - size) / 2, width: size, height: size)
+            if dots > 0 {
+                tagDots.frame = NSRect(
+                    x: x + textEnd + TagDotsView.gap, y: 0, width: tagDots.dotsWidth, height: bounds.height)
+            }
+            if glyph > 0 {
+                let size = ClipboardMarkGlyph.size
+                markGlyph.frame = NSRect(
+                    x: x + textEnd + dots + CGFloat(ClipboardLayout.Mark.gap), y: (bounds.height - size) / 2,
+                    width: size, height: size)
+            }
         }
         label.frame = NSRect(x: x, y: (bounds.height - height) / 2, width: width, height: height)
     }
@@ -260,6 +271,7 @@ final class DetailsBarView: NSView {
         nameCell.markGlyph.mark = mark
         nameCell.markGlyph.color = ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection)
         nameLabel.alphaValue = mark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
+        nameCell.tagDots.colors = host.tagColors(for: entry.path)
         cutMarker.isHidden = mark != .cut
         dropState = host.dropState(for: entry.path)
         dropMarker.isHidden = dropState == nil || dropState == .invalid

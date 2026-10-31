@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 
 @testable import FTFileSystem
@@ -103,5 +104,69 @@ import Testing
         #expect(ThumbnailStore.maxEntries == 500)
         #expect(ThumbnailStore.pixelSize == 128)
         #expect(ThumbnailLoadQueue.maxConcurrentLoads == 4)
+    }
+}
+
+@Suite struct CustomFolderIconTests {
+    @Test func aCustomizedFolderHasItsOwnKeyAndOthersShareOne() {
+        let plain = IconEntry(path: "/a/b", name: "b", kind: .directory)
+        let custom = IconEntry(path: "/a/c", name: "c", kind: .directory, hasCustomIcon: true)
+        #expect(IconCacheKey.key(for: plain) == GenericIconKind.folder.cacheKey)
+        #expect(IconCacheKey.key(for: custom) == "path:/a/c")
+    }
+
+    @Test func foldersOfATagColorShareAKeyAndACustomOneKeepsItsOwn() {
+        let red = IconRequest(entry: IconEntry(path: "/a/b", name: "b", kind: .directory, tagColor: .red))
+        #expect(red.tint == .red)
+        #expect(red.generic == nil)
+        #expect(red == IconRequest(cacheKey: red.cacheKey, path: "/a/b", tint: .red))
+        let other = IconRequest(entry: IconEntry(path: "/a/c", name: "c", kind: .directory, tagColor: .red))
+        #expect(other.cacheKey == red.cacheKey)
+        let custom = IconRequest(
+            entry: IconEntry(path: "/a/d", name: "d", kind: .directory, hasCustomIcon: true, tagColor: .red))
+        #expect(custom.cacheKey == "path:/a/d")
+        #expect(custom.tint == nil)
+        // A special folder keeps the system's picture.
+        let special = IconRequest(
+            entry: IconEntry(path: "/a/Documents", name: "Documents", kind: .directory, tagColor: .red))
+        #expect(special.tint == nil)
+    }
+
+    @Test func theSystemDrawsATintedSampleUnlikeThePlainFolder() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let samples = IconSamples(root: root)
+        let source = WorkspaceIconSource()
+        let plain = source.icon(atPath: try samples.path(for: .folder))?.tiffRepresentation
+        let red = source.icon(atPath: try samples.path(forTint: .red))?.tiffRepresentation
+        let blue = source.icon(atPath: try samples.path(forTint: .blue))?.tiffRepresentation
+        #expect(red != plain)
+        #expect(red != blue)
+    }
+
+    @Test func theDiskReadSaysTheLabelOfATaggedFolder() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let folder = root.appendingPathComponent("tagged")
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        try FinderTags.write(
+            [FinderTag(name: "Blue", color: .blue), FinderTag(name: "Yellow", color: .yellow)], to: folder.path)
+        #expect(try NativeFileSystem().readDirectory(root.path).first?.tagColor == .yellow)
+    }
+
+    @Test func theDiskReadSaysWhichFoldersFinderCustomized() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        for name in ["custom", "plain"] {
+            try FileManager.default.createDirectory(
+                at: root.appendingPathComponent(name), withIntermediateDirectories: true)
+        }
+        var finderInfo = [UInt8](repeating: 0, count: 32)
+        finderInfo[8] = 0x04
+        let custom = root.appendingPathComponent("custom").path
+        #expect(setxattr(custom, "com.apple.FinderInfo", &finderInfo, 32, 0, 0) == 0)
+        let records = try NativeFileSystem().readDirectory(root.path)
+        #expect(records.first { $0.name == "custom" }?.hasCustomIcon == true)
+        #expect(records.first { $0.name == "plain" }?.hasCustomIcon == false)
     }
 }

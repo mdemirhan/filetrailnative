@@ -81,6 +81,10 @@ protocol ContentPaneHost: AnyObject {
     func metadata(for path: String) -> EntryMetadata?
     /// Asks for the details of rows that came into view.
     func requestMetadata(for paths: [String])
+    /// The colors of an item's Finder tags, once read.
+    func tagColors(for path: String) -> [FinderTagColor]
+    /// Asks for the tags of items that came into view.
+    func requestTags(for paths: [String])
     func folderSizeEntry(_ path: String) -> FolderSizeEntry
     /// The largest size among the folder's entries, while the folder is sorted by size and not searched; nil when the
     /// list draws no bars.

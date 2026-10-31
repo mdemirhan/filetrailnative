@@ -19,6 +19,12 @@ struct ContentLoaders {
     var iconStore: @MainActor () -> FileIconStore?
     var homePath: String
     var openPrivacySettings: @MainActor () -> Void
+    /// The colors of items' Finder tags.
+    var tagColors: @MainActor (_ paths: [String]) async -> [String: [FinderTagColor]] = { paths in
+        await Task.detached(priority: .utility) {
+            Dictionary(uniqueKeysWithValues: paths.map { ($0, FinderTags.colors($0)) })
+        }.value
+    }
 }
 
 /// Holds the view of the folder, the states over it, and the background's menu and drops.
@@ -155,6 +161,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var staleMetadata = Set<String>()
     private var metadataQueue: [String] = []
     private var metadataFlushQueued = false
+    private var tagColors: [String: [FinderTagColor]] = [:]
+    private var staleTags = Set<String>()
+    private var tagsInflight = Set<String>()
+    /// Items whose tags changed while they were being read: what that read gives may be from before.
+    private var tagsChangedDuringRead = Set<String>()
     private var showsLoading = false
     private var loadingTimer: DispatchWorkItem?
     private var windowActive = true
@@ -362,6 +373,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         changedPaths: [String]? = nil, restoring memory: FolderViewMemory? = nil
     ) {
         readError = nil
+        if path != folderPath {
+            tagColors = [:]
+            staleTags = []
+            tagsChangedDuringRead = []
+        } else {
+            markTagsStale(changedPaths)
+        }
         // The folder read again under search results (hidden files, a change on disk) waits for them to close.
         if searchDisplay != nil, var kept = keptFolder, path == folderPath {
             kept.listed = newEntries
@@ -393,6 +411,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             sameFolder
             ? DirectoryListingDiff.keepUnchanged(shown: listed, next: newEntries, path: \.path) : nil
         let unchanged = kept?.isUnchanged == true
+        // A folder's own icon can change with nothing else about it: it is drawn again, as the others' can't.
+        let changedSet = changedPaths.map(Set.init)
+        let customIconsChanged =
+            sameFolder
+            ? newEntries.filter { $0.hasCustomIcon == true && changedSet?.contains($0.path) != false } : []
+        for entry in customIconsChanged { iconStore?.forget(IconRequest(entry: entry.iconEntry)) }
+        let customIconPaths = Set(customIconsChanged.map(\.path))
         let previousPaths = entryPaths
         listed = newEntries
         rowsCache = nil
@@ -413,11 +438,12 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         closeRenameIfItemLeft()
         if let kept, !unchanged, keepingScroll, inlineRename == nil, previousPaths == entryPaths {
             // The same rows in the same order: only the rows of the items that changed are drawn again.
-            pane?.reloadRows(paths: Set(kept.changedPaths))
+            pane?.reloadRows(paths: Set(kept.changedPaths).union(customIconPaths))
         } else if !unchanged || !keepingScroll {
             pane?.reload(scrollToTop: !keepingScroll)
         } else {
             pane?.refresh(paths: changedPaths.map(Set.init))
+            if !customIconPaths.isEmpty { pane?.reloadRows(paths: customIconPaths) }
         }
         pane?.syncSelection()
         if let memory { pane?.scrollPosition = (memory.scrollTop, memory.scrollLeft) }
@@ -980,6 +1006,49 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             self.pane?.refresh(paths: Set(items.map(\.path)))
             self.updateStatus()
         }
+    }
+
+    // MARK: Finder tags
+
+    func tagColors(for path: String) -> [FinderTagColor] { tagColors[path] ?? [] }
+
+    /// Tags are read for the items on screen in every view, which draw them: reading them for a whole folder would
+    /// cost a call per item for what is rarely there.
+    func requestTags(for paths: [String]) {
+        let wanted = paths.filter { (tagColors[$0] == nil || staleTags.contains($0)) && !tagsInflight.contains($0) }
+        guard !wanted.isEmpty else { return }
+        tagsInflight.formUnion(wanted)
+        let listKey = searchDisplay?.viewKey ?? folderPath
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let colors = await self.loaders.tagColors(wanted)
+            self.tagsInflight.subtract(wanted)
+            let readAgain = self.tagsChangedDuringRead.intersection(wanted)
+            self.tagsChangedDuringRead.subtract(wanted)
+            guard listKey == (self.searchDisplay?.viewKey ?? self.folderPath) else { return }
+            self.tagColors.merge(colors) { $1 }
+            self.staleTags.subtract(wanted)
+            self.staleTags.formUnion(readAgain)
+            self.pane?.refresh(paths: Set(wanted))
+            if !readAgain.isEmpty { self.requestTags(for: Array(readAgain)) }
+        }
+    }
+
+    /// The tags of these items may have changed (nil: of any).
+    private func markTagsStale(_ paths: [String]?) {
+        if let paths {
+            staleTags.formUnion(paths.filter { tagColors[$0] != nil })
+            tagsChangedDuringRead.formUnion(paths.filter { tagsInflight.contains($0) })
+        } else {
+            staleTags = Set(tagColors.keys)
+            tagsChangedDuringRead = tagsInflight
+        }
+    }
+
+    /// This window changed the items' tags: they are read again now, before the change on disk is heard of.
+    func tagsChanged(_ paths: [String]) {
+        markTagsStale(paths)
+        requestTags(for: paths)
     }
 
     // MARK: Folder sizes

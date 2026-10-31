@@ -100,6 +100,11 @@ public final class FileIconStore {
         return LoadHandle { task.cancel() }
     }
 
+    /// The icon may have changed: the next request draws it again.
+    public func forget(_ request: IconRequest) {
+        cache.remove(request.cacheKey)
+    }
+
     /// Asks for the plain folder and document icons, so the first folder already draws them.
     public func preloadGenericIcons() {
         for kind in Self.preloadedKinds {
@@ -136,6 +141,10 @@ public final class FileIconStore {
     private nonisolated static func draw(_ request: IconRequest, source: any IconSource, samples: IconSamples)
         -> NSImage?
     {
+        if let tint = request.tint {
+            let sample = (try? samples.path(forTint: tint)) ?? (try? samples.path(for: .folder))
+            return sample.flatMap(source.icon(atPath:))
+        }
         guard let kind = request.generic else {
             return source.icon(atPath: request.path)
         }

@@ -68,6 +68,9 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
     if (attributes & FT_READ_MODE) {
         request.commonattr |= ATTR_CMN_ACCESSMASK;
     }
+    if (attributes & FT_READ_FINDER_INFO) {
+        request.commonattr |= ATTR_CMN_FNDRINFO;
+    }
     if (attributes & FT_READ_SIZE) {
         request.fileattr = ATTR_FILE_DATALENGTH;
     }
@@ -141,6 +144,12 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
                 entry.mtime_sec = time.tv_sec;
                 entry.mtime_nsec = (int32_t)time.tv_nsec;
                 entry.mtime_valid = 1;
+            }
+            if (returned.commonattr & ATTR_CMN_FNDRINFO) {
+                // Bytes 8 and 9 of Finder's information are its flags: kHasCustomIcon is 0x0400, the label 0x000E.
+                entry.has_custom_icon = (((uint8_t *)field)[8] & 0x04) != 0;
+                entry.finder_label = (((uint8_t *)field)[9] >> 1) & 0x07;
+                field += 32;
             }
             if (returned.commonattr & ATTR_CMN_ACCESSMASK) {
                 entry.mode = *(uint32_t *)field;

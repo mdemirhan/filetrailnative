@@ -22,6 +22,8 @@ protocol ContextMenuResponder: AnyObject {
     func contextMenu(perform action: ContextMenuActionID, subject: ContextMenuSubject)
     /// An app of Open With was chosen (`always`: Always Open With). `other` asks which app.
     func contextMenu(open paths: [String], with choice: OpenWithAction, kind: OpenWithKind?)
+    /// A color of the row of Finder tags was chosen.
+    func contextMenu(toggleTag color: FinderTagColor, paths: [String])
     func contextMenu(setViewMode mode: ExplorerViewMode)
     func contextMenu(sortBy field: SortByPreference)
     /// An item with a submenu was chosen: the menu only opens it. (A capture scenario chooses it to look at the
@@ -69,8 +71,12 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         let palette = ThemePalette.palette(for: NSApp.effectiveAppearance.isDark ? .dark : .light)
         for item in ContextMenuItems.visibleItems(surface: subject.surface, options: options, hidden: hidden) {
             switch item {
-            case .separator:
+            case .separator(let key):
                 menu.addItem(.separator())
+                if key == "separator-organize", subject.surface == .content || subject.surface == .search {
+                    addTagColors()
+                    menu.addItem(.separator())
+                }
             case .action(let id, let label, let icon, let destructive, let hasSubmenu):
                 let entry = NSMenuItem(title: label, action: #selector(choose(_:)), keyEquivalent: "")
                 entry.target = self
@@ -95,6 +101,28 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
             }
         }
     }
+
+    /// Finder's row of colors. Which of them the items have is read behind the menu and marked as it comes, so a large
+    /// selection or a slow disk doesn't hold it up; beyond a limit it isn't asked, and choosing still looks at the items.
+    private func addTagColors() {
+        let paths = request.subject.paths
+        let row = TagColorsMenuRow { [weak self] color in
+            self?.responder?.contextMenu(toggleTag: color, paths: paths)
+        }
+        let item = NSMenuItem()
+        item.identifier = NSUserInterfaceItemIdentifier("tagColors")
+        item.view = row
+        menu.addItem(item)
+        tagColors = row
+        guard paths.count <= Self.tagStateLimit else { return }
+        Task { @MainActor [weak row] in
+            let states = await Task.detached(priority: .userInitiated) { FinderTags.states(of: paths) }.value
+            row?.show(states)
+        }
+    }
+
+    private static let tagStateLimit = 1000
+    private(set) weak var tagColors: TagColorsMenuRow?
 
     /// Option turns Open With into Always Open With: offered for files only, and only once macOS has said the kinds
     /// allow it (B-VIEW-223). Its row stays hidden until then, so Option promises nothing its apps wouldn't do.
