@@ -29,14 +29,15 @@ struct ReviewTopLevelCountPerfTests {
                 CopyPasteItemResult(
                     sourcePath: $0, destinationPath: $0, sourceKind: .file, status: .completed, error: nil)
             }
-            let started = ContinuousClock.now
-            let result = createOperationResult(
-                operationId: "op", report: report, mode: .copy, startedAt: Date(), finishedAt: Date(),
-                completedByteCount: 0, totalBytes: 0, items: items, status: .completed, error: nil)
-            let elapsed = ContinuousClock.now - started
-            print("createOperationResult \(count) same-length picked items: \(elapsed)")
+            // CPU time of this thread, not wall time, so a busy machine does not fail it.
+            let (result, seconds) = CPUTime.measureThread {
+                createOperationResult(
+                    operationId: "op", report: report, mode: .copy, startedAt: Date(), finishedAt: Date(),
+                    completedByteCount: 0, totalBytes: 0, items: items, status: .completed, error: nil)
+            }
+            print("createOperationResult \(count) same-length picked items: \(seconds) s")
             #expect(result.summary.topLevelItemCount == count)
-            #expect(elapsed < .seconds(1))
+            #expect(seconds < 1)
         }
     }
 }

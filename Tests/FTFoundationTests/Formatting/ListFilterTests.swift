@@ -234,11 +234,11 @@ struct ListFilterTests {
     // A keystroke in a folder of tens of thousands of items stays in the original's ballpark (about 5 ms there).
     @Test func filtersFiftyThousandNamesWithinAFewHundredMillisecondsEvenUnoptimized() {
         let items = (0..<50_000).map { Entry(id: $0, name: "IMG_\($0) holiday photo copy.jpg", relativeParentPath: "") }
-        let clock = ContinuousClock()
-        let elapsed = clock.measure {
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (_, seconds) = CPUTime.measureThread {
             let matches = ListFilter.filterByName(items, query: "img_4")
             _ = ListFilter.selection(in: matches, query: "img_4")
         }
-        #expect(elapsed < .milliseconds(400))
+        #expect(seconds < 0.4)
     }
 }

@@ -151,8 +151,8 @@ struct ContentSelectionTests {
     // T-d6cea52c B-SEL-021: selecting tens of thousands of items at once does not stall.
     @Test func selectsTensOfThousandsOfItemsWithoutStalling() {
         let paths = (0..<60_000).map { "/demo/folder/item-\($0).txt" }
-        let clock = ContinuousClock()
-        let elapsed = clock.measure {
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (_, seconds) = CPUTime.measureThread {
             let all = ContentSelection.all(entryPaths: paths)
             let index = PathIndex(paths, path: { $0 })
             #expect(index.resolve(all.paths).count == 60_000)
@@ -161,7 +161,7 @@ struct ContentSelectionTests {
             let extended = ContentSelection.single(paths[5]).extended(entryPaths: paths, to: paths[59_000])
             #expect(extended.paths.count == 58_996)
         }
-        #expect(elapsed < .seconds(2))
+        #expect(seconds < 2)
     }
 
     // F-779 B-SEL-150 B-SEL-151: the marquee's selection is put in list order, the lead its anchor.

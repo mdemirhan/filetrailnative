@@ -1,4 +1,5 @@
 // Port of apps/desktop/src/renderer/lib/copyPasteClipboard.test.ts
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -331,11 +332,10 @@ struct CopyPasteClipboardTests {
                     sourcePath: path, destinationPath: path.replacingOccurrences(of: "/a/", with: "/b/"),
                     status: index == 0 ? "failed" : "completed")
             })
-        let started = ContinuousClock.now
-        let followed = ClipboardRules.followThroughWrite(copied, result)
-        let elapsed = ContinuousClock.now - started
+        // CPU time of this thread, not wall time, so a busy machine does not fail it.
+        let (followed, seconds) = CPUTime.measureThread { ClipboardRules.followThroughWrite(copied, result) }
         #expect(Array(followed.sourcePaths.prefix(2)) == ["/Users/demo/a/item-0", "/Users/demo/b/item-1"])
-        #expect(elapsed < .seconds(5))
+        #expect(seconds < 5)
     }
 
     // T-a560f3a4
