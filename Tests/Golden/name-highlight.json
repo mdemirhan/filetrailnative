@@ -1,0 +1,6363 @@
+{
+  "suite": "name-highlight",
+  "referenceCommit": "59f60cf",
+  "seed": 2587758855,
+  "generator": "tools/parity/golden/name-highlight.ts",
+  "cases": [
+    {
+      "name": "0: text name \"Panorama\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
+      "input": {
+        "name": "Panorama from the Miradouro do Monte.jpeg",
+        "label": "Panorama from the…Monte.jpeg",
+        "query": "Panorama",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 8
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 8
+          }
+        ]
+      }
+    },
+    {
+      "name": "1: text name \"Monte\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
+      "input": {
+        "name": "Panorama from the Miradouro do Monte.jpeg",
+        "label": "Panorama from the…Monte.jpeg",
+        "query": "Monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 31,
+          "end": 36
+        },
+        "ranges": [
+          {
+            "start": 18,
+            "end": 23
+          }
+        ]
+      }
+    },
+    {
+      "name": "2: text name \"Miradouro\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
+      "input": {
+        "name": "Panorama from the Miradouro do Monte.jpeg",
+        "label": "Panorama from the…Monte.jpeg",
+        "query": "Miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 18,
+          "end": 27
+        },
+        "ranges": [
+          {
+            "start": 17,
+            "end": 18
+          }
+        ]
+      }
+    },
+    {
+      "name": "3: text name \"the Miradouro\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
+      "input": {
+        "name": "Panorama from the Miradouro do Monte.jpeg",
+        "label": "Panorama from the…Monte.jpeg",
+        "query": "the Miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 14,
+          "end": 27
+        },
+        "ranges": [
+          {
+            "start": 14,
+            "end": 18
+          }
+        ]
+      }
+    },
+    {
+      "name": "4: text name \"do Monte\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
+      "input": {
+        "name": "Panorama from the Miradouro do Monte.jpeg",
+        "label": "Panorama from the…Monte.jpeg",
+        "query": "do Monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 28,
+          "end": 36
+        },
+        "ranges": [
+          {
+            "start": 17,
+            "end": 23
+          }
+        ]
+      }
+    },
+    {
+      "name": "5: text name \"jpeg\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
+      "input": {
+        "name": "Panorama from the Miradouro do Monte.jpeg",
+        "label": "Panorama from the…Monte.jpeg",
+        "query": "jpeg",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 37,
+          "end": 41
+        },
+        "ranges": [
+          {
+            "start": 24,
+            "end": 28
+          }
+        ]
+      }
+    },
+    {
+      "name": "6: text name \"x\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",
+      "input": {
+        "name": "Panorama from the Miradouro do Monte.jpeg",
+        "label": "Panorama from the…Monte.jpeg",
+        "query": "x",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "7: text name \"rep\" in Annual Report.pdf as Annual Report.pdf",
+      "input": {
+        "name": "Annual Report.pdf",
+        "label": "Annual Report.pdf",
+        "query": "rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 7,
+          "end": 10
+        },
+        "ranges": [
+          {
+            "start": 7,
+            "end": 10
+          }
+        ]
+      }
+    },
+    {
+      "name": "8: regex name \"x*\" in Report.pdf as Report.pdf",
+      "input": {
+        "name": "Report.pdf",
+        "label": "Report.pdf",
+        "query": "x*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "9: glob name \"*.pdf\" in Report.pdf as Report.pdf",
+      "input": {
+        "name": "Report.pdf",
+        "label": "Report.pdf",
+        "query": "*.pdf",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "10: text path \"Report\" in Report.pdf as Report.pdf",
+      "input": {
+        "name": "Report.pdf",
+        "label": "Report.pdf",
+        "query": "Report",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "11: text name \"a\" in a.txt as a.txt",
+      "input": {
+        "name": "a.txt",
+        "label": "a.txt",
+        "query": "a",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "12: text name \"b\" in a…b…c.txt as a…b…c.txt",
+      "input": {
+        "name": "a…b…c.txt",
+        "label": "a…b…c.txt",
+        "query": "b",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 2,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 2,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "13: text name \"c and\" in a…b…c and more text.txt as a…b…c…xt",
+      "input": {
+        "name": "a…b…c and more text.txt",
+        "label": "a…b…c…xt",
+        "query": "c and",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 4,
+          "end": 9
+        },
+        "ranges": [
+          {
+            "start": 4,
+            "end": 6
+          }
+        ]
+      }
+    },
+    {
+      "name": "14: text name \"nte\" in Monte.jpeg as Mo…eg",
+      "input": {
+        "name": "Monte.jpeg",
+        "label": "Mo…eg",
+        "query": "nte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 2,
+          "end": 5
+        },
+        "ranges": [
+          {
+            "start": 2,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "15: text name \"nte\" in Monte.jpeg as Xo…eg",
+      "input": {
+        "name": "Monte.jpeg",
+        "label": "Xo…eg",
+        "query": "nte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 2,
+          "end": 5
+        },
+        "ranges": []
+      }
+    },
+    {
+      "name": "16: regex name \"foo\\\\-bar\" in foo-bar.txt as foo-bar.txt",
+      "input": {
+        "name": "foo-bar.txt",
+        "label": "foo-bar.txt",
+        "query": "foo\\-bar",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 7
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 7
+          }
+        ]
+      }
+    },
+    {
+      "name": "17: regex name \"a]\" in a].txt as a].txt",
+      "input": {
+        "name": "a].txt",
+        "label": "a].txt",
+        "query": "a]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "18: regex name \"^.\" in 🎉 party.txt as 🎉 party.txt",
+      "input": {
+        "name": "🎉 party.txt",
+        "label": "🎉 party.txt",
+        "query": "^.",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "19: regex name \"^.{2}\" in 🎉 party.txt as 🎉 party.txt",
+      "input": {
+        "name": "🎉 party.txt",
+        "label": "🎉 party.txt",
+        "query": "^.{2}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "20: regex name \"[🎉]\" in x🎉.txt as x🎉.txt",
+      "input": {
+        "name": "x🎉.txt",
+        "label": "x🎉.txt",
+        "query": "[🎉]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "21: regex name \"🎉+\" in 🎉🎉.txt as 🎉🎉.txt",
+      "input": {
+        "name": "🎉🎉.txt",
+        "label": "🎉🎉.txt",
+        "query": "🎉+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "22: regex name \"x{\" in ax{b}.txt as ax{b}.txt",
+      "input": {
+        "name": "ax{b}.txt",
+        "label": "ax{b}.txt",
+        "query": "x{",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "23: regex name \"\\\\p{L}\" in ap{L}.txt as ap{L}.txt",
+      "input": {
+        "name": "ap{L}.txt",
+        "label": "ap{L}.txt",
+        "query": "\\p{L}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 5
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 5
+          }
+        ]
+      }
+    },
+    {
+      "name": "24: regex name \"\\\\k\" in k.txt as k.txt",
+      "input": {
+        "name": "k.txt",
+        "label": "k.txt",
+        "query": "\\k",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "25: regex name \"\\\\8\" in a8.txt as a8.txt",
+      "input": {
+        "name": "a8.txt",
+        "label": "a8.txt",
+        "query": "\\8",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "26: regex name \"[\\\\w-]+\" in a-b c.txt as a-b c.txt",
+      "input": {
+        "name": "a-b c.txt",
+        "label": "a-b c.txt",
+        "query": "[\\w-]+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "27: regex name \"(?=a)*b\" in ab.txt as ab.txt",
+      "input": {
+        "name": "ab.txt",
+        "label": "ab.txt",
+        "query": "(?=a)*b",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "28: regex name \"{2}\" in a{2}.txt as a{2}.txt",
+      "input": {
+        "name": "a{2}.txt",
+        "label": "a{2}.txt",
+        "query": "{2}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "29: regex name \"ſ\" in Sun.txt as Sun.txt",
+      "input": {
+        "name": "Sun.txt",
+        "label": "Sun.txt",
+        "query": "ſ",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "30: regex name \"µ\" in ΜΑΘ.txt as ΜΑΘ.txt",
+      "input": {
+        "name": "ΜΑΘ.txt",
+        "label": "ΜΑΘ.txt",
+        "query": "µ",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "31: regex name \"k\" in Kelvin k.txt as Kelvin k.txt",
+      "input": {
+        "name": "Kelvin k.txt",
+        "label": "Kelvin k.txt",
+        "query": "k",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 7,
+          "end": 8
+        },
+        "ranges": [
+          {
+            "start": 7,
+            "end": 8
+          }
+        ]
+      }
+    },
+    {
+      "name": "32: text name \"ſ\" in Sun.txt as Sun.txt",
+      "input": {
+        "name": "Sun.txt",
+        "label": "Sun.txt",
+        "query": "ſ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "33: text name \"µ\" in ΜΑΘ.txt as ΜΑΘ.txt",
+      "input": {
+        "name": "ΜΑΘ.txt",
+        "label": "ΜΑΘ.txt",
+        "query": "µ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "34: text name \"k\" in Kelvin k.txt as Kelvin k.txt",
+      "input": {
+        "name": "Kelvin k.txt",
+        "label": "Kelvin k.txt",
+        "query": "k",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 7,
+          "end": 8
+        },
+        "ranges": [
+          {
+            "start": 7,
+            "end": 8
+          }
+        ]
+      }
+    },
+    {
+      "name": "35: text name \"🎉\" in a🎉.txt as a🎉.txt",
+      "input": {
+        "name": "a🎉.txt",
+        "label": "a🎉.txt",
+        "query": "🎉",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "36: text name \".jpeg\" in REPORT-Miradouro-copy-notes.tsx as REPORT-Mir…notes.tsx",
+      "input": {
+        "name": "REPORT-Miradouro-copy-notes.tsx",
+        "label": "REPORT-Mir…notes.tsx",
+        "query": ".jpeg",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "37: text name \"(1).p\" in abc.🎉 as a….🎉",
+      "input": {
+        "name": "abc.🎉",
+        "label": "a….🎉",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "38: text name \"(1).p\" in REPORT_abc.md as R….md",
+      "input": {
+        "name": "REPORT_abc.md",
+        "label": "R….md",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "39: text name \"(1)\" in c++ _ REPORT TripCard a.c REPORT.md as c++ _ REPORT TripC…EPORT.md",
+      "input": {
+        "name": "c++ _ REPORT TripCard a.c REPORT.md",
+        "label": "c++ _ REPORT TripC…EPORT.md",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "40: regex path \"Mon\" in Résuméstraße xc++testc++.tsx as Résumés…stc++.tsx",
+      "input": {
+        "name": "Résuméstraße xc++testc++.tsx",
+        "label": "Résumés…stc++.tsx",
+        "query": "Mon",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "41: regex name \"Ann(?=u)\" in straße_Résumé_Trip.jpeg as straße_…_Trip.jpeg",
+      "input": {
+        "name": "straße_Résumé_Trip.jpeg",
+        "label": "straße_…_Trip.jpeg",
+        "query": "Ann(?=u)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "42: regex name \"jpeg$\" in AnnualnotesReportxcopyRésuméabcMiradouro.jpeg as AnnualnotesReportxcopy…douro.jpeg",
+      "input": {
+        "name": "AnnualnotesReportxcopyRésuméabcMiradouro.jpeg",
+        "label": "AnnualnotesReportxcopy…douro.jpeg",
+        "query": "jpeg$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 41,
+          "end": 45
+        },
+        "ranges": [
+          {
+            "start": 29,
+            "end": 33
+          }
+        ]
+      }
+    },
+    {
+      "name": "43: text name \"Trip\" in abcΣίσυφος-testreport_.txt as abcΣίσυφος…port_.txt",
+      "input": {
+        "name": "abcΣίσυφος-testreport_.txt",
+        "label": "abcΣίσυφος…port_.txt",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "44: text name \"nothing\" in  .pdf as  .pdf",
+      "input": {
+        "name": " .pdf",
+        "label": " .pdf",
+        "query": "nothing",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "45: text name \"Rep\" in TripCard-.PDF as TripCard-.PDF",
+      "input": {
+        "name": "TripCard-.PDF",
+        "label": "TripCard-.PDF",
+        "query": "Rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "46: text name \"rep\" in Monte___Résumé_Annual_(1)_test_final.🎉 as Monte___Résumé_Annua…final.🎉",
+      "input": {
+        "name": "Monte___Résumé_Annual_(1)_test_final.🎉",
+        "label": "Monte___Résumé_Annua…final.🎉",
+        "query": "rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "47: regex name \"\\\\d+\" in 2026.tsx as 2….tsx",
+      "input": {
+        "name": "2026.tsx",
+        "label": "2….tsx",
+        "query": "\\d+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 4
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "48: regex name \"x*\" in Résumé-Résumé-Monte.tsx as Résum…Monte.tsx",
+      "input": {
+        "name": "Résumé-Résumé-Monte.tsx",
+        "label": "Résum…Monte.tsx",
+        "query": "x*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "49: regex name \"(rep|Mon)\" in test_Report_Miradouro_Σίσυφος_test_naïve_Annual.pdf as test_Report_Miradouro_Σίσυφος_test_naï…nnual.pdf",
+      "input": {
+        "name": "test_Report_Miradouro_Σίσυφος_test_naïve_Annual.pdf",
+        "label": "test_Report_Miradouro_Σίσυφος_test_naï…nnual.pdf",
+        "query": "(rep|Mon)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "50: text name \"Trip\" in naïve-x---TripCard- -naïve.🎉 as naïve-x---T…naïve.🎉",
+      "input": {
+        "name": "naïve-x---TripCard- -naïve.🎉",
+        "label": "naïve-x---T…naïve.🎉",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 10,
+          "end": 14
+        },
+        "ranges": [
+          {
+            "start": 10,
+            "end": 12
+          }
+        ]
+      }
+    },
+    {
+      "name": "51: regex name \"^.{3}\" in Panorama_draft.md as Panorama_draft.md",
+      "input": {
+        "name": "Panorama_draft.md",
+        "label": "Panorama_draft.md",
+        "query": "^.{3}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "52: regex name \"^$\" in reportsrcdraftRésuménaïveReport Résumé.pdf as reportsrcdraftRésu…ésumé.pdf",
+      "input": {
+        "name": "reportsrcdraftRésuménaïveReport Résumé.pdf",
+        "label": "reportsrcdraftRésu…ésumé.pdf",
+        "query": "^$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "53: glob name \"port\" in x-draft-2026-(1) as x-draft-2026-(1)",
+      "input": {
+        "name": "x-draft-2026-(1)",
+        "label": "x-draft-2026-(1)",
+        "query": "port",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "54: regex name \"[a-c]+\" in abc_IMG_Report_x_(1).🎉 as abc_IMG_R…x_(1).🎉",
+      "input": {
+        "name": "abc_IMG_Report_x_(1).🎉",
+        "label": "abc_IMG_R…x_(1).🎉",
+        "query": "[a-c]+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "55: text name \"Ann\" in  _straße_2026.🎉 as …6.🎉",
+      "input": {
+        "name": " _straße_2026.🎉",
+        "label": "…6.🎉",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "56: regex name \"jpeg$\" in Miradouro.jpeg as Miradouro.jpeg",
+      "input": {
+        "name": "Miradouro.jpeg",
+        "label": "Miradouro.jpeg",
+        "query": "jpeg$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 10,
+          "end": 14
+        },
+        "ranges": [
+          {
+            "start": 10,
+            "end": 14
+          }
+        ]
+      }
+    },
+    {
+      "name": "57: text path \"straße\" in src (1) (1) Σίσυφος naïve.tsx as sr…naïve.tsx",
+      "input": {
+        "name": "src (1) (1) Σίσυφος naïve.tsx",
+        "label": "sr…naïve.tsx",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "58: text path \"trip\" in Annual Report src.🎉 as Annual Report src.🎉",
+      "input": {
+        "name": "Annual Report src.🎉",
+        "label": "Annual Report src.🎉",
+        "query": "trip",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "59: glob name \"  x\" in straße-trip.tsx as straße-trip.tsx",
+      "input": {
+        "name": "straße-trip.tsx",
+        "label": "straße-trip.tsx",
+        "query": "  x",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "60: text name \"(1).p\" in IMG- -日本語-notes.txt as IMG- -日本語-notes.txt",
+      "input": {
+        "name": "IMG- -日本語-notes.txt",
+        "label": "IMG- -日本語-notes.txt",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "61: text path \" \" in srcfinalΣίσυφοςtestdraftReportMonte2026.md as srcfinalΣίσυ…e2026.md",
+      "input": {
+        "name": "srcfinalΣίσυφοςtestdraftReportMonte2026.md",
+        "label": "srcfinalΣίσυ…e2026.md",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "62: text name \"Trip\" in TripCardAnnualabc.tsx as TripCardAnnualabc.tsx",
+      "input": {
+        "name": "TripCardAnnualabc.tsx",
+        "label": "TripCardAnnualabc.tsx",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 4
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 4
+          }
+        ]
+      }
+    },
+    {
+      "name": "63: regex name \"a?b\" in final-copy-REPORT-test-Annual-abc-abc.jpeg as final-copy-R…c-abc.jpeg",
+      "input": {
+        "name": "final-copy-REPORT-test-Annual-abc-abc.jpeg",
+        "label": "final-copy-R…c-abc.jpeg",
+        "query": "a?b",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 30,
+          "end": 32
+        },
+        "ranges": [
+          {
+            "start": 12,
+            "end": 13
+          }
+        ]
+      }
+    },
+    {
+      "name": "64: regex name \"x*\" in (1)c++a.cfinal.tsx as (…inal.tsx",
+      "input": {
+        "name": "(1)c++a.cfinal.tsx",
+        "label": "(…inal.tsx",
+        "query": "x*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "65: text name \"Trip\" in test-report.pdf as test-…eport.pdf",
+      "input": {
+        "name": "test-report.pdf",
+        "label": "test-…eport.pdf",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "66: text name \"(1).p\" in Miradouro-trip.tsx as Mir…-trip.tsx",
+      "input": {
+        "name": "Miradouro-trip.tsx",
+        "label": "Mir…-trip.tsx",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "67: text name \"Mon\" in a.c straße.md as a…aße.md",
+      "input": {
+        "name": "a.c straße.md",
+        "label": "a…aße.md",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "68: regex name \"R.*\" in scan.🎉 as s…an.🎉",
+      "input": {
+        "name": "scan.🎉",
+        "label": "s…an.🎉",
+        "query": "R.*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "69: text name \"Mon\" in _Panorama.pdf as _Panorama.pdf",
+      "input": {
+        "name": "_Panorama.pdf",
+        "label": "_Panorama.pdf",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "70: glob name \"RÉS\" in Trip as T…ip",
+      "input": {
+        "name": "Trip",
+        "label": "T…ip",
+        "query": "RÉS",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "71: text name \"REP\" in finalREPORTΣίσυφοςReportstraßecopy.tsx as finalREPORTΣίσυφ…ecopy.tsx",
+      "input": {
+        "name": "finalREPORTΣίσυφοςReportstraßecopy.tsx",
+        "label": "finalREPORTΣίσυφ…ecopy.tsx",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 5,
+          "end": 8
+        },
+        "ranges": [
+          {
+            "start": 5,
+            "end": 8
+          }
+        ]
+      }
+    },
+    {
+      "name": "72: text name \"the miradouro\" in Annual notes as Annual notes",
+      "input": {
+        "name": "Annual notes",
+        "label": "Annual notes",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "73: regex name \"^Pan\" in Monte___Trip_draft.md as Monte___Trip_draft.md",
+      "input": {
+        "name": "Monte___Trip_draft.md",
+        "label": "Monte___Trip_draft.md",
+        "query": "^Pan",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "74: text name \".jpeg\" in Résumé-IMG-Panorama-trip.PDF as Résumé-IMG-Panora…-trip.PDF",
+      "input": {
+        "name": "Résumé-IMG-Panorama-trip.PDF",
+        "label": "Résumé-IMG-Panora…-trip.PDF",
+        "query": ".jpeg",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "75: text name \"c++\" in src REPORT 日本語.🎉 as src REPORT 日本語.🎉",
+      "input": {
+        "name": "src REPORT 日本語.🎉",
+        "label": "src REPORT 日本語.🎉",
+        "query": "c++",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "76: glob name \"Σ\" in   naïve.txt as   naïve.txt",
+      "input": {
+        "name": "  naïve.txt",
+        "label": "  naïve.txt",
+        "query": "Σ",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "77: text name \"straße\" in report- .txt as report- .txt",
+      "input": {
+        "name": "report- .txt",
+        "label": "report- .txt",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "78: text name \"do monte\" in Trip_2026_final.pdf as T…inal.pdf",
+      "input": {
+        "name": "Trip_2026_final.pdf",
+        "label": "T…inal.pdf",
+        "query": "do monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "79: text path \"Trip\" in finalc++srcPanorama(1)report .pdf as finalc++sr…port .pdf",
+      "input": {
+        "name": "finalc++srcPanorama(1)report .pdf",
+        "label": "finalc++sr…port .pdf",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "80: text name \"日本\" in c++ test 🎉 straße.tar.gz as c++ te…traße.tar.gz",
+      "input": {
+        "name": "c++ test 🎉 straße.tar.gz",
+        "label": "c++ te…traße.tar.gz",
+        "query": "日本",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "81: text path \"🎉\" in copy straße copy a.c notes.tar.gz as copy straße copy a.c notes.tar.gz",
+      "input": {
+        "name": "copy straße copy a.c notes.tar.gz",
+        "label": "copy straße copy a.c notes.tar.gz",
+        "query": "🎉",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "82: regex name \"\\\\d+\" in a.c_Panorama_2026_test_scan_Miradouro_2026.tsx as a.c_Panorama_2026_t…_2026.tsx",
+      "input": {
+        "name": "a.c_Panorama_2026_test_scan_Miradouro_2026.tsx",
+        "label": "a.c_Panorama_2026_t…_2026.tsx",
+        "query": "\\d+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 13,
+          "end": 17
+        },
+        "ranges": [
+          {
+            "start": 13,
+            "end": 17
+          }
+        ]
+      }
+    },
+    {
+      "name": "83: text name \"Ann\" in 2026 Report c++ a.c src.pdf as 2026 R…c src.pdf",
+      "input": {
+        "name": "2026 Report c++ a.c src.pdf",
+        "label": "2026 R…c src.pdf",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "84: text name \"nothing\" in ReportTripCardTripCardMiradouro🎉 as ReportTripCardTripCardMiradouro🎉",
+      "input": {
+        "name": "ReportTripCardTripCardMiradouro🎉",
+        "label": "ReportTripCardTripCardMiradouro🎉",
+        "query": "nothing",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "85: regex path \"x  \" in src draft 🎉 Trip.txt as src draft 🎉 Trip.txt",
+      "input": {
+        "name": "src draft 🎉 Trip.txt",
+        "label": "src draft 🎉 Trip.txt",
+        "query": "x  ",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "86: regex name \"Σ\" in notes Miradouro draft Report final.🎉 as notes Miradouro draft R…final.🎉",
+      "input": {
+        "name": "notes Miradouro draft Report final.🎉",
+        "label": "notes Miradouro draft R…final.🎉",
+        "query": "Σ",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "87: glob name \"panorama from\" in _日本語TripCardMiradouroAnnual2026.jpeg as _日本語TripCardMi…l2026.jpeg",
+      "input": {
+        "name": "_日本語TripCardMiradouroAnnual2026.jpeg",
+        "label": "_日本語TripCardMi…l2026.jpeg",
+        "query": "panorama from",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "88: text name \"report\" in test_scan_Monte_(1)_trip as test_scan_Monte_(…_trip",
+      "input": {
+        "name": "test_scan_Monte_(1)_trip",
+        "label": "test_scan_Monte_(…_trip",
+        "query": "report",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "89: text name \"(1)\" in (1)-c++-Monte.pdf as (1)-…Monte.pdf",
+      "input": {
+        "name": "(1)-c++-Monte.pdf",
+        "label": "(1)-…Monte.pdf",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "90: text name \" \" in final_x_x.pdf as f…_x.pdf",
+      "input": {
+        "name": "final_x_x.pdf",
+        "label": "f…_x.pdf",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "91: text name \"RÉS\" in Résumé_notes.md as Résumé_notes.md",
+      "input": {
+        "name": "Résumé_notes.md",
+        "label": "Résumé_notes.md",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "92: text name \"rep\" in IMG_IMG_Résumé.jpeg as IM…é.jpeg",
+      "input": {
+        "name": "IMG_IMG_Résumé.jpeg",
+        "label": "IM…é.jpeg",
+        "query": "rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "93: text name \"a.c\" in 2026-Report-trip.txt as 2026-Report-trip.txt",
+      "input": {
+        "name": "2026-Report-trip.txt",
+        "label": "2026-Report-trip.txt",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "94: regex name \"a**\" in abc -.🎉 as ab… -.🎉",
+      "input": {
+        "name": "abc -.🎉",
+        "label": "ab… -.🎉",
+        "query": "a**",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "95: regex name \"^.{3}\" in tripTripCarda.cxa.c2026testPanorama.jpeg as tripTripCard…orama.jpeg",
+      "input": {
+        "name": "tripTripCarda.cxa.c2026testPanorama.jpeg",
+        "label": "tripTripCard…orama.jpeg",
+        "query": "^.{3}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "96: regex name \"jpeg$\" in Panorama_abc_c++_abc_test_scan_Résumé_(1).txt as Panorama_abc_c++_abc_test_scan_Résumé_(1).txt",
+      "input": {
+        "name": "Panorama_abc_c++_abc_test_scan_Résumé_(1).txt",
+        "label": "Panorama_abc_c++_abc_test_scan_Résumé_(1).txt",
+        "query": "jpeg$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "97: text name \"\" in MontetripMiradouroMiradouroREPORT.pdf as MontetripMiradouroMiradouroREPORT.pdf",
+      "input": {
+        "name": "MontetripMiradouroMiradouroREPORT.pdf",
+        "label": "MontetripMiradouroMiradouroREPORT.pdf",
+        "query": "",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "98: text name \"Mon\" in 🎉 straße src.pdf as 🎉…src.pdf",
+      "input": {
+        "name": "🎉 straße src.pdf",
+        "label": "🎉…src.pdf",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "99: text path \"  x\" in x - test.🎉 as x…est.🎉",
+      "input": {
+        "name": "x - test.🎉",
+        "label": "x…est.🎉",
+        "query": "  x",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "100: glob name \"o\" in draft-REPORT-straße-trip-Monte---abc.tar.gz as draft-REPORT-straße-trip-Monte---abc.tar.gz",
+      "input": {
+        "name": "draft-REPORT-straße-trip-Monte---abc.tar.gz",
+        "label": "draft-REPORT-straße-trip-Monte---abc.tar.gz",
+        "query": "o",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "101: regex name \"\\\\d+\" in 🎉_日本語_c++_TripCard_naïve_copy_Monte_c++.tsx as 🎉_日本語_c++_Trip…e_c++.tsx",
+      "input": {
+        "name": "🎉_日本語_c++_TripCard_naïve_copy_Monte_c++.tsx",
+        "label": "🎉_日本語_c++_Trip…e_c++.tsx",
+        "query": "\\d+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "102: text name \"RÉS\" in 2026.tsx as 2026.tsx",
+      "input": {
+        "name": "2026.tsx",
+        "label": "2026.tsx",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "103: text name \"Σ\" in ΣίσυφοςTripCard_ TripdraftREPORT.🎉 as ΣίσυφοςTripC…EPORT.🎉",
+      "input": {
+        "name": "ΣίσυφοςTripCard_ TripdraftREPORT.🎉",
+        "label": "ΣίσυφοςTripC…EPORT.🎉",
+        "query": "Σ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "104: glob name \"Rep\" in c++-Monte-🎉-Monte.txt as c++-…Monte.txt",
+      "input": {
+        "name": "c++-Monte-🎉-Monte.txt",
+        "label": "c++-…Monte.txt",
+        "query": "Rep",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "105: regex path \"Rep\" in (1) as (1)",
+      "input": {
+        "name": "(1)",
+        "label": "(1)",
+        "query": "Rep",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "106: regex path \"report\" in test-c++-draft as t…aft",
+      "input": {
+        "name": "test-c++-draft",
+        "label": "t…aft",
+        "query": "report",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "107: regex name \"^Pan\" in Miradouro-_-Résumé-Report-Σίσυφος-Annual.jpeg as Miradouro-…nnual.jpeg",
+      "input": {
+        "name": "Miradouro-_-Résumé-Report-Σίσυφος-Annual.jpeg",
+        "label": "Miradouro-…nnual.jpeg",
+        "query": "^Pan",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "108: text name \"ann\" in copyRésuméReport naïve as copyRésumé…naïve",
+      "input": {
+        "name": "copyRésuméReport naïve",
+        "label": "copyRésumé…naïve",
+        "query": "ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "109: text name \" \" in Miradouro c++ draft Panorama Annual notes as Miradouro c++ draft Panorama Annual notes",
+      "input": {
+        "name": "Miradouro c++ draft Panorama Annual notes",
+        "label": "Miradouro c++ draft Panorama Annual notes",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "110: text path \"nothing\" in notes日本語TripCardc++Annualabc🎉_.🎉 as notes日本語TripCard…abc🎉_.🎉",
+      "input": {
+        "name": "notes日本語TripCardc++Annualabc🎉_.🎉",
+        "label": "notes日本語TripCard…abc🎉_.🎉",
+        "query": "nothing",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "111: text name \"ss\" in REPORT-IMG-src-Report.PDF as R…eport.PDF",
+      "input": {
+        "name": "REPORT-IMG-src-Report.PDF",
+        "label": "R…eport.PDF",
+        "query": "ss",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "112: regex name \"é+\" in Annualxabc2026.PDF as Annualxabc2026.PDF",
+      "input": {
+        "name": "Annualxabc2026.PDF",
+        "label": "Annualxabc2026.PDF",
+        "query": "é+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "113: regex name \"o{2}\" in _naïveRésumé_ srca.c.tar.gz as _naïveR…rca.c.tar.gz",
+      "input": {
+        "name": "_naïveRésumé_ srca.c.tar.gz",
+        "label": "_naïveR…rca.c.tar.gz",
+        "query": "o{2}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "114: regex name \"^.{3}\" in Σίσυφος2026AnnualstraßesrcfinalΣίσυφοςTrip.jpeg as Σίσυφο…ςTrip.jpeg",
+      "input": {
+        "name": "Σίσυφος2026AnnualstraßesrcfinalΣίσυφοςTrip.jpeg",
+        "label": "Σίσυφο…ςTrip.jpeg",
+        "query": "^.{3}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "115: text name \"x  \" in src_-_test.tar.gz as s…_test.tar.gz",
+      "input": {
+        "name": "src_-_test.tar.gz",
+        "label": "s…_test.tar.gz",
+        "query": "x  ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "116: regex name \"^Pan\" in Report-Trip-Annual-IMG-Résumé-a.c.tsx as Report-Trip-An…é-a.c.tsx",
+      "input": {
+        "name": "Report-Trip-Annual-IMG-Résumé-a.c.tsx",
+        "label": "Report-Trip-An…é-a.c.tsx",
+        "query": "^Pan",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "117: text name \"nothing\" in final_report___straße_2026_Σίσυφος_Trip.pdf as final_report___s…_Trip.pdf",
+      "input": {
+        "name": "final_report___straße_2026_Σίσυφος_Trip.pdf",
+        "label": "final_report___s…_Trip.pdf",
+        "query": "nothing",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "118: text name \"RÉS\" in a.c Annual scan Monte 2026 as a.c Ann… 2026",
+      "input": {
+        "name": "a.c Annual scan Monte 2026",
+        "label": "a.c Ann… 2026",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "119: text name \"σ\" in trip_Σίσυφος.tar.gz as t…υφος.tar.gz",
+      "input": {
+        "name": "trip_Σίσυφος.tar.gz",
+        "label": "t…υφος.tar.gz",
+        "query": "σ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 5,
+          "end": 6
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "120: text name \"Trip\" in RésuméREPORTΣίσυφος.tar.gz as RésuméRE…συφος.tar.gz",
+      "input": {
+        "name": "RésuméREPORTΣίσυφος.tar.gz",
+        "label": "RésuméRE…συφος.tar.gz",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "121: text name \"é\" in src copyIMGnaïve.PDF as s…naïve.PDF",
+      "input": {
+        "name": "src copyIMGnaïve.PDF",
+        "label": "s…naïve.PDF",
+        "query": "é",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "122: text name \"the miradouro\" in 日本語.pdf as 日…語.pdf",
+      "input": {
+        "name": "日本語.pdf",
+        "label": "日…語.pdf",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "123: text path \"panorama from\" in draftRésumé.tar.gz as draftRésumé.tar.gz",
+      "input": {
+        "name": "draftRésumé.tar.gz",
+        "label": "draftRésumé.tar.gz",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "124: text name \"RÉS\" in trip final test 2026.txt as trip final te… 2026.txt",
+      "input": {
+        "name": "trip final test 2026.txt",
+        "label": "trip final te… 2026.txt",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "125: regex path \"o\" in notesTripCardREPORTdraft(1)日本語.md as notesTripCardREPORTdraft(1)日本語.md",
+      "input": {
+        "name": "notesTripCardREPORTdraft(1)日本語.md",
+        "label": "notesTripCardREPORTdraft(1)日本語.md",
+        "query": "o",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "126: regex name \"rep.*t\" in  _2026_test.pdf as …est.pdf",
+      "input": {
+        "name": " _2026_test.pdf",
+        "label": "…est.pdf",
+        "query": "rep.*t",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "127: regex path \"a.c\" in Report日本語draft(1).🎉 as Report日本語draft(1).🎉",
+      "input": {
+        "name": "Report日本語draft(1).🎉",
+        "label": "Report日本語draft(1).🎉",
+        "query": "a.c",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "128: text name \"REP\" in   Monte notes - as   Monte…tes -",
+      "input": {
+        "name": "  Monte notes -",
+        "label": "  Monte…tes -",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "129: text name \"日本\" in scan   Trip.tsx as s…rip.tsx",
+      "input": {
+        "name": "scan   Trip.tsx",
+        "label": "s…rip.tsx",
+        "query": "日本",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "130: text name \"Trip\" in _-a.c-Trip- .jpeg as _-a.c-Trip- .jpeg",
+      "input": {
+        "name": "_-a.c-Trip- .jpeg",
+        "label": "_-a.c-Trip- .jpeg",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 6,
+          "end": 10
+        },
+        "ranges": [
+          {
+            "start": 6,
+            "end": 10
+          }
+        ]
+      }
+    },
+    {
+      "name": "131: text name \"🎉\" in notes_draft_notes_Panorama.jpeg as notes_draft_notes_Panorama.jpeg",
+      "input": {
+        "name": "notes_draft_notes_Panorama.jpeg",
+        "label": "notes_draft_notes_Panorama.jpeg",
+        "query": "🎉",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "132: text name \" \" in Résumé-src---notes-test.tsx as Résu…-test.tsx",
+      "input": {
+        "name": "Résumé-src---notes-test.tsx",
+        "label": "Résu…-test.tsx",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "133: text name \"panorama from\" in x_a.c_draft.md as x_….md",
+      "input": {
+        "name": "x_a.c_draft.md",
+        "label": "x_….md",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "134: regex name \"rep.*t\" in notes draft final Σίσυφος scan.tar.gz as notes dr… scan.tar.gz",
+      "input": {
+        "name": "notes draft final Σίσυφος scan.tar.gz",
+        "label": "notes dr… scan.tar.gz",
+        "query": "rep.*t",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "135: text path \"🎉\" in Σίσυφος_naïve_Σίσυφος_straße_Monte_IMG_trip_abc.jpeg as Σίσυφος_naïve_Σίσυφος_straße_Monte_IMG_trip_abc.jpeg",
+      "input": {
+        "name": "Σίσυφος_naïve_Σίσυφος_straße_Monte_IMG_trip_abc.jpeg",
+        "label": "Σίσυφος_naïve_Σίσυφος_straße_Monte_IMG_trip_abc.jpeg",
+        "query": "🎉",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "136: regex name \"(rep|Mon)\" in Panorama.tsx as Panorama.tsx",
+      "input": {
+        "name": "Panorama.tsx",
+        "label": "Panorama.tsx",
+        "query": "(rep|Mon)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "137: text name \"Trip\" in draft_final.txt as dr…final.txt",
+      "input": {
+        "name": "draft_final.txt",
+        "label": "dr…final.txt",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "138: regex name \"*a\" in Report-IMG-IMG-naïve-a.c as Report-IMG-…e-a.c",
+      "input": {
+        "name": "Report-IMG-IMG-naïve-a.c",
+        "label": "Report-IMG-…e-a.c",
+        "query": "*a",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "139: text name \"port\" in final.🎉 as f…l.🎉",
+      "input": {
+        "name": "final.🎉",
+        "label": "f…l.🎉",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "140: text name \"nothing\" in straße-notes-(1)-x-test-trip-Annual-(1).txt as straße-notes-(…l-(1).txt",
+      "input": {
+        "name": "straße-notes-(1)-x-test-trip-Annual-(1).txt",
+        "label": "straße-notes-(…l-(1).txt",
+        "query": "nothing",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "141: text name \".jpeg\" in Panorama REPORT x (1) Report Trip src copy.pdf as Panorama REPORT x (1) Report Trip src copy.pdf",
+      "input": {
+        "name": "Panorama REPORT x (1) Report Trip src copy.pdf",
+        "label": "Panorama REPORT x (1) Report Trip src copy.pdf",
+        "query": ".jpeg",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "142: regex name \"a?b\" in Σίσυφος- -Résumé-Résumé-Résumé.🎉 as Σίσυ…ésumé.🎉",
+      "input": {
+        "name": "Σίσυφος- -Résumé-Résumé-Résumé.🎉",
+        "label": "Σίσυ…ésumé.🎉",
+        "query": "a?b",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "143: regex name \".\" in (1) _.tar.gz as (… _.tar.gz",
+      "input": {
+        "name": "(1) _.tar.gz",
+        "label": "(… _.tar.gz",
+        "query": ".",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "144: text path \"(1)\" in Miradourofinalscannaïvereport.PDF as Miradourofinalscannaïvereport.PDF",
+      "input": {
+        "name": "Miradourofinalscannaïvereport.PDF",
+        "label": "Miradourofinalscannaïvereport.PDF",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "145: text name \"(1)\" in Miradouro Σίσυφος as Mi…υφος",
+      "input": {
+        "name": "Miradouro Σίσυφος",
+        "label": "Mi…υφος",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "146: text name \"panorama from\" in c++ TripCard abc Annual a.c -.🎉 as c++ TripCa…a.c -.🎉",
+      "input": {
+        "name": "c++ TripCard abc Annual a.c -.🎉",
+        "label": "c++ TripCa…a.c -.🎉",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "147: regex name \"^.{3}\" in Σίσυφος_-.pdf as Σίσυφος_-.pdf",
+      "input": {
+        "name": "Σίσυφος_-.pdf",
+        "label": "Σίσυφος_-.pdf",
+        "query": "^.{3}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "148: regex name \"(\" in 日本語-Trip-🎉-test-REPORT-日本語.jpeg as 日本語-Trip-🎉-test-REPORT-日本語.jpeg",
+      "input": {
+        "name": "日本語-Trip-🎉-test-REPORT-日本語.jpeg",
+        "label": "日本語-Trip-🎉-test-REPORT-日本語.jpeg",
+        "query": "(",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "149: text name \"Ann\" in 🎉scanREPORTtripcopyΣίσυφοςREPORT.PDF as 🎉scanREPORTt…EPORT.PDF",
+      "input": {
+        "name": "🎉scanREPORTtripcopyΣίσυφοςREPORT.PDF",
+        "label": "🎉scanREPORTt…EPORT.PDF",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "150: regex path \"RÉS\" in 2026_a.c_ .txt as 2…_ .txt",
+      "input": {
+        "name": "2026_a.c_ .txt",
+        "label": "2…_ .txt",
+        "query": "RÉS",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "151: text name \"the miradouro\" in draft src Monte final   notes x 🎉.tsx as draft src Monte final…s x 🎉.tsx",
+      "input": {
+        "name": "draft src Monte final   notes x 🎉.tsx",
+        "label": "draft src Monte final…s x 🎉.tsx",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "152: text name \"\" in _naïvea.c finalsrcfinal.md as _naïve…final.md",
+      "input": {
+        "name": "_naïvea.c finalsrcfinal.md",
+        "label": "_naïve…final.md",
+        "query": "",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "153: text name \"日本\" in x_draft.pdf as x…ft.pdf",
+      "input": {
+        "name": "x_draft.pdf",
+        "label": "x…ft.pdf",
+        "query": "日本",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "154: text name \"ss\" in Panorama x abc   Report copy straße Résumé.tar.gz as Panorama x abc   Report…ésumé.tar.gz",
+      "input": {
+        "name": "Panorama x abc   Report copy straße Résumé.tar.gz",
+        "label": "Panorama x abc   Report…ésumé.tar.gz",
+        "query": "ss",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "155: regex name \"[\" in a.c.PDF as a.c.PDF",
+      "input": {
+        "name": "a.c.PDF",
+        "label": "a.c.PDF",
+        "query": "[",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "156: text name \"panorama from\" in xfinalReportc++ a.c.pdf as x…a.c.pdf",
+      "input": {
+        "name": "xfinalReportc++ a.c.pdf",
+        "label": "x…a.c.pdf",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "157: text name \"e\" in straße.md as straße.md",
+      "input": {
+        "name": "straße.md",
+        "label": "straße.md",
+        "query": "e",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 5,
+          "end": 6
+        },
+        "ranges": [
+          {
+            "start": 5,
+            "end": 6
+          }
+        ]
+      }
+    },
+    {
+      "name": "158: text name \"c++\" in TripCard-x-Trip-2026-c++-Report.txt as TripCa…eport.txt",
+      "input": {
+        "name": "TripCard-x-Trip-2026-c++-Report.txt",
+        "label": "TripCa…eport.txt",
+        "query": "c++",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 21,
+          "end": 24
+        },
+        "ranges": [
+          {
+            "start": 6,
+            "end": 7
+          }
+        ]
+      }
+    },
+    {
+      "name": "159: text name \"é\" in copy🎉REPORT-.pdf as copy…PORT-.pdf",
+      "input": {
+        "name": "copy🎉REPORT-.pdf",
+        "label": "copy…PORT-.pdf",
+        "query": "é",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "160: text name \"straße\" in x Σίσυφος scan copy.md as x Σίσυφος scan copy.md",
+      "input": {
+        "name": "x Σίσυφος scan copy.md",
+        "label": "x Σίσυφος scan copy.md",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "161: regex name \"rep.*t\" in src_Report as s…eport",
+      "input": {
+        "name": "src_Report",
+        "label": "s…eport",
+        "query": "rep.*t",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 4,
+          "end": 10
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 7
+          }
+        ]
+      }
+    },
+    {
+      "name": "162: text name \"do monte\" in c++ TripCard Résumé.pdf as c++ TripCa…ésumé.pdf",
+      "input": {
+        "name": "c++ TripCard Résumé.pdf",
+        "label": "c++ TripCa…ésumé.pdf",
+        "query": "do monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "163: text name \"straße\" in Σίσυφος_IMGtesttest.tsx as Σίσυφο…ttest.tsx",
+      "input": {
+        "name": "Σίσυφος_IMGtesttest.tsx",
+        "label": "Σίσυφο…ttest.tsx",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "164: text name \"txt\" in straße2026Report2026.md as straße2026Rep…t2026.md",
+      "input": {
+        "name": "straße2026Report2026.md",
+        "label": "straße2026Rep…t2026.md",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "165: text path \"trip\" in Σίσυφος_naïve_(1)_c++_x_Trip_report.pdf as Σίσυφος_naïve_(1)_c++_x_…eport.pdf",
+      "input": {
+        "name": "Σίσυφος_naïve_(1)_c++_x_Trip_report.pdf",
+        "label": "Σίσυφος_naïve_(1)_c++_x_…eport.pdf",
+        "query": "trip",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "166: text name \"the miradouro\" in Trip Report TripCard src src   abc trip.PDF as Trip Report TripCard src… trip.PDF",
+      "input": {
+        "name": "Trip Report TripCard src src   abc trip.PDF",
+        "label": "Trip Report TripCard src… trip.PDF",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "167: text name \"the miradouro\" in Σίσυφοςa.c as Σίσυφοςa.c",
+      "input": {
+        "name": "Σίσυφοςa.c",
+        "label": "Σίσυφοςa.c",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "168: regex name \"[\" in abc🎉reporttestReportnotes .jpeg as abc🎉reporttestRepo…otes .jpeg",
+      "input": {
+        "name": "abc🎉reporttestReportnotes .jpeg",
+        "label": "abc🎉reporttestRepo…otes .jpeg",
+        "query": "[",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "169: text name \"port\" in IMG-report-x-REPORT-Résumé-Miradouro-report.txt as IMG-report-x-REPORT-Ré…eport.txt",
+      "input": {
+        "name": "IMG-report-x-REPORT-Résumé-Miradouro-report.txt",
+        "label": "IMG-report-x-REPORT-Ré…eport.txt",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 6,
+          "end": 10
+        },
+        "ranges": [
+          {
+            "start": 6,
+            "end": 10
+          }
+        ]
+      }
+    },
+    {
+      "name": "170: regex name \".\" in scan 🎉 Annual Annual.pdf as scan 🎉 Annual Annual.pdf",
+      "input": {
+        "name": "scan 🎉 Annual Annual.pdf",
+        "label": "scan 🎉 Annual Annual.pdf",
+        "query": ".",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "171: text name \"txt\" in Résumé_draft_a.c_Report_Résumé_test.txt as Résumé_draft_a.c_Report_Résumé_test.txt",
+      "input": {
+        "name": "Résumé_draft_a.c_Report_Résumé_test.txt",
+        "label": "Résumé_draft_a.c_Report_Résumé_test.txt",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 36,
+          "end": 39
+        },
+        "ranges": [
+          {
+            "start": 36,
+            "end": 39
+          }
+        ]
+      }
+    },
+    {
+      "name": "172: glob name \"nothing\" in srcReportstraße-notes🎉Reportstraße.PDF as srcReportstraße-notes🎉Reportstraße.PDF",
+      "input": {
+        "name": "srcReportstraße-notes🎉Reportstraße.PDF",
+        "label": "srcReportstraße-notes🎉Reportstraße.PDF",
+        "query": "nothing",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "173: text name \"panorama from\" in copy scan IMG abc 日本語 naïve.PDF as c…ïve.PDF",
+      "input": {
+        "name": "copy scan IMG abc 日本語 naïve.PDF",
+        "label": "c…ïve.PDF",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "174: text name \"x  \" in 🎉-.tar.gz as 🎉-.tar.gz",
+      "input": {
+        "name": "🎉-.tar.gz",
+        "label": "🎉-.tar.gz",
+        "query": "x  ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "175: text name \"RÉS\" in test_final_test_🎉.txt as test_final_test_🎉.txt",
+      "input": {
+        "name": "test_final_test_🎉.txt",
+        "label": "test_final_test_🎉.txt",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "176: text name \"a.c\" in  _Report_scan_straße_(1)_Annual_abc_abc.🎉 as  _Report_scan_straße_(1…c_abc.🎉",
+      "input": {
+        "name": " _Report_scan_straße_(1)_Annual_abc_abc.🎉",
+        "label": " _Report_scan_straße_(1…c_abc.🎉",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "177: text name \"é\" in straße_notes_Miradouro_Σίσυφος.PDF as straße_notes_Mir…συφος.PDF",
+      "input": {
+        "name": "straße_notes_Miradouro_Σίσυφος.PDF",
+        "label": "straße_notes_Mir…συφος.PDF",
+        "query": "é",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "178: text name \"port\" in abc-TripCard-_-REPORT-_-copy-c++.PDF as abc-TripCard-_-REPOR…y-c++.PDF",
+      "input": {
+        "name": "abc-TripCard-_-REPORT-_-copy-c++.PDF",
+        "label": "abc-TripCard-_-REPOR…y-c++.PDF",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 17,
+          "end": 21
+        },
+        "ranges": [
+          {
+            "start": 17,
+            "end": 21
+          }
+        ]
+      }
+    },
+    {
+      "name": "179: text name \"txt\" in  _x_ _copy.tar.gz as …opy.tar.gz",
+      "input": {
+        "name": " _x_ _copy.tar.gz",
+        "label": "…opy.tar.gz",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "180: text name \"Σ\" in TripCard_c++_Panorama_notes_a.c_TripCard_x_test.🎉 as TripCard_c+…_test.🎉",
+      "input": {
+        "name": "TripCard_c++_Panorama_notes_a.c_TripCard_x_test.🎉",
+        "label": "TripCard_c+…_test.🎉",
+        "query": "Σ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "181: regex name \"[\" in src-report-trip-IMG-draft-copy as src-report-trip-IMG-draft-copy",
+      "input": {
+        "name": "src-report-trip-IMG-draft-copy",
+        "label": "src-report-trip-IMG-draft-copy",
+        "query": "[",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "182: glob name \"σ\" in a.c-c++-2026-test-2026-Report-Report-REPORT.tar.gz as a.c-c++-2026-test-2026-Report-Report-REPORT.tar.gz",
+      "input": {
+        "name": "a.c-c++-2026-test-2026-Report-Report-REPORT.tar.gz",
+        "label": "a.c-c++-2026-test-2026-Report-Report-REPORT.tar.gz",
+        "query": "σ",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "183: text name \"REP\" in 2026 scan abc.tar.gz as 202…n abc.tar.gz",
+      "input": {
+        "name": "2026 scan abc.tar.gz",
+        "label": "202…n abc.tar.gz",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "184: text name \"report\" in (1)_Trip_straße_Report_Miradouro_Résumé_🎉.md as (1)_Trip_straße_Report_Miradouro_Résumé_🎉.md",
+      "input": {
+        "name": "(1)_Trip_straße_Report_Miradouro_Résumé_🎉.md",
+        "label": "(1)_Trip_straße_Report_Miradouro_Résumé_🎉.md",
+        "query": "report",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 16,
+          "end": 22
+        },
+        "ranges": [
+          {
+            "start": 16,
+            "end": 22
+          }
+        ]
+      }
+    },
+    {
+      "name": "185: text path \"\" in 2026ΣίσυφοςTripCard MonteTripCard.jpeg as 2026ΣίσυφοςTripCard MonteTripCard.jpeg",
+      "input": {
+        "name": "2026ΣίσυφοςTripCard MonteTripCard.jpeg",
+        "label": "2026ΣίσυφοςTripCard MonteTripCard.jpeg",
+        "query": "",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "186: regex name \"o{2}\" in Résumé.md as Résumé.md",
+      "input": {
+        "name": "Résumé.md",
+        "label": "Résumé.md",
+        "query": "o{2}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "187: text name \"txt\" in 日本語_Miradouro___IMG.md as 日本語_Miradouro___IMG.md",
+      "input": {
+        "name": "日本語_Miradouro___IMG.md",
+        "label": "日本語_Miradouro___IMG.md",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "188: text name \"panorama from\" in IMG 日本語 abc.md as I…abc.md",
+      "input": {
+        "name": "IMG 日本語 abc.md",
+        "label": "I…abc.md",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "189: text name \"ss\" in Report_straße_c++_Résumé_Miradouro.tar.gz as Report…douro.tar.gz",
+      "input": {
+        "name": "Report_straße_c++_Résumé_Miradouro.tar.gz",
+        "label": "Report…douro.tar.gz",
+        "query": "ss",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "190: regex name \"^Pan\" in a.c_(1)_(1)_trip_notes_notes_Σίσυφος as a.c_(1)…συφος",
+      "input": {
+        "name": "a.c_(1)_(1)_trip_notes_notes_Σίσυφος",
+        "label": "a.c_(1)…συφος",
+        "query": "^Pan",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "191: text name \"c++\" in copy copy.pdf as copy copy.pdf",
+      "input": {
+        "name": "copy copy.pdf",
+        "label": "copy copy.pdf",
+        "query": "c++",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "192: text name \"Rep\" in Résumé_Report_a.c_TripCard_x_scan_abc_🎉.txt as Résumé_Report_a.c_TripCard_x_scan_abc_🎉.txt",
+      "input": {
+        "name": "Résumé_Report_a.c_TripCard_x_scan_abc_🎉.txt",
+        "label": "Résumé_Report_a.c_TripCard_x_scan_abc_🎉.txt",
+        "query": "Rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 7,
+          "end": 10
+        },
+        "ranges": [
+          {
+            "start": 7,
+            "end": 10
+          }
+        ]
+      }
+    },
+    {
+      "name": "193: regex name \"[^a-z]\" in straße Panorama Miradouro 🎉 Panorama x.tar.gz as straße Panorama Miradouro 🎉 Panorama x.tar.gz",
+      "input": {
+        "name": "straße Panorama Miradouro 🎉 Panorama x.tar.gz",
+        "label": "straße Panorama Miradouro 🎉 Panorama x.tar.gz",
+        "query": "[^a-z]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 4,
+          "end": 5
+        },
+        "ranges": [
+          {
+            "start": 4,
+            "end": 5
+          }
+        ]
+      }
+    },
+    {
+      "name": "194: text name \"  x\" in Panorama scan notes IMG as Panorama scan…s IMG",
+      "input": {
+        "name": "Panorama scan notes IMG",
+        "label": "Panorama scan…s IMG",
+        "query": "  x",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "195: text name \"Σ\" in Σίσυφος draft.md as Σίσυφος draft.md",
+      "input": {
+        "name": "Σίσυφος draft.md",
+        "label": "Σίσυφος draft.md",
+        "query": "Σ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "196: regex path \"port\" in  _final_copy_2026_Report_Monte_Report_report as  _final_copy_2026_Report_Monte_Report_…eport",
+      "input": {
+        "name": " _final_copy_2026_Report_Monte_Report_report",
+        "label": " _final_copy_2026_Report_Monte_Report_…eport",
+        "query": "port",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "197: text name \"port\" in 🎉naïvea.cReportabc.🎉 as 🎉na…rtabc.🎉",
+      "input": {
+        "name": "🎉naïvea.cReportabc.🎉",
+        "label": "🎉na…rtabc.🎉",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 12,
+          "end": 16
+        },
+        "ranges": [
+          {
+            "start": 4,
+            "end": 7
+          }
+        ]
+      }
+    },
+    {
+      "name": "198: regex name \"[^a-z]\" in trip.txt as trip.txt",
+      "input": {
+        "name": "trip.txt",
+        "label": "trip.txt",
+        "query": "[^a-z]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 4,
+          "end": 5
+        },
+        "ranges": [
+          {
+            "start": 4,
+            "end": 5
+          }
+        ]
+      }
+    },
+    {
+      "name": "199: text name \"txt\" in notes 🎉 copy.PDF as no…y.PDF",
+      "input": {
+        "name": "notes 🎉 copy.PDF",
+        "label": "no…y.PDF",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "200: regex name \"R.*\" in Résumé notes trip   final.tar.gz as Résumé no…final.tar.gz",
+      "input": {
+        "name": "Résumé notes trip   final.tar.gz",
+        "label": "Résumé no…final.tar.gz",
+        "query": "R.*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 32
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 22
+          }
+        ]
+      }
+    },
+    {
+      "name": "201: text name \"do monte\" in report_(1)_Annual_Report_straße_x_Panorama as report_(1)_Annual_Report_stra…orama",
+      "input": {
+        "name": "report_(1)_Annual_Report_straße_x_Panorama",
+        "label": "report_(1)_Annual_Report_stra…orama",
+        "query": "do monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "202: text name \"a.c\" in MontestraßetripPanorama.pdf as MontestraßetripPanorama.pdf",
+      "input": {
+        "name": "MontestraßetripPanorama.pdf",
+        "label": "MontestraßetripPanorama.pdf",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "203: text name \"Ann\" in (1).txt as (1).txt",
+      "input": {
+        "name": "(1).txt",
+        "label": "(1).txt",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "204: text name \"txt\" in 2026.tar.gz as 2026.tar.gz",
+      "input": {
+        "name": "2026.tar.gz",
+        "label": "2026.tar.gz",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "205: glob name \" \" in REPORT (1) Panorama REPORT IMG x abc.md as REPORT (1) Panorama REPORT IMG x abc.md",
+      "input": {
+        "name": "REPORT (1) Panorama REPORT IMG x abc.md",
+        "label": "REPORT (1) Panorama REPORT IMG x abc.md",
+        "query": " ",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "206: text name \"trip\" in - as -",
+      "input": {
+        "name": "-",
+        "label": "-",
+        "query": "trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "207: regex name \"^$\" in  Résumé.jpeg as  Résumé.jpeg",
+      "input": {
+        "name": " Résumé.jpeg",
+        "label": " Résumé.jpeg",
+        "query": "^$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "208: text name \"mon\" in abcdraft .PDF as abcdraft .PDF",
+      "input": {
+        "name": "abcdraft .PDF",
+        "label": "abcdraft .PDF",
+        "query": "mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "209: text name \"o\" in ΣίσυφοςMiradouronotesscantestnaïvec++(1).jpeg as ΣίσυφοςMiradouronote…++(1).jpeg",
+      "input": {
+        "name": "ΣίσυφοςMiradouronotesscantestnaïvec++(1).jpeg",
+        "label": "ΣίσυφοςMiradouronote…++(1).jpeg",
+        "query": "o",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 12,
+          "end": 13
+        },
+        "ranges": [
+          {
+            "start": 12,
+            "end": 13
+          }
+        ]
+      }
+    },
+    {
+      "name": "210: text name \"txt\" in  ΣίσυφοςMiradouro.tar.gz as …o.tar.gz",
+      "input": {
+        "name": " ΣίσυφοςMiradouro.tar.gz",
+        "label": "…o.tar.gz",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "211: text name \".jpeg\" in 🎉copy.tsx as 🎉copy.tsx",
+      "input": {
+        "name": "🎉copy.tsx",
+        "label": "🎉copy.tsx",
+        "query": ".jpeg",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "212: text name \"the miradouro\" in 2026-straße-2026-Panorama- -Report as 2026-straße-2026-Panorama- -Report",
+      "input": {
+        "name": "2026-straße-2026-Panorama- -Report",
+        "label": "2026-straße-2026-Panorama- -Report",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "213: text name \"panorama from\" in 日本語_abc_Report_c++_TripCard_trip_src.tsx as 日本語_a…p_src.tsx",
+      "input": {
+        "name": "日本語_abc_Report_c++_TripCard_trip_src.tsx",
+        "label": "日本語_a…p_src.tsx",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "214: regex name \"(?:an)+\" in 🎉-🎉-Annual-TripCard.md as 🎉…pCard.md",
+      "input": {
+        "name": "🎉-🎉-Annual-TripCard.md",
+        "label": "🎉…pCard.md",
+        "query": "(?:an)+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 6,
+          "end": 8
+        },
+        "ranges": [
+          {
+            "start": 2,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "215: regex name \"Ann(?=u)\" in copyREPORT2026REPORTsrc.tar.gz as copyREPORT2026REPORTsrc.tar.gz",
+      "input": {
+        "name": "copyREPORT2026REPORTsrc.tar.gz",
+        "label": "copyREPORT2026REPORTsrc.tar.gz",
+        "query": "Ann(?=u)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "216: text path \"panorama from\" in test 2026 c++ 日本語 notes naïve c++.pdf as test 2026 c++ 日本語 notes naïve c++.pdf",
+      "input": {
+        "name": "test 2026 c++ 日本語 notes naïve c++.pdf",
+        "label": "test 2026 c++ 日本語 notes naïve c++.pdf",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "217: text name \"Mon\" in src-trip-Report-x-Trip-_.PDF as src-trip-Report-x-…rip-_.PDF",
+      "input": {
+        "name": "src-trip-Report-x-Trip-_.PDF",
+        "label": "src-trip-Report-x-…rip-_.PDF",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "218: text name \"ann\" in notesxAnnual.tsx as n…ual.tsx",
+      "input": {
+        "name": "notesxAnnual.tsx",
+        "label": "n…ual.tsx",
+        "query": "ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 6,
+          "end": 9
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "219: regex path \"report\" in a.c_ _Panorama.🎉 as a…rama.🎉",
+      "input": {
+        "name": "a.c_ _Panorama.🎉",
+        "label": "a…rama.🎉",
+        "query": "report",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "220: regex name \"[a-c]+\" in abc test _ 🎉 Σίσυφος.tsx as abc…συφος.tsx",
+      "input": {
+        "name": "abc test _ 🎉 Σίσυφος.tsx",
+        "label": "abc…συφος.tsx",
+        "query": "[a-c]+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "221: regex name \"(rep|Mon)\" in Trip-naïve-report-final-Monte-REPORT-2026-(1).pdf as Trip-naïve-report-final…6-(1).pdf",
+      "input": {
+        "name": "Trip-naïve-report-final-Monte-REPORT-2026-(1).pdf",
+        "label": "Trip-naïve-report-final…6-(1).pdf",
+        "query": "(rep|Mon)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 11,
+          "end": 14
+        },
+        "ranges": [
+          {
+            "start": 11,
+            "end": 14
+          }
+        ]
+      }
+    },
+    {
+      "name": "222: text name \"(1).p\" in xMiradouroREPORTabcabc.txt as xMiradouroREPORTabcabc.txt",
+      "input": {
+        "name": "xMiradouroREPORTabcabc.txt",
+        "label": "xMiradouroREPORTabcabc.txt",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "223: text name \"do monte\" in Trip-test-日本語-report-trip-final as Trip-t…final",
+      "input": {
+        "name": "Trip-test-日本語-report-trip-final",
+        "label": "Trip-t…final",
+        "query": "do monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "224: text name \"o\" in REPORT_Trip_Miradouro.tsx as REPORT_Trip_Miradouro.tsx",
+      "input": {
+        "name": "REPORT_Trip_Miradouro.tsx",
+        "label": "REPORT_Trip_Miradouro.tsx",
+        "query": "o",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 3,
+          "end": 4
+        },
+        "ranges": [
+          {
+            "start": 3,
+            "end": 4
+          }
+        ]
+      }
+    },
+    {
+      "name": "225: regex name \".\" in Monte REPORT report copy 🎉 final.jpeg as Monte REPORT report copy…final.jpeg",
+      "input": {
+        "name": "Monte REPORT report copy 🎉 final.jpeg",
+        "label": "Monte REPORT report copy…final.jpeg",
+        "query": ".",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "226: text name \"trip\" in 2026-naïve.pdf as 2026-naïve.pdf",
+      "input": {
+        "name": "2026-naïve.pdf",
+        "label": "2026-naïve.pdf",
+        "query": "trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "227: glob name \"Ann\" in c++-Trip.md as c++-Trip.md",
+      "input": {
+        "name": "c++-Trip.md",
+        "label": "c++-Trip.md",
+        "query": "Ann",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "228: text name \"straße\" in xReporta.c🎉c++🎉Monte.txt as x…onte.txt",
+      "input": {
+        "name": "xReporta.c🎉c++🎉Monte.txt",
+        "label": "x…onte.txt",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "229: text name \" \" in final report TripCard.PDF as final report TripCard.PDF",
+      "input": {
+        "name": "final report TripCard.PDF",
+        "label": "final report TripCard.PDF",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "230: regex name \"Σ\" in a.c 日本語 trip abc 2026 as a.c 日本語 trip… 2026",
+      "input": {
+        "name": "a.c 日本語 trip abc 2026",
+        "label": "a.c 日本語 trip… 2026",
+        "query": "Σ",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "231: regex name \"\\\\d+\" in Trip test straße c++ abc Σίσυφος Panorama.🎉 as Trip test straße c…orama.🎉",
+      "input": {
+        "name": "Trip test straße c++ abc Σίσυφος Panorama.🎉",
+        "label": "Trip test straße c…orama.🎉",
+        "query": "\\d+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "232: glob name \"é\" in a.c.PDF as a.c.PDF",
+      "input": {
+        "name": "a.c.PDF",
+        "label": "a.c.PDF",
+        "query": "é",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "233: text name \"ann\" in c++-_-Résumé-scan.PDF as c++-_-Résu…-scan.PDF",
+      "input": {
+        "name": "c++-_-Résumé-scan.PDF",
+        "label": "c++-_-Résu…-scan.PDF",
+        "query": "ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "234: regex name \"Σ\" in REPORT-straße-a.c.tar.gz as REPORT-straße-a.c.tar.gz",
+      "input": {
+        "name": "REPORT-straße-a.c.tar.gz",
+        "label": "REPORT-straße-a.c.tar.gz",
+        "query": "Σ",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "235: regex name \"[^a-z]\" in REPORT.PDF as R…ORT.PDF",
+      "input": {
+        "name": "REPORT.PDF",
+        "label": "R…ORT.PDF",
+        "query": "[^a-z]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 6,
+          "end": 7
+        },
+        "ranges": [
+          {
+            "start": 5,
+            "end": 6
+          }
+        ]
+      }
+    },
+    {
+      "name": "236: text name \"a.c\" in Report.tar.gz as Report.tar.gz",
+      "input": {
+        "name": "Report.tar.gz",
+        "label": "Report.tar.gz",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "237: regex name \"^$\" in _日本語-_RésuménotesIMG.tar.gz as _日本語-_R…esIMG.tar.gz",
+      "input": {
+        "name": "_日本語-_RésuménotesIMG.tar.gz",
+        "label": "_日本語-_R…esIMG.tar.gz",
+        "query": "^$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "238: text name \".jpeg\" in -_c++_🎉_Miradouro.txt as -_c++_🎉_Miradouro.txt",
+      "input": {
+        "name": "-_c++_🎉_Miradouro.txt",
+        "label": "-_c++_🎉_Miradouro.txt",
+        "query": ".jpeg",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "239: regex name \"(rep|Mon)\" in a.ccopyAnnualsrcfinalcopy.🎉 as a.ccopyAnnuals…lcopy.🎉",
+      "input": {
+        "name": "a.ccopyAnnualsrcfinalcopy.🎉",
+        "label": "a.ccopyAnnuals…lcopy.🎉",
+        "query": "(rep|Mon)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "240: regex path \"(1)\" in notes-c++-Trip-🎉-c++-Résumé-IMG.pdf as notes-c+…é-IMG.pdf",
+      "input": {
+        "name": "notes-c++-Trip-🎉-c++-Résumé-IMG.pdf",
+        "label": "notes-c+…é-IMG.pdf",
+        "query": "(1)",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "241: glob name \" \" in Triptesta.cTripCardTripCard.tar.gz as Triptesta.cTripCardTripCard.tar.gz",
+      "input": {
+        "name": "Triptesta.cTripCardTripCard.tar.gz",
+        "label": "Triptesta.cTripCardTripCard.tar.gz",
+        "query": " ",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "242: text name \"rep\" in Annual-scan-REPORT-c++-TripCard.pdf as Annual-scan-REPORT-c++-TripCard.pdf",
+      "input": {
+        "name": "Annual-scan-REPORT-c++-TripCard.pdf",
+        "label": "Annual-scan-REPORT-c++-TripCard.pdf",
+        "query": "rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 12,
+          "end": 15
+        },
+        "ranges": [
+          {
+            "start": 12,
+            "end": 15
+          }
+        ]
+      }
+    },
+    {
+      "name": "243: text name \"a.c\" in 2026-_-x-trip-🎉-IMG-test-test.md as 2026-_-x…-test.md",
+      "input": {
+        "name": "2026-_-x-trip-🎉-IMG-test-test.md",
+        "label": "2026-_-x…-test.md",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "244: regex name \"a?b\" in -.tar.gz as -.tar.gz",
+      "input": {
+        "name": "-.tar.gz",
+        "label": "-.tar.gz",
+        "query": "a?b",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "245: text name \"ss\" in Résumé-src-REPORT-🎉-final-2026- .tar.gz as R…026- .tar.gz",
+      "input": {
+        "name": "Résumé-src-REPORT-🎉-final-2026- .tar.gz",
+        "label": "R…026- .tar.gz",
+        "query": "ss",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "246: text name \"the miradouro\" in copy.🎉 as copy.🎉",
+      "input": {
+        "name": "copy.🎉",
+        "label": "copy.🎉",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "247: regex path \"Mon\" in Annual-scan-abc-Résumé-Annual-abc-trip.tar.gz as Annual-s…-trip.tar.gz",
+      "input": {
+        "name": "Annual-scan-abc-Résumé-Annual-abc-trip.tar.gz",
+        "label": "Annual-s…-trip.tar.gz",
+        "query": "Mon",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "248: text name \" \" in 2026-straße-trip-🎉-copy-Miradouro-c++.tar.gz as 2…-c++.tar.gz",
+      "input": {
+        "name": "2026-straße-trip-🎉-copy-Miradouro-c++.tar.gz",
+        "label": "2…-c++.tar.gz",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "249: text name \"ss\" in Miradouro日本語trip.txt as M…rip.txt",
+      "input": {
+        "name": "Miradouro日本語trip.txt",
+        "label": "M…rip.txt",
+        "query": "ss",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "250: regex name \"[\" in RésuméxΣίσυφοςfinalc++notes.txt as RésuméxΣίσυφοςfinalc++notes.txt",
+      "input": {
+        "name": "RésuméxΣίσυφοςfinalc++notes.txt",
+        "label": "RésuméxΣίσυφοςfinalc++notes.txt",
+        "query": "[",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "251: regex name \"R.*\" in Monte.jpeg as M…e.jpeg",
+      "input": {
+        "name": "Monte.jpeg",
+        "label": "M…e.jpeg",
+        "query": "R.*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "252: regex name \"*a\" in a.cΣίσυφοςTripreportreportscanRésumé.pdf as a.cΣίσυφοςTripreport…ésumé.pdf",
+      "input": {
+        "name": "a.cΣίσυφοςTripreportreportscanRésumé.pdf",
+        "label": "a.cΣίσυφοςTripreport…ésumé.pdf",
+        "query": "*a",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "253: regex name \"^.{3}\" in testxTripnotesa.cstraße .PDF as t…ße .PDF",
+      "input": {
+        "name": "testxTripnotesa.cstraße .PDF",
+        "label": "t…ße .PDF",
+        "query": "^.{3}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "254: text name \"rep\" in Report draft final Panorama draft trip Miradouro 2026.pdf as Report draft final Panorama draft tri… 2026.pdf",
+      "input": {
+        "name": "Report draft final Panorama draft trip Miradouro 2026.pdf",
+        "label": "Report draft final Panorama draft tri… 2026.pdf",
+        "query": "rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "255: text name \"do monte\" in 🎉 final IMG (1) -.jpeg as 🎉 final…(1) -.jpeg",
+      "input": {
+        "name": "🎉 final IMG (1) -.jpeg",
+        "label": "🎉 final…(1) -.jpeg",
+        "query": "do monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "256: text name \"c++\" in 🎉-Miradouro.PDF as 🎉…ouro.PDF",
+      "input": {
+        "name": "🎉-Miradouro.PDF",
+        "label": "🎉…ouro.PDF",
+        "query": "c++",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "257: text name \"Mon\" in 🎉 Report Miradouro (1) 2026 x -  .🎉 as 🎉 Report Miradouro (1) 2026 x -  .🎉",
+      "input": {
+        "name": "🎉 Report Miradouro (1) 2026 x -  .🎉",
+        "label": "🎉 Report Miradouro (1) 2026 x -  .🎉",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "258: text name \"RÉS\" in Σίσυφος_Panorama_Panorama_Miradouro_draft_test.pdf as Σίσυφος_Panorama_Panora…_test.pdf",
+      "input": {
+        "name": "Σίσυφος_Panorama_Panorama_Miradouro_draft_test.pdf",
+        "label": "Σίσυφος_Panorama_Panora…_test.pdf",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "259: text name \".jpeg\" in Résumé-scan-c++.🎉 as Résumé-s…n-c++.🎉",
+      "input": {
+        "name": "Résumé-scan-c++.🎉",
+        "label": "Résumé-s…n-c++.🎉",
+        "query": ".jpeg",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "260: regex name \"Σ\" in 2026ΣίσυφοςMiradouro.txt as 2026ΣίσυφοςMiradouro.txt",
+      "input": {
+        "name": "2026ΣίσυφοςMiradouro.txt",
+        "label": "2026ΣίσυφοςMiradouro.txt",
+        "query": "Σ",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 4,
+          "end": 5
+        },
+        "ranges": [
+          {
+            "start": 4,
+            "end": 5
+          }
+        ]
+      }
+    },
+    {
+      "name": "261: text name \"日本\" in copy.txt as copy.txt",
+      "input": {
+        "name": "copy.txt",
+        "label": "copy.txt",
+        "query": "日本",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "262: text name \"straße\" in abc-trip-Σίσυφος-Σίσυφος-draft-日本語-2026-naïve.tsx as abc-trip-Σίσυφος-Σίσυφος-draft-日本語-2026-naïve.tsx",
+      "input": {
+        "name": "abc-trip-Σίσυφος-Σίσυφος-draft-日本語-2026-naïve.tsx",
+        "label": "abc-trip-Σίσυφος-Σίσυφος-draft-日本語-2026-naïve.tsx",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "263: text path \"(1).p\" in Panorama_naïve_Annual_TripCard.tsx as P…pCard.tsx",
+      "input": {
+        "name": "Panorama_naïve_Annual_TripCard.tsx",
+        "label": "P…pCard.tsx",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "264: text name \" \" in Report-notes-2026-src-_.PDF as Report-notes-2026-src-_.PDF",
+      "input": {
+        "name": "Report-notes-2026-src-_.PDF",
+        "label": "Report-notes-2026-src-_.PDF",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "265: text name \"x  \" in 日本語Panoramaa.c.txt as 日本語Panoramaa.c.txt",
+      "input": {
+        "name": "日本語Panoramaa.c.txt",
+        "label": "日本語Panoramaa.c.txt",
+        "query": "x  ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 16,
+          "end": 17
+        },
+        "ranges": [
+          {
+            "start": 16,
+            "end": 17
+          }
+        ]
+      }
+    },
+    {
+      "name": "266: regex name \"é+\" in 🎉- -trip-🎉-straße-copy.md as 🎉- -trip-🎉-st…-copy.md",
+      "input": {
+        "name": "🎉- -trip-🎉-straße-copy.md",
+        "label": "🎉- -trip-🎉-st…-copy.md",
+        "query": "é+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "267: text name \"  x\" in REPORT Σίσυφος trip _ x.pdf as REPORT Σίσυφος trip _ x.pdf",
+      "input": {
+        "name": "REPORT Σίσυφος trip _ x.pdf",
+        "label": "REPORT Σίσυφος trip _ x.pdf",
+        "query": "  x",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 22,
+          "end": 23
+        },
+        "ranges": [
+          {
+            "start": 22,
+            "end": 23
+          }
+        ]
+      }
+    },
+    {
+      "name": "268: text name \"RÉS\" in REPORT report abc Annual Trip.tar.gz as REPOR… Trip.tar.gz",
+      "input": {
+        "name": "REPORT report abc Annual Trip.tar.gz",
+        "label": "REPOR… Trip.tar.gz",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "269: text name \"the miradouro\" in Résumé.PDF as Résumé.PDF",
+      "input": {
+        "name": "Résumé.PDF",
+        "label": "Résumé.PDF",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "270: regex name \"^.{3}\" in draft Miradouro Miradouro final Annual   src c++.🎉 as draft Miradouro Miradouro final Annual   s…c c++.🎉",
+      "input": {
+        "name": "draft Miradouro Miradouro final Annual   src c++.🎉",
+        "label": "draft Miradouro Miradouro final Annual   s…c c++.🎉",
+        "query": "^.{3}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "271: text name \"trip\" in TripCarda.cstraßestraßeMiradourotripcopy.txt as TripCarda.cstraßestra…pcopy.txt",
+      "input": {
+        "name": "TripCarda.cstraßestraßeMiradourotripcopy.txt",
+        "label": "TripCarda.cstraßestra…pcopy.txt",
+        "query": "trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 4
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 4
+          }
+        ]
+      }
+    },
+    {
+      "name": "272: regex name \"^.{3}\" in Report report test copy Annual final copy.PDF as Report report… copy.PDF",
+      "input": {
+        "name": "Report report test copy Annual final copy.PDF",
+        "label": "Report report… copy.PDF",
+        "query": "^.{3}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 3
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "273: text path \"Rep\" in abc Trip Σίσυφος trip IMG abc copy.tsx as abc Trip Σίσυφος trip IMG… copy.tsx",
+      "input": {
+        "name": "abc Trip Σίσυφος trip IMG abc copy.tsx",
+        "label": "abc Trip Σίσυφος trip IMG… copy.tsx",
+        "query": "Rep",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "274: text path \"Ann\" in IMG Report Report - 日本語 c++ Σίσυφος Miradouro as IMG Report Report - 日本…douro",
+      "input": {
+        "name": "IMG Report Report - 日本語 c++ Σίσυφος Miradouro",
+        "label": "IMG Report Report - 日本…douro",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "275: text name \" \" in Annual_a.c_src_naïve_ _Report_straße.pdf as Annua…traße.pdf",
+      "input": {
+        "name": "Annual_a.c_src_naïve_ _Report_straße.pdf",
+        "label": "Annua…traße.pdf",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "276: regex name \"[^a-z]\" in trip - notes Report copy trip Résumé.jpeg as trip - notes Report copy trip Résumé.jpeg",
+      "input": {
+        "name": "trip - notes Report copy trip Résumé.jpeg",
+        "label": "trip - notes Report copy trip Résumé.jpeg",
+        "query": "[^a-z]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 4,
+          "end": 5
+        },
+        "ranges": [
+          {
+            "start": 4,
+            "end": 5
+          }
+        ]
+      }
+    },
+    {
+      "name": "277: text name \"a.c\" in copy-naïve_test日本語.PDF as copy-naïve_test日本語.PDF",
+      "input": {
+        "name": "copy-naïve_test日本語.PDF",
+        "label": "copy-naïve_test日本語.PDF",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "278: text name \"do monte\" in (1)-a.c-Panorama- -copy.md as (1)…-copy.md",
+      "input": {
+        "name": "(1)-a.c-Panorama- -copy.md",
+        "label": "(1)…-copy.md",
+        "query": "do monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "279: glob name \"RÉS\" in TripCard_TripCard_Résumé_notes_straße.PDF as TripCard_TripCard_Résumé_notes_straße.PDF",
+      "input": {
+        "name": "TripCard_TripCard_Résumé_notes_straße.PDF",
+        "label": "TripCard_TripCard_Résumé_notes_straße.PDF",
+        "query": "RÉS",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "280: text name \"a.c\" in src-test.tar.gz as src-test.tar.gz",
+      "input": {
+        "name": "src-test.tar.gz",
+        "label": "src-test.tar.gz",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "281: text path \"a.c\" in TripCard-日本語-draft-Trip.jpeg as T…ip.jpeg",
+      "input": {
+        "name": "TripCard-日本語-draft-Trip.jpeg",
+        "label": "T…ip.jpeg",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "282: text name \"ann\" in IMG x draft Σίσυφος a.c c++ a.c final.tar.gz as IMG x draft Σίσυφος a.c…final.tar.gz",
+      "input": {
+        "name": "IMG x draft Σίσυφος a.c c++ a.c final.tar.gz",
+        "label": "IMG x draft Σίσυφος a.c…final.tar.gz",
+        "query": "ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "283: text path \"REP\" in Annual_abc_straße_scan_straße_Annual_Monte_Trip.PDF as Annual_abc_straße_scan_straße_Annual_Monte_Trip.PDF",
+      "input": {
+        "name": "Annual_abc_straße_scan_straße_Annual_Monte_Trip.PDF",
+        "label": "Annual_abc_straße_scan_straße_Annual_Monte_Trip.PDF",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "284: text name \"(1)\" in PanoramaMonte🎉Résumé.jpeg as P…mé.jpeg",
+      "input": {
+        "name": "PanoramaMonte🎉Résumé.jpeg",
+        "label": "P…mé.jpeg",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "285: text name \"panorama from\" in (1)scanscannaïvec++_🎉copy.txt as (1)s…🎉copy.txt",
+      "input": {
+        "name": "(1)scanscannaïvec++_🎉copy.txt",
+        "label": "(1)s…🎉copy.txt",
+        "query": "panorama from",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "286: text name \"(1).p\" in REPORT_Σίσυφος.tsx as REPORT_Σίσυφος.tsx",
+      "input": {
+        "name": "REPORT_Σίσυφος.tsx",
+        "label": "REPORT_Σίσυφος.tsx",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "287: text path \"Mon\" in final__.tar.gz as f…l__.tar.gz",
+      "input": {
+        "name": "final__.tar.gz",
+        "label": "f…l__.tar.gz",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "288: text name \"straße\" in Σίσυφος 2026 trip draft - Report.jpeg as Σίσυφος 2026 trip d…eport.jpeg",
+      "input": {
+        "name": "Σίσυφος 2026 trip draft - Report.jpeg",
+        "label": "Σίσυφος 2026 trip d…eport.jpeg",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "289: regex path \"ann\" in Report scan Panorama a.c 🎉 - Σίσυφος c++.md as Report scan Pano…ς c++.md",
+      "input": {
+        "name": "Report scan Panorama a.c 🎉 - Σίσυφος c++.md",
+        "label": "Report scan Pano…ς c++.md",
+        "query": "ann",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "290: regex name \"^$\" in scannotesPanorama_-IMG.PDF as s…-IMG.PDF",
+      "input": {
+        "name": "scannotesPanorama_-IMG.PDF",
+        "label": "s…-IMG.PDF",
+        "query": "^$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "291: text path \"(1)\" in copy.txt as copy.txt",
+      "input": {
+        "name": "copy.txt",
+        "label": "copy.txt",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "292: regex name \"*a\" in Trip.txt as T…ip.txt",
+      "input": {
+        "name": "Trip.txt",
+        "label": "T…ip.txt",
+        "query": "*a",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "293: regex name \"\\\\w+\\\\.\" in Monte - x 🎉.tsx as M… x 🎉.tsx",
+      "input": {
+        "name": "Monte - x 🎉.tsx",
+        "label": "M… x 🎉.tsx",
+        "query": "\\w+\\.",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "294: text path \".jpeg\" in draft-a.c-draft-src-Report.tar.gz as draft-a.c-draft-src-Report.tar.gz",
+      "input": {
+        "name": "draft-a.c-draft-src-Report.tar.gz",
+        "label": "draft-a.c-draft-src-Report.tar.gz",
+        "query": ".jpeg",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "295: text name \"REP\" in final.tar.gz as f….tar.gz",
+      "input": {
+        "name": "final.tar.gz",
+        "label": "f….tar.gz",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "296: text path \"(1)\" in naïve_x_test_____Résumé.PDF as naïve_x_…ésumé.PDF",
+      "input": {
+        "name": "naïve_x_test_____Résumé.PDF",
+        "label": "naïve_x_…ésumé.PDF",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "297: text name \"straße\" in x test.PDF as x test.PDF",
+      "input": {
+        "name": "x test.PDF",
+        "label": "x test.PDF",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "298: text name \"REP\" in 日本語_IMG_report_draft_final_c++_Report.md as 日本語_IMG_…eport.md",
+      "input": {
+        "name": "日本語_IMG_report_draft_final_c++_Report.md",
+        "label": "日本語_IMG_…eport.md",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "299: text name \"a.c\" in -.txt as -.txt",
+      "input": {
+        "name": "-.txt",
+        "label": "-.txt",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "300: text name \"nothing\" in c++-c++-notes-Monte-Miradouro-Monte-straße.md as c++-c++-notes…traße.md",
+      "input": {
+        "name": "c++-c++-notes-Monte-Miradouro-Monte-straße.md",
+        "label": "c++-c++-notes…traße.md",
+        "query": "nothing",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "301: text name \"\" in (1) as (…",
+      "input": {
+        "name": "(1)",
+        "label": "(…",
+        "query": "",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "302: regex name \"\\\\d+\" in finalscan.🎉 as finalscan.🎉",
+      "input": {
+        "name": "finalscan.🎉",
+        "label": "finalscan.🎉",
+        "query": "\\d+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "303: regex name \"o{2}\" in copy 2026 a.c notes Report.🎉 as copy 2026 a.c notes Report.🎉",
+      "input": {
+        "name": "copy 2026 a.c notes Report.🎉",
+        "label": "copy 2026 a.c notes Report.🎉",
+        "query": "o{2}",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "304: text name \"report\" in (1)-final.🎉 as (1)-final.🎉",
+      "input": {
+        "name": "(1)-final.🎉",
+        "label": "(1)-final.🎉",
+        "query": "report",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "305: regex name \"(?:an)+\" in Annual.tsx as Annual.tsx",
+      "input": {
+        "name": "Annual.tsx",
+        "label": "Annual.tsx",
+        "query": "(?:an)+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "306: text name \"日本\" in Panorama- .🎉 as Panorama- .🎉",
+      "input": {
+        "name": "Panorama- .🎉",
+        "label": "Panorama- .🎉",
+        "query": "日本",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "307: text name \"port\" in -draft Report.jpeg as -draft…eport.jpeg",
+      "input": {
+        "name": "-draft Report.jpeg",
+        "label": "-draft…eport.jpeg",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 9,
+          "end": 13
+        },
+        "ranges": [
+          {
+            "start": 8,
+            "end": 12
+          }
+        ]
+      }
+    },
+    {
+      "name": "308: text name \"mon\" in Report_Annual.tsx as Report_Annual.tsx",
+      "input": {
+        "name": "Report_Annual.tsx",
+        "label": "Report_Annual.tsx",
+        "query": "mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "309: text name \"Ann\" in x_final_ _report.txt as x…port.txt",
+      "input": {
+        "name": "x_final_ _report.txt",
+        "label": "x…port.txt",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "310: text name \"Rep\" in straße_draft_c++_report.🎉 as straße_draft_c++…eport.🎉",
+      "input": {
+        "name": "straße_draft_c++_report.🎉",
+        "label": "straße_draft_c++…eport.🎉",
+        "query": "Rep",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "311: text name \"Trip\" in report.tsx as r…rt.tsx",
+      "input": {
+        "name": "report.tsx",
+        "label": "r…rt.tsx",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "312: regex name \"a**\" in  .🎉 as  .🎉",
+      "input": {
+        "name": " .🎉",
+        "label": " .🎉",
+        "query": "a**",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "313: text name \"REP\" in srcdraftnotesAnnualx2026.md as srcdraftnotesAnnualx2026.md",
+      "input": {
+        "name": "srcdraftnotesAnnualx2026.md",
+        "label": "srcdraftnotesAnnualx2026.md",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "314: regex name \"\\\\\" in 2026 final Miradouro draft report copy.🎉 as 2026 final Miradouro draft… copy.🎉",
+      "input": {
+        "name": "2026 final Miradouro draft report copy.🎉",
+        "label": "2026 final Miradouro draft… copy.🎉",
+        "query": "\\",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "315: glob name \"txt\" in (1) abc notes.txt as (…notes.txt",
+      "input": {
+        "name": "(1) abc notes.txt",
+        "label": "(…notes.txt",
+        "query": "txt",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "316: text name \"σ\" in 🎉 scan IMG.PDF as 🎉 scan IMG.PDF",
+      "input": {
+        "name": "🎉 scan IMG.PDF",
+        "label": "🎉 scan IMG.PDF",
+        "query": "σ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "317: regex name \"(\" in Trip_Panorama_src_straße.jpeg as Trip_Panor…traße.jpeg",
+      "input": {
+        "name": "Trip_Panorama_src_straße.jpeg",
+        "label": "Trip_Panor…traße.jpeg",
+        "query": "(",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "318: glob name \"Trip\" in naïve-report-straße-naïve-test-naïve-c++-Panorama.tar.gz as naïve-rep…orama.tar.gz",
+      "input": {
+        "name": "naïve-report-straße-naïve-test-naïve-c++-Panorama.tar.gz",
+        "label": "naïve-rep…orama.tar.gz",
+        "query": "Trip",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "319: glob name \"txt\" in Σίσυφος_src___Panorama.tsx as Σίσυφος_src___Panorama.tsx",
+      "input": {
+        "name": "Σίσυφος_src___Panorama.tsx",
+        "label": "Σίσυφος_src___Panorama.tsx",
+        "query": "txt",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "320: text name \"(1).p\" in Trip_src_copy_copy.tsx as Trip_src_copy_copy.tsx",
+      "input": {
+        "name": "Trip_src_copy_copy.tsx",
+        "label": "Trip_src_copy_copy.tsx",
+        "query": "(1).p",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "321: regex name \"[^a-z]\" in RésumécopyTripTripCardREPORTRésumé2026.PDF as RésumécopyTripTripCardREPORTR…é2026.PDF",
+      "input": {
+        "name": "RésumécopyTripTripCardREPORTRésumé2026.PDF",
+        "label": "RésumécopyTripTripCardREPORTR…é2026.PDF",
+        "query": "[^a-z]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "322: regex name \"^$\" in naïve - Σίσυφος TripCard _ as naïve - Σίσ…ard _",
+      "input": {
+        "name": "naïve - Σίσυφος TripCard _",
+        "label": "naïve - Σίσ…ard _",
+        "query": "^$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "323: text name \"Mon\" in abcstraßetripTripCardMiradourostraße日本語naïve.jpeg as abcstraßet…naïve.jpeg",
+      "input": {
+        "name": "abcstraßetripTripCardMiradourostraße日本語naïve.jpeg",
+        "label": "abcstraßet…naïve.jpeg",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "324: regex name \"Ann(?=u)\" in Report 🎉 2026 test as Repo… test",
+      "input": {
+        "name": "Report 🎉 2026 test",
+        "label": "Repo… test",
+        "query": "Ann(?=u)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "325: text name \"  x\" in _ Annual straße REPORT Σίσυφος Monte x.PDF as _ Annual straße REP…nte x.PDF",
+      "input": {
+        "name": "_ Annual straße REPORT Σίσυφος Monte x.PDF",
+        "label": "_ Annual straße REP…nte x.PDF",
+        "query": "  x",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 37,
+          "end": 38
+        },
+        "ranges": [
+          {
+            "start": 24,
+            "end": 25
+          }
+        ]
+      }
+    },
+    {
+      "name": "326: text name \"🎉\" in 2026xtest(1)a.c.jpeg as 2026xtest(1)a.c.jpeg",
+      "input": {
+        "name": "2026xtest(1)a.c.jpeg",
+        "label": "2026xtest(1)a.c.jpeg",
+        "query": "🎉",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "327: text name \"do monte\" in test final.pdf as test final.pdf",
+      "input": {
+        "name": "test final.pdf",
+        "label": "test final.pdf",
+        "query": "do monte",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "328: text name \"  x\" in IMG-test-copy-Σίσυφος-test-Trip-REPORT- .jpeg as IMG-test-copy-Σίσυφος-t…ORT- .jpeg",
+      "input": {
+        "name": "IMG-test-copy-Σίσυφος-test-Trip-REPORT- .jpeg",
+        "label": "IMG-test-copy-Σίσυφος-t…ORT- .jpeg",
+        "query": "  x",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "329: text name \"txt\" in abc.tsx as abc.tsx",
+      "input": {
+        "name": "abc.tsx",
+        "label": "abc.tsx",
+        "query": "txt",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "330: regex name \".\" in --scan-Panorama---(1)-_-Annual.md as --scan-Panorama---(1)-_-Annual.md",
+      "input": {
+        "name": "--scan-Panorama---(1)-_-Annual.md",
+        "label": "--scan-Panorama---(1)-_-Annual.md",
+        "query": ".",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "331: regex name \"Ann(?=u)\" in scanMontetestTripCardTripCardReport_scan.pdf as scanMontetestTripCardTr…_scan.pdf",
+      "input": {
+        "name": "scanMontetestTripCardTripCardReport_scan.pdf",
+        "label": "scanMontetestTripCardTr…_scan.pdf",
+        "query": "Ann(?=u)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "332: text name \"RÉS\" in straße_2026_日本語_x_REPORT_2026_draft_Report.🎉 as straße_2026_日本語_x_R…eport.🎉",
+      "input": {
+        "name": "straße_2026_日本語_x_REPORT_2026_draft_Report.🎉",
+        "label": "straße_2026_日本語_x_R…eport.🎉",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "333: text name \"a.c\" in Annual-Monte-draft-copy-notes-notes-a.c.md as Annual-Monte-draft-copy-…s-a.c.md",
+      "input": {
+        "name": "Annual-Monte-draft-copy-notes-notes-a.c.md",
+        "label": "Annual-Monte-draft-copy-…s-a.c.md",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 36,
+          "end": 39
+        },
+        "ranges": [
+          {
+            "start": 27,
+            "end": 30
+          }
+        ]
+      }
+    },
+    {
+      "name": "334: glob name \"Trip\" in Trip as T…",
+      "input": {
+        "name": "Trip",
+        "label": "T…",
+        "query": "Trip",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "335: text name \"🎉\" in Miradouro-trip-src-report.tar.gz as Miradouro-trip-s…eport.tar.gz",
+      "input": {
+        "name": "Miradouro-trip-src-report.tar.gz",
+        "label": "Miradouro-trip-s…eport.tar.gz",
+        "query": "🎉",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "336: text name \"Mon\" in report.md as r…rt.md",
+      "input": {
+        "name": "report.md",
+        "label": "r…rt.md",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "337: text name \"Trip\" in copy abc _ report a.c.🎉 as c…a.c.🎉",
+      "input": {
+        "name": "copy abc _ report a.c.🎉",
+        "label": "c…a.c.🎉",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "338: text path \"Σ\" in c++ notes.tar.gz as c…s.tar.gz",
+      "input": {
+        "name": "c++ notes.tar.gz",
+        "label": "c…s.tar.gz",
+        "query": "Σ",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "339: text name \"Ann\" in Σίσυφος 🎉 🎉 Σίσυφος.tar.gz as Σίσυ…συφος.tar.gz",
+      "input": {
+        "name": "Σίσυφος 🎉 🎉 Σίσυφος.tar.gz",
+        "label": "Σίσυ…συφος.tar.gz",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "340: text path \"RÉS\" in x.jpeg as x.jpeg",
+      "input": {
+        "name": "x.jpeg",
+        "label": "x.jpeg",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "341: text name \"REP\" in src.🎉 as s….🎉",
+      "input": {
+        "name": "src.🎉",
+        "label": "s….🎉",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "342: text name \"ann\" in a.c.🎉 as a….🎉",
+      "input": {
+        "name": "a.c.🎉",
+        "label": "a….🎉",
+        "query": "ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "343: text name \"port\" in straßea.ccopystraßeabc.md as straßea.cco…ßeabc.md",
+      "input": {
+        "name": "straßea.ccopystraßeabc.md",
+        "label": "straßea.cco…ßeabc.md",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "344: text name \"Trip\" in trip src REPORT Annual  .md as trip src REPORT…ual  .md",
+      "input": {
+        "name": "trip src REPORT Annual  .md",
+        "label": "trip src REPORT…ual  .md",
+        "query": "Trip",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "345: text name \"Ann\" in 日本語日本語xxreportMonte as 日本語日本語xxreportMonte",
+      "input": {
+        "name": "日本語日本語xxreportMonte",
+        "label": "日本語日本語xxreportMonte",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "346: regex name \"[^a-z]\" in xstraßeAnnualtestfinaldraft.md as xstraßeAnnualtestfinaldraft.md",
+      "input": {
+        "name": "xstraßeAnnualtestfinaldraft.md",
+        "label": "xstraßeAnnualtestfinaldraft.md",
+        "query": "[^a-z]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 5,
+          "end": 6
+        },
+        "ranges": [
+          {
+            "start": 5,
+            "end": 6
+          }
+        ]
+      }
+    },
+    {
+      "name": "347: text name \" \" in final x _ report x.md as final…ort x.md",
+      "input": {
+        "name": "final x _ report x.md",
+        "label": "final…ort x.md",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "348: text name \"c++\" in TripCard.txt as Tri…Card.txt",
+      "input": {
+        "name": "TripCard.txt",
+        "label": "Tri…Card.txt",
+        "query": "c++",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "349: regex name \"^Pan\" in Annual-copy.🎉 as Annual-copy.🎉",
+      "input": {
+        "name": "Annual-copy.🎉",
+        "label": "Annual-copy.🎉",
+        "query": "^Pan",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "350: regex name \"\\\\w+\\\\.\" in Panorama-test.md as Panorama-test.md",
+      "input": {
+        "name": "Panorama-test.md",
+        "label": "Panorama-test.md",
+        "query": "\\w+\\.",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 9,
+          "end": 14
+        },
+        "ranges": [
+          {
+            "start": 9,
+            "end": 14
+          }
+        ]
+      }
+    },
+    {
+      "name": "351: regex name \"Σ\" in scan Résumé copy test Trip c++ naïve.PDF as scan Résumé c…naïve.PDF",
+      "input": {
+        "name": "scan Résumé copy test Trip c++ naïve.PDF",
+        "label": "scan Résumé c…naïve.PDF",
+        "query": "Σ",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "352: text path \"Mon\" in x-REPORT.txt as x-REPORT.txt",
+      "input": {
+        "name": "x-REPORT.txt",
+        "label": "x-REPORT.txt",
+        "query": "Mon",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "353: text name \"(1)\" in IMGtripRésuméREPORTΣίσυφοςstraße日本語abc as IMGtripRésuméR…本語abc",
+      "input": {
+        "name": "IMGtripRésuméREPORTΣίσυφοςstraße日本語abc",
+        "label": "IMGtripRésuméR…本語abc",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "354: text name \"the miradouro\" in PanoramaReportnotesMonte.md as PanoramaReportnotesMonte.md",
+      "input": {
+        "name": "PanoramaReportnotesMonte.md",
+        "label": "PanoramaReportnotesMonte.md",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "355: regex name \"^Pan\" in straße_Monte_(1)_naïve_notes_Σίσυφος_日本語.🎉 as straße_Monte_(1)_naïve_notes_Σίσυφος_日本語.🎉",
+      "input": {
+        "name": "straße_Monte_(1)_naïve_notes_Σίσυφος_日本語.🎉",
+        "label": "straße_Monte_(1)_naïve_notes_Σίσυφος_日本語.🎉",
+        "query": "^Pan",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "356: regex name \"(?:an)+\" in Σίσυφος-src-abc-naïve-Σίσυφος.jpeg as Σίσυφ…συφος.jpeg",
+      "input": {
+        "name": "Σίσυφος-src-abc-naïve-Σίσυφος.jpeg",
+        "label": "Σίσυφ…συφος.jpeg",
+        "query": "(?:an)+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "357: text name \"RÉS\" in final Report IMG IMG draft notes Résumé.md as final…ésumé.md",
+      "input": {
+        "name": "final Report IMG IMG draft notes Résumé.md",
+        "label": "final…ésumé.md",
+        "query": "RÉS",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "358: regex path \"Σ\" in final-_-Annual-Report-copy-Panorama-c++-report.🎉 as final-_-Annual-Report-copy-Panorama-c++-report.🎉",
+      "input": {
+        "name": "final-_-Annual-Report-copy-Panorama-c++-report.🎉",
+        "label": "final-_-Annual-Report-copy-Panorama-c++-report.🎉",
+        "query": "Σ",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "359: text name \"straße\" in testΣίσυφος-abcMiradouro .tsx as testΣίσυφος-abcMiradouro .tsx",
+      "input": {
+        "name": "testΣίσυφος-abcMiradouro .tsx",
+        "label": "testΣίσυφος-abcMiradouro .tsx",
+        "query": "straße",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "360: regex name \"jpeg$\" in Σίσυφος 🎉 Annual copy straße notes src x.🎉 as Σίσυφος 🎉 Annual copy s…src x.🎉",
+      "input": {
+        "name": "Σίσυφος 🎉 Annual copy straße notes src x.🎉",
+        "label": "Σίσυφος 🎉 Annual copy s…src x.🎉",
+        "query": "jpeg$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "361: glob name \"σ\" in draft IMG abc Miradouro draft c++ IMG Σίσυφος.tsx as draft IMG abc Miradouro draft c++ IMG Σίσυφος.tsx",
+      "input": {
+        "name": "draft IMG abc Miradouro draft c++ IMG Σίσυφος.tsx",
+        "label": "draft IMG abc Miradouro draft c++ IMG Σίσυφος.tsx",
+        "query": "σ",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "362: regex name \"x*\" in 日本語draftx.tsx as 日本語draftx.tsx",
+      "input": {
+        "name": "日本語draftx.tsx",
+        "label": "日本語draftx.tsx",
+        "query": "x*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "363: text name \" \" in Σίσυφος Monte test.md as Σ…est.md",
+      "input": {
+        "name": "Σίσυφος Monte test.md",
+        "label": "Σ…est.md",
+        "query": " ",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "364: regex name \"x*\" in notes_Monte_REPORT_Σίσυφος_-.tsx as notes_Monte_REPORT_Σίσυφος_-.tsx",
+      "input": {
+        "name": "notes_Monte_REPORT_Σίσυφος_-.tsx",
+        "label": "notes_Monte_REPORT_Σίσυφος_-.tsx",
+        "query": "x*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "365: text name \"\" in Miradouro copy.tar.gz as Miradouro copy.tar.gz",
+      "input": {
+        "name": "Miradouro copy.tar.gz",
+        "label": "Miradouro copy.tar.gz",
+        "query": "",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "366: regex name \"jpeg$\" in 🎉-abc-scan-report.md as 🎉…port.md",
+      "input": {
+        "name": "🎉-abc-scan-report.md",
+        "label": "🎉…port.md",
+        "query": "jpeg$",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "367: text name \"port\" in copy_a.c_final_2026_Report_Σίσυφος__.md as copy_a.c_final_2026_Report_Σίσυφος__.md",
+      "input": {
+        "name": "copy_a.c_final_2026_Report_Σίσυφος__.md",
+        "label": "copy_a.c_final_2026_Report_Σίσυφος__.md",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 22,
+          "end": 26
+        },
+        "ranges": [
+          {
+            "start": 22,
+            "end": 26
+          }
+        ]
+      }
+    },
+    {
+      "name": "368: text name \"c++\" in trip IMG Résumé Report 🎉 x as trip IMG Résumé…t 🎉 x",
+      "input": {
+        "name": "trip IMG Résumé Report 🎉 x",
+        "label": "trip IMG Résumé…t 🎉 x",
+        "query": "c++",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "369: regex path \"🎉\" in copyΣίσυφος2026Reportstraße.PDF as copyΣίσυφος…traße.PDF",
+      "input": {
+        "name": "copyΣίσυφος2026Reportstraße.PDF",
+        "label": "copyΣίσυφος…traße.PDF",
+        "query": "🎉",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "370: text name \"Ann\" in MiradouroabcMontestraßeTripMontec++.🎉 as MiradouroabcMontest…tec++.🎉",
+      "input": {
+        "name": "MiradouroabcMontestraßeTripMontec++.🎉",
+        "label": "MiradouroabcMontest…tec++.🎉",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "371: text name \"e\" in AnnualTripAnnualsrc🎉c++final-.jpeg as Annual…inal-.jpeg",
+      "input": {
+        "name": "AnnualTripAnnualsrc🎉c++final-.jpeg",
+        "label": "Annual…inal-.jpeg",
+        "query": "e",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 33,
+          "end": 34
+        },
+        "ranges": [
+          {
+            "start": 15,
+            "end": 16
+          }
+        ]
+      }
+    },
+    {
+      "name": "372: regex name \"[^a-z]\" in Résumé.PDF as Résumé.PDF",
+      "input": {
+        "name": "Résumé.PDF",
+        "label": "Résumé.PDF",
+        "query": "[^a-z]",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 1,
+          "end": 2
+        },
+        "ranges": [
+          {
+            "start": 1,
+            "end": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "373: regex name \"a?b\" in src copy 🎉 -.md as src copy 🎉 -.md",
+      "input": {
+        "name": "src copy 🎉 -.md",
+        "label": "src copy 🎉 -.md",
+        "query": "a?b",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "374: text path \"Ann\" in report report copy Monte.🎉 as report report copy Monte.🎉",
+      "input": {
+        "name": "report report copy Monte.🎉",
+        "label": "report report copy Monte.🎉",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "375: regex name \".\" in Panorama_-_copy.md as Pano…_copy.md",
+      "input": {
+        "name": "Panorama_-_copy.md",
+        "label": "Pano…_copy.md",
+        "query": ".",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "376: text name \"ss\" in Report-(1)-copy.md as Report…-copy.md",
+      "input": {
+        "name": "Report-(1)-copy.md",
+        "label": "Report…-copy.md",
+        "query": "ss",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "377: text name \"REP\" in copy-Report-a.c-🎉.md as c…-🎉.md",
+      "input": {
+        "name": "copy-Report-a.c-🎉.md",
+        "label": "c…-🎉.md",
+        "query": "REP",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "378: text name \"a.c\" in __copy_trip_Résumé_src.txt as __copy_trip_Résumé_src.txt",
+      "input": {
+        "name": "__copy_trip_Résumé_src.txt",
+        "label": "__copy_trip_Résumé_src.txt",
+        "query": "a.c",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "379: regex path \"report\" in copy_trip_scan_ .tsx as copy_trip_scan_ .tsx",
+      "input": {
+        "name": "copy_trip_scan_ .tsx",
+        "label": "copy_trip_scan_ .tsx",
+        "query": "report",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "380: regex name \"[\" in Annual- -c++-report-Trip-test.PDF as Annual-…-test.PDF",
+      "input": {
+        "name": "Annual- -c++-report-Trip-test.PDF",
+        "label": "Annual-…-test.PDF",
+        "query": "[",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "381: text name \"(1)\" in c++_Report_Trip_trip.tar.gz as c….tar.gz",
+      "input": {
+        "name": "c++_Report_Trip_trip.tar.gz",
+        "label": "c….tar.gz",
+        "query": "(1)",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "382: text name \"🎉\" in c++_draft_Annual_test_日本語_Report___IMG.🎉 as c++_draft_Annual_test_日本語_Report___IMG.🎉",
+      "input": {
+        "name": "c++_draft_Annual_test_日本語_Report___IMG.🎉",
+        "label": "c++_draft_Annual_test_日本語_Report___IMG.🎉",
+        "query": "🎉",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 39,
+          "end": 41
+        },
+        "ranges": [
+          {
+            "start": 39,
+            "end": 41
+          }
+        ]
+      }
+    },
+    {
+      "name": "383: regex path \"(1).p\" in abctestAnnualIMGstraßescandraft.tsx as ab…draft.tsx",
+      "input": {
+        "name": "abctestAnnualIMGstraßescandraft.tsx",
+        "label": "ab…draft.tsx",
+        "query": "(1).p",
+        "patternMode": "regex",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "384: text name \"report\" in (1)_x_a.c_copy.PDF as (1…_copy.PDF",
+      "input": {
+        "name": "(1)_x_a.c_copy.PDF",
+        "label": "(1…_copy.PDF",
+        "query": "report",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "385: text name \"port\" in straße Trip Trip   straße abc x.tar.gz as straße Trip Trip   stra…abc x.tar.gz",
+      "input": {
+        "name": "straße Trip Trip   straße abc x.tar.gz",
+        "label": "straße Trip Trip   stra…abc x.tar.gz",
+        "query": "port",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "386: glob name \"o\" in Monte_日本語_-_日本語_Annual_a.c.🎉 as Monte_日本語_-_日本語_Annual_a.c.🎉",
+      "input": {
+        "name": "Monte_日本語_-_日本語_Annual_a.c.🎉",
+        "label": "Monte_日本語_-_日本語_Annual_a.c.🎉",
+        "query": "o",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "387: text name \"the miradouro\" in Trip copy notes 🎉.tsx as Trip copy notes 🎉.tsx",
+      "input": {
+        "name": "Trip copy notes 🎉.tsx",
+        "label": "Trip copy notes 🎉.tsx",
+        "query": "the miradouro",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "388: regex name \"R.*\" in src-🎉-日本語-straße---REPORT as src-🎉-日本語-straße---REPORT",
+      "input": {
+        "name": "src-🎉-日本語-straße---REPORT",
+        "label": "src-🎉-日本語-straße---REPORT",
+        "query": "R.*",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 20,
+          "end": 26
+        },
+        "ranges": [
+          {
+            "start": 20,
+            "end": 26
+          }
+        ]
+      }
+    },
+    {
+      "name": "389: regex name \"(rep|Mon)\" in Panorama_report.md as Panorama_report.md",
+      "input": {
+        "name": "Panorama_report.md",
+        "label": "Panorama_report.md",
+        "query": "(rep|Mon)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 9,
+          "end": 12
+        },
+        "ranges": [
+          {
+            "start": 9,
+            "end": 12
+          }
+        ]
+      }
+    },
+    {
+      "name": "390: regex name \"Ann(?=u)\" in Trip_ _Miradouro_abc.🎉 as Trip_ _Miradouro_abc.🎉",
+      "input": {
+        "name": "Trip_ _Miradouro_abc.🎉",
+        "label": "Trip_ _Miradouro_abc.🎉",
+        "query": "Ann(?=u)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "391: glob name \"(1).p\" in report-Annual-straße-a.c-abc-src-src.PDF as report-Annual-straß…c-src.PDF",
+      "input": {
+        "name": "report-Annual-straße-a.c-abc-src-src.PDF",
+        "label": "report-Annual-straß…c-src.PDF",
+        "query": "(1).p",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "392: regex name \"[a-c]+\" in 🎉 a.c (1) 日本語 _.pdf as 🎉 a.c…日本語 _.pdf",
+      "input": {
+        "name": "🎉 a.c (1) 日本語 _.pdf",
+        "label": "🎉 a.c…日本語 _.pdf",
+        "query": "[a-c]+",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": {
+          "start": 3,
+          "end": 4
+        },
+        "ranges": [
+          {
+            "start": 3,
+            "end": 4
+          }
+        ]
+      }
+    },
+    {
+      "name": "393: text name \"c++\" in TripCard.txt as TripCard.txt",
+      "input": {
+        "name": "TripCard.txt",
+        "label": "TripCard.txt",
+        "query": "c++",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "394: regex name \"(rep|Mon)\" in -.🎉 as -.🎉",
+      "input": {
+        "name": "-.🎉",
+        "label": "-.🎉",
+        "query": "(rep|Mon)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "395: text name \"Ann\" in 2026-Σίσυφος-Report-🎉.md as 2…rt-🎉.md",
+      "input": {
+        "name": "2026-Σίσυφος-Report-🎉.md",
+        "label": "2…rt-🎉.md",
+        "query": "Ann",
+        "patternMode": "text",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "396: text path \"Rep\" in Report-IMG-naïve-src-Trip-🎉-Résumé.txt as Report-IMG-naïve-src-Trip-🎉-Résumé.txt",
+      "input": {
+        "name": "Report-IMG-naïve-src-Trip-🎉-Résumé.txt",
+        "label": "Report-IMG-naïve-src-Trip-🎉-Résumé.txt",
+        "query": "Rep",
+        "patternMode": "text",
+        "matchScope": "path"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "397: glob name \"ann\" in c++-copy-src-Trip-(1)-c++.txt as c+…)-c++.txt",
+      "input": {
+        "name": "c++-copy-src-Trip-(1)-c++.txt",
+        "label": "c+…)-c++.txt",
+        "query": "ann",
+        "patternMode": "glob",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "398: regex name \"(rep|Mon)\" in naïve_scan_Σίσυφος_REPORT_REPORT_final.tsx as naïve_scan_Σίσ…final.tsx",
+      "input": {
+        "name": "naïve_scan_Σίσυφος_REPORT_REPORT_final.tsx",
+        "label": "naïve_scan_Σίσ…final.tsx",
+        "query": "(rep|Mon)",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    },
+    {
+      "name": "399: regex name \"\\\\bMon\" in Report_Trip_trip_TripCard.PDF as Report_Trip_trip_TripCard.PDF",
+      "input": {
+        "name": "Report_Trip_trip_TripCard.PDF",
+        "label": "Report_Trip_trip_TripCard.PDF",
+        "query": "\\bMon",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "match": null,
+        "ranges": []
+      }
+    }
+  ]
+}

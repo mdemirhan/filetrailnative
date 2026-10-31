@@ -1,0 +1,3088 @@
+{
+  "suite": "number-names",
+  "referenceCommit": "59f60cf",
+  "seed": 1084424197,
+  "generator": "tools/parity/golden/number-names.ts",
+  "cases": [
+    {
+      "name": "0: \"Lisbon.jpg\"",
+      "input": {
+        "name": "Lisbon.jpg",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Lisbon 2.jpg",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "1: \"Lisbon.jpg\"",
+      "input": {
+        "name": "Lisbon.jpg",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Lisbon-100000.jpg",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "2: \"Lisbon.jpg\"",
+      "input": {
+        "name": "Lisbon.jpg",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Lisbon.jpg 2",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "3: \"Lisbon.jpg\"",
+      "input": {
+        "name": "Lisbon.jpg",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Lisbon.jpg-100000",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "4: \"Lisbon\"",
+      "input": {
+        "name": "Lisbon",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Lisbon 2",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "5: \"Lisbon\"",
+      "input": {
+        "name": "Lisbon",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Lisbon-100000",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "6: \"Lisbon\"",
+      "input": {
+        "name": "Lisbon",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Lisbon 2",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "7: \"Lisbon\"",
+      "input": {
+        "name": "Lisbon",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Lisbon-100000",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "8: \".env\"",
+      "input": {
+        "name": ".env",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": ".env 2",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "9: \".env\"",
+      "input": {
+        "name": ".env",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": ".env-100000",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "10: \".env\"",
+      "input": {
+        "name": ".env",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": ".env 2",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "11: \".env\"",
+      "input": {
+        "name": ".env",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": ".env-100000",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "12: \"a.\"",
+      "input": {
+        "name": "a.",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a. 2",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "13: \"a.\"",
+      "input": {
+        "name": "a.",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "a.-100000",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "14: \"a.\"",
+      "input": {
+        "name": "a.",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a. 2",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "15: \"a.\"",
+      "input": {
+        "name": "a.",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "a.-100000",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "16: \"a.b.c\"",
+      "input": {
+        "name": "a.b.c",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a.b 2.c",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "17: \"a.b.c\"",
+      "input": {
+        "name": "a.b.c",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "a.b-100000.c",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "18: \"a.b.c\"",
+      "input": {
+        "name": "a.b.c",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a.b.c 2",
+        "keptStemLength": 5,
+        "stemLength": 5
+      }
+    },
+    {
+      "name": "19: \"a.b.c\"",
+      "input": {
+        "name": "a.b.c",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "a.b.c-100000",
+        "keptStemLength": 5,
+        "stemLength": 5
+      }
+    },
+    {
+      "name": "20: \"archive.tar.gz\"",
+      "input": {
+        "name": "archive.tar.gz",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "archive.tar 2.gz",
+        "keptStemLength": 11,
+        "stemLength": 11
+      }
+    },
+    {
+      "name": "21: \"archive.tar.gz\"",
+      "input": {
+        "name": "archive.tar.gz",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "archive.tar-100000.gz",
+        "keptStemLength": 11,
+        "stemLength": 11
+      }
+    },
+    {
+      "name": "22: \"archive.tar.gz\"",
+      "input": {
+        "name": "archive.tar.gz",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "archive.tar.gz 2",
+        "keptStemLength": 14,
+        "stemLength": 14
+      }
+    },
+    {
+      "name": "23: \"archive.tar.gz\"",
+      "input": {
+        "name": "archive.tar.gz",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "archive.tar.gz-100000",
+        "keptStemLength": 14,
+        "stemLength": 14
+      }
+    },
+    {
+      "name": "24: \"x copy.txt\"",
+      "input": {
+        "name": "x copy.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "x copy 2.txt",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "25: \"x copy.txt\"",
+      "input": {
+        "name": "x copy.txt",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "x copy-100000.txt",
+        "keptStemLength": 6,
+        "stemLength": 6
+      }
+    },
+    {
+      "name": "26: \"x copy.txt\"",
+      "input": {
+        "name": "x copy.txt",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "x copy.txt 2",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "27: \"x copy.txt\"",
+      "input": {
+        "name": "x copy.txt",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "x copy.txt-100000",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "28: \"Tool.app\"",
+      "input": {
+        "name": "Tool.app",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Tool 2.app",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "29: \"Tool.app\"",
+      "input": {
+        "name": "Tool.app",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Tool-100000.app",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "30: \"Tool.app\"",
+      "input": {
+        "name": "Tool.app",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Tool.app 2",
+        "keptStemLength": 8,
+        "stemLength": 8
+      }
+    },
+    {
+      "name": "31: \"Tool.app\"",
+      "input": {
+        "name": "Tool.app",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Tool.app-100000",
+        "keptStemLength": 8,
+        "stemLength": 8
+      }
+    },
+    {
+      "name": "32: \"日本語.txt\"",
+      "input": {
+        "name": "日本語.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "日本語 2.txt",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "33: \"日本語.txt\"",
+      "input": {
+        "name": "日本語.txt",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "日本語-100000.txt",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "34: \"日本語.txt\"",
+      "input": {
+        "name": "日本語.txt",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "日本語.txt 2",
+        "keptStemLength": 7,
+        "stemLength": 7
+      }
+    },
+    {
+      "name": "35: \"日本語.txt\"",
+      "input": {
+        "name": "日本語.txt",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "日本語.txt-100000",
+        "keptStemLength": 7,
+        "stemLength": 7
+      }
+    },
+    {
+      "name": "36: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Café 2.txt",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "37: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Café-100000.txt",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "38: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Café.txt 2",
+        "keptStemLength": 8,
+        "stemLength": 8
+      }
+    },
+    {
+      "name": "39: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Café.txt-100000",
+        "keptStemLength": 8,
+        "stemLength": 8
+      }
+    },
+    {
+      "name": "40: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Café 2.txt",
+        "keptStemLength": 5,
+        "stemLength": 5
+      }
+    },
+    {
+      "name": "41: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Café-100000.txt",
+        "keptStemLength": 5,
+        "stemLength": 5
+      }
+    },
+    {
+      "name": "42: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "Café.txt 2",
+        "keptStemLength": 9,
+        "stemLength": 9
+      }
+    },
+    {
+      "name": "43: \"Café.txt\"",
+      "input": {
+        "name": "Café.txt",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "Café.txt-100000",
+        "keptStemLength": 9,
+        "stemLength": 9
+      }
+    },
+    {
+      "name": "44: \"name with spaces .txt\"",
+      "input": {
+        "name": "name with spaces .txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "name with spaces  2.txt",
+        "keptStemLength": 17,
+        "stemLength": 17
+      }
+    },
+    {
+      "name": "45: \"name with spaces .txt\"",
+      "input": {
+        "name": "name with spaces .txt",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "name with spaces -100000.txt",
+        "keptStemLength": 17,
+        "stemLength": 17
+      }
+    },
+    {
+      "name": "46: \"name with spaces .txt\"",
+      "input": {
+        "name": "name with spaces .txt",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "name with spaces .txt 2",
+        "keptStemLength": 21,
+        "stemLength": 21
+      }
+    },
+    {
+      "name": "47: \"name with spaces .txt\"",
+      "input": {
+        "name": "name with spaces .txt",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "name with spaces .txt-100000",
+        "keptStemLength": 21,
+        "stemLength": 21
+      }
+    },
+    {
+      "name": "48: \"trailing  \"",
+      "input": {
+        "name": "trailing  ",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "trailing   2",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "49: \"trailing  \"",
+      "input": {
+        "name": "trailing  ",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "trailing  -100000",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "50: \"trailing  \"",
+      "input": {
+        "name": "trailing  ",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "trailing   2",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "51: \"trailing  \"",
+      "input": {
+        "name": "trailing  ",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "trailing  -100000",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "52: \"..\"",
+      "input": {
+        "name": "..",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": ".. 2",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "53: \"..\"",
+      "input": {
+        "name": "..",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "..-100000",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "54: \"..\"",
+      "input": {
+        "name": "..",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": ".. 2",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "55: \"..\"",
+      "input": {
+        "name": "..",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "..-100000",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "56: \"...\"",
+      "input": {
+        "name": "...",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "... 2",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "57: \"...\"",
+      "input": {
+        "name": "...",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "...-100000",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "58: \"...\"",
+      "input": {
+        "name": "...",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "... 2",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "59: \"...\"",
+      "input": {
+        "name": "...",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "...-100000",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "60: \"a..b\"",
+      "input": {
+        "name": "a..b",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a. 2.b",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "61: \"a..b\"",
+      "input": {
+        "name": "a..b",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "a.-100000.b",
+        "keptStemLength": 2,
+        "stemLength": 2
+      }
+    },
+    {
+      "name": "62: \"a..b\"",
+      "input": {
+        "name": "a..b",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a..b 2",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "63: \"a..b\"",
+      "input": {
+        "name": "a..b",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "a..b-100000",
+        "keptStemLength": 4,
+        "stemLength": 4
+      }
+    },
+    {
+      "name": "64: \".\"",
+      "input": {
+        "name": ".",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": ". 2",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "65: \".\"",
+      "input": {
+        "name": ".",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": ".-100000",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "66: \".\"",
+      "input": {
+        "name": ".",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": ". 2",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "67: \".\"",
+      "input": {
+        "name": ".",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": ".-100000",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "68: \"\"",
+      "input": {
+        "name": "",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": " 2",
+        "keptStemLength": 0,
+        "stemLength": 0
+      }
+    },
+    {
+      "name": "69: \"\"",
+      "input": {
+        "name": "",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "-100000",
+        "keptStemLength": 0,
+        "stemLength": 0
+      }
+    },
+    {
+      "name": "70: \"\"",
+      "input": {
+        "name": "",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": " 2",
+        "keptStemLength": 0,
+        "stemLength": 0
+      }
+    },
+    {
+      "name": "71: \"\"",
+      "input": {
+        "name": "",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "-100000",
+        "keptStemLength": 0,
+        "stemLength": 0
+      }
+    },
+    {
+      "name": "72: \"x.é\"",
+      "input": {
+        "name": "x.é",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "x 2.é",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "73: \"x.é\"",
+      "input": {
+        "name": "x.é",
+        "isFolder": false,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "x-100000.é",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "74: \"x.é\"",
+      "input": {
+        "name": "x.é",
+        "isFolder": true,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "x.é 2",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "75: \"x.é\"",
+      "input": {
+        "name": "x.é",
+        "isFolder": true,
+        "separator": "-",
+        "number": 100000
+      },
+      "output": {
+        "name": "x.é-100000",
+        "keptStemLength": 3,
+        "stemLength": 3
+      }
+    },
+    {
+      "name": "76: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2",
+        "keptStemLength": 253,
+        "stemLength": 255
+      }
+    },
+    {
+      "name": "77: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2.txt",
+        "keptStemLength": 249,
+        "stemLength": 250
+      }
+    },
+    {
+      "name": "78: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.xxxxxxxxxxxxxx",
+        "isFolder": false,
+        "separator": " ",
+        "number": 10
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 10.xxxxxxxxxxxxxx",
+        "keptStemLength": 237,
+        "stemLength": 240
+      }
+    },
+    {
+      "name": "79: \"a.xxxxxxxxxxxxxxxxxxxxxxxxxxxx\"",
+      "input": {
+        "name": "a.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a 2.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "80: \"a.xxxxxxxxxxxxxxxxxxxxxxxxxxxx\"",
+      "input": {
+        "name": "a.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "a 2.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "81: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 123456
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 123456.txt",
+        "keptStemLength": 244,
+        "stemLength": 252
+      }
+    },
+    {
+      "name": "82: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦 2.txt",
+        "keptStemLength": 99,
+        "stemLength": 132
+      }
+    },
+    {
+      "name": "83: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé 2.txt",
+        "keptStemLength": 166,
+        "stemLength": 180
+      }
+    },
+    {
+      "name": "84: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   b.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   b 2.txt",
+        "keptStemLength": 244,
+        "stemLength": 244
+      }
+    },
+    {
+      "name": "85: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": " (",
+        "number": 1000
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé (1000.txt",
+        "keptStemLength": 98,
+        "stemLength": 98
+      }
+    },
+    {
+      "name": "86: \"                              \"",
+      "input": {
+        "name": "                                                                                                       .jpeg",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 2
+      },
+      "output": {
+        "name": "                                                                                                        - 2.jpeg",
+        "keptStemLength": 103,
+        "stemLength": 103
+      }
+    },
+    {
+      "name": "87: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.jpeg",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 2.jpeg",
+        "keptStemLength": 86,
+        "stemLength": 86
+      }
+    },
+    {
+      "name": "88: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 2",
+        "keptStemLength": 76,
+        "stemLength": 76
+      }
+    },
+    {
+      "name": "89: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.tar.gz",
+        "isFolder": true,
+        "separator": " (",
+        "number": 2
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 (2",
+        "keptStemLength": 126,
+        "stemLength": 143
+      }
+    },
+    {
+      "name": "90: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.jpeg",
+        "isFolder": false,
+        "separator": "",
+        "number": 9
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日9.jpeg",
+        "keptStemLength": 36,
+        "stemLength": 36
+      }
+    },
+    {
+      "name": "91: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "isFolder": true,
+        "separator": " - ",
+        "number": 9
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - 9",
+        "keptStemLength": 185,
+        "stemLength": 185
+      }
+    },
+    {
+      "name": "92: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.日本",
+        "isFolder": false,
+        "separator": " (",
+        "number": 1000
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦 (1000.日本",
+        "keptStemLength": 99,
+        "stemLength": 132
+      }
+    },
+    {
+      "name": "93: \"                              \"",
+      "input": {
+        "name": "                                           .日本",
+        "isFolder": false,
+        "separator": "_",
+        "number": 100000
+      },
+      "output": {
+        "name": "                                           _100000.日本",
+        "keptStemLength": 43,
+        "stemLength": 43
+      }
+    },
+    {
+      "name": "94: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.日本",
+        "isFolder": true,
+        "separator": " (",
+        "number": 2
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.日本 (2",
+        "keptStemLength": 52,
+        "stemLength": 52
+      }
+    },
+    {
+      "name": "95: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+        "isFolder": false,
+        "separator": " ",
+        "number": 9
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé 9",
+        "keptStemLength": 93,
+        "stemLength": 93
+      }
+    },
+    {
+      "name": "96: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": true,
+        "separator": " - ",
+        "number": 1000
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééé.txt - 1000",
+        "keptStemLength": 54,
+        "stemLength": 54
+      }
+    },
+    {
+      "name": "97: \"                              \"",
+      "input": {
+        "name": "                                                                                                          ",
+        "isFolder": false,
+        "separator": " ",
+        "number": 99999
+      },
+      "output": {
+        "name": "                                                                                                           99999",
+        "keptStemLength": 106,
+        "stemLength": 106
+      }
+    },
+    {
+      "name": "98: \"éééééééééé.日本\"",
+      "input": {
+        "name": "éééééééééé.日本",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 3
+      },
+      "output": {
+        "name": "éééééééééé - 3.日本",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "99: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.tar.gz",
+        "isFolder": true,
+        "separator": " - ",
+        "number": 2
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx - 2",
+        "keptStemLength": 250,
+        "stemLength": 295
+      }
+    },
+    {
+      "name": "100: \"                              \"",
+      "input": {
+        "name": "                                                                                                                  .tar.gz",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 3
+      },
+      "output": {
+        "name": "                                                                                                                  .tar - 3.gz",
+        "keptStemLength": 118,
+        "stemLength": 118
+      }
+    },
+    {
+      "name": "101: \"日日日日日日日日日日日日日日日日日日日.日本\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日.日本",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 2
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日 - 2.日本",
+        "keptStemLength": 19,
+        "stemLength": 19
+      }
+    },
+    {
+      "name": "102: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": "é",
+        "number": 10
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé10.txt",
+        "keptStemLength": 164,
+        "stemLength": 168
+      }
+    },
+    {
+      "name": "103: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y",
+        "isFolder": false,
+        "separator": "",
+        "number": 9
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y9",
+        "keptStemLength": 93,
+        "stemLength": 93
+      }
+    },
+    {
+      "name": "104: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.txt",
+        "isFolder": false,
+        "separator": " (",
+        "number": 10
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 (10.txt",
+        "keptStemLength": 51,
+        "stemLength": 51
+      }
+    },
+    {
+      "name": "105: \"😀😀😀😀😀😀😀😀😀😀😀😀.tar.g\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀.tar.gz",
+        "isFolder": false,
+        "separator": " ",
+        "number": 9
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀.tar 9.gz",
+        "keptStemLength": 28,
+        "stemLength": 28
+      }
+    },
+    {
+      "name": "106: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.tar.gz",
+        "isFolder": true,
+        "separator": " - ",
+        "number": 3
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.tar.gz - 3",
+        "keptStemLength": 51,
+        "stemLength": 51
+      }
+    },
+    {
+      "name": "107: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.jpeg",
+        "isFolder": false,
+        "separator": "_",
+        "number": 10
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦_10.jpeg",
+        "keptStemLength": 33,
+        "stemLength": 33
+      }
+    },
+    {
+      "name": "108: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.tar.gz",
+        "isFolder": false,
+        "separator": " ",
+        "number": 100000
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.tar 100000.gz",
+        "keptStemLength": 124,
+        "stemLength": 124
+      }
+    },
+    {
+      "name": "109: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.txt",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 100000
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx - 100000.txt",
+        "keptStemLength": 241,
+        "stemLength": 261
+      }
+    },
+    {
+      "name": "110: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y 2.日本",
+        "keptStemLength": 48,
+        "stemLength": 48
+      }
+    },
+    {
+      "name": "111: \"ééééééééééééééééé.txt\"",
+      "input": {
+        "name": "ééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": " (",
+        "number": 99
+      },
+      "output": {
+        "name": "ééééééééééééééééé (99.txt",
+        "keptStemLength": 17,
+        "stemLength": 17
+      }
+    },
+    {
+      "name": "112: \"aaaaaaaaaaaa.日本\"",
+      "input": {
+        "name": "aaaaaaaaaaaa.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 100000
+      },
+      "output": {
+        "name": "aaaaaaaaaaaa 100000.日本",
+        "keptStemLength": 12,
+        "stemLength": 12
+      }
+    },
+    {
+      "name": "113: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                                            .txt",
+        "isFolder": false,
+        "separator": "-",
+        "number": 9
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                                            -9.txt",
+        "keptStemLength": 252,
+        "stemLength": 252
+      }
+    },
+    {
+      "name": "114: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 2",
+        "keptStemLength": 84,
+        "stemLength": 97
+      }
+    },
+    {
+      "name": "115: \"aaaaaaaaaaaaaaaaa.tar.gz\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaa.tar.gz",
+        "isFolder": false,
+        "separator": "-",
+        "number": 1000
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaa.tar-1000.gz",
+        "keptStemLength": 21,
+        "stemLength": 21
+      }
+    },
+    {
+      "name": "116: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
+        "isFolder": false,
+        "separator": " ",
+        "number": 100000
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 100000",
+        "keptStemLength": 82,
+        "stemLength": 92
+      }
+    },
+    {
+      "name": "117: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 2.txt",
+        "keptStemLength": 118,
+        "stemLength": 118
+      }
+    },
+    {
+      "name": "118: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": " (",
+        "number": 99
+      },
+      "output": {
+        "name": "éééééééééééééééééééééé.tar (99.gz",
+        "keptStemLength": 48,
+        "stemLength": 48
+      }
+    },
+    {
+      "name": "119: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                                                                                         .txt",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 99999
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                                                                                          - 99999.txt",
+        "keptStemLength": 297,
+        "stemLength": 297
+      }
+    },
+    {
+      "name": "120: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": "",
+        "number": 9
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééé9.txt",
+        "keptStemLength": 80,
+        "stemLength": 80
+      }
+    },
+    {
+      "name": "121: \"ééééééé.日本\"",
+      "input": {
+        "name": "ééééééé.日本",
+        "isFolder": false,
+        "separator": "",
+        "number": 10
+      },
+      "output": {
+        "name": "ééééééé10.日本",
+        "keptStemLength": 14,
+        "stemLength": 14
+      }
+    },
+    {
+      "name": "122: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 99999
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééé 99999.txt",
+        "keptStemLength": 43,
+        "stemLength": 43
+      }
+    },
+    {
+      "name": "123: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 9
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 9.日本",
+        "keptStemLength": 48,
+        "stemLength": 48
+      }
+    },
+    {
+      "name": "124: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 3
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦 3.日本",
+        "keptStemLength": 44,
+        "stemLength": 44
+      }
+    },
+    {
+      "name": "125: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": "",
+        "number": 2
+      },
+      "output": {
+        "name": "éééééééééééééééé.tar2.gz",
+        "keptStemLength": 36,
+        "stemLength": 36
+      }
+    },
+    {
+      "name": "126: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.jpeg",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 1000
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 - 1000.jpeg",
+        "keptStemLength": 98,
+        "stemLength": 98
+      }
+    },
+    {
+      "name": "127: \"ééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 99999
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé 99999.日本",
+        "keptStemLength": 142,
+        "stemLength": 142
+      }
+    },
+    {
+      "name": "128: \"éééééééééééé.日本\"",
+      "input": {
+        "name": "éééééééééééé.日本",
+        "isFolder": false,
+        "separator": "é",
+        "number": 9
+      },
+      "output": {
+        "name": "ééééééééééééé9.日本",
+        "keptStemLength": 24,
+        "stemLength": 24
+      }
+    },
+    {
+      "name": "129: \"ééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 10
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar - 10.gz",
+        "keptStemLength": 150,
+        "stemLength": 150
+      }
+    },
+    {
+      "name": "130: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": "-",
+        "number": 99
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééé.tar-99.gz",
+        "keptStemLength": 96,
+        "stemLength": 96
+      }
+    },
+    {
+      "name": "131: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y",
+        "isFolder": false,
+        "separator": " (",
+        "number": 9
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y (9",
+        "keptStemLength": 108,
+        "stemLength": 108
+      }
+    },
+    {
+      "name": "132: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+        "isFolder": true,
+        "separator": " ",
+        "number": 1000
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 1000",
+        "keptStemLength": 74,
+        "stemLength": 74
+      }
+    },
+    {
+      "name": "133: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.tar.gz",
+        "isFolder": true,
+        "separator": "é",
+        "number": 100000
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.tar.gzé100000",
+        "keptStemLength": 73,
+        "stemLength": 73
+      }
+    },
+    {
+      "name": "134: \"                              \"",
+      "input": {
+        "name": "                                                                                                           ",
+        "isFolder": false,
+        "separator": "-",
+        "number": 99999
+      },
+      "output": {
+        "name": "                                                                                                           -99999",
+        "keptStemLength": 107,
+        "stemLength": 107
+      }
+    },
+    {
+      "name": "135: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.日本",
+        "isFolder": true,
+        "separator": " ",
+        "number": 1000
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.日本 1000",
+        "keptStemLength": 111,
+        "stemLength": 111
+      }
+    },
+    {
+      "name": "136: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.jpeg",
+        "isFolder": false,
+        "separator": "-",
+        "number": 10
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-10.jpeg",
+        "keptStemLength": 96,
+        "stemLength": 96
+      }
+    },
+    {
+      "name": "137: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦.txt\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦.txt",
+        "isFolder": false,
+        "separator": "é",
+        "number": 1000
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦é1000.txt",
+        "keptStemLength": 22,
+        "stemLength": 22
+      }
+    },
+    {
+      "name": "138: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.日本",
+        "isFolder": false,
+        "separator": "",
+        "number": 9
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y9.日本",
+        "keptStemLength": 84,
+        "stemLength": 84
+      }
+    },
+    {
+      "name": "139: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 9
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 9.日本",
+        "keptStemLength": 56,
+        "stemLength": 56
+      }
+    },
+    {
+      "name": "140: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
+        "isFolder": true,
+        "separator": "-",
+        "number": 99
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日-99",
+        "keptStemLength": 47,
+        "stemLength": 47
+      }
+    },
+    {
+      "name": "141: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.日本",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 2
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 - 2.日本",
+        "keptStemLength": 81,
+        "stemLength": 95
+      }
+    },
+    {
+      "name": "142: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+        "isFolder": false,
+        "separator": "",
+        "number": 99
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀99",
+        "keptStemLength": 126,
+        "stemLength": 146
+      }
+    },
+    {
+      "name": "143: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.jpeg",
+        "isFolder": false,
+        "separator": "é",
+        "number": 99999
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yé99999.jpeg",
+        "keptStemLength": 66,
+        "stemLength": 66
+      }
+    },
+    {
+      "name": "144: \"日日日日日日日日日日日日日日.jpeg\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日.jpeg",
+        "isFolder": false,
+        "separator": "-",
+        "number": 3
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日-3.jpeg",
+        "keptStemLength": 14,
+        "stemLength": 14
+      }
+    },
+    {
+      "name": "145: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.jpeg",
+        "isFolder": false,
+        "separator": " (",
+        "number": 3
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé (3.jpeg",
+        "keptStemLength": 128,
+        "stemLength": 128
+      }
+    },
+    {
+      "name": "146: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 99
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééé 99.txt",
+        "keptStemLength": 104,
+        "stemLength": 104
+      }
+    },
+    {
+      "name": "147: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.tar.gz",
+        "isFolder": false,
+        "separator": "é",
+        "number": 10
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.taré10.gz",
+        "keptStemLength": 103,
+        "stemLength": 103
+      }
+    },
+    {
+      "name": "148: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                             .jpeg",
+        "isFolder": false,
+        "separator": "",
+        "number": 3
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                             3.jpeg",
+        "keptStemLength": 221,
+        "stemLength": 221
+      }
+    },
+    {
+      "name": "149: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                                           .jpeg",
+        "isFolder": false,
+        "separator": "",
+        "number": 99999
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                                           99999.jpeg",
+        "keptStemLength": 251,
+        "stemLength": 251
+      }
+    },
+    {
+      "name": "150: \"x yx yx yx yx yx yx y.tar.gz\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx y.tar.gz",
+        "isFolder": true,
+        "separator": "_",
+        "number": 100000
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx y.tar.gz_100000",
+        "keptStemLength": 28,
+        "stemLength": 28
+      }
+    },
+    {
+      "name": "151: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "isFolder": true,
+        "separator": "_",
+        "number": 1000
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_1000",
+        "keptStemLength": 188,
+        "stemLength": 188
+      }
+    },
+    {
+      "name": "152: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.jpeg",
+        "isFolder": false,
+        "separator": "-",
+        "number": 99
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀-99.jpeg",
+        "keptStemLength": 72,
+        "stemLength": 72
+      }
+    },
+    {
+      "name": "153: \"日日日日日日日日日日.tar.gz\"",
+      "input": {
+        "name": "日日日日日日日日日日.tar.gz",
+        "isFolder": true,
+        "separator": "-",
+        "number": 2
+      },
+      "output": {
+        "name": "日日日日日日日日日日.tar.gz-2",
+        "keptStemLength": 17,
+        "stemLength": 17
+      }
+    },
+    {
+      "name": "154: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                                                                    ",
+        "isFolder": false,
+        "separator": " ",
+        "number": 99
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                                                                     99",
+        "keptStemLength": 276,
+        "stemLength": 276
+      }
+    },
+    {
+      "name": "155: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.日本",
+        "isFolder": false,
+        "separator": "_",
+        "number": 100000
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé_100000.日本",
+        "keptStemLength": 120,
+        "stemLength": 142
+      }
+    },
+    {
+      "name": "156: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.txt",
+        "isFolder": false,
+        "separator": "_",
+        "number": 100000
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日_100000.txt",
+        "keptStemLength": 80,
+        "stemLength": 80
+      }
+    },
+    {
+      "name": "157: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "isFolder": false,
+        "separator": "-",
+        "number": 99
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-99",
+        "keptStemLength": 53,
+        "stemLength": 53
+      }
+    },
+    {
+      "name": "158: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦",
+        "isFolder": false,
+        "separator": "",
+        "number": 99
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦99",
+        "keptStemLength": 110,
+        "stemLength": 132
+      }
+    },
+    {
+      "name": "159: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.jpeg",
+        "isFolder": false,
+        "separator": "-",
+        "number": 99999
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日-99999.jpeg",
+        "keptStemLength": 56,
+        "stemLength": 56
+      }
+    },
+    {
+      "name": "160: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": " (",
+        "number": 3
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé (3.gz",
+        "keptStemLength": 166,
+        "stemLength": 192
+      }
+    },
+    {
+      "name": "161: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 99999
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - 99999.txt",
+        "keptStemLength": 243,
+        "stemLength": 296
+      }
+    },
+    {
+      "name": "162: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.jpeg",
+        "isFolder": true,
+        "separator": "_",
+        "number": 3
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.jpeg_3",
+        "keptStemLength": 110,
+        "stemLength": 110
+      }
+    },
+    {
+      "name": "163: \"é.jpeg\"",
+      "input": {
+        "name": "é.jpeg",
+        "isFolder": false,
+        "separator": "é",
+        "number": 100000
+      },
+      "output": {
+        "name": "éé100000.jpeg",
+        "keptStemLength": 1,
+        "stemLength": 1
+      }
+    },
+    {
+      "name": "164: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.tar.gz",
+        "isFolder": false,
+        "separator": " (",
+        "number": 10
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.tar (10.gz",
+        "keptStemLength": 134,
+        "stemLength": 134
+      }
+    },
+    {
+      "name": "165: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                   ",
+        "isFolder": true,
+        "separator": "_",
+        "number": 99999
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                   _99999",
+        "keptStemLength": 195,
+        "stemLength": 195
+      }
+    },
+    {
+      "name": "166: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 9
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 9.日本",
+        "keptStemLength": 34,
+        "stemLength": 34
+      }
+    },
+    {
+      "name": "167: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.日本",
+        "isFolder": false,
+        "separator": " (",
+        "number": 9
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y (9.日本",
+        "keptStemLength": 159,
+        "stemLength": 159
+      }
+    },
+    {
+      "name": "168: \"                              \"",
+      "input": {
+        "name": "                                                                                                    .txt",
+        "isFolder": true,
+        "separator": " - ",
+        "number": 99999
+      },
+      "output": {
+        "name": "                                                                                                    .txt - 99999",
+        "keptStemLength": 104,
+        "stemLength": 104
+      }
+    },
+    {
+      "name": "169: \"aaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "isFolder": true,
+        "separator": "_",
+        "number": 99999
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaa_99999",
+        "keptStemLength": 27,
+        "stemLength": 27
+      }
+    },
+    {
+      "name": "170: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+        "isFolder": false,
+        "separator": " ",
+        "number": 100000
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 100000",
+        "keptStemLength": 50,
+        "stemLength": 50
+      }
+    },
+    {
+      "name": "171: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": " (",
+        "number": 10
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar (10.gz",
+        "keptStemLength": 106,
+        "stemLength": 106
+      }
+    },
+    {
+      "name": "172: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 10
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 10.日本",
+        "keptStemLength": 68,
+        "stemLength": 68
+      }
+    },
+    {
+      "name": "173: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+        "isFolder": false,
+        "separator": "é",
+        "number": 10
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaé10.txt",
+        "keptStemLength": 45,
+        "stemLength": 45
+      }
+    },
+    {
+      "name": "174: \"éééééééééééééé.t\"",
+      "input": {
+        "name": "éééééééééééééé.txt",
+        "isFolder": true,
+        "separator": " ",
+        "number": 10
+      },
+      "output": {
+        "name": "éééééééééééééé.txt 10",
+        "keptStemLength": 32,
+        "stemLength": 32
+      }
+    },
+    {
+      "name": "175: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 99
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦 99.txt",
+        "keptStemLength": 33,
+        "stemLength": 33
+      }
+    },
+    {
+      "name": "176: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 3
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 - 3.txt",
+        "keptStemLength": 122,
+        "stemLength": 136
+      }
+    },
+    {
+      "name": "177: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 1000
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y 1000.日本",
+        "keptStemLength": 201,
+        "stemLength": 201
+      }
+    },
+    {
+      "name": "178: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.日本",
+        "isFolder": false,
+        "separator": "",
+        "number": 100000
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé100000.日本",
+        "keptStemLength": 72,
+        "stemLength": 72
+      }
+    },
+    {
+      "name": "179: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": " (",
+        "number": 2
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé (2.gz",
+        "keptStemLength": 166,
+        "stemLength": 176
+      }
+    },
+    {
+      "name": "180: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt",
+        "isFolder": false,
+        "separator": "_",
+        "number": 3
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀_3.txt",
+        "keptStemLength": 108,
+        "stemLength": 108
+      }
+    },
+    {
+      "name": "181: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt",
+        "isFolder": true,
+        "separator": "",
+        "number": 1000
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt1000",
+        "keptStemLength": 50,
+        "stemLength": 50
+      }
+    },
+    {
+      "name": "182: \"ééééééééééééé.日本\"",
+      "input": {
+        "name": "ééééééééééééé.日本",
+        "isFolder": false,
+        "separator": "",
+        "number": 99999
+      },
+      "output": {
+        "name": "ééééééééééééé99999.日本",
+        "keptStemLength": 13,
+        "stemLength": 13
+      }
+    },
+    {
+      "name": "183: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.jpeg",
+        "isFolder": true,
+        "separator": " ",
+        "number": 99
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.jpeg 99",
+        "keptStemLength": 53,
+        "stemLength": 53
+      }
+    },
+    {
+      "name": "184: \"日日日.jpeg\"",
+      "input": {
+        "name": "日日日.jpeg",
+        "isFolder": true,
+        "separator": "é",
+        "number": 10
+      },
+      "output": {
+        "name": "日日日.jpegé10",
+        "keptStemLength": 8,
+        "stemLength": 8
+      }
+    },
+    {
+      "name": "185: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                     .tar.gz",
+        "isFolder": false,
+        "separator": " ",
+        "number": 10
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                     .tar 10.gz",
+        "keptStemLength": 233,
+        "stemLength": 233
+      }
+    },
+    {
+      "name": "186: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.txt",
+        "isFolder": false,
+        "separator": "é",
+        "number": 1000
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yé1000.txt",
+        "keptStemLength": 228,
+        "stemLength": 228
+      }
+    },
+    {
+      "name": "187: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦",
+        "isFolder": false,
+        "separator": "",
+        "number": 9
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦9",
+        "keptStemLength": 77,
+        "stemLength": 77
+      }
+    },
+    {
+      "name": "188: \"ééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééé",
+        "isFolder": false,
+        "separator": "-",
+        "number": 2
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééé-2",
+        "keptStemLength": 78,
+        "stemLength": 78
+      }
+    },
+    {
+      "name": "189: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.日本",
+        "isFolder": true,
+        "separator": "-",
+        "number": 9
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦-9",
+        "keptStemLength": 110,
+        "stemLength": 135
+      }
+    },
+    {
+      "name": "190: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar.gz",
+        "isFolder": false,
+        "separator": " ",
+        "number": 99
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.tar 99.gz",
+        "keptStemLength": 107,
+        "stemLength": 107
+      }
+    },
+    {
+      "name": "191: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+        "isFolder": false,
+        "separator": "_",
+        "number": 100000
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_100000.txt",
+        "keptStemLength": 77,
+        "stemLength": 77
+      }
+    },
+    {
+      "name": "192: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
+        "isFolder": false,
+        "separator": " (",
+        "number": 99
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 (99",
+        "keptStemLength": 45,
+        "stemLength": 45
+      }
+    },
+    {
+      "name": "193: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                                                                                .txt",
+        "isFolder": false,
+        "separator": "_",
+        "number": 1000
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                                                                                _1000.txt",
+        "keptStemLength": 288,
+        "stemLength": 288
+      }
+    },
+    {
+      "name": "194: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.tar.gz",
+        "isFolder": false,
+        "separator": "-",
+        "number": 99
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.tar-99.gz",
+        "keptStemLength": 37,
+        "stemLength": 37
+      }
+    },
+    {
+      "name": "195: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééé.日本",
+        "isFolder": true,
+        "separator": "_",
+        "number": 2
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééé.日本_2",
+        "keptStemLength": 53,
+        "stemLength": 53
+      }
+    },
+    {
+      "name": "196: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                                                 .txt",
+        "isFolder": false,
+        "separator": " (",
+        "number": 99
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                                                  (99.txt",
+        "keptStemLength": 257,
+        "stemLength": 257
+      }
+    },
+    {
+      "name": "197: \"👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧\"",
+      "input": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦.日本",
+        "isFolder": false,
+        "separator": "é",
+        "number": 9
+      },
+      "output": {
+        "name": "👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦👩‍👩‍👧‍👦é9.日本",
+        "keptStemLength": 99,
+        "stemLength": 99
+      }
+    },
+    {
+      "name": "198: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt",
+        "isFolder": false,
+        "separator": "",
+        "number": 1000
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀1000.txt",
+        "keptStemLength": 82,
+        "stemLength": 82
+      }
+    },
+    {
+      "name": "199: \"ééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééé",
+        "isFolder": false,
+        "separator": " (",
+        "number": 10
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééé (10",
+        "keptStemLength": 78,
+        "stemLength": 78
+      }
+    },
+    {
+      "name": "200: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.jpeg",
+        "isFolder": false,
+        "separator": "-",
+        "number": 2
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-2.jpeg",
+        "keptStemLength": 203,
+        "stemLength": 203
+      }
+    },
+    {
+      "name": "201: \"😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀",
+        "isFolder": false,
+        "separator": "é",
+        "number": 2
+      },
+      "output": {
+        "name": "😀😀😀😀é2",
+        "keptStemLength": 8,
+        "stemLength": 8
+      }
+    },
+    {
+      "name": "202: \"éééééééééééééééééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+        "isFolder": true,
+        "separator": " (",
+        "number": 99999
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé (99999",
+        "keptStemLength": 88,
+        "stemLength": 88
+      }
+    },
+    {
+      "name": "203: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                         .jpeg",
+        "isFolder": false,
+        "separator": "",
+        "number": 100000
+      },
+      "output": {
+        "name": "                                                                                                                                                                         100000.jpeg",
+        "keptStemLength": 169,
+        "stemLength": 169
+      }
+    },
+    {
+      "name": "204: \"aaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaa",
+        "isFolder": false,
+        "separator": " ",
+        "number": 10
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaa 10",
+        "keptStemLength": 18,
+        "stemLength": 18
+      }
+    },
+    {
+      "name": "205: \"                              \"",
+      "input": {
+        "name": "                                                                                                                                                                                                                                                                                                       .tar.gz",
+        "isFolder": false,
+        "separator": " (",
+        "number": 10
+      },
+      "output": {
+        "name": "                                                                                                                                                                                                                                                                                                       .tar (10.gz",
+        "keptStemLength": 299,
+        "stemLength": 299
+      }
+    },
+    {
+      "name": "206: \"éééééééééééééééééé.日本\"",
+      "input": {
+        "name": "éééééééééééééééééé.日本",
+        "isFolder": false,
+        "separator": "é",
+        "number": 100000
+      },
+      "output": {
+        "name": "ééééééééééééééééééé100000.日本",
+        "keptStemLength": 18,
+        "stemLength": 18
+      }
+    },
+    {
+      "name": "207: \"日日日日日日日日日日日日日日日.日本\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日.日本",
+        "isFolder": false,
+        "separator": " (",
+        "number": 9
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日 (9.日本",
+        "keptStemLength": 15,
+        "stemLength": 15
+      }
+    },
+    {
+      "name": "208: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+        "isFolder": false,
+        "separator": "é",
+        "number": 2
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaé2.txt",
+        "keptStemLength": 248,
+        "stemLength": 279
+      }
+    },
+    {
+      "name": "209: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.txt",
+        "isFolder": false,
+        "separator": "-",
+        "number": 99999
+      },
+      "output": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀-99999.txt",
+        "keptStemLength": 44,
+        "stemLength": 44
+      }
+    },
+    {
+      "name": "210: \"x yx yx yx yx yx yx yx yx yx y\"",
+      "input": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx y.日本",
+        "isFolder": true,
+        "separator": "-",
+        "number": 9
+      },
+      "output": {
+        "name": "x yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx yx-9",
+        "keptStemLength": 253,
+        "stemLength": 297
+      }
+    },
+    {
+      "name": "211: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.日本",
+        "isFolder": false,
+        "separator": " ",
+        "number": 10
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 10.日本",
+        "keptStemLength": 228,
+        "stemLength": 228
+      }
+    },
+    {
+      "name": "212: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "isFolder": false,
+        "separator": " ",
+        "number": 2
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2",
+        "keptStemLength": 29,
+        "stemLength": 29
+      }
+    },
+    {
+      "name": "213: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.jpeg",
+        "isFolder": false,
+        "separator": " - ",
+        "number": 9
+      },
+      "output": {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa - 9.jpeg",
+        "keptStemLength": 150,
+        "stemLength": 150
+      }
+    },
+    {
+      "name": "214: \"ééééééééééééééé\"",
+      "input": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": " ",
+        "number": 3
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé 3.txt",
+        "keptStemLength": 164,
+        "stemLength": 164
+      }
+    },
+    {
+      "name": "215: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.txt",
+        "isFolder": true,
+        "separator": " ",
+        "number": 9
+      },
+      "output": {
+        "name": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.txt 9",
+        "keptStemLength": 70,
+        "stemLength": 70
+      }
+    },
+    {
+      "name": "216: \"ééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.txt",
+        "isFolder": false,
+        "separator": "é",
+        "number": 99999
+      },
+      "output": {
+        "name": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé99999.txt",
+        "keptStemLength": 146,
+        "stemLength": 146
+      }
+    },
+    {
+      "name": "217: \"ééééééééééééééééééééé.jpeg\"",
+      "input": {
+        "name": "ééééééééééééééééééééé.jpeg",
+        "isFolder": false,
+        "separator": "",
+        "number": 1000
+      },
+      "output": {
+        "name": "ééééééééééééééééééééé1000.jpeg",
+        "keptStemLength": 21,
+        "stemLength": 21
+      }
+    },
+    {
+      "name": "218: \"日日日日日日日日日日\"",
+      "input": {
+        "name": "日日日日日日日日日日",
+        "isFolder": false,
+        "separator": "é",
+        "number": 10
+      },
+      "output": {
+        "name": "日日日日日日日日日日é10",
+        "keptStemLength": 10,
+        "stemLength": 10
+      }
+    },
+    {
+      "name": "219: \"ééééééééééééééé\"",
+      "input": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+        "isFolder": true,
+        "separator": " (",
+        "number": 3
+      },
+      "output": {
+        "name": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé (3",
+        "keptStemLength": 118,
+        "stemLength": 118
+      }
+    }
+  ]
+}

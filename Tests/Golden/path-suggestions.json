@@ -1,0 +1,2934 @@
+{
+  "suite": "path-suggestions",
+  "referenceCommit": "59f60cf",
+  "seed": 290914307,
+  "generator": "tools/parity/golden/path-suggestions.ts",
+  "cases": [
+    {
+      "name": "0: \"lighthouse/Lighthouse/app/src/pag\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pag",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/src/pages",
+            "name": "pages"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "1: \"lighthouse/Lighthouse/app/src/pages/Tri\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/Tri",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/pages",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "2: \"lighthouse/Lighthouse/IN\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/IN",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/infra",
+            "name": "infra"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "3: \"lighthouse/Lighthouse/app/node_modules/react-dom/nothing-here\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/nothing-here",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react-dom",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "4: \"names/packages/Sample.app/Contents/Info.plist\" hidden true limit 12",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/Info.plist",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/packages/Sample.app/Contents",
+        "suggestions": [],
+        "resolved": "names/packages/Sample.app/Contents/Info.plist"
+      }
+    },
+    {
+      "name": "5: \"lighthouse/Lighthouse/app/src/pages/Trips.jsx/\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/Trips.jsx/",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/pages",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/src/pages/Trips.jsx"
+      }
+    },
+    {
+      "name": "6: \"names/packages/Slides.key/In\" hidden false limit 50",
+      "input": {
+        "path": "names/packages/Slides.key/In",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key",
+        "suggestions": [
+          {
+            "path": "names/packages/Slides.key/Index",
+            "name": "Index"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "7: \"lighthouse/Lighthouse/app/src/lib/S\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/S",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "8: \"lighthouse/Lighthouse/app/src/pages/se\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/se",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/pages",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "9: \"lighthouse/Lighthouse/tsc\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/tsc",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "10: \"lighthouse/Lighthouse/photos/fj\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/fj",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "11: \"lighthouse/Lighthouse/app/src/components/TripCard.jsx/\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TripCard.jsx/",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/src/components/TripCard.jsx"
+      }
+    },
+    {
+      "name": "12: \"lighthouse/Lighthouse/app/src/li\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/li",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/src/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "13: \"names/dots/nothing-here/deeper\" hidden true limit 12",
+      "input": {
+        "path": "names/dots/nothing-here/deeper",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/dots",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "14: \"lighthouse/Lighthouse/app/src/components/a\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/a",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "15: \"lighthouse/Lighthouse/app/node_modules/react-dom/i\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/i",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react-dom",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "16: \"names/packages/Sample.app/c\" hidden true limit 12",
+      "input": {
+        "path": "names/packages/Sample.app/c",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/packages/Sample.app",
+        "suggestions": [
+          {
+            "path": "names/packages/Sample.app/Contents",
+            "name": "Contents"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "17: \"names/localized/\" hidden true limit 50",
+      "input": {
+        "path": "names/localized/",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "names/localized",
+        "suggestions": [
+          {
+            "path": "names/localized/Applications",
+            "name": "Applications"
+          }
+        ],
+        "resolved": "names/localized"
+      }
+    },
+    {
+      "name": "18: \"lighthouse/Lighthouse/T\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/T",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "19: \"lighthouse/Lighthouse/docs/SE\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs/SE",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/docs",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "20: \"lighthouse/Lighthouse/app/src/m\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/m",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "21: \"lighthouse/Lighthouse/photos/raw/IMG_0415.dng\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/raw/IMG_0415.dng",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos/raw",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/photos/raw/IMG_0415.dng"
+      }
+    },
+    {
+      "name": "22: \"names/packages/Slides.key/Data\" hidden true limit 12",
+      "input": {
+        "path": "names/packages/Slides.key/Data",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key",
+        "suggestions": [
+          {
+            "path": "names/packages/Slides.key/Data",
+            "name": "Data"
+          }
+        ],
+        "resolved": "names/packages/Slides.key/Data"
+      }
+    },
+    {
+      "name": "23: \"lighthouse/Lighthouse/mobile/android\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/android",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/mobile/android",
+            "name": "android"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/mobile/android"
+      }
+    },
+    {
+      "name": "24: \"names/packages/Sample.app/Contents/MacOS/sa\" hidden true limit 50",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/MacOS/sa",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "names/packages/Sample.app/Contents/MacOS",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "25: \"names/lo\" hidden true limit 12",
+      "input": {
+        "path": "names/lo",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names",
+        "suggestions": [
+          {
+            "path": "names/localized",
+            "name": "localized"
+          },
+          {
+            "path": "names/locked",
+            "name": "locked"
+          },
+          {
+            "path": "names/long",
+            "name": "long"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "26: \"lighthouse/Lighthouse/data/\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/data",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/data/exports",
+            "name": "exports"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/data"
+      }
+    },
+    {
+      "name": "27: \"lighthouse/Lighthouse/app/src/components/Se\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/Se",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "28: \"lighthouse/Lighthouse/app/node_modules/vite/lib/bu\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/bu",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "29: \"names/similar/RE\" hidden false limit 2",
+      "input": {
+        "path": "names/similar/RE",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/similar",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "30: \"lighthouse/nothing-here/deeper\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/nothing-here/deeper",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "31: \"names/similar/readme 2.txt/\" hidden true limit 1",
+      "input": {
+        "path": "names/similar/readme 2.txt/",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "names/similar",
+        "suggestions": [],
+        "resolved": "names/similar/readme 2.txt"
+      }
+    },
+    {
+      "name": "32: \"lighthouse/Lighthouse/app/node_modules/typescript/IN\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/IN",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/typescript",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "33: \"names/packages/Slides.key/Data/IMA\" hidden false limit 1",
+      "input": {
+        "path": "names/packages/Slides.key/Data/IMA",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key/Data",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "34: \"lighthouse/Lighthouse/mobile/ios/./\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios/./",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile/ios",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/mobile/ios"
+      }
+    },
+    {
+      "name": "35: \"lighthouse/Lighthouse/app/src/components/SE\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/SE",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "36: \"names/links\" hidden true limit 50",
+      "input": {
+        "path": "names/links",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "names",
+        "suggestions": [
+          {
+            "path": "names/links",
+            "name": "links"
+          }
+        ],
+        "resolved": "names/links"
+      }
+    },
+    {
+      "name": "37: \"lighthouse/Lighthouse/app/node_modules/typescript/P\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/P",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/typescript",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "38: \"lighthouse/Lighthouse/app/node_modules/V\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/V",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/vite",
+            "name": "vite"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "39: \"lighthouse/Lighthouse/app/TES\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/TES",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/tests",
+            "name": "tests"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "40: \"lighthouse/Lighthouse/app/dist/assets/./\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/assets/./",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/dist/assets",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/dist/assets"
+      }
+    },
+    {
+      "name": "41: \"lighthouse/Lighthouse/app/src/components/Pla\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/Pla",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "42: \"lighthouse/Lighthouse/mobile/android/app-release.apk/\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/android/app-release.apk/",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile/android",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/mobile/android/app-release.apk"
+      }
+    },
+    {
+      "name": "43: \"lighthouse/Lighthouse/app/node_modules/eslint/li\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/li",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/eslint",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/eslint/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "44: \"lighthouse/Lighthouse/mobile/android/./\" hidden false limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/android/./",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile/android",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/mobile/android"
+      }
+    },
+    {
+      "name": "45: \"lighthouse/Lighthouse/app/node_modules/react/package.json/\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/package.json/",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/react/package.json"
+      }
+    },
+    {
+      "name": "46: \"names/links/li\" hidden true limit 12",
+      "input": {
+        "path": "names/links/li",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [
+          {
+            "path": "names/links/link to folder",
+            "name": "link to folder"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "47: \"names/si\" hidden true limit 1",
+      "input": {
+        "path": "names/si",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "names",
+        "suggestions": [
+          {
+            "path": "names/similar",
+            "name": "similar"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "48: \"lighthouse/Lighthouse/design/screens/m\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/m",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "49: \"names/localized\" hidden false limit 12",
+      "input": {
+        "path": "names/localized",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names",
+        "suggestions": [
+          {
+            "path": "names/localized",
+            "name": "localized"
+          }
+        ],
+        "resolved": "names/localized"
+      }
+    },
+    {
+      "name": "50: \"names/emoji/🎉 p\" hidden false limit 2",
+      "input": {
+        "path": "names/emoji/🎉 p",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/emoji",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "51: \"lighthouse/Lighthouse/app/node_modules/vite/lib/./\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/./",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/vite/lib"
+      }
+    },
+    {
+      "name": "52: \"lighthouse/Lighthouse/infra/nothing-here\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/infra/nothing-here",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/infra",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "53: \"lighthouse/Lighthouse/app/node_modules/react-dom/lib/B\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/lib/B",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react-dom/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "54: \"lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js/\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js/",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js"
+      }
+    },
+    {
+      "name": "55: \"lighthouse/Lighthouse/photos/vik\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/vik",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "56: \"lighthouse/Lighthouse/app/node_modules/typescript/lib/bundle.js\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/lib/bundle.js",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/typescript/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/typescript/lib/bundle.js"
+      }
+    },
+    {
+      "name": "57: \"lighthouse/Lighthouse/app/tests/e2e/tr\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/e2e/tr",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/tests/e2e",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "58: \"lighthouse/Lighthouse/app/node_modules//\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules//",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/eslint",
+            "name": "eslint"
+          },
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react",
+            "name": "react"
+          },
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react-dom",
+            "name": "react-dom"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/app/node_modules"
+      }
+    },
+    {
+      "name": "59: \"lighthouse/Lighthouse/bun\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/bun",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "60: \"lighthouse/Lighthouse/app/src/pages/Trips.jsx\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/Trips.jsx",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/pages",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/src/pages/Trips.jsx"
+      }
+    },
+    {
+      "name": "61: \"lighthouse/Lighthouse/photos/Thingvellir.jpg/\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Thingvellir.jpg/",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/photos/Thingvellir.jpg"
+      }
+    },
+    {
+      "name": "62: \"lighthouse/Lighthouse/design/p\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/p",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "63: \"names/long/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt\" hidden false limit 3",
+      "input": {
+        "path": "names/long/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/long",
+        "suggestions": [],
+        "resolved": "names/long/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.txt"
+      }
+    },
+    {
+      "name": "64: \"lighthouse/Lighthouse/app/src/P\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/P",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/src/pages",
+            "name": "pages"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "65: \"lighthouse/Lighthouse/design/screens/nothing-here/deeper\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/nothing-here/deeper",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "66: \"names/links/ali\" hidden false limit 3",
+      "input": {
+        "path": "names/links/ali",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "67: \"names/packages/Slides.key/Data/image-1.png/\" hidden true limit 3",
+      "input": {
+        "path": "names/packages/Slides.key/Data/image-1.png/",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key/Data",
+        "suggestions": [],
+        "resolved": "names/packages/Slides.key/Data/image-1.png"
+      }
+    },
+    {
+      "name": "68: \"lighthouse/Lighthouse/photos/Arrabida coast.jpg\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Arrabida coast.jpg",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/photos/Arrabida coast.jpg"
+      }
+    },
+    {
+      "name": "69: \"lighthouse/Lighthouse/app/node_modules/react-dom/index.js/\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/index.js/",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react-dom",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/react-dom/index.js"
+      }
+    },
+    {
+      "name": "70: \"lighthouse/Lighthouse/design/screens/map\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/map",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "71: \"lighthouse/Lighthouse/design/screens/./\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/./",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/design/screens"
+      }
+    },
+    {
+      "name": "72: \"lighthouse/Lighthouse/mobile/ios/LIG\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios/LIG",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile/ios",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "73: \"lighthouse/Lighthouse/mobile/\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/mobile/android",
+            "name": "android"
+          },
+          {
+            "path": "lighthouse/Lighthouse/mobile/ios",
+            "name": "ios"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/mobile"
+      }
+    },
+    {
+      "name": "74: \"names/links/tar\" hidden false limit 3",
+      "input": {
+        "path": "names/links/tar",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [
+          {
+            "path": "names/links/target folder",
+            "name": "target folder"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "75: \"lighthouse/Lighthouse/app/src/lib/format.js/\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/format.js/",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/src/lib/format.js"
+      }
+    },
+    {
+      "name": "76: \"names/packages/Sample.app/Contents/R\" hidden false limit 2",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/R",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/packages/Sample.app/Contents",
+        "suggestions": [
+          {
+            "path": "names/packages/Sample.app/Contents/Resources",
+            "name": "Resources"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "77: \"lighthouse/Lighthouse/infra/ma\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/infra/ma",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/infra",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "78: \"names/S\" hidden false limit 2",
+      "input": {
+        "path": "names/S",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names",
+        "suggestions": [
+          {
+            "path": "names/similar",
+            "name": "similar"
+          },
+          {
+            "path": "names/spaces",
+            "name": "spaces"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "79: \"lighthouse/Lighthouse/mobile/ios//\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios//",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile/ios",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/mobile/ios"
+      }
+    },
+    {
+      "name": "80: \"lighthouse/Lighthouse/app/node_modules/react/L\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/L",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "81: \"lighthouse/Lighthouse/app/src/components/AV\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/AV",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "82: \"lighthouse/Lighthouse/design/screens/onb\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/onb",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "83: \"lighthouse/Lighthouse/app/node_modules/typescript/LIB\" hidden false limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/LIB",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/typescript",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/typescript/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/typescript/lib"
+      }
+    },
+    {
+      "name": "84: \"lighthouse/Lighthouse/app/SR\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/SR",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/src",
+            "name": "src"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "85: \"names/links/B\" hidden true limit 12",
+      "input": {
+        "path": "names/links/B",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "86: \"lighthouse/Lighthouse/app/dist/ASS\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/ASS",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/dist",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/dist/assets",
+            "name": "assets"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "87: \"lighthouse/Lighthouse/photos/C\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/C",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "88: \"lighthouse/Lighthouse/app/src/lib/G\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/G",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "89: \"lighthouse/Lighthouse/app/node_modules/react/pac\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/pac",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "90: \"lighthouse/Lighthouse/app/node_modules/react/LI\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/LI",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "91: \"names/packages/Slides.key/In\" hidden true limit 12",
+      "input": {
+        "path": "names/packages/Slides.key/In",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key",
+        "suggestions": [
+          {
+            "path": "names/packages/Slides.key/Index",
+            "name": "Index"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "92: \"lighthouse/Lighthouse/photos/fuj\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/fuj",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "93: \"lighthouse/Lighthouse/mobile/io\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/io",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/mobile/ios",
+            "name": "ios"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "94: \"lighthouse/Lighthouse/app/node_modules/vite/lib/nothing-here\" hidden false limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/nothing-here",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "95: \"lighthouse/Lighthouse/app/src/l\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/l",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/src/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "96: \"lighthouse\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "",
+        "suggestions": [
+          {
+            "path": "lighthouse",
+            "name": "lighthouse"
+          }
+        ],
+        "resolved": "lighthouse"
+      }
+    },
+    {
+      "name": "97: \"lighthouse/Lighthouse/photos/har\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/har",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "98: \"lighthouse/Lighthouse/app/node_modules/RE\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/RE",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react",
+            "name": "react"
+          },
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react-dom",
+            "name": "react-dom"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "99: \"names/packages/Slides.key/Data/ima\" hidden false limit 12",
+      "input": {
+        "path": "names/packages/Slides.key/Data/ima",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key/Data",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "100: \"names/packages/Sample.app/Contents/MacOS/nothing-here\" hidden false limit 12",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/MacOS/nothing-here",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/packages/Sample.app/Contents/MacOS",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "101: \"lighthouse/Lighthouse/photos/Ar\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Ar",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "102: \"lighthouse/Lighthouse/mobile/ios\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/mobile/ios",
+            "name": "ios"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/mobile/ios"
+      }
+    },
+    {
+      "name": "103: \"lighthouse/Lighthouse/app/src/lib/a\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/a",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "104: \"lighthouse/Lighthouse/app/dist/\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/dist",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/dist/assets",
+            "name": "assets"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/app/dist"
+      }
+    },
+    {
+      "name": "105: \"lighthouse/Lighthouse/app/node_modules/react-dom/index.js/\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react-dom/index.js/",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react-dom",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/react-dom/index.js"
+      }
+    },
+    {
+      "name": "106: \"lighthouse/Lighthouse/app/src/lib/nothing-here\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/nothing-here",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "107: \"lighthouse/Lighthouse/app/node_modules/eslint/lib/\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/lib/",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/eslint/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/eslint/lib"
+      }
+    },
+    {
+      "name": "108: \"lighthouse/Lighthouse/design/palette.md\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/palette.md",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/design/palette.md"
+      }
+    },
+    {
+      "name": "109: \"lighthouse/Lighthouse/dat\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/dat",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/data",
+            "name": "data"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "110: \"lighthouse/Lighthouse/app/dist/assets/./\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/assets/./",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/dist/assets",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/dist/assets"
+      }
+    },
+    {
+      "name": "111: \"lighthouse/Lighthouse/mobile/AND\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/AND",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/mobile/android",
+            "name": "android"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "112: \"lighthouse/Lighthouse/design/screens//\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens//",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/design/screens"
+      }
+    },
+    {
+      "name": "113: \"lighthouse/Lighthouse/app/src/components/TRI\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/TRI",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "114: \"names/links/ta\" hidden true limit 12",
+      "input": {
+        "path": "names/links/ta",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [
+          {
+            "path": "names/links/target folder",
+            "name": "target folder"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "115: \"lighthouse/Lighthouse/app/src/components/DAT\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/DAT",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "116: \"names/links/link to file/\" hidden false limit 1",
+      "input": {
+        "path": "names/links/link to file/",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [],
+        "resolved": "names/links/target.txt"
+      }
+    },
+    {
+      "name": "117: \"lighthouse/Lighthouse/app/dist/assets/nothing-here\" hidden true limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/assets/nothing-here",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/dist/assets",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "118: \"lighthouse/Lighthouse/app/src/lib/nothing-here\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/nothing-here",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "119: \"lighthouse/Lighthouse/app/node_modules/react/p\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/p",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "120: \"lighthouse/Lighthouse/app/node_modules/react/i\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/i",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "121: \"names/emoji/🇳🇴 \" hidden true limit 2",
+      "input": {
+        "path": "names/emoji/🇳🇴 ",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/emoji",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "122: \"names/packages/Slides.key/in\" hidden true limit 50",
+      "input": {
+        "path": "names/packages/Slides.key/in",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key",
+        "suggestions": [
+          {
+            "path": "names/packages/Slides.key/Index",
+            "name": "Index"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "123: \"lighthouse/Lighthouse/docs/setup.md\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs/setup.md",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/docs",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/docs/setup.md"
+      }
+    },
+    {
+      "name": "124: \"lighthouse/Lighthouse/CONTRIBUTING.md\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/CONTRIBUTING.md",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/CONTRIBUTING.md"
+      }
+    },
+    {
+      "name": "125: \"lighthouse/Lighthouse/photos/har\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/har",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "126: \"lighthouse/Lighthouse/app/src/pages/TRI\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/TRI",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/pages",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "127: \"lighthouse/Lighthouse/CONTRIBUTING.md/\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/CONTRIBUTING.md/",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/CONTRIBUTING.md"
+      }
+    },
+    {
+      "name": "128: \"lighthouse/Lighthouse/app/node_modules/react/lib\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/lib",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/react/lib"
+      }
+    },
+    {
+      "name": "129: \"lighthouse/Lighthouse/app/src/lib/\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/src/lib"
+      }
+    },
+    {
+      "name": "130: \"lighthouse/Lighthouse/app/node_modules/vite/lib/b\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/b",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "131: \"lighthouse/Lighthouse/app/node_modules/typescript/i\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/typescript/i",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/typescript",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "132: \"names/icons/custom icon.txt\" hidden true limit 2",
+      "input": {
+        "path": "names/icons/custom icon.txt",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/icons",
+        "suggestions": [],
+        "resolved": "names/icons/custom icon.txt"
+      }
+    },
+    {
+      "name": "133: \"names/packages/Slides.key/Data//\" hidden false limit 2",
+      "input": {
+        "path": "names/packages/Slides.key/Data//",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key/Data",
+        "suggestions": [],
+        "resolved": "names/packages/Slides.key/Data"
+      }
+    },
+    {
+      "name": "134: \"names/links/link to folder/\" hidden false limit 3",
+      "input": {
+        "path": "names/links/link to folder/",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/links/target folder",
+        "suggestions": [],
+        "resolved": "names/links/target folder"
+      }
+    },
+    {
+      "name": "135: \"names/dots/.CO\" hidden false limit 12",
+      "input": {
+        "path": "names/dots/.CO",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/dots",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "136: \"names/nfd/caf\" hidden false limit 3",
+      "input": {
+        "path": "names/nfd/caf",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/nfd",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "137: \"names/links/\" hidden true limit 1",
+      "input": {
+        "path": "names/links/",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [
+          {
+            "path": "names/links/link to folder",
+            "name": "link to folder"
+          }
+        ],
+        "resolved": "names/links"
+      }
+    },
+    {
+      "name": "138: \"lighthouse/Lighthouse/app/src/lib/\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/src/lib"
+      }
+    },
+    {
+      "name": "139: \"names/LOC\" hidden true limit 12",
+      "input": {
+        "path": "names/LOC",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names",
+        "suggestions": [
+          {
+            "path": "names/localized",
+            "name": "localized"
+          },
+          {
+            "path": "names/locked",
+            "name": "locked"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "140: \"lighthouse/Lighthouse/app/SR\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/SR",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/src",
+            "name": "src"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "141: \"lighthouse/Lighthouse/photos/I\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/I",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "142: \"lighthouse/Lighthouse/app/tests/fixtures\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/tests/fixtures",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/tests",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/tests/fixtures",
+            "name": "fixtures"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/app/tests/fixtures"
+      }
+    },
+    {
+      "name": "143: \"names/localized/Applications/RE\" hidden false limit 3",
+      "input": {
+        "path": "names/localized/Applications/RE",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/localized/Applications",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "144: \"lighthouse/Lighthouse/design/screens/ONB\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/ONB",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "145: \"lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj/project.pbxproj\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj/project.pbxproj",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/mobile/ios/Lighthouse.xcodeproj/project.pbxproj"
+      }
+    },
+    {
+      "name": "146: \"lighthouse/Lighthouse/design/screens/ma\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/screens/ma",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design/screens",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "147: \"lighthouse/Lighthouse/photos/r\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/r",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/photos/raw",
+            "name": "raw"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "148: \"names/similar/readme 2.txt/\" hidden false limit 12",
+      "input": {
+        "path": "names/similar/readme 2.txt/",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/similar",
+        "suggestions": [],
+        "resolved": "names/similar/readme 2.txt"
+      }
+    },
+    {
+      "name": "149: \"lighthouse/Lighthouse/app/src/lib/sto\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/lib/sto",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "150: \"names/locked/\" hidden true limit 3",
+      "input": {
+        "path": "names/locked/",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/locked",
+        "suggestions": [],
+        "resolved": "names/locked"
+      }
+    },
+    {
+      "name": "151: \"names/packages/Sample.app/Contents/MacOS/SAM\" hidden true limit 2",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/MacOS/SAM",
+        "includeHidden": true,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/packages/Sample.app/Contents/MacOS",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "152: \"names/localized/Applications/RE\" hidden true limit 1",
+      "input": {
+        "path": "names/localized/Applications/RE",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "names/localized/Applications",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "153: \"lighthouse/Lighthouse/photos/Alpine lake.jpg/\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Alpine lake.jpg/",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/photos/Alpine lake.jpg"
+      }
+    },
+    {
+      "name": "154: \"names/packages/Slides.key/d\" hidden true limit 12",
+      "input": {
+        "path": "names/packages/Slides.key/d",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/packages/Slides.key",
+        "suggestions": [
+          {
+            "path": "names/packages/Slides.key/Data",
+            "name": "Data"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "155: \"names/nfc/Café Zoë Ångström.txt/\" hidden true limit 12",
+      "input": {
+        "path": "names/nfc/Café Zoë Ångström.txt/",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/nfc",
+        "suggestions": [],
+        "resolved": "names/nfc/Café Zoë Ångström.txt"
+      }
+    },
+    {
+      "name": "156: \"names/lin\" hidden true limit 1",
+      "input": {
+        "path": "names/lin",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "names",
+        "suggestions": [
+          {
+            "path": "names/links",
+            "name": "links"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "157: \"lighthouse/Lighthouse/app/node_modules/vite/lib/./\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/./",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/vite/lib"
+      }
+    },
+    {
+      "name": "158: \"lighthouse/Lighthouse/REA\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/REA",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "159: \"lighthouse/Lighthouse/app/src/pages/SE\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/pages/SE",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/pages",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "160: \"lighthouse/Lighthouse/app/src/components/t\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/src/components/t",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/src/components",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "161: \"lighthouse/Lighthouse/mo\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mo",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/mobile",
+            "name": "mobile"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "162: \"lighthouse/Lighthouse/mobile/nothing-here/deeper\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/nothing-here/deeper",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "163: \"lighthouse/Lighthouse/app/node_modules/eslint/in\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/in",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/eslint",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "164: \"lighthouse/Lighthouse/infra/VAR\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/infra/VAR",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/infra",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "165: \"lighthouse/Lighthouse/photos/AL\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/AL",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "166: \"names/localized/Applications\" hidden true limit 12",
+      "input": {
+        "path": "names/localized/Applications",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/localized",
+        "suggestions": [
+          {
+            "path": "names/localized/Applications",
+            "name": "Applications"
+          }
+        ],
+        "resolved": "names/localized/Applications"
+      }
+    },
+    {
+      "name": "167: \"lighthouse/Lighthouse/photos/s\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/s",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "168: \"lighthouse/Lighthouse/app/node_modules/react/lib/nothing-here/deeper\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react/lib/nothing-here/deeper",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "169: \"lighthouse/Lighthouse/re\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/re",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "170: \"lighthouse/Lighthouse/design//\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/design//",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/design/screens",
+            "name": "screens"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/design"
+      }
+    },
+    {
+      "name": "171: \"lighthouse/Lighthouse/docs/S\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs/S",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/docs",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "172: \"lighthouse/Lighthouse/photos/i\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/i",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "173: \"lighthouse/Lighthouse/photos/RA\" hidden false limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/RA",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/photos/raw",
+            "name": "raw"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "174: \"lighthouse/Lighthouse/photos/RA\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/RA",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/photos/raw",
+            "name": "raw"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "175: \"lighthouse/Lighthouse/photos/M\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/M",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "176: \"names/links/target.txt\" hidden false limit 2",
+      "input": {
+        "path": "names/links/target.txt",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/links",
+        "suggestions": [],
+        "resolved": "names/links/target.txt"
+      }
+    },
+    {
+      "name": "177: \"lighthouse/Lighthouse/app/dist/AS\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dist/AS",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/dist",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/dist/assets",
+            "name": "assets"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "178: \"lighthouse/Lighthouse/data/sc\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/sc",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/data",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "179: \"lighthouse/Lighthouse/app/node_modules/eslint/package.json/\" hidden false limit 2",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/package.json/",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/eslint",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/eslint/package.json"
+      }
+    },
+    {
+      "name": "180: \"names/icons/nothing-here\" hidden true limit 3",
+      "input": {
+        "path": "names/icons/nothing-here",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "names/icons",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "181: \"lighthouse/Lighthouse/CHANGELOG.md\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/CHANGELOG.md",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/CHANGELOG.md"
+      }
+    },
+    {
+      "name": "182: \"lighthouse/Lighthouse/app/dis\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/dis",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/dist",
+            "name": "dist"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "183: \"lighthouse/Lighthouse/mobile//\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile//",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/mobile/android",
+            "name": "android"
+          },
+          {
+            "path": "lighthouse/Lighthouse/mobile/ios",
+            "name": "ios"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/mobile"
+      }
+    },
+    {
+      "name": "184: \"lighthouse/Lighthouse/photos/Si\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Si",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "185: \"lighthouse/Lighthouse/infra/VA\" hidden false limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/infra/VA",
+        "includeHidden": false,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/infra",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "186: \"lighthouse/Lighthouse/mobile/REA\" hidden false limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/mobile/REA",
+        "includeHidden": false,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/mobile",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "187: \"lighthouse/Lighthouse/app/node_modules/vite/IND\" hidden true limit 3",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/IND",
+        "includeHidden": true,
+        "limit": 3
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "188: \"lighthouse/Lighthouse/docs/A\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/docs/A",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/docs",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "189: \"lighthouse/Lighthouse/photos/i\" hidden false limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/i",
+        "includeHidden": false,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "190: \"lighthouse/Lighthouse/app/node_modules/eslint/lib/BUN\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/eslint/lib/BUN",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/eslint/lib",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "191: \"names/spaces/ le\" hidden true limit 12",
+      "input": {
+        "path": "names/spaces/ le",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "names/spaces",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "192: \"lighthouse/Lighthouse/photos/Lake Wanaka.jpg/\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/Lake Wanaka.jpg/",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/photos/Lake Wanaka.jpg"
+      }
+    },
+    {
+      "name": "193: \"names/packages/Sample.app/Contents/RES\" hidden false limit 2",
+      "input": {
+        "path": "names/packages/Sample.app/Contents/RES",
+        "includeHidden": false,
+        "limit": 2
+      },
+      "output": {
+        "basePath": "names/packages/Sample.app/Contents",
+        "suggestions": [
+          {
+            "path": "names/packages/Sample.app/Contents/Resources",
+            "name": "Resources"
+          }
+        ],
+        "resolved": null
+      }
+    },
+    {
+      "name": "194: \"lighthouse/Lighthouse/photos/COA\" hidden true limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/photos/COA",
+        "includeHidden": true,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/photos",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "195: \"lighthouse/Lighthouse/design/./\" hidden true limit 12",
+      "input": {
+        "path": "lighthouse/Lighthouse/design/./",
+        "includeHidden": true,
+        "limit": 12
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/design",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/design/screens",
+            "name": "screens"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/design"
+      }
+    },
+    {
+      "name": "196: \"lighthouse/Lighthouse/bun\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/bun",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse",
+        "suggestions": [],
+        "resolved": null
+      }
+    },
+    {
+      "name": "197: \"lighthouse/Lighthouse/app/node_modules/react//\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/react//",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/react",
+        "suggestions": [
+          {
+            "path": "lighthouse/Lighthouse/app/node_modules/react/lib",
+            "name": "lib"
+          }
+        ],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/react"
+      }
+    },
+    {
+      "name": "198: \"lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js/\" hidden true limit 50",
+      "input": {
+        "path": "lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js/",
+        "includeHidden": true,
+        "limit": 50
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/app/node_modules/vite/lib",
+        "suggestions": [],
+        "resolved": "lighthouse/Lighthouse/app/node_modules/vite/lib/bundle.js"
+      }
+    },
+    {
+      "name": "199: \"lighthouse/Lighthouse/data/exports/T\" hidden false limit 1",
+      "input": {
+        "path": "lighthouse/Lighthouse/data/exports/T",
+        "includeHidden": false,
+        "limit": 1
+      },
+      "output": {
+        "basePath": "lighthouse/Lighthouse/data/exports",
+        "suggestions": [],
+        "resolved": null
+      }
+    }
+  ]
+}

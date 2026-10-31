@@ -1,0 +1,99 @@
+{
+  "name": "batch-rename",
+  "description": "Rename sheet numbering 21 photos",
+  "root": "/Users/Shared/Lighthouse",
+  "now": "2026-10-13T14:46:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false,
+        "batchRenameSettings": {
+          "mode": "format",
+          "nameFormat": "index",
+          "customName": "Road trip",
+          "formatWhere": "after",
+          "separator": " ",
+          "startAt": 1,
+          "step": 1
+        }
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "photos"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "select",
+      "names": [
+        "Alpine lake.jpg",
+        "Arrabida coast.jpg",
+        "Biwa shore.jpg",
+        "Cape Point.jpg",
+        "Coast road.jpg",
+        "Desert dusk.jpg",
+        "Douro valley.jpg",
+        "Fjord morning.jpg",
+        "Fuji at dawn.jpg",
+        "Glenorchy road.jpg",
+        "Harbor sunrise.jpg",
+        "Island noon.jpg",
+        "Lake Wanaka.jpg",
+        "Milford Sound.jpg",
+        "Night ridge.jpg",
+        "Old town evening.jpg",
+        "Sintra hills.jpg",
+        "Table Mountain dusk.jpg",
+        "Thingvellir.jpg",
+        "Valley mist.jpg",
+        "Vik beach.jpg"
+      ]
+    },
+    {
+      "step": "key",
+      "key": "F2",
+      "modifiers": []
+    },
+    {
+      "step": "expectSheet",
+      "name": "batch rename sheet"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "batch-rename"
+    }
+  ]
+}

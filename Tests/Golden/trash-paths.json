@@ -1,0 +1,4386 @@
+{
+  "suite": "trash-paths",
+  "referenceCommit": "59f60cf",
+  "seed": 2052718594,
+  "generator": "tools/parity/golden/trash-paths.ts",
+  "cases": [
+    {
+      "name": "home trash",
+      "input": {
+        "path": "/Users/me/.Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "home trash, trailing slash",
+      "input": {
+        "path": "/Users/me/.Trash/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "home trash, many trailing slashes",
+      "input": {
+        "path": "/Users/me/.Trash///",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "inside home trash",
+      "input": {
+        "path": "/Users/me/.Trash/a.txt",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "deep inside home trash",
+      "input": {
+        "path": "/Users/me/.Trash/a/b/c",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "home trash, upper case",
+      "input": {
+        "path": "/USERS/ME/.TRASH",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "home trash, home in upper case",
+      "input": {
+        "path": "/Users/me/.Trash",
+        "homePath": "/USERS/ME"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "home with trailing slash",
+      "input": {
+        "path": "/Users/me/.Trash",
+        "homePath": "/Users/me/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "home with many trailing slashes",
+      "input": {
+        "path": "/Users/me/.Trash/x",
+        "homePath": "/Users/me///"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "not the trash: .Trash2",
+      "input": {
+        "path": "/Users/me/.Trash2",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "not the trash: Trash",
+      "input": {
+        "path": "/Users/me/Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "not the trash: home itself",
+      "input": {
+        "path": "/Users/me",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "not the trash: other user",
+      "input": {
+        "path": "/Users/you/.Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "not the trash: prefix home",
+      "input": {
+        "path": "/Users/meme/.Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "empty home",
+      "input": {
+        "path": "/.Trash",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "root home",
+      "input": {
+        "path": "/.Trash",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "root home, inside",
+      "input": {
+        "path": "/.Trash/x",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "slashes-only home",
+      "input": {
+        "path": "/.Trash",
+        "homePath": "///"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "relative home",
+      "input": {
+        "path": "me/.Trash",
+        "homePath": "me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "empty path",
+      "input": {
+        "path": "",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "root path",
+      "input": {
+        "path": "/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "nfc home, nfd path",
+      "input": {
+        "path": "/Users/José/.Trash",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "nfd home, nfc path",
+      "input": {
+        "path": "/Users/José/.Trash/x",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "home with combining mark",
+      "input": {
+        "path": "/Users/mé/.Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "combining mark after trash slash",
+      "input": {
+        "path": "/Users/me/.Trash/́x",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "combining mark on trash name",
+      "input": {
+        "path": "/Users/me/.Trash́",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "greek final sigma home",
+      "input": {
+        "path": "/Users/ΑΣ/.Trash",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "greek sigma home, lower path",
+      "input": {
+        "path": "/Users/ας/.Trash",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "greek sigma home, medial path",
+      "input": {
+        "path": "/Users/ασ/.Trash",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "dotted capital I home",
+      "input": {
+        "path": "/Users/i̇/.Trash",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "sharp s home",
+      "input": {
+        "path": "/Users/ß/.Trash",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "kelvin sign home",
+      "input": {
+        "path": "/Users/k/.Trash",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "ohm sign home",
+      "input": {
+        "path": "/Users/ω/.Trash",
+        "homePath": "/Users/Ω"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "angstrom sign home",
+      "input": {
+        "path": "/Users/å/.Trash",
+        "homePath": "/Users/Å"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "cherokee home",
+      "input": {
+        "path": "/Users/ꭰ/.Trash",
+        "homePath": "/Users/Ꭰ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "georgian home",
+      "input": {
+        "path": "/Users/ა/.Trash",
+        "homePath": "/Users/Ა"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "volume trashes",
+      "input": {
+        "path": "/Volumes/Data/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "volume trashes, trailing slash",
+      "input": {
+        "path": "/Volumes/Data/.Trashes/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "volume user trash",
+      "input": {
+        "path": "/Volumes/Data/.Trashes/501",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "volume user trash, trailing slashes",
+      "input": {
+        "path": "/Volumes/Data/.Trashes/501//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "inside volume user trash",
+      "input": {
+        "path": "/Volumes/Data/.Trashes/501/a.txt",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "volume trashes, upper case",
+      "input": {
+        "path": "/VOLUMES/DATA/.TRASHES/501",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "volume with spaces",
+      "input": {
+        "path": "/Volumes/My Disk/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "volume with empty name",
+      "input": {
+        "path": "/Volumes//.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "volume .Trashes2",
+      "input": {
+        "path": "/Volumes/Data/.Trashes2",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "volume .Trash (not .Trashes)",
+      "input": {
+        "path": "/Volumes/Data/.Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "nested volume path",
+      "input": {
+        "path": "/Volumes/Data/x/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "volumes itself",
+      "input": {
+        "path": "/Volumes/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "relative volumes",
+      "input": {
+        "path": "Volumes/Data/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "double slash after volumes",
+      "input": {
+        "path": "/Volumes//Data/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "newline before trailing slash",
+      "input": {
+        "path": "/Volumes/Data/.Trashes/501\n/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "newline before trailing slashes",
+      "input": {
+        "path": "/Volumes/Data/.Trashes/501\n//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "newline as user trash",
+      "input": {
+        "path": "/Volumes/Data/.Trashes/\n//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "line separator before trailing slashes",
+      "input": {
+        "path": "/Users/me/.Trash/ //",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "carriage return home trash",
+      "input": {
+        "path": "/Users/me/.Trash\r/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "emoji volume",
+      "input": {
+        "path": "/Volumes/🎉/.Trashes/501",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "nfd volume name",
+      "input": {
+        "path": "/Volumes/Café/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "home on a volume",
+      "input": {
+        "path": "/Volumes/Data/Users/me/.Trash",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 0",
+      "input": {
+        "path": "/Users/José/.Trash́/x /",
+        "homePath": "/UseRS/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 1",
+      "input": {
+        "path": "/VoluMEs/CaFé/.TRashes2/.TrasH/501",
+        "homePath": "/VOLumES/DaTA/USeRS/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 2",
+      "input": {
+        "path": "/volumes/DatA/.TrASHES2",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 3",
+      "input": {
+        "path": "/VOLUMES//.TrasHes2",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 4",
+      "input": {
+        "path": "/USers/JoSé/.TrAsh",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 5",
+      "input": {
+        "path": "/VoluMe/CAfé/.TRashEs2/501/́",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 6",
+      "input": {
+        "path": "/TmP/.Trash/\n",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 7",
+      "input": {
+        "path": "/vOlumES/CaFé/.TRaSh/",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 8",
+      "input": {
+        "path": "/USeRs/José/.TRASH",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 9",
+      "input": {
+        "path": "/volUMes/🎉/.TRashes/.TraSh//",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 10",
+      "input": {
+        "path": "VoluMEs/CAfé/.TRASHES/\n",
+        "homePath": "/UseRs/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 11",
+      "input": {
+        "path": "/UserS/İ/TrAsh/",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 12",
+      "input": {
+        "path": "/UserS/\n/501/",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 13",
+      "input": {
+        "path": "/VolUmes/🎉/.TrAsH//",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 14",
+      "input": {
+        "path": "//.trash/",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 15",
+      "input": {
+        "path": "/USeRs/Me/.TraSheS/a.tXt/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 16",
+      "input": {
+        "path": "/VoLume//.Trash",
+        "homePath": "/Users/JoSé"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 17",
+      "input": {
+        "path": "/UseRs/Me/.TrasH/",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 18",
+      "input": {
+        "path": "/VOLUMES/CAFÉ/.TrAshes2/Σ/a/b//",
+        "homePath": "/USers/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 19",
+      "input": {
+        "path": "/USerS/ΑΣ/.TRasH/a/b",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 20",
+      "input": {
+        "path": "/VolumES",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 21",
+      "input": {
+        "path": "/UsERS/ME/.Trash2/A.tXt/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 22",
+      "input": {
+        "path": "/.TRAsh2/A.txt/a/b",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 23",
+      "input": {
+        "path": "/USERs/ΑΣ/.TrAs/.TRaSh/",
+        "homePath": "/UseRS/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 24",
+      "input": {
+        "path": "/VolUmEs/x/y/TraSHes/.TRASh/.TrasH",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 25",
+      "input": {
+        "path": "/volUmes/CAFé/.TrAshes//",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 26",
+      "input": {
+        "path": "/VolUMes/ΑΣ/TRashes/a/b",
+        "homePath": "/UsERs/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 27",
+      "input": {
+        "path": "/volumEs//.TrashEs2//a/b",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 28",
+      "input": {
+        "path": "/VOLUMES/🎉/TRasHeS/Σ",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 29",
+      "input": {
+        "path": "/VOlumes/CAfÉ/TraShes/\n",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 30",
+      "input": {
+        "path": "VOlumes/🎉/.TRaSheS2",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 31",
+      "input": {
+        "path": "/volUmes//.TrashEs2",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 32",
+      "input": {
+        "path": "/VOLUMES/CAfé/.TrasH",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 33",
+      "input": {
+        "path": "/VOLumES/🎉/.TRaSheS2",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 34",
+      "input": {
+        "path": "/VoLuMe/Data/.TRASHES//",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 35",
+      "input": {
+        "path": "/UseRs/Me/.TraSH",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 36",
+      "input": {
+        "path": "/VOLUMES/My Disk/.TrAShes/a/b",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 37",
+      "input": {
+        "path": "/Users/Me/.trAsh/A/b/a.txt",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 38",
+      "input": {
+        "path": "/VolUmES//.TrAshes2//",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 39",
+      "input": {
+        "path": "/VOlUme/DaTA/.TrashEs/\n",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 40",
+      "input": {
+        "path": "/USeRS/JosÉ/.TRAS/X /",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 41",
+      "input": {
+        "path": "VoluMEs//Trashes/a/B/.TRAsh/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 42",
+      "input": {
+        "path": "/vOlumes/Café/.TrAsH/́//",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 43",
+      "input": {
+        "path": "/Volumes/🎉/.TRASHES/́",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 44",
+      "input": {
+        "path": "/Volumes/DatA/Users/ME/.Trash/",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 45",
+      "input": {
+        "path": "VoLumes//.TRAShEs",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 46",
+      "input": {
+        "path": "/VOlUmes/My DiSk/.TrashES/501",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 47",
+      "input": {
+        "path": "VOlumEs/DaTA/TRAShEs/a.Txt//",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 48",
+      "input": {
+        "path": "/VOlUMe/CAFé/TrAsHes/X /A.tXT",
+        "homePath": "/Users/JOSÉ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 49",
+      "input": {
+        "path": "/useRs/ME/.TrasH́/a/b/A/b/",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 50",
+      "input": {
+        "path": "/VOLuMes/DaTa/Users/mE/.TrasH́/\n",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 51",
+      "input": {
+        "path": "/VoLUmes/DatA/UseRs/me/TrasH/.TrAsh",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 52",
+      "input": {
+        "path": "/.TrAsh2/\n/́",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 53",
+      "input": {
+        "path": "/voluMEs/Café/.TRASHES",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 54",
+      "input": {
+        "path": "/Σ",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 55",
+      "input": {
+        "path": "///",
+        "homePath": "/VOLUmes/DaTA/UsErs/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 56",
+      "input": {
+        "path": "/UsErs/K/.TRashES",
+        "homePath": "/UsErs/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 57",
+      "input": {
+        "path": "/VolUmes/CAFÉ/.trashEs/A/b",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 58",
+      "input": {
+        "path": "/UseRs/JOSé/.TraSh́",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 59",
+      "input": {
+        "path": "/VOluMe/ΑΣ/.TrAsh/a.txT/501/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 60",
+      "input": {
+        "path": "/VOlUmes/ΑΣ/.TrAsh//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 61",
+      "input": {
+        "path": "/VolumeS/CafÉ/TrAsHEs",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 62",
+      "input": {
+        "path": "/Users/K/.TraS/.TrAsh/A.tXT",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 63",
+      "input": {
+        "path": "/VOlUmeS/x/Y/TraSHEs/Σ//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 64",
+      "input": {
+        "path": "/UsErs/mE/DOcUmenTs/a.txT",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 65",
+      "input": {
+        "path": "/UserS/JOSé/.TrASh//",
+        "homePath": "/USErS/JOsé"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 66",
+      "input": {
+        "path": "/VOLUMES//.TrasH/",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 67",
+      "input": {
+        "path": "/Volumes/ΑΣ/.TRaSheS2/A.txT/a.txT",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 68",
+      "input": {
+        "path": "/UseRs/ẞ/.trASh/́",
+        "homePath": "/USerS/ẞ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 69",
+      "input": {
+        "path": "/USers/K/.TRaSh",
+        "homePath": "/UsErs/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 70",
+      "input": {
+        "path": "//A/b/.TRash",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 71",
+      "input": {
+        "path": "/VoLUme/My DisK/.Trashes",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 72",
+      "input": {
+        "path": "/Users/K/.TRASheS/501/a/b",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 73",
+      "input": {
+        "path": "/USerS/",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 74",
+      "input": {
+        "path": "/UseRS/İ/.traSh/\n",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 75",
+      "input": {
+        "path": "/Users/ẞ/.TRaSH́/Σ//",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 76",
+      "input": {
+        "path": "/VOLuME/CAfé/Trashes",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 77",
+      "input": {
+        "path": "/VOlumES/ΑΣ/.TrashEs2/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 78",
+      "input": {
+        "path": "/.Tras/x ///",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 79",
+      "input": {
+        "path": "/UseRS/me/DoCuMenTS/́/a/b",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 80",
+      "input": {
+        "path": "/.TRASH/501",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 81",
+      "input": {
+        "path": "/USErs/mE/.Trashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 82",
+      "input": {
+        "path": "/UsErS/Me/.TrAs/A/b//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 83",
+      "input": {
+        "path": "/.TrAsh́/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 84",
+      "input": {
+        "path": "//a/b//",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 85",
+      "input": {
+        "path": "/Volume/DaTA/TRasHEs/́/X /",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 86",
+      "input": {
+        "path": "/UserS/José/.TRashes/a.txt",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 87",
+      "input": {
+        "path": "/VOLUMES/ΑΣ/Trashes/a/B/",
+        "homePath": "/UseRs/JOSé"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 88",
+      "input": {
+        "path": "/VolUMes/Café/.TRASHES//501",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 89",
+      "input": {
+        "path": "/UseRs/K/.TRASH/a/b//",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 90",
+      "input": {
+        "path": "/USerS/Me/.TRash́/x ",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 91",
+      "input": {
+        "path": "/Users/Me/.TrasheS/.Trash/.TrAsh",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 92",
+      "input": {
+        "path": "/UserS/ME//.TRaSh/501",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 93",
+      "input": {
+        "path": "/VolUme/ΑΣ/.TRASHES/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 94",
+      "input": {
+        "path": "/usErs/ME/.Trash/",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 95",
+      "input": {
+        "path": "/UseRs/ΑΣ/.TRAshes",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 96",
+      "input": {
+        "path": "/.TrAsH́/́",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 97",
+      "input": {
+        "path": "/Users/ME/.TRASH/Σ",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 98",
+      "input": {
+        "path": "/VOLUMES//.traSheS/Σ/a.txt",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 99",
+      "input": {
+        "path": "/VoluMes/MY DiSk/TRaSHes/a.tXt/A/b/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 100",
+      "input": {
+        "path": "/a.tXT/́//",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 101",
+      "input": {
+        "path": "/USers/ẞ/.TRash́",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 102",
+      "input": {
+        "path": "/USers/İ/.TrAshes/Σ/.TraSH",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 103",
+      "input": {
+        "path": "/VOLUMES/CAfé/TrAsHeS/",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 104",
+      "input": {
+        "path": "/UsErS/a b/.Trashes/Σ/́/",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 105",
+      "input": {
+        "path": "/Users/ẞ/.TraSH2/X /Σ",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 106",
+      "input": {
+        "path": "/VOLUMES/My DiSk/.TRASHES/501",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 107",
+      "input": {
+        "path": "/USeRs/İ/.TRash́/a/b/́",
+        "homePath": "/USErs/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 108",
+      "input": {
+        "path": "/volUmeS/CafÉ/.TRash/́/Σ/",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 109",
+      "input": {
+        "path": "/Users/A B/.TRaSH2",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 110",
+      "input": {
+        "path": "/tmp/.TrAsh//\n",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 111",
+      "input": {
+        "path": "VOLumes/CaFÉ/.TrashES2",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 112",
+      "input": {
+        "path": "/VOLUMES/DaTa/TrasHES",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 113",
+      "input": {
+        "path": "/.TRasH/x /\n/",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 114",
+      "input": {
+        "path": "/VOlUme/ΑΣ/.TraSheS/",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 115",
+      "input": {
+        "path": "Volumes//.TRasHEs2/",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 116",
+      "input": {
+        "path": "/VOlumes/DaTa/.TRASHES/́/Σ//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 117",
+      "input": {
+        "path": "/UseRs/ẞ/.tRash/a/b/",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 118",
+      "input": {
+        "path": "/.TRASH",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 119",
+      "input": {
+        "path": "/.TRASH/.Trash",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 120",
+      "input": {
+        "path": "VoLuMes/Data/.TrAShes2",
+        "homePath": "/UserS/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 121",
+      "input": {
+        "path": "/VolumE/CaFÉ/.TRaSheS/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 122",
+      "input": {
+        "path": "/VOlumEs/x/y/.TrASHeS2/Σ/\n",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 123",
+      "input": {
+        "path": "/VolUmES/CaFé/.TrashEs//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 124",
+      "input": {
+        "path": "/VolumeS/Data/USers/me/.TRASH/",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 125",
+      "input": {
+        "path": "/UsErs/me/.TRASH///",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 126",
+      "input": {
+        "path": "VOLUmEs//TrAsheS/.Trash//",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 127",
+      "input": {
+        "path": "/Users/ME/.TraSh́/́",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 128",
+      "input": {
+        "path": "/usErS/ME/.TrasH2/a/b/",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 129",
+      "input": {
+        "path": "/Users/Me/DocuMENts/Σ",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 130",
+      "input": {
+        "path": "/vOLuMEs/CAfÉ/.trasheS",
+        "homePath": "/UseRs/JOsé"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 131",
+      "input": {
+        "path": "/TrasH",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 132",
+      "input": {
+        "path": "/UseRs/İ/.TRASH",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 133",
+      "input": {
+        "path": "/VOLUMES/ΑΣ/.TrAsh/.TRaSh/",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 134",
+      "input": {
+        "path": "/USers/İ/.TRaShES",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 135",
+      "input": {
+        "path": "/.TRAshES/Σ",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 136",
+      "input": {
+        "path": "/VOlumeS//.tRaShes",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 137",
+      "input": {
+        "path": "/VOlumES",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 138",
+      "input": {
+        "path": "//Σ//",
+        "homePath": "/USeRS/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 139",
+      "input": {
+        "path": "/VolumEs/DaTa/Users/ME/.TraSH2/",
+        "homePath": "/VolumeS/DAta/UsErS/ME"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 140",
+      "input": {
+        "path": "/VOLuMe/x/y/.TRaShes2//.Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 141",
+      "input": {
+        "path": "/VOLUMES/X/Y/.TrAShES/́/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 142",
+      "input": {
+        "path": "/VoLume//.TRASHES",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 143",
+      "input": {
+        "path": "/.Trash/a/B",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 144",
+      "input": {
+        "path": "/UsErs/K/.TRASH/\n/",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 145",
+      "input": {
+        "path": "/UsErs/ΑΣ/.TrashEs",
+        "homePath": "/UserS/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 146",
+      "input": {
+        "path": "/Volumes/x /",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 147",
+      "input": {
+        "path": "/VoluMe/x/Y/.trAShEs///",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 148",
+      "input": {
+        "path": "/USerS/Me/DOcUments/",
+        "homePath": "/UsERS/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 149",
+      "input": {
+        "path": "/UseRs/ΑΣ/.tRash/Σ/",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 150",
+      "input": {
+        "path": "/VolumES/CaFé/TrashES/",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 151",
+      "input": {
+        "path": "VolUmEs//.TRASHES//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 152",
+      "input": {
+        "path": "/UsErs/ΑΣ/.TRashEs/a/b",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 153",
+      "input": {
+        "path": "/UseRS/ME/.TraSH2/A/b//",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 154",
+      "input": {
+        "path": "/VoLumEs/CAfé/.trAsHeS",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 155",
+      "input": {
+        "path": "/tMP/.TrASh",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 156",
+      "input": {
+        "path": "/Users/a B/.TRaSH/́",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 157",
+      "input": {
+        "path": "/.trash/X /.TrAsH/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 158",
+      "input": {
+        "path": "VOlUmes/MY DIsk/.TraShes",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 159",
+      "input": {
+        "path": "/users/ME/Trash/Σ//",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 160",
+      "input": {
+        "path": "/VoLumeS/CAfÉ/Trashes/x ",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 161",
+      "input": {
+        "path": "/VolumeS/ΑΣ/TrasheS/a.Txt",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 162",
+      "input": {
+        "path": "/VOlUmEs/My DIsk/.Trash",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 163",
+      "input": {
+        "path": "/vOlUMeS//.TraShes/",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 164",
+      "input": {
+        "path": "/VolumeS/Café/.TRASHES",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 165",
+      "input": {
+        "path": "/VOLume/CafÉ/TrAshes/\n/x ",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 166",
+      "input": {
+        "path": "/USErs/ẞ/.TraSh2",
+        "homePath": "/USeRS/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 167",
+      "input": {
+        "path": "/UsErs/JosÉ/.TRas",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 168",
+      "input": {
+        "path": "/VoLumes/x/Y/.TraSh/A.txt/\n",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 169",
+      "input": {
+        "path": "/UserS/İ/.TraSH//",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 170",
+      "input": {
+        "path": "/Trash/501/",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 171",
+      "input": {
+        "path": "/VolUMEs/DaTA/TRaSHes/a/B/\n",
+        "homePath": "/UsErS/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 172",
+      "input": {
+        "path": "/VOlUme/Café/.TraSheS/.TRaSh",
+        "homePath": "/uSers/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 173",
+      "input": {
+        "path": "/VoluMEs//TrasHEs",
+        "homePath": "/UsERs/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 174",
+      "input": {
+        "path": "/VoLUmes/x ",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 175",
+      "input": {
+        "path": "/voluMes/🎉/.TRASHES//",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 176",
+      "input": {
+        "path": "VolumeS/DATa/.trAsHes/X /Σ",
+        "homePath": "/UserS/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 177",
+      "input": {
+        "path": "/VOLUMES//.TrAsHeS//A/b//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 178",
+      "input": {
+        "path": "/VOluMes/Data/USErs/me/.TRash́/501/\n/",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 179",
+      "input": {
+        "path": "/VOLUME/x/y/.Trash/\n/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 180",
+      "input": {
+        "path": "/Users/Me/Trash",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 181",
+      "input": {
+        "path": "/USErS/ΑΣ/.TRasHes",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 182",
+      "input": {
+        "path": "/VOLUMES/CaFé/TRaShEs/.TrASh/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 183",
+      "input": {
+        "path": "/Users/mE/DOcumEnts/a/b/\n",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 184",
+      "input": {
+        "path": "/TRash/501/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 185",
+      "input": {
+        "path": "/VOlumeS/🎉/.TRASHES/a.txT/A.txt//",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 186",
+      "input": {
+        "path": "/VOLUMES/CafÉ/.trAsHes//a/b",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 187",
+      "input": {
+        "path": "/volumEs/CAfÉ/.TRasHeS",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 188",
+      "input": {
+        "path": "/USeRs/Me/.trash/a.txT/\n",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 189",
+      "input": {
+        "path": "VoluMeS/ΑΣ/.TrAsh/\n/",
+        "homePath": "/USErS/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 190",
+      "input": {
+        "path": "/.TRash́",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 191",
+      "input": {
+        "path": "/VOLUMES/x/Y/.TRasHes/Σ/x ",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 192",
+      "input": {
+        "path": "/UsErs///",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 193",
+      "input": {
+        "path": "/Users",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 194",
+      "input": {
+        "path": "VOluMEs/Café/.TRasHEs/a.txt",
+        "homePath": "/VOlumEs/DATa/UsErs/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 195",
+      "input": {
+        "path": "/UseRs/Me/TRaSh/a/b/",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 196",
+      "input": {
+        "path": "/UseRs/JOsÉ/.TRaSh/a.Txt/501",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 197",
+      "input": {
+        "path": "/VolumEs/🎉/.TrasH/́",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 198",
+      "input": {
+        "path": "/TrasH",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 199",
+      "input": {
+        "path": "/UserS/İ/TRaSh",
+        "homePath": "/UsErS/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 200",
+      "input": {
+        "path": "/USeRs/K/.TrAsh",
+        "homePath": "/UsErs/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 201",
+      "input": {
+        "path": "/VOlumEs/X/y/.TRASHes/X ",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 202",
+      "input": {
+        "path": "/USers/İ/.tRasH/́/Σ",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 203",
+      "input": {
+        "path": "Volumes/CaFÉ/.Trash/501/\n/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 204",
+      "input": {
+        "path": "//501/",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 205",
+      "input": {
+        "path": "/USErs/JosÉ/.trash/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 206",
+      "input": {
+        "path": "/UsErs/José/.TraS",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 207",
+      "input": {
+        "path": "/VOLUMES/🎉/.TRASHES/501/",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 208",
+      "input": {
+        "path": "/USers/ME/.TRASH/.TrASh",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 209",
+      "input": {
+        "path": "/Volumes/x/y/.Trashes",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 210",
+      "input": {
+        "path": "/.TRASH/a.tXt",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 211",
+      "input": {
+        "path": "/UseRs/İ/.TRASH/Σ",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 212",
+      "input": {
+        "path": "/Volumes/DAta/UsErs/mE/TrasH//",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 213",
+      "input": {
+        "path": "/VolUMeS/X/y/.TRaShES2/.Trash",
+        "homePath": "/USers/JoSé"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 214",
+      "input": {
+        "path": "/VoLuME/MY DisK/.TraSheS/x ",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 215",
+      "input": {
+        "path": "VoluMes/ΑΣ/.TrAsh",
+        "homePath": "/uSERs/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 216",
+      "input": {
+        "path": "/USerS/JOSé/.Tras/a/b",
+        "homePath": "/UsERs/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 217",
+      "input": {
+        "path": "/UserS/K/.TRas/",
+        "homePath": "/UsErs/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 218",
+      "input": {
+        "path": "/VOLUMES//.TRASHES/",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 219",
+      "input": {
+        "path": "/Tmp/.TRAsH/.Trash//",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 220",
+      "input": {
+        "path": "/Users/a b/.TraShes//",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 221",
+      "input": {
+        "path": "/UseRs/K/.TRASH",
+        "homePath": "/VOlUmEs/Data/Users/mE"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 222",
+      "input": {
+        "path": "VOLumEs/🎉/TrasheS",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 223",
+      "input": {
+        "path": "/UsERs/José/.Tras/.TRASh",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 224",
+      "input": {
+        "path": "/Users/me/.TRASH",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 225",
+      "input": {
+        "path": "/VolumE//.TrASH/́/501",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 226",
+      "input": {
+        "path": "/VoLuMes/Café/.TrAsh/a/B",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 227",
+      "input": {
+        "path": "/VolUmes/x/Y/TrasheS",
+        "homePath": "/Volumes/Data/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 228",
+      "input": {
+        "path": "/Volumes/Café/.TrAsHes2/\n/",
+        "homePath": "/UseRS/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 229",
+      "input": {
+        "path": "VoluMes/DaTa/TraShes/x //",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 230",
+      "input": {
+        "path": "/USers/Me/.TrasHeS/",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 231",
+      "input": {
+        "path": "/VolUmes//.TRASHES",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 232",
+      "input": {
+        "path": "/Volumes/🎉/.TRashes",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 233",
+      "input": {
+        "path": "/UseRS/José/.TrAsh́/501/",
+        "homePath": "/USers/JOsé"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 234",
+      "input": {
+        "path": "VolUmeS/Data/TrashEs",
+        "homePath": "/USeRS/A b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 235",
+      "input": {
+        "path": "//a/b//",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 236",
+      "input": {
+        "path": "/x /a/B",
+        "homePath": "/VolUMeS/DAta/UseRS/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 237",
+      "input": {
+        "path": "/UsERs/ME/TraSh/a.tXt/x //",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 238",
+      "input": {
+        "path": "/UsERs/ẞ/.TrASH́//",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 239",
+      "input": {
+        "path": "/VOLUme/🎉/TraSheS/\n//",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 240",
+      "input": {
+        "path": "/UsErs/ΑΣ/.TrAsH/501/",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 241",
+      "input": {
+        "path": "/VoLuMe/Data/TrAshes//",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 242",
+      "input": {
+        "path": "/VOLumes/x/y/.TRashEs2/a/b//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 243",
+      "input": {
+        "path": "/VOLUMES/Data/.TRASHES",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 244",
+      "input": {
+        "path": "/UsErs/İ/.TRash//",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 245",
+      "input": {
+        "path": "/VolumeS/CAFé/.Trashes2",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 246",
+      "input": {
+        "path": "/VolUmE/🎉/.TraSh",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 247",
+      "input": {
+        "path": "/voluMEs/Data/.TRASheS2",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 248",
+      "input": {
+        "path": "/USers/ME/.TRASH",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 249",
+      "input": {
+        "path": "/VOLUMES/🎉/TRAshes/\n",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 250",
+      "input": {
+        "path": "/UsErs/JosÉ/.TRash2",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 251",
+      "input": {
+        "path": "/UserS/ΑΣ/.TRasH/.TRaSh/501",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 252",
+      "input": {
+        "path": "/VOLUMES/ΑΣ/.TRAshes/́",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 253",
+      "input": {
+        "path": "/volumes/CAfé/.Trash/a/b/",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 254",
+      "input": {
+        "path": "/VOLUMES/x/Y/.trAShes//",
+        "homePath": "/Users/ẞ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 255",
+      "input": {
+        "path": "/vOlumEs/My DiSk/.TRASHES//",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 256",
+      "input": {
+        "path": "/USers/ΑΣ/.TRASH",
+        "homePath": "/UserS/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 257",
+      "input": {
+        "path": "/VoLumEs/ΑΣ/.TRash//x ",
+        "homePath": "/USErs/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 258",
+      "input": {
+        "path": "/VOlUMe//.TRashEs/X ",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 259",
+      "input": {
+        "path": "/UsErS/ΑΣ/.Trash́/a.txt",
+        "homePath": "/Volumes/DaTA/USErS/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 260",
+      "input": {
+        "path": "VolUmeS/🎉/.TrashES",
+        "homePath": "/VoLumes/DaTa/UseRs/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 261",
+      "input": {
+        "path": "/VolUmEs/DAta/TRashes//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 262",
+      "input": {
+        "path": "/VOLUMES/DatA/.TRAshes2//Σ",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 263",
+      "input": {
+        "path": "/Users/ΑΣ/.TrAsh́",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 264",
+      "input": {
+        "path": "/VOLUMES/x/y/TrAshEs/Σ/x //",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 265",
+      "input": {
+        "path": "VoLumEs/Café/.TRasheS2",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 266",
+      "input": {
+        "path": "/UserS/İ/.TRASH/X /\n",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 267",
+      "input": {
+        "path": "/vOlUmes//.Trashes/a/b",
+        "homePath": "/USerS/A b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 268",
+      "input": {
+        "path": "/UseRS/JOsé/.TrasH́/\n",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 269",
+      "input": {
+        "path": "/USerS/JosÉ/.TraShes//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 270",
+      "input": {
+        "path": "/Users/José/.TrAS/a/B/501",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 271",
+      "input": {
+        "path": "/USeRs/ΑΣ/TRasH/",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 272",
+      "input": {
+        "path": "/VOLUMES/Café/.TraSh/́",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 273",
+      "input": {
+        "path": "VOLUmES//.TRASHES/x /501",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 274",
+      "input": {
+        "path": "/UseRS/JOSé/.Trash2/a/b/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 275",
+      "input": {
+        "path": "/UserS/JOsÉ/.TraShes/x //",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 276",
+      "input": {
+        "path": "/volUmes/DATA/.TrasheS/501",
+        "homePath": "/USers/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 277",
+      "input": {
+        "path": "/Volumes/My DisK/.TRASHES//",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 278",
+      "input": {
+        "path": "/VOLUme//.TrasHES/",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 279",
+      "input": {
+        "path": "/userS/ME//.TraSh",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 280",
+      "input": {
+        "path": "/UseRs/İ/.TrAsh́//",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 281",
+      "input": {
+        "path": "/TMP/.Trash/a/b/",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 282",
+      "input": {
+        "path": "Volumes/x/y/TrAShEs",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 283",
+      "input": {
+        "path": "/USErs/ME/.TRasH/́//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 284",
+      "input": {
+        "path": "/Volume/CafÉ/.trASheS",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 285",
+      "input": {
+        "path": "VolUmeS/ΑΣ/.tRashEs/Σ",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 286",
+      "input": {
+        "path": "/VOLUMES/x/y/.TrashEs2/́/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 287",
+      "input": {
+        "path": "/VoLumES/x/y/TrAsheS/Σ/Σ//",
+        "homePath": "/Users/K"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 288",
+      "input": {
+        "path": "VoLumES/x/y/.TRASHES",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 289",
+      "input": {
+        "path": "/.TrAs/a/B",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 290",
+      "input": {
+        "path": "/VolumeS/CafÉ/.TRaShes2/a/b/",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 291",
+      "input": {
+        "path": "VOluMes/Data/.TRASHES/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 292",
+      "input": {
+        "path": "/UseRs/ẞ/.TraSh2/",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 293",
+      "input": {
+        "path": "/.TraSh//",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 294",
+      "input": {
+        "path": "/VOLumE/Café/.TrASheS/A/b",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 295",
+      "input": {
+        "path": "/UserS/JOSé/TraSH//",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 296",
+      "input": {
+        "path": "VoLumes//TrAsHes",
+        "homePath": "/Users/Me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 297",
+      "input": {
+        "path": "/volumes/X/y/.TraSHes",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 298",
+      "input": {
+        "path": "/VolUmes/DATa/.TRASHES/",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 299",
+      "input": {
+        "path": "/volumeS/DAta/.tRAshes/a.txT//",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 300",
+      "input": {
+        "path": "/UseRs/José/TrasH/.TRASh/",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 301",
+      "input": {
+        "path": "/useRS/ME/.tRAsh//",
+        "homePath": "/usERs/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 302",
+      "input": {
+        "path": "VOlumES//.TRASHES/\n/Σ//",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 303",
+      "input": {
+        "path": "/UseRs/mE/.trASh/x ",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 304",
+      "input": {
+        "path": "/Users/ΑΣ/TRASH//",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 305",
+      "input": {
+        "path": "/vOlumes/CafÉ/.TRasHes/x /",
+        "homePath": "/USErs/K"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 306",
+      "input": {
+        "path": "/UsErs/ΑΣ/TrAsH",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 307",
+      "input": {
+        "path": "/.TRASH/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 308",
+      "input": {
+        "path": "/UserS/a b/.TrasH́/A.txt//",
+        "homePath": "/USErs/A b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 309",
+      "input": {
+        "path": "VolUmes//.TRasHes",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 310",
+      "input": {
+        "path": "/USErS/ΑΣ/.Trash/A.txt//",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 311",
+      "input": {
+        "path": "//A.tXt/a.txt//",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 312",
+      "input": {
+        "path": "/.TRASH",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 313",
+      "input": {
+        "path": "/voLUmes/CAfé/.TRashes/́",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 314",
+      "input": {
+        "path": "/Users/JOsÉ/.Trash́///",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 315",
+      "input": {
+        "path": "/.TrASh/501",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 316",
+      "input": {
+        "path": "/VolumeS/X/Y/.TRashes",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 317",
+      "input": {
+        "path": "/Volume/My Disk/.TrAsheS2",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 318",
+      "input": {
+        "path": "/",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 319",
+      "input": {
+        "path": "/.Trash/501/",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 320",
+      "input": {
+        "path": "/usErs/ME//.TRASH/X ",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 321",
+      "input": {
+        "path": "/VOLUMES/My DIsk/.TrashEs2",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 322",
+      "input": {
+        "path": "/USErs/ME/.TrAsHEs/.Trash",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 323",
+      "input": {
+        "path": "/Volume/CAfé/.TrAshEs",
+        "homePath": "/Users/me"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 324",
+      "input": {
+        "path": "/UsERs/me/DOcuMents/501/́",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 325",
+      "input": {
+        "path": "/UsERs/ΑΣ/.Tras",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 326",
+      "input": {
+        "path": "/Users/ΑΣ/.TrAsH2/a.tXT/́//",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 327",
+      "input": {
+        "path": "VolumEs//.TraSHeS",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 328",
+      "input": {
+        "path": "/Volumes/CafÉ/.TrashEs",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 329",
+      "input": {
+        "path": "/VOLUMES/x/y/.tRashes",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 330",
+      "input": {
+        "path": "/UsErs/a b/.TrAsh́///",
+        "homePath": "/Users/a b"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 331",
+      "input": {
+        "path": "/VOLUMES/🎉/.trasheS/a.txT/",
+        "homePath": "/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 332",
+      "input": {
+        "path": "/VoLuMes/🎉/.TraShES2/a.TXt/",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 333",
+      "input": {
+        "path": "/UsERs/JoSé/Trash/.TrAsh/a.txT",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 334",
+      "input": {
+        "path": "VolumeS/x/y/.TRaShes2/a.txt",
+        "homePath": "/Users/ΑΣ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 335",
+      "input": {
+        "path": "/UsERs/José/.TraS/X ",
+        "homePath": "/Users/José"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 336",
+      "input": {
+        "path": "/UsErs/İ/.TrashES/\n/501",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 337",
+      "input": {
+        "path": "Volumes/Café/TraSHEs/\n",
+        "homePath": "/Users/İ"
+      },
+      "output": {
+        "insideTrash": false,
+        "trashFolder": false
+      }
+    },
+    {
+      "name": "random 338",
+      "input": {
+        "path": "/users/ME/.TRAsH//",
+        "homePath": "/users/ME/"
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    },
+    {
+      "name": "random 339",
+      "input": {
+        "path": "/VOLUMES/My Disk/.TrashES",
+        "homePath": ""
+      },
+      "output": {
+        "insideTrash": true,
+        "trashFolder": true
+      }
+    }
+  ]
+}

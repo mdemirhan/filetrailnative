@@ -1,0 +1,73 @@
+{
+  "name": "dark-mode",
+  "description": "The same in Dark",
+  "root": "/Users/Shared/Lighthouse",
+  "now": "2026-10-13T14:46:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "dark",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false,
+        "propertiesOpen": true
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "."
+    },
+    {
+      "step": "command",
+      "id": "sortBySize"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "command",
+      "id": "calculateSize"
+    },
+    {
+      "step": "wait",
+      "ms": 3000
+    },
+    {
+      "step": "click",
+      "element": "list row",
+      "text": "app"
+    },
+    {
+      "step": "wait",
+      "ms": 2000
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "dark-mode"
+    }
+  ]
+}

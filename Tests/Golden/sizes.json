@@ -1,0 +1,2408 @@
+{
+  "suite": "sizes",
+  "referenceCommit": "59f60cf",
+  "seed": 1372454916,
+  "generator": "tools/parity/golden/sizes.ts",
+  "cases": [
+    {
+      "name": "ready 0",
+      "input": {
+        "bytes": 0,
+        "status": "ready"
+      },
+      "output": "0 B"
+    },
+    {
+      "name": "ready 1",
+      "input": {
+        "bytes": 1,
+        "status": "ready"
+      },
+      "output": "1 B"
+    },
+    {
+      "name": "ready 9",
+      "input": {
+        "bytes": 9,
+        "status": "ready"
+      },
+      "output": "9 B"
+    },
+    {
+      "name": "ready 999",
+      "input": {
+        "bytes": 999,
+        "status": "ready"
+      },
+      "output": "999 B"
+    },
+    {
+      "name": "ready 1000",
+      "input": {
+        "bytes": 1000,
+        "status": "ready"
+      },
+      "output": "1.0 KB"
+    },
+    {
+      "name": "ready 1001",
+      "input": {
+        "bytes": 1001,
+        "status": "ready"
+      },
+      "output": "1.0 KB"
+    },
+    {
+      "name": "ready 1049",
+      "input": {
+        "bytes": 1049,
+        "status": "ready"
+      },
+      "output": "1.0 KB"
+    },
+    {
+      "name": "ready 1050",
+      "input": {
+        "bytes": 1050,
+        "status": "ready"
+      },
+      "output": "1.1 KB"
+    },
+    {
+      "name": "ready 1051",
+      "input": {
+        "bytes": 1051,
+        "status": "ready"
+      },
+      "output": "1.1 KB"
+    },
+    {
+      "name": "ready 1249",
+      "input": {
+        "bytes": 1249,
+        "status": "ready"
+      },
+      "output": "1.2 KB"
+    },
+    {
+      "name": "ready 1250",
+      "input": {
+        "bytes": 1250,
+        "status": "ready"
+      },
+      "output": "1.3 KB"
+    },
+    {
+      "name": "ready 1251",
+      "input": {
+        "bytes": 1251,
+        "status": "ready"
+      },
+      "output": "1.3 KB"
+    },
+    {
+      "name": "ready 1950",
+      "input": {
+        "bytes": 1950,
+        "status": "ready"
+      },
+      "output": "1.9 KB"
+    },
+    {
+      "name": "ready 2250",
+      "input": {
+        "bytes": 2250,
+        "status": "ready"
+      },
+      "output": "2.3 KB"
+    },
+    {
+      "name": "ready 9949",
+      "input": {
+        "bytes": 9949,
+        "status": "ready"
+      },
+      "output": "9.9 KB"
+    },
+    {
+      "name": "ready 9950",
+      "input": {
+        "bytes": 9950,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 9951",
+      "input": {
+        "bytes": 9951,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 9959",
+      "input": {
+        "bytes": 9959,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 9960",
+      "input": {
+        "bytes": 9960,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 9994",
+      "input": {
+        "bytes": 9994,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 9999",
+      "input": {
+        "bytes": 9999,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 10000",
+      "input": {
+        "bytes": 10000,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 10049",
+      "input": {
+        "bytes": 10049,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 10050",
+      "input": {
+        "bytes": 10050,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 10449",
+      "input": {
+        "bytes": 10449,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 10450",
+      "input": {
+        "bytes": 10450,
+        "status": "ready"
+      },
+      "output": "10 KB"
+    },
+    {
+      "name": "ready 10500",
+      "input": {
+        "bytes": 10500,
+        "status": "ready"
+      },
+      "output": "11 KB"
+    },
+    {
+      "name": "ready 12500",
+      "input": {
+        "bytes": 12500,
+        "status": "ready"
+      },
+      "output": "13 KB"
+    },
+    {
+      "name": "ready 99499",
+      "input": {
+        "bytes": 99499,
+        "status": "ready"
+      },
+      "output": "99 KB"
+    },
+    {
+      "name": "ready 99500",
+      "input": {
+        "bytes": 99500,
+        "status": "ready"
+      },
+      "output": "100 KB"
+    },
+    {
+      "name": "ready 99949",
+      "input": {
+        "bytes": 99949,
+        "status": "ready"
+      },
+      "output": "100 KB"
+    },
+    {
+      "name": "ready 99950",
+      "input": {
+        "bytes": 99950,
+        "status": "ready"
+      },
+      "output": "100 KB"
+    },
+    {
+      "name": "ready 99999",
+      "input": {
+        "bytes": 99999,
+        "status": "ready"
+      },
+      "output": "100 KB"
+    },
+    {
+      "name": "ready 100000",
+      "input": {
+        "bytes": 100000,
+        "status": "ready"
+      },
+      "output": "100 KB"
+    },
+    {
+      "name": "ready 999499",
+      "input": {
+        "bytes": 999499,
+        "status": "ready"
+      },
+      "output": "999 KB"
+    },
+    {
+      "name": "ready 999500",
+      "input": {
+        "bytes": 999500,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 999699",
+      "input": {
+        "bytes": 999699,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 999700",
+      "input": {
+        "bytes": 999700,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 999949",
+      "input": {
+        "bytes": 999949,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 999950",
+      "input": {
+        "bytes": 999950,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 999999",
+      "input": {
+        "bytes": 999999,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 1000000",
+      "input": {
+        "bytes": 1000000,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 1250000",
+      "input": {
+        "bytes": 1250000,
+        "status": "ready"
+      },
+      "output": "1.3 MB"
+    },
+    {
+      "name": "ready 9950000",
+      "input": {
+        "bytes": 9950000,
+        "status": "ready"
+      },
+      "output": "10 MB"
+    },
+    {
+      "name": "ready 99433647655",
+      "input": {
+        "bytes": 99433647655,
+        "status": "ready"
+      },
+      "output": "99 GB"
+    },
+    {
+      "name": "ready 226587120929",
+      "input": {
+        "bytes": 226587120929,
+        "status": "ready"
+      },
+      "output": "227 GB"
+    },
+    {
+      "name": "ready 999500000",
+      "input": {
+        "bytes": 999500000,
+        "status": "ready"
+      },
+      "output": "1.0 GB"
+    },
+    {
+      "name": "ready 999950000000",
+      "input": {
+        "bytes": 999950000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 999999999999",
+      "input": {
+        "bytes": 999999999999,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 1000000000000",
+      "input": {
+        "bytes": 1000000000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 999500000000000",
+      "input": {
+        "bytes": 999500000000000,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 999999999999999",
+      "input": {
+        "bytes": 999999999999999,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 1000000000000000",
+      "input": {
+        "bytes": 1000000000000000,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 2500000000000000",
+      "input": {
+        "bytes": 2500000000000000,
+        "status": "ready"
+      },
+      "output": "2.5 PB"
+    },
+    {
+      "name": "ready 9007199254740991",
+      "input": {
+        "bytes": 9007199254740991,
+        "status": "ready"
+      },
+      "output": "9.0 PB"
+    },
+    {
+      "name": "ready null",
+      "input": {
+        "bytes": null,
+        "status": "ready"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "deferred null",
+      "input": {
+        "bytes": null,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "unavailable null",
+      "input": {
+        "bytes": null,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "deferred 0",
+      "input": {
+        "bytes": 0,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "deferred 1234",
+      "input": {
+        "bytes": 1234,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "unavailable 5",
+      "input": {
+        "bytes": 5,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "unavailable 123456",
+      "input": {
+        "bytes": 123456,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "deferred 718276081447",
+      "input": {
+        "bytes": 718276081447,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 77750000000000",
+      "input": {
+        "bytes": 77750000000000,
+        "status": "ready"
+      },
+      "output": "78 TB"
+    },
+    {
+      "name": "ready 234",
+      "input": {
+        "bytes": 234,
+        "status": "ready"
+      },
+      "output": "234 B"
+    },
+    {
+      "name": "unavailable 160",
+      "input": {
+        "bytes": 160,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 300619351266879",
+      "input": {
+        "bytes": 300619351266879,
+        "status": "ready"
+      },
+      "output": "301 TB"
+    },
+    {
+      "name": "ready 65500000",
+      "input": {
+        "bytes": 65500000,
+        "status": "ready"
+      },
+      "output": "66 MB"
+    },
+    {
+      "name": "ready 27",
+      "input": {
+        "bytes": 27,
+        "status": "ready"
+      },
+      "output": "27 B"
+    },
+    {
+      "name": "unavailable 287017",
+      "input": {
+        "bytes": 287017,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 32750",
+      "input": {
+        "bytes": 32750,
+        "status": "ready"
+      },
+      "output": "33 KB"
+    },
+    {
+      "name": "ready 479070052680",
+      "input": {
+        "bytes": 479070052680,
+        "status": "ready"
+      },
+      "output": "479 GB"
+    },
+    {
+      "name": "ready 35",
+      "input": {
+        "bytes": 35,
+        "status": "ready"
+      },
+      "output": "35 B"
+    },
+    {
+      "name": "deferred 22194",
+      "input": {
+        "bytes": 22194,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 7367195816234",
+      "input": {
+        "bytes": 7367195816234,
+        "status": "ready"
+      },
+      "output": "7.4 TB"
+    },
+    {
+      "name": "ready 89950000",
+      "input": {
+        "bytes": 89950000,
+        "status": "ready"
+      },
+      "output": "90 MB"
+    },
+    {
+      "name": "ready 3460",
+      "input": {
+        "bytes": 3460,
+        "status": "ready"
+      },
+      "output": "3.5 KB"
+    },
+    {
+      "name": "ready 2950000000000000",
+      "input": {
+        "bytes": 2950000000000000,
+        "status": "ready"
+      },
+      "output": "3.0 PB"
+    },
+    {
+      "name": "ready 22250000000",
+      "input": {
+        "bytes": 22250000000,
+        "status": "ready"
+      },
+      "output": "22 GB"
+    },
+    {
+      "name": "deferred 105716955829",
+      "input": {
+        "bytes": 105716955829,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "unavailable 66739397281",
+      "input": {
+        "bytes": 66739397281,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "unavailable 1206251759079819",
+      "input": {
+        "bytes": 1206251759079819,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 13751039833545",
+      "input": {
+        "bytes": 13751039833545,
+        "status": "ready"
+      },
+      "output": "14 TB"
+    },
+    {
+      "name": "ready 999886000000000",
+      "input": {
+        "bytes": 999886000000000,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 1856255",
+      "input": {
+        "bytes": 1856255,
+        "status": "ready"
+      },
+      "output": "1.9 MB"
+    },
+    {
+      "name": "ready 71050",
+      "input": {
+        "bytes": 71050,
+        "status": "ready"
+      },
+      "output": "71 KB"
+    },
+    {
+      "name": "ready 999519000000",
+      "input": {
+        "bytes": 999519000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 45250",
+      "input": {
+        "bytes": 45250,
+        "status": "ready"
+      },
+      "output": "45 KB"
+    },
+    {
+      "name": "ready 3034225406324590",
+      "input": {
+        "bytes": 3034225406324590,
+        "status": "ready"
+      },
+      "output": "3.0 PB"
+    },
+    {
+      "name": "ready 7066152004",
+      "input": {
+        "bytes": 7066152004,
+        "status": "ready"
+      },
+      "output": "7.1 GB"
+    },
+    {
+      "name": "ready 21750000000000",
+      "input": {
+        "bytes": 21750000000000,
+        "status": "ready"
+      },
+      "output": "22 TB"
+    },
+    {
+      "name": "ready 73898253",
+      "input": {
+        "bytes": 73898253,
+        "status": "ready"
+      },
+      "output": "74 MB"
+    },
+    {
+      "name": "ready 335452193",
+      "input": {
+        "bytes": 335452193,
+        "status": "ready"
+      },
+      "output": "335 MB"
+    },
+    {
+      "name": "ready 39050000",
+      "input": {
+        "bytes": 39050000,
+        "status": "ready"
+      },
+      "output": "39 MB"
+    },
+    {
+      "name": "ready 165517018039973",
+      "input": {
+        "bytes": 165517018039973,
+        "status": "ready"
+      },
+      "output": "166 TB"
+    },
+    {
+      "name": "ready 6746020875298",
+      "input": {
+        "bytes": 6746020875298,
+        "status": "ready"
+      },
+      "output": "6.7 TB"
+    },
+    {
+      "name": "ready 80750000000000",
+      "input": {
+        "bytes": 80750000000000,
+        "status": "ready"
+      },
+      "output": "81 TB"
+    },
+    {
+      "name": "ready 10884",
+      "input": {
+        "bytes": 10884,
+        "status": "ready"
+      },
+      "output": "11 KB"
+    },
+    {
+      "name": "ready 14347336616",
+      "input": {
+        "bytes": 14347336616,
+        "status": "ready"
+      },
+      "output": "14 GB"
+    },
+    {
+      "name": "ready 2637",
+      "input": {
+        "bytes": 2637,
+        "status": "ready"
+      },
+      "output": "2.6 KB"
+    },
+    {
+      "name": "ready 10",
+      "input": {
+        "bytes": 10,
+        "status": "ready"
+      },
+      "output": "10 B"
+    },
+    {
+      "name": "ready 9848129125",
+      "input": {
+        "bytes": 9848129125,
+        "status": "ready"
+      },
+      "output": "9.8 GB"
+    },
+    {
+      "name": "unavailable 139927833",
+      "input": {
+        "bytes": 139927833,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 10926",
+      "input": {
+        "bytes": 10926,
+        "status": "ready"
+      },
+      "output": "11 KB"
+    },
+    {
+      "name": "ready 76500000000",
+      "input": {
+        "bytes": 76500000000,
+        "status": "ready"
+      },
+      "output": "77 GB"
+    },
+    {
+      "name": "ready 65",
+      "input": {
+        "bytes": 65,
+        "status": "ready"
+      },
+      "output": "65 B"
+    },
+    {
+      "name": "ready 264606640",
+      "input": {
+        "bytes": 264606640,
+        "status": "ready"
+      },
+      "output": "265 MB"
+    },
+    {
+      "name": "ready 999619000000000",
+      "input": {
+        "bytes": 999619000000000,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 561109",
+      "input": {
+        "bytes": 561109,
+        "status": "ready"
+      },
+      "output": "561 KB"
+    },
+    {
+      "name": "ready 11116270199080",
+      "input": {
+        "bytes": 11116270199080,
+        "status": "ready"
+      },
+      "output": "11 TB"
+    },
+    {
+      "name": "ready 20705013",
+      "input": {
+        "bytes": 20705013,
+        "status": "ready"
+      },
+      "output": "21 MB"
+    },
+    {
+      "name": "ready 36945108494",
+      "input": {
+        "bytes": 36945108494,
+        "status": "ready"
+      },
+      "output": "37 GB"
+    },
+    {
+      "name": "ready 177137",
+      "input": {
+        "bytes": 177137,
+        "status": "ready"
+      },
+      "output": "177 KB"
+    },
+    {
+      "name": "ready 999872",
+      "input": {
+        "bytes": 999872,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 74950",
+      "input": {
+        "bytes": 74950,
+        "status": "ready"
+      },
+      "output": "75 KB"
+    },
+    {
+      "name": "ready 49",
+      "input": {
+        "bytes": 49,
+        "status": "ready"
+      },
+      "output": "49 B"
+    },
+    {
+      "name": "ready 76750000000000",
+      "input": {
+        "bytes": 76750000000000,
+        "status": "ready"
+      },
+      "output": "77 TB"
+    },
+    {
+      "name": "ready 390",
+      "input": {
+        "bytes": 390,
+        "status": "ready"
+      },
+      "output": "390 B"
+    },
+    {
+      "name": "ready 59520",
+      "input": {
+        "bytes": 59520,
+        "status": "ready"
+      },
+      "output": "60 KB"
+    },
+    {
+      "name": "ready 284956931",
+      "input": {
+        "bytes": 284956931,
+        "status": "ready"
+      },
+      "output": "285 MB"
+    },
+    {
+      "name": "ready 56950",
+      "input": {
+        "bytes": 56950,
+        "status": "ready"
+      },
+      "output": "57 KB"
+    },
+    {
+      "name": "ready 76250000000000",
+      "input": {
+        "bytes": 76250000000000,
+        "status": "ready"
+      },
+      "output": "76 TB"
+    },
+    {
+      "name": "ready 55090959375",
+      "input": {
+        "bytes": 55090959375,
+        "status": "ready"
+      },
+      "output": "55 GB"
+    },
+    {
+      "name": "ready 1032690118",
+      "input": {
+        "bytes": 1032690118,
+        "status": "ready"
+      },
+      "output": "1.0 GB"
+    },
+    {
+      "name": "ready 999798000000000",
+      "input": {
+        "bytes": 999798000000000,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 80584936817133",
+      "input": {
+        "bytes": 80584936817133,
+        "status": "ready"
+      },
+      "output": "81 TB"
+    },
+    {
+      "name": "ready 288",
+      "input": {
+        "bytes": 288,
+        "status": "ready"
+      },
+      "output": "288 B"
+    },
+    {
+      "name": "ready 2239416",
+      "input": {
+        "bytes": 2239416,
+        "status": "ready"
+      },
+      "output": "2.2 MB"
+    },
+    {
+      "name": "ready 93950000",
+      "input": {
+        "bytes": 93950000,
+        "status": "ready"
+      },
+      "output": "94 MB"
+    },
+    {
+      "name": "ready 82500000000",
+      "input": {
+        "bytes": 82500000000,
+        "status": "ready"
+      },
+      "output": "83 GB"
+    },
+    {
+      "name": "ready 1193848",
+      "input": {
+        "bytes": 1193848,
+        "status": "ready"
+      },
+      "output": "1.2 MB"
+    },
+    {
+      "name": "ready 55894043621870",
+      "input": {
+        "bytes": 55894043621870,
+        "status": "ready"
+      },
+      "output": "56 TB"
+    },
+    {
+      "name": "ready 30568350595",
+      "input": {
+        "bytes": 30568350595,
+        "status": "ready"
+      },
+      "output": "31 GB"
+    },
+    {
+      "name": "ready 92050000000000",
+      "input": {
+        "bytes": 92050000000000,
+        "status": "ready"
+      },
+      "output": "92 TB"
+    },
+    {
+      "name": "unavailable 56288352991",
+      "input": {
+        "bytes": 56288352991,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "deferred 4970854392",
+      "input": {
+        "bytes": 4970854392,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 82750",
+      "input": {
+        "bytes": 82750,
+        "status": "ready"
+      },
+      "output": "83 KB"
+    },
+    {
+      "name": "ready 8050000",
+      "input": {
+        "bytes": 8050000,
+        "status": "ready"
+      },
+      "output": "8.1 MB"
+    },
+    {
+      "name": "unavailable 7501625081",
+      "input": {
+        "bytes": 7501625081,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 227",
+      "input": {
+        "bytes": 227,
+        "status": "ready"
+      },
+      "output": "227 B"
+    },
+    {
+      "name": "ready 999799000",
+      "input": {
+        "bytes": 999799000,
+        "status": "ready"
+      },
+      "output": "1.0 GB"
+    },
+    {
+      "name": "ready 38950000000000",
+      "input": {
+        "bytes": 38950000000000,
+        "status": "ready"
+      },
+      "output": "39 TB"
+    },
+    {
+      "name": "ready 999766000",
+      "input": {
+        "bytes": 999766000,
+        "status": "ready"
+      },
+      "output": "1.0 GB"
+    },
+    {
+      "name": "ready 999413000000000",
+      "input": {
+        "bytes": 999413000000000,
+        "status": "ready"
+      },
+      "output": "999 TB"
+    },
+    {
+      "name": "ready 70250",
+      "input": {
+        "bytes": 70250,
+        "status": "ready"
+      },
+      "output": "70 KB"
+    },
+    {
+      "name": "ready 1138928525",
+      "input": {
+        "bytes": 1138928525,
+        "status": "ready"
+      },
+      "output": "1.1 GB"
+    },
+    {
+      "name": "unavailable 31",
+      "input": {
+        "bytes": 31,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "deferred 326",
+      "input": {
+        "bytes": 326,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 1177338050",
+      "input": {
+        "bytes": 1177338050,
+        "status": "ready"
+      },
+      "output": "1.2 GB"
+    },
+    {
+      "name": "ready 38973838513",
+      "input": {
+        "bytes": 38973838513,
+        "status": "ready"
+      },
+      "output": "39 GB"
+    },
+    {
+      "name": "ready 8723138803",
+      "input": {
+        "bytes": 8723138803,
+        "status": "ready"
+      },
+      "output": "8.7 GB"
+    },
+    {
+      "name": "ready 5640726913289",
+      "input": {
+        "bytes": 5640726913289,
+        "status": "ready"
+      },
+      "output": "5.6 TB"
+    },
+    {
+      "name": "unavailable 53794176252972",
+      "input": {
+        "bytes": 53794176252972,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 3654563586753998",
+      "input": {
+        "bytes": 3654563586753998,
+        "status": "ready"
+      },
+      "output": "3.7 PB"
+    },
+    {
+      "name": "ready 95250000000",
+      "input": {
+        "bytes": 95250000000,
+        "status": "ready"
+      },
+      "output": "95 GB"
+    },
+    {
+      "name": "ready 646",
+      "input": {
+        "bytes": 646,
+        "status": "ready"
+      },
+      "output": "646 B"
+    },
+    {
+      "name": "ready 999630000000",
+      "input": {
+        "bytes": 999630000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 648278991225",
+      "input": {
+        "bytes": 648278991225,
+        "status": "ready"
+      },
+      "output": "648 GB"
+    },
+    {
+      "name": "ready 89500000000",
+      "input": {
+        "bytes": 89500000000,
+        "status": "ready"
+      },
+      "output": "90 GB"
+    },
+    {
+      "name": "ready 2118035",
+      "input": {
+        "bytes": 2118035,
+        "status": "ready"
+      },
+      "output": "2.1 MB"
+    },
+    {
+      "name": "ready 1576764360",
+      "input": {
+        "bytes": 1576764360,
+        "status": "ready"
+      },
+      "output": "1.6 GB"
+    },
+    {
+      "name": "ready 93250000",
+      "input": {
+        "bytes": 93250000,
+        "status": "ready"
+      },
+      "output": "93 MB"
+    },
+    {
+      "name": "ready 8288",
+      "input": {
+        "bytes": 8288,
+        "status": "ready"
+      },
+      "output": "8.3 KB"
+    },
+    {
+      "name": "ready 4744244",
+      "input": {
+        "bytes": 4744244,
+        "status": "ready"
+      },
+      "output": "4.7 MB"
+    },
+    {
+      "name": "ready 1260301633126439",
+      "input": {
+        "bytes": 1260301633126439,
+        "status": "ready"
+      },
+      "output": "1.3 PB"
+    },
+    {
+      "name": "ready 187049791385055",
+      "input": {
+        "bytes": 187049791385055,
+        "status": "ready"
+      },
+      "output": "187 TB"
+    },
+    {
+      "name": "ready 29",
+      "input": {
+        "bytes": 29,
+        "status": "ready"
+      },
+      "output": "29 B"
+    },
+    {
+      "name": "ready 3744015062",
+      "input": {
+        "bytes": 3744015062,
+        "status": "ready"
+      },
+      "output": "3.7 GB"
+    },
+    {
+      "name": "unavailable 24720941",
+      "input": {
+        "bytes": 24720941,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 64",
+      "input": {
+        "bytes": 64,
+        "status": "ready"
+      },
+      "output": "64 B"
+    },
+    {
+      "name": "ready 999612",
+      "input": {
+        "bytes": 999612,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 12050000000",
+      "input": {
+        "bytes": 12050000000,
+        "status": "ready"
+      },
+      "output": "12 GB"
+    },
+    {
+      "name": "ready 49750",
+      "input": {
+        "bytes": 49750,
+        "status": "ready"
+      },
+      "output": "50 KB"
+    },
+    {
+      "name": "ready 12955",
+      "input": {
+        "bytes": 12955,
+        "status": "ready"
+      },
+      "output": "13 KB"
+    },
+    {
+      "name": "deferred 187311",
+      "input": {
+        "bytes": 187311,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 89950",
+      "input": {
+        "bytes": 89950,
+        "status": "ready"
+      },
+      "output": "90 KB"
+    },
+    {
+      "name": "ready 2",
+      "input": {
+        "bytes": 2,
+        "status": "ready"
+      },
+      "output": "2 B"
+    },
+    {
+      "name": "ready 84750000000",
+      "input": {
+        "bytes": 84750000000,
+        "status": "ready"
+      },
+      "output": "85 GB"
+    },
+    {
+      "name": "ready 20250000",
+      "input": {
+        "bytes": 20250000,
+        "status": "ready"
+      },
+      "output": "20 MB"
+    },
+    {
+      "name": "deferred 5334004116935216",
+      "input": {
+        "bytes": 5334004116935216,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 999531000000",
+      "input": {
+        "bytes": 999531000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 82503196028",
+      "input": {
+        "bytes": 82503196028,
+        "status": "ready"
+      },
+      "output": "83 GB"
+    },
+    {
+      "name": "ready 553824931413",
+      "input": {
+        "bytes": 553824931413,
+        "status": "ready"
+      },
+      "output": "554 GB"
+    },
+    {
+      "name": "ready 3386133",
+      "input": {
+        "bytes": 3386133,
+        "status": "ready"
+      },
+      "output": "3.4 MB"
+    },
+    {
+      "name": "unavailable 2616614182",
+      "input": {
+        "bytes": 2616614182,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 3750000000",
+      "input": {
+        "bytes": 3750000000,
+        "status": "ready"
+      },
+      "output": "3.8 GB"
+    },
+    {
+      "name": "ready 176831",
+      "input": {
+        "bytes": 176831,
+        "status": "ready"
+      },
+      "output": "177 KB"
+    },
+    {
+      "name": "deferred 19420",
+      "input": {
+        "bytes": 19420,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 6",
+      "input": {
+        "bytes": 6,
+        "status": "ready"
+      },
+      "output": "6 B"
+    },
+    {
+      "name": "ready 1835091",
+      "input": {
+        "bytes": 1835091,
+        "status": "ready"
+      },
+      "output": "1.8 MB"
+    },
+    {
+      "name": "ready 37950",
+      "input": {
+        "bytes": 37950,
+        "status": "ready"
+      },
+      "output": "38 KB"
+    },
+    {
+      "name": "deferred 364548",
+      "input": {
+        "bytes": 364548,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 64500000000000",
+      "input": {
+        "bytes": 64500000000000,
+        "status": "ready"
+      },
+      "output": "65 TB"
+    },
+    {
+      "name": "ready 14358737",
+      "input": {
+        "bytes": 14358737,
+        "status": "ready"
+      },
+      "output": "14 MB"
+    },
+    {
+      "name": "ready 136828415",
+      "input": {
+        "bytes": 136828415,
+        "status": "ready"
+      },
+      "output": "137 MB"
+    },
+    {
+      "name": "ready 33750000",
+      "input": {
+        "bytes": 33750000,
+        "status": "ready"
+      },
+      "output": "34 MB"
+    },
+    {
+      "name": "ready 1079",
+      "input": {
+        "bytes": 1079,
+        "status": "ready"
+      },
+      "output": "1.1 KB"
+    },
+    {
+      "name": "ready 6165128",
+      "input": {
+        "bytes": 6165128,
+        "status": "ready"
+      },
+      "output": "6.2 MB"
+    },
+    {
+      "name": "ready 43250000",
+      "input": {
+        "bytes": 43250000,
+        "status": "ready"
+      },
+      "output": "43 MB"
+    },
+    {
+      "name": "ready 1225",
+      "input": {
+        "bytes": 1225,
+        "status": "ready"
+      },
+      "output": "1.2 KB"
+    },
+    {
+      "name": "ready 59950000000",
+      "input": {
+        "bytes": 59950000000,
+        "status": "ready"
+      },
+      "output": "60 GB"
+    },
+    {
+      "name": "ready 66368",
+      "input": {
+        "bytes": 66368,
+        "status": "ready"
+      },
+      "output": "66 KB"
+    },
+    {
+      "name": "ready 8392570422512",
+      "input": {
+        "bytes": 8392570422512,
+        "status": "ready"
+      },
+      "output": "8.4 TB"
+    },
+    {
+      "name": "ready 48050",
+      "input": {
+        "bytes": 48050,
+        "status": "ready"
+      },
+      "output": "48 KB"
+    },
+    {
+      "name": "unavailable 47419006580775",
+      "input": {
+        "bytes": 47419006580775,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 18250",
+      "input": {
+        "bytes": 18250,
+        "status": "ready"
+      },
+      "output": "18 KB"
+    },
+    {
+      "name": "ready 14783606",
+      "input": {
+        "bytes": 14783606,
+        "status": "ready"
+      },
+      "output": "15 MB"
+    },
+    {
+      "name": "ready 43933815882307",
+      "input": {
+        "bytes": 43933815882307,
+        "status": "ready"
+      },
+      "output": "44 TB"
+    },
+    {
+      "name": "ready 999992000000",
+      "input": {
+        "bytes": 999992000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 315817798955",
+      "input": {
+        "bytes": 315817798955,
+        "status": "ready"
+      },
+      "output": "316 GB"
+    },
+    {
+      "name": "ready 71750000",
+      "input": {
+        "bytes": 71750000,
+        "status": "ready"
+      },
+      "output": "72 MB"
+    },
+    {
+      "name": "ready 749453",
+      "input": {
+        "bytes": 749453,
+        "status": "ready"
+      },
+      "output": "749 KB"
+    },
+    {
+      "name": "ready 5583",
+      "input": {
+        "bytes": 5583,
+        "status": "ready"
+      },
+      "output": "5.6 KB"
+    },
+    {
+      "name": "ready 29050000000",
+      "input": {
+        "bytes": 29050000000,
+        "status": "ready"
+      },
+      "output": "29 GB"
+    },
+    {
+      "name": "ready 10101969",
+      "input": {
+        "bytes": 10101969,
+        "status": "ready"
+      },
+      "output": "10 MB"
+    },
+    {
+      "name": "ready 1487834836146",
+      "input": {
+        "bytes": 1487834836146,
+        "status": "ready"
+      },
+      "output": "1.5 TB"
+    },
+    {
+      "name": "ready 173247917773",
+      "input": {
+        "bytes": 173247917773,
+        "status": "ready"
+      },
+      "output": "173 GB"
+    },
+    {
+      "name": "ready 167795",
+      "input": {
+        "bytes": 167795,
+        "status": "ready"
+      },
+      "output": "168 KB"
+    },
+    {
+      "name": "ready 181321190887",
+      "input": {
+        "bytes": 181321190887,
+        "status": "ready"
+      },
+      "output": "181 GB"
+    },
+    {
+      "name": "ready 30512085",
+      "input": {
+        "bytes": 30512085,
+        "status": "ready"
+      },
+      "output": "31 MB"
+    },
+    {
+      "name": "ready 191998015080",
+      "input": {
+        "bytes": 191998015080,
+        "status": "ready"
+      },
+      "output": "192 GB"
+    },
+    {
+      "name": "ready 61750000",
+      "input": {
+        "bytes": 61750000,
+        "status": "ready"
+      },
+      "output": "62 MB"
+    },
+    {
+      "name": "ready 40008559128",
+      "input": {
+        "bytes": 40008559128,
+        "status": "ready"
+      },
+      "output": "40 GB"
+    },
+    {
+      "name": "ready 17500000000",
+      "input": {
+        "bytes": 17500000000,
+        "status": "ready"
+      },
+      "output": "18 GB"
+    },
+    {
+      "name": "deferred 374019543259",
+      "input": {
+        "bytes": 374019543259,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 234949995",
+      "input": {
+        "bytes": 234949995,
+        "status": "ready"
+      },
+      "output": "235 MB"
+    },
+    {
+      "name": "deferred 13078568492",
+      "input": {
+        "bytes": 13078568492,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 57950000000",
+      "input": {
+        "bytes": 57950000000,
+        "status": "ready"
+      },
+      "output": "58 GB"
+    },
+    {
+      "name": "ready 999791",
+      "input": {
+        "bytes": 999791,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 25",
+      "input": {
+        "bytes": 25,
+        "status": "ready"
+      },
+      "output": "25 B"
+    },
+    {
+      "name": "unavailable 6423322295",
+      "input": {
+        "bytes": 6423322295,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 1015",
+      "input": {
+        "bytes": 1015,
+        "status": "ready"
+      },
+      "output": "1.0 KB"
+    },
+    {
+      "name": "ready 999945000000",
+      "input": {
+        "bytes": 999945000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 769340",
+      "input": {
+        "bytes": 769340,
+        "status": "ready"
+      },
+      "output": "769 KB"
+    },
+    {
+      "name": "ready 761057249",
+      "input": {
+        "bytes": 761057249,
+        "status": "ready"
+      },
+      "output": "761 MB"
+    },
+    {
+      "name": "ready 23500",
+      "input": {
+        "bytes": 23500,
+        "status": "ready"
+      },
+      "output": "24 KB"
+    },
+    {
+      "name": "ready 999967000000",
+      "input": {
+        "bytes": 999967000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "deferred 96107954215720",
+      "input": {
+        "bytes": 96107954215720,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 19750000000",
+      "input": {
+        "bytes": 19750000000,
+        "status": "ready"
+      },
+      "output": "20 GB"
+    },
+    {
+      "name": "ready 9877",
+      "input": {
+        "bytes": 9877,
+        "status": "ready"
+      },
+      "output": "9.9 KB"
+    },
+    {
+      "name": "ready 999836000000",
+      "input": {
+        "bytes": 999836000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 49500000000000",
+      "input": {
+        "bytes": 49500000000000,
+        "status": "ready"
+      },
+      "output": "50 TB"
+    },
+    {
+      "name": "ready 91750000",
+      "input": {
+        "bytes": 91750000,
+        "status": "ready"
+      },
+      "output": "92 MB"
+    },
+    {
+      "name": "ready 158030938850329",
+      "input": {
+        "bytes": 158030938850329,
+        "status": "ready"
+      },
+      "output": "158 TB"
+    },
+    {
+      "name": "ready 53250000000",
+      "input": {
+        "bytes": 53250000000,
+        "status": "ready"
+      },
+      "output": "53 GB"
+    },
+    {
+      "name": "ready 8949999999999999",
+      "input": {
+        "bytes": 8949999999999999,
+        "status": "ready"
+      },
+      "output": "8.9 PB"
+    },
+    {
+      "name": "ready 3645070565684383",
+      "input": {
+        "bytes": 3645070565684383,
+        "status": "ready"
+      },
+      "output": "3.6 PB"
+    },
+    {
+      "name": "ready 117363423",
+      "input": {
+        "bytes": 117363423,
+        "status": "ready"
+      },
+      "output": "117 MB"
+    },
+    {
+      "name": "ready 2284",
+      "input": {
+        "bytes": 2284,
+        "status": "ready"
+      },
+      "output": "2.3 KB"
+    },
+    {
+      "name": "ready 225670686233",
+      "input": {
+        "bytes": 225670686233,
+        "status": "ready"
+      },
+      "output": "226 GB"
+    },
+    {
+      "name": "ready 286434275",
+      "input": {
+        "bytes": 286434275,
+        "status": "ready"
+      },
+      "output": "286 MB"
+    },
+    {
+      "name": "ready 21950000000000",
+      "input": {
+        "bytes": 21950000000000,
+        "status": "ready"
+      },
+      "output": "22 TB"
+    },
+    {
+      "name": "ready 532628",
+      "input": {
+        "bytes": 532628,
+        "status": "ready"
+      },
+      "output": "533 KB"
+    },
+    {
+      "name": "ready 15250000",
+      "input": {
+        "bytes": 15250000,
+        "status": "ready"
+      },
+      "output": "15 MB"
+    },
+    {
+      "name": "deferred 86995",
+      "input": {
+        "bytes": 86995,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 998319304",
+      "input": {
+        "bytes": 998319304,
+        "status": "ready"
+      },
+      "output": "998 MB"
+    },
+    {
+      "name": "ready 3522",
+      "input": {
+        "bytes": 3522,
+        "status": "ready"
+      },
+      "output": "3.5 KB"
+    },
+    {
+      "name": "ready 108583038",
+      "input": {
+        "bytes": 108583038,
+        "status": "ready"
+      },
+      "output": "109 MB"
+    },
+    {
+      "name": "ready 699856661",
+      "input": {
+        "bytes": 699856661,
+        "status": "ready"
+      },
+      "output": "700 MB"
+    },
+    {
+      "name": "unavailable 459973103",
+      "input": {
+        "bytes": 459973103,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "deferred 1741962282119",
+      "input": {
+        "bytes": 1741962282119,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 614336512976",
+      "input": {
+        "bytes": 614336512976,
+        "status": "ready"
+      },
+      "output": "614 GB"
+    },
+    {
+      "name": "ready 23",
+      "input": {
+        "bytes": 23,
+        "status": "ready"
+      },
+      "output": "23 B"
+    },
+    {
+      "name": "ready 52500000",
+      "input": {
+        "bytes": 52500000,
+        "status": "ready"
+      },
+      "output": "53 MB"
+    },
+    {
+      "name": "ready 9603756",
+      "input": {
+        "bytes": 9603756,
+        "status": "ready"
+      },
+      "output": "9.6 MB"
+    },
+    {
+      "name": "ready 33500000000",
+      "input": {
+        "bytes": 33500000000,
+        "status": "ready"
+      },
+      "output": "34 GB"
+    },
+    {
+      "name": "unavailable 1132248062021014",
+      "input": {
+        "bytes": 1132248062021014,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "unavailable 78629058325710",
+      "input": {
+        "bytes": 78629058325710,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 16245",
+      "input": {
+        "bytes": 16245,
+        "status": "ready"
+      },
+      "output": "16 KB"
+    },
+    {
+      "name": "ready 250248941517",
+      "input": {
+        "bytes": 250248941517,
+        "status": "ready"
+      },
+      "output": "250 GB"
+    },
+    {
+      "name": "ready 5",
+      "input": {
+        "bytes": 5,
+        "status": "ready"
+      },
+      "output": "5 B"
+    },
+    {
+      "name": "unavailable 48",
+      "input": {
+        "bytes": 48,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 97050000",
+      "input": {
+        "bytes": 97050000,
+        "status": "ready"
+      },
+      "output": "97 MB"
+    },
+    {
+      "name": "ready 5081215658326878",
+      "input": {
+        "bytes": 5081215658326878,
+        "status": "ready"
+      },
+      "output": "5.1 PB"
+    },
+    {
+      "name": "deferred 15697438616209",
+      "input": {
+        "bytes": 15697438616209,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 58950000",
+      "input": {
+        "bytes": 58950000,
+        "status": "ready"
+      },
+      "output": "59 MB"
+    },
+    {
+      "name": "ready 57050",
+      "input": {
+        "bytes": 57050,
+        "status": "ready"
+      },
+      "output": "57 KB"
+    },
+    {
+      "name": "ready 50207172226",
+      "input": {
+        "bytes": 50207172226,
+        "status": "ready"
+      },
+      "output": "50 GB"
+    },
+    {
+      "name": "ready 999606000000",
+      "input": {
+        "bytes": 999606000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 999728000000000",
+      "input": {
+        "bytes": 999728000000000,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 999543000000000",
+      "input": {
+        "bytes": 999543000000000,
+        "status": "ready"
+      },
+      "output": "1.0 PB"
+    },
+    {
+      "name": "ready 1072296404773",
+      "input": {
+        "bytes": 1072296404773,
+        "status": "ready"
+      },
+      "output": "1.1 TB"
+    },
+    {
+      "name": "ready 999780000",
+      "input": {
+        "bytes": 999780000,
+        "status": "ready"
+      },
+      "output": "1.0 GB"
+    },
+    {
+      "name": "ready 999995000000",
+      "input": {
+        "bytes": 999995000000,
+        "status": "ready"
+      },
+      "output": "1.0 TB"
+    },
+    {
+      "name": "ready 8805207773",
+      "input": {
+        "bytes": 8805207773,
+        "status": "ready"
+      },
+      "output": "8.8 GB"
+    },
+    {
+      "name": "unavailable 1162974772743852",
+      "input": {
+        "bytes": 1162974772743852,
+        "status": "unavailable"
+      },
+      "output": "Unavailable"
+    },
+    {
+      "name": "ready 63617320",
+      "input": {
+        "bytes": 63617320,
+        "status": "ready"
+      },
+      "output": "64 MB"
+    },
+    {
+      "name": "ready 731595",
+      "input": {
+        "bytes": 731595,
+        "status": "ready"
+      },
+      "output": "732 KB"
+    },
+    {
+      "name": "ready 28050000",
+      "input": {
+        "bytes": 28050000,
+        "status": "ready"
+      },
+      "output": "28 MB"
+    },
+    {
+      "name": "ready 4",
+      "input": {
+        "bytes": 4,
+        "status": "ready"
+      },
+      "output": "4 B"
+    },
+    {
+      "name": "ready 29950000",
+      "input": {
+        "bytes": 29950000,
+        "status": "ready"
+      },
+      "output": "30 MB"
+    },
+    {
+      "name": "ready 8924804215396",
+      "input": {
+        "bytes": 8924804215396,
+        "status": "ready"
+      },
+      "output": "8.9 TB"
+    },
+    {
+      "name": "ready 11750000000",
+      "input": {
+        "bytes": 11750000000,
+        "status": "ready"
+      },
+      "output": "12 GB"
+    },
+    {
+      "name": "ready 999985",
+      "input": {
+        "bytes": 999985,
+        "status": "ready"
+      },
+      "output": "1.0 MB"
+    },
+    {
+      "name": "ready 117805523382",
+      "input": {
+        "bytes": 117805523382,
+        "status": "ready"
+      },
+      "output": "118 GB"
+    },
+    {
+      "name": "ready 3993",
+      "input": {
+        "bytes": 3993,
+        "status": "ready"
+      },
+      "output": "4.0 KB"
+    },
+    {
+      "name": "ready 1378745286",
+      "input": {
+        "bytes": 1378745286,
+        "status": "ready"
+      },
+      "output": "1.4 GB"
+    },
+    {
+      "name": "deferred 5",
+      "input": {
+        "bytes": 5,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "deferred 223695",
+      "input": {
+        "bytes": 223695,
+        "status": "deferred"
+      },
+      "output": "Not yet available"
+    },
+    {
+      "name": "ready 32",
+      "input": {
+        "bytes": 32,
+        "status": "ready"
+      },
+      "output": "32 B"
+    }
+  ]
+}

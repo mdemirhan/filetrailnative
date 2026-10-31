@@ -1,0 +1,63 @@
+{
+  "name": "customize-toolbar",
+  "description": "Customizing the toolbar",
+  "root": "/Users/Shared/Lighthouse",
+  "now": "2026-10-13T14:46:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 780
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "list",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "."
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "command",
+      "id": "customizeToolbar"
+    },
+    {
+      "step": "expectSheet",
+      "name": "toolbar customize panel"
+    },
+    {
+      "step": "wait",
+      "ms": 2000
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "customize-toolbar"
+    }
+  ]
+}

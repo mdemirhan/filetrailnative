@@ -1,0 +1,6 @@
+.DS_Store
+/.build/
+/.swiftpm/
+/build/
+*.xcresult
+__pycache__/

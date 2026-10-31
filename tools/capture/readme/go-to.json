@@ -1,0 +1,62 @@
+{
+  "name": "go-to",
+  "description": "Go To listing the folders used most lately",
+  "root": "/Users/Shared/Lighthouse",
+  "now": "2026-10-13T14:46:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "app/src"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "key",
+      "key": "k",
+      "modifiers": [
+        "cmd"
+      ]
+    },
+    {
+      "step": "expectSheet",
+      "name": "go to folder"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "go-to"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "metrics": {
+    "back_ms": 14.57,
+    "bundle_mb": 5.61,
+    "first_search_results_ms": 44.45,
+    "idle_mb": 29.0,
+    "launch_ms": 277.01,
+    "list_100000_ms": 427.07,
+    "list_3000_ms": 16.05,
+    "open_100000_ms": 1503.52,
+    "open_30000_ms": 510.92,
+    "open_3000_ms": 60.72,
+    "open_300_ms": 26.65,
+    "scroll_max_ms": 33.08,
+    "scroll_p99_ms": 9.12,
+    "stall_100000_ms": 801.18,
+    "stall_30000_ms": 237.05,
+    "stall_3000_ms": 63.5,
+    "stall_300_ms": 374.51
+  },
+  "note": "Last accepted run; refresh with tools/bench/run.sh --update-baseline."
+}

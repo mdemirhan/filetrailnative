@@ -1,0 +1,94 @@
+{
+  "name": "cut-paste",
+  "description": "Four files cut, with the clipboard list open",
+  "root": "/Users/Shared/Lighthouse",
+  "now": "2026-10-13T14:46:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 1000,
+      "height": 625
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "app/src/pages"
+    },
+    {
+      "step": "newTab"
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "app/src/components"
+    },
+    {
+      "step": "selectTab",
+      "index": 1
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "select",
+      "names": [
+        "TripCard.jsx",
+        "TripList.jsx",
+        "TripMap.jsx",
+        "TripTimeline.jsx"
+      ]
+    },
+    {
+      "step": "key",
+      "key": "x",
+      "modifiers": [
+        "cmd"
+      ]
+    },
+    {
+      "step": "wait",
+      "ms": 300
+    },
+    {
+      "step": "click",
+      "element": "clipboard button"
+    },
+    {
+      "step": "expectSheet",
+      "name": "clipboard popover"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "cut-paste"
+    }
+  ]
+}

@@ -1,0 +1,2394 @@
+{
+  "suite": "item-name-validation",
+  "referenceCommit": "59f60cf",
+  "seed": 400752643,
+  "generator": "tools/parity/golden/item-name-validation.ts",
+  "cases": [
+    {
+      "name": "0: \"\"",
+      "input": "",
+      "output": {
+        "error": "Enter a name.",
+        "package": false
+      }
+    },
+    {
+      "name": "1: \" \"",
+      "input": " ",
+      "output": {
+        "error": "Enter a name.",
+        "package": false
+      }
+    },
+    {
+      "name": "2: \"   \"",
+      "input": "   ",
+      "output": {
+        "error": "Enter a name.",
+        "package": false
+      }
+    },
+    {
+      "name": "3: \"\\t\"",
+      "input": "\t",
+      "output": {
+        "error": "Enter a name.",
+        "package": false
+      }
+    },
+    {
+      "name": "4: \"\\n\"",
+      "input": "\n",
+      "output": {
+        "error": "Enter a name.",
+        "package": false
+      }
+    },
+    {
+      "name": "5: \".\"",
+      "input": ".",
+      "output": {
+        "error": "\".\" is not a valid name.",
+        "package": false
+      }
+    },
+    {
+      "name": "6: \"..\"",
+      "input": "..",
+      "output": {
+        "error": "\"..\" is not a valid name.",
+        "package": false
+      }
+    },
+    {
+      "name": "7: \"...\"",
+      "input": "...",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "8: \" . \"",
+      "input": " . ",
+      "output": {
+        "error": "\".\" is not a valid name.",
+        "package": false
+      }
+    },
+    {
+      "name": "9: \" .. \"",
+      "input": " .. ",
+      "output": {
+        "error": "\"..\" is not a valid name.",
+        "package": false
+      }
+    },
+    {
+      "name": "10: \" . \"",
+      "input": " . ",
+      "output": {
+        "error": "\".\" is not a valid name.",
+        "package": false
+      }
+    },
+    {
+      "name": "11: \"﻿..﻿\"",
+      "input": "﻿..﻿",
+      "output": {
+        "error": "\"..\" is not a valid name.",
+        "package": false
+      }
+    },
+    {
+      "name": "12: \". .\"",
+      "input": ". .",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "13: \"a\"",
+      "input": "a",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "14: \"report.pdf\"",
+      "input": "report.pdf",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "15: \".env\"",
+      "input": ".env",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "16: \"a:b\"",
+      "input": "a:b",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "17: \"C:\\\\notes.txt\"",
+      "input": "C:\\notes.txt",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "18: \"a/b\"",
+      "input": "a/b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "19: \"/\"",
+      "input": "/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "20: \"a/\"",
+      "input": "a/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "21: \"/a\"",
+      "input": "/a",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "22: \"../escape\"",
+      "input": "../escape",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "23: \"sub/child\"",
+      "input": "sub/child",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "24: \"nul\\u0000byte\"",
+      "input": "nul\u0000byte",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "25: \"\\u0000\"",
+      "input": "\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "26: \" \\u0000 \"",
+      "input": " \u0000 ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "27: \"a\\u0000\"",
+      "input": "a\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "28: \" x \"",
+      "input": " x ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "29: \"x\"",
+      "input": "x",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "30: \"᠎x᠎\"",
+      "input": "᠎x᠎",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "31: \"​x​\"",
+      "input": "​x​",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "32: \" x \"",
+      "input": " x ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "33: \" x\"",
+      "input": " x",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "34: \" x\"",
+      "input": " x",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "35: \" x\"",
+      "input": " x",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "36: \"﻿x\"",
+      "input": "﻿x",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "37: \"\\u000bx\\f\"",
+      "input": "\u000bx\f",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "38: \" é \"",
+      "input": " é ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "39: \"Safari.app\"",
+      "input": "Safari.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "40: \"Foo.FRAMEWORK\"",
+      "input": "Foo.FRAMEWORK",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "41: \"Sound.prefPane\"",
+      "input": "Sound.prefPane",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "42: \"Applications\"",
+      "input": "Applications",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "43: \".app\"",
+      "input": ".app",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "44: \"a.app\"",
+      "input": "a.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "45: \"a.app \"",
+      "input": "a.app ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "46: \" a.app\"",
+      "input": " a.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "47: \"x.xcodeproj\"",
+      "input": "x.xcodeproj",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "48: \"x.Playground\"",
+      "input": "x.Playground",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "49: \"x.appex\"",
+      "input": "x.appex",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "50: \"x.kext\"",
+      "input": "x.kext",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "51: \"x.xpc\"",
+      "input": "x.xpc",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "52: \"x.plugin\"",
+      "input": "x.plugin",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "53: \"x.bundle\"",
+      "input": "x.bundle",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "54: \"x.APPEX\"",
+      "input": "x.APPEX",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "55: \"x.app.bak\"",
+      "input": "x.app.bak",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "56: \"x.apps\"",
+      "input": "x.apps",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "57: \"app\"",
+      "input": "app",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "58: \"x.\"",
+      "input": "x.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "59: \"x..app\"",
+      "input": "x..app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "60: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "61: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "62: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "63: \" aaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "64: \" aaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "65: \"éééééééééééééééééééééééééééééé\"",
+      "input": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "66: \"éééééééééééééééééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "67: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "68: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "69: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日a",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "70: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "71: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "72: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀abc",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "73: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀abcd",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "74: \"ééééééééééééééé\"",
+      "input": "ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "75: \"ééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "76: \"a/a/a/\"",
+      "input": "a/a/a/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "77: \"a\\\\b\"",
+      "input": "a\\b",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "78: \"\\\\\"",
+      "input": "\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "79: \"a\\nb\"",
+      "input": "a\nb",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "80: \"tab\\tin\"",
+      "input": "tab\tin",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "81: \"end.\"",
+      "input": "end.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "82: \".hidden\"",
+      "input": ".hidden",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "83: \"-\"",
+      "input": "-",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "84: \"~\"",
+      "input": "~",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "85: \"`\"",
+      "input": "`",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "86: \"Ünï.APP\"",
+      "input": "Ünï.APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "87: \"\\\\﻿日é.\"",
+      "input": "\\﻿日é.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "88: \"\\tx y 😀é\"",
+      "input": "\tx y 😀é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "89: \".app...\"",
+      "input": ".app...",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "90: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀.APPé\\é",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "91: \"x y\\\\..\\\\bé\\t\"",
+      "input": "x y\\..\\bé\t",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "92: \"/ \\\\ 日\"",
+      "input": "/ \\ 日",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "93: \".framework日éx y \"",
+      "input": ".framework日éx y ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "94: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀 .APP\u0000\u0000.app﻿😀",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "95: \".app.framework\\\\.app\"",
+      "input": ".app.framework\\.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "96: \"éa\"",
+      "input": "éa",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "97: \"日.app 😀/ .framework\"",
+      "input": "日.app 😀/ .framework",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "98: \"﻿é \\u0000\\u0000.framework\"",
+      "input": "﻿é \u0000\u0000.framework",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "99: \"﻿aaé.framework日.framework\"",
+      "input": "﻿aaé.framework日.framework",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "100: \" ﻿.app..\"",
+      "input": " ﻿.app..",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "101: \"...framework  é日.app\"",
+      "input": "...framework  é日.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "102: \"é /\"",
+      "input": "é /",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "103: \"😀.日\"",
+      "input": "😀.日",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "104: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\u0000:﻿.",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "105: \"éééééééééééééééééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé.APP\t\\:日..",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "106: \"a b/a\"",
+      "input": "a b/a",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "107: \"\\u0000..x ya\"",
+      "input": "\u0000..x ya",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "108: \"/a.framework﻿//\\u0000\"",
+      "input": "/a.framework﻿//\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "109: \" 日\\\\.APP\"",
+      "input": " 日\\.APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "110: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "111: \" é\\u0000b\"",
+      "input": " é\u0000b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "112: \"a.framework.app:\\u0000\\t\"",
+      "input": "a.framework.app:\u0000\t",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "113: \" \\u0000\\t\\u0000..framework \"",
+      "input": " \u0000\t\u0000..framework ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "114: \"😀b😀é﻿\"",
+      "input": "😀b😀é﻿",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "115: \"日﻿.APP﻿\\u0000😀\"",
+      "input": "日﻿.APP﻿\u0000😀",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "116: \"\\\\éa..é\\u0000\"",
+      "input": "\\éa..é\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "117: \"\\\\:/.😀\"",
+      "input": "\\:/.😀",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "118: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "119: \".app.framework../x y 😀\"",
+      "input": ".app.framework../x y 😀",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "120: \".app.😀\\u0000..\"",
+      "input": ".app.😀\u0000..",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "121: \" é\"",
+      "input": " é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "122: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日﻿\t",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "123: \".x y\"",
+      "input": ".x y",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "124: \":\"",
+      "input": ":",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "125: \" x y.\\u0000.. \"",
+      "input": " x y.\u0000.. ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "126: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  ﻿",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "127: \"😀é:.\"",
+      "input": "😀é:.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "128: \"😀 .framework\\u0000😀:..\"",
+      "input": "😀 .framework\u0000😀:..",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "129: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "130: \"/.app日b\"",
+      "input": "/.app日b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "131: \"\\t﻿.framework.appx y \"",
+      "input": "\t﻿.framework.appx y ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "132: \"﻿a\\t.\"",
+      "input": "﻿a\t.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "133: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日/.é😀b日",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "134: \".APP\"",
+      "input": ".APP",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "135: \"éééééééééééééééééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "136: \"./:😀\"",
+      "input": "./:😀",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "137: \"éé\\\\x y\"",
+      "input": "éé\\x y",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "138: \" \\u0000a.framework.app\"",
+      "input": " \u0000a.framework.app",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "139: \"..😀\\\\b.\"",
+      "input": "..😀\\b.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "140: \":ab\\\\\"",
+      "input": ":ab\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "141: \"..é .app:\"",
+      "input": "..é .app:",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "142: \"a😀 \\\\/.. \"",
+      "input": "a😀 \\/.. ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "143: \"éééééééééééééééééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééé  \t.app  \t",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "144: \"..\\t.😀\"",
+      "input": "..\t.😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "145: \":﻿😀 \"",
+      "input": ":﻿😀 ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "146: \".framework ..app é\"",
+      "input": ".framework ..app é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "147: \".framework.appa.frameworka\"",
+      "input": ".framework.appa.frameworka",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "148: \": .APP\"",
+      "input": ": .APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "149: \".:\\u0000\"",
+      "input": ".:\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "150: \"é😀\\u0000x y/.APP\"",
+      "input": "é😀\u0000x y/.APP",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "151: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\t\\",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "152: \" é.appx y/\"",
+      "input": " é.appx y/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "153: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日:😀",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "154: \" \\t日日 /:\"",
+      "input": " \t日日 /:",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "155: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa﻿\u0000.framework",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "156: \".framework日.app.app:\"",
+      "input": ".framework日.app.app:",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "157: \"😀.app.framework\"",
+      "input": "😀.app.framework",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "158: \":日 /x ya\"",
+      "input": ":日 /x ya",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "159: \"日\"",
+      "input": "日",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "160: \"b 日x y\"",
+      "input": "b 日x y",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "161: \"a/\\\\ébb\"",
+      "input": "a/\\ébb",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "162: \"\\u0000.frameworké.\"",
+      "input": "\u0000.frameworké.",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "163: \"﻿.x y.APP\"",
+      "input": "﻿.x y.APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "164: \"/.appx y﻿\\t\"",
+      "input": "/.appx y﻿\t",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "165: \"é \\u0000\"",
+      "input": "é \u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "166: \"b😀\"",
+      "input": "b😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "167: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \\.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "168: \"éééééééééééééééééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "169: \"éééééééééééééééééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé\\\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "170: \"x y.app\\u0000.\"",
+      "input": "x y.app\u0000.",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "171: \".framework日😀b\\t \"",
+      "input": ".framework日😀b\t ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "172: \"é/ b//\"",
+      "input": "é/ b//",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "173: \" a.APP\"",
+      "input": " a.APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "174: \".framework.app.\"",
+      "input": ".framework.app.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "175: \".app.APP\"",
+      "input": ".app.APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "176: \"é\"",
+      "input": "é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "177: \"x y.APP😀.framework\"",
+      "input": "x y.APP😀.framework",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "178: \".app b\\tx y😀\"",
+      "input": ".app b\tx y😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "179: \"x yé😀\\\\\"",
+      "input": "x yé😀\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "180: \"\\\\x ybb\"",
+      "input": "\\x ybb",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "181: \"...APPéé\"",
+      "input": "...APPéé",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "182: \" ..\"",
+      "input": " ..",
+      "output": {
+        "error": "\"..\" is not a valid name.",
+        "package": false
+      }
+    },
+    {
+      "name": "183: \":\\u0000..b.APPa\\t\"",
+      "input": ":\u0000..b.APPa\t",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "184: \"﻿/.\\\\/ \"",
+      "input": "﻿/.\\/ ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "185: \"aa﻿a.app\"",
+      "input": "aa﻿a.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "186: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日😀.app日é\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "187: \".frameworka.app😀x y\"",
+      "input": ".frameworka.app😀x y",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "188: \"é /  ..\\u0000\"",
+      "input": "é /  ..\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "189: \".app./\\u0000x y\"",
+      "input": ".app./\u0000x y",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "190: \"😀日.framework\\\\😀x y\\u0000\"",
+      "input": "😀日.framework\\😀x y\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "191: \".framework.framework..APPb\"",
+      "input": ".framework.framework..APPb",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "192: \"é  é 日\"",
+      "input": "é  é 日",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "193: \"a.  é\"",
+      "input": "a.  é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "194: \"//b.APP😀\"",
+      "input": "//b.APP😀",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "195: \": \\u0000bb😀 \"",
+      "input": ": \u0000bb😀 ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "196: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.. ",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "197: \"b .APP 😀.framework\"",
+      "input": "b .APP 😀.framework",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "198: \".\\tb日\"",
+      "input": ".\tb日",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "199: \":.appb\\té//\"",
+      "input": ":.appb\té//",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "200: \"..APP\"",
+      "input": "..APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "201: \"😀b.framework\"",
+      "input": "😀b.framework",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "202: \"😀.../\"",
+      "input": "😀.../",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "203: \".\\\\a ...\"",
+      "input": ".\\a ...",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "204: \"é...\"",
+      "input": "é...",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "205: \"/😀﻿.app\"",
+      "input": "/😀﻿.app",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "206: \"\\u0000.app.APP\"",
+      "input": "\u0000.app.APP",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "207: \"\\t.app\\\\:.app\"",
+      "input": "\t.app\\:.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "208: \" \\u0000\\\\béa \"",
+      "input": " \u0000\\béa ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "209: \"a.appéx y\"",
+      "input": "a.appéx y",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "210: \"﻿/.framework://\"",
+      "input": "﻿/.framework://",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "211: \".\\u0000a\"",
+      "input": ".\u0000a",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "212: \"\\\\  x yb\"",
+      "input": "\\  x yb",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "213: \"é :/\\\\.framework\"",
+      "input": "é :/\\.framework",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "214: \"x y.APP\\t\\\\é.frameworké\"",
+      "input": "x y.APP\t\\é.frameworké",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "215: \".app\\u0000.app日a\\\\b\"",
+      "input": ".app\u0000.app日a\\b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "216: \"é:\"",
+      "input": "é:",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "217: \": x y日  \"",
+      "input": ": x y日  ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "218: \"﻿x y\\t😀\"",
+      "input": "﻿x y\t😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "219: \".é.APPb..\"",
+      "input": ".é.APPb..",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "220: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\u0000.appx y.framework﻿",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "221: \"﻿\"",
+      "input": "﻿",
+      "output": {
+        "error": "Enter a name.",
+        "package": false
+      }
+    },
+    {
+      "name": "222: \".APP  /..﻿\"",
+      "input": ".APP  /..﻿",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "223: \":😀x ybé  \"",
+      "input": ":😀x ybé  ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "224: \"é .framework 😀\\u0000﻿\"",
+      "input": "é .framework 😀\u0000﻿",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "225: \"..b😀 x y\\t.\"",
+      "input": "..b😀 x y\t.",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "226: \"ba\\t﻿\"",
+      "input": "ba\t﻿",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "227: \"/ b\"",
+      "input": "/ b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "228: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日.APP .framework\t/x y",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "229: \"b日.framework .framework\"",
+      "input": "b日.framework .framework",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "230: \"/\\u0000b \"",
+      "input": "/\u0000b ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "231: \"日.app.APP/.framework.appa\"",
+      "input": "日.app.APP/.framework.appa",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "232: \"é.APP  ..\"",
+      "input": "é.APP  ..",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "233: \"b.\\t日\\u0000aa\"",
+      "input": "b.\t日\u0000aa",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "234: \"éé : \"",
+      "input": "éé : ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "235: \".framework\"",
+      "input": ".framework",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "236: \"x y.. .app\\\\x y.framework\"",
+      "input": "x y.. .app\\x y.framework",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "237: \" é😀/.appéx y\"",
+      "input": " é😀/.appéx y",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "238: \"/a﻿日\"",
+      "input": "/a﻿日",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "239: \"日éa /.framework\"",
+      "input": "日éa /.framework",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "240: \"x yé.framework\\u0000\"",
+      "input": "x yé.framework\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "241: \"\\u0000\\\\.APP.APP\"",
+      "input": "\u0000\\.APP.APP",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "242: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀é",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "243: \" \"",
+      "input": " ",
+      "output": {
+        "error": "Enter a name.",
+        "package": false
+      }
+    },
+    {
+      "name": "244: \"é..\\\\éa/\"",
+      "input": "é..\\éa/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "245: \"\\téb.APP\"",
+      "input": "\téb.APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "246: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日/b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "247: \"﻿ \\u0000\\u0000\"",
+      "input": "﻿ \u0000\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "248: \".app/\\t\"",
+      "input": ".app/\t",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "249: \" \\u0000.. \\t日\"",
+      "input": " \u0000.. \t日",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "250: \" é.APPaé\"",
+      "input": " é.APPaé",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "251: \".frameworkx yx y.APP\"",
+      "input": ".frameworkx yx y.APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "252: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日 \u0000é\\/.APP",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "253: \" .é é\"",
+      "input": " .é é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "254: \".app.appé.APP//\"",
+      "input": ".app.appé.APP//",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "255: \"a﻿\"",
+      "input": "a﻿",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "256: \"a\\u0000.APP日\\u0000\"",
+      "input": "a\u0000.APP日\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "257: \"  \\u0000.framework .﻿\"",
+      "input": "  \u0000.framework .﻿",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "258: \"日😀...app\"",
+      "input": "日😀...app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "259: \"日\\tb:\\u0000\"",
+      "input": "日\tb:\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "260: \"\\\\.app﻿\\t./:\"",
+      "input": "\\.app﻿\t./:",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "261: \"﻿日\\t:\"",
+      "input": "﻿日\t:",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "262: \". é日日﻿:\"",
+      "input": ". é日日﻿:",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "263: \"x y:\\\\:....😀\"",
+      "input": "x y:\\:....😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "264: \".app日﻿/é\"",
+      "input": ".app日﻿/é",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "265: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日x ya",
+      "output": {
+        "error": "The name is too long.",
+        "package": false
+      }
+    },
+    {
+      "name": "266: \"éééééééééééééééééééééééééééééé\"",
+      "input": "éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé\u0000b\t.appx y/b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "267: \".app.app\\\\\"",
+      "input": ".app.app\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "268: \"😀/\"",
+      "input": "😀/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "269: \"😀.APP/:\"",
+      "input": "😀.APP/:",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "270: \".framework\\\\ /\\t\"",
+      "input": ".framework\\ /\t",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "271: \".x y..APP\"",
+      "input": ".x y..APP",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "272: \"/😀\\u0000  .framework\"",
+      "input": "/😀\u0000  .framework",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "273: \"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"",
+      "input": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\u0000😀/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "274: \"..APP﻿\"",
+      "input": "..APP﻿",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "275: \"\\t😀 \"",
+      "input": "\t😀 ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "276: \"a😀 \\u0000:\"",
+      "input": "a😀 \u0000:",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "277: \":x y ﻿\"",
+      "input": ":x y ﻿",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "278: \"..\\t.framework.framework:b \"",
+      "input": "..\t.framework.framework:b ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "279: \"éb\\u0000\"",
+      "input": "éb\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "280: \"﻿日  \"",
+      "input": "﻿日  ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "281: \"😀b \"",
+      "input": "😀b ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "282: \"\\u0000/ébéé\"",
+      "input": "\u0000/ébéé",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "283: \"é😀\"",
+      "input": "é😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "284: \".frameworka\"",
+      "input": ".frameworka",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "285: \".APP\\\\.app\"",
+      "input": ".APP\\.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "286: \" .APP.app.APPb\\u0000\"",
+      "input": " .APP.app.APPb\u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "287: \"\\t:\\\\\"",
+      "input": "\t:\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "288: \"x y﻿/.app.b\"",
+      "input": "x y﻿/.app.b",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "289: \" 😀x y/  .\"",
+      "input": " 😀x y/  .",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "290: \"日x y\\t\\tb é\"",
+      "input": "日x y\t\tb é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "291: \"aa/日/﻿\"",
+      "input": "aa/日/﻿",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "292: \".framework😀\\\\😀.APP😀\"",
+      "input": ".framework😀\\😀.APP😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "293: \"﻿\\u0000.framework.frameworké\"",
+      "input": "﻿\u0000.framework.frameworké",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "294: \"//\"",
+      "input": "//",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "295: \"😀.APP日éé😀\"",
+      "input": "😀.APP日éé😀",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "296: \"/﻿.appé\"",
+      "input": "/﻿.appé",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "297: \"x yb/\"",
+      "input": "x yb/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "298: \"/é\"",
+      "input": "/é",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "299: \" ﻿.framework  \\u0000\"",
+      "input": " ﻿.framework  \u0000",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "300: \"/.APPéb.\\t\"",
+      "input": "/.APPéb.\t",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "301: \" é.APP\\\\日\"",
+      "input": " é.APP\\日",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "302: \"😀 \"",
+      "input": "😀 ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "303: \"日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日\"",
+      "input": "日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日日x y日  /﻿",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "304: \".APP\\\\x y\"",
+      "input": ".APP\\x y",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "305: \"é...APPé ﻿/\"",
+      "input": "é...APPé ﻿/",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "306: \".APP bb\"",
+      "input": ".APP bb",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "307: \".//\"",
+      "input": ".//",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "308: \"﻿\\u0000\\u0000﻿日 /\"",
+      "input": "﻿\u0000\u0000﻿日 /",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "309: \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.app: 日\t",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "310: \"b.framework \\u0000\\\\ .app\"",
+      "input": "b.framework \u0000\\ .app",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": true
+      }
+    },
+    {
+      "name": "311: \".APP..:é\"",
+      "input": ".APP..:é",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "312: \" /.app \"",
+      "input": " /.app ",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "313: \"é.app\"",
+      "input": "é.app",
+      "output": {
+        "package": true
+      }
+    },
+    {
+      "name": "314: \"..\\t\\\\.appb\"",
+      "input": "..\t\\.appb",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "315: \"b\\\\\"",
+      "input": "b\\",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "316: \"日 ..éé\"",
+      "input": "日 ..éé",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "317: \".APPx ya\\\\ \"",
+      "input": ".APPx ya\\ ",
+      "output": {
+        "package": false
+      }
+    },
+    {
+      "name": "318: \"/b../.\"",
+      "input": "/b../.",
+      "output": {
+        "error": "Names can’t contain “/”.",
+        "package": false
+      }
+    },
+    {
+      "name": "319: \"😀x ya😀﻿😀x y\"",
+      "input": "😀x ya😀﻿😀x y",
+      "output": {
+        "package": false
+      }
+    }
+  ]
+}

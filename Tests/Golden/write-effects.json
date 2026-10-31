@@ -1,0 +1,6036 @@
+{
+  "suite": "write-effects",
+  "referenceCommit": "59f60cf",
+  "seed": 1041104900,
+  "generator": "tools/parity/golden/write-effects.ts",
+  "cases": [
+    {
+      "name": "target and items #0",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/Users/demo/Dest",
+        "items": [
+          {
+            "sourcePath": "/Users/demo/a.txt",
+            "destinationPath": "/Users/demo/Dest/a.txt"
+          },
+          {
+            "sourcePath": "/Users/demo/Old",
+            "destinationPath": null
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/Users/demo/Dest",
+          "/Users/demo/a.txt",
+          "/Users/demo/Old"
+        ]
+      }
+    },
+    {
+      "name": "trashed #1",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/Users/demo/Dest",
+        "items": [
+          {
+            "sourcePath": "/Users/demo/a.txt",
+            "destinationPath": "/Users/demo/Dest/a.txt"
+          }
+        ],
+        "trashedPaths": [
+          "/Users/demo/.Trash/a.txt"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/Users/demo/Dest",
+          "/Users/demo/a.txt",
+          "/Users/demo/.Trash/a.txt"
+        ]
+      }
+    },
+    {
+      "name": "empty #2",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": []
+      },
+      "output": {
+        "paths": []
+      }
+    },
+    {
+      "name": "empty strings skipped #3",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "",
+        "items": [
+          {
+            "sourcePath": "",
+            "destinationPath": null
+          }
+        ]
+      },
+      "output": {
+        "paths": []
+      }
+    },
+    {
+      "name": "root swallows #4",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/",
+        "items": [
+          {
+            "sourcePath": "/a/b",
+            "destinationPath": "/c"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "trailing slash folder #5",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/b/",
+        "items": [
+          {
+            "sourcePath": "/b/x",
+            "destinationPath": "/b/y"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/b/"
+        ]
+      }
+    },
+    {
+      "name": "trailing slash then sibling #6",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/b/",
+        "items": [
+          {
+            "sourcePath": "/b",
+            "destinationPath": "/bc"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/b",
+          "/bc"
+        ]
+      }
+    },
+    {
+      "name": "duplicates #7",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/a",
+            "destinationPath": "/a"
+          },
+          {
+            "sourcePath": "/a",
+            "destinationPath": "/a/b"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/a"
+        ]
+      }
+    },
+    {
+      "name": "nfc and nfd kept apart #8",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/Café",
+            "destinationPath": "/Café/x"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/Café",
+          "/Café/x"
+        ]
+      }
+    },
+    {
+      "name": "double slash #9",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "//a",
+            "destinationPath": "/a"
+          },
+          {
+            "sourcePath": "/a//b",
+            "destinationPath": null
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "//a",
+          "/a"
+        ]
+      }
+    },
+    {
+      "name": "copy of many files #10",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/Volumes/Backup",
+        "items": [
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_0.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_0.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_1.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_1.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_2.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_2.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_3.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_3.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_4.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_4.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_5.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_5.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_6.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_6.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_7.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_7.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_8.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_8.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_9.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_9.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_10.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_10.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_11.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_11.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_12.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_12.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_13.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_13.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_14.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_14.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_15.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_15.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_16.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_16.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_17.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_17.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_18.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_18.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_19.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_19.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_20.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_20.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_21.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_21.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_22.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_22.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_23.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_23.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_24.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_24.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_25.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_25.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_26.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_26.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_27.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_27.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_28.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_28.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_29.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_29.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_30.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_30.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_31.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_31.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_32.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_32.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_33.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_33.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_34.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_34.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_35.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_35.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_36.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_36.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_37.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_37.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_38.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_38.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_39.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_39.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_40.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_40.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_41.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_41.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_42.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_42.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_43.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_43.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_44.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_44.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_45.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_45.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_46.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_46.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_47.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_47.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_48.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_48.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_49.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_49.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_50.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_50.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_51.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_51.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_52.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_52.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_53.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_53.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_54.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_54.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_55.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_55.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_56.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_56.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_57.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_57.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_58.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_58.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_59.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_59.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_60.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_60.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_61.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_61.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_62.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_62.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_63.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_63.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_64.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_64.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_65.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_65.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_66.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_66.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_67.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_67.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_68.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_68.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_69.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_69.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_70.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_70.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_71.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_71.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_72.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_72.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_73.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_73.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_74.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_74.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_75.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_75.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_76.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_76.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_77.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_77.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_78.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_78.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_79.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_79.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_80.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_80.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_81.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_81.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_82.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_82.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_83.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_83.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_84.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_84.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_85.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_85.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_86.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_86.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_87.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_87.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_88.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_88.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_89.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_89.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_90.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_90.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_91.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_91.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_92.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_92.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_93.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_93.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_94.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_94.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_95.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_95.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_96.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_96.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_97.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_97.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_98.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_98.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_99.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_99.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_100.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_100.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_101.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_101.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_102.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_102.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_103.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_103.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_104.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_104.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_105.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_105.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_106.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_106.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_107.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_107.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_108.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_108.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_109.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_109.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_110.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_110.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_111.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_111.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_112.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_112.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_113.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_113.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_114.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_114.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_115.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_115.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_116.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_116.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_117.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_117.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_118.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_118.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_119.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_119.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_120.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_120.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_121.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_121.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_122.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_122.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_123.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_123.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_124.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_124.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_125.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_125.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_126.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_126.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_127.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_127.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_128.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_128.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_129.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_129.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_130.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_130.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_131.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_131.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_132.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_132.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_133.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_133.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_134.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_134.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_135.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_135.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_136.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_136.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_137.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_137.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_138.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_138.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_139.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_139.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_140.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_140.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_141.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_141.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_142.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_142.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_143.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_143.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_144.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_144.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_145.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_145.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_146.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_146.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_147.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_147.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_148.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_148.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_149.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_149.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_150.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_150.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_151.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_151.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_152.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_152.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_153.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_153.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_154.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_154.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_155.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_155.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_156.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_156.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_157.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_157.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_158.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_158.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_159.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_159.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_160.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_160.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_161.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_161.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_162.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_162.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_163.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_163.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_164.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_164.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_165.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_165.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_166.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_166.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_167.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_167.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_168.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_168.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_169.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_169.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_170.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_170.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_171.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_171.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_172.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_172.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_173.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_173.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_174.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_174.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_175.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_175.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_176.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_176.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_177.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_177.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_178.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_178.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_179.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_179.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_180.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_180.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_181.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_181.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_182.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_182.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_183.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_183.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_184.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_184.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_185.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_185.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_186.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_186.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_187.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_187.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_188.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_188.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_189.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_189.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_190.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_190.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_191.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_191.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_192.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_192.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_193.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_193.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_194.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_194.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_195.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_195.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_196.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_196.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_197.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_197.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_198.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_198.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_199.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_199.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_200.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_200.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_201.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_201.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_202.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_202.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_203.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_203.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_204.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_204.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_205.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_205.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_206.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_206.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_207.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_207.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_208.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_208.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_209.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_209.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_210.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_210.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_211.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_211.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_212.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_212.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_213.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_213.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_214.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_214.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_215.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_215.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_216.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_216.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_217.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_217.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_218.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_218.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_219.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_219.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_220.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_220.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_221.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_221.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_222.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_222.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_223.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_223.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_224.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_224.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_225.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_225.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_226.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_226.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_227.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_227.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_228.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_228.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_229.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_229.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_230.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_230.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_231.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_231.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_232.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_232.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_233.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_233.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_234.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_234.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_235.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_235.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_236.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_236.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_237.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_237.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_238.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_238.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_239.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_239.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_240.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_240.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_241.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_241.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_242.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_242.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_243.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_243.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_244.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_244.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_245.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_245.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_246.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_246.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_247.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_247.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_248.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_248.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_249.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_249.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_250.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_250.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_251.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_251.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_252.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_252.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_253.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_253.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_254.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_254.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_255.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_255.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_256.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_256.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_257.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_257.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_258.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_258.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_259.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_259.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_260.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_260.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_261.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_261.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_262.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_262.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_263.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_263.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_264.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_264.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_265.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_265.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_266.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_266.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_267.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_267.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_268.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_268.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_269.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_269.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_270.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_270.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_271.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_271.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_272.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_272.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_273.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_273.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_274.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_274.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_275.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_275.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_276.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_276.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_277.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_277.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_278.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_278.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_279.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_279.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_280.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_280.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_281.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_281.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_282.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_282.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_283.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_283.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_284.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_284.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_285.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_285.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_286.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_286.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_287.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_287.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_288.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_288.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_289.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_289.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/0/IMG_290.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/0/IMG_290.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/1/IMG_291.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/1/IMG_291.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/2/IMG_292.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/2/IMG_292.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/3/IMG_293.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/3/IMG_293.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/4/IMG_294.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/4/IMG_294.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/5/IMG_295.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/5/IMG_295.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/6/IMG_296.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/6/IMG_296.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/7/IMG_297.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/7/IMG_297.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/8/IMG_298.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/8/IMG_298.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos/9/IMG_299.jpg",
+            "destinationPath": "/Volumes/Backup/Photos/9/IMG_299.jpg"
+          },
+          {
+            "sourcePath": "/Users/demo/Photos",
+            "destinationPath": "/Volumes/Backup/Photos"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/Volumes/Backup",
+          "/Users/demo/Photos"
+        ]
+      }
+    },
+    {
+      "name": "affected #11",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/Users/demo/Projects/app",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "matcher #12",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects/app",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "affected #13",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/Users/demo/Projects",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "matcher #14",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "affected #15",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "matcher #16",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "affected #17",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/Users/demo/Projects/app/src",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "matcher #18",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects/app/src",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "affected #19",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/Users/demo/Projects/application",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "matcher #20",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects/application",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "affected #21",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/Users/demo/Music",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "matcher #22",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Music",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "affected #23",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/Users/demo/Projects/",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "matcher #24",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects/",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "affected #25",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/Users/demo/Projects/app/",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "matcher #26",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects/app/",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "affected #27",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "matcher #28",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "",
+        "changed": [
+          "/Users/demo/Projects/app"
+        ]
+      },
+      "output": {
+        "matcher": [
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "matcher trailing slash change #29",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects/",
+        "changed": [
+          "/Users/demo/Projects/"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "matcher trailing slash inside #30",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/Users/demo/Projects/x",
+        "changed": [
+          "/Users/demo/Projects/"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "matcher root change #31",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a",
+        "changed": [
+          "/"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "matcher empty #32",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a",
+        "changed": []
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "folder known #33",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "targetPath": "/b",
+        "items": [
+          {
+            "sourcePath": "/a/F",
+            "destinationPath": "/b/F",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/F/x",
+            "destinationPath": "/b/F/x",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/F/y",
+            "destinationPath": "/b/F/y",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/F/z",
+            "destinationPath": null,
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "trailing slash target #34",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "targetPath": "/b/",
+        "items": [
+          {
+            "sourcePath": "/b/x",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/b/y",
+            "destinationPath": null,
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": []
+      }
+    },
+    {
+      "name": "tab follows #35",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "move_to",
+        "items": [
+          {
+            "sourcePath": "/a/F",
+            "destinationPath": "/b/F",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/a/F/x",
+            "destinationPath": "/b/F/x",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "relative names #36",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "items": [
+          {
+            "sourcePath": "x",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "x",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "y",
+            "destinationPath": "",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "name": "moved folder then its contents #37",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "move_to",
+        "targetPath": "/b",
+        "items": [
+          {
+            "sourcePath": "/a/F",
+            "destinationPath": "/b/F",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/F/x",
+            "destinationPath": "/b/F/x",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/F/sub/y",
+            "destinationPath": "/b/F/sub/y",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/G",
+            "destinationPath": "/b/G",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "name": "followed move #38",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/a/F",
+          "destinationPath": "/b/F",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "followed move #39",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/a/F",
+          "destinationPath": "/b/F",
+          "status": "failed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "followed move #40",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "batch_rename",
+        "item": {
+          "sourcePath": "/a/F",
+          "destinationPath": "/b/F",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "followed move #41",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "batch_rename",
+        "item": {
+          "sourcePath": "/a/F",
+          "destinationPath": "/b/F",
+          "status": "failed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "followed move edge #42",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/a",
+          "destinationPath": "/a",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "followed move edge #43",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": null,
+          "destinationPath": "/a",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "followed move edge #44",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/a",
+          "destinationPath": null,
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "followed move edge #45",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "",
+          "destinationPath": "/a",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "followed move edge #46",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/Café",
+          "destinationPath": "/Café",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random changed #47",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/é/.Trash/é/a b",
+        "destinationDirectoryPath": "a b/x/é/b",
+        "items": [
+          {
+            "sourcePath": "/a b/é/b",
+            "destinationPath": "//a/a/é/x"
+          },
+          {
+            "sourcePath": "/x/a b/é/x/",
+            "destinationPath": "//a/a b"
+          },
+          {
+            "sourcePath": "/a/.Trash/.Trash/A",
+            "destinationPath": "/x"
+          },
+          {
+            "sourcePath": "/A",
+            "destinationPath": "/x/ab/ab/é"
+          },
+          {
+            "sourcePath": "/.Trash/.Trash/é",
+            "destinationPath": "/ab"
+          },
+          {
+            "sourcePath": "//",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/x/é",
+            "destinationPath": "/"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "a b/x/é/b",
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random other windows #48",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "batch_rename",
+        "targetPath": "/ab/ab",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/é",
+            "destinationPath": null,
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/a b",
+            "destinationPath": null,
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/a b/é/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/.Trash/a b/a/A",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/.Trash",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/a b/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "a/A/A",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "name": "random other windows #49",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "duplicate",
+        "targetPath": "/A/a b",
+        "items": [
+          {
+            "sourcePath": "//a b/a b/ab/a",
+            "destinationPath": "/a",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0
+        ]
+      }
+    },
+    {
+      "name": "random matcher #50",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/é/a/A/A",
+        "changed": [
+          "A/.Trash",
+          "é",
+          "b/x",
+          "/ab/ab/.Trash"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random changed #51",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "A/a b/é",
+        "items": [],
+        "trashedPaths": [
+          "/x/é/é/a"
+        ]
+      },
+      "output": {
+        "paths": [
+          "A/a b/é",
+          "/x/é/é/a"
+        ]
+      }
+    },
+    {
+      "name": "random followed #52",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "duplicate",
+        "item": {
+          "sourcePath": "/",
+          "destinationPath": "/",
+          "status": "failed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random changed #53",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/",
+        "items": [
+          {
+            "sourcePath": "//b",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/é/a b/é",
+            "destinationPath": "/a b/ab/x/ab"
+          },
+          {
+            "sourcePath": "/é/b",
+            "destinationPath": "/ab/x"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random other windows #54",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "targetPath": "/",
+        "items": [
+          {
+            "sourcePath": "/a/x",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "relative",
+            "destinationPath": "relative",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/A/A/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/a/a b/é",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "name": "random changed #55",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/x",
+        "items": [
+          {
+            "sourcePath": "/b/é",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/b/.Trash/a",
+            "destinationPath": "/.Trash/a/A/A"
+          },
+          {
+            "sourcePath": "//A/A/.Trash/.Trash",
+            "destinationPath": "/a b/b/.Trash/b"
+          }
+        ],
+        "trashedPaths": [
+          "é/a b/A/é",
+          "é/b/a"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/x",
+          "/b/é",
+          "/b/.Trash/a",
+          "/.Trash/a/A/A",
+          "//A/A/.Trash/.Trash",
+          "/a b/b/.Trash/b",
+          "é/a b/A/é",
+          "é/b/a"
+        ]
+      }
+    },
+    {
+      "name": "random followed #56",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "A/ab/ab/ab",
+          "destinationPath": "/A/x/a b/a",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random changed #57",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/a/",
+            "destinationPath": "/.Trash"
+          },
+          {
+            "sourcePath": "/ab/é",
+            "destinationPath": "/a b/a b/a/ab/"
+          },
+          {
+            "sourcePath": "//a b",
+            "destinationPath": "/.Trash"
+          }
+        ],
+        "trashedPaths": [
+          "//",
+          "/a"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/.Trash",
+          "/ab/é",
+          "/a b/a b/a/ab/",
+          "//",
+          "/a"
+        ]
+      }
+    },
+    {
+      "name": "random other windows #58",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "batch_rename",
+        "items": [
+          {
+            "sourcePath": "/a b/é/A/b",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/.Trash/A/a",
+            "destinationPath": "/x/b/ab/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a b/é",
+            "destinationPath": "/x/.Trash/é/é",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/b/ab",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "//a b/é/a b",
+            "destinationPath": "/a/ab/ab",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/a/a b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/.Trash",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "//A/A/a",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "//ab/ab/é",
+            "destinationPath": "/ab/é/x/",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "name": "random matcher #59",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/é",
+        "changed": [
+          "/x/b/é/b",
+          "//b/é/é/a b",
+          "/A",
+          "/ab/b/A"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random matcher #60",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/ab/é",
+        "changed": []
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random followed #61",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "batch_rename",
+        "item": {
+          "sourcePath": null,
+          "destinationPath": "/a/é/ab",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #62",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/A/b",
+        "changed": []
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #63",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/ab/é/ab/a b",
+        "changed": [
+          ""
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #64",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "targetPath": "/x",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/é/ab/b",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/x/a b/ab/x",
+            "destinationPath": "/x/b/A/",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/é/ab/b/é",
+            "destinationPath": "/ab/x/.Trash/.Trash",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "random affected #65",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/x/é/x/.Trash",
+        "changed": [
+          "/x/a b/a/b",
+          "/a/a b",
+          "/.Trash/b/x/A",
+          "/A/b"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random followed #66",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "batch_rename",
+        "item": {
+          "sourcePath": "A/ab/x",
+          "destinationPath": "/ab/ab/b/ab",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random affected #67",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/b/.Trash",
+          "relative"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #68",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "targetPath": "/",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/ab/",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/x/x/a b/.Trash",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/",
+            "destinationPath": "/é/a/.Trash",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/é/é",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/a b",
+            "destinationPath": "relative",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "name": "random followed #69",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "paste",
+        "item": {
+          "sourcePath": "/a b",
+          "destinationPath": "é/é/.Trash/a",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random matcher #70",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a/é/b",
+        "changed": [
+          "/a b/b",
+          "/",
+          "/x",
+          "/é/a/b"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random followed #71",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "batch_rename",
+        "item": {
+          "sourcePath": "/A/é",
+          "destinationPath": "//.Trash",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random affected #72",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/",
+          "//A",
+          "/é/é",
+          "/a b/é/a b"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random followed #73",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "trash",
+        "item": {
+          "sourcePath": "/é",
+          "destinationPath": "/é/é/A",
+          "status": "skipped"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #74",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/ab/ab/é",
+        "changed": []
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random other windows #75",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/A/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/.Trash/x",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/A/é",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/é/a/ab",
+            "destinationPath": "/.Trash/é/é/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "x/.Trash",
+            "destinationPath": "/ab/.Trash/b/x",
+            "status": "completed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "relative",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "",
+            "destinationPath": "a/A/b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "a b/a b",
+            "destinationPath": "/a b/.Trash/x",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "name": "random followed #76",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/x/a b",
+          "destinationPath": "//ab",
+          "status": "skipped"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #77",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "//",
+        "changed": []
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #78",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/b/a b/A/A",
+        "changed": [
+          "/A/a b/A",
+          "/",
+          "/é/b/.Trash/b"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #79",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "delete",
+        "targetPath": "/é/a/.Trash/",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "//x/a/a",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "a b/é",
+            "destinationPath": "/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/a b/a",
+            "destinationPath": "/",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/A/a b/.Trash/ab/",
+            "destinationPath": "/b/a b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/b/x/a/x",
+            "destinationPath": "/ab/ab/ab/ab",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "//",
+            "destinationPath": "/a/b/a b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/ab",
+            "destinationPath": "//",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/b",
+            "destinationPath": "/.Trash/a/x/é",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "name": "random other windows #80",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "duplicate",
+        "targetPath": "/",
+        "items": [
+          {
+            "sourcePath": "/b",
+            "destinationPath": "//a/a/é/ab",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/é/a b/a b/é",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/A/A/.Trash",
+            "destinationPath": "/é",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/a/ab/b",
+            "destinationPath": "ab/é",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "name": "random followed #81",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "trash",
+        "item": {
+          "sourcePath": "é/b/ab/x",
+          "destinationPath": null,
+          "status": "skipped"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #82",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/ab/é/a b",
+          "/é",
+          "//A/é/x"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random affected #83",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/A/x",
+        "changed": [
+          "/x",
+          "/a b/a b/a b",
+          "/"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random changed #84",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/a b",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/ab/ab/é/ab",
+            "destinationPath": "/A"
+          },
+          {
+            "sourcePath": "/b/é",
+            "destinationPath": "/b/a/é/"
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/"
+          }
+        ],
+        "trashedPaths": [
+          "/a"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random changed #85",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/",
+        "items": [
+          {
+            "sourcePath": "/a b",
+            "destinationPath": "/"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random other windows #86",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "targetPath": "/b",
+        "items": [
+          {
+            "sourcePath": "relative",
+            "destinationPath": "/é/a b/ab",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/é/é",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/A/x/ab/a b",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/",
+            "destinationPath": "//a b/é/a b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/A",
+            "destinationPath": "/é/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/x/.Trash/b",
+            "destinationPath": "/x/x/ab/x",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a b/é/ab/é",
+            "destinationPath": "/x",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/a b/.Trash/.Trash",
+            "destinationPath": "/a b/é/a b/a",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/A/é/é",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    {
+      "name": "random other windows #87",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "duplicate",
+        "targetPath": "/A",
+        "items": [
+          {
+            "sourcePath": "/A/ab/é/.Trash",
+            "destinationPath": "/é/b/.Trash",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/.Trash/x/x/a",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/é/A/b/",
+            "destinationPath": "/a",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "random affected #88",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "",
+        "changed": [
+          "/",
+          "//a/é",
+          "a/x/ab",
+          "/",
+          "/"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random followed #89",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "delete",
+        "item": {
+          "sourcePath": "",
+          "destinationPath": "/b/a",
+          "status": "failed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #90",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "//é/a b/b",
+        "changed": [
+          "/"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random matcher #91",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/ab/a b/A/ab",
+        "changed": [
+          "/é/a/x",
+          "//b/é",
+          "//A/é",
+          "/ab",
+          "/A/é/a"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random matcher #92",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/x/.Trash",
+        "changed": [
+          "/.Trash/A"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random affected #93",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "é/b/a b/ab",
+        "changed": [
+          "//",
+          "/ab"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #94",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/.Trash"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random changed #95",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/",
+        "destinationDirectoryPath": "/é",
+        "items": [
+          {
+            "sourcePath": "/a b/ab",
+            "destinationPath": "/x/a"
+          },
+          {
+            "sourcePath": "/.Trash/a/x",
+            "destinationPath": "/a"
+          },
+          {
+            "sourcePath": "/ab/é/a/A",
+            "destinationPath": null
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random followed #96",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "move_to",
+        "item": {
+          "sourcePath": "/é/b",
+          "destinationPath": "/",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #97",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "move_to",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/b/A/.Trash",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/b",
+            "destinationPath": "/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/.Trash/ab/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/é/a b",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "name": "random other windows #98",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "rename",
+        "items": [
+          {
+            "sourcePath": "/é/é",
+            "destinationPath": "/x/A",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/.Trash/b/é/.Trash",
+            "destinationPath": "/",
+            "status": "failed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/b",
+            "status": "failed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/a/x/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/b/a b/a",
+            "destinationPath": "/b/x/A/é",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "name": "random matcher #99",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/é/.Trash/a",
+        "changed": [
+          "/a b/",
+          "/A",
+          "/b/A/a"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random followed #100",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "trash",
+        "item": {
+          "sourcePath": "//ab",
+          "destinationPath": "/a b/b/é/é",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random matcher #101",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a b/é/a/ab",
+        "changed": [
+          "//a/A",
+          "/b",
+          "/",
+          "/x"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random changed #102",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [],
+        "trashedPaths": []
+      },
+      "output": {
+        "paths": []
+      }
+    },
+    {
+      "name": "random followed #103",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "move_to",
+        "item": {
+          "sourcePath": null,
+          "destinationPath": "/ab/é",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random followed #104",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/.Trash",
+          "destinationPath": "/a/A/x/",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random affected #105",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/ab/.Trash",
+        "changed": [
+          "/",
+          "/é/é/.Trash/x",
+          "/a/A/a/é",
+          "/a b"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random followed #106",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "trash",
+        "item": {
+          "sourcePath": "/a",
+          "destinationPath": "/x",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random followed #107",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "trash",
+        "item": {
+          "sourcePath": "/x/b",
+          "destinationPath": "/é/A/",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random matcher #108",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/é/.Trash/a b/é/",
+        "changed": [
+          "/x/x",
+          "/é/a/A"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random changed #109",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/",
+        "items": [
+          {
+            "sourcePath": "/a b/ab/x/.Trash/",
+            "destinationPath": "/.Trash/a"
+          },
+          {
+            "sourcePath": "/.Trash/ab",
+            "destinationPath": "/é/é/x/ab"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/b/x/é/a b/",
+            "destinationPath": "/"
+          }
+        ],
+        "trashedPaths": [
+          "/b"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random changed #110",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/a",
+        "items": [
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/é/b"
+          },
+          {
+            "sourcePath": "/ab/a b",
+            "destinationPath": "/é"
+          },
+          {
+            "sourcePath": "/A",
+            "destinationPath": "/"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random changed #111",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/b",
+        "items": [
+          {
+            "sourcePath": "/a/A/b/",
+            "destinationPath": "/A"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/b/é/.Trash"
+          }
+        ],
+        "trashedPaths": [
+          "//.Trash/é/ab/.Trash",
+          "/x"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/b",
+          "/a/A/b/",
+          "/A",
+          "//.Trash/é/ab/.Trash",
+          "/x"
+        ]
+      }
+    },
+    {
+      "name": "random matcher #112",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/b/x/é",
+        "changed": []
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random affected #113",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/A/ab",
+        "changed": [
+          "/",
+          "/x/A",
+          "/é/é/a b/a b",
+          "/.Trash/a b/é",
+          "/.Trash/.Trash/"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #114",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "targetPath": "/.Trash",
+        "items": [
+          {
+            "sourcePath": "//x/x/a b/ab",
+            "destinationPath": "/b/x/é",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0
+        ]
+      }
+    },
+    {
+      "name": "random affected #115",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "relative",
+        "changed": [
+          "/é/A/.Trash",
+          "/é/a/A/a b",
+          "//a/é",
+          "ab/b",
+          "/x/ab"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random changed #116",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/A/A",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/b/b/a",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/b/a/.Trash/b",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/a b",
+            "destinationPath": null
+          }
+        ],
+        "trashedPaths": [
+          "/é/.Trash"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random changed #117",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/ab/b/a/",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "b/a/b",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/a b/é",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/é/ab/a/a",
+            "destinationPath": "é/A/A/é"
+          }
+        ],
+        "trashedPaths": [
+          "//a b/a b/ab",
+          "/é/b/ab/é",
+          "/b"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/",
+          "b/a/b",
+          "é/A/A/é"
+        ]
+      }
+    },
+    {
+      "name": "random changed #118",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/ab/x/b",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "/é/é/.Trash"
+          },
+          {
+            "sourcePath": "/a b/A",
+            "destinationPath": "/a"
+          },
+          {
+            "sourcePath": "/a b/é/",
+            "destinationPath": "/é"
+          },
+          {
+            "sourcePath": "/b/é",
+            "destinationPath": "/b/.Trash/é"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/ab/x/b",
+          "/é/é/.Trash",
+          "/a b/A",
+          "/a",
+          "/a b/é/",
+          "/é",
+          "/b/é",
+          "/b/.Trash/é"
+        ]
+      }
+    },
+    {
+      "name": "random changed #119",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/A"
+          },
+          {
+            "sourcePath": "/A/b/A",
+            "destinationPath": "é"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": ""
+          },
+          {
+            "sourcePath": "a/é/é",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/b/b/x"
+          },
+          {
+            "sourcePath": "A/ab/ab/.Trash",
+            "destinationPath": "/b/b"
+          },
+          {
+            "sourcePath": "/A",
+            "destinationPath": "//a b/.Trash"
+          }
+        ],
+        "trashedPaths": []
+      },
+      "output": {
+        "paths": [
+          "é",
+          "/",
+          "a/é/é",
+          "A/ab/ab/.Trash"
+        ]
+      }
+    },
+    {
+      "name": "random other windows #120",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "move_to",
+        "targetPath": "/x/b/A/ab",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "",
+            "destinationPath": "/A/b/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "//a/a",
+            "destinationPath": "/a b/.Trash",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "é/é/a b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/b/ab",
+            "destinationPath": "/b/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "//a b/a",
+            "destinationPath": "/b/a/b/x",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "",
+            "destinationPath": "/x/a",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/A/é/é/é",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          7
+        ]
+      }
+    },
+    {
+      "name": "random changed #121",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": ".Trash",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "/é/x/a/"
+          },
+          {
+            "sourcePath": "/x/é",
+            "destinationPath": "/b"
+          },
+          {
+            "sourcePath": "é",
+            "destinationPath": "/a b"
+          },
+          {
+            "sourcePath": "/A",
+            "destinationPath": "/.Trash/a b/ab/é"
+          },
+          {
+            "sourcePath": "/a b/a/b/A",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/x/ab/b/.Trash",
+            "destinationPath": "/x/b/b"
+          },
+          {
+            "sourcePath": "/A",
+            "destinationPath": "é"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/b/"
+          }
+        ],
+        "trashedPaths": [
+          "/a b/x",
+          "/ab/A/ab"
+        ]
+      },
+      "output": {
+        "paths": [
+          ".Trash",
+          "é",
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random matcher #122",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/A",
+        "changed": []
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random followed #123",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "paste",
+        "item": {
+          "sourcePath": null,
+          "destinationPath": "/a/é/ab",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #124",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/",
+        "changed": [
+          "/.Trash/A",
+          "/a/ab/ab",
+          "/a/ab",
+          "//",
+          "/a b/é/.Trash"
+        ]
+      },
+      "output": {
+        "matcher": [
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random other windows #125",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "targetPath": "//x/é/.Trash/ab",
+        "items": [
+          {
+            "sourcePath": "/.Trash",
+            "destinationPath": "/ab/ab/A/b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/x/a/é",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a/é",
+            "destinationPath": "/é/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/.Trash",
+            "destinationPath": "//.Trash",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/.Trash",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "name": "random matcher #126",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a/b/",
+        "changed": [
+          "//",
+          "/a b/a/é"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random followed #127",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "batch_rename",
+        "item": {
+          "sourcePath": "/A/",
+          "destinationPath": "/é/a b/a b",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random matcher #128",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/é/a b/b/a",
+        "changed": [
+          "/b/.Trash"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random affected #129",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/é"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random followed #130",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "batch_rename",
+        "item": {
+          "sourcePath": "/a/a/.Trash/b",
+          "destinationPath": "/x/.Trash/A/a",
+          "status": "failed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #131",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "batch_rename",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "/b/b/.Trash/a",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": null,
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/ab/b/a",
+            "destinationPath": ".Trash",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "random followed #132",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "move_to",
+        "item": {
+          "sourcePath": "é/é/ab/A",
+          "destinationPath": "/",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random affected #133",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/a b",
+        "changed": [
+          "/A/x/ab/a",
+          "//é/a",
+          "//",
+          "/.Trash",
+          "/x/A"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #134",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a b/.Trash/a b/",
+        "changed": [
+          "/é/ab",
+          "/é/a b"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random other windows #135",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "move_to",
+        "targetPath": "/a/A/b/é",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "//A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/b/A/ab",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "//a",
+            "destinationPath": "/",
+            "status": "skipped"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "random other windows #136",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "targetPath": "/a b",
+        "items": [
+          {
+            "sourcePath": "//",
+            "destinationPath": "/é/é/.Trash",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0
+        ]
+      }
+    },
+    {
+      "name": "random affected #137",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/ab/a b/b",
+        "changed": [
+          "/é/é/é",
+          "a/é"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #138",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "//A/A/a/ab",
+        "changed": [
+          "/x/A/x",
+          "/b/ab/a b",
+          "/",
+          "/a b/a b/A",
+          "/é",
+          "/é/x"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random other windows #139",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "duplicate",
+        "targetPath": "/a",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "/ab/a/b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/é/é",
+            "destinationPath": "A/é/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/a b/.Trash/A",
+            "destinationPath": "//é/é",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "random followed #140",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "move_to",
+        "item": {
+          "sourcePath": ".Trash/A/é",
+          "destinationPath": "/a/.Trash/a/a",
+          "status": "failed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #141",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/é",
+        "changed": []
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random other windows #142",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "targetPath": "",
+        "items": [
+          {
+            "sourcePath": "/A",
+            "destinationPath": "/",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/ab/x/",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "random changed #143",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/b/",
+        "items": []
+      },
+      "output": {
+        "paths": [
+          "/b/"
+        ]
+      }
+    },
+    {
+      "name": "random changed #144",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/a b",
+        "items": [
+          {
+            "sourcePath": "/é/a/x/b",
+            "destinationPath": "é/A/ab"
+          },
+          {
+            "sourcePath": "/b/.Trash/x",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": null
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/a b",
+          "/é/a/x/b",
+          "é/A/ab",
+          "/b/.Trash/x"
+        ]
+      }
+    },
+    {
+      "name": "random other windows #145",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "duplicate",
+        "targetPath": "/",
+        "items": [
+          {
+            "sourcePath": "/ab/a",
+            "destinationPath": "/a b/A/b/b",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0
+        ]
+      }
+    },
+    {
+      "name": "random other windows #146",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "delete",
+        "targetPath": "",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": null,
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/é/x",
+            "destinationPath": "/x/x/.Trash/a b",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/.Trash/",
+            "destinationPath": "/é",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/A/A",
+            "destinationPath": "/é/.Trash/A",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/A",
+            "destinationPath": "/a/a",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "name": "random matcher #147",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/b/é/a/.Trash/",
+        "changed": [
+          "/x/a",
+          "/x/b/x/.Trash",
+          "/a/"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random matcher #148",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/A/x/é",
+        "changed": [
+          "/a/A",
+          "/é/b/.Trash",
+          "/ab/b/",
+          "/é/ab/a/b",
+          "/é/b/.Trash"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random followed #149",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "move_to",
+        "item": {
+          "sourcePath": "//.Trash/A/é/b",
+          "destinationPath": "/x/a",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random matcher #150",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a",
+        "changed": [
+          "",
+          "/a/ab",
+          "/b/ab/ab/",
+          "/.Trash"
+        ]
+      },
+      "output": {
+        "matcher": [
+          true,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random other windows #151",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "move_to",
+        "targetPath": "/",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/x/",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "a/a/ab",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/b/.Trash",
+            "destinationPath": "/.Trash/.Trash/a b/a",
+            "status": "skipped"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          1,
+          2,
+          5
+        ]
+      }
+    },
+    {
+      "name": "random affected #152",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": ".Trash/ab/x",
+        "changed": [
+          "/é/x",
+          "/é/a b/ab/a b",
+          "/é/a/A",
+          "/",
+          "/.Trash/é"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #153",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "//.Trash/é/x",
+        "changed": [
+          "/.Trash",
+          "/é/ab/a",
+          "/x/é/a"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random matcher #154",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/é/x",
+        "changed": [
+          "/x/a/é",
+          "/",
+          "/A/A"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random changed #155",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "//a/a",
+            "destinationPath": "ab/é"
+          },
+          {
+            "sourcePath": "/b/.Trash/ab/é",
+            "destinationPath": "relative"
+          }
+        ],
+        "trashedPaths": [
+          "/ab",
+          "/",
+          "/é"
+        ]
+      },
+      "output": {
+        "paths": [
+          "ab/é",
+          "relative",
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random matcher #156",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/A/ab",
+        "changed": [
+          "/é/a",
+          "/é/é/x",
+          "/a b"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random other windows #157",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "duplicate",
+        "items": [
+          {
+            "sourcePath": "/A/b/x/b",
+            "destinationPath": "/a/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/ab",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/A/é/é/ab",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "random affected #158",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/a b/ab",
+        "changed": [
+          "/a b/ab/b",
+          "/A/é/é",
+          "/é/ab",
+          "/ab/b/A"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #159",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "targetPath": "/ab/x/a b/é",
+        "items": [
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": "é/é",
+            "status": "failed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "é/ab",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/é/a/b/é",
+            "destinationPath": "/a",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "name": "random changed #160",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/",
+        "destinationDirectoryPath": "/",
+        "items": [
+          {
+            "sourcePath": "/é/.Trash/b/b",
+            "destinationPath": "/x"
+          },
+          {
+            "sourcePath": "/a b/é/A/b",
+            "destinationPath": "/"
+          }
+        ],
+        "trashedPaths": [
+          "/"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random matcher #161",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a/ab",
+        "changed": [
+          "/A/x",
+          "/a b/ab/.Trash",
+          "/ab",
+          "/ab/x",
+          "/a b/A/é/é",
+          "/A/a b"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random other windows #162",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "batch_rename",
+        "targetPath": "/A",
+        "items": [
+          {
+            "sourcePath": "//a b/é/é/.Trash",
+            "destinationPath": "//é/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/A",
+            "destinationPath": "/b/é/a b/ab",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/.Trash/é/a b",
+            "destinationPath": "/.Trash",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "random followed #163",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "rename",
+        "item": {
+          "sourcePath": "/b/é/b",
+          "destinationPath": "/.Trash/a b/.Trash",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random matcher #164",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "é/b",
+        "changed": []
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random affected #165",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "a/.Trash",
+        "changed": [
+          "/ab",
+          "/.Trash/A/.Trash/ab",
+          ""
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random followed #166",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "move_to",
+        "item": {
+          "sourcePath": "/",
+          "destinationPath": "/.Trash",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random followed #167",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "trash",
+        "item": {
+          "sourcePath": "//b/ab",
+          "destinationPath": null,
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #168",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/b/a b/a/ab",
+        "changed": [
+          "ab/a/a b/A"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random changed #169",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "/",
+        "destinationDirectoryPath": "/ab/.Trash/ab/x",
+        "items": [
+          {
+            "sourcePath": "/é/A/a/",
+            "destinationPath": "/a/é"
+          },
+          {
+            "sourcePath": "/x/A/x/ab",
+            "destinationPath": "//a b/b/ab"
+          },
+          {
+            "sourcePath": "/x/x/A",
+            "destinationPath": "/.Trash/ab/a b/A"
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/a b",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/a/ab/a",
+            "destinationPath": null
+          }
+        ],
+        "trashedPaths": [
+          "relative",
+          "/é"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/",
+          "relative"
+        ]
+      }
+    },
+    {
+      "name": "random followed #170",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "paste",
+        "item": {
+          "sourcePath": "/é/x/a b",
+          "destinationPath": "//",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random matcher #171",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/ab/é/x",
+        "changed": [
+          "/",
+          "b",
+          "/é/ab/.Trash/a b",
+          "relative",
+          "/"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random changed #172",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "/A/b/é/A",
+            "destinationPath": "/ab/A"
+          },
+          {
+            "sourcePath": "/a/ab/é/ab",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "",
+            "destinationPath": "//"
+          },
+          {
+            "sourcePath": "/é/A/é",
+            "destinationPath": "/é/ab/a b"
+          },
+          {
+            "sourcePath": "/a/ab/A/A",
+            "destinationPath": "/A/é/é/b"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "x/é/b"
+          },
+          {
+            "sourcePath": "/ab/b",
+            "destinationPath": "/"
+          }
+        ],
+        "trashedPaths": [
+          "/",
+          "/.Trash/A"
+        ]
+      },
+      "output": {
+        "paths": [
+          "x/é/b",
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random matcher #173",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a/b/",
+        "changed": [
+          "/x/",
+          "/A",
+          "/a/x/ab/ab",
+          "/b",
+          "/b/.Trash/x/a b",
+          "/A/ab"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random affected #174",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/é/x/A",
+        "changed": [
+          "/a b/A/é",
+          ".Trash/a"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random matcher #175",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/a/A/ab",
+        "changed": [
+          "ab/a b/A",
+          "/x/x/é/A"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random other windows #176",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/a",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/A/A/é/a",
+            "destinationPath": "/b/a b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/x/a/a",
+            "destinationPath": "/.Trash/A/a/.Trash",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/.Trash/b/é/a",
+            "destinationPath": "/é/.Trash/ab",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a b",
+            "destinationPath": "/é/.Trash/é/.Trash",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/a",
+            "destinationPath": "/ab/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "relative",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/x/a/a b",
+            "destinationPath": "/A/é/a b",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "name": "random other windows #177",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "items": [
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/a b/é/b/a",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/x",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/.Trash/.Trash/",
+            "destinationPath": "/é/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/A/a/a b/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "A",
+            "destinationPath": "/ab/é/a/a b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/x/A/é/",
+            "destinationPath": "/",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/é/a/A/b",
+            "destinationPath": "é/b/é/a",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "name": "random matcher #178",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "//x/é/.Trash/é",
+        "changed": [
+          "/a b/a b/ab",
+          "/",
+          "/x/é",
+          "/"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random affected #179",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "b/A/ab",
+        "changed": [
+          "/b/A/b",
+          "/é/a",
+          "/A",
+          "/é"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random other windows #180",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "rename",
+        "targetPath": "/é/é",
+        "items": [
+          {
+            "sourcePath": "/a",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/.Trash/x/b",
+            "destinationPath": "/a/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/ab",
+            "destinationPath": "/é/a b",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "random matcher #181",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/",
+        "changed": [
+          "/",
+          "/ab/b",
+          "//é"
+        ]
+      },
+      "output": {
+        "matcher": [
+          true,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "random changed #182",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/a/ab/",
+        "items": [
+          {
+            "sourcePath": "/.Trash/A/a",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/é/.Trash",
+            "destinationPath": "/é/b/a"
+          },
+          {
+            "sourcePath": "/ab",
+            "destinationPath": null
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random affected #183",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/A/é",
+          "/"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random affected #184",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/é",
+        "changed": [
+          "/"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #185",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "trash",
+        "targetPath": "/a/é/.Trash/é",
+        "items": [
+          {
+            "sourcePath": "/A/ab/a b",
+            "destinationPath": "/é/x/a b/é",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/.Trash/a/b/x/",
+            "destinationPath": "/a/é/A",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/.Trash/ab",
+            "destinationPath": "/é/.Trash",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/.Trash/.Trash/a b/ab",
+            "destinationPath": "//é",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "/ab",
+            "destinationPath": "",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "name": "random affected #186",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/b/A",
+        "changed": [
+          "/",
+          "/ab"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random changed #187",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/.Trash/ab",
+        "items": [],
+        "trashedPaths": [
+          "/é/a b/",
+          "/ab",
+          "/a b/.Trash/.Trash/a b"
+        ]
+      },
+      "output": {
+        "paths": [
+          "/.Trash/ab",
+          "/é/a b/",
+          "/ab",
+          "/a b/.Trash/.Trash/a b"
+        ]
+      }
+    },
+    {
+      "name": "random followed #188",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "duplicate",
+        "item": {
+          "sourcePath": "/",
+          "destinationPath": "/",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #189",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "a",
+        "changed": []
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random changed #190",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": ".Trash",
+            "destinationPath": "/x/a"
+          },
+          {
+            "sourcePath": "/.Trash/é",
+            "destinationPath": "/A/a"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/a/a"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          ".Trash",
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random followed #191",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "trash",
+        "item": {
+          "sourcePath": "//",
+          "destinationPath": "/é/x/é/é",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #192",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "duplicate",
+        "targetPath": "/ab/é/b",
+        "items": [
+          {
+            "sourcePath": "/é/a b",
+            "destinationPath": "/é/b/a/b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/b",
+            "destinationPath": "/ab/é/A",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "/b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/a",
+            "destinationPath": "/ab",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/b",
+            "destinationPath": "/a b/.Trash/é/b",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "name": "random followed #193",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "duplicate",
+        "item": {
+          "sourcePath": "/.Trash/a",
+          "destinationPath": "/é/ab",
+          "status": "failed"
+        }
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #194",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/ab/A",
+        "changed": [
+          "//"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random changed #195",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/a/b/x/é",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/a"
+          },
+          {
+            "sourcePath": "/x",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/x/",
+            "destinationPath": null
+          },
+          {
+            "sourcePath": "/a/a b/.Trash",
+            "destinationPath": ""
+          },
+          {
+            "sourcePath": "//a b",
+            "destinationPath": "/A/a b/a"
+          },
+          {
+            "sourcePath": "/a b/é/ab/ab",
+            "destinationPath": "/"
+          },
+          {
+            "sourcePath": "/ab/a b",
+            "destinationPath": ""
+          },
+          {
+            "sourcePath": "",
+            "destinationPath": "/a/a b/é/A"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "/"
+        ]
+      }
+    },
+    {
+      "name": "random affected #196",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/é/ab/é",
+        "changed": [
+          "/A/a/x/b",
+          "/é/b",
+          "/",
+          "/"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random affected #197",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/ab",
+        "changed": [
+          "/x/b/A/a",
+          "/b/b/a/",
+          "/x/é/ab"
+        ]
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #198",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "//.Trash/b/ab",
+        "changed": [
+          "/é/a b",
+          "//A/é/a",
+          "/"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random changed #199",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "targetPath": "é/x/a b/é",
+        "items": [
+          {
+            "sourcePath": "/b/é",
+            "destinationPath": "/ab/.Trash"
+          },
+          {
+            "sourcePath": "/",
+            "destinationPath": "ab/é/A/x"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "é/x/a b/é",
+          "/",
+          "ab/é/A/x"
+        ]
+      }
+    },
+    {
+      "name": "random changed #200",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "items": [
+          {
+            "sourcePath": "//a b",
+            "destinationPath": "/x/b/"
+          },
+          {
+            "sourcePath": "/b/a b/A/a b",
+            "destinationPath": "/é/a b/x/b"
+          },
+          {
+            "sourcePath": "/ab/b",
+            "destinationPath": "/ab"
+          },
+          {
+            "sourcePath": "/a/ab/a b/x",
+            "destinationPath": "/ab"
+          }
+        ]
+      },
+      "output": {
+        "paths": [
+          "//a b",
+          "/x/b/",
+          "/b/a b/A/a b",
+          "/é/a b/x/b",
+          "/ab",
+          "/a/ab/a b/x"
+        ]
+      }
+    },
+    {
+      "name": "random other windows #201",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "batch_rename",
+        "targetPath": "/é/ab/é/.Trash/",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "/a/a/a b/A",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/.Trash",
+            "destinationPath": "/a b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a b",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "x/A",
+            "destinationPath": null,
+            "status": "completed"
+          },
+          {
+            "sourcePath": "",
+            "destinationPath": "/b/a/a/ab",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/a b/é/x/x",
+            "destinationPath": "/é/é/.Trash",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "name": "random matcher #202",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/",
+        "changed": []
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "name": "random other windows #203",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "paste",
+        "targetPath": "relative",
+        "items": [
+          {
+            "sourcePath": null,
+            "destinationPath": "/a b/a b/x/a b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "/é",
+            "destinationPath": "/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/.Trash/é",
+            "destinationPath": "/A/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": null,
+            "destinationPath": "a b/é/a b",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "//a/b",
+            "destinationPath": "/ab/b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": "",
+            "destinationPath": "/.Trash",
+            "status": "failed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "name": "random followed #204",
+      "input": {
+        "fn": "isFollowedMove",
+        "action": "delete",
+        "item": {
+          "sourcePath": "/é/",
+          "destinationPath": "/é/ab/é/.Trash",
+          "status": "completed"
+        }
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random changed #205",
+      "input": {
+        "fn": "pathsChangedByWrite",
+        "destinationDirectoryPath": "/.Trash/A",
+        "items": []
+      },
+      "output": {
+        "paths": [
+          "/.Trash/A"
+        ]
+      }
+    },
+    {
+      "name": "random affected #206",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": []
+      },
+      "output": {
+        "value": false
+      }
+    },
+    {
+      "name": "random affected #207",
+      "input": {
+        "fn": "isAffectedByChange",
+        "path": "/",
+        "changed": [
+          "/b/A"
+        ]
+      },
+      "output": {
+        "value": true
+      }
+    },
+    {
+      "name": "random other windows #208",
+      "input": {
+        "fn": "itemsForOtherWindows",
+        "action": "delete",
+        "targetPath": "/x/A/x",
+        "items": [
+          {
+            "sourcePath": "/",
+            "destinationPath": "/x",
+            "status": "failed"
+          },
+          {
+            "sourcePath": "//b/x/a/é",
+            "destinationPath": "/a b",
+            "status": "skipped"
+          },
+          {
+            "sourcePath": ".Trash/x/A",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/.Trash/b/é/a",
+            "destinationPath": "/b/a/a b/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/x/é/é",
+            "destinationPath": "/",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/é/x",
+            "destinationPath": "/a b/a b/a/é",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/x",
+            "destinationPath": "/é/ab/é/b",
+            "status": "completed"
+          },
+          {
+            "sourcePath": "/.Trash/b/é",
+            "destinationPath": "/.Trash/.Trash",
+            "status": "completed"
+          }
+        ]
+      },
+      "output": {
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "name": "random matcher #209",
+      "input": {
+        "fn": "changeMatcher",
+        "path": "/x/.Trash/é/é",
+        "changed": [
+          "/.Trash/a b",
+          "/A"
+        ]
+      },
+      "output": {
+        "matcher": [
+          false,
+          false,
+          false
+        ]
+      }
+    }
+  ]
+}

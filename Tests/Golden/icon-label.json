@@ -1,0 +1,2708 @@
+{
+  "suite": "icon-label",
+  "referenceCommit": "59f60cf",
+  "seed": 470482949,
+  "generator": "tools/parity/golden/icon-label.ts",
+  "cases": [
+    {
+      "name": "0:  |  | 0",
+      "input": {
+        "name": "",
+        "extension": "",
+        "limit": 0
+      },
+      "output": ""
+    },
+    {
+      "name": "1:  |  | 1",
+      "input": {
+        "name": "",
+        "extension": "",
+        "limit": 1
+      },
+      "output": ""
+    },
+    {
+      "name": "2:  |  | 6",
+      "input": {
+        "name": "",
+        "extension": "",
+        "limit": 6
+      },
+      "output": ""
+    },
+    {
+      "name": "3:  |  | 12",
+      "input": {
+        "name": "",
+        "extension": "",
+        "limit": 12
+      },
+      "output": ""
+    },
+    {
+      "name": "4: a |  | 0",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 0
+      },
+      "output": "a"
+    },
+    {
+      "name": "5: a |  | 1",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 1
+      },
+      "output": "a"
+    },
+    {
+      "name": "6: a |  | 6",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 6
+      },
+      "output": "a"
+    },
+    {
+      "name": "7: a |  | 12",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 12
+      },
+      "output": "a"
+    },
+    {
+      "name": "8: a |  | 2",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 2
+      },
+      "output": "a"
+    },
+    {
+      "name": "9: a |  | 3",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 3
+      },
+      "output": "a"
+    },
+    {
+      "name": "10: a |  | 4",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 4
+      },
+      "output": "a"
+    },
+    {
+      "name": "11: a |  | 5",
+      "input": {
+        "name": "a",
+        "extension": "",
+        "limit": 5
+      },
+      "output": "a"
+    },
+    {
+      "name": "12: a.txt | txt | 0",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 0
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "13: a.txt | txt | 1",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 1
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "14: a.txt | txt | 6",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 6
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "15: a.txt | txt | 12",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 12
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "16: a.txt | txt | 5",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 5
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "17: a.txt | txt | 7",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 7
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "18: a.txt | txt | 14",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 14
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "19: a.txt | txt | 15",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 15
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "20: a.txt | txt | 16",
+      "input": {
+        "name": "a.txt",
+        "extension": "txt",
+        "limit": 16
+      },
+      "output": "a.txt"
+    },
+    {
+      "name": "21: .txt | txt | 0",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 0
+      },
+      "output": ".txt"
+    },
+    {
+      "name": "22: .txt | txt | 1",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 1
+      },
+      "output": ".txt"
+    },
+    {
+      "name": "23: .txt | txt | 6",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 6
+      },
+      "output": ".…"
+    },
+    {
+      "name": "24: .txt | txt | 12",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 12
+      },
+      "output": ".txt"
+    },
+    {
+      "name": "25: .txt | txt | 3",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 3
+      },
+      "output": ".txt"
+    },
+    {
+      "name": "26: .txt | txt | 5",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 5
+      },
+      "output": ".…"
+    },
+    {
+      "name": "27: .txt | txt | 10",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 10
+      },
+      "output": ".…xt"
+    },
+    {
+      "name": "28: .txt | txt | 11",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 11
+      },
+      "output": ".txt"
+    },
+    {
+      "name": "29: Miradouro do Monte.jpeg | jpeg | 0",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 0
+      },
+      "output": "Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "30: Miradouro do Monte.jpeg | jpeg | 1",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 1
+      },
+      "output": "Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "31: Miradouro do Monte.jpeg | jpeg | 6",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 6
+      },
+      "output": "Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "32: Miradouro do Monte.jpeg | jpeg | 12",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 12
+      },
+      "output": "Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "33: Miradouro do Monte.jpeg | jpeg | 26",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 26
+      },
+      "output": "Mi….jpeg"
+    },
+    {
+      "name": "34: Miradouro do Monte.jpeg | jpeg | 40",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 40
+      },
+      "output": "M…Monte.jpeg"
+    },
+    {
+      "name": "35: Miradouro do Monte.jpeg | jpeg | 79",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 79
+      },
+      "output": "Miradouro do…Monte.jpeg"
+    },
+    {
+      "name": "36: Miradouro do Monte.jpeg | jpeg | 80",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 80
+      },
+      "output": "Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "37: Miradouro do Monte.jpeg | jpeg | 81",
+      "input": {
+        "name": "Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 81
+      },
+      "output": "Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "38: Panorama Miradouro do Monte.jpeg | jpeg | 0",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 0
+      },
+      "output": "Panorama Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "39: Panorama Miradouro do Monte.jpeg | jpeg | 1",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 1
+      },
+      "output": "Panorama Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "40: Panorama Miradouro do Monte.jpeg | jpeg | 6",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 6
+      },
+      "output": "Panorama Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "41: Panorama Miradouro do Monte.jpeg | jpeg | 12",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 12
+      },
+      "output": "Panorama Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "42: Panorama Miradouro do Monte.jpeg | jpeg | 38",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 38
+      },
+      "output": "P…Monte.jpeg"
+    },
+    {
+      "name": "43: Panorama Miradouro do Monte.jpeg | jpeg | 57",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 57
+      },
+      "output": "Panora…Monte.jpeg"
+    },
+    {
+      "name": "44: Panorama Miradouro do Monte.jpeg | jpeg | 114",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 114
+      },
+      "output": "Panorama Miradouro do…Monte.jpeg"
+    },
+    {
+      "name": "45: Panorama Miradouro do Monte.jpeg | jpeg | 115",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 115
+      },
+      "output": "Panorama Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "46: Panorama Miradouro do Monte.jpeg | jpeg | 116",
+      "input": {
+        "name": "Panorama Miradouro do Monte.jpeg",
+        "extension": "jpeg",
+        "limit": 116
+      },
+      "output": "Panorama Miradouro do Monte.jpeg"
+    },
+    {
+      "name": "47: no extension at all in this long name |  | 0",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 0
+      },
+      "output": "no extension at all in this long name"
+    },
+    {
+      "name": "48: no extension at all in this long name |  | 1",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 1
+      },
+      "output": "no extension at all in this long name"
+    },
+    {
+      "name": "49: no extension at all in this long name |  | 6",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 6
+      },
+      "output": "n…"
+    },
+    {
+      "name": "50: no extension at all in this long name |  | 12",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 12
+      },
+      "output": "no…e"
+    },
+    {
+      "name": "51: no extension at all in this long name |  | 41",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 41
+      },
+      "output": "no exte… name"
+    },
+    {
+      "name": "52: no extension at all in this long name |  | 61",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 61
+      },
+      "output": "no extension a… name"
+    },
+    {
+      "name": "53: no extension at all in this long name |  | 122",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 122
+      },
+      "output": "no extension at all in this lon… name"
+    },
+    {
+      "name": "54: no extension at all in this long name |  | 123",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 123
+      },
+      "output": "no extension at all in this long name"
+    },
+    {
+      "name": "55: no extension at all in this long name |  | 124",
+      "input": {
+        "name": "no extension at all in this long name",
+        "extension": "",
+        "limit": 124
+      },
+      "output": "no extension at all in this long name"
+    },
+    {
+      "name": "56: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 0",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 0
+      },
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "57: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 1",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 1
+      },
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "58: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 6",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 6
+      },
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "59: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 12",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 12
+      },
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "60: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 16",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 16
+      },
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "61: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 25",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 25
+      },
+      "output": "🎉…🎉🎉.png"
+    },
+    {
+      "name": "62: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 49",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 49
+      },
+      "output": "🎉🎉🎉🎉🎉🎉…🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "63: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 50",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 50
+      },
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "64: 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png | png | 51",
+      "input": {
+        "name": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png",
+        "extension": "png",
+        "limit": 51
+      },
+      "output": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉.png"
+    },
+    {
+      "name": "65: éééééééé.txt | txt | 0",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 0
+      },
+      "output": "éééééééé.txt"
+    },
+    {
+      "name": "66: éééééééé.txt | txt | 1",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 1
+      },
+      "output": "éééééééé.txt"
+    },
+    {
+      "name": "67: éééééééé.txt | txt | 6",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 6
+      },
+      "output": "éééééééé.txt"
+    },
+    {
+      "name": "68: éééééééé.txt | txt | 12",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 12
+      },
+      "output": "éééééééé.txt"
+    },
+    {
+      "name": "69: éééééééé.txt | txt | 27",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 27
+      },
+      "output": "e…é.txt"
+    },
+    {
+      "name": "70: éééééééé.txt | txt | 41",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 41
+      },
+      "output": "e…́éé.txt"
+    },
+    {
+      "name": "71: éééééééé.txt | txt | 82",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 82
+      },
+      "output": "ééééé…́éé.txt"
+    },
+    {
+      "name": "72: éééééééé.txt | txt | 83",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 83
+      },
+      "output": "éééééééé.txt"
+    },
+    {
+      "name": "73: éééééééé.txt | txt | 84",
+      "input": {
+        "name": "éééééééé.txt",
+        "extension": "txt",
+        "limit": 84
+      },
+      "output": "éééééééé.txt"
+    },
+    {
+      "name": "74: trailing space before the cut here and there.txt | txt | 0",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 0
+      },
+      "output": "trailing space before the cut here and there.txt"
+    },
+    {
+      "name": "75: trailing space before the cut here and there.txt | txt | 1",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 1
+      },
+      "output": "trailing space before the cut here and there.txt"
+    },
+    {
+      "name": "76: trailing space before the cut here and there.txt | txt | 6",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 6
+      },
+      "output": "trailing space before the cut here and there.txt"
+    },
+    {
+      "name": "77: trailing space before the cut here and there.txt | txt | 12",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 12
+      },
+      "output": "trailing space before the cut here and there.txt"
+    },
+    {
+      "name": "78: trailing space before the cut here and there.txt | txt | 61",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 61
+      },
+      "output": "trailin…there.txt"
+    },
+    {
+      "name": "79: trailing space before the cut here and there.txt | txt | 91",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 91
+      },
+      "output": "trailing space…there.txt"
+    },
+    {
+      "name": "80: trailing space before the cut here and there.txt | txt | 182",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 182
+      },
+      "output": "trailing space before the cut here and…there.txt"
+    },
+    {
+      "name": "81: trailing space before the cut here and there.txt | txt | 183",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 183
+      },
+      "output": "trailing space before the cut here and there.txt"
+    },
+    {
+      "name": "82: trailing space before the cut here and there.txt | txt | 184",
+      "input": {
+        "name": "trailing space before the cut here and there.txt",
+        "extension": "txt",
+        "limit": 184
+      },
+      "output": "trailing space before the cut here and there.txt"
+    },
+    {
+      "name": "83: name with a NO-BREAK   space and   em spaces  .md | md | 0",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 0
+      },
+      "output": "name with a NO-BREAK   space and   em spaces  .md"
+    },
+    {
+      "name": "84: name with a NO-BREAK   space and   em spaces  .md | md | 1",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 1
+      },
+      "output": "name with a NO-BREAK   space and   em spaces  .md"
+    },
+    {
+      "name": "85: name with a NO-BREAK   space and   em spaces  .md | md | 6",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 6
+      },
+      "output": "name with a NO-BREAK   space and   em spaces  .md"
+    },
+    {
+      "name": "86: name with a NO-BREAK   space and   em spaces  .md | md | 12",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 12
+      },
+      "output": "name with a NO-BREAK   space and   em spaces  .md"
+    },
+    {
+      "name": "87: name with a NO-BREAK   space and   em spaces  .md | md | 58",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 58
+      },
+      "output": "name wi…ces  .md"
+    },
+    {
+      "name": "88: name with a NO-BREAK   space and   em spaces  .md | md | 88",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 88
+      },
+      "output": "name with a N…ces  .md"
+    },
+    {
+      "name": "89: name with a NO-BREAK   space and   em spaces  .md | md | 175",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 175
+      },
+      "output": "name with a NO-BREAK   space and   em sp…ces  .md"
+    },
+    {
+      "name": "90: name with a NO-BREAK   space and   em spaces  .md | md | 176",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 176
+      },
+      "output": "name with a NO-BREAK   space and   em spaces  .md"
+    },
+    {
+      "name": "91: name with a NO-BREAK   space and   em spaces  .md | md | 177",
+      "input": {
+        "name": "name with a NO-BREAK   space and   em spaces  .md",
+        "extension": "md",
+        "limit": 177
+      },
+      "output": "name with a NO-BREAK   space and   em spaces  .md"
+    },
+    {
+      "name": "92: UPPER.TXT | txt | 0",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 0
+      },
+      "output": "UPPER.TXT"
+    },
+    {
+      "name": "93: UPPER.TXT | txt | 1",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 1
+      },
+      "output": "UPPER.TXT"
+    },
+    {
+      "name": "94: UPPER.TXT | txt | 6",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 6
+      },
+      "output": "UPPER.TXT"
+    },
+    {
+      "name": "95: UPPER.TXT | txt | 12",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 12
+      },
+      "output": "UPPER.TXT"
+    },
+    {
+      "name": "96: UPPER.TXT | txt | 18",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 18
+      },
+      "output": "UP….txt"
+    },
+    {
+      "name": "97: UPPER.TXT | txt | 35",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 35
+      },
+      "output": "UP…ER.txt"
+    },
+    {
+      "name": "98: UPPER.TXT | txt | 36",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 36
+      },
+      "output": "UPPER.TXT"
+    },
+    {
+      "name": "99: UPPER.TXT | txt | 37",
+      "input": {
+        "name": "UPPER.TXT",
+        "extension": "txt",
+        "limit": 37
+      },
+      "output": "UPPER.TXT"
+    },
+    {
+      "name": "100: archive.tar.gz | gz | 0",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 0
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "101: archive.tar.gz | gz | 1",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 1
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "102: archive.tar.gz | gz | 6",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 6
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "103: archive.tar.gz | gz | 12",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 12
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "104: archive.tar.gz | gz | 20",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 20
+      },
+      "output": "a….gz"
+    },
+    {
+      "name": "105: archive.tar.gz | gz | 30",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 30
+      },
+      "output": "a…ar.gz"
+    },
+    {
+      "name": "106: archive.tar.gz | gz | 59",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 59
+      },
+      "output": "archi…e.tar.gz"
+    },
+    {
+      "name": "107: archive.tar.gz | gz | 60",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 60
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "108: archive.tar.gz | gz | 61",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "gz",
+        "limit": 61
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "109: archive.tar.gz | tar.gz | 0",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 0
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "110: archive.tar.gz | tar.gz | 1",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 1
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "111: archive.tar.gz | tar.gz | 6",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 6
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "112: archive.tar.gz | tar.gz | 12",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 12
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "113: archive.tar.gz | tar.gz | 20",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 20
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "114: archive.tar.gz | tar.gz | 30",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 30
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "115: archive.tar.gz | tar.gz | 59",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 59
+      },
+      "output": "arc…ive.tar.gz"
+    },
+    {
+      "name": "116: archive.tar.gz | tar.gz | 60",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 60
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "117: archive.tar.gz | tar.gz | 61",
+      "input": {
+        "name": "archive.tar.gz",
+        "extension": "tar.gz",
+        "limit": 61
+      },
+      "output": "archive.tar.gz"
+    },
+    {
+      "name": "118: IMG_Final___Monte_notes | é | 10",
+      "input": {
+        "name": "IMG_Final___Monte_notes",
+        "extension": "é",
+        "limit": 10
+      },
+      "output": "I…s"
+    },
+    {
+      "name": "119: 👩‍👩‍👧‍👦 2026 𝔘𝔫𝔦 copy _ Ünï.swift | swift | 81",
+      "input": {
+        "name": "👩‍👩‍👧‍👦 2026 𝔘𝔫𝔦 copy _ Ünï.swift",
+        "extension": "swift",
+        "limit": 81
+      },
+      "output": "👩‍👩‍👧‍👦 2026…_ Ünï.swift"
+    },
+    {
+      "name": "120: 2026 - Monte naïve report Monte IMG.md | md | 118",
+      "input": {
+        "name": "2026 - Monte naïve report Monte IMG.md",
+        "extension": "md",
+        "limit": 118
+      },
+      "output": "2026 - Monte naïve repo…e IMG.md"
+    },
+    {
+      "name": "121: Ünï..naïvenaïveMonteé_.jpeg | jpeg | 27",
+      "input": {
+        "name": "Ünï..naïvenaïveMonteé_.jpeg",
+        "extension": "jpeg",
+        "limit": 27
+      },
+      "output": "Ün…_.jpeg"
+    },
+    {
+      "name": "122: Monte_𝔘𝔫𝔦Panorama.swift | swift | 39",
+      "input": {
+        "name": "Monte_𝔘𝔫𝔦Panorama.swift",
+        "extension": "swift",
+        "limit": 39
+      },
+      "output": "Mo…ma.swift"
+    },
+    {
+      "name": "123: (1)MiradourocopyaMiradouroMonteMonte.j | j | 47",
+      "input": {
+        "name": "(1)MiradourocopyaMiradouroMonteMonte.j",
+        "extension": "j",
+        "limit": 47
+      },
+      "output": "(1)Mir…Monte.j"
+    },
+    {
+      "name": "124: notes x y x y Ünï Miradouro | PDF | 53",
+      "input": {
+        "name": "notes x y x y Ünï Miradouro",
+        "extension": "PDF",
+        "limit": 53
+      },
+      "output": "notes x y x…douro"
+    },
+    {
+      "name": "125: 日本語_copyMonte2026.jpeg | jpeg | 55",
+      "input": {
+        "name": "日本語_copyMonte2026.jpeg",
+        "extension": "jpeg",
+        "limit": 55
+      },
+      "output": "日本語_c…e2026.jpeg"
+    },
+    {
+      "name": "126: é_IMG_  _a_draft.PDF | PDF | 55",
+      "input": {
+        "name": "é_IMG_  _a_draft.PDF",
+        "extension": "PDF",
+        "limit": 55
+      },
+      "output": "é_IM…draft.PDF"
+    },
+    {
+      "name": "127: .-report-👩‍👩‍👧‍👦-2026-日本語-IMG.tar.gz | tar.gz | 0",
+      "input": {
+        "name": ".-report-👩‍👩‍👧‍👦-2026-日本語-IMG.tar.gz",
+        "extension": "tar.gz",
+        "limit": 0
+      },
+      "output": ".-report-👩‍👩‍👧‍👦-2026-日本語-IMG.tar.gz"
+    },
+    {
+      "name": "128: 🎉-é-IMG-Miradouro-Monte.tar.gz | tar.gz | 79",
+      "input": {
+        "name": "🎉-é-IMG-Miradouro-Monte.tar.gz",
+        "extension": "tar.gz",
+        "limit": 79
+      },
+      "output": "🎉-é-IMG-M…Monte.tar.gz"
+    },
+    {
+      "name": "129: x y-é-Résumé-Miradouro-Final.🎉 | 🎉 | 61",
+      "input": {
+        "name": "x y-é-Résumé-Miradouro-Final.🎉",
+        "extension": "🎉",
+        "limit": 61
+      },
+      "output": "x y-é-Résu…Final.🎉"
+    },
+    {
+      "name": "130: Miradouro.aIMGbnotes2026copy.PDF | PDF | 24",
+      "input": {
+        "name": "Miradouro.aIMGbnotes2026copy.PDF",
+        "extension": "PDF",
+        "limit": 24
+      },
+      "output": "Mi…y.PDF"
+    },
+    {
+      "name": "131: b (1) 👩‍👩‍👧‍👦 b 𝔘𝔫𝔦 Ünï Final . 👩‍👩‍👧‍👦.app | app | 67",
+      "input": {
+        "name": "b (1) 👩‍👩‍👧‍👦 b 𝔘𝔫𝔦 Ünï Final . 👩‍👩‍👧‍👦.app",
+        "extension": "app",
+        "limit": 67
+      },
+      "output": "b (1) 👩‍👩‍…👩‍👧‍👦.app"
+    },
+    {
+      "name": "132: 👩‍👩‍👧‍👦-naïve-naïve-日本語-Ünï.PDF | PDF | 67",
+      "input": {
+        "name": "👩‍👩‍👧‍👦-naïve-naïve-日本語-Ünï.PDF",
+        "extension": "PDF",
+        "limit": 67
+      },
+      "output": "👩‍👩‍👧‍👦-naïv…語-Ünï.PDF"
+    },
+    {
+      "name": "133: 𝔘𝔫𝔦-Monte.app | app | 26",
+      "input": {
+        "name": "𝔘𝔫𝔦-Monte.app",
+        "extension": "app",
+        "limit": 26
+      },
+      "output": "𝔘…e.app"
+    },
+    {
+      "name": "134: _-a.🎉 | 🎉 | 9",
+      "input": {
+        "name": "_-a.🎉",
+        "extension": "🎉",
+        "limit": 9
+      },
+      "output": "_-a.🎉"
+    },
+    {
+      "name": "135: copy x y Miradouro Résumé _ 2026 a.🎉 | 🎉 | 55",
+      "input": {
+        "name": "copy x y Miradouro Résumé _ 2026 a.🎉",
+        "extension": "🎉",
+        "limit": 55
+      },
+      "output": "copy x…026 a.🎉"
+    },
+    {
+      "name": "136: _ 👩‍👩‍👧‍👦 report (1) Monte    Ünï b.txt | txt | 29",
+      "input": {
+        "name": "_ 👩‍👩‍👧‍👦 report (1) Monte    Ünï b.txt",
+        "extension": "txt",
+        "limit": 29
+      },
+      "output": "_… b.txt"
+    },
+    {
+      "name": "137: MiradourocopyRésuméx yPanoramaÜnï-.🎉 | 🎉 | 82",
+      "input": {
+        "name": "MiradourocopyRésuméx yPanoramaÜnï-.🎉",
+        "extension": "🎉",
+        "limit": 82
+      },
+      "output": "MiradourocopyR…aÜnï-.🎉"
+    },
+    {
+      "name": "138: a 2026 (1) Résumé scan copy Monte | PDF | 68",
+      "input": {
+        "name": "a 2026 (1) Résumé scan copy Monte",
+        "extension": "PDF",
+        "limit": 68
+      },
+      "output": "a 2026 (1) Ré…Monte"
+    },
+    {
+      "name": "139: (1) copy naïve . Final 𝔘𝔫𝔦.tar.gz | tar.gz | 29",
+      "input": {
+        "name": "(1) copy naïve . Final 𝔘𝔫𝔦.tar.gz",
+        "extension": "tar.gz",
+        "limit": 29
+      },
+      "output": "(1) copy naïve . Final 𝔘𝔫𝔦.tar.gz"
+    },
+    {
+      "name": "140: copy 2026 notes Final Final a 𝔘𝔫𝔦 _.TXT | txt | 50",
+      "input": {
+        "name": "copy 2026 notes Final Final a 𝔘𝔫𝔦 _.TXT",
+        "extension": "txt",
+        "limit": 50
+      },
+      "output": "copy…𝔘𝔫𝔦 _.txt"
+    },
+    {
+      "name": "141: .txt | txt | 2",
+      "input": {
+        "name": ".txt",
+        "extension": "txt",
+        "limit": 2
+      },
+      "output": ".txt"
+    },
+    {
+      "name": "142: b-é-scan-notes-👩‍👩‍👧‍👦-report-copy-draft-x y.j | j | 11",
+      "input": {
+        "name": "b-é-scan-notes-👩‍👩‍👧‍👦-report-copy-draft-x y.j",
+        "extension": "j",
+        "limit": 11
+      },
+      "output": "b-é-scan-notes-👩‍👩‍👧‍👦-report-copy-draft-x y.j"
+    },
+    {
+      "name": "143: notes-a-x y-Monte-(1)-report-2026-Miradouro.tar.gz | tar.gz | 160",
+      "input": {
+        "name": "notes-a-x y-Monte-(1)-report-2026-Miradouro.tar.gz",
+        "extension": "tar.gz",
+        "limit": 160
+      },
+      "output": "notes-a-x y-Monte-(1)-report-2026-Mi…douro.tar.gz"
+    },
+    {
+      "name": "144: _reportMiradourox yRésuméPanoramacopy(1)report.j | j | 107",
+      "input": {
+        "name": "_reportMiradourox yRésuméPanoramacopy(1)report.j",
+        "extension": "j",
+        "limit": 107
+      },
+      "output": "_reportMiradourox yRé…eport.j"
+    },
+    {
+      "name": "145: (1) a Final . | numbers | 34",
+      "input": {
+        "name": "(1) a Final .",
+        "extension": "numbers",
+        "limit": 34
+      },
+      "output": "(1)…nal ."
+    },
+    {
+      "name": "146: Miradouro x y Monte a é 日本語 Final . -.swift | swift | 151",
+      "input": {
+        "name": "Miradouro x y Monte a é 日本語 Final . -.swift",
+        "extension": "swift",
+        "limit": 151
+      },
+      "output": "Miradouro x y Monte a é 日本語 Fin…l . -.swift"
+    },
+    {
+      "name": "147: .numbers | numbers | 10",
+      "input": {
+        "name": ".numbers",
+        "extension": "numbers",
+        "limit": 10
+      },
+      "output": ".n…s"
+    },
+    {
+      "name": "148: 👩‍👩‍👧‍👦 _.txt | txt | 33",
+      "input": {
+        "name": "👩‍👩‍👧‍👦 _.txt",
+        "extension": "txt",
+        "limit": 33
+      },
+      "output": "👩‍👩‍…‍👦 _.txt"
+    },
+    {
+      "name": "149: copy.app | app | 8",
+      "input": {
+        "name": "copy.app",
+        "extension": "app",
+        "limit": 8
+      },
+      "output": "copy.app"
+    },
+    {
+      "name": "150: copy-Monte-  -draft-🎉-Miradouro-  .é | é | 52",
+      "input": {
+        "name": "copy-Monte-  -draft-🎉-Miradouro-  .é",
+        "extension": "é",
+        "limit": 52
+      },
+      "output": "copy-M…ro-  .é"
+    },
+    {
+      "name": "151: 👩‍👩‍👧‍👦 b notes    👩‍👩‍👧‍👦 -.🎉 | 🎉 | 53",
+      "input": {
+        "name": "👩‍👩‍👧‍👦 b notes    👩‍👩‍👧‍👦 -.🎉",
+        "extension": "🎉",
+        "limit": 53
+      },
+      "output": "👩‍👩‍👧‍👦 b…👧‍👦 -.🎉"
+    },
+    {
+      "name": "152: x y.tar.gz | tar.gz | 16",
+      "input": {
+        "name": "x y.tar.gz",
+        "extension": "tar.gz",
+        "limit": 16
+      },
+      "output": "x y.tar.gz"
+    },
+    {
+      "name": "153:   _  _report_𝔘𝔫𝔦_draft_._b.PDF | PDF | 79",
+      "input": {
+        "name": "  _  _report_𝔘𝔫𝔦_draft_._b.PDF",
+        "extension": "PDF",
+        "limit": 79
+      },
+      "output": "  _  _report_…t_._b.PDF"
+    },
+    {
+      "name": "154: 日本語 🎉 notes draft é.swift | swift | 68",
+      "input": {
+        "name": "日本語 🎉 notes draft é.swift",
+        "extension": "swift",
+        "limit": 68
+      },
+      "output": "日本語 🎉 no…ft é.swift"
+    },
+    {
+      "name": "155: IMG a x y Résumé Résumé x y Final Ünï b.numbers | numbers | 52",
+      "input": {
+        "name": "IMG a x y Résumé Résumé x y Final Ünï b.numbers",
+        "extension": "numbers",
+        "limit": 52
+      },
+      "output": "IM… b.numbers"
+    },
+    {
+      "name": "156: Final.É | é | 25",
+      "input": {
+        "name": "Final.É",
+        "extension": "é",
+        "limit": 25
+      },
+      "output": "Final.É"
+    },
+    {
+      "name": "157: x y-.-report-(1)-Panorama-é.txt | txt | 94",
+      "input": {
+        "name": "x y-.-report-(1)-Panorama-é.txt",
+        "extension": "txt",
+        "limit": 94
+      },
+      "output": "x y-.-report-(1)-P…ma-é.txt"
+    },
+    {
+      "name": "158: a-Monte-draft-x y-.-report-_.PDF | PDF | 69",
+      "input": {
+        "name": "a-Monte-draft-x y-.-report-_.PDF",
+        "extension": "PDF",
+        "limit": 69
+      },
+      "output": "a-Monte-draf…ort-_.PDF"
+    },
+    {
+      "name": "159: --Final-draft-𝔘𝔫𝔦-Monte-日本語-report-IMG | 🎉 | 89",
+      "input": {
+        "name": "--Final-draft-𝔘𝔫𝔦-Monte-日本語-report-IMG",
+        "extension": "🎉",
+        "limit": 89
+      },
+      "output": "--Final-draft-𝔘𝔫𝔦-Mont…t-IMG"
+    },
+    {
+      "name": "160: x y-x y---notes-(1)-copy-x y.PDF | PDF | 50",
+      "input": {
+        "name": "x y-x y---notes-(1)-copy-x y.PDF",
+        "extension": "PDF",
+        "limit": 50
+      },
+      "output": "x y-x y-…y-x y.PDF"
+    },
+    {
+      "name": "161: naïve.🎉 | 🎉 | 18",
+      "input": {
+        "name": "naïve.🎉",
+        "extension": "🎉",
+        "limit": 18
+      },
+      "output": "n…ve.🎉"
+    },
+    {
+      "name": "162: .-naïve-notes-Résumé-.-Panorama-🎉-naïve |  | 112",
+      "input": {
+        "name": ".-naïve-notes-Résumé-.-Panorama-🎉-naïve",
+        "extension": "",
+        "limit": 112
+      },
+      "output": ".-naïve-notes-Résumé-.-Pano…naïve"
+    },
+    {
+      "name": "163: Miradouro Final (1) é notes - ..tar.gz | tar.gz | 82",
+      "input": {
+        "name": "Miradouro Final (1) é notes - ..tar.gz",
+        "extension": "tar.gz",
+        "limit": 82
+      },
+      "output": "Miradouro…s - ..tar.gz"
+    },
+    {
+      "name": "164: . x y Miradouro é report.🎉 | 🎉 | 53",
+      "input": {
+        "name": ". x y Miradouro é report.🎉",
+        "extension": "🎉",
+        "limit": 53
+      },
+      "output": ". x y Mi…eport.🎉"
+    },
+    {
+      "name": "165: scan a 🎉 日本語 _.SWIFT | swift | 23",
+      "input": {
+        "name": "scan a 🎉 日本語 _.SWIFT",
+        "extension": "swift",
+        "limit": 23
+      },
+      "output": "scan a 🎉 日本語 _.SWIFT"
+    },
+    {
+      "name": "166: 👩‍👩‍👧‍👦 . draft 🎉 x y draft 👩‍👩‍👧‍👦 🎉 report.jpeg | jpeg | 137",
+      "input": {
+        "name": "👩‍👩‍👧‍👦 . draft 🎉 x y draft 👩‍👩‍👧‍👦 🎉 report.jpeg",
+        "extension": "jpeg",
+        "limit": 137
+      },
+      "output": "👩‍👩‍👧‍👦 . draft 🎉 x y draft 👩…eport.jpeg"
+    },
+    {
+      "name": "167: b IMG scan scan a copy 🎉 . |  | 33",
+      "input": {
+        "name": "b IMG scan scan a copy 🎉 .",
+        "extension": "",
+        "limit": 33
+      },
+      "output": "b I…y 🎉 ."
+    },
+    {
+      "name": "168: 日本語RésumécopyPanorama.tar.gz | tar.gz | 12",
+      "input": {
+        "name": "日本語RésumécopyPanorama.tar.gz",
+        "extension": "tar.gz",
+        "limit": 12
+      },
+      "output": "日本語RésumécopyPanorama.tar.gz"
+    },
+    {
+      "name": "169: IMG draft scan Monte.PDF | PDF | 25",
+      "input": {
+        "name": "IMG draft scan Monte.PDF",
+        "extension": "PDF",
+        "limit": 25
+      },
+      "output": "I…te.PDF"
+    },
+    {
+      "name": "170: .-Résumé-_-👩‍👩‍👧‍👦-draft-naïve-.-👩‍👩‍👧‍👦-a.jpeg | jpeg | 34",
+      "input": {
+        "name": ".-Résumé-_-👩‍👩‍👧‍👦-draft-naïve-.-👩‍👩‍👧‍👦-a.jpeg",
+        "extension": "jpeg",
+        "limit": 34
+      },
+      "output": ".…👦-a.jpeg"
+    },
+    {
+      "name": "171: (1).numbers | numbers | 17",
+      "input": {
+        "name": "(1).numbers",
+        "extension": "numbers",
+        "limit": 17
+      },
+      "output": "(1).numbers"
+    },
+    {
+      "name": "172: x y2026𝔘𝔫𝔦copy_draft.Miradouro.txt | txt | 83",
+      "input": {
+        "name": "x y2026𝔘𝔫𝔦copy_draft.Miradouro.txt",
+        "extension": "txt",
+        "limit": 83
+      },
+      "output": "x y2026𝔘𝔫𝔦cop…douro.txt"
+    },
+    {
+      "name": "173: 日本語_Final_draft___é.tar.gz | tar.gz | 27",
+      "input": {
+        "name": "日本語_Final_draft___é.tar.gz",
+        "extension": "tar.gz",
+        "limit": 27
+      },
+      "output": "日本語_Final_draft___é.tar.gz"
+    },
+    {
+      "name": "174: éPanorama.tar.gz | tar.gz | 33",
+      "input": {
+        "name": "éPanorama.tar.gz",
+        "extension": "tar.gz",
+        "limit": 33
+      },
+      "output": "e….tar.gz"
+    },
+    {
+      "name": "175: __._👩‍👩‍👧‍👦.é | é | 32",
+      "input": {
+        "name": "__._👩‍👩‍👧‍👦.é",
+        "extension": "é",
+        "limit": 32
+      },
+      "output": "__.…👩‍👧‍👦.é"
+    },
+    {
+      "name": "176: Monte . scan 👩‍👩‍👧‍👦 (1).app | app | 94",
+      "input": {
+        "name": "Monte . scan 👩‍👩‍👧‍👦 (1).app",
+        "extension": "app",
+        "limit": 94
+      },
+      "output": "Monte . scan 👩‍👩‍👧‍👦 (1).app"
+    },
+    {
+      "name": "177: .    👩‍👩‍👧‍👦 report scan Miradouro naïve Final.md | md | 151",
+      "input": {
+        "name": ".    👩‍👩‍👧‍👦 report scan Miradouro naïve Final.md",
+        "extension": "md",
+        "limit": 151
+      },
+      "output": ".    👩‍👩‍👧‍👦 report scan Miradouro…Final.md"
+    },
+    {
+      "name": "178: 日本語 2026 b report naïve Miradouro é.md | md | 96",
+      "input": {
+        "name": "日本語 2026 b report naïve Miradouro é.md",
+        "extension": "md",
+        "limit": 96
+      },
+      "output": "日本語 2026 b repo…ro é.md"
+    },
+    {
+      "name": "179: report Résumé - notes.🎉 | 🎉 | 50",
+      "input": {
+        "name": "report Résumé - notes.🎉",
+        "extension": "🎉",
+        "limit": 50
+      },
+      "output": "report…notes.🎉"
+    },
+    {
+      "name": "180: Ünï copy 𝔘𝔫𝔦 é 🎉 _ é 👩‍👩‍👧‍👦.app | app | 34",
+      "input": {
+        "name": "Ünï copy 𝔘𝔫𝔦 é 🎉 _ é 👩‍👩‍👧‍👦.app",
+        "extension": "app",
+        "limit": 34
+      },
+      "output": "Ü…👩‍👧‍👦.app"
+    },
+    {
+      "name": "181: x y.naïveéMiradouroMonteé-.numbers | numbers | 24",
+      "input": {
+        "name": "x y.naïveéMiradouroMonteé-.numbers",
+        "extension": "numbers",
+        "limit": 24
+      },
+      "output": "x y.naïveéMiradouroMonteé-.numbers"
+    },
+    {
+      "name": "182: Final.app | app | 20",
+      "input": {
+        "name": "Final.app",
+        "extension": "app",
+        "limit": 20
+      },
+      "output": "F….app"
+    },
+    {
+      "name": "183: Monte_2026_-_draft_🎉.swift | swift | 17",
+      "input": {
+        "name": "Monte_2026_-_draft_🎉.swift",
+        "extension": "swift",
+        "limit": 17
+      },
+      "output": "Monte_2026_-_draft_🎉.swift"
+    },
+    {
+      "name": "184: naïve 𝔘𝔫𝔦 👩‍👩‍👧‍👦.tar.gz | tar.gz | 90",
+      "input": {
+        "name": "naïve 𝔘𝔫𝔦 👩‍👩‍👧‍👦.tar.gz",
+        "extension": "tar.gz",
+        "limit": 90
+      },
+      "output": "naïve 𝔘𝔫𝔦 👩‍👩‍👧‍👦.tar.gz"
+    },
+    {
+      "name": "185: naïve Miradouro    draft naïve Panorama Final.txt | txt | 123",
+      "input": {
+        "name": "naïve Miradouro    draft naïve Panorama Final.txt",
+        "extension": "txt",
+        "limit": 123
+      },
+      "output": "naïve Miradouro    draft…Final.txt"
+    },
+    {
+      "name": "186: naïve 2026 b draft 👩‍👩‍👧‍👦 (1) draft.é | é | 99",
+      "input": {
+        "name": "naïve 2026 b draft 👩‍👩‍👧‍👦 (1) draft.é",
+        "extension": "é",
+        "limit": 99
+      },
+      "output": "naïve 2026 b draf…draft.é"
+    },
+    {
+      "name": "187: .j | j | 6",
+      "input": {
+        "name": ".j",
+        "extension": "j",
+        "limit": 6
+      },
+      "output": ".j"
+    },
+    {
+      "name": "188: _-FinalaMiradouroFinal.copy.🎉 | 🎉 | 60",
+      "input": {
+        "name": "_-FinalaMiradouroFinal.copy.🎉",
+        "extension": "🎉",
+        "limit": 60
+      },
+      "output": "_-FinalaMi….copy.🎉"
+    },
+    {
+      "name": "189: .tar.gz | tar.gz | 11",
+      "input": {
+        "name": ".tar.gz",
+        "extension": "tar.gz",
+        "limit": 11
+      },
+      "output": ".…z"
+    },
+    {
+      "name": "190: scan.md | md | 21",
+      "input": {
+        "name": "scan.md",
+        "extension": "md",
+        "limit": 21
+      },
+      "output": "s…an.md"
+    },
+    {
+      "name": "191: b.j | j | 8",
+      "input": {
+        "name": "b.j",
+        "extension": "j",
+        "limit": 8
+      },
+      "output": "b.j"
+    },
+    {
+      "name": "192: Monte.É | é | 12",
+      "input": {
+        "name": "Monte.É",
+        "extension": "é",
+        "limit": 12
+      },
+      "output": "Monte.É"
+    },
+    {
+      "name": "193: 日本語 copy é Ünï.PDF | PDF | 14",
+      "input": {
+        "name": "日本語 copy é Ünï.PDF",
+        "extension": "PDF",
+        "limit": 14
+      },
+      "output": "日本語 copy é Ünï.PDF"
+    },
+    {
+      "name": "194: 2026   .j | j | 22",
+      "input": {
+        "name": "2026   .j",
+        "extension": "j",
+        "limit": 22
+      },
+      "output": "2…   .j"
+    },
+    {
+      "name": "195: notes_🎉_Panorama_Monte.swift | swift | 76",
+      "input": {
+        "name": "notes_🎉_Panorama_Monte.swift",
+        "extension": "swift",
+        "limit": 76
+      },
+      "output": "notes_🎉_Panor…Monte.swift"
+    },
+    {
+      "name": "196: 👩‍👩‍👧‍👦 日本語 - naïve |  | 54",
+      "input": {
+        "name": "👩‍👩‍👧‍👦 日本語 - naïve",
+        "extension": "",
+        "limit": 54
+      },
+      "output": "👩‍👩‍👧‍👦 日本語…naïve"
+    },
+    {
+      "name": "197: x ynotes-Ünï.numbers | numbers | 42",
+      "input": {
+        "name": "x ynotes-Ünï.numbers",
+        "extension": "numbers",
+        "limit": 42
+      },
+      "output": "x…ï.numbers"
+    },
+    {
+      "name": "198: .numbers | numbers | 15",
+      "input": {
+        "name": ".numbers",
+        "extension": "numbers",
+        "limit": 15
+      },
+      "output": ".n…rs"
+    },
+    {
+      "name": "199: Miradouro notes Résumé.PDF | PDF | 9",
+      "input": {
+        "name": "Miradouro notes Résumé.PDF",
+        "extension": "PDF",
+        "limit": 9
+      },
+      "output": "Miradouro notes Résumé.PDF"
+    },
+    {
+      "name": "200: .🎉 | 🎉 | 7",
+      "input": {
+        "name": ".🎉",
+        "extension": "🎉",
+        "limit": 7
+      },
+      "output": ".🎉"
+    },
+    {
+      "name": "201: report 日本語 Miradouro 🎉 Final é IMG 🎉 Monte |  | 51",
+      "input": {
+        "name": "report 日本語 Miradouro 🎉 Final é IMG 🎉 Monte",
+        "extension": "",
+        "limit": 51
+      },
+      "output": "report 日…Monte"
+    },
+    {
+      "name": "202: Panorama Résumé |  | 51",
+      "input": {
+        "name": "Panorama Résumé",
+        "extension": "",
+        "limit": 51
+      },
+      "output": "Panoram…ésumé"
+    },
+    {
+      "name": "203: 2026 IMG Ünï 日本語 2026 x y |  | 87",
+      "input": {
+        "name": "2026 IMG Ünï 日本語 2026 x y",
+        "extension": "",
+        "limit": 87
+      },
+      "output": "2026 IMG Ünï 日本語 2…6 x y"
+    },
+    {
+      "name": "204: - 2026 _ a notes    é Ünï Miradouro.é | é | 62",
+      "input": {
+        "name": "- 2026 _ a notes    é Ünï Miradouro.é",
+        "extension": "é",
+        "limit": 62
+      },
+      "output": "- 2026 _…douro.é"
+    },
+    {
+      "name": "205: (1) a naïve 日本語 é Ünï (1) x y.app | app | 112",
+      "input": {
+        "name": "(1) a naïve 日本語 é Ünï (1) x y.app",
+        "extension": "app",
+        "limit": 112
+      },
+      "output": "(1) a naïve 日本語 é Ün…) x y.app"
+    },
+    {
+      "name": "206: naïve_(1)___._Panorama | txt | 70",
+      "input": {
+        "name": "naïve_(1)___._Panorama",
+        "extension": "txt",
+        "limit": 70
+      },
+      "output": "naïve_(1)___._…orama"
+    },
+    {
+      "name": "207: 𝔘𝔫𝔦 Miradouro copy 日本語 b IMG Résumé b Panorama.jpeg | jpeg | 164",
+      "input": {
+        "name": "𝔘𝔫𝔦 Miradouro copy 日本語 b IMG Résumé b Panorama.jpeg",
+        "extension": "jpeg",
+        "limit": 164
+      },
+      "output": "𝔘𝔫𝔦 Miradouro copy 日本語 b IMG R…orama.jpeg"
+    },
+    {
+      "name": "208: Ünï (1) Final 日本語 𝔘𝔫𝔦 Final b 2026 | txt | 94",
+      "input": {
+        "name": "Ünï (1) Final 日本語 𝔘𝔫𝔦 Final b 2026",
+        "extension": "txt",
+        "limit": 94
+      },
+      "output": "Ünï (1) Final 日本語 𝔘𝔫… 2026"
+    },
+    {
+      "name": "209: 2026-draft-report-🎉-Ünï.é | é | 74",
+      "input": {
+        "name": "2026-draft-report-🎉-Ünï.é",
+        "extension": "é",
+        "limit": 74
+      },
+      "output": "2026-draft-re…🎉-Ünï.é"
+    },
+    {
+      "name": "210: b-draft-notes-_-2026-x y-b-report | swift | 90",
+      "input": {
+        "name": "b-draft-notes-_-2026-x y-b-report",
+        "extension": "swift",
+        "limit": 90
+      },
+      "output": "b-draft-notes-_-2026-x…eport"
+    },
+    {
+      "name": "211: Ünï x y a 🎉 notes Ünï Monte x y.🎉 | 🎉 | 97",
+      "input": {
+        "name": "Ünï x y a 🎉 notes Ünï Monte x y.🎉",
+        "extension": "🎉",
+        "limit": 97
+      },
+      "output": "Ünï x y a 🎉 notes Ünï…e x y.🎉"
+    },
+    {
+      "name": "212: a-scan-Final-é-.-report-copy.numbers | numbers | 117",
+      "input": {
+        "name": "a-scan-Final-é-.-report-copy.numbers",
+        "extension": "numbers",
+        "limit": 117
+      },
+      "output": "a-scan-Final-é-.-re…-copy.numbers"
+    },
+    {
+      "name": "213: 𝔘𝔫𝔦_copy_notes.j | j | 46",
+      "input": {
+        "name": "𝔘𝔫𝔦_copy_notes.j",
+        "extension": "j",
+        "limit": 46
+      },
+      "output": "𝔘𝔫𝔦_co…notes.j"
+    },
+    {
+      "name": "214: 🎉 👩‍👩‍👧‍👦 IMG x y Final copy ..app | app | 80",
+      "input": {
+        "name": "🎉 👩‍👩‍👧‍👦 IMG x y Final copy ..app",
+        "extension": "app",
+        "limit": 80
+      },
+      "output": "🎉 👩‍👩‍👧‍👦 IMG…opy ..app"
+    },
+    {
+      "name": "215: .app | app | 5",
+      "input": {
+        "name": ".app",
+        "extension": "app",
+        "limit": 5
+      },
+      "output": ".…"
+    },
+    {
+      "name": "216: Miradouro.txt | txt | 30",
+      "input": {
+        "name": "Miradouro.txt",
+        "extension": "txt",
+        "limit": 30
+      },
+      "output": "M…uro.txt"
+    },
+    {
+      "name": "217: report-report-notes.PDF | PDF | 67",
+      "input": {
+        "name": "report-report-notes.PDF",
+        "extension": "PDF",
+        "limit": 67
+      },
+      "output": "report-rep…notes.PDF"
+    },
+    {
+      "name": "218: 🎉 . b é (1) (1) report x y Résumé.txt | txt | 104",
+      "input": {
+        "name": "🎉 . b é (1) (1) report x y Résumé.txt",
+        "extension": "txt",
+        "limit": 104
+      },
+      "output": "🎉 . b é (1) (1)…ésumé.txt"
+    },
+    {
+      "name": "219: copy draft copy - (1) |  | 74",
+      "input": {
+        "name": "copy draft copy - (1)",
+        "extension": "",
+        "limit": 74
+      },
+      "output": "copy draft co…- (1)"
+    },
+    {
+      "name": "220: IMG 🎉.app | app | 10",
+      "input": {
+        "name": "IMG 🎉.app",
+        "extension": "app",
+        "limit": 10
+      },
+      "output": "IMG 🎉.app"
+    },
+    {
+      "name": "221: x y Monte Final.J | j | 11",
+      "input": {
+        "name": "x y Monte Final.J",
+        "extension": "j",
+        "limit": 11
+      },
+      "output": "x….j"
+    },
+    {
+      "name": "222: é Résumé Résumé 2026 Ünï Panorama.txt | txt | 115",
+      "input": {
+        "name": "é Résumé Résumé 2026 Ünï Panorama.txt",
+        "extension": "txt",
+        "limit": 115
+      },
+      "output": "é Résumé Résumé 2…orama.txt"
+    },
+    {
+      "name": "223: ._x y_Ünï.txt | txt | 33",
+      "input": {
+        "name": "._x y_Ünï.txt",
+        "extension": "txt",
+        "limit": 33
+      },
+      "output": "._x…_Ünï.txt"
+    },
+    {
+      "name": "224: .numbers | numbers | 19",
+      "input": {
+        "name": ".numbers",
+        "extension": "numbers",
+        "limit": 19
+      },
+      "output": ".n…ers"
+    },
+    {
+      "name": "225: b🎉👩‍👩‍👧‍👦x y.🎉 | 🎉 | 29",
+      "input": {
+        "name": "b🎉👩‍👩‍👧‍👦x y.🎉",
+        "extension": "🎉",
+        "limit": 29
+      },
+      "output": "b…‍👦x y.🎉"
+    },
+    {
+      "name": "226: naïve -.numbers | numbers | 8",
+      "input": {
+        "name": "naïve -.numbers",
+        "extension": "numbers",
+        "limit": 8
+      },
+      "output": "naïve -.numbers"
+    },
+    {
+      "name": "227: 2026 report naïve Miradouro 👩‍👩‍👧‍👦 Final Miradouro Monte.tar.gz | tar.gz | 99",
+      "input": {
+        "name": "2026 report naïve Miradouro 👩‍👩‍👧‍👦 Final Miradouro Monte.tar.gz",
+        "extension": "tar.gz",
+        "limit": 99
+      },
+      "output": "2026 report na…Monte.tar.gz"
+    },
+    {
+      "name": "228: 𝔘𝔫𝔦 - Ünï Ünï . x y 👩‍👩‍👧‍👦 Miradouro _.j | j | 76",
+      "input": {
+        "name": "𝔘𝔫𝔦 - Ünï Ünï . x y 👩‍👩‍👧‍👦 Miradouro _.j",
+        "extension": "j",
+        "limit": 76
+      },
+      "output": "𝔘𝔫𝔦 - Ünï Ünï…uro _.j"
+    },
+    {
+      "name": "229: 𝔘𝔫𝔦 Ünï report.swift | swift | 62",
+      "input": {
+        "name": "𝔘𝔫𝔦 Ünï report.swift",
+        "extension": "swift",
+        "limit": 62
+      },
+      "output": "𝔘𝔫𝔦 Ün…eport.swift"
+    },
+    {
+      "name": "230: Panorama.app | app | 35",
+      "input": {
+        "name": "Panorama.app",
+        "extension": "app",
+        "limit": 35
+      },
+      "output": "P…ama.app"
+    },
+    {
+      "name": "231: Monte🎉 | jpeg | 13",
+      "input": {
+        "name": "Monte🎉",
+        "extension": "jpeg",
+        "limit": 13
+      },
+      "output": "M…e🎉"
+    },
+    {
+      "name": "232: draft a é x y copy é.jpeg | jpeg | 79",
+      "input": {
+        "name": "draft a é x y copy é.jpeg",
+        "extension": "jpeg",
+        "limit": 79
+      },
+      "output": "draft a e…py é.jpeg"
+    },
+    {
+      "name": "233: 日本語 Résumé draft Monte naïve.app | app | 60",
+      "input": {
+        "name": "日本語 Résumé draft Monte naïve.app",
+        "extension": "app",
+        "limit": 60
+      },
+      "output": "日本語 Ré…naïve.app"
+    },
+    {
+      "name": "234: x y 🎉.jpeg | jpeg | 18",
+      "input": {
+        "name": "x y 🎉.jpeg",
+        "extension": "jpeg",
+        "limit": 18
+      },
+      "output": "x y 🎉.jpeg"
+    },
+    {
+      "name": "235: scan.jpeg | jpeg | 3",
+      "input": {
+        "name": "scan.jpeg",
+        "extension": "jpeg",
+        "limit": 3
+      },
+      "output": "scan.jpeg"
+    },
+    {
+      "name": "236: b . (1) Ünï 👩‍👩‍👧‍👦 copy.jpeg | jpeg | 60",
+      "input": {
+        "name": "b . (1) Ünï 👩‍👩‍👧‍👦 copy.jpeg",
+        "extension": "jpeg",
+        "limit": 60
+      },
+      "output": "b . (… copy.jpeg"
+    },
+    {
+      "name": "237: (1)-Panorama-a.numbers | numbers | 34",
+      "input": {
+        "name": "(1)-Panorama-a.numbers",
+        "extension": "numbers",
+        "limit": 34
+      },
+      "output": "(1)-Panorama-a.numbers"
+    },
+    {
+      "name": "238: 日本語 | numbers | 9",
+      "input": {
+        "name": "日本語",
+        "extension": "numbers",
+        "limit": 9
+      },
+      "output": "日本語"
+    },
+    {
+      "name": "239: IMG.swift | swift | 32",
+      "input": {
+        "name": "IMG.swift",
+        "extension": "swift",
+        "limit": 32
+      },
+      "output": "IMG.swift"
+    },
+    {
+      "name": "240: copyRésuménaïve2026IMGIMGx y日本語é.app | app | 53",
+      "input": {
+        "name": "copyRésuménaïve2026IMGIMGx y日本語é.app",
+        "extension": "app",
+        "limit": 53
+      },
+      "output": "copy…日本語é.app"
+    },
+    {
+      "name": "241: Monte 🎉 Résumé (1) 👩‍👩‍👧‍👦    | txt | 103",
+      "input": {
+        "name": "Monte 🎉 Résumé (1) 👩‍👩‍👧‍👦   ",
+        "extension": "txt",
+        "limit": 103
+      },
+      "output": "Monte 🎉 Résumé (1) 👩‍👩‍👧‍👦   "
+    },
+    {
+      "name": "242: b 日本語 Ünï      .app | app | 37",
+      "input": {
+        "name": "b 日本語 Ünï      .app",
+        "extension": "app",
+        "limit": 37
+      },
+      "output": "b…   .app"
+    },
+    {
+      "name": "243: Panorama 👩‍👩‍👧‍👦 - Monte _ report _ -.é | é | 8",
+      "input": {
+        "name": "Panorama 👩‍👩‍👧‍👦 - Monte _ report _ -.é",
+        "extension": "é",
+        "limit": 8
+      },
+      "output": "Panorama 👩‍👩‍👧‍👦 - Monte _ report _ -.é"
+    },
+    {
+      "name": "244: Panorama_x y_copy.tar.gz | tar.gz | 26",
+      "input": {
+        "name": "Panorama_x y_copy.tar.gz",
+        "extension": "tar.gz",
+        "limit": 26
+      },
+      "output": "Panorama_x y_copy.tar.gz"
+    },
+    {
+      "name": "245: .app | app | 2",
+      "input": {
+        "name": ".app",
+        "extension": "app",
+        "limit": 2
+      },
+      "output": ".app"
+    },
+    {
+      "name": "246: Final IMG.tar.gz | tar.gz | 45",
+      "input": {
+        "name": "Final IMG.tar.gz",
+        "extension": "tar.gz",
+        "limit": 45
+      },
+      "output": "F…IMG.tar.gz"
+    },
+    {
+      "name": "247: reportx y𝔘𝔫𝔦🎉🎉.app | app | 71",
+      "input": {
+        "name": "reportx y𝔘𝔫𝔦🎉🎉.app",
+        "extension": "app",
+        "limit": 71
+      },
+      "output": "reportx y𝔘𝔫𝔦🎉🎉.app"
+    },
+    {
+      "name": "248: b_scan_Final_日本語.PDF | PDF | 46",
+      "input": {
+        "name": "b_scan_Final_日本語.PDF",
+        "extension": "PDF",
+        "limit": 46
+      },
+      "output": "b_sc…l_日本語.PDF"
+    },
+    {
+      "name": "249: 日本語 . 2026 x y 日本語 Monte ..swift | swift | 73",
+      "input": {
+        "name": "日本語 . 2026 x y 日本語 Monte ..swift",
+        "extension": "swift",
+        "limit": 73
+      },
+      "output": "日本語 . 2026…nte ..swift"
+    },
+    {
+      "name": "250: b 👩‍👩‍👧‍👦 naïve copy Résumé 👩‍👩‍👧‍👦.j | j | 66",
+      "input": {
+        "name": "b 👩‍👩‍👧‍👦 naïve copy Résumé 👩‍👩‍👧‍👦.j",
+        "extension": "j",
+        "limit": 66
+      },
+      "output": "b 👩‍👩‍👧‍👦 na…👩‍👧‍👦.j"
+    },
+    {
+      "name": "251: b 2026 Monte Ünï.swift | swift | 80",
+      "input": {
+        "name": "b 2026 Monte Ünï.swift",
+        "extension": "swift",
+        "limit": 80
+      },
+      "output": "b 2026 Monte Ünï.swift"
+    },
+    {
+      "name": "252: scan Résumé b Panorama.é | é | 3",
+      "input": {
+        "name": "scan Résumé b Panorama.é",
+        "extension": "é",
+        "limit": 3
+      },
+      "output": "scan Résumé b Panorama.é"
+    },
+    {
+      "name": "253: Miradouro.j | j | 39",
+      "input": {
+        "name": "Miradouro.j",
+        "extension": "j",
+        "limit": 39
+      },
+      "output": "Mir…ouro.j"
+    },
+    {
+      "name": "254: 👩‍👩‍👧‍👦-Monte-🎉-Final-🎉-naïve.é | é | 68",
+      "input": {
+        "name": "👩‍👩‍👧‍👦-Monte-🎉-Final-🎉-naïve.é",
+        "extension": "é",
+        "limit": 68
+      },
+      "output": "👩‍👩‍👧‍👦-Monte-…naïve.é"
+    },
+    {
+      "name": "255: . - Monte Monte _ (1) x y x y.app | app | 8",
+      "input": {
+        "name": ". - Monte Monte _ (1) x y x y.app",
+        "extension": "app",
+        "limit": 8
+      },
+      "output": ". - Monte Monte _ (1) x y x y.app"
+    },
+    {
+      "name": "256: copy Ünï naïve (1) copy 🎉 - Final |  | 122",
+      "input": {
+        "name": "copy Ünï naïve (1) copy 🎉 - Final",
+        "extension": "",
+        "limit": 122
+      },
+      "output": "copy Ünï naïve (1) copy 🎉 - Final"
+    },
+    {
+      "name": "257: .md | md | 5",
+      "input": {
+        "name": ".md",
+        "extension": "md",
+        "limit": 5
+      },
+      "output": ".…"
+    },
+    {
+      "name": "258: 🎉-Final.é | é | 16",
+      "input": {
+        "name": "🎉-Final.é",
+        "extension": "é",
+        "limit": 16
+      },
+      "output": "🎉-….é"
+    },
+    {
+      "name": "259: 🎉-draft-Miradouro-  --.é | é | 18",
+      "input": {
+        "name": "🎉-draft-Miradouro-  --.é",
+        "extension": "é",
+        "limit": 18
+      },
+      "output": "🎉…--.é"
+    },
+    {
+      "name": "260: .-copy-a-Panorama.numbers | numbers | 83",
+      "input": {
+        "name": ".-copy-a-Panorama.numbers",
+        "extension": "numbers",
+        "limit": 83
+      },
+      "output": ".-copy-a…orama.numbers"
+    },
+    {
+      "name": "261: .é | é | 5",
+      "input": {
+        "name": ".é",
+        "extension": "é",
+        "limit": 5
+      },
+      "output": ".…"
+    },
+    {
+      "name": "262: 𝔘𝔫𝔦 copy 日本語 Miradouro x y b - a.swift | swift | 41",
+      "input": {
+        "name": "𝔘𝔫𝔦 copy 日本語 Miradouro x y b - a.swift",
+        "extension": "swift",
+        "limit": 41
+      },
+      "output": "𝔘… - a.swift"
+    },
+    {
+      "name": "263: Final Final Monte Ünï x y.é | é | 63",
+      "input": {
+        "name": "Final Final Monte Ünï x y.é",
+        "extension": "é",
+        "limit": 63
+      },
+      "output": "Final Final…ï x y.é"
+    },
+    {
+      "name": "264: b copy 🎉 naïve x y . scan draft.🎉 | 🎉 | 64",
+      "input": {
+        "name": "b copy 🎉 naïve x y . scan draft.🎉",
+        "extension": "🎉",
+        "limit": 64
+      },
+      "output": "b copy 🎉…draft.🎉"
+    },
+    {
+      "name": "265: Ünï Miradouro.app | app | 48",
+      "input": {
+        "name": "Ünï Miradouro.app",
+        "extension": "app",
+        "limit": 48
+      },
+      "output": "Ünï…douro.app"
+    },
+    {
+      "name": "266: Monte.numbers | numbers | 26",
+      "input": {
+        "name": "Monte.numbers",
+        "extension": "numbers",
+        "limit": 26
+      },
+      "output": "Monte.numbers"
+    },
+    {
+      "name": "267: .🎉 | 🎉 | 1",
+      "input": {
+        "name": ".🎉",
+        "extension": "🎉",
+        "limit": 1
+      },
+      "output": ".🎉"
+    },
+    {
+      "name": "268: .tar.gz | tar.gz | 20",
+      "input": {
+        "name": ".tar.gz",
+        "extension": "tar.gz",
+        "limit": 20
+      },
+      "output": ".t….gz"
+    },
+    {
+      "name": "269: scan-_-2026-report-Miradouro-𝔘𝔫𝔦.txt | txt | 120",
+      "input": {
+        "name": "scan-_-2026-report-Miradouro-𝔘𝔫𝔦.txt",
+        "extension": "txt",
+        "limit": 120
+      },
+      "output": "scan-_-2026-report-Miradou…o-𝔘𝔫𝔦.txt"
+    },
+    {
+      "name": "270: report.🎉 | 🎉 | 14",
+      "input": {
+        "name": "report.🎉",
+        "extension": "🎉",
+        "limit": 14
+      },
+      "output": "r….🎉"
+    },
+    {
+      "name": "271: notes Panorama Résumé _ copy Résumé |  | 71",
+      "input": {
+        "name": "notes Panorama Résumé _ copy Résumé",
+        "extension": "",
+        "limit": 71
+      },
+      "output": "notes Panoram…ésumé"
+    },
+    {
+      "name": "272: IMG 🎉 Miradouro    draft 2026 👩‍👩‍👧‍👦 - | PDF | 74",
+      "input": {
+        "name": "IMG 🎉 Miradouro    draft 2026 👩‍👩‍👧‍👦 -",
+        "extension": "PDF",
+        "limit": 74
+      },
+      "output": "IMG 🎉 Miradour…👧‍👦 -"
+    },
+    {
+      "name": "273: .PDF | PDF | 13",
+      "input": {
+        "name": ".PDF",
+        "extension": "PDF",
+        "limit": 13
+      },
+      "output": ".PDF"
+    },
+    {
+      "name": "274: 2026-Résumé.jpeg | jpeg | 32",
+      "input": {
+        "name": "2026-Résumé.jpeg",
+        "extension": "jpeg",
+        "limit": 32
+      },
+      "output": "20…é.jpeg"
+    },
+    {
+      "name": "275: Résumé scan Ünï.é | é | 62",
+      "input": {
+        "name": "Résumé scan Ünï.é",
+        "extension": "é",
+        "limit": 62
+      },
+      "output": "Résumé s…n Ünï.é"
+    },
+    {
+      "name": "276: scan 日本語 copy . x y |  | 17",
+      "input": {
+        "name": "scan 日本語 copy . x y",
+        "extension": "",
+        "limit": 17
+      },
+      "output": "s… x y"
+    },
+    {
+      "name": "277: 𝔘𝔫𝔦 Miradouro Final b . draft 🎉 draft IMG.j | j | 140",
+      "input": {
+        "name": "𝔘𝔫𝔦 Miradouro Final b . draft 🎉 draft IMG.j",
+        "extension": "j",
+        "limit": 140
+      },
+      "output": "𝔘𝔫𝔦 Miradouro Final b . draft…t IMG.j"
+    },
+    {
+      "name": "278: ..tar.gz | tar.gz | 19",
+      "input": {
+        "name": "..tar.gz",
+        "extension": "tar.gz",
+        "limit": 19
+      },
+      "output": "..tar.gz"
+    },
+    {
+      "name": "279: 日本語_(1)_𝔘𝔫𝔦_🎉_Final_a | md | 16",
+      "input": {
+        "name": "日本語_(1)_𝔘𝔫𝔦_🎉_Final_a",
+        "extension": "md",
+        "limit": 16
+      },
+      "output": "日…l_a"
+    },
+    {
+      "name": "280: Résumé    𝔘𝔫𝔦 Ünï IMG Final.PDF | PDF | 72",
+      "input": {
+        "name": "Résumé    𝔘𝔫𝔦 Ünï IMG Final.PDF",
+        "extension": "PDF",
+        "limit": 72
+      },
+      "output": "Résumé…Final.PDF"
+    },
+    {
+      "name": "281: 2026-é-naïve-2026-report.JPEG | jpeg | 46",
+      "input": {
+        "name": "2026-é-naïve-2026-report.JPEG",
+        "extension": "jpeg",
+        "limit": 46
+      },
+      "output": "20…eport.jpeg"
+    },
+    {
+      "name": "282: 2026_copy_  _scan_..swift | swift | 61",
+      "input": {
+        "name": "2026_copy_  _scan_..swift",
+        "extension": "swift",
+        "limit": 61
+      },
+      "output": "2026_…can_..swift"
+    },
+    {
+      "name": "283: IMG_🎉_a_IMG_notes_  .j | j | 9",
+      "input": {
+        "name": "IMG_🎉_a_IMG_notes_  .j",
+        "extension": "j",
+        "limit": 9
+      },
+      "output": "IMG_🎉_a_IMG_notes_  .j"
+    },
+    {
+      "name": "284: 2026-é-𝔘𝔫𝔦-Monte-b-Final.numbers | numbers | 87",
+      "input": {
+        "name": "2026-é-𝔘𝔫𝔦-Monte-b-Final.numbers",
+        "extension": "numbers",
+        "limit": 87
+      },
+      "output": "2026-é-𝔘𝔫…Final.numbers"
+    },
+    {
+      "name": "285: 2026  naïve | PDF | 34",
+      "input": {
+        "name": "2026  naïve",
+        "extension": "PDF",
+        "limit": 34
+      },
+      "output": "202…naïve"
+    },
+    {
+      "name": "286: Panorama-𝔘𝔫𝔦.md | md | 48",
+      "input": {
+        "name": "Panorama-𝔘𝔫𝔦.md",
+        "extension": "md",
+        "limit": 48
+      },
+      "output": "Pano…a-𝔘𝔫𝔦.md"
+    },
+    {
+      "name": "287: a-notes-naïve-(1)-Panorama-Résumé-scan-Ünï.md | md | 81",
+      "input": {
+        "name": "a-notes-naïve-(1)-Panorama-Résumé-scan-Ünï.md",
+        "extension": "md",
+        "limit": 81
+      },
+      "output": "a-notes-naïve-(1)…n-Ünï.md"
+    },
+    {
+      "name": "288: b-a-(1)-Monte-Ünï-🎉-- |  | 43",
+      "input": {
+        "name": "b-a-(1)-Monte-Ünï-🎉--",
+        "extension": "",
+        "limit": 43
+      },
+      "output": "b-a-(1)-…ï-🎉--"
+    },
+    {
+      "name": "289: Miradouro-Final-  -draft---日本語-Monte-notes.j | j | 27",
+      "input": {
+        "name": "Miradouro-Final-  -draft---日本語-Monte-notes.j",
+        "extension": "j",
+        "limit": 27
+      },
+      "output": "Mi…notes.j"
+    },
+    {
+      "name": "290: b 👩‍👩‍👧‍👦.md | md | 42",
+      "input": {
+        "name": "b 👩‍👩‍👧‍👦.md",
+        "extension": "md",
+        "limit": 42
+      },
+      "output": "b 👩‍👩‍👧‍👦.md"
+    },
+    {
+      "name": "291: notes _   .é | é | 8",
+      "input": {
+        "name": "notes _   .é",
+        "extension": "é",
+        "limit": 8
+      },
+      "output": "notes _   .é"
+    },
+    {
+      "name": "292:    a Ünï Final | app | 14",
+      "input": {
+        "name": "   a Ünï Final",
+        "extension": "app",
+        "limit": 14
+      },
+      "output": "…nal"
+    },
+    {
+      "name": "293: (1) IMG 👩‍👩‍👧‍👦 𝔘𝔫𝔦.PDF | PDF | 27",
+      "input": {
+        "name": "(1) IMG 👩‍👩‍👧‍👦 𝔘𝔫𝔦.PDF",
+        "extension": "PDF",
+        "limit": 27
+      },
+      "output": "(…𝔫𝔦.PDF"
+    },
+    {
+      "name": "294: Monte_Monte_naïve_notes_🎉___Miradouro_Ünï.txt | txt | 2",
+      "input": {
+        "name": "Monte_Monte_naïve_notes_🎉___Miradouro_Ünï.txt",
+        "extension": "txt",
+        "limit": 2
+      },
+      "output": "Monte_Monte_naïve_notes_🎉___Miradouro_Ünï.txt"
+    },
+    {
+      "name": "295: 🎉.🎉 | 🎉 | 3",
+      "input": {
+        "name": "🎉.🎉",
+        "extension": "🎉",
+        "limit": 3
+      },
+      "output": "🎉.🎉"
+    },
+    {
+      "name": "296: .swift | swift | 4",
+      "input": {
+        "name": ".swift",
+        "extension": "swift",
+        "limit": 4
+      },
+      "output": ".swift"
+    },
+    {
+      "name": "297: Final_👩‍👩‍👧‍👦_日本語_Miradouro_  _draft_𝔘𝔫𝔦.swift | swift | 66",
+      "input": {
+        "name": "Final_👩‍👩‍👧‍👦_日本語_Miradouro_  _draft_𝔘𝔫𝔦.swift",
+        "extension": "swift",
+        "limit": 66
+      },
+      "output": "Final_👩‍👩‍…t_𝔘𝔫𝔦.swift"
+    },
+    {
+      "name": "298: (1)___report_..md | md | 2",
+      "input": {
+        "name": "(1)___report_..md",
+        "extension": "md",
+        "limit": 2
+      },
+      "output": "(1)___report_..md"
+    },
+    {
+      "name": "299: copy-2026-Panorama.j | j | 46",
+      "input": {
+        "name": "copy-2026-Panorama.j",
+        "extension": "j",
+        "limit": 46
+      },
+      "output": "cop…orama.j"
+    }
+  ]
+}

@@ -1,0 +1,1958 @@
+{
+  "suite": "exec-stop",
+  "referenceCommit": "59f60cf",
+  "seed": 0,
+  "generator": "tools/parity/golden/exec-stop.ts",
+  "cases": [
+    {
+      "name": "stopped as it starts running: nothing is copied",
+      "input": {
+        "name": "stopped as it starts running: nothing is copied",
+        "tree": [
+          {
+            "path": "source/f/a.txt",
+            "kind": "file",
+            "content": "source/f/a.txt\n"
+          },
+          {
+            "path": "source/f/b.txt",
+            "kind": "file",
+            "content": "source/f/b.txt\n"
+          },
+          {
+            "path": "source/f/c.txt",
+            "kind": "file",
+            "content": "source/f/c.txt\n"
+          },
+          {
+            "path": "source/g.txt",
+            "kind": "file",
+            "content": "source/g.txt\n"
+          },
+          {
+            "path": "destination",
+            "kind": "dir"
+          }
+        ],
+        "paste": {
+          "mode": "copy",
+          "sources": [
+            "source/f",
+            "source/g.txt"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "skip",
+          "directory": "skip",
+          "mismatch": "skip"
+        },
+        "overrides": [],
+        "answers": [],
+        "applyToRemaining": [],
+        "stopAt": {
+          "afterEvent": 2
+        },
+        "crashAt": null,
+        "changes": [],
+        "trash": true,
+        "volumes": {},
+        "volumesWithoutTrash": []
+      },
+      "output": {
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/c.txt",
+            "sha256": "70c21ce59919d508e84b3ad5ed6861dbb2e4fd4927f745c7ab0e084591c58879",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/g.txt",
+            "sha256": "8786ff1451ceb013ad60f9be63c7dd6ddfcba8eb8c66fc49f46ce616d82aa0dd",
+            "size": 13
+          }
+        ],
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/c.txt",
+            "sha256": "70c21ce59919d508e84b3ad5ed6861dbb2e4fd4927f745c7ab0e084591c58879",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/g.txt",
+            "sha256": "8786ff1451ceb013ad60f9be63c7dd6ddfcba8eb8c66fc49f46ce616d82aa0dd",
+            "size": 13
+          }
+        ],
+        "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 58,
+            "totalItemCount": 5
+          },
+          {
+            "kind": "stop"
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "cancelled",
+            "totalBytes": 58,
+            "totalItemCount": 5
+          }
+        ],
+        "journal": [],
+        "recovery": null,
+        "result": {
+          "destinationDirectoryPath": "$ROOT/destination",
+          "error": "Operation cancelled.",
+          "items": [
+            {
+              "destinationPath": "$ROOT/destination/f",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "directory",
+              "sourcePath": "$ROOT/source/f",
+              "status": "cancelled"
+            },
+            {
+              "destinationPath": "$ROOT/destination/g.txt",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/g.txt",
+              "status": "cancelled"
+            }
+          ],
+          "mode": "copy",
+          "operationId": "operation",
+          "status": "cancelled",
+          "summary": {
+            "cancelledItemCount": 2,
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "topLevelItemCount": 2,
+            "totalBytes": 58,
+            "totalItemCount": 2
+          }
+        },
+        "trash": [],
+        "undoLog": {
+          "undoable": true,
+          "units": []
+        }
+      }
+    },
+    {
+      "name": "stopped inside a folder copy: nothing of the folder is left",
+      "input": {
+        "name": "stopped inside a folder copy: nothing of the folder is left",
+        "tree": [
+          {
+            "path": "source/f/a.txt",
+            "kind": "file",
+            "content": "source/f/a.txt\n"
+          },
+          {
+            "path": "source/f/b.txt",
+            "kind": "file",
+            "content": "source/f/b.txt\n"
+          },
+          {
+            "path": "source/f/c.txt",
+            "kind": "file",
+            "content": "source/f/c.txt\n"
+          },
+          {
+            "path": "source/g.txt",
+            "kind": "file",
+            "content": "source/g.txt\n"
+          },
+          {
+            "path": "destination",
+            "kind": "dir"
+          }
+        ],
+        "paste": {
+          "mode": "copy",
+          "sources": [
+            "source/f",
+            "source/g.txt"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "skip",
+          "directory": "skip",
+          "mismatch": "skip"
+        },
+        "overrides": [],
+        "answers": [],
+        "applyToRemaining": [],
+        "stopAt": {
+          "afterEvent": 4
+        },
+        "crashAt": null,
+        "changes": [],
+        "trash": true,
+        "volumes": {},
+        "volumesWithoutTrash": []
+      },
+      "output": {
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/c.txt",
+            "sha256": "70c21ce59919d508e84b3ad5ed6861dbb2e4fd4927f745c7ab0e084591c58879",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/g.txt",
+            "sha256": "8786ff1451ceb013ad60f9be63c7dd6ddfcba8eb8c66fc49f46ce616d82aa0dd",
+            "size": 13
+          }
+        ],
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/c.txt",
+            "sha256": "70c21ce59919d508e84b3ad5ed6861dbb2e4fd4927f745c7ab0e084591c58879",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/g.txt",
+            "sha256": "8786ff1451ceb013ad60f9be63c7dd6ddfcba8eb8c66fc49f46ce616d82aa0dd",
+            "size": 13
+          }
+        ],
+        "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 58,
+            "totalItemCount": 5
+          },
+          {
+            "entries": [
+              {
+                "finalPath": "$ROOT/destination/f",
+                "id": "journal-1",
+                "moved": false,
+                "sourcePath": "$ROOT/source/f",
+                "staged": false,
+                "stagingPath": "$ROOT/destination/.f.filetrail-~1"
+              }
+            ],
+            "kind": "journal",
+            "write": 1
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 1,
+            "currentDestinationPath": "$ROOT/destination/f",
+            "currentSourcePath": "$ROOT/source/f",
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 58,
+            "totalItemCount": 5
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 15,
+            "completedItemCount": 2,
+            "currentDestinationPath": "$ROOT/destination/f/a.txt",
+            "currentSourcePath": "$ROOT/source/f/a.txt",
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 58,
+            "totalItemCount": 5
+          },
+          {
+            "kind": "stop"
+          },
+          {
+            "entries": [],
+            "kind": "journal",
+            "write": 2
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 15,
+            "completedItemCount": 2,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "cancelled",
+            "totalBytes": 58,
+            "totalItemCount": 5
+          }
+        ],
+        "journal": [],
+        "recovery": null,
+        "result": {
+          "destinationDirectoryPath": "$ROOT/destination",
+          "error": "Operation cancelled.",
+          "items": [
+            {
+              "destinationPath": "$ROOT/destination/f",
+              "error": "Operation cancelled.",
+              "skipReason": null,
+              "sourceKind": "directory",
+              "sourcePath": "$ROOT/source/f",
+              "status": "cancelled"
+            },
+            {
+              "destinationPath": "$ROOT/destination/g.txt",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/g.txt",
+              "status": "cancelled"
+            }
+          ],
+          "mode": "copy",
+          "operationId": "operation",
+          "status": "cancelled",
+          "summary": {
+            "cancelledItemCount": 2,
+            "completedByteCount": 15,
+            "completedItemCount": 0,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "topLevelItemCount": 2,
+            "totalBytes": 58,
+            "totalItemCount": 2
+          }
+        },
+        "trash": [],
+        "undoLog": {
+          "undoable": true,
+          "units": []
+        }
+      }
+    },
+    {
+      "name": "stopped between top-level items: the rest is not started",
+      "input": {
+        "name": "stopped between top-level items: the rest is not started",
+        "tree": [
+          {
+            "path": "source/a.txt",
+            "kind": "file",
+            "content": "source/a.txt\n"
+          },
+          {
+            "path": "source/b.txt",
+            "kind": "file",
+            "content": "source/b.txt\n"
+          },
+          {
+            "path": "source/c.txt",
+            "kind": "file",
+            "content": "source/c.txt\n"
+          },
+          {
+            "path": "destination",
+            "kind": "dir"
+          }
+        ],
+        "paste": {
+          "mode": "copy",
+          "sources": [
+            "source/a.txt",
+            "source/b.txt",
+            "source/c.txt"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "skip",
+          "directory": "skip",
+          "mismatch": "skip"
+        },
+        "overrides": [],
+        "answers": [],
+        "applyToRemaining": [],
+        "stopAt": {
+          "afterEvent": 3
+        },
+        "crashAt": null,
+        "changes": [],
+        "trash": true,
+        "volumes": {},
+        "volumesWithoutTrash": []
+      },
+      "output": {
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/a.txt",
+            "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
+            "size": 13
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/a.txt",
+            "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
+            "size": 13
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/b.txt",
+            "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
+            "size": 13
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/c.txt",
+            "sha256": "201cebc63f1470ca3dc69e59c9b8a0abe2f61b7d40784a49b1e7b3f02bbfa578",
+            "size": 13
+          }
+        ],
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/a.txt",
+            "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
+            "size": 13
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/b.txt",
+            "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
+            "size": 13
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/c.txt",
+            "sha256": "201cebc63f1470ca3dc69e59c9b8a0abe2f61b7d40784a49b1e7b3f02bbfa578",
+            "size": 13
+          }
+        ],
+        "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 39,
+            "totalItemCount": 3
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 13,
+            "completedItemCount": 1,
+            "currentDestinationPath": "$ROOT/destination/a.txt",
+            "currentSourcePath": "$ROOT/source/a.txt",
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 39,
+            "totalItemCount": 3
+          },
+          {
+            "kind": "stop"
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 13,
+            "completedItemCount": 1,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "partial",
+            "totalBytes": 39,
+            "totalItemCount": 3
+          }
+        ],
+        "journal": [],
+        "recovery": null,
+        "result": {
+          "destinationDirectoryPath": "$ROOT/destination",
+          "error": "Operation cancelled.",
+          "items": [
+            {
+              "destinationPath": "$ROOT/destination/a.txt",
+              "error": null,
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/a.txt",
+              "status": "completed"
+            },
+            {
+              "destinationPath": "$ROOT/destination/b.txt",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/b.txt",
+              "status": "cancelled"
+            },
+            {
+              "destinationPath": "$ROOT/destination/c.txt",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/c.txt",
+              "status": "cancelled"
+            }
+          ],
+          "mode": "copy",
+          "operationId": "operation",
+          "status": "partial",
+          "summary": {
+            "cancelledItemCount": 2,
+            "completedByteCount": 13,
+            "completedItemCount": 1,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "topLevelItemCount": 3,
+            "totalBytes": 39,
+            "totalItemCount": 3
+          }
+        },
+        "trash": [],
+        "undoLog": {
+          "undoable": true,
+          "units": [
+            {
+              "steps": [
+                {
+                  "id": {
+                    "dev": "dev-1",
+                    "ino": "ino-1"
+                  },
+                  "kind": "created",
+                  "path": "$ROOT/destination/a.txt",
+                  "stamp": {
+                    "entryCount": null,
+                    "kind": "file",
+                    "mtimeMs": "set",
+                    "size": 13
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stopped while building a replacement folder: the old folder stays",
+      "input": {
+        "name": "stopped while building a replacement folder: the old folder stays",
+        "tree": [
+          {
+            "path": "source/f/a.txt",
+            "kind": "file",
+            "content": "new\n"
+          },
+          {
+            "path": "source/f/b.txt",
+            "kind": "file",
+            "content": "source/f/b.txt\n"
+          },
+          {
+            "path": "destination/f/old.txt",
+            "kind": "file",
+            "content": "destination/f/old.txt\n"
+          }
+        ],
+        "paste": {
+          "mode": "copy",
+          "sources": [
+            "source/f"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "overwrite",
+          "directory": "overwrite",
+          "mismatch": "overwrite"
+        },
+        "overrides": [],
+        "answers": [],
+        "applyToRemaining": [],
+        "stopAt": {
+          "afterEvent": 4
+        },
+        "crashAt": null,
+        "changes": [],
+        "trash": true,
+        "volumes": {},
+        "volumesWithoutTrash": []
+      },
+      "output": {
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/f/old.txt",
+            "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
+            "size": 22
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
+            "size": 4
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          }
+        ],
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/f/old.txt",
+            "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
+            "size": 22
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "7aa7a5359173d05b63cfd682e3c38487f3cb4f7f1d60659fe59fab1505977d4c",
+            "size": 4
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          }
+        ],
+        "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 19,
+            "totalItemCount": 3
+          },
+          {
+            "entries": [
+              {
+                "finalPath": "$ROOT/destination/f",
+                "id": "journal-1",
+                "moved": false,
+                "sourcePath": "$ROOT/source/f",
+                "staged": false,
+                "stagingPath": "$ROOT/destination/.f.filetrail-~1"
+              }
+            ],
+            "kind": "journal",
+            "write": 1
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 1,
+            "currentDestinationPath": "$ROOT/destination/f",
+            "currentSourcePath": "$ROOT/source/f",
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 19,
+            "totalItemCount": 3
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 4,
+            "completedItemCount": 2,
+            "currentDestinationPath": "$ROOT/destination/f/a.txt",
+            "currentSourcePath": "$ROOT/source/f/a.txt",
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 19,
+            "totalItemCount": 3
+          },
+          {
+            "kind": "stop"
+          },
+          {
+            "entries": [],
+            "kind": "journal",
+            "write": 2
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 4,
+            "completedItemCount": 2,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "cancelled",
+            "totalBytes": 19,
+            "totalItemCount": 3
+          }
+        ],
+        "journal": [],
+        "recovery": null,
+        "result": {
+          "destinationDirectoryPath": "$ROOT/destination",
+          "error": "Operation cancelled.",
+          "items": [
+            {
+              "destinationPath": "$ROOT/destination/f",
+              "error": "Operation cancelled.",
+              "skipReason": null,
+              "sourceKind": "directory",
+              "sourcePath": "$ROOT/source/f",
+              "status": "cancelled"
+            }
+          ],
+          "mode": "copy",
+          "operationId": "operation",
+          "status": "cancelled",
+          "summary": {
+            "cancelledItemCount": 1,
+            "completedByteCount": 4,
+            "completedItemCount": 0,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "topLevelItemCount": 1,
+            "totalBytes": 19,
+            "totalItemCount": 1
+          }
+        },
+        "trash": [],
+        "undoLog": {
+          "undoable": true,
+          "units": []
+        }
+      }
+    },
+    {
+      "name": "stopped during a move into a merged folder",
+      "input": {
+        "name": "stopped during a move into a merged folder",
+        "tree": [
+          {
+            "path": "source/f/a.txt",
+            "kind": "file",
+            "content": "source/f/a.txt\n"
+          },
+          {
+            "path": "source/f/b.txt",
+            "kind": "file",
+            "content": "source/f/b.txt\n"
+          },
+          {
+            "path": "source/f/c.txt",
+            "kind": "file",
+            "content": "source/f/c.txt\n"
+          },
+          {
+            "path": "destination/f/old.txt",
+            "kind": "file",
+            "content": "destination/f/old.txt\n"
+          }
+        ],
+        "paste": {
+          "mode": "cut",
+          "sources": [
+            "source/f"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "skip",
+          "directory": "merge",
+          "mismatch": "skip"
+        },
+        "overrides": [],
+        "answers": [],
+        "applyToRemaining": [],
+        "stopAt": {
+          "afterEvent": 3
+        },
+        "crashAt": null,
+        "changes": [],
+        "trash": true,
+        "volumes": {},
+        "volumesWithoutTrash": []
+      },
+      "output": {
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/f/old.txt",
+            "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
+            "size": 22
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/c.txt",
+            "sha256": "70c21ce59919d508e84b3ad5ed6861dbb2e4fd4927f745c7ab0e084591c58879",
+            "size": 15
+          }
+        ],
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/f/old.txt",
+            "sha256": "7273d34f3ad4979af9b3d2aa6d4912bee8b8ee67f1fcbd94eab76a10e7ec3ef2",
+            "size": 22
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/b.txt",
+            "sha256": "0ad61cf1e63ea67c655601e33160312e922e0d90d6bf8831063af79e87b80166",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/c.txt",
+            "sha256": "70c21ce59919d508e84b3ad5ed6861dbb2e4fd4927f745c7ab0e084591c58879",
+            "size": 15
+          }
+        ],
+        "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 45,
+            "totalItemCount": 3
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 15,
+            "completedItemCount": 1,
+            "currentDestinationPath": "$ROOT/destination/f/a.txt",
+            "currentSourcePath": "$ROOT/source/f/a.txt",
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 45,
+            "totalItemCount": 3
+          },
+          {
+            "kind": "stop"
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 15,
+            "completedItemCount": 1,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "cut",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "partial",
+            "totalBytes": 45,
+            "totalItemCount": 3
+          }
+        ],
+        "journal": [],
+        "recovery": null,
+        "result": {
+          "destinationDirectoryPath": "$ROOT/destination",
+          "error": "Operation cancelled.",
+          "items": [
+            {
+              "destinationPath": "$ROOT/destination/f",
+              "error": "Operation cancelled.",
+              "skipReason": null,
+              "sourceKind": "directory",
+              "sourcePath": "$ROOT/source/f",
+              "status": "cancelled"
+            },
+            {
+              "destinationPath": "$ROOT/destination/f/a.txt",
+              "error": null,
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/f/a.txt",
+              "status": "completed"
+            }
+          ],
+          "mode": "cut",
+          "operationId": "operation",
+          "status": "partial",
+          "summary": {
+            "cancelledItemCount": 1,
+            "completedByteCount": 15,
+            "completedItemCount": 1,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "topLevelItemCount": 1,
+            "totalBytes": 45,
+            "totalItemCount": 2
+          }
+        },
+        "trash": [],
+        "undoLog": {
+          "reason": "merge",
+          "undoable": false
+        }
+      }
+    },
+    {
+      "name": "stopped while a question is open",
+      "input": {
+        "name": "stopped while a question is open",
+        "tree": [
+          {
+            "path": "source/a.txt",
+            "kind": "file",
+            "content": "source/a.txt\n"
+          },
+          {
+            "path": "source/b.txt",
+            "kind": "file",
+            "content": "source/b.txt\n"
+          },
+          {
+            "path": "destination",
+            "kind": "dir"
+          }
+        ],
+        "paste": {
+          "mode": "copy",
+          "sources": [
+            "source/a.txt",
+            "source/b.txt"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "skip",
+          "directory": "skip",
+          "mismatch": "skip"
+        },
+        "overrides": [],
+        "answers": [],
+        "applyToRemaining": [],
+        "stopAt": {
+          "afterEvent": 3
+        },
+        "crashAt": null,
+        "changes": [
+          {
+            "ops": [
+              {
+                "op": "write",
+                "path": "destination/a.txt",
+                "content": "appeared\n"
+              }
+            ]
+          }
+        ],
+        "trash": true,
+        "volumes": {},
+        "volumesWithoutTrash": []
+      },
+      "output": {
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "destination/a.txt",
+            "sha256": "9ee3e3ee32c28e181f099a28ee294dbb517732a9fcb74e0254ad08b8b9abdc17",
+            "size": 9
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/a.txt",
+            "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
+            "size": 13
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/b.txt",
+            "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
+            "size": 13
+          }
+        ],
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/a.txt",
+            "sha256": "eee384e0bdf197ab09d32c270a16bca5169e7fa5941eadf459cc10627c23c63f",
+            "size": 13
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/b.txt",
+            "sha256": "9073465e395abc5a69797dc5c708ca49546a4ee5cff74147078ff80ac8118c78",
+            "size": 13
+          }
+        ],
+        "events": [
+          {
+            "kind": "change",
+            "ops": [
+              {
+                "content": "appeared\n",
+                "op": "write",
+                "path": "$ROOT/destination/a.txt"
+              }
+            ]
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 26,
+            "totalItemCount": 2
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": "$ROOT/destination/a.txt",
+            "currentSourcePath": "$ROOT/source/a.txt",
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": {
+              "analysisId": "analysis",
+              "conflictClass": "file_conflict",
+              "conflictId": "runtime-item-1-destination-q1",
+              "currentDestinationFingerprint": {
+                "dev": "dev-1",
+                "exists": true,
+                "ino": "ino-1",
+                "kind": "file",
+                "mode": 33188,
+                "mtimeMs": "set",
+                "size": 9,
+                "symlinkTarget": null
+              },
+              "currentSourceFingerprint": {
+                "dev": "dev-1",
+                "exists": true,
+                "ino": "ino-2",
+                "kind": "file",
+                "mode": 33188,
+                "mtimeMs": "set",
+                "size": 13,
+                "symlinkTarget": null
+              },
+              "destinationFingerprint": {
+                "dev": null,
+                "exists": false,
+                "ino": null,
+                "kind": "missing",
+                "mode": null,
+                "mtimeMs": null,
+                "size": null,
+                "symlinkTarget": null
+              },
+              "destinationKind": "file",
+              "destinationPath": "$ROOT/destination/a.txt",
+              "reason": "destination_created",
+              "sourceFingerprint": {
+                "dev": "dev-1",
+                "exists": true,
+                "ino": "ino-2",
+                "kind": "file",
+                "mode": 33188,
+                "mtimeMs": "set",
+                "size": 13,
+                "symlinkTarget": null
+              },
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/a.txt"
+            },
+            "status": "awaiting_resolution",
+            "totalBytes": 26,
+            "totalItemCount": 2
+          },
+          {
+            "kind": "stop"
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "cancelled",
+            "totalBytes": 26,
+            "totalItemCount": 2
+          }
+        ],
+        "journal": [],
+        "recovery": null,
+        "result": {
+          "destinationDirectoryPath": "$ROOT/destination",
+          "error": "Operation cancelled.",
+          "items": [
+            {
+              "destinationPath": "$ROOT/destination/a.txt",
+              "error": "Operation cancelled.",
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/a.txt",
+              "status": "cancelled"
+            },
+            {
+              "destinationPath": "$ROOT/destination/b.txt",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/b.txt",
+              "status": "cancelled"
+            }
+          ],
+          "mode": "copy",
+          "operationId": "operation",
+          "status": "cancelled",
+          "summary": {
+            "cancelledItemCount": 2,
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "topLevelItemCount": 2,
+            "totalBytes": 26,
+            "totalItemCount": 2
+          }
+        },
+        "trash": [],
+        "undoLog": {
+          "undoable": true,
+          "units": []
+        }
+      }
+    },
+    {
+      "name": "stopped as soon as it is queued",
+      "input": {
+        "name": "stopped as soon as it is queued",
+        "tree": [
+          {
+            "path": "source/f/a.txt",
+            "kind": "file",
+            "content": "source/f/a.txt\n"
+          },
+          {
+            "path": "source/g.txt",
+            "kind": "file",
+            "content": "source/g.txt\n"
+          },
+          {
+            "path": "destination",
+            "kind": "dir"
+          }
+        ],
+        "paste": {
+          "mode": "copy",
+          "sources": [
+            "source/f",
+            "source/g.txt"
+          ],
+          "destination": "destination"
+        },
+        "policy": {
+          "file": "skip",
+          "directory": "skip",
+          "mismatch": "skip"
+        },
+        "overrides": [],
+        "answers": [],
+        "applyToRemaining": [],
+        "stopAt": {
+          "afterEvent": 1
+        },
+        "crashAt": null,
+        "changes": [],
+        "trash": true,
+        "volumes": {},
+        "volumesWithoutTrash": []
+      },
+      "output": {
+        "after": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/g.txt",
+            "sha256": "8786ff1451ceb013ad60f9be63c7dd6ddfcba8eb8c66fc49f46ce616d82aa0dd",
+            "size": 13
+          }
+        ],
+        "before": [
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "destination"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "dir",
+            "mode": "0755",
+            "path": "source/f"
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/f/a.txt",
+            "sha256": "46132af595b21b150b9e5bc2982c62cd95d11ac7103e2a5da94b7a6868ecff49",
+            "size": 15
+          },
+          {
+            "acl": false,
+            "flags": [],
+            "kind": "file",
+            "mode": "0644",
+            "path": "source/g.txt",
+            "sha256": "8786ff1451ceb013ad60f9be63c7dd6ddfcba8eb8c66fc49f46ce616d82aa0dd",
+            "size": 13
+          }
+        ],
+        "events": [
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "queued",
+            "totalBytes": null,
+            "totalItemCount": 0
+          },
+          {
+            "kind": "stop"
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "running",
+            "totalBytes": 28,
+            "totalItemCount": 3
+          },
+          {
+            "analysisId": "analysis",
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "currentDestinationPath": null,
+            "currentSourcePath": null,
+            "kind": "event",
+            "mode": "copy",
+            "operationId": "operation",
+            "runtimeConflict": null,
+            "status": "cancelled",
+            "totalBytes": 28,
+            "totalItemCount": 3
+          }
+        ],
+        "journal": [],
+        "recovery": null,
+        "result": {
+          "destinationDirectoryPath": "$ROOT/destination",
+          "error": "Operation cancelled.",
+          "items": [
+            {
+              "destinationPath": "$ROOT/destination/f",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "directory",
+              "sourcePath": "$ROOT/source/f",
+              "status": "cancelled"
+            },
+            {
+              "destinationPath": "$ROOT/destination/g.txt",
+              "error": "Not started because the operation was stopped.",
+              "skipReason": null,
+              "sourceKind": "file",
+              "sourcePath": "$ROOT/source/g.txt",
+              "status": "cancelled"
+            }
+          ],
+          "mode": "copy",
+          "operationId": "operation",
+          "status": "cancelled",
+          "summary": {
+            "cancelledItemCount": 2,
+            "completedByteCount": 0,
+            "completedItemCount": 0,
+            "failedItemCount": 0,
+            "skippedItemCount": 0,
+            "topLevelItemCount": 2,
+            "totalBytes": 28,
+            "totalItemCount": 2
+          }
+        },
+        "trash": [],
+        "undoLog": {
+          "undoable": true,
+          "units": []
+        }
+      }
+    }
+  ]
+}

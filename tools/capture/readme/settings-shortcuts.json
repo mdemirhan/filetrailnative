@@ -1,0 +1,68 @@
+{
+  "name": "settings-shortcuts",
+  "description": "The Shortcuts section of Settings",
+  "root": "/Users/Shared/Lighthouse",
+  "now": "2026-10-13T14:46:00",
+  "steps": [
+    {
+      "step": "window",
+      "width": 920,
+      "height": 575
+    },
+    {
+      "step": "prefs",
+      "prefs": {
+        "theme": "light",
+        "accent": "#007aff",
+        "zoomPercent": 100,
+        "density": "comfortable",
+        "viewMode": "details",
+        "sortBy": "name",
+        "sortDirection": "asc",
+        "favoritesPlacement": "separate",
+        "notificationsEnabled": false
+      }
+    },
+    {
+      "step": "rootTree",
+      "path": "/Users/Shared/Lighthouse"
+    },
+    {
+      "step": "open",
+      "path": "."
+    },
+    {
+      "step": "menu",
+      "path": [
+        "File Trail",
+        "Settings…"
+      ]
+    },
+    {
+      "step": "selectWindow",
+      "title": "Settings"
+    },
+    {
+      "step": "window",
+      "width": 648,
+      "height": 486
+    },
+    {
+      "step": "click",
+      "element": "settings section",
+      "text": "Shortcuts"
+    },
+    {
+      "step": "wait",
+      "ms": 500
+    },
+    {
+      "step": "snapshot",
+      "name": "preview"
+    },
+    {
+      "step": "windowShot",
+      "name": "settings-shortcuts"
+    }
+  ]
+}
