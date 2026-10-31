@@ -1,4 +1,4 @@
-// The copy throughput budget (tools/bench/budgets.json, ): a large file pasted to another disk, and the stoppable copy on
+// The copy throughput budget (tools/bench/budgets.json): a large file pasted to another disk, and the stoppable copy on
 // its own, go as fast as a bare copyfile call, and the time a small folder's paste takes is reported
 import CFileTrail
 import Darwin
@@ -20,7 +20,10 @@ struct PasteThroughputTests {
     // builds load the machine meanwhile: the three take turns, 15 runs each (one copy takes a fifth of a second, so
     // a few runs are noisy), and their medians are compared, so one scheduling spike can't decide it.
     // F-404 F-410 F-453
-    @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
+    // A budget, not a behavior: a busy Mac can miss it, so it runs with the other budgets (tools/bench/listing.sh).
+    @Test(
+        .tags(.diskImage), .diskImages,
+        .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_BENCH"] == "1"))
     func aPastedLargeFileAndTheStoppableCopyKeepWithinFivePercentOfABareCopyfile() async throws {
         try await withTemporaryDirectory(prefix: "paste-throughput") { root in
             try await DiskImage.withSharedVolume(.apfs) { volume in

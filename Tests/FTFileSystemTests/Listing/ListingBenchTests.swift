@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-// Listing budgets (tools/bench/budgets.json, ) on fixtures/bench: 3,000 items read and sorted in 25 ms or
+// Listing budgets (tools/bench/budgets.json) on fixtures/bench: 3,000 items read and sorted in 25 ms or
 // less, 100,000 in 400 ms or less. Run by tools/bench/listing.sh in a release build; skipped otherwise, as a
 // debug build says nothing about speed.
 @testable import FTFileSystem

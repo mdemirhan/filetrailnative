@@ -12,7 +12,7 @@ if [ ! -d "$fixtures/files-3000" ] || [ ! -d "$fixtures/files-100000" ]; then
     exit 2
 fi
 mkdir -p build/logs build/bench
-FILETRAIL_BENCH=1 swift test -c release -Xswiftc -enable-testing --filter BenchTests >build/logs/bench-listing.log 2>&1
+FILETRAIL_BENCH=1 swift test -c release -Xswiftc -enable-testing --filter 'BenchTests|PasteThroughputTests' >build/logs/bench-listing.log 2>&1
 status=$?
 grep '^BENCH ' build/logs/bench-listing.log | sed 's/^BENCH //' | tee build/bench/listing.json
 if [ "$status" -ne 0 ]; then

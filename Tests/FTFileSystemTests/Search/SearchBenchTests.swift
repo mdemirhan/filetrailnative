@@ -3,7 +3,7 @@ import Testing
 
 @testable import FTFileSystem
 
-// first_search_results_ms (tools/bench/budgets.json, budget 150 ms): the time from starting a recursive
+// first_search_results_ms (tools/bench/budgets.json: budget 150 ms): the time from starting a recursive
 // name search of the Home folder with the bundled fd to the first results being polled, as the search bar
 // does. Run by tools/bench/listing.sh in a release build; skipped otherwise. It opens no window.
 struct SearchBenchTests {
