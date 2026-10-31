@@ -98,6 +98,7 @@ public enum PathBarModel {
     }
 
     /// `buildPathSegments`: one per folder from the top of the disk, a path on another volume starting at that volume.
+    /// On another volume, ".Trashes" and the user's folder in it are one segment, the Trash.
     public static func segments(_ path: String) -> [PathbarSegment] {
         if path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return [PathbarSegment(label: "No folder selected", path: "")]
@@ -107,9 +108,12 @@ public enum PathBarModel {
         let rest = path.dropFirst(root == "/" ? 0 : root.count)
         var result = [PathbarSegment(label: label(root), path: root)]
         var current = root == "/" ? "" : root
-        for part in rest.split(separator: "/", omittingEmptySubsequences: true) {
+        let parts = rest.split(separator: "/", omittingEmptySubsequences: true)
+        let inVolumeTrash = root != "/" && parts.count > 1 && parts[0] == ".Trashes"
+        for (index, part) in parts.enumerated() {
             current += "/" + part
-            result.append(PathbarSegment(label: String(part), path: current))
+            if inVolumeTrash && index == 0 { continue }
+            result.append(PathbarSegment(label: inVolumeTrash && index == 1 ? "Trash" : String(part), path: current))
         }
         return result
     }

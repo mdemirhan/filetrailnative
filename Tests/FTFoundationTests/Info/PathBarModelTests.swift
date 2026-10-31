@@ -26,6 +26,17 @@ struct PathBarModelTests {
         #expect(home.map(\.label) == ["Macintosh HD", "Users", "demo"])
     }
 
+    @Test func aDisksTrashIsOneSegmentCalledTrash() {
+        let inside = PathBarModel.segments("/Volumes/Photos/.Trashes/501/album")
+        #expect(inside.map(\.label) == ["Photos", "Trash", "album"])
+        #expect(
+            inside.map(\.path) == [
+                "/Volumes/Photos", "/Volumes/Photos/.Trashes/501", "/Volumes/Photos/.Trashes/501/album",
+            ])
+        #expect(PathBarModel.segments("/Volumes/Photos/.Trashes").map(\.label) == ["Photos", ".Trashes"])
+        #expect(PathBarModel.segments("/.Trashes/501").map(\.label) == ["Macintosh HD", ".Trashes", "501"])
+    }
+
     @Test func parentAndLabel() {
         #expect(PathBarModel.parentPath("/Users") == "/")
         #expect(PathBarModel.parentPath("/Users/demo") == "/Users")

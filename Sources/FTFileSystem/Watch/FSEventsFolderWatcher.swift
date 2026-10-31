@@ -14,14 +14,16 @@ public enum FSEventsFolderWatcher {
     /// Starts watching `path` without blocking the caller: the path is resolved and the stream started off the
     /// main actor (either can stall on a network volume), and the callbacks run on the main actor. Returns at
     /// once a function that stops, also when the stream is not started yet. `onFail` is called as well when
-    /// the stream can't be started (the folder isn't there, say).
+    /// the stream can't be started (the folder isn't there, say). With `disk`, the stream is on that disk and keeps to
+    /// `path` on it, which need not be there yet.
     @MainActor
     public static func watchFolder(
-        path: String, onChange: @escaping @MainActor (String?) -> Void, onFail: @escaping @MainActor () -> Void
+        path: String, onDisk disk: String? = nil, onChange: @escaping @MainActor (String?) -> Void,
+        onFail: @escaping @MainActor () -> Void
     ) -> @Sendable () -> Void {
         let start = DeferredStart()
         Task.detached(priority: .utility) {
-            if let stop = openStream(path: path, onChange: onChange, onFail: onFail) {
+            if let stop = openStream(path: path, onDisk: disk, onChange: onChange, onFail: onFail) {
                 start.attach(stop)
             } else if !start.isCancelled {
                 DispatchQueue.main.async { MainActor.assumeIsolated { if !start.isCancelled { onFail() } } }
@@ -62,12 +64,14 @@ public enum FSEventsFolderWatcher {
 
     /// Starts the stream on the calling thread; nil when the folder can't be watched.
     static func openStream(
-        path: String, onChange: @escaping @MainActor (String?) -> Void, onFail: @escaping @MainActor () -> Void
+        path: String, onDisk disk: String? = nil, onChange: @escaping @MainActor (String?) -> Void,
+        onFail: @escaping @MainActor () -> Void
     ) -> (@Sendable () -> Void)? {
         // The events carry real paths.
-        guard let resolved = realpath(path, nil) else { return nil }
-        let root = String(cString: resolved)
+        guard let resolved = realpath(disk ?? path, nil) else { return nil }
+        let streamRoot = String(cString: resolved)
         free(resolved)
+        let root = disk.map { streamRoot + path.dropFirst($0.count) } ?? streamRoot
 
         let context = Context(root: root, onChange: onChange, onFail: onFail)
         var streamContext = FSEventStreamContext(
@@ -78,7 +82,7 @@ public enum FSEventsFolderWatcher {
                 | kFSEventStreamCreateFlagNoDefer | kFSEventStreamCreateFlagWatchRoot)
         guard
             let stream = FSEventStreamCreate(
-                kCFAllocatorDefault, eventCallback, &streamContext, [root] as CFArray,
+                kCFAllocatorDefault, eventCallback, &streamContext, [streamRoot] as CFArray,
                 FSEventStreamEventId(kFSEventStreamEventIdSinceNow), latencySeconds, flags)
         else {
             Unmanaged.passUnretained(context).release()

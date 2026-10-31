@@ -428,7 +428,10 @@ final class SidebarModel {
         }
         let isLocation = request.origin.isLocation
         // The Trash, gone to from the sidebar, leaves the tree as it is: it is not a folder the tree shows.
-        let inTrash = fromSidebar != nil && Paths.isInsideTrash(path, homePath: homePath)
+        // Nor can it go into a disk's Trash, gone to from anywhere: nothing may list that disk's ".Trashes". It is the
+        // Trash's row that is selected there.
+        let inDiskTrash = Paths.isInsideTrash(path, homePath: "")
+        let inTrash = inDiskTrash || (fromSidebar != nil && Paths.isInsideTrash(path, homePath: homePath))
         let syncsTree = request.origin != .alias && !inTrash
         if request.rerootTree { initializeTree(path) }
         var reveal = path
@@ -453,7 +456,11 @@ final class SidebarModel {
         case (.alias, nil):
             break
         case (.other, nil), (.folder, nil):
-            select(.filesystem(path), subview: .tree)
+            if inDiskTrash {
+                select(.location(FavoriteLabel.trashPath(homePath: homePath)), subview: separate ? .favorites : nil)
+            } else {
+                select(.filesystem(path), subview: .tree)
+            }
         }
         optimistic = nil
         onChange()

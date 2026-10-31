@@ -190,58 +190,65 @@ enum ExplorerListing {
     // MARK: Snapshot
 
     /// Snapshot listing fetches extra stat data only for sort modes that require it so the common
-    /// name-sorted path stays as cheap as possible.
+    /// name-sorted path stays as cheap as possible. The items of `alsoListing` are listed as if in the folder, under
+    /// their own paths (the Trash of each disk); one that can't be read has nothing to add.
     static func snapshot(
         path: String, includeHidden: Bool, sortBy: DirectorySortKey, sortDirection: SortDirection,
-        foldersFirst: Bool, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        foldersFirst: Bool, alsoListing: [String] = [], _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
     ) throws -> DirectorySnapshot {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
-        let records = try fileSystem.readDirectory(directoryPath)
+        var folders = [(path: directoryPath, records: try fileSystem.readDirectory(directoryPath))]
+        for other in alsoListing {
+            if let records = try? fileSystem.readDirectory(other) { folders.append((other, records)) }
+        }
+        let recordCount = folders.reduce(0) { $0 + $1.records.count }
 
         // What each kept entry is, one column per fact, so sorting touches only what it compares.
         var entries: [DirectoryEntry] = []
-        entries.reserveCapacity(records.count)
-        var keys = NameKeys(capacity: records.count)
+        entries.reserveCapacity(recordCount)
+        var keys = NameKeys(capacity: recordCount)
         var modified: [Int64?] = []
         var sizes: [Int64?] = []
         var labels: [String] = []
-        for record in records {
-            let hidden = isHidden(record.name)
-            if !includeHidden && hidden { continue }
-            let entryPath = join(directoryPath, record.name)
-            let kind = classify(record, path: entryPath, fileSystem)
-            let fileExtension = extensionName(ofName: record.name)
-            // A file without an extension is drawn as a document or as an executable, which only its
-            // permissions tell apart. Other entries are not looked at unless the sort needs it.
-            let needsExecutableFlag = kind == .file && fileExtension.isEmpty
-            let stats =
-                sortBy == .modified || sortBy == .size || needsExecutableFlag
-                ? bestEffortStats(record, path: entryPath, fileSystem) : nil
-            var entry = DirectoryEntry(
-                path: entryPath, name: record.name, fileExtension: fileExtension, kind: kind, isHidden: hidden,
-                isSymlink: kind == .symlinkDirectory || kind == .symlinkFile)
-            if needsExecutableFlag, let stats {
-                entry.isExecutable = stats.mode & 0o111 != 0
-            }
-            switch sortBy {
-            case .modified:
-                modified.append(stats?.mtimeMs)
-            case .size:
-                // A link to a folder is sized as the link itself (see readEntrySize).
-                if kind == .symlinkDirectory {
-                    sizes.append((record.lstat ?? safeLstat(entryPath, fileSystem))?.size)
-                } else if let stats, kind == .file || kind == .symlinkFile {
-                    sizes.append(stats.size)
-                } else {
-                    sizes.append(nil)
+        for folder in folders {
+            for record in folder.records {
+                let hidden = isHidden(record.name)
+                if !includeHidden && hidden { continue }
+                let entryPath = join(folder.path, record.name)
+                let kind = classify(record, path: entryPath, fileSystem)
+                let fileExtension = extensionName(ofName: record.name)
+                // A file without an extension is drawn as a document or as an executable, which only its
+                // permissions tell apart. Other entries are not looked at unless the sort needs it.
+                let needsExecutableFlag = kind == .file && fileExtension.isEmpty
+                let stats =
+                    sortBy == .modified || sortBy == .size || needsExecutableFlag
+                    ? bestEffortStats(record, path: entryPath, fileSystem) : nil
+                var entry = DirectoryEntry(
+                    path: entryPath, name: record.name, fileExtension: fileExtension, kind: kind, isHidden: hidden,
+                    isSymlink: kind == .symlinkDirectory || kind == .symlinkFile)
+                if needsExecutableFlag, let stats {
+                    entry.isExecutable = stats.mode & 0o111 != 0
                 }
-            case .kind:
-                labels.append(kinds.label(for: kind, fileExtension: fileExtension, path: entryPath))
-            case .name:
-                break
+                switch sortBy {
+                case .modified:
+                    modified.append(stats?.mtimeMs)
+                case .size:
+                    // A link to a folder is sized as the link itself (see readEntrySize).
+                    if kind == .symlinkDirectory {
+                        sizes.append((record.lstat ?? safeLstat(entryPath, fileSystem))?.size)
+                    } else if let stats, kind == .file || kind == .symlinkFile {
+                        sizes.append(stats.size)
+                    } else {
+                        sizes.append(nil)
+                    }
+                case .kind:
+                    labels.append(kinds.label(for: kind, fileExtension: fileExtension, path: entryPath))
+                case .name:
+                    break
+                }
+                entries.append(entry)
+                keys.append(record.name)
             }
-            entries.append(entry)
-            keys.append(record.name)
         }
 
         let order = sortedPositions(

@@ -136,8 +136,11 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     private func volumesChanged(_ volumes: [Volume]) {
         let mounted = Set(volumes.map(\.path))
         let unmounted = mountedDiskPaths.subtracting(mounted)
+        let changed = mounted != mountedDiskPaths
         mountedDiskPaths = mounted
         disksUnmounted(unmounted)
+        // Each disk has its part of the Trash.
+        if changed { folderWatches?.restartWatches(of: TrashFolders(homePath: home).home) }
     }
 
     /// Disks just unmounted, by the folders they were mounted at: every window lets go of them (B-VIEW-173).
