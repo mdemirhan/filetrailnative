@@ -160,8 +160,16 @@ extension ListViewController {
         defer { marquee.hide() }
         while true {
             let next = PointerTracker.next(
-                in: window, matching: [.leftMouseUp, .leftMouseDragged], until: Date(timeIntervalSinceNow: 1.0 / 60.0))
+                in: window, matching: [.leftMouseUp, .leftMouseDragged, .scrollWheel],
+                until: Date(timeIntervalSinceNow: 1.0 / 60.0))
             if let next {
+                // The wheel moves the list under a pointer that stays: the box follows (B-VIEW-081).
+                if next.type == .scrollWheel {
+                    let (top, left) = (scrollPosition.top, scrollPosition.left)
+                    scrollPosition = (top: top + next.wheelOffset.top, left: left + next.wheelOffset.left)
+                    if dragging { update() }
+                    continue
+                }
                 pointer = next.locationInWindow
                 if next.type == .leftMouseUp { break }
                 if !dragging {
@@ -240,6 +248,7 @@ extension ListViewController {
         guard let field = renameField, let path = renamingPath, let row = rowByPath[path] else { return }
         let frame = renameFrame(row: row)
         if field.frame != frame { field.frame = frame }
+        field.repositionError()
     }
 
     /// Shows the field of the rename the pane is told of, or takes it away when the rename is over or its item left the

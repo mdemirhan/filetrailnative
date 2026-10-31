@@ -102,8 +102,9 @@ final class SidebarOutlineView: NSOutlineView {
         switch listRow {
         case .spacer:
             if !list.isInScrollbar(event) { list.delegate?.sidebarList(list, pressEmptySpaceIn: list.subview) }
-        case .header:
-            break
+        case .header(let state):
+            // Beside the header's button: the button takes its own presses.
+            if !list.isInScrollbar(event) { list.delegate?.sidebarList(list, pressHeader: state) }
         case .item(let state):
             pressedRow = index
             pressEvent = event

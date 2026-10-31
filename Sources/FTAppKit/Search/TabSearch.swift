@@ -270,11 +270,12 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     // MARK: ⌘F, ⇧⌘F
 
     /// `focusFileSearch`: the field takes the keyboard with its text selected. Text typed into the folder list goes into
-    /// it, and is searched at once.
+    /// it, and is searched at once, with the caret after it so typing goes on (B-SRCH-052).
     func focusField() {
         let content = tab.content
         let typed = content.filter
-        if !session.isSearchMode, !typed.isEmpty {
+        let carried = !session.isSearchMode && !typed.isEmpty
+        if carried {
             content.clearFilter()
             session.setDraft(typed)
             session.startSearch(typed, rootPath: tab.shownFolderPath, live: true)
@@ -284,7 +285,11 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         guard let field, let window = tab.window else { return }
         tab.explorerToolbar.beginSearch()
         if !field.isActive { window.makeFirstResponder(field) }
-        field.currentEditor()?.selectAll(nil)
+        if carried {
+            field.currentEditor()?.selectedRange = NSRange(location: field.stringValue.utf16.count, length: 0)
+        } else {
+            field.currentEditor()?.selectAll(nil)
+        }
     }
 
     /// Show Last Search Results.

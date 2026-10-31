@@ -19,19 +19,11 @@ Differences and gaps left when the port from Electron finished. None has been de
 ## Keyboard and focus
 
 - **Keyboard lost after a dialog** (`B-NAV-223`): closing a dialog opened from a text field leaves no pane with the keyboard until a click.
-- **Path bar clicks** (`B-INFO-111`, `B-VIEW-006`, `T-01ad97ab`): a press on a segment or separator doesn't move focus to the list. `PathBarView.swift:93,178`.
-- **Search from a filter** (`B-SRCH-052`): the carried text ends selected, so the next key replaces it. `TabSearch.swift:288`.
-- **Sidebar header margins** (`B-TREE-028`): a press beside the header's button doesn't clear the selection. `SidebarListView.swift:105`.
 
 ## Lists and panels
 
 - **Outside changes during some dialogs** (`B-NAV-136`, `B-VIEW-187`): the list can change under Go To, Customize Toolbar and notices; only copy-paste dialogs, drags, menus, rename and writes hold changes back.
 - **Sorted search results** (`B-VIEW-083`): sorting by a header doesn't reveal the lead item, and a quiet re-order doesn't keep it in view.
-- **Marquee and the scroll wheel** (`B-VIEW-081`): the wheel does nothing during a marquee.
-- **Rename error box** (`B-SEL-134`): stays in place when the window resizes.
-- **Removed favorite** (`B-NAV-186`, `B-TREE-050`): a saved tab still opens as that favorite, so no row is selected and the tree doesn't follow.
-- **Free space in the Info panel** (`B-INFO-049`): stays as first read for that tab.
-- **Info Row buttons** (`B-INFO-166`): with the panel open on another item, Calculate, refresh and Stop act on the panel's item.
 - **Folder sizes per tab** (`B-INFO-199`): a calculation in one tab shows no progress in another tab on the same folder.
 
 ## Small visual details

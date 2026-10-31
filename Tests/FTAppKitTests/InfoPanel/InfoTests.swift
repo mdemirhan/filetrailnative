@@ -182,6 +182,78 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // B-INFO-166: the Info Row's buttons act on what the row shows, not on the item the panel is open on.
+        @Test func theRowsButtonsActOnWhatTheRowShows() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let info = try #require(tab.infoController)
+            select(["Alpha"], in: tab, harness: harness)
+            let alpha = path("Alpha", in: tab)
+            info.showInfo(for: path("Beta", in: tab))
+            #expect(info.targetOverride == path("Beta", in: tab))
+            #expect((tab.folderSizes.cachedEntry(alpha) ?? .idle) == .idle)
+            info.row.onCalculate()
+            #expect(await waitUntil { (tab.folderSizes.cachedEntry(alpha) ?? .idle) != .idle })
+            await harness.close()
+        }
+
+        // B-INFO-049: free space is read again when the folder changes, and when the clock ticks.
+        @Test(.windowlessAlone) func freeSpaceIsReadAgain() async throws {
+            final class Reads: @unchecked Sendable {
+                let lock = NSLock()
+                var count = 0
+                func add() -> Int64 {
+                    lock.lock()
+                    defer { lock.unlock() }
+                    count += 1
+                    return Int64(count) * 1_000_000
+                }
+                var current: Int {
+                    lock.lock()
+                    defer { lock.unlock() }
+                    return count
+                }
+            }
+            let reads = Reads()
+            let original = InfoController.volumeSizes
+            InfoController.volumeSizes = { _ in
+                var sizes = VolumeInfo.sizes(atPath: "/")
+                sizes.availableBytes = reads.add()
+                return sizes
+            }
+            defer { InfoController.volumeSizes = original }
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            let info = try #require(tab.infoController)
+            info.showInfo(for: "/")
+            #expect(await waitUntil { reads.current == 1 })
+            info.update()
+            try await Task.sleep(for: .milliseconds(100))
+            #expect(reads.current == 1)
+            tab.reload()
+            #expect(await waitUntil { reads.current >= 2 })
+            await harness.close()
+        }
+
+        // B-INFO-111 B-VIEW-006 T-01ad97ab: a press on a segment or a separator gives the list the keyboard, as a press on
+        // the bar beside them does.
+        @Test func aPressOnASegmentOrSeparatorGivesTheListTheKeyboard() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open(harness.folder.appending("Alpha").path)
+            let bar = tab.content.contentShell.pathBarRow
+            #expect(await waitUntil { bar.pathBar.segments.last?.label == "Alpha" })
+            harness.layout(tab)
+            let window = try #require(tab.window)
+            for id in ["pathBar.segment", "pathBar.separator"] {
+                window.makeFirstResponder(nil)
+                let view = try #require(findViews(id, in: bar).first)
+                let point = view.convert(NSPoint(x: view.bounds.midX, y: view.bounds.midY), to: nil)
+                view.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: point, in: window)))
+                #expect(window.firstResponder === tab.content.focusView)
+            }
+            await harness.close()
+        }
+
         // T-a322b806 B-INFO-202: Show Info on an app measures it; it stays the one measured while the panel shows it.
         @Test func showInfoMeasuresTheItemItPutInThePanel() async throws {
             let harness = try ExplorerHarness.windowless()

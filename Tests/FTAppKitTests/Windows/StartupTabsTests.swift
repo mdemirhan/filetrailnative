@@ -7,6 +7,26 @@ import Testing
 @Suite struct StartupTabsTests {
     private static let home = "/Users/demo"
 
+    // B-NAV-186 B-TREE-050: a tab saved on a favorite removed since opens as the folder it is.
+    @Test func aRemovedFavoriteOpensAsItsFolder() throws {
+        var preferences = AppPreferences.defaults()
+        preferences.favoritesInitialized = true
+        preferences.favorites = [FavoritePreference(path: "/kept", icon: .home)]
+        func tab(_ favorite: String) -> StartupTab {
+            StartupTab(
+                path: favorite, rootPath: favorite, favoritePath: favorite, viewMode: preferences.viewMode,
+                searchViewMode: preferences.searchViewMode, sortBy: preferences.sortBy,
+                sortDirection: preferences.sortDirection, includeHidden: preferences.includeHidden,
+                foldersFirst: preferences.foldersFirst, favoritesExpanded: preferences.favoritesExpanded,
+                locationsExpanded: preferences.locationsExpanded)
+        }
+        #expect(StartupTabs.withoutRemovedFavorite(tab("/kept"), preferences).favoritePath == "/kept")
+        #expect(StartupTabs.withoutRemovedFavorite(tab("/gone"), preferences).favoritePath == nil)
+        // Before the favorites are first made, nothing can be said about them.
+        preferences.favoritesInitialized = false
+        #expect(StartupTabs.withoutRemovedFavorite(tab("/gone"), preferences).favoritePath == "/gone")
+    }
+
     /// `resolveStartupNavigation`: the single view a window opens with when no tabs were saved.
     private func single(
         restore: Bool, last: String?, favorite: String?, root: String?, startupFolder: String? = nil

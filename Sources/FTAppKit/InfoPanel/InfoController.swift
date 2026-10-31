@@ -69,7 +69,10 @@ final class InfoController {
         host.content.onDetailsChanged = { [weak self] in self?.queueUpdate() }
         // Something can still hold this controller when its tab has gone, and `host` is unowned.
         relativeRelease = RelativeClock.shared.subscribe { [weak self, weak host] in
-            if let host, host.window?.isBehindAnotherTab != true { self?.update() }
+            guard let host, host.window?.isBehindAnotherTab != true else { return }
+            // Free space changes with copies anywhere on the disk, which no folder change here tells of.
+            self?.volumeRequested = nil
+            self?.update()
         }
         update()
     }
@@ -97,9 +100,9 @@ final class InfoController {
         panel.onCalculate = { [weak self] in self?.calculate(forced: false) }
         panel.onRecalculate = { [weak self] in self?.calculate(forced: true) }
         panel.onCancel = { [weak self] in self?.cancelCalculating() }
-        row.onCalculate = { [weak self] in self?.calculate(forced: false) }
-        row.onRecalculate = { [weak self] in self?.calculate(forced: true) }
-        row.onCancel = { [weak self] in self?.cancelCalculating() }
+        row.onCalculate = { [weak self] in self?.calculate(forced: false, targets: self?.rowSizeTargets) }
+        row.onRecalculate = { [weak self] in self?.calculate(forced: true, targets: self?.rowSizeTargets) }
+        row.onCancel = { [weak self] in self?.cancelCalculating(targets: self?.rowSizeTargets) }
     }
 
     /// The item the panel describes.
@@ -168,6 +171,7 @@ final class InfoController {
 
     private func folderChanged() {
         // The folder reloaded or another one opened: what is shown stays, and is asked for again.
+        volumeRequested = nil
         if let path = targetPath { scheduleFetch(path, immediately: false) }
         update()
     }
@@ -218,11 +222,15 @@ final class InfoController {
 
     // MARK: Volume (B-INFO-047 to 049)
 
+    /// A seam of the tests.
+    static var volumeSizes: @Sendable (String) -> VolumeInfo.Sizes = { VolumeInfo.sizes(atPath: $0) }
+
     private func requestVolume(_ path: String) {
         guard volumeRequested != path else { return }
         volumeRequested = path
+        let read = Self.volumeSizes
         Task { @MainActor [weak self] in
-            let sizes = await Task.detached { VolumeInfo.sizes(atPath: path) }.value
+            let sizes = await Task.detached { read(path) }.value
             guard let self, self.volumeRequested == path else { return }
             self.volume = (path, InfoVolume(totalBytes: sizes.totalBytes, availableBytes: sizes.availableBytes))
             self.update()
@@ -296,6 +304,7 @@ final class InfoController {
         panel.closeTooltip = Tooltips.format("Hide Info Panel", shortcutLabel: shortcuts.label(.toggleInfoPanel))
         let selection = selectionDetails()
         updateAutoSize(preferences)
+        if !panelOpen { volumeRequested = nil }
         if panelOpen || rowOpen {
             if fetchTarget != targetPath || (properties == nil && !loading) {
                 if let path = targetPath { scheduleFetch(path, immediately: false) }
@@ -365,7 +374,7 @@ final class InfoController {
         }
         let item = resolved.item
         let isVolume = VolumePaths.isVolumeRootPath(item.path)
-        if isVolume { requestVolume(item.path) }
+        if isVolume { requestVolume(item.path) } else { volumeRequested = nil }
         requestLookup(item.path)
         let isFile = item.kind == .file || item.kind == .symlinkFile
         let lookupForItem = lookup?.path == item.path ? lookup : nil
@@ -452,18 +461,26 @@ final class InfoController {
 
     // MARK: Folder sizes
 
-    /// The folder paths the size controls work on now: the selected folders, or the one folder the views describe.
+    /// The folder paths the panel's size controls work on now: the selected folders, or the one folder it describes.
     private var sizeTargets: [String] {
+        if selectionDetails() == nil, panelOpen, let item = resolved?.item, item.kind.isFolderSizeEligible {
+            return [item.path]
+        }
+        return rowSizeTargets
+    }
+
+    /// The folder paths the Info Row's size controls work on: what the row shows, whatever item the panel is on
+    /// (B-INFO-166).
+    private var rowSizeTargets: [String] {
         if let selection = selectionDetails() { return selection.size.folderPaths }
-        if panelOpen, let item = resolved?.item, item.kind.isFolderSizeEligible { return [item.path] }
         if let single = content.selectedEntries.first, content.selection.paths.count == 1 {
             return single.isFolderSizeEligible ? [single.path] : []
         }
         return folderPath.isEmpty ? [] : [folderPath]
     }
 
-    private func calculate(forced: Bool) {
-        let targets = sizeTargets
+    private func calculate(forced: Bool, targets chosen: [String]? = nil) {
+        let targets = chosen ?? sizeTargets
         let sizes = host.folderSizes
         if targets.count == 1, let path = targets.first {
             forced ? sizes.recalculate(path) : sizes.calculate(path)
@@ -473,8 +490,8 @@ final class InfoController {
         update()
     }
 
-    private func cancelCalculating() {
-        let targets = sizeTargets
+    private func cancelCalculating(targets chosen: [String]? = nil) {
+        let targets = chosen ?? sizeTargets
         if targets.count == 1, let path = targets.first {
             host.folderSizes.cancel(path)
         } else {

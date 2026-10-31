@@ -1,6 +1,15 @@
 // The loop a press runs to follow the pointer until the button goes up (a click, a drag, a marquee)
 import AppKit
 
+extension NSEvent {
+    /// How far a wheel event moves a list, down and to the right being positive. A wheel without precise deltas moves
+    /// a set distance per line.
+    @MainActor var wheelOffset: (top: Double, left: Double) {
+        let scale = hasPreciseScrollingDeltas ? 1 : ItemGridScrollView.wheelLineStep
+        return (-Double(scrollingDeltaY) * scale, -Double(scrollingDeltaX) * scale)
+    }
+}
+
 /// Where a press gets the events that follow it. A view that tracks the mouse reads them from the window's queue; a test
 /// that has no event loop sets `source` to events it holds.
 @MainActor

@@ -242,6 +242,8 @@ extension ExplorerWindowlessTests {
             #expect(engine.starts.first?.rootPath == tab.shownFolderPath)
             #expect(tab.search.session.startedLive)
             #expect(tab.searchField?.isActive == true)
+            // B-SRCH-052: the caret follows the text, so the next key adds to it.
+            #expect(tab.searchField?.currentEditor()?.selectedRange == NSRange(location: 2, length: 0))
             await opened.harness.close()
         }
 

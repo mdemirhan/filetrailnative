@@ -246,6 +246,30 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
+        // B-TREE-028: and a press beside a header's button.
+        @Test func aPressBesideAHeadersButtonClearsTheSelection() async throws {
+            let opened = try await open()
+            let (tab, controller) = (opened.tab, opened.controller)
+            await setPlacement(tab, "separate", opened.harness)
+            let alpha = listed(opened.harness, "Alpha")
+            controller.toggleFavorite(alpha)
+            controller.model.selectItem(.favorite(alpha))
+            #expect(await waitUntil { tab.shownFolderPath == alpha })
+            opened.harness.layout(tab)
+
+            let list = controller.sections
+            let outline = list.outline
+            let header = try #require(
+                (0..<outline.numberOfRows).first {
+                    if case .header = list.row(at: $0) { return true }
+                    return false
+                })
+            let rect = outline.rect(ofRow: header)
+            try pressOutline(outline, at: NSPoint(x: rect.minX + 1, y: rect.midY))
+            #expect(controller.model.selected == nil)
+            await opened.harness.close()
+        }
+
         // T-6f692b35: and a press on the spacer at the top of the list favorites are rows of.
         @Test func aPressOnASpacerOfTheListClearsTheSelection() async throws {
             let opened = try await open()

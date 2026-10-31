@@ -90,7 +90,6 @@ final class PathSegmentView: NSView, TextStyleSource {
     override func mouseEntered(with event: NSEvent) { isHovered = true }
     override func mouseExited(with event: NSEvent) { isHovered = false }
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
-    override func mouseDown(with event: NSEvent) {}
 
     override func mouseUp(with event: NSEvent) {
         guard bounds.contains(convert(event.locationInWindow, from: nil)) else { return }
@@ -175,7 +174,6 @@ final class PathSeparatorView: NSView, TextStyleSource {
     override func mouseEntered(with event: NSEvent) { isHovered = true }
     override func mouseExited(with event: NSEvent) { isHovered = false }
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
-    override func mouseDown(with event: NSEvent) {}
 
     override func mouseUp(with event: NSEvent) {
         guard isButton, bounds.contains(convert(event.locationInWindow, from: nil)) else { return }

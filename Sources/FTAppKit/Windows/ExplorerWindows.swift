@@ -262,7 +262,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         // A waiting tab whose folder is gone is dropped; the one in front reads its own, and opens Home if it can't.
         var tabs: [StartupTab] = []
         var active = 0
-        for (index, startup) in resolved.tabs.enumerated() {
+        for (index, saved) in resolved.tabs.enumerated() {
+            let startup = StartupTabs.withoutRemovedFavorite(saved, preferences)
             if index == resolved.activeIndex {
                 active = tabs.count
                 tabs.append(startup)

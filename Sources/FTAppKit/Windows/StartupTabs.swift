@@ -66,6 +66,17 @@ public enum StartupTabs {
             favoritesExpanded: tab.favoritesExpanded, locationsExpanded: tab.locationsExpanded)
     }
 
+    /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it
+    /// (B-NAV-186, B-TREE-050).
+    public static func withoutRemovedFavorite(_ tab: StartupTab, _ preferences: AppPreferences) -> StartupTab {
+        guard preferences.favoritesInitialized, let favorite = tab.favoritePath,
+            !preferences.favorites.contains(where: { $0.path == favorite })
+        else { return tab }
+        var plain = tab
+        plain.favoritePath = nil
+        return plain
+    }
+
     /// `resolveStartupTabs`: "Reopen the last folder and tabs" brings back the tabs that were open; without it the
     /// window opens one tab at home. A window opened while the app runs (`restoreTabs`) always opens the tabs it was
     /// given. A folder the app was launched with is shown in a tab of its own, unless a restored tab already has it.

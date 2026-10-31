@@ -355,6 +355,19 @@ final class InlineRenameField: NSTextField, NSTextFieldDelegate {
         let view = errorView ?? RenameErrorView()
         errorView = view
         let size = view.configure(message: message, theme: theme)
+        place(view, size: size, in: host)
+        if view.superview !== host { host.addSubview(view, positioned: .above, relativeTo: nil) }
+        view.isHidden = false
+    }
+
+    /// The window or the pane changed size: the box on screen stays under the field (B-SEL-134). One that scrolling
+    /// hid stays hidden.
+    func repositionError() {
+        guard isShowingError, let view = errorView, let host = window?.contentView else { return }
+        place(view, size: view.frame.size, in: host)
+    }
+
+    private func place(_ view: RenameErrorView, size: NSSize, in host: NSView) {
         let field = host.convert(bounds, from: self)
         let layout = SelectionLayout.Rename.self
         let belowTop = host.isFlipped ? field.maxY : field.minY
@@ -370,8 +383,6 @@ final class InlineRenameField: NSTextField, NSTextFieldDelegate {
         left = placed.left
         top = host.isFlipped ? placed.top : Double(host.bounds.height) - placed.top - Double(size.height)
         view.frame = NSRect(x: left, y: top, width: Double(size.width), height: Double(size.height))
-        if view.superview !== host { host.addSubview(view, positioned: .above, relativeTo: nil) }
-        view.isHidden = false
     }
 
     /// Scrolling moves the row away from the explanation, so it is dropped until the next try.

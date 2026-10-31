@@ -238,6 +238,63 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // B-SEL-134: the explanation of a refused name stays under the field when the window changes size.
+        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsIcons])
+        func theRenameErrorBoxFollowsItsFieldWhenTheWindowResizes(_ view: RendererCommand) async throws {
+            let (harness, tab, _) = try await open(view)
+            let taken = tab.content.entries[6].name
+            #expect(tab.content.beginRename(path: tab.content.entries[5].path))
+            tab.content.renameSubmitted(taken)
+            #expect(await waitUntil { tab.content.inlineRename?.error != nil })
+            let host = try #require(tab.window?.contentView)
+            let box = try #require(findViews("rename.error", in: host).first)
+            let field = try #require(findViews("rename.field", in: host).first)
+            func gap() -> CGFloat {
+                let frame = host.convert(field.bounds, from: field)
+                return host.isFlipped ? box.frame.minY - frame.maxY : frame.minY - box.frame.maxY
+            }
+            #expect(abs(gap() - CGFloat(SelectionLayout.Rename.errorGap)) < 1)
+            let size = host.frame.size
+            tab.window?.setContentSize(NSSize(width: size.width + 120, height: size.height + 120))
+            harness.layout(tab)
+            #expect(!box.isHidden)
+            #expect(abs(gap() - CGFloat(SelectionLayout.Rename.errorGap)) < 1)
+            await harness.close()
+        }
+
+        // B-VIEW-081: the wheel scrolls the list during a marquee, and the box follows.
+        // (A list long enough to scroll has no empty space to start one in; Icons has its margins.)
+        @Test(.windowlessAlone) func theWheelScrollsDuringAMarquee() async throws {
+            let (harness, tab, _) = try await open(.viewAsIcons)
+            let window = try #require(tab.window)
+            let grid = try #require(tab.content.pane as? ItemGridPane)
+            let surface: NSView = grid.collection
+            let first = grid.collection.frameForItem(at: 0)
+            let start = surface.convert(NSPoint(x: first.midX, y: max(0, first.minY - 1)), to: nil)
+            let wheel = try #require(
+                CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 1, wheel1: -300, wheel2: 0, wheel3: 0))
+            let end = NSPoint(x: start.x, y: start.y - 20)
+            var queue = [
+                try #require(MouseEvents.event(.leftMouseDragged, at: end, in: window)),
+                try #require(NSEvent(cgEvent: wheel)),
+                try #require(MouseEvents.event(.leftMouseUp, at: end, in: window)),
+            ]
+            let original = PointerTracker.source
+            defer { PointerTracker.source = original }
+            // As the window's queue does: an event of a kind not asked for never arrives.
+            PointerTracker.source = { _, mask, _ in
+                while !queue.isEmpty {
+                    let next = queue.removeFirst()
+                    if mask.contains(NSEvent.EventTypeMask(rawValue: 1 << next.type.rawValue)) { return next }
+                }
+                return nil
+            }
+            let before = grid.scrollPosition.top
+            surface.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: start, in: window)))
+            #expect(grid.scrollPosition.top > before)
+            await harness.close()
+        }
+
         // The item to show stays the same when the lead's name starts being edited: a lead scrolled away stays away.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func renamingALeadScrolledAwayLeavesTheViewWhereItIs(_ view: RendererCommand) async throws {
