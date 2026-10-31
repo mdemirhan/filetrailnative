@@ -102,6 +102,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         sections.setAccessibilityIdentifier("sidebar.sections")
         tree.outline.setAccessibilityIdentifier("sidebar.tree.outline")
         tree.setAccessibilityIdentifier("sidebar.tree")
+        sections.outline.setAccessibilityLabel("Favorites and Locations")
+        tree.outline.setAccessibilityLabel("Folders")
         foldersHeader.setAccessibilityIdentifier("sidebar.foldersHeader")
         foldersTitle.setAccessibilityIdentifier("sidebar.foldersTitle")
         pill.setAccessibilityIdentifier("sidebar.typeahead")

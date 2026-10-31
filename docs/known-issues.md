@@ -2,10 +2,6 @@
 
 Differences and gaps left when the port from Electron finished. None has been decided on yet. IDs are from the port's records, kept in the private archive. Background work that may affect battery is in [battery.md](battery.md).
 
-## Medium
-
-- **VoiceOver in the folder tree** (`B-TREE-015`): rows don't report selected, expanded or level, and the lists have no names. Only the row label is exposed.
-
 ## Files and drags
 
 - **Preparing sheet** (`T-00e53ea3`): Return does nothing; the focused Cancel took it in Electron. `PasteFlow.swift:70`.

@@ -246,6 +246,51 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
+        // B-TREE-015: VoiceOver hears a row's selection, level and disclosure, and the lists' names.
+        @Test func rowsTellVoiceOverTheirStateAndTheListsHaveNames() async throws {
+            let opened = try await open()
+            let (tab, controller) = (opened.tab, opened.controller)
+            opened.harness.layout(tab)
+            #expect(controller.tree.outline.accessibilityLabel() == "Folders")
+            #expect(controller.sections.outline.accessibilityLabel() == "Favorites and Locations")
+
+            let list = controller.tree
+            let outline = list.outline
+            let rows = (outline.accessibilityChildren() ?? []).compactMap { $0 as? SidebarAccessibilityRow }
+            #expect(!rows.isEmpty)
+            #expect(rows.count == (outline.accessibilityRows() ?? []).count)
+            for (index, state) in (0..<list.rowCount).compactMap({ index -> (Int, SidebarRowState)? in
+                guard case .item(let state)? = list.row(at: index) else { return nil }
+                return (index, state)
+            }) {
+                let row = try #require(list.accessibilityRow(at: index))
+                #expect(rows.contains { $0 === row })
+                #expect(row.accessibilityRole() == .row)
+                #expect(row.accessibilityLabel() == state.item.label)
+                #expect(row.isAccessibilitySelected() == (state.selection != .none))
+                #expect(row.accessibilityDisclosureLevel() == state.item.depth)
+                #expect(row.isAccessibilityDisclosed() == state.item.expanded)
+                #expect(row.accessibilityParent() as AnyObject === outline)
+                #expect(list.accessibilityRow(at: index) === row)
+            }
+            let selected = (outline.accessibilitySelectedRows() ?? []).count
+            #expect(selected == rows.filter { $0.isAccessibilitySelected() }.count)
+
+            // The chevron is a button of its row, and its row opens and closes.
+            let cell = try #require(cells(controller).first { $0.state?.item.canExpand == true })
+            let button = try chevron(cell)
+            let index = outline.row(for: cell)
+            let row = try #require(list.accessibilityRow(at: index))
+            #expect(button.isAccessibilityElement())
+            #expect(button.accessibilityRole() == .button)
+            #expect(button.accessibilityParent() as AnyObject === row)
+            #expect((row.accessibilityChildren() ?? []).contains { $0 as AnyObject === button })
+            let wasOpen = row.isAccessibilityDisclosed()
+            row.setAccessibilityDisclosed(!wasOpen)
+            #expect(await waitUntil { row.isAccessibilityDisclosed() != wasOpen })
+            await opened.harness.close()
+        }
+
         // B-TREE-028: and a press beside a header's button.
         @Test func aPressBesideAHeadersButtonClearsTheSelection() async throws {
             let opened = try await open()
