@@ -127,7 +127,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         view.issuesButton.perform()
         #expect(
             recorder.opened.map(\.absoluteString) == [
-                "https://github.com/mdemirhan/filetrail", "https://github.com/mdemirhan/filetrail/issues",
+                "https://github.com/mdemirhan/filetrailnative", "https://github.com/mdemirhan/filetrailnative/issues",
             ])
         view.acknowledgementsLink.perform()
         #expect(recorder.acknowledgements == 1)

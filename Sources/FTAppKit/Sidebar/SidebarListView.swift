@@ -384,9 +384,11 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     /// How much of the list is in view.
     var visibleHeight: Double { Double(scroll.contentView.bounds.height) }
 
+    /// The list's height can be a fraction of a point, which the clip view rounds, so a row revealed at the foot can
+    /// end less than a pixel past the visible area.
     func isFullyVisible(_ index: Int) -> Bool {
         let rect = outline.rect(ofRow: index)
-        let visible = scroll.contentView.bounds
+        let visible = scroll.contentView.bounds.insetBy(dx: 0, dy: -0.5)
         return rect.minY >= visible.minY && rect.maxY <= visible.maxY
     }
 

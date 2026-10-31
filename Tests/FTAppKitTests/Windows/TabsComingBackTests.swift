@@ -80,5 +80,18 @@ extension ExplorerWindowlessTests {
             #expect(controller.tree.isFullyVisible(after))
             await harness.close()
         }
+
+        // The controller can outlive its tab while something still holds it; the clock must not reach the tab then
+        @Test func aMinuteTickAfterATabWentDoesNotReachIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            var tab: MainWindowController? = try await harness.open()
+            let info = try #require(tab?.infoController)
+            weak let gone = tab
+            tab = nil
+            await harness.close()
+            #expect(await waitUntil { gone == nil })
+            RelativeClock.shared.windowStateDidChange()
+            withExtendedLifetime(info) {}
+        }
     }
 }
