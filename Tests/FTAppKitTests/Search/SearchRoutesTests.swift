@@ -552,7 +552,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let operations = AppWriteOperations(
                 userData: harness.folder.url, directoryService: harness.services.directoryService,
-                windows: harness.windows, trash: .standIn, log: { _ in })
+                windows: harness.windows, trash: .standIn, emptyTrash: { (true, nil) }, log: { _ in })
             operations.dialogs.show = { _, _, _ in }
             operations.dialogs.confirm = { _, _ in false }
             let engine = FakeSearchEngine()

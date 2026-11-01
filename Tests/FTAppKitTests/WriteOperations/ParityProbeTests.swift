@@ -274,7 +274,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let operations = AppWriteOperations(
                 userData: harness.folder.url, directoryService: DirectoryService(), windows: harness.windows,
-                trash: .standIn,
+                trash: .standIn, emptyTrash: { (true, nil) },
                 log: { _ in })
             let group = try #require(tab.group)
             let session = operations.session(for: group)

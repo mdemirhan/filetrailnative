@@ -46,7 +46,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let operations = AppWriteOperations(
                 userData: harness.folder.url, directoryService: harness.services.directoryService,
-                windows: harness.windows, trash: .standIn, log: { _ in })
+                windows: harness.windows, trash: .standIn, emptyTrash: { (true, nil) }, log: { _ in })
             let notices = Notices()
             operations.dialogs.show = { title, message, _ in
                 notices.titles.append(title)

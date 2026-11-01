@@ -19,7 +19,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open(listed(harness, ""))
             let operations = AppWriteOperations(
                 userData: harness.folder.url, directoryService: harness.services.directoryService,
-                windows: harness.windows, trash: .standIn, log: { _ in })
+                windows: harness.windows, trash: .standIn, emptyTrash: { (true, nil) }, log: { _ in })
             let recorder = DialogRecorder()
             operations.dialogs = recorder.dialogs
             tab.perform(.viewAsDetails)

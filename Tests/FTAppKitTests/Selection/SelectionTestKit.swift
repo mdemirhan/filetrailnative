@@ -138,6 +138,7 @@ extension ExplorerHarness {
         try FileManager.default.createDirectory(at: userData, withIntermediateDirectories: true)
         return AppWriteOperations(
             userData: userData, directoryService: services.directoryService, windows: windows, trash: .standIn,
+            emptyTrash: { (true, nil) },
             log: { _ in })
     }
 

@@ -38,7 +38,7 @@ struct WritingWindow {
         let tab = try await harness.open(path)
         let operations = AppWriteOperations(
             userData: harness.folder.url, directoryService: harness.services.directoryService, windows: harness.windows,
-            trash: .standIn,
+            trash: .standIn, emptyTrash: { (true, nil) },
             log: { _ in })
         let recorder = DialogRecorder()
         operations.dialogs = recorder.dialogs

@@ -2,8 +2,8 @@
 import AppKit
 import FTFoundation
 
-/// The content pane's rows: the search header in search mode (P5-07), the list and the Info Row. The path bar row is the
-/// pane's too, but lies in the workspace's status cell, which runs under the Info panel as well.
+/// The content pane's rows: the search header in search mode (P5-07) or the Trash's bar, the list and the Info Row. The
+/// path bar row is the pane's too, but lies in the workspace's status cell, which runs under the Info panel as well.
 final class ContentPaneView: NSView {
     /// The search results' header; nil outside search mode.
     var searchHeader: NSView? {
@@ -14,6 +14,15 @@ final class ContentPaneView: NSView {
         }
     }
     var searchHeaderHeight = 0.0
+    /// The Trash's bar; nil anywhere else, and while search results show.
+    var trashHeader: TrashHeaderView? {
+        didSet {
+            guard trashHeader !== oldValue else { return }
+            oldValue?.removeFromSuperview()
+            if let trashHeader { addSubview(trashHeader) }
+            needsLayout = true
+        }
+    }
     var list: NSView? {
         didSet {
             oldValue?.removeFromSuperview()
@@ -58,6 +67,10 @@ final class ContentPaneView: NSView {
         if let searchHeader {
             searchHeader.frame = NSRect(x: 0, y: 0, width: width, height: searchHeaderHeight)
             y = searchHeaderHeight
+        }
+        if let trashHeader {
+            trashHeader.frame = NSRect(x: 0, y: y, width: width, height: TrashHeaderView.height)
+            y += TrashHeaderView.height
         }
         let infoHeight = infoRow.height
         let listHeight = max(0, bounds.height - y - infoHeight)

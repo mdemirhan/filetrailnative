@@ -20,17 +20,21 @@ final class AppWriteOperations {
     private weak var windows: ExplorerWindows?
     private var sessions: [Int: ExplorerWriteSession] = [:]
     var dialogs = WriteDialogs()
+    /// `system:emptyTrash`, for every tab's actions.
+    var emptyTrash: @MainActor () async -> (ok: Bool, error: String?)
     /// What recovery at start says the person must know (items left under a hidden name, or waiting for their disk).
     private(set) var startupNotices: [String] = []
 
     /// Opens the journal in `userData`, finishes or undoes what an earlier run left half done, and makes the
     /// coordinator. Runs before any window can write.
     ///
-    /// `trash` has no default, so that no test can reach the user's Trash by leaving it out.
+    /// `trash` and `emptyTrash` have no default, so that no test can reach the user's Trash by leaving them out.
     init(
         userData: URL, directoryService: DirectoryService, windows: ExplorerWindows, trash trashItem: TrashItem,
+        emptyTrash: @escaping @MainActor () async -> (ok: Bool, error: String?),
         log: @escaping @MainActor (String) -> Void
     ) {
+        self.emptyTrash = emptyTrash
         let homePath = FileManager.default.homeDirectoryForCurrentUser.path
         let diskHasTrash = makeDiskHasTrash()
         // Items replaced by a paste go to the Trash, so a replace can always be undone.
@@ -120,7 +124,9 @@ final class AppWriteOperations {
     /// The actions of tab `tab`.
     func actions(for tab: MainWindowController) -> WindowWriteActions? {
         guard let group = tab.group else { return nil }
-        return WindowWriteActions(session: session(for: group), tab: tab, dialogs: dialogs)
+        let actions = WindowWriteActions(session: session(for: group), tab: tab, dialogs: dialogs)
+        actions.emptyTrashRunner = emptyTrash
+        return actions
     }
 
     /// An explorer window closed: what it ran goes on in the window in front, or stops.

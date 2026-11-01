@@ -327,6 +327,8 @@ enum ToolbarKeyboard {
             window.makeFirstResponder(tab.workspace.treeResizer)
         } else if !backward, let header = tab.content.contentShell.searchHeader as? SearchHeaderView {
             header.enterFromStart()
+        } else if !backward, let header = tab.content.contentShell.trashHeader, header.emptyButton.isEnabled {
+            header.emptyButton.takeKeyboard()
         } else {
             tab.content.focusList()
         }

@@ -1899,16 +1899,42 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// Whether the Trash has anything in it (nil: it can't be told), asked when the window comes to the front and after
     /// every file operation (`useTrashState`).
     var trashIsEmpty: Bool?
+    /// Reads whether the Trash has anything in it; tests use their own.
+    var trashIsEmptyReader: @Sendable () -> Bool? = {
+        TrashState.isEmpty(home: FileManager.default.homeDirectoryForCurrentUser.path, uid: getuid())
+    }
 
     func refreshTrashState() {
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let uid = getuid()
+        let read = trashIsEmptyReader
         Task { [weak self] in
-            let empty = await Task.detached(priority: .utility) { TrashState.isEmpty(home: home, uid: uid) }.value
+            let empty = await Task.detached(priority: .utility) { read() }.value
             guard let self, self.trashIsEmpty != empty else { return }
             self.trashIsEmpty = empty
             self.commandsChanged()
         }
+    }
+
+    /// The home folder whose Trash gets the bar; tests use their own.
+    var trashHomePath = FileManager.default.homeDirectoryForCurrentUser.path
+
+    private lazy var trashHeader: TrashHeaderView = {
+        let header = TrashHeaderView()
+        header.onEmpty = { [weak self] in _ = self?.performWriteCommand(.emptyTrash) }
+        header.onFocusList = { [weak self] in self?.content.focusList() }
+        header.onSwitchPane = { [weak self] in self?.content.switchPane() }
+        return header
+    }()
+
+    /// The Trash itself on screen has its bar, not a folder in it, and not over search results. Empty follows Empty
+    /// Trash in the menu: dimmed with nothing to erase, or while a file operation runs.
+    private func refreshTrashHeader() {
+        let shell = content.contentShell
+        guard searchRootPath == nil, Paths.isTrashFolder(shownFolderPath, homePath: trashHomePath) else {
+            shell.trashHeader = nil
+            return
+        }
+        shell.trashHeader = trashHeader
+        trashHeader.emptyButton.isEnabled = canPerform(.emptyTrash)
     }
 
     /// Something the commands read changed that has no change of its own to tell of.
@@ -2100,6 +2126,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     // MARK: Observers
 
     fileprivate func notify(_ change: ExplorerWindowChange) {
+        if change == .folder || change == .search || change == .commands { refreshTrashHeader() }
+        // The Trash on screen changed, or came to the screen: what it holds may not be what was last read.
+        if change == .folder, content.contentShell.trashHeader != nil { refreshTrashState() }
         observers.removeAll { $0.token.value?.isValid != true }
         for observer in observers { observer.handler(change) }
         reportMenuStateSoon()

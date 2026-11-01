@@ -489,10 +489,9 @@ final class WindowWriteActions {
         return .queued(operationId: "")
     }
 
-    /// `system:emptyTrash`: Finder empties it (`TrashState.empty`); tests use their own.
+    /// `system:emptyTrash`, which `AppWriteOperations` gives. Without it nothing is erased.
     var emptyTrashRunner: @MainActor () async -> (ok: Bool, error: String?) = {
-        let result = await TrashState.empty()
-        return (result.ok, result.error)
+        (false, "Nothing here can empty the Trash.")
     }
 
     /// `followClipboardThroughRemoval` of what was in a Trash.

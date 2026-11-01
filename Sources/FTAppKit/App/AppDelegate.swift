@@ -231,6 +231,10 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         let writes = AppWriteOperations(
             userData: userDataDirectory ?? AppStatePaths.userDataDirectory(), directoryService: directoryService,
             windows: windows, trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
+            emptyTrash: {
+                let result = await TrashState.empty()
+                return (result.ok, result.error)
+            },
             log: { [weak logger] message in logger?.info(.text(message)) })
         writeOperations = writes
         windows.onExplorerWindowClosed = { [weak writes] group in writes?.explorerWindowClosed(group) }

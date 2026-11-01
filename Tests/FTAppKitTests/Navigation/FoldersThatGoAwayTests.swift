@@ -507,7 +507,7 @@ extension ExplorerWindowlessTests {
             let group = try #require(back.group)
             let operations = AppWriteOperations(
                 userData: harness.folder.url, directoryService: DirectoryService(), windows: harness.windows,
-                trash: .standIn,
+                trash: .standIn, emptyTrash: { (true, nil) },
                 log: { _ in })
             let session = operations.session(for: group)
             let alpha = harness.folder.appending("Alpha").path
