@@ -75,18 +75,29 @@ final class CompactListViewController: ItemGridPane {
         return NSRect(x: cell.x, y: cell.y, width: width, height: cell.height)
     }
 
-    /// The name's width, and the clipboard glyph after it with its gap on an item on the clipboard (P5-08).
+    /// The name's width, and what follows it with its gap: the tag dots, and the clipboard glyph on an item on the
+    /// clipboard (P5-08).
     private func markedNameWidth(_ entry: DirectoryEntry) -> Double {
-        let width = nameWidth(entry.name)
-        guard host?.clipboardMarks?.mark(for: entry.path) != nil else { return width }
-        return width + ClipboardLayout.Mark.gap + ClipboardLayout.Mark.iconSize
+        var width = nameWidth(entry.name)
+        let tags = host?.tagColors(for: entry.path).count ?? 0
+        if tags > 0 { width += Double(TagDotsView.gap + TagDotsView.width(count: tags)) }
+        if host?.clipboardMarks?.mark(for: entry.path) != nil {
+            width += ClipboardLayout.Mark.gap + ClipboardLayout.Mark.iconSize
+        }
+        return width
     }
 
-    /// The marks changed: a marked item is wider by its glyph.
-    override func clipboardMarksChanged() {
-        gridLayout.invalidateLayout()
-        placeItems()
-        super.clipboardMarksChanged()
+    /// Tags or clipboard marks may have changed: an item is wider by its dots and its glyph.
+    override func refresh(paths: Set<String>?) {
+        let resized = collection.indexPathsForVisibleItems().contains { path in
+            guard let item = collection.item(at: path) else { return false }
+            return abs(item.view.frame.width - itemFrame(at: path.item, viewport: viewport).width) >= 1
+        }
+        if resized {
+            gridLayout.invalidateLayout()
+            placeItems()
+        }
+        super.refresh(paths: paths)
     }
 
     override func items(in rect: NSRect, viewport: NSSize) -> Range<Int> {

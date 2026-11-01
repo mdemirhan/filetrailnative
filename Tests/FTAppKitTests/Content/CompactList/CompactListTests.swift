@@ -42,6 +42,39 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A tagged item grows by its dots, so its name keeps all its room, and shrinks back when they go.
+        @Test func anItemIsWiderByItsTagDotsAndItsNameKeepsItsRoom() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, probe) = try await harness.openGrid(.viewAsList, files: 4)
+            let compact = try #require(probe.compact)
+            let entry = tab.content.entries[1]
+            defer { try? FinderTags.write([], to: entry.path) }
+            let nameWidth = (entry.name as NSString).size(withAttributes: [.font: compact.nameFont]).width
+            let plainWidth = nameWidth + 50
+
+            try FinderTags.write(
+                [
+                    FinderTag(name: "Red", color: .red), FinderTag(name: "Blue", color: .blue),
+                    FinderTag(name: "Green", color: .green), FinderTag(name: "Gray", color: .gray),
+                ], to: entry.path)
+            tab.content.tagsChanged([entry.path])
+            // Three of the four dots show: 10 wide, each next one 4 further, 5 after the name.
+            let dots = TagDotsView.gap + TagDotsView.diameter + 2 * TagDotsView.step
+            let width = { probe.compactItems[entry.name]?.view.frame.width ?? 0 }
+            #expect(await waitUntil { abs(width() - plainWidth - dots) < 0.01 })
+            let item = try #require(probe.compactItems[entry.name])
+            #expect(!item.tagDots.isHidden)
+            #expect(item.tagDots.dotsWidth == dots - TagDotsView.gap)
+            #expect(abs(item.label.frame.width - nameWidth) < 0.01)
+            #expect(abs(item.tagDots.frame.minX - (item.label.frame.maxX + TagDotsView.gap)) < 0.01)
+            #expect(abs(item.tagDots.frame.maxX - (item.view.bounds.width - 12)) < 0.01)
+
+            try FinderTags.write([], to: entry.path)
+            tab.content.tagsChanged([entry.path])
+            #expect(await waitUntil { abs(width() - plainWidth) < 0.01 })
+            await harness.close()
+        }
+
         // T-f76e6635 F-776 B-VIEW-035: the wheel's up and down scroll the list sideways; a mostly sideways gesture is
         // left to the scroll view.
         // B-SEL-069

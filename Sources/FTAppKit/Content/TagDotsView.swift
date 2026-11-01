@@ -42,12 +42,16 @@ final class TagDotsView: NSView {
         }
     }
 
-    private var shown: ArraySlice<FinderTagColor> { colors.suffix(3) }
+    private static let mostShown = 3
+    private var shown: ArraySlice<FinderTagColor> { colors.suffix(Self.mostShown) }
+
+    /// The width the dots of an item with `count` tags take.
+    static func width(count: Int) -> CGFloat {
+        count == 0 ? 0 : diameter + CGFloat(min(count, mostShown) - 1) * step
+    }
 
     /// The width the dots take.
-    var dotsWidth: CGFloat {
-        shown.isEmpty ? 0 : Self.diameter + CGFloat(shown.count - 1) * Self.step
-    }
+    var dotsWidth: CGFloat { Self.width(count: colors.count) }
 
     init() {
         super.init(frame: .zero)
