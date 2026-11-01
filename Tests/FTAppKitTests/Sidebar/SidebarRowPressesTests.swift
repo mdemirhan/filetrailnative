@@ -577,14 +577,39 @@ extension ExplorerWindowlessTests {
 
             // Past the time since the last toggle, a change of rows that isn't a toggle by hand scrolls to the selection.
             clock.advance(1500)
+            let read = controller.model.readChildren
+            let added = listed(harness, "") + "/added"
+            controller.model.readChildren = { path, includeHidden in
+                try await read(path, includeHidden)
+                    + [TreePaths.Child(path: added, name: "added", isHidden: false, isSymlink: false)]
+            }
+            await controller.model.loadChildren(listed(harness, ""), forceReload: true)
+            harness.layout(tab)
+            #expect(try selectedRowIsInView(controller))
+            await harness.close()
+        }
+
+        // Rows come above what is in view, and the selected row is out of view: nothing moves.
+        @Test func turningHiddenFilesOnLeavesTheRowsInViewWhereTheyAre() async throws {
+            let (harness, tab, _) = try await open()
+            let controller = sidebar(tab)
+            try FileManager.default.createDirectory(
+                at: harness.folder.appending(".hidden-first"), withIntermediateDirectories: true)
+            let tree = controller.tree
+            let anchor = try #require(tree.index(ofItem: .filesystem(listed(harness, "f20"))))
+            tree.scrollTop = Double(tree.outline.rect(ofRow: anchor).minY) - 10
+            harness.layout(tab)
+            let scrolled = tree.scrollTop
+            let rows = tree.rowCount
+            #expect(try !selectedRowIsInView(controller))
+
             tab.perform(.toggleHiddenFiles)
-            // The row is gone for a moment while the tree is rebuilt, which `#require` would record as a failure.
-            #expect(
-                await waitUntil {
-                    guard let selected = controller.model.selected, let row = controller.tree.index(ofItem: selected)
-                    else { return false }
-                    return controller.tree.isFullyVisible(row)
-                })
+            #expect(await waitUntil { tree.rowCount > rows })
+            harness.layout(tab)
+            let moved = try #require(tree.index(ofItem: .filesystem(listed(harness, "f20"))))
+            #expect(abs(Double(tree.outline.rect(ofRow: moved).minY) - tree.scrollTop - 10) < 1)
+            #expect(tree.scrollTop > scrolled)
+            #expect(try !selectedRowIsInView(controller))
             await harness.close()
         }
 

@@ -2007,7 +2007,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// The tab's order, Folders First or hidden files changed: the content pane shows it, the folder is read again in
     /// place and the choice is saved with the tab.
-    private func viewChanged() {
+    /// `keepingTree`: the tree sees to itself, and the folder read again leaves it alone.
+    private func viewChanged(keepingTree: Bool = false) {
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
         notify(.view)
@@ -2015,7 +2016,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         // No folder to read again (`toggleHiddenFiles` with an empty currentPath).
         guard loaded, !folderLetGo else { return }
         // `getSelectedTreeReloadOptions`: the row of a favorite, a location or a link stays, and the tree where it is.
-        let open = sidebar.model.openKeepingRow(folder.path) ?? .other
+        let open = keepingTree ? SidebarOpen(origin: .alias) : sidebar.model.openKeepingRow(folder.path) ?? .other
         Task { await navigate(to: folder, history: .replace, open: open, keepingSearch: true) }
     }
 
@@ -2200,7 +2201,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleHiddenFiles:
             includeHidden.toggle()
             sidebar.hiddenFilesChanged(includeHidden)
-            viewChanged()
+            viewChanged(keepingTree: !sidebar.model.rootPath.isEmpty)
             searchStore?.session.hiddenFilesChanged(includeHidden)
         case .refreshOrApplySearchSort:
             // In search mode ⌘R runs the same search again (B-SRCH-140).

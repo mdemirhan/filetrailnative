@@ -366,13 +366,16 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
 
     var rowCount: Int { items.count }
 
-    /// The rows now in the list: one whose state is the same is not drawn again.
-    func apply(_ rows: [SidebarListRow]) {
+    /// The rows now in the list: one whose state is the same is not drawn again. `keepingRowsInPlace`: a row in view
+    /// stays where it is on screen, when rows come or go above it.
+    func apply(_ rows: [SidebarListRow], keepingRowsInPlace: Bool = false) {
         defer { placeDropLine() }
         let ids = rows.map(\.id)
         let known = Dictionary(items.map { ($0.row.id, $0) }, uniquingKeysWith: { first, _ in first })
         noteChevronTurns(rows, known: known)
-        if ids != items.map({ $0.row.id }) {
+        let shownIDs = items.map { $0.row.id }
+        if ids != shownIDs {
+            let anchor = keepingRowsInPlace ? rowInView(among: ids, shownIDs: shownIDs) : nil
             items = rows.map { row in
                 if let item = known[row.id] {
                     item.row = row
@@ -382,6 +385,10 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
             }
             heights = rows.map { rowHeight($0) }
             outline.reloadData()
+            if let anchor, let index = ids.firstIndex(of: anchor.id) {
+                outline.layoutSubtreeIfNeeded()
+                scrollTop = Double(outline.rect(ofRow: index).minY) - anchor.offset
+            }
             NSAccessibility.post(element: outline, notification: .rowCountChanged)
             announceChanges(rows, known: known)
             return
@@ -398,6 +405,20 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
             outline.reloadItem(items[index])
         }
         if !changedHeights.isEmpty { outline.noteHeightOfRows(withIndexesChanged: changedHeights) }
+    }
+
+    /// The first row in view that will still be there, and how far below the top of the view it is. None at the very
+    /// top of the list, where what comes first should be seen.
+    private func rowInView(among ids: [String], shownIDs: [String]) -> (id: String, offset: Double)? {
+        guard scrollTop > 0 else { return nil }
+        let staying = Set(ids)
+        let inView = outline.rows(in: scroll.contentView.bounds)
+        guard
+            let index = (inView.lowerBound..<inView.upperBound).first(where: {
+                $0 < shownIDs.count && staying.contains(shownIDs[$0])
+            })
+        else { return nil }
+        return (shownIDs[index], Double(outline.rect(ofRow: index).minY) - scrollTop)
     }
 
     /// What VoiceOver follows, as AppKit would post it for a selection and disclosure it knew of.

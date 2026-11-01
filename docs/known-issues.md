@@ -11,10 +11,6 @@ A folder holding something shows Finder's sheet of paper, read from the folder's
 - **Changes inside a folder**: the icon changes when the folder around it is next read, not as they happen.
 - **The tree, Info for the current folder and the clipboard list**: these don't know the count, so every plain folder has the sheet.
 
-## The tree when hidden files change
-
-With a deep tree open, turning hidden files on or off visibly redraws the tree as it updates, instead of changing in one step. With a favorite, a location, a link or the Trash selected, `SidebarModel.refreshBranches` reads the open folders one at a time, and each read marks its row as loading and draws the tree again. It should read them all first, then apply them together and draw once.
-
 ## The Trash across disks
 
 The Trash lists what is in the Trash of every local disk (`TrashFolders`), as Finder's does. Two things still see only the home folder's:

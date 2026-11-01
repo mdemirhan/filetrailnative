@@ -205,6 +205,85 @@ struct SidebarModelTests {
         #expect(trash.model.nodes["/Users/demo/.Trash"] == nil)
     }
 
+    @Test @MainActor func turningHiddenFilesOnWithATreeRowSelectedLeavesItsOpenFoldersOpen() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo/src", .other)
+        await rig.model.loadChildren("/Users/demo/src", expandOnSuccess: true)
+        await rig.model.loadChildren("/Users/demo/src/app", expandOnSuccess: true)
+        await rig.model.folderOpened("/Users/demo/Documents", .other)
+        #expect(rig.model.selected == .filesystem("/Users/demo/Documents"))
+        var draws = 0
+        rig.model.onChange = { draws += 1 }
+        rig.model.includeHidden = true
+        rig.model.hiddenFilesChanged()
+        await settleModel()
+        #expect(draws == 1)
+        #expect(rig.visible().contains("fs:/Users/demo/.config"))
+        #expect(rig.model.nodes["/Users/demo/src"]?.expanded == true)
+        #expect(rig.model.nodes["/Users/demo/src/app"]?.expanded == true)
+    }
+
+    @Test @MainActor func readingBranchesAgainReadsThemAllAndDrawsOnce() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo/src", .other)
+        await rig.model.loadChildren("/Users/demo/src", expandOnSuccess: true)
+        await rig.model.loadChildren("/Users/demo/src/app", expandOnSuccess: true)
+        rig.disk.reads = []
+        rig.disk.folder("/Users/demo/src", ["app", "lib", "new"])
+        rig.disk.folder("/Users/demo/src/app", ["added"])
+        var draws: [(childrenOfSrc: [String], loading: Bool)] = []
+        rig.model.onChange = {
+            draws.append(
+                (rig.model.nodes["/Users/demo/src"]?.childPaths ?? [], rig.model.nodes.all.contains { $0.loading }))
+        }
+        await rig.model.refreshBranches()
+        #expect(rig.disk.reads == ["/Users/demo", "/Users/demo/src", "/Users/demo/src/app"])
+        #expect(draws.count == 1)
+        #expect(draws.first?.childrenOfSrc.contains("/Users/demo/src/new") == true)
+        #expect(draws.first?.loading == false)
+        #expect(rig.model.nodes["/Users/demo/src/app"]?.childPaths == ["/Users/demo/src/app/added"])
+    }
+
+    @Test @MainActor func aBranchThatCantBeReadAgainKeepsWhatItListsAndTheRestUpdate() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo/src", .other)
+        await rig.model.loadChildren("/Users/demo/src", expandOnSuccess: true)
+        await rig.model.loadChildren("/Users/demo/src/app", expandOnSuccess: true)
+        let listed = rig.model.nodes["/Users/demo/src"]?.childPaths
+        rig.disk.failing["/Users/demo/src"] = "gone"
+        rig.disk.folder("/Users/demo/src/app", ["added"])
+        rig.disk.folder("/Users/demo", ["Documents", "Linked", "new", "src"], hidden: [".config"], aliases: ["Linked"])
+        await rig.model.refreshBranches()
+        #expect(rig.model.nodes["/Users/demo/src"]?.childPaths == listed)
+        #expect(rig.model.nodes["/Users/demo/src"]?.error != nil)
+        #expect(rig.model.nodes["/Users/demo/src"]?.loading == false)
+        #expect(rig.model.nodes["/Users/demo/src/app"]?.childPaths == ["/Users/demo/src/app/added"])
+        #expect(rig.model.nodes["/Users/demo"]?.childPaths.contains("/Users/demo/new") == true)
+    }
+
+    @Test @MainActor func aBranchReadWhileTheyAreReadAgainKeepsTheNewerAnswer() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo/src", .other)
+        await rig.model.loadChildren("/Users/demo/src", expandOnSuccess: true)
+        await rig.model.loadChildren("/Users/demo/src/app", expandOnSuccess: true)
+        let disk = rig.disk
+        let model = rig.model
+        let read = model.readChildren
+        var interrupted = false
+        model.readChildren = { path, includeHidden in
+            // The refresh has read `src` already: a newer read of it finishes before anything is applied.
+            if path == "/Users/demo/src/app", !interrupted {
+                interrupted = true
+                disk.folder("/Users/demo/src", ["newer"])
+                await model.loadChildren("/Users/demo/src", forceReload: true)
+            }
+            return try await read(path, includeHidden)
+        }
+        await model.refreshBranches()
+        #expect(interrupted)
+        #expect(model.nodes["/Users/demo/src"]?.childPaths == ["/Users/demo/src/newer"])
+    }
+
     @Test @MainActor func aWindowThatStartsInTheTrashStillHasATree() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/.Trash/New Folder", .other)
@@ -297,7 +376,7 @@ struct SidebarModelTests {
         // Back to a folder elsewhere: the hidden one is gone again.
         await rig.model.folderOpened("/Users/demo/src", SidebarOpen(forceTreeReload: true))
         #expect(!rig.visible().contains("fs:/Users/demo/.config"))
-        // With hidden files on, all of them are listed; turning them off seeds the tree again.
+        // With hidden files on, all of them are listed; turning them off lists them no more.
         rig.model.includeHidden = true
         await rig.model.folderOpened("/Users/demo/src", SidebarOpen(forceTreeReload: true))
         #expect(rig.visible().contains("fs:/Users/demo/.config"))

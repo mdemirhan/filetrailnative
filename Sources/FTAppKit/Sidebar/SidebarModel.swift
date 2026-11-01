@@ -94,6 +94,8 @@ final class SidebarModel {
     /// The row shown as selected: the one just pressed, or the tree's selection.
     var currentItemID: TreeItemID? { optimistic ?? selected }
 
+    /// The tree is drawing folders read again: nothing was asked to come into view, so the rows on screen stay put.
+    private(set) var isApplyingBranches = false
     private var treeRequests: [ExactKeyBox: Int] = [:]
     private var nextRequestID = 0
     /// Counts the tab's navigations: an answer for an older one is dropped.
@@ -274,10 +276,7 @@ final class SidebarModel {
         }
         onChange()
         do {
-            let effective =
-                includeHidden || forcedHidden != nil
-                || (rootPath.isEmpty && TreePaths.hasHiddenSegment(path, withinRoot: path))
-            let response = try await readChildren(path, effective)
+            let response = try await read(path, includeHidden: includeHidden, forcedHidden: forcedHidden)
             guard treeRequests[ExactKeyBox(path)] == requestID else { return }
             apply(
                 response, to: path, includeHidden: includeHidden, forcedHidden: forcedHidden,
@@ -292,18 +291,39 @@ final class SidebarModel {
         onChange()
     }
 
+    private func read(_ path: String, includeHidden: Bool, forcedHidden: String?) async throws -> [TreePaths.Child] {
+        let effective =
+            includeHidden || forcedHidden != nil
+            || (rootPath.isEmpty && TreePaths.hasHiddenSegment(path, withinRoot: path))
+        return try await readChildren(path, effective)
+    }
+
+    private func listed(
+        _ response: [TreePaths.Child], includeHidden: Bool, forcedHidden: String?, forcedPackage: String?
+    ) -> [TreePaths.Child] {
+        // Macintosh HD's Volumes folder, where the other disks are mounted, is left out as Finder leaves it out:
+        // those disks are under Locations.
+        let children = response.filter { includeHidden || !TreePaths.same($0.path, "/Volumes") }
+        let visible =
+            forcedHidden == nil
+            ? children.filter { includeHidden || !$0.isHidden }
+            : children.filter { !$0.isHidden || TreePaths.same($0.path, forcedHidden ?? "") }
+        guard let forcedPackage else { return visible }
+        return TreePaths.withPackageChild(visible, packagePath: forcedPackage)
+    }
+
+    /// Whether a folder listed again stays open: one marked open with nothing read or being read closes.
+    private func staysExpanded(_ known: TreeNodeState?) -> Bool {
+        known?.expanded == true
+            && (known?.loaded == true || known?.loading == true || !(known?.childPaths.isEmpty ?? true))
+    }
+
     private func apply(
         _ response: [TreePaths.Child], to path: String, includeHidden: Bool, forcedHidden: String?,
         forcedPackage: String?, expandOnSuccess: Bool
     ) {
-        // Macintosh HD's Volumes folder, where the other disks are mounted, is left out as Finder leaves it out:
-        // those disks are under Locations.
-        let children = response.filter { includeHidden || !TreePaths.same($0.path, "/Volumes") }
-        var visible =
-            forcedHidden == nil
-            ? children.filter { includeHidden || !$0.isHidden }
-            : children.filter { !$0.isHidden || TreePaths.same($0.path, forcedHidden ?? "") }
-        if let forcedPackage { visible = TreePaths.withPackageChild(visible, packagePath: forcedPackage) }
+        let visible = listed(
+            response, includeHidden: includeHidden, forcedHidden: forcedHidden, forcedPackage: forcedPackage)
         var existing = nodes[path] ?? TreeNodeState(path: path, expanded: true)
         existing.expanded = existing.expanded || expandOnSuccess
         existing.loading = false
@@ -318,9 +338,7 @@ final class SidebarModel {
             let known = nodes[child.path]
             nodes[child.path] = TreeNodeState(
                 path: child.path, name: child.name, isHidden: child.isHidden, isSymlink: child.isSymlink,
-                expanded: known?.expanded == true
-                    && (known?.loaded == true || known?.loading == true
-                        || !(known?.childPaths.isEmpty ?? true)),
+                expanded: staysExpanded(known),
                 loading: known?.loading ?? false, loaded: known?.loaded ?? false,
                 loadedIncludeHidden: known?.loadedIncludeHidden ?? false,
                 forcedVisibleHiddenChildPath: known?.forcedVisibleHiddenChildPath,
@@ -581,43 +599,83 @@ final class SidebarModel {
         open(path, SidebarOpen(origin: .other, rerootTree: true, pushesHistory: !TreePaths.same(path, currentPath)))
     }
 
-    /// Hidden files were turned on or off: the tree is read again, and seeded again first unless its row isn't what is
-    /// selected (a favorite, a location, a link, or the Trash): those leave its open folders as they are.
+    /// Hidden files were turned on or off: the tree is read again with its open folders as they are, whichever row is
+    /// selected. Only a tree that has no root yet is seeded, from the folder on screen.
     func hiddenFilesChanged() {
         guard !currentPath.isEmpty else { return }
-        let keeps: Bool
-        if let shortcut = selected?.shortcutPath, TreePaths.same(shortcut, currentPath) {
-            keeps = true
-        } else if let path = selected?.filesystemPath, nodes[path]?.isSymlink == true {
-            keeps = true
-        } else if Paths.isInsideTrash(currentPath, homePath: homePath) {
-            keeps = true
-        } else {
-            keeps = false
-        }
-        guard !keeps else {
+        guard rootPath.isEmpty else {
             Task { await refreshBranches() }
             return
         }
-        reinitializeTree(root: rootPath.isEmpty ? currentPath : rootPath, focus: currentPath)
+        reinitializeTree(root: currentPath, focus: currentPath)
         let path = currentPath
         viewVersion += 1
         let version = viewVersion
         Task { await syncTree(to: path, version: version) }
     }
 
-    /// The tree's open branches read again, from `path` down (`refreshVisibleTreePath`).
+    /// The tree's open branches read again, from `path` down (`refreshVisibleTreePath`). All of them are read before
+    /// any is applied, parents first, so the tree changes in one step and draws once.
     func refreshBranches(from path: String? = nil, recursive: Bool = true) async {
+        struct BranchRead {
+            let path: String
+            let requestID: Int
+            let forcedHidden: String?
+            let forcedPackage: String?
+            let answer: Result<[TreePaths.Child], Error>
+        }
+        let includeHidden = self.includeHidden
+        let activePath = currentPath
+        var reads: [BranchRead] = []
         var seen = Set<ExactKeyBox>()
         func refresh(_ path: String) async {
             guard seen.insert(ExactKeyBox(path)).inserted, let node = nodes[path], node.loaded || node.expanded else {
                 return
             }
-            await loadChildren(path, expandOnSuccess: false, activePath: currentPath, forceReload: true)
-            guard recursive, let reloaded = nodes[path] else { return }
-            for child in reloaded.childPaths where nodes[child]?.expanded == true { await refresh(child) }
+            let forcedHidden =
+                includeHidden || rootPath.isEmpty ? nil : await forcedHiddenChild(of: path, activePath: activePath)
+            let forcedPackage =
+                rootPath.isEmpty ? nil : TreePaths.forcedVisiblePackageChild(of: path, activePath: activePath)
+            nextRequestID += 1
+            let requestID = nextRequestID
+            treeRequests[ExactKeyBox(path)] = requestID
+            let answer: Result<[TreePaths.Child], Error>
+            do {
+                answer = .success(try await read(path, includeHidden: includeHidden, forcedHidden: forcedHidden))
+            } catch {
+                answer = .failure(error)
+            }
+            reads.append(
+                BranchRead(
+                    path: path, requestID: requestID, forcedHidden: forcedHidden, forcedPackage: forcedPackage,
+                    answer: answer))
+            guard recursive else { return }
+            // What the folder will list once applied, or what it lists now if it couldn't be read.
+            let children =
+                (try? answer.get()).map {
+                    listed($0, includeHidden: includeHidden, forcedHidden: forcedHidden, forcedPackage: forcedPackage)
+                        .map(\.path)
+                } ?? nodes[path]?.childPaths ?? []
+            for child in children where staysExpanded(nodes[child]) { await refresh(child) }
         }
         await refresh(path ?? rootPath)
+        guard !reads.isEmpty else { return }
+        isApplyingBranches = true
+        defer { isApplyingBranches = false }
+        for read in reads where treeRequests[ExactKeyBox(read.path)] == read.requestID {
+            switch read.answer {
+            case .success(let response):
+                apply(
+                    response, to: read.path, includeHidden: includeHidden, forcedHidden: read.forcedHidden,
+                    forcedPackage: read.forcedPackage, expandOnSuccess: false)
+            case .failure(let error):
+                update(read.path) {
+                    $0.loading = false
+                    $0.error = Self.message(of: error)
+                }
+            }
+        }
+        onChange()
     }
 
     /// A disk went: tabs that showed it are elsewhere. Nothing of the sidebar to do but drop what was under it.

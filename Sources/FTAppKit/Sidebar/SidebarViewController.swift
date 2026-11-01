@@ -285,7 +285,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         guard isViewLoaded else { return }
         trackLoading()
         let showsSections = separate
-        tree.apply(treeRows())
+        // The selected row isn't brought back from where it was scrolled to, and doesn't get pushed out of view either.
+        let leavesSelection = model.isApplyingBranches && !selectionIsInView
+        tree.apply(treeRows(), keepingRowsInPlace: model.isApplyingBranches)
         sections.apply(showsSections ? sectionRows() : [])
         let hadSections = !sections.isHidden
         sections.isHidden = !showsSections || sections.rowCount == 0
@@ -296,8 +298,15 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         if hadSections != sections.isHidden { root.needsLayout = true }
         root.needsLayout = true
         layoutIfNeeded()
-        revealSelectionIfNeeded()
+        revealSelectionIfNeeded(leavingSelection: leavesSelection)
         selectionChanged()
+    }
+
+    private var selectionIsInView: Bool {
+        guard let selected = model.selected else { return false }
+        return [tree, sections].contains { list in
+            !list.isHidden && list.index(ofItem: selected).map(list.isFullyVisible) == true
+        }
     }
 
     /// Draws every row again from its state (a new theme).
@@ -356,10 +365,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     }
 
     /// `scrollIntoView({ block: "nearest" })` for the selected row when the selection changes or the rows do.
-    private func revealSelectionIfNeeded() {
+    private func revealSelectionIfNeeded(leavingSelection: Bool = false) {
         let signature = [
             model.placement.rawValue, model.favoritesExpanded ? "f" : "-", model.locationsExpanded ? "l" : "-",
-            model.includeHidden ? "h" : "-",
             model.favoriteRows.map(\.id.rawValue).joined(separator: "\0"),
             model.treePresentation.visibleItemIDs.map(\.rawValue).joined(separator: "\0"),
             model.selected?.rawValue ?? "",
@@ -367,7 +375,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         guard signature != revealSignature else { return }
         revealSignature = signature
         guard let selected = model.selected else { return }
-        if holdsScrollPosition {
+        if holdsScrollPosition || leavingSelection {
             lastRevealed = selected
             return
         }
