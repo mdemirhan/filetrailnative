@@ -1,0 +1,460 @@
+diff --git a/Resources/Info.plist b/Resources/Info.plist
+index 284bd87..2b99f44 100644
+--- a/Resources/Info.plist
++++ b/Resources/Info.plist
+@@ -56,7 +56,7 @@
+ 	<key>LSMinimumSystemVersion</key>
+ 	<string>14.0</string>
+ 	<key>NSAppleEventsUsageDescription</key>
+-	<string>File Trail asks Finder to empty the Trash.</string>
++	<string>File Trail asks Finder to empty the Trash and to show what is in the Trash of other disks.</string>
+ 	<key>NSDesktopFolderUsageDescription</key>
+ 	<string>File Trail shows the files in your Desktop folder.</string>
+ 	<key>NSDocumentsFolderUsageDescription</key>
+diff --git a/Sources/FTAppKit/App/AppDelegate.swift b/Sources/FTAppKit/App/AppDelegate.swift
+index b73e9fb..905f82f 100644
+--- a/Sources/FTAppKit/App/AppDelegate.swift
++++ b/Sources/FTAppKit/App/AppDelegate.swift
+@@ -230,7 +230,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
+         // The journal's recovery runs before any window can write (P3-05).
+         let writes = AppWriteOperations(
+             userData: userDataDirectory ?? AppStatePaths.userDataDirectory(), directoryService: directoryService,
+-            windows: windows, trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
++            windows: windows,
++            trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path, finderDisks: .live),
+             log: { [weak logger] message in logger?.info(.text(message)) })
+         writeOperations = writes
+         windows.onExplorerWindowClosed = { [weak writes] group in writes?.explorerWindowClosed(group) }
+diff --git a/Sources/FTAppKit/WriteOperations/WindowWriteActions.swift b/Sources/FTAppKit/WriteOperations/WindowWriteActions.swift
+index a1d7130..bd674fc 100644
+--- a/Sources/FTAppKit/WriteOperations/WindowWriteActions.swift
++++ b/Sources/FTAppKit/WriteOperations/WindowWriteActions.swift
+@@ -491,7 +491,9 @@ final class WindowWriteActions {
+ 
+     /// `system:emptyTrash`: Finder empties it (`TrashState.empty`); tests use their own.
+     var emptyTrashRunner: @MainActor () async -> (ok: Bool, error: String?) = {
+-        let result = await TrashState.empty()
++        let result = await TrashState.empty(prepare: {
++            FinderTrashDisks.live.prepareToEmpty(TrashFolders().onOtherDisks)
++        })
+         return (result.ok, result.error)
+     }
+ 
+diff --git a/Sources/FTFileSystem/System/FinderTrashDisks.swift b/Sources/FTFileSystem/System/FinderTrashDisks.swift
+new file mode 100644
+index 0000000..76f4f1e
+--- /dev/null
++++ b/Sources/FTFileSystem/System/FinderTrashDisks.swift
+@@ -0,0 +1,113 @@
++import Darwin
++import Foundation
++
++/// Finder's Trash leaves out a disk whose Trash it hasn't taken on. It takes it on when it moves something to the Trash
++/// there, or when the disk is mounted with a Trash already on it; from then on it shows all of that Trash and empties
++/// it. What `FileManager.trashItem` moves doesn't count, and neither do `NSWorkspace.recycle`, `noteFileSystemChanged`
++/// or Finder's `update`.
++///
++/// So Finder is given a throwaway file to trash on such a disk, and the file is then removed. People's own items never
++/// go through Finder: its `delete` follows a symlink and trashes what the link points at. Finder marks the disk's Trash
++/// folder hidden when it takes it on, which is how a disk it knows is told. That is read each time rather than kept: it
++/// costs next to nothing beside the move itself, and what was kept would go stale when another disk takes the name.
++///
++/// None of this holds up a move. Finder shows what was trashed before it took the disk on as well, so it is asked after
++/// the move and on a queue of its own, where a slow Finder or its permission prompt keeps no one waiting.
++public final class FinderTrashDisks: @unchecked Sendable {
++    public static let live = FinderTrashDisks()
++
++    private let uid: UInt32
++    private let run: @Sendable (String) throws -> Void
++    private let diskHolding: @Sendable (String) -> String?
++    private let queue = DispatchQueue(label: "FinderTrashDisks", qos: .utility)
++    private let lock = NSLock()
++    /// Disks Finder is about to be asked about, so that a batch asks once.
++    private var waiting: Set<String> = []
++    /// Disks Finder wouldn't do this for (no permission, not running). It isn't asked again until the next launch.
++    private var refused: Set<String> = []
++
++    public init(
++        uid: UInt32 = getuid(), run: @escaping @Sendable (String) throws -> Void = TrashState.runAppleScriptNow,
++        diskHolding: @escaping @Sendable (String) -> String? = FinderTrashDisks.localDisk(holding:)
++    ) {
++        self.uid = uid
++        self.run = run
++        self.diskHolding = diskHolding
++    }
++
++    /// After `path` was moved to the Trash. Its folder takes the throwaway file, as it was just written to. Returns at
++    /// once; a failure leaves the item in the Trash, only not yet shown by Finder.
++    public func didTrash(_ path: String) {
++        let folder = (path as NSString).deletingLastPathComponent
++        guard let disk = diskHolding(folder), !Self.isHidden(trash(on: disk)) else { return }
++        let isNew = lock.withLock { !refused.contains(disk) && waiting.insert(disk).inserted }
++        guard isNew else { return }
++        queue.async { [self] in
++            introduce(disk, in: folder)
++            lock.withLock { _ = waiting.remove(disk) }
++        }
++    }
++
++    /// Before Finder empties the Trash, so that it also empties the Trash of a disk it doesn't know yet. Waits for
++    /// Finder, and for what it was already asked: call it off the main thread. A Trash Finder knows isn't read, as a
++    /// large one takes a while.
++    public func prepareToEmpty(_ trashes: [String], read: TrashState.Reader = TrashState.readDirectory) {
++        queue.sync {
++            for trash in trashes where !Self.isHidden(trash) {
++                guard let names = try? read(trash), names.contains(where: { $0 != ".DS_Store" }) else { continue }
++                let disk = TrashFolders.disk(of: trash)
++                introduce(disk, in: disk)
++            }
++        }
++    }
++
++    /// Waits for what Finder was asked.
++    func finish() {
++        queue.sync {}
++    }
++
++    private func trash(on disk: String) -> String {
++        "\(disk)/.Trashes/\(uid)"
++    }
++
++    private func introduce(_ disk: String, in folder: String) {
++        let trash = trash(on: disk)
++        guard !lock.withLock({ refused.contains(disk) }), !Self.isHidden(trash) else { return }
++        let name = ".File Trail \(UUID().uuidString)"
++        let file = "\(folder)/\(name)"
++        guard FileManager.default.createFile(atPath: file, contents: nil) else { return }
++        do {
++            try run(Self.deleteScript(file))
++            unlink("\(trash)/\(name)")
++        } catch {
++            lock.withLock { _ = refused.insert(disk) }
++            unlink(file)
++        }
++    }
++
++    static func deleteScript(_ path: String) -> String {
++        let quoted = path.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
++        return """
++            with timeout of 60 seconds
++            tell application "Finder" to delete (POSIX file "\(quoted)" as alias)
++            end timeout
++            """
++    }
++
++    private static func isHidden(_ path: String) -> Bool {
++        var info = Darwin.stat()
++        return lstat(path, &info) == 0 && info.st_flags & UInt32(UF_HIDDEN) != 0
++    }
++
++    /// The disk under /Volumes that holds `path`, when it is a local one: the startup disk's Trash is the home folder's,
++    /// and a network share has none. The system says where the path is, so a link to the startup disk doesn't count.
++    public static func localDisk(holding path: String) -> String? {
++        var info = Darwin.statfs()
++        guard statfs(path, &info) == 0, info.f_flags & UInt32(MNT_LOCAL) != 0 else { return nil }
++        let mount = withUnsafePointer(to: &info.f_mntonname) {
++            $0.withMemoryRebound(to: CChar.self, capacity: Int(MAXPATHLEN)) { String(cString: $0) }
++        }
++        let parts = mount.split(separator: "/")
++        return parts.count == 2 && parts[0] == "Volumes" ? mount : nil
++    }
++}
+diff --git a/Sources/FTFileSystem/System/TrashState.swift b/Sources/FTFileSystem/System/TrashState.swift
+index 4f36d2a..5a41619 100644
+--- a/Sources/FTFileSystem/System/TrashState.swift
++++ b/Sources/FTFileSystem/System/TrashState.swift
+@@ -66,23 +66,30 @@ public enum TrashState {
+     /// In-process `NSAppleScript`, so the Apple Events prompt names File Trail. Run off the main thread: Finder may
+     /// take long.
+     public static let runAppleScript: ScriptRunner = { source in
+-        try await Task.detached {
+-            guard let script = NSAppleScript(source: source) else {
+-                throw AppleScriptFailure(message: "execution error: the script could not be made.")
+-            }
+-            var failure: NSDictionary?
+-            script.executeAndReturnError(&failure)
+-            if let failure {
+-                let message = failure[NSAppleScript.errorMessage] as? String ?? "The script failed."
+-                let number = failure[NSAppleScript.errorNumber] as? Int
+-                throw AppleScriptFailure(
+-                    message: "execution error: \(message)" + (number.map { " (\($0))" } ?? ""))
+-            }
+-        }.value
++        try await Task.detached { try runAppleScriptNow(source) }.value
++    }
++
++    /// `runAppleScript` on the calling thread, which waits for Finder: never the main one.
++    public static let runAppleScriptNow: @Sendable (String) throws -> Void = { source in
++        guard let script = NSAppleScript(source: source) else {
++            throw AppleScriptFailure(message: "execution error: the script could not be made.")
++        }
++        var failure: NSDictionary?
++        script.executeAndReturnError(&failure)
++        if let failure {
++            let message = failure[NSAppleScript.errorMessage] as? String ?? "The script failed."
++            let number = failure[NSAppleScript.errorNumber] as? Int
++            throw AppleScriptFailure(
++                message: "execution error: \(message)" + (number.map { " (\($0))" } ?? ""))
++        }
+     }
+ 
+-    /// system:emptyTrash. What is reported is the script engine's own error line, not the script that ran.
+-    public static func empty(run: ScriptRunner = runAppleScript) async -> OperationResult {
++    /// system:emptyTrash. What is reported is the script engine's own error line, not the script that ran. `prepare`
++    /// runs first, off the main thread.
++    public static func empty(
++        run: ScriptRunner = runAppleScript, prepare: @escaping @Sendable () -> Void = {}
++    ) async -> OperationResult {
++        await Task.detached(operation: prepare).value
+         do {
+             try await run(emptyTrashScript)
+             return .success
+diff --git a/Sources/FTOperations/Native/TrashItem.swift b/Sources/FTOperations/Native/TrashItem.swift
+index a7cc9a6..5da04eb 100644
+--- a/Sources/FTOperations/Native/TrashItem.swift
++++ b/Sources/FTOperations/Native/TrashItem.swift
+@@ -35,11 +35,17 @@ public struct TrashItem: Sendable {
+     }
+ 
+     /// The app's Trash: `NativeFS.trashItem`, with the disk's flags and the mount table's idea of which disks
+-    /// have a Trash (P2-05's `makeDiskHasTrash`).
+-    public static func live(homePath: String = NSHomeDirectory()) -> TrashItem {
++    /// have a Trash (P2-05's `makeDiskHasTrash`). `finderDisks` makes what is trashed on another disk show in
++    /// Finder's Trash; it has no default, so that no test talks to Finder by leaving it out.
++    public static func live(homePath: String = NSHomeDirectory(), finderDisks: FinderTrashDisks?) -> TrashItem {
+         let fileSystem = PosixFileSystem()
+         return TrashItem(
+-            trash: NativeFS.trashItem, lstat: { try fileSystem.lstat($0) }, getFlags: NativeFS.getFlags,
++            trash: { path in
++                let inTrash = try NativeFS.trashItem(path)
++                finderDisks?.didTrash(path)
++                return inTrash
++            },
++            lstat: { try fileSystem.lstat($0) }, getFlags: NativeFS.getFlags,
+             homePath: homePath, diskHasTrash: makeDiskHasTrash())
+     }
+ 
+diff --git a/Tests/FTFileSystemTests/System/FinderTrashDisksTests.swift b/Tests/FTFileSystemTests/System/FinderTrashDisksTests.swift
+new file mode 100644
+index 0000000..8d3010f
+--- /dev/null
++++ b/Tests/FTFileSystemTests/System/FinderTrashDisksTests.swift
+@@ -0,0 +1,186 @@
++import Darwin
++import FTTestSupport
++import Foundation
++import Testing
++
++@testable import FTFileSystem
++
++@Suite struct FinderTrashDisksTests {
++    private final class Finder: @unchecked Sendable {
++        private let lock = NSLock()
++        private var scripts: [String] = []
++        var asked: [String] { lock.withLock { scripts } }
++
++        func add(_ script: String) { lock.withLock { scripts.append(script) } }
++    }
++
++    private struct Refused: Error {}
++
++    private func trashFolder(on disk: String) throws -> String {
++        let trash = disk + "/.Trashes/501"
++        try FileManager.default.createDirectory(atPath: trash, withIntermediateDirectories: true)
++        return trash
++    }
++
++    /// A Finder that moves the file named in the script to the disk's Trash, as Finder's `delete` does.
++    private func disks(on disk: String?, finder: Finder) -> FinderTrashDisks {
++        FinderTrashDisks(
++            uid: 501,
++            run: { script in
++                finder.add(script)
++                let path = try #require(script.split(separator: "\"").first { $0.hasPrefix("/") }).description
++                let name = (path as NSString).lastPathComponent
++                try FileManager.default.moveItem(atPath: path, toPath: "\(disk ?? "")/.Trashes/501/\(name)")
++            },
++            diskHolding: { _ in disk })
++    }
++
++    private func names(_ folder: String) throws -> [String] {
++        try FileManager.default.contentsOfDirectory(atPath: folder)
++    }
++
++    @Test func finderTrashesAThrowawayFileThatIsThenGoneAndNeverTheItem() throws {
++        try withTemporaryDirectory { directory in
++            let disk = directory.path
++            let trash = try trashFolder(on: disk)
++            FileManager.default.createFile(atPath: trash + "/photo.jpg", contents: nil)
++            let finder = Finder()
++            let subject = disks(on: disk, finder: finder)
++
++            subject.didTrash(disk + "/photo.jpg")
++            subject.finish()
++
++            #expect(finder.asked.count == 1)
++            #expect(!finder.asked[0].contains("photo.jpg"))
++            #expect(try names(trash) == ["photo.jpg"])
++            #expect(try names(disk) == [".Trashes"])
++        }
++    }
++
++    @Test func aMoveDoesNotWaitForFinderAndABatchAsksOnce() throws {
++        try withTemporaryDirectory { directory in
++            let disk = directory.path
++            _ = try trashFolder(on: disk)
++            let finder = Finder()
++            let answer = DispatchSemaphore(value: 0)
++            let slow = FinderTrashDisks(
++                uid: 501,
++                run: { script in
++                    finder.add(script)
++                    answer.wait()
++                },
++                diskHolding: { _ in disk })
++
++            // Finder hasn't answered, and these return all the same.
++            for index in 0..<100 { slow.didTrash(disk + "/\(index).txt") }
++            answer.signal()
++            slow.finish()
++
++            #expect(finder.asked.count == 1)
++        }
++    }
++
++    @Test func finderIsNotAskedForADiskItAlreadyKnows() throws {
++        try withTemporaryDirectory { directory in
++            let disk = directory.path
++            let trash = try trashFolder(on: disk)
++            #expect(chflags(trash, UInt32(UF_HIDDEN)) == 0)
++            let finder = Finder()
++
++            let subject = disks(on: disk, finder: finder)
++            subject.didTrash(disk + "/a.txt")
++            subject.finish()
++
++            #expect(finder.asked.isEmpty)
++        }
++    }
++
++    @Test func finderIsNotAskedForAPathOffOtherDisks() {
++        let finder = Finder()
++        let subject = disks(on: nil, finder: finder)
++        subject.didTrash("/Users/me/a.txt")
++        subject.finish()
++        #expect(finder.asked.isEmpty)
++    }
++
++    @Test func aFinderThatRefusesIsAskedOnceAndLeavesNoFileBehind() throws {
++        try withTemporaryDirectory { directory in
++            let disk = directory.path
++            _ = try trashFolder(on: disk)
++            let finder = Finder()
++            let refusing = FinderTrashDisks(
++                uid: 501,
++                run: { script in
++                    finder.add(script)
++                    throw Refused()
++                },
++                diskHolding: { _ in disk })
++
++            refusing.didTrash(disk + "/a.txt")
++            refusing.finish()
++            refusing.didTrash(disk + "/b.txt")
++            refusing.finish()
++
++            #expect(finder.asked.count == 1)
++            #expect(try names(disk) == [".Trashes"])
++        }
++    }
++
++    @Test func aFolderThatCantBeWrittenToAsksNothing() {
++        let finder = Finder()
++        let subject = disks(on: "/Volumes/Gone", finder: finder)
++        subject.didTrash("/Volumes/Gone/missing/a.txt")
++        subject.finish()
++        #expect(finder.asked.isEmpty)
++    }
++
++    @Test func emptyingAsksOnlyForDisksWhoseTrashHoldsItems() throws {
++        try withTemporaryDirectory { directory in
++            let disk = directory.path + "/Full"
++            let trash = try trashFolder(on: disk)
++            let onlyDSStore = try trashFolder(on: directory.path + "/Bare")
++            let missing = directory.path + "/None/.Trashes/501"
++            let finder = Finder()
++
++            disks(on: disk, finder: finder).prepareToEmpty(
++                [trash, onlyDSStore, missing],
++                read: { path in
++                    if path == trash { return ["a.txt"] }
++                    if path == onlyDSStore { return [".DS_Store"] }
++                    throw POSIXError(.ENOENT)
++                })
++
++            #expect(finder.asked.count == 1)
++            #expect(finder.asked[0].contains(disk + "/.File Trail "))
++            #expect(try names(disk) == [".Trashes"])
++        }
++    }
++
++    @Test func emptyingDoesNotReadATrashFinderKnows() throws {
++        try withTemporaryDirectory { directory in
++            let disk = directory.path
++            let trash = try trashFolder(on: disk)
++            #expect(chflags(trash, UInt32(UF_HIDDEN)) == 0)
++            let finder = Finder()
++
++            disks(on: disk, finder: finder).prepareToEmpty(
++                [trash],
++                read: { path in
++                    Issue.record("read \(path)")
++                    return []
++                })
++
++            #expect(finder.asked.isEmpty)
++        }
++    }
++
++    @Test func aPathIsQuotedForTheScript() {
++        let script = FinderTrashDisks.deleteScript(#"/Volumes/A "B"\C/.x"#)
++        #expect(script.contains(#"POSIX file "/Volumes/A \"B\"\\C/.x" as alias"#))
++    }
++
++    @Test func theStartupDiskIsNotAnotherDisk() {
++        #expect(FinderTrashDisks.localDisk(holding: NSHomeDirectory()) == nil)
++        #expect(FinderTrashDisks.localDisk(holding: "/Volumes/No Such Disk/a") == nil)
++    }
++}
+diff --git a/Tests/FTFileSystemTests/System/TrashAndDiskTests.swift b/Tests/FTFileSystemTests/System/TrashAndDiskTests.swift
+index 1f4de66..47a970f 100644
+--- a/Tests/FTFileSystemTests/System/TrashAndDiskTests.swift
++++ b/Tests/FTFileSystemTests/System/TrashAndDiskTests.swift
+@@ -222,6 +222,14 @@ private final class ScriptLog: @unchecked Sendable {
+             ])
+     }
+ 
++    @Test func preparesBeforeFinderEmpties() async {
++        let log = ScriptLog()
++        let result = await TrashState.empty(run: { log.add($0) }, prepare: { log.add("prepared") })
++        #expect(result == .success)
++        #expect(log.sources.first == "prepared")
++        #expect(log.sources.count == 2)
++    }
++
+     // T-8442c436
+     @Test func reportsTheScriptEnginesOwnErrorLineNotTheScriptThatRan() async {
+         let line = "execution error: Not authorized to send Apple events to Finder. (-1743)"
+diff --git a/Tests/FTOperationsTests/Undo/UndoRealDiskTests.swift b/Tests/FTOperationsTests/Undo/UndoRealDiskTests.swift
+index 3f3bee4..6a9b4ad 100644
+--- a/Tests/FTOperationsTests/Undo/UndoRealDiskTests.swift
++++ b/Tests/FTOperationsTests/Undo/UndoRealDiskTests.swift
+@@ -16,7 +16,7 @@ struct UndoRealDiskTests {
+     {
+         try await withUndoFolder { home, trashDir in
+             try await DiskImage.withVolume(kind) { volume in
+-                let trashItem = TrashItem.live(homePath: home)
++                let trashItem = TrashItem.live(homePath: home, finderDisks: nil)
+                 let t = UndoTest(root: home, trashDir: trashDir) { fileSystem in
+                     fileSystem.trashImpl = { try trashItem($0) }
+                 }
