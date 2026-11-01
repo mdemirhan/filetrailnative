@@ -331,6 +331,8 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         noteHeight = Self.noteHeight(state, width: width)
         needsLayout = true
         needsDisplay = true
+        // It has a layer of its own, which the cell's redraw leaves alone.
+        box.needsDisplay = true
     }
 
     /// The row's item was just copied or cut: its box flashes (`.tree-row.clipboard-flash`).
