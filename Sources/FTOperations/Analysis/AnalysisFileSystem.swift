@@ -17,12 +17,21 @@ public protocol AnalysisFileSystem: IdentityFileSystem {
     /// Whether a "._name" file is AppleDouble metadata that macOS reads as "name"'s own attributes. Without it,
     /// every "._name" file is an ordinary item.
     func isAppleDouble(_ path: String) -> Bool
+    /// Whether the item is in quarantine (it has `com.apple.quarantine`): it came from the internet. Without it,
+    /// nothing is.
+    func isQuarantined(_ path: String) -> Bool
 }
 
 extension AnalysisFileSystem {
     public func isCaseSensitive(_ path: String) throws -> Bool? { nil }
     public func isPackage(_ path: String) throws -> Bool? { nil }
     public func isAppleDouble(_ path: String) -> Bool { false }
+    public func isQuarantined(_ path: String) -> Bool { false }
+}
+
+/// Whether the name at `path` is an app's.
+func hasAppExtension(_ path: String) -> Bool {
+    (path as NSString).pathExtension.caseInsensitiveCompare("app") == .orderedSame
 }
 
 /// The disk itself, asked as the app's native file system asks it.
@@ -40,6 +49,10 @@ extension PosixFileSystem: AnalysisFileSystem {
 
     public func isAppleDouble(_ path: String) -> Bool {
         NativeFS.isAppleDoubleOnItsVolume(path)
+    }
+
+    public func isQuarantined(_ path: String) -> Bool {
+        getxattr(path, "com.apple.quarantine", nil, 0, 0, XATTR_NOFOLLOW) >= 0
     }
 }
 

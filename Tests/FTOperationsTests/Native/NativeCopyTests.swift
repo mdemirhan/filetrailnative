@@ -81,6 +81,34 @@ struct NativeCopyMetadataTests {
         }
     }
 
+    @Test func marksTheCopyOfAFolderInQuarantineToRunInPlaceAndLeavesOthersOutOfQuarantine() throws {
+        try withTemporaryDirectory(prefix: "native-fs-metadata") { root in
+            let quarantine = "com.apple.quarantine"
+            let source = root.appending("Foo.app").path
+            let inPlace = root.appending("in-place").path
+            let plain = root.appending("plain").path
+            let notQuarantined = root.appending("not-quarantined").path
+            for path in [source, inPlace, plain, notQuarantined] {
+                try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: false)
+            }
+            try NativeFS.copyMetadataToRunInPlace(source, notQuarantined)
+            #expect(!Files.xattrNames(notQuarantined).contains(quarantine))
+
+            #expect(Files.setXattr(source, quarantine, "0083;00000000;Safari;") == 0)
+            try NativeFS.copyMetadataToRunInPlace(source, inPlace)
+            try NativeFS.copyMetadata(source, plain)
+
+            func flags(_ path: String) -> UInt32? {
+                var value = [UInt8](repeating: 0, count: 128)
+                guard getxattr(path, quarantine, &value, value.count, 0, 0) >= 4 else { return nil }
+                return UInt32(String(decoding: value.prefix(4), as: UTF8.self), radix: 16)
+            }
+            // QTN_FLAG_DO_NOT_TRANSLOCATE.
+            #expect(flags(inPlace).map { $0 & 0x100 != 0 } == true)
+            #expect(flags(plain).map { $0 & 0x100 == 0 } == true)
+        }
+    }
+
     // T-eee4b3f2
     @Test func namesTheErrnoWhenTheSourceIsMissing() throws {
         try withTemporaryDirectory(prefix: "native-fs-metadata") { root in

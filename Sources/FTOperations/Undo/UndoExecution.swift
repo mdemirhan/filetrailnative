@@ -807,6 +807,7 @@ final class RecordingErrorsFileSystem: UndoFileSystem, @unchecked Sendable {
     func isCaseSensitive(_ path: String) throws -> Bool? { try base.isCaseSensitive(path) }
     func isPackage(_ path: String) throws -> Bool? { try base.isPackage(path) }
     func isAppleDouble(_ path: String) -> Bool { base.isAppleDouble(path) }
+    func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
     func mkdir(_ path: String) throws { try base.mkdir(path) }
     func rm(_ path: String, recursive: Bool, force: Bool) throws {
         try base.rm(path, recursive: recursive, force: force)
@@ -822,6 +823,7 @@ final class RecordingErrorsFileSystem: UndoFileSystem, @unchecked Sendable {
     var chmod: ((String, UInt32) throws -> Void)? { base.chmod }
     var utimes: ((String, Double, Double) throws -> Void)? { base.utimes }
     var copyMetadata: ((String, String) throws -> Void)? { base.copyMetadata }
+    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { base.copyMetadataToRunInPlace }
     var setAcl: ((String, String?) throws -> Void)? { base.setAcl }
     var trash: ((String) throws -> String?)? { base.trash }
     var canModifyFolder: ((String) throws -> Void)? { base.canModifyFolder }

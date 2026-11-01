@@ -59,6 +59,8 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
         return try base.isPackage(path)
     }
     func isAppleDouble(_ path: String) -> Bool { isAppleDoubleImpl?(path) ?? base.isAppleDouble(path) }
+    func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
+    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { base.copyMetadataToRunInPlace }
     func renameExclusive(_ from: String, _ to: String) throws {
         if let renameExclusiveImpl { return try renameExclusiveImpl(from, to) }
         try base.renameExclusive(from, to)

@@ -66,6 +66,7 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
         return try base.isPackage(path)
     }
     func isAppleDouble(_ path: String) -> Bool { base.isAppleDouble(path) }
+    func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
     func rename(_ from: String, _ to: String) throws {
         if let renameImpl = impl(\.renameImpl) { return try renameImpl(from, to) }
         try base.rename(from, to)

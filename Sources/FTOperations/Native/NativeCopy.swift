@@ -56,6 +56,15 @@ extension NativeFS {
         }
     }
 
+    /// `copyMetadata` for the folder of an app copied on its own: a source in quarantine gives the copy that
+    /// quarantine, marked to run where it is put instead of being translocated (COPYFILE_RUN_IN_PLACE).
+    public static func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        let errnum = ft_copy_metadata_run_in_place(source, destination)
+        if errnum != 0 {
+            throw NativeError.errno(errnum, syscall: "copyfile", path: source, dest: destination)
+        }
+    }
+
     /// Node's `chmod(path, mode)`.
     public static func chmod(_ path: String, _ mode: UInt32) throws {
         if Darwin.chmod(path, mode_t(mode & 0o7777)) != 0 {

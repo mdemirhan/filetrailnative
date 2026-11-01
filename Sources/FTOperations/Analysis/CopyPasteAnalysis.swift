@@ -229,10 +229,13 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
             plannedDestinationKeys.insert(pathKey(destinationPath))
 
             // A folder moved on its own disk is renamed whole when its name is free: reading all that is inside
-            // it (a project with its node_modules) would only take time.
+            // it (a project with its node_modules) would only take time. Not a lone app in quarantine: a rename
+            // leaves it translocated, so it is copied and its original removed (see movesAppByCopy).
             let renameIfFree =
                 request.mode == .cut && sourceFingerprint.dev != nil
                 && sourceFingerprint.dev == destinationFingerprint.dev
+                && !(request.sourcePaths.count == 1 && hasAppExtension(sourcePath)
+                    && fileSystem.isQuarantined(sourcePath))
             let node = try walker.analyzeNode(
                 id: "item-\(index + 1)", sourcePath: sourcePath, destinationPath: destinationPath,
                 renameIfFree: renameIfFree)

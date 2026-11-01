@@ -31,4 +31,8 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
 /// folder that already exists. Returns 0 or the errno.
 int ft_copy_metadata(const char *source, const char *destination);
 
+/// As `ft_copy_metadata`, adding COPYFILE_RUN_IN_PLACE: a copy of an app in quarantine runs from where it is put
+/// instead of being translocated.
+int ft_copy_metadata_run_in_place(const char *source, const char *destination);
+
 #endif

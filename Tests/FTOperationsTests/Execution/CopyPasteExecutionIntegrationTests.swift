@@ -211,6 +211,42 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(fileSystem.readNode("/target/dir")?.mtimeMs == 1234)
     }
 
+    /// Which folders of a paste of `sources` got metadata that lets a quarantined app run in place, and which the
+    /// plain kind.
+    private func metadataCalls(_ sources: [String], folders: [String]) async throws -> (
+        inPlace: [String], plain: [String]
+    ) {
+        let fileSystem = MockWriteServiceFileSystem([("/source", .directory(dev: 2)), ("/target", .directory())])
+        for folder in folders {
+            fileSystem.addDirectory(folder, .directory(dev: 2))
+        }
+        fileSystem.enableUtimes()
+        let inPlace = Recorded<String>()
+        let plain = Recorded<String>()
+        fileSystem.copyMetadataToRunInPlaceImpl = { _, destination in inPlace.append(destination) }
+        fileSystem.copyMetadataImpl = { _, destination in plain.append(destination) }
+        let result = try await run(fileSystem, .copy, sources)
+        #expect(result?.status == .completed)
+        return (inPlace.all, plain.all)
+    }
+
+    @Test func anAppCopiedOnItsOwnRunsInPlace() async throws {
+        let calls = try await metadataCalls(
+            ["/source/Foo.app"], folders: ["/source/Foo.app", "/source/Foo.app/Contents"])
+        #expect(calls.inPlace == ["/target/Foo.app"])
+        #expect(calls.plain.allSatisfy { !$0.hasSuffix("/Foo.app") })
+    }
+
+    @Test func anAppCopiedWithOtherItemsOrInAFolderDoesntRunInPlace() async throws {
+        let beside = try await metadataCalls(
+            ["/source/Foo.app", "/source/other"], folders: ["/source/Foo.app", "/source/other"])
+        #expect(beside.inPlace.isEmpty)
+        let inside = try await metadataCalls(["/source/dir"], folders: ["/source/dir", "/source/dir/Foo.app"])
+        #expect(inside.inPlace.isEmpty)
+        let notAnApp = try await metadataCalls(["/source/dir"], folders: ["/source/dir"])
+        #expect(notAnApp.inPlace.isEmpty)
+    }
+
     // T-90b2d9bd F-271 F-457
     @Test func fallsBackToTheModeAndDateWhenAFoldersMetadataCantBeCopied() async throws {
         let fileSystem = otherVolumeFolder()

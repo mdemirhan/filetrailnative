@@ -37,6 +37,9 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
     /// A folder's own metadata (mode, flags, dates, xattrs such as tags, ACLs) onto an existing folder, without
     /// its contents. Without it, only the mode and dates are carried over.
     var copyMetadata: ((String, String) throws -> Void)? { get }
+    /// `copyMetadata` for the folder of an app copied on its own, which then runs from where it is put even when
+    /// it is in quarantine. Without it, `copyMetadata` is used.
+    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { get }
     /// Gives the item the ACL `acl` (acl_to_text(3) text), or none at all for nil (a symlink not followed).
     var setAcl: ((String, String?) throws -> Void)? { get }
     /// Moves an item to the Trash and returns the path it has there (nil when the Trash didn't say). Without it
@@ -51,6 +54,7 @@ extension WriteServiceFileSystem {
     public var chmod: ((String, UInt32) throws -> Void)? { nil }
     public var utimes: ((String, Double, Double) throws -> Void)? { nil }
     public var copyMetadata: ((String, String) throws -> Void)? { nil }
+    public var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { nil }
     public var setAcl: ((String, String?) throws -> Void)? { nil }
     public var trash: ((String) throws -> String?)? { nil }
     public var canModifyFolder: ((String) throws -> Void)? { nil }
@@ -91,6 +95,7 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
     public func isCaseSensitive(_ path: String) throws -> Bool? { try disk.isCaseSensitive(path) }
     public func isPackage(_ path: String) throws -> Bool? { try disk.isPackage(path) }
     public func isAppleDouble(_ path: String) -> Bool { disk.isAppleDouble(path) }
+    public func isQuarantined(_ path: String) -> Bool { disk.isQuarantined(path) }
 
     public func renameExclusive(_ from: String, _ to: String) throws {
         try NativeFS.renameExclusive(from, to)
@@ -124,6 +129,9 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
         { try NativeFS.utimes($0, atimeMs: $1, mtimeMs: $2) }
     }
     public var copyMetadata: ((String, String) throws -> Void)? { { try NativeFS.copyMetadata($0, $1) } }
+    public var copyMetadataToRunInPlace: ((String, String) throws -> Void)? {
+        { try NativeFS.copyMetadataToRunInPlace($0, $1) }
+    }
     public var setAcl: ((String, String?) throws -> Void)? { { try NativeFS.setAcl($0, $1) } }
     public var trash: ((String) throws -> String?)? { trashItem.map { trash in { try trash($0) } } }
     public var canModifyFolder: ((String) throws -> Void)? {

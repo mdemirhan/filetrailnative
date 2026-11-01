@@ -41,6 +41,7 @@ func executeReplace(
         try assertRemovableAfterCopy(context, currentNode, deep: true)
     }
 
+    let appMovedByCopy = movesAppByCopy(context, currentNode)
     var temporaryPath = try temporarySiblingPath(fileSystem, finalPath)
     // Written down before anything is staged, so a crash can't leave the item under the hidden name: the next
     // start finishes or undoes the Replace.
@@ -69,7 +70,7 @@ func executeReplace(
         }
     }
     if !movedByRename {
-        if context.mode == .cut {
+        if context.mode == .cut && !appMovedByCopy {
             expectCantUndo(context, .otherDiskMove)
         }
         if currentNode.node.sourceKind == .directory {
@@ -213,6 +214,9 @@ func executeReplace(
             restoreAfterMove(fileSystem, visiblePath, stagedMode, stagedFlags)
             applyStagedFolderMetadata(context, currentNode, visiblePath, movedByRename)
             recordReplacement(context, currentNode, visiblePath, movedByRename, source)
+            if appMovedByCopy {
+                recordAppMovedByCopy(context, currentNode, visiblePath)
+            }
             try? journal?.remove(journalEntry.id)
             return ExecuteNodeResult(
                 itemStatus: .failed, skipReason: nil,
@@ -241,6 +245,9 @@ func executeReplace(
         let cleanup = removeMovedSources(context, currentNode, stagedChildItems, temporaryPath, finalPath)
         ownError = cleanup.error
         childItems = cleanup.childItems
+    }
+    if appMovedByCopy {
+        recordAppMovedByCopy(context, currentNode, finalPath)
     }
     emitProgress(context, .running, currentNode, nil)
     let failed = ownError != nil || childItems.contains { $0.status == .failed }

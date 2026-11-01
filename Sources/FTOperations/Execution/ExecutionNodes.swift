@@ -42,7 +42,7 @@ func performNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCopyPasteN
     if context.mode == .cut {
         try assertRemovableAfterCopy(context, currentNode, deep: false)
         // A folder merged into isn't copied itself: its items are, each moved as its own disk allows.
-        if currentNode.action != .merge {
+        if currentNode.action != .merge && !movesAppByCopy(context, currentNode) {
             expectCantUndo(context, .otherDiskMove)
         }
     }
@@ -71,6 +71,7 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
     let fileSystem = context.fileSystem
     let finalPath = currentNode.destinationPath
     let name = basenameOf(finalPath)
+    let appMovedByCopy = movesAppByCopy(context, currentNode)
     // Everything it will remove is checked before anything is copied: a move that couldn't remove its originals
     // would leave them in both places.
     if context.mode == .cut {
@@ -183,6 +184,9 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
         error = cleanup.error
         items = cleanup.childItems
     }
+    if appMovedByCopy {
+        recordAppMovedByCopy(context, currentNode, finalPath)
+    }
     return ExecuteNodeResult(
         itemStatus: error != nil || items.contains { $0.status == .failed } ? .failed : .completed, skipReason: nil,
         error: error, destinationPath: finalPath, childItems: items.map { .item($0) })
@@ -243,8 +247,32 @@ private func unreadableFolderMessage(_ mode: CopyPasteMode, _ reason: String?) -
 }
 
 func canRenameForCut(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> Bool {
+    isMoveOnOneDisk(context, node) && !movesAppByCopy(context, node)
+}
+
+private func isMoveOnOneDisk(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> Bool {
     context.mode == .cut && context.destinationDev != nil && node.node.sourceFingerprint.dev == context.destinationDev
         && node.action != .merge
+}
+
+/// Whether a move on one disk copies the item and removes its original instead of renaming it: a lone app in
+/// quarantine. A rename can't mark it to run in place, so it would stay translocated (see isAppPastedOnItsOwn). Each
+/// file is a clone where the disk has them, so this takes little time or space. Undo still takes it back. Not a
+/// folder the review didn't read (it wasn't in quarantine then): its items aren't known, so it can only be renamed.
+func movesAppByCopy(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) -> Bool {
+    isMoveOnOneDisk(context, node) && !node.node.renameOnly && node.node.sourceKind == .directory
+        && isAppPastedOnItsOwn(context, node.node.sourcePath) && context.fileSystem.isQuarantined(node.node.sourcePath)
+}
+
+/// Undo's step for an app movesAppByCopy moved: a move back from its new id, or, with its original still there
+/// (it couldn't be removed), the copy that was made.
+func recordAppMovedByCopy(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ path: String) {
+    let fileSystem = context.fileSystem
+    if captureFingerprint(fileSystem, node.node.sourcePath).exists {
+        recordCreated(context, node, path)
+    } else {
+        recordMoved(context, node, path, captureFingerprint(fileSystem, path))
+    }
 }
 
 /// A file or symlink written to its destination.
@@ -449,7 +477,8 @@ func applyDirectoryMetadata(_ context: ExecutionContext, _ node: ResolvedCopyPas
     let sourceFingerprint = node.node.sourceFingerprint
     // A move, or a copy built for a move to take the originals' place with.
     let moving = context.mode == .cut || context.stagingFor == .cut
-    if let copyMetadata = fileSystem.copyMetadata {
+    let runsInPlace = isAppPastedOnItsOwn(context, sourcePath) ? fileSystem.copyMetadataToRunInPlace : nil
+    if let copyMetadata = runsInPlace ?? fileSystem.copyMetadata {
         do {
             // Tags, the custom-icon flag, ACLs and flags along with the mode and dates.
             try copyMetadata(sourcePath, node.destinationPath)
@@ -470,6 +499,15 @@ func applyDirectoryMetadata(_ context: ExecutionContext, _ node: ResolvedCopyPas
     }
     try preserveModeIfSupported(fileSystem, node.destinationPath, sourceFingerprint.mode)
     try preserveTimestampsIfSupported(fileSystem, node.destinationPath, sourceFingerprint.mtimeMs)
+}
+
+/// Whether `sourcePath` is an app and the only item of this paste. Such a copy of an app in quarantine (from a
+/// downloaded disk image) runs from where it is put, as an app moved on its own in Finder does. macOS translocates
+/// any other copy, and fails to open one that replaced an app it translocated before. An app arriving in a folder
+/// or with other items stays translocated: that keeps it from reaching files planted next to it.
+private func isAppPastedOnItsOwn(_ context: ExecutionContext, _ sourcePath: String) -> Bool {
+    let items = context.report.nodes
+    return items.count == 1 && sameText(items[0].sourcePath, sourcePath) && hasAppExtension(sourcePath)
 }
 
 /// `preserveModeIfSupported`.

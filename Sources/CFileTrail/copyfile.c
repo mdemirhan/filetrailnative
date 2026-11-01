@@ -145,3 +145,11 @@ int ft_copyfile(const char *source, const char *destination, ft_copy_control *co
 int ft_copy_metadata(const char *source, const char *destination) {
     return copyfile(source, destination, NULL, COPYFILE_METADATA | COPYFILE_NOFOLLOW_SRC) == 0 ? 0 : errno;
 }
+
+/* As ft_copy_metadata, for the folder of an app copied on its own: a source in quarantine gives the copy that
+   quarantine with QTN_FLAG_DO_NOT_TRANSLOCATE (COPYFILE_RUN_IN_PLACE), so the app runs from where it was put.
+   It stays in quarantine, so Gatekeeper still checks it when it is first opened. */
+int ft_copy_metadata_run_in_place(const char *source, const char *destination) {
+    const copyfile_flags_t flags = COPYFILE_METADATA | COPYFILE_NOFOLLOW_SRC | COPYFILE_RUN_IN_PLACE;
+    return copyfile(source, destination, NULL, flags) == 0 ? 0 : errno;
+}

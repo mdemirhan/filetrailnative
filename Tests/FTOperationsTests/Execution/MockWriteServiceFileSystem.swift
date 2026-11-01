@@ -95,6 +95,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     /// The calls the original's tests add to the mock as they need them.
     var canModifyFolderImpl: ((String) throws -> Void)?
     var copyMetadataImpl: ((String, String) throws -> Void)?
+    var copyMetadataToRunInPlaceImpl: ((String, String) throws -> Void)?
     var setAclImpl: ((String, String?) throws -> Void)?
     /// The macOS default; tests of case-sensitive volumes set this to true.
     var caseSensitive = false
@@ -324,6 +325,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
 
     var canModifyFolder: ((String) throws -> Void)? { canModifyFolderImpl }
     var copyMetadata: ((String, String) throws -> Void)? { copyMetadataImpl }
+    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { copyMetadataToRunInPlaceImpl }
     var setAcl: ((String, String?) throws -> Void)? { setAclImpl }
 
     /// rename(2) as the mock does it, for a `renameImpl` that changes only some renames.
