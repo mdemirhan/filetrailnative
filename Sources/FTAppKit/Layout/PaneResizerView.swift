@@ -16,14 +16,10 @@ final class PaneResizerView: NSView {
     var onNudge: (_ delta: Double) -> Void = { _ in }
     /// Tab or Shift-Tab, when this resizer has somewhere for the keyboard to go.
     var onTab: ((_ backward: Bool) -> Void)?
-    /// The tree's resizer: nothing of its own at rest, and under the pointer the accent's line on the sidebar's edge.
+    /// The tree's resizer: nothing of its own at rest, and under the pointer the accent's line on the sidebar's edge, from
+    /// the window's top.
     var isSidebarEdge = false {
         didSet { needsDisplay = true }
-    }
-    /// Where the panes start, in this view's coordinates: the system's title bar is above it, so this gutter draws
-    /// nothing there. The tree's resizer runs from the window's top; the Info panel's starts at the panes.
-    var panesTop: Double = 0 {
-        didSet { if panesTop != oldValue { needsDisplay = true } }
     }
     private var hovered = false {
         didSet { needsDisplay = true }
@@ -99,19 +95,18 @@ final class PaneResizerView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         let palette = ChromeColors.palette(for: self)
         let half = bounds.width / 2
-        let height = max(0, bounds.height - panesTop)
         if isSidebarEdge {
             guard hovered else { return }
             ChromeColors.color(ChromeColors.accent(for: self).border).setFill()
-            NSRect(x: bounds.maxX - 1, y: panesTop, width: 1, height: height).fill()
+            NSRect(x: bounds.maxX - 1, y: 0, width: 1, height: bounds.height).fill()
             return
         }
         // The opaque part of the window.
         ChromeColors.contentBackground(for: self).setFill()
-        NSRect(x: 0, y: panesTop, width: bounds.width, height: height).fill()
+        NSRect(x: 0, y: 0, width: bounds.width, height: bounds.height).fill()
         let line = hovered ? ChromeColors.accent(for: self).border : palette.border
         ChromeColors.color(line).setFill()
-        NSRect(x: half - 0.5, y: panesTop, width: 1, height: height).fill()
+        NSRect(x: half - 0.5, y: 0, width: 1, height: bounds.height).fill()
     }
 
     override func viewDidChangeEffectiveAppearance() {

@@ -101,7 +101,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Under the pointer the sidebar's edge shows the accent's line, on the edge and under the band only.
+        // Under the pointer the sidebar's edge shows the accent's line, on the edge, from the window's top.
         @Test func theTreeResizerShowsTheAccentUnderThePointer() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -111,9 +111,11 @@ extension ExplorerWindowlessTests {
             resizer.mouseEntered(with: try Self.crossing(.mouseEntered))
             #expect(try Self.pixel(of: resizer, xFraction: 0.99, y: top + 20).alphaComponent > 0)
             #expect(try Self.pixel(of: resizer, xFraction: 0.5, y: top + 20).alphaComponent == 0)
-            #expect(try Self.pixel(of: resizer, xFraction: 0.99, y: 20).alphaComponent == 0)
+            #expect(try Self.pixel(of: resizer, xFraction: 0.99, y: 0).alphaComponent > 0)
+            #expect(try Self.pixel(of: resizer, xFraction: 0.99, y: 20).alphaComponent > 0)
             resizer.mouseExited(with: try Self.crossing(.mouseExited))
             #expect(try Self.pixel(of: resizer, xFraction: 0.99, y: top + 20).alphaComponent == 0)
+            #expect(try Self.pixel(of: resizer, xFraction: 0.99, y: 20).alphaComponent == 0)
             await harness.close()
         }
 

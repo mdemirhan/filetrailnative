@@ -3,15 +3,14 @@
 import AppKit
 import FTFoundation
 
-/// The row under the list: 28 tall with a line on top, the path bar on its left and the status text on its right. It starts
-/// in the half of the divider past the hairline (4 pt left of the content), so its line reaches the hairline, and keeps its
-/// contents where they were.
+/// The status bar under the content and the Info panel: 28 tall with a line on top, the path bar on its left and the status
+/// text on its right.
 final class PathBarRowView: NSView {
     /// `.content-pathbar-row { height: 28px }`.
     static var height: Double { WindowMetrics.standard.controlHeights.large }
-    /// How far it reaches into the divider.
+    /// How far the Info Row reaches into the divider.
     static var reach: Double { WindowMetrics.standard.explorer.resizerWidth / 2 }
-    /// Padding: 10 on each side, plus the reach on the left.
+    /// Padding: 10 on each side.
     static let paddingInline = InfoMetrics.pathRowPaddingInline
 
     let status = TextBoxField(labelWithString: "")
@@ -147,7 +146,7 @@ final class PathBarRowView: NSView {
 
     override func layout() {
         super.layout()
-        let left = Self.reach + Self.paddingInline
+        let left = Self.paddingInline
         let width = max(0, bounds.width - left - Self.paddingInline)
         let contentTop = 1.0
         let contentHeight = bounds.height - contentTop

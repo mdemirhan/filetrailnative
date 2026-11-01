@@ -174,6 +174,41 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The status bar runs from the sidebar's edge to the window's right under the content and the Info panel: opening
+        // the panel neither moves nor narrows it, and the panes stop on its top.
+        @Test func theStatusBarStaysWholeUnderTheInfoPanel() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            harness.layout(tab)
+            let workspace = tab.workspace
+            let row = tab.content.contentShell.pathBarRow
+            #expect(row.superview === workspace.statusCell)
+            let closed = workspace.frame(of: row)
+            let sidebarEdge = workspace.frame(of: workspace.sidebarColumn).maxX
+            #expect(closed.minX == sidebarEdge && closed.maxX == workspace.bounds.width)
+            #expect(closed.maxY == workspace.bounds.height && closed.height == PathBarRowView.height)
+            #expect(workspace.frame(of: workspace.mainCell).maxY == closed.minY)
+
+            tab.perform(.toggleInfoPanel)
+            #expect(await waitUntil { workspace.infoPanelOpen && workspace.slide == nil })
+            harness.layout(tab)
+            #expect(workspace.frame(of: row) == closed)
+            #expect(workspace.frame(of: workspace.mainCell).maxY == closed.minY)
+            #expect(workspace.frame(of: workspace.inspectorCell).maxY == closed.minY)
+            #expect(workspace.frame(of: workspace.inspectorResizer).maxY == closed.minY)
+
+            // A press on it lands on it, in the panel's column too.
+            let point = NSPoint(x: workspace.bounds.width - 40, y: closed.midY)
+            let hit = workspace.hitTest(workspace.convert(point, to: workspace.superview))
+            #expect(hit?.isDescendant(of: row) == true)
+
+            // The tree hidden: from the window's left.
+            tab.perform(.toggleFolderTree)
+            harness.layout(tab)
+            #expect(workspace.frame(of: row).minX == 0 && workspace.frame(of: row).maxX == workspace.bounds.width)
+            await harness.close()
+        }
+
         // T-21dbb5e8 T-f539501b T-f1326c67 F-703 F-704 B-INFO-187 B-INFO-188 B-INFO-189
         @Test func squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths() async throws {
             let harness = try ExplorerHarness.windowless()

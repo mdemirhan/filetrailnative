@@ -397,6 +397,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         workspace.sidebarCell.content = sidebar.view
         workspace.mainCell.content = content.view
         workspace.inspectorCell.content = infoPanel
+        workspace.statusCell.content = content.contentShell.pathBarRow
         // The tree's resizer is in no pane, so Tab is the browser's: on to the toolbar, or back into the tree.
         workspace.treeResizer.onTab = { [weak self] backward in
             guard let self else { return }
@@ -2414,7 +2415,9 @@ extension MainWindowController: ExplorerWindowContext {
         // field (the path bar's, the results' filter): only the panes' own focus counts (`onFocusChange`).
         if content.inlineRename != nil || isTextFieldEditing { return nil }
         guard let responder = window?.firstResponder as? NSView else { return nil }
-        if responder.isDescendant(of: content.view) { return .content }
+        if responder.isDescendant(of: content.view) || responder.isDescendant(of: content.contentShell.pathBarRow) {
+            return .content
+        }
         if responder.isDescendant(of: sidebar.view) { return .tree }
         return nil
     }

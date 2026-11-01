@@ -11,7 +11,8 @@ import FTFoundation
 ///, which the toolbar's row and the tab bar reach over; it still slides as the original's. The sidebar is the
 /// sidebar item's own material, its edge one straight line where the item ends; the content's color runs from
 /// the window's top, so the band has no edge of its own, and a line shows under it only while the pointer is over it
-///, as Finder's.
+///, as Finder's. The status bar lies over the bottom of both the content and the Info panel, as Finder's under its
+/// preview, so opening the panel neither moves nor narrows it.
 final class WorkspaceView: NSView {
     let split = WorkspaceSplitController()
     let sidebarItem: NSSplitViewItem
@@ -32,6 +33,8 @@ final class WorkspaceView: NSView {
     var inspectorResizer: PaneResizerView { inspectorColumn.resizer }
     /// `.workspace-inspector-cell`: the Info panel.
     var inspectorCell: WorkspaceCell { inspectorColumn.cell }
+    /// The status bar (`PathBarRowView`), from the sidebar's edge to the window's right.
+    let statusCell = WorkspaceCell()
 
     private(set) var panes: PaneWidths
     private(set) var folderTreeOpen = true
@@ -84,6 +87,7 @@ final class WorkspaceView: NSView {
         split.view.frame = bounds
         split.view.autoresizingMask = [.width, .height]
         addSubview(split.view)
+        addSubview(statusCell)
         sidebarColumn.workspace = self
         contentColumn.workspace = self
         inspectorColumn.workspace = self
@@ -192,9 +196,6 @@ final class WorkspaceView: NSView {
         convert(view.bounds, from: view)
     }
 
-    /// The content pane still tells where its rows' lines are; no hairline is left for them to reach.
-    func setPaneRowLines(_ lines: [Double]) {}
-
     private func setSidebarWidth(_ width: Double) { Self.setWidth(width, of: sidebarItem) }
     private func setInspectorWidth(_ width: Double) { Self.setWidth(width, of: inspectorItem) }
 
@@ -258,37 +259,44 @@ final class WorkspaceView: NSView {
             view.isHidden = !isReady
         }
         column.backdrop.frame = column.bounds
+        statusCell.isHidden = !isReady
         guard isReady else { return }
         let top = panesTop
+        let paneHeight = max(0, height - top - PathBarRowView.height)
+        let left = frame(of: column).minX
+        statusCell.frame = NSRect(
+            x: left, y: bounds.height - PathBarRowView.height, width: max(0, bounds.width - left),
+            height: PathBarRowView.height)
         // The toolbar's band runs over the inspector item too, as the original's over its panel.
         let inspectorRoom = inspectorItem.isCollapsed ? 0 : inspectorColumn.frame.width
         column.band.frame = NSRect(
             x: 0, y: 0, width: width + inspectorRoom, height: Self.metrics.toolbar.minHeight)
         column.bandLine.frame = NSRect(x: 0, y: top, width: width, height: WorkspaceBandLine.height(in: window))
-        column.mainCell.frame = NSRect(x: 0, y: top, width: width, height: max(0, height - top))
+        column.mainCell.frame = NSRect(x: 0, y: top, width: width, height: paneHeight)
         // A closing panel stays over the content's right edge, out of reach, while it slides away.
         if inspectorCell.superview === column {
             inspectorCell.frame = NSRect(
-                x: width - panes.inspectorWidth, y: top, width: panes.inspectorWidth, height: max(0, height - top))
+                x: width - panes.inspectorWidth, y: top, width: panes.inspectorWidth, height: paneHeight)
         }
     }
 
-    /// The inspector column: the resizer on its leading edge and the panel, both from under the title bar down.
+    /// The inspector column: the resizer on its leading edge and the panel, both from under the title bar to the status
+    /// bar.
     fileprivate func layoutInspector(_ column: WorkspaceInspectorColumn) {
         let resizer = Self.metrics.explorer.resizerWidth
-        let height = column.bounds.height
         let top = panesTop
+        let paneHeight = max(0, column.bounds.height - top - PathBarRowView.height)
         let shown = isReady && infoPanelOpen
         column.resizer.isHidden = !shown
         // From the window's top, as the content's: the band has one color over both.
         column.backdrop.frame = column.bounds
-        column.resizer.frame = NSRect(x: 0, y: top, width: resizer, height: max(0, height - top))
+        column.resizer.frame = NSRect(x: 0, y: top, width: resizer, height: paneHeight)
         column.band.frame = NSRect(x: 0, y: 0, width: column.bounds.width, height: Self.metrics.toolbar.minHeight)
         column.bandLine.frame = NSRect(
             x: 0, y: top, width: column.bounds.width, height: WorkspaceBandLine.height(in: window))
         guard column.cell.superview === column else { return }
         column.cell.isHidden = !shown
-        column.cell.frame = NSRect(x: resizer, y: top, width: panes.inspectorWidth, height: max(0, height - top))
+        column.cell.frame = NSRect(x: resizer, y: top, width: panes.inspectorWidth, height: paneHeight)
         if slide == nil { column.cell.contentOffset = 0 }
     }
 
@@ -302,7 +310,6 @@ final class WorkspaceView: NSView {
         guard isReady else { return }
         column.cell.frame = NSRect(x: 0, y: 0, width: tree, height: height)
         column.resizer.frame = NSRect(x: tree, y: 0, width: resizer, height: height)
-        column.resizer.panesTop = panesTop
     }
 
     // MARK: The Info panel's slide

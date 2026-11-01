@@ -2,7 +2,8 @@
 import AppKit
 import FTFoundation
 
-/// The content pane's rows: the search header in search mode (P5-07), the list, the Info Row and the path bar row.
+/// The content pane's rows: the search header in search mode (P5-07), the list and the Info Row. The path bar row is the
+/// pane's too, but lies in the workspace's status cell, which runs under the Info panel as well.
 final class ContentPaneView: NSView {
     /// The search results' header; nil outside search mode.
     var searchHeader: NSView? {
@@ -29,7 +30,6 @@ final class ContentPaneView: NSView {
         // Closed, it is a line's height: what is in it is cut off (`overflow: hidden`), and not on screen.
         infoRow.clipsToBounds = true
         addSubview(infoRow)
-        addSubview(pathBarRow)
         infoRow.onHeightChange = { [weak self] in self?.needsLayout = true }
     }
 
@@ -59,23 +59,9 @@ final class ContentPaneView: NSView {
             searchHeader.frame = NSRect(x: 0, y: 0, width: width, height: searchHeaderHeight)
             y = searchHeaderHeight
         }
-        let pathHeight = PathBarRowView.height
         let infoHeight = infoRow.height
-        let listHeight = max(0, bounds.height - y - pathHeight - infoHeight)
+        let listHeight = max(0, bounds.height - y - infoHeight)
         list?.frame = NSRect(x: 0, y: y, width: width, height: listHeight)
         infoRow.frame = NSRect(x: -reach, y: y + listHeight, width: width + reach, height: infoHeight)
-        pathBarRow.frame = NSRect(x: -reach, y: bounds.height - pathHeight, width: width + reach, height: pathHeight)
-        reportRowLines()
-    }
-
-    /// The Info Row's and the path bar's lines reach the hairline, in the part of the divider that the tree's resizer
-    /// covers: the workspace has it draw them there.
-    private func reportRowLines() {
-        var parent = superview
-        while let view = parent, !(view is WorkspaceView) { parent = view.superview }
-        guard let workspace = parent as? WorkspaceView else { return }
-        var lines = [pathBarRow.frame.minY]
-        if infoRow.isOpen { lines.append(infoRow.frame.minY) }
-        workspace.setPaneRowLines(lines.map { Double(convert(NSPoint(x: 0, y: $0), to: workspace).y) })
     }
 }
