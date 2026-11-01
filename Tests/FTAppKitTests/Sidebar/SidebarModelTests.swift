@@ -168,6 +168,43 @@ struct SidebarModelTests {
         #expect(rig.model.nodes["/Users/demo/.Trash"] == nil)
     }
 
+    @Test @MainActor func turningHiddenFilesOnReadsTheTreeAgainWhateverRowIsSelected() async {
+        let hiddenFolder = "fs:/Users/demo/.config"
+        // A folder's own tree row.
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo", .other)
+        rig.model.includeHidden = true
+        rig.model.hiddenFilesChanged()
+        await settleModel()
+        #expect(rig.visible().contains(hiddenFolder))
+
+        // A favorite's row, which stays selected and leaves the tree where it is.
+        let favorite = Rig()
+        await favorite.model.folderOpened("/Users/demo/src", .other)
+        await favorite.model.folderOpened(
+            "/Users/demo", SidebarOpen(origin: .favorite(.favorite("/Users/demo"))))
+        #expect(!favorite.visible().contains(hiddenFolder))
+        favorite.model.includeHidden = true
+        favorite.model.hiddenFilesChanged()
+        await settleModel()
+        #expect(favorite.visible().contains(hiddenFolder))
+        #expect(favorite.model.selected == .favorite("/Users/demo"))
+        favorite.model.includeHidden = false
+        favorite.model.hiddenFilesChanged()
+        await settleModel()
+        #expect(!favorite.visible().contains(hiddenFolder))
+
+        // The Trash, which leaves the tree where it is too.
+        let trash = Rig()
+        await trash.model.folderOpened("/Users/demo/src", .other)
+        await trash.model.folderOpened("/Users/demo/.Trash/New Folder", .other)
+        trash.model.includeHidden = true
+        trash.model.hiddenFilesChanged()
+        await settleModel()
+        #expect(trash.visible().contains(hiddenFolder))
+        #expect(trash.model.nodes["/Users/demo/.Trash"] == nil)
+    }
+
     @Test @MainActor func aWindowThatStartsInTheTrashStillHasATree() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/.Trash/New Folder", .other)

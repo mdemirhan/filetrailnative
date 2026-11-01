@@ -581,8 +581,8 @@ final class SidebarModel {
         open(path, SidebarOpen(origin: .other, rerootTree: true, pushesHistory: !TreePaths.same(path, currentPath)))
     }
 
-    /// Hidden files were turned on or off: the tree is seeded again (not for a favorite, a location or a link that
-    /// is selected), and read again.
+    /// Hidden files were turned on or off: the tree is read again, and seeded again first unless its row isn't what is
+    /// selected (a favorite, a location, a link, or the Trash): those leave its open folders as they are.
     func hiddenFilesChanged() {
         guard !currentPath.isEmpty else { return }
         let keeps: Bool
@@ -595,8 +595,11 @@ final class SidebarModel {
         } else {
             keeps = false
         }
-        if !keeps { reinitializeTree(root: rootPath.isEmpty ? currentPath : rootPath, focus: currentPath) }
-        guard !keeps else { return }
+        guard !keeps else {
+            Task { await refreshBranches() }
+            return
+        }
+        reinitializeTree(root: rootPath.isEmpty ? currentPath : rootPath, focus: currentPath)
         let path = currentPath
         viewVersion += 1
         let version = viewVersion
