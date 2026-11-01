@@ -31,6 +31,19 @@ The Trash lists what is in the Trash of every local disk (`TrashFolders`), as Fi
 
 There is no Put Back, on any disk.
 
+## Why there is no Put Back
+
+Looked into on 2026-11-01 and decided against for now: a put back leaves a stale entry in the Trash's `.DS_Store`, and later deletes could then have an unintended effect. Removing the entry would mean changing `.DS_Store`, which is dangerous: Finder writes that file too, and our writes might need coordinating with its own, which could get tricky.
+
+What the original locations look like, from trashing test files on a disk image:
+
+- **Where they are**: there is no public API and the items carry no xattr for it. Each Trash folder's `.DS_Store` has two records per item, under its name in the Trash: `ptbL`, the original folder relative to the disk (`/sub/deep/`), and `ptbN`, the original name. So a renamed `api.txt 12-12-06-924.txt` has `ptbN` `api.txt`.
+- **Who writes them**: both `FileManager.trashItem` and Finder's delete. The former's were there at once; Finder's weren't after 3 seconds and were a few seconds later.
+- **What has none**: an item moved in with `mv`, and an item inside a trashed folder (only the folder has a record).
+- **Stale records**: they stay after the item leaves the Trash, and are matched by name alone. A file then moved in by `mv` under the same name picked up the old location.
+
+Reading is simple, about 40 lines of script for the B-tree in `.DS_Store`, and restoring could start from Undo's `PlannedMove(putBack: true)`, which also requires the original parent's id. Not checked: the home folder's Trash, which needs Full Disk Access to read and may spell its paths differently; whether Finder offers Put Back for `trashItem`'s items; and what Finder does when the original folder is gone or a record is stale.
+
 ## Tests to watch
 
 `aChangeToTheFolderBeingLeftIsDropped` failed once in a full run on a busy Mac: one more read of the folder being left than its baseline (2026-10-31). Cause unknown.
