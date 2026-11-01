@@ -1,12 +1,14 @@
 #!/bin/bash
 # Builds "build/File Trail.app" from the Swift package, signed ad hoc. Says each step; the build log goes to build/logs/build-app.log.
-# Usage: scripts/build-app.sh [release|debug] [--out <folder>]
+# Usage: scripts/build-app.sh [release|debug] [--out <folder>] [--verbose]
 # --out names the folder the app goes in (scripts/make-release-app.sh).
+# --verbose shows the build's output as it comes.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 config=release
 out=build
+verbose=0
 while [ $# -gt 0 ]; do
     case "$1" in
         release | debug) config="$1" ;;
@@ -14,6 +16,7 @@ while [ $# -gt 0 ]; do
             out="$2"
             shift
             ;;
+        --verbose) verbose=1 ;;
         *)
             echo "Unknown argument '$1'." >&2
             exit 1
@@ -23,10 +26,12 @@ while [ $# -gt 0 ]; do
 done
 mkdir -p build/logs "$out"
 log=build/logs/build-app.log
-# In a terminal, SwiftPM's latest [done/total] line, rewritten in place. A release build shows a module only when it's
-# finished, and FTAppKit alone takes most of the time.
+# With --verbose, SwiftPM's output as it comes. Otherwise, in a terminal, its latest [done/total] line, rewritten in
+# place. A release build shows a module only when it's finished, and FTAppKit alone takes most of the time.
 show_progress() {
-    if [ -t 1 ]; then
+    if [ "$verbose" = 1 ]; then
+        cat
+    elif [ -t 1 ]; then
         awk '/^\[[0-9]+\/[0-9]+\] / { printf "\r\033[K  %s %s %s", $1, $2, $3; fflush() } END { printf "\r\033[K" }'
     else
         cat >/dev/null
