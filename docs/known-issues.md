@@ -2,14 +2,6 @@
 
 Nothing is open from the port from Electron: what was fixed is in the history, and what stays different on purpose is in [differences-from-electron.md](differences-from-electron.md). Background work that may affect battery is in [battery.md](battery.md).
 
-## Not yet checked by hand
-
-These have tests, which can't show all of what a person gets:
-
-- **VoiceOver in the sidebar**: rows, levels, disclosure and the lists' names, by listening. The rows are the app's own accessibility elements (`SidebarAccessibility.swift`), not AppKit's.
-- **The row of tag colors in a menu**: pointing at a color and clicking it in a real menu; the tests press it through accessibility, and a capture can't show a native menu.
-- **Drop from another File Trail window**: a real drag, that the target window comes forward for its dialog.
-
 ## Folder icons
 
 A folder holding something shows Finder's sheet of paper, read from the folder's count on APFS and HFS+ when the folder around it is listed. That leaves some folders different from Finder:
@@ -77,17 +69,3 @@ What the original locations look like, from trashing test files on a disk image:
 - **Stale records**: they stay after the item leaves the Trash, and are matched by name alone. A file then moved in by `mv` under the same name picked up the old location.
 
 Reading is simple, about 40 lines of script for the B-tree in `.DS_Store`, and restoring could start from Undo's `PlannedMove(putBack: true)`, which also requires the original parent's id. Not checked: the home folder's Trash, which needs Full Disk Access to read and may spell its paths differently; whether Finder offers Put Back for `trashItem`'s items; and what Finder does when the original folder is gone or a record is stale.
-
-## Tests to watch
-
-`aChangeToTheFolderBeingLeftIsDropped` failed once in a full run on a busy Mac: one more read of the folder being left than its baseline (2026-10-31). Cause unknown.
-
-`detachesWhatAProcessThatIsGoneLeftAttached` failed once in a full run while other builds ran: `hdiutil attach` exited with an error (2026-10-31). Cause unknown; it passed in every other run.
-
-`unmountsOnlyTheVolumeWithoutWholeDiskLeavingItsDiskAttached` failed once in a full run: `hdiutil info` no longer listed the image after its volume was unmounted (2026-11-01). Cause unknown.
-
-Crashes of the test processes that happened once and haven't come back, cause unknown; `scripts/ci.sh` now keeps the logs of a failed run and names its crash reports:
-
-- `FTAppKitTests`: `WindowWriteActions.coordinator` read an `unowned` value that had gone (2026-10-30 12:39).
-- `FTAppKitTests`: an exception during view layout, `NSApplication._crashOnException` (2026-10-30 14:59 and 15:01).
-- `FTAppKitTests`: a bad access running a job on the main queue (2026-10-30 20:21).
