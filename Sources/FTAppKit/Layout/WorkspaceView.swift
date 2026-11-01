@@ -13,7 +13,7 @@ import FTFoundation
 /// the window's top, so the band has no edge of its own, and a line shows under it only while the pointer is over it
 /// (D-015), as Finder's.
 final class WorkspaceView: NSView {
-    let split = NSSplitViewController()
+    let split = WorkspaceSplitController()
     let sidebarItem: NSSplitViewItem
     let contentItem: NSSplitViewItem
     let inspectorItem: NSSplitViewItem
@@ -383,6 +383,16 @@ final class WorkspaceSidebarColumn: NSView {
 final class WorkspaceSplitView: NSSplitView {
     override var dividerThickness: CGFloat { 0 }
     override func drawDivider(in rect: NSRect) {}
+}
+
+/// The split's dividers take no pointer: a divider without thickness would still claim about 5 pt around it, over the
+/// edge of the pane's resizer, with a one-way cursor of its own (the items' widths are pinned) and a drag that can't
+/// move anything. The resizers do all of that.
+final class WorkspaceSplitController: NSSplitViewController {
+    override func splitView(
+        _ splitView: NSSplitView, effectiveRect proposedEffectiveRect: NSRect, forDrawnRect drawnRect: NSRect,
+        ofDividerAt dividerIndex: Int
+    ) -> NSRect { .zero }
 }
 
 /// The inspector item's view: its background from the window's top, as the content's, the resizer and the Info panel.

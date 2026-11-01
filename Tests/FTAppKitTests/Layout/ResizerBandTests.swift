@@ -60,6 +60,32 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Each resizer takes the pointer across its whole width: the split's dividers, which can't move anything, claim
+        // none of it and none of the panes beside it.
+        @Test func theSplitsDividersLeaveThePointerToTheResizers() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            tab.perform(.toggleInfoPanel)
+            harness.layout(tab)
+            let workspace = tab.workspace
+            #expect(await waitUntil { workspace.infoPanelOpen && workspace.slide == nil })
+            harness.layout(tab)
+            let splitView = workspace.split.splitView
+            for resizer in [workspace.treeResizer, workspace.inspectorResizer] {
+                let frame = workspace.frame(of: resizer)
+                #expect(frame.width == 8)
+                let hit = { (x: Double) in splitView.hitTest(NSPoint(x: x, y: frame.midY)) }
+                for x in stride(from: frame.minX + 0.5, to: frame.maxX, by: 1) {
+                    #expect(hit(x) === resizer, "\(x) in \(frame)")
+                }
+                for x in [frame.minX - 2.5, frame.minX - 0.5, frame.maxX + 0.5, frame.maxX + 2.5] {
+                    let other = hit(x)
+                    #expect(other !== splitView && other !== resizer, "\(x) beside \(frame)")
+                }
+            }
+            await harness.close()
+        }
+
         // The tree hidden: no sidebar, the content's color and the line from the window's left.
         @Test func withTheTreeHiddenTheContentStartsAtTheWindowsLeft() async throws {
             let harness = try ExplorerHarness.windowless()
