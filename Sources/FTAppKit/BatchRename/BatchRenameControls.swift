@@ -525,7 +525,7 @@ final class BatchRenameSelectedMark: NSView, TextStyleSource {
     override var isFlipped: Bool { true }
 }
 
-/// `.segmented` as the system's control (D-020), a radio group ("How to rename"): Tab lands on it, the arrow keys move
+/// `.segmented` as the system's control, a radio group ("How to rename"): Tab lands on it, the arrow keys move
 /// between the segments, a click chooses one.
 @MainActor
 final class BatchRenameModeControl: SystemSegmentedControl {

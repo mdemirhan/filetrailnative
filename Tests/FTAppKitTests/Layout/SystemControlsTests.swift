@@ -1,4 +1,4 @@
-// D-020: the system's controls take clicks through the views that name their segments for captures, and the keys
+// The system's controls take clicks through the views that name their segments for captures, and the keys
 import AppKit
 import FTFoundation
 import Foundation

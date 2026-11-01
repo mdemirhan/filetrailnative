@@ -4,7 +4,7 @@ import Testing
 @testable import FTFoundation
 
 /// Density replaces the Compact screenshots (PLAN.md section 5.4): for each density, every metric is the original's CSS
-/// pixel value (no zoom, D-005). The base values below are typed out from the original's layout modules and `ui.md`,
+/// pixel value (no zoom). The base values below are typed out from the original's layout modules and `ui.md`,
 /// apart from the code under test.
 @Suite struct MetricsTests {
     typealias Table = [String: Double]
@@ -109,8 +109,8 @@ import Testing
         return problems
     }
 
-    // N/A B-DLG-240 B-DLG-241 B-DLG-242 B-DLG-243 D-005: zoom is not ported
-    // N/A F-588 F-651 F-931 D-005: zoom is not ported (nor is the zoom part of any other row: the About window is not
+    // N/A B-DLG-240 B-DLG-241 B-DLG-242 B-DLG-243: zoom is not ported
+    // N/A F-588 F-651 F-931: zoom is not ported (nor is the zoom part of any other row: the About window is not
     // scaled and no zoom change resizes anything). Every other metric is checked here, Compact included.
     @Test(arguments: Density.allCases)
     func everyMetricIsTheOriginalValue(density: Density) {

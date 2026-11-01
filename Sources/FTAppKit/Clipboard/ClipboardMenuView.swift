@@ -1,5 +1,5 @@
 // Port of the menu of apps/desktop/src/renderer/components/ClipboardButton.tsx and its rules in styles.css (7504-7690):
-// the clipboard's list under its button, in a system popover (D-022), with the count, the hint, the items under their
+// the clipboard's list under its button, in a system popover, with the count, the hint, the items under their
 // folders, and Clear Clipboard
 import AppKit
 import FTFileSystem

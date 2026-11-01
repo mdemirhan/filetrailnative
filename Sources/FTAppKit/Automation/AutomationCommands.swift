@@ -24,7 +24,7 @@
             "focusContentPane", "openHelp", "openKeyboardShortcuts",
         ]
 
-        /// The zoom commands, which this app leaves to the system (DEVIATIONS D-005).
+        /// The zoom commands, which this app leaves to the system.
         static let leftToTheSystem: Set<String> = ["zoomIn", "zoomOut", "resetZoom"]
 
         /// The ids `run` carries out: every command of the original but the zoom ones.
@@ -36,7 +36,7 @@
         static func run(_ id: String, controller: MainWindowController, window: NSWindow) -> AutomationRunner.Outcome {
             guard all.contains(id) else { return .init(.failed, "unknown command \(id)") }
             guard supported.contains(id), let command = RendererCommand(rawValue: id) else {
-                return .init(.unsupported, "\(id) is left to the system here (DEVIATIONS D-005)")
+                return .init(.unsupported, "\(id) is left to the system here")
             }
             switch command {
             case .openHelp, .openKeyboardShortcuts:

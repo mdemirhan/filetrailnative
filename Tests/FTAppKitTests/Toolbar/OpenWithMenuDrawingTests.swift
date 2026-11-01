@@ -1,4 +1,4 @@
-// Checks the rows of the Open With menu as a system menu shows them (D-022), and the Info icon's pixels
+// Checks the rows of the Open With menu as a system menu shows them, and the Info icon's pixels
 import AppKit
 import FTFileSystem
 import FTFoundation

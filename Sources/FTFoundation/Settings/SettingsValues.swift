@@ -115,7 +115,7 @@ public enum SettingsValues {
         return "open-with-\(time)-\(suffix)"
     }
 
-    /// Restore Defaults under Appearance: the theme and the accent go back (the zoom is not drawn, D-005).
+    /// Restore Defaults under Appearance: the theme and the accent go back (the zoom is not drawn).
     public static func resetAppearance(_ preferences: inout AppPreferences) {
         let defaults = AppPreferences.defaults()
         preferences.theme = defaults.theme

@@ -1,4 +1,4 @@
-// Checks the sidebar's system symbols and colors, which follow Finder (D-021), on rows that are never shown
+// Checks the sidebar's system symbols and colors, which follow Finder, on rows that are never shown
 import AppKit
 import FTFoundation
 import Testing
@@ -43,7 +43,7 @@ import Testing
         return (name, pointSize, color)
     }
 
-    // The mapping the user approved (D-021, in place of the original's line icons), every symbol there on this system.
+    // The mapping the user approved (in place of the original's line icons), every symbol there on this system.
     // T-fe3f2758 F-732
     @Test func everyIconHasTheApprovedSymbol() {
         let approved: [FavoriteIconID: String] = [

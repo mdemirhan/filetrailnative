@@ -3,10 +3,10 @@ import AppKit
 import FTFoundation
 
 /// The window's frame, as Finder's: no title, a unified system toolbar (`ExplorerToolbar`), the content under the title
-/// bar, and the system tab bar (D-001) under the toolbar. The window's content is a sidebar split (`WorkspaceView`), so
+/// bar, and the system tab bar under the toolbar. The window's content is a sidebar split (`WorkspaceView`), so
 /// the system places the toolbar's items and the tab bar over the content column only, and the traffic lights over the
 /// sidebar, where it puts them. The system draws the tabs; the band is the content's color with no separator at rest,
-/// and `WorkspaceBandLine` is its line under the pointer, as Finder's (D-015).
+/// and `WorkspaceBandLine` is its line under the pointer, as Finder's.
 @MainActor
 enum WindowChrome {
     static func configure(_ window: NSWindow, toolbar: NSToolbar) {

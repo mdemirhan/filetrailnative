@@ -24,7 +24,7 @@ extension ExplorerWindowlessTests.ToolbarTests {
     }
 
     // B-VIEW-126 B-VIEW-127: the Sort menu closes when the toolbar's items change. No window is resized under a system
-    // menu, which holds the pointer while it is open (D-022).
+    // menu, which holds the pointer while it is open.
     @Test func closesTheSortMenuWhenTheItemsChange() async throws {
         let harness = try ExplorerHarness.windowless()
         let tab = try await harness.open()

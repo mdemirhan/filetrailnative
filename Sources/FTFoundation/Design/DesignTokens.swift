@@ -38,7 +38,7 @@ public struct Motion: Equatable, Sendable {
     }()
 }
 
-/// Everything the UI draws with, (no zoom, D-005). `Metrics` is the same set for a density.
+/// Everything the UI draws with, (no zoom). `Metrics` is the same set for a density.
 public enum DesignTokens {
     public static let typeScale = TypeScale.make()
     public static let radii = Radii.make()

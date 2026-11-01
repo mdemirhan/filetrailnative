@@ -303,7 +303,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     #if DEBUG
         /// What a scenario's `prefs` step does with the look: through the appearance, as Settings does. The zoom is read
-        /// and ignored (D-005).
+        /// and ignored.
         private func registerAutomationPreferences() {
             AutomationPrefs.register("theme") { [appearance] value, _ in
                 guard let theme = value.string.flatMap(ThemePreference.init(rawValue:)) else {

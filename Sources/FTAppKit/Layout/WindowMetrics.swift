@@ -3,10 +3,10 @@ import AppKit
 import FTFoundation
 
 /// The one place the UI builds its `Metrics`: every view of the explorer window takes its sizes from here, so a
-/// change to how metrics are made (density, D-005's zoom removal) is one line.
+/// change to how metrics are made (density) is one line.
 @MainActor
 enum WindowMetrics {
-    /// The metrics for a density (the original's 100% sizes; UI zoom is not ported, D-005).
+    /// The metrics for a density (the original's 100% sizes; UI zoom is not ported).
     static func metrics(density: Density = .comfortable) -> Metrics {
         Metrics(density: density)
     }
@@ -49,7 +49,7 @@ enum ChromeColors {
         return result
     }
 
-    /// The content column's background, band included, Finder's: the system's, in every appearance (D-015).
+    /// The content column's background, band included, Finder's: the system's, in every appearance.
     static func contentBackground(for view: NSView?) -> NSColor {
         resolved(.controlBackgroundColor, for: view)
     }
@@ -58,7 +58,7 @@ enum ChromeColors {
     /// against the label's 0.847, measured from Finder's screenshots.
     private static let toolbarTitleStrength = 0.7 / 0.847
 
-    /// The toolbar's title, Finder's: the system's label color, dimmed as Finder's in a key window (D-015).
+    /// The toolbar's title, Finder's: the system's label color, dimmed as Finder's in a key window.
     static func toolbarTitle(for view: NSView?, isKey: Bool) -> NSColor {
         guard isKey else { return resolved(.tertiaryLabelColor, for: view) }
         let label = resolved(.labelColor, for: view)

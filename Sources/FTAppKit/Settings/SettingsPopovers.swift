@@ -1,5 +1,5 @@
 // Port of FavoriteIconPicker, useSettingsMenu and ApplicationPopup of apps/desktop/src/renderer/components/SettingsView.tsx:
-// the icon grid in a system popover, the app pop-up's menu a system menu (D-022)
+// the icon grid in a system popover, the app pop-up's menu a system menu
 import AppKit
 import FTFoundation
 

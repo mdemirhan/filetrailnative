@@ -1,8 +1,8 @@
-// Port of the density handling around renderer/lib/layoutTokens.ts and the layout modules (zoom dropped, D-005)
+// Port of the density handling around renderer/lib/layoutTokens.ts and the layout modules (zoom dropped)
 import Foundation
 
 /// Every metric and font size the UI uses for a density, in points. The original's zoom preference is not ported
-/// (D-005): the saved `zoomPercent` is still read and ignored, and lengths are the original's CSS pixels.
+///: the saved `zoomPercent` is still read and ignored, and lengths are the original's CSS pixels.
 public struct Metrics: Equatable, Sendable {
     public let density: Density
 

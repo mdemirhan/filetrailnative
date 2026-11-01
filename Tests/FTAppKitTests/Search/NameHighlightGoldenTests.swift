@@ -1,6 +1,6 @@
 // What a search marks in names, against the reference (tools/parity/golden/name-highlight.ts): the pattern the query
 // makes, its match in the name, and where that shows in a label shortened in the middle, with the JavaScript-compatible
-// matcher (D-011)
+// matcher
 import FTFileSystem
 import FTFoundation
 import FTTestSupport

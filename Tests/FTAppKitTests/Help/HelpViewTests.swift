@@ -1,4 +1,4 @@
-// Ports apps/desktop/src/renderer/components/HelpView.test.tsx; the zoom case uses another command's plus key (D-005)
+// Ports apps/desktop/src/renderer/components/HelpView.test.tsx; the zoom case uses another command's plus key
 import AppKit
 import FTFoundation
 import Testing
@@ -47,7 +47,7 @@ import Testing
     }
 
     // T-31f053f9 F-663 B-DLG-250
-    // DEVIATIONS D-001, D-003, D-016: Help doesn't describe what the system's tab bar and customizing sheet replaced.
+    // Help doesn't describe what the system's tab bar and customizing sheet replaced.
     @Test func saysNothingOfWhatTheApprovedDeviationsRemoved() {
         let text = HelpContent.topics.flatMap(\.sections).flatMap(\.rows).map(\.description).joined(separator: "\n")
         for gone in [
@@ -144,7 +144,7 @@ import Testing
             })
     }
 
-    // T-833871bc F-667 B-DLG-254 (a plus key of Copy the path instead of Zoom in: D-005)
+    // T-833871bc F-667 B-DLG-254 (a plus key of Copy the path instead of Zoom in)
     @Test func rendersShortcutKeysAsSeparateKeycapsAndPreservesTrailingPlusKeys() {
         let overrides: JSONNode = .object(["copyPath": .array([.string("Cmd+Plus")])])
         let view = make(

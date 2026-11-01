@@ -14,7 +14,7 @@ import Testing
     }
 
     // T-b65028eb F-572 F-573 F-574 F-575 F-576 F-577 F-579 F-581 F-582 F-583 F-584 F-585 F-586 F-587 F-590 F-591 F-592 F-593
-    // F-594 (Zoom In, Zoom Out and Actual Size are left out: DEVIATIONS D-005; macOS adds its own Enter Full Screen)
+    // F-594 (Zoom In, Zoom Out and Actual Size are left out; macOS adds its own Enter Full Screen)
     // B-VIEW-002
     @Test func laysTheMenusOutTheWayAMacAppDoes() {
         let (built, _) = build()
@@ -87,7 +87,7 @@ import Testing
     }
 
     // T-ea45c4fc F-596 (the keys; the commands sent are checked in MenuCommandRouterTests)
-    // covered-by-feature F-588 (zoom items: N/A, DEVIATIONS D-005)
+    // covered-by-feature F-588 (zoom items: N/A)
     // B-NAV-055 T-e07c2ef1
     @Test func showsEachItemOnItsShortcut() {
         let (built, _) = build()

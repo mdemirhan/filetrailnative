@@ -129,7 +129,7 @@ import Testing
         #expect(blue.accent.onSolid == .white)
         #expect(button.titleColor == nil)
         #expect(blue.accent.onSolid == .white)
-        // Disabled, it has the system's own look, tint and title (D-020).
+        // Disabled, it has the system's own look, tint and title.
         button.isEnabled = false
         #expect(button.bezelColor == nil)
         #expect(button.titleColor == nil)

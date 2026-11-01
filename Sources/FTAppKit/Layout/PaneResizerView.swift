@@ -5,7 +5,7 @@ import FTFoundation
 
 /// The 8 pt gutter between two panes: a 1 pt hairline in its middle (the accent's border color under the pointer),
 /// a resize cursor, a drag that moves the pane's edge, and ←/→ (12 pt, 24 with ⇧) once it has the keyboard. The tree's
-/// is the sidebar's own edge instead: the sidebar's material shows all through it (D-017).
+/// is the sidebar's own edge instead: the sidebar's material shows all through it.
 final class PaneResizerView: NSView {
     let pane: PaneWidths.Pane
     /// Where the pointer went down, in window coordinates.
@@ -21,7 +21,7 @@ final class PaneResizerView: NSView {
         didSet { needsDisplay = true }
     }
     /// Where the panes start, in this view's coordinates: the system's title bar is above it, so this gutter draws
-    /// nothing there (D-015). The tree's resizer runs from the window's top; the Info panel's starts at the panes.
+    /// nothing there. The tree's resizer runs from the window's top; the Info panel's starts at the panes.
     var panesTop: Double = 0 {
         didSet { if panesTop != oldValue { needsDisplay = true } }
     }

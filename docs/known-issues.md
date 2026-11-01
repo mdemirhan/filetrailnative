@@ -1,6 +1,6 @@
 # Known issues
 
-Nothing is open from the port from Electron: what was fixed is in the history, and what stays different on purpose is in [differences-from-electron.md](differences-from-electron.md). Background work that may affect battery is in [battery.md](battery.md).
+Nothing is open from the port from Electron: what was fixed is in the history. Background work that may affect battery is in [battery.md](battery.md).
 
 ## Folder icons
 

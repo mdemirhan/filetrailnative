@@ -1,5 +1,5 @@
 // Port of the push button, the segmented control, the link button and the keycap of
-// apps/desktop/src/renderer/styles.css, the first two as system controls (D-020)
+// apps/desktop/src/renderer/styles.css, the first two as system controls
 import AppKit
 import FTFoundation
 
@@ -106,7 +106,7 @@ public class TextControl: NSTextField, ThemeApplying {
 
 // MARK: Push button
 
-/// The push button (`.push-button`) as the system's button: its bezel, press and focus ring (D-020). The default one is
+/// The push button (`.push-button`) as the system's button: its bezel, press and focus ring. The default one is
 /// tinted with the theme's accent and never takes Return from the system: the panels press it themselves (they know
 /// what has the keyboard). It is as wide as the original's: the text and 12 each side, at least 76.
 public class SystemButton: NSButton, ThemeApplying {

@@ -45,7 +45,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case halfPageDown
     case newWindow
     case newTab
-    /// Not in the original's table: its Duplicate Tab is in the tab strip's menu only (DEVIATIONS D-001).
+    /// Not in the original's table: its Duplicate Tab is in the tab strip's menu only.
     case duplicateTab
     case closeTab
     case reopenClosedTab

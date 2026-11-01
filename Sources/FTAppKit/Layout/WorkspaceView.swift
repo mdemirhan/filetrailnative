@@ -6,12 +6,12 @@ import FTFoundation
 /// The explorer window's content: a sidebar split, as Finder's. The sidebar item holds the folder tree and its 8 pt
 /// resizer, the full height of the window, under the traffic lights; the content item holds the content and, while it
 /// is open, an 8 pt resizer and the Info panel. Because the system knows where the sidebar is, it puts the toolbar's
-/// row (`ExplorerToolbar`, over the content column) and the tab bar (D-001, under the band) over the content column
+/// row (`ExplorerToolbar`, over the content column) and the tab bar (under the band) over the content column
 /// only. A hidden tree collapses the sidebar item and takes no room. The Info panel is the system's inspector item
-/// (D-020), which the toolbar's row and the tab bar reach over; it still slides as the original's. The sidebar is the
-/// sidebar item's own material, its edge one straight line where the item ends (D-017); the content's color runs from
+///, which the toolbar's row and the tab bar reach over; it still slides as the original's. The sidebar is the
+/// sidebar item's own material, its edge one straight line where the item ends; the content's color runs from
 /// the window's top, so the band has no edge of its own, and a line shows under it only while the pointer is over it
-/// (D-015), as Finder's.
+///, as Finder's.
 final class WorkspaceView: NSView {
     let split = WorkspaceSplitController()
     let sidebarItem: NSSplitViewItem
@@ -192,7 +192,7 @@ final class WorkspaceView: NSView {
         convert(view.bounds, from: view)
     }
 
-    /// The content pane still tells where its rows' lines are; no hairline is left for them to reach (D-017).
+    /// The content pane still tells where its rows' lines are; no hairline is left for them to reach.
     func setPaneRowLines(_ lines: [Double]) {}
 
     private func setSidebarWidth(_ width: Double) { Self.setWidth(width, of: sidebarItem) }
@@ -293,7 +293,7 @@ final class WorkspaceView: NSView {
     }
 
     /// The sidebar column: the tree from the window's top, its resizer on its trailing edge. The column's own material
-    /// is the sidebar, up to the column's edge all the way down: nothing lies over it (D-017).
+    /// is the sidebar, up to the column's edge all the way down: nothing lies over it.
     fileprivate func layoutSidebar(_ column: WorkspaceSidebarColumn) {
         let resizer = Self.metrics.explorer.resizerWidth
         let height = column.bounds.height
@@ -529,7 +529,7 @@ final class WorkspaceBandPlace: NSView {
 
 /// The line Finder shows under its toolbar while the pointer is over it: one device pixel across the content column, just
 /// under the title bar. Drawn because the system's own (its scroll pocket's) comes with a scroll view reaching under the
-/// toolbar, which the panes' rows don't (D-015).
+/// toolbar, which the panes' rows don't.
 final class WorkspaceBandLine: NSView {
     /// The system's separator, which is Finder's line: stored as 229 over white in its screenshot.
     static var color: NSColor { NSColor.separatorColor }

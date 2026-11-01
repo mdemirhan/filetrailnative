@@ -1,4 +1,4 @@
-// Port of createApplicationMenuTemplate (apps/desktop/src/main/appMenu.ts), the layout and keys; View > Zoom is dropped (DEVIATIONS D-005)
+// Port of createApplicationMenuTemplate (apps/desktop/src/main/appMenu.ts), the layout and keys; View > Zoom is dropped
 import AppKit
 import FTFoundation
 
@@ -61,7 +61,7 @@ enum ApplicationMenuBuilder {
         context.addSubmenu(to: main, title: "File") { menu in
             menu.addItem(context.command(.newWindow, "New Window"))
             menu.addItem(context.command(.newTab, "New Tab"))
-            // The original's tab strip menu has it; the system tab bar has no menu of the app's (DEVIATIONS D-001).
+            // The original's tab strip menu has it; the system tab bar has no menu of the app's.
             menu.addItem(context.command(.duplicateTab, "Duplicate Tab"))
             menu.addItem(context.command(.newFolder, "New Folder"))
             menu.addItem(.separator())
@@ -147,7 +147,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.toggleInfoRow, "Info Row", kind: .checkbox))
             menu.addItem(.separator())
             menu.addItem(context.command(.customizeToolbar, "Customize Toolbar…"))
-            // No Zoom In, Zoom Out or Actual Size (DEVIATIONS D-005), and no hidden full screen item: AppKit adds its
+            // No Zoom In, Zoom Out or Actual Size, and no hidden full screen item: AppKit adds its
             // own Enter Full Screen to this menu, with ⌃⌘F.
         }
 

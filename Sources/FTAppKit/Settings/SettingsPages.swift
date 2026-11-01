@@ -130,7 +130,7 @@ final class SettingsPageView: NSView {
         accent.onChange = { [weak self] value in self?.update { $0.accent = value } }
         accent.openColorPicker = { [weak self] start, picked in self?.host?.openColorPicker(start, picked) }
         appearance.card.add(row("Accent color", nil, accent))
-        // The Zoom row is not drawn (DEVIATIONS D-005).
+        // The Zoom row is not drawn.
         onRefresh {
             picker.update($0.theme)
             accent.update($0.accent)

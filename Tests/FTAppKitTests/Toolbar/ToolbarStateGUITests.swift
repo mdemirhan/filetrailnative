@@ -65,7 +65,7 @@ extension ExplorerWindowGUITests {
 }
 
 extension ExplorerWindowGUITests.ToolbarGUITests {
-    // N/A T-19d51434 T-bb62d104 the toolbar's right-click menu is the system's, with Customize Toolbar… (D-016); F-717
+    // N/A T-19d51434 T-bb62d104 the toolbar's right-click menu is the system's, with Customize Toolbar…; F-717
     // likewise. Back's and Forward's history stay theirs: stepsOnAClickAndListsTheFoldersWhenHeld.
     // F-718 F-719 F-720: Customize Toolbar… opens the system's sheet on the window, and the items wait under it, as under
     // any sheet. Ending the sheet lets them go.

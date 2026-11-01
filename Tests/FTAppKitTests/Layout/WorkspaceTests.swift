@@ -99,7 +99,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // D-001 D-015: the system draws the tabs and the title bar is its own, with no separator at rest; the band is the
+        // The system draws the tabs and the title bar is its own, with no separator at rest; the band is the
         // content's color from the window's top; a veil or a dialog's scrim dims it once.
         @Test func theBandIsTheContentsColor() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -140,7 +140,7 @@ extension ExplorerWindowlessTests {
             let tab = try await harness.open()
             let workspace = tab.workspace
             #expect(workspace.infoPanelOpen && workspace.slide == nil)
-            // D-020: the system's inspector item, from under the title bar, the content beside it.
+            // The system's inspector item, from under the title bar, the content beside it.
             #expect(workspace.inspectorItem.behavior == .inspector && !workspace.inspectorItem.isCollapsed)
             #expect(workspace.inspectorCell.frame.width == 320)
             #expect(workspace.inspectorResizer.frame.maxX == workspace.inspectorCell.frame.minX)

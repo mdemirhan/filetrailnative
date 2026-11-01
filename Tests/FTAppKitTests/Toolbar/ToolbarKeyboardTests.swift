@@ -334,7 +334,7 @@ extension ExplorerWindowlessTests {
             #expect(clicks == 0)
         }
 
-        // HistoryButton.tsx:158-163: a dimmed Back or Forward opens no menu, the toolbar's own included (D-016).
+        // HistoryButton.tsx:158-163: a dimmed Back or Forward opens no menu, the toolbar's own included.
         @Test func aRightClickOnADimmedHistoryButtonDoesNothing() throws {
             let button = ToolbarButton(icon: .back, label: "Back", identifier: "toolbar.back")
             var rights = 0

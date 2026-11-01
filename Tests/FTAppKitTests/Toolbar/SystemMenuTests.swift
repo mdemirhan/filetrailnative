@@ -1,4 +1,4 @@
-// Checks the app's menus as system menus (D-022): what their items say and do, not how they are drawn
+// Checks the app's menus as system menus: what their items say and do, not how they are drawn
 import AppKit
 import FTFoundation
 import Testing

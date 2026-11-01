@@ -196,7 +196,7 @@ import Testing
         #expect(recorder.saved["accent"] == .string("#123abc"))
     }
 
-    // T-914587da T-10d689b4 F-894 B-DLG-178 D-005: Restore Defaults puts back the theme and the accent only
+    // T-914587da T-10d689b4 F-894 B-DLG-178: Restore Defaults puts back the theme and the accent only
     @Test func restoresTheDefaultAppearanceWithThePushButton() throws {
         let preferences = AppPreferences.defaults(theme: .dark).with {
             $0.accent = "#e0383e"
@@ -775,7 +775,7 @@ import Testing
     // N/A T-f7150cd1 the Settings window has one layout: the single-panel layout modes are Help's (F-664)
     // N/A T-418f2d7d T-0a67899e there is no stylesheet or inline style: the controls draw with ThemePalette tokens,
     // one control height (DesignTokens.controlHeights) and the push button's bezel, checked by the frames above
-    // N/A T-c8bd0b66 T-c91ec44b T-a6ffd8db the Zoom row is not drawn (DEVIATIONS D-005)
+    // N/A T-c8bd0b66 T-c91ec44b T-a6ffd8db the Zoom row is not drawn
 }
 
 extension AppPreferences {

@@ -68,9 +68,9 @@ extension ExplorerWindowlessTests {
     @Suite struct ToolbarTests: ToolbarTesting {
         // N/A T-950f5cb5 T-52a1e901 T-31c46dd8 T-e5501fcb T-0d626566 T-af6e6f0a T-a669a0e1 T-9b0b8821 T-91333069 T-3e4a1c9f
         // T-12547eab T-0a9009c4 T-05bfc5d2 T-5f4a2239 T-4dabc4eb T-1be0c4f9 T-2fd182cd (TabStrip.test.tsx): the tab strip is
-        // the system's tab bar (D-001, D-002, D-003, D-013, P4-02/P4-04); F-721 F-722 F-723 F-725 F-726 likewise.
+        // the system's tab bar (P4-02/P4-04); F-721 F-722 F-723 F-725 F-726 likewise.
         // N/A T-36bede3d (HistoryButton): the toolbar is not measured from a hidden copy; its widths are computed.
-        // N/A T-b4ef483c (only a primary press on a handle starts a drag): the system's customizing has no handles (D-016).
+        // N/A T-b4ef483c (only a primary press on a handle starts a drag): the system's customizing has no handles.
         // T-88f9e2d3 T-bcb2497c T-e090ff70 F-708 F-709 B-VIEW-107 B-VIEW-108 B-VIEW-109 B-VIEW-110 B-VIEW-112
         @Test func drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -169,7 +169,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Finder's capsules, read from its screenshots to ±1 pt: 36 high, its buttons 36 wide, 8 apart (D-015).
+        // Finder's capsules, read from its screenshots to ±1 pt: 36 high, its buttons 36 wide, 8 apart.
         @Test func theCapsulesAreFindersSizes() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -320,7 +320,7 @@ extension ExplorerWindowlessTests {
         // T-fa22d272 T-b5ab76c0 T-cd18e312 T-5ee43c38 F-716 B-VIEW-114 B-VIEW-115 B-VIEW-116 B-VIEW-117: the system's »
         // menu takes the removable items, each with what the menu bar calls it; the required ones go last. Which items
         // go is the system's: aNarrowWindowMovesTheRemovableItemsOut on screen.
-        // N/A B-VIEW-118 the system places and closes its » menu, as it does the toolbar's other menus (D-022)
+        // N/A B-VIEW-118 the system places and closes its » menu, as it does the toolbar's other menus
         // F-716 B-VIEW-116 B-VIEW-117
         @Test func listsTheItemsUnderTheOverflowMenuAsTheMenuBarWordsThem() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -422,7 +422,7 @@ extension ExplorerWindowlessTests {
         }
 
         // N/A T-ad6435d1 T-709e0d2c T-612dbec6 T-addfcb64 T-0d8f5ac1 T-3da726ea T-090c3038 T-92946215 T-b58bb216 T-47e212cb
-        // T-78565d8f (the original's edit layer, panel and drag ghost): the customizing is the system's (D-016). What the
+        // T-78565d8f (the original's edit layer, panel and drag ghost): the customizing is the system's. What the
         // app still owes is below. F-718 F-719 F-720 B-VIEW-132 B-VIEW-133 B-VIEW-134 B-VIEW-135 B-VIEW-136 B-VIEW-137
         // B-VIEW-138 B-VIEW-140 B-VIEW-141
         // F-718 F-719 F-720
@@ -477,7 +477,7 @@ extension ExplorerWindowlessTests {
         }
 
         // Under a name being edited or a dialog nothing can customize the toolbar, the system's right-click menu included.
-        // That menu is the system's (D-016) and offers Customize Toolbar… by this flag; opening it is a hand check.
+        // That menu is the system's and offers Customize Toolbar… by this flag; opening it is a hand check.
         // F-717
         @Test func customizingWaitsUnderARenameOrADialog() async throws {
             let harness = try ExplorerHarness.windowless()

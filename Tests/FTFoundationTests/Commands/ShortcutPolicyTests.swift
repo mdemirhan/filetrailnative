@@ -46,7 +46,7 @@ struct ShortcutPolicyTests {
     }
 
     // T-210cc8bf F-083
-    // The zoom commands are dropped (D-005), so only Settings is checked.
+    // The zoom commands are dropped, so only Settings is checked.
     @Test func keepsSettingsAvailableOnNonExplorerViews() {
         #expect(Self.handle(.openSettings, Self.ctx(mainView: .help)))
     }
@@ -273,7 +273,7 @@ struct ShortcutPolicyTests {
         for command in RendererCommand.allCases {
             _ = ShortcutPolicy.treeFocusBucket(of: command)
         }
-        // The original's 71, and Duplicate Tab (DEVIATIONS D-001).
+        // The original's 71, and Duplicate Tab.
         #expect(RendererCommand.allCases.count == 72)
         // The two commands the original keeps in two buckets' worth of notes.
         #expect(ShortcutPolicy.treeFocusBucket(of: .ejectVolume) == .globalExplorer)

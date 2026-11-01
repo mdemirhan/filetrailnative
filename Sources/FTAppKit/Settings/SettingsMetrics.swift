@@ -112,7 +112,7 @@ enum SettingsMetrics {
     static let numberStepperWidth: CGFloat = 15
     /// `.settings-field-with-unit` gap 6 (:5514).
     static let unitGap: CGFloat = 6
-    /// The system's mini switch, in place of `.settings-switch` (28 by 16, D-020).
+    /// The system's mini switch, in place of `.settings-switch` (28 by 16).
     static let switchSize = NSSize(width: 36, height: 16)
     /// `.settings-checkbox input` 14 by 14, radius `--radius-xs` (:5563-5566); gap 6 (:5556).
     static let checkboxSize: CGFloat = 14

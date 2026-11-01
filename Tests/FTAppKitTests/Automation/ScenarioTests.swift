@@ -117,7 +117,7 @@
         @Test @MainActor func knowsTheOriginalsCommands() {
             #expect(AutomationCommands.all.count == 74)
             #expect(AutomationCommands.supported.isSubset(of: AutomationCommands.all))
-            // Every command goes to the window but the zoom ones (DEVIATIONS D-005).
+            // Every command goes to the window but the zoom ones.
             #expect(
                 AutomationCommands.all.subtracting(AutomationCommands.supported) == ["zoomIn", "zoomOut", "resetZoom"])
             #expect(AutomationCommands.supported.allSatisfy { RendererCommand(rawValue: $0) != nil })

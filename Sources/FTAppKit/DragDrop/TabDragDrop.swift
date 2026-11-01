@@ -2,7 +2,7 @@
 // file drag, its images and its end, the items other apps took away) and the drags over it (the targets, move or
 // copy by the disks and the keys, the highlights, springing folders, the tree's hover expand, the drop). AppKit's
 // dragging callbacks replace the web page's guesses about when a drag came, left and ended; `draggingSequenceNumber`
-// tells one drag from the next (D-004).
+// tells one drag from the next.
 import AppKit
 import FTFileSystem
 import FTFoundation

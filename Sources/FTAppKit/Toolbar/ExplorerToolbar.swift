@@ -5,7 +5,7 @@ import FTFoundation
 
 /// The window's system toolbar, in the unified style Finder uses: a sidebar tracking separator, so the items start
 /// over the content column, then one `NSToolbarItem` per item of the user's saved order. The system draws the band
-/// (52 points), the Liquid Glass, the » menu, the customizing sheet and the tab bar under the band (D-015, D-016).
+/// (52 points), the Liquid Glass, the » menu, the customizing sheet and the tab bar under the band.
 ///
 /// `topToolbarItems` stays the source of the order, so a saved layout, an imported one and Reset to Defaults need no
 /// other format: the toolbar follows the preference, and what the user changes in the toolbar goes back into it. The

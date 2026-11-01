@@ -19,7 +19,7 @@ struct ShortcutsTests {
     @Test func namesEveryCommandOnceAndGivesNoKeyToTwoCommands() {
         let ids = ShortcutCommands.all.map(\.id)
         #expect(Set(ids).count == ids.count)
-        // The original's 79, and Duplicate Tab (DEVIATIONS D-001).
+        // The original's 79, and Duplicate Tab.
         #expect(ids.count == 80)
 
         let keys = ShortcutCommands.all.flatMap { Self.defaults[$0.id] ?? [] }
@@ -32,8 +32,8 @@ struct ShortcutsTests {
     }
 
     // T-ea83b599 F-082
-    // The original lets 69 commands be changed; Zoom In, Zoom Out and Actual Size are dropped (D-005) and Duplicate
-    // Tab is added (D-001), so 67 are.
+    // The original lets 69 commands be changed; Zoom In, Zoom Out and Actual Size are dropped and Duplicate
+    // Tab is added, so 67 are.
     @Test func letsSixtySevenCommandsBeChangedAndKeepsTheStandardOnesFixed() {
         let fixed = ShortcutCommands.all.filter(\.fixed)
         #expect(ShortcutCommands.all.count - fixed.count == 67)
@@ -435,7 +435,7 @@ struct ShortcutsTests {
         }
     }
 
-    // The zoom commands and their keys (Cmd+Plus, Cmd+-, Cmd+0) are dropped by D-005.
+    // The zoom commands and their keys (Cmd+Plus, Cmd+-, Cmd+0) are dropped.
     @Test func zoomHasNoCommandsAndNoKeys() {
         #expect(ShortcutCommandID(rawValue: "zoomIn") == nil)
         #expect(ShortcutCommandID(rawValue: "zoomOut") == nil)

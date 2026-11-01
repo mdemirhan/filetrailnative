@@ -76,7 +76,7 @@ struct ShortcutGoldenTests {
     }
 
     static func named(_ bindings: ShortcutBindings) -> [String: [String]] {
-        // Duplicate Tab is the port's own command (DEVIATIONS D-001): the reference has no key for it.
+        // Duplicate Tab is the port's own command: the reference has no key for it.
         Dictionary(
             uniqueKeysWithValues: bindings.filter { $0.key != .duplicateTab }.map { ($0.key.rawValue, $0.value) })
     }

@@ -25,7 +25,7 @@ struct FileDragTests {
 
     // MARK: Starting
 
-    // T-e58d38a7 (the page's zoom is N/A D-005: points are measured where they are drawn)
+    // T-e58d38a7 (the page's zoom is N/A: points are measured where they are drawn)
     @Test func answersWithWhatTheDropDidAndWhereItEnded() {
         var ended: [(FileDragEnd, FileDragEndedOver)] = []
         let source = FileDragSource(windowNumber: 7) { ended.append(($0, $1)) }

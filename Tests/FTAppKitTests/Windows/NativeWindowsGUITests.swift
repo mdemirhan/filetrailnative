@@ -375,14 +375,14 @@ struct NativeWindowsGUITests {
 
     // MARK: The tab bar
 
-    // The rules of the original's own tab strip that the system tab bar takes over (DEVIATIONS D-001 to D-003):
-    // N/A B-VIEW-145 the system tab bar owns clicks, keys and focus on tabs; middle-click is not available (D-002)
+    // The rules of the original's own tab strip that the system tab bar takes over:
+    // N/A B-VIEW-145 the system tab bar owns clicks, keys and focus on tabs; middle-click is not available
     // N/A B-VIEW-147 the system tab bar keeps the tab in front in view
-    // N/A B-VIEW-148 the system tab bar owns tab drags (D-013)
-    // N/A B-VIEW-150 no tab menu of the app's on the system tab bar; Duplicate Tab is in the File menu (D-001)
-    // N/A B-VIEW-151 no tab menu of the app's on the system tab bar (D-001)
-    // N/A B-VIEW-152 the system tab bar takes no file drags (D-003)
-    // N/A B-VIEW-153 the system tab bar takes no file drops and has no spring-loaded tabs (D-003)
+    // N/A B-VIEW-148 the system tab bar owns tab drags
+    // N/A B-VIEW-150 no tab menu of the app's on the system tab bar; Duplicate Tab is in the File menu
+    // N/A B-VIEW-151 no tab menu of the app's on the system tab bar
+    // N/A B-VIEW-152 the system tab bar takes no file drags
+    // N/A B-VIEW-153 the system tab bar takes no file drops and has no spring-loaded tabs
 
     // F-673 B-VIEW-142 B-VIEW-146 B-VIEW-156 B-VIEW-157
     // B-TREE-058 T-490b3d0b

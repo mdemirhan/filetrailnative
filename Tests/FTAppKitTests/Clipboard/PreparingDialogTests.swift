@@ -1,4 +1,4 @@
-// "Preparing to Paste…" comes only when the analysis is slow and never flashes (D-018; the dialog itself is
+// "Preparing to Paste…" comes only when the analysis is slow and never flashes (the dialog itself is
 // components/AppDialogs.tsx:290-308), on the timers moved by hand
 import AppKit
 import FTFoundation
@@ -105,7 +105,7 @@ private final class Finishing {
         PreparingDialog(timers: timers, present: { [sheet] in sheet.present($0) }, onCancel: onCancel)
     }
 
-    // F-863 (D-018): an analysis over within 500 ms never shows the dialog, and nothing waits.
+    // F-863: an analysis over within 500 ms never shows the dialog, and nothing waits.
     // T-43d49580
     @Test func aFastAnalysisShowsNoDialog() async {
         let preparing = dialog()
@@ -117,7 +117,7 @@ private final class Finishing {
         #expect(sheet.shown == 0 && sheet.dismissed == 0)
     }
 
-    // F-863 (D-018): still running at 500 ms, the dialog comes; Cancel stops the analysis.
+    // F-863: still running at 500 ms, the dialog comes; Cancel stops the analysis.
     @Test func aSlowAnalysisShowsTheDialogAndCancelStopsIt() async throws {
         var cancels = 0
         let preparing = dialog { cancels += 1 }
@@ -132,7 +132,7 @@ private final class Finishing {
         #expect(sheet.dismissed == 0)
     }
 
-    // F-863 (D-018): once up, the dialog stays 300 ms, however soon the analysis ends.
+    // F-863: once up, the dialog stays 300 ms, however soon the analysis ends.
     @Test func theDialogStaysUpTheMinimumTime() async {
         let preparing = dialog()
         timers.advance(0.5)

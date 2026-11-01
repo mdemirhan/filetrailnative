@@ -220,7 +220,7 @@ class SettingsControlView: NSView, ThemeApplying {
 
 // MARK: Switch
 
-/// `Toggle`: the system's switch at the size System Settings draws one (D-020); `role=switch` with its state.
+/// `Toggle`: the system's switch at the size System Settings draws one; `role=switch` with its state.
 final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
     var isOn: Bool {
         get { state == .on }

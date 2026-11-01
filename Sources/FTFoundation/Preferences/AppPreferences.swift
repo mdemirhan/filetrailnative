@@ -6,7 +6,7 @@ import Foundation
 public struct AppPreferences: Codable, Equatable, Sendable {
     public var theme: ThemePreference
     public var accent: String
-    /// Kept so files round-trip and imports work; nothing uses it (DEVIATIONS D-005).
+    /// Kept so files round-trip and imports work; nothing uses it.
     public var zoomPercent: Int
     public var viewMode: ExplorerViewMode
     /// The view search results are shown in, for the tab on screen; List to begin with.

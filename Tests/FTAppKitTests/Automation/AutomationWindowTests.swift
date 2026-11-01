@@ -21,7 +21,7 @@
                 let open = tab.panels.propertiesOpen
                 #expect(AutomationCommands.run("toggleInfoPanel", controller: tab, window: window).status == .ok)
                 #expect(tab.panels.propertiesOpen == !open)
-                // The zoom commands are the system's here (D-005); an id the original doesn't have is an error.
+                // The zoom commands are the system's here; an id the original doesn't have is an error.
                 #expect(AutomationCommands.run("zoomIn", controller: tab, window: window).status == .unsupported)
                 #expect(AutomationCommands.run("explode", controller: tab, window: window).status == .failed)
                 await harness.close()

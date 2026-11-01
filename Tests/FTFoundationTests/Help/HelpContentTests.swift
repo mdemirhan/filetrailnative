@@ -128,7 +128,7 @@ struct HelpContentTests {
         #expect(HelpContent.search("nothing matches this").isEmpty)
     }
 
-    // F-665 the content leaves out the zoom rows (DEVIATIONS D-005)
+    // F-665 the content leaves out the zoom rows
     @Test func leavesOutTheZoomRows() {
         let texts = HelpContent.topics.flatMap { topic in
             [topic.intro] + topic.sections.flatMap { $0.rows.map(\.description) + $0.rows.map(\.label) }

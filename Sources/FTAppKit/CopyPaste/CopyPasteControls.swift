@@ -110,7 +110,7 @@ final class SheetGlyphView: NSView, ThemeApplying {
 
 // MARK: Segmented control
 
-/// "For all conflicts:" (`AllConflictsButtons`): the system's segmented control (D-020) as a radio group, so Tab lands on
+/// "For all conflicts:" (`AllConflictsButtons`): the system's segmented control as a radio group, so Tab lands on
 /// it and the arrow keys move the choice. Replace is red once chosen.
 @MainActor
 final class AllConflictsControl: SystemSegmentedControl {

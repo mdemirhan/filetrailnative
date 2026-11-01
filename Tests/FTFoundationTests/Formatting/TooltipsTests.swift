@@ -80,7 +80,7 @@ struct TooltipsTests {
 
     // T-e3148ee5 F-093
     // The commands Help's shortcut list documents (SHORTCUT_ITEMS in helpContent.ts, less the zoom commands, which
-    // are dropped by D-005); a tooltip must not promise a key for any other command.
+    // are dropped); a tooltip must not promise a key for any other command.
     @Test func promisesNoShortcutThatHelpDoesNotList() {
         let documented: Set<String> = [
             "calculateSize", "clearClipboard", "closeTab", "closeWindow", "copy", "copyPath", "cut",

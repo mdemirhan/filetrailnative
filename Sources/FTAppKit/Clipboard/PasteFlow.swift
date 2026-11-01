@@ -81,7 +81,7 @@ enum PreparingSheet {
     }
 }
 
-/// When "Preparing to Paste…" comes and goes (D-018): only if the analysis is still running after `showDelay`, so a
+/// When "Preparing to Paste…" comes and goes: only if the analysis is still running after `showDelay`, so a
 /// quick paste never shows it; once shown, for at least `minimumVisible`, so it never flashes.
 @MainActor
 final class PreparingDialog {

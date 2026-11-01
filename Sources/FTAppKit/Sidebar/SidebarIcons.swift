@@ -2,7 +2,7 @@
 import AppKit
 import FTFoundation
 
-/// The icons of favorites and locations, the system's symbols as Finder's (D-021); the headings, the eject and the
+/// The icons of favorites and locations, the system's symbols as Finder's; the headings, the eject and the
 /// chevron stay the original's line icons.
 enum SidebarIcons {
     /// A heading's line icon, in the original's SVG path: 24-unit box, stroke 1.7, round caps and joins, no fill.

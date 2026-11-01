@@ -150,7 +150,7 @@ scripts/ci.sh --scope <filter>     # the same, with only the tests a swift test 
 
 Each step prints one line, and the full logs are in `build/logs/`.
 
-Open issues are in [docs/known-issues.md](docs/known-issues.md) and [docs/battery.md](docs/battery.md). What differs on purpose from the Electron app is in [docs/differences-from-electron.md](docs/differences-from-electron.md).
+Open issues are in [docs/known-issues.md](docs/known-issues.md) and [docs/battery.md](docs/battery.md).
 
 `scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk). Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh` before a release; `scripts/release.sh` includes them.
 

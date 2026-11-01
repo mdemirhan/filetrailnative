@@ -93,7 +93,7 @@ struct CommandAvailabilityGoldenTests {
             contextMenuPaths: input.contextMenuPaths, selectedContentPaths: input.selectedPaths,
             selectedTreePath: input.selectedTreeTargetPath, currentPath: input.currentPath)
         return Output(
-            // Duplicate Tab is the port's own command (DEVIATIONS D-001): the reference never names it.
+            // Duplicate Tab is the port's own command: the reference never names it.
             disabled: state.disabledCommands.filter { $0 != .duplicateTab }.map(\.rawValue),
             newTab: CommandAvailability.newTabTargetPath(target),
             favorite: CommandAvailability.favoriteTargetPath(target),

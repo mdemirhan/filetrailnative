@@ -229,7 +229,7 @@ extension ExplorerWindowlessTests {
         }
 
         // T-1a141f6f: choosing a row of Open With runs that app on the file and closes the menu; an outside click and
-        // Escape are the system menu's (D-022).
+        // Escape are the system menu's.
         @Test func openWithRunsTheChosenApp() async throws {
             let (harness, tab, info, lookup) = try await panelOnANote()
             let spy = OpenSpy()

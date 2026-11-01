@@ -1,4 +1,4 @@
-// The chrome that follows Finder (D-015, D-017): the sidebar's straight edge, the band's line under the pointer. Finder's
+// The chrome that follows Finder: the sidebar's straight edge, the band's line under the pointer. Finder's
 // numbers are measured from its 2x screenshots; the Info panel's resizer keeps .pane-resizer of
 // apps/desktop/src/renderer/styles.css:1950-1955
 import AppKit

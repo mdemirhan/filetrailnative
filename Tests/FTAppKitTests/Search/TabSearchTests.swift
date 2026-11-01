@@ -183,7 +183,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-4fdb6b39 T-89efb9bf T-ada18c17 F-807: the arrows and Return are the system menu's while it is open (D-022).
+        // T-4fdb6b39 T-89efb9bf T-ada18c17 F-807: the arrows and Return are the system menu's while it is open.
         // Opened from the keyboard, the first item is marked; chosen, it does what it says.
         // B-SRCH-085 B-SRCH-088
         @Test func theOptionsMenuOpensMarkedFromTheKeyboard() async throws {

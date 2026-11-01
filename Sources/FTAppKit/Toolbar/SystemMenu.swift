@@ -1,5 +1,5 @@
 // Port of the toolbar menus of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx, HistoryButton.tsx,
-// ThemeMenuButton.tsx, ToolbarOverflowButton.tsx, PullDownMenu.tsx and MenuCheck.tsx, shown as system menus (D-022)
+// ThemeMenuButton.tsx, ToolbarOverflowButton.tsx, PullDownMenu.tsx and MenuCheck.tsx, shown as system menus
 import AppKit
 import FTFoundation
 

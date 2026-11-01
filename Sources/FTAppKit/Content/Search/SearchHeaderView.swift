@@ -236,7 +236,7 @@ final class SearchScopeBarView: NSView {
 
 // MARK: The scope
 
-/// `.segmented.search-scope-segmented` as the system's control (D-020): its segments are the places to search in. They
+/// `.segmented.search-scope-segmented` as the system's control: its segments are the places to search in. They
 /// are plain buttons of the pane in the original, not a radio group: a click gives the keyboard to the results, so the
 /// arrows and typeahead go on working there, and no arrow changes the scope. Tab stops at each in turn, where Return or
 /// Space presses it.
