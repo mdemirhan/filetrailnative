@@ -97,8 +97,8 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
 
     let box = SidebarRowBox()
     private let chevron = SidebarChevronView()
-    private let icon = SidebarIconView()
-    private let label = SidebarLabelField()
+    let icon = SidebarIconView()
+    let label = SidebarLabelField()
     private let badge = SidebarBadgeView()
     private let eject = SidebarEjectView()
     private let dropBadge = SidebarBadgeView()
@@ -258,6 +258,8 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
             }
             icon.content = .folder(image)
         }
+
+        icon.alphaValue = item.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
 
         // The label
         let headingStyle = isHeading

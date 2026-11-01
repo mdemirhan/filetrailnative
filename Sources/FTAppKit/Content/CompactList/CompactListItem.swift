@@ -165,6 +165,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         markGlyph.mark = mark
         markGlyph.color = ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection(pane, selected))
         label.alphaValue = mark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
+        iconView.alphaValue = entry.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
         let dropState = host.dropState(for: entry.path)
         root.drop = dropState.map { ($0, host.theme) }
         dropMarker.isHidden = dropState == nil || dropState == .invalid

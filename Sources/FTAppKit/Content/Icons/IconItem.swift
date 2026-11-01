@@ -379,7 +379,8 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         // Cut items look taken out already: the name and the picture (not its badge) dimmed (P5-08).
         let cut = host.clipboardMark(for: entry.path) == .cut
         label.alphaValue = cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
-        iconBox.alphaValue = cut ? CGFloat(ClipboardLayout.Mark.cutIconAlpha) : 1
+        iconBox.alphaValue =
+            cut ? CGFloat(ClipboardLayout.Mark.cutIconAlpha) : entry.isHidden ? CGFloat(HiddenItemLook.iconAlpha) : 1
         let dropState = host.dropState(for: entry.path)
         root.radius = CGFloat(pane.style.tileRadius)
         root.drop = dropState.map { ($0, theme) }

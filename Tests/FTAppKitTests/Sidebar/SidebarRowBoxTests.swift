@@ -35,4 +35,21 @@ import Testing
         cell.configure(state, width: 240)
         #expect(layer.needsDisplay())
     }
+
+    @Test func aHiddenFoldersIconIsFadedAndItsNameIsNot() {
+        func cell(hidden: Bool) -> SidebarItemCell {
+            let item = TreePresentationItem(
+                id: .filesystem("/x"), kind: .filesystem, label: "Row", depth: 0, path: "/x", parentID: nil,
+                expanded: false, canExpand: false, isHidden: hidden)
+            let state = SidebarRowState(
+                item: item, subview: .tree, selection: .none, menuTarget: false, drop: nil, ejecting: false,
+                dragging: false, dropLine: nil, showsLoading: false, density: .comfortable, hasDisclosure: true)
+            let cell = SidebarItemCell(frame: NSRect(x: 0, y: 0, width: 240, height: 26))
+            cell.configure(state, width: 240)
+            return cell
+        }
+        #expect(cell(hidden: true).icon.alphaValue == CGFloat(HiddenItemLook.iconAlpha))
+        #expect(cell(hidden: true).label.alphaValue == 1)
+        #expect(cell(hidden: false).icon.alphaValue == 1)
+    }
 }

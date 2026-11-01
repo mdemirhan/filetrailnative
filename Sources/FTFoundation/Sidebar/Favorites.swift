@@ -220,7 +220,8 @@ public enum Favorites {
                 TreePresentationItem(
                     id: id, kind: .filesystem, label: node.name, depth: depth, path: path, parentID: parent,
                     expanded: node.expanded, canExpand: !node.isSymlink, loading: node.loading, error: node.error,
-                    isSymlink: node.isSymlink, childIDs: node.childPaths.map { .filesystem($0) }))
+                    isSymlink: node.isSymlink, isHidden: node.isHidden,
+                    childIDs: node.childPaths.map { .filesystem($0) }))
             guard node.expanded else { return }
             for child in node.childPaths { addNode(child, depth: depth + 1, parent: id) }
         }

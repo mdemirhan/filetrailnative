@@ -196,6 +196,7 @@ public struct TreePresentationItem: Equatable, Sendable {
     public var loading: Bool
     public var error: String?
     public var isSymlink: Bool
+    public var isHidden: Bool
     public var childIDs: [TreeItemID]
     public var icon: FavoriteIconID?
     /// A disk's row in Locations that has an Eject button.
@@ -204,7 +205,7 @@ public struct TreePresentationItem: Equatable, Sendable {
     public init(
         id: TreeItemID, kind: TreeItemKind, label: String, depth: Int, path: String?, parentID: TreeItemID?,
         expanded: Bool, canExpand: Bool, loading: Bool = false, error: String? = nil, isSymlink: Bool = false,
-        childIDs: [TreeItemID] = [], icon: FavoriteIconID? = nil, canEject: Bool = false
+        isHidden: Bool = false, childIDs: [TreeItemID] = [], icon: FavoriteIconID? = nil, canEject: Bool = false
     ) {
         self.id = id
         self.kind = kind
@@ -217,6 +218,7 @@ public struct TreePresentationItem: Equatable, Sendable {
         self.loading = loading
         self.error = error
         self.isSymlink = isSymlink
+        self.isHidden = isHidden
         self.childIDs = childIDs
         self.icon = icon
         self.canEject = canEject
