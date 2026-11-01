@@ -290,12 +290,13 @@ extension ExplorerWindowlessTests {
                         ApplicationInfo(path: "/Applications/BBEdit.app", name: "BBEdit"),
                     ], kinds: [kind], pinnedApps: [])
             }
-            // B-VIEW-223: Option changes nothing before macOS has said the kinds allow it.
-            #expect(menu?.items.first { $0.isAlternate }?.isHidden == true)
+            // The row is there before the menu opens: one that appears under the pointer with Option held never opens
+            // its submenu. Its apps can't be chosen until macOS has named the kind (B-VIEW-223).
+            let waiting = try #require(menu?.items.first { $0.isAlternate }?.submenu)
+            #expect(!waiting.items.isEmpty && waiting.items.allSatisfy { $0.action == nil })
             let submenu = try #require(item(menu, "Open With")?.submenu)
             submenu.delegate?.menuNeedsUpdate?(submenu)
             #expect(await waitUntil { submenu.items.count > 2 })
-            #expect(menu?.items.first { $0.isAlternate }?.isHidden == false)
             #expect(
                 submenu.items.map { $0.isSeparatorItem ? "-" : $0.title } == [
                     "TextEdit (default)", "-", "BBEdit", "Zed", "-", "Other…",
@@ -331,8 +332,21 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-223: files of different kinds have no one app to always open with: Option leaves the row as it is. The
-        // answer is asked for when the row is reached, not only when its submenu opens.
+        // B-VIEW-223: files whose names show different kinds have no one app to always open with: there is no row for
+        // Option to turn it into, so nothing can stand in the way of Open With's submenu.
+        @Test func filesNamedAsDifferentKindsHaveNoAlwaysOpenWithRow() async throws {
+            let harness = try ExplorerHarness.windowless()
+            try "x".write(to: harness.folder.appending("photo.png"), atomically: true, encoding: .utf8)
+            let tab = try await opened(harness)
+            let menu = try #require(
+                tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt"), try entry(tab, "photo.png")]))
+            #expect(!menu.items.contains { $0.isAlternate })
+            #expect(item(menu, "Open With")?.submenu != nil)
+            await harness.close()
+        }
+
+        // B-VIEW-223: when macOS says the kinds differ after all, the row stays where the pointer may be and says Open
+        // With. The answer is asked for when the row is reached, not only when its submenu opens.
         @Test func optionLeavesOpenWithAsItIsForFilesOfDifferentKinds() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -349,7 +363,31 @@ extension ExplorerWindowlessTests {
             let row = try #require(item(menu, "Open With"))
             session.menu(menu, willHighlight: row)
             #expect(await waitUntil { session.openWith.lookup != nil })
-            #expect(menu.items.first { $0.isAlternate }?.isHidden == true)
+            let alternate = try #require(menu.items.first { $0.isAlternate })
+            #expect(alternate.title == "Open With" && !alternate.isHidden)
+            let rows = try #require(alternate.submenu).items.compactMap { $0.representedObject as? OpenWithChoice }
+            #expect(rows.map(\.action) == [.other(id: "other", label: "Other…", appName: "Other…", always: false)])
+            await harness.close()
+        }
+
+        // With Option held from the start, the row reached is Always Open With: it is what asks macOS.
+        @Test func reachingAlwaysOpenWithAsksMacOSAndLetsItsAppsBeChosen() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let menu = try #require(tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")]))
+            let session = try #require(tab.contextMenus.current)
+            session.openWith.ask = { _, _ in
+                OpenWithLookup(
+                    apps: [ApplicationInfo(path: "/Applications/Zed.app", name: "Zed")],
+                    kinds: [OpenWithKind(contentType: "public.plain-text", name: "Plain Text", isFolder: false)],
+                    pinnedApps: [])
+            }
+            let alternate = try #require(menu.items.first { $0.isAlternate })
+            session.menu(menu, willHighlight: alternate)
+            let always = try #require(alternate.submenu)
+            #expect(await waitUntil { always.items.contains { $0.title == "Zed" } })
+            #expect(always.items.allSatisfy { $0.isSeparatorItem || $0.action != nil })
+            #expect(alternate.title == "Always Open With")
             await harness.close()
         }
 

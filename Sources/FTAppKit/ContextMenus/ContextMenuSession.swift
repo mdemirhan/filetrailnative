@@ -124,11 +124,13 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
     private static let tagStateLimit = 1000
     private(set) weak var tagColors: TagColorsMenuRow?
 
-    /// Option turns Open With into Always Open With: offered for files only, and only once macOS has said the kinds
-    /// allow it (B-VIEW-223). Its row stays hidden until then, so Option promises nothing its apps wouldn't do.
+    /// Option turns Open With into Always Open With: offered for files only, and only for one kind (B-VIEW-223). The
+    /// names decide before the menu opens whether it has the row at all: a hidden alternate, or one that appears under
+    /// the pointer while Option is held, doesn't open its submenu. Its apps can't be chosen until macOS has answered.
     private var offersAlwaysOpenWith: Bool {
         let entries = request.subject.entries
         return !entries.isEmpty && entries.allSatisfy { !$0.kind.isDirectoryLike && $0.kind != .bundle }
+            && OpenWithMenu.looksLikeOneKind(paths: request.subject.paths)
     }
 
     private func alwaysOpenWithAlternate(after parent: NSMenuItem) -> NSMenuItem {
@@ -138,20 +140,23 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
         item.showImage(parent.image)
         item.isAlternate = true
         item.keyEquivalentModifierMask = .option
-        item.isHidden = true
         item.submenu = openWith.makeSubmenu(always: true, session: self)
         return item
     }
 
     private weak var alwaysOpenWith: NSMenuItem?
 
+    /// The names were wrong (`OpenWithSubmenu` has already made the rows plain): the row says so and stays in the menu,
+    /// so a pointer on it keeps its submenu.
     func openWithAnswered(_ lookup: OpenWithLookup) {
-        alwaysOpenWith?.isHidden = !OpenWithMenu.canAlwaysOpenWith(lookup)
+        guard !OpenWithMenu.canAlwaysOpenWith(lookup) else { return }
+        alwaysOpenWith?.title = "Open With"
     }
 
     /// Reaching the row is what asks macOS, so Option can work before its submenu opens.
     func menu(_ menu: NSMenu, willHighlight item: NSMenuItem?) {
-        guard item?.identifier?.rawValue == ContextMenuActionID.openWith.rawValue else { return }
+        guard let item, item === alwaysOpenWith || item.identifier?.rawValue == ContextMenuActionID.openWith.rawValue
+        else { return }
         openWith.askOnce(session: self)
     }
 

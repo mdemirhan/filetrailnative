@@ -1,6 +1,7 @@
 // Port of apps/desktop/src/renderer/lib/openWith.ts
 import FTFoundation
 import Foundation
+import UniformTypeIdentifiers
 
 /// What a row of the Open With submenu does when chosen.
 public enum OpenWithAction: Equatable, Sendable {
@@ -39,6 +40,14 @@ public enum OpenWithMenu {
     public static func canAlwaysOpenWith(_ lookup: OpenWithLookup?) -> Bool {
         let kinds = lookup?.kinds ?? []
         return kinds.count == 1 && kinds[0].isFolder == false
+    }
+
+    /// What `canAlwaysOpenWith` will most likely say, from the names alone, so it can be known before a menu opens:
+    /// nothing here reads the disk or waits for Launch Services.
+    public static func looksLikeOneKind(paths: [String]) -> Bool {
+        let extensions = Set(paths.map { ($0 as NSString).pathExtension.lowercased() })
+        let types = Set(extensions.map { UTType(filenameExtension: $0)?.identifier ?? $0 })
+        return types.count == 1
     }
 
     /// An app as Open With tells apps apart: two copies of one version are one app; another version is another.

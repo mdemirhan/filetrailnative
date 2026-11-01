@@ -185,4 +185,14 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
         #expect(!OpenWithMenu.canAlwaysOpenWith(lookup(kinds: [markdown, text])))
         #expect(!OpenWithMenu.canAlwaysOpenWith(nil))
     }
+
+    @Test func namesTellOneKindFromSeveralBeforeMacOSAnswers() {
+        #expect(OpenWithMenu.looksLikeOneKind(paths: ["/a/note.txt"]))
+        #expect(OpenWithMenu.looksLikeOneKind(paths: ["/a/README"]))
+        #expect(OpenWithMenu.looksLikeOneKind(paths: ["/a/one.txt", "/b/TWO.TXT"]))
+        // Two spellings of one type are one kind.
+        #expect(OpenWithMenu.looksLikeOneKind(paths: ["/a/one.jpg", "/a/two.jpeg"]))
+        #expect(!OpenWithMenu.looksLikeOneKind(paths: ["/a/note.txt", "/a/photo.png"]))
+        #expect(!OpenWithMenu.looksLikeOneKind(paths: []))
+    }
 }

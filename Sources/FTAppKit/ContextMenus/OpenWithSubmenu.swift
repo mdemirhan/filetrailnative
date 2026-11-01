@@ -58,13 +58,16 @@ final class OpenWithLookupModel {
     func fill(_ menu: NSMenu, always: Bool, session: ContextMenuSession) {
         menu.removeAllItems()
         let alwaysAllowed = always && OpenWithMenu.canAlwaysOpenWith(lookup)
+        // Always needs the kind macOS names: until it has, its rows show but can't be chosen.
+        let choosable = !always || lookup != nil
         for item in OpenWithMenu.menuItems(lookup: lookup, pinned: pinned, always: alwaysAllowed) {
             switch item {
             case .separator:
                 menu.addItem(.separator())
             case .action(let action):
                 let row = NSMenuItem(
-                    title: action.label, action: #selector(OpenWithSubmenuDelegate.choose(_:)), keyEquivalent: "")
+                    title: action.label, action: choosable ? #selector(OpenWithSubmenuDelegate.choose(_:)) : nil,
+                    keyEquivalent: "")
                 row.target = menu.delegate
                 row.representedObject = OpenWithChoice(action: action)
                 if case .application(_, _, let appPath, _, _) = action {
