@@ -143,12 +143,15 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         if changed { folderWatches?.restartWatches(of: TrashFolders(homePath: home).home) }
     }
 
-    /// Disks just unmounted, by the folders they were mounted at: every window lets go of them (B-VIEW-173).
+    /// Disks just unmounted, by the folders they were mounted at: every window lets go of them (B-VIEW-173), and the
+    /// clipboard of what was on them (a cut of any is cancelled).
     func disksUnmounted(_ mountPaths: Set<String>) {
         guard !mountPaths.isEmpty else { return }
         for group in groups where !group.isDestroyed {
             group.disksUnmounted(mountPaths, homePath: home, volumeRoot: volumeRoot)
         }
+        let followed = ClipboardRules.followThroughRemoval(clipboard.contents, Array(mountPaths))
+        if followed != clipboard.contents { clipboard.set(followed, from: nil) }
     }
 
     /// A file operation's progress, from whichever window ran it, as the original's `onWriteOperationProgress` reaches

@@ -240,6 +240,34 @@ extension ExplorerWindowlessTests {
             await closeAll(app)
         }
 
+        @Test func anUnmountedDisksItemsComeOffTheClipboard() async throws {
+            let folder = try folders()
+            defer { folder.remove() }
+            let app = launch(folder)
+            let disk = try fakeDisk(app, folder)
+            let clipboard = app.windows.clipboard
+            let home = folder.appending("note.txt").path
+            let copied = ClipboardRules.set(.copy, [disk + "/Inner", disk + "/Inner/a.txt", home], capturedAt: "t")
+            clipboard.set(copied, from: nil)
+
+            // Another disk's going leaves it as it is, even one whose name starts the same.
+            app.windows.disksUnmounted(["/Volumes/FileTrailNoSuchDisk", disk + "2"])
+            #expect(clipboard.contents == copied)
+
+            // Only what was on the disk goes, and the rest is still the same copy.
+            app.windows.disksUnmounted([disk])
+            #expect(clipboard.contents.sourcePaths == [home])
+            #expect(clipboard.contents.capturedAt == "t")
+
+            // Nothing left of it empties the clipboard; a cut of anything on the disk is cancelled.
+            clipboard.set(ClipboardRules.set(.copy, [disk + "/a.txt"], capturedAt: "u"), from: nil)
+            app.windows.disksUnmounted([disk])
+            #expect(clipboard.contents == .empty)
+            clipboard.set(ClipboardRules.set(.cut, [disk + "/a.txt", home], capturedAt: "v"), from: nil)
+            app.windows.disksUnmounted([disk])
+            #expect(clipboard.contents == .empty)
+        }
+
         // F-676 B-VIEW-173 B-VIEW-154 B-VIEW-180 B-NAV-189
         // B-NAV-197 T-2e942ee8
         @Test func tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen() async throws {
