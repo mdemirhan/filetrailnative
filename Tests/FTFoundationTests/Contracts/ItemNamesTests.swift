@@ -70,6 +70,6 @@ struct ItemNamesTests {
     // F-910
     @Test func limitsAreTheOriginals() {
         #expect(Limits.maxPathsPerRequest == 100_000)
-        #expect(Limits.maxFileDragImages == 200)
+        #expect(Limits.maxFileDragImages == 5)
     }
 }

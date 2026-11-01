@@ -307,7 +307,7 @@ final class SidebarEjectView: SidebarPlainView {
     }
 }
 
-/// A pill of text in a row: the "Alias" badge after a link's name (`.tree-label-badge`), and "Drop here" on a drop target.
+/// A pill of text in a row: the "Alias" badge after a link's name (`.tree-label-badge`).
 final class SidebarBadgeView: SidebarPlainView {
     private let label = TextBoxField(labelWithString: "")
     var fill = NSColor.clear

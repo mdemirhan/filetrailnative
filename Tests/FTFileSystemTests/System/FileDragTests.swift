@@ -83,6 +83,37 @@ struct FileDragTests {
         #expect(!called)
     }
 
+    /// A view of the app's: its `isFlipped` may only be asked on the main thread.
+    private final class FlippedView: NSView {
+        override var isFlipped: Bool { true }
+    }
+
+    // With many items AppKit measures their frames on other threads, going up through the view the drag starts from.
+    @Test func startsADragOfManyFilesFromAViewOfTheApp() {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 200, height: 200), styleMask: [.titled], backing: .buffered,
+            defer: true)
+        let content = FlippedView(frame: NSRect(x: 0, y: 0, width: 200, height: 200))
+        let view = FlippedView(frame: content.bounds)
+        content.addSubview(view)
+        window.contentView = content
+        let paths = (0..<20_000).map { "/tmp/filetrail-drag-\($0)" }
+        #expect(
+            FileDrag.start(
+                from: view, event: mouseDown(in: window), paths: paths,
+                directories: paths.map { _ in false }, images: [image(index: 0)], buttonDown: true
+            ) { _, _ in })
+    }
+
+    // A single item goes beside the pointer, down and to its left, leaving the pointer in the clear.
+    @Test func putsASingleItemDownAndLeftOfThePointer() {
+        let frame = FileDrag.besidePointer(
+            NSRect(x: 500, y: 500, width: 120, height: 20), pointer: NSPoint(x: 100, y: 200))
+        #expect(frame.size == NSSize(width: 120, height: 20))
+        #expect(frame.maxX < 100)
+        #expect(frame.maxY < 200)
+    }
+
     // T-7b0702ec
     // N/A T-b7c6cc04 Swift's types hold the arguments to their kinds: a view, paths, flags, images and a callback.
     @Test func refusesAnImageForAPlaceNoPathCanHave() {

@@ -49,8 +49,8 @@ public struct FileDragPlacement: Equatable, Sendable {
 }
 
 public enum FileDragImages {
-    /// `MAX_FILE_DRAG_IMAGES`: Finder draws no more than fit on screen.
-    public static let maxImages = 200
+    /// `MAX_FILE_DRAG_IMAGES`: a few pictures say a drag of many, and the rest go along unseen.
+    public static let maxImages = Limits.maxFileDragImages
     /// `MAX_PATHS_PER_REQUEST`: a drag of more files than one copy takes is refused as a whole.
     public static let maxPaths = 100_000
 

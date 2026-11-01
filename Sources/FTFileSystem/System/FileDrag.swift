@@ -79,6 +79,17 @@ public enum FileDrag {
     public static let labelGap: CGFloat = 2
     public static let labelFontSize: CGFloat = 12
 
+    /// How far a single item's picture keeps from the pointer.
+    static let pointerGap: CGFloat = 6
+
+    /// A single item's picture down and to the left of the pointer, where a stack of many goes (a formation leaves one
+    /// item where it was grabbed, under the pointer). In a view that isn't flipped.
+    static func besidePointer(_ frame: NSRect, pointer: NSPoint) -> NSRect {
+        NSRect(
+            x: pointer.x - pointerGap - frame.width, y: pointer.y - pointerGap - frame.height, width: frame.width,
+            height: frame.height)
+    }
+
     /// `sourceOperationMaskForDraggingContext`.
     public static func sourceOperationMask(_ context: NSDraggingContext) -> NSDragOperation {
         context == .withinApplication ? [.copy, .move] : [.copy, .move, .generic, .link, .delete]
@@ -109,7 +120,13 @@ public enum FileDrag {
         thumbnails: [Int: NSImage] = [:], buttonDown: Bool = NSEvent.pressedMouseButtons & 1 != 0,
         onEnded: @escaping (FileDragEnd, FileDragEndedOver) -> Void
     ) -> Bool {
-        guard imagesAreValid(images), let window = view.window, !paths.isEmpty, buttonDown else { return false }
+        guard imagesAreValid(images), let window = view.window, let content = window.contentView,
+            let frameView = content.superview, !paths.isEmpty, buttonDown
+        else { return false }
+        // With many items AppKit measures their frames on other threads, up through the view the drag starts from, and
+        // a view of the app may only be asked on the main thread. This one has only the window's own frame above it.
+        let anchor = NSView(frame: .zero)
+        frameView.addSubview(anchor, positioned: .below, relativeTo: content)
         var placed: [Int: FileDragImage] = [:]
         for image in images where image.index < paths.count { placed[image.index] = image }
         var items: [NSDraggingItem] = []
@@ -123,13 +140,14 @@ public enum FileDrag {
             if let image = placed[index] {
                 let icon = thumbnails[index] ?? NSWorkspace.shared.icon(forFile: path)
                 let label = labelImage(FileManager.default.displayName(atPath: path), fontSize: image.nameFontSize)
-                let name = image.nameRect
+                let name = view.convert(image.nameRect, to: anchor)
                 let labelX = image.nameCentered ? name.midX - label.size.width / 2 : name.minX - labelPaddingX
                 let labelRect = NSRect(
                     x: labelX, y: name.midY - label.size.height / 2, width: label.size.width,
                     height: label.size.height)
                 setPicture(
-                    item, icon: icon, iconRect: fit(icon.size, in: image.iconRect), label: label, labelRect: labelRect)
+                    item, icon: icon, iconRect: fit(icon.size, in: view.convert(image.iconRect, to: anchor)),
+                    label: label, labelRect: labelRect)
                 if !anyPlaced {
                     unseenFrame = item.draggingFrame
                     anyPlaced = true
@@ -137,17 +155,21 @@ public enum FileDrag {
             }
             items.append(item)
         }
+        let pointer = anchor.convert(event.locationInWindow, from: nil)
         if !anyPlaced {
             // Nothing measured: the first item at the pointer, the rest in a pile under it.
-            let pointer = view.convert(event.locationInWindow, from: nil)
-            setPictureAtPointer(items[0], path: paths[0], view: view, pointer: pointer)
+            setPictureAtPointer(items[0], path: paths[0], pointer: pointer)
             unseenFrame = items[0].draggingFrame
         }
         for (index, item) in items.enumerated() where placed[index] == nil && !(index == 0 && !anyPlaced) {
             item.draggingFrame = unseenFrame
         }
-        let source = FileDragSource(windowNumber: window.windowNumber, onEnded: onEnded)
-        let session = view.beginDraggingSession(with: items, event: event, source: source)
+        if items.count == 1 { items[0].draggingFrame = besidePointer(items[0].draggingFrame, pointer: pointer) }
+        let source = FileDragSource(windowNumber: window.windowNumber) { end, over in
+            anchor.removeFromSuperview()
+            onEnded(end, over)
+        }
+        let session = anchor.beginDraggingSession(with: items, event: event, source: source)
         session.animatesToStartingPositionsOnCancelOrFail = true
         session.draggingFormation = .stack
         source.keep()
@@ -206,13 +228,12 @@ public enum FileDrag {
 
     /// `set_item_picture_at_pointer`: an item with no place on screen, its icon over its name, the pointer on it.
     @MainActor
-    static func setPictureAtPointer(_ item: NSDraggingItem, path: String, view: NSView, pointer: NSPoint) {
+    static func setPictureAtPointer(_ item: NSDraggingItem, path: String, pointer: NSPoint) {
         let icon = NSWorkspace.shared.icon(forFile: path)
         let label = labelImage(FileManager.default.displayName(atPath: path), fontSize: labelFontSize)
-        let below: CGFloat = view.isFlipped ? 1 : -1
         let iconRect = NSRect(
             x: pointer.x - iconSize / 2, y: pointer.y - iconSize / 2, width: iconSize, height: iconSize)
-        let labelMidY = iconRect.midY + below * (iconSize / 2 + labelGap + label.size.height / 2)
+        let labelMidY = iconRect.midY - (iconSize / 2 + labelGap + label.size.height / 2)
         let labelRect = NSRect(
             x: pointer.x - label.size.width / 2, y: labelMidY - label.size.height / 2, width: label.size.width,
             height: label.size.height)

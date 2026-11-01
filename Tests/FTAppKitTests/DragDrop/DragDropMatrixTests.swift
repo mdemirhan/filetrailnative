@@ -483,9 +483,9 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-e1dbe49b B-TREE-158: a row that would take the drop shows "Drop here", one refusing shows no badge, leaving
-        // clears it; a disk's Eject makes way for the badge.
-        @Test func aRowThatTakesTheDropShowsTheBadge() async throws {
+        // T-e1dbe49b B-TREE-158: a row marks whether it would take the drop, with no words, and leaving clears it; a
+        // disk keeps its Eject either way.
+        @Test func aRowMarksTheDropWithoutWords() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
             let tree = try await tree(window)
@@ -515,16 +515,11 @@ extension ExplorerWindowlessTests {
             valid.drop = .valid
             var invalid = disk
             invalid.drop = .invalid
-            #expect(shows("sidebar.row.dropBadge", valid))
-            let pill = findViews("sidebar.row.dropBadge", in: cell(valid)).first as? SidebarBadgeView
-            #expect(pill?.title == "Drop here")
             var link = real
             link.item.isSymlink = true
             let linkBadge = findViews("sidebar.row.badge", in: cell(link)).first as? SidebarBadgeView
             #expect(linkBadge?.title == "Alias")
-            #expect(!shows("sidebar.row.dropBadge", invalid))
-            #expect(!shows("sidebar.row.dropBadge", disk))
-            #expect(!shows("sidebar.row.eject", valid))
+            #expect(shows("sidebar.row.eject", valid))
             #expect(shows("sidebar.row.eject", invalid))
             await window.close()
         }

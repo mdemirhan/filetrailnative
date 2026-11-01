@@ -101,9 +101,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
     let label = SidebarLabelField()
     private let badge = SidebarBadgeView()
     private let eject = SidebarEjectView()
-    private let dropBadge = SidebarBadgeView()
-    private static let dropBadgeTitle = "Drop here"
-    private static var dropBadgeFont: NSFont { ChromeColors.font(size: DesignTokens.typeScale.small, weight: 600) }
     /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
     private let markGlyph = ClipboardMarkGlyph(identifier: "sidebar.row.clipboardMark")
     private let loading = SidebarLabelField()
@@ -133,7 +130,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         for (view, name) in [
             (box, "sidebar.row"), (chevron, "sidebar.row.chevron"), (icon, "sidebar.row.icon"),
             (label, "sidebar.row.label"), (badge, "sidebar.row.badge"), (eject, "sidebar.row.eject"),
-            (dropBadge, "sidebar.row.dropBadge"), (treeRowTag, "sidebar.treeRow"),
+            (treeRowTag, "sidebar.treeRow"),
         ] as [(NSView, String)] {
             view.setAccessibilityIdentifier(name)
         }
@@ -143,8 +140,8 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         expandedTag.setAccessibilityIdentifier("sidebar.row.expanded")
         for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] { tag.source = label }
         for view in [
-            chevron, icon, label, badge, eject, dropBadge, treeRowTag, favoriteTag, selectedTag, menuTargetTag,
-            expandedTag, kindTag, markGlyph,
+            chevron, icon, label, badge, eject, treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag,
+            kindTag, markGlyph,
         ] as [NSView] {
             box.addSubview(view)
         }
@@ -160,7 +157,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         chevron.onClick = { [weak self] in self?.onToggle?() }
         eject.onClick = { [weak self] in self?.onEject?() }
         eject.onRightClick = { [weak self] event in self?.onMenu?(event) }
-        dropBadge.setAccessibilityElement(false)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -291,7 +287,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         badge.apply(title: "Alias", font: ChromeColors.font(size: layout.badgeFontSize))
 
         // The eject button
-        let showsEject = item.kind == .location && item.canEject && item.path != nil && state.drop != .valid
+        let showsEject = item.kind == .location && item.canEject && item.path != nil
         eject.isHidden = !showsEject
         eject.iconSize = layout.ejectIcon
         eject.strokeWidth = layout.ejectStroke
@@ -300,12 +296,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         eject.isEnabled = !state.ejecting
         eject.toolTip = "Eject \u{201C}\(item.label)\u{201D}"
         eject.setAccessibilityLabel("Eject \u{201C}\(item.label)\u{201D}")
-
-        // The drop pill
-        dropBadge.isHidden = state.drop != .valid
-        dropBadge.fill = ChromeColors.color(accent.solidButton)
-        dropBadge.textColor = ChromeColors.color(accent.onSolid)
-        dropBadge.apply(title: Self.dropBadgeTitle, font: Self.dropBadgeFont)
 
         // Loading and errors under the row
         let noteFont = ChromeColors.font(size: layout.noteFontSize)
@@ -391,16 +381,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
             eject.frame = NSRect(
                 x: ejectX, y: (rowHeight - layout.ejectBox) / 2, width: layout.ejectBox, height: layout.ejectBox)
             limit = ejectX - layout.rowGap
-        }
-        if !dropBadge.isHidden {
-            let font = Self.dropBadgeFont
-            let textWidth = SidebarText.width(Self.dropBadgeTitle, font: font)
-            let pillWidth = textWidth + 20
-            let pillHeight = SidebarText.lineHeight(font) + 8
-            dropBadge.frame = NSRect(
-                x: limit - pillWidth + layout.rowGap, y: (rowHeight - pillHeight) / 2, width: pillWidth,
-                height: pillHeight)
-            limit = dropBadge.frame.minX - layout.rowGap
         }
         // The icon, the name, and the badge
         icon.frame = NSRect(x: x, y: (rowHeight - layout.iconSize) / 2, width: layout.iconSize, height: layout.iconSize)
