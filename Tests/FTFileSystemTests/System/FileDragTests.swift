@@ -88,8 +88,9 @@ struct FileDragTests {
         override var isFlipped: Bool { true }
     }
 
-    // With many items AppKit measures their frames on other threads, going up through the view the drag starts from.
-    @Test func startsADragOfManyFilesFromAViewOfTheApp() {
+    // With many items AppKit measures their frames on other threads, up through the view the drag starts from; every
+    // item is handed over, in order, so the drag counts them all and the drop gets them all.
+    @Test func startsADragOfManyFilesWithAllOfThemOnThePasteboard() throws {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 200, height: 200), styleMask: [.titled], backing: .buffered,
             defer: true)
@@ -97,21 +98,28 @@ struct FileDragTests {
         let view = FlippedView(frame: content.bounds)
         content.addSubview(view)
         window.contentView = content
-        let paths = (0..<20_000).map { "/tmp/filetrail-drag-\($0)" }
+        let folder = try TemporaryDirectory(prefix: "filetrail-drag-many")
+        let paths = (0..<2000).map { folder.appending("\($0)").path }
         #expect(
             FileDrag.start(
-                from: view, event: mouseDown(in: window), paths: paths,
-                directories: paths.map { _ in false }, images: [image(index: 0)], buttonDown: true
+                from: view, event: mouseDown(in: window), paths: paths, directories: paths.map { _ in false },
+                images: (0..<9).map(image(index:)), buttonDown: true
             ) { _, _ in })
+        let dragged = NSPasteboard(name: .drag).readObjects(forClasses: [NSURL.self], options: nil) as? [URL] ?? []
+        #expect(dragged.map(\.path) == paths)
     }
 
-    // A single item goes beside the pointer, down and to its left, leaving the pointer in the clear.
-    @Test func putsASingleItemDownAndLeftOfThePointer() {
-        let frame = FileDrag.besidePointer(
-            NSRect(x: 500, y: 500, width: 120, height: 20), pointer: NSPoint(x: 100, y: 200))
-        #expect(frame.size == NSSize(width: 120, height: 20))
-        #expect(frame.maxX < 100)
-        #expect(frame.maxY < 200)
+    // One picture or many start from the same place, and the others stack down and to the right of it.
+    @Test func stacksThePicturesDownAndRightOfThePointerHoweverManyThereAre() {
+        let frame = NSRect(x: 500, y: 500, width: 120, height: 20)
+        let pointer = NSPoint(x: 100, y: 200)
+        let gap = FileDrag.pointerGap
+        let step = FileDrag.stackStep
+        let one = FileDrag.besidePointer([frame], pointer: pointer)
+        let two = FileDrag.besidePointer([frame, frame], pointer: pointer)
+        #expect(one[0] == two[0])
+        #expect(one[0] == NSRect(x: 100 + gap, y: 200 - gap - 20, width: 120, height: 20))
+        #expect(two[1] == two[0].offsetBy(dx: step, dy: -step))
     }
 
     // T-7b0702ec

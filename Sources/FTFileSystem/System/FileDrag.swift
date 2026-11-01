@@ -79,15 +79,20 @@ public enum FileDrag {
     public static let labelGap: CGFloat = 2
     public static let labelFontSize: CGFloat = 12
 
-    /// How far a single item's picture keeps from the pointer.
-    static let pointerGap: CGFloat = 6
+    /// How far a drag's pictures keep from the pointer.
+    static let pointerGap: CGFloat = 16
+    /// How far each picture of a stack sits from the one before it, across and down.
+    static let stackStep: CGFloat = 4
 
-    /// A single item's picture down and to the left of the pointer, where a stack of many goes (a formation leaves one
-    /// item where it was grabbed, under the pointer). In a view that isn't flipped.
-    static func besidePointer(_ frame: NSRect, pointer: NSPoint) -> NSRect {
-        NSRect(
-            x: pointer.x - pointerGap - frame.width, y: pointer.y - pointerGap - frame.height, width: frame.width,
-            height: frame.height)
+    /// Where a drag's pictures go, however many there are: a stack down and to the right of the pointer, each a step
+    /// further that way than the one before. In a view that isn't flipped.
+    static func besidePointer(_ frames: [NSRect], pointer: NSPoint) -> [NSRect] {
+        frames.enumerated().map { index, frame in
+            let step = CGFloat(index) * stackStep
+            return NSRect(
+                x: pointer.x + pointerGap + step, y: pointer.y - pointerGap - frame.height - step,
+                width: frame.width, height: frame.height)
+        }
     }
 
     /// `sourceOperationMaskForDraggingContext`.
@@ -109,10 +114,10 @@ public enum FileDrag {
         images.allSatisfy { $0.index >= 0 && $0.index < Int(UInt32.max) }
     }
 
-    /// `nativeStartFileDrag`: starts a drag of `paths` from `view` (file URLs only, no promises), each item setting
-    /// off from where it shows (`images`, rects in the view's coordinates), the rest going along unseen, gathered into
-    /// a stack under the pointer, and animating back when it is cancelled. False when it could not start: no window,
-    /// nothing to drag, the button already up, or an image no path can have.
+    /// `nativeStartFileDrag`: starts a drag of `paths` from `view`'s window (file URLs only, no promises). Up to
+    /// `FileDragImages.maxImages` items are drawn as they show (`images`, rects in the view's coordinates), or the first
+    /// item with no picture measured, and they go beside the pointer whatever their number; the rest go along unseen.
+    /// False when it could not start: no window, nothing to drag, the button already up, or an image no path can have.
     @MainActor
     @discardableResult
     public static func start(
@@ -128,11 +133,16 @@ public enum FileDrag {
         let anchor = NSView(frame: .zero)
         frameView.addSubview(anchor, positioned: .below, relativeTo: content)
         var placed: [Int: FileDragImage] = [:]
-        for image in images where image.index < paths.count { placed[image.index] = image }
+        for image in images where image.index < paths.count && placed.count < FileDragImages.maxImages {
+            placed[image.index] = image
+        }
+        let pointer = anchor.convert(event.locationInWindow, from: nil)
+        // The drawn items first: AppKit takes the first item for the one at the pointer.
+        let drawn = placed.isEmpty ? [0] : placed.keys.sorted()
+        let drawnSet = Set(drawn)
         var items: [NSDraggingItem] = []
-        var unseenFrame = NSRect.zero
-        var anyPlaced = false
-        for (index, path) in paths.enumerated() {
+        for index in drawn + paths.indices.filter({ !drawnSet.contains($0) }) {
+            let path = paths[index]
             let url =
                 index < directories.count
                 ? URL(fileURLWithPath: path, isDirectory: directories[index]) : URL(fileURLWithPath: path)
@@ -148,30 +158,21 @@ public enum FileDrag {
                 setPicture(
                     item, icon: icon, iconRect: fit(icon.size, in: view.convert(image.iconRect, to: anchor)),
                     label: label, labelRect: labelRect)
-                if !anyPlaced {
-                    unseenFrame = item.draggingFrame
-                    anyPlaced = true
-                }
             }
             items.append(item)
         }
-        let pointer = anchor.convert(event.locationInWindow, from: nil)
-        if !anyPlaced {
-            // Nothing measured: the first item at the pointer, the rest in a pile under it.
-            setPictureAtPointer(items[0], path: paths[0], pointer: pointer)
-            unseenFrame = items[0].draggingFrame
-        }
-        for (index, item) in items.enumerated() where placed[index] == nil && !(index == 0 && !anyPlaced) {
-            item.draggingFrame = unseenFrame
-        }
-        if items.count == 1 { items[0].draggingFrame = besidePointer(items[0].draggingFrame, pointer: pointer) }
+        if placed.isEmpty { setPictureAtPointer(items[0], path: paths[0], pointer: pointer) }
+        let frames = besidePointer(items.prefix(drawn.count).map(\.draggingFrame), pointer: pointer)
+        for item in items { item.draggingFrame = frames[0] }
+        for (item, frame) in zip(items, frames) { item.draggingFrame = frame }
         let source = FileDragSource(windowNumber: window.windowNumber) { end, over in
             anchor.removeFromSuperview()
             onEnded(end, over)
         }
         let session = anchor.beginDraggingSession(with: items, event: event, source: source)
         session.animatesToStartingPositionsOnCancelOrFail = true
-        session.draggingFormation = .stack
+        // The system's default may gather a drag of many under the pointer: the pictures stay where they were put.
+        session.draggingFormation = .none
         source.keep()
         return true
     }
