@@ -84,15 +84,17 @@ public enum FileDrag {
     /// How far each picture of a stack sits from the one before it, across and down.
     static let stackStep: CGFloat = 4
 
-    /// Where a drag's pictures go, however many there are: a stack down and to the right of the pointer, each a step
-    /// further that way than the one before. In a view that isn't flipped.
-    static func besidePointer(_ frames: [NSRect], pointer: NSPoint) -> [NSRect] {
-        frames.enumerated().map { index, frame in
+    /// Where each of a stack's pictures goes in the stack's image, and the image's size: each a step down and to the
+    /// right of the one before, the first at the top left. In an image that isn't flipped.
+    static func stackLayout(_ sizes: [NSSize]) -> (size: NSSize, frames: [NSRect]) {
+        let steps = CGFloat(max(sizes.count - 1, 0)) * stackStep
+        let width = (sizes.map(\.width).max() ?? 0) + steps
+        let height = (sizes.map(\.height).max() ?? 0) + steps
+        let frames = sizes.enumerated().map { index, size in
             let step = CGFloat(index) * stackStep
-            return NSRect(
-                x: pointer.x + pointerGap + step, y: pointer.y - pointerGap - frame.height - step,
-                width: frame.width, height: frame.height)
+            return NSRect(x: step, y: height - size.height - step, width: size.width, height: size.height)
         }
+        return (NSSize(width: width, height: height), frames)
     }
 
     /// `sourceOperationMaskForDraggingContext`.
@@ -132,46 +134,42 @@ public enum FileDrag {
         // a view of the app may only be asked on the main thread. This one has only the window's own frame above it.
         let anchor = NSView(frame: .zero)
         frameView.addSubview(anchor, positioned: .below, relativeTo: content)
-        var placed: [Int: FileDragImage] = [:]
-        for image in images where image.index < paths.count && placed.count < FileDragImages.maxImages {
-            placed[image.index] = image
+        var pictures: [Picture] = []
+        for image in images where image.index < paths.count && pictures.count < FileDragImages.maxImages {
+            let path = paths[image.index]
+            let icon = thumbnails[image.index] ?? NSWorkspace.shared.icon(forFile: path)
+            let label = labelImage(FileManager.default.displayName(atPath: path), fontSize: image.nameFontSize)
+            let name = view.convert(image.nameRect, to: anchor)
+            let labelX = image.nameCentered ? name.midX - label.size.width / 2 : name.minX - labelPaddingX
+            pictures.append(
+                Picture(
+                    icon: icon, iconRect: fit(icon.size, in: view.convert(image.iconRect, to: anchor)), label: label,
+                    labelRect: NSRect(
+                        x: labelX, y: name.midY - label.size.height / 2, width: label.size.width,
+                        height: label.size.height)))
         }
+        if pictures.isEmpty { pictures.append(pictureOfPath(paths[0])) }
+        let stack = stackImage(pictures)
         let pointer = anchor.convert(event.locationInWindow, from: nil)
-        // The drawn items first: AppKit takes the first item for the one at the pointer.
-        let drawn = placed.isEmpty ? [0] : placed.keys.sorted()
-        let drawnSet = Set(drawn)
+        let frame = NSRect(
+            x: pointer.x, y: pointer.y - stack.size.height, width: stack.size.width, height: stack.size.height)
+        // The stack is one picture, on the first item; the others go along unseen.
         var items: [NSDraggingItem] = []
-        for index in drawn + paths.indices.filter({ !drawnSet.contains($0) }) {
-            let path = paths[index]
+        for (index, path) in paths.enumerated() {
             let url =
                 index < directories.count
                 ? URL(fileURLWithPath: path, isDirectory: directories[index]) : URL(fileURLWithPath: path)
             let item = NSDraggingItem(pasteboardWriter: url as NSURL)
-            if let image = placed[index] {
-                let icon = thumbnails[index] ?? NSWorkspace.shared.icon(forFile: path)
-                let label = labelImage(FileManager.default.displayName(atPath: path), fontSize: image.nameFontSize)
-                let name = view.convert(image.nameRect, to: anchor)
-                let labelX = image.nameCentered ? name.midX - label.size.width / 2 : name.minX - labelPaddingX
-                let labelRect = NSRect(
-                    x: labelX, y: name.midY - label.size.height / 2, width: label.size.width,
-                    height: label.size.height)
-                setPicture(
-                    item, icon: icon, iconRect: fit(icon.size, in: view.convert(image.iconRect, to: anchor)),
-                    label: label, labelRect: labelRect)
-            }
+            item.draggingFrame = frame
             items.append(item)
         }
-        if placed.isEmpty { setPictureAtPointer(items[0], path: paths[0], pointer: pointer) }
-        let frames = besidePointer(items.prefix(drawn.count).map(\.draggingFrame), pointer: pointer)
-        for item in items { item.draggingFrame = frames[0] }
-        for (item, frame) in zip(items, frames) { item.draggingFrame = frame }
+        items[0].setDraggingFrame(frame, contents: stack)
         let source = FileDragSource(windowNumber: window.windowNumber) { end, over in
             anchor.removeFromSuperview()
             onEnded(end, over)
         }
         let session = anchor.beginDraggingSession(with: items, event: event, source: source)
         session.animatesToStartingPositionsOnCancelOrFail = true
-        // The system's default may gather a drag of many under the pointer: the pictures stay where they were put.
         session.draggingFormation = .none
         source.keep()
         return true
@@ -209,36 +207,43 @@ public enum FileDrag {
             x: box.midX - fitted.width / 2, y: box.midY - fitted.height / 2, width: fitted.width, height: fitted.height)
     }
 
-    /// `set_item_picture`: the icon and the label in their places, framed together.
-    @MainActor
-    static func setPicture(_ item: NSDraggingItem, icon: NSImage, iconRect: NSRect, label: NSImage, labelRect: NSRect) {
-        let frame = iconRect.union(labelRect)
-        let iconInFrame = iconRect.offsetBy(dx: -frame.minX, dy: -frame.minY)
-        let labelInFrame = labelRect.offsetBy(dx: -frame.minX, dy: -frame.minY)
-        item.draggingFrame = frame
-        item.imageComponentsProvider = {
-            let iconComponent = NSDraggingImageComponent(key: .icon)
-            iconComponent.contents = icon
-            iconComponent.frame = iconInFrame
-            let labelComponent = NSDraggingImageComponent(key: .label)
-            labelComponent.contents = label
-            labelComponent.frame = labelInFrame
-            return [iconComponent, labelComponent]
-        }
+    /// An item's icon and name, where they go relative to each other.
+    struct Picture: @unchecked Sendable {
+        let icon: NSImage
+        let iconRect: NSRect
+        let label: NSImage
+        let labelRect: NSRect
+
+        var frame: NSRect { iconRect.union(labelRect) }
     }
 
-    /// `set_item_picture_at_pointer`: an item with no place on screen, its icon over its name, the pointer on it.
+    /// `set_item_picture_at_pointer`: an item with no place on screen, its icon over its name.
     @MainActor
-    static func setPictureAtPointer(_ item: NSDraggingItem, path: String, pointer: NSPoint) {
-        let icon = NSWorkspace.shared.icon(forFile: path)
+    static func pictureOfPath(_ path: String) -> Picture {
         let label = labelImage(FileManager.default.displayName(atPath: path), fontSize: labelFontSize)
-        let iconRect = NSRect(
-            x: pointer.x - iconSize / 2, y: pointer.y - iconSize / 2, width: iconSize, height: iconSize)
-        let labelMidY = iconRect.midY - (iconSize / 2 + labelGap + label.size.height / 2)
-        let labelRect = NSRect(
-            x: pointer.x - label.size.width / 2, y: labelMidY - label.size.height / 2, width: label.size.width,
-            height: label.size.height)
-        setPicture(item, icon: icon, iconRect: iconRect, label: label, labelRect: labelRect)
+        let iconRect = NSRect(x: 0, y: 0, width: iconSize, height: iconSize)
+        return Picture(
+            icon: NSWorkspace.shared.icon(forFile: path), iconRect: iconRect, label: label,
+            labelRect: NSRect(
+                x: iconRect.midX - label.size.width / 2, y: iconRect.minY - labelGap - label.size.height,
+                width: label.size.width, height: label.size.height))
+    }
+
+    /// The pictures drawn as one stack, the first on top, with `pointerGap` left clear above and to the left of it:
+    /// AppKit keeps the image's corner close to the pointer.
+    @MainActor
+    static func stackImage(_ pictures: [Picture]) -> NSImage {
+        let layout = stackLayout(pictures.map(\.frame.size))
+        let size = NSSize(width: layout.size.width + pointerGap, height: layout.size.height + pointerGap)
+        return NSImage(size: size, flipped: false) { _ in
+            for (picture, frame) in zip(pictures, layout.frames).reversed() {
+                let dx = frame.minX + pointerGap - picture.frame.minX
+                let dy = frame.minY - picture.frame.minY
+                picture.icon.draw(in: picture.iconRect.offsetBy(dx: dx, dy: dy))
+                picture.label.draw(in: picture.labelRect.offsetBy(dx: dx, dy: dy))
+            }
+            return true
+        }
     }
 
     // MARK: After the drag

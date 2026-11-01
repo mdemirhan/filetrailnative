@@ -109,17 +109,17 @@ struct FileDragTests {
         #expect(dragged.map(\.path) == paths)
     }
 
-    // One picture or many start from the same place, and the others stack down and to the right of it.
-    @Test func stacksThePicturesDownAndRightOfThePointerHoweverManyThereAre() {
-        let frame = NSRect(x: 500, y: 500, width: 120, height: 20)
-        let pointer = NSPoint(x: 100, y: 200)
-        let gap = FileDrag.pointerGap
+    // The first picture is at the stack's top left, however many there are, and the others step down and to the right.
+    @Test func stacksThePicturesDownAndToTheRight() {
+        let size = NSSize(width: 120, height: 20)
         let step = FileDrag.stackStep
-        let one = FileDrag.besidePointer([frame], pointer: pointer)
-        let two = FileDrag.besidePointer([frame, frame], pointer: pointer)
-        #expect(one[0] == two[0])
-        #expect(one[0] == NSRect(x: 100 + gap, y: 200 - gap - 20, width: 120, height: 20))
-        #expect(two[1] == two[0].offsetBy(dx: step, dy: -step))
+        let one = FileDrag.stackLayout([size])
+        #expect(one.size == size)
+        #expect(one.frames == [NSRect(origin: .zero, size: size)])
+        let two = FileDrag.stackLayout([size, size])
+        #expect(two.size == NSSize(width: 120 + step, height: 20 + step))
+        #expect(two.frames[0] == NSRect(x: 0, y: step, width: 120, height: 20))
+        #expect(two.frames[1] == NSRect(x: step, y: 0, width: 120, height: 20))
     }
 
     // T-7b0702ec
