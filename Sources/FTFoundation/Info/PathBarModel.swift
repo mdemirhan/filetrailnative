@@ -98,22 +98,39 @@ public enum PathBarModel {
     }
 
     /// `buildPathSegments`: one per folder from the top of the disk, a path on another volume starting at that volume.
-    /// On another volume, ".Trashes" and the user's folder in it are one segment, the Trash.
-    public static func segments(_ path: String) -> [PathbarSegment] {
+    /// The Trash is one place on every disk: its path starts at a segment called Trash, which goes to the Trash.
+    public static func segments(_ path: String, homePath: String = "") -> [PathbarSegment] {
         if path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return [PathbarSegment(label: "No folder selected", path: "")]
         }
         if path == "/" { return [PathbarSegment(label: "Macintosh HD", path: "/")] }
+        let homeTrash = FavoriteLabel.trashPath(homePath: homePath)
+        if !homeTrash.isEmpty, path == homeTrash || path.hasPrefix(homeTrash + "/") {
+            return inTrash(start: homeTrash, rest: path.dropFirst(homeTrash.count), trashPath: homeTrash)
+        }
         let root = TreePaths.volumeRootPath(path)
         let rest = path.dropFirst(root == "/" ? 0 : root.count)
         var result = [PathbarSegment(label: label(root), path: root)]
         var current = root == "/" ? "" : root
         let parts = rest.split(separator: "/", omittingEmptySubsequences: true)
-        let inVolumeTrash = root != "/" && parts.count > 1 && parts[0] == ".Trashes"
-        for (index, part) in parts.enumerated() {
+        if root != "/" && parts.count > 1 && parts[0] == ".Trashes" {
+            let own = "\(root)/.Trashes/\(parts[1])"
+            return inTrash(start: own, rest: path.dropFirst(own.count), trashPath: homeTrash.isEmpty ? own : homeTrash)
+        }
+        for part in parts {
             current += "/" + part
-            if inVolumeTrash && index == 0 { continue }
-            result.append(PathbarSegment(label: inVolumeTrash && index == 1 ? "Trash" : String(part), path: current))
+            result.append(PathbarSegment(label: String(part), path: current))
+        }
+        return result
+    }
+
+    /// What is in a Trash folder at `start`, after the segment of the Trash.
+    private static func inTrash(start: String, rest: Substring, trashPath: String) -> [PathbarSegment] {
+        var result = [PathbarSegment(label: "Trash", path: trashPath)]
+        var current = start
+        for part in rest.split(separator: "/", omittingEmptySubsequences: true) {
+            current += "/" + part
+            result.append(PathbarSegment(label: String(part), path: current))
         }
         return result
     }

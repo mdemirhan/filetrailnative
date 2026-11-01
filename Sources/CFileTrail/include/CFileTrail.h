@@ -36,6 +36,7 @@ typedef struct {
     int32_t has_custom_icon;
     int32_t finder_label;
     int32_t is_empty_folder;
+    int32_t has_hidden_flag;
 } FTDirEntry;
 
 typedef struct {
@@ -53,6 +54,7 @@ enum {
     FT_READ_CREATED = 8,      /* the creation time */
     FT_READ_FINDER_INFO = 16, /* Finder's custom-icon flag and label color */
     FT_READ_EMPTY_FOLDERS = 32, /* which folders hold nothing, on the disks that store a folder's count (APFS, HFS+) */
+    FT_READ_HIDDEN_FLAG = 64, /* the flag that hides an item whatever its name (UF_HIDDEN) */
 };
 
 /// Reads a folder with getattrlistbulk(2): every name with its type, and the `attributes` asked for, in a

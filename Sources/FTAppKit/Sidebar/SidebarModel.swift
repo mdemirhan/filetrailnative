@@ -55,6 +55,8 @@ final class SidebarModel {
     var currentPath = ""
     private(set) var volumes: [SidebarVolume] = []
     /// Reads a folder's subfolders (`tree:getChildren`).
+    /// Whether a folder has the flag that hides it, which its path doesn't tell.
+    var hasHiddenFlag: (_ path: String) async -> Bool = { _ in false }
     var readChildren: (_ path: String, _ includeHidden: Bool) async throws -> [TreePaths.Child] = { _, _ in
         []
     }
@@ -227,10 +229,13 @@ final class SidebarModel {
         }
     }
 
-    private func effectiveIncludeHidden(_ override: Bool, path: String, activePath: String) -> Bool {
-        if override { return true }
-        if rootPath.isEmpty { return TreePaths.hasHiddenSegment(path, withinRoot: path) }
-        return TreePaths.forcedVisibleHiddenChild(of: path, activePath: activePath) != nil
+    /// The one hidden child of `path` that stays listed, as the folder on screen is in it.
+    private func forcedHiddenChild(of path: String, activePath: String) async -> String? {
+        if let named = TreePaths.forcedVisibleHiddenChild(of: path, activePath: activePath) { return named }
+        guard let child = TreePaths.childPath(of: path, towards: activePath), await hasHiddenFlag(child) else {
+            return nil
+        }
+        return child
     }
 
     /// `loadTreeChildren`: reads the folder's subfolders, and expands it when asked to.
@@ -240,10 +245,9 @@ final class SidebarModel {
     ) async {
         let includeHidden = includeHiddenOverride ?? self.includeHidden
         let activePath = activePath ?? currentPath
-        let current = nodes[path]
         let forcedHidden =
-            includeHidden || rootPath.isEmpty
-            ? nil : TreePaths.forcedVisibleHiddenChild(of: path, activePath: activePath)
+            includeHidden || rootPath.isEmpty ? nil : await forcedHiddenChild(of: path, activePath: activePath)
+        let current = nodes[path]
         let forcedPackage =
             rootPath.isEmpty ? nil : TreePaths.forcedVisiblePackageChild(of: path, activePath: activePath)
         if current?.loading == true, !forceReload { return }
@@ -270,7 +274,9 @@ final class SidebarModel {
         }
         onChange()
         do {
-            let effective = effectiveIncludeHidden(includeHidden, path: path, activePath: activePath)
+            let effective =
+                includeHidden || forcedHidden != nil
+                || (rootPath.isEmpty && TreePaths.hasHiddenSegment(path, withinRoot: path))
             let response = try await readChildren(path, effective)
             guard treeRequests[ExactKeyBox(path)] == requestID else { return }
             apply(
@@ -421,18 +427,11 @@ final class SidebarModel {
         currentPath = path
         viewVersion += 1
         let version = viewVersion
-        let fromSidebar: TreeItemID?
-        switch request.origin {
-        case .favorite(let id), .location(let id): fromSidebar = id
-        default: fromSidebar = nil
-        }
         let isLocation = request.origin.isLocation
-        // The Trash, gone to from the sidebar, leaves the tree as it is: it is not a folder the tree shows.
-        // Nor can it go into a disk's Trash, gone to from anywhere: nothing may list that disk's ".Trashes". It is the
-        // Trash's row that is selected there.
-        let inDiskTrash = Paths.isInsideTrash(path, homePath: "")
-        let inTrash = inDiskTrash || (fromSidebar != nil && Paths.isInsideTrash(path, homePath: homePath))
-        let syncsTree = request.origin != .alias && !inTrash
+        // The Trash, and any folder in it, leaves the tree as it is, however it was gone to: it is not a folder the tree
+        // shows. It is the Trash's row that is selected there.
+        let inTrash = Paths.isInsideTrash(path, homePath: homePath)
+        let syncsTree = request.origin != .alias && (!inTrash || request.rerootTree)
         if request.rerootTree { initializeTree(path) }
         var reveal = path
         if isLocation, !inTrash {
@@ -442,6 +441,10 @@ final class SidebarModel {
         }
         if syncsTree {
             await syncTree(to: reveal, forceReload: request.forceTreeReload, version: version)
+            if viewVersion != version { return }
+        } else if inTrash, rootPath.isEmpty, !homePath.isEmpty {
+            // A window that starts out in the Trash still has a tree.
+            await syncTree(to: homePath, version: version)
             if viewVersion != version { return }
         }
         if let row = request.selectingRow {
@@ -456,7 +459,7 @@ final class SidebarModel {
         case (.alias, nil):
             break
         case (.other, nil), (.folder, nil):
-            if inDiskTrash {
+            if inTrash {
                 select(.location(FavoriteLabel.trashPath(homePath: homePath)), subview: separate ? .favorites : nil)
             } else {
                 select(.filesystem(path), subview: .tree)
@@ -586,6 +589,8 @@ final class SidebarModel {
         if let shortcut = selected?.shortcutPath, TreePaths.same(shortcut, currentPath) {
             keeps = true
         } else if let path = selected?.filesystemPath, nodes[path]?.isSymlink == true {
+            keeps = true
+        } else if Paths.isInsideTrash(currentPath, homePath: homePath) {
             keeps = true
         } else {
             keeps = false

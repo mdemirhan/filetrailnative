@@ -27,14 +27,15 @@ public actor DirectoryService {
     /// The children of a folder that are folders (or links to folders), by name.
     public func treeChildren(path: String, includeHidden: Bool = false) async throws -> TreeChildren {
         let fileSystem = fileSystem
+        let trash = trash
         return try await cache.treeChildren(TreeKey(path: path, includeHidden: includeHidden)) {
-            try ExplorerListing.treeChildren(path: path, includeHidden: includeHidden, fileSystem)
+            try ExplorerListing.treeChildren(path: path, includeHidden: includeHidden, trash: trash, fileSystem)
         }
     }
 
     /// The Trash is listed as Finder shows it, with what is in the Trash of every disk, and a disk's own Trash is the
-    /// same folder by another name. Without Full Disk Access, when only the home folder's is refused, a disk's own Trash
-    /// can still be opened as itself.
+    /// same folder by another name, as is its ".Trashes". Without Full Disk Access, when only the home folder's is
+    /// refused, a disk's own Trash can still be opened as itself.
     public func snapshot(
         path: String, includeHidden: Bool = false, sortBy: DirectorySortKey = .name,
         sortDirection: SortDirection = .ascending, foldersFirst: Bool = true
@@ -43,19 +44,20 @@ public actor DirectoryService {
         func read(_ path: String, alsoListing: [String]) async throws -> DirectorySnapshot {
             let fileSystem = fileSystem
             let kinds = kinds
+            let trash = trash
             let key = ListingKey(
                 path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
                 foldersFirst: foldersFirst)
             return try await cache.directorySnapshot(key) {
                 try ExplorerListing.snapshot(
                     path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
-                    foldersFirst: foldersFirst, alsoListing: alsoListing, fileSystem, kinds: kinds)
+                    foldersFirst: foldersFirst, alsoListing: alsoListing, trash: trash, fileSystem, kinds: kinds)
             }
         }
         do {
             return try await read(listed, alsoListing: trash.listedWith(listed))
         } catch  where listed != path {
-            return try await read(path, alsoListing: [])
+            return try await read(trash.ownFolder(for: path), alsoListing: [])
         }
     }
 
@@ -74,6 +76,11 @@ public actor DirectoryService {
         return MetadataBatch(directoryPath: directoryPath, items: items)
     }
 
+    /// Whether the item itself has the flag that hides it, for telling a hidden folder from its path alone.
+    public func hasHiddenFlag(path: String) -> Bool {
+        (try? fileSystem.lstat(path))?.hasHiddenFlag == true
+    }
+
     public func itemProperties(path: String) -> ItemProperties {
         ExplorerListing.itemProperties(path: path, fileSystem, kinds: kinds)
     }
@@ -82,7 +89,7 @@ public actor DirectoryService {
         -> PathSuggestions
     {
         try ExplorerListing.pathSuggestions(
-            inputPath: inputPath, includeHidden: includeHidden, limit: limit, fileSystem)
+            inputPath: inputPath, includeHidden: includeHidden, limit: limit, trash: trash, fileSystem)
     }
 
     public func resolvePath(_ path: String) -> ResolvedPath {

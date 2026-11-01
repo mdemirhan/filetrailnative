@@ -89,7 +89,7 @@ public enum TreePaths {
     }
 
     /// `getChildPathTowards`: the child of `parentPath` that `activePath` is, or is inside.
-    static func childPath(of parentPath: String, towards activePath: String) -> String? {
+    public static func childPath(of parentPath: String, towards activePath: String) -> String? {
         guard isWithinRoot(activePath, parentPath), !JSString.equals(activePath, parentPath) else { return nil }
         let relative =
             JSString.equals(parentPath, "/")

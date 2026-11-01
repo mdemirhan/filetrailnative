@@ -127,6 +127,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             guard let self else { return }
             self.updatePreferences(["favorites": .array(favorites.map(Self.json))])
         }
+        model.hasHiddenFlag = { [weak self] path in
+            await self?.directoryService().hasHiddenFlag(path: path) ?? false
+        }
         model.readChildren = { [weak self] path, includeHidden in
             guard let self else { return [] }
             let read = try await self.directoryService().treeChildren(path: path, includeHidden: includeHidden)

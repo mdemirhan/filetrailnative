@@ -1,4 +1,5 @@
 // Searches run by the real bundled fd: the reference's results on the fixtures, and no fd left after quitting.
+import Darwin
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -147,6 +148,29 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         #expect(update.status == .error)
         #expect(update.done)
         #expect(update.error?.isEmpty == false)
+    }
+
+    @Test(.enabled(if: hasFd))
+    func aRealSearchLeavesOutWhatHasTheHiddenFlagWhereverTheFolderIs() async throws {
+        let runtime = try makeRuntime()
+        defer { runtime.close() }
+        try await withTemporaryDirectory { folder in
+            // The temporary folder is really under the hidden /private: what is above the search doesn't count.
+            try FileManager.default.createDirectory(
+                atPath: folder.path + "/hidden/deep", withIntermediateDirectories: true)
+            try Data().write(to: folder.appending("match-plain.txt"))
+            try Data().write(to: folder.appending("match-flagged.txt"))
+            try Data().write(to: folder.appending("hidden/deep/match-inside.txt"))
+            #expect(chflags(folder.path + "/hidden", UInt32(UF_HIDDEN)) == 0)
+            #expect(chflags(folder.path + "/match-flagged.txt", UInt32(UF_HIDDEN)) == 0)
+            var names: [String] = []
+            for await update in runtime.results(
+                for: SearchRequest(rootPath: folder.path, query: "match-", patternMode: .text))
+            {
+                names += update.items.map(\.name)
+            }
+            #expect(names == ["match-plain.txt"])
+        }
     }
 
     @Test(.enabled(if: hasFd))

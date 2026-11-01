@@ -35,14 +35,42 @@ public struct TrashFolders: Sendable {
             && parts[3] == String(uid)
     }
 
-    /// The folder that is listed for `path`: a disk's own Trash is shown as part of the one Trash.
+    /// Whether `path` is a disk's ".Trashes", which holds one Trash per user. macOS makes it so that no one can list
+    /// it, Full Disk Access or not (mode d-wx--x--t); only this user's folder in it can be read.
+    func isTrashesOfDisk(_ path: String) -> Bool {
+        let parts = path.split(separator: "/")
+        return path.hasPrefix("/") && parts.count == 3 && parts[0] == "Volumes" && parts[2] == ".Trashes"
+    }
+
+    /// The Trash folders, which are never listed, with hidden files shown or not, as in Finder: the Trash is reached by
+    /// its own row. A folder of that name anywhere else is a folder like any other. The name is looked at first, as
+    /// this is asked of every item of every folder.
+    func isAlwaysHidden(_ name: String, in folder: String) -> Bool {
+        switch name {
+        case ".Trash":
+            let path = NodePath.join(folder, name)
+            return path == home || path == homeAsSpelled
+        case ".Trashes":
+            return isTrashesOfDisk(NodePath.join(folder, name))
+        default:
+            return false
+        }
+    }
+
+    /// This user's Trash in the disk's ".Trashes" `path`; any other path as it is.
+    func ownFolder(for path: String) -> String {
+        isTrashesOfDisk(path) ? "\(path)/\(uid)" : path
+    }
+
+    /// The folder that is listed for `path`: a disk's own Trash is shown as part of the one Trash, as is its ".Trashes"
+    /// when its path is typed.
     func listedFolder(for path: String) -> String {
-        path == homeAsSpelled || isOnOtherDisk(path) ? home : path
+        path == homeAsSpelled || isOnOtherDisk(path) || isTrashesOfDisk(path) ? home : path
     }
 
     /// The folders listed along with `path`.
     public func listedWith(_ path: String) -> [String] {
-        listedFolder(for: path) == home && !isOnOtherDisk(path) ? onOtherDisks : []
+        listedFolder(for: path) == home && !isOnOtherDisk(path) && !isTrashesOfDisk(path) ? onOtherDisks : []
     }
 
     /// The disk a Trash from `onOtherDisks` is on.

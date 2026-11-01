@@ -74,6 +74,53 @@ struct TrashFoldersTests {
         #expect(snapshot.entries.count == 3)
     }
 
+    @Test func aDisksTrashesFolderThatNoOneCanListOpensAsTheOneTrash() async throws {
+        let snapshot = try await service(disks()).snapshot(path: "/Volumes/Photos/.Trashes")
+        #expect(snapshot.path == "/Users/me/.Trash")
+        #expect(snapshot.entries.count == 3)
+        #expect(trash.listedWith("/Volumes/Photos/.Trashes") == [])
+    }
+
+    @Test func aDisksTrashesFolderOpensAsThisUsersTrashThereWhenTheHomeTrashIsRefused() async throws {
+        let fake = disks()
+        fake.directory = { path in
+            guard path == "/Volumes/Photos/.Trashes/501" else { throw ExplorerError.system(code: EPERM, path: path) }
+            return [fakeDirent("b.txt", file: true)]
+        }
+        let snapshot = try await service(fake).snapshot(path: "/Volumes/Photos/.Trashes")
+        #expect(snapshot.entries.map(\.path) == ["/Volumes/Photos/.Trashes/501/b.txt"])
+    }
+
+    @Test func theTrashFoldersAreNeverListedWithHiddenFilesShownOrNot() async throws {
+        let fake = disks()
+        fake.directory = { path in
+            [".Trash", ".Trashes", "kept"].map { fakeDirent($0, directory: true) }
+        }
+        let service = service(fake)
+        for folder in ["/Users/me", "/Volumes/Photos"] {
+            for includeHidden in [true, false] {
+                let names = try await service.snapshot(path: folder, includeHidden: includeHidden).entries.map(\.name)
+                let treeNames = try await service.treeChildren(path: folder, includeHidden: includeHidden)
+                    .children.map(\.name)
+                let shownByName = includeHidden ? [folder == "/Users/me" ? ".Trashes" : ".Trash", "kept"] : ["kept"]
+                #expect(names == shownByName)
+                #expect(treeNames == shownByName)
+            }
+        }
+        let suggestions = try await service.pathSuggestions(inputPath: "/Volumes/Photos/", includeHidden: true)
+        #expect(suggestions.suggestions.map(\.name) == [".Trash", "kept"])
+        let elsewhere = try await service.snapshot(path: "/Users/me/src", includeHidden: true).entries.map(\.name)
+        #expect(elsewhere == [".Trash", ".Trashes", "kept"])
+    }
+
+    @Test func thereIsNothingToSuggestInADisksTrashesFolder() async throws {
+        let fake = disks()
+        fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 1) }
+        fake.directory = { path in throw ExplorerError.system(code: EACCES, path: path) }
+        let suggestions = try await service(fake).pathSuggestions(inputPath: "/Volumes/Photos/.Trashes/")
+        #expect(suggestions.suggestions.isEmpty)
+    }
+
     @Test func whatIsInsideADisksTrashIsAFolderLikeAnyOther() async throws {
         let fake = disks()
         fake.directory = { path in

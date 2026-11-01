@@ -79,6 +79,9 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
     if (attributes & FT_READ_FINDER_INFO) {
         request.commonattr |= ATTR_CMN_FNDRINFO;
     }
+    if (attributes & FT_READ_HIDDEN_FLAG) {
+        request.commonattr |= ATTR_CMN_FLAGS;
+    }
     if (attributes & FT_READ_SIZE) {
         request.fileattr = ATTR_FILE_DATALENGTH;
     }
@@ -165,6 +168,10 @@ int ft_read_directory(const char *path, unsigned int attributes, FTDirListing *l
             if (returned.commonattr & ATTR_CMN_ACCESSMASK) {
                 entry.mode = *(uint32_t *)field;
                 entry.mode_valid = 1;
+                field += sizeof(uint32_t);
+            }
+            if (returned.commonattr & ATTR_CMN_FLAGS) {
+                entry.has_hidden_flag = (*(uint32_t *)field & UF_HIDDEN) != 0;
                 field += sizeof(uint32_t);
             }
             if (returned.dirattr & ATTR_DIR_ENTRYCOUNT) {

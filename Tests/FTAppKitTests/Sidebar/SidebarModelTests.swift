@@ -156,6 +156,38 @@ struct SidebarModelTests {
         #expect(rig.model.selected == .location("/Users/demo/.Trash"))
     }
 
+    @Test @MainActor func aFolderInTheHomeTrashLeavesTheTreeAloneHoweverItWasGoneTo() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo/src", .other)
+        let reads = rig.disk.reads.count
+        await rig.model.folderOpened("/Users/demo/.Trash/New Folder", .other)
+        #expect(rig.model.nodes["/Users/demo/.Trash"] == nil)
+        #expect(rig.disk.reads.count == reads)
+        #expect(rig.model.selected == .location("/Users/demo/.Trash"))
+        rig.model.hiddenFilesChanged()
+        #expect(rig.model.nodes["/Users/demo/.Trash"] == nil)
+    }
+
+    @Test @MainActor func aWindowThatStartsInTheTrashStillHasATree() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo/.Trash/New Folder", .other)
+        #expect(rig.model.rootPath == "/Users/demo")
+        #expect(rig.model.nodes["/Users/demo/.Trash"] == nil)
+    }
+
+    @Test @MainActor func aFolderWithTheHiddenFlagStaysListedOnTheWayToTheFolderOnScreen() async {
+        let rig = Rig()
+        rig.disk.folder("/", ["Users", "Volumes"], hidden: ["usr"])
+        rig.disk.folder("/usr", ["local"])
+        rig.model.hasHiddenFlag = { $0 == "/usr" }
+        await rig.model.folderOpened("/usr/local", .other)
+        #expect(rig.model.rootPath == "/")
+        #expect(rig.model.nodes["/"]?.childPaths.contains("/usr") == true)
+
+        await rig.model.folderOpened("/Users", .other)
+        #expect(rig.model.nodes["/"]?.childPaths.contains("/usr") == false)
+    }
+
     // T-1fb6401c T-1a68f61e B-TREE-100
     // B-NAV-079 B-TREE-099
     @Test @MainActor func aLinkKeepsItsRowAndDoesNotMoveOrReadTheTree() async {

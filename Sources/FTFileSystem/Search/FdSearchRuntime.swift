@@ -40,8 +40,35 @@ public final class FdSearchRuntime: @unchecked Sendable {
     public static let resultLimit = 20_000
     private static let maxFinishedJobRecords = 64
 
+    /// What fd can't tell: it hides by the name alone, so what has the flag that hides an item, or is in a folder that
+    /// has it, is told here. A folder's answer is kept for the search, so a folder of many results is looked at once,
+    /// and they are dropped without each being looked at. The folder the search starts in, and what is above it, don't
+    /// count: looking inside a hidden folder is what was asked. fd says where a result really is (/private/tmp for
+    /// /tmp), which may not be how the folder was spelled.
+    struct HiddenFilter {
+        private let tops: [String]
+        let hasHiddenFlag: @Sendable (String) -> Bool
+        var folders: [String: Bool] = [:]
+
+        init(rootPath: String, realRootPath: String?, hasHiddenFlag: @escaping @Sendable (String) -> Bool) {
+            tops = [rootPath, realRootPath ?? rootPath].map { $0.hasSuffix("/") ? $0 : $0 + "/" }
+            self.hasHiddenFlag = hasHiddenFlag
+        }
+
+        mutating func isInHiddenFolder(_ path: String) -> Bool {
+            let parent = NodePath.dirname(path)
+            guard parent != "/", tops.contains(where: { parent.hasPrefix($0) }) else { return false }
+            if let known = folders[parent] { return known }
+            let hidden = isInHiddenFolder(parent) || hasHiddenFlag(parent)
+            folders[parent] = hidden
+            return hidden
+        }
+    }
+
     private struct Job {
         var rootPath: String
+        var includeHidden: Bool
+        var filter: HiddenFilter
         var items: [SearchResultItem] = []
         var status: SearchJobStatus = .running
         var truncated = false
@@ -63,15 +90,22 @@ public final class FdSearchRuntime: @unchecked Sendable {
 
     private let fdBinaryPath: String
     private let spawn: SearchSpawn
+    private let hasHiddenFlag: @Sendable (String) -> Bool
     private let lock = NSLock()
     private var jobs: [String: Job] = [:]
     private var finishedJobs: [String: FinishedJob] = [:]
     private var finishedOrder: [String] = []
     private var sequence = 0
 
-    public init(fdBinaryPath: String, spawn: @escaping SearchSpawn = FdProcess.spawn) {
+    public init(
+        fdBinaryPath: String, spawn: @escaping SearchSpawn = FdProcess.spawn,
+        hasHiddenFlag: @escaping @Sendable (String) -> Bool = {
+            (try? NativeFileSystem().lstat($0))?.hasHiddenFlag == true
+        }
+    ) {
         self.fdBinaryPath = fdBinaryPath
         self.spawn = spawn
+        self.hasHiddenFlag = hasHiddenFlag
     }
 
     public func startSearch(_ request: SearchRequest) -> SearchStartResponse {
@@ -81,7 +115,11 @@ public final class FdSearchRuntime: @unchecked Sendable {
         let jobId = lock.withLock {
             sequence += 1
             let id = "search-\(sequence)"
-            jobs[id] = Job(rootPath: rootPath)
+            jobs[id] = Job(
+                rootPath: rootPath, includeHidden: request.includeHidden,
+                filter: HiddenFilter(
+                    rootPath: rootPath, realRootPath: try? MountTable.realPath(rootPath),
+                    hasHiddenFlag: hasHiddenFlag))
             return id
         }
         let events = SearchProcessEvents(
@@ -235,7 +273,13 @@ public final class FdSearchRuntime: @unchecked Sendable {
 
     /// Adds a result; the process to stop when that makes the 20,000th.
     private func append(_ output: String, to job: inout Job) -> SearchProcess? {
-        job.items.append(SearchResults.item(rootPath: job.rootPath, outputPath: output))
+        var item = SearchResults.item(rootPath: job.rootPath, outputPath: output)
+        if job.includeHidden {
+            item.isHidden = item.isHidden || hasHiddenFlag(item.path)
+        } else if job.filter.isInHiddenFolder(item.path) || hasHiddenFlag(item.path) {
+            return nil
+        }
+        job.items.append(item)
         guard job.items.count >= Self.resultLimit else { return nil }
         job.truncated = true
         job.status = .truncated

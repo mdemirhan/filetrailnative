@@ -52,13 +52,93 @@ private func item(
         relativeParentPath: relative)
 }
 
+/// The paths a search asked about.
+private final class LookedAt: @unchecked Sendable {
+    private let lock = NSLock()
+    private var asked: [String] = []
+    var paths: [String] { lock.withLock { asked } }
+    func add(_ path: String) { lock.withLock { asked.append(path) } }
+}
+
 @Suite struct FdSearchRuntimeTests {
     private func make() -> (FdSearchRuntime, MockSearchProcess) {
         let process = MockSearchProcess()
         return (FdSearchRuntime(fdBinaryPath: "/tmp/fd", spawn: process.spawn), process)
     }
 
-    // B-SRCH-175
+    /// A runtime that counts what it looks at; `flagged` are the paths with the flag that hides an item.
+    private func make(flagged: Set<String>) -> (FdSearchRuntime, MockSearchProcess, LookedAt) {
+        let process = MockSearchProcess()
+        let looked = LookedAt()
+        let runtime = FdSearchRuntime(
+            fdBinaryPath: "/tmp/fd", spawn: process.spawn,
+            hasHiddenFlag: { path in
+                looked.add(path)
+                return flagged.contains(path)
+            })
+        return (runtime, process, looked)
+    }
+
+    private func paths(_ runtime: FdSearchRuntime, _ jobId: String) throws -> [SearchResultItem] {
+        try runtime.getUpdate(jobId: jobId, cursor: 0).items
+    }
+
+    @Test func dropsWhatHasTheFlagAndWhatIsInAFolderThatHasItWithHiddenFilesOff() throws {
+        let root = "/Users/demo/project"
+        let (runtime, process, looked) = make(flagged: [root + "/hidden", root + "/secret.txt"])
+        let job = runtime.startSearch(demo()).jobId
+        process.write(
+            [
+                root + "/kept.txt", root + "/secret.txt", root + "/hidden/", root + "/hidden/a/b.txt",
+                root + "/hidden/a/c.txt", root + "/hidden/a/d.txt", root + "/src/kept.swift",
+            ].map { $0 + "\0" }.joined())
+        #expect(try paths(runtime, job).map(\.path) == [root + "/kept.txt", root + "/src/kept.swift"])
+        // Each folder is looked at once, and what is in a hidden one isn't looked at itself.
+        #expect(looked.paths.filter { $0.hasSuffix("/a/c.txt") || $0.hasSuffix("/a/d.txt") }.isEmpty)
+        #expect(looked.paths.filter { $0 == root + "/hidden" }.count == 2)  // as a result, and as a folder
+        #expect(!looked.paths.contains(root))
+    }
+
+    @Test func aSearchOfMacintoshHDDropsWhatIsInItsHiddenFolders() throws {
+        var search = demo()
+        search.rootPath = "/"
+        let (runtime, process, _) = make(flagged: ["/usr"])
+        let job = runtime.startSearch(search).jobId
+        process.write("/usr/\0/usr/local/bin/tool\0/Users/demo/kept.txt\0/kept.txt\0")
+        #expect(try paths(runtime, job).map(\.path) == ["/Users/demo/kept.txt", "/kept.txt"])
+    }
+
+    @Test func whatIsDroppedDoesNotCountTowardsTheLimit() throws {
+        let root = "/Users/demo/project"
+        let (runtime, process, _) = make(flagged: [root + "/hidden"])
+        let job = runtime.startSearch(demo()).jobId
+        let dropped = (0..<FdSearchRuntime.resultLimit).map { root + "/hidden/\($0)\0" }.joined()
+        process.write(dropped)
+        let update = try runtime.getUpdate(jobId: job, cursor: 0)
+        #expect(update.items.isEmpty)
+        #expect(!update.truncated)
+        #expect(process.terminateCount == 0)
+    }
+
+    @Test func searchingInsideAHiddenFolderFindsWhatIsThere() throws {
+        let root = "/Users/demo/project"
+        let (runtime, process, _) = make(flagged: [root, "/Users/demo"])
+        let job = runtime.startSearch(demo()).jobId
+        process.write(root + "/a.txt\0" + root + "/sub/b.txt\0")
+        #expect(try paths(runtime, job).map(\.name) == ["a.txt", "b.txt"])
+    }
+
+    @Test func withHiddenFilesOnNothingIsDroppedAndFlaggedResultsLookHidden() throws {
+        let root = "/Users/demo/project"
+        let (runtime, process, _) = make(flagged: [root + "/hidden", root + "/secret.txt"])
+        let job = runtime.startSearch(demo(hidden: true)).jobId
+        process.write(root + "/secret.txt\0" + root + "/hidden/inside.txt\0" + root + "/plain.txt\0")
+        let items = try paths(runtime, job)
+        #expect(items.map(\.name) == ["secret.txt", "inside.txt", "plain.txt"])
+        // What is in a hidden folder isn't hidden itself, as with a folder hidden by a dot.
+        #expect(items.map(\.isHidden) == [true, false, false])
+    }
+
     @Test func runsFdInTheSearchedFolderWithTheBuiltArguments() throws {
         let (runtime, process) = make()
         _ = runtime.startSearch(demo("a b"))

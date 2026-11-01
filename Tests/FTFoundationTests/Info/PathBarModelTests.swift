@@ -28,13 +28,24 @@ struct PathBarModelTests {
 
     @Test func aDisksTrashIsOneSegmentCalledTrash() {
         let inside = PathBarModel.segments("/Volumes/Photos/.Trashes/501/album")
-        #expect(inside.map(\.label) == ["Photos", "Trash", "album"])
-        #expect(
-            inside.map(\.path) == [
-                "/Volumes/Photos", "/Volumes/Photos/.Trashes/501", "/Volumes/Photos/.Trashes/501/album",
-            ])
+        #expect(inside.map(\.label) == ["Trash", "album"])
+        #expect(inside.map(\.path) == ["/Volumes/Photos/.Trashes/501", "/Volumes/Photos/.Trashes/501/album"])
         #expect(PathBarModel.segments("/Volumes/Photos/.Trashes").map(\.label) == ["Photos", ".Trashes"])
         #expect(PathBarModel.segments("/.Trashes/501").map(\.label) == ["Macintosh HD", ".Trashes", "501"])
+    }
+
+    @Test func theTrashStartsAtASegmentThatGoesToTheOneTrash() {
+        let home = "/Users/demo"
+        let onHome = PathBarModel.segments("/Users/demo/.Trash/New Folder/aa", homePath: home)
+        #expect(onHome.map(\.label) == ["Trash", "New Folder", "aa"])
+        #expect(
+            onHome.map(\.path) == [
+                "/Users/demo/.Trash", "/Users/demo/.Trash/New Folder", "/Users/demo/.Trash/New Folder/aa",
+            ])
+        #expect(PathBarModel.segments("/Users/demo/.Trash", homePath: home).map(\.label) == ["Trash"])
+        let onDisk = PathBarModel.segments("/Volumes/Photos/.Trashes/501/album", homePath: home)
+        #expect(onDisk.map(\.path) == ["/Users/demo/.Trash", "/Volumes/Photos/.Trashes/501/album"])
+        #expect(PathBarModel.segments("/Users/demo/.Trash2", homePath: home).last?.label == ".Trash2")
     }
 
     @Test func parentAndLabel() {

@@ -29,7 +29,7 @@ final class PathBarRowView: NSView {
             pathBar.setExpanded(false)
             folderMenu.close()
             if isEditing { endEditing(restoreFocus: false) }
-            pathBar.segments = PathBarModel.segments(path)
+            pathBar.segments = PathBarModel.segments(path, homePath: NSHomeDirectory())
         }
     }
 
@@ -57,7 +57,7 @@ final class PathBarRowView: NSView {
         addSubview(status)
         addSubview(editor)
         editor.isHidden = true
-        pathBar.segments = PathBarModel.segments(path)
+        pathBar.segments = PathBarModel.segments(path, homePath: NSHomeDirectory())
         pathBar.onNavigate = { [weak self] in self?.onNavigate($0) }
         pathBar.onOpenInNewTab = { [weak self] in self?.onOpenInNewTab($0) }
         pathBar.onEdit = { [weak self] in self?.beginEditing() }

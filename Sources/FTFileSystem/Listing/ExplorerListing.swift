@@ -103,6 +103,9 @@ enum ExplorerListing {
 
     static func isHidden(_ name: String) -> Bool { name.utf8.first == UInt8(ascii: ".") }
 
+    /// Hidden as Finder hides it: by its name, or by the flag.
+    static func isHidden(_ record: DirectoryRecord) -> Bool { record.hasHiddenFlag || isHidden(record.name) }
+
     // MARK: Reading
 
     /// The folder's real path; it must be a folder.
@@ -166,15 +169,16 @@ enum ExplorerListing {
 
     /// Tree loading only returns navigable folders, not every entry in the directory.
     static func treeChildren(
-        path: String, includeHidden: Bool, _ fileSystem: any ExplorerFileSystem
+        path: String, includeHidden: Bool, trash: TrashFolders? = nil, _ fileSystem: any ExplorerFileSystem
     ) throws -> TreeChildren {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
         let records = try fileSystem.readDirectory(directoryPath)
         var children: [TreeChild] = []
         var keys = NameKeys()
         for record in records {
-            let hidden = isHidden(record.name)
+            let hidden = isHidden(record)
             if !includeHidden && hidden { continue }
+            if trash?.isAlwaysHidden(record.name, in: directoryPath) == true { continue }
             let entryPath = join(directoryPath, record.name)
             let kind = classify(record, path: entryPath, fileSystem)
             guard kind == .directory || kind == .symlinkDirectory else { continue }
@@ -194,7 +198,8 @@ enum ExplorerListing {
     /// their own paths (the Trash of each disk); one that can't be read has nothing to add.
     static func snapshot(
         path: String, includeHidden: Bool, sortBy: DirectorySortKey, sortDirection: SortDirection,
-        foldersFirst: Bool, alsoListing: [String] = [], _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        foldersFirst: Bool, alsoListing: [String] = [], trash: TrashFolders? = nil,
+        _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
     ) throws -> DirectorySnapshot {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
         var folders = [(path: directoryPath, records: try fileSystem.readDirectory(directoryPath))]
@@ -212,8 +217,9 @@ enum ExplorerListing {
         var labels: [String] = []
         for folder in folders {
             for record in folder.records {
-                let hidden = isHidden(record.name)
+                let hidden = isHidden(record)
                 if !includeHidden && hidden { continue }
+                if trash?.isAlwaysHidden(record.name, in: folder.path) == true { continue }
                 let entryPath = join(folder.path, record.name)
                 let kind = classify(record, path: entryPath, fileSystem)
                 let fileExtension = extensionName(ofName: record.name)
@@ -423,7 +429,8 @@ enum ExplorerListing {
             // `/` has no base name, and the response needs one: it is named as the app names it.
             name: resolvedPath == "/" ? "Macintosh HD" : name,
             fileExtension: extensionName(resolvedPath), kind: details.kind, kindLabel: details.kindLabel,
-            isHidden: isHidden(name), isSymlink: details.isSymlink, createdAt: details.createdAt,
+            isHidden: isHidden(name) || safeLstat(resolvedPath, fileSystem)?.hasHiddenFlag == true,
+            isSymlink: details.isSymlink, createdAt: details.createdAt,
             modifiedAt: details.modifiedAt, sizeBytes: details.sizeBytes, sizeStatus: details.sizeStatus,
             permissionMode: details.permissionMode)
     }
@@ -433,17 +440,22 @@ enum ExplorerListing {
     /// Suggestions resolve the deepest existing directory prefix, then match only directory-like children
     /// under that base path.
     static func pathSuggestions(
-        inputPath: String, includeHidden: Bool, limit: Int, _ fileSystem: any ExplorerFileSystem
+        inputPath: String, includeHidden: Bool, limit: Int, trash: TrashFolders? = nil,
+        _ fileSystem: any ExplorerFileSystem
     ) throws -> PathSuggestions {
         guard let query = suggestionQuery(inputPath, fileSystem) else {
             return PathSuggestions(inputPath: inputPath, basePath: nil, suggestions: [])
+        }
+        if trash?.isTrashesOfDisk(query.basePath) == true {
+            return PathSuggestions(inputPath: inputPath, basePath: query.basePath, suggestions: [])
         }
         let records = try fileSystem.readDirectory(query.basePath)
         let typed = Array(query.typedName.lowercased().utf16)
         var matches: [PathSuggestion] = []
         var keys = NameKeys()
         for record in records {
-            if !includeHidden && isHidden(record.name) { continue }
+            if !includeHidden && isHidden(record) { continue }
+            if trash?.isAlwaysHidden(record.name, in: query.basePath) == true { continue }
             if !typed.isEmpty && !Array(record.name.lowercased().utf16).starts(with: typed) { continue }
             let entryPath = join(query.basePath, record.name)
             let kind = classify(record, path: entryPath, fileSystem)

@@ -18,8 +18,14 @@ public struct FileStats: Sendable, Hashable {
     public var birthtimeMs: Int64?
     public var mtimeMs: Int64?
     public var mode: UInt32
+    /// The flag that hides an item whatever its name (UF_HIDDEN).
+    public var hasHiddenFlag: Bool
 
-    public init(type: FileType, size: Int64 = 0, birthtimeMs: Int64? = nil, mtimeMs: Int64? = nil, mode: UInt32 = 0) {
+    public init(
+        type: FileType, size: Int64 = 0, birthtimeMs: Int64? = nil, mtimeMs: Int64? = nil, mode: UInt32 = 0,
+        hasHiddenFlag: Bool = false
+    ) {
+        self.hasHiddenFlag = hasHiddenFlag
         self.type = type
         self.size = size
         self.birthtimeMs = birthtimeMs
@@ -44,11 +50,14 @@ public struct DirectoryRecord: Sendable, Hashable {
     public var tagColor: FinderTagColor?
     /// A folder the disk says holds nothing, hidden items included. Only APFS and HFS+ say so.
     public var isEmptyFolder: Bool
+    /// The flag that hides an item whatever its name, as Finder goes by. Folders, files and links can all have it.
+    public var hasHiddenFlag: Bool
 
     public init(
         name: String, type: FileType, lstat: FileStats? = nil, hasCustomIcon: Bool = false,
-        tagColor: FinderTagColor? = nil, isEmptyFolder: Bool = false
+        tagColor: FinderTagColor? = nil, isEmptyFolder: Bool = false, hasHiddenFlag: Bool = false
     ) {
+        self.hasHiddenFlag = hasHiddenFlag
         self.name = name
         self.type = type
         self.lstat = lstat
@@ -77,7 +86,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
             path,
             UInt32(
                 FT_READ_MODE | FT_READ_SIZE | FT_READ_MODIFIED | FT_READ_CREATED | FT_READ_FINDER_INFO
-                    | FT_READ_EMPTY_FOLDERS),
+                    | FT_READ_EMPTY_FOLDERS | FT_READ_HIDDEN_FLAG),
             &listing)
         guard code == 0 else { throw ExplorerError.system(code: code, path: path) }
         defer { ft_free_listing(&listing) }
@@ -96,7 +105,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
                     lstat: Self.knownStats(entry, type: type),
                     hasCustomIcon: entry.has_custom_icon != 0,
                     tagColor: FinderTagColor(rawValue: Int(entry.finder_label)),
-                    isEmptyFolder: entry.is_empty_folder != 0))
+                    isEmptyFolder: entry.is_empty_folder != 0, hasHiddenFlag: entry.has_hidden_flag != 0))
         }
         return records
     }
@@ -162,7 +171,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
             type: fileType(mode: info.st_mode), size: Int64(info.st_size),
             birthtimeMs: milliseconds(Int64(info.st_birthtimespec.tv_sec), Int32(info.st_birthtimespec.tv_nsec)),
             mtimeMs: milliseconds(Int64(info.st_mtimespec.tv_sec), Int32(info.st_mtimespec.tv_nsec)),
-            mode: UInt32(info.st_mode))
+            mode: UInt32(info.st_mode), hasHiddenFlag: info.st_flags & UInt32(UF_HIDDEN) != 0)
     }
 }
 
