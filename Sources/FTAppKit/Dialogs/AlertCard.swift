@@ -36,11 +36,13 @@ struct AlertContent {
     var onReturn: (@MainActor () -> Void)?
 
     var isStacked: Bool { stacked ?? AlertButtons.isStacked(count: buttons.count) }
+    /// A plain question lies on glass. One with more to read or fill in stays on the opaque panel.
+    @MainActor var isOnGlass: Bool { GlassSurface.isAvailable && !wide && accessory == nil }
 }
 
-/// A macOS alert as the original draws it: a bold title and a short message centred on a compact panel over the
-/// window, the buttons across the bottom, no icon. A click outside does nothing; it is answered with a button, Return
-/// or Escape.
+/// A macOS alert: a bold title and a short message on a compact panel over the window, the buttons across the bottom,
+/// no icon. A plain one lies on glass from macOS 26; otherwise the panel is opaque with the text centred, as the original
+/// draws it. A click outside does nothing; it is answered with a button, Return or Escape.
 @MainActor
 final class AlertCard: NSView, DialogPanel, ThemeApplying {
     let content: AlertContent
@@ -55,7 +57,8 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
     init(_ content: AlertContent) {
         self.content = content
         let layout = DialogLayout.Alert.self
-        let alignment: NSTextAlignment = content.wide ? .left : .center
+        // The system's alert on glass is left aligned too.
+        let alignment: NSTextAlignment = content.wide || content.isOnGlass ? .left : .center
         var titleStyle = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.body, .bold), color: { $0.palette.textPrimary },
             lineHeight: layout.titleLineHeight, alignment: alignment)
@@ -64,7 +67,8 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
         titleLabel.setAccessibilityIdentifier("alert.title")
         if let message = content.message, !message.isEmpty {
             var style = TextStyle(
-                font: ThemeFonts.sans(DesignTokens.typeScale.small), color: { $0.palette.textSecondary },
+                font: ThemeFonts.sans(DesignTokens.typeScale.small),
+                color: { [onGlass = content.isOnGlass] in onGlass ? GlassSurface.text($0) : $0.palette.textSecondary },
                 lineHeight: layout.messageLineHeight, alignment: alignment)
             style.background = { $0.palette.bgElevated }
             let label = ThemedText(message, style: style, wrapping: true)
@@ -126,6 +130,7 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
             layer?.borderWidth = CGFloat(edge.spread)
             layer?.borderColor = NSColor(edge.color).cgColor
         }
+        if content.isOnGlass { GlassSurface.install(in: self, radius: GlassSurface.alertRadius) }
     }
 
     // MARK: DialogPanel

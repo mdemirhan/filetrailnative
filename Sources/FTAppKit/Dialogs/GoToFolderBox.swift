@@ -341,7 +341,7 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
         self.theme = theme
         let palette = theme.palette
         layer?.backgroundColor = NSColor(palette.bgElevated).cgColor
-        layer?.cornerRadius = CGFloat(DesignTokens.radii.dialog)
+        layer?.cornerRadius = GlassSurface.sheetRadius
         // --elevation-dialog: the 0.5 edge; DialogScrim draws the drops under the panel.
         if let edge = palette.elevationDialog.first(where: { $0.blur == 0 && $0.spread > 0 }) {
             layer?.borderWidth = CGFloat(edge.spread)

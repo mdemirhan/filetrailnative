@@ -469,7 +469,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         self.theme = theme
         let palette = theme.palette
         layer?.backgroundColor = NSColor(palette.bgElevated).cgColor
-        layer?.cornerRadius = CGFloat(BatchRenameSheetLayout.radius)
+        layer?.cornerRadius = GlassSurface.sheetRadius
         // --elevation-dialog: the 0.5 edge; DialogScrim draws the drops under the panel.
         if let edge = palette.elevationDialog.first(where: { $0.blur == 0 && $0.spread > 0 }) {
             layer?.borderWidth = CGFloat(edge.spread)

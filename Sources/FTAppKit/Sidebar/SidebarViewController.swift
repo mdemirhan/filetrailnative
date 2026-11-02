@@ -508,7 +508,7 @@ final class SidebarTypeaheadPill: NSView {
     func configure(query: String, theme: Theme) {
         let size = DesignTokens.typeScale.callout
         label.font = ChromeColors.font(size: size)
-        label.textColor = ChromeColors.color(theme.palette.textSecondary)
+        label.textColor = ChromeColors.color(GlassSurface.text(theme))
         value.font = NSFont.monospacedDigitSystemFont(ofSize: size, weight: .regular)
         value.textColor = ChromeColors.color(theme.accent.pillText)
         value.stringValue = query
@@ -531,6 +531,7 @@ final class SidebarTypeaheadPill: NSView {
     override func layout() {
         super.layout()
         layer?.cornerRadius = bounds.height / 2
+        GlassSurface.installFloating(in: self, radius: bounds.height / 2)
         let line = SidebarText.lineHeight(label.font ?? .systemFont(ofSize: 12))
         let labelWidth = SidebarText.width(label.stringValue, font: label.font ?? .systemFont(ofSize: 12))
         label.frame = NSRect(x: 1 + Self.padding.x, y: 1 + Self.padding.y, width: labelWidth, height: line)

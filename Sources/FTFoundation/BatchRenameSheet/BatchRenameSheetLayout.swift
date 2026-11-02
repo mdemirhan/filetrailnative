@@ -9,7 +9,6 @@ public enum BatchRenameSheetLayout {
     public static let width = 680.0
     public static let viewportInset = 48.0
     public static let heightInset = DialogLayout.sheetTop + 24.0
-    public static var radius: Double { DesignTokens.radii.dialog }
     public static var controlHeight: Double { DesignTokens.controlHeights.regular }
 
     /// `.batch-rename-header`: `gap: 8px; padding: 20px 20px 14px`.

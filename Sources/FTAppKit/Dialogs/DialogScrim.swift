@@ -207,6 +207,8 @@ final class DialogScrim: NSView {
     /// not by the panel's layer: a layer's `shadowOffset` went upward under the sheets (17, 218) though down under the
     /// alert with the same value, and a layer takes only one of the two drops. A context's shadow goes the same way.
     private func drawPanelShadow() {
+        // Glass has its own shadow, and the fill here would cover what it shows through.
+        guard !GlassSurface.holds(panel) else { return }
         let palette = AppearanceModel.shared.theme.palette
         let radius = panel.layer?.cornerRadius ?? CGFloat(DesignTokens.radii.dialog)
         let shape = NSBezierPath(roundedRect: panel.frame, xRadius: radius, yRadius: radius)

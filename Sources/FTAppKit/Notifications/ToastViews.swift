@@ -115,6 +115,7 @@ final class ToastCardView: NSView, ThemeApplying {
     func applyTheme(_ theme: Theme) {
         self.theme = theme
         MenuSurface.apply(to: layer, theme: theme, borderWidth: metrics.borderWidth)
+        GlassSurface.installFloating(in: self, radius: bounds.height / 2)
         for view in subviews { view.applyTheme(theme, throughSubviews: true) }
     }
 
@@ -139,6 +140,7 @@ final class ToastCardView: NSView, ThemeApplying {
 
     override func layout() {
         super.layout()
+        GlassSurface.installFloating(in: self, radius: bounds.height / 2)
         let border = metrics.borderWidth
         let body = max(metrics.iconSize, Double(lineHeight))
         let top = border + metrics.paddingTop

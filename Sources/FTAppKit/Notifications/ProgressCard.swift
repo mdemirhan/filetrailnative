@@ -155,8 +155,8 @@ final class ProgressCardView: NSView, ThemeApplying {
         let scale = DesignTokens.typeScale
         return (
             TextStyle(font: ThemeFonts.sans(scale.body, .semibold), color: { $0.palette.textPrimary }),
-            TextStyle(font: ThemeFonts.sans(scale.callout), color: { $0.palette.textSecondary }),
-            TextStyle(font: ThemeFonts.sans(scale.small), color: { $0.palette.textSecondary }),
+            TextStyle(font: ThemeFonts.sans(scale.callout), color: { GlassSurface.text($0) }),
+            TextStyle(font: ThemeFonts.sans(scale.small), color: { GlassSurface.text($0) }),
             TextStyle(font: ThemeFonts.sans(scale.small), color: { $0.palette.textPrimary })
         )
     }
@@ -197,6 +197,7 @@ final class ProgressCardView: NSView, ThemeApplying {
     func applyTheme(_ theme: Theme) {
         self.theme = theme
         MenuSurface.apply(to: layer, theme: theme, borderWidth: metrics.borderWidth)
+        GlassSurface.installFloating(in: self, radius: GlassSurface.cardRadius)
         for view in subviews { view.applyTheme(theme, throughSubviews: true) }
     }
 
@@ -227,6 +228,7 @@ final class ProgressCardView: NSView, ThemeApplying {
 
     override func layout() {
         super.layout()
+        GlassSurface.installFloating(in: self, radius: GlassSurface.cardRadius)
         let border = metrics.borderWidth
         let left = border + metrics.paddingHorizontal
         let innerWidth = bounds.width - 2 * left

@@ -78,6 +78,37 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
+        // What floats briefly lies on glass, as the system's alert does; a sheet to fill in stays opaque, as the system's
+        // sheet does, with its corners.
+        @available(macOS 26, *)
+        @Test func anAlertIsOnGlassAndTheGoToBoxIsOpaque() async throws {
+            let (harness, tab) = try await open()
+            let window = try #require(tab.window)
+            let box = try openBox(tab)
+            #expect(!GlassSurface.holds(box))
+            #expect(box.layer?.cornerRadius == 20)
+            box.onClose()
+            let alert = AlertCard(AlertContent(title: "T", message: "M", buttons: [AlertButton(title: "OK") {}]))
+            let scrim = DialogScrim(panel: alert, placement: .centered)
+            scrim.present(in: window)
+            #expect(GlassSurface.holds(alert))
+            // A press on the panel's own room stays the panel's, not the glass's.
+            let center = NSPoint(x: alert.bounds.midX, y: 4)
+            #expect(alert.hitTest(alert.convert(center, to: alert.superview)) === alert)
+            scrim.dismiss()
+            // One with more to read or fill in stays opaque, its text as it was.
+            let prompt = AlertCard(
+                AlertContent(
+                    title: "T", message: "M", buttons: [AlertButton(title: "OK") {}],
+                    accessory: TextPromptAccessory(text: "", label: "Name", selectsAll: true)))
+            let wide = AlertCard(AlertContent(title: "T", buttons: [AlertButton(title: "OK") {}], wide: true))
+            #expect(!GlassSurface.holds(prompt))
+            #expect(!GlassSurface.holds(wide))
+            #expect(prompt.layer?.cornerRadius == CGFloat(DesignTokens.radii.dialog))
+            #expect(prompt.messageLabel?.textColor == NSColor(AppearanceModel.shared.theme.palette.textSecondary))
+            await close(harness)
+        }
+
         // The toolbar's items dim as the dialog comes up and light again as it goes, with no other change to tell them.
         // F-848 B-DLG-064
         @Test func theToolbarDimsUnderADialogAtOnce() async throws {
