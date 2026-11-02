@@ -37,6 +37,77 @@ import Testing
         return menu
     }
 
+    /// A menu of 100 files in a window, so that its list takes mouse events; the list's height is 240.
+    private func longMenu() throws -> (menu: ClipboardMenuView, list: ClipboardMenuList, window: NSWindow) {
+        let paths = (0..<100).map { "/f/\($0).txt" }
+        let state = ClipboardRules.set(.copy, paths, capturedAt: "t")
+        let menu = ClipboardMenuView(summary: try #require(ClipboardRules.describe(state)), pasteHint: "")
+        menu.frame = NSRect(x: 0, y: 0, width: 300, height: menu.fittingSize(viewportWidth: 1200).height)
+        let window = NSWindow(
+            contentRect: menu.frame, styleMask: [.borderless], backing: .buffered, defer: true)
+        window.contentView = menu
+        menu.layoutSubtreeIfNeeded()
+        let list = try #require(identified("clipboardPopover.list", in: menu).first as? ClipboardMenuList)
+        list.layoutSubtreeIfNeeded()
+        return (menu, list, window)
+    }
+
+    /// Presses, and optionally drags and lets go, the list's scrollbar at heights in the list.
+    private func press(_ list: ClipboardMenuList, at y: Double, dragTo end: Double? = nil, in window: NSWindow) throws {
+        func event(_ type: NSEvent.EventType, _ y: Double) throws -> NSEvent {
+            let point = list.convert(NSPoint(x: list.bounds.width - 5, y: y), to: nil)
+            return try #require(
+                NSEvent.mouseEvent(
+                    with: type, location: point, modifierFlags: [], timestamp: 0, windowNumber: window.windowNumber,
+                    context: nil, eventNumber: 0, clickCount: 1, pressure: 1))
+        }
+        let hit = window.contentView?.hitTest(list.convert(NSPoint(x: list.bounds.width - 5, y: y), to: nil))
+        #expect(hit === list)
+        list.mouseDown(with: try event(.leftMouseDown, y))
+        if let end { list.mouseDragged(with: try event(.leftMouseDragged, end)) }
+        list.mouseUp(with: try event(.leftMouseUp, end ?? y))
+    }
+
+    // Scrolled so that a row straddles the pinned heading's bottom, the row shows only below the heading.
+    @Test func rowsDoNotShowBehindThePinnedHeading() throws {
+        let (menu, list, _) = try longMenu()
+        // A row starts 12 pt into the pinned heading's 24; made active, it has a fill to find.
+        list.onScroll(132)
+        let row = try #require(rows(menu).first { list.convert($0.bounds, from: $0).minY == 12 })
+        row.onHover()
+        list.layoutSubtreeIfNeeded()
+        let image = try #require(list.bitmapImageRepForCachingDisplay(in: list.bounds))
+        list.cacheDisplay(in: list.bounds, to: image)
+        let scale = Double(image.pixelsWide) / list.bounds.width
+        func alpha(y: Double) -> Double {
+            Double(image.colorAt(x: Int(100 * scale), y: Int(y * scale))?.alphaComponent ?? 0)
+        }
+        #expect(alpha(y: 18) == 0)
+        #expect(alpha(y: 30) > 0)
+    }
+
+    @Test func draggingTheScrollbarsThumbScrollsTheList() throws {
+        let (menu, list, window) = try longMenu()
+        let limit = menu.modelForTests.contentHeight - menu.modelForTests.listHeight
+        try press(list, at: 5, dragTo: 1000, in: window)
+        #expect(menu.modelForTests.scrollTop == limit)
+        try press(list, at: 235, dragTo: -5, in: window)
+        #expect(menu.modelForTests.scrollTop == 0)
+    }
+
+    @Test func clickingTheScrollbarsTrackPagesOrJumpsAsTheSystemIsSet() throws {
+        let (menu, list, window) = try longMenu()
+        let height = menu.modelForTests.listHeight
+        let limit = menu.modelForTests.contentHeight - height
+        list.jumpsToClickedSpot = false
+        try press(list, at: 200, in: window)
+        // A page is what the pinned heading leaves of the list.
+        #expect(menu.modelForTests.scrollTop == height - 24)
+        list.jumpsToClickedSpot = true
+        try press(list, at: height - 1, in: window)
+        #expect(menu.modelForTests.scrollTop == limit)
+    }
+
     // F-800 F-801: the list reads from the top down: the folder's heading, then its items in the order they were copied,
     // none under the pinned heading; the texts are not cut short and start at the padding, as the original's.
     @Test func theListIsDrawnFromTheTopDown() throws {

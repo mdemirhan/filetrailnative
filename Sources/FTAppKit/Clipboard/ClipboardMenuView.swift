@@ -344,12 +344,22 @@ final class ClipboardMenuList: NSView {
     var contentHeight = 0.0
     /// How much of its top the rows leave to the pinned heading.
     var hiddenTop = 0.0 {
-        didSet { needsLayout = hiddenTop != oldValue }
+        didSet {
+            if hiddenTop != oldValue { needsLayout = true }
+        }
+    }
+    /// Scroll Bars' "Click in the scroll bar to" in System Settings: to the spot clicked, or a page that way.
+    var jumpsToClickedSpot = UserDefaults.standard.bool(forKey: "AppleScrollerPagingBehavior")
+    /// Where in the thumb the pointer holds it, while it is dragged.
+    private var thumbGrab: Double? {
+        didSet { needsDisplay = true }
     }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
         clipsToBounds = true
+        // The rows stop at the pinned heading rather than running on behind it.
+        content.clipsToBounds = true
         addSubview(content)
         setAccessibilityIdentifier("clipboardPopover.list")
     }
@@ -367,19 +377,69 @@ final class ClipboardMenuList: NSView {
         onScroll(-Double(event.scrollingDeltaY) * (event.hasPreciseScrollingDeltas ? 1 : 10))
     }
 
+    // MARK: Scrollbar
+
+    private var showsBar: Bool { scrolls && contentHeight > bounds.height }
+
+    private var track: NSRect {
+        let width = ClipboardLayout.Menu.scrollbarWidth
+        return NSRect(x: bounds.width - width, y: 0, width: width, height: bounds.height)
+    }
+
+    private var scrollRange: Double { max(1, contentHeight - bounds.height) }
+
+    private var thumbHeight: Double {
+        max(ClipboardLayout.Menu.scrollbarWidth * 2, bounds.height * bounds.height / contentHeight)
+    }
+
+    private var thumb: NSRect {
+        let offset = (bounds.height - thumbHeight) * scrollTop / scrollRange
+        return NSRect(x: track.minX, y: offset, width: track.width, height: thumbHeight)
+    }
+
+    private func location(of event: NSEvent) -> NSPoint { convert(event.locationInWindow, from: nil) }
+
+    /// Scrolls so that the thumb's top is `thumbTop` down the track.
+    private func moveThumb(to thumbTop: Double) {
+        let travel = max(1, bounds.height - thumbHeight)
+        onScroll(thumbTop / travel * scrollRange - scrollTop)
+    }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        if !isHidden, showsBar, track.contains(convert(point, from: superview)) { return self }
+        return super.hitTest(point)
+    }
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func mouseDown(with event: NSEvent) {
+        let point = location(of: event)
+        if thumb.contains(point) {
+            thumbGrab = point.y - thumb.minY
+        } else if jumpsToClickedSpot {
+            thumbGrab = thumbHeight / 2
+            moveThumb(to: point.y - thumbHeight / 2)
+        } else {
+            let page = bounds.height - hiddenTop
+            onScroll(point.y < thumb.minY ? -page : page)
+        }
+    }
+
+    override func mouseDragged(with event: NSEvent) {
+        guard let thumbGrab else { return }
+        moveThumb(to: location(of: event).y - thumbGrab)
+    }
+
+    override func mouseUp(with event: NSEvent) { thumbGrab = nil }
+
     override func draw(_ dirtyRect: NSRect) {
-        guard scrolls, contentHeight > bounds.height else { return }
+        guard showsBar else { return }
         let layout = ClipboardLayout.Menu.self
         let palette = ChromeColors.palette(for: self)
-        let track = NSRect(
-            x: bounds.width - layout.scrollbarWidth, y: 0, width: layout.scrollbarWidth, height: bounds.height)
-        let thumbHeight = max(layout.scrollbarWidth * 2, bounds.height * bounds.height / contentHeight)
-        let travel = bounds.height - thumbHeight
-        let offset = travel * scrollTop / max(1, contentHeight - bounds.height)
-        let thumb = NSRect(x: track.minX, y: offset, width: track.width, height: thumbHeight)
-            .insetBy(dx: layout.scrollbarThumbInset, dy: layout.scrollbarThumbInset)
-        NSColor(palette.contextMenuText.withAlpha(palette.contextMenuText.alpha * layout.scrollbarThumbAlpha)).setFill()
-        NSBezierPath(roundedRect: thumb, xRadius: thumb.width / 2, yRadius: thumb.width / 2).fill()
+        let shown = thumb.insetBy(dx: layout.scrollbarThumbInset, dy: layout.scrollbarThumbInset)
+        let alpha = thumbGrab == nil ? layout.scrollbarThumbAlpha : layout.scrollbarThumbActiveAlpha
+        NSColor(palette.contextMenuText.withAlpha(palette.contextMenuText.alpha * alpha)).setFill()
+        NSBezierPath(roundedRect: shown, xRadius: shown.width / 2, yRadius: shown.width / 2).fill()
     }
 }
 
