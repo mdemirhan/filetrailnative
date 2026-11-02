@@ -57,14 +57,14 @@ struct AppStateStoreTests {
     @Test func writesADeliberateChangePromptly() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
-            t.store.updatePreferences(["foldersFirst": .bool(false)])
-            t.store.updatePreferences(["favoritesExpanded": .bool(false)])
+            t.store.updatePreferences(["notificationsEnabled": .bool(false)])
+            t.store.updatePreferences(["markClipboardItems": .bool(false)])
             // A burst of changes is one write, a moment later.
             #expect(t.timer.pendingDelays == [150])
             t.timer.run()
 
             #expect(t.files.written.count == 1)
-            #expect(Kit.readFile(t.path)["preferences"]?["foldersFirst"] == .bool(false))
+            #expect(Kit.readFile(t.path)["preferences"]?["notificationsEnabled"] == .bool(false))
 
             // Forgetting a folder Go To does not list changes nothing.
             t.store.forgetVisitedFolder("/Users/demo/gone")
@@ -174,7 +174,7 @@ struct AppStateStoreTests {
             let t = Timed(folder)
             t.store.updatePreferences(["lastVisitedPath": .string("/Users/demo/work")])
             t.store.addExplorerWindow(id: "window-a", bounds: Kit.bounds, session: t.store.createWindowSession())
-            t.store.updatePreferences(["foldersFirst": .bool(false)])
+            t.store.updatePreferences(["markClipboardItems": .bool(false)])
             // The prompt write takes the place of the long timer.
             #expect(t.timer.pendingDelays == [150])
             t.timer.run()
@@ -185,7 +185,7 @@ struct AppStateStoreTests {
 
             // The same values again, and the same window, are not changes.
             t.store.updatePreferences([
-                "foldersFirst": .bool(false), "lastVisitedPath": .string("/Users/demo/work"),
+                "markClipboardItems": .bool(false), "lastVisitedPath": .string("/Users/demo/work"),
             ])
             t.store.setExplorerWindowBounds("window-a", t.store.explorerWindows()[0].bounds)
             t.timer.run()
@@ -302,6 +302,81 @@ struct AppStateStoreTests {
             // same.
             store.updateWindowPreferences("window-b", ["treeWidth": .number(333)])
             #expect(timer.delays == [150])
+        }
+    }
+
+    @Test func waitsWhenAnotherTabComesToTheFrontWithItsOwnSettings() throws {
+        try Kit.withFolder { folder in
+            let t = Timed(folder)
+            t.store.addExplorerWindow(id: "window-a", bounds: Kit.bounds, session: t.store.createWindowSession())
+            for hidden in [true, false, true] {
+                t.store.updateWindowPreferences(
+                    "window-a",
+                    [
+                        "includeHidden": .bool(hidden), "foldersFirst": .bool(!hidden),
+                        "favoritesExpanded": .bool(!hidden), "locationsExpanded": .bool(!hidden),
+                    ])
+            }
+            #expect(t.files.written.isEmpty)
+            #expect(t.timer.pendingDelays == [5 * 60 * 1000])
+
+            t.store.flush()
+            let saved = Kit.readFile(t.path)
+            #expect(saved["preferences"]?["includeHidden"] == .bool(true))
+            #expect(saved["windows"]?.array?.first?["session"]?["includeHidden"] == .bool(true))
+        }
+    }
+
+    @Test func waitsWhenWindowsWithDifferentPanelsTakeTurnsNavigating() throws {
+        try Kit.withFolder { folder in
+            let t = Timed(folder)
+            t.store.addExplorerWindow(id: "window-a", bounds: Kit.bounds, session: t.store.createWindowSession())
+            t.store.addExplorerWindow(id: "window-b", bounds: Kit.bounds, session: t.store.createWindowSession())
+            t.store.updateWindowPreferences("window-a", ["treeWidth": .number(300)])
+            t.store.updateWindowPreferences("window-b", ["treeWidth": .number(400)])
+            t.timer.run()
+            #expect(t.files.written == ["app-state.json"])
+
+            for (window, width, folder) in [
+                ("window-a", 300.0, "/Users/demo/a"), ("window-b", 400.0, "/Users/demo/b"),
+                ("window-a", 300.0, "/Users/demo/c"),
+            ] {
+                t.store.updateWindowPreferences(
+                    window, ["treeWidth": .number(width), "lastVisitedPath": .string(folder)])
+            }
+            #expect(t.files.written.count == 1)
+            #expect(t.timer.pendingDelays == [5 * 60 * 1000])
+
+            t.store.flush()
+            let saved = Kit.readFile(t.path)
+            // The app's value is the window's that sent one last; each window keeps its own.
+            #expect(saved["preferences"]?["treeWidth"] == .number(300))
+            let widths = saved["windows"]?.array?.compactMap { $0["session"]?["treeWidth"]?.number }
+            #expect(widths == [400, 300])
+
+            // A change to its panels is still written promptly, and so is a setting sent through a window.
+            t.store.updateWindowPreferences("window-a", ["treeWidth": .number(310)])
+            #expect(t.timer.pendingDelays == [150])
+            t.timer.run()
+            t.store.updateWindowPreferences("window-b", ["notificationsEnabled": .bool(false)])
+            #expect(t.timer.pendingDelays == [150])
+        }
+    }
+
+    @Test func savesTheAppsCopyOfAPanelWhenOnlyThatChanged() throws {
+        try Kit.withFolder { folder in
+            let t = Timed(folder)
+            t.store.addExplorerWindow(id: "window-a", bounds: Kit.bounds, session: t.store.createWindowSession())
+            t.store.addExplorerWindow(id: "window-b", bounds: Kit.bounds, session: t.store.createWindowSession())
+            t.store.updateWindowPreferences("window-a", ["treeWidth": .number(300)])
+            t.store.updateWindowPreferences("window-b", ["treeWidth": .number(400)])
+            t.timer.run()
+
+            // Window A's own value is unchanged; only the app's copy moves, and it still reaches the file.
+            t.store.updateWindowPreferences("window-a", ["treeWidth": .number(300)])
+            #expect(t.timer.pendingDelays == [5 * 60 * 1000])
+            t.store.flush()
+            #expect(Kit.readFile(t.path)["preferences"]?["treeWidth"] == .number(300))
         }
     }
 

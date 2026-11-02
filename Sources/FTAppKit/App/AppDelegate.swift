@@ -323,9 +323,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 appearance.apply(accent: accent)
                 return .applied
             }
-            AutomationPrefs.register("zoomPercent") { value, _ in
-                value.number == nil ? .failed("zoomPercent \(value)") : .applied
-            }
         }
     #endif
 

@@ -389,8 +389,6 @@ public typealias ShortcutOverrides = [String: [String]]
 /// Constants and small functions of appPreferences.ts.
 public enum AppPreferenceLimits {
     public static let openTabsLimit = 25
-    public static let zoomPercentMin = 75
-    public static let zoomPercentMax = 150
     public static let openItemLimitMin = 1
     public static let openItemLimitMax = 50
     public static let treeWidthRange = 220...520
@@ -420,10 +418,6 @@ public enum AppPreferenceLimits {
     /// `clampPaneWidth`.
     public static func clampPaneWidth(_ value: Double, _ range: ClosedRange<Int>) -> Int {
         clampRounded(value, Double(range.lowerBound), Double(range.upperBound))
-    }
-
-    public static func clampZoomPercent(_ value: Double) -> Int {
-        clampRounded(value, Double(zoomPercentMin), Double(zoomPercentMax))
     }
 
     public static func clampOpenItemLimit(_ value: Double) -> Int {

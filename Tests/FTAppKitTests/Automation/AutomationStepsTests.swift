@@ -193,7 +193,7 @@
             func apply(_ prefs: [String: Scenario.PrefValue]) -> AutomationRunner.Outcome {
                 AutomationPrefs.apply(prefs, context: .init(controller: nil, window: window, prefs: prefs))
             }
-            #expect(apply(["zoomPercent": .number(100), "accent": .string("#007AFF")]).status == .ok)
+            #expect(apply(["accent": .string("#007AFF")]).status == .ok)
             let partial = apply(["includeHidden": .bool(true), "openItemLimit": .number(7)])
             #expect(partial.status == .partial)
             #expect(partial.message == "unsupported: includeHidden, openItemLimit")

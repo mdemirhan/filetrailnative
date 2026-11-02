@@ -198,8 +198,6 @@ public enum PreferencesSanitizer {
             theme: choice(record, "theme", defaults.theme),
             accent: record["accent"]?.string.map { AppPreferenceLimits.normalizeAccentColor($0) ?? defaults.accent }
                 ?? defaults.accent,
-            zoomPercent: AppPreferenceLimits.clampZoomPercent(
-                record["zoomPercent"]?.number ?? Double(defaults.zoomPercent)),
             viewMode: viewMode(record["viewMode"]),
             searchViewMode: viewMode(record["searchViewMode"], global.searchViewMode),
             sortBy: choice(record, "sortBy", defaults.sortBy),

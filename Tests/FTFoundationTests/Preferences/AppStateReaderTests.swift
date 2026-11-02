@@ -135,7 +135,6 @@ struct AppStateReaderTests {
             (try? AppStateReader.read(data: JSONEncoder().encode(state), defaults: defaults))?.preferences ?? defaults
 
         #expect(reloaded.accent == "#007aff")
-        #expect(reloaded.zoomPercent == 150)
         #expect(reloaded.sortBy == .name)
         #expect(reloaded.sortDirection == .asc)
         #expect(reloaded.topToolbarItems == [.back, .search, .title, .clipboard, .viewOptions])
@@ -146,7 +145,7 @@ struct AppStateReaderTests {
         for removed in [
             "uiFontFamily", "tabStyle", "highlightHoveredItems", "notificationDurationSeconds", "notifyClipboardItems",
             "uiFontSize", "uiFontWeight", "favoritesPaneHeight", "typeaheadEnabled", "typeaheadDebounceMs",
-            "searchResultsFilterScope",
+            "searchResultsFilterScope", "zoomPercent",
         ] {
             #expect(!keys.contains(removed), "\(removed)")
         }
@@ -202,7 +201,7 @@ struct AppStateReaderTests {
                 {"theme": "dark",
                  "shortcutOverrides": {"newTab": ["option+cmd+n", "Cmd+C", "D"], "duplicateSelection": [],
                                        "closeTab": ["Cmd+W"], "noSuchCommand": ["Cmd+J"]},
-                 "accent": "#2cb5a0", "zoomPercent": 115, "viewMode": "details", "sortBy": "modified",
+                 "accent": "#2cb5a0", "viewMode": "details", "sortBy": "modified",
                  "sortDirection": "desc", "foldersFirst": false, "compactListView": true,
                  "detailColumns": {"size": true, "modified": false, "permissions": true, "kind": true, "created": false},
                  "detailColumnOrder": ["kind", "size", "modified", "permissions", "created"],
@@ -235,7 +234,6 @@ struct AppStateReaderTests {
         #expect(reloaded.preferences == applied)
         #expect(applied.shortcutOverrides == ["newTab": ["Cmd+Option+N"], "duplicateSelection": []])
         #expect(applied.accent == "#2cb5a0")
-        #expect(applied.zoomPercent == 115)
         #expect(applied.openTabs.count == 2)
         #expect(applied.activeTabIndex == 1)
         #expect(applied.favorites.map(\.icon) == [.documents, .applications])
@@ -335,11 +333,10 @@ struct AppStateReaderTests {
     // F-134
     @Test func halfPixelWidthsRoundUpAndBadBoundsFallBack() {
         let state = Self.preferences(
-            "{\"preferences\": {\"treeWidth\": 220.5, \"inspectorWidth\": 260.5, \"zoomPercent\": 75.5, \"openItemLimit\": 1.5}}"
+            "{\"preferences\": {\"treeWidth\": 220.5, \"inspectorWidth\": 260.5, \"openItemLimit\": 1.5}}"
         )
         #expect(state.treeWidth == 221)
         #expect(state.inspectorWidth == 261)
-        #expect(state.zoomPercent == 76)
         #expect(state.openItemLimit == 2)
         #expect(AppStateReader.windowState(.object(["width": .number(319), "height": .number(6001)])).width == 1200)
         #expect(AppStateReader.windowState(.object(["width": .number(320), "height": .number(6000)])).height == 6000)

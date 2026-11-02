@@ -15,7 +15,6 @@ struct AppStateRoundTripTests {
           "preferences": {
             "theme": "light",
             "accent": "#34c759",
-            "zoomPercent": 110,
             "viewMode": "details",
             "searchViewMode": "list",
             "sortBy": "modified",
@@ -144,7 +143,7 @@ struct AppStateRoundTripTests {
         #expect(lines.dropFirst().first == "  \"preferences\": {")
         #expect(lines.dropFirst(2).first == "    \"theme\": \"light\",")
         let order = [
-            "\"theme\"", "\"accent\"", "\"zoomPercent\"", "\"openTabs\"", "\"favorites\"", "\"batchRenamePresets\"",
+            "\"theme\"", "\"accent\"", "\"openTabs\"", "\"favorites\"", "\"batchRenamePresets\"",
         ]
         let positions = order.compactMap { key in text.range(of: "    \(key):")?.lowerBound }
         #expect(positions == positions.sorted())

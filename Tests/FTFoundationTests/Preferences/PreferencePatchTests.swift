@@ -99,16 +99,15 @@ struct PreferencePatchTests {
     // T-5e2111de
     @Test func takesTheLimitsOfEachNumberRange() {
         let low = Self.receive(
-            "{\"zoomPercent\": 75, \"treeWidth\": 220, \"inspectorWidth\": 260, \"openItemLimit\": 1, \"activeTabIndex\": 0}"
+            "{\"treeWidth\": 220, \"inspectorWidth\": 260, \"openItemLimit\": 1, \"activeTabIndex\": 0}"
         )
         let high = Self.receive(
-            "{\"zoomPercent\": 150, \"treeWidth\": 520, \"inspectorWidth\": 480, \"openItemLimit\": 50}")
+            "{\"treeWidth\": 520, \"inspectorWidth\": 480, \"openItemLimit\": 50}")
         let defaults = AppPreferences.defaults()
         for patch in [low, high] {
-            #expect(patch.count >= 4)
+            #expect(patch.count >= 3)
             // The store applies a limit as it is.
             let applied = PreferencesSanitizer.apply(patch, to: defaults, defaults: defaults)
-            #expect(Double(applied.zoomPercent) == patch["zoomPercent"]?.number)
             #expect(Double(applied.treeWidth) == patch["treeWidth"]?.number)
             #expect(Double(applied.inspectorWidth) == patch["inspectorWidth"]?.number)
             #expect(Double(applied.openItemLimit) == patch["openItemLimit"]?.number)
@@ -121,10 +120,9 @@ struct PreferencePatchTests {
         current.treeWidth = 300
         current.foldersFirst = false
         let applied = PreferencesSanitizer.apply(
-            Self.receive("{\"viewMode\": \"details\", \"zoomPercent\": 500, \"sortBy\": \"bogus\", \"isAdmin\": true}"),
+            Self.receive("{\"viewMode\": \"details\", \"sortBy\": \"bogus\", \"isAdmin\": true}"),
             to: current, defaults: defaults)
         #expect(applied.viewMode == .details)
-        #expect(applied.zoomPercent == 150)
         // A bad value takes the default it is applied over.
         #expect(applied.sortBy == defaults.sortBy)
         #expect(applied.treeWidth == 300)

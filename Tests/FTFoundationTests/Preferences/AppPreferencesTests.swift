@@ -11,8 +11,6 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.clampPaneWidth(99.2, 200...320) == 200)
         #expect(AppPreferenceLimits.clampOpenItemLimit(0.3) == 1)
         #expect(AppPreferenceLimits.clampOpenItemLimit(51.2) == 50)
-        #expect(AppPreferenceLimits.clampZoomPercent(106.8) == 107)
-        #expect(AppPreferenceLimits.clampZoomPercent(500) == 150)
     }
 
     // T-c3b4e67c F-013 F-070
@@ -47,7 +45,6 @@ struct AppPreferencesTests {
         let defaults = AppPreferences.defaults()
         #expect(defaults.theme == .auto)
         #expect(defaults.accent == "#007aff")
-        #expect(defaults.zoomPercent == 100)
         #expect(defaults.viewMode == .icons)
         #expect(defaults.searchViewMode == .details)
         #expect(defaults.sortBy == .name)
@@ -151,7 +148,7 @@ struct AppPreferencesTests {
         // Every preference key is one of the 57 the original has.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(AppPreferences.keys))
-        #expect(AppPreferences.keys.count == 57)
+        #expect(AppPreferences.keys.count == 56)
     }
 
     @Test func filesRoundTripWithTheSameJSONKeys() throws {

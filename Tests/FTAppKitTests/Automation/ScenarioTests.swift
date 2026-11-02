@@ -18,7 +18,7 @@
                   "now": "2026-10-13T14:38:00", "setup": { "emptyFolders": [] },
                   "steps": [
                     { "step": "window", "width": 1200, "height": 760 },
-                    { "step": "prefs", "prefs": { "theme": "dark", "zoomPercent": 100, "foldersFirst": true } },
+                    { "step": "prefs", "prefs": { "theme": "dark", "foldersFirst": true } },
                     { "step": "open", "path": "app/src/components" },
                     { "step": "select", "names": ["a.txt", "b.txt"] },
                     { "step": "key", "key": "ArrowDown", "modifiers": ["cmd"] },
@@ -37,7 +37,7 @@
             #expect(
                 scenario.steps == [
                     .window(width: 1200, height: 760),
-                    .prefs(["theme": .string("dark"), "zoomPercent": .number(100), "foldersFirst": .bool(true)]),
+                    .prefs(["theme": .string("dark"), "foldersFirst": .bool(true)]),
                     .open(path: "app/src/components"),
                     .select(names: ["a.txt", "b.txt"]),
                     .key(key: "ArrowDown", modifiers: ["cmd"]),

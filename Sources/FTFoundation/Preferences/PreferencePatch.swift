@@ -4,7 +4,7 @@ import Foundation
 extension AppPreferences {
     /// The preference keys, in the order of `DEFAULT_APP_PREFERENCES`.
     public static let keys: [String] = [
-        "theme", "accent", "zoomPercent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
+        "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
         "compactListView", "compactDetailsView", "compactIconView", "compactTreeView", "singleClickExpandTreeItems",
         "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns", "searchColumnOrder",
         "searchColumnWidths", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",

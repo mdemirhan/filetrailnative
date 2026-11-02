@@ -6,8 +6,6 @@ import Foundation
 public struct AppPreferences: Codable, Equatable, Sendable {
     public var theme: ThemePreference
     public var accent: String
-    /// Kept so files round-trip and imports work; nothing uses it.
-    public var zoomPercent: Int
     public var viewMode: ExplorerViewMode
     /// The view search results are shown in, for the tab on screen; List to begin with.
     public var searchViewMode: ExplorerViewMode
@@ -76,7 +74,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     /// DEFAULT_APP_PREFERENCES, with the theme a new install starts with (`createDefaultPreferences`).
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
         AppPreferences(
-            theme: theme, accent: AppPreferenceLimits.defaultAccent, zoomPercent: 100, viewMode: .icons,
+            theme: theme, accent: AppPreferenceLimits.defaultAccent, viewMode: .icons,
             searchViewMode: .details, sortBy: .name, sortDirection: .asc, foldersFirst: true, compactListView: false,
             compactDetailsView: false, compactIconView: false, compactTreeView: false,
             singleClickExpandTreeItems: false, detailColumns: .defaults,

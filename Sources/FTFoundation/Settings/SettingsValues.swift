@@ -48,7 +48,7 @@ public enum SettingsDensity: String, CaseIterable, Sendable {
 public enum SettingsValues {
     /// The keys the Settings window shows and writes (the window's `payload`).
     public static let payloadKeys: [String] = [
-        "theme", "accent", "zoomPercent", "compactListView", "compactDetailsView", "compactIconView",
+        "theme", "accent", "compactListView", "compactDetailsView", "compactIconView",
         "compactTreeView", "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder", "searchColumns",
         "searchColumnOrder", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
         "restoreSessionOnStartup", "favorites", "favoritesPlacement", "terminalApp", "defaultTextEditor",

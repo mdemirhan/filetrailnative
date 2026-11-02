@@ -28,7 +28,7 @@
 
         /// Every preference key of the original (`DEFAULT_APP_PREFERENCES`, appPreferences.ts:390-448).
         static let originalKeys: Set<String> = [
-            "theme", "accent", "zoomPercent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
+            "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
             "compactListView", "compactDetailsView", "compactIconView", "compactTreeView",
             "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns",
             "searchColumnOrder", "searchColumnWidths", "notificationsEnabled", "markClipboardItems",
@@ -158,9 +158,6 @@
                 return AutomationCommands.sort(
                     by: "name", ascending: direction == "asc", controller: controller, window: context.window)
                     ? .applied : .unsupported("sortDirection")
-            },
-            "zoomPercent": { value, _ in
-                value.number == 100 ? .applied : .unsupported("zoomPercent \(describe(value))")
             },
             "density": { value, _ in
                 switch value.string {

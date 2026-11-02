@@ -16,11 +16,12 @@ public final class AppStateStore: @unchecked Sendable {
     /// How long after the first unsaved change, at most, navigation waits for a write.
     public static let deferredSaveDelayMilliseconds = 5 * 60 * 1000
 
-    /// The keys that only follow where the user is: the view mode and the sort orders belong to the tab on screen, so
-    /// they change whenever another tab comes to the front.
+    /// The keys that only follow where the user is: the view mode, the sort orders and the other settings of a tab belong
+    /// to the tab on screen, so they change whenever another tab comes to the front.
     static let navigationKeys: Set<String> = [
         "lastVisitedPath", "lastVisitedFavoritePath", "treeRootPath", "openTabs", "activeTabIndex", "viewMode",
         "searchViewMode", "sortBy", "sortDirection", "searchResultsSortBy", "searchResultsSortDirection",
+        "includeHidden", "foldersFirst", "favoritesExpanded", "locationsExpanded",
     ]
 
     private enum StoreFile: Hashable { case state, visits }
@@ -137,24 +138,24 @@ public final class AppStateStore: @unchecked Sendable {
     @discardableResult
     public func updateWindowPreferences(_ windowID: String, _ patch: [String: JSONNode]) -> AppPreferences {
         locked {
-            let preferences = update(patch)
-            guard let window = windows.first(where: { Self.sameID($0.id, windowID) }) else { return preferences }
+            guard let window = windows.first(where: { Self.sameID($0.id, windowID) }) else { return update(patch) }
+            let (preferences, appKeys) = apply(patch)
             let current = window.session.applied(to: preferences)
             let session = PreferencesSanitizer.apply(
                 WindowSessionKeys.pick(patch), to: current, defaults: current
             ).windowSession
             let before = Self.sessionNode(window.session)
             let after = Self.sessionNode(session)
-            let changedKeys = WindowSessionKeys.all.filter { before[$0] != after[$0] }
-            if !changedKeys.isEmpty {
+            let windowKeys = WindowSessionKeys.all.filter { before[$0] != after[$0] }
+            if !windowKeys.isEmpty {
                 replaceWindow(StoredExplorerWindow(id: window.id, bounds: window.bounds, session: session))
-                markUnsaved(.state)
-                if changedKeys.contains(where: { !Self.navigationKeys.contains($0) }) {
-                    saveSoon()
-                } else {
-                    saveLater()
-                }
             }
+            // The app's copy of a session key is only the last window's value: a window sending its own again, after
+            // another window sent a different one, is no new choice.
+            let (sessionKeys, sharedKeys) = (
+                appKeys.filter(WindowSessionKeys.isSessionKey), appKeys.filter { !WindowSessionKeys.isSessionKey($0) }
+            )
+            saveChanges(windowKeys + sharedKeys, following: sessionKeys)
             return session.applied(to: preferences)
         }
     }
@@ -254,21 +255,30 @@ public final class AppStateStore: @unchecked Sendable {
     }
 
     private func update(_ patch: [String: JSONNode]) -> AppPreferences {
+        let (next, changedKeys) = apply(patch)
+        saveChanges(changedKeys)
+        return next
+    }
+
+    // Takes the patch into the app's preferences; saving it is the caller's.
+    private func apply(_ patch: [String: JSONNode]) -> (preferences: AppPreferences, changedKeys: [String]) {
         let current = currentPreferences
         let next = PreferencesSanitizer.apply(patch, to: current, defaults: defaults)
         let before = (try? JSONNode.of(current))?.object ?? [:]
         let after = (try? JSONNode.of(next))?.object ?? [:]
-        let changedKeys = after.keys.filter { before[$0] != after[$0] }
         state.preferences = next
-        if !changedKeys.isEmpty {
-            markUnsaved(.state)
-        }
-        if changedKeys.contains(where: { !Self.navigationKeys.contains($0) }) {
+        return (next, after.keys.filter { before[$0] != after[$0] })
+    }
+
+    // Saves the state file, soon when `keys` hold a deliberate change. `following` changed too, but never hurries it.
+    private func saveChanges(_ keys: [String], following: [String] = []) {
+        guard !keys.isEmpty || !following.isEmpty else { return }
+        markUnsaved(.state)
+        if keys.contains(where: { !Self.navigationKeys.contains($0) }) {
             saveSoon()
-        } else if !changedKeys.isEmpty {
+        } else {
             saveLater()
         }
-        return next
     }
 
     private static func difference(from old: AppPreferences, to new: AppPreferences) -> [String: JSONNode] {
