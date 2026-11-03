@@ -7,10 +7,10 @@ import FTFoundation
 /// The Compact List: each column is filled top to bottom, then the next one to the right; the list scrolls sideways,
 /// and the wheel's up and down scroll it sideways too.
 final class CompactListViewController: ItemGridPane {
-    private(set) var density = Density.comfortable
-    private(set) var layout = DesignTokens.flowList(density: .comfortable)
+    private(set) var density = Density.standard
+    private(set) var layout = DesignTokens.flowList(density: .standard)
     let style = FlowItemStyle.make()
-    private(set) var nameFont = ThemeFonts.sans(DesignTokens.flowList(density: .comfortable).fontSize)
+    private(set) var nameFont = ThemeFonts.sans(DesignTokens.flowList(density: .standard).fontSize)
     /// Names measured in the list's font, by name.
     private var nameWidths: [String: Double] = [:]
 
@@ -28,7 +28,7 @@ final class CompactListViewController: ItemGridPane {
     }
 
     override func metricsChanged() -> Bool {
-        let next = host?.columnState.flowDensity ?? .comfortable
+        let next = host?.columnState.density ?? .standard
         guard next != density else { return false }
         density = next
         layout = DesignTokens.flowList(density: next)

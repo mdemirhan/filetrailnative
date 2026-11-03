@@ -185,10 +185,10 @@ final class DetailsBarView: NSView {
     let sizeCell = SizeCellView()
     private var labels: [DetailColumn: ListLabel] = [:]
 
-    private(set) var layoutMetrics = DesignTokens.details(density: .comfortable)
+    private(set) var layoutMetrics = DesignTokens.details(density: .standard)
     private var fitted = DetailsColumnSet(columns: [.name], widths: [:])
     private var colors = RowColors.make(
-        theme: AppearanceModel.shared.theme, layout: DesignTokens.details(density: .comfortable), selected: false,
+        theme: AppearanceModel.shared.theme, layout: DesignTokens.details(density: .standard), selected: false,
         odd: false, paneFocused: false, windowActive: true)
     private weak var host: (any ContentPaneHost)?
     private(set) var entry: DirectoryEntry?

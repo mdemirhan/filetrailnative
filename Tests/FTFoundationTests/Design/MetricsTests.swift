@@ -3,9 +3,9 @@ import Testing
 
 @testable import FTFoundation
 
-/// Density replaces the Compact screenshots (PLAN.md section 5.4): for each density, every metric is the original's CSS
-/// pixel value (no zoom). The base values below are typed out from the original's layout modules and `ui.md`,
-/// apart from the code under test.
+/// For each density, every metric is typed out here apart from the code under test: File Trail's are the original's CSS
+/// pixel values (no zoom), from its layout modules and `ui.md`, and Finder's are the defaults of Finder's View Options
+/// and AppKit's source list sizes.
 @Suite struct MetricsTests {
     typealias Table = [String: Double]
 
@@ -18,41 +18,29 @@ import Testing
     static let radii: Table = ["xs": 4, "control": 6, "menu": 10, "dialog": 14, "capsule": 999]
     static let controlHeights: Table = ["small": 22, "regular": 24, "large": 28, "toolbar": 32]
 
-    static func explorer(_ density: Density) -> Table {
-        [
-            "treeMinWidth": 220, "treeMaxWidth": 520, "inspectorMinWidth": 260, "inspectorMaxWidth": 480,
-            "resizerWidth": 8, "paneResizeStep": 12, "paneResizeStepLarge": 24, "minContentWidth": 420,
-            "defaultTreeWidth": 280, "defaultInspectorWidth": 320, "toolbarInsetWithoutTree": 76,
-            "treeRowHeight": density == .compact ? 21 : 26,
-        ]
-    }
+    static let explorer: Table = [
+        "treeMinWidth": 220, "treeMaxWidth": 520, "inspectorMinWidth": 260, "inspectorMaxWidth": 480,
+        "resizerWidth": 8, "paneResizeStep": 12, "paneResizeStepLarge": 24, "minContentWidth": 420,
+        "defaultTreeWidth": 280, "defaultInspectorWidth": 320, "toolbarInsetWithoutTree": 76,
+    ]
 
     static func iconGrid(_ density: Density) -> Table {
-        switch density {
-        case .comfortable:
-            [
-                "iconSize": 64, "iconBoxSize": 72, "cellMinWidth": 104, "rowHeight": 116, "itemPaddingTop": 5,
-                "labelGap": 4, "labelWidth": 102, "paddingTop": 10, "paddingBottom": 10, "paddingInline": 16,
-                "labelFontSize": 13, "labelLineHeight": 16, "labelPaddingVertical": 1, "labelPaddingHorizontal": 4,
-                "labelRadius": 4, "clipboardBadgeSize": 18, "clipboardBadgeOffset": -4,
-            ]
-        case .compact:
-            [
-                "iconSize": 48, "iconBoxSize": 56, "cellMinWidth": 88, "rowHeight": 94, "itemPaddingTop": 3,
-                "labelGap": 3, "labelWidth": 86, "paddingTop": 8, "paddingBottom": 8, "paddingInline": 16,
-                "labelFontSize": 12, "labelLineHeight": 15, "labelPaddingVertical": 1, "labelPaddingHorizontal": 2,
-                "labelRadius": 4, "clipboardBadgeSize": 18, "clipboardBadgeOffset": -4,
-            ]
-        }
+        [
+            "iconSize": 64, "iconBoxSize": 72, "cellMinWidth": 104, "rowHeight": 116, "itemPaddingTop": 5,
+            "labelGap": 4, "labelWidth": 102, "paddingTop": 10, "paddingBottom": 10, "paddingInline": 16,
+            "labelFontSize": density == .finder ? 12 : 13, "labelLineHeight": density == .finder ? 15 : 16,
+            "labelPaddingVertical": 1, "labelPaddingHorizontal": 4, "labelRadius": 4, "clipboardBadgeSize": 18,
+            "clipboardBadgeOffset": -4,
+        ]
     }
 
     static func details(_ density: Density) -> Table {
         [
-            "rowHeight": density == .compact ? 24 : 28, "columnGap": 12, "rowPadding": 24, "rowInset": 10,
-            "rowRadius": 6, "nameFloorWidth": 160, "nameMinWidth": 96, "cellFontSize": density == .compact ? 13 : 14,
+            "rowHeight": density == .finder ? 24 : 28, "columnGap": 12, "rowPadding": 24, "rowInset": 10,
+            "rowRadius": 6, "nameFloorWidth": 160, "nameMinWidth": 96, "cellFontSize": density == .finder ? 13 : 14,
             "headerHeight": 28, "headerFontSize": 11, "sortChevronWidth": 9, "sortChevronHeight": 6,
             "separatorWidth": 1, "separatorHeight": 14, "separatorHitWidth": 12, "columnKeyboardStep": 12,
-            "iconSize": 18, "nameIconGap": 8, "rowPaddingInline": 12, "headerButtonGap": 6,
+            "iconSize": density == .finder ? 16 : 18, "nameIconGap": 8, "rowPaddingInline": 12, "headerButtonGap": 6,
             "sortChevronTrailingMargin": 6,
             "headerBorderWidth": 1, "separatorHitOverhang": 6, "scrollbarAllowance": 8, "sizeBarInsetVertical": 3,
             "sizeBarOverhang": 4, "sizeBarMinWidth": 2, "sizeBarAlpha": 0.2, "sizeBarSelectedAlpha": 0.28,
@@ -62,9 +50,9 @@ import Testing
 
     static func flowList(_ density: Density) -> Table {
         [
-            "rowHeight": density == .compact ? 24 : 28, "rowGap": 0, "itemWidth": density == .compact ? 252 : 292,
+            "rowHeight": density == .finder ? 24 : 28, "rowGap": 0, "itemWidth": density == .finder ? 252 : 292,
             "columnGap": 18, "paddingTop": 8, "paddingBottom": 4, "paddingInline": 10,
-            "fontSize": density == .compact ? 13 : 14, "iconSize": 18, "iconGap": 8,
+            "fontSize": density == .finder ? 13 : 14, "iconSize": density == .finder ? 16 : 18, "iconGap": 8,
         ]
     }
 
@@ -111,7 +99,7 @@ import Testing
 
     // N/A B-DLG-240 B-DLG-241 B-DLG-242 B-DLG-243: zoom is not ported
     // N/A F-588 F-651 F-931: zoom is not ported (nor is the zoom part of any other row: the About window is not
-    // scaled and no zoom change resizes anything). Every other metric is checked here, Compact included.
+    // scaled and no zoom change resizes anything). Every other metric is checked here, Finder's sizes included.
     @Test(arguments: Density.allCases)
     func everyMetricIsTheOriginalValue(density: Density) {
         let metrics = Metrics(density: density)
@@ -119,7 +107,7 @@ import Testing
         problems += Self.mismatches(metrics.typeScale, base: Self.typeScale, label: "typeScale")
         problems += Self.mismatches(metrics.radii, base: Self.radii, label: "radii")
         problems += Self.mismatches(metrics.controlHeights, base: Self.controlHeights, label: "heights")
-        problems += Self.mismatches(metrics.explorer, base: Self.explorer(density), label: "explorer")
+        problems += Self.mismatches(metrics.explorer, base: Self.explorer, label: "explorer")
         problems += Self.mismatches(metrics.iconGrid, base: Self.iconGrid(density), label: "iconGrid")
         problems += Self.mismatches(metrics.details, base: Self.details(density), label: "details")
         problems += Self.mismatches(metrics.flowList, base: Self.flowList(density), label: "flowList")
@@ -138,7 +126,7 @@ import Testing
     }
 
     @Test func columnWidthsAreTheOriginalValues() {
-        let metrics = Metrics(density: .comfortable)
+        let metrics = Metrics(density: .standard)
         for column in DetailColumn.allCases {
             let widths = metrics.columnWidths(column)
             let base = Self.columns[column] ?? []
@@ -163,19 +151,39 @@ import Testing
         #expect(layout.columns(containerWidth: 0) == 1)
     }
 
+    /// Row, indent, chevron, icon, symbol, label gap, label font, list padding top and bottom, section header.
+    static func sidebar(_ density: SidebarDensity) -> [Double] {
+        switch density {
+        case .standard: [26, 14, 14, 16, 16, 6, 14, 6, 16, 24]
+        case .small: [24, 12, 12, 14, 11, 4, 11, 4, 12, 20]
+        case .medium: [32, 14, 14, 16, 13, 6, 13, 6, 16, 24]
+        case .large: [40, 16, 16, 20, 15, 8, 15, 6, 16, 28]
+        }
+    }
+
     // The sidebar's lengths are tokens too (.tree-pane, .sidebar-main-native .tree-row, ui.md section 1.4).
-    @Test(arguments: Density.allCases)
-    func sidebarMetricsAreTokensOfTheDensity(density: Density) {
-        let sidebar = Metrics(density: density).sidebar
-        #expect(sidebar == DesignTokens.sidebar(density: density))
+    @Test(arguments: SidebarDensity.allCases)
+    func sidebarMetricsAreTokensOfTheDensity(density: SidebarDensity) {
+        let sidebar = DesignTokens.sidebar(density: density)
+        #expect(sidebar.density == density)
+        #expect(
+            [
+                sidebar.rowHeight, sidebar.indent, sidebar.chevronBox, sidebar.iconSize, sidebar.symbolPointSize,
+                sidebar.labelGap, sidebar.labelFontSize, sidebar.treeListPaddingTop, sidebar.treeListPaddingBottom,
+                sidebar.sectionHeaderHeight,
+            ] == Self.sidebar(density))
         #expect(sidebar.titlebarHeight == DesignTokens.toolbar.minHeight)
-        #expect(sidebar.rowHeight == Self.explorer(density)["treeRowHeight"])
-        #expect(sidebar.indent == (density == .compact ? 11 : 14))
-        #expect(sidebar.iconSize == (density == .compact ? 14 : 16))
-        #expect(sidebar.treeListPaddingTop == (density == .compact ? 4 : 6))
-        #expect(sidebar.treeListPaddingBottom == (density == .compact ? 12 : 16))
-        #expect(sidebar.sectionHeaderHeight == (density == .compact ? 20 : 24))
         #expect(sidebar.rowRadius == DesignTokens.radii.control)
         #expect(sidebar.foldersTitlePadding == SidebarInsets(top: 14, right: 12, bottom: 0, left: 20))
+    }
+
+    // With Finder's sizes the tree takes the system's sidebar size; File Trail's keep its own.
+    @Test func theTreeFollowsTheSystemSidebarSizeOnlyWithFindersSizes() {
+        for system in [SidebarDensity.small, .medium, .large] {
+            #expect(Density.finder.sidebarDensity(system: system) == system)
+            #expect(Density.standard.sidebarDensity(system: system) == .standard)
+        }
+        #expect(Metrics(density: .standard).sidebar == DesignTokens.sidebar(density: .standard))
+        #expect(Metrics(density: .finder).sidebar == DesignTokens.sidebar(density: .medium))
     }
 }

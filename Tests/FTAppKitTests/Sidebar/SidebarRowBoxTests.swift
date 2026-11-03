@@ -16,7 +16,7 @@ import Testing
             expanded: false, canExpand: false)
         var state = SidebarRowState(
             item: item, subview: .tree, selection: .focused, menuTarget: false, drop: nil, ejecting: false,
-            dragging: false, dropLine: nil, showsLoading: false, density: .comfortable, hasDisclosure: true)
+            dragging: false, dropLine: nil, showsLoading: false, density: .standard, hasDisclosure: true)
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 240, height: 26), styleMask: [], backing: .buffered, defer: true)
         window.isReleasedWhenClosed = false
@@ -43,7 +43,7 @@ import Testing
                 expanded: false, canExpand: false, isHidden: hidden)
             let state = SidebarRowState(
                 item: item, subview: .tree, selection: .none, menuTarget: false, drop: nil, ejecting: false,
-                dragging: false, dropLine: nil, showsLoading: false, density: .comfortable, hasDisclosure: true)
+                dragging: false, dropLine: nil, showsLoading: false, density: .standard, hasDisclosure: true)
             let cell = SidebarItemCell(frame: NSRect(x: 0, y: 0, width: 240, height: 26))
             cell.configure(state, width: 240)
             return cell

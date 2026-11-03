@@ -132,7 +132,7 @@ extension ExplorerWindowlessTests {
                         id: .filesystem(path), kind: kind, label: "x", depth: 1, path: path, parentID: nil,
                         expanded: false, canExpand: true),
                     subview: .tree, selection: .none, menuTarget: false, drop: nil, ejecting: false, dragging: false,
-                    dropLine: nil, showsLoading: false, density: .comfortable, hasDisclosure: true)
+                    dropLine: nil, showsLoading: false, density: .standard, hasDisclosure: true)
             }
             let targets = [
                 content,

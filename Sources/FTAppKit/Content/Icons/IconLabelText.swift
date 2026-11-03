@@ -7,7 +7,7 @@ import FTFoundation
 /// most two.
 @MainActor
 enum IconLabelText {
-    /// The label's font: 13 px (compact 12 px), the sans font.
+    /// The label's font: 13 px (12 px with Finder's sizes), the sans font.
     static func font(_ layout: IconGridLayout) -> NSFont {
         ThemeFonts.sans(layout.labelFontSize)
     }
@@ -74,7 +74,7 @@ enum IconLabelText {
     static func fit(
         name: String, extension fileExtension: String, density: Density, firstLineIndent: CGFloat = 0
     ) -> String {
-        let key = "\(density.isCompact ? "c" : "r")\(firstLineIndent)\0\(name)"
+        let key = "\(density.isFinder ? "f" : "r")\(firstLineIndent)\0\(name)"
         if let cached = fitted[key] { return cached }
         let result = fitNow(
             name: name, extension: fileExtension, density: density, firstLineIndent: firstLineIndent)

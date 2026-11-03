@@ -7,7 +7,7 @@ import FTFoundation
 @MainActor
 enum WindowMetrics {
     /// The metrics for a density (the original's 100% sizes; UI zoom is not ported).
-    static func metrics(density: Density = .comfortable) -> Metrics {
+    static func metrics(density: Density = .standard) -> Metrics {
         Metrics(density: density)
     }
 

@@ -28,8 +28,7 @@
 
         /// Every preference key of the original (`DEFAULT_APP_PREFERENCES`, appPreferences.ts:390-448).
         static let originalKeys: Set<String> = [
-            "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
-            "compactListView", "compactDetailsView", "compactIconView", "compactTreeView",
+            "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst", "density",
             "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns",
             "searchColumnOrder", "searchColumnWidths", "notificationsEnabled", "markClipboardItems",
             "autoCalculateFolderSizes", "folderTreeOpen", "propertiesOpen", "detailRowOpen", "topToolbarItems",
@@ -53,9 +52,6 @@
             "searchColumnWidths",
         ]
 
-        /// Capture shorthands: `density` sets the four compact switches together, as the driver does.
-        static let shorthandKeys: Set<String> = ["density"]
-
         private static var handlers: [String: Handler] = defaultHandlers
 
         /// Registers (or replaces) the handler of a preference key.
@@ -72,7 +68,7 @@
             var failed: [String] = []
             for key in prefs.keys.sorted() {
                 guard let value = prefs[key] else { continue }
-                guard originalKeys.contains(key) || shorthandKeys.contains(key) else {
+                guard originalKeys.contains(key) else {
                     failed.append("\(key) is not a preference of the original")
                     continue
                 }
@@ -161,8 +157,8 @@
             },
             "density": { value, _ in
                 switch value.string {
-                case "comfortable": .applied
-                case "compact": .unsupported("density compact")
+                case "standard": .applied
+                case "finder": .unsupported("density finder")
                 default: .failed("density \(describe(value))")
                 }
             },

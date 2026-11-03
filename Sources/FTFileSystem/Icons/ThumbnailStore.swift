@@ -3,10 +3,9 @@ import Foundation
 
 /// Previews of the content of files, for icon view.
 ///
-/// Longest side previews are asked for in: the 64-point icon of icon view on a Retina display. Compact icon
-/// view draws the same picture smaller, so both share one cache. Previews are kept in memory only (Quick
-/// Look has its own cache on disk), most recently used last. 500 cover several screens of icon view; older
-/// ones are asked for again.
+/// Longest side previews are asked for in: the 64-point icon of icon view on a Retina display, at either density.
+/// Previews are kept in memory only (Quick Look has its own cache on disk), most recently used last. 500 cover
+/// several screens of icon view; older ones are asked for again.
 @MainActor
 public final class ThumbnailStore {
     public nonisolated static let pixelSize = 128

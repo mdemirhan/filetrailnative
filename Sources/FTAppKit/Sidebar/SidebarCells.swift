@@ -239,12 +239,12 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
                 color: selectedFocused ? onSelection : ChromeColors.color(accent.solid))
         case .favorite:
             icon.content = .symbol(
-                SidebarIcons.symbolName(for: item.icon ?? .folder), pointSize: layout.iconSize,
+                SidebarIcons.symbolName(for: item.icon ?? .folder), pointSize: layout.symbolPointSize,
                 color: selectedFocused ? onSelection : ChromeColors.color(accent.solid))
         case .location:
             icon.content = .symbol(
                 SidebarIcons.locationSymbolName(for: item.icon ?? .folder, path: item.path),
-                pointSize: layout.iconSize, color: selectedFocused ? onSelection : .secondaryLabelColor)
+                pointSize: layout.symbolPointSize, color: selectedFocused ? onSelection : .secondaryLabelColor)
         case .filesystem:
             let image = item.path.flatMap { path in
                 SidebarFolderIcons.shared.icon(path: path, alias: item.isSymlink) { [weak self] in

@@ -145,10 +145,10 @@ struct AppPreferencesTests {
         #expect(!WindowSessionKeys.isSessionKey("theme"))
         let encoded = (try? JSONNode.of(AppPreferences.defaults().windowSession))?.object ?? [:]
         #expect(Set(encoded.keys) == Set(WindowSessionKeys.all))
-        // Every preference key is one of the 57 the original has.
+        // Every preference key is listed: the original's, with one density for its four Compact switches.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(AppPreferences.keys))
-        #expect(AppPreferences.keys.count == 56)
+        #expect(AppPreferences.keys.count == 53)
     }
 
     @Test func filesRoundTripWithTheSameJSONKeys() throws {

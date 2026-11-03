@@ -14,7 +14,7 @@
       "prefs": {
         "theme": "dark",
         "accent": "#007aff",
-        "density": "comfortable",
+        "density": "standard",
         "viewMode": "details",
         "sortBy": "name",
         "sortDirection": "asc",

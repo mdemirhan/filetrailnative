@@ -53,7 +53,7 @@ struct DragSelectionTests {
     // T-fc34240d T-132cae07 F-784 B-SEL-155
     // B-VIEW-039 B-VIEW-082
     @Test func selectsTheFlowListsItemsColumnByColumn() {
-        let layout = DesignTokens.flowList(density: .comfortable)
+        let layout = DesignTokens.flowList(density: .standard)
         let step = layout.itemWidth + layout.columnGap
         func hit(
             _ left: Double, _ right: Double, _ top: Double, _ bottom: Double,
@@ -78,7 +78,7 @@ struct DragSelectionTests {
     // T-395f1dac T-a8349a96 F-784 B-SEL-156 B-SEL-157
     // B-VIEW-082
     @Test func selectsTheIconViewsItemsOnTheirIconsAndNamesOnly() {
-        let layout = DesignTokens.iconGrid(density: .comfortable)
+        let layout = DesignTokens.iconGrid(density: .standard)
         let gridWidth = 4.0 * 150
         func hit(
             _ left: Double, _ right: Double, _ top: Double, _ bottom: Double,

@@ -4,34 +4,25 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The List's columns as it draws them: which are shown (Name first), how wide each is as saved, and the density; with
-/// the densities of the Icons view and of the Compact List, which Settings sets apart.
+/// The List's columns as it draws them: which are shown (Name first) and how wide each is as saved; with the density
+/// of every view of the folder.
 struct ListColumnState: Equatable {
     var columns: [DetailColumn]
     var widths: [DetailColumn: Double]
     var density: Density
-    var iconDensity: Density
-    var flowDensity: Density
 
     /// A folder's columns, from Settings and the window's saved widths.
     init(preferences: AppPreferences) {
         columns = DetailsColumns.visible(
             visibility: preferences.detailColumns, order: preferences.detailColumnOrder)
         widths = DetailsColumns.widths(preferences.detailColumnWidths)
-        density = preferences.compactDetailsView ? .compact : .comfortable
-        iconDensity = preferences.compactIconView ? .compact : .comfortable
-        flowDensity = preferences.compactListView ? .compact : .comfortable
+        density = preferences.density
     }
 
-    init(
-        columns: [DetailColumn], widths: [DetailColumn: Double], density: Density,
-        iconDensity: Density = .comfortable, flowDensity: Density = .comfortable
-    ) {
+    init(columns: [DetailColumn], widths: [DetailColumn: Double], density: Density) {
         self.columns = columns
         self.widths = widths
         self.density = density
-        self.iconDensity = iconDensity
-        self.flowDensity = flowDensity
     }
 
     static let standard = ListColumnState(preferences: .defaults())

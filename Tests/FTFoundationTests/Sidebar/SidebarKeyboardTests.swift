@@ -226,14 +226,14 @@ struct SidebarKeyboardTests {
     // B-NAV-100 B-NAV-155 B-SEL-061
     @Test func pagesByTheRowsOnScreenAndStopsAtTheEnds() {
         // rows on screen = floor(height / row height); a page is one less, half a page half of them, at least 1.
-        let regular = DesignTokens.explorer(density: .comfortable).treeRowHeight
-        let compact = DesignTokens.explorer(density: .compact).treeRowHeight
+        let regular = DesignTokens.sidebar(density: .standard).rowHeight
+        let medium = DesignTokens.sidebar(density: .medium).rowHeight
         #expect(regular == 26)
-        #expect(compact == 21)
+        #expect(medium == 32)
         #expect(SidebarKeyboard.pageStepLines(viewportHeight: 520, rowHeight: regular, size: .full) == 19)
         #expect(SidebarKeyboard.pageStepLines(viewportHeight: 520, rowHeight: regular, size: .half) == 10)
-        #expect(SidebarKeyboard.pageStepLines(viewportHeight: 520, rowHeight: compact, size: .full) == 23)
-        #expect(SidebarKeyboard.pageStepLines(viewportHeight: 520, rowHeight: compact, size: .half) == 12)
+        #expect(SidebarKeyboard.pageStepLines(viewportHeight: 520, rowHeight: medium, size: .full) == 15)
+        #expect(SidebarKeyboard.pageStepLines(viewportHeight: 520, rowHeight: medium, size: .half) == 8)
         #expect(SidebarKeyboard.pageStepLines(viewportHeight: 10, rowHeight: regular, size: .full) == 1)
         #expect(SidebarKeyboard.pageStepLines(viewportHeight: 30, rowHeight: regular, size: .half) == 1)
         #expect(SidebarKeyboard.pageStepLines(viewportHeight: 0, rowHeight: regular, size: .full) == 1)

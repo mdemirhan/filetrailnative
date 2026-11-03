@@ -7,9 +7,9 @@ import FTFoundation
 /// The Icon view: large icons that read left to right and scroll down, in columns that share the pane's width. Files show
 /// the Quick Look preview of their content where there is one.
 final class IconViewController: ItemGridPane {
-    private(set) var density = Density.comfortable
-    private(set) var layout = DesignTokens.iconGrid(density: .comfortable)
-    private(set) var style = IconItemStyle.make(density: .comfortable)
+    private(set) var density = Density.standard
+    private(set) var layout = DesignTokens.iconGrid(density: .standard)
+    private(set) var style = IconItemStyle.make(density: .standard)
     /// Where the items on screen were, while the Info panel opens or closes the pane's width changes in one step.
     private var placesBefore: [String: NSPoint]?
 
@@ -26,7 +26,7 @@ final class IconViewController: ItemGridPane {
     }
 
     override func metricsChanged() -> Bool {
-        let next = host?.columnState.iconDensity ?? .comfortable
+        let next = host?.columnState.density ?? .standard
         guard next != density else { return false }
         density = next
         layout = DesignTokens.iconGrid(density: next)
@@ -121,7 +121,7 @@ final class IconViewController: ItemGridPane {
 
     // MARK: Rename
 
-    /// `.icon-item.renaming .inline-rename-input`: the label's width, 20 tall (19 compact), under the tile.
+    /// `.icon-item.renaming .inline-rename-input`: the label's width, 20 tall (19 with Finder's sizes), under the tile.
     override func renameFrame(at index: Int) -> NSRect {
         let item = itemFrame(at: index, viewport: viewport)
         let label = layout.labelFrame(textWidth: layout.labelWidth, lines: 1)

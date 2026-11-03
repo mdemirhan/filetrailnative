@@ -9,7 +9,7 @@ import Testing
 @Suite struct SidebarSymbolTests {
     private func cell(
         _ kind: TreeItemKind, id: TreeItemID, icon: FavoriteIconID?, path: String?,
-        selection: SidebarRowState.Selection = .none, density: Density = .comfortable
+        selection: SidebarRowState.Selection = .none, density: SidebarDensity = .standard
     ) -> SidebarItemCell {
         let item = TreePresentationItem(
             id: id, kind: kind, label: "Row", depth: 0, path: path, parentID: nil, expanded: false, canExpand: false,
@@ -91,8 +91,11 @@ import Testing
 
     @Test func aSymbolIsTheRowsIconSizeAsItsPointSize() throws {
         #expect(try symbol(favorite(.folder)).pointSize == 16)
-        let compact = cell(.favorite, id: .favorite("/x"), icon: .folder, path: "/x", density: .compact)
-        #expect(try symbol(compact).pointSize == 14)
+        // At the system's sidebar sizes, a source list's: the size of the text.
+        for (density, size) in [(SidebarDensity.small, 11.0), (.medium, 13), (.large, 15)] {
+            let row = cell(.favorite, id: .favorite("/x"), icon: .folder, path: "/x", density: density)
+            #expect(try symbol(row).pointSize == size)
+        }
         // Centered over the 16 pt box, which keeps its size.
         let row = location(.drive, "/")
         let view = try iconView(row)

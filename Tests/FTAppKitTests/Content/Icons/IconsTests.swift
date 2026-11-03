@@ -21,7 +21,7 @@ extension ExplorerWindowlessTests {
             let items = probe.iconItems
             #expect(Set(items.keys) == ["Alpha", "Beta", "Gamma", "note.txt"])
             let width = Double(icons.viewport.width)
-            let layout = DesignTokens.iconGrid(density: .comfortable)
+            let layout = DesignTokens.iconGrid(density: .standard)
             let columns = layout.columns(containerWidth: width)
             #expect(icons.columns == columns && icons.itemsPerLine == columns)
             let columnWidth = (width - 32) / Double(columns)
@@ -45,20 +45,20 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-81c02106 F-757 F-759 B-VIEW-005 B-VIEW-017: compact icons are smaller and more of them fit.
-        @Test func fitsMoreColumnsWhenCompact() async throws {
+        // Finder's sizes keep the icons and the grid, with Finder's 12 point names.
+        @Test func findersSizesKeepTheGridAndTakeSmallerNames() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
             let regular = try #require(probe.icons).columns
-            tab.updatePreferences(["compactIconView": .bool(true)])
+            tab.updatePreferences(["density": .string("finder")])
             tab.refreshColumns()
             probe.layout()
             let icons = try #require(probe.icons)
-            #expect(icons.density == .compact)
-            #expect(icons.columns > regular)
+            #expect(icons.density == .finder)
+            #expect(icons.columns == regular)
             let item = try #require(probe.iconItems["Alpha"])
-            #expect(item.view.frame.size == NSSize(width: 88, height: 92))
-            #expect(item.tile.frame == NSRect(x: 16, y: 3, width: 56, height: 56))
+            #expect(item.view.frame.size == NSSize(width: 104, height: 114))
+            #expect(item.tile.frame == NSRect(x: 16, y: 5, width: 72, height: 72))
             #expect(item.label.font?.pointSize == 12)
             #expect(item.label.frame.height == 17)
             await harness.close()
@@ -125,7 +125,7 @@ extension ExplorerWindowlessTests {
             let icons = try #require(probe.icons)
             let grid = try #require(probe.grid)
             let columns = icons.columns
-            let layout = DesignTokens.iconGrid(density: .comfortable)
+            let layout = DesignTokens.iconGrid(density: .standard)
             #expect(Double(grid.frame.height) == layout.contentHeight(itemCount: 600, columns: columns))
             let shown = grid.indexPathsForVisibleItems().count
             #expect(shown > 0 && shown < 600)
@@ -150,7 +150,7 @@ extension ExplorerWindowlessTests {
             #expect(probe.selectedNames == [String(format: "item-%03d.txt", 1 + columns)])
             probe.key("End")
             #expect(probe.selectedNames == ["item-299.txt"])
-            let layout = DesignTokens.iconGrid(density: .comfortable)
+            let layout = DesignTokens.iconGrid(density: .standard)
             let clip = icons.scroll.contentView.bounds
             let lastRow = 299 / columns
             let bottom = layout.paddingTop + Double(lastRow + 1) * layout.rowHeight + layout.paddingBottom
@@ -203,12 +203,12 @@ extension ExplorerWindowlessTests {
         // keeping the end of the stem and the extension.
         @Test func longNamesAreShortenedInTheMiddle() {
             let name = "Panorama of the Miradouro da Senhora do Monte at sunset.jpeg"
-            let fitted = IconLabelText.fit(name: name, extension: "jpeg", density: .comfortable)
+            let fitted = IconLabelText.fit(name: name, extension: "jpeg", density: .standard)
             #expect(fitted != name)
             #expect(fitted.contains(IconLabel.ellipsis))
             #expect(fitted.hasSuffix("unset.jpeg"))
-            #expect(IconLabelText.lines(fitted, density: .comfortable).count == 2)
-            #expect(IconLabelText.fit(name: "note.txt", extension: "txt", density: .comfortable) == "note.txt")
+            #expect(IconLabelText.lines(fitted, density: .standard).count == 2)
+            #expect(IconLabelText.fit(name: "note.txt", extension: "txt", density: .standard) == "note.txt")
         }
 
         // B-VIEW-024: an item on the clipboard gets an 18 pt badge on the corner of its tile, 4 pt out.
@@ -284,7 +284,7 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             probe.layout()
             #expect(icons.isWhollyInView(index: lead))
-            tab.updatePreferences(["compactIconView": .bool(true)])
+            tab.updatePreferences(["density": .string("finder")])
             tab.refreshColumns()
             probe.layout()
             #expect(icons.isWhollyInView(index: lead))

@@ -7,25 +7,26 @@ import Testing
 @testable import FTFoundation
 
 struct FlowListLayoutTests {
-    static let layout = DesignTokens.flowList(density: .comfortable)
-    static let compact = DesignTokens.flowList(density: .compact)
+    static let layout = DesignTokens.flowList(density: .standard)
+    /// Finder's sizes have the reference's compact rows: 24 points, columns 252 wide.
+    static let finder = DesignTokens.flowList(density: .finder)
 
     // T-dfa350d4 F-776 B-VIEW-031
     @Test func usesTheDetailsViewRowPitchSoBothViewsHaveTheSameDensity() {
-        #expect(Self.layout.rowHeight == DesignTokens.details(density: .comfortable).rowHeight)
-        #expect(Self.compact.rowHeight == DesignTokens.details(density: .compact).rowHeight)
+        #expect(Self.layout.rowHeight == DesignTokens.details(density: .standard).rowHeight)
+        #expect(Self.finder.rowHeight == DesignTokens.details(density: .finder).rowHeight)
     }
 
     // T-9796e9b1 F-776 B-VIEW-031
-    @Test func returnsTheCorrectColumnStepForRegularAndCompactLayouts() {
+    @Test func returnsTheCorrectColumnStepForEitherDensity() {
         #expect(Self.layout.columnStep == Self.layout.itemWidth + Self.layout.columnGap)
-        #expect(Self.compact.columnStep == Self.compact.itemWidth + Self.compact.columnGap)
+        #expect(Self.finder.columnStep == Self.finder.itemWidth + Self.finder.columnGap)
     }
 
     static func reveal(
-        _ scrollLeft: Double, _ index: Int, compact: Bool = false, maxScrollLeft: Double = 3000
+        _ scrollLeft: Double, _ index: Int, finder: Bool = false, maxScrollLeft: Double = 3000
     ) -> Double {
-        (compact ? Self.compact : Self.layout).revealScrollLeft(
+        (finder ? Self.finder : Self.layout).revealScrollLeft(
             currentScrollLeft: scrollLeft, viewportWidth: 980, itemIndex: index, rowsPerColumn: 12,
             maxScrollLeft: maxScrollLeft)
     }
@@ -47,7 +48,7 @@ struct FlowListLayoutTests {
 
     // T-3e02a4a6 B-VIEW-037
     @Test func usesTheCompactColumnWidthWhenRevealingCompactListItems() {
-        #expect(Self.reveal(0, 36, compact: true) == 102)
+        #expect(Self.reveal(0, 36, finder: true) == 102)
     }
 
     // T-ac80a981 B-VIEW-037
@@ -65,7 +66,7 @@ struct FlowListLayoutTests {
         #expect(style.chromeWidth(layout: Self.layout) == 2 * 12 + 18 + 8)
         #expect(Self.layout.itemWidth(nameWidth: 40, style: style) == 90)
         #expect(Self.layout.itemWidth(nameWidth: 400, style: style) == 292)
-        #expect(Self.compact.itemWidth(nameWidth: 400, style: style) == 252)
+        #expect(Self.finder.itemWidth(nameWidth: 400, style: style) == 252)
         #expect(Self.layout.items(left: 0, right: 330, itemCount: 100, rowsPerColumn: 10) == 0..<20)
         #expect(Self.layout.pageViewport(viewportWidth: 1000) == 998)
     }
@@ -121,7 +122,7 @@ struct FlowListLayoutTests {
     }
 
     static func run(_ input: Input) -> Output {
-        let layout = DesignTokens.flowList(density: input.compact == true ? .compact : .comfortable)
+        let layout = DesignTokens.flowList(density: input.compact == true ? .finder : .standard)
         switch input.op {
         case "rows":
             return .number(Double(layout.rowsPerColumn(containerHeight: input.height ?? 0)))

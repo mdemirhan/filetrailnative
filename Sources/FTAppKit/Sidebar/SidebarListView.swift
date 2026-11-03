@@ -336,7 +336,7 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
         }
     }
 
-    func updateFade(height: Double = SidebarLayout(density: .comfortable).treeFadeHeight) {
+    func updateFade(height: Double = SidebarLayout(density: .standard).treeFadeHeight) {
         guard bounds.height > 0 else { return }
         fade.locations = [0, NSNumber(value: min(1, height / bounds.height))]
         fade.frame = bounds

@@ -1,56 +1,22 @@
-// Port of the logic of apps/desktop/src/renderer/components/SettingsView.tsx (describeKeys, resolveDensity,
-// OpenItemLimitInput, moveItem) and the notices and payload of apps/desktop/src/renderer/SettingsWindowApp.tsx
+// Port of the logic of apps/desktop/src/renderer/components/SettingsView.tsx (describeKeys, OpenItemLimitInput,
+// moveItem) and the notices and payload of apps/desktop/src/renderer/SettingsWindowApp.tsx
 import Foundation
 
-/// Density for every view at once: the four switches it sets were once separate, and a profile that still has them
-/// mixed shows as Custom until a density is chosen (B-DLG-181, F-072).
-public enum SettingsDensity: String, CaseIterable, Sendable {
-    case comfortable, compact, custom
-
-    /// `resolveDensity`.
-    public static func resolve(_ flags: [Bool]) -> SettingsDensity {
-        if flags.allSatisfy({ $0 }) { return .compact }
-        return flags.contains(true) ? .custom : .comfortable
-    }
-
-    /// The density of the four flags of `preferences`.
-    public static func of(_ preferences: AppPreferences) -> SettingsDensity {
-        resolve([
-            preferences.compactListView, preferences.compactDetailsView, preferences.compactIconView,
-            preferences.compactTreeView,
-        ])
-    }
-
-    /// The choices the pop-up lists: Custom only while it is the density, and never choosable.
-    public static func options(for density: SettingsDensity) -> [SettingsDensity] {
-        density == .custom ? [.comfortable, .compact, .custom] : [.comfortable, .compact]
-    }
-
-    public var label: String {
+extension Density {
+    /// The Sizes setting's name for the density.
+    public var settingsLabel: String {
         switch self {
-        case .comfortable: "Comfortable"
-        case .compact: "Compact"
-        case .custom: "Custom"
+        case .standard: "Default"
+        case .finder: "Match Finder"
         }
-    }
-
-    /// `setDensity`: Comfortable or Compact sets all four flags; Custom changes nothing.
-    public func apply(to preferences: inout AppPreferences) {
-        guard self != .custom else { return }
-        let compact = self == .compact
-        preferences.compactListView = compact
-        preferences.compactDetailsView = compact
-        preferences.compactIconView = compact
-        preferences.compactTreeView = compact
     }
 }
 
 public enum SettingsValues {
     /// The keys the Settings window shows and writes (the window's `payload`).
     public static let payloadKeys: [String] = [
-        "theme", "accent", "compactListView", "compactDetailsView", "compactIconView",
-        "compactTreeView", "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder", "searchColumns",
-        "searchColumnOrder", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
+        "theme", "accent", "density", "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder",
+        "searchColumns", "searchColumnOrder", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
         "restoreSessionOnStartup", "favorites", "favoritesPlacement", "terminalApp", "defaultTextEditor",
         "openWithApplications", "fileActivationAction", "diskImageOpensIn", "returnKeyAction", "shortcutOverrides",
         "openItemLimit", "searchPatternMode", "searchMatchScope", "searchRecursive", "searchSkipGitFolders",

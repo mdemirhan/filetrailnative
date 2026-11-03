@@ -19,7 +19,7 @@
         }
     }
 
-    /// The `prefs` keys of the sidebar: where Favorites are, the compact tree, single-click expand, the favorites and
+    /// The `prefs` keys of the sidebar: where Favorites are, single-click expand, the favorites and
     /// whether their sections are open. Registered from here, as P5-01 does for the window's layout.
     @MainActor
     enum AutomationSidebarPrefs {
@@ -36,7 +36,6 @@
                     return .applied
                 }
             }
-            flag("compactTreeView")
             flag("singleClickExpandTreeItems")
             flag("favoritesInitialized")
             AutomationPrefs.register("favoritesPlacement") { value, context in
@@ -45,19 +44,6 @@
                 }
                 guard let controller = context.controller else { return .unsupported("favoritesPlacement") }
                 controller.updatePreferences(["favoritesPlacement": .string(name)])
-                return .applied
-            }
-            // The four compact switches together, as the capture driver sets them.
-            AutomationPrefs.register("density") { value, context in
-                guard let name = value.string, let density = Density(rawValue: name) else {
-                    return .failed("density \(value.string ?? "?")")
-                }
-                guard let controller = context.controller else { return .unsupported("density") }
-                let compact = JSONNode.bool(density == .compact)
-                controller.updatePreferences([
-                    "compactListView": compact, "compactDetailsView": compact, "compactIconView": compact,
-                    "compactTreeView": compact,
-                ])
                 return .applied
             }
             AutomationPrefs.register("favorites") { value, context in

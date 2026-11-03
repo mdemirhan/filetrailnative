@@ -296,7 +296,7 @@ final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
 // MARK: Pop-up
 
 /// `SelectControl`: the system's own pop-up menu on a button with the push button's bezel, as wide as its longest
-/// choice and never narrower than 120. A choice can be listed and not choosable (Density's "Custom").
+/// choice and never narrower than 120. A choice can be listed and not choosable.
 final class SettingsPopup: SettingsControlView, SettingsSized, NSMenuDelegate {
     struct Option: Equatable {
         var value: String

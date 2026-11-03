@@ -280,6 +280,10 @@
             // unless the rows no longer reach that far, where it stands at their end, as a browser's scrollTop does.
             // B-TREE-137 T-7bee4986
             @Test func aDensityChangeLeavesTheTreeWhereItStands() async throws {
+                // Finder's sizes at the system's small sidebar size: rows shorter than File Trail's.
+                let system = SystemSidebarSize.shared.size
+                SystemSidebarSize.shared.size = .small
+                defer { SystemSidebarSize.shared.size = system }
                 let harness = try ExplorerHarness.windowless()
                 for index in 0..<120 {
                     try FileManager.default.createDirectory(
@@ -298,16 +302,16 @@
                 #expect(sidebar.tree.isFullyVisible(index))
                 let before = sidebar.tree.scrollTop
                 #expect(before > 0)
-                tab.updatePreferences(["compactTreeView": .bool(true)])
+                tab.updatePreferences(["density": .string("finder")])
                 harness.layout(tab)
                 await settle()
                 #expect(sidebar.tree.scrollTop == before)
-                // Back, and from the end of the rows, where the compact rows are shorter than the offset.
-                tab.updatePreferences(["compactTreeView": .bool(false)])
+                // Back, and from the end of the rows, where the shorter rows don't reach the offset.
+                tab.updatePreferences(["density": .string("standard")])
                 harness.layout(tab)
                 sidebar.tree.scrollTop = sidebar.tree.contentHeight - sidebar.tree.visibleHeight
                 let end = sidebar.tree.scrollTop
-                tab.updatePreferences(["compactTreeView": .bool(true)])
+                tab.updatePreferences(["density": .string("finder")])
                 harness.layout(tab)
                 await settle()
                 #expect(sidebar.tree.scrollTop < end)
@@ -336,12 +340,12 @@
                 defer { scratch.remove() }
                 let steps = try runner(
                     #"{"step": "window", "width": 760, "height": 520}, "#
-                        + #"{"step": "prefs", "prefs": {"density": "compact"}}, {"step": "open", "path": "/"}"#,
+                        + #"{"step": "prefs", "prefs": {"density": "finder"}}, {"step": "open", "path": "/"}"#,
                     tab: tab, in: scratch)
                 let seeded = await steps.seedPreferences()
                 #expect(Array(seeded.keys) == [1])
                 #expect(seeded[1]?.status == .ok)
-                #expect(tab.preferences.compactTreeView)
+                #expect(tab.preferences.density == .finder)
                 harness.layout(tab)
                 let selected = try #require(sidebar.model.selected)
                 let index = try #require(sidebar.tree.index(ofItem: selected))

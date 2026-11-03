@@ -105,7 +105,7 @@ struct ContentModelTests {
     // B-SEL-020 B-SEL-166
     @Test func selectionColorsFollowFocus() {
         let theme = Theme(appearance: .light, accentHex: "#007aff")
-        let layout = DesignTokens.details(density: .comfortable)
+        let layout = DesignTokens.details(density: .standard)
         func colors(_ selected: Bool, odd: Bool = false, focused: Bool, active: Bool) -> RowColors {
             RowColors.make(
                 theme: theme, layout: layout, selected: selected, odd: odd, paneFocused: focused, windowActive: active)

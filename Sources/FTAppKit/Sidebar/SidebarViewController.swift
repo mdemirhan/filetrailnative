@@ -64,7 +64,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     private var volumesToken: SidebarVolumes.Token?
     private var themeObservation: AppearanceModel.Observation?
     private var activity: WindowActivity?
-    private var density = Density.comfortable
+    /// The density of the file views: with Finder's sizes the tree takes the system's sidebar size.
+    private var filesDensity = Density.standard
+    private var density: SidebarDensity { filesDensity.sidebarDensity(system: SystemSidebarSize.shared.size) }
     var isFocused = false
     private var windowActive: Bool { activity?.isActive ?? true }
 
@@ -140,7 +142,13 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         applyPreferences()
         volumesToken = SidebarVolumes.shared.observe { [weak self] volumes in self?.model.setVolumes(volumes) }
         themeObservation = AppearanceModel.shared.observe { [weak self] _ in self?.reloadAll() }
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(systemSidebarSizeChanged), name: SystemSidebarSize.didChange, object: nil)
         refresh()
+    }
+
+    @objc private func systemSidebarSizeChanged() {
+        if filesDensity.isFinder { refresh() }
     }
 
     override func viewDidAppear() {
@@ -176,7 +184,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     // MARK: Preferences
 
-    /// Reads the window's preferences: the favorites and layout are the app's; the density follows the compact switch.
+    /// Reads the window's preferences: the favorites and layout are the app's, and so is the density.
     func applyPreferences() {
         let prefs = preferences()
         model.homePath = FileManager.default.homeDirectoryForCurrentUser.path
@@ -194,7 +202,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         }
         model.placement = prefs.favoritesPlacement
         model.singleClickExpand = prefs.singleClickExpandTreeItems
-        density = prefs.compactTreeView ? .compact : .comfortable
+        filesDensity = prefs.density
         refresh()
     }
 

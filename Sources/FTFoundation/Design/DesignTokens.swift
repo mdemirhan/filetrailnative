@@ -73,11 +73,11 @@ public enum DesignTokens {
         ThemePalette.palette(for: appearance)
     }
 
-    public static func explorer(density: Density) -> ExplorerLayout { .make(density: density) }
+    public static let explorer = ExplorerLayout.make()
     public static func iconGrid(density: Density) -> IconGridLayout { .make(density: density) }
     public static func details(density: Density) -> DetailsLayout { .make(density: density) }
     public static func flowList(density: Density) -> FlowListLayout { .make(density: density) }
-    public static func sidebar(density: Density) -> SidebarLayout { SidebarLayout(density: density) }
+    public static func sidebar(density: SidebarDensity) -> SidebarLayout { SidebarLayout(density: density) }
 
     /// Column widths of the folder's List view, or of search results' (`search`).
     public static func columnWidths(_ column: DetailColumn, search: Bool = false) -> ColumnWidths {

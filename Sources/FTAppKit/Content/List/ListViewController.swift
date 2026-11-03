@@ -163,7 +163,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         return made
     }
     private(set) var fitted = DetailsColumnSet(columns: [.name], widths: [:])
-    private(set) var layoutMetrics = DesignTokens.details(density: .comfortable)
+    private(set) var layoutMetrics = DesignTokens.details(density: .standard)
     private var isSyncing = false
     /// Whether the table's selection is being set from the model (and not from outside).
     var isSyncingSelection: Bool { isSyncing }
@@ -245,7 +245,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     // MARK: Pane
 
     private var metrics: DetailsLayout {
-        DesignTokens.details(density: host?.columnState.density ?? .comfortable)
+        DesignTokens.details(density: host?.columnState.density ?? .standard)
     }
 
     func reload(scrollToTop: Bool) {
@@ -317,7 +317,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
 
     func columnsChanged() {
         let density = host?.columnState.density
-        if density != nil, DesignTokens.details(density: density ?? .comfortable) != layoutMetrics {
+        if density != nil, DesignTokens.details(density: density ?? .standard) != layoutMetrics {
             reload(scrollToTop: false, change: .layout)
             return
         }

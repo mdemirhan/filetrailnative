@@ -2,11 +2,24 @@
 // the sidebar rules of styles.css (.tree-pane, .sidebar-main-native, .tree-row, .sidebar-section-header)
 import Foundation
 
-public enum Density: String, CaseIterable, Sendable {
-    case comfortable
-    case compact
+/// How big the file views are: File Trail's own sizes, or Finder's (the defaults of its View Options).
+public enum Density: String, CaseIterable, Codable, Sendable {
+    case standard
+    case finder
 
-    public var isCompact: Bool { self == .compact }
+    public var isFinder: Bool { self == .finder }
+
+    /// The folder tree's density: with Finder's sizes, the system's sidebar size (`system`).
+    public func sidebarDensity(system: SidebarDensity) -> SidebarDensity { isFinder ? system : .standard }
+}
+
+/// How big the folder tree is. With Finder's sizes it follows the sidebar size of System Settings › Appearance, as
+/// Finder's sidebar does; AppKit's source lists are 24, 32 and 40 points a row there, with 11, 13 and 15 point text.
+public enum SidebarDensity: String, CaseIterable, Sendable {
+    case standard
+    case small
+    case medium
+    case large
 }
 
 /// Shell constraints from `EXPLORER_LAYOUT` and the preferences' default pane widths.
@@ -24,18 +37,17 @@ public struct ExplorerLayout: Equatable, Sendable {
     /// Toolbar padding-left with the sidebar hidden, clearing the traffic lights. The original's; the port's system
     /// toolbar places its row past the traffic lights itself.
     public var toolbarInsetWithoutTree: Double
-    public var treeRowHeight: Double
 
-    static func make(density: Density) -> ExplorerLayout {
+    static func make() -> ExplorerLayout {
         ExplorerLayout(
             treeMinWidth: 220, treeMaxWidth: 520, inspectorMinWidth: 260, inspectorMaxWidth: 480,
             resizerWidth: 8, paneResizeStep: 12, paneResizeStepLarge: 24, minContentWidth: 420,
-            defaultTreeWidth: 280, defaultInspectorWidth: 320, toolbarInsetWithoutTree: 76,
-            treeRowHeight: density.isCompact ? 21 : 26)
+            defaultTreeWidth: 280, defaultInspectorWidth: 320, toolbarInsetWithoutTree: 76)
     }
 }
 
-/// Icon view metrics (`ICON_GRID_LAYOUT` / `COMPACT_ICON_GRID_LAYOUT` and the `.icon-grid` rules).
+/// Icon view metrics (`ICON_GRID_LAYOUT` and the `.icon-grid` rules). Finder's sizes keep the icons and the grid and
+/// take Finder's 12 point labels.
 public struct IconGridLayout: Equatable, Sendable {
     public var iconSize: Double
     public var iconBoxSize: Double
@@ -56,19 +68,12 @@ public struct IconGridLayout: Equatable, Sendable {
     public var clipboardBadgeOffset: Double
 
     static func make(density: Density) -> IconGridLayout {
-        if density.isCompact {
-            return IconGridLayout(
-                iconSize: 48, iconBoxSize: 56, cellMinWidth: 88, rowHeight: 94, itemPaddingTop: 3,
-                labelGap: 3, labelWidth: 86, paddingTop: 8, paddingBottom: 8, paddingInline: 16,
-                labelFontSize: 12, labelLineHeight: 15, labelPaddingVertical: 1,
-                labelPaddingHorizontal: 2, labelRadius: 4, clipboardBadgeSize: 18,
-                clipboardBadgeOffset: -4)
-        }
-        return IconGridLayout(
+        IconGridLayout(
             iconSize: 64, iconBoxSize: 72, cellMinWidth: 104, rowHeight: 116, itemPaddingTop: 5,
             labelGap: 4, labelWidth: 102, paddingTop: 10, paddingBottom: 10, paddingInline: 16,
-            labelFontSize: 13, labelLineHeight: 16, labelPaddingVertical: 1, labelPaddingHorizontal: 4,
-            labelRadius: 4, clipboardBadgeSize: 18, clipboardBadgeOffset: -4)
+            labelFontSize: density.isFinder ? 12 : 13, labelLineHeight: density.isFinder ? 15 : 16,
+            labelPaddingVertical: 1, labelPaddingHorizontal: 4, labelRadius: 4, clipboardBadgeSize: 18,
+            clipboardBadgeOffset: -4)
     }
 
     /// How many columns fit across the pane (`computeIconGridColumns`); `containerWidth` is in
@@ -123,10 +128,11 @@ public struct DetailsLayout: Equatable, Sendable {
 
     static func make(density: Density) -> DetailsLayout {
         DetailsLayout(
-            rowHeight: density.isCompact ? 24 : 28, columnGap: 12, rowPadding: 24, rowInset: 10,
-            rowRadius: 6, nameFloorWidth: 160, nameMinWidth: 96, cellFontSize: density.isCompact ? 13 : 14,
+            rowHeight: density.isFinder ? 24 : 28, columnGap: 12, rowPadding: 24, rowInset: 10,
+            rowRadius: 6, nameFloorWidth: 160, nameMinWidth: 96, cellFontSize: density.isFinder ? 13 : 14,
             headerHeight: 28, headerFontSize: 11, sortChevronWidth: 9, sortChevronHeight: 6,
-            separatorWidth: 1, separatorHeight: 14, separatorHitWidth: 12, columnKeyboardStep: 12, iconSize: 18,
+            separatorWidth: 1, separatorHeight: 14, separatorHitWidth: 12, columnKeyboardStep: 12,
+            iconSize: density.isFinder ? 16 : 18,
             nameIconGap: 8, rowPaddingInline: 12, headerButtonGap: 6, sortChevronTrailingMargin: 6,
             headerBorderWidth: 1, separatorHitOverhang: 6, scrollbarAllowance: 8, sizeBarInsetVertical: 3,
             sizeBarOverhang: 4, sizeBarMinWidth: 2, sizeBarAlpha: 0.2, sizeBarSelectedAlpha: 0.28, fitSlack: 2)
@@ -166,7 +172,7 @@ public struct ColumnWidths: Equatable, Sendable {
     }
 }
 
-/// Compact List (`list`) metrics: `FLOW_LIST_LAYOUT` / `COMPACT_FLOW_LIST_LAYOUT`.
+/// Compact List (`list`) metrics: `FLOW_LIST_LAYOUT`, and Finder's List view sizes (13 point text, 16 point icons).
 public struct FlowListLayout: Equatable, Sendable {
     public var rowHeight: Double
     public var rowGap: Double
@@ -184,9 +190,9 @@ public struct FlowListLayout: Equatable, Sendable {
 
     static func make(density: Density) -> FlowListLayout {
         FlowListLayout(
-            rowHeight: density.isCompact ? 24 : 28, rowGap: 0, itemWidth: density.isCompact ? 252 : 292,
+            rowHeight: density.isFinder ? 24 : 28, rowGap: 0, itemWidth: density.isFinder ? 252 : 292,
             columnGap: 18, paddingTop: 8, paddingBottom: 4, paddingInline: 10,
-            fontSize: density.isCompact ? 13 : 14, iconSize: 18, iconGap: 8)
+            fontSize: density.isFinder ? 13 : 14, iconSize: density.isFinder ? 16 : 18, iconGap: 8)
     }
 }
 
@@ -305,9 +311,10 @@ public struct SidebarInsets: Equatable, Sendable {
 
 /// Sidebar metrics: every length of the sidebar for a density, in points (the original's CSS pixels; the sidebar rules
 /// of styles.css, `.tree-pane`, `.sidebar-main-native`, `.tree-row`, `.sidebar-section-header`, ui.md section 1.4). The
-/// rows' height is `ExplorerLayout.treeRowHeight`; fonts, radii and durations come from `DesignTokens`.
+/// small, medium and large sizes are AppKit's source list rows and text; fonts, radii and durations come from
+/// `DesignTokens`.
 public struct SidebarLayout: Equatable, Sendable {
-    public let density: Density
+    public let density: SidebarDensity
 
     /// `.sidebar-titlebar`: the sidebar's parts start this far down, under the window's toolbar band and its traffic
     /// lights (the band is the system toolbar's, over the sidebar; the sidebar draws nothing there).
@@ -337,6 +344,9 @@ public struct SidebarLayout: Equatable, Sendable {
     public let chevronStroke = 1.8
     /// `.tree-label`: the icon, then the text.
     public let iconSize: Double
+    /// A favorite's or location's symbol, centered over the icon's box. A source list's symbols are the size of its
+    /// text.
+    public let symbolPointSize: Double
     public let labelGap: Double
     public let labelFontSize: Double
     public let headingFontSize: Double
@@ -357,10 +367,10 @@ public struct SidebarLayout: Equatable, Sendable {
 
     // MARK: Lists
 
-    /// `.tree-list { padding: 6px 0 16px }` and its compact form (`4px 0 12px`).
+    /// `.tree-list { padding: 6px 0 16px }`, and `4px 0 12px` for the small size.
     public let treeListPaddingTop: Double
     public let treeListPaddingBottom: Double
-    /// The Folders tree of the separate layout keeps 6 pt on top in either density (`.filesystem-tree-section .tree-list`).
+    /// The Folders tree of the separate layout keeps 6 pt on top in every density (`.filesystem-tree-section .tree-list`).
     public let foldersTreePaddingTop = 6.0
 
     // MARK: Section headers (`.sidebar-section-header`)
@@ -383,24 +393,32 @@ public struct SidebarLayout: Equatable, Sendable {
     /// `mask-image: linear-gradient(to bottom, transparent 0, #000 6px)` over the folders tree.
     public let treeFadeHeight = 6.0
 
-    public init(density: Density) {
+    public init(density: SidebarDensity) {
         self.density = density
-        let compact = density.isCompact
-        rowHeight = DesignTokens.explorer(density: density).treeRowHeight
-        indent = compact ? 11 : 14
+        let size: (row: Double, indent: Double, chevron: Double, icon: Double, gap: Double, font: Double)
+        switch density {
+        case .standard: size = (26, 14, 14, 16, 6, DesignTokens.typeScale.name)
+        case .small: size = (24, 12, 12, 14, 4, 11)
+        case .medium: size = (32, 14, 14, 16, 6, 13)
+        case .large: size = (40, 16, 16, 20, 8, 15)
+        }
+        let small = density == .small
+        rowHeight = size.row
+        indent = size.indent
         rowRadius = DesignTokens.radii.control
-        chevronBox = compact ? 12 : 14
-        iconSize = compact ? 14 : 16
-        labelGap = compact ? 4 : 6
-        labelFontSize = compact ? DesignTokens.typeScale.callout : DesignTokens.typeScale.name
+        chevronBox = size.chevron
+        iconSize = size.icon
+        symbolPointSize = density == .standard ? size.icon : size.font
+        labelGap = size.gap
+        labelFontSize = size.font
         headingFontSize = DesignTokens.typeScale.small
         headingFontSizeSmall = DesignTokens.typeScale.small
         badgeFontSize = DesignTokens.typeScale.mini
-        badgeGap = compact ? 4 : 6
-        treeListPaddingTop = compact ? 4 : 6
-        treeListPaddingBottom = compact ? 12 : 16
-        sectionHeaderHeight = compact ? 20 : 24
-        sectionHeaderMarginTop = compact ? 4 : 8
+        badgeGap = small ? 4 : 6
+        treeListPaddingTop = small ? 4 : 6
+        treeListPaddingBottom = small ? 12 : 16
+        sectionHeaderHeight = small ? 20 : density == .large ? 28 : 24
+        sectionHeaderMarginTop = small ? 4 : 8
     }
 
     /// The left edge of a row's content: `8 + depth * indent` from the row's left edge.

@@ -242,7 +242,7 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
 /// 12 gap).
 final class DetailsHeaderView: NSView {
     private var cells: [DetailsHeaderCell] = []
-    private(set) var layoutMetrics = DesignTokens.details(density: .comfortable)
+    private(set) var layoutMetrics = DesignTokens.details(density: .standard)
     private var fitted = DetailsColumnSet(columns: [], widths: [:])
 
     var onSort: (DetailColumn) -> Void = { _ in }

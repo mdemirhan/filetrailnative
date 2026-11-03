@@ -7,8 +7,8 @@ import Testing
 @testable import FTFoundation
 
 struct DetailsLayoutTests {
-    static let layout = DesignTokens.details(density: .comfortable)
-    static let compact = DesignTokens.details(density: .compact)
+    static let layout = DesignTokens.details(density: .standard)
+    static let finder = DesignTokens.details(density: .finder)
     static let defaults = DetailsColumns.widths(DetailColumnWidths.defaults)
 
     // MARK: The original's cases
@@ -16,7 +16,7 @@ struct DetailsLayoutTests {
     // T-6f96314a
     @Test func rowHeightsFollowTheDensity() {
         #expect(Self.layout.rowHeight == 28)
-        #expect(Self.compact.rowHeight == 24)
+        #expect(Self.finder.rowHeight == 24)
         #expect(Self.layout.rowInset == 10)
         #expect(Self.layout.columnGap == 12)
     }
@@ -283,8 +283,9 @@ struct DetailsLayoutTests {
         default:
             let l = layout
             return .constants([
-                "regularRowHeight": DesignTokens.details(density: .comfortable).rowHeight,
-                "compactRowHeight": DesignTokens.details(density: .compact).rowHeight, "columnGap": l.columnGap,
+                "regularRowHeight": DesignTokens.details(density: .standard).rowHeight,
+                // Finder's sizes have the reference's compact rows.
+                "compactRowHeight": DesignTokens.details(density: .finder).rowHeight, "columnGap": l.columnGap,
                 "rowPadding": l.rowPadding, "rowInset": l.rowInset, "nameFloorWidth": l.nameFloorWidth,
                 "nameMinWidth": l.nameMinWidth,
             ])

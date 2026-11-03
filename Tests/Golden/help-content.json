@@ -118,7 +118,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -357,6 +357,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -367,8 +372,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -405,6 +415,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -460,6 +474,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -720,7 +738,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -743,6 +761,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -841,12 +869,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -1008,6 +1041,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -1078,6 +1115,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -1154,7 +1199,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -1261,17 +1311,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -1340,6 +1379,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -1966,7 +2009,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -2205,6 +2248,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -2215,8 +2263,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -2253,6 +2306,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -2308,6 +2365,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -2568,7 +2629,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -2591,6 +2652,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -2689,12 +2760,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -2856,6 +2932,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -2926,6 +3006,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -3002,7 +3090,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -3103,17 +3196,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -3187,6 +3269,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -3820,7 +3906,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -4064,6 +4150,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -4074,8 +4165,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -4112,6 +4208,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -4167,6 +4267,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -4434,7 +4538,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -4457,6 +4561,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -4555,12 +4669,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -4717,6 +4836,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -4787,6 +4910,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -4863,7 +4994,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -4970,17 +5106,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -5049,6 +5174,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -5676,7 +5805,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -5915,6 +6044,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -5925,8 +6059,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -5963,6 +6102,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -6018,6 +6161,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -6278,7 +6425,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -6301,6 +6448,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -6399,12 +6556,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -6566,6 +6728,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -6636,6 +6802,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -6712,7 +6886,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -6813,17 +6992,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -6897,6 +7065,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -7634,13 +7806,23 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -7677,6 +7859,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -7721,6 +7907,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -7947,6 +8137,16 @@
               ]
             },
             {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
               "topic": "views",
               "rows": [
                 [
@@ -8020,12 +8220,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -8146,6 +8351,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -8206,6 +8415,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -8258,6 +8475,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -8360,17 +8587,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [],
@@ -8427,6 +8643,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -8967,7 +9187,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -9206,6 +9426,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -9216,8 +9441,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -9254,6 +9484,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -9309,6 +9543,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -9569,7 +9807,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -9592,6 +9830,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -9690,12 +9938,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -9862,6 +10115,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -9932,6 +10189,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -10008,7 +10273,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -10118,11 +10388,6 @@
                   "group": "views",
                   "shortcut": "Cmd+Left",
                   "description": "View as icons (Option+Return also works)"
-                },
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
                 }
               ]
             }
@@ -10198,6 +10463,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -10830,7 +11099,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -11064,6 +11333,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -11074,8 +11348,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -11112,6 +11391,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -11162,6 +11445,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -11417,7 +11704,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -11440,6 +11727,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -11550,12 +11847,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -11712,6 +12014,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -11782,6 +12088,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -11858,7 +12172,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -11965,17 +12284,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -12044,6 +12352,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -12668,7 +12980,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -12907,6 +13219,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -12917,8 +13234,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -12955,6 +13277,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -13005,6 +13331,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -13260,7 +13590,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -13283,6 +13613,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -13381,12 +13721,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -13548,6 +13893,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -13618,6 +13967,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -13694,7 +14051,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -13795,17 +14157,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -13879,6 +14230,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -14533,7 +14888,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -14747,6 +15102,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -14757,8 +15117,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -14795,6 +15160,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -14845,6 +15214,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -15100,7 +15473,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -15123,6 +15496,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -15221,12 +15604,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -15378,6 +15766,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -15449,6 +15841,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -15512,6 +15912,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -15608,17 +16018,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -15692,6 +16091,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -16313,7 +16716,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -16552,6 +16955,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -16562,8 +16970,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -16600,6 +17013,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -16655,6 +17072,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -16920,7 +17341,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -16943,6 +17364,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -17041,12 +17472,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -17208,6 +17644,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -17278,6 +17718,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -17354,7 +17802,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -17455,17 +17908,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -17539,6 +17981,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -18189,7 +18635,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -18423,6 +18869,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -18433,8 +18884,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -18471,6 +18927,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -18526,6 +18986,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -18763,7 +19227,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -18786,6 +19250,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -18896,12 +19370,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -19063,6 +19542,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -19133,6 +19616,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -19209,7 +19700,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -19316,17 +19812,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -19400,6 +19885,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -20036,7 +20525,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -20265,6 +20754,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -20275,8 +20769,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -20313,6 +20812,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -20368,6 +20871,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -20628,7 +21135,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -20651,6 +21158,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -20761,12 +21278,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -20928,6 +21450,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -20999,6 +21525,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -21062,6 +21596,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -21158,17 +21702,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -21242,6 +21775,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -21866,7 +22403,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -22110,6 +22647,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -22125,8 +22667,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -22163,6 +22710,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -22218,6 +22769,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -22478,7 +23033,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -22501,6 +23056,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -22599,12 +23164,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -22761,6 +23331,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -22831,6 +23405,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -22907,7 +23489,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -23014,17 +23601,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -23093,6 +23669,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -23724,7 +24304,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -23963,6 +24543,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -23973,8 +24558,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -24011,6 +24601,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -24066,6 +24660,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -24338,7 +24936,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -24361,6 +24959,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -24459,12 +25067,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -24626,6 +25239,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -24696,6 +25313,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -24772,7 +25397,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -24873,17 +25503,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -24957,6 +25576,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -25592,7 +26215,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -25831,6 +26454,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -25841,8 +26469,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -25879,6 +26512,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -25934,6 +26571,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -26183,7 +26824,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -26206,6 +26847,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -26304,12 +26955,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -26466,6 +27122,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -26537,6 +27197,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -26600,6 +27268,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -26696,17 +27374,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -26780,6 +27447,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -27414,7 +28085,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -27648,6 +28319,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -27658,8 +28334,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -27696,6 +28377,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -27751,6 +28436,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -28011,7 +28700,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -28034,6 +28723,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -28132,12 +28831,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -28299,6 +29003,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -28369,6 +29077,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -28445,7 +29161,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -28552,17 +29273,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -28631,6 +29341,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -29282,7 +29996,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -29521,6 +30235,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -29531,8 +30250,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -29580,6 +30304,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -29646,6 +30374,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -29913,7 +30645,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -29936,6 +30668,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -30046,12 +30788,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -30213,6 +30960,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -30278,6 +31029,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -30359,7 +31118,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -30460,17 +31224,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -30544,6 +31297,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -31176,7 +31933,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -31410,6 +32167,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -31420,8 +32182,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -31458,6 +32225,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -31513,6 +32284,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -31778,7 +32553,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -31801,6 +32576,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -31899,12 +32684,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -32066,6 +32856,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -32137,6 +32931,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -32200,6 +33002,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -32296,17 +33108,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -32380,6 +33181,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -33024,7 +33829,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -33258,6 +34063,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -33268,8 +34078,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -33306,6 +34121,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -33356,6 +34175,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -33611,7 +34434,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -33634,6 +34457,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -33732,12 +34565,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -33894,6 +34732,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -33964,6 +34806,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -34045,7 +34895,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -34152,17 +35007,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -34236,6 +35080,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -34861,7 +35709,7 @@
           {
             "group": "navigation",
             "shortcut": "Ctrl+Cmd+S",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -35095,6 +35943,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -35105,8 +35958,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -35143,6 +36001,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -35198,6 +36060,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -35458,7 +36324,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Ctrl+Cmd+S",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -35481,6 +36347,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -35579,12 +36455,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -35746,6 +36627,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -35817,6 +36702,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -35880,6 +36773,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -35976,17 +36879,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -36060,6 +36952,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -36709,7 +37605,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -36933,6 +37829,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -36943,8 +37844,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -36981,6 +37887,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -37031,6 +37941,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -37291,7 +38205,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -37314,6 +38228,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -37412,12 +38336,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -37579,6 +38508,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -37649,6 +38582,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -37730,7 +38671,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -37837,17 +38783,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -37916,6 +38851,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -38554,7 +39493,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -38788,6 +39727,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -38798,8 +39742,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -38836,6 +39785,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -38891,6 +39844,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -39151,7 +40108,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -39169,6 +40126,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -39267,12 +40234,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -39439,6 +40411,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -39510,6 +40486,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -39578,6 +40562,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -39683,11 +40677,6 @@
                   "group": "views",
                   "shortcut": "Option+Return",
                   "description": "View as a compact list of names"
-                },
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
                 }
               ]
             }
@@ -39763,6 +40752,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -40381,7 +41374,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -40620,6 +41613,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -40630,8 +41628,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -40668,6 +41671,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -40723,6 +41730,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -40983,7 +41994,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -41006,6 +42017,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -41104,12 +42125,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -41256,6 +42282,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -41326,6 +42356,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -41402,7 +42440,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -41509,17 +42552,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -41588,6 +42620,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -42225,7 +43261,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -42464,6 +43500,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -42474,8 +43515,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -42512,6 +43558,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -42567,6 +43617,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -42839,7 +43893,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -42862,6 +43916,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -42960,12 +44024,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -43122,6 +44191,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -43193,6 +44266,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -43263,7 +44344,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -43364,17 +44450,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -43448,6 +44523,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -44086,7 +45165,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -44315,6 +45394,16 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
+            "shortcut": "Cmd+Option+Y",
+            "description": "Customize the toolbar"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -44325,8 +45414,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -44363,6 +45457,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -44418,6 +45516,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -44673,7 +45775,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -44696,6 +45798,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -44806,12 +45918,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -44963,6 +46080,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -45034,6 +46155,14 @@
               "topic": "views",
               "rows": [
                 [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
+                [
                   "Information",
                   "Folder sizes"
                 ],
@@ -45097,6 +46226,16 @@
                 [
                   "Copying and moving",
                   "From the folder tree"
+                ]
+              ],
+              "shortcuts": []
+            },
+            {
+              "topic": "views",
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
                 ]
               ],
               "shortcuts": []
@@ -45199,17 +46338,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -45278,6 +46406,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -45882,7 +47014,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -46116,6 +47248,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -46126,8 +47263,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -46164,6 +47306,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -46219,6 +47365,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -46479,7 +47629,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -46497,6 +47647,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -46595,12 +47755,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -46762,6 +47927,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -46832,6 +48001,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -46908,7 +48085,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -47015,17 +48197,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -47094,6 +48265,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -47739,7 +48914,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -47973,6 +49148,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -47983,8 +49163,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -48032,6 +49217,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -48098,6 +49287,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -48358,7 +49551,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -48381,6 +49574,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -48479,12 +49682,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -48646,6 +49854,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -48716,6 +49928,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -48792,7 +50012,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -48893,17 +50118,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -48977,6 +50191,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -49607,7 +50825,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -49846,6 +51064,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -49856,8 +51079,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -49894,6 +51122,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -49949,6 +51181,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -50209,7 +51445,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -50232,6 +51468,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -50342,12 +51588,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -50509,6 +51760,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -50579,6 +51834,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -50655,7 +51918,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -50756,17 +52024,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -50840,6 +52097,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",
@@ -51483,7 +52744,7 @@
           {
             "group": "navigation",
             "shortcut": "Cmd+W",
-            "description": "Close the tab (the window, when it has a single view)"
+            "description": "Close the tab (the window, when it is the last tab)"
           },
           {
             "group": "navigation",
@@ -51717,6 +52978,11 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Option+H",
+            "description": "Hide other apps"
+          },
+          {
+            "group": "views",
             "shortcut": "Cmd+,",
             "description": "Settings"
           },
@@ -51727,8 +52993,13 @@
           },
           {
             "group": "views",
+            "shortcut": "Cmd+Q",
+            "description": "Quit File Trail"
+          },
+          {
+            "group": "views",
             "shortcut": "Esc",
-            "description": "Return from Help"
+            "description": "Clear the search in Help"
           }
         ],
         "mentions": [
@@ -51765,6 +53036,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -51820,6 +53095,10 @@
                 [
                   "Changing",
                   "Move to Trash"
+                ],
+                [
+                  "Changing",
+                  "The Trash"
                 ],
                 [
                   "Undo and Redo",
@@ -52080,7 +53359,7 @@
                 {
                   "group": "navigation",
                   "shortcut": "Cmd+W",
-                  "description": "Close the tab (the window, when it has a single view)"
+                  "description": "Close the tab (the window, when it is the last tab)"
                 },
                 {
                   "group": "navigation",
@@ -52103,6 +53382,16 @@
                   "description": "Switch between the tree and the list"
                 }
               ]
+            },
+            {
+              "topic": "search",
+              "rows": [
+                [
+                  "Options",
+                  "Defaults"
+                ]
+              ],
+              "shortcuts": []
             },
             {
               "topic": "views",
@@ -52201,12 +53490,17 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Sort"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
                   "shortcut": "Esc",
-                  "description": "Return from Help"
+                  "description": "Clear the search in Help"
                 }
               ]
             }
@@ -52368,6 +53662,10 @@
                   "Same name"
                 ],
                 [
+                  "Changing",
+                  "Tags"
+                ],
+                [
                   "Undo and Redo",
                   "What you can undo"
                 ],
@@ -52433,6 +53731,14 @@
             {
               "topic": "views",
               "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ],
+                [
+                  "The list",
+                  "Sort"
+                ],
                 [
                   "Information",
                   "Folder sizes"
@@ -52509,7 +53815,12 @@
             },
             {
               "topic": "views",
-              "rows": [],
+              "rows": [
+                [
+                  "The list",
+                  "Icons, List and Compact List"
+                ]
+              ],
               "shortcuts": [
                 {
                   "group": "views",
@@ -52616,17 +53927,6 @@
                   "description": "Move from the search field into the results (Return also works)"
                 }
               ]
-            },
-            {
-              "topic": "views",
-              "rows": [],
-              "shortcuts": [
-                {
-                  "group": "views",
-                  "shortcut": "Esc",
-                  "description": "Return from Help"
-                }
-              ]
             }
           ],
           [
@@ -52695,6 +53995,10 @@
                 [
                   "Copying and moving",
                   "From other apps"
+                ],
+                [
+                  "Changing",
+                  "Tags"
                 ],
                 [
                   "Undo and Redo",

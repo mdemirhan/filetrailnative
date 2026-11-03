@@ -18,8 +18,7 @@
           "searchMinWidth": 110,
           "controlHeight": 32,
           "buttonWidth": 32,
-          "treeRowHeight": 26,
-          "compactTreeRowHeight": 21
+          "treeRowHeight": 26
         },
         "topToolbarLayout": {
           "itemGap": 2,

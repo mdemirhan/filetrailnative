@@ -131,7 +131,7 @@ enum QuickLookItemFrame {
         if let table = firstView(NSTableView.self, in: root), index < table.numberOfRows {
             let row = table.rect(ofRow: index)
             // The icon sits at the row's left edge.
-            let side = min(row.height, CGFloat(DesignTokens.details(density: .comfortable).iconSize))
+            let side = min(row.height, CGFloat(DesignTokens.details(density: .standard).iconSize))
             rect = table.convert(NSRect(x: row.minX + 8, y: row.midY - side / 2, width: side, height: side), to: nil)
         } else if let collection = firstView(NSCollectionView.self, in: root),
             let item = collection.item(at: IndexPath(item: index, section: 0))

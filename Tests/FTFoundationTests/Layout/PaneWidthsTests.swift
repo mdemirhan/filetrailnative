@@ -11,7 +11,7 @@ struct PaneWidthsTests {
         #expect(moved.left == 752 && moved.top == 292)
     }
 
-    let layout = DesignTokens.explorer(density: .comfortable)
+    let layout = DesignTokens.explorer
 
     func panes(tree: Double = 280, inspector: Double = 320) -> PaneWidths {
         PaneWidths(treeWidth: tree, inspectorWidth: inspector, layout: layout)

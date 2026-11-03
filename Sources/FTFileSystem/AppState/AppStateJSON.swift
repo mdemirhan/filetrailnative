@@ -20,11 +20,11 @@ enum AppStateJSON {
 
     /// `sanitizePreferences`' object literal.
     private static let preferenceKeys = [
-        "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
-        "compactListView", "compactDetailsView", "compactIconView", "compactTreeView", "detailColumns",
-        "detailColumnOrder", "detailColumnWidths", "searchColumns", "searchColumnOrder", "searchColumnWidths",
-        "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes", "folderTreeOpen", "propertiesOpen",
-        "detailRowOpen", "topToolbarItems", "terminalApp", "defaultTextEditor", "openWithApplications",
+        "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst", "density",
+        "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns", "searchColumnOrder",
+        "searchColumnWidths", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
+        "folderTreeOpen", "propertiesOpen", "detailRowOpen", "topToolbarItems", "terminalApp", "defaultTextEditor",
+        "openWithApplications",
         "fileActivationAction", "diskImageOpensIn", "returnKeyAction", "shortcutOverrides", "openItemLimit",
         "includeHidden", "searchPatternMode", "searchMatchScope", "searchRecursive", "searchSkipGitFolders",
         "searchSkipGitIgnored", "searchResultsSortBy", "searchResultsSortDirection", "treeWidth", "inspectorWidth",

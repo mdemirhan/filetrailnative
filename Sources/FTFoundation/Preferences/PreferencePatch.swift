@@ -5,7 +5,7 @@ extension AppPreferences {
     /// The preference keys, in the order of `DEFAULT_APP_PREFERENCES`.
     public static let keys: [String] = [
         "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
-        "compactListView", "compactDetailsView", "compactIconView", "compactTreeView", "singleClickExpandTreeItems",
+        "density", "singleClickExpandTreeItems",
         "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns", "searchColumnOrder",
         "searchColumnWidths", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
         "folderTreeOpen", "propertiesOpen", "detailRowOpen", "topToolbarItems", "terminalApp", "defaultTextEditor",

@@ -10,7 +10,7 @@ struct SidebarHeaderState: Equatable {
     var expanded: Bool
     /// The first header sits just below the toolbar's bottom edge (`margin-top: 2px`).
     var first: Bool
-    var density: Density
+    var density: SidebarDensity
 }
 
 /// How a row would take what is dragged over it.
@@ -42,7 +42,7 @@ struct SidebarRowState: Equatable {
     var dropLine: Favorites.DropPosition?
     /// "Loading folder…" shows (the read has lasted 400 ms).
     var showsLoading: Bool
-    var density: Density
+    var density: SidebarDensity
     /// Favorites and Locations of the separate lists are flat rows without a disclosure button.
     var hasDisclosure: Bool
     /// The item is on the clipboard: a copy or cut glyph after its name (P5-08).

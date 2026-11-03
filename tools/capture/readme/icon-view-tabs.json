@@ -14,13 +14,12 @@
       "prefs": {
         "theme": "light",
         "accent": "#007aff",
-        "density": "comfortable",
+        "density": "standard",
         "viewMode": "icons",
         "sortBy": "name",
         "sortDirection": "asc",
         "favoritesPlacement": "separate",
-        "notificationsEnabled": false,
-        "compactIconView": true
+        "notificationsEnabled": false
       }
     },
     {

@@ -49,6 +49,14 @@ public enum PreferencesSanitizer {
         record[key]?.string.flatMap { Choice(rawValue: $0) } ?? fallback
     }
 
+    /// `density`, or for a file saved before it, Finder's sizes where all four Compact switches were on.
+    private static func density(_ record: [String: JSONNode], _ fallback: Density) -> Density {
+        if record["density"] != nil { return choice(record, "density", fallback) }
+        let compact = ["compactListView", "compactDetailsView", "compactIconView", "compactTreeView"]
+        guard compact.contains(where: { record[$0] != nil }) else { return fallback }
+        return compact.allSatisfy { record[$0]?.bool == true } ? .finder : .standard
+    }
+
     /// `sanitizeViewMode`.
     private static func viewMode(_ value: JSONNode?, _ fallback: ExplorerViewMode = .icons) -> ExplorerViewMode {
         value?.string.flatMap { ExplorerViewMode(rawValue: $0) } ?? fallback
@@ -203,10 +211,7 @@ public enum PreferencesSanitizer {
             sortBy: choice(record, "sortBy", defaults.sortBy),
             sortDirection: choice(record, "sortDirection", defaults.sortDirection),
             foldersFirst: bool(record, "foldersFirst", defaults.foldersFirst),
-            compactListView: bool(record, "compactListView", defaults.compactListView),
-            compactDetailsView: bool(record, "compactDetailsView", defaults.compactDetailsView),
-            compactIconView: bool(record, "compactIconView", defaults.compactIconView),
-            compactTreeView: bool(record, "compactTreeView", defaults.compactTreeView),
+            density: density(record, defaults.density),
             singleClickExpandTreeItems: bool(record, "singleClickExpandTreeItems", defaults.singleClickExpandTreeItems),
             detailColumns: detailColumns(record["detailColumns"], defaults.detailColumns),
             detailColumnOrder: record["detailColumnOrder"] == nil

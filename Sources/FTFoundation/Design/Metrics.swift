@@ -30,11 +30,11 @@ public struct Metrics: Equatable, Sendable {
         radii = .make()
         controlHeights = .make()
         spacing = DesignTokens.spacing
-        explorer = .make(density: density)
+        explorer = .make()
         iconGrid = .make(density: density)
         details = .make(density: density)
         flowList = .make(density: density)
-        sidebar = SidebarLayout(density: density)
+        sidebar = SidebarLayout(density: density.sidebarDensity(system: .medium))
         toolbar = .make()
         tabStrip = .make()
         scrollbarWidth = DesignTokens.scrollbarWidth

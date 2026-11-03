@@ -4,7 +4,7 @@ import Foundation
 
 /// The rules of `.icon-item` and its parts that `IconGridLayout` does not hold.
 public struct IconItemStyle: Equatable, Sendable {
-    /// `.icon-item` is `padding: 5px 1px 0` (compact 3px on top): its sides.
+    /// `.icon-item` is `padding: 5px 1px 0`: its sides.
     public var paddingInline: Double
     /// `.icon-item` is 2 px shorter than its row.
     public var heightInset: Double
@@ -30,8 +30,8 @@ public struct IconItemStyle: Equatable, Sendable {
     public static func make(density: Density) -> IconItemStyle {
         IconItemStyle(
             paddingInline: 1, heightInset: 2, tileRadius: DesignTokens.radii.control, selectedTileAlpha: 0.1,
-            renameHeight: density.isCompact ? 19 : 20,
-            renameFontSize: density.isCompact ? DesignTokens.typeScale.callout : DesignTokens.typeScale.body,
+            renameHeight: density.isFinder ? 19 : 20,
+            renameFontSize: density.isFinder ? DesignTokens.typeScale.callout : DesignTokens.typeScale.body,
             thumbnailRadius: 2, thumbnailHairlineWidth: 0.5, thumbnailHairlineAlpha: 0.26, thumbnailShadowOffsetY: 1,
             thumbnailShadowBlur: 2, thumbnailShadowAlpha: 0.16, badgeBorderWidth: 1, badgeBorderAlpha: 0.7,
             badgeGlyphSize: 11)

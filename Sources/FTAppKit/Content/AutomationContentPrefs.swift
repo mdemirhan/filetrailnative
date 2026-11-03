@@ -53,11 +53,7 @@
                 }
                 return .applied
             }
-            // The densities of the List, the Icons view and the Compact List.
-            for key in [
-                "detailColumns", "detailColumnOrder", "detailColumnWidths", "compactDetailsView", "compactIconView",
-                "compactListView",
-            ] {
+            for key in ["detailColumns", "detailColumnOrder", "detailColumnWidths"] {
                 AutomationPrefs.register(key) { value, context in
                     guard let controller = context.controller else { return .unsupported(key) }
                     controller.updatePreferences([key: node(value)])
@@ -72,13 +68,10 @@
             }
             AutomationPrefs.register("density") { value, context in
                 guard let controller = context.controller else { return .unsupported("density") }
-                guard let name = value.string, ["comfortable", "compact"].contains(name) else {
+                guard let name = value.string, Density(rawValue: name) != nil else {
                     return .failed("density \(value)")
                 }
-                controller.updatePreferences([
-                    "compactListView": .bool(name == "compact"), "compactDetailsView": .bool(name == "compact"),
-                    "compactIconView": .bool(name == "compact"), "compactTreeView": .bool(name == "compact"),
-                ])
+                controller.updatePreferences(["density": .string(name)])
                 controller.refreshColumns()
                 controller.sidebarController.revealSelectionFromTheTop()
                 return .applied

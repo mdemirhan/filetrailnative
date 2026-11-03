@@ -311,7 +311,7 @@ final class SidebarEjectView: SidebarPlainView {
 final class SidebarBadgeView: SidebarPlainView {
     private let label = TextBoxField(labelWithString: "")
     var fill = NSColor.clear
-    var density = Density.comfortable
+    var density = SidebarDensity.standard
 
     override init(frame: NSRect) {
         super.init(frame: frame)

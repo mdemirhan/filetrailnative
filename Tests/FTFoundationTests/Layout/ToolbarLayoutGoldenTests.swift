@@ -65,9 +65,8 @@ struct ToolbarLayoutGoldenTests {
         #expect(css["searchMinWidth"] == toolbar.searchMinWidth)
         #expect(css["controlHeight"] == toolbar.controlHeight)
         #expect(css["buttonWidth"] == toolbar.buttonWidth)
-        #expect(css["treeRowHeight"] == DesignTokens.explorer(density: .comfortable).treeRowHeight)
-        #expect(css["compactTreeRowHeight"] == DesignTokens.explorer(density: .compact).treeRowHeight)
-        let explorer = DesignTokens.explorer(density: .comfortable)
+        #expect(css["treeRowHeight"] == DesignTokens.sidebar(density: .standard).rowHeight)
+        let explorer = DesignTokens.explorer
         let constants = try #require(sheet.explorerLayout)
         #expect(constants["treeMinWidth"] == explorer.treeMinWidth)
         #expect(constants["treeMaxWidth"] == explorer.treeMaxWidth)

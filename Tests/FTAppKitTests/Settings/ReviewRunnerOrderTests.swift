@@ -26,13 +26,13 @@ import Testing
 
 @MainActor
 @Suite struct ReviewExpectTextTests {
-    // F-896 B-DLG-181: an expect step reads the Density pop-up's text as the original's driver does, from its
-    // aria-label ("Density"), not the value it shows ("Custom") (263-settings-density-custom step 9).
+    // F-896 B-DLG-181: an expect step reads a pop-up's text as the original's driver does, from its aria-label
+    // ("Sizes"), not the value it shows ("Match Finder") (263-settings-density-custom step 9).
     @Test func expectReadsAPopupByItsLabelAsTheOriginalDoes() throws {
-        let preferences = AppPreferences.defaults(theme: .light).with { $0.compactIconView = true }
+        let preferences = AppPreferences.defaults(theme: .light).with { $0.density = .finder }
         let (controller, _) = SettingsTestKit.make(tab: .browsing, preferences: preferences)
-        let popup = try SettingsTestKit.control("Density", SettingsPopup.self, in: controller)
-        #expect(ElementFinder.text(of: popup) == "Custom")
+        let popup = try SettingsTestKit.control("Sizes", SettingsPopup.self, in: controller)
+        #expect(ElementFinder.text(of: popup) == "Match Finder")
         let spec = Data(
             """
             {"elements": {
@@ -42,8 +42,8 @@ import Testing
             """.utf8)
         let elements = try AutomationElements.parse(spec)
         #expect(elements.labelled == ["settings popup"])
-        #expect(ElementFinder.text(of: popup, named: "settings popup", elements: elements) == "Density")
-        let title = try SettingsTestKit.row("Density", in: controller).titleText
-        #expect(ElementFinder.text(of: title, named: "settings row title", elements: elements) == "Density")
+        #expect(ElementFinder.text(of: popup, named: "settings popup", elements: elements) == "Sizes")
+        let title = try SettingsTestKit.row("Sizes", in: controller).titleText
+        #expect(ElementFinder.text(of: title, named: "settings row title", elements: elements) == "Sizes")
     }
 }

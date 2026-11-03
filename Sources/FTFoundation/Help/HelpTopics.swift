@@ -14,7 +14,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder tree",
                             description:
-                                "Click a favorite or a folder to open it. The arrow beside a folder shows its subfolders without leaving the folder you are in."
+                                "Click a favorite or a folder to open it. The arrow beside a folder shows its subfolders without leaving the folder you are in, and a double-click opens the folder and shows them. Settings → Browsing → Expand folders with a single click does that on every click."
                         ),
                         HelpRow(
                             label: "File list",
@@ -24,12 +24,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Go to Folder",
                             description:
-                                "{openLocationSheet} finds a folder you have opened before, or a favorite, from a few letters of its name; the folders you use most come first. Start with `/` or `~` to type a path instead, and Tab completes it. ⌘⌫ removes the selected folder from the list."
+                                "{openLocationSheet} finds a folder you have opened before, or a favorite, from a few letters of its name; the folders you use most come first. Start with `/` or `~` to type a path instead, and Tab completes it. ⌘⌫ removes the selected folder from the list, if it is one you opened."
                         ),
                         HelpRow(
                             label: "Favorites",
                             description:
-                                "Right-click a folder and choose Add to Favorites to pin it in the folder tree. File > Add to Favorites does the same for the selected folder, or for the folder you are in when nothing is selected."
+                                "Right-click a folder and choose Add to Favorites to pin it in the sidebar. File > Add to Favorites does the same for the selected folder, or for the folder you are in when nothing is selected. Drag a favorite up or down to reorder it, and right-click it for Remove from Favorites. Settings → Browsing → Favorites lists them, and Show favorites puts them in the folder tree or in their own section."
                         ),
                         HelpRow(
                             label: "Disks",
@@ -48,7 +48,7 @@ extension HelpContent {
                         HelpRow(
                             label: "New tab",
                             description:
-                                "{newTab} opens a tab on the folder you are in. The row of tabs appears with the second tab; with a single view the window looks as it always did."
+                                "{newTab} opens a tab on the folder you are in. The row of tabs appears with the second tab. A window holds up to 25 tabs."
                         ),
                         HelpRow(
                             label: "Open in New Tab",
@@ -58,17 +58,17 @@ extension HelpContent {
                         HelpRow(
                             label: "Each tab",
                             description:
-                                "Keeps its own folder, history, folder tree, selection, view, sort order, hidden files, Folders First and search. A new tab starts with these from the tab it was opened from. A search keeps running while its tab is in the background."
+                                "Keeps its own folder, history, folder tree, selection, view, sort order, hidden files, Folders First and search. A new tab starts on the same folder, with the same folder tree, view, sort order, hidden files and Folders First as the tab it was opened from; its history starts there, with nothing selected and no search. A search keeps running while its tab is in the background."
                         ),
                         HelpRow(
                             label: "Moving between tabs",
                             description:
-                                "Click a tab, or use {selectNextTab} and {selectPreviousTab}. Drag a tab to move it along the row."
+                                "Click a tab, or use {selectNextTab} and {selectPreviousTab}. Drag a tab to move it along the row, out of the window to give it a window of its own, or onto another window's tabs to move it there."
                         ),
                         HelpRow(
                             label: "Closing",
                             description:
-                                "{closeTab} closes the tab, and the window when a single view is left. {reopenClosedTab} brings back the tab closed last. Right-click a tab for Close Other Tabs and Move Tab to New Window. Duplicate Tab is in the File menu, and Merge All Windows in the Window menu."
+                                "{closeTab} closes the tab, and the window when it is the last tab. {reopenClosedTab} brings back the tab closed last. Right-click a tab for Close Other Tabs and Move Tab to New Window. Duplicate Tab is in the File menu, and Merge All Windows in the Window menu."
                         ),
                         HelpRow(
                             label: "Between tabs",
@@ -95,12 +95,12 @@ extension HelpContent {
                         HelpRow(
                             label: "Each window",
                             description:
-                                "Has its own tabs, folder tree, Info panel and Info Row, and column widths. A new window starts with these from the window it was opened from. Settings, favorites and the columns shown are the same in every window."
+                                "Has its own tabs, Info panel and Info Row, column widths, and whether the folder tree shows and how wide it is. A new window opens with one tab, on the folder you were in, and takes the rest from the window it was opened from. Settings, favorites and the columns shown are the same in every window."
                         ),
                         HelpRow(
                             label: "Moving tabs",
                             description:
-                                "Window > Move Tab to New Window, or the same item in a tab's right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others."
+                                "Window > Move Tab to New Window, or the same item in a tab's right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others; a window whose tabs would take this one past 25 stays open."
                         ),
                         HelpRow(
                             label: "Between windows",
@@ -168,7 +168,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Open With",
                             description:
-                                "Right-click an item for the apps that can open it: the one it opens in, then the apps you keep first (Settings → Files), then every other app macOS offers. Hold Option for Always Open With: every file of that kind then opens in the app you choose, in Finder too. In Get Info, Open names the app the file opens in, and choosing another app beside Opens with does the same as Always Open With."
+                                "Right-click an item for the apps that can open it: the one it opens in, then the apps you keep first (Settings → Files), then every other app macOS offers. Hold Option for Always Open With: every file of that kind then opens in the app you choose, in Finder too. In the Info panel, the Open button names the app the file opens in, and choosing another app beside Opens with does the same as Always Open With."
                         ),
                         HelpRow(
                             label: "Quick Look",
@@ -194,7 +194,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What was copied",
                             description:
-                                "Copied and cut items flash, and keep a copy or cut icon after their name until they are pasted or the clipboard changes. A button with their count appears in the toolbar: click it to list them, show one in its folder, take one off, or choose Clear Clipboard. Settings → General → Copy and Cut turns the marks off."
+                                "Copied and cut items flash, then keep a copy or cut icon after their name, and cut items are dimmed. Cut items lose the mark once they are pasted; copied ones keep it, to be pasted again, until you copy or cut something else. A button with their count appears in the toolbar: click it to list them, show one in its folder, take one off, or choose Clear Clipboard. Turn off Mark copied and cut items in Settings → General to hide the marks."
                         ),
                         HelpRow(
                             label: "Drag",
@@ -214,7 +214,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Same name",
                             description:
-                                "If an item already exists, you choose: Skip, Keep Both or Replace, and for a folder being copied, Add Missing, which copies only what the folder there lacks. Replaced items go to the Trash."
+                                "If an item already exists, you choose for each one: Skip, Keep Both or Replace, and for a folder, Merge, which puts what you paste into the folder already there. Or choose for all of them at once: Skip, Keep All, Replace, and when copying folders, Add Missing, which merges them but adds only what the folder there lacks. Replaced items go to the Trash."
                         ),
                     ]),
                 HelpSection(
@@ -228,7 +228,17 @@ extension HelpContent {
                         HelpRow(
                             label: "Move to Trash",
                             description:
-                                "{undo} puts what you just moved to the Trash back. Items can also be put back from the Trash in Finder."
+                                "{undo} puts what you just moved to the Trash back. File Trail has no Put Back: to bring back something older, drag it out of the Trash."
+                        ),
+                        HelpRow(
+                            label: "The Trash",
+                            description:
+                                "The Empty button at the top of the Trash empties it, after asking. Right-click an item there to delete it immediately."
+                        ),
+                        HelpRow(
+                            label: "Tags",
+                            description:
+                                "Tagged items show colored dots by their name, before it in Icons view and after it in the lists, and a tagged folder takes the tag’s color. Right-click items for Finder’s tag colors: a color goes on the items that don’t have it, or comes off when they all do. The tags are Finder’s own, so Finder shows them too. Undo doesn’t change tags back."
                         ),
                     ]),
                 HelpSection(
@@ -237,7 +247,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Undo",
                             description:
-                                "{undo} takes back the last thing you did to your files. Press it again to take back the one before, and so on, back to when you opened File Trail (after about a million items, the oldest are let go). Edit › Undo shows what it will take back, such as “Undo Rename”."
+                                "{undo} takes back the last thing you did to your files. Press it again to take back the one before, and so on, back to when you opened File Trail or last did something that can’t be undone (after about a million items, the oldest are let go). Edit › Undo shows what it will take back, such as “Undo Rename”."
                         ),
                         HelpRow(
                             label: "Redo",
@@ -262,7 +272,7 @@ extension HelpContent {
                         HelpRow(
                             label: "What can’t be undone",
                             description:
-                                "Merging folders, moving items to another disk, copying onto a network share, Delete Immediately, and Empty Trash. File Trail tells you before you merge folders, and afterwards Edit › Undo shows “Can’t Undo”."
+                                "Merging folders, moving items to another disk, copying or making a folder on a disk without a Trash (such as a network share), and anything deleted for good: Delete Immediately, Empty Trash, and Move to Trash or Replace on a disk without a Trash. File Trail tells you before you merge folders or delete anything for good. Afterwards Edit › Undo shows “Can’t Undo”, and nothing done before can be undone either."
                         ),
                     ]),
                 HelpSection(
@@ -417,7 +427,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Defaults",
                             description:
-                                "Options you change in the search field last until you quit. Settings → Search sets what each launch starts with."
+                                "Options you change in the search field stay with that tab, and new tabs in its window start with them. Settings → Search sets what new windows start with, and changing it there also changes the tab on screen."
                         ),
                     ]),
                 HelpSection(
@@ -426,7 +436,8 @@ extension HelpContent {
                         HelpRow(
                             label: "Search elsewhere",
                             description:
-                                "The bar above the results switches between this folder, Home and the whole disk."),
+                                "The bar above the results switches between this folder, Home, the disk it is on, and Macintosh HD."
+                        ),
                         HelpRow(
                             label: "Filter",
                             description:
@@ -457,17 +468,17 @@ extension HelpContent {
                         HelpRow(
                             label: "Icons, List and Compact List",
                             description:
-                                "The three buttons in the toolbar, the View menu, or {viewAsIcons}, {viewAsDetails} and {viewAsList} switch between large icons with previews of photos, PDFs and other files, a list with columns for date, size and kind, and a compact list of names. Settings → Browsing chooses the columns, and the density of every view."
+                                "The three buttons in the toolbar, the View menu, or {viewAsIcons}, {viewAsDetails} and {viewAsList} switch between large icons with previews of photos, PDFs and other files, a list with columns for date, size and kind, and a compact list of names. Settings → Browsing chooses the columns, and Sizes → Match Finder uses Finder’s text and icon sizes in every view and the folder tree."
                         ),
                         HelpRow(
                             label: "Sort",
                             description:
-                                "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again reverses it."
+                                "The sort button, View > Sort By, or a click on a column heading in List view orders by name, kind, date or size. Choosing the same order again in View > Sort By, or clicking the same heading, reverses it; the sort button has Ascending and Descending. Search results order by name, folder or kind: click their headings in List view."
                         ),
                         HelpRow(
                             label: "Hidden files",
                             description:
-                                "Files whose names start with a dot. {toggleHiddenFiles} shows them in the tab on screen; search follows this setting too."
+                                "Files whose names start with a dot, and items macOS marks as hidden, as Finder hides them. {toggleHiddenFiles} shows them in the tab on screen, with their icons faded; search follows this setting too."
                         ),
                         HelpRow(
                             label: "Dates",
@@ -494,7 +505,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder sizes",
                             description:
-                                "With the Info panel open, a folder you select in your home folder is measured by itself (turn it off in Settings → Behavior). Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. Right-click empty space to size the folder on screen. With several items selected it sizes the folders among them. The path bar's right end shows the size of the selection, or of the folder on screen when nothing is selected, once every size in it is known. Sizing a folder also sizes every folder inside it."
+                                "With the Info panel or the Info Row open, a folder you select in your home folder, or an app, is measured by itself (turn it off with Calculate folder sizes automatically in Settings → General). Other folders show no size until you ask: click Calculate in the Info panel, or choose Calculate Size from the right-click menu or {calculateSize}. Right-click empty space to size the folder on screen. With several items selected it sizes the folders among them. The path bar's right end shows the size of the selection, or of the folder on screen when nothing is selected, once every size in it is known. Sizing a folder also sizes every folder inside it."
                         ),
                         HelpRow(
                             label: "What takes the space",
@@ -551,10 +562,11 @@ extension HelpContent {
         HelpShortcutItem(group: .navigation, .command(.moveTabToNewWindow), "Move the tab to a window of its own"),
         HelpShortcutItem(group: .navigation, .command(.mergeAllWindows), "Bring every window's tabs into this window"),
         HelpShortcutItem(
-            group: .navigation, .command(.closeTab), "Close the tab (the window, when it has a single view)"),
+            group: .navigation, .command(.closeTab), "Close the tab (the window, when it is the last tab)"),
         HelpShortcutItem(group: .navigation, .command(.selectNextTab), "Next tab"),
         HelpShortcutItem(group: .navigation, .command(.selectPreviousTab), "Previous tab"),
         HelpShortcutItem(group: .navigation, .command(.reopenClosedTab), "Reopen the tab closed last"),
+        HelpShortcutItem(group: .navigation, .command(.duplicateTab), "Duplicate the tab"),
         HelpShortcutItem(group: .navigation, .command(.closeWindow), "Close the window"),
         HelpShortcutItem(group: .navigation, .command(.focusTreePane), "Focus the folder tree"),
         HelpShortcutItem(group: .navigation, .command(.focusContentPane), "Focus the file list"),
@@ -617,9 +629,12 @@ extension HelpContent {
         HelpShortcutItem(group: .views, .command(.fullScreen), "Enter or leave full screen"),
         HelpShortcutItem(group: .views, .command(.minimize), "Minimize the window"),
         HelpShortcutItem(group: .views, .command(.hide), "Hide File Trail"),
+        HelpShortcutItem(group: .views, .command(.hideOthers), "Hide other apps"),
+        HelpShortcutItem(group: .views, .command(.customizeToolbar), "Customize the toolbar"),
         HelpShortcutItem(group: .views, .command(.settings), "Settings"),
         HelpShortcutItem(group: .views, .command(.openHelp), "Help"),
         HelpShortcutItem(group: .views, .command(.openKeyboardShortcuts), "Keyboard shortcuts"),
-        HelpShortcutItem(group: .views, .fixed("Esc"), "Return from Help"),
+        HelpShortcutItem(group: .views, .command(.quit), "Quit File Trail"),
+        HelpShortcutItem(group: .views, .fixed("Esc"), "Clear the search in Help"),
     ]
 }

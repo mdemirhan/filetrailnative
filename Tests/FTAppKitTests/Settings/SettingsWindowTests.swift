@@ -269,23 +269,15 @@ import Testing
     // MARK: Browsing
 
     // T-5c2e2b1c T-b7c4ec80 F-072 F-896 B-DLG-181 B-DLG-182
-    @Test func setsEveryViewsDensityAtOnceAndShowsAMixAsCustom() throws {
-        let mixed = AppPreferences.defaults(theme: .light).with { $0.compactIconView = true }
-        let (controller, recorder) = Kit.make(tab: .browsing, preferences: mixed)
-        let density = try Kit.control("Density", SettingsPopup.self, in: controller)
-        #expect(density.title == "Custom")
-        #expect(density.options.map(\.title) == ["Comfortable", "Compact", "Custom"])
-        #expect(density.options.map(\.enabled) == [true, true, false])
-        // Custom can't be chosen.
-        density.choose("custom")
-        density.choose("compact")
+    @Test func setsEveryViewsSizesAtOnce() throws {
+        let (controller, recorder) = Kit.make(tab: .browsing, preferences: .defaults(theme: .light))
+        let density = try Kit.control("Sizes", SettingsPopup.self, in: controller)
+        #expect(density.title == "Default")
+        #expect(density.options.map(\.title) == ["Default", "Match Finder"])
+        density.choose("finder")
         Kit.flush(controller)
-        #expect(
-            recorder.saved == [
-                "compactListView": .bool(true), "compactDetailsView": .bool(true), "compactTreeView": .bool(true),
-            ])
-        #expect(density.title == "Compact")
-        #expect(density.options.map(\.title) == ["Comfortable", "Compact"])
+        #expect(recorder.saved == ["density": .string("finder")])
+        #expect(density.title == "Match Finder")
         let single = try Kit.control("Expand folders with a single click", SettingsSwitch.self, in: controller)
         Kit.click(single)
         Kit.flush(controller)

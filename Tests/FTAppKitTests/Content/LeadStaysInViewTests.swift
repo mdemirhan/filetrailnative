@@ -156,16 +156,16 @@ extension ExplorerWindowlessTests {
         // F-776 B-VIEW-085 B-NAV-162: rows of another height move the lead away.
         @Test func theListKeepsTheLeadInViewOnADensityChange() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails)
-            tab.updatePreferences(["compactDetailsView": .bool(true)])
+            tab.updatePreferences(["density": .string("finder")])
             tab.refreshColumns()
             harness.layout(tab)
             tab.content.select(paths: [tab.content.entries[150].path])
-            tab.updatePreferences(["compactDetailsView": .bool(false)])
+            tab.updatePreferences(["density": .string("standard")])
             tab.refreshColumns()
             #expect(try leadIsInView(tab))
             scrollAway(.viewAsDetails, tab)
             let away = try scroller(tab).scrollOrigin
-            tab.updatePreferences(["compactDetailsView": .bool(true)])
+            tab.updatePreferences(["density": .string("finder")])
             tab.refreshColumns()
             #expect(try scroller(tab).scrollOrigin == away)
             await harness.close()

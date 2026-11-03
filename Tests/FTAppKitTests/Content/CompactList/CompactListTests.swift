@@ -18,7 +18,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 120)
             let compact = try #require(probe.compact)
-            let layout = DesignTokens.flowList(density: .comfortable)
+            let layout = DesignTokens.flowList(density: .standard)
             let rows = compact.rowsPerColumn
             #expect(rows == layout.rowsPerColumn(containerHeight: Double(compact.viewport.height)))
             #expect(compact.itemsPerLine == rows)
@@ -113,7 +113,7 @@ extension ExplorerWindowlessTests {
             #expect(probe.selectedNames == ["item-001.txt"])
             probe.key("End")
             #expect(probe.selectedNames == ["item-399.txt"])
-            let layout = DesignTokens.flowList(density: .comfortable)
+            let layout = DesignTokens.flowList(density: .standard)
             let clip = compact.scroll.contentView.bounds
             let right = Double(399 / rows) * layout.columnStep + layout.itemWidth
             #expect(abs(Double(clip.origin.x) - (right - (Double(clip.width) - 20))) <= 1 || clip.maxX >= right)
@@ -160,19 +160,19 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-777 B-VIEW-005 B-VIEW-031: compact density: rows of 24, columns of 252 and 13 pt names.
-        @Test func compactDensityHasShorterRowsAndNarrowerColumns() async throws {
+        // F-777 B-VIEW-005 B-VIEW-031: Finder's sizes: rows of 24, columns of 252 and 13 pt names.
+        @Test func findersSizesHaveShorterRowsAndNarrowerColumns() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 80)
-            tab.updatePreferences(["compactListView": .bool(true)])
+            tab.updatePreferences(["density": .string("finder")])
             tab.refreshColumns()
             probe.layout()
             let compact = try #require(probe.compact)
-            #expect(compact.density == .compact)
+            #expect(compact.density == .finder)
             let rows = compact.rowsPerColumn
             #expect(
                 rows
-                    == DesignTokens.flowList(density: .compact).rowsPerColumn(
+                    == DesignTokens.flowList(density: .finder).rowsPerColumn(
                         containerHeight: Double(compact.viewport.height)))
             let second = try #require(probe.compactItems[tab.content.entries[rows].name])
             #expect(Double(second.view.frame.minX) == 10 + 270)
@@ -225,7 +225,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 400)
             let compact = try #require(probe.compact)
-            let layout = DesignTokens.flowList(density: .comfortable)
+            let layout = DesignTokens.flowList(density: .standard)
             let columnsInView = Int((Double(compact.viewport.width) - 20) / layout.columnStep)
             let lead = max(0, columnsInView * compact.rowsPerColumn - 1)
             tab.content.select(paths: [tab.content.entries[lead].path])

@@ -39,7 +39,7 @@ struct PreferencePatchTests {
             #"{"searchResultsSortBy": "name", "searchResultsSortDirection": "desc"}"#,
             #"{"restoreSessionOnStartup": false, "markClipboardItems": false}"#,
             """
-            {"compactDetailsView": true,
+            {"density": "finder",
              "detailColumns": {"size": true, "modified": false, "permissions": true, "kind": true, "created": false},
              "detailColumnWidths": {"name": 360, "size": 120, "modified": 180, "permissions": 160, "kind": 148, "created": 168}}
             """,

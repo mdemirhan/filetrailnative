@@ -86,6 +86,19 @@ struct AppStateReaderTests {
         #expect(load("7") == .auto)
     }
 
+    // A file saved before the density had the four Compact switches: all of them on is Finder's sizes.
+    @Test func readsTheDensityOrTheCompactSwitchesItReplaced() {
+        func load(_ fields: String) -> Density { Self.preferences("{\"preferences\": {\(fields)}}").density }
+        #expect(load("") == .standard)
+        #expect(load(#""density": "finder""#) == .finder)
+        #expect(load(#""density": "compact""#) == .standard)
+        let all =
+            #""compactListView": true, "compactDetailsView": true, "compactIconView": true, "compactTreeView": true"#
+        #expect(load(all) == .finder)
+        #expect(load(#""compactListView": true, "compactDetailsView": false"#) == .standard)
+        #expect(load(#""density": "standard", "# + all) == .standard)
+    }
+
     // T-fe1b8d68 F-020
     @Test func keepsASavedSearchMatchModeAndDefaultsToPlainText() {
         func load(_ mode: String?) -> SearchPatternModePreference {
@@ -115,7 +128,7 @@ struct AppStateReaderTests {
                  "terminalApp": {"appPath": "   ", "appName": "iTerm"},
                  "defaultTextEditor": {"appPath": "   ", "appName": "TextEdit"},
                  "openWithApplications": [{"id": "", "appPath": "/Applications/Bad.app", "appName": "Bad"}],
-                 "compactDetailsView": "yes",
+                 "density": "huge",
                  "detailColumns": {"size": "nope", "modified": false, "permissions": true},
                  "detailColumnOrder": ["kind", "kind", "bogus", "size"],
                  "searchColumns": {"folder": false, "kind": "yes", "created": true},
@@ -145,7 +158,8 @@ struct AppStateReaderTests {
         for removed in [
             "uiFontFamily", "tabStyle", "highlightHoveredItems", "notificationDurationSeconds", "notifyClipboardItems",
             "uiFontSize", "uiFontWeight", "favoritesPaneHeight", "typeaheadEnabled", "typeaheadDebounceMs",
-            "searchResultsFilterScope", "zoomPercent",
+            "searchResultsFilterScope", "zoomPercent", "compactListView", "compactDetailsView", "compactIconView",
+            "compactTreeView",
         ] {
             #expect(!keys.contains(removed), "\(removed)")
         }
@@ -154,7 +168,7 @@ struct AppStateReaderTests {
             reloaded.defaultTextEditor
                 == ApplicationSelection(appPath: "/System/Applications/TextEdit.app", appName: "TextEdit"))
         #expect(reloaded.openWithApplications == [])
-        #expect(reloaded.compactDetailsView == false)
+        #expect(reloaded.density == .standard)
         #expect(
             reloaded.detailColumns
                 == DetailColumnVisibility(modified: false, size: true, kind: true, created: false, permissions: true))
@@ -202,7 +216,7 @@ struct AppStateReaderTests {
                  "shortcutOverrides": {"newTab": ["option+cmd+n", "Cmd+C", "D"], "duplicateSelection": [],
                                        "closeTab": ["Cmd+W"], "noSuchCommand": ["Cmd+J"]},
                  "accent": "#2cb5a0", "viewMode": "details", "sortBy": "modified",
-                 "sortDirection": "desc", "foldersFirst": false, "compactListView": true,
+                 "sortDirection": "desc", "foldersFirst": false, "density": "finder",
                  "detailColumns": {"size": true, "modified": false, "permissions": true, "kind": true, "created": false},
                  "detailColumnOrder": ["kind", "size", "modified", "permissions", "created"],
                  "detailColumnWidths": {"name": 360, "size": 120, "modified": 180, "permissions": 160, "kind": 148,

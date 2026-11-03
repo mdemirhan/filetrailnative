@@ -14,7 +14,7 @@ enum IconThumbnails {
 /// The name under an icon (`.icon-item-label`): centred lines, at most two, on the selection's pill when the item is
 /// selected. The field holds the label's text (the name as shortened) and draws it itself.
 final class IconNameLabel: ListLabel {
-    var density = Density.comfortable
+    var density = Density.standard
     var pillColor: NSColor? {
         didSet { needsDisplay = true }
     }
@@ -166,7 +166,7 @@ final class ClipboardBadgeView: PassThroughView {
     var theme = AppearanceModel.shared.theme {
         didSet { needsDisplay = true }
     }
-    var style = IconItemStyle.make(density: .comfortable)
+    var style = IconItemStyle.make(density: .standard)
 
     override func draw(_ dirtyRect: NSRect) {
         let border = CGFloat(style.badgeBorderWidth)
@@ -230,7 +230,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
     private let nameField = NSTextField(labelWithString: "")
 
     private(set) var path: String?
-    private var density = Density.comfortable
+    private var density = Density.standard
     private var iconRequest: LoadHandle?
     private var thumbnailRequest: LoadHandle?
     private var hasThumbnail = false

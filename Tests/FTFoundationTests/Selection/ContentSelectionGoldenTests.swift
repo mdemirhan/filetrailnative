@@ -102,10 +102,22 @@ struct ContentSelectionGoldenTests {
         (sizes ?? [:]).mapValues { DragSelectionSize(width: $0.width, height: $0.height) }
     }
 
-    /// The icon layout the reference recorded, which is ours: compared token by token.
+    /// The icon layout the reference recorded: ours, compared token by token, or its compact grid, which File Trail no
+    /// longer has and is taken as recorded.
     private static func iconLayout(_ recorded: [String: Double]) -> IconGridLayout {
-        let compact = recorded["rowHeight"] == DesignTokens.iconGrid(density: .compact).rowHeight
-        let layout = DesignTokens.iconGrid(density: compact ? .compact : .comfortable)
+        var layout = DesignTokens.iconGrid(density: .standard)
+        if recorded["rowHeight"] != layout.rowHeight {
+            layout.iconSize = recorded["iconSize"] ?? layout.iconSize
+            layout.cellMinWidth = recorded["cellMinWidth"] ?? layout.cellMinWidth
+            layout.rowHeight = recorded["rowHeight"] ?? layout.rowHeight
+            layout.itemPaddingTop = recorded["itemPaddingTop"] ?? layout.itemPaddingTop
+            layout.iconBoxSize = recorded["iconBoxSize"] ?? layout.iconBoxSize
+            layout.labelGap = recorded["labelGap"] ?? layout.labelGap
+            layout.labelWidth = recorded["labelWidth"] ?? layout.labelWidth
+            layout.paddingTop = recorded["paddingTop"] ?? layout.paddingTop
+            layout.paddingBottom = recorded["paddingBottom"] ?? layout.paddingBottom
+            layout.paddingInline = recorded["paddingInline"] ?? layout.paddingInline
+        }
         #expect(recorded["rowHeight"] == layout.rowHeight)
         #expect(recorded["itemPaddingTop"] == layout.itemPaddingTop)
         #expect(recorded["iconBoxSize"] == layout.iconBoxSize)

@@ -12,10 +12,8 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var sortBy: SortByPreference
     public var sortDirection: SortDirectionPreference
     public var foldersFirst: Bool
-    public var compactListView: Bool
-    public var compactDetailsView: Bool
-    public var compactIconView: Bool
-    public var compactTreeView: Bool
+    /// File Trail's sizes in the file views and the folder tree, or Finder's.
+    public var density: Density
     public var singleClickExpandTreeItems: Bool
     public var detailColumns: DetailColumnVisibility
     public var detailColumnOrder: [OptionalDetailColumnKey]
@@ -75,8 +73,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
         AppPreferences(
             theme: theme, accent: AppPreferenceLimits.defaultAccent, viewMode: .icons,
-            searchViewMode: .details, sortBy: .name, sortDirection: .asc, foldersFirst: true, compactListView: false,
-            compactDetailsView: false, compactIconView: false, compactTreeView: false,
+            searchViewMode: .details, sortBy: .name, sortDirection: .asc, foldersFirst: true, density: .standard,
             singleClickExpandTreeItems: false, detailColumns: .defaults,
             detailColumnOrder: AppPreferenceLimits.defaultDetailColumnOrder, detailColumnWidths: .defaults,
             searchColumns: .defaults, searchColumnOrder: AppPreferenceLimits.defaultSearchColumnOrder,

@@ -142,7 +142,8 @@ final class SettingsPageView: NSView {
             \.restoreSessionOnStartup)
         toggle(behavior, "Show notifications", "When a copy, a move or the Trash finishes.", \.notificationsEnabled)
         toggle(
-            behavior, "Mark copied and cut items", "They keep a mark in the tree and the list until they are pasted.",
+            behavior, "Mark copied and cut items",
+            "They keep a mark in the tree and the list while they are on the clipboard.",
             \.markClipboardItems)
         toggle(
             behavior, "Calculate folder sizes automatically",
@@ -157,18 +158,22 @@ final class SettingsPageView: NSView {
 
     private func buildBrowsing() {
         let views = section("Views")
-        let density = SettingsPopup(label: "Density", options: [], value: "", theme: theme)
+        let density = SettingsPopup(
+            label: "Sizes", options: Density.allCases.map { .init(value: $0.rawValue, title: $0.settingsLabel) },
+            value: Density.standard.rawValue, theme: theme)
         density.onChange = { [weak self] raw in
-            guard let value = SettingsDensity(rawValue: raw) else { return }
-            self?.update { value.apply(to: &$0) }
+            guard let value = Density(rawValue: raw) else { return }
+            self?.update { $0.density = value }
         }
-        views.card.add(row("Density", "Compact fits more rows in every view and the folder tree.", density))
+        views.card.add(
+            row(
+                "Sizes",
+                "Default is File Trail’s own sizes. Match Finder uses Finder’s text and icon sizes, and the folder "
+                    + "tree follows the sidebar size in System Settings → Appearance.", density))
         onRefresh { preferences in
-            let current = SettingsDensity.of(preferences)
             density.update(
-                options: SettingsDensity.options(for: current).map {
-                    .init(value: $0.rawValue, title: $0.label, enabled: $0 != .custom)
-                }, value: current.rawValue)
+                options: Density.allCases.map { .init(value: $0.rawValue, title: $0.settingsLabel) },
+                value: preferences.density.rawValue)
         }
         toggle(
             views, "Expand folders with a single click", "In the folder tree, a click also opens or closes the folder.",
@@ -395,7 +400,9 @@ final class SettingsPageView: NSView {
     private func buildSearch() {
         let searches = section(
             "New Searches",
-            note: "Every new search starts with these. The search field’s menu changes them for one search.")
+            note:
+                "New windows start with these, and a change here applies to the tab on screen too. The search "
+                + "field’s menu changes them for its tab.")
         popup(
             searches, "Search in", nil, label: "Search in",
             options: [(SearchMatchScopePreference.name, "Names"), (.path, "Full Paths")], \.searchMatchScope)

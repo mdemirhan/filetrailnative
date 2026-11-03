@@ -92,7 +92,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
     let dropMarker = GridMarkerView(id: "compactList.item.dropTarget")
 
     private(set) var path: String?
-    private var layout = DesignTokens.flowList(density: .comfortable)
+    private var layout = DesignTokens.flowList(density: .standard)
     private var iconRequest: LoadHandle?
 
     override func loadView() {
