@@ -178,6 +178,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         return made
     }
     private var barScaleCache: (listedCount: Int, version: Int, scale: Int64?)?
+    /// The order on screen just before a write or a drag took items away. Their sizes are forgotten first, and a size
+    /// order puts a folder without one at the end, so where a selected one stood is counted in this order instead.
+    /// Used once, by the selection letting go of what left, and dropped when the selection changes.
+    private var orderBeforeRemoval: [String]?
     /// While search results show (P5-07): what is shown in place of the folder, and the folder as it was, which comes
     /// back when the results are put away.
     private(set) var searchDisplay: ContentSearchDisplay?
@@ -419,6 +423,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         for entry in customIconsChanged { iconStore?.forget(IconRequest(entry: entry.iconEntry)) }
         let customIconPaths = Set(customIconsChanged.map(\.path))
         let previousPaths = entryPaths
+        let orderBefore = takeOrderBeforeRemoval()
         listed = newEntries
         rowsCache = nil
         reorder()
@@ -433,7 +438,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             let lookup = paths.isEmpty ? [:] : rowsByPath
             setSelection(ContentSelection.of(paths.filter { lookup[$0] != nil }), notify: true)
         } else {
-            resanitizeSelection(previousPaths: previousPaths)
+            resanitizeSelection(previousPaths: sameFolder ? orderBefore ?? previousPaths : previousPaths)
         }
         closeRenameIfItemLeft()
         if let kept, !unchanged, keepingScroll, inlineRename == nil, previousPaths == entryPaths {
@@ -668,6 +673,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     private func setSelection(_ next: ContentSelection, notify: Bool) {
         guard next != selection else { return }
+        orderBeforeRemoval = nil
         selection = next
         pane?.syncSelection()
         updateStatus()
@@ -688,9 +694,24 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func dropFromSelection(_ paths: [String]) {
         let left = Set(paths)
         guard selection.paths.contains(where: left.contains) else { return }
-        let listed = entryPaths + selection.paths.filter { position(of: $0) == nil }
+        let order = takeOrderBeforeRemoval() ?? entryPaths
+        let listed = order + selection.paths.filter { position(of: $0) == nil }
         let staying = listed.filter { !left.contains($0) }
-        setSelection(selection.sanitized(entryPaths: staying, previousPaths: entryPaths), notify: true)
+        setSelection(selection.sanitized(entryPaths: staying, previousPaths: order), notify: true)
+    }
+
+    /// Called just before the sizes of what a write or a drag took away are forgotten: the order on screen is kept for
+    /// where the selected items that left stood (B-NAV-140, B-SEL-026).
+    func keepOrderBeforeRemoval() {
+        orderBeforeRemoval = selection.isEmpty ? nil : entryPaths
+    }
+
+    /// The order kept before a removal, when the list still holds the same items and was only sorted again since.
+    private func takeOrderBeforeRemoval() -> [String]? {
+        guard let order = orderBeforeRemoval else { return nil }
+        orderBeforeRemoval = nil
+        guard order.count == entryPaths.count, Set(order) == Set(entryPaths) else { return nil }
+        return order
     }
 
     /// Selects the paths that are listed; the view keeps their lead in view (`RevealKeeper`). An item the filter hides is shown: the filter is

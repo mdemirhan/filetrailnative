@@ -139,6 +139,71 @@ extension ExplorerWindowlessTests {
             #expect(scroller.scrollOrigin == .zero)
         }
 
+        /// Ten folders sorted by size, largest first, each size known: `folder-00` to `folder-09` in that order.
+        private func sizeSortedFolders(_ view: ExplorerViewMode) -> (
+            ContentPaneController, WindowFolderSizes, ManualTimers, [DirectoryEntry]
+        ) {
+            let jobs = FakeJobs()
+            let timers = ManualTimers()
+            let sizes = WindowFolderSizes(backend: jobs, owner: 1, homePath: "/", scheduler: timers) { [timers] in
+                timers.time
+            }
+            let content = ContentPaneController(mode: view, folderSizes: sizes, loaders: .placeholder)
+            content.view.frame = NSRect(x: 0, y: 0, width: 800, height: 400)
+            content.setView(sortBy: .size, direction: .desc, foldersFirst: false, includeHidden: false)
+            let folders = (0..<10).map { ContentModelTests.entry(String(format: "folder-%02d", $0), kind: .directory) }
+            content.show(folder: "/f", entries: folders, selecting: nil, keepingScroll: false)
+            content.view.layoutSubtreeIfNeeded()
+            for (index, folder) in folders.enumerated() {
+                jobs.nextStart = JobStart(jobId: folder.path, status: .ready)
+                jobs.finish(folder.path, folder.path, size: Int64(1_000 - index))
+                sizes.calculate(folder.path)
+                timers.advance(1)
+            }
+            return (content, sizes, timers, folders)
+        }
+
+        // B-NAV-140 B-SEL-026: a folder trashed from a size order has its size forgotten before it leaves the list,
+        // which puts it at the end; the arrow keys still carry on from where it stood.
+        @Test(arguments: [ExplorerViewMode.details, .list, .icons])
+        func aFolderTakenFromASizeOrderKeepsItsPlace(_ view: ExplorerViewMode) throws {
+            let (content, sizes, timers, folders) = sizeSortedFolders(view)
+            #expect(content.entries.map(\.path) == folders.map(\.path))
+            let gone = folders[3].path
+            content.select(paths: [gone])
+
+            // As a write's end has it: the sizes are forgotten, then the selection lets go of what left.
+            content.keepOrderBeforeRemoval()
+            sizes.forgetChangedSizes([gone], intoTrash: true)
+            timers.advance(1)
+            #expect(content.entries.last?.path == gone)
+            content.dropFromSelection([gone])
+            #expect(content.selection.isEmpty)
+            #expect(content.selection.gapIndex == 3)
+
+            content.show(
+                folder: "/f", entries: folders.filter { $0.path != gone }, selecting: nil, keepingScroll: true)
+            #expect(content.selection.gapIndex == 3)
+            #expect(content.entries[3].path == folders[4].path)
+        }
+
+        // The same in a tab the write wasn't started from: the folder read again lets go of what left.
+        @Test(arguments: [ExplorerViewMode.details, .list, .icons])
+        func aFolderTakenFromASizeOrderKeepsItsPlaceInAnotherTab(_ view: ExplorerViewMode) throws {
+            let (content, sizes, timers, folders) = sizeSortedFolders(view)
+            let gone = folders[3].path
+            content.select(paths: [gone])
+
+            content.keepOrderBeforeRemoval()
+            sizes.forgetChangedSizes([gone], intoTrash: true)
+            timers.advance(1)
+            #expect(content.entries.last?.path == gone)
+            content.show(
+                folder: "/f", entries: folders.filter { $0.path != gone }, selecting: nil, keepingScroll: true)
+            #expect(content.selection.isEmpty)
+            #expect(content.selection.gapIndex == 3)
+        }
+
         // F-776 B-VIEW-085 B-NAV-162: the pane is made smaller, by the window or a panel: the lead stays on screen.
         @Test func theListKeepsTheLeadInViewOnAResize() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails)

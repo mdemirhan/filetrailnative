@@ -210,6 +210,8 @@ final class TabDragDrop {
         }
         let tabs = (NSApp.delegate as? AppDelegate)?.explorerWindowsIfStarted?.allTabs ?? [tab]
         for each in tabs {
+            // Before a size order puts what left at the end: its place is kept for the arrow keys.
+            each.content.keepOrderBeforeRemoval()
             each.folderSizes.forgetChangedSizes(cleared, intoTrash: intoTrash)
             each.reload(changedPaths: cleared)
         }

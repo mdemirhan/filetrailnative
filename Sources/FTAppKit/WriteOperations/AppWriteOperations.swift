@@ -170,6 +170,8 @@ final class AppWriteOperations {
         if event.status.isTerminal, let result = event.result {
             let intoTrash = event.action == .trash || event.action == .undo || event.action == .redo
             for tab in windows.allTabs {
+                // Before a size order puts what left at the end: its place is kept for the arrow keys.
+                tab.content.keepOrderBeforeRemoval()
                 tab.folderSizes.forgetChangedSizes(result.changedPaths, intoTrash: intoTrash)
             }
         }
