@@ -8,7 +8,7 @@ import Testing
 @testable import FTAppKit
 
 extension ExplorerWindowlessTests {
-    @MainActor @Suite struct CheckpointLayoutTests {
+    @MainActor @Suite struct TextFitLayoutTests {
         func allViews(in root: NSView?) -> [NSView] {
             guard let root, !root.isHidden else { return [] }
             return [root] + root.subviews.flatMap { allViews(in: $0) }

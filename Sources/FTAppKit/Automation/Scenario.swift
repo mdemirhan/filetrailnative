@@ -1,9 +1,8 @@
-// Port of the capture scenario format shared with tools/capture/electron/driver.ts; no TypeScript source.
 #if DEBUG
     import Foundation
 
-    /// One UI state or flow to capture, as written in `tools/capture/scenarios/**/*.json`. The same file
-    /// drives the original app (through Playwright) and this one (through `--automation`).
+    /// One UI state or flow to capture, as written in a scenario's JSON file. The app plays it through
+    /// `--automation`.
     struct Scenario: Equatable, Sendable {
         var name: String
         /// The folder relative paths in `open` and `fs` steps start from: absolute, `~/…`, or relative to
@@ -13,10 +12,6 @@
         var root: String?
         /// The frozen clock (local ISO time); `fs` steps date what they make with it.
         var now: String?
-        /// The feature rows (`F-…`) and behavior rules (`B-…`) the scenario proves, and its tiers.
-        var features: [String] = []
-        var behaviors: [String] = []
-        var tiers: [String] = []
         var steps: [Step]
 
         /// A logical element of `tools/capture/elements.json`, narrowed to one of several by its text or
@@ -146,7 +141,7 @@
             }
         }
 
-        /// A preference value: the original's preferences include lists and objects (favorites, columns).
+        /// A preference value: the preferences include lists and objects (favorites, columns).
         indirect enum PrefValue: Equatable, Sendable {
             case string(String)
             case number(Double)
@@ -219,15 +214,7 @@
                 }
                 return try parseStep(step, index: index + 1)
             }
-            func strings(_ key: String) throws -> [String] {
-                guard let value = top[key] else { return [] }
-                guard let list = value as? [String] else { throw ParseError(description: "\"\(key)\" is not a list") }
-                return list
-            }
-            return Scenario(
-                name: name, root: top["root"] as? String, now: top["now"] as? String,
-                features: try strings("features"), behaviors: try strings("behaviors"), tiers: try strings("tier"),
-                steps: steps)
+            return Scenario(name: name, root: top["root"] as? String, now: top["now"] as? String, steps: steps)
         }
 
         private static func parseStep(_ step: [String: Any], index: Int) throws -> Step {

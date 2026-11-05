@@ -56,7 +56,7 @@ struct ContextMenuGoldenTests {
             })
     }
 
-    @Test func everyMenuListsTheItemsOfTheOriginalInItsOrder() throws {
+    @Test func everyMenuListsTheGoldenFilesItemsInOrder() throws {
         let cases: [GoldenCase<JSONNode, JSONNode>] = try Golden.load(suite: "context-menu")
         #expect(cases.count > 100)
         Golden.expectMatches(cases) { input in

@@ -36,7 +36,7 @@
         }
     }
 
-    /// The scenario steps P0-10 added, the checked-in scenarios and elements, and the pieces of the runner
+    /// The scenario steps, the checked-in scenarios and elements, and the pieces of the runner
     /// that work without a running app.
     @Suite struct AutomationStepsTests {
         private static let repo = URL(fileURLWithPath: #filePath)
@@ -52,7 +52,7 @@
             let scenario = try parse(
                 """
                 {
-                  "name": "x", "features": ["F-808"], "behaviors": ["B-SEL-071"], "tier": ["wave", "final"],
+                  "name": "x",
                   "steps": [
                     { "step": "click", "element": "list row", "text": "Avatar.jsx", "count": 2, "modifiers": ["cmd"] },
                     { "step": "click", "element": "back button", "holdMs": 600 },
@@ -84,9 +84,6 @@
                   ]
                 }
                 """)
-            #expect(scenario.features == ["F-808"])
-            #expect(scenario.behaviors == ["B-SEL-071"])
-            #expect(scenario.tiers == ["wave", "final"])
             typealias Ref = Scenario.ElementRef
             #expect(
                 scenario.steps == [
@@ -149,7 +146,6 @@
                     try parse(#"{"name": "x", "steps": [\#(step)]}"#)
                 }
             }
-            #expect(throws: Scenario.ParseError.self) { try parse(#"{"name": "x", "tier": "wp", "steps": []}"#) }
         }
 
         @Test func readsListAndObjectPreferences() throws {
@@ -384,7 +380,7 @@
             #expect(!AutomationDrag.pressesNoItem(content, at: NSPoint(x: 150, y: 50)))
         }
 
-        // B-CLIP-175: what the step plays goes to the view AppKit would ask, so it finds out whether a field takes files.
+        // What the step plays goes to the view AppKit would ask, so it finds out whether a field takes files.
         @Test @MainActor func aFileDragGoesToTheViewAppKitWouldAsk() async throws {
             let window = ShownWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 300, height: 300), styleMask: [.titled],

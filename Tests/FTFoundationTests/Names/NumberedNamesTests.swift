@@ -18,7 +18,7 @@ struct NumberedNamesTests {
         let stemLength: Int
     }
 
-    @Test func addNumberToNameMatchesTheReference() throws {
+    @Test func addNumberToNameMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<NumberInput, NumberOutput>] = try Golden.load(suite: "number-names")
         #expect(cases.count >= 200)
         Golden.expectMatches(cases) {

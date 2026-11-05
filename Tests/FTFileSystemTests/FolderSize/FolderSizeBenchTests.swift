@@ -22,7 +22,7 @@ extension RealWalks {
                     && FileManager.default.fileExists(atPath: deepTree),
                 "needs FILETRAIL_BENCH=1 and the deep fixture tree"
             ))
-        func walksTheDeepTreeNoSlowerThanTheReference() async throws {
+        func walksTheDeepTreeNoSlowerThanTheBaseline() async throws {
             let native = NativeFolderSize()
             var milliseconds: [Double] = []
             var files = 0

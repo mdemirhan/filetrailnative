@@ -53,7 +53,7 @@ struct ItemNamesTests {
         let package: Bool
     }
 
-    @Test func validationMatchesTheReference() throws {
+    @Test func validationMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<String, Output>] = try Golden.load(suite: "item-name-validation")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) {
@@ -61,7 +61,7 @@ struct ItemNamesTests {
         }
     }
 
-    @Test func limitsAreTheOriginals() {
+    @Test func limitsHaveTheirSetValues() {
         #expect(Limits.maxPathsPerRequest == 100_000)
         #expect(Limits.maxFileDragImages == 5)
     }

@@ -319,7 +319,7 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(formatPathForShell("/tmp/a\tb") == "'/tmp/a\tb'")
     }
 
-    @Test func namesApplicationsLikeTheOriginal() {
+    @Test func namesApplicationsByTheirFileName() {
         #expect(ApplicationPaths.displayName("/Applications/Zed.app") == "Zed")
         #expect(ApplicationPaths.displayName("/Applications/Zed.APP/") == "Zed")
         #expect(ApplicationPaths.displayName("/bin/sh") == "sh")

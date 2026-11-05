@@ -622,7 +622,7 @@ import Testing
     }
 
     // The Files tab, row by row, with its app menu.
-    @Test func laysTheFilesTabOutAsTheOriginalWithItsAppMenuFoundRowByRow() throws {
+    @Test func laysTheFilesTabOutWithItsAppMenuFoundRowByRow() throws {
         let (controller, _) = Kit.make(tab: .files)
         // The number sits right-aligned before the room kept for a stepper: 48 less 8 of padding on each side and 15.
         let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)

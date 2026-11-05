@@ -42,7 +42,7 @@ struct SizeTextTests {
         #expect(SizeText.size(9_950) == "10 KB")
     }
 
-    @Test func sizesMatchTheReference() throws {
+    @Test func sizesMatchTheGoldenFile() throws {
         let cases: [GoldenCase<SizeInput, String>] = try Golden.load(suite: "sizes")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { SizeText.size($0.bytes, status: $0.status) }

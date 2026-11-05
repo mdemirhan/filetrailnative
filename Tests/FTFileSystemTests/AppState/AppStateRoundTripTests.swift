@@ -128,7 +128,7 @@ struct AppStateRoundTripTests {
     }
 
     // The keys come out in a fixed order.
-    @Test func writesKeysInTheOriginalsOrder() throws {
+    @Test func writesKeysInAFixedOrder() throws {
         let state = try AppStateReader.read(data: Data(Self.everyKey.utf8), defaults: .defaults(theme: .auto))
         let text = try AppStateJSON.serialize(state)
         let lines = text.split(separator: "\n").map(String.init)

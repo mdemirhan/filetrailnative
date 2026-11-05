@@ -265,7 +265,7 @@ struct CopyPasteNamesTests {
         var error: String?
     }
 
-    @Test func keepBothNamesMatchTheReference() throws {
+    @Test func keepBothNamesMatchTheGoldenFile() throws {
         let cases: [GoldenCase<KeepBothInput, KeepBothOutput>] = try Golden.load(suite: "keep-both-names")
         #expect(cases.count >= 500)
         Golden.expectMatches(cases) { input in
@@ -293,7 +293,7 @@ struct CopyPasteNamesTests {
         let `extension`: String
     }
 
-    @Test func fitNameMatchesTheReference() throws {
+    @Test func fitNameMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<FitInput, String>] = try Golden.load(suite: "fit-name")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) {

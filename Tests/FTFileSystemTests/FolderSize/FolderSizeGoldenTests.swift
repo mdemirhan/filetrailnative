@@ -82,7 +82,7 @@ extension RealWalks {
         // Machine-local: disk sizes (allocated blocks) depend on the volume, so the golden holds only on the machine
         // that recorded it.
         @Test(.enabled(if: hasFixtures, "needs the shared fixtures"))
-        func theWalkerMatchesTheReferencesOnTheFixtureAndGeneratedTrees() async throws {
+        func theWalkerMatchesTheGoldenFileOnTheFixtureAndGeneratedTrees() async throws {
             let cases: [GoldenCase<TreeInput, TreeOutput>] = try Golden.load(suite: "folder-size-trees")
             #expect(!cases.isEmpty)
             var measured: [String: TreeOutput] = [:]

@@ -104,7 +104,7 @@ import Testing
 
     // The tokens derived from the accent: a deep shade 18% darker, a 30% border, alphas that differ for light and
     // dark
-    @Test func derivesTheAccentTokensAsTheReferenceDoes() {
+    @Test func derivesTheAccentTokensFromTheAccentColor() {
         let light = Theme(appearance: .light, accentHex: "#007aff").accent
         let dark = Theme(appearance: .dark, accentHex: "#007aff").accent
         #expect(light.solidDark.hexString == "#0064d1")

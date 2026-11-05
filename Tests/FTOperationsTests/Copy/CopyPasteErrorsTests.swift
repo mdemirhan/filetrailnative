@@ -88,7 +88,7 @@ struct CopyPasteErrorsGoldenTests {
         var described: String
     }
 
-    @Test func matchesTheReferenceForEveryErrnoAndNodeShapedErrors() throws {
+    @Test func matchesTheGoldenFileForEveryErrnoAndErrorShape() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "copy-paste-errors")
         #expect(cases.count > 200)
         Golden.expectMatches(cases) { input in

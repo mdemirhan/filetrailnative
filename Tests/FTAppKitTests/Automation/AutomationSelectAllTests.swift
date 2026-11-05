@@ -6,7 +6,7 @@
 
     extension ExplorerWindowlessTests {
         @MainActor
-        @Suite struct P023ParityProbeTests {
+        @Suite struct AutomationSelectAllTests {
             /// The driver sends Select All to the scenario's window, which need not be key: the list it focuses selects
             /// every entry.
             @Test func selectAllCommandSelectsTheList() async throws {

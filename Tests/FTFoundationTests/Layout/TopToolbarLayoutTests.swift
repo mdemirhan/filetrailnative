@@ -145,7 +145,7 @@ struct TopToolbarLayoutTests {
     }
 
     // The default toolbar, laid out in a 1200 pt window with a 280 pt tree.
-    @Test func laysTheDefaultRowOutWhereTheOriginalDrawsIt() {
+    @Test func laysTheDefaultRowOutAtItsSetPlaces() {
         let row = TopToolbarLayout.slots(ToolbarItems.defaultTopItems).filter { $0.id != .clipboard }
         let widths: [String: Double] = [
             "folderTree": 32, "topSeparator": 0, "back": 32, "forward": 32, "view": 122, "sort": 32,

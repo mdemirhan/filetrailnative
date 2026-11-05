@@ -76,7 +76,7 @@ struct BatchRenameGoldenTests {
         return ProposeOutput(settingsError: normalizedError(result.settingsError), names: names)
     }
 
-    @Test func proposeNamesMatchesTheReference() throws {
+    @Test func proposeNamesMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<ProposeInput, ProposeOutput>] = try Golden.load(suite: "batch-rename-propose")
         #expect(cases.count == 600)
         Golden.expectMatches(cases, actual: Self.propose)
@@ -159,7 +159,7 @@ struct BatchRenameGoldenTests {
             blockingCount: result.blockingCount)
     }
 
-    @Test func planMatchesTheReference() throws {
+    @Test func planMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<PlanInput, PlanOutput>] = try Golden.load(suite: "batch-rename-plan")
         #expect(cases.count == 300)
         Golden.expectMatches(cases, actual: Self.plan)

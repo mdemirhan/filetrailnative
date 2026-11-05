@@ -224,7 +224,7 @@ extension ExplorerWindowlessTests {
 
         // Typing narrows the list and selects the best match;
         // Backspace edits; Esc brings the list back and keeps the selection. (Space, nothing matching and the ✕ are in
-        // SelectionCheckpointTests.)
+        // ListSelectionWindowTests.)
         @Test func typingFiltersTheList() async throws {
             let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Files", files: 0)

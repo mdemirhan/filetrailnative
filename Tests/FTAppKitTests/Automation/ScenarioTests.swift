@@ -114,7 +114,7 @@
             #expect(decoded == report)
         }
 
-        @Test @MainActor func knowsTheOriginalsCommands() {
+        @Test @MainActor func knowsEveryAutomationCommand() {
             #expect(AutomationCommands.all.count == 74)
             #expect(AutomationCommands.supported.isSubset(of: AutomationCommands.all))
             // Every command goes to the window but the zoom ones.

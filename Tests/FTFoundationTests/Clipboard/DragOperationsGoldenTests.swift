@@ -52,7 +52,7 @@ struct DragOperationsGoldenTests {
         let refusal: String?
     }
 
-    @Test func dropDecisionsMatchTheReference() throws {
+    @Test func dropDecisionsMatchTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "drag-operations")
         #expect(cases.count >= 400)
         Golden.expectMatches(cases) { input in

@@ -14,13 +14,13 @@ struct PathsGoldenTests {
         let trashFolder: Bool
     }
 
-    @Test func withoutNestedPathsMatchesTheReference() throws {
+    @Test func withoutNestedPathsMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<[String], [String]>] = try Golden.load(suite: "paths-nested")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { Paths.withoutNestedPaths($0) }
     }
 
-    @Test func trashChecksMatchTheReference() throws {
+    @Test func trashChecksMatchTheGoldenFile() throws {
         let cases: [GoldenCase<TrashInput, TrashOutput>] = try Golden.load(suite: "trash-paths")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) {

@@ -72,7 +72,7 @@ private func request(
     }
 
     // The golden: every combination of the options and the arguments it gives.
-    @Test func matchesTheReferenceForEveryCombinationOfOptions() throws {
+    @Test func matchesTheGoldenFileForEveryCombinationOfOptions() throws {
         let cases: [GoldenCase<SearchRequest, [String]>] = try Golden.load(suite: "search-args")
         #expect(cases.count > 300)
         Golden.expectMatches(cases) { FdSearchArgs.build($0) }

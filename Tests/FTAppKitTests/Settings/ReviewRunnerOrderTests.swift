@@ -27,7 +27,7 @@ import Testing
 @MainActor
 @Suite struct ReviewExpectTextTests {
     // An expect step reads a pop-up's text from its label ("Sizes"), not the value it shows ("Match Finder").
-    @Test func expectReadsAPopupByItsLabelAsTheOriginalDoes() throws {
+    @Test func expectReadsAPopupByItsLabel() throws {
         let preferences = AppPreferences.defaults(theme: .light).with { $0.density = .finder }
         let (controller, _) = SettingsTestKit.make(tab: .browsing, preferences: preferences)
         let popup = try SettingsTestKit.control("Sizes", SettingsPopup.self, in: controller)

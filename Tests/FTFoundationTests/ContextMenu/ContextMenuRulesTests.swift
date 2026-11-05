@@ -138,7 +138,7 @@ struct ContextMenuRulesTests {
                 .targetsFolder == false)
     }
 
-    @Test func theMenuOfAFileHasTheOriginalsGroupsAndNothingThatDoesNotApply() {
+    @Test func theMenuOfAFileHasItsGroupsAndNothingThatDoesNotApply() {
         let menu = labels(subject(.content, [("/a/b.txt", .file)]), world(), editor: "TextEdit")
         #expect(
             menu == [

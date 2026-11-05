@@ -67,7 +67,7 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
     }
 
     @Test(.enabled(if: hasFd))
-    func matchesTheReferenceOnTheScratchTreeAndTheLighthouseFixture() throws {
+    func matchesTheGoldenFileOnTheScratchTreeAndTheLighthouseFixture() throws {
         let cases: [GoldenCase<ResultsInput, ResultsOutput>] = try Golden.load(suite: "search-results")
         #expect(cases.count > 150)
         let usable = cases.filter { $0.input.tree == "scratch" || hasFixtures }

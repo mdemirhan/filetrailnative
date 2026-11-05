@@ -78,7 +78,7 @@ struct ListFilterTests {
         #expect(ListFilter.formatItemCount(shown: 0, total: 1) == "0 of 1 item")
     }
 
-    @Test func listFilterMatchesTheReference() throws {
+    @Test func listFilterMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "list-filter")
         #expect(cases.count >= 200)
         Golden.expectMatches(cases) { input in

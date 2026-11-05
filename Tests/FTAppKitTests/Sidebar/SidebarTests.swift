@@ -147,7 +147,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        @Test func rowsHaveTheOriginalsHeightIndentAndPadding() async throws {
+        @Test func rowsHaveTheirHeightIndentAndPadding() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(listed(harness, ""))
             // The tree on the folder under test, so the rows are the few of it, not the temporary directory's.

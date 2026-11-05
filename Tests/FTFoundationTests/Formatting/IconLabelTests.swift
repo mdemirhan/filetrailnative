@@ -70,7 +70,7 @@ struct IconLabelTests {
         text.unicodeScalars.reduce(0) { $0 + 2 + Int($1.value % 5) }
     }
 
-    @Test func shortenedNamesMatchTheReference() throws {
+    @Test func shortenedNamesMatchTheGoldenFile() throws {
         let cases: [GoldenCase<Input, String>] = try Golden.load(suite: "icon-label")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { input in

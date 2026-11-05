@@ -17,7 +17,7 @@ struct PreferencePatchTests {
         #expect(Set(Self.defaultsJSON.keys) == Set(AppPreferences.keys))
     }
 
-    @Test func carriesEachGroupOfPreferencesTheOriginalListsAsSent() {
+    @Test func carriesEachGroupOfPreferencesAsSent() {
         let groups = [
             #"{"theme": "dark", "returnKeyAction": "open", "shortcutOverrides": {"newTab": ["Cmd+Option+N"]}}"#,
             #"{"searchResultsSortBy": "name", "searchResultsSortDirection": "desc"}"#,

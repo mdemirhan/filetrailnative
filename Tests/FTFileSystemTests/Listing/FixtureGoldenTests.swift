@@ -35,7 +35,7 @@ struct FixtureGoldenTests {
     struct ClassifyInput: Codable, Sendable { var directory: String }
 
     @Test("classify golden", .enabled(if: Fixtures.available))
-    func classifiesAsTheReferenceDoes() async throws {
+    func classifiesAsTheGoldenFileSays() async throws {
         let cases: [GoldenCase<ClassifyInput, JSONValue>] = try Golden.load(suite: "classify")
         #expect(cases.count > 30)
         let service = DirectoryService(kinds: KindLabeler(describer: nil))
@@ -95,7 +95,7 @@ struct FixtureGoldenTests {
     }
 
     @Test("path-suggestions golden", .enabled(if: Fixtures.available))
-    func suggestsAsTheReferenceDoes() async throws {
+    func suggestsAsTheGoldenFileSays() async throws {
         let cases: [GoldenCase<SuggestionInput, JSONValue>] = try Golden.load(suite: "path-suggestions")
         #expect(cases.count == 200)
         let service = DirectoryService()

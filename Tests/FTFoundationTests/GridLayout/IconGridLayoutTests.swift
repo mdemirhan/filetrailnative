@@ -192,7 +192,7 @@ struct IconGridLayoutTests {
         }
     }
 
-    @Test func theGridMathMatchesTheReference() throws {
+    @Test func theGridMathMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "icon-grid-layout")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { Self.run($0) }

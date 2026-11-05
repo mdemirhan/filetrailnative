@@ -110,7 +110,7 @@ struct CommandAvailabilityGoldenTests {
                     selectedTreePath: input.selectedTreeTargetPath, currentPath: input.currentPath)))
     }
 
-    @Test func commandAvailabilityMatchesTheReference() throws {
+    @Test func commandAvailabilityMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "command-availability")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { Self.run($0) }

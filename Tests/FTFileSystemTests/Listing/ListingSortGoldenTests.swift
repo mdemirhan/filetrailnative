@@ -143,7 +143,7 @@ struct ListingSortGoldenTests {
     /// Without ICU names are compared by `CollationTable`: the names it covers (ASCII and the accented
     /// letters, but not Cyrillic, CJK or emoji) come out in the order the golden gives them.
     @Test("listing-sort golden, names by the collation table")
-    func sortsCoveredNamesAsTheReferenceDoesWithoutICU() throws {
+    func sortsCoveredNamesAsTheGoldenFileSaysWithoutICU() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "listing-sort")
         var compared = 0
         var failures: [String] = []
@@ -167,7 +167,7 @@ struct ListingSortGoldenTests {
     }
 
     @Test("Tests/Golden/listing-sort.json")
-    func sortsAsTheReferenceDoes() async throws {
+    func sortsAsTheGoldenFileSays() async throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "listing-sort")
         #expect(cases.count >= 300)
         var lines: [String] = []

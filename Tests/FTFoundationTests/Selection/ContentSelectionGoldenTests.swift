@@ -250,7 +250,7 @@ struct ContentSelectionGoldenTests {
         return Output(results: results)
     }
 
-    @Test func theSelectionModelAndMovesMatchTheReference() throws {
+    @Test func theSelectionModelAndMovesMatchTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "content-selection")
         #expect(cases.count > 100)
         Golden.expectMatches(cases) { Self.replay($0) }

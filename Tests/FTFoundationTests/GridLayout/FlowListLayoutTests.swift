@@ -151,7 +151,7 @@ struct FlowListLayoutTests {
         }
     }
 
-    @Test func theCompactListMathMatchesTheReference() throws {
+    @Test func theCompactListMathMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "flow-list-layout")
         #expect(cases.count >= 500)
         Golden.expectMatches(cases) { Self.run($0) }

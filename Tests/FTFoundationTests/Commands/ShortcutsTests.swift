@@ -336,7 +336,7 @@ struct ShortcutsTests {
         #expect(Shortcuts.menuShortcut([]) == nil)
     }
 
-    @Test func writesAShortcutTheWayElectronsMenusDo() {
+    @Test func writesAShortcutAsAMenuAccelerator() {
         #expect(Shortcuts.menuAccelerator("Cmd+Option+T") == "Command+Alt+T")
         #expect(Shortcuts.menuAccelerator("Ctrl+Shift+Tab") == "Control+Shift+Tab")
         #expect(Shortcuts.menuAccelerator("Cmd+Plus") == "Command+Plus")

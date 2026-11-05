@@ -135,7 +135,7 @@ struct FileWriteJournalTests {
     }
 
     /// The file holds each entry's keys in a fixed order, and none an entry leaves out.
-    @Test func writesEntriesAsTheOriginalDoes() throws {
+    @Test func writesEntriesInTheJournalsFormat() throws {
         try withTemporaryDirectory { directory in
             let filePath = directory.path + "/replace-journal.json"
             let journal = FileWriteJournal.open(filePath)

@@ -56,7 +56,7 @@ private final class Calls: @unchecked Sendable {
                     status: .failed, failedPath: "/dev/disk4", code: "EPERM", reason: "Not permitted by a claim."))
     }
 
-    @Test func statusesMapToErrnosAsTheOriginalDoes() {
+    @Test func statusesMapToErrnos() {
         // unix_err(EBUSY): the system's errno wrapped.
         #expect(VolumeEjector.errno(ofStatus: Int32(0xc000 | EBUSY)) == EBUSY)
         #expect(VolumeEjector.errno(ofStatus: Int32(bitPattern: 0xf8da_0002)) == EBUSY)

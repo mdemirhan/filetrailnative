@@ -77,7 +77,7 @@ struct ToolbarLayoutGoldenTests {
         #expect(constants["minContentWidth"] == explorer.minContentWidth)
     }
 
-    @Test func toolbarRowsFitAndOverflowLikeTheOriginal() throws {
+    @Test func toolbarRowsFitAndOverflowAsTheGoldenFileSays() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "toolbar-layout")
         let layoutCases = cases.filter { $0.name != "stylesheet" }
         #expect(layoutCases.count >= 200)

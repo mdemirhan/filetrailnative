@@ -1,6 +1,6 @@
 // The write-engine scenario checks: runs the scenarios of Tests/Golden through a Swift engine in
 // fresh folders, normalizes what it reports, and names the first differences from the frozen
-// expected results. ReferenceReplayEngine replays those results, to check the checks themselves.
+// expected results. RecordedReplayEngine replays those results, to check the checks themselves.
 import Foundation
 
 /// What an engine did with a scenario, as recorded: absolute paths, its own hidden names and ids.
@@ -122,7 +122,7 @@ public protocol ExecAnalysisEngine: Sendable {
 
 /// Returns the recorded results themselves, so the decode, normalize and compare path is proven
 /// on its own.
-public struct ReferenceReplayEngine: ExecEngine, ExecAnalysisEngine {
+public struct RecordedReplayEngine: ExecEngine, ExecAnalysisEngine {
     public struct Unknown: Error, CustomStringConvertible {
         public let description: String
     }

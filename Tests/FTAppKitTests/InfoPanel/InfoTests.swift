@@ -75,7 +75,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The panel's Open only logs a failed open; the other actions show their notices, word for word.
-        @Test func thePanelsFailedActionsShowTheOriginalsNotices() async throws {
+        @Test func thePanelsFailedActionsShowNotices() async throws {
             struct Refused: Error, LocalizedError {
                 var errorDescription: String? { "It refused." }
             }

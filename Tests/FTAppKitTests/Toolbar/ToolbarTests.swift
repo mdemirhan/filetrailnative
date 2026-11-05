@@ -129,7 +129,7 @@ extension ExplorerWindowlessTests {
 
         // A capsule is a run of buttons, the view switch and the search field off them. There are no fixed groups, so
         // the system's platters are the capsules, an empty clipboard button leaving no break in its run. Private class name: there is no public way to ask which items share glass.
-        @Test func theSystemsPlattersAreTheOriginalsCapsules() async throws {
+        @Test func theSystemsPlattersAreCapsules() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let window = try #require(tab.window)
@@ -569,7 +569,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The system's ✕ has the search bar's tooltip and name, and text of only spaces has none.
-        @Test func theSystemsClearButtonSaysWhatTheOriginalsDoes() async throws {
+        @Test func theSystemsClearButtonIsLabelled() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let field = try #require(tab.searchField)

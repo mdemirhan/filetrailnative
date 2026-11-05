@@ -21,7 +21,7 @@ private let hasFixtures = FileManager.default.fileExists(atPath: fixtures.append
     // Machine-local: Spotlight's kind strings depend on the macOS version, language and installed apps, so the golden
     // holds only on the machine that recorded it.
     @Test(.enabled(if: hasFixtures, "needs the shared fixtures"))
-    func kindStringsMatchTheReferenceOnTheFixtures() throws {
+    func kindStringsMatchTheGoldenFileOnTheFixtures() throws {
         let cases: [GoldenCase<KindInput, String?>] = try Golden.load(suite: "kind-strings")
         #expect(!cases.isEmpty)
         Golden.expectMatches(cases) { input in

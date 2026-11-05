@@ -97,7 +97,7 @@ import Testing
     }
 
     @Test(arguments: Density.allCases)
-    func everyMetricIsTheOriginalValue(density: Density) {
+    func everyMetricHasItsSetValue(density: Density) {
         let metrics = Metrics(density: density)
         var problems: [String] = []
         problems += Self.mismatches(metrics.typeScale, base: Self.typeScale, label: "typeScale")
@@ -121,7 +121,7 @@ import Testing
         #expect(metrics.flowList.columnStep == (Self.flowList(density)["itemWidth"] ?? 0) + 18)
     }
 
-    @Test func columnWidthsAreTheOriginalValues() {
+    @Test func columnWidthsHaveTheirSetValues() {
         let metrics = Metrics(density: .standard)
         for column in DetailColumn.allCases {
             let widths = metrics.columnWidths(column)
@@ -135,7 +135,7 @@ import Testing
     }
 
     @Test(arguments: Density.allCases)
-    func iconGridColumnsMatchTheOriginalFloor(density: Density) {
+    func iconGridColumnsAreTheWidthOverTheCellRoundedDown(density: Density) {
         // Columns = max(1, floor((width - 2 * paddingInline) / cellMinWidth)).
         let base = Self.iconGrid(density)
         let layout = Metrics(density: density).iconGrid

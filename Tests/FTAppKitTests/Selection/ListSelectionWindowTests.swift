@@ -9,7 +9,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct SelectionCheckpointTests {
+    @Suite struct ListSelectionWindowTests {
         func path(_ tab: MainWindowController, _ name: String) -> String? {
             tab.content.entries.first { $0.name == name }?.path
         }
@@ -102,7 +102,7 @@ extension ExplorerWindowlessTests {
 
         // The state a filter nothing matches shows: the title at the body size in the primary color,
         // centered in the whole pane, and Search Subfolders at the start of its row, 4 below the line.
-        @Test func theNoMatchStateIsLaidOutAsTheOriginals() async throws {
+        @Test func theNoMatchStateIsLaidOut() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
             tab.content.focusList()

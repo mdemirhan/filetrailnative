@@ -123,7 +123,7 @@ struct ReadItemStampTests {
     }
 
     // The digest is SHA-1 of the names sorted by UTF-16 code unit and joined by NUL.
-    @Test func digestsNamesAsTheOriginalDoes() {
+    @Test func digestsTheSortedNames() {
         // printf 'a.txt\0b.txt' | shasum
         #expect(digestOfNames(["b.txt", "a.txt"]) == "6ce2420bc45fdd0df9530431b9bd05b5c9a7daf1")
         // An astral character sorts before U+FFFD by UTF-16 code unit (a surrogate), after it by scalar.
@@ -147,7 +147,7 @@ struct StampWithoutIdTests {
 
 struct UndoLogCodingTests {
     // The JSON has null for some keys without a value, and other optional keys only when set.
-    @Test func encodesStepsInTheOriginalsShape() throws {
+    @Test func encodesStepsInTheLogsShape() throws {
         let stamp = ItemStamp(kind: .file, size: 3, mtimeMs: 1.5, entryCount: nil)
         let log = UndoLog.undoable(units: [
             UndoUnit(steps: [

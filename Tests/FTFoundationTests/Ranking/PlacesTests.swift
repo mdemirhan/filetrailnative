@@ -138,7 +138,7 @@ struct PlacesTests {
         let locations: [String]
     }
 
-    @Test func placesAndRankingMatchTheReference() throws {
+    @Test func placesAndRankingMatchTheGoldenFile() throws {
         let cases: [GoldenCase<VisitedInput, RankedOutput>] = try Golden.load(suite: "visited-ranking")
         #expect(cases.count >= 200)
         Golden.expectMatches(cases) { input in

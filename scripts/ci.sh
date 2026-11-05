@@ -207,8 +207,8 @@ run_bundle() {
 }
 
 # A full run, or `bundles` if some are named: the test bundles side by side, each in its own process, and the windowless
-# suites over several. Each process writes its log and results under build/logs/bundles/; they are put together into
-# test.log and the xunit files the parity sync reads. Known failures are skipped in every process.
+# suites over several. Each process writes its log and results under build/logs/bundles/; the logs are put together into
+# test.log. Known failures are skipped in every process.
 full_tests() {
     local dir="$logs/bundles" names=() pids=() i name status=0 group
     [ "$CI_LIVE" = 1 ] && echo "Building the tests…" >&9
@@ -268,17 +268,6 @@ full_tests() {
         echo "== $name"
         cat "$dir/$name.log"
     done
-    # One results file, as `swift test` writes it: each process's suite of results in it. Only a full run's is whole.
-    [ -z "$bundles" ] || return "$status"
-    {
-        echo '<?xml version="1.0" encoding="UTF-8"?>'
-        echo '<testsuites>'
-        for name in "${names[@]}"; do
-            [ -f "$dir/$name.xml" ] && sed -n '/<testsuite[ >]/,/<\/testsuite>/p' "$dir/$name.xml"
-        done
-        echo '</testsuites>'
-    } >build/logs/parity-xunit-swift-testing.xml
-    cp build/logs/parity-xunit-swift-testing.xml build/logs/parity-xunit.xml
     return "$status"
 }
 

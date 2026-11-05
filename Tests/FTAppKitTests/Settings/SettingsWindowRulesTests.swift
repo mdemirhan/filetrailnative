@@ -5,7 +5,7 @@ import Testing
 @testable import FTAppKit
 
 @MainActor
-@Suite struct ReviewProbeTests {
+@Suite struct SettingsWindowRulesTests {
     typealias Kit = SettingsTestKit
 
     /// Asking for the tab on screen changes nothing: the Shortcuts search stays.

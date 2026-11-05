@@ -55,7 +55,7 @@
 
     extension ExplorerWindowlessTests {
         @MainActor
-        @Suite struct CheckpointStepsTests {
+        @Suite struct AutomationStepWindowTests {
             private static let repo = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
                 .deletingLastPathComponent()

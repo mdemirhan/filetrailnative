@@ -22,7 +22,7 @@ import Testing
         var ranges: [HighlightRange]
     }
 
-    @Test func marksWhatTheReferenceMarks() throws {
+    @Test func marksWhatTheGoldenFileMarks() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "name-highlight")
         #expect(cases.count >= 400)
         Golden.expectMatches(cases) { input in

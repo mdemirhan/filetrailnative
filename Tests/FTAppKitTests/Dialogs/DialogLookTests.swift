@@ -189,7 +189,7 @@ extension ExplorerWindowlessTests {
 
         // A row's name is shown whole while it fits in 55% of the row, the location taking the rest; the name, the
         // location, the field's text and the label start where the layout puts them (a cell draws its text 2 in).
-        @Test func rowsShowTheNameWholeAndTextStartsWhereTheOriginalsDoes() async throws {
+        @Test func rowsShowTheNameWholeAndTextStartsAtTheSameEdge() async throws {
             let (harness, tab) = try await open()
             for name in ["Alpha", "Beta", "Gamma"] {
                 harness.store.recordFolderVisit(harness.folder.appending(name).path, kind: .stay)

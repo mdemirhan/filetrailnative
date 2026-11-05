@@ -118,7 +118,7 @@ struct DetailsLayoutTests {
 
     // MARK: The sort rules of the header
 
-    @Test func headerClicksSortLikeTheOriginal() {
+    @Test func headerClicksSortOnlyBySortableColumns() {
         #expect(DetailsSorting.sortKey(for: .name, search: false) == "name")
         #expect(DetailsSorting.sortKey(for: .created, search: false) == nil)
         #expect(DetailsSorting.sortKey(for: .permissions, search: false) == nil)
@@ -265,7 +265,7 @@ struct DetailsLayoutTests {
         }
     }
 
-    @Test func theColumnMathMatchesTheReference() throws {
+    @Test func theColumnMathMatchesTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "details-layout")
         #expect(cases.count >= 500)
         Golden.expectMatches(cases) { Self.run($0) }

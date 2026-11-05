@@ -199,7 +199,7 @@ private enum SortOutput: Codable, Equatable {
 }
 
 @Suite struct SearchSortGoldenTests {
-    @Test func matchesTheReferenceForOrderFolderColumnAndHighlight() throws {
+    @Test func matchesTheGoldenFileForOrderFolderColumnAndHighlight() throws {
         let cases: [GoldenCase<SortInput, SortOutput>] = try Golden.load(suite: "search-sort")
         #expect(cases.count > 100)
         Golden.expectMatches(cases) { input in

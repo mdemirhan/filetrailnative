@@ -40,7 +40,7 @@ import Testing
         #expect(heading.isSectionHeader && heading.title == "Always Open With")
     }
 
-    @Test func theInfoIconIsDrawnFromTheOriginalsPixels() throws {
+    @Test func theInfoIconIsDrawnFromItsPixels() throws {
         let image = NativeIconPixels.image(solidImage())
         let rep = try #require(image.representations.first as? NSBitmapImageRep)
         #expect(rep.pixelsWide == NativeIconPixels.side)

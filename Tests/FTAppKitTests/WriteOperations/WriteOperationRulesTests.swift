@@ -71,7 +71,7 @@ private final class Shown {
 }
 
 @MainActor
-@Suite struct ParityProbeTests {
+@Suite struct WriteOperationRulesTests {
     private let service = StubWriteService()
     private let host = FakeHost()
     private let clipboard = SharedClipboard()

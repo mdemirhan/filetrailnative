@@ -34,7 +34,7 @@ struct DateTextTests {
     }
 
     // The list writes its dates in the locale the Info panel uses, the app's language alone, not the machine's region.
-    @Test func listDatesUseTheOriginalsLocale() {
+    @Test func listDatesUseTheAppsLocale() {
         #expect(DateText.shared.locale == InfoLocale.original)
         #expect(DateText().locale == InfoLocale.original)
         let now = Self.local(2026, 10, 19, 12)
@@ -108,7 +108,7 @@ struct DateTextTests {
         #expect(text.shortDateTime(Self.local(2026, 10, 5, 0, 5, 3)) == "Oct 5, 00:05:03")
     }
 
-    @Test func relativeDatesMatchTheReference() throws {
+    @Test func relativeDatesMatchTheGoldenFile() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "relative-dates")
         #expect(cases.count >= 500)
         Golden.expectMatches(cases) { input in

@@ -1,7 +1,7 @@
 // The write-engine scenario checks. The analysis suites
 // run through the Swift review (Exec/SwiftAnalysisEngine.swift), the execution suites through the
 // Swift paste engine (Exec/SwiftExecEngine.swift), but for the stop and crash suites, which
-// aren't injected (decided 2026-10-14). ReferenceReplayEngine replays every execution recording, which proves the decode,
+// aren't injected (decided 2026-10-14). RecordedReplayEngine replays every execution recording, which proves the decode,
 // normalize and compare path, and each scenario's tree is built here and checked against the
 // recorded "before".
 import FTTestSupport
@@ -33,7 +33,7 @@ struct ExecGoldenTests {
     func replayedExecutionMatchesItsRecording(suite: String) async throws {
         let cases = try ExecHarness.cases(suite: suite)
         #expect(!cases.isEmpty)
-        let report = try await ExecHarness.mismatchReport(suite: suite, engine: ReferenceReplayEngine(cases: cases))
+        let report = try await ExecHarness.mismatchReport(suite: suite, engine: RecordedReplayEngine(cases: cases))
         #expect(report == nil, Comment(rawValue: report ?? ""))
     }
 
