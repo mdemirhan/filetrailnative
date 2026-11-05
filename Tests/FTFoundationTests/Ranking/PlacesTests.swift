@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/{places,goMenuPlaces,historyMenu}.test.ts, with the
-// visited-ranking golden recorded from the reference (tools/parity/golden/visited-ranking.ts).
 import FTTestSupport
 import Testing
 
@@ -32,8 +30,6 @@ struct PlacesTests {
         Places.rank(places(currentPath: currentPath), query: query).map(\.place.name)
     }
 
-    // T-03dac36f F-096 F-097
-    // B-DLG-018 B-DLG-019 B-DLG-020 B-TREE-032 B-TREE-196
     @Test func listsOpenedFoldersAndFavoritesOnceEachNamedAsTheSidebarNamesThem() {
         let all = places()
         #expect(
@@ -58,16 +54,12 @@ struct PlacesTests {
         #expect(!places(currentPath: "/Users/demo/Downloads").contains { $0.path.hasSuffix("/Downloads") })
     }
 
-    // T-17c86615 F-096
-    // B-TREE-198
     @Test func listsTheMostUsedPlacesFirstWhenNothingIsTyped() {
         #expect(Array(names("").prefix(3)) == ["Old Downloads", "filetrail", "Downloads"])
         // Favorites never opened come last, in their own order.
         #expect(Array(names("").suffix(3)) == ["Home", "Desktop", "Trash"])
     }
 
-    // T-35f7d93b F-096
-    // B-DLG-024 B-TREE-199
     @Test func ranksByHowTheTextMatchesFirstAndByUseSecond() {
         // Both start with "desk"; the one that has been opened comes first.
         #expect(names("desk") == ["desktop", "Desktop"])
@@ -79,8 +71,6 @@ struct PlacesTests {
         #expect(names("zzz") == [])
     }
 
-    // T-182825e8 F-096
-    // B-TREE-199
     @Test func matchesEveryWordTypedInTheNameOrInThePath() {
         // "apps" is only in the path of one "desktop".
         #expect(names("apps desk") == ["desktop"])
@@ -90,8 +80,6 @@ struct PlacesTests {
         #expect(names("farm") == ["render-farm"])
     }
 
-    // T-93e5444b
-    // B-TREE-200
     @Test func reportsWhichLettersOfTheNameMatched() {
         func match(_ query: String) -> PlaceMatch? { Places.rank(places(), query: query).first }
         #expect(match("down")?.nameRanges == [0..<4])
@@ -101,8 +89,6 @@ struct PlacesTests {
         #expect(match("apps desk")?.nameRanges == [0..<4])
     }
 
-    // T-415c212b F-097
-    // B-TREE-201
     @Test func saysWhereAPlaceIs() {
         #expect(Places.describeLocation(name: "filetrail", displayPath: "~/src/filetrail") == "~/src")
         #expect(Places.describeLocation(name: "Desktop", displayPath: "~/Desktop") == "~")
@@ -111,8 +97,6 @@ struct PlacesTests {
         #expect(Places.describeLocation(name: "Trash", displayPath: "~/.Trash") == "~/.Trash")
     }
 
-    // T-07d278a9 F-097
-    // B-DLG-017 B-TREE-197
     @Test func tellsAPathFromANameAndShortensTheHomeFolder() {
         #expect(Places.isPathQuery("/usr"))
         #expect(Places.isPathQuery("~/Doc"))
@@ -125,7 +109,6 @@ struct PlacesTests {
         #expect(Places.abbreviate("/Applications", homePath: Self.home) == "/Applications")
     }
 
-    // B-DLG-025 B-TREE-199
     @Test func cutsTheListAtFiftyResults() {
         let many = (0..<80).map { VisitedFolder(path: "/many/folder \($0)", visits: []) }
         let all = Places.build(
@@ -155,7 +138,6 @@ struct PlacesTests {
         let locations: [String]
     }
 
-    // F-096 F-095
     @Test func placesAndRankingMatchTheReference() throws {
         let cases: [GoldenCase<VisitedInput, RankedOutput>] = try Golden.load(suite: "visited-ranking")
         #expect(cases.count >= 200)
@@ -177,8 +159,6 @@ struct PlacesTests {
 
     // MARK: Go menu
 
-    // T-108c669a
-    // B-NAV-103 B-NAV-104 B-NAV-105 B-TREE-083
     @Test func findsTheFoldersInHomeAndThePlacesOutsideIt() {
         #expect(
             GoMenuPlaceCommand.goDocuments.place(homePath: Self.home)
@@ -194,14 +174,12 @@ struct PlacesTests {
                 == GoMenuPlace(path: "/Users/demo/.Trash", asLocation: true))
     }
 
-    // T-e67aa010
     @Test func hasNoPlaceInHomeUntilHomeIsKnown() {
         #expect(GoMenuPlaceCommand.goDownloads.place(homePath: "") == nil)
         #expect(GoMenuPlaceCommand.goTrash.place(homePath: "") == nil)
         #expect(GoMenuPlaceCommand.goMacintoshHD.place(homePath: "")?.path == "/")
     }
 
-    // T-9e77156e
     @Test func tellsThePlaceCommandsFromTheOthers() {
         #expect(GoMenuPlaceCommand.isPlaceCommand("goDesktop"))
         #expect(GoMenuPlaceCommand.isPlaceCommand("goTrash"))
@@ -213,7 +191,6 @@ struct PlacesTests {
 
     private let history = ["/", Self.home, "/Users/demo/src", "/Users/demo/src/app", "/Applications"]
 
-    // T-8f3fa1a7
     @Test func listsWhereBackLeadsNearestFirst() {
         #expect(
             HistoryMenu.backEntries(historyPaths: history, historyIndex: 3, homePath: Self.home) == [
@@ -225,7 +202,6 @@ struct PlacesTests {
         #expect(HistoryMenu.backEntries(historyPaths: [], historyIndex: -1, homePath: Self.home).isEmpty)
     }
 
-    // T-87426be6
     @Test func listsWhereForwardLeadsNearestFirst() {
         #expect(
             HistoryMenu.forwardEntries(historyPaths: history, historyIndex: 2, homePath: Self.home) == [
@@ -235,8 +211,6 @@ struct PlacesTests {
         #expect(HistoryMenu.forwardEntries(historyPaths: history, historyIndex: 4, homePath: Self.home).isEmpty)
     }
 
-    // T-389442af
-    // B-NAV-008
     @Test func stopsAtADozenFoldersInEitherDirection() {
         let long = (0..<40).map { "/folders/\($0)" }
         let back = HistoryMenu.backEntries(historyPaths: long, historyIndex: 30, homePath: Self.home)

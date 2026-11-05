@@ -1,5 +1,3 @@
-// Port of the glyphs of apps/desktop/src/renderer/components/GetInfoPanel.tsx (InfoPanelGlyph), the .spinner of styles.css
-// and the small buttons the Info views draw
 import AppKit
 import FTFoundation
 
@@ -27,12 +25,12 @@ func textExtent(_ text: String, _ font: NSFont?) -> Double {
     Double((text as NSString).size(withAttributes: [.font: font ?? .systemFont(ofSize: 12)]).width)
 }
 
-/// The original's locale for dates (`InfoLocale.original`), which the list's dates share.
+/// The locale for dates (`InfoLocale.original`), which the list's dates share.
 extension DateText {
     static var original: DateText { .shared }
 }
 
-/// The line icons of the Info panel, in a 24-unit box, stroked in `currentColor` with round caps and joins.
+/// The line icons of the Info panel, in a 24-unit box, stroked in the text color with round caps and joins.
 enum InfoGlyph {
     case close, quickLook, edit, name, favorite, rootTree, finder, terminal, copy, check, refresh
     case openChevron, popupChevron

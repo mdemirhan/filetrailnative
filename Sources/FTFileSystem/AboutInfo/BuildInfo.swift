@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/aboutInfo.ts (build-info.json, formatMacosVersion) and the app:getAboutInfo handler
 import FTFoundation
 import Foundation
 

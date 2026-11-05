@@ -1,2 +1,2 @@
-// Placeholder so the FTFileSystem target builds; later work packages add the real code.
+// A placeholder; nothing uses it.
 public enum FTFileSystemModule {}

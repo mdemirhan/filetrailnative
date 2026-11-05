@@ -1,5 +1,3 @@
-// Port of ExecutionContext, UndoRecorder, CopiedItem, the error classes and the item lists of
-// packages/core/src/fs/copyPasteExecution.ts
 import FTFoundation
 import Foundation
 import os
@@ -124,7 +122,7 @@ struct CopiedItem {
     var source: NodeFingerprint
 }
 
-/// What every step of one paste shares: what the original's context keeps in objects its copies share.
+/// What every step of one paste shares: the copies of its context all hold this one object.
 final class ExecutionShared {
     /// Every destination this paste planned or has written so far (`destinationPathKey`), so a runtime "Keep
     /// Both" never takes a name another item will use.
@@ -161,8 +159,7 @@ final class ExecutionShared {
 }
 
 /// One step's view of the paste. A step that builds an item under a hidden name works on a copy of it
-/// (`with`), as the original spreads its context: the copy shares what the paste shares, and has its own
-/// settings and its own count of items to go.
+/// (`with`): the copy shares what the paste shares, and has its own settings and its own count of items to go.
 // Used by the paste's own thread; a large file's progress is read on the copy's timer while that thread waits
 // in the copy.
 final class ExecutionContext: @unchecked Sendable {
@@ -286,7 +283,7 @@ struct CancelledWithItemsError: CodedError {
 }
 
 /// An error and where its item was headed when it failed, when that differs from the plan (a runtime "Keep
-/// Both" picked another name): the original's `failedDestinations` map, which keeps the first place set.
+/// Both" picked another name). Once set, the place isn't changed.
 struct PlacedError: CodedError {
     let underlying: any Error
     let destinationPath: String

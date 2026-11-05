@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/internalDragAndDrop.test.ts
 import Foundation
 import Testing
 
@@ -20,8 +19,6 @@ struct InternalDragAndDropTests {
             targetIsSelected: selected, operation: operation)
     }
 
-    // T-d8c5f3b8
-    // T-5b6c37ca
     @Test func buildsADragSessionFromTheCurrentSelectionWhenTheDraggedRowIsSelected() throws {
         let kinds: [String: EntryKind] = ["/Users/demo/source.txt": .file, "/Users/demo/Folder": .directory]
         let made = try #require(
@@ -47,15 +44,12 @@ struct InternalDragAndDropTests {
                 == nil)
     }
 
-    // T-b5e5da50
     @Test func recognizesRealDirectoryEntriesOnly() {
         #expect(DragRules.isRealDirectory(kind: .directory, isSymlink: false))
         #expect(!DragRules.isRealDirectory(kind: .symlinkDirectory, isSymlink: true))
         #expect(!DragRules.isRealDirectory(kind: .file, isSymlink: false))
     }
 
-    // T-6cd914d0
-    // B-SRCH-145 T-cfb4b577
     @Test func rejectsDroppingSearchResultsOntoContentRows() {
         #expect(
             validate(
@@ -63,7 +57,6 @@ struct InternalDragAndDropTests {
                 == .unsupportedTarget)
     }
 
-    // T-0b10c4fa
     @Test func rejectsDropsOntoTheSelectedTargetRow() {
         #expect(
             validate(
@@ -71,29 +64,23 @@ struct InternalDragAndDropTests {
                 selected: true) == .targetSelected)
     }
 
-    // T-88743754
-    // T-11ca1eea T-8ca6669c
     @Test func rejectsDropsOntoTheSamePath() {
         #expect(
             validate(session(.content, [("/Users/demo/Folder", .directory)]), target: "/Users/demo/Folder") == .samePath
         )
     }
 
-    // T-0c5373e1
-    // T-11ca1eea
     @Test func rejectsNoOpDropsIntoTheSameParentDirectory() {
         #expect(
             validate(session(.content, [("/Users/demo/source.txt", .file)]), target: "/Users/demo") == .alreadyInTarget)
     }
 
-    // T-413f32ce
     @Test func rejectsDroppingAFolderIntoItsOwnDescendant() {
         #expect(
             validate(session(.content, [("/Users/demo/Folder", .directory)]), target: "/Users/demo/Folder/Subfolder")
                 == .parentIntoChild)
     }
 
-    // T-84ce137b
     @Test func rejectsBlockedDragsBeforeCheckingTheTarget() {
         #expect(
             validate(
@@ -121,8 +108,6 @@ struct InternalDragAndDropTests {
         DragRules.operation(sourcePaths: sources, targetPath: target, option: option, command: command)
     }
 
-    // T-fef00b31
-    // T-740a332a
     @Test func movesToAFolderOnTheSameVolumeAndCopiesToAnotherVolume() {
         #expect(resolve(["/Users/demo/a.txt"], "/Users/demo/Folder") == .move)
         #expect(resolve(["/Volumes/Backup/a.txt"], "/Volumes/Backup/Old") == .move)
@@ -131,8 +116,6 @@ struct InternalDragAndDropTests {
         #expect(resolve(["/Volumes/Backup/a.txt"], "/Volumes/Other") == .copy)
     }
 
-    // T-4b42a287
-    // T-3932f86d T-d16e383b
     @Test func copiesWithOptionAndMovesWithCommandWhateverTheVolumes() {
         #expect(resolve(["/Users/demo/a.txt"], "/Users/demo/Folder", option: true) == .copy)
         #expect(resolve(["/Users/demo/a.txt"], "/Volumes/Backup", option: true) == .copy)
@@ -142,7 +125,6 @@ struct InternalDragAndDropTests {
         #expect(resolve(["/Users/demo/a.txt"], "/Users/demo/Folder", option: true, command: true) == .copy)
     }
 
-    // T-e053e423
     @Test func copiesItemsFromSeveralVolumesUnlessAllAreOnTheTargets() {
         #expect(resolve(["/Users/demo/a.txt", "/Volumes/Backup/b.txt"], "/Users/demo/Folder") == .copy)
         #expect(resolve(["/Users/demo/a.txt", "/Users/other/b.txt"], "/Users/demo/Folder") == .move)
@@ -150,22 +132,18 @@ struct InternalDragAndDropTests {
         #expect(DragRules.operation(facts, targetPath: "/Users/demo/Folder", option: false, command: false) == .copy)
     }
 
-    // T-4fdd9b61
-    // T-be87a191
     @Test func letsACopyGoIntoTheFolderTheItemsAreInToDuplicateThem() {
         let dragged = session(.content, [("/Users/demo/source.txt", .file)])
         #expect(validate(dragged, target: "/Users/demo", operation: .move) == .alreadyInTarget)
         #expect(validate(dragged, target: "/Users/demo", operation: .copy) == nil)
     }
 
-    // T-dc9c71fe
     @Test func stillRefusesToCopyAFolderOntoItselfOrIntoItsOwnDescendant() {
         let dragged = session(.content, [("/Users/demo/Folder", .directory)])
         #expect(validate(dragged, target: "/Users/demo/Folder", operation: .copy) == .samePath)
         #expect(validate(dragged, target: "/Users/demo/Folder/Inner", operation: .copy) == .parentIntoChild)
     }
 
-    // T-5763c21a
     @Test func refusesAnAppOrPackageDroppedIntoAFolderInsideIt() {
         let dragged = session(.external, [("/Applications/Tool.app", .bundle)])
         #expect(
@@ -175,7 +153,6 @@ struct InternalDragAndDropTests {
 
     // MARK: Which disk decides a drag
 
-    // T-0055adca
     @Test func namesTheFoldersThatHoldTheDraggedItemsOnceEach() {
         let files = ["/Users/demo/a.txt", "/Users/demo/b.txt", "/Volumes/X/c.txt", "/top"]
         #expect(
@@ -183,8 +160,6 @@ struct InternalDragAndDropTests {
                 == ["/Users/demo", "/Volumes/X", "/"])
     }
 
-    // T-dcaa9249
-    // T-710ae2af
     @Test func namesDraggedFoldersTooButNotLinksToFolders() {
         #expect(
             DragRules.sourceFolderPaths([
@@ -193,8 +168,6 @@ struct InternalDragAndDropTests {
             ]) == ["/Volumes", "/Volumes/USB", "/Users/demo"])
     }
 
-    // T-50be89fb
-    // T-710ae2af T-82fad2f3
     @Test func knowsTheItemsShareTheTargetsDiskOnlyOnceEveryDiskHasAnswered() {
         var ids: [String: Int64?] = ["/Users/demo": 1, "/Volumes/X": 2, "/net/share": 7]
         ids["/Unreadable"] = .some(nil)
@@ -216,8 +189,6 @@ struct InternalDragAndDropTests {
                 == nil)
     }
 
-    // T-b5628474
-    // T-3932f86d T-710ae2af T-740a332a T-82fad2f3 T-86d54fc1
     @Test func goesByTheDisksOnceTheyHaveAnsweredAndByThePathsUntilThen() {
         func drop(_ target: String, _ same: Bool? = nil) -> DropOperation {
             DragRules.operation(
@@ -235,7 +206,6 @@ struct InternalDragAndDropTests {
 
     // MARK: A drag of many items
 
-    // T-d29d26f6
     @Test func readsItsItemsOnceHoweverManyTimesATargetIsChecked() {
         let dragged = session(.content, (0..<1000).map { ("/Users/demo/f\($0).txt", .file) })
         let facts = dragged.facts
@@ -249,7 +219,6 @@ struct InternalDragAndDropTests {
         #expect(validate(dragged, target: "/Users/demo") == .alreadyInTarget)
     }
 
-    // T-1cbec273
     @Test func knowsItsPathsTheFoldersTheyAreInAndTheFoldersAmongThem() {
         let dragged = session(
             .content,
@@ -265,7 +234,6 @@ struct InternalDragAndDropTests {
         #expect(facts.containerPaths == [ExactKey("/Users/demo/Folder"), ExactKey("/Applications/Tool.app")])
     }
 
-    // T-4147b976
     @Test func refusesAFolderIntoItselfOrBelowItNotAFolderWhoseNameOnlyStartsTheSame() {
         let dragged = session(.content, [("/Users/demo/Folder", .directory)])
         #expect(validate(dragged, target: "/Users/demo/Folder/a/b/c", operation: .copy) == .parentIntoChild)

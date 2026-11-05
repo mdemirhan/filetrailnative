@@ -71,7 +71,7 @@ public indirect enum JSONValue: Sendable, Codable, CustomStringConvertible {
         if case .array(let items) = self { items } else { nil }
     }
 
-    /// Compact JSON with keys sorted as JavaScript sorts strings.
+    /// Compact JSON with keys sorted by UTF-16 code unit.
     public var description: String {
         switch self {
         case .null: return "null"
@@ -89,7 +89,7 @@ public indirect enum JSONValue: Sendable, Codable, CustomStringConvertible {
         }
     }
 
-    /// Keys in JavaScript's default order (UTF-16 code units).
+    /// Keys sorted by UTF-16 code unit.
     public static func sortedKeys(_ members: [String: JSONValue]) -> [String] {
         members.keys.sorted { $0.utf16.lexicographicallyPrecedes($1.utf16) }
     }

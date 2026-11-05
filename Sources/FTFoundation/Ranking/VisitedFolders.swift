@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/visitedFolders.ts
 import Foundation
 
 /// How a folder was come to, which says how much the visit counts:
@@ -124,7 +123,7 @@ public enum VisitedFolders {
         return lines.isEmpty ? "{\"folders\":[]}\n" : "{\"folders\":[\n\(lines.joined(separator: ",\n"))\n]}\n"
     }
 
-    // A JSON number as JavaScript writes it: whole numbers without a fraction.
+    // A JSON number: whole numbers without a fraction.
     private static func jsonNumber(_ value: Double) -> String {
         if value == value.rounded(), abs(value) < 1e15 {
             return String(Int64(value))

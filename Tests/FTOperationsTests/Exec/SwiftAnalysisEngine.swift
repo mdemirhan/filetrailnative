@@ -1,6 +1,5 @@
-// The Swift paste review, as the differential drives it: what tools/parity/exec/analysis.ts records of the
-// reference, made by the Swift analysis and policy. The review sheet's helpers (choicesForNode, effectiveChoice,
-// policyForAllConflicts, allConflictsChoicesFor) are those of apps/desktop/src/renderer/lib/copyPasteReview.ts.
+// The Swift paste review, as the scenario checks drive it: the tree before, the report, the choices offered and
+// taken for each conflict under each "For all conflicts" button, and the items resolved with the scenario's policy.
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -9,7 +8,7 @@ import Foundation
 @testable import FTOperations
 
 struct SwiftAnalysisEngine: ExecAnalysisEngine {
-    /// The "For all conflicts" buttons, in the order analysis.ts asks about them.
+    /// The "For all conflicts" buttons, in a fixed order.
     private static let allConflicts = ["skip", "add_missing", "keep_all", "overwrite"]
 
     func analyze(_ scenario: ExecScenario, in places: ExecPlaces) async throws -> JSONValue {
@@ -109,7 +108,7 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
         return choice
     }
 
-    // MARK: JSON, every key present as the reference writes it
+    // MARK: JSON, every key present
 
     private static func compact(_ node: ResolvedCopyPasteNode) -> JSONValue {
         .object([
@@ -201,9 +200,9 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
     }
 }
 
-/// The disk as the recordings' file system saw it. They were made under Bun, whose `fs.promises.realpath` opens
-/// the item, so it fails (EACCES) on an item its owner can't read, where the app's (Node's realpath(3)) and
-/// `PosixFileSystem`'s succeed. The review is compared on the same answers; the app keeps realpath(3).
+/// The disk as the recordings expect it: its realpath opens the item, so it fails (EACCES) on an item its owner
+/// can't read, where realpath(3) and `PosixFileSystem`'s succeed. The review is compared on the same answers; the
+/// app keeps realpath(3).
 struct RecordedFileSystem: AnalysisFileSystem {
     private let disk = PosixFileSystem()
 

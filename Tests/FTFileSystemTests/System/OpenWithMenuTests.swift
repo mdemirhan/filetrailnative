@@ -31,7 +31,6 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
 }
 
 @Suite struct OpenWithMenuTests {
-    // T-5f17a80b
     @Test func listsTheDefaultAppThePinnedAppsThenTheOthersAToZThenOther() {
         let items = OpenWithMenu.menuItems(
             lookup: lookup(
@@ -49,7 +48,6 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
             ])
     }
 
-    // T-0245a437
     @Test func listsAnAppOnceInItsFirstPlace() {
         let items = OpenWithMenu.menuItems(
             lookup: lookup(
@@ -60,26 +58,22 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
         #expect(rows(items) == ["Zed (default)", "---", "Visual Studio Code", "---", "Other…"])
     }
 
-    // T-e67751b5
     @Test func leavesOutPinnedAppsThatArentThereAnyMore() {
         let items = OpenWithMenu.menuItems(
             lookup: lookup(apps: [app("Zed")], pinnedApps: [nil, app("Zed")]), pinned: [pin("Gone"), pin("Zed")])
         #expect(rows(items) == ["Zed", "---", "Other…"])
     }
 
-    // T-7946a6da
     @Test func listsThePinnedAppsAsSavedUntilMacOSAnswers() {
         #expect(rows(OpenWithMenu.menuItems(lookup: nil, pinned: [pin("Zed")])) == ["Zed", "---", "Other…"])
     }
 
-    // T-2f76c93c
     @Test func ignoresPinnedAnswersAskedWithADifferentList() {
         let items = OpenWithMenu.menuItems(
             lookup: lookup(apps: [app("Zed"), app("Nova")], pinnedApps: [nil]), pinned: [pin("Zed"), pin("Nova")])
         #expect(rows(items) == ["Zed", "Nova", "---", "Other…"])
     }
 
-    // T-f63e4a78
     @Test func leavesOutPinnedAppsThatCantOpenTheItems() {
         let items = OpenWithMenu.menuItems(
             lookup: lookup(
@@ -89,7 +83,6 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
         #expect(rows(items) == ["DiskImageMounter (default)", "---", "Zed", "---", "Other…"])
     }
 
-    // T-251d631b
     @Test func listsAPinnedAppWhereItIsWhenMacOSOffersAnotherCopyOfIt() {
         var zed = app("Zed")
         zed.bundleId = "dev.zed.Zed"
@@ -105,14 +98,12 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
         #expect(appPath == "/Users/demo/Applications/Zed.app")
     }
 
-    // T-c93f786f
     @Test func listsEveryPinnedAppWhenMacOSCouldntSayWhatOpensTheItems() {
         let items = OpenWithMenu.menuItems(
             lookup: lookup(kinds: [], pinnedApps: [app("Zed")]), pinned: [pin("Zed")])
         #expect(rows(items) == ["Zed", "---", "Other…"])
     }
 
-    // T-b7368b6a
     @Test func listsTwoCopiesOfOneVersionOfAnAppOnceTheOneMacOSPutsFirst() {
         func fileTrail(_ path: String, _ version: String) -> ApplicationInfo {
             ApplicationInfo(path: path, name: "File Trail", bundleId: "com.filetrail.app", version: version)
@@ -131,12 +122,10 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
         #expect(appPath == "/Applications/File Trail.app")
     }
 
-    // T-7ce97c4c
     @Test func offersOnlyOtherWhenThereIsNothingElse() {
         #expect(rows(OpenWithMenu.menuItems(lookup: lookup(), pinned: [])) == ["Other…"])
     }
 
-    // T-4e421ac1
     @Test func addsTheVersionToAppsThatShareAName() {
         let items = OpenWithMenu.menuItems(
             lookup: lookup(
@@ -150,7 +139,6 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
             rows(items) == ["Xcode (26.0) (default)", "---", "Preview", "Xcode (27.0 beta)", "---", "Other…"])
     }
 
-    // T-28f23718
     @Test func opensEachAppByItsPathAndNameAndMarksEveryChoiceWhenItIsForAlways() {
         let items = OpenWithMenu.menuItems(lookup: lookup(defaultApp: app("Zed")), pinned: [], always: true)
         let actions = items.compactMap { item -> OpenWithAction? in
@@ -166,20 +154,15 @@ private func rows(_ items: [OpenWithMenuItem]) -> [String] {
             ])
     }
 
-    // T-97bb29ee
     @Test func alwaysOpenWithIsForItemsOfOneKindOfFile() {
         #expect(OpenWithMenu.canAlwaysOpenWith(lookup()))
     }
 
-    // T-11281420
-    // T-55a72312
     @Test func alwaysOpenWithIsNotForFoldersPackagesOrApps() {
         let folder = OpenWithKind(contentType: "public.folder", name: "Folder", isFolder: true)
         #expect(!OpenWithMenu.canAlwaysOpenWith(lookup(kinds: [folder])))
     }
 
-    // T-2015fc33
-    // T-55a72312
     @Test func alwaysOpenWithIsNotForSeveralKindsOrBeforeMacOSAnswers() {
         let text = OpenWithKind(contentType: "public.plain-text", name: "Plain Text", isFolder: false)
         #expect(!OpenWithMenu.canAlwaysOpenWith(lookup(kinds: [markdown, text])))

@@ -1,5 +1,4 @@
-// Ports by feature apps/desktop/src/renderer/components/ContentPane.reveal.test.tsx over the real routes: the folder read
-// again, a folder's size coming in, the window resized, the order of results chosen and a refused name
+// The folder read again, a folder's size coming in, the window resized, the order of results chosen and a refused name
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -51,7 +50,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.entries.count == count + names.count })
         }
 
-        // T-05301e3b F-776 B-SEL-064 B-VIEW-084 B-NAV-161: items come before the lead: where the view is scrolled it would
+        // Items come before the lead: where the view is scrolled it would
         // be out of view.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func keepsTheLeadInViewWhenTheListChangesAroundIt(_ view: RendererCommand) async throws {
@@ -69,7 +68,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-c3144f91 B-SEL-064: a lead the view was scrolled away from doesn't bring the view back.
+        // A lead the view was scrolled away from doesn't bring the view back.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func staysWhereItWasScrolledWhenAnItemIsAddedAboveALeadOutOfView(_ view: RendererCommand) async throws {
             let (harness, tab, folder) = try await open(view)
@@ -84,7 +83,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-643b6df1: a new item is selected before the folder is read again with it.
+        // A new item is selected before the folder is read again with it.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func bringsANewItemIntoViewOnceTheListHasIt(_ view: RendererCommand) async throws {
             let (harness, tab, folder) = try await open(view)
@@ -100,7 +99,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-246c2213 B-NAV-161 B-SEL-064 B-VIEW-084: a folder's size comes in and moves it past the lead, in view or not.
+        // A folder's size comes in and moves it past the lead, in view or not.
         @Test func followsTheLeadAsSizesReSortTheList() async throws {
             let jobs = FakeJobs()
             let timers = ManualTimers()
@@ -163,7 +162,7 @@ extension ExplorerWindowlessTests {
             return (content, sizes, timers, folders)
         }
 
-        // B-NAV-140 B-SEL-026: a folder trashed from a size order has its size forgotten before it leaves the list,
+        // A folder trashed from a size order has its size forgotten before it leaves the list,
         // which puts it at the end; the arrow keys still carry on from where it stood.
         @Test(arguments: [ExplorerViewMode.details, .list, .icons])
         func aFolderTakenFromASizeOrderKeepsItsPlace(_ view: ExplorerViewMode) throws {
@@ -204,7 +203,7 @@ extension ExplorerWindowlessTests {
             #expect(content.selection.gapIndex == 3)
         }
 
-        // F-776 B-VIEW-085 B-NAV-162: the pane is made smaller, by the window or a panel: the lead stays on screen.
+        // The pane is made smaller, by the window or a panel: the lead stays on screen.
         @Test func theListKeepsTheLeadInViewOnAResize() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails)
             tab.content.select(paths: [tab.content.entries[150].path])
@@ -218,7 +217,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-776 B-VIEW-085 B-NAV-162: rows of another height move the lead away.
+        // Rows of another height move the lead away.
         @Test func theListKeepsTheLeadInViewOnADensityChange() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails)
             tab.updatePreferences(["density": .string("finder")])
@@ -236,7 +235,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-03a4c1d0 B-NAV-160 B-SEL-063: the first result goes last when the order of the results is turned around.
+        // The first result goes last when the order of the results is turned around.
         @Test func aNewOrderOfResultsBringsTheLeadIntoView() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails)
             let names = tab.content.entries.map(\.name)
@@ -267,8 +266,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-092 B-SEL-066: the item being renamed, and a refused name, come into view in the List and the Icons view;
-        // the Compact List follows only the lead (ContentPane.tsx:1236).
+        // The item being renamed, and a refused name, come into view in the List and the Icons view;
+        // the Compact List follows only the lead.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func theItemBeingRenamedIsBroughtIntoViewButNotInTheCompactList(_ view: RendererCommand) async throws {
             let (harness, tab, _) = try await open(view)
@@ -287,7 +286,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-134: the explanation of a refused name stays under the field when the window changes size.
+        // The explanation of a refused name stays under the field when the window changes size.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsIcons])
         func theRenameErrorBoxFollowsItsFieldWhenTheWindowResizes(_ view: RendererCommand) async throws {
             let (harness, tab, _) = try await open(view)
@@ -311,7 +310,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-081: the wheel scrolls the list during a marquee, and the box follows.
+        // The wheel scrolls the list during a marquee, and the box follows.
         // (A list long enough to scroll has no empty space to start one in; Icons has its margins.)
         @Test func theWheelScrollsDuringAMarquee() async throws {
             let (harness, tab, _) = try await open(.viewAsIcons)
@@ -344,7 +343,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-064 B-CLIP-140: what a paste made, far apart, by the route a write ends on (each view's is in
+        // What a paste made, far apart, by the route a write ends on (each view's is in
         // LeadStaysOnThePaneTests).
         @Test func aWriteEndingWithItemsFarApartShowsTheLead() async throws {
             let (harness, tab, folder) = try await open(.viewAsDetails)
@@ -356,7 +355,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-083: results that arrive ahead of the lead, as a search goes on, leave it in view.
+        // Results that arrive ahead of the lead, as a search goes on, leave it in view.
         @Test func resultsArrivingAheadOfTheLeadKeepItInView() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails)
             let names = tab.content.entries.map(\.name)
@@ -388,7 +387,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-140 B-SEL-026: what a write took away leaves the selection before the read comes in, keeping its place.
+        // What a write took away leaves the selection before the read comes in, keeping its place.
         @Test func itemsAWriteTookAwayLeaveTheSelectionAtOnce() async throws {
             let (harness, tab, _) = try await open(.viewAsDetails, files: 10)
             let gone = tab.content.entries[3].path
@@ -458,7 +457,7 @@ struct LeadStaysOnThePaneTests {
         return scroller.isInView(index: try #require(content.entries.firstIndex { $0.path == lead }))
     }
 
-    // T-8ab8cdc7: scrolled away since: the view stays where it was scrolled.
+    // Scrolled away since: the view stays where it was scrolled.
     @Test(arguments: views)
     func staysWhereItWasScrolledWhenThePaneIsResized(_ view: ExplorerViewMode) throws {
         let (content, scroller) = try pane(view)
@@ -485,8 +484,8 @@ struct LeadStaysOnThePaneTests {
         #expect(scroller.scrollOrigin == away)
     }
 
-    // B-SEL-064 B-CLIP-140: what a paste made is selected with its last item as the lead, and that is what ends up in
-    // view, however far from the first item it is (useExplorerNavigationController.ts:942-950).
+    // What a paste made is selected with its last item as the lead, and that is what ends up in
+    // view, however far from the first item it is.
     @Test(arguments: views)
     func aSelectionOfItemsFarApartShowsTheLead(_ view: ExplorerViewMode) throws {
         let (content, scroller) = try pane(view)
@@ -496,7 +495,7 @@ struct LeadStaysOnThePaneTests {
         #expect(try leadIsInView(content, scroller))
     }
 
-    // B-SEL-064 B-NAV-161: the same lead selected again asks for nothing: a lead scrolled away stays away.
+    // The same lead selected again asks for nothing: a lead scrolled away stays away.
     @Test(arguments: views)
     func selectingTheLeadAgainLeavesTheViewWhereItWasScrolled(_ view: ExplorerViewMode) throws {
         let (content, scroller) = try pane(view)
@@ -509,7 +508,7 @@ struct LeadStaysOnThePaneTests {
         #expect(scroller.scrollOrigin == before)
     }
 
-    // B-SEL-064 B-NAV-161: the whole list coming back is a change of the list: a lead scrolled away stays away.
+    // The whole list coming back is a change of the list: a lead scrolled away stays away.
     @Test(arguments: views)
     func clearingTheFilterLeavesALeadScrolledAwayAlone(_ view: ExplorerViewMode) throws {
         let (content, scroller) = try pane(view)
@@ -525,7 +524,7 @@ struct LeadStaysOnThePaneTests {
         #expect(scroller.scrollOrigin == before)
     }
 
-    // B-SEL-064 B-NAV-161: a lead in view moves with the list and stays in view.
+    // A lead in view moves with the list and stays in view.
     @Test(arguments: views)
     func clearingTheFilterKeepsALeadInViewInView(_ view: ExplorerViewMode) throws {
         let (content, scroller) = try pane(view)

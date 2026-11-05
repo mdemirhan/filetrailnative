@@ -1,5 +1,3 @@
-// Port of the content pane's preference keys of apps/desktop/src/shared/appPreferences.ts, as capture scenarios set them
-// (`prefs` steps)
 #if DEBUG
     import AppKit
     import FTFoundation

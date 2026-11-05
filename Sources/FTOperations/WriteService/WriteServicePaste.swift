@@ -1,6 +1,5 @@
-// Port of startCopyPaste and executeActiveOperation (packages/core/src/fs/writeService.ts): the write slot a paste
-// claims, the service's own events around it, and the paste itself (`executeCopyPasteFromAnalysis`, unless
-// `WriteServiceDependencies.executeCopyPaste` stands in for it).
+// The write slot a paste claims, the service's own events around it, and the paste itself
+// (`executeCopyPasteFromAnalysis`, unless `WriteServiceDependencies.executeCopyPaste` stands in for it).
 import FTFoundation
 import Foundation
 

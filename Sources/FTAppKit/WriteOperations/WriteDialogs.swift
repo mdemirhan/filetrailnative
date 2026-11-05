@@ -1,7 +1,3 @@
-// Port of getCopyLikePreStartFailureTitle, WRITE_OPERATION_BUSY_MESSAGE and the "not available yet" refusals around
-// them (apps/desktop/src/renderer/hooks/useExplorerActions.ts), and of the questions asked before a write starts
-// (CopyPasteDialog in apps/desktop/src/renderer/components/AppDialogs.tsx), drawn as the original's in-window alerts
-// (Dialogs/)
 import AppKit
 import FTFoundation
 import FTOperations
@@ -11,7 +7,6 @@ enum WriteStartAction: Equatable, Sendable {
     case operation(WriteOperationAction)
     case emptyTrash
 
-    /// `getCopyLikePreStartFailureTitle`.
     var failureTitle: String {
         switch self {
         case .emptyTrash: "Couldn\u{2019}t Empty the Trash"
@@ -32,12 +27,10 @@ enum WriteStartAction: Equatable, Sendable {
     }
 }
 
-/// The modal notices of writes (`showModalNotice`): a refusal, "another file operation is running", what the quit
-/// question can't say. They are the original's alert, drawn in the window (`InWindowAlerts`); with no window to draw
-/// in, a plain alert with the same words.
+/// The modal notices of writes: a refusal, "another file operation is running", what the quit question can't say. They
+/// are an alert drawn in the window (`InWindowAlerts`); with no window to draw in, a plain alert with the same words.
 @MainActor
 struct WriteDialogs {
-    /// `WRITE_OPERATION_BUSY_MESSAGE`.
     static let busyMessage = "Another file operation is running. Try again when it has finished."
 
     /// Shows a warning with `title` and `message` on `window` (or on its own, with none).
@@ -55,7 +48,7 @@ struct WriteDialogs {
         await WriteDialogs.drawQuestion(question, window)
     }
 
-    /// Asks for a name (`TextPromptDialog`): each name submitted, trimmed and not empty, goes
+    /// Asks for a name: each name submitted, trimmed and not empty, goes
     /// to `submit`, whose reply closes the prompt or keeps it open with the reason under what was typed. Returns once
     /// the prompt is closed, by its reply or by Cancel.
     var askName:
@@ -63,7 +56,7 @@ struct WriteDialogs {
             _ prompt: NamePrompt, _ window: NSWindow?, _ submit: @escaping @MainActor (String) async -> NamePromptReply
         ) async -> Void = { prompt, window, submit in await WriteDialogs.drawNamePrompt(prompt, window, submit) }
 
-    /// The notices main.ts shows as native message boxes (the recovery and startup notices): plain alerts, not the
+    /// The notices shown as native message boxes (the recovery and startup notices): plain alerts, not the
     /// in-window one.
     static var native: WriteDialogs {
         var dialogs = WriteDialogs()
@@ -162,7 +155,7 @@ struct WriteDialogs {
         }
     }
 
-    /// B-CLIP-107: every write asked for while one runs says so the same way.
+    /// Every write asked for while one runs says so the same way.
     func showBusy(_ action: WriteStartAction, in window: NSWindow?) {
         show(action.failureTitle, Self.busyMessage, window)
     }
@@ -173,7 +166,7 @@ struct WriteDialogs {
     }
 }
 
-/// What a name prompt shows (`TextPromptDialog`'s props in `AppDialogs`).
+/// What a name prompt shows.
 struct NamePrompt: Equatable, Sendable {
     var title: String
     var message: String?
@@ -181,8 +174,8 @@ struct NamePrompt: Equatable, Sendable {
     var label: String
     var submitLabel: String
     var initialName: String
-    /// The whole name is selected as the prompt opens, so typing replaces it (`selectAllOnOpen`, which both of the
-    /// app's prompts set); off, the caret goes to its end.
+    /// The whole name is selected as the prompt opens, so typing replaces it (both of the app's prompts do); off, the
+    /// caret goes to its end.
     var selectsAll = true
 
     /// Renaming an item that has no row to type in (a folder of the tree).

@@ -62,7 +62,7 @@ final class BatchRenameInspectBox {
         waiting.removeValue(forKey: index)?.resume(returning: answer)
     }
 
-    /// `answerFor`: what the checks say of these items, all in the folder of the first.
+    /// What the checks say of these items, all in the folder of the first.
     static func answer(
         paths: [String], folderNames: [String]? = nil, cannotRename: [String: String] = [:], takenAt: String? = nil,
         created: String? = "2026-09-30T10:12:40", modified: String? = "2026-10-01T08:30:15"
@@ -130,7 +130,7 @@ func makeBatchRenameModel(_ box: BatchRenameInspectBox, _ saved: BatchRenameSave
     BatchRenameSheetModel(inspector: box.inspector, readSaved: { try saved.read() }, save: { saved.save($0) })
 }
 
-/// The sheet on a window that is never shown, as `BatchRenameSheet.test.tsx`'s harness renders it: the items in
+/// The sheet on a window that is never shown: the items in
 /// "/trip", created 2026-09-30T10:12:40 and modified 2026-10-01T08:30:15, the folder holding only them unless told.
 @MainActor
 final class BatchRenameSheetFixture {

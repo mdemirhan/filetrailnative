@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteExecution.ts (createOperationResult's top-level count)
 import FTFoundation
 import FTTestSupport
 import Foundation

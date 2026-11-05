@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/undoPlan.ts
 import FTFoundation
 import Foundation
 import os
@@ -58,7 +57,6 @@ public enum PlannedStep: Equatable, Sendable {
     /// Renames each item at `from` back to the name in `to`, as one batch.
     case batch(items: [BatchRenamedItem])
 
-    /// `reverseStep`.
     public init(reversing step: UndoStep) {
         switch step {
         case .moved(let moved):
@@ -179,7 +177,7 @@ public struct UndoQuestions: Equatable, Sendable {
 }
 
 public enum UndoPlan {
-    /// How many units `findQuestions` looks at at once (`QUESTION_CHECKS_AT_ONCE`).
+    /// How many units `findQuestions` looks at at once.
     static let questionChecksAtOnce = 16
 
     /// `placeKey`: a place compared as a disk that ignores case and accent encoding does, as the Mac's disks do: on

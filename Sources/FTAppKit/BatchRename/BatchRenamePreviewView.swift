@@ -1,6 +1,3 @@
-// Port of BatchRenamePreview, PreviewRow, Segments, ItemGlyph and the arrow of
-// apps/desktop/src/renderer/components/BatchRenameSheet.tsx, and the .batch-rename-preview rules of
-// apps/desktop/src/renderer/styles.css (7016-7140)
 import AppKit
 import FTFoundation
 
@@ -156,7 +153,7 @@ final class BatchRenamePreviewView: NSView, ThemeApplying, NSTableViewDataSource
     var holdsKeyboard: Bool { window?.firstResponder === table }
 
     override func draw(_ dirtyRect: NSRect) {
-        // `box-shadow: inset 0 0 0 0.5px var(--border-active)`, under the header's fill.
+        // An inset 0.5 edge in the active border color, under the header's fill.
         let edge = CGFloat(BatchRenameSheetLayout.Preview.edge)
         let radius = CGFloat(BatchRenameSheetLayout.Preview.radius)
         let path = NSBezierPath(
@@ -221,7 +218,7 @@ final class BatchRenamePreviewTable: NSTableView {
     override func drawBackground(inClipRect clipRect: NSRect) {}
 }
 
-/// `.batch-rename-preview-head`: Name and New Name over their columns, on the surface's fill with a line under it.
+/// The preview's head: Name and New Name over their columns, on the surface's fill with a line under it.
 @MainActor
 final class BatchRenamePreviewHead: NSView, ThemeApplying {
     let nameLabel: ThemedText
@@ -386,8 +383,7 @@ final class BatchRenameRowCell: NSTableCellView {
     }
 }
 
-/// `.batch-rename-new`: the new name with its changed parts marked ("No change" for an item left as it is), and the
-/// row's note under it.
+/// The new name with its changed parts marked ("No change" for an item left as it is), and the row's note under it.
 @MainActor
 final class BatchRenameNewNameView: NSView, TextStyleSource {
     let nameLabel = ThemedText(wrapping: false) { _ in NSAttributedString() }
@@ -508,7 +504,7 @@ func batchRenameTextWidthExact(_ text: String, _ size: Double) -> CGFloat {
     (text as NSString).size(withAttributes: [.font: ThemeFonts.sans(size)]).width
 }
 
-/// `.batch-rename-changed`: the tint behind a changed part of a new name, 1 wider each side, rounded 3.
+/// The tint behind a changed part of a new name, 1 wider each side, rounded 3.
 @MainActor
 final class BatchRenameMarkView: NSView, ThemeApplying {
     let danger: Bool

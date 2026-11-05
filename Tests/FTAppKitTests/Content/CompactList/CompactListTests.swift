@@ -1,5 +1,3 @@
-// Covers the Compact List in an explorer window that is never shown, by feature row (the Compact List cases of
-// ContentPane.test.tsx)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -11,9 +9,8 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct CompactListTests {
-        // F-776 F-777 B-VIEW-031 B-VIEW-032 B-VIEW-033 B-VIEW-038: items fill a column top to bottom, then the next;
+        // Items fill a column top to bottom, then the next;
         // each is as wide as its icon and name, its highlight hugging them, in `padding: 8 10 4`.
-        // B-VIEW-001
         @Test func itemsFillAColumnThenTheNextAndHugTheirNames() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 120)
@@ -75,9 +72,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-f76e6635 F-776 B-VIEW-035: the wheel's up and down scroll the list sideways; a mostly sideways gesture is
+        // The wheel's up and down scroll the list sideways; a mostly sideways gesture is
         // left to the scroll view.
-        // B-SEL-069
         @Test func turnsTheWheelsUpAndDownIntoSidewaysScroll() async throws {
             let harness = try ExplorerHarness.windowless()
             let (_, probe) = try await harness.openGrid(.viewAsList, files: 400)
@@ -95,9 +91,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-6eedbcad B-VIEW-036 B-VIEW-037 B-VIEW-087 B-VIEW-088: ←/→ move by a column and ↑/↓ by an item, and the lead's
+        // ←/→ move by a column and ↑/↓ by an item, and the lead's
         // column is kept in view sideways; a page moves by the columns that fit.
-        // B-NAV-144 B-NAV-148 B-NAV-155 B-NAV-166 B-SEL-046 B-SEL-050 B-SEL-062 T-39bda507 T-ed1ee8c6
         @Test func arrowsMoveByAColumnAndKeepTheItemHorizontallyVisible() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 400)
@@ -126,10 +121,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-3af848da T-5335903c F-777 B-VIEW-069 B-VIEW-070 B-VIEW-072 B-VIEW-073: a press on an item selects it, ⇧ extends,
+        // A press on an item selects it, ⇧ extends,
         // a press past the end of a name is empty space, and a right-click there clears the selection and asks for the
         // background's menu.
-        // B-VIEW-204
         @Test func forwardsModifierSelectionAndBackgroundMenus() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList)
@@ -141,7 +135,7 @@ extension ExplorerWindowlessTests {
             let items = probe.compactItems
             let alpha = try #require(items["Alpha"])
             let gamma = try #require(items["Gamma"])
-            // F-776 B-VIEW-038: an item names itself in its tooltip (`title={entry.name}`).
+            // An item names itself in its tooltip (`title={entry.name}`).
             #expect(alpha.view.toolTip == "Alpha")
             probe.press(at: probe.point(in: alpha.root))
             #expect(probe.selectedNames == ["Alpha"])
@@ -160,7 +154,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-777 B-VIEW-005 B-VIEW-031: Finder's sizes: rows of 24, columns of 252 and 13 pt names.
+        // Finder's sizes: rows of 24, columns of 252 and 13 pt names.
         @Test func findersSizesHaveShorterRowsAndNarrowerColumns() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 80)
@@ -182,7 +176,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The collection view takes its scroll view's horizontal scroller away under a custom layout: the Compact List
-        // keeps it, so its thumb shows when End scrolls sideways (106, 107). F-776 B-VIEW-036
+        // keeps it, so its thumb shows when End scrolls sideways (106, 107).
         @Test func keepsItsHorizontalScrollerWhenItOverflows() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 200)
@@ -198,7 +192,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-8b04180b B-VIEW-090: a name is edited in its item, which keeps its column's width for the field.
+        // A name is edited in its item, which keeps its column's width for the field.
         @Test func editsANameInItsItem() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList)
@@ -220,7 +214,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-776 B-VIEW-037: a lower pane puts fewer items in a column; the lead's column is kept in view.
+        // A lower pane puts fewer items in a column; the lead's column is kept in view.
         @Test func keepsTheLeadInViewWhenTheHeightChanges() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 400)
@@ -241,7 +235,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-776: the Compact List doesn't read the details of the items on screen; only the List shows them.
+        // The Compact List doesn't read the details of the items on screen; only the List shows them.
         @Test func doesNotReadTheDetailsOfTheItemsOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsList, files: 20)

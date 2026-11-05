@@ -1,5 +1,3 @@
-// Covers how far the List view scrolls, in an explorer window that is never shown (ContentPane.tsx's .details-table: the
-// rows and nothing below them)
 import AppKit
 import FTFileSystem
 import FTFoundation

@@ -1,7 +1,5 @@
-// Port by feature of the remaining cases of App.dragIn.test.tsx, App.dragOut.test.tsx, the drag cases of
-// App.fileOperations.test.tsx and App.search.test.tsx, and of entryItemEvents.ts and TreePane.rows.test.tsx: drags over
-// the list, the grid and the tree of a window that is never shown, through AppKit's dragging callbacks, with the app's real
-// file operations on a temporary folder
+// Drags over the list, the grid and the tree of a window that is never shown, through AppKit's dragging callbacks, with
+// the app's real file operations on a temporary folder
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -74,7 +72,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Copy or move
 
-        // T-2f7441b1: a source that only offers a copy is copied, though the folder is on the same disk.
+        // A source that only offers a copy is copied, though the folder is on the same disk.
         @Test func aDragThatOffersOnlyACopyCopiesOnTheSameDisk() async throws {
             let window = try await WritingWindow.open()
             let restore = noKeys()
@@ -90,7 +88,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-9f4c86f0: told by path it would be a copy; the disks say it is a move, into the items' own folder: dropped
+        // Told by path it would be a copy; the disks say it is a move, into the items' own folder: dropped
         // without a word.
         @Test func aDropThatTurnsOutAMoveIntoTheItemsOwnFolderIsRefusedSilently() async throws {
             let window = try await WritingWindow.open()
@@ -117,7 +115,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Which targets take it
 
-        // T-c89e355a B-CLIP-156: a folder in the Trash, the Trash's row and a folder of the tree in it refuse, nothing moved.
+        // A folder in the Trash, the Trash's row and a folder of the tree in it refuse, nothing moved.
         @Test func theTrashAndWhatIsInItRefuse() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -150,14 +148,14 @@ extension ExplorerWindowlessTests {
             let elsewhere = try #require(drags.sidebarTarget(row(path(window, "Alpha"), .filesystem)))
             #expect(elsewhere.supportsMove)
             #expect(window.exists("note.txt"))
-            // T-a91faf09 B-CLIP-157: an alias of a folder takes nothing.
+            // An alias of a folder takes nothing.
             let link = try #require(
                 drags.contentTarget(session, entry: try folderEntry(path(window, "Link"), kind: "symlink_directory")))
             #expect(!link.supportsMove)
             await window.close()
         }
 
-        // T-87626198 B-CLIP-156: a folder found takes a drag from another app, and the results stay on screen.
+        // A folder found takes a drag from another app, and the results stay on screen.
         @Test func aFolderFoundTakesADropFromAnotherApp() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -178,7 +176,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-576bf206 B-CLIP-156: the app's own drag of what was found has nowhere to go among the results.
+        // The app's own drag of what was found has nowhere to go among the results.
         @Test func aDragOfResultsCantBeDroppedOnResults() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -193,7 +191,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-SEL-019 T-4650adf5 T-b2112746: over a file's row the list takes the folder on screen as the target, and marks
+        // Over a file's row the list takes the folder on screen as the target, and marks
         // nothing; over a folder's row it is that folder.
         @Test func onlyFolderRowsAreTargetsInTheList() async throws {
             let window = try await WritingWindow.open()
@@ -220,7 +218,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-6708b721 B-SEL-019: the same in the Icons view and the Compact List.
+        // The same in the Icons view and the Compact List.
         @Test(arguments: [RendererCommand.viewAsIcons, .viewAsList])
         func onlyFolderItemsAreTargetsInTheGrids(_ view: RendererCommand) async throws {
             let harness = try ExplorerHarness.windowless()
@@ -245,7 +243,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: One drag, or the next
 
-        // T-301b8787 T-8c07cc75: the drag is read once however long it is held, also when it leaves and comes back.
+        // The drag is read once however long it is held, also when it leaves and comes back.
         @Test func aDragIsReadOnceThoughItLeavesAndComesBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -263,7 +261,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-41ce0b22 T-752d0402: the next drag is new, whether the last one was seen to leave or not.
+        // The next drag is new, whether the last one was seen to leave or not.
         @Test(arguments: [true, false]) func theNextDragIsANewOne(lastOneLeft: Bool) async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -286,7 +284,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-f4a1c03a: the window's own drag stays its own when it left the window and came back, without reading the
+        // The window's own drag stays its own when it left the window and came back, without reading the
         // pasteboard, and takes nothing on the folder on screen.
         @Test func theOwnDragStaysItsOwnAcrossLeaving() async throws {
             let window = try await WritingWindow.open()
@@ -307,7 +305,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Springing
 
-        // T-13d47c59: two springs in one drag, then no drop: the tab comes back from the last, its history as it was.
+        // Two springs in one drag, then no drop: the tab comes back from the last, its history as it was.
         @Test(arguments: [true, false])
         func twoSpringsComeBackWhenTheDragEndsWithoutADrop(firstArrived: Bool) async throws {
             let window = try await WritingWindow.open()
@@ -325,7 +323,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-cddc04fe: the app's own drag holds a folder open: its empty space takes the drop, and the tab stays there.
+        // The app's own drag holds a folder open: its empty space takes the drop, and the tab stays there.
         @Test func aFolderTheDragSprangIntoTakesItOnItsEmptySpace() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -345,7 +343,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Items other apps took away
 
-        // T-0914189a B-CLIP-165: looked for again after each wait: there at the first look, gone at the second.
+        // Looked for again after each wait: there at the first look, gone at the second.
         @Test func aMoveFinishedAfterTheDragEndedIsNoticedAtALaterLook() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -361,7 +359,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-f76a912e T-687aafe3 B-CLIP-165: only a drag dropped elsewhere with a move or the Dock's Trash may have left its
+        // Only a drag dropped elsewhere with a move or the Dock's Trash may have left its
         // items with another app: nothing is looked for after a copy, a cancel, a drop inside the window or on another
         // window of the app.
         @Test func onlyADragAwayIsLookedFor() {
@@ -390,7 +388,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-165: dropped elsewhere with a move or the Dock's Trash, the first look finds them gone.
+        // Dropped elsewhere with a move or the Dock's Trash, the first look finds them gone.
         @Test(arguments: [FileDragEnd.move, .delete]) func aDragAwayIsLookedFor(_ operation: FileDragEnd) async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -427,7 +425,7 @@ extension ExplorerWindowlessTests {
             throw CancellationError()
         }
 
-        // B-CLIP-171 B-TREE-161: another row takes over the wait: it is that one that opens, not the first.
+        // Another row takes over the wait: it is that one that opens, not the first.
         @Test func anotherRowTakesOverTheWaitOfTheHold() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -450,7 +448,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-171 B-TREE-161: held for longer than the wait, a favorite, a location or a link in the tree doesn't open:
+        // Held for longer than the wait, a favorite, a location or a link in the tree doesn't open:
         // only a folder of the tree does; each still shows the drop.
         @Test func onlyAFolderOfTheTreeOpensUnderAHold() async throws {
             let window = try await WritingWindow.open()
@@ -483,7 +481,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-e1dbe49b B-TREE-158: a row marks whether it would take the drop, with no words, and leaving clears it; a
+        // A row marks whether it would take the drop, with no words, and leaving clears it; a
         // disk keeps its Eject either way.
         @Test func aRowMarksTheDropWithoutWords() async throws {
             let window = try await WritingWindow.open()

@@ -1,6 +1,4 @@
-// Port of the helpers of apps/desktop/src/main/bootstrap/writeOperations.test.ts the local operations run on:
-// createWriteOperationFs (a disk the test answers for), createRealWriteOperationFs (the disk itself, with a stand-in
-// Trash), inTrash and createStats
+// The disks local operations run on in tests: one the test answers for, and the disk itself with a stand-in Trash
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -10,8 +8,8 @@ import os
 
 @testable import FTOperations
 
-/// `createWriteOperationFs` / `createRealWriteOperationFs`: every call goes through a closure the test can replace,
-/// and is recorded. Calls come from the operations' disk threads.
+/// Every call goes through a closure the test can replace, and is recorded. Calls come from the operations' disk
+/// threads.
 final class TestLocalFileSystem: LocalWriteFileSystem, @unchecked Sendable {
     struct Calls {
         var lstat: [String] = []
@@ -62,7 +60,7 @@ final class TestLocalFileSystem: LocalWriteFileSystem, @unchecked Sendable {
         getFlagsImpl = getFlags
     }
 
-    /// `createWriteOperationFs`: nothing is there (lstat fails, without a code), every folder exists, and every
+    /// Nothing is there (lstat fails, without a code), every folder exists, and every
     /// write works; the Trash says where an item went (`inTrash`).
     static func stub() -> TestLocalFileSystem {
         TestLocalFileSystem(
@@ -72,7 +70,7 @@ final class TestLocalFileSystem: LocalWriteFileSystem, @unchecked Sendable {
             realpath: { $0 }, getFlags: { _ in 0 })
     }
 
-    /// `createRealWriteOperationFs`: the disk itself, with a Trash that only says where an item would have gone.
+    /// The disk itself, with a Trash that only says where an item would have gone.
     static func real() -> TestLocalFileSystem {
         let disk = NativeWriteFileSystem()
         let fileSystem = TestLocalFileSystem(
@@ -159,7 +157,6 @@ func inTrash(_ path: String) -> String {
     "/Users/demo/.Trash/\(NodePath.basename(path))"
 }
 
-/// `createStats`.
 enum Stats {
     static func file(dev: Int64? = nil, ino: UInt64? = nil, mtimeMs: Double? = nil) -> WriteServiceStats {
         WriteServiceStats(type: .file, mtimeMs: mtimeMs, ino: ino, dev: dev)
@@ -170,7 +167,7 @@ enum Stats {
     }
 }
 
-/// An error with a Node code (`Object.assign(new Error(message), { code })`).
+/// An error with a code.
 func errorWithCode(_ message: String, _ code: String) -> OperationError {
     OperationError(message, code: code)
 }
@@ -215,7 +212,7 @@ final class HeldCall: @unchecked Sendable {
 }
 
 extension WriteCoordinator {
-    /// `createWriteOperationCoordinator(createWriteServiceStub(), fs, options)`.
+    /// A coordinator over `fileSystem`, with a stub write service.
     static func local(
         _ fileSystem: TestLocalFileSystem, homePath: String = NSHomeDirectory(),
         options: WriteCoordinatorOptions? = nil
@@ -230,7 +227,7 @@ extension TestWindow {
     /// The statuses of everything it was sent.
     var statuses: [WriteOperationStatus] { progress.map(\.status) }
 
-    /// `waitForTerminalEvent`, told by the window when the event comes rather than polled for until a deadline: in a
+    /// Told by the window when the event comes rather than polled for until a deadline: in a
     /// full run the operation's disk thread and the main actor can both be kept waiting for seconds by other suites,
     /// which made a deadline fail operations that were only slow. A hang is caught by the suite's time limit.
     func ended(_ operationId: String) async -> WriteOperationEvent {

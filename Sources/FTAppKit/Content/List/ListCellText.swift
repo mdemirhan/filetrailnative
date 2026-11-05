@@ -1,5 +1,3 @@
-// Port of formatDetailSize, getDetailCellText and DetailsDateCell (apps/desktop/src/renderer/components/ContentPane.tsx:2160-2330)
-// and useRelativeDate (hooks/useRelativeDate.ts)
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -15,7 +13,7 @@ enum ListCellText {
     /// A folder or bundle shows this until its size is calculated.
     static let folderSizePlaceholder = "--"
 
-    /// `formatDetailSize`: folders and bundles show "--", as in Finder, until their size is calculated. An empty
+    /// Folders and bundles show "--", as in Finder, until their size is calculated. An empty
     /// string is kept for metadata that is still loading.
     static func detailSize(entry: DirectoryEntry, metadata: EntryMetadata?) -> String {
         if entry.isFolderSizeEligible { return folderSizePlaceholder }
@@ -58,7 +56,7 @@ enum ListCellText {
         return ListCellContent(text: parts.octal, tooltip: parts.symbolic)
     }
 
-    /// `getDetailCellText`: a cell's text as the list shows it, for fitting a column to its widest value.
+    /// A cell's text as the list shows it, for fitting a column to its widest value.
     static func content(
         column: DetailColumn, entry: DirectoryEntry, metadata: EntryMetadata?, folderSize: FolderSizeEntry, now: Date
     ) -> ListCellContent {

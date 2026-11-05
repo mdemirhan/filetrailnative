@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/main/explorerWindowController.test.ts (the window cases; quitting is QuitCoordinatorTests')
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -8,7 +7,6 @@ import Testing
 
 @MainActor
 @Suite struct ExplorerWindowControllerStartupTests {
-    // T-2fbcbb64 F-615 F-616 F-617
     @Test func bringsBackEveryWindowShownBackToFrontOnceAllAreReadyTheFrontOneFocused() async throws {
         let store = try makeStore()
         add(store, storedWindow(store, "window-b", ["/Users/demo/b"], maximized: true))
@@ -31,7 +29,6 @@ import Testing
         #expect(setup.controller.launchContext(for: setup.window("window-b")?.windowID) == ExplorerLaunchContext())
     }
 
-    // T-62e9cf33 F-616
     @Test func showsTheWindowsAnywayWhenAFirstFolderNeverComes() throws {
         let store = try makeStore()
         add(store, storedWindow(store, "window-a", ["/Users/demo/a"]))
@@ -46,7 +43,6 @@ import Testing
         #expect(setup.log == ["show window-a"])
     }
 
-    // T-1768b6db F-615
     @Test func opensOnlyTheFrontWindowWhenTheLastFoldersArentReopenedAndForgetsTheRest() throws {
         let store = try makeStore(#"{"preferences":{"restoreSessionOnStartup":false},"windows":[]}"#)
         add(store, storedWindow(store, "window-b", ["/Users/demo/b"]))
@@ -59,7 +55,6 @@ import Testing
         #expect(store.explorerWindows().map(\.id) == ["window-a"])
     }
 
-    // T-e1298edd F-615 F-611
     @Test func opensOneWindowAsTheWindowClosedLastEndedWhenNoneWasOpenAtQuit() throws {
         let store = try makeStore()
         add(store, storedWindow(store, "window-old", ["/Users/demo/a", "/Users/demo/b"], x: 40, y: 50))
@@ -80,7 +75,6 @@ import Testing
 
 @MainActor
 @Suite struct ExplorerWindowControllerOpeningTests {
-    // T-ef3c5c1f F-620 F-638
     @Test func opensAWindowFromAnotherWithItsTabsAndPanelsAStepDownAndToTheRight() throws {
         let setup = try WindowSetup.withWindows(1)
         let first = try #require(setup.windows.first)
@@ -109,7 +103,6 @@ import Testing
         #expect(!setup.controller.openWindowFrom(first.windowID, tabs: [], activeTabIndex: 0))
     }
 
-    // T-39d8248c F-620
     @Test func opensAWindowFromNoWindowAtTheDefaultSizeWithTheAppsLatestPanels() throws {
         let setup = try WindowSetup()
         setup.store.updatePreferences(["propertiesOpen": .bool(true)])
@@ -121,8 +114,6 @@ import Testing
         #expect(record.session.propertiesOpen)
     }
 
-    // T-04c9c8d8 F-619 F-642
-    // T-bd532a00
     @Test func opensAWindowWhereTheLastOneClosedToRunACommandChosenWithNoneOpen() throws {
         let setup = try WindowSetup()
 
@@ -135,9 +126,6 @@ import Testing
         #expect(setup.launches[window.recordID] == expected)
     }
 
-    // N/A T-e48c6be2 a native window has no page to load again: it is given its launch folder and command once, when it is made
-    // N/A T-29244b8d a native window has no page to load again, so the Go menu's command can't run twice
-    // F-642 B-NAV-175
     @Test func givesTheLaunchFolderToTheWindowAsItIsMade() throws {
         let store = try makeStore()
         add(store, storedWindow(store, "window-a", ["/Users/demo/a"]))
@@ -148,7 +136,6 @@ import Testing
         #expect(setup.launches["window-a"] == ExplorerLaunchContext(startupFolderPath: "/Users/demo/launched"))
     }
 
-    // T-fe1d53aa F-606
     @Test func opensNewWindowFromTheDockOnTheFrontWindowsTabOrOneWhereTheLastClosed() throws {
         let setup = try WindowSetup()
 
@@ -172,7 +159,6 @@ import Testing
         #expect(opened.propertiesOpen)
     }
 
-    // T-8f6da899 F-623
     @Test func bringsTheWindowInFrontForwardForASecondLaunchOrOpensOne() throws {
         let setup = try WindowSetup()
         setup.controller.bringToFront()
@@ -187,7 +173,6 @@ import Testing
         #expect(setup.windows.count == 1)
     }
 
-    // T-c156fb57 F-619
     @Test func opensAWindowZoomedWithNoneOpenWhenTheWindowClosedLastWas() throws {
         let store = try makeStore()
         add(store, storedWindow(store, "window-old", ["/Users/demo"], maximized: true))
@@ -201,7 +186,6 @@ import Testing
         #expect(setup.log == ["maximize window-new-1", "show window-new-1"])
     }
 
-    // T-73d24cc6 F-604
     @Test func tellsTheMenuWhenAWindowIsMinimizedOrComesBack() throws {
         let setup = try WindowSetup.withWindows(1)
         setup.windowsChanged = 0
@@ -217,8 +201,6 @@ import Testing
 @Suite struct ExplorerWindowControllerOpenFileTests {
     let image = OpenRequest(path: "/Users/demo/Install.dmg", kind: .diskImage)
 
-    // T-b8d258a3 F-136 F-642
-    // T-aa290e2d
     @Test func givesThemToTheWindowInFrontOnceAndTellsItTheyAreWaiting() throws {
         let setup = try WindowSetup.withWindows(2)
         let back = setup.windows[0]
@@ -235,7 +217,6 @@ import Testing
         #expect(setup.controller.takeOpenRequests(front.windowID).isEmpty)
     }
 
-    // T-2955ff8c F-136
     @Test func saysSoWithNoWindowOpenToTakeThemAndBringsBackAMinimizedOne() throws {
         let setup = try WindowSetup()
 
@@ -252,7 +233,6 @@ import Testing
         #expect(window.focused == 1)
     }
 
-    // T-e6a2360a F-136
     @Test func opensAWindowOnADiskAloneWhereTheWindowClosedLastWas() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.windows[0].close()
@@ -269,7 +249,6 @@ import Testing
         #expect(setup.controller.takeOpenRequests(opened.windowID).isEmpty)
     }
 
-    // T-bb5cec67 F-136
     @Test func opensAWindowOnAnItemsFolderWhichThenSelectsTheItem() throws {
         let setup = try WindowSetup()
 
@@ -286,7 +265,6 @@ import Testing
             ])
     }
 
-    // T-d27361b6 F-135
     @Test func opensNothingWhileQuitting() async throws {
         let setup = try WindowSetup.withWindows(1)
         await setup.quit.quit()
@@ -301,7 +279,6 @@ import Testing
 
 @MainActor
 @Suite struct ExplorerWindowControllerOrderAndBoundsTests {
-    // T-7f6bde0e F-621
     @Test func keepsTheWindowFocusedLastInFrontInTheStoreToo() throws {
         let setup = try WindowSetup.withWindows(3)
         func ids() -> [String] { setup.store.explorerWindows().map(\.id) }
@@ -314,7 +291,6 @@ import Testing
         #expect(ids().first == setup.windows[0].recordID)
     }
 
-    // T-b24bfb31 F-607 F-620
     @Test func recordsAFullScreenWindowsPlaceAndSizeOutOfFullScreen() throws {
         let setup = try WindowSetup.withWindows(2)
         let window = setup.windows[0]
@@ -332,7 +308,6 @@ import Testing
                 == StoredWindowState(x: 100, y: 80, width: 900, height: 600, maximized: false))
     }
 
-    // T-6c34579a F-607
     @Test func recordsWhereAWindowIsOnceItStopsMovingAndAsItCloses() throws {
         let setup = try WindowSetup.withWindows(2)
         let window = setup.windows[0]
@@ -355,7 +330,6 @@ import Testing
 
 @MainActor
 @Suite struct ExplorerWindowControllerClosingTests {
-    // T-f6963bbb F-622 F-611
     @Test func forgetsAWindowClosedByHandAndRemembersItAsTheWindowClosedLast() async throws {
         let setup = try WindowSetup.withWindows(2)
         let window = setup.windows[0]
@@ -370,7 +344,6 @@ import Testing
         #expect(setup.windowsChanged > 0)
     }
 
-    // T-79a59f81 F-611
     @Test func keepsAWindowClosedWhileQuittingToBringItBackAtTheNextLaunch() async throws {
         let setup = try WindowSetup.withWindows(2)
         await setup.quit.quit()
@@ -382,7 +355,6 @@ import Testing
         #expect(setup.store.lastClosedWindow() == nil)
     }
 
-    // T-0e9eff11 F-622 F-239
     @Test func asksBeforeClosingTheLastWindowStopsACopyAndKeepsWorkingWhenToldTo() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.runOperation(.copy)
@@ -410,7 +382,6 @@ import Testing
         #expect(setup.controller.windows.count == 0)
     }
 
-    // T-8e5a9006 F-624
     @Test func bringsTheQuestionForwardWhenQuitOrAnotherCloseComesWhileItIsOpen() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.runOperation(.copy)
@@ -434,7 +405,6 @@ import Testing
         await settle()
     }
 
-    // T-f7757b8b F-239
     @Test func stopsTheOperationWithStopAndCloseEvenWithAWindowOpenedWhileItAsked() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.runOperation(.copy)
@@ -452,8 +422,6 @@ import Testing
         #expect(setup.controller.successor(of: first.windowID) == nil)
     }
 
-    // T-5c41e83d F-622
-    // T-e35524a8
     @Test func asksTheSameWhenCommandWClosesTheLastTabOfTheLastWindow() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.runOperation(.copy)
@@ -475,7 +443,6 @@ import Testing
         #expect(!setup.controller.closeWindow(of: 12_345))
     }
 
-    // T-1135fedb F-622
     @Test func asksOnceWhenTheLastTwoWindowsCloseTogetherWhileOneOfThemCopies() async throws {
         let setup = try WindowSetup.withWindows(2)
         setup.runOperation(.copy)
@@ -496,7 +463,6 @@ import Testing
         #expect(!second.destroyed)
     }
 
-    // T-e0570eb9 F-240
     @Test func doesntHandACopyToAWindowThatIsClosingToo() async throws {
         let setup = try WindowSetup.withWindows(3)
         let first = setup.windows[0]
@@ -508,7 +474,6 @@ import Testing
         await settle()
     }
 
-    // T-f882affc F-622
     @Test func closesTheLastWindowWithoutAskingWhenNothingWorthAskingAboutRuns() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.runOperation(.rename)
@@ -518,7 +483,6 @@ import Testing
         #expect(setup.windows[0].destroyed)
     }
 
-    // T-bc10d6ff F-240
     @Test func closesOneOfSeveralWindowsWithoutAskingAndHandsItsCopyToAnother() async throws {
         let setup = try WindowSetup.withWindows(2)
         setup.runOperation(.copy)
@@ -537,8 +501,6 @@ import Testing
 
 @MainActor
 @Suite struct ExplorerWindowControllerMergeTests {
-    // T-2c973d7e F-628 F-629
-    // T-2e942ee8
     @Test func handsOverTheOtherWindowsTabsAsTheyAreNowFrontToBackAndClosesThem() async throws {
         let setup = try WindowSetup.withWindows(3)
         let first = setup.windows[0]
@@ -557,8 +519,6 @@ import Testing
         #expect(await setup.controller.mergeInto(12_345, tabCount: 1).isEmpty)
     }
 
-    // T-3beb86c2 F-628
-    // T-90c76b8c
     @Test func leavesOpenABusyWindowOneThatDoesntAnswerAndOneWhoseTabsDontFit() async throws {
         let setup = try WindowSetup.withWindows(5)
         // In front of the first window, front to back: inFront, leftOut, silent, renaming.
@@ -581,8 +541,6 @@ import Testing
         #expect(setup.controller.windows.count == 4)
     }
 
-    // T-e22e1aab F-629
-    // T-483df13d
     @Test func mergesOnceAtATimeASecondMergeWhileOneWaitsLeavesItsWindowOpen() async throws {
         let setup = try WindowSetup.withWindows(3)
         let first = setup.windows[0]
@@ -608,7 +566,6 @@ import Testing
         #expect(await setup.controller.mergeInto(first.windowID, tabCount: 3).count == 1)
     }
 
-    // T-16b63019 F-629
     @Test func mergesNothingWhenTheWindowAskingClosesWhileTheOthersAreAsked() async throws {
         let setup = try WindowSetup.withWindows(3)
         let first = setup.windows[0]
@@ -627,7 +584,6 @@ import Testing
         #expect(!setup.windows[2].destroyed)
     }
 
-    // T-ede576e3 F-629
     @Test func mergesNothingWhileQuittingOrWhenQuittingStartsWhileTheOthersAreAsked() async throws {
         let setup = try WindowSetup.withWindows(2)
         setup.shutDownHeld = true
@@ -647,14 +603,8 @@ import Testing
     }
 }
 
-// N/A T-16a6e729 a native window has no page that can crash and be loaded again
-// N/A T-7e35122d a native window has no page that can crash and be loaded again
-// N/A T-fc659b91 a native window has no page that can crash before it is first shown
-// N/A T-753a3735 a native window has no page that loads, crashed or not
-// N/A T-982ee3d5 a native window has no page still loading: every open window can take a running operation
 @MainActor
 @Suite struct ExplorerWindowControllerQuittingTests {
-    // T-1e0a75b0 F-645
     @Test func opensNoWindowWhileQuitting() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.shutDownHeld = true
@@ -671,7 +621,6 @@ import Testing
         #expect(setup.windows.count == 1)
     }
 
-    // T-cb97a936 F-624
     @Test func asksOnceWithOnlySettingsOpenAndHasNoWindowToBringForwardForQuitAgain() async throws {
         let setup = try WindowSetup()
         setup.runOperation(.copy)
@@ -693,7 +642,6 @@ import Testing
         #expect(setup.exits == 0)
     }
 
-    // T-8171a8f2 F-627
     @Test func recordsTheWindowsBoundsBeforeExiting() async throws {
         let setup = try WindowSetup.withWindows(1)
         setup.runOperation(.copy)

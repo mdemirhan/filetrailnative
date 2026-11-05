@@ -1,4 +1,3 @@
-// Port of the types and options of createWriteOperationCoordinator (apps/desktop/src/main/bootstrap/writeOperations.ts):
 // WriteOperationKind, FinishedWrite, WriteOperationSender, and what the coordinator is given
 import FTFileSystem
 import FTFoundation
@@ -31,8 +30,8 @@ extension WriteService: CoordinatorWriteService {
     }
 }
 
-/// A window an operation answers to (`WriteOperationSender`, the original's WebContents): its progress, its
-/// questions and its end go there. The app tells the coordinator when one closes (`windowClosed`).
+/// A window an operation answers to: its progress, its questions and its end go there. The app tells the
+/// coordinator when one closes (`windowClosed`).
 @MainActor
 public protocol WriteOperationWindow: AnyObject {
     /// `isDestroyed()`: closed, or on its way out.
@@ -57,7 +56,6 @@ public enum WriteOperationKind: String, Sendable, CaseIterable {
     case undo
     case emptyTrash = "empty_trash"
 
-    /// `toWriteOperationKind`.
     public init(_ action: WriteOperationAction) {
         switch action {
         case .trash: self = .trash
@@ -71,7 +69,7 @@ public enum WriteOperationKind: String, Sendable, CaseIterable {
     }
 }
 
-/// The operation holding the write slot (`getActiveOperation`).
+/// The operation holding the write slot.
 public struct ActiveWriteOperation: Equatable, Sendable {
     public var operationId: String
     public var kind: WriteOperationKind
@@ -152,8 +150,8 @@ public struct WriteCoordinatorError: Error, Equatable, Sendable, CustomStringCon
     public static let analysisOfAnotherWindow = WriteCoordinatorError("This copy was set up in another window.")
 }
 
-/// Folder listings and sizes read before an operation finished may show the old contents (`clearResponseCaches`,
-/// `noteWriteStarting`, `noteWriteEnded`). The app passes its directory service's cache and the folder sizes.
+/// Folder listings and sizes read before an operation finished may show the old contents. The app passes its
+/// directory service's cache and the folder sizes.
 @MainActor
 public struct WriteCaches {
     /// Forgets the listings, and what the operation changed of the folder sizes; what a delete removed is taken off
@@ -199,13 +197,13 @@ public struct CoordinatorClock {
     }
 }
 
-/// What the coordinator is given besides its write service (`createWriteOperationCoordinator`'s options).
+/// What the coordinator is given besides its write service.
 @MainActor
 public struct WriteCoordinatorOptions {
     /// Where the home folder and its Trash are (tests use their own).
     public var homePath: String
     /// Told what each operation did, before the next one can start, so they are kept in the order they happened.
-    /// Operations that changed nothing aren't told. P3-07 fills it with the Undo history.
+    /// Operations that changed nothing aren't told. The app fills it with the Undo history.
     public var recordUndo: ((FinishedWrite) throws -> Void)?
     /// Whether the disk holding `path` has a Trash. Copies onto one that hasn't can't be undone. Undo also asks it
     /// from its disk thread.
@@ -228,7 +226,7 @@ public struct WriteCoordinatorOptions {
     public var onTrashEmptied: (() -> Void)?
     public var caches: WriteCaches
     public var clock: CoordinatorClock
-    /// `console.error`: what went wrong, and the error.
+    /// What went wrong, and the error.
     public var logError: (_ message: String, _ error: (any Error)?) -> Void
 
     public init(

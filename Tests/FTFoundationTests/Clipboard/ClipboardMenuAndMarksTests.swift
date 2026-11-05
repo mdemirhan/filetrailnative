@@ -1,6 +1,4 @@
-// Port of apps/desktop/src/renderer/lib/fileDragImages.test.ts, and by feature of the list, key and mark cases of
-// components/ClipboardButton.test.tsx and components/ClipboardMarks.test.tsx: the clipboard menu's model, the marks,
-// the flash and the spring hold, without a window
+// The clipboard menu's model, the marks, the flash and the spring hold, without a window
 import CoreGraphics
 import Foundation
 import Testing
@@ -23,7 +21,6 @@ struct ClipboardMenuAndMarksTests {
             nameFontSize: 13, nameCentered: centered, thumbnail: icon, inSight: inSight)
     }
 
-    // T-e19ec635
     @Test func findsEachDraggedItemWhereItShowsItsIconAndItsName() {
         let images = FileDragImages.measure(
             ["/demo/a.txt", "/demo/b.txt"], placements: ["/demo/a.txt": placed(100), "/demo/b.txt": placed(124)])
@@ -37,7 +34,6 @@ struct ClipboardMenuAndMarksTests {
         #expect(images.last?.iconRect == CGRect(x: 8, y: 128, width: 16, height: 16))
     }
 
-    // T-cc5858e2
     @Test func leavesOutItemsScrolledOutOfSightOrNotOnThePage() {
         let list = CGRect(x: 0, y: 100, width: 400, height: 200)
         let below = placed(320)
@@ -52,7 +48,6 @@ struct ClipboardMenuAndMarksTests {
         #expect(images.map(\.index) == [1])
     }
 
-    // T-e23caeac
     @Test func centersNamesInIconViewAndSendsThePictureShownForAnIcon() {
         let images = FileDragImages.measure(
             ["/demo/photo.jpg", "/demo/notes.txt"],
@@ -61,7 +56,6 @@ struct ClipboardMenuAndMarksTests {
         #expect(!images[1].nameCentered && !images[1].thumbnail)
     }
 
-    // T-d52aa58c
     @Test func looksThroughThePageOnceHoweverManyItemsAreDragged() {
         let paths = (0..<5000).map { "/demo/far/\($0).txt" } + ["/demo/b.txt"]
         let images = FileDragImages.measure(
@@ -74,8 +68,6 @@ struct ClipboardMenuAndMarksTests {
 
     // MARK: The clipboard menu
 
-    // T-ccfcb549 F-801
-    // B-CLIP-025
     @Test func listsTheItemsUnderTheFoldersTheyCameFrom() {
         let model = ClipboardMenuModel(items: items(["/Users/demo/a.txt", "/top", "/Users/demo/b.txt"]))
         #expect(model.rows.count == 5)
@@ -84,7 +76,6 @@ struct ClipboardMenuAndMarksTests {
         #expect(model.pinnedHeading?.label == "demo")
     }
 
-    // T-4914f3c3 F-802 B-CLIP-031 B-CLIP-033 B-CLIP-034
     @Test func isWorkedWithTheArrowKeysReturnDeleteAndEscape() {
         var model = ClipboardMenuModel(items: items(["/a/1", "/a/2", "/a/3"]))
         model.opened()
@@ -121,7 +112,6 @@ struct ClipboardMenuAndMarksTests {
         #expect(model.activeIndex == model.clearIndex)
     }
 
-    // T-f27ccac2 T-a88bfdb2 F-801 B-CLIP-026 B-CLIP-027
     @Test func drawsOnlyTheRowsInViewOfAClipboardThatHoldsHundredsOfItems() {
         var model = ClipboardMenuModel(items: items((0..<500).map { "/a/\($0)" }))
         #expect(model.drawnRows.count < 30)
@@ -133,7 +123,6 @@ struct ClipboardMenuAndMarksTests {
         #expect(!ClipboardMenuModel(items: items((0..<9).map { "/a/\($0)" })).scrolls)
     }
 
-    // T-87f80e08 F-801 B-CLIP-036
     @Test func scrollsTheListOnlyWhenTheKeysMoveTheActiveRow() {
         var model = ClipboardMenuModel(items: items((0..<40).map { "/a/\($0)" }))
         model.activeIndex = 20
@@ -148,8 +137,6 @@ struct ClipboardMenuAndMarksTests {
 
     // MARK: The marks
 
-    // T-409a0b20 T-b6500c53 T-32b9cf2d T-3553aecb F-791 B-CLIP-013 B-CLIP-018
-    // T-709b2590
     @Test func marksOnlyTheItemsOnTheClipboardWhileTheSettingIsOn() throws {
         let cut = ClipboardRules.set(.cut, ["/a/x"], capturedAt: "t")
         let marks = try #require(ClipboardMarks(cut, enabled: true))
@@ -163,8 +150,6 @@ struct ClipboardMenuAndMarksTests {
                 == .copy)
     }
 
-    // T-32b9cf2d F-791 B-CLIP-016 B-CLIP-017
-    // B-CLIP-004 B-VIEW-076
     @Test func flashesOnceForEachCopyOrCutAndNotForAnItemTakenOff() {
         var tracker = ClipboardFlashTracker()
         let first = ClipboardRules.set(.copy, ["/a/x", "/a/y"], capturedAt: "t1")
@@ -182,8 +167,6 @@ struct ClipboardMenuAndMarksTests {
 
     // MARK: Springing
 
-    // F-841 B-CLIP-166 B-CLIP-167
-    // T-4d2cf392 T-8ca6669c T-d34dd2ba T-e9b3fa09
     @Test func springsAFolderOpenAfterAHoldUnlessThePointerMoves() {
         var hold = SpringHold()
         let point = (x: 10.0, y: 10.0)

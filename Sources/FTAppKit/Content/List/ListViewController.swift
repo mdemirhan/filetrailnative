@@ -1,5 +1,4 @@
-// Port of DetailsView (apps/desktop/src/renderer/components/ContentPane.tsx:1450-1893): the List view, an NSTableView with
-// one wide column whose cells are laid out by hand
+// The List view, an NSTableView with one wide column whose cells are laid out by hand
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -45,7 +44,7 @@ final class ListTableView: NSTableView {
         if pane?.renameField != nil, !(subview is InlineRenameField) { InlineRenameField.keepOnTop(in: self) }
     }
 
-    // The pane keeps the selection (B-SEL): presses, keys and ⌘A are its own, not the table's.
+    // The pane keeps the selection: presses, keys and ⌘A are its own, not the table's.
     override func mouseDown(with event: NSEvent) {
         if let pane { pane.handleMouseDown(event) } else { super.mouseDown(with: event) }
     }
@@ -58,7 +57,7 @@ final class ListTableView: NSTableView {
         pane?.host?.selectAllEntries()
     }
 
-    /// Rows selected from outside (the capture's `select` step, accessibility) are selected in the pane's model, which
+    /// Rows selected from outside (a scenario's `select` step, accessibility) are selected in the pane's model, which
     /// the window reads; the table then shows the model's selection. Only the pane's own sync selects rows directly.
     override func selectRowIndexes(_ indexes: IndexSet, byExtendingSelection extend: Bool) {
         guard let pane, pane.host != nil, !pane.isSyncingSelection else {
@@ -81,7 +80,7 @@ final class ListTableView: NSTableView {
         return super.validateUserInterfaceItem(item)
     }
 
-    /// Escape and ⌘. while nothing else takes them do nothing here (Escape never clears a selection, B-SEL-017).
+    /// Escape and ⌘. while nothing else takes them do nothing here (Escape never clears a selection).
     override func cancelOperation(_ sender: Any?) {}
 }
 
@@ -105,7 +104,7 @@ final class ListRootView: NSView, RowsBelowCard {
     }
 }
 
-/// The header's strip (`.details-header-shell`): the line under it, and the header clipped to it.
+/// The header's strip: the line under it, and the header clipped to it.
 final class DetailsHeaderShell: NSView {
     var lineColor: NSColor = .separatorColor {
         didSet { needsDisplay = true }
@@ -216,7 +215,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
             forName: NSView.boundsDidChangeNotification, object: scroll.contentView, queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
-                // The scrollers show while a pane scrolls, by the keyboard too (lib/scrollbarVisibility.ts).
+                // The scrollers show while a pane scrolls, by the keyboard too.
                 self?.scroll.flashScrollers()
                 self?.scrolled()
             }
@@ -402,7 +401,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     private var lastViewport = NSSize.zero
 
     /// The columns fitted to the pane: in a narrow pane Name gives up width and then columns drop away from the
-    /// right, instead of the table scrolling sideways (B-VIEW-044, B-VIEW-045).
+    /// right, instead of the table scrolling sideways.
     private func fitColumns() {
         let state = host?.columnState ?? .standard
         let available = max(0, root.bounds.width - layoutMetrics.scrollbarAllowance - 2 * layoutMetrics.rowInset)
@@ -527,8 +526,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     }
 
     /// The menu for a right-click: on an item, which keeps the selection when it is selected and otherwise selects it
-    /// alone first; or on the background, which clears the selection (`openItemContextMenu`, B-SEL-015 and 016). The
-    /// list gets the keyboard either way.
+    /// alone first; or on the background, which clears the selection. The list gets the keyboard either way.
     func menu(forEventAt point: NSPoint) -> NSMenu? {
         guard let host else { return nil }
         giveKeyboard()
@@ -608,7 +606,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         host?.columnWidthsChanged(next)
     }
 
-    /// ←/→ on a focused separator steps the width (`nudgeColumnWidth`).
+    /// ←/→ on a focused separator steps the width.
     private func nudge(_ column: DetailColumn, _ direction: Int) {
         let saved = host?.columnState.widths ?? [:]
         let width = DetailsColumns.clamp(
@@ -621,7 +619,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
     }
 
     /// A double-click on a separator fits the column to its title and its widest value, every row's and not only those
-    /// on screen: their text is measured in the fonts the cells are drawn in (B-VIEW-052).
+    /// on screen: their text is measured in the fonts the cells are drawn in.
     private func fitToContent(_ column: DetailColumn) {
         guard let host, let headerCell = header.cell(for: column) else { return }
         let layout = layoutMetrics
@@ -688,7 +686,7 @@ final class ListViewController: NSViewController, FolderPane, NSTableViewDataSou
         updateMinuteHold()
     }
 
-    /// The minute timer runs only while a date under an hour old is on screen (`useRelativeDate`).
+    /// The minute timer runs only while a date under an hour old is on screen.
     private func updateMinuteHold() {
         var wanted = false
         forEachVisibleBar { if $0.readsInMinutes { wanted = true } }

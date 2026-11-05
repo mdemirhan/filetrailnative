@@ -59,7 +59,6 @@ private func entry(
 }
 
 @MainActor @Suite struct FileIconStoreTests {
-    // T-30abdbfb F-224 T-7a3e2fb1
     @Test func anIconIsMissingUntilItArrivesAndNoneWhenMacOSHasNone() async throws {
         try await withTemporaryDirectory { directory in
             let store = makeStore(source: RecordingSource { _ in nil }, samples: directory)
@@ -78,7 +77,6 @@ private func entry(
         }
     }
 
-    // T-046b5caf F-224
     @Test func asksForAnIconOnceAndReusesIt() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
@@ -94,7 +92,6 @@ private func entry(
         }
     }
 
-    // F-224
     @Test func overlappingRequestsForTheSameIconShareOneFetch() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
@@ -108,7 +105,6 @@ private func entry(
         }
     }
 
-    // T-308244dc F-224 F-225 F-223
     @Test func executablesWithoutAnExtensionShareAnIconAndSoDoTheOtherFiles() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
@@ -134,7 +130,6 @@ private func entry(
         }
     }
 
-    // T-4a26a2f9 F-224
     @Test func thePlainFolderAndDocumentIconsAreReadyBeforeAnyItemAsksForThem() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
@@ -164,7 +159,6 @@ private func entry(
         }
     }
 
-    // T-0be0c077
     @Test func doesNothingWhenTheIconsCannotBeMade() async throws {
         try await withTemporaryDirectory { directory in
             // The samples cannot be made: their folder would have to be inside a file.
@@ -184,7 +178,6 @@ private func entry(
         }
     }
 
-    // T-41333069 F-225
     @Test func asksForEachSymlinkByPathSinceMacOSDrawsItAsWhatItPointsTo() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
@@ -200,7 +193,6 @@ private func entry(
         }
     }
 
-    // T-4a058765 F-224
     @Test func waitsBeforeAskingWhenDeferredSoItemsPassedQuicklyAreNeverAskedFor() async throws {
         try await withTemporaryDirectory { directory in
             let source = RecordingSource()
@@ -244,7 +236,6 @@ private func entry(
 }
 
 @Suite struct IconSamplesTests {
-    // T-f0300b75 F-223
     @Test func samplesAreAFolderWithAnItemAnEmptyFolderAPlainFileAndAnExecutable() throws {
         try withTemporaryDirectory { directory in
             let samples = IconSamples(root: directory.appending("filetrail-icon-samples"))
@@ -290,7 +281,6 @@ private func entry(
         }
     }
 
-    // T-77887acd F-156
     @Test @MainActor func theWorkspaceGivesAnItemItsOwnIcon() throws {
         try withTemporaryDirectory { directory in
             let file = directory.appending("a.txt")

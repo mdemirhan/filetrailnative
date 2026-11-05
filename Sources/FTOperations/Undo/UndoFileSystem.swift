@@ -1,6 +1,3 @@
-// Port of the getAcl member of WriteOperationFs (apps/desktop/src/main/bootstrap/writeOperations.ts) and of the
-// batch rename that undoExecution.ts runs (runBatchRename and movedItemsOf, batchRenameExecution.ts), as Undo calls
-// them
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -8,7 +5,7 @@ import Foundation
 /// What Undo asks of the disk, on top of what the local operations do: the item's access control list, to take a
 /// rule against deleting it off an operation's own copy for the Trash, and put it back after.
 public protocol UndoFileSystem: LocalWriteFileSystem {
-    /// `nativeGetAcl`: the ACL as text, nil for none.
+    /// The ACL as text, nil for none.
     var getAcl: ((String) throws -> String?)? { get }
 }
 
@@ -22,7 +19,7 @@ extension NativeWriteFileSystem: UndoFileSystem {
     }
 }
 
-/// One item of the batch an Undo renames back (`writeOperation:batchRename`'s item).
+/// One item of the batch an Undo renames back, as a rename of several items takes it.
 public struct UndoBatchRenameItem: Equatable, Sendable {
     public var sourcePath: String
     public var destinationName: String

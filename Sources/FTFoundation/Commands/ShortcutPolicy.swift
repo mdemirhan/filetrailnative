@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/shortcutPolicy.ts
 import Foundation
 
 /// Which view fills the window.
@@ -61,7 +60,6 @@ public enum ShortcutPolicy {
         .copyPath, .openInTerminal, .copySelection, .cutSelection, .pasteSelection,
     ]
 
-    /// `canHandleRendererCommand`.
     public static func canHandle(_ command: RendererCommand, _ context: ShortcutContext) -> Bool {
         if editCommands.contains(command) {
             return true
@@ -104,7 +102,6 @@ public enum ShortcutPolicy {
             && !context.locationSheetOpen
     }
 
-    /// `canHandleRawExplorerShortcut`.
     public static func canHandleRaw(_ shortcut: RawExplorerShortcutID, _ context: ShortcutContext) -> Bool {
         if !canHandleExplorerKeyboardShortcuts(context) {
             return false
@@ -128,7 +125,7 @@ public enum ShortcutPolicy {
 
     // MARK: Context menus
 
-    /// The command whose shortcut a context-menu item shows (`CONTEXT_MENU_SHORTCUT_COMMANDS`), by the item's id.
+    /// The command whose shortcut a context-menu item shows, by the item's id.
     public static let contextMenuShortcutCommands: [String: ShortcutCommandID] = [
         "open": .openSelection, "openInNewTab": .openSelectionInNewTab, "openInNewWindow": .openSelectionInNewWindow,
         "quickLook": .quickLookSelection, "showInfo": .toggleInfoPanel, "calculateSize": .calculateSize,
@@ -138,7 +135,7 @@ public enum ShortcutPolicy {
         "trash": .trashSelection,
     ]
 
-    /// `getContextMenuShortcutLabel`: the shortcut shown beside a context-menu item, only where pressing it now would
+    /// The shortcut shown beside a context-menu item, only where pressing it now would
     /// do what the item does.
     public static func contextMenuShortcutLabel(
         actionID: String, context: ShortcutContext, shortcuts: ShortcutDisplay = .defaults

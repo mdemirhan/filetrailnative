@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/hooks/useFolderSizeCache.ts
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -28,7 +27,7 @@ struct JobStart: Equatable {
     var status: FolderSizeJobStatus
 }
 
-/// What a window asks of the folder size jobs (the original's `folderSize:*` channels).
+/// What a window asks of the folder size jobs.
 @MainActor
 protocol FolderSizeBackend: AnyObject {
     func probeMany(_ paths: [String]) -> [SizeProbe]
@@ -62,7 +61,7 @@ extension FolderSizeJobs: FolderSizeBackend {
 
 /// One window's view of the folder sizes: what it knows of each folder's size, asked of the jobs as the views draw
 /// folders and kept current while a calculation runs. The cache is per window: other windows' walks do not repaint
-/// this one (B-INFO-143).
+/// this one.
 @MainActor
 final class WindowFolderSizes {
     /// A polled calculation is looked at this often.
@@ -128,7 +127,7 @@ final class WindowFolderSizes {
         stopAll()
     }
 
-    /// Unmounting stops all polling timers and the pending repaint (B-INFO-144).
+    /// Unmounting stops all polling timers and the pending repaint.
     func stopAll() {
         for timer in pollTimers.values { timer.cancel() }
         pollTimers.removeAll()
@@ -177,7 +176,7 @@ final class WindowFolderSizes {
     }
 
     /// Over the limit, the oldest go but the calculations under way, a tenth at a time: one at a time, each entry
-    /// stored would walk past the places of all those let go before it (B-INFO-142).
+    /// stored would walk past the places of all those let go before it.
     private func trimCache() {
         guard cache.count > Self.maxEntries else { return }
         var over = cache.count - Int((Double(Self.maxEntries) * 0.9).rounded(.up))
@@ -203,7 +202,7 @@ final class WindowFolderSizes {
     // MARK: Probes
 
     /// A folder's size, or idle when it isn't known: then the jobs are asked (all the folders a redraw asks about,
-    /// in one request), unless they were asked lately (B-INFO-131, B-INFO-132).
+    /// in one request), unless they were asked lately.
     func entry(_ path: String) -> FolderSizeEntry {
         if let slot = cache[path] { return slot.entry }
         if let missed = probeMissedAt[path], now() - missed.time < Self.probeMissCooldown {
@@ -242,7 +241,7 @@ final class WindowFolderSizes {
     }
 
     /// Sends the questions queued, as few requests as fit, and stores the answers: a folder being calculated
-    /// meanwhile is left to report its own size. One repaint for all (B-INFO-133).
+    /// meanwhile is left to report its own size. One repaint for all.
     func flushProbes() {
         probeFlushQueued = false
         let queued = probeQueueOrder.map { ($0, probeQueue[$0] ?? .ask) }
@@ -282,7 +281,7 @@ final class WindowFolderSizes {
     }
 
     /// The folders inside `path` without a size, or all of them (`includeKnown`), asked about again at once: a walk
-    /// of `path` measured some or all of them (B-INFO-140).
+    /// of `path` measured some or all of them.
     private func askAgainInside(_ path: String, includeKnown: Bool) {
         let prefix = path.hasSuffix("/") ? path : path + "/"
         var inside: [String] = []
@@ -367,7 +366,7 @@ final class WindowFolderSizes {
     }
 
     /// The jobs say a measurement has ended: it is looked at now, not at the next poll, so measuring many small
-    /// folders one after another isn't held up between them (B-INFO-145).
+    /// folders one after another isn't held up between them.
     func settled(jobId: String) {
         if let look = lookNow[jobId] {
             look()
@@ -379,7 +378,7 @@ final class WindowFolderSizes {
     }
 
     /// `automatic` for a measurement the app starts by itself (the Info panel's), which the jobs run at a lower
-    /// priority (B-INFO-134, B-INFO-135, B-INFO-136).
+    /// priority.
     func calculate(_ path: String, recalculate: Bool = false, automatic: Bool = false) {
         // An earlier calculation of the folder gives way to this one.
         stopPolling(path)
@@ -438,7 +437,7 @@ final class WindowFolderSizes {
     }
 
     /// Stop: polling stops, the jobs are told to cancel, the entry returns to idle and the sizes of folders inside
-    /// that were already measured stay shown (B-INFO-137).
+    /// that were already measured stay shown.
     func cancel(_ path: String) {
         if case .calculating(let jobID)? = cache[path]?.entry {
             stopPolling(path)

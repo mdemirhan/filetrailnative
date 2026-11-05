@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/stoppableCopy.test.ts
 import Foundation
 import Testing
 import os
@@ -19,7 +18,7 @@ final class ManualTicker: ProgressTicker, @unchecked Sendable {
         return Ticking(owner: self)
     }
 
-    /// The timers still running (`vi.getTimerCount()`).
+    /// The timers still running.
     var running: Int { lock.withLock { tick == nil ? 0 : 1 } }
 
     /// One interval passes.
@@ -51,7 +50,6 @@ private final class Calls: @unchecked Sendable {
 }
 
 struct StoppableCopyTests {
-    // T-9c6c350c F-361 F-515
     @Test func copiesWithoutAStopFlagWhenNothingCanStopIt() throws {
         let calls = Calls()
         try StoppableCopy(copy: { calls.record($0, $1, $2) }).copyFile("/a", to: "/b")
@@ -61,7 +59,6 @@ struct StoppableCopyTests {
         #expect(calls.all.first?.2 == nil)
     }
 
-    // T-6a2c6b39 F-361 F-410 F-515
     @Test func raisesTheStopFlagWhenStoppedAndRejectsWithTheStop() {
         let stop = StopSignal()
         let calls = Calls()
@@ -76,7 +73,6 @@ struct StoppableCopyTests {
     }
 
     // A disk error that comes as the copy is stopped is still that error, not "stopped".
-    // T-e3935602 F-361 F-515
     @Test func passesOnAnotherErrorEvenAfterAStop() {
         let stop = StopSignal()
         let copy = StoppableCopy(copy: { source, destination, _ in
@@ -89,7 +85,6 @@ struct StoppableCopyTests {
     }
 
     // The native copy counts the bytes copied so far as one 64-bit count beside the flag.
-    // T-4f51a7e9 F-410 F-515
     @Test func reportsTheBytesCopiedSoFarWhileTheCopyRunsAndStopsReadingAfter() throws {
         let ticker = ManualTicker()
         let progress = OSAllocatedUnfairLock(initialState: [Int64]())
@@ -116,7 +111,6 @@ struct StoppableCopyTests {
         #expect(ticker.started == [.milliseconds(250)])
     }
 
-    // T-174a7b84 F-361 F-515
     @Test func doesntStartACopyAlreadyStopped() {
         let stop = StopSignal()
         stop.stop()

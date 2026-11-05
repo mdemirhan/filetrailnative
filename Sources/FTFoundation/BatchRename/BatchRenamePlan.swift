@@ -1,4 +1,3 @@
-// Port of planBatchRename and its helpers in apps/desktop/src/shared/batchRename.ts
 import Foundation
 
 extension BatchRename {
@@ -26,7 +25,7 @@ extension BatchRename {
             }
             byFolder[key, default: []].append(index)
         }
-        // Dictionaries keyed by path compare strings by canonical equivalence; the original compares them exactly.
+        // Dictionaries keyed by path compare strings by canonical equivalence; these compare them exactly.
         var folders: [NameKeys.Exact: BatchRenameFolder] = [:]
         for (path, folder) in input.folders { folders[NameKeys.Exact(path)] = folder }
         var cannotRename: [NameKeys.Exact: String] = [:]

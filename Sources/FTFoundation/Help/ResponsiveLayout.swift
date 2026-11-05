@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/responsiveLayout.ts
 import Foundation
 
 public enum SinglePanelLayout: String, Sendable, Equatable {

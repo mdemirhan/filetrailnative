@@ -1,4 +1,4 @@
-// Checks the hard watchdog of AutomationRunner, the port's own step runner; no TypeScript source.
+// Checks the hard watchdog of AutomationRunner, the app's own step runner.
 #if DEBUG
     import AppKit
     import Foundation

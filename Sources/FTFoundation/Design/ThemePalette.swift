@@ -1,7 +1,6 @@
 // Generated once from Tests/Golden/css-tokens.json; now edited by hand, with CSSTokenTests checking it against that file.
-// Port of the light and dark blocks of apps/desktop/src/renderer/styles.css
 
-/// Every theme-dependent colour and shadow of the reference stylesheet. Tokens that follow the
+/// Every theme-dependent colour and shadow, light and dark. Tokens that follow the
 /// accent colour live in `AccentPalette`.
 public struct ThemePalette: Equatable, Sendable {
     /// `--bg-active-inactive`

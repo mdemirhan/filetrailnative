@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/helpContent.test.ts (the application-menu case is in FTAppKitTests/Help), with the
-// help-content golden recorded from the reference (tools/parity/golden/help-content.ts)
 import FTTestSupport
 import Foundation
 import Testing
@@ -7,7 +5,6 @@ import Testing
 @testable import FTFoundation
 
 struct HelpContentTests {
-    // T-7229a2ec F-665 F-666
     @Test func givesEveryTopicATitleAnIntroductionAndUniquelyNamedSectionsAndRows() {
         #expect(HelpContent.topics.map(\.id) == [.navigation, .files, .search, .views, .shortcuts])
         for topic in HelpContent.topics {
@@ -31,7 +28,6 @@ struct HelpContentTests {
             ])
     }
 
-    // T-16be1b56 F-667
     @Test func listsShortcutsForEachTopicWithoutRepeatingOneWithinATopic() {
         let shown = HelpContent.listShortcuts()
         for group in HelpContent.shortcutGroups {
@@ -47,7 +43,6 @@ struct HelpContentTests {
                 == HelpShownShortcut(group: .files, shortcut: "Return", description: "Rename (F2 also works)"))
     }
 
-    // T-d680d940 F-665 F-667
     @Test func followsTheKeysChosenInSettingsInTheListAndInTheSentences() {
         let overrides: JSONNode = .object([
             "newTab": .array([]), "goBack": .array([.string("Cmd+Option+Left")]),
@@ -72,7 +67,6 @@ struct HelpContentTests {
         #expect(HelpContent.search("cmd+shift+j", display).first?.shortcuts.first?.description == "Show in Finder")
     }
 
-    // T-4f2e3f5e F-665
     @Test func namesOnlyCommandsThatExistInItsSentences() {
         let texts = HelpContent.topics.flatMap { topic in
             [topic.intro]
@@ -98,7 +92,6 @@ struct HelpContentTests {
         }
     }
 
-    // T-b51e9329 F-666
     @Test func coversTheSearchPatternsPeopleGetWrong() {
         let search = HelpContent.topic(.search)
         let patterns = search.sections.flatMap { $0.rows.filter(\.code).map(\.label) }
@@ -110,7 +103,6 @@ struct HelpContentTests {
         #expect(notes.contains("Start a glob with `**/`"))
     }
 
-    // T-9ccf0275 F-668
     @Test func searchesRowsAndShortcutsByTheirWordsAndByTheShortcutAsWritten() {
         #expect(HelpContent.search("   ").isEmpty)
         let trash = HelpContent.search("TRASH")
@@ -123,12 +115,12 @@ struct HelpContentTests {
         #expect((HelpContent.search("glob patterns").first?.rows.count ?? 0) >= 6)
     }
 
-    // F-668 the empty result text is the view's; a query nothing matches finds nothing
+    // The empty result text is the view's; a query nothing matches finds nothing
     @Test func findsNothingForAQueryNothingMatches() {
         #expect(HelpContent.search("nothing matches this").isEmpty)
     }
 
-    // F-665 the content leaves out the zoom rows
+    // The content leaves out the zoom rows
     @Test func leavesOutTheZoomRows() {
         let texts = HelpContent.topics.flatMap { topic in
             [topic.intro] + topic.sections.flatMap { $0.rows.map(\.description) + $0.rows.map(\.label) }
@@ -189,7 +181,6 @@ struct HelpContentTests {
             })
     }
 
-    // T-7229a2ec T-16be1b56 T-d680d940 T-9ccf0275
     @Test func listsMentionsAndSearchesLikeTheOriginal() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "help-content")
         #expect(cases.count >= 20)

@@ -1,5 +1,3 @@
-// Port of performNode, executeStagedDirectory, executeLeafNode, executeDirectoryNode and their helpers
-// (packages/core/src/fs/copyPasteExecution.ts)
 import Darwin
 import FTFoundation
 import Foundation

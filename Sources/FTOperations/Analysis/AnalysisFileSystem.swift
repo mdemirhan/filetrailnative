@@ -1,17 +1,14 @@
-// Port of the optional questions of WriteServiceFileSystem (packages/core/src/fs/writeServiceTypes.ts), and of
-// isPackageFolder, resolveDuplicateName, detectCaseSensitivity and isPathAvailable (packages/core/src/fs/copyPasteNames.ts),
-// which ask them of the disk
 import Darwin
 import FTFoundation
 import Foundation
 
 /// What the review asks of the disk: the reading calls, and the questions a disk may not answer. Each question's
-/// default is the original's answer when its file system leaves the call out.
+/// default is used when a file system leaves the call out.
 public protocol AnalysisFileSystem: IdentityFileSystem {
     /// Whether the volume holding `path` tells names apart by letter case (`pathconf(_PC_CASE_SENSITIVE)`), or
     /// nil when it doesn't say. Without it, an existing name is looked up with its case swapped.
     func isCaseSensitive(_ path: String) throws -> Bool?
-    /// Whether macOS shows the folder as one item, a package (`NSURLIsPackageKey`); nil when it can't tell.
+    /// Whether macOS shows the folder as one item, a package; nil when it can't tell.
     /// Without it, the folder's extension decides.
     func isPackage(_ path: String) throws -> Bool?
     /// Whether a "._name" file is AppleDouble metadata that macOS reads as "name"'s own attributes. Without it,
@@ -40,7 +37,7 @@ extension PosixFileSystem: AnalysisFileSystem {
         try NativeFS.isCaseSensitive(path)
     }
 
-    /// `nativeIsPackage(path)`: `NSURLIsPackageKey`, true for folders Finder shows as one item, by their type or
+    /// `NSURLIsPackageKey`: true for folders Finder shows as one item, by their type or
     /// by the folder's own package bit; nil when it can't be told (the item is gone, say).
     public func isPackage(_ path: String) throws -> Bool? {
         let values = try? URL(fileURLWithPath: path).resourceValues(forKeys: [.isPackageKey])
@@ -62,7 +59,7 @@ public func isPackageFolder(_ fileSystem: some AnalysisFileSystem, _ path: Strin
     CopyPasteNames.isPackage(folderAt: path) { (try? fileSystem.isPackage($0)) ?? nil }
 }
 
-/// `isPathAvailable`: free only when lstat says nothing is there (ENOENT); any other failure counts as taken, so
+/// Free only when lstat says nothing is there (ENOENT); any other failure counts as taken, so
 /// a name is never reused by mistake.
 public func isPathTaken(_ fileSystem: some IdentityFileSystem, _ path: String) -> Bool {
     do {

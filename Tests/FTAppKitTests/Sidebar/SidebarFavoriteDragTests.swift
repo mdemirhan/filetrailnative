@@ -1,5 +1,5 @@
-// Ports the favorites' drag of components/TreePane.tsx (F-738) past the automation seam: what a real drag carries, on a
-// real pasteboard, through the outline's dragging destination, the preference channel and back into the rows
+// What a real drag carries, on a real pasteboard, through the outline's dragging destination, the preference channel
+// and back into the rows
 import AppKit
 import FTFoundation
 import Foundation
@@ -73,10 +73,9 @@ extension ExplorerWindowlessTests {
             return list.outline.convert(NSPoint(x: rect.midX, y: y), to: nil)
         }
 
-        // F-738: a scenario's `drag` step goes through the real pasteboard: what the row's drag writes, offered to the row
+        // A scenario's `drag` step goes through the real pasteboard: what the row's drag writes, offered to the row
         // AppKit would ask, which reorders and saves. AppKit drops data put under a type that isn't a valid UTI, so the path
         // has to be on it under a type the outline registered.
-        // B-TREE-041
         @Test func theDriversFavoriteDragGoesThroughARealPasteboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await open(harness)
@@ -96,10 +95,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-738 B-TREE-043: the whole way, past the automation seam: the top half of a row drops before it, the bottom
+        // The whole way, past the automation seam: the top half of a row drops before it, the bottom
         // half after it, the line marks the spot, the dragged row dims; the new order is saved, and stays when the
         // channel's save comes back into the sidebar.
-        // B-TREE-034 B-TREE-041 B-TREE-042
         @Test func draggingAFavoriteOverAnotherPutsItThereAndSavesIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await open(harness)
@@ -184,8 +182,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-738: over the dragged row itself nothing is marked and nothing moves.
-        // B-TREE-042
+        // Over the dragged row itself nothing is marked and nothing moves.
         @Test func droppingAFavoriteOnItselfChangesNothing() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await open(harness)

@@ -1,5 +1,3 @@
-// Port of the workspace grid of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx:1786-1879, the pane widths
-// of hooks/useExplorerPaneLayout.ts and the translucent sidebar rules of styles.css:8113-8185
 import AppKit
 import FTFoundation
 
@@ -8,7 +6,7 @@ import FTFoundation
 /// is open, an 8 pt resizer and the Info panel. Because the system knows where the sidebar is, it puts the toolbar's
 /// row (`ExplorerToolbar`, over the content column) and the tab bar (under the band) over the content column
 /// only. A hidden tree collapses the sidebar item and takes no room. The Info panel is the system's inspector item
-///, which the toolbar's row and the tab bar reach over; it still slides as the original's. The sidebar is the
+///, which the toolbar's row and the tab bar reach over; it still slides. The sidebar is the
 /// sidebar item's own material, its edge one straight line where the item ends; the content's color runs from
 /// the window's top, so the band has no edge of its own, and a line shows under it only while the pointer is over it
 ///, as Finder's. The status bar lies over the bottom of both the content and the Info panel, as Finder's under its
@@ -25,13 +23,13 @@ final class WorkspaceView: NSView {
     /// The inspector item's view: the Info panel's resizer and the Info panel.
     let inspectorColumn = WorkspaceInspectorColumn()
     private var pointerOverBand = (content: false, inspector: false)
-    /// `.workspace-sidebar-cell` (the tree pane): the sidebar's views go in it.
+    /// The tree pane's cell: the sidebar's views go in it.
     var sidebarCell: WorkspaceCell { sidebarColumn.cell }
     var treeResizer: PaneResizerView { sidebarColumn.resizer }
-    /// `.workspace-main-cell`: the content pane.
+    /// The content pane's cell.
     var mainCell: WorkspaceCell { contentColumn.mainCell }
     var inspectorResizer: PaneResizerView { inspectorColumn.resizer }
-    /// `.workspace-inspector-cell`: the Info panel.
+    /// The Info panel's cell.
     var inspectorCell: WorkspaceCell { inspectorColumn.cell }
     /// The status bar (`PathBarRowView`), from the sidebar's edge to the window's right.
     let statusCell = WorkspaceCell()
@@ -39,7 +37,7 @@ final class WorkspaceView: NSView {
     private(set) var panes: PaneWidths
     private(set) var folderTreeOpen = true
     private(set) var infoPanelOpen = false
-    /// Not drawn until the preferences and the pane widths are in (`workspaceReady`).
+    /// Not drawn until the preferences and the pane widths are in.
     private(set) var isReady = false
     private var dragStart: PaneWidths.DragStart?
     /// The Info panel sliding: in over the room it takes, or out over the content.
@@ -163,7 +161,7 @@ final class WorkspaceView: NSView {
         needsLayout = true
     }
 
-    /// The saved widths (`restoreWidths`).
+    /// The saved widths.
     func restore(treeWidth: Double, inspectorWidth: Double) {
         panes.restore(treeWidth: treeWidth, inspectorWidth: inspectorWidth)
         needsLayout = true
@@ -267,7 +265,7 @@ final class WorkspaceView: NSView {
         statusCell.frame = NSRect(
             x: left, y: bounds.height - PathBarRowView.height, width: max(0, bounds.width - left),
             height: PathBarRowView.height)
-        // The toolbar's band runs over the inspector item too, as the original's over its panel.
+        // The toolbar's band runs over the inspector item too.
         let inspectorRoom = inspectorItem.isCollapsed ? 0 : inspectorColumn.frame.width
         column.band.frame = NSRect(
             x: 0, y: 0, width: width + inspectorRoom, height: Self.metrics.toolbar.minHeight)
@@ -314,7 +312,7 @@ final class WorkspaceView: NSView {
 
     // MARK: The Info panel's slide
 
-    /// 220 ms with the standard easing (`PANE_LAYOUT_CHANGE_MS`).
+    /// 220 ms with the standard easing.
     static var slideDuration: Double { DesignTokens.motion.slow / 1000 }
 
     private func startSlide(_ kind: Slide) {
@@ -386,7 +384,7 @@ final class WorkspaceSidebarColumn: NSView {
 }
 
 /// The split of the window: the sidebar's resizer is the edge between its items, so the split draws no divider and
-/// keeps no room for one (the content column starts at the sidebar's width, as the original's grid column does).
+/// keeps no room for one (the content column starts at the sidebar's width).
 final class WorkspaceSplitView: NSSplitView {
     override var dividerThickness: CGFloat { 0 }
     override func drawDivider(in rect: NSRect) {}
@@ -444,7 +442,7 @@ final class WorkspaceContentColumn: NSView {
     /// The panes' color, from the window's top: the band is the content's color with nothing between them, as under
     /// Finder's toolbar, in every appearance.
     let backdrop = NSView()
-    /// Where the original's `header.window-toolbar` is: the place of the system's band over the content column.
+    /// The place of the system's band over the content column.
     let band = WorkspaceBandPlace()
     /// Finder's line under the band: only while the pointer is over the band.
     let bandLine = WorkspaceBandLine()
@@ -514,9 +512,9 @@ final class WorkspaceCell: NSView {
     }
 }
 
-/// The capture's "toolbar" (`header.window-toolbar`) and what a dialog's title bar veil lines up with: the place of the
-/// system's band over the content column, from the window's top. It draws nothing and takes no presses, and tells when
-/// the pointer is over it: a tracking area goes by the pointer alone, whatever of the title bar lies over this view.
+/// The place of the system's band over the content column, from the window's top, and what a dialog's title bar veil
+/// lines up with. It draws nothing and takes no presses, and tells when the pointer is over it: a tracking area goes by
+/// the pointer alone, whatever of the title bar lies over this view.
 final class WorkspaceBandPlace: NSView {
     var onHover: (Bool) -> Void = { _ in }
 

@@ -1,5 +1,3 @@
-// Ports what a tab takes along of apps/desktop/src/renderer/hooks/useExplorerTabs.ts (captureLiveTab, openNewTab,
-// duplicateTab, openPathInNewTab), and App.tsx's rule for a tree that is hidden with the keyboard in it
 import AppKit
 import FTFoundation
 import Foundation
@@ -53,7 +51,6 @@ extension ExplorerWindowlessTests {
             return new
         }
 
-        // B-NAV-054 B-NAV-172 B-NAV-192 B-SEL-121 B-VIEW-164
         @Test func duplicateTabCarriesTheSelectionFilterScrollMemoriesAndOpenedBranches() async throws {
             let harness = try ExplorerHarness.windowless()
             for index in 100..<400 {
@@ -86,8 +83,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-673
-        // B-NAV-010 B-NAV-054 B-SEL-086 T-aa6d3211
         @Test func aNewTabKeepsTheOpenedBranchesAndNotTheSelectionFilterOrMemories() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await tabWithAlphaOpen(harness)
@@ -108,8 +103,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-673: the tree's scroll goes along with its rows.
-        // B-TREE-139 B-TREE-140 T-01c23ea5
+        // The tree's scroll goes along with its rows.
         @Test func aNewTabKeepsWhereTheTreeWasScrolled() async throws {
             let harness = try ExplorerHarness.windowless()
             let many = URL(fileURLWithPath: real(harness, "")).appending(path: "Many")
@@ -216,8 +210,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // captureLiveTab's directoryError, openNewTab's and duplicateTab's mode "none": a folder that can't be read (the
-        // Trash, without Full Disk Access) stays in the new tab, showing the same error, on the same sidebar row.
+        // A folder that can't be read (the Trash, without Full Disk Access) stays in a new or duplicated tab, showing
+        // the same error, on the same sidebar row.
         @Test(arguments: [false, true])
         func aNewTabOrACopyStaysOnAFolderThatCannotBeRead(duplicate: Bool) async throws {
             let harness = try ExplorerHarness.windowless()
@@ -246,8 +240,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // captureLiveTab's directoryError: a Go To that failed left its message over the folder on screen, and the new
-        // tab shows the same.
+        // A Go To that failed left its message over the folder on screen, and the new tab shows the same.
         @Test(arguments: [false, true])
         func aNewTabOrACopyKeepsTheMessageOverTheFolder(duplicate: Bool) async throws {
             let harness = try ExplorerHarness.windowless()
@@ -292,9 +285,8 @@ extension ExplorerWindowlessTests {
             return tab
         }
 
-        // captureLiveTab takes the selection, filter and scroll whether results are showing or not, and duplicateTab only
-        // sets `search: null`: they narrow, select and scroll the copy's folder.
-        // B-SRCH-165
+        // A duplicate takes the selection, filter and scroll whether results are showing or not, and leaves the search
+        // out: they narrow, select and scroll the copy's folder.
         @Test func duplicateTabOverResultsCarriesTheirSelectionFilterAndScrollToTheFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let names = (100..<400).map { "f\($0).txt" }
@@ -325,8 +317,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerNavigationController.ts:668: a selected result the folder's filter hides brings the whole list back.
-        // B-NAV-173 B-SEL-028
+        // A selected result the folder's filter hides brings the whole list back.
         @Test func duplicateTabOverResultsClearsAFilterThatHidesTheSelectedResult() async throws {
             let harness = try ExplorerHarness.windowless()
             let names = ["f1.txt", "f2.txt"]
@@ -348,7 +339,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // applyContentSelection: a selected result that isn't in the folder is not among the copy's selected items.
+        // A selected result that isn't in the folder is not among the copy's selected items.
         @Test func duplicateTabOverResultsLeavesOutAResultThatIsNotInTheFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await tabWithResults(harness, ["Alpha/Inner"])
@@ -367,7 +358,6 @@ extension ExplorerWindowlessTests {
         }
 
         // openNewTab drops all of it, results or not.
-        // B-SEL-086 B-SRCH-165
         @Test func aNewTabOverResultsStartsWithNothingSelectedOrTyped() async throws {
             let harness = try ExplorerHarness.windowless()
             let names = ["f1.txt", "f2.txt"]
@@ -387,8 +377,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-673: the row that was selected stays, a favorite's among them.
-        // T-6c54c49c T-d4d05739
+        // The row that was selected stays, a favorite's among them.
         @Test func aNewTabKeepsTheFavoriteRowSelected() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = URL(fileURLWithPath: real(harness, "Alpha"))
@@ -405,8 +394,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx: "Hiding the tree while it has the keyboard gives the keyboard to the list".
-        // B-NAV-101 B-NAV-224 B-TREE-018
+        // Hiding the tree while it has the keyboard gives the keyboard to the list.
         @Test func hidingTheTreeWithTheKeyboardInItGivesTheKeyboardToTheList() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -432,8 +420,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-2ddaf09f F-673: the keyboard goes to the pane the tab had it in, and each tab keeps its own.
-        // B-NAV-191 B-SEL-121 B-TREE-119 B-TREE-121 T-2c22c9b4 T-c0704916
+        // The keyboard goes to the pane the tab had it in, and each tab keeps its own.
         @Test func aNewTabOpenedFromTheTreeKeepsTheKeyboardInTheTree() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -449,8 +436,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `openPathInNewTab` and `duplicateTab` keep the pane too.
-        // B-NAV-191 B-NAV-224 B-TREE-058
+        // Opening a folder in a new tab and `duplicateTab` keep the pane too.
         @Test func openingAFolderOrDuplicatingFromTheTreeKeepsTheKeyboardInTheTree() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -470,7 +456,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-191
         @Test func aNewTabWithTheKeyboardInTheListKeepsItThere() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -485,8 +470,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Refresh
 
-        // useExplorerNavigationController.ts `refreshDirectory`: the root, the folders above and the folder are read again.
-        // B-NAV-124
+        // Refresh reads the root, the folders above and the folder again.
         @Test func refreshReadsTheTreeAgain() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = URL(fileURLWithPath: real(harness, "Alpha"))
@@ -507,8 +491,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `getSelectedTreeReloadOptions`: with a favorite's row selected the tree isn't touched.
-        // B-TREE-181
+        // With a favorite's row selected the tree isn't touched.
         @Test func refreshLeavesTheTreeAloneWithAFavoriteRowSelected() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = URL(fileURLWithPath: real(harness, "Alpha"))
@@ -531,9 +514,8 @@ extension ExplorerWindowlessTests {
 
         // MARK: A new order, Folders First and hidden files
 
-        // useExplorerNavigationController.ts `handleSortChange`, `toggleFoldersFirst`, `toggleHiddenFiles`: one path here,
-        // `viewChanged`, and hidden files adds to it.
-        // B-NAV-130 T-bae92ca4
+        // A sort change, `toggleFoldersFirst` and `toggleHiddenFiles` take one path here, `viewChanged`, and hidden
+        // files adds to it.
         @Test func changingTheViewKeepsAFavoriteRowAndTheTreeWhereItIs() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = URL(fileURLWithPath: real(harness, "Alpha"))
@@ -558,7 +540,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-130
         @Test func changingTheViewKeepsALinkRow() async throws {
             let harness = try ExplorerHarness.windowless()
             let link = URL(fileURLWithPath: real(harness, "")).appending(path: "Link")
@@ -580,7 +561,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-4023bc38
         @Test func aNewOrderKeepsAFolderRowOnTheFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = real(harness, "Alpha")

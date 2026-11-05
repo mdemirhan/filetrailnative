@@ -1,4 +1,3 @@
-// Port of the wording in apps/desktop/src/renderer/lib/explorerTabs.ts (getFolderDisplayName, describeTab)
 import Foundation
 
 public struct TabDescription: Equatable, Sendable {

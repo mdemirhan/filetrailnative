@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/visitedFolders.test.ts and apps/desktop/src/renderer/lib/folderVisitTracker.test.ts
 import Foundation
 import Testing
 
@@ -13,8 +12,6 @@ struct VisitedFoldersTests {
         VisitedFolder(path: "/x", visits: visits.map { FolderVisit(at: Self.now - $0.age, kind: $0.kind) })
     }
 
-    // T-74b40c9a F-026 F-138
-    // B-DLG-070
     @Test func keepsEachVisitNewestFirstAndMovesTheFolderToTheFront() {
         let day = Self.day
         let now = Self.now
@@ -34,7 +31,6 @@ struct VisitedFoldersTests {
         #expect(VisitedFolders.record(other, path: "", kind: .stay, now: now) == other)
     }
 
-    // T-5d1ef9e3 F-026
     @Test func keepsOnlyTheLatestVisitsOfAFolder() {
         var folders: [VisitedFolder] = []
         let limit = VisitedFolders.maxVisitsPerFolder
@@ -47,8 +43,6 @@ struct VisitedFoldersTests {
         #expect(visits.last?.at == Self.now + 5)
     }
 
-    // T-1f07a6cc F-026 F-138
-    // B-DLG-067
     @Test func onlyMakesAFolderPassedThroughKnownWithoutAVisit() {
         let known = VisitedFolders.record([], path: "/a", kind: .passThrough, now: Self.now)
         #expect(known == [VisitedFolder(path: "/a", visits: [])])
@@ -59,8 +53,6 @@ struct VisitedFoldersTests {
         #expect(VisitedFolders.record(folders, path: "/b", kind: .passThrough, now: Self.now) == folders)
     }
 
-    // T-405c4507 F-027
-    // B-DLG-069
     @Test func weighsEachVisitByHowItWasMadeAndHowLongAgo() {
         let hour = Self.hour
         let day = Self.day
@@ -86,8 +78,6 @@ struct VisitedFoldersTests {
         #expect(score(thisWeek) > score(lastSpring))
     }
 
-    // T-71b23b8a F-027
-    // B-DLG-071
     @Test func forgetsTheLeastUsedFoldersPastTheLimitNeverTheOneJustOpened() {
         var folders = (0..<VisitedFolders.maxFolders).map { index in
             VisitedFolder(
@@ -105,7 +95,6 @@ struct VisitedFoldersTests {
         #expect(folders.contains { $0.path == "/folders/\(VisitedFolders.maxFolders - 1)" })
     }
 
-    // T-3b35105d F-138
     @Test func forgetsAFolderOnRequest() {
         let folders = VisitedFolders.record(
             VisitedFolders.record([], path: "/a", kind: .stay, now: Self.now), path: "/b", kind: .stay, now: Self.now)
@@ -113,8 +102,6 @@ struct VisitedFoldersTests {
         #expect(VisitedFolders.forget(folders, path: "/missing") == folders)
     }
 
-    // T-75b06913 F-124
-    // B-DLG-072
     @Test func writesOneFolderPerLineAndReadsItBack() throws {
         let now = Self.now
         let folders = [
@@ -141,7 +128,6 @@ struct VisitedFoldersTests {
         #expect(VisitedFolders.parse(VisitedFolders.serialize(folders)) == folders)
     }
 
-    // T-a135762b F-027
     @Test func readsSavedVisitsLeniently() throws {
         #expect(VisitedFolders.sanitize(nil).isEmpty)
         #expect(VisitedFolders.sanitize("nope").isEmpty)
@@ -201,8 +187,6 @@ struct FolderVisitTrackerTests {
         return (tracker, recorded, timers)
     }
 
-    // T-e100b72c F-094 F-138 B-NAV-200
-    // B-DLG-065
     @Test func countsAFolderPickedInGoToAtOnce() {
         let (tracker, recorded, timers) = makeTracker()
         tracker.arrive("/a", viaGoTo: true)
@@ -210,8 +194,6 @@ struct FolderVisitTrackerTests {
         #expect(timers.pendingDelays.isEmpty)
     }
 
-    // T-5f1923af F-094 B-NAV-201
-    // B-DLG-066
     @Test func countsAFolderOpenedAnotherWayOnceItHasStayedOnScreen() {
         let (tracker, recorded, timers) = makeTracker()
         tracker.arrive("/a", viaGoTo: false)
@@ -226,8 +208,6 @@ struct FolderVisitTrackerTests {
         #expect(recorded.visits == ["/a stay"])
     }
 
-    // T-0540857f F-094 B-NAV-202
-    // B-DLG-067 B-NAV-019 B-NAV-204
     @Test func onlyPassesThroughAFolderLeftBeforeItStayed() {
         let (tracker, recorded, timers) = makeTracker()
         // Going on to another folder.
@@ -244,8 +224,6 @@ struct FolderVisitTrackerTests {
         #expect(timers.pendingDelays.isEmpty)
     }
 
-    // T-7d304c05 F-094 B-NAV-201
-    // B-NAV-071
     @Test func countsAFolderUsedBeforeItStayed() {
         let (tracker, recorded, timers) = makeTracker()
         tracker.arrive("/a", viaGoTo: false)
@@ -257,8 +235,6 @@ struct FolderVisitTrackerTests {
         #expect(recorded.visits == ["/a stay"])
     }
 
-    // T-b692dcd0 F-094 B-NAV-203
-    // B-DLG-067
     @Test func passesThroughAFolderStillBeingDecidedOnWhenTheWindowGoes() {
         let (tracker, recorded, timers) = makeTracker()
         tracker.arrive("/a", viaGoTo: false)

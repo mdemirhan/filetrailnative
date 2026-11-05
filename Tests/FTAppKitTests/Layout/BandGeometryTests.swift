@@ -1,5 +1,3 @@
-// Ports the toolbar band's geometry of apps/desktop/src/renderer/styles.css (.window-toolbar: padding 0 12px 0 8px,
-// min-height 52px; the workspace grid's columns) on a window whose band is the system toolbar's
 import AppKit
 import FTFoundation
 import Foundation
@@ -16,7 +14,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The system places the items: in the band, over the content column, the title taking the room the others leave.
-        // covered-by-feature F-707 F-708
         @Test func theItemsSitInTheBand() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -40,7 +37,6 @@ extension ExplorerWindowlessTests {
 
         // A press goes to the button (through the title bar only on screen: placesTheBandAndTakesItsPressesOnScreen):
         // Sort opens its menu, a second press closes it.
-        // covered-by-feature F-712 F-700
         @Test func pressesInTheBandReachItsButtons() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -76,7 +72,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The field takes the keyboard in its toolbar item, and its options button sits on the system's magnifier.
-        // covered-by-feature F-713
         @Test func theSearchFieldTakesTheKeyboardWithItsOptionsOnTheMagnifier() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -94,7 +89,6 @@ extension ExplorerWindowlessTests {
 
         // The accent the preferences chose is the one the window draws with; a capture's `prefs` step stores it, so a
         // theme set after it keeps it.
-        // covered-by-feature F-662
         @Test func drawsWithTheChosenAccent() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

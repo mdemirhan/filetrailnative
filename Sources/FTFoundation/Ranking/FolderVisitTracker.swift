@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/folderVisitTracker.ts
 import Foundation
 
 /// Decides how much opening a folder counts for the Go To box. Picked in Go To, it counts at once and

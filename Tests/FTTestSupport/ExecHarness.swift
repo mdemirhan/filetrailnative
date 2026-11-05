@@ -1,11 +1,10 @@
-// The write-engine differential (PLAN.md §5.3), Swift side: runs the scenarios the reference
-// engine was recorded on (Tests/Golden/exec-*.json, analysis-*.json, made by tools/parity/exec)
-// through a Swift engine in fresh folders, normalizes what it reports exactly as run.ts does,
-// and names the first differences. Until the Swift engine exists, ReferenceReplayEngine stands in.
+// The write-engine scenario checks: runs the scenarios of Tests/Golden through a Swift engine in
+// fresh folders, normalizes what it reports, and names the first differences from the frozen
+// expected results. ReferenceReplayEngine replays those results, to check the checks themselves.
 import Foundation
 
 /// What an engine did with a scenario, as recorded: absolute paths, its own hidden names and ids.
-/// ExecHarness normalizes it (ExecNormalize) before comparing. The shape is run.ts's ScenarioOutcome.
+/// ExecHarness normalizes it (ExecNormalize) before comparing.
 public struct ExecOutcome: Codable, Sendable {
     /// After a crash: the startup recovery's report and log, and the tree, Trash and journal after it.
     public struct Recovery: Codable, Sendable {
@@ -50,7 +49,7 @@ public struct ExecOutcome: Codable, Sendable {
     /// The journal file when the engine was done (or killed); [] when never written.
     public var journal: JSONValue
     public var recovery: Recovery?
-    /// With `scenario.undo`: { steps } of its Undo and Redo, as engine.ts records them (left out without one).
+    /// With `scenario.undo`: { steps } of its Undo and Redo (left out without one).
     public var undo: JSONValue?
 
     public init(
@@ -68,7 +67,7 @@ public struct ExecOutcome: Codable, Sendable {
         self.recovery = recovery
     }
 
-    /// As JSON, every key present (a missing recovery is null), as run.ts writes it.
+    /// As JSON, every key present (a missing recovery is null).
     public func json() throws -> JSONValue {
         let recoveryValue: JSONValue
         if let recovery {
@@ -98,7 +97,7 @@ public struct ExecOutcome: Codable, Sendable {
     }
 }
 
-/// The Swift write engine, as the differential drives it, through its write service as the app
+/// The Swift write engine, as the scenario checks drive it, through its write service as the app
 /// does. `places` already holds the scenario's tree; the engine pastes `scenario.paste` with its
 /// policy and overrides, uses `places.trashFor` as the Trash, failing as on a disk without one
 /// where `places.hasTrash` is false (and has none when `scenario.trash == false`), and
@@ -115,14 +114,14 @@ public protocol ExecEngine: Sendable {
     ) async throws -> ExecOutcome
 }
 
-/// The Swift paste analysis, as the differential drives it: returns, for the tree in `places`,
-/// { before, report, allConflictsChoices, choices, resolved } as tools/parity/exec/analysis.ts does.
+/// The Swift paste analysis, as the scenario checks drive it: returns, for the tree in `places`,
+/// { before, report, allConflictsChoices, choices, resolved }.
 public protocol ExecAnalysisEngine: Sendable {
     func analyze(_ scenario: ExecScenario, in places: ExecPlaces) async throws -> JSONValue
 }
 
-/// Returns what the reference recorded, so the decode, normalize and compare path is proven
-/// before the Swift engine exists.
+/// Returns the recorded results themselves, so the decode, normalize and compare path is proven
+/// on its own.
 public struct ReferenceReplayEngine: ExecEngine, ExecAnalysisEngine {
     public struct Unknown: Error, CustomStringConvertible {
         public let description: String

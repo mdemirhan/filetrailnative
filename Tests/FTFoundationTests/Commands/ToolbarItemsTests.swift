@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/toolbarItems.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -12,7 +11,6 @@ struct ToolbarItemsTests {
 
     static let defaults = ToolbarItems.defaultTopItems
 
-    // T-d37fe3fb F-017 F-067
     @Test func keepsATopToolbarsOrderTheFixedItemsWhereverTheyWerePut() {
         let customized = [
             "search", "back", "viewOptions", "topSeparator", "sort", "title", "topSeparator", "clipboard", "view",
@@ -21,7 +19,6 @@ struct ToolbarItemsTests {
         #expect(ToolbarItems.sanitizeTopItems(Self.list(Self.defaults.map(\.rawValue))) == Self.defaults)
     }
 
-    // T-9d244d69 F-017
     @Test func dropsItemsThatAreUnknownOrRepeated() {
         #expect(
             Self.sanitized([
@@ -30,7 +27,6 @@ struct ToolbarItemsTests {
             ]) == ["back", "title", "search", "openSelection", "clipboard", "viewOptions"])
     }
 
-    // T-1f3bf2e9 F-067
     @Test func putsAFixedItemThatAListIsMissingAtTheEnd() {
         #expect(
             Self.sanitized(["search", "back", "title"]) == ["search", "back", "title", "clipboard", "viewOptions"])
@@ -40,7 +36,6 @@ struct ToolbarItemsTests {
             ToolbarItems.sanitizeTopItems(.null).map(\.rawValue) == ["title", "clipboard", "search", "viewOptions"])
     }
 
-    // T-ebfaa9c3 F-017 F-067
     @Test func preservesRepeatableSeparatorItemsWhileStillDedupingNormalItems() {
         #expect(
             Self.sanitized([
@@ -48,12 +43,10 @@ struct ToolbarItemsTests {
             ]) == ["topSeparator", "back", "topSeparator", "title", "clipboard", "search", "viewOptions"])
     }
 
-    // T-b87edb39 F-067
     @Test func addsAClickedItemAtTheFarRight() {
         #expect(ToolbarItems.addTopItem(Self.defaults, .copyPath) == Self.defaults + [.copyPath])
     }
 
-    // T-97bc9a9e F-067
     @Test func insertsMovesAndRemovesItemsByTheirPlaceInTheOrder() {
         let items = Self.defaults
         #expect(
@@ -75,7 +68,6 @@ struct ToolbarItemsTests {
         #expect(ToolbarItems.removeTopItem(items, at: searchIndex) == items)
     }
 
-    // T-6856c3fc F-067
     @Test func offersEveryItemThatCanBeTakenOffSoEachCanBePutBack() {
         let palette = ToolbarItems.paletteItems(excluding: [])
         let alwaysThere: Set<ToolbarItemID> = [.title, .clipboard, .search, .viewOptions]
@@ -84,7 +76,6 @@ struct ToolbarItemsTests {
         }
     }
 
-    // T-2b6a35fc F-067
     @Test func offersEveryItemTheToolbarDoesNotHoldAndTheSpaceAlways() {
         let palette = ToolbarItems.paletteItems(excluding: Self.defaults)
         #expect(palette.first == .topSeparator)
@@ -95,7 +86,6 @@ struct ToolbarItemsTests {
         #expect(ToolbarItems.paletteItems(excluding: Self.defaults + [.topSeparator]).contains(.topSeparator))
     }
 
-    // T-23d43fd9
     @Test func offersTheAppsOwnButtonsAndTheNewFileActions() {
         let names = [
             "title", "newTab", "quickLook", "showInFinder", "theme", "settings", "help", "clipboard", "viewOptions",
@@ -104,7 +94,6 @@ struct ToolbarItemsTests {
         #expect(Self.sanitized(names) == names)
     }
 
-    // T-01a55030 F-066
     @Test func givesEveryButtonACommandToRunApartFromTheOnesTheToolbarDrawsItself() {
         let drawnByTheToolbar: Set<ToolbarItemID> = [
             .back, .forward, .up, .view, .sort, .title, .clipboard, .viewOptions, .search, .foldersFirst, .hidden,
@@ -114,7 +103,6 @@ struct ToolbarItemsTests {
         #expect(withoutCommand.filter { !drawnByTheToolbar.contains($0) } == [])
     }
 
-    // F-066
     @Test func theCatalogHoldsThe37Items() {
         #expect(ToolbarItems.ids.count == 37)
         #expect(Set(ToolbarItems.ids).count == 37)

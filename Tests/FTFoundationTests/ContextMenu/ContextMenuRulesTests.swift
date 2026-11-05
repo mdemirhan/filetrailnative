@@ -1,5 +1,4 @@
-// Checks the menu visibility rules of apps/desktop/src/renderer/hooks/useExplorerActions.ts:576-700 case by case (the
-// rules sit in a React hook, so no golden can import them), and the item list's compaction of ItemContextMenu.tsx
+// Checks the menu visibility rules case by case, and the item list's compaction
 import Testing
 
 @testable import FTFoundation
@@ -37,8 +36,6 @@ struct ContextMenuRulesTests {
         ).compactMap(\.label)
     }
 
-    // F-815
-    // B-VIEW-211 T-eb3ba6a5
     @Test func aTextFileShowsEditAndNothingElseDoes() {
         let file = subject(.content, [("/a/b.txt", .file)])
         #expect(!hidden(file, world()).contains(.edit))
@@ -48,8 +45,6 @@ struct ContextMenuRulesTests {
         #expect(!hidden(subject(.content, [("/a/b.txt", .file), ("/a/c.md", .symlinkFile)]), world()).contains(.edit))
     }
 
-    // F-815
-    // B-VIEW-211 T-c2c3e724
     @Test func showPackageContentsIsForBundlesAndCalculateSizeForFolders() {
         let file = hidden(subject(.content, [("/a/b.txt", .file)]), world())
         #expect(file.contains(.showPackageContents) && file.contains(.calculateSize))
@@ -62,8 +57,6 @@ struct ContextMenuRulesTests {
         #expect(hidden(subject(.content, [("/a/l", .symlinkDirectory)]), world()).contains(.calculateSize))
     }
 
-    // F-815
-    // B-VIEW-211 T-848e568e
     @Test func pasteAndNewFolderAreForOneFolderAndOpenInANewTabToo() {
         let folder = subject(.content, [("/a/Folder", .directory)])
         let withDestination = hidden(folder, world(pasteDestination: true))
@@ -79,9 +72,6 @@ struct ContextMenuRulesTests {
         #expect(two.contains(.paste) && two.contains(.newFolder) && two.contains(.openInNewTab))
     }
 
-    // F-816
-    // B-CLIP-007 B-CLIP-053 B-CLIP-059 B-TREE-145 B-TREE-148 B-VIEW-210 B-VIEW-212 T-0ad433eb T-5389fe11
-    // T-c6fb632a
     @Test func whileAWriteRunsTheMenuLeavesOutWhatWouldStartAnotherButPasteIsOnlyDimmed() {
         let folder = subject(.content, [("/a/Folder", .directory)])
         let locked = hidden(folder, world(locked: true, pasteDestination: true))
@@ -98,8 +88,6 @@ struct ContextMenuRulesTests {
         #expect(!locked.contains(.copy) && !locked.contains(.cut) && !locked.contains(.copyPath))
     }
 
-    // F-816
-    // B-VIEW-205 B-VIEW-212 T-e28360aa
     @Test func theTrashHidesPasteNewFolderDuplicateAndTrash() {
         let inTrash = subject(.trash, [(Self.trash + "/old.txt", .file)])
         let result = hidden(inTrash, world(current: Self.trash))
@@ -110,8 +98,6 @@ struct ContextMenuRulesTests {
                 && !labels(inTrash, world(current: Self.trash)).contains("Move to Trash"))
     }
 
-    // F-816
-    // B-TREE-036 B-TREE-037 B-TREE-189 B-VIEW-211 B-VIEW-213 T-0e303da8 T-342c9b04
     @Test func theFavoriteToggleReadsAddOrRemoveAndIsLeftOutWhereItDoesNotApply() {
         let folder = subject(.content, [("/a/Folder", .directory)])
         #expect(ContextMenuRules.favoriteToggleLabel(folder, world()) == "Add to Favorites")
@@ -138,7 +124,6 @@ struct ContextMenuRulesTests {
             hidden(subject(.search, [("/a/Folder", .directory)]), world(search: true)).contains(.toggleFavorite))
     }
 
-    // F-810
     @Test func severalItemsAreRenamedInTheSheet() {
         let many = subject(.content, (0..<1_204).map { ("/a/f\($0).txt", EntryKind.file) })
         #expect(ContextMenuRules.options(many, world(), textEditorName: nil).renameLabel == "Rename 1,204 Items…")
@@ -153,8 +138,6 @@ struct ContextMenuRulesTests {
                 .targetsFolder == false)
     }
 
-    // F-810
-    // B-VIEW-206 T-0e303da8 T-2258c755 T-7c9dc00f T-eb3ba6a5
     @Test func theMenuOfAFileHasTheOriginalsGroupsAndNothingThatDoesNotApply() {
         let menu = labels(subject(.content, [("/a/b.txt", .file)]), world(), editor: "TextEdit")
         #expect(
@@ -172,8 +155,6 @@ struct ContextMenuRulesTests {
             ])
     }
 
-    // F-811
-    // B-VIEW-207 T-0e303da8 T-22f37d32 T-8c986b11
     @Test func searchResultsStartWithRevealInFolderAndLeaveOutNewFolderAndFavorites() {
         let result = subject(.search, [("/a/b.txt", .file)])
         let menu = labels(result, world(search: true), editor: "TextEdit")
@@ -190,8 +171,6 @@ struct ContextMenuRulesTests {
         #expect(ContextMenuRules.duplicateFolder(of: ["/b.txt"]) == "/")
     }
 
-    // F-812
-    // B-TREE-145 B-VIEW-212 T-24d6dadf
     @Test func aTreeFolderStartsWithNewFolderAndOffersDeleteImmediatelyOnlyInTheTrash() {
         let folder = subject(.treeFolder, [("/a/Folder", .directory)])
         let menu = labels(folder, world(pasteDestination: true))
@@ -210,9 +189,6 @@ struct ContextMenuRulesTests {
         }
     }
 
-    // F-813
-    // B-TREE-143 B-TREE-145 T-0218aaf1 T-27c2e760 T-33ba7245 T-3a0c2a65 T-506b38da T-ab30df4e T-c6fb632a
-    // T-e5169248
     @Test func aFavoriteOrLocationOffersEmptyTrashOnlyForTheTrash() {
         let place = subject(.favorite, [("/a/Folder", .directory)])
         let result = hidden(place, world())
@@ -227,8 +203,6 @@ struct ContextMenuRulesTests {
         #expect(!hidden(trash, world(trashEmpty: nil)).contains(.emptyTrash))
     }
 
-    // F-813
-    // B-TREE-149 T-7b4fe196
     @Test func ejectNamesTheDiskAndIsLeftOutForAnythingElse() {
         let plain = subject(.favorite, [("/a/Folder", .directory)])
         #expect(hidden(plain, world()).contains(.eject))
@@ -243,8 +217,6 @@ struct ContextMenuRulesTests {
         #expect(eject != nil && eject == menu.firstIndex(of: "Reveal in Tree").map { $0 + 2 })
     }
 
-    // F-814
-    // B-VIEW-208 B-VIEW-212
     @Test func theBackgroundMenuHasNewFolderViewAsSortByAndEmptyTrashOnlyInTheTrash() {
         let background = subject(.background, [], scope: .background)
         let menu = labels(background, world(pasteDestination: true))
@@ -257,8 +229,6 @@ struct ContextMenuRulesTests {
         #expect(inTrash.contains(.paste) && inTrash.contains(.newFolder) && !inTrash.contains(.emptyTrash))
     }
 
-    // F-815
-    // B-VIEW-210 T-768f7db4 T-cb6f036c
     @Test func separatorsThatWouldStandFirstLastOrTwiceInARowAreDropped() {
         let items = ContextMenuItems.visibleItems(
             surface: .favorite, hidden: [.newFolder, .eject, .emptyTrash, .toggleFavorite, .paste, .copyPath])
@@ -273,8 +243,6 @@ struct ContextMenuRulesTests {
         #expect(ContextMenuItems.visibleItems(surface: .background, hidden: Set(ContextMenuActionID.allCases)).isEmpty)
     }
 
-    // F-815
-    // B-TREE-145 B-TREE-189 T-0218aaf1 T-0516f92a T-1c693346 T-22f37d32 T-848e568e
     @Test func pasteGoesIntoTheFolderTheMenuIsFor() {
         let folder = subject(.content, [("/a/Folder", .directory)])
         #expect(ContextMenuRules.pasteDestination(folder, world(), clipboardSourcePaths: []) == "/a/Folder")

@@ -1,7 +1,4 @@
-// Port of the Icons and Compact List share of apps/desktop/src/renderer/components/IconGridView.tsx and
-// ContentPane.tsx's FlowListView (data-drag-path, the items' drag and drop events) and of lib/fileDragImages.ts for
-// their items: where a drag of their items sets off from, what a drag over them is offered to, and the flash of copied
-// and cut items
+// Where a drag of their items sets off from, what a drag over them is offered to, and the flash of copied and cut items
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -16,7 +13,7 @@ protocol GridItemDragging: AnyObject {
 }
 
 extension ItemGridPane {
-    /// The collection takes drags of files (B-CLIP-156); the items draw their own drop highlight.
+    /// The collection takes drags of files; the items draw their own drop highlight.
     func registerForFileDrops() {
         collection.registerForDraggedTypes([.fileURL])
     }

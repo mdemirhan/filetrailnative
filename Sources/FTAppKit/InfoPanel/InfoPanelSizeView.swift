@@ -1,4 +1,3 @@
-// Port of FolderSizeCell as apps/desktop/src/renderer/components/GetInfoPanel.tsx shows it in the panel since 59f60cf
 import AppKit
 import FTFoundation
 

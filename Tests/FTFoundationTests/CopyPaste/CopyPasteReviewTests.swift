@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/copyPasteReview.test.ts
 import Foundation
 import Testing
 
@@ -85,7 +84,6 @@ private struct Triple: Equatable {
 }
 
 @Suite struct CopyPasteReviewTests {
-    // T-a81a1577
     @Test func skipsEveryConflictByDefaultFoldersIncluded() {
         let all = report([notes, photos, config, brandNew])
         let listed = rows(all, CopyPasteReview.safePolicy)
@@ -100,7 +98,6 @@ private struct Triple: Equatable {
         #expect(CopyPasteReview.currentAllConflictsChoice(all, CopyPasteReview.safePolicy, [:]) == .skip)
     }
 
-    // T-2ae734f7
     @Test func mergesFoldersAndSkipsFilesThatExistWithAddMissing() {
         let all = report([notes, photos, config, brandNew])
         let policy = CopyPasteReview.policy(for: .addMissing)
@@ -113,8 +110,6 @@ private struct Triple: Equatable {
         #expect(CopyPasteReview.currentAllConflictsChoice(all, policy, [:]) == .addMissing)
     }
 
-    // T-cb9562ff
-    // B-CLIP-081
     @Test func offersAddMissingOnlyForACopyWithAFolderThatAlreadyExists() {
         #expect(
             CopyPasteReview.allConflictsChoices(report([notes, photos])) == [.skip, .addMissing, .keepAll, .overwrite])
@@ -124,7 +119,6 @@ private struct Triple: Equatable {
         #expect(CopyPasteReview.allConflictsChoices(report([notes, config])) == [.skip, .keepAll, .overwrite])
     }
 
-    // T-cfbdb7c1
     @Test func saysWhatTheForAllConflictsChoiceDoes() {
         let withFolder = report([notes, photos])
         #expect(CopyPasteReview.describe(.skip, withFolder) == "Existing items stay as they are.")
@@ -137,8 +131,6 @@ private struct Triple: Equatable {
         #expect(CopyPasteReview.describe(nil, withFolder) == "Set separately for some items below.")
     }
 
-    // T-f986253b
-    // B-CLIP-098
     @Test func keepsBothFilesAndMergesFoldersWithKeepAllListingOnlyConflicts() {
         let listed = rows(report([notes, photos, config, brandNew]), keepAll)
         #expect(listed.map(\.name) == ["notes.txt", "photos", "a.jpg", "config"])
@@ -156,13 +148,11 @@ private struct Triple: Equatable {
                 == "Yours is a file \u{B7} the existing \u{201C}config\u{201D} is a folder with 1 item")
     }
 
-    // T-1efbe01a
     @Test func doesntCountWhatIsInAFolderMovedByRenamingItWhichWasntRead() {
         let project = node("item-project", "/src/Project", sourceKind: .directory, renameOnly: true)
         #expect(rows(report([project], .cut), keepAll, showNewItems: true).map(\.detail) == ["New folder"])
     }
 
-    // T-8c379017
     @Test func spellsOutWhatReplaceDeletes() {
         let listed = rows(report([notes, photos, config]), CopyPasteReview.policy(for: .overwrite))
         #expect(listed.map(\.name) == ["notes.txt", "photos", "config"])
@@ -175,7 +165,6 @@ private struct Triple: Equatable {
             ])
     }
 
-    // T-1b40940b
     @Test func describesAPackageAsOneItemNeverAsAFolderToMerge() {
         let app = node(
             "item-app", "/src/Foo.app", conflictClass: .fileConflict, sourceKind: .directory,
@@ -189,8 +178,6 @@ private struct Triple: Equatable {
         #expect(kept.detail == "The existing \u{201C}Foo.app\u{201D} stays")
     }
 
-    // T-4accb430
-    // T-f9bdb3fb
     @Test func getsSingularPluralAndUnnamedItemsRightInWhatReplaceDeletes() {
         func describe(_ only: ReviewDestinationOnly) -> String? {
             var folder = photos
@@ -211,7 +198,6 @@ private struct Triple: Equatable {
                 == "Deletes \u{201C}d.jpg\u{201D} and 1,200 more, which only exist in the existing folder")
     }
 
-    // T-12ec017b
     @Test func saysWhatMergingKeepsWithOrWithoutASampleName() {
         func describe(_ only: ReviewDestinationOnly) -> String? {
             var folder = photos
@@ -226,8 +212,6 @@ private struct Triple: Equatable {
                 == "Folder \u{B7} 1 conflict inside \u{B7} 1 item added \u{B7} keeps 2 items already there")
     }
 
-    // T-82f5c6e7
-    // T-6d9f49ef
     @Test func fallsBackToTheSafeChoiceWhereReplaceIsntPossibleAndSaysWhy() {
         var blockedFolder = photos
         blockedFolder.replaceBlockedReason = "It contains the item being pasted."
@@ -247,13 +231,10 @@ private struct Triple: Equatable {
         #expect(CopyPasteReview.currentAllConflictsChoice(all, policy, [:]) == .overwrite)
     }
 
-    // T-79327802
     @Test func namesNestedRowsByTheirPathBelowTheSourceFolder() {
         #expect(rows(report([photos]), keepAll).map(\.relativePath) == ["photos", "photos/a.jpg"])
     }
 
-    // T-07ef850d
-    // B-CLIP-095
     @Test func appliesPerItemChoicesAndSaysWhereSkippedMovesStay() {
         let listed = rows(report([notes, photos], .cut), keepAll, ["item-1": .skip, "item-2": .keepBoth])
         #expect(
@@ -264,21 +245,17 @@ private struct Triple: Equatable {
             ])
     }
 
-    // T-3660ef0a
     @Test func saysEachSkippedMoveStaysInItsOwnFolder() {
         let listed = rows(report([notes, photos], .cut), keepAll, ["item-2/a.jpg": .skip])
         #expect(listed.first { $0.name == "a.jpg" }?.detail == "Stays in \u{201C}photos\u{201D}")
     }
 
-    // T-428fe0f8
     @Test func showsNewItemsOnRequest() {
         let listed = rows(report([notes, brandNew]), keepAll, showNewItems: true)
         #expect(listed.map(\.name) == ["notes.txt", "brand new.txt"])
         #expect(listed.map(\.choice) == [.keepBoth, nil])
     }
 
-    // T-cd834e69
-    // T-f9bdb3fb
     @Test func summarizesWhatTheOperationWillDo() {
         let summary = CopyPasteReview.summarize(
             report([notes, photos, config, brandNew]), policy: keepAll, overrides: ["item-3": .overwrite])
@@ -308,7 +285,6 @@ private struct Triple: Equatable {
         #expect(CopyPasteReview.formatSummary(skipped) == "1 item will be skipped")
     }
 
-    // T-ef63d1b6
     @Test func reportsTheForAllConflictsChoiceOrMixed() {
         let nodes = report([notes, photos, config])
         #expect(CopyPasteReview.currentAllConflictsChoice(nodes, keepAll, [:]) == .keepAll)
@@ -322,8 +298,6 @@ private struct Triple: Equatable {
         #expect(CopyPasteReview.currentAllConflictsChoice(nodes, keepAll, ["item-2/a.jpg": .skip]) == nil)
     }
 
-    // T-81abaa8c
-    // B-CLIP-092
     @Test func goesBackToASingleForAllConflictsValueWhenAnItemIsSetBack() {
         let nodes = report([notes, photos])
         // Choices equal to what "For all conflicts" does are not a difference.
@@ -335,8 +309,6 @@ private struct Triple: Equatable {
                 nodes, CopyPasteReview.policy(for: .overwrite), ["item-1": .overwrite]) == .overwrite)
     }
 
-    // T-f8734900
-    // B-CLIP-099
     @Test func formatsDatesRelativeToToday() {
         #expect(dates.format(now - 60_000, now: now) == "today, 1:59 PM")
         #expect(dates.format(now - 86_400_000, now: now) == "yesterday, 2:00 PM")
@@ -346,8 +318,6 @@ private struct Triple: Equatable {
 
     // Built from local dates, so they hold in any time zone; in one with daylight saving the days around the change
     // are 23 and 25 hours long.
-    // T-70180a1d
-    // B-CLIP-099
     @Test func countsYesterdayInCalendarDaysAcrossDaylightSavingChanges() {
         let afterFallBack = local(2026, 10, 2, 10, 0)
         #expect(dates.format(local(2026, 10, 1, 0, 30), now: afterFallBack) == "yesterday, 12:30 AM")
@@ -359,8 +329,6 @@ private struct Triple: Equatable {
         #expect(dates.format(local(2025, 11, 31, 22, 0), now: newYear) == "yesterday, 10:00 PM")
     }
 
-    // T-d678a304
-    // B-CLIP-099
     @Test func showsADateInTheFutureInFullInsteadOfAsToday() {
         #expect(dates.format(now + 30_000, now: now) == "today, 2:00 PM")
         #expect(dates.format(now + 2 * 3_600_000, now: now) == "Sep 29, 2026, 4:00 PM")

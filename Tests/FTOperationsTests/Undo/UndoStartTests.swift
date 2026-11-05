@@ -1,5 +1,4 @@
-// Port of apps/desktop/src/main/bootstrap/undoExecution.start.test.ts and undoExecution.links.test.ts: starting an
-// Undo against what was asked, and Undo through a folder opened by a link
+// Starting an Undo against what was asked, and Undo through a folder opened by a link
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -40,7 +39,6 @@ final class DiskGate: @unchecked Sendable {
 struct UndoStartTests {
     private func items(_ end: WriteOperationEvent) -> [WriteOperationItem] { end.result?.items ?? [] }
 
-    // T-fdce3b36 F-388 F-558
     @Test func refusesWhenAnItemChangedWhileTheQuestionAboutAnotherWasOpen() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/x.txt", "x")
@@ -77,7 +75,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-086549ab F-388 F-558
     @Test func refusesWhenAnotherItemTookANameWhileUndoWasBeingChosen() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -96,7 +93,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-e913f17e F-386 F-558
     @Test func refusesAndFreesTheWriteSlotWhenADiskDoesntAnswerItsLastLook() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -130,7 +126,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-dd6a69b0 F-391 F-558
     @Test func leavesACopyThatChangedOnceTheUndoStartedToBeAskedAboutNextTime() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/x.txt", "x")
@@ -159,7 +154,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-a4cbd868 F-388 F-558
     @Test func tellsApartTwoItemsOfOneNameInTwoFolders() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/x.txt", "x")
@@ -187,7 +181,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-c8ba2524 F-387 F-558
     @Test func startsEachWindowsUndoWithWhatThatWindowWasAsked() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/x.txt", "x")
@@ -217,7 +210,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-d4e51511 F-387 F-558
     @Test func startsOneUndoForTwoWindowsThatChoseItAtOnceAndRefusesTheOther() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -264,7 +256,6 @@ struct UndoStartTests {
         return (real, link)
     }
 
-    // T-813536c7 F-555
     @Test func renamesBackThroughALinkAndAgainOnRedo() async throws {
         try await withUndoFolder { root, trashDir in
             let (real, link) = try linkedFolder(root)
@@ -281,7 +272,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-aa64fc37 F-555
     @Test func putsBackFromTheTrashThroughALinkAndMovesToTheTrashAgainOnRedo() async throws {
         try await withUndoFolder { root, trashDir in
             let (real, link) = try linkedFolder(root)
@@ -297,7 +287,6 @@ struct UndoStartTests {
         }
     }
 
-    // T-9b0ce600 F-555
     @Test func movesACutItemBackOutOfAFolderReachedThroughALinkAndInAgain() async throws {
         try await withUndoFolder { root, trashDir in
             let (real, link) = try linkedFolder(root)

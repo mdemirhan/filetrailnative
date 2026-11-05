@@ -1,4 +1,4 @@
-// Checks the search field's text against apps/desktop/src/renderer/styles.css (.search-field-input, input::placeholder)
+// Checks where the search field draws its text and its placeholder
 import AppKit
 import FTFoundation
 import Testing
@@ -67,7 +67,7 @@ import Testing
     @Test func thePlaceholderStartsAfterTheIconAndItsGap() throws {
         let (_, _, host) = make()
         let scan = try scan(host)
-        // The original's ink: x 37.5 in a field at x 10, y 59 to 71.5 in a field at y 52.
+        // The expected ink: x 37.5 in a field at x 10, y 59 to 71.5 in a field at y 52.
         #expect(abs(scan.inkStart - (Self.textStart + 0.5)) <= 0.5)
         #expect(abs(scan.inkTop - 7) <= 0.5 && abs(scan.inkBottom - 19.5) <= 0.5)
     }
@@ -88,7 +88,7 @@ import Testing
 
     @Test func typedTextStartsWhereThePlaceholderDoes() throws {
         let (_, _, host) = make(text: "zzzqq")
-        // The original's ink: x about 37 in a field at x 10.
+        // The expected ink: x about 37 in a field at x 10.
         #expect(abs(try scan(host).inkStart - Self.textStart) <= 1)
     }
 

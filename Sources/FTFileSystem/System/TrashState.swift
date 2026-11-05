@@ -1,4 +1,3 @@
-// Port of getTrashState and emptyTrash (apps/desktop/src/main/bootstrap/systemHandlers.ts)
 import Darwin
 import Foundation
 

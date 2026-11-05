@@ -1,4 +1,3 @@
-// Port of the command table and the key resolution of apps/desktop/src/shared/shortcuts.ts
 import Foundation
 
 /// A command's place in the shortcut table.
@@ -33,7 +32,7 @@ public struct ResolvedShortcuts: Sendable, Equatable {
     public var bindings: ShortcutBindings
     /// The command a key press runs. Fixed commands are not in it; they have handlers of their own.
     public var commandByShortcut: [String: ShortcutCommandID]
-    /// The keys of `commandByShortcut` in the order the original's map holds them.
+    /// The keys of `commandByShortcut` in the order they were claimed.
     public var shortcutOrder: [String]
 }
 
@@ -47,12 +46,10 @@ public enum ShortcutCommands {
     private static let definitionByID: [ShortcutCommandID: ShortcutCommandDefinition] = Dictionary(
         uniqueKeysWithValues: all.map { ($0.id, $0) })
 
-    /// `getShortcutCommand`.
     public static func definition(_ id: ShortcutCommandID) -> ShortcutCommandDefinition {
         definitionByID[id] ?? all[0]
     }
 
-    /// `isShortcutCommandId`.
     public static func isCommandID(_ value: String) -> Bool {
         ShortcutCommandID(rawValue: value) != nil
     }
@@ -101,7 +98,7 @@ public enum ShortcutCommands {
         case cancelsDialogs
         case macOS
 
-        /// The `reason` the original gives.
+        /// The reason's name.
         public var reason: String {
             switch self {
             case .needsCommandOrControl: "needsCommandOrControl"
@@ -117,7 +114,7 @@ public enum ShortcutCommands {
         key.utf16.count == 1 || key == "Plus" || key == "Space"
     }
 
-    /// `getShortcutRefusal`: why a key can not be given to any command, or nil when it can.
+    /// Why a key can not be given to any command, or nil when it can.
     public static func refusal(for shortcut: String) -> Refusal? {
         guard let parsed = Shortcuts.parse(shortcut) else { return .needsCommandOrControl }
         if let fixed = fixedCommandByShortcut[shortcut] {
@@ -138,7 +135,7 @@ public enum ShortcutCommands {
         return nil
     }
 
-    /// `isShortcutUsedByMacOSByDefault`: macOS may take the key before the app sees it; it works once that is
+    /// macOS may take the key before the app sees it; it works once that is
     /// switched off.
     public static func isUsedByMacOSByDefault(_ shortcut: String) -> Bool {
         macOSOptionalShortcuts.contains(shortcut)
@@ -154,7 +151,7 @@ public enum ShortcutCommands {
 
     // MARK: Resolution
 
-    /// `resolveShortcuts`: the keys every command has, given what was saved. Saved keys are taken as far as they make
+    /// The keys every command has, given what was saved. Saved keys are taken as far as they make
     /// sense: an unknown command or an unusable key is dropped, and a key two commands claim goes to the one that was
     /// given it over the one that has it by default.
     public static func resolve(_ overrides: JSONNode?) -> ResolvedShortcuts {
@@ -205,16 +202,16 @@ public enum ShortcutCommands {
         return ResolvedShortcuts(bindings: bindings, commandByShortcut: commandByShortcut, shortcutOrder: order)
     }
 
-    /// `resolveShortcuts` for overrides held as a dictionary.
+    /// `resolve` for overrides held as a dictionary.
     public static func resolve(_ overrides: ShortcutOverrides) -> ResolvedShortcuts {
         if overrides.isEmpty { return defaultResolved }
         return resolve(.object(overrides.mapValues { .array($0.map(JSONNode.string)) }))
     }
 
-    /// DEFAULT_SHORTCUTS.
+    /// The shortcuts with nothing changed.
     public static let defaultResolved = resolve(JSONNode.object([:]))
 
-    /// `shortcuts.includes(shortcut)`: strings are equal scalar for scalar, as JavaScript compares them.
+    /// Whether `shortcuts` holds `shortcut`: strings are equal scalar for scalar.
     private static func has(_ shortcuts: [String], _ shortcut: String) -> Bool {
         shortcuts.contains { JSString.equals($0, shortcut) }
     }
@@ -223,7 +220,7 @@ public enum ShortcutCommands {
         left.count == right.count && zip(left, right).allSatisfy { JSString.equals($0, $1) }
     }
 
-    /// `toShortcutOverrides`: what to save for a set of keys, the commands that differ from their defaults.
+    /// What to save for a set of keys, the commands that differ from their defaults.
     public static func overrides(for bindings: ShortcutBindings) -> ShortcutOverrides {
         var overrides: ShortcutOverrides = [:]
         for command in all {
@@ -235,12 +232,11 @@ public enum ShortcutCommands {
         return overrides
     }
 
-    /// `sanitizeShortcutOverrides`: saved keys as the app will use them, whatever shape they arrived in.
+    /// Saved keys as the app will use them, whatever shape they arrived in.
     public static func sanitizeOverrides(_ value: JSONNode?) -> ShortcutOverrides {
         overrides(for: resolve(value).bindings)
     }
 
-    /// `isShortcutCustomized`.
     public static func isCustomized(_ bindings: ShortcutBindings, _ id: ShortcutCommandID) -> Bool {
         !same(bindings[id] ?? [], defaultBindings[id] ?? [])
     }
@@ -256,7 +252,7 @@ public enum ShortcutCommands {
         case conflict(ShortcutCommandID)
     }
 
-    /// `checkShortcutAssignment`: whether a key can be given to a command, as things stand.
+    /// Whether a key can be given to a command, as things stand.
     public static func checkAssignment(_ bindings: ShortcutBindings, _ id: ShortcutCommandID, _ shortcut: String)
         -> Assignment
     {
@@ -273,7 +269,7 @@ public enum ShortcutCommands {
         return .ok
     }
 
-    /// `assignShortcut`: gives a key to a command in the main (0) or alternate (1) place, taking it away from any
+    /// Gives a key to a command in the main (0) or alternate (1) place, taking it away from any
     /// command that had it. A key put in an empty main place stays the only one.
     public static func assign(_ bindings: ShortcutBindings, _ id: ShortcutCommandID, slot: Int, _ shortcut: String)
         -> ShortcutBindings
@@ -294,14 +290,14 @@ public enum ShortcutCommands {
         return next
     }
 
-    /// `removeShortcut`: takes a key away from a command; the alternate, if there is one, becomes the main key.
+    /// Takes a key away from a command; the alternate, if there is one, becomes the main key.
     public static func remove(_ bindings: ShortcutBindings, _ id: ShortcutCommandID, slot: Int) -> ShortcutBindings {
         var next = bindings
         next[id] = (bindings[id] ?? []).enumerated().filter { $0.offset != slot }.map(\.element)
         return next
     }
 
-    /// `resetShortcut`: gives a command its default keys back. A default key another command was given since is taken
+    /// Gives a command its default keys back. A default key another command was given since is taken
     /// back from it; the commands it was taken from are returned.
     public static func reset(_ bindings: ShortcutBindings, _ id: ShortcutCommandID)
         -> (bindings: ShortcutBindings, takenFrom: [ShortcutCommandID])

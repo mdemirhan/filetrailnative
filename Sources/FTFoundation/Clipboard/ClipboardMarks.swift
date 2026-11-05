@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/clipboardMarks.tsx and of the marks' effect in App.tsx (:769-790)
 import Foundation
 
 /// How an item on the clipboard is drawn: a copy or cut glyph after its name, cut items dimmed, and a flash at the
@@ -39,7 +38,7 @@ public struct ClipboardMarks: Equatable, Sendable {
     }
 }
 
-/// When the marks flash (`App.tsx`): a Copy or Cut, here or arriving from another window, changes `capturedAt`; a
+/// When the marks flash: a Copy or Cut, here or arriving from another window, changes `capturedAt`; a
 /// change that keeps it (an item taken off, a follow-up) does not flash again.
 public struct ClipboardFlashTracker: Sendable {
     private var lastCapturedAt: String?

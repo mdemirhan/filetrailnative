@@ -1,8 +1,7 @@
-// Port of apps/desktop/src/main/quitWhileBusy.ts
 import Foundation
 
 /// What kind of change the running operation is making, in the words a person would use (`WriteOperationKind`). The
-/// write coordinator (P3-05) reports its own kind through the `QuitCoordinator`'s `activeOperation` hook.
+/// write coordinator reports its own kind through the `QuitCoordinator`'s `activeOperation` hook.
 public enum BusyOperationKind: String, Sendable, CaseIterable {
     case copy
     case move
@@ -35,7 +34,6 @@ public enum QuitWhileBusy {
     public static let keepWorkingButtonIndex = 0
     public static let stopButtonIndex = 1
 
-    /// `stopQuestionButtons`.
     public static func buttons(_ trigger: StopTrigger, kind: BusyOperationKind? = nil) -> [String] {
         // Finder empties the Trash: quitting doesn't stop it.
         if kind == .emptyTrash {
@@ -51,7 +49,7 @@ public enum QuitWhileBusy {
         !shutdownInProgress && explorerWindowCount == 0
     }
 
-    /// `describeQuitWhileBusy`: what to ask before quitting or closing the window stops a running operation. A rename
+    /// What to ask before quitting or closing the window stops a running operation. A rename
     /// of one item or a new folder is over in a moment, so it is simply waited for: there is nothing to ask. A rename
     /// of several can take a while (thousands of items on a network disk).
     public static func describe(_ kind: BusyOperationKind, trigger: StopTrigger = .quit) -> (

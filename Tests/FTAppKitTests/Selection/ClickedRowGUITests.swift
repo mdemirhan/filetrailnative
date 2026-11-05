@@ -1,5 +1,4 @@
-// Covers the scenarios 187-trash-command-delete and 196-undo-trash-puts-back through a shown window: the press as the
-// capture's driver sends it, the key as the system offers it
+// The press as the capture's driver sends it, the key as the system offers it
 import AppKit
 import Foundation
 import Testing
@@ -17,7 +16,7 @@ extension ExplorerWindowGUITests {
             }
         }
 
-        // F-290 F-378: on screen, ⌘⌫ takes the row just clicked, and the files' Undo puts it back.
+        // On screen, ⌘⌫ takes the row just clicked, and the files' Undo puts it back.
         @Test func theTrashKeyTakesTheRowClicked() async throws {
             let harness = try ExplorerHarness()
             let writes = try harness.writeOperations()
@@ -41,7 +40,7 @@ extension ExplorerWindowGUITests {
             await harness.close()
         }
 
-        // F-290: a press that only brings the window forward selects nothing, so the key takes what stayed selected and
+        // A press that only brings the window forward selects nothing, so the key takes what stayed selected and
         // shown as selected, not the row under that press.
         @Test func aPressThatOnlyBringsTheWindowForwardLeavesTheKeyOnWhatIsShownSelected() async throws {
             let harness = try ExplorerHarness()

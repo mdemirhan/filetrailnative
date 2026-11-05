@@ -1,6 +1,3 @@
-// Ports by behavior row (components/GetInfoPanel.test.tsx, InfoRow.test.tsx, App.tsx:644-689) what the Info panel, the Info
-// Row and the status text say of a real selection in a tab, the Opens with and Open With menus over this Mac's answers
-// with the actions' spies, and Calculate Size from its routes
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -38,7 +35,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Counting
 
-        // B-INFO-052: only real folders count as folders; a package and a link count as files; and only the entries shown
+        // Only real folders count as folders; a package and a link count as files; and only the entries shown
         // are counted.
         @Test func theSummaryCountsRealFoldersAndWhatIsShown() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -63,7 +60,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-091 T-9fa8ca8a B-INFO-075: the Info Row and the panel sum the entries shown; the status text the whole
+        // The Info Row and the panel sum the entries shown; the status text the whole
         // selection. Files only: the row has their count and their total, and nothing to calculate.
         @Test func theRowSumsWhatIsShownAndTheStatusTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -89,7 +86,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-9fa8ca8a B-INFO-075: a total that can't be told isn't shown: the row has its count and no fact.
+        // A total that can't be told isn't shown: the row has its count and no fact.
         @Test func theRowHasNoFactWithoutATotal() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["aaa.txt": 100, "aab.txt": 200], in: harness)
@@ -110,7 +107,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-49205480 B-INFO-076: folders among them: the row's link measures both, and it reads their total and counts.
+        // Folders among them: the row's link measures both, and it reads their total and counts.
         @Test func theRowsLinkMeasuresTheSelectedFolders() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["Alpha/one.txt": 100, "Beta/two.txt": 200, "aaa.txt": 400], in: harness)
@@ -159,7 +156,7 @@ extension ExplorerWindowlessTests {
             menu.items.firstIndex { $0.appPath != nil && $0.appPath != app }
         }
 
-        // T-43f23ca5 B-INFO-064: the row says what it does; choosing the app a kind already opens in changes nothing, and
+        // The row says what it does; choosing the app a kind already opens in changes nothing, and
         // another changes the app of every file of the kind.
         @Test func opensWithChangesTheKindsAppOnlyForAnother() async throws {
             let (harness, tab, info, lookup) = try await panelOnANote()
@@ -210,7 +207,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-3ae2ee91 B-INFO-065: until macOS answers the row is there with a dash, so the rows under it don't move.
+        // Until macOS answers the row is there with a dash, so the rows under it don't move.
         @Test func theOpensWithRowWaitsForTheAnswer() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -228,7 +225,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-1a141f6f: choosing a row of Open With runs that app on the file and closes the menu; an outside click and
+        // Choosing a row of Open With runs that app on the file and closes the menu; an outside click and
         // Escape are the system menu's.
         @Test func openWithRunsTheChosenApp() async throws {
             let (harness, tab, info, lookup) = try await panelOnANote()
@@ -251,7 +248,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Calculate Size and the status text
 
-        // B-INFO-101: with nothing selected the status text takes in the size of the folder on screen as it comes.
+        // With nothing selected the status text takes in the size of the folder on screen as it comes.
         @Test func theStatusTextTakesInTheFoldersSize() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -265,7 +262,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-165: in a view without a Size column the status text shows a selected folder's size.
+        // In a view without a Size column the status text shows a selected folder's size.
         @Test func theStatusTextShowsTheSelectedFoldersSizeInIcons() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["Alpha/one.txt": 2000], in: harness)
@@ -282,7 +279,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-161: one folder is measured afresh, even with its size known.
+        // One folder is measured afresh, even with its size known.
         @Test func calculateSizeOnOneFolderMeasuresItAgain() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["Alpha/one.txt": 1000], in: harness)
@@ -298,7 +295,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-161: of several, those known are left: one grown since keeps its old size while the other is measured.
+        // Of several, those known are left: one grown since keeps its old size while the other is measured.
         @Test func calculateSizeOnSeveralLeavesThoseKnown() async throws {
             let harness = try ExplorerHarness.windowless()
             try files(["Alpha/one.txt": 1000, "Beta/one.txt": 300], in: harness)

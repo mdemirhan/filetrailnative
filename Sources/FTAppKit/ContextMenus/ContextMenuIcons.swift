@@ -1,4 +1,3 @@
-// Port of ContextMenuIcon (apps/desktop/src/renderer/components/ItemContextMenu.tsx) and EjectIcon.tsx
 import AppKit
 import FTFoundation
 

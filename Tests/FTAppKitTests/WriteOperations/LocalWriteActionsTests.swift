@@ -1,6 +1,4 @@
-// Port by feature of the rename, New Folder, Trash, Delete Immediately and Empty Trash cases of
-// apps/desktop/src/renderer/App.fileOperations.test.tsx, App.menusAndTree.test.tsx and App.writeRefusals.test.tsx: what
-// one window asks of the coordinator, and what it asks the person first, driven on a real folder
+// What one window asks of the coordinator, and what it asks the person first, driven on a real folder
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -207,7 +205,6 @@ private final class Fixture {
 @Suite struct LocalWriteActionsTests {
     // MARK: Rename
 
-    // F-243 F-300 F-302 T-05cea347
     @Test func renamesWhatWasTypedThroughTheCoordinatorAndClosesTheField() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -225,8 +222,6 @@ private final class Fixture {
     }
 
     // The refusal goes to the rename field, which stays open; nothing else is shown.
-    // F-302 T-91956dcd
-    // B-CLIP-197
     @Test func givesTheRenameFieldTheRefusal() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -248,7 +243,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-243 T-8a7e5f61 T-e673aabb
     @Test func asksBeforeARenameWouldHideTheItemAndLeavesTheNameOnCancel() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -272,7 +266,6 @@ private final class Fixture {
     }
 
     // A folder of the tree is renamed in a prompt: a refusal stays in it with the reason, until a name is used.
-    // F-243 F-302
     @Test func keepsTheRenamePromptOpenWithTheReasonANameWasRefused() async throws {
         let fixture = try Fixture()
         try fixture.make("Folder", folder: true)
@@ -293,7 +286,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-247 T-a40a49e4 T-eccf7009
     @Test func saysAtOnceThatARenameWaitsForARunningOperation() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -312,8 +304,6 @@ private final class Fixture {
 
     // In the folder on screen it is made at once with a free name, then named in its row: the one actually made,
     // which got the next free name when the listing didn't know of one made meanwhile.
-    // F-243 F-297 F-299 T-35a7e9cf
-    // B-CLIP-199 B-SEL-144 T-574fdd65 T-9f23bfcd
     @Test func makesTheFolderOnScreenAtOnceAndNamesTheOneActuallyMadeInItsRow() async throws {
         let fixture = try Fixture()
         // Made elsewhere meanwhile: the window hasn't listed it.
@@ -332,7 +322,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-247 T-f8ae027e T-d9459142
     @Test func doesntWaitToRenameALaterFolderAfterOneWasRefusedWhileBusy() async throws {
         let fixture = try Fixture()
         try fixture.anotherWindowRuns()
@@ -345,8 +334,6 @@ private final class Fixture {
     }
 
     // Elsewhere the name is asked for first, suggested free in the folder it goes into.
-    // F-297 T-8cf4f276 T-71b8e8a7 T-3ae883e9
-    // B-CLIP-199 B-SEL-144 T-56b88ca6
     @Test func asksTheNameOfAFolderMadeElsewhereAndBeforeItWouldBeHidden() async throws {
         let fixture = try Fixture()
         try fixture.make("Inner", folder: true)
@@ -381,8 +368,6 @@ private final class Fixture {
 
     // The prompt says where the folder goes; a bad name, or one taken, stays in it with the reason, what was typed
     // kept, until a name is made or the prompt is cancelled.
-    // F-297
-    // T-56b88ca6
     @Test func keepsTheNewFolderPromptOpenWithTheReasonANameWasRefused() async throws {
         let fixture = try Fixture()
         try fixture.make("Inner/Made", folder: true)
@@ -413,7 +398,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-297 T-04593422
     @Test func saysWhyTheFolderCouldntBeMadeInTheFolderOnScreen() async throws {
         let fixture = try Fixture()
         fixture.host.currentPath = fixture.path("Gone")
@@ -429,7 +413,6 @@ private final class Fixture {
 
     // MARK: Trash and Delete Immediately
 
-    // F-290 F-291 T-bb64604a
     @Test func movesTheItemsToTheTrash() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -445,8 +428,6 @@ private final class Fixture {
     }
 
     // A quick double ⌘⌫: the lock is taken before the request is sent, so the second press finds it taken.
-    // F-247 T-b45fe448 T-aca62778
-    // B-CLIP-109
     @Test func sendsOneTrashRequestForAQuickDoubleCommandDelete() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -464,7 +445,6 @@ private final class Fixture {
     }
 
     // What is in the Trash is never moved there again, from the keyboard or a menu.
-    // F-290 T-daa5fb71
     @Test func trashesNothingThatIsInTheTrash() async throws {
         let fixture = try Fixture()
         try fixture.make(".Trash/old.txt")
@@ -475,8 +455,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-290 T-7b041681
-    // B-CLIP-196
     @Test func saysWhyTheTrashCouldntStartAndLeavesNoProgressBehind() async throws {
         let fixture = try Fixture()
 
@@ -488,7 +466,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-247 T-90958c14
     @Test func saysAnotherOperationIsRunningWhenTheCoordinatorFindsOne() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -504,8 +481,6 @@ private final class Fixture {
 
     // Their disk has no Trash: as Finder does, the person is asked, Cancel the default, and they are deleted
     // immediately on Delete, nothing on Cancel.
-    // F-294 F-295 T-e4a54dd7 T-bedd9795
-    // B-CLIP-133
     @Test func asksAndDeletesImmediatelyWhatItsDiskCouldntTakeToTheTrash() async throws {
         let fixture = try Fixture()
         try fixture.make("Share/a.txt")
@@ -529,8 +504,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-294 T-6f4bb610
-    // B-CLIP-133
     @Test func reportsOtherTrashFailuresAsFailuresWithoutAsking() async throws {
         let fixture = try Fixture()
         try fixture.make("Share/a.txt")
@@ -555,8 +528,6 @@ private final class Fixture {
     }
 
     // Asked about first, Cancel the default; only what is in a Trash.
-    // F-295 F-296 T-54e37a9c
-    // B-CLIP-196
     @Test func deletesImmediatelyAfterAskingAndSaysWhyItCouldntStart() async throws {
         let fixture = try Fixture()
         try fixture.make(".Trash/old.txt")
@@ -582,8 +553,6 @@ private final class Fixture {
     }
 
     // A folder of the tree is moved to the Trash after asking.
-    // F-290 T-9bd51531
-    // B-CLIP-132 B-TREE-146
     @Test func asksBeforeTrashingATreeFolder() async throws {
         let fixture = try Fixture()
         try fixture.make("Folder", folder: true)
@@ -602,8 +571,6 @@ private final class Fixture {
 
     // MARK: Empty Trash
 
-    // F-304 F-305 T-dc52b88b T-a73c478d
-    // B-CLIP-049 T-33ba7245
     @Test func emptiesTheTrashAfterAskingAndLetsGoOfClipboardItemsThatWereInIt() async throws {
         let fixture = try Fixture()
         var emptied = 0
@@ -634,7 +601,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-304 T-6200e703
     @Test func refusesEmptyTrashWithoutAskingWhileAnotherOperationRuns() async throws {
         let fixture = try Fixture()
         try fixture.anotherWindowRuns()
@@ -646,8 +612,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-305 T-9407a866
-    // T-3a244590
     @Test func saysWhyTheTrashWasntEmptied() async throws {
         let fixture = try Fixture()
         fixture.answers = [true]
@@ -662,9 +626,8 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // MARK: Batch rename (`startBatchRename`; the sheet that settles the names is P6-03's)
+    // MARK: Batch rename (`startBatchRename`; the sheet that settles the names is)
 
-    // F-570
     @Test func renamesWhatTheSheetSettledThroughTheCoordinator() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")
@@ -693,7 +656,6 @@ private final class Fixture {
         await fixture.close()
     }
 
-    // F-396
     @Test func saysWhyABatchRenameWasRefusedBeforeItStarted() async throws {
         let fixture = try Fixture()
         try fixture.make("a.txt")

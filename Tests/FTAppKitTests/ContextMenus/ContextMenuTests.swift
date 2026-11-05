@@ -1,6 +1,3 @@
-// Ports the UI cases of components/ItemContextMenu.test.tsx and the menu, Open With and notice cases of
-// App.menusAndTree.test.tsx, App.openItems.test.tsx and App.windows.test.tsx on an explorer window that is never
-// shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -78,10 +75,6 @@ extension ExplorerWindowlessTests {
             menu?.items.first { $0.title == title }
         }
 
-        // T-4b2ec48e T-4ace0132 F-812 F-814
-        // covered-by-feature F-808 F-810 F-815 T-eb3ba6a5 T-0db05884 (a file's items, Edit naming the editor and no
-        // Paste for a file: FTFoundation's ContextMenuGoldenTests and ContextMenuRulesTests)
-        // B-VIEW-205 B-VIEW-208 B-VIEW-210 T-56b88ca6 T-7540eb06 T-9f23bfcd T-a6a86d62
         @Test func aFolderHasNewTabsAndPasteAndTheBackgroundHasTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -209,8 +202,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-42ce73e3 F-814
-        // B-VIEW-002 B-VIEW-208 T-7540eb06
         @Test func viewAsTicksTheCurrentViewAndSortByTheCurrentOrderAndPickingOneApplies() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -231,7 +222,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-808: 14 pt line icons, destructive items red
+        // 14 pt line icons, destructive items red
         @Test func everyItemHasAFourteenPointTemplateIconAndTheTrashItemIsRed() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -250,8 +241,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-809: the shortcut is shown only where the key would do the same now
-        // B-TREE-144 T-642926e8 T-91b32f12
+        // The shortcut is shown only where the key would do the same now
         @Test func theShortcutsShownAreTheKeysThatWouldDoTheSameNow() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -273,8 +263,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-4b1b713a T-994f6c5c T-947ce6a8 T-948f8ad2 F-808 F-851
-        // B-VIEW-219 T-1ac2638f T-45b197f8 T-bffa1e76
         @Test func openWithListsTheDefaultPinnedAndOtherAppsAndOptionTurnsItIntoAlwaysOpenWith() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -291,7 +279,7 @@ extension ExplorerWindowlessTests {
                     ], kinds: [kind], pinnedApps: [])
             }
             // The row is there before the menu opens: one that appears under the pointer with Option held never opens
-            // its submenu. Its apps can't be chosen until macOS has named the kind (B-VIEW-223).
+            // its submenu. Its apps can't be chosen until macOS has named the kind.
             let waiting = try #require(menu?.items.first { $0.isAlternate }?.submenu)
             #expect(!waiting.items.isEmpty && waiting.items.allSatisfy { $0.action == nil })
             let submenu = try #require(item(menu, "Open With")?.submenu)
@@ -332,7 +320,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-223: files whose names show different kinds have no one app to always open with: there is no row for
+        // Files whose names show different kinds have no one app to always open with: there is no row for
         // Option to turn it into, so nothing can stand in the way of Open With's submenu.
         @Test func filesNamedAsDifferentKindsHaveNoAlwaysOpenWithRow() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -345,7 +333,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-223: when macOS says the kinds differ after all, the row stays where the pointer may be and says Open
+        // When macOS says the kinds differ after all, the row stays where the pointer may be and says Open
         // With. The answer is asked for when the row is reached, not only when its submenu opens.
         @Test func optionLeavesOpenWithAsItIsForFilesOfDifferentKinds() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -392,7 +380,6 @@ extension ExplorerWindowlessTests {
         }
 
         /// The window can close while macOS answers. What comes after the answer still reads the tab.
-        // T-446c303e
         @Test func anAnswerFromMacOSAfterTheWindowClosedIsStillHandled() async throws {
             let harness = try ExplorerHarness.windowless()
             let notices = NoticeSpy()
@@ -419,8 +406,6 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { closedTab == nil })
         }
 
-        // T-9c23e56d T-d76e20b7 T-c63fddc6
-        // B-DLG-192
         @Test func tooManyItemsAreToldInANotice() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -514,7 +499,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `openPathExternally`: an item macOS doesn't open is logged, and nothing is shown.
+        // An item macOS doesn't open is logged, and nothing is shown.
         @Test func aFailedOpenFromTheMenuShowsNoNotice() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -538,9 +523,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `editPaths` ends in `openPathsWithApplication`, whichever control asked: a double-click set to Edit, Return and
-        // the Edit command tell of a failure as the menu does.
-        // T-33d23be1 T-94710962
+        // A failed Edit is told as the menu tells it, whichever control asked: a double-click set to Edit, Return or
+        // the Edit command.
         @Test func aFailedEditFromADoubleClickOrTheCommandIsToldInANotice() async throws {
             struct Refused: LocalizedError {
                 var errorDescription: String? { "The editor is gone." }
@@ -575,8 +559,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-e4395190 T-f34a5b66 T-ef662069 F-696
-        // B-CLIP-010 T-6528d794 T-6b67d7f6
         @Test func terminalFinderAndCopyPathAreDoneThroughTheSystem() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -603,14 +585,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-810: the menu holds the folder's reloads while it is open (B-VIEW-187)
-        // T-f0d963ef B-VIEW-182: menus are NSMenus, which the system tracks and ends on a click elsewhere
+        // The menu holds the folder's reloads while it is open
+        // Menus are NSMenus, which the system tracks and ends on a click elsewhere
         // (didEndTracking); the session ends with it.
-        // N/A T-ebac0af8 T-5b070983 T-9b853d57 T-4d8c727e T-49096868 T-99c41da7 T-b78847a6 (menuPlacement.ts): NSMenu
-        // places itself, keeps itself inside the screen and flips its submenus at an edge.
-        // N/A T-ab4c17e9 T-2a203391 T-85ff21c7 T-510a7d55 (the keyboard, type-select and a disabled row's hover are
-        // NSMenu's).
-        // B-CLIP-147 B-NAV-222
         @Test func changesOutsideWaitWhileAMenuIsOpen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)

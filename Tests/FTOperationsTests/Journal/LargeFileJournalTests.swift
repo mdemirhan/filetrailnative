@@ -1,5 +1,3 @@
-// Port of "copying a large file" (packages/core/src/fs/copyPasteRecovery.test.ts); the recovery cases there are
-// P3-04's
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -30,7 +28,6 @@ struct LargeFileJournalTests {
         return (seen.all, journal)
     }
 
-    // T-afcfd54a F-275
     @Test func writesDownTheHiddenNameItIsCopiedUnderBeforeCopyingAnything() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/movie.mov", .file(size: journaledFileBytes)), ("/target", .directory()),
@@ -56,7 +53,6 @@ struct LargeFileJournalTests {
     }
 
     // The folder's own record covers what is inside it: a crash leaves both to go with it.
-    // T-94d72168 F-262 F-275
     @Test func isntWrittenDownOnItsOwnInsideAFolderBuiltUnderAHiddenName() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/F", .directory()), ("/source/F/movie.mov", .file(size: journaledFileBytes)),

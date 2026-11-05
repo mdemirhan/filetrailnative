@@ -1,5 +1,4 @@
-// Port of the BrowserWindow options of apps/desktop/src/main/main.ts:424-445, which set no acceptFirstMouse: on macOS the
-// click that brings a window forward doesn't reach the page
+// On macOS the click that brings a window forward doesn't reach the page
 import AppKit
 
 /// The click that brings a window forward only brings it forward. It doesn't reach the window's content or the toolbar's

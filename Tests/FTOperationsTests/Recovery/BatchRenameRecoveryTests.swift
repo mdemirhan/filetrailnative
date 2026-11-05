@@ -1,4 +1,3 @@
-// Port of the rename-of-several cases of apps/desktop/src/main/bootstrap/writeJournal.test.ts
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -68,7 +67,6 @@ private struct CrashableJournal: WriteJournal {
 struct BatchRenameRecoveryTests {
     // A rename of several ("1" becomes "2", "2" becomes "3") stops dead as the first item takes its new name, as in a
     // crash: the items waiting under hidden names are put back at the next start, and the person is told.
-    // T-b6cfb45b F-356 F-566
     @Test func putsBackTheItemsARenameOfSeveralLeftUnderHiddenNames() throws {
         try withTemporaryDirectory { directory in
             let folder = directory.path + "/trip"
@@ -106,7 +104,6 @@ struct BatchRenameRecoveryTests {
 
     // Items renamed from search results, one on a network share that hangs: the start goes on, and nothing of the
     // entry is put back until every folder answers.
-    // T-51361091 F-356
     @Test func leavesARenameOfSeveralForLaterWhenAnyOfItsFoldersDoesntAnswer() throws {
         try withTemporaryDirectory { directory in
             let journal = FileWriteJournal.open(directory.path + "/replace-journal.json")

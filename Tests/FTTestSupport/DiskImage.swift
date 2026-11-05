@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/testDiskImage.ts (attach and detach approach)
 import Darwin
 import Foundation
 import Testing
@@ -31,12 +30,12 @@ public enum DiskImage {
         case hfs
         case apfs
         case apfsCaseSensitive
-        /// A 32 MB APFS disk, for tests that fill it (the original filled 20 to 32 MB disks).
+        /// A 32 MB APFS disk, for tests that fill it.
         case apfsSmall
         /// A 40 MB FAT32 disk, about the smallest that is still FAT32, for tests that fill it.
         case fat32Small
 
-        /// The format's name in `tools/fixtures/disk-images.sh` and the parity scenarios.
+        /// The format's name in `tools/fixtures/disk-images.sh` and the scenarios.
         var imageName: String {
             switch self {
             case .apfsCaseSensitive: "apfs-cs"

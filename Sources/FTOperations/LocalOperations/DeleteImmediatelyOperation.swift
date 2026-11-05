@@ -1,5 +1,3 @@
-// Port of the "writeOperation:deleteImmediately" handler, executeDeleteImmediatelyOperation, assertDeletableImmediately,
-// readRealHomePath, placeInTrash and assertStillAskedItem (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -18,8 +16,8 @@ private struct DeletedItem: Sendable {
 }
 
 extension WriteCoordinator {
-    /// `writeOperation:deleteImmediately`: deletes the items for good. Only what is in a Trash may be, or what a
-    /// Move to Trash of this window just found has no Trash to go to, and is still the item it was.
+    /// Deletes the items for good. Only what is in a Trash may be, or what a Move to Trash of this window just found
+    /// has no Trash to go to, and is still the item it was.
     @discardableResult
     public func deleteImmediately(paths: [String], window: any WriteOperationWindow) async throws
         -> WriteOperationHandle
@@ -46,7 +44,7 @@ extension WriteCoordinator {
         let homePath = homePath
         let asked = recordOfItemsWithoutTrash(window)?.items ?? [:]
         try await LocalOperations.onDisk {
-            // `readRealHomePath`: the home folder as it really is, to compare real paths with.
+            // The home folder as it really is, to compare real paths with.
             let realHomePath = (try? fileSystem.realpath(homePath)) ?? homePath
             for path in paths {
                 let resolved = NodePath.resolve(path)
@@ -110,7 +108,6 @@ extension WriteCoordinator {
         return false
     }
 
-    /// `executeDeleteImmediatelyOperation`.
     static func executeDeleteImmediately(
         _ requested: [String], _ operation: LocalWriteOperation, _ fileSystem: any LocalWriteFileSystem,
         asked: ItemsWithoutTrash?

@@ -1,22 +1,18 @@
-// Ports apps/desktop/src/main/quitWhileBusy.test.ts and the quit and Dock cases of explorerWindowController.test.ts
 import AppKit
 import Testing
 
 @testable import FTAppKit
 
 @Suite struct QuitWhileBusyTests {
-    // T-4cb49784 F-645
     @Test func opensAWindowFromTheDockWhenNoExplorerWindowIsOpenEvenWithSettingsOpen() {
         #expect(QuitWhileBusy.shouldOpenWindowOnActivate(shutdownInProgress: false, explorerWindowCount: 0))
         #expect(!QuitWhileBusy.shouldOpenWindowOnActivate(shutdownInProgress: false, explorerWindowCount: 1))
     }
 
-    // T-de9e432d F-645
     @Test func doesntOpenOneWhileQuittingWaitsForAnOperationToStop() {
         #expect(!QuitWhileBusy.shouldOpenWindowOnActivate(shutdownInProgress: true, explorerWindowCount: 0))
     }
 
-    // T-1dbb021b F-626
     @Test func asksAboutACopyAMoveATrashAndADeleteInTheirOwnWords() {
         let copy = QuitWhileBusy.describe(.copy)
         #expect(copy?.message == "A copy is still in progress.")
@@ -35,13 +31,11 @@ import Testing
         #expect(QuitWhileBusy.describe(.undo)?.message == "An Undo is still in progress.")
     }
 
-    // T-e3017674 F-626
     @Test func doesntAskAboutARenameOrANewFolderWhichAreOverInAMoment() {
         #expect(QuitWhileBusy.describe(.rename) == nil)
         #expect(QuitWhileBusy.describe(.newFolder) == nil)
     }
 
-    // T-e7afd977 F-626
     @Test func asksAboutARenameOfSeveralItems() {
         let question = QuitWhileBusy.describe(.batchRename, trigger: .close)
         #expect(question?.message == "Items are still being renamed.")
@@ -51,7 +45,6 @@ import Testing
         )
     }
 
-    // T-738e9105 F-625 F-626
     @Test func asksBeforeQuittingWhileTheTrashIsEmptiedWithoutOfferingToStopIt() {
         let question = QuitWhileBusy.describe(.emptyTrash)
         #expect(question?.message == "The Trash is still being emptied.")
@@ -60,13 +53,11 @@ import Testing
         #expect(QuitWhileBusy.describe(.emptyTrash, trigger: .close) == nil)
     }
 
-    // T-8727727c F-625
     @Test func makesKeepWorkingTheDefaultAndStopAndQuitTheSecondButton() {
         #expect(QuitWhileBusy.buttons(.quit)[QuitWhileBusy.keepWorkingButtonIndex] == "Keep Working")
         #expect(QuitWhileBusy.buttons(.quit)[QuitWhileBusy.stopButtonIndex] == "Stop and Quit")
     }
 
-    // T-3a562d4c F-626
     @Test func asksInItsOwnWordsWhenTheWindowIsBeingClosed() {
         #expect(QuitWhileBusy.buttons(.close) == ["Keep Working", "Stop and Close"])
         let question = QuitWhileBusy.describe(.copy, trigger: .close)
@@ -112,7 +103,6 @@ import Testing
         return QuitCoordinator(hooks: hooks)
     }
 
-    // T-128c7715 F-625
     @Test func asksFirstWhileACopyRunsAndKeepsWorkingWhenToldTo() async {
         let run = Run()
         run.operation = .copy
@@ -127,7 +117,6 @@ import Testing
         #expect(!quit.shutdownInProgress)
     }
 
-    // T-8171a8f2 F-627
     @Test func recordsTheWindowsWritesTheStoreWaitsForTheWorkToStopThenExits() async {
         let run = Run()
         run.operation = .copy
@@ -142,7 +131,6 @@ import Testing
         #expect(run.order == ["asked", "bounds", "flush", "shutDown", "bounds", "flush", "exit"])
     }
 
-    // T-8e285e15 F-627
     @Test func writesWhatChangedWhileItWaitedForTheWorkToStop() async {
         let run = Run()
         let quit = coordinator(run)
@@ -153,7 +141,6 @@ import Testing
         #expect(run.order.last == "exit")
     }
 
-    // T-7bd99ba1 F-625
     @Test func quitsWithoutAskingWithNoWindowOpen() async {
         let run = Run()
         run.operation = .copy
@@ -166,7 +153,7 @@ import Testing
         #expect(run.questions.isEmpty)
     }
 
-    // T-cb97a936 F-624 (the window the question hangs from is the front one, none with only Settings open)
+    // (the window the question hangs from is the front one, none with only Settings open)
     @Test func asksOnceAndAsksNothingOfARenameOrANewFolder() async {
         let run = Run()
         run.operation = .newFolder
@@ -178,7 +165,6 @@ import Testing
         #expect(run.questions.isEmpty)
     }
 
-    // T-8e5a9006 F-624
     @Test func bringsTheQuestionForwardWhenAnotherQuitComesWhileItIsOpen() async {
         let run = Run()
         run.operation = .move
@@ -200,7 +186,7 @@ import Testing
         #expect(run.questions.count == 1)
     }
 
-    // T-1e0a75b0 F-645 (a second quit while shutdown waits does not cut it short)
+    // (a second quit while shutdown waits does not cut it short)
     @Test func doesNotCutShutdownShortWithASecondQuit() async {
         let run = Run()
         run.holdShutDown = true

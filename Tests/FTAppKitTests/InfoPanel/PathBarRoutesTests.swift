@@ -1,6 +1,5 @@
-// Ports by behavior row what components/ContentPane.test.tsx and PathSuggestionDropdown say of the path bar in a tab: the
-// expanded bar folding back, the editor closing with the folder and its suggestions from the keyboard, and of a folder
-// opened normally starting with nothing selected (hooks/useExplorerNavigationController.ts)
+// The expanded bar folding back, the editor closing with the folder and its suggestions from the keyboard, and of a
+// folder opened normally starting with nothing selected
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -67,9 +66,9 @@ struct PathEditorSuggestionTests {
     private let escape = #selector(NSResponder.cancelOperation(_:))
     private let enter = #selector(NSResponder.insertNewline(_:))
 
-    // B-VIEW-101: Tab marks the first suggestion (Shift+Tab the last), Return fills that row in and keeps the editor,
+    // Tab marks the first suggestion (Shift+Tab the last), Return fills that row in and keeps the editor,
     // which goes nowhere. The row had the keyboard and is gone: the field doesn't get it back, so the next keys
-    // don't reach it (`PathSuggestionDropdown` without `refocusInputOnAccept`).
+    // don't reach it.
     @Test func tabMarksASuggestionAndReturnFillsItIn() async throws {
         let editing = await editing()
         let bar = editing.bar
@@ -89,7 +88,7 @@ struct PathEditorSuggestionTests {
         #expect(bar.editor.field.currentEditor() == nil)
     }
 
-    // B-VIEW-101: a click on a suggestion never took the keyboard from the field, which goes on being edited.
+    // A click on a suggestion never took the keyboard from the field, which goes on being edited.
     @Test func aClickOnASuggestionLeavesTheKeyboardInTheField() async throws {
         let editing = await editing()
         let bar = editing.bar
@@ -112,7 +111,7 @@ struct PathEditorSuggestionTests {
         [view] + view.subviews.flatMap(allViews)
     }
 
-    // B-INFO-117: in the list the arrows move with wrap.
+    // In the list the arrows move with wrap.
     @Test func theArrowsWrapInTheSuggestionList() async throws {
         let editing = await editing()
         let bar = editing.bar
@@ -128,7 +127,7 @@ struct PathEditorSuggestionTests {
         withExtendedLifetime(editing) {}
     }
 
-    // B-INFO-117: Escape in the list clears the suggestions and stays in the field, with what was typed.
+    // Escape in the list clears the suggestions and stays in the field, with what was typed.
     @Test func escapeInTheListStaysInTheField() async throws {
         let editing = await editing()
         let bar = editing.bar
@@ -142,7 +141,7 @@ struct PathEditorSuggestionTests {
         withExtendedLifetime(editing) {}
     }
 
-    // B-INFO-117: Tab goes back to the field: Return no longer fills the row in, it goes to the one marked.
+    // Tab goes back to the field: Return no longer fills the row in, it goes to the one marked.
     @Test func tabLeavesTheList() async throws {
         let editing = await editing()
         let bar = editing.bar
@@ -185,7 +184,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: The editor's suggestions
 
-        // B-VIEW-102: Escape first clears the suggestions and keeps the editor; the next closes it, giving the
+        // Escape first clears the suggestions and keeps the editor; the next closes it, giving the
         // keyboard back to the list.
         @Test func escapeClearsTheSuggestionsThenClosesTheEditor() async throws {
             let (harness, tab, bar) = try await editing()
@@ -198,7 +197,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-118 B-VIEW-097: the folder on screen changing closes the editor with its draft reset, and it
+        // The folder on screen changing closes the editor with its draft reset, and it
         // doesn't keep the keyboard.
         @Test func anotherFolderClosesTheEditor() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -239,7 +238,7 @@ extension ExplorerWindowlessTests {
             _ = WindowEventRouting.intercept(event, in: window)
         }
 
-        // T-a38008df B-VIEW-097: a mouse move inside keeps it open; one outside folds it, and so does a press outside.
+        // A mouse move inside keeps it open; one outside folds it, and so does a press outside.
         @Test func theExpandedBarFoldsWhenThePointerLeavesOrOnAPressOutside() async throws {
             let (harness, _, bar, window) = try await expanded()
             try pointer(.mouseMoved, inside: true, bar, window)
@@ -255,7 +254,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-097: it stays while a separator's menu is open, which belongs to it.
+        // It stays while a separator's menu is open, which belongs to it.
         @Test func theExpandedBarStaysWhileASeparatorsMenuIsOpen() async throws {
             let (harness, tab, bar, window) = try await expanded()
             harness.layout(tab)
@@ -270,7 +269,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-097: and it folds when the folder changes.
+        // And it folds when the folder changes.
         @Test func theExpandedBarFoldsWithAnotherFolder() async throws {
             let (harness, tab, bar, _) = try await expanded()
             let beta = harness.folder.appending("Beta").path
@@ -282,7 +281,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: A folder opened
 
-        // B-SEL-029: opening a folder starts with nothing selected, and going up doesn't select the folder come from.
+        // Opening a folder starts with nothing selected, and going up doesn't select the folder come from.
         @Test func aFolderOpenedStartsWithNothingSelected() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()

@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/components/GoToFolderDialog.tsx (with hooks/usePathSuggestions.ts) and the
-// .go-to-folder-* rules of apps/desktop/src/renderer/styles.css (3437-3666)
 import AppKit
 import FTFoundation
 
@@ -29,7 +27,7 @@ struct GoToBoxOptions {
 @MainActor
 final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelegate {
     static let placeholder = "Folder name, or a path starting with / or ~"
-    /// Where the pointer last was over a box's list, by window: kept across opens, as the original's ref is.
+    /// Where the pointer last was over a box's list, by window: kept across opens.
     private static var lastPointers: [ObjectIdentifier: CGPoint] = [:]
 
     let options: GoToBoxOptions
@@ -172,7 +170,7 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
         render()
     }
 
-    /// The places read again: the rows follow at once (B-DLG-038).
+    /// The places read again: the rows follow at once.
     func setPlaces(_ places: [Place]) {
         state.setPlaces(places)
         render()
@@ -502,7 +500,7 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
         let labelHeight = line(Self.labelFont)
         let labelX = sectionX + CGFloat(layout.labelHorizontal)
         let labelWidth = max(0, sectionWidth - 2 * CGFloat(layout.labelHorizontal))
-        // The labels' cells draw their text 2 in from their frames: the frames reach 2 past the original's text boxes.
+        // The labels' cells draw their text 2 in from their frames: the frames reach 2 past where the text goes.
         let inset = GoToRowView.cellInset
         // The intrinsic width is the text's alone: the cell's insets come on top of it.
         let hintWidth = hintLabel.isHidden ? 0 : ceil(hintLabel.intrinsicContentSize.width)

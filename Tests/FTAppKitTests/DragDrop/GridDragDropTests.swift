@@ -1,5 +1,4 @@
-// Port by feature of the Icons and Compact List share of components/ClipboardMarks.test.tsx and App.dragOut.test.tsx:
-// the clipboard's marks and the drags of the Icons view and the Compact List of a window that is never shown
+// The clipboard's marks and the drags of the Icons view and the Compact List of a window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -15,9 +14,8 @@ extension ExplorerWindowlessTests {
             ClipboardMarks(ClipboardRules.set(mode, paths, capturedAt: "t"), enabled: true)
         }
 
-        // F-791 B-CLIP-014 B-CLIP-015: in the Compact List an item on the clipboard has the copy or scissors glyph
+        // In the Compact List an item on the clipboard has the copy or scissors glyph
         // after its name, the item grows by the glyph and its gap, and a cut one's name is dimmed.
-        // B-VIEW-076
         @Test func compactListItemsShowTheirMark() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList)
@@ -40,7 +38,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-791 B-CLIP-015: a cut item of the Icons view has its name at 0.55 and its picture at 0.45, its badge
+        // A cut item of the Icons view has its name at 0.55 and its picture at 0.45, its badge
         // untouched.
         @Test func cutIconsAreDimmed() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -56,7 +54,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-688 B-CLIP-149: a drag from the Icons view sets off from its pictures and the names centered under them.
+        // A drag from the Icons view sets off from its pictures and the names centered under them.
         @Test func iconDragImagesComeFromTheItemsInSight() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
@@ -70,7 +68,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-688 B-CLIP-149: a drag from the Compact List sets off from the icons and the names after them.
+        // A drag from the Compact List sets off from the icons and the names after them.
         @Test func compactListDragImagesComeFromTheItemsInSight() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList)
@@ -83,9 +81,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-CLIP-164: a folder item a drag is over shows what a drop would do; the highlight goes when the drag
+        // A folder item a drag is over shows what a drop would do; the highlight goes when the drag
         // moves on.
-        // B-VIEW-074
         @Test func gridItemsShowTheDropTarget() async throws {
             let harness = try ExplorerHarness.windowless()
             for mode in [RendererCommand.viewAsIcons, .viewAsList] {

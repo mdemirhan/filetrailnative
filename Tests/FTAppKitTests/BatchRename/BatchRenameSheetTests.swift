@@ -1,5 +1,4 @@
-// Port of apps/desktop/src/renderer/components/BatchRenameSheet.test.tsx: the sheet on a window that is never shown,
-// its rows, summary, buttons and presets read from its views and its model
+// The sheet on a window that is never shown, its rows, summary, buttons and presets read from its views and its model
 import AppKit
 import FTFoundation
 import FTOperations
@@ -17,8 +16,6 @@ private func target(_ name: String, folder: Bool = false) -> BatchRenameTarget {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct BatchRenameSheetTests {
-        // F-873 F-874 F-878 F-879 B-DLG-092 B-DLG-093 B-DLG-095 B-DLG-108 B-DLG-111 B-DLG-112
-        // T-ab095052
         @Test func namesTheItemsStartsWithReplaceTextAndShowsNothingToRenameYet() async throws {
             let fixture = await Fixture([target("IMG_1.jpg"), target("IMG_2.jpg")])
             #expect(fixture.sheet.titleLabel.stringValue == "Rename 2 Items")
@@ -33,8 +30,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-875 F-878 F-879 B-DLG-108 B-DLG-111 B-DLG-112 B-DLG-113
-        // T-120af9d9
         @Test func showsEachNewNameAsItIsTypedTheChangeMarkedAndRenamesOnReturn() async throws {
             let fixture = await Fixture([target("IMG_1.jpg"), target("notes.txt")])
             fixture.type(fixture.sheet.findField, "IMG_")
@@ -51,8 +46,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-877 F-878 F-879 B-DLG-109 B-DLG-110 B-DLG-111
-        // T-b5d7988e
         @Test func holdsTheRenameWhileANameMustBeFixedAndSaysWhyOnItsRow() async throws {
             let fixture = await Fixture([target("IMG_1.jpg")], folderNames: ["IMG_1.jpg", "Lisbon 1.jpg"]) {
                 $0.find = "IMG_"
@@ -79,8 +72,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-878 B-DLG-107 B-DLG-108
-        // T-bfa39c1c
         @Test func tellsScreenReadersEachOldNameBecomesTheNewOneAndShowsTheWholeNewName() async throws {
             let fixture = await Fixture([target("IMG_1.jpg")]) {
                 $0.find = "IMG_"
@@ -94,8 +85,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-877 B-DLG-109
-        // T-9d621df5
         @Test func saysWhenTwoItemsWouldGetTheSameNewNameAndSettlesItAsChosen() async throws {
             let fixture = await Fixture([target("a1.txt"), target("b1.txt")]) {
                 $0.find = "^."
@@ -110,8 +99,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-878 B-DLG-108 B-DLG-110
-        // T-6c018297
         @Test func holdsTheRenameForANameThatCantBeUsedAndDrawsFoldersAsFolders() async throws {
             let fixture = await Fixture([target("Photos", folder: true), target("a.txt")]) {
                 $0.mode = .add
@@ -126,8 +113,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // B-DLG-113
-        // T-c35d5811
         @Test func doesNothingOnReturnWhileTheNamesAreCheckedOrOneMustBeFixed() async throws {
             let checking = await Fixture([target("a.txt")], inspect: .hold) {
                 $0.mode = .add
@@ -148,8 +133,6 @@ extension ExplorerWindowlessTests {
             fixing.close()
         }
 
-        // B-DLG-109 B-DLG-111
-        // T-9c64ae7d
         @Test func reportsAnItemThatCantBeRenamedAndRenamesTheOthers() async throws {
             let fixture = await Fixture(
                 [target("locked.txt"), target("free.txt")],
@@ -164,8 +147,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-875 B-DLG-100
-        // T-14ce1e53
         @Test func explainsRegularExpressionsAndSaysUnderFindWhenAPatternIsBroken() async throws {
             let fixture = await Fixture([target("a.txt")])
             #expect(fixture.sheet.regexHint.isHidden)
@@ -178,7 +159,7 @@ extension ExplorerWindowlessTests {
             #expect(!fixture.sheet.findField.isInvalid)
             fixture.type(fixture.sheet.findField, "(")
             #expect(fixture.sheet.findField.isInvalid)
-            // The message under the field, without JavaScript's own words for the pattern.
+            // The message under the field, without the regex engine's own words for the pattern.
             let message = fixture.sheet.findMessage.stringValue
             #expect(!fixture.sheet.findMessage.isHidden)
             #expect(message.hasPrefix("The pattern isn\u{2019}t valid: "))
@@ -195,8 +176,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-875
-        // T-9ff5f6ee
         @Test func findsTextIgnoringCaseUnlessMatchCaseIsOn() async throws {
             let fixture = await Fixture([target("IMG_1.jpg")]) {
                 $0.find = "img_"
@@ -208,8 +187,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-877 B-DLG-097 B-DLG-098
-        // T-f14bb84b
         @Test func advisesThatChangingAnExtensionMayChangeTheAppAFileOpensIn() async throws {
             let fixture = await Fixture([target("a.JPG")]) { $0.mode = .changeCase }
             #expect(fixture.sheet.advice.isHidden)
@@ -221,8 +198,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-876 F-877 B-DLG-096 B-DLG-097 B-DLG-101 B-DLG-104 B-DLG-105 B-DLG-106
-        // T-25f915ca
         @Test func numbersItemsInFormatWithTheOptionsForNumbers() async throws {
             let fixture = await Fixture([target("a.jpg"), target("b.jpg")])
             let sheet = fixture.sheet
@@ -265,8 +240,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-876 B-DLG-102 B-DLG-103
-        // T-17e9a3bb
         @Test func putsDatesInTheFormatChosenWithItsSeparatorOrACustomPattern() async throws {
             let fixture = await Fixture([target("a.jpg")]) { $0.mode = .format }
             let sheet = fixture.sheet
@@ -295,8 +268,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-876 B-DLG-103
-        // T-e7f2b2d9
         @Test func namesEachDateTokenAndInsertsOneWhereTheCursorIs() async throws {
             let fixture = await Fixture([target("a.jpg")]) {
                 $0.mode = .format
@@ -322,8 +293,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-876 B-DLG-109
-        // T-ee7a5e16
         @Test func saysWhenTheDateTakenIsntThereAndTheDateCreatedIsUsed() async throws {
             let fixture = await Fixture([target("a.jpg")]) {
                 $0.mode = .format
@@ -334,8 +303,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-877
-        // T-96c73366
         @Test func changesCaseInChangeCase() async throws {
             let fixture = await Fixture([target("My Photo.JPG")])
             fixture.sheet.modeControl.choose(.changeCase)
@@ -345,8 +312,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-875
-        // T-1b2719d7
         @Test func addsTextBeforeOrAfterTheName() async throws {
             let fixture = await Fixture([target("a.txt")])
             fixture.sheet.modeControl.choose(.add)
@@ -356,8 +321,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // B-DLG-109
-        // T-66e4ae8e
         @Test func warnsOfANameThatHidesTheItem() async throws {
             let fixture = await Fixture([target("config")]) {
                 $0.mode = .add
@@ -369,8 +332,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-879 B-DLG-081 B-DLG-084 B-DLG-111
-        // T-58f7cebe
         @Test func saysWhenTheItemsAreStillBeingCheckedOrCouldntBe() async throws {
             let checking = await Fixture([target("a.txt")], inspect: .hold) {
                 $0.mode = .add
@@ -388,8 +349,6 @@ extension ExplorerWindowlessTests {
             failed.close()
         }
 
-        // F-878 B-DLG-107
-        // T-d423fb6a
         @Test func listsAtMostAThousandRowsAndSaysHowManyMoreThereAre() async throws {
             let many = (0..<1_005).map { target("f\($0).txt") }
             let fixture = await Fixture(many)
@@ -398,8 +357,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // B-DLG-089 B-DLG-090
-        // T-22bf8eed
         @Test func closesOnEscapeAndOnCancel() async throws {
             let fixture = await Fixture([target("a.txt")])
             fixture.sheet.findField.focus()
@@ -410,7 +367,7 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // B-DLG-092 B-DLG-095: Tab goes from Find through the sheet in the order it shows its controls (the mode as one
+        // Tab goes from Find through the sheet in the order it shows its controls (the mode as one
         // stop), wraps at the end, and ⇧Tab goes back.
         @Test func tabGoesRoundTheSheetInTheOrderItShowsItsControls() async throws {
             let fixture = await Fixture([target("a.txt"), target("b.txt")])
@@ -442,8 +399,6 @@ extension ExplorerWindowlessTests {
         private static let photos = BatchRenamePreset(
             name: "Photos", settings: BatchRenameSettings(mode: .format, customName: "Trip"))
 
-        // F-873 B-DLG-114 B-DLG-115 B-DLG-116
-        // T-d751c845
         @Test func presetsLoadOneThenOfferToUpdateOrDeleteIt() async throws {
             let fixture = await Fixture([target("a.jpg")], presets: [Self.photos])
             let menu = fixture.sheet.presetsPopUp
@@ -459,8 +414,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-873 B-DLG-114
-        // T-cece5be3
         @Test func presetsAreListedAboveTheCommandsWithASeparatorBetween() async throws {
             let fixture = await Fixture([target("a.jpg")], presets: [Self.photos])
             #expect(fixture.titles(fixture.sheet.presetsPopUp) == ["Photos", "-", "Save as Preset\u{2026}"])
@@ -468,8 +421,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-873 B-DLG-115 B-DLG-116
-        // T-491bb4f9
         @Test func saysALoadedPresetWasEditedAndUpdatesIt() async throws {
             let fixture = await Fixture([target("a.jpg")], presets: [Self.photos])
             fixture.pick(fixture.sheet.presetsPopUp, "Photos")
@@ -481,8 +432,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-873 B-DLG-117 B-DLG-118
-        // T-90481d3b
         @Test func offersTheLoadedPresetsNameToSaveTheSettingsUnder() async throws {
             let fixture = await Fixture([target("a.jpg")], presets: [Self.photos])
             fixture.pick(fixture.sheet.presetsPopUp, "Photos")
@@ -493,8 +442,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-873 B-DLG-112 B-DLG-113 B-DLG-117 B-DLG-118 B-DLG-119
-        // T-bf9cd809
         @Test func savesTheSettingsUnderANameTypedInTheHeader() async throws {
             let fixture = await Fixture([target("a.jpg")], presets: [Self.photos]) {
                 $0.mode = .add
@@ -522,8 +469,6 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // B-DLG-090 B-DLG-120
-        // T-1657a9b9
         @Test func leavesSavingWithEscapeOrCancelWithoutClosingTheSheet() async throws {
             let fixture = await Fixture([target("a.jpg")])
             let sheet = fixture.sheet

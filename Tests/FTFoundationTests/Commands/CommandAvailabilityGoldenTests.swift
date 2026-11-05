@@ -1,4 +1,4 @@
-// Checks the port against goldens recorded from the reference: tools/parity/golden/command-availability.ts
+// Checks command availability against the command-availability golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -93,7 +93,7 @@ struct CommandAvailabilityGoldenTests {
             contextMenuPaths: input.contextMenuPaths, selectedContentPaths: input.selectedPaths,
             selectedTreePath: input.selectedTreeTargetPath, currentPath: input.currentPath)
         return Output(
-            // Duplicate Tab is the port's own command: the reference never names it.
+            // Duplicate Tab is left out: the golden never names it.
             disabled: state.disabledCommands.filter { $0 != .duplicateTab }.map(\.rawValue),
             newTab: CommandAvailability.newTabTargetPath(target),
             favorite: CommandAvailability.favoriteTargetPath(target),
@@ -110,7 +110,6 @@ struct CommandAvailabilityGoldenTests {
                     selectedTreePath: input.selectedTreeTargetPath, currentPath: input.currentPath)))
     }
 
-    // B-CLIP-007 B-INFO-153 B-NAV-221 B-VIEW-124 B-VIEW-228 T-479e0e6c
     @Test func commandAvailabilityMatchesTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "command-availability")
         #expect(cases.count >= 300)

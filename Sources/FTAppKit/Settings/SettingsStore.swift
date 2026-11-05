@@ -1,5 +1,4 @@
-// Port of the state of apps/desktop/src/renderer/SettingsWindowApp.tsx: the preferences the window edits, the pickers it
-// opens, and how its edits are saved (usePreferencesSync)
+// The preferences the window edits, the pickers it opens, and how its edits are saved
 import AppKit
 import FTFileSystem
 import FTFoundation

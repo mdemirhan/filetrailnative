@@ -1,8 +1,7 @@
-// Port of WriteServiceStats and the reading half of WriteServiceFileSystem (packages/core/src/fs/writeServiceTypes.ts)
 import Darwin
 import Foundation
 
-/// What `lstat` or `stat` says of an item, as Node's `Stats` gives it to the write engine.
+/// What `lstat` or `stat` says of an item, as the write engine uses it.
 public struct WriteServiceStats: Equatable, Sendable {
     public enum FileType: Sendable {
         case file, directory, symlink, other
@@ -35,7 +34,7 @@ public struct WriteServiceStats: Equatable, Sendable {
     public var isDirectory: Bool { type == .directory }
     public var isSymbolicLink: Bool { type == .symlink }
 
-    /// Node's `Stats` of a `stat` structure.
+    /// The stats of a `stat` structure.
     public init(_ info: stat) {
         let format = info.st_mode & S_IFMT
         type =
@@ -53,7 +52,7 @@ public struct WriteServiceStats: Equatable, Sendable {
         dev = Int64(info.st_dev)
     }
 
-    /// Node's `sec * 1e3 + nsec / 1e6`.
+    /// Milliseconds: `sec * 1e3 + nsec / 1e6`.
     private static func milliseconds(_ time: timespec) -> Double {
         Double(time.tv_sec) * 1e3 + Double(time.tv_nsec) / 1e6
     }
@@ -69,7 +68,7 @@ public protocol IdentityFileSystem: Sendable {
     func readlink(_ path: String) throws -> String
 }
 
-/// The disk itself, through the system calls Node's fs makes; errors carry Node's syscall names.
+/// The disk itself, through system calls; errors carry fixed syscall names ("scandir" for a listing).
 public struct PosixFileSystem: IdentityFileSystem {
     public init() {}
 

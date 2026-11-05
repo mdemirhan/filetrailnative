@@ -1,4 +1,3 @@
-// Port of the parsing half of apps/desktop/src/shared/shortcuts.ts
 import Foundation
 
 /// A shortcut taken apart. It is written "Cmd+Shift+G": modifiers in the order Ctrl, Cmd, Option, Shift, then one key.
@@ -10,8 +9,8 @@ struct ParsedShortcut: Equatable {
     var key: String
 }
 
-/// The keyboard event the original's window key handler sees (`ShortcutKeyEvent`): `key` is the character the
-/// press types, `code` the position of the key.
+/// A key press as the window's shortcut handling sees it: `key` is the character the press types, `code` the
+/// position of the key.
 public struct ShortcutKeyEvent: Equatable, Sendable {
     public var key: String
     public var code: String
@@ -38,8 +37,7 @@ public enum Shortcuts {
 
     private enum Modifier {
         case ctrl, cmd, option, shift
-        /// A name JavaScript finds on any object (`MODIFIER_NAMES["constructor"]`): it names no modifier but is
-        /// not refused either.
+        /// `constructor` and `__proto__`: they name no modifier but are not refused either.
         case inherited
     }
 
@@ -109,7 +107,6 @@ public enum Shortcuts {
         return namedKeyByLowercase[lower]
     }
 
-    /// `parseShortcut`.
     static func parse(_ value: String) -> ParsedShortcut? {
         // "Cmd++" and "+" name the plus key.
         let text = JSString.trimmed(value)
@@ -145,7 +142,6 @@ public enum Shortcuts {
         return parsed
     }
 
-    /// `writeShortcut`.
     static func write(_ parsed: ParsedShortcut) -> String {
         var parts: [String] = []
         if parsed.ctrl { parts.append("Ctrl") }
@@ -156,7 +152,7 @@ public enum Shortcuts {
         return parts.joined(separator: "+")
     }
 
-    /// `normalizeShortcut`: the one way a shortcut is written, or nil when the text does not name one.
+    /// The one way a shortcut is written, or nil when the text does not name one.
     public static func normalize(_ value: String) -> String? {
         parse(value).map(write)
     }
@@ -194,7 +190,7 @@ public enum Shortcuts {
         return keyByEventCode[code]
     }
 
-    /// `shortcutFromKeyboardEvent`: the shortcut a key press spells, or nil while only modifiers are down. Characters
+    /// The shortcut a key press spells, or nil while only modifiers are down. Characters
     /// follow the keyboard layout, as menus do.
     public static func fromKeyboardEvent(_ event: ShortcutKeyEvent) -> String? {
         let key = event.key
@@ -245,13 +241,13 @@ public enum Shortcuts {
         return parsed.cmd || parsed.ctrl
     }
 
-    /// `getMenuShortcut`: the key the application menu shows and listens for. A key without ⌘ or ⌃ (Space, F2) is left
+    /// The key the application menu shows and listens for. A key without ⌘ or ⌃ (Space, F2) is left
     /// to the window: as a menu key it would be taken from text fields and dialogs.
     public static func menuShortcut(_ shortcuts: [String]) -> String? {
         shortcuts.first(where: hasCommandOrControl)
     }
 
-    /// `toMenuAccelerator`: a shortcut as Electron's menus write it, "Command+Shift+G".
+    /// A shortcut in the menu accelerator form, "Command+Shift+G".
     public static func menuAccelerator(_ shortcut: String) -> String? {
         guard let parsed = parse(shortcut), parsed.key != "?" else { return nil }
         var parts: [String] = []

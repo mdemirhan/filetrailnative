@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/colorUtils.ts (hexToRgb, withAlpha, darkenHex)
 import Foundation
 
 /// A colour in sRGB, each component 0...1. Channels that came from a `#rrggbb` string hold
@@ -29,7 +28,8 @@ public struct RGBA: Equatable, Hashable, Sendable {
         self.init(r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255)
     }
 
-    /// `#rrggbb`, `rgb()`/`rgba()` or `transparent`: the spellings the reference stylesheet uses.
+    /// `#rrggbb`, `rgb()`/`rgba()` or `transparent`: the spellings of the colour tokens in
+    /// `Tests/Golden/css-tokens.json`.
     public init?(css: String) {
         let text = css.trimmingCharacters(in: .whitespaces).lowercased()
         if text == "transparent" {
@@ -54,7 +54,7 @@ public struct RGBA: Equatable, Hashable, Sendable {
     public static let black = RGBA(r: 0, g: 0, b: 0)
     public static let clear = RGBA(r: 0, g: 0, b: 0, alpha: 0)
 
-    /// The channels as 0...255 integers, rounded as JavaScript's `Math.round` does.
+    /// The channels as 0...255 integers, rounded to the nearest.
     public var bytes: (r: Int, g: Int, b: Int) {
         (Self.byte(red), Self.byte(green), Self.byte(blue))
     }
@@ -63,7 +63,7 @@ public struct RGBA: Equatable, Hashable, Sendable {
         Int((channel * 255).rounded(.toNearestOrAwayFromZero))
     }
 
-    /// The same colour with a different alpha (`withAlpha` in the reference).
+    /// The same colour with a different alpha.
     public func withAlpha(_ alpha: Double) -> RGBA {
         var copy = self
         copy.alpha = alpha
@@ -76,7 +76,7 @@ public struct RGBA: Equatable, Hashable, Sendable {
         return "#" + [r, g, b].map { String(format: "%02x", $0) }.joined()
     }
 
-    /// The reference's spelling: `#rrggbb` when opaque, otherwise `rgba(r, g, b, a)`.
+    /// The CSS spelling: `#rrggbb` when opaque, otherwise `rgba(r, g, b, a)`.
     public var cssString: String {
         if alpha == 1 { return hexString }
         let (r, g, b) = bytes
@@ -84,7 +84,7 @@ public struct RGBA: Equatable, Hashable, Sendable {
     }
 }
 
-/// A number as JavaScript prints it for the values used here: no trailing `.0`.
+/// A number for a CSS string: no trailing `.0` on the whole values used here.
 func formatCSSNumber(_ value: Double) -> String {
     if value == value.rounded(), abs(value) < 1e15 { return String(Int(value)) }
     return "\(value)"

@@ -1,9 +1,8 @@
-// Port of sanitizeBatchRenameSettings and sanitizeBatchRenamePresets (apps/desktop/src/shared/batchRename.ts)
 import Foundation
 
 extension BatchRename {
-    /// `text`: a string cut to 255 UTF-16 units (a cut inside a surrogate pair leaves a replacement character here,
-    /// where JavaScript keeps half of the pair).
+    /// `text`: a string cut to 255 UTF-16 units (a cut inside a surrogate pair leaves a replacement
+    /// character).
     private static func text(_ value: JSONNode?, _ fallback: String) -> String {
         guard let string = value?.string else { return fallback }
         let units = string.utf16

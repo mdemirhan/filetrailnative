@@ -1,5 +1,4 @@
-// Covers the routes of a command in a real tab (P7 round 1): the built application menu, its keys and the toolbar, over
-// useExplorerShortcuts.ts runRendererCommand, App.tsx buildApplicationMenuState and rendererCommandAvailability.ts
+// The built application menu, its keys and the toolbar: the commands they run and when each is available
 import AppKit
 import FTFoundation
 import Foundation
@@ -79,8 +78,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Commands with no route
 
-        // F-597: Open in Terminal, Show in Finder and Copy Path, chosen from the menu bar.
-        // B-CLIP-010 B-VIEW-233 T-3af241c2 T-6528d794 T-f9a90488
+        // Open in Terminal, Show in Finder and Copy Path, chosen from the menu bar.
         @Test func terminalFinderAndCopyPathRunFromTheMenu() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -99,8 +97,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerShortcuts.ts:1440-1443, 1540-1547: ? from the list and from the tree, and the Help command.
-        // B-VIEW-231
+        // ? from the list and from the tree, and the Help command.
         @Test func helpOpensFromTheQuestionMarkInEitherPaneAndFromItsCommand() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -128,8 +125,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Dimming
 
-        // App.tsx:1429-1449: every command that can't run is dimmed, from the same state as the toolbar's.
-        // B-VIEW-226 T-4851fd44 T-a1688568
+        // Every command that can't run is dimmed, from the same state as the toolbar's.
         @Test func theMenuDimsWhatCantRun() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -148,7 +144,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The state comes from the window at the moment the menu is asked: a dialog that just came up dims it all.
-        // B-VIEW-228 T-fc829ef9
         @Test func theMenuReadsTheWindowWhenAsked() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -163,8 +158,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx:1522-1527: the state goes to the menu whenever the selection changes it.
-        // B-TREE-038
+        // The state goes to the menu whenever the selection changes it.
         @Test func favoritesFollowTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -181,7 +175,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-e8e8e6cd: the menu's items add the selected folder and take it away.
+        // The menu's items add the selected folder and take it away.
         @Test func theMenuAddsTheSelectedFolderToFavoritesAndTakesItAway() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -205,8 +199,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx:1505: the radio shows the view on screen, the search results' own while they show.
-        // B-VIEW-003 T-26fc62ad
+        // The radio shows the view on screen, the search results' own while they show.
         @Test func theViewRadioShowsTheViewOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -220,10 +213,10 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.search.showsResults })
             #expect(tab.menuState.viewMode == .icons)
             #expect(tab.viewMode != .icons)
-            // ExplorerWorkspace.tsx:1527-1532: the » menu's entries too.
+            // The » menu's entries too.
             let entry = try #require(tab.explorerToolbar.overflowEntry(.view)?.submenu)
             #expect(entry.items.first { $0.title == "as Icons" }?.state == .on)
-            // useExplorerShortcuts.ts:1392, 1398: the order isn't the folder's to change while results show.
+            // The order isn't the folder's to change while results show.
             let order = (tab.sortBy, tab.sortDirection, tab.foldersFirst)
             tab.perform(.sortBySize)
             tab.perform(.toggleFoldersFirst)
@@ -233,9 +226,8 @@ extension ExplorerWindowlessTests {
 
         // MARK: Text fields
 
-        // App.tsx:1500, 1513; appMenu.ts resolveApplicationMenuItemStates: while a field has the keyboard Undo and Redo
-        // are its own, always on and plainly named, with no file operation to undo.
-        // B-CLIP-008 B-CLIP-184 B-SEL-142 T-7b2fe094
+        // While a field has the keyboard Undo and Redo are its own, always on and plainly named, with no file operation
+        // to undo.
         @Test func aFieldsUndoIsItsOwn() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -267,8 +259,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerShortcuts.ts:1089-1098: ⌘↑ and ⌘⌫ stay with a field that has the keyboard: the menu leaves them.
-        // B-NAV-218 B-TREE-194 B-VIEW-230 T-9497e5dc T-f573c5d9
+        // ⌘↑ and ⌘⌫ stay with a field that has the keyboard: the menu leaves them.
         @Test func aFieldKeepsTheKeysItEditsWith() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -293,15 +284,14 @@ extension ExplorerWindowlessTests {
             let delete = try key("Backspace", [.command], in: tab)
             #expect(KeyEvents.performKeyEquivalent(delete, window: window, menu: menu.built.menu))
             #expect(editor.string.isEmpty)
-            // A click on the item still acts, as it does in the original.
+            // A click on the item still acts.
             #expect(menu.isEnabled("goEnclosingFolder"))
             await harness.close()
         }
 
         // MARK: Keys of the window
 
-        // useExplorerShortcuts.ts:1537-1604: one table serves every pane.
-        // B-SEL-115 B-TREE-106 T-16bc48f4
+        // One table serves every pane.
         @Test func theWindowsKeysWorkWithTheTreeFocused() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -321,7 +311,6 @@ extension ExplorerWindowlessTests {
         }
 
         // A key without ⌘ or ⌃ chosen in Settings runs from the tree too, and isn't type-ahead.
-        // B-TREE-119 T-47b5d059 T-8767f57b T-c0704916
         @Test func aPlainKeyChosenInSettingsRunsFromTheTree() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -337,8 +326,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Quick Look
 
-        // useExplorerShortcuts.ts:930: Quick Look is on whatever key it has.
-        // B-SEL-112 B-VIEW-233 T-3af241c2
+        // Quick Look is on whatever key it has.
         @Test func quickLookGoesWithItsKey() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -362,7 +350,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Opening
 
-        // useExplorerShortcuts.ts:566-581: ⌘↓ over the limit says so, whatever the limit is.
+        // ⌘↓ over the limit says so, whatever the limit is.
         @Test func commandDownOverTheLimitTellsOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -374,7 +362,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerShortcuts.ts:1099-1122: File ▸ Open and ⌘O open; only activation follows "Double-click a file to".
+        // File ▸ Open and ⌘O open; only activation follows "Double-click a file to".
         @Test func fileOpenOpensWhatActivationWouldEdit() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -407,9 +395,8 @@ extension ExplorerWindowlessTests {
             return list
         }
 
-        // F-290 F-291 F-378 F-550: ⌘⌫ takes the row the click selected and nothing else, and ⌘Z puts it back; also when a
+        // ⌘⌫ takes the row the click selected and nothing else, and ⌘Z puts it back; also when a
         // new item moved the rows between the click and the key.
-        // B-CLIP-184 T-f90496ca
         @Test func theTrashKeyTakesTheClickedRowAndUndoPutsItBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -443,8 +430,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // F-290: rename, duplicate and move, reached by the same keys, take the clicked row too.
-        // T-1a31a754 T-56c85e6b T-d889b78c
+        // Rename, duplicate and move, reached by the same keys, take the clicked row too.
         @Test func theOtherWriteKeysTakeTheClickedRow() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -475,7 +461,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-9e7de3fa: Copy and Cut from the menu take what is selected: the folder on screen is no implicit selection.
+        // Copy and Cut from the menu take what is selected: the folder on screen is no implicit selection.
         @Test func copyAndCutWithNothingSelectedTakeNothing() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -502,7 +488,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-b55c9910: Select All from the menu with a field editing selects its text: the Go To box's, the path bar's and
+        // Select All from the menu with a field editing selects its text: the Go To box's, the path bar's and
         // a name being typed in its row; the files stay as they were.
         @Test func selectAllFromTheMenuStaysWithTheFieldEditing() async throws {
             let window = try await WritingWindow.open()
@@ -555,9 +541,8 @@ extension ExplorerWindowlessTests {
             }
         }
 
-        // useExplorerShortcuts.ts:1569-1603: the keys don't go by what dims the menu. A write's key during another write
-        // reaches the command, which says why it can't start (useExplorerActions.ts:3576, 3662, 3917, 3093, 4292).
-        // B-CLIP-007 B-CLIP-186
+        // The keys don't go by what dims the menu. A write's key during another write reaches the command, which says
+        // why it can't start.
         @Test func theKeysOfWritesSayAnotherIsRunning() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -578,8 +563,8 @@ extension ExplorerWindowlessTests {
                 tab.dialogs.last?.dismiss()
                 #expect(await waitUntil { tab.frontAlert == nil })
             }
-            // shortcuts.ts:968-972: a fixed command is not in the window's table, so ⌘Z and ⇧⌘Z are the menu's alone: its
-            // dimmed item keeps them.
+            // A fixed command is not in the window's table, so ⌘Z and ⇧⌘Z are the menu's alone: its dimmed item keeps
+            // them.
             for modifiers: NSEvent.ModifierFlags in [.command, [.command, .shift]] {
                 try press("z", modifiers, in: tab, menu: menu)
                 try? await Task.sleep(for: .milliseconds(25))
@@ -588,8 +573,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx:1439, useExplorerActions.ts:3329-3331, 3353-3358: Open and Edit go by the limit in Settings: ⌘O and ⌘⇧E
-        // over "Ask before opening more than" say so; only the toolbar's button and the menu's item dim.
+        // Open and Edit go by the limit in Settings: ⌘O and ⌘⇧E over "Ask before opening more than" say so; only the
+        // toolbar's button and the menu's item dim.
         @Test func openAndEditKeysOverTheLimitTellOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
             try Data().write(to: harness.folder.appending("second.txt"))
@@ -615,9 +600,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerActions.ts:3353-3358 `editPaths`: anything but files among the items and it does nothing at all, over
-        // the limit too.
-        // T-94710962
+        // Edit: anything but files among the items and it does nothing at all, over the limit too.
         @Test func theEditKeyLeavesFoldersAlone() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -633,8 +616,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerActions.ts:3379-3388: ⌘D on search results from several folders says why.
-        // B-SRCH-143 B-VIEW-203 T-a39af101
+        // ⌘D on search results from several folders says why.
         @Test func theDuplicateKeyOnResultsOfSeveralFoldersTellsOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -660,8 +642,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerActions.ts:3081-3087: ⌘⇧⌫ asks to empty the Trash, whatever is known of what is in it.
-        // T-e5169248
+        // ⌘⇧⌫ asks to empty the Trash, whatever is known of what is in it.
         @Test func theEmptyTrashKeyAsksOfAnEmptyTrash() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -681,8 +662,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `canHandleRawExplorerShortcut`: what the tree doesn't take stays dropped; the dimmed item keeps the key.
-        // T-81bf2f83
+        // What the tree doesn't take stays dropped; the dimmed item keeps the key.
         @Test func aKeyTheTreeDoesNotTakeStaysDropped() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -699,7 +679,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `startDuplicatePaths`: nothing is made in the Trash, which comes before the busy notice.
+        // Nothing is made in the Trash, which comes before the busy notice.
         @Test func nothingIsDuplicatedInTheTrash() {
             let home = "/Users/me"
             #expect(

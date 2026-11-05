@@ -1,6 +1,3 @@
-// Port of the sanitizing and migration cases of apps/desktop/src/main/appStateStore.test.ts. The cases that write
-// files, time the writes, or drive the store's window operations are P2-07's, which cites them; the Rename sheet's
-// settings and presets (T-85076d5a, T-4842d062, T-c05abda2) are checked by the batch-rename package's sanitizers.
 import Foundation
 import Testing
 
@@ -27,7 +24,6 @@ struct AppStateReaderTests {
         """
     }
 
-    // T-ce547ed1 F-022 B-NAV-181
     @Test func keepsTheSavedTabsThatMakeSenseAndDropsTheRest() {
         let preferences = Self.preferences(
             """
@@ -56,7 +52,6 @@ struct AppStateReaderTests {
             ])
     }
 
-    // T-817178dd F-011
     // With no file the store holds the defaults of the platform's first-launch theme and no windows.
     @Test func returnsDefaultsWhenNoStateFileExists() {
         let defaults = AppPreferences.defaults(theme: .dark)
@@ -74,7 +69,6 @@ struct AppStateReaderTests {
         #expect(Self.preferences("{}") == defaults)
     }
 
-    // T-472f579d F-011
     @Test func keepsASavedThemeAndDefaultsAnyOtherValue() {
         func load(_ theme: String) -> ThemePreference {
             Self.preferences("{\"preferences\": {\"theme\": \(theme)}}", theme: .auto).theme
@@ -99,7 +93,6 @@ struct AppStateReaderTests {
         #expect(load(#""density": "standard", "# + all) == .standard)
     }
 
-    // T-fe1b8d68 F-020
     @Test func keepsASavedSearchMatchModeAndDefaultsToPlainText() {
         func load(_ mode: String?) -> SearchPatternModePreference {
             let body = mode.map { "\"searchPatternMode\": \($0)" } ?? ""
@@ -112,10 +105,9 @@ struct AppStateReaderTests {
         #expect(load("\"fuzzy\"") == .text)
     }
 
-    // T-183c3ee2 F-011 F-013 F-014 F-015 F-019 F-021
     @Test func sanitizesInvalidPersistedValues() {
         let defaults = AppPreferences.defaults(theme: .dark)
-        // The change the original applies through updatePreferences, then reads back from the file.
+        // A change applied through updatePreferences, then read back from the file.
         let patch =
             Self.node(
                 """
@@ -194,7 +186,6 @@ struct AppStateReaderTests {
         #expect(reloaded.lastVisitedFavoritePath == nil)
     }
 
-    // T-d22ddcc1 F-018
     @Test func preservesAnExplicitlyEmptyOpenWithApplicationList() {
         let defaults = AppPreferences.defaults(theme: .dark)
         let patch: [String: JSONNode] = ["openWithApplications": .array([])]
@@ -205,7 +196,6 @@ struct AppStateReaderTests {
         #expect(reloaded?.openWithApplications == [])
     }
 
-    // T-60062fcd
     // The sanitizing half: a hand-edited change is stored as the app will read it back.
     @Test func persistsPreferencesAndWindowStateInOneFile() throws {
         let defaults = AppPreferences.defaults(theme: .dark)
@@ -257,7 +247,6 @@ struct AppStateReaderTests {
 
     // MARK: Windows
 
-    // T-894b255d F-130
     @Test func readsAFileSavedWithOneWindowAsThatWindowWithItsTabsAndPanels() {
         let state = Self.read(
             """
@@ -276,7 +265,6 @@ struct AppStateReaderTests {
         #expect(state.lastClosedWindow == nil)
     }
 
-    // T-bedcb0e7 F-131
     @Test func opensAsTheWindowClosedLastEndedWhenTheListOfWindowsIsDamaged() {
         let state = Self.read(
             """
@@ -290,7 +278,6 @@ struct AppStateReaderTests {
         #expect(state.lastClosedWindow?.session.openTabs.map(\.path) == ["/Users/demo/work"])
     }
 
-    // T-ad5ce6b9
     // The reading half; remembering a window as it closes is the store's.
     @Test func bringsBackTheWindowClosedLastOnATabItHasWhateverItsFrontTabSays() {
         let state = Self.read(
@@ -307,7 +294,6 @@ struct AppStateReaderTests {
         #expect(state.windows?.first?.session.frontTabIndex == 1)
     }
 
-    // T-7fddaaf9 F-132
     @Test func keepsTheWindowsOfADamagedFileThatMakeSense() {
         var sixty = ""
         for index in 0..<60 { sixty += ", {\"id\": \"window-\(index + 1000)\"}" }
@@ -344,7 +330,6 @@ struct AppStateReaderTests {
         #expect(state.preferences?.treeWidth == 300)
     }
 
-    // F-134
     @Test func halfPixelWidthsRoundUpAndBadBoundsFallBack() {
         let state = Self.preferences(
             "{\"preferences\": {\"treeWidth\": 220.5, \"inspectorWidth\": 260.5, \"openItemLimit\": 1.5}}"

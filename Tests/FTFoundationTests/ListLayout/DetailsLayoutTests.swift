@@ -1,5 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/detailsLayout.test.ts, and checks the column math against the golden recorded from
-// the reference (tools/parity/golden/details-layout.ts).
 import FTTestSupport
 import Foundation
 import Testing
@@ -11,9 +9,8 @@ struct DetailsLayoutTests {
     static let finder = DesignTokens.details(density: .finder)
     static let defaults = DetailsColumns.widths(DetailColumnWidths.defaults)
 
-    // MARK: The original's cases
+    // MARK: Layout cases
 
-    // T-6f96314a
     @Test func rowHeightsFollowTheDensity() {
         #expect(Self.layout.rowHeight == 28)
         #expect(Self.finder.rowHeight == 24)
@@ -21,8 +18,6 @@ struct DetailsLayoutTests {
         #expect(Self.layout.columnGap == 12)
     }
 
-    // T-da426402 F-764
-    // B-VIEW-041
     @Test func nameIsFirstAndOptionalColumnsFollowTheirOrder() {
         var visibility = DetailColumnVisibility(
             modified: false, size: true, kind: true, created: false, permissions: true)
@@ -35,8 +30,6 @@ struct DetailsLayoutTests {
                 == [.name, .kind, .permissions, .modified, .created, .size])
     }
 
-    // T-7fb627c4
-    // B-VIEW-043
     @Test func gapsAndRowPaddingAddToTheTableWidth() {
         var widths = Self.defaults
         widths[.name] = 220
@@ -54,16 +47,12 @@ struct DetailsLayoutTests {
         DetailsColumns.fit(columns: columns, widths: defaults, availableWidth: available, layout: layout)
     }
 
-    // T-bc6fc27c F-765
-    // B-VIEW-044
     @Test func fittingChangesNothingWhenItFitsOrThePaneIsNotMeasured() {
         let same = DetailsColumnSet(columns: Self.columns, widths: Self.defaults)
         #expect(Self.fit(Self.fullWidth) == same)
         #expect(Self.fit(0) == same)
     }
 
-    // T-933dad89
-    // B-VIEW-045
     @Test func nameNarrowsBeforeAnyColumnDrops() {
         var narrowed = Self.defaults
         narrowed[.name] = 220
@@ -72,8 +61,6 @@ struct DetailsLayoutTests {
         #expect(Self.fit(Self.fullWidth - 160) == DetailsColumnSet(columns: Self.columns, widths: narrowed))
     }
 
-    // T-0bada08f
-    // B-VIEW-045
     @Test func columnsDropFromTheRightOneAtATime() {
         let withoutKind = Self.fit(Self.fullWidth - 161)
         #expect(withoutKind.columns == [.name, .modified, .size])
@@ -85,7 +72,6 @@ struct DetailsLayoutTests {
         #expect(Self.fit(264) == DetailsColumnSet(columns: [.name], widths: alone))
     }
 
-    // T-1ef35513
     @Test func neverMoreThanThePaneHoldsAndNameStaysReadable() {
         var available = 120.0
         while available <= Self.fullWidth {
@@ -101,8 +87,6 @@ struct DetailsLayoutTests {
         }
     }
 
-    // T-6ae4f9d2
-    // B-VIEW-045
     @Test func fittingLeavesTheOtherSavedWidthsAlone() {
         let fitted = Self.fit(400)
         #expect(fitted.width(.modified) == 152)
@@ -116,23 +100,17 @@ struct DetailsLayoutTests {
         ) { DetailsColumns.clamp($0, column: column, search: false) }
     }
 
-    // T-0bd9a65d
-    // T-077e781e
     @Test func aColumnFitsTheWiderOfItsTitleAndItsWidestValue() {
         #expect(Self.fitWidth(.kind, header: 28, values: [60.2, 84.5]) == 87)
         #expect(Self.fitWidth(.size, header: 69.4, values: [24]) == 72)
         #expect(Self.fitWidth(.name, header: 40, values: [300], extra: 24) == 326)
     }
 
-    // T-c90c4243
-    // T-077e781e
     @Test func permissionsFitsItsCodesNotItsTitle() {
         #expect(Self.fitWidth(.permissions, header: 69.4, values: [36.5]) == 39)
         #expect(Self.fitWidth(.permissions, header: 69.4, values: [24]) == 36)
     }
 
-    // T-80505d69 B-VIEW-042
-    // T-077e781e
     @Test func aFittedWidthStaysWithinTheColumnsLimits() {
         #expect(Self.fitWidth(.size, header: 26, values: []) == 60)
         #expect(Self.fitWidth(.name, header: 40, values: [5000], extra: 24) == 720)
@@ -140,8 +118,6 @@ struct DetailsLayoutTests {
 
     // MARK: The sort rules of the header
 
-    // B-VIEW-048 B-VIEW-049 B-NAV-127
-    // B-VIEW-047 T-4023bc38 T-b0215a2e T-bae92ca4 T-f43eb8e0
     @Test func headerClicksSortLikeTheOriginal() {
         #expect(DetailsSorting.sortKey(for: .name, search: false) == "name")
         #expect(DetailsSorting.sortKey(for: .created, search: false) == nil)
@@ -160,8 +136,6 @@ struct DetailsLayoutTests {
 
     // MARK: Size bars
 
-    // T-87c303a0 B-VIEW-057 B-INFO-176 B-INFO-178
-    // B-VIEW-058
     @Test func barsAreAShareOfTheLargestSize() {
         #expect(SizeBars.fraction(bytes: 50, maxBytes: 100) == 0.5)
         #expect(SizeBars.fraction(bytes: 500, maxBytes: 100) == 1)
@@ -182,7 +156,6 @@ struct DetailsLayoutTests {
 
     // MARK: States
 
-    // T-71a43ef8 T-115ec808 T-af56cfdc B-VIEW-063 B-NAV-116 B-SEL-178 B-SEL-180
     @Test func theEmptyStateTexts() {
         #expect(ContentStateText.empty(path: "/Users/demo", hiddenItemCount: 0) == "Empty folder")
         #expect(ContentStateText.empty(path: "/Users/demo", hiddenItemCount: 1) == "Empty folder · 1 hidden item")
@@ -191,7 +164,7 @@ struct DetailsLayoutTests {
         #expect(ContentStateText.noMatches(query: "ab") == "No items match “ab”")
     }
 
-    // MARK: Against the reference
+    // MARK: Against the golden
 
     struct Input: Codable, Sendable {
         var op: String
@@ -267,7 +240,7 @@ struct DetailsLayoutTests {
             let fitted = DetailsColumns.fit(
                 columns: columns(input.columns), widths: widths(input.widths),
                 availableWidth: input.availableWidth ?? 0, layout: layout)
-            // The reference keeps every width it was given, Folder's included.
+            // The golden keeps every width it was given, Folder's included.
             let given = input.widths ?? [:]
             var out: [String: Double] = [:]
             for name in given.keys {
@@ -284,7 +257,7 @@ struct DetailsLayoutTests {
             let l = layout
             return .constants([
                 "regularRowHeight": DesignTokens.details(density: .standard).rowHeight,
-                // Finder's sizes have the reference's compact rows.
+                // Finder's sizes have the golden's compact rows.
                 "compactRowHeight": DesignTokens.details(density: .finder).rowHeight, "columnGap": l.columnGap,
                 "rowPadding": l.rowPadding, "rowInset": l.rowInset, "nameFloorWidth": l.nameFloorWidth,
                 "nameMinWidth": l.nameMinWidth,
@@ -292,8 +265,6 @@ struct DetailsLayoutTests {
         }
     }
 
-    // T-bc6fc27c T-933dad89 T-0bada08f T-1ef35513 T-6ae4f9d2 T-0bd9a65d T-c90c4243 T-80505d69 F-765 F-766
-    // B-VIEW-041 B-VIEW-044 B-VIEW-045
     @Test func theColumnMathMatchesTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "details-layout")
         #expect(cases.count >= 500)

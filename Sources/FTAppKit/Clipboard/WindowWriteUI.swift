@@ -1,6 +1,4 @@
-// Port of what an explorer window shows of its file operations in apps/desktop/src/renderer/hooks/useExplorerActions.ts
-// (handleProgress's end: followClipboardThroughWrite, shouldRenderCopyPasteResultDialog, pushTerminalCopyPasteToast)
-// and App.tsx (the progress card in every tab): P3-05's events on P5-09's card and toasts
+// The write coordinator's events on the progress card and toasts
 import AppKit
 import FTFoundation
 import FTOperations
@@ -25,7 +23,7 @@ final class WindowWriteUI {
     private weak var session: ExplorerWriteSession?
     private weak var group: ExplorerTabGroup?
     private var token: ExplorerWindowObservation?
-    /// The question the window's operation waits on (`CopyPasteRuntimeConflictDialog`).
+    /// The question the window's operation waits on.
     let runtimeConflicts = RuntimeConflictAlertController()
 
     private init(session: ExplorerWriteSession, group: ExplorerTabGroup) {
@@ -52,19 +50,19 @@ final class WindowWriteUI {
 
     func handle(_ event: WindowWriteEvent) {
         guard let group else { return }
-        // The right-click menus leave out the writes, and dim Paste, while one runs (B-CLIP-059).
+        // The right-click menus leave out the writes, and dim Paste, while one runs.
         let locked = session?.isWriteLocked ?? false
         for tab in group.tabs { tab.contextMenus.isWriteOperationLocked = locked }
         switch event {
         case .card(let card):
-            // The progress shows in every tab of the window (B-VIEW-171).
+            // The progress shows in every tab of the window.
             for tab in group.tabs {
                 guard let progress = tab.notifications?.progress else { continue }
                 progress.onStop = { [weak tab] in _ = tab?.writeActions?.cancel() }
                 progress.state = card
             }
         case .progress(let event):
-            // The question a drop from another app runs into brings the window forward (B-CLIP-178).
+            // The question a drop from another app runs into brings the window forward.
             if event.status == .awaitingResolution, TabDragDrop.externalDropOperations.contains(event.operationId) {
                 TabDragDrop.bringForward(group.selected?.window)
             }
@@ -81,7 +79,7 @@ final class WindowWriteUI {
     private func ended(_ event: WriteOperationEvent, inTabOnScreen: Bool) {
         guard let group, let tab = group.selected else { return }
         let fromExternalDrop = TabDragDrop.externalDropOperations.remove(event.operationId) != nil
-        // The clipboard follows what the write did before anything is said about it (B-CLIP-047).
+        // The clipboard follows what the write did before anything is said about it.
         if let result = event.result, let clipboard = session?.clipboard {
             let write = ClipboardWrite(
                 action: result.action.rawValue, mode: result.mode.flatMap { ClipboardMode(rawValue: $0.rawValue) },
@@ -109,7 +107,7 @@ final class WindowWriteUI {
         if WriteEndNotices.needsResultSheet(summary) {
             Self.resultPresenter.present(event, in: tab)
             // A drop from another app is still in flight until its result is read: the sheet brings the window
-            // forward (B-CLIP-178).
+            // forward.
             if fromExternalDrop { TabDragDrop.bringForward(tab.window) }
             return
         }

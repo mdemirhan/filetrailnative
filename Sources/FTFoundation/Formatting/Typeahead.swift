@@ -1,7 +1,6 @@
-// Port of apps/desktop/src/renderer/lib/typeahead.ts
 import Foundation
 
-/// A folder of the sidebar's tree, as typeahead needs it (the original's `TreeNodeState`).
+/// A folder of the sidebar's tree, as typeahead needs it.
 public struct TypeaheadTreeNode: Equatable, Sendable {
     public var path: String
     public var name: String
@@ -18,8 +17,8 @@ public struct TypeaheadTreeNode: Equatable, Sendable {
 
 public enum Typeahead {
     /// Printable, non-whitespace characters start or extend the list filter and the sidebar's
-    /// type-to-select. Navigation and modifier shortcuts are handled elsewhere. `key` is a
-    /// `KeyboardEvent.key` value: one UTF-16 unit for a character, a name ("ArrowDown") otherwise.
+    /// type-to-select. Navigation and modifier shortcuts are handled elsewhere. `key` is one
+    /// UTF-16 unit for a character, a name ("ArrowDown") otherwise.
     public static func isCharacterKey(_ key: String) -> Bool {
         key.utf16.count == 1 && !JSString.trimmed(key).isEmpty
     }
@@ -41,7 +40,7 @@ public enum Typeahead {
         return nil
     }
 
-    // The exact visual order of the expanded tree (`flattenVisibleTree` of lib/treeView.ts).
+    // The exact visual order of the expanded tree.
     private static func visiblePaths(rootPath: String, nodes: [String: TypeaheadTreeNode]) -> [String] {
         var paths: [String] = []
         func walk(_ path: String) {

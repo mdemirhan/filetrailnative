@@ -1,4 +1,4 @@
-// The column widths a drag sets, kept as the window saves its session (the original's usePreferencesSync)
+// The column widths a drag sets, kept as the window saves its session
 import AppKit
 import FTFileSystem
 import FTFoundation

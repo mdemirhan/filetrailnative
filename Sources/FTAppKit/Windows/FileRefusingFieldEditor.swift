@@ -1,4 +1,3 @@
-// Port of the text field rule of handleWindowDragOver and handleWindowDrop in apps/desktop/src/renderer/hooks/useExplorerDragAndDrop.ts
 import AppKit
 
 /// The field editor of an explorer window. A text field takes no files: a drop would type their paths in. It answers

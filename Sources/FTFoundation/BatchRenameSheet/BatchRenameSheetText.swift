@@ -1,15 +1,15 @@
-// Port of the texts of apps/desktop/src/renderer/components/BatchRenameSheet.tsx: PREVIEW_ROW_LIMIT, EXAMPLE_DATE,
-// MODES, DATE_TOKEN_NAMES, the pop-ups' choices, describeRow, Summary and describeSettingsError
+// PREVIEW_ROW_LIMIT, EXAMPLE_DATE, MODES, DATE_TOKEN_NAMES, the pop-ups' choices, describeRow, Summary and
+// describeSettingsError
 import Foundation
 
 /// What the Rename sheet for several items says: its title, its choices, each row's note and the footer's summary.
 public enum BatchRenameSheetText {
-    /// `PREVIEW_ROW_LIMIT`: rows drawn in the preview; the counts below it always cover every item.
+    /// Rows drawn in the preview; the counts below it always cover every item.
     public static let previewRowLimit = 1_000
-    /// `EXAMPLE_DATE`: the date the example under the date options is written for.
+    /// The date the example under the date options is written for.
     public static let exampleDate: LocalDateTime = "2026-05-14T18:02:11"
 
-    /// `MODES`, in the order the segments show them.
+    /// In the order the segments show them.
     public static let modes: [(mode: BatchRenameMode, label: String)] = [
         (.replace, "Replace Text"), (.add, "Add Text"), (.format, "Format"), (.changeCase, "Change Case"),
     ]
@@ -88,7 +88,7 @@ public enum BatchRenameSheetText {
 
     // MARK: Date pattern
 
-    /// `DATE_TOKEN_NAMES`: what each date token puts in a name, shown for the date the example is written for.
+    /// What each date token puts in a name, shown for the date the example is written for.
     public static func tokenName(_ token: BatchRenameDateToken) -> String {
         switch token {
         case .year4: "Year (2026)"
@@ -101,7 +101,7 @@ public enum BatchRenameSheetText {
         }
     }
 
-    /// The tokens in the order their buttons show them (`DATE_TOKENS`).
+    /// The tokens in the order their buttons show them.
     public static let tokens: [BatchRenameDateToken] = [.year4, .year2, .month, .day, .hour, .minute, .second]
 
     public static let insertLabel = "Insert"
@@ -243,7 +243,7 @@ public enum BatchRenameSheetText {
         return Summary(text: parts.joined(separator: " \u{00B7} "), danger: false)
     }
 
-    /// `describeSettingsError`: the settings' fault as the sheet says it. JavaScript's own words for a broken pattern
+    /// `describeSettingsError`: the settings' fault as the sheet says it. The matcher's own words for a broken pattern
     /// ("Invalid regular expression: /(/giu: ") are left out, the reason kept
     /// (`/^(The pattern isn’t valid: )(?:Invalid regular expression: )?\/.*\/[a-z]*: /su`).
     public static func describeSettingsError(_ error: String) -> String {

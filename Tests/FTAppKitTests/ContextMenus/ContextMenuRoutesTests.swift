@@ -1,6 +1,4 @@
-// Ports the cases of App.fileOperations.test.tsx ("selecting what Duplicate made") and App.menusAndTree.test.tsx
-// ("Calculate Size") and the Show Info cases of useExplorerActions.ts that go through a right-click menu: each test
-// right-clicks and chooses the item, so a route that refuses on the way or acts on something else fails it
+// Each test right-clicks and chooses the item, so a route that refuses on the way or acts on something else fails it
 import AppKit
 import FTFoundation
 import FTTestSupport
@@ -77,7 +75,7 @@ extension ExplorerWindowlessTests {
             _ = NSApp.sendAction(try #require(item.action), to: item.target, from: item)
         }
 
-        // B-CLIP-060 B-VIEW-215: an item chosen after an operation began says the app is busy, and does nothing.
+        // An item chosen after an operation began says the app is busy, and does nothing.
         @Test func anItemChosenOnceAnOperationBeganSaysItIsBusy() async throws {
             let window = try await open()
             let menu = try contentMenu(window, ["note.txt"])
@@ -106,8 +104,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Duplicate and Move of the tree
 
-        // T-3f8263ee: the copy goes next to the folder, whatever is selected in the list, and is selected in the tree.
-        // B-TREE-141 B-VIEW-209 B-VIEW-218
+        // The copy goes next to the folder, whatever is selected in the list, and is selected in the tree.
         @Test func aTreeFoldersDuplicateMakesTheCopyNextToItAndSelectsItInTheTree() async throws {
             let window = try await open()
             window.select(["note.txt"])
@@ -118,7 +115,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-3f8263ee: a folder deep in the tree goes into its own parent, not the folder on screen.
+        // A folder deep in the tree goes into its own parent, not the folder on screen.
         @Test func aNestedTreeFoldersCopyGoesIntoItsParentNotTheFolderOnScreen() async throws {
             let window = try await open()
             let inner = window.folder.appendingPathComponent("Alpha/Inner")
@@ -132,8 +129,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // F-861: the tree's Move to… moves the folder right-clicked, not the list's selection.
-        // B-DLG-054 B-TREE-141 B-VIEW-209
+        // The tree's Move to… moves the folder right-clicked, not the list's selection.
         @Test func aTreeFoldersMoveMovesThatFolder() async throws {
             let window = try await open()
             window.select(["note.txt"])
@@ -165,7 +161,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Show Info
 
-        // B-INFO-009: the panel opens on the item right-clicked, not the selection.
+        // The panel opens on the item right-clicked, not the selection.
         @Test func showInfoOnARowDescribesThatRow() async throws {
             let window = try await open()
             let info = try #require(window.tab.infoController)
@@ -177,8 +173,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-INFO-010: a sidebar folder's, a favorite's and the background's describe that folder.
-        // B-TREE-141 B-TREE-142 B-VIEW-216
+        // A sidebar folder's, a favorite's and the background's describe that folder.
         @Test func showInfoFromTheSidebarAndTheBackgroundDescribesThatFolder() async throws {
             let window = try await open()
             let info = try #require(window.tab.infoController)
@@ -196,7 +191,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Calculate Size of the menus
 
-        // T-f9b3fe24 B-INFO-163: one item is measured again, past a size already known.
+        // One item is measured again, past a size already known.
         @Test func aRowsCalculateSizeMeasuresAgain() async throws {
             let window = try await open()
             let alpha = path(window, "Alpha")
@@ -207,7 +202,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-e3c9959a B-INFO-163: so is the folder on screen, from empty space.
+        // So is the folder on screen, from empty space.
         @Test func theBackgroundsCalculateSizeMeasuresTheFolderOnScreenAgain() async throws {
             let window = try await open()
             let folder = window.tab.shownFolderPath
@@ -218,7 +213,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-fc474670 B-INFO-163 B-TREE-147 B-VIEW-217: a sidebar folder in the Size column is measured again and leaves the panel closed.
+        // A sidebar folder in the Size column is measured again and leaves the panel closed.
         @Test func aSidebarFolderInTheSizeColumnMeasuresAgainWithThePanelClosed() async throws {
             let window = try await open()
             let beta = path(window, "Beta")
@@ -229,7 +224,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-147baa0e B-TREE-147 B-VIEW-217: the sidebar's folder on screen shows in the status bar: the panel stays closed.
+        // The sidebar's folder on screen shows in the status bar: the panel stays closed.
         @Test func theSidebarsFolderOnScreenLeavesThePanelClosed() async throws {
             let window = try await open()
             let folder = window.tab.shownFolderPath
@@ -244,7 +239,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-9cb4c249 B-INFO-164 B-TREE-147 B-VIEW-217: a sidebar folder nothing else on screen shows opens the Info panel on it.
+        // A sidebar folder nothing else on screen shows opens the Info panel on it.
         @Test func aSidebarFolderNothingElseShowsOpensTheInfoPanelOnIt() async throws {
             let window = try await open()
             let info = try #require(window.tab.infoController)
@@ -260,7 +255,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: The Calculate Size command
 
-        // B-INFO-160: with the tree on a location row it measures the folder on screen, not the list's selection.
+        // With the tree on a location row it measures the folder on screen, not the list's selection.
         @Test func theCommandOnALocationRowMeasuresTheFolderOnScreen() async throws {
             let window = try await open()
             let tab = window.tab
@@ -275,7 +270,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-INFO-160 B-INFO-162: on a tree folder it measures that folder again, and opens no panel.
+        // On a tree folder it measures that folder again, and opens no panel.
         @Test func theCommandOnATreeFolderMeasuresAgainAndOpensNoPanel() async throws {
             let window = try await open()
             let tab = window.tab

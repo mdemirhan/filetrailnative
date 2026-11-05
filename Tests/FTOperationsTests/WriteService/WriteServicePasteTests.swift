@@ -1,4 +1,3 @@
-// Port of the paste cases of packages/core/src/fs/writeService.test.ts
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -8,8 +7,7 @@ import os
 
 @testable import FTOperations
 
-/// Port of createMockFileSystem (writeService.test.ts): items by path, with no ids or dates; writes add and remove
-/// paths, and copies can be replaced.
+/// Items by path, with no ids or dates; writes add and remove paths, and copies can be replaced.
 private final class PathSetWriteFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     private struct State {
         var existingPaths: Set<String>
@@ -136,7 +134,6 @@ private func nativeService(_ operationId: String) -> (WriteService, Events) {
 }
 
 struct WriteServicePasteTests {
-    // T-4ca2bce9 F-273 F-336
     @Test func copiesSymlinksAsLinksDuringExecution() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/source/actual.txt", "hello")
@@ -151,7 +148,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    // T-37ddd66b F-461
     @Test func executesCutByCopyingFirstAndRemovingTheSourceAfterSuccess() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/source/notes.txt", "hello")
@@ -167,7 +163,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    // T-170d73ea F-466
     @Test func removesNestedSourceDirectoriesAfterASuccessfulCutOnTheRealFilesystem() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/source/nested/deeper/alpha.txt", "alpha")
@@ -185,7 +180,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    // T-430afe8c F-257 F-280
     @Test func supportsCooperativeCancellationAndReportsPartialCompletion() async throws {
         let fileSystem = PathSetWriteFileSystem(
             existingPaths: ["/target", "/source/one.txt", "/source/two.txt"], directoryPaths: ["/target"],
@@ -211,7 +205,6 @@ struct WriteServicePasteTests {
         #expect(terminal?.result?.summary.completedItemCount == 1)
     }
 
-    // T-6adcf405 F-242
     @Test func rejectsStartingASecondWriteOperationWhileOneIsAlreadyActive() async throws {
         let fileSystem = PathSetWriteFileSystem(
             existingPaths: ["/target", "/source/one.txt", "/source/two.txt"], directoryPaths: ["/target"],
@@ -247,7 +240,6 @@ struct WriteServicePasteTests {
         service.cancelOperation("op-1")
     }
 
-    // T-1dd3b541 F-447
     @Test func copiesNestedDirectoryTreesOnTheRealFilesystem() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/source/nested/alpha.txt", "alpha")
@@ -265,7 +257,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    // T-8227d576 F-452
     @Test func preservesFilePermissionsIncludingExecuteBitsWhenCopying() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/source/bin/run", "#!/bin/sh\necho hi")
@@ -283,7 +274,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    // T-250a2e62 F-271 F-452
     @Test func treatsUnsupportedChmodAsNonFatalDuringCopy() async throws {
         let fileSystem = PathSetWriteFileSystem(
             existingPaths: ["/target", "/source", "/source/run.sh"], directoryPaths: ["/target", "/source"],
@@ -299,9 +289,7 @@ struct WriteServicePasteTests {
         #expect(terminal?.result?.status == .completed)
     }
 
-    // The original's case guards Electron's fs, which takes .asar archives for folders: the app's own file system
-    // sees one as the file it is.
-    // T-3e4b85d5 F-447
+    // An .asar archive is copied as the file it is, not as a folder.
     @Test func copiesAsarFilesAsRegularFilesNotAsVirtualDirectories() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/source/app.asar", "asar-archive-content")
@@ -317,7 +305,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    // T-12a18238 F-447
     @Test func duplicatesAFileWhenCopyPasteTargetsTheSameDirectory() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/workspace/notes.txt", "hello")
@@ -332,7 +319,6 @@ struct WriteServicePasteTests {
         }
     }
 
-    // T-e7e30fd5 F-447
     @Test func duplicatesADirectoryTreeWhenCopyPasteTargetsTheSameDirectory() async throws {
         try await withTemporaryDirectory { root in
             try Disk.write(root.path + "/workspace/source/nested/alpha.txt", "alpha")

@@ -21,7 +21,7 @@
                 let open = tab.panels.propertiesOpen
                 #expect(AutomationCommands.run("toggleInfoPanel", controller: tab, window: window).status == .ok)
                 #expect(tab.panels.propertiesOpen == !open)
-                // The zoom commands are the system's here; an id the original doesn't have is an error.
+                // The zoom commands are the system's here; an unknown id is an error.
                 #expect(AutomationCommands.run("zoomIn", controller: tab, window: window).status == .unsupported)
                 #expect(AutomationCommands.run("explode", controller: tab, window: window).status == .failed)
                 await harness.close()
@@ -38,7 +38,7 @@
                 #expect(!AutomationPrefs.hasHandler("returnKeyAction"))
                 #expect(apply(["returnKeyAction": .string("open")]).status == .ok)
                 #expect(tab.preferences.returnKeyAction == .open)
-                // A window session key is only seeded before launch in the original's driver.
+                // A window session key has no handler: it is only seeded before launch.
                 #expect(!AutomationPrefs.hasHandler("lastVisitedPath"))
                 let session = apply(["lastVisitedPath": .string("/")])
                 #expect(session.status == .partial)
@@ -46,7 +46,7 @@
                 await harness.close()
             }
 
-            // T-49bf3581 B-CLIP-175: a field being edited is where the drag goes, and it takes no files.
+            // A field being edited is where the drag goes, and it takes no files.
             @Test func aFieldBeingEditedIsWhereAFileDragGoes() async throws {
                 let harness = try ExplorerHarness.windowless()
                 let tab = try await harness.open()

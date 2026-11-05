@@ -112,7 +112,7 @@ extension SidebarViewController {
 
     // MARK: Commands
 
-    /// The folder "Use as Tree Root" roots the tree at (`resolveRootTreeTargetPath`).
+    /// The folder "Use as Tree Root" roots the tree at.
     func rootTreeTarget(
         focusedPane: ExplorerPane?, lastFocusedPane: ExplorerPane?, selectedContentFolder: String?, currentPath: String
     ) -> String? {

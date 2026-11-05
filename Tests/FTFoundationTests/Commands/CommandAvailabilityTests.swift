@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/rendererCommandAvailability.test.ts
 import FTTestSupport
 import Foundation
 import Testing
@@ -20,7 +19,7 @@ struct CommandAvailabilityTests {
             selectedTreeTargetKind: selectedTreeTargetKind)
     }
 
-    /// The original's `availabilityContext()`: one file selected in /Users/demo, an empty clipboard.
+    /// One file selected in /Users/demo, an empty clipboard.
     static func context(
         _ configure: (inout Context) -> Void = { _ in }
     ) -> Context {
@@ -38,8 +37,6 @@ struct CommandAvailabilityTests {
         CommandAvailability.canRun(command, context)
     }
 
-    // T-0cb7701a F-002
-    // B-CLIP-002
     @Test func disablesSelectionCommandsWithoutAContentSelection() {
         let context = Self.context {
             $0.selectedPathsInViewOrder = []
@@ -53,8 +50,6 @@ struct CommandAvailabilityTests {
         }
     }
 
-    // T-c81f8a3d F-004
-    // B-CLIP-053
     @Test func requiresAReadyClipboardAndDestinationForPaste() {
         #expect(!Self.run(.pasteSelection, Self.context { $0.clipboardHasItems = false }))
         #expect(
@@ -67,8 +62,6 @@ struct CommandAvailabilityTests {
         #expect(Self.run(.pasteSelection, Self.context { $0.clipboardHasItems = true }))
     }
 
-    // T-a6627a45 F-083
-    // B-CLIP-002
     @Test func copiesAndCutsTheTreesFolderFromTheTreeWhateverTheListHasSelected() {
         func treeContext(_ path: String?) -> Context {
             Self.context {
@@ -85,8 +78,6 @@ struct CommandAvailabilityTests {
         }
     }
 
-    // T-3bde1910 F-005
-    // B-CLIP-039
     @Test func showsAndClearsTheClipboardOnlyWhileItHoldsSomething() {
         let filled = Self.context { $0.clipboardHasItems = true }
         for command in [RendererCommand.showClipboard, .clearClipboard] {
@@ -95,7 +86,6 @@ struct CommandAvailabilityTests {
         }
     }
 
-    // T-7c0d1c60 F-002
     @Test func requiresEditableFilesAndRespectsTheOpenItemLimitForEdit() {
         let textFile = Self.file("/Users/demo/file.txt")
         let folder = Self.directory("/Users/demo/Folder")
@@ -126,8 +116,6 @@ struct CommandAvailabilityTests {
                 }))
     }
 
-    // T-9b208ff7 F-002
-    // B-DLG-192
     @Test func requiresASelectedItemAndRespectsTheOpenItemLimitForOpen() {
         #expect(
             !Self.run(
@@ -145,8 +133,6 @@ struct CommandAvailabilityTests {
                 }))
     }
 
-    // T-eefbaafe F-083
-    // B-TREE-105 B-TREE-152 T-3ee594a4
     @Test func allowsTreeSafeOpenTerminalAndCopyPathCommandsOnlyWithATreeTarget() {
         let withTarget = Self.context {
             $0.shortcutContext = Self.shortcutContext(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
@@ -169,7 +155,6 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.copyPath, withoutTarget))
     }
 
-    // T-fe502f1e
     @Test func allowsOpenInTerminalFromContentWithNoSelectionWhenAFolderIsOpen() {
         #expect(
             Self.run(
@@ -181,7 +166,6 @@ struct CommandAvailabilityTests {
                 }))
     }
 
-    // T-9ea9571e F-003
     // Finding files, then moving, renaming, duplicating or trashing them, is a Finder flow.
     @Test func letsSearchResultsBeMovedRenamedDuplicatedAndTrashedButNotPastedInto() {
         let search = Self.context {
@@ -197,7 +181,6 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.pasteSelection, search))
     }
 
-    // T-62605ecc F-003
     // A duplicate goes next to its original: results from two folders have no one folder.
     @Test func duplicatesSearchResultsOnlyWhenTheyShareAFolder() {
         let fromTwoFolders = Self.context {
@@ -214,7 +197,6 @@ struct CommandAvailabilityTests {
         #expect(Self.run(.renameSelection, fromTwoFolders))
     }
 
-    // T-dad828ed
     @Test func allowsNewFolderWheneverThereIsAFolderToMakeItIn() {
         #expect(
             Self.run(
@@ -245,7 +227,6 @@ struct CommandAvailabilityTests {
                 }))
     }
 
-    // T-d06fc2bd
     @Test func renamesOneSelectedItemInItsRowAndSeveralInTheRenameSheet() {
         #expect(Self.run(.renameSelection, Self.context { $0.selectedPathsInViewOrder = ["/Users/demo/file.txt"] }))
         #expect(
@@ -261,8 +242,6 @@ struct CommandAvailabilityTests {
                 }))
     }
 
-    // T-fc267c38 F-001
-    // B-CLIP-007 B-VIEW-124
     @Test func disablesWhatWouldStartAnotherOperationWhileAWriteOperationIsInFlight() {
         let context = Self.context {
             $0.writeOperationLocked = true
@@ -278,7 +257,6 @@ struct CommandAvailabilityTests {
         #expect(Self.run(.copyPath, context))
     }
 
-    // T-639007a7 F-083
     @Test func stillRequiresContentFocusForContentOnlyActions() {
         #expect(!Self.run(.copySelection, Self.context { $0.shortcutContext = Self.shortcutContext(focusedPane: nil) }))
     }
@@ -314,8 +292,6 @@ struct CommandAvailabilityTests {
         CommandAvailability.TargetContext(context)
     }
 
-    // T-6c4cf0a0 F-083
-    // B-TREE-155 T-a1688568
     @Test func opensOneSelectedFolderOrTheTreesFolderInANewTab() {
         let run = { (context: Context) in Self.run(.openSelectionInNewTab, context) }
         #expect(run(Self.select(Self.folder)))
@@ -327,16 +303,12 @@ struct CommandAvailabilityTests {
         #expect(CommandAvailability.newTabTargetPath(Self.target(Self.treeFocused("/Users"))) == "/Users")
     }
 
-    // T-cddfbbe4
-    // B-VIEW-233
     @Test func needsASelectedItemForQuickLook() {
         #expect(Self.run(.quickLookSelection, Self.select(Self.note)))
         #expect(!Self.run(.quickLookSelection, Self.select()))
         #expect(!Self.run(.quickLookSelection, Self.treeFocused("/Users")))
     }
 
-    // T-2afa9f93 F-005
-    // B-SRCH-151 B-TREE-037 B-TREE-038 B-TREE-105 B-TREE-189
     @Test func addsTheSelectedFolderToTheFavoritesOrTheFolderOnScreenWithNothingSelected() {
         func favorite(_ context: Context) -> String? {
             CommandAvailability.favoriteTargetPath(Self.target(context))
@@ -354,7 +326,6 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.toggleFavorite, Self.select(Self.note)))
     }
 
-    // T-fd1f6836
     @Test func showsTheSelectionInFinderOrTheFolderOnScreenWithNothingSelected() {
         func paths(_ context: Context) -> [String] {
             CommandAvailability.showInFinderPaths(Self.target(context))
@@ -366,8 +337,6 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.showInFinder, Self.select { $0.currentPath = "" }))
     }
 
-    // T-d7f1f781
-    // B-TREE-156
     @Test func sizesTheSelectedFoldersOrTheFolderOnScreenWithNothingSelected() {
         func paths(_ context: Context) -> [String] {
             CommandAvailability.calculateSizePaths(Self.target(context))
@@ -393,15 +362,12 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.calculateSize, Self.select(Self.note)))
     }
 
-    // T-e0d3c6ad F-005
     @Test func revealsASelectedSearchResultInItsFolderAndOnlyASearchResult() {
         #expect(Self.run(.revealInFolder, Self.select(Self.note) { $0.isSearchMode = true }))
         #expect(!Self.run(.revealInFolder, Self.select { $0.isSearchMode = true }))
         #expect(!Self.run(.revealInFolder, Self.select(Self.note)))
     }
 
-    // T-ded2e1c3 F-006
-    // T-a1688568
     @Test func followsTheHistoryForBackAndForward() {
         #expect(!Self.run(.goBack, Self.select { $0.canGoBack = false }))
         #expect(Self.run(.goBack, Self.select { $0.canGoBack = true }))
@@ -409,16 +375,12 @@ struct CommandAvailabilityTests {
         #expect(Self.run(.goForward, Self.select { $0.canGoForward = true }))
     }
 
-    // T-d06ec78b F-006
-    // B-NAV-058
     @Test func hasNoEnclosingFolderAtTheTopOfTheDisk() {
         #expect(Self.run(.goEnclosingFolder, Self.select()))
         #expect(!Self.run(.goEnclosingFolder, Self.select { $0.currentPath = "/" }))
         #expect(!Self.run(.goEnclosingFolder, Self.select { $0.currentPath = "" }))
     }
 
-    // T-0ac6221f F-006
-    // B-NAV-129 B-SRCH-106
     @Test func leavesTheOrderOfSearchResultsToTheResultsBar() {
         let searching = Self.select { $0.isSearchMode = true }
         for command in [
@@ -429,8 +391,6 @@ struct CommandAvailabilityTests {
         }
     }
 
-    // T-2ae13f7b
-    // B-SRCH-071
     @Test func bringsBackTheLastResultsOnlyWhenThereAreSomeAndTheyAreNotOnScreen() {
         let withSearch = Self.select { $0.hasCachedSearch = true }
         #expect(Self.run(.showLastSearchResults, withSearch))
@@ -444,15 +404,11 @@ struct CommandAvailabilityTests {
                 }))
     }
 
-    // T-097a0447 F-006
-    // B-VIEW-237
     @Test func needsASecondTabToMoveBetweenTabs() {
         #expect(!Self.run(.selectNextTab, Self.select { $0.tabCount = 1 }))
         #expect(Self.run(.selectPreviousTab, Self.select { $0.tabCount = 3 }))
     }
 
-    // T-c6d07093 F-083
-    // B-VIEW-228
     @Test func opensHelpFromTheHelpPageTooButNotOverADialog() {
         let onHelp = Self.select { $0.shortcutContext = Self.shortcutContext(mainView: .help) }
         let overDialog = Self.select { $0.shortcutContext = Self.shortcutContext(copyPasteModalOpen: true) }
@@ -461,7 +417,6 @@ struct CommandAvailabilityTests {
         #expect(!Self.run(.openHelp, overDialog))
     }
 
-    // T-c08837a1
     // ⌘A in a big folder once took seconds here: every command looked up every selected item by walking the whole
     // listing. The bound is far above the few milliseconds it takes now.
     @Test func buildsTheMenuStateForABigFolderWithEverythingSelectedWithoutAFreeze() {
@@ -489,7 +444,6 @@ struct CommandAvailabilityTests {
         #expect(elapsed < 1)
     }
 
-    // F-003 F-004
     @Test func theTrashAndEjectRules() {
         let inTrash = Self.context {
             $0.homePath = "/Users/demo"
@@ -514,8 +468,6 @@ struct CommandAvailabilityTests {
         #expect(Self.run(.ejectVolume, Self.context { $0.ejectTargetPath = "/Volumes/Backup" }))
     }
 
-    // F-006
-    // B-NAV-106
     @Test func theGoPlacesNeedTheHomeFolderExceptTheDiskAndApplications() {
         #expect(Self.run(.goMacintoshHD, Self.context()))
         #expect(Self.run(.goApplications, Self.context()))

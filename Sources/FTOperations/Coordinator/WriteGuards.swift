@@ -1,5 +1,3 @@
-// Port of assertNotProtectedPath, assertNotIntoTrash, assertNotAlreadyInTrash, assertNotSystemLocation, identitiesOf,
-// identityOf and trimAnalysisReportForWindow (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFoundation
 import Foundation
 

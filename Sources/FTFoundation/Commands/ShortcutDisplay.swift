@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/shortcutLabels.ts and shortcutDisplay.ts
 import Foundation
 
 /// Shortcuts are written as "Cmd+Shift+G" in the app's data (Help, the toolbar buttons) and shown the macOS way:
@@ -11,7 +10,7 @@ public enum ShortcutLabels {
     ]
     private static let modifierOrder = ["⌃", "⌥", "⇧", "⌘"]
 
-    /// `shortcutParts`: one entry for each key, for Help's keycaps: ["⇧", "⌘", "G"].
+    /// One entry for each key, for Help's keycaps: ["⇧", "⌘", "G"].
     public static func parts(_ shortcut: String) -> [String] {
         var units = Array(shortcut.utf16)
         if JSString.hasSuffix(shortcut, "++") {
@@ -23,7 +22,7 @@ public enum ShortcutLabels {
             .map { JSString.trimmed(JSString.string($0)) }
             .filter { !$0.isEmpty }
             .map { glyphs[$0] ?? $0 }
-        // Sorted by the modifier's place; the sort is stable, as JavaScript's.
+        // Sorted by the modifier's place; the sort is stable.
         let modifiers = parts.enumerated().filter { modifierOrder.contains($0.element) }
             .sorted {
                 let left = modifierOrder.firstIndex(of: $0.element) ?? 0
@@ -34,7 +33,7 @@ public enum ShortcutLabels {
         return modifiers + parts.filter { !modifierOrder.contains($0) }
     }
 
-    /// `formatShortcut`: as one piece of text, the way a menu writes it: "⇧⌘G". Escape is spelled out, as "Esc".
+    /// As one piece of text, the way a menu writes it: "⇧⌘G". Escape is spelled out, as "Esc".
     public static func format(_ shortcut: String) -> String {
         parts(shortcut).map { $0 == "esc" ? "Esc" : $0 }.joined()
     }

@@ -1,4 +1,3 @@
-// Covers F-742..F-746, F-805 and F-819 (the path bar's logic: B-INFO-102..130); ports the path bar part of ContentPane.tsx
 import Foundation
 import Testing
 
@@ -6,18 +5,16 @@ import Testing
 
 @Suite("path bar")
 struct PathBarModelTests {
-    /// A measure that gives every label 8 per character and 12 of padding, like the fallback of the original.
+    /// A measure that gives every label 8 per character and 12 of padding.
     static func measure(_ label: String, _ isActive: Bool, _ collapsed: Bool, _ uncapped: Bool) -> Double {
         Double(label.count) * 8 + 12
     }
 
-    // B-VIEW-095
     @Test func rootIsMacintoshHD() {
         #expect(PathBarModel.segments("/") == [PathbarSegment(label: "Macintosh HD", path: "/")])
         #expect(PathBarModel.segments("").first?.label == "No folder selected")
     }
 
-    // B-VIEW-095 T-e082ec7b
     @Test func aPathStartsAtItsVolume() {
         let segments = PathBarModel.segments("/Volumes/Photos/2026/Trip")
         #expect(segments.map(\.label) == ["Photos", "2026", "Trip"])
@@ -55,14 +52,12 @@ struct PathBarModelTests {
         #expect(PathBarModel.label("/Users/demo") == "demo")
     }
 
-    // B-VIEW-096
     @Test func fourSegmentsOrFewerAlwaysShow() {
         let segments = PathBarModel.segments("/a/b/c")
         let items = PathBarModel.visibleItems(segments, availableWidth: 10, expanded: false, measure: Self.measure)
         #expect(items.count == 4)
     }
 
-    // B-VIEW-096
     @Test func middleSegmentsCollapseBehindTheEllipsisKeepingTheRootAndTheTail() {
         let segments = PathBarModel.segments("/aaaa/bbbb/cccc/dddd/eeee")
         // Roomy enough for the root, the "…" and a tail of two.
@@ -83,7 +78,6 @@ struct PathBarModelTests {
         #expect(narrow.first == .collapsed(hiddenCount: 4))
     }
 
-    // B-VIEW-096
     @Test func theLastResortIsTheEllipsisAndTheCurrentFolder() {
         let segments = PathBarModel.segments("/aaaa/bbbb/cccc/dddd/eeee")
         let items = PathBarModel.visibleItems(segments, availableWidth: 8, expanded: false, measure: Self.measure)
@@ -91,14 +85,12 @@ struct PathBarModelTests {
         #expect(items.first == .collapsed(hiddenCount: 5))
     }
 
-    // B-VIEW-096
     @Test func expandedShowsEverything() {
         let segments = PathBarModel.segments("/aaaa/bbbb/cccc/dddd/eeee")
         #expect(
             PathBarModel.visibleItems(segments, availableWidth: 100, expanded: true, measure: Self.measure).count == 6)
     }
 
-    // B-INFO-108 B-VIEW-098
     @Test func roomLeftOverGoesBackToCutNames() {
         let measure: PathBarModel.Measure = { label, _, _, uncapped in
             let natural = Double(label.count) * 8 + 12
@@ -116,13 +108,11 @@ struct PathBarModelTests {
         #expect(width > 100 && width <= 252)
     }
 
-    // T-18fe33a6
     @Test func hiddenFoldersLabel() {
         #expect(PathBarModel.showHiddenLabel(1) == "Show 1 More Folder")
         #expect(PathBarModel.showHiddenLabel(3) == "Show 3 More Folders")
     }
 
-    // B-VIEW-015 T-fb71ed4a
     @Test func statusKeepsAtLeastAShareForThePath() {
         // Room for both.
         let roomy = PathBarModel.rowLayout(contentWidth: 800, statusWidth: 100)
@@ -134,9 +124,8 @@ struct PathBarModelTests {
         #expect(PathBarModel.rowLayout(contentWidth: 400, statusWidth: nil).path == 400)
     }
 
-    // MARK: Folder menu (B-INFO-122..129)
+    // MARK: Folder menu
 
-    // T-ca1e9d7a F-805 B-INFO-129
     @Test func menuListsAtMost300FoldersCenteredOnTheTickedOne() {
         let folders = (0..<1000).map { PathbarFolder(path: "/f/\($0)", name: "\($0)") }
         let limited = PathbarFolderMenuModel.limit(folders, activePath: "/f/500")
@@ -152,7 +141,6 @@ struct PathBarModelTests {
         #expect(PathbarFolderMenuModel.hiddenLabel(5) == "5 more folders")
     }
 
-    // T-d2b67f2e F-805 B-INFO-125
     @Test func aLetterJumpsToTheNextFolderStartingWithItAndWraps() {
         let folders = ["alpha", "beta", "Alps", "gamma"].map { PathbarFolder(path: "/\($0)", name: $0) }
         #expect(PathbarFolderMenuModel.jump(letter: "a", from: 0, in: folders) == 2)
@@ -160,9 +148,8 @@ struct PathBarModelTests {
         #expect(PathbarFolderMenuModel.jump(letter: "z", from: 0, in: folders) == nil)
     }
 
-    // MARK: Path editor (B-INFO-113..116)
+    // MARK: Path editor
 
-    // T-6d2af5d3
     @Test func arrowsPreviewSuggestionsWithWrap() {
         var state = PathSuggestionState(draft: "/Us")
         state.receive([PathSuggestionRow(path: "/Users", name: "Users"), PathSuggestionRow(path: "/Usr", name: "Usr")])
@@ -176,7 +163,6 @@ struct PathBarModelTests {
         #expect(state.nextIndex(down: true) == 0)
     }
 
-    // T-5f7427b6
     @Test func returnGoesToTheHighlightedSuggestionElseTheTrimmedText() {
         var state = PathSuggestionState(draft: "  /Users/demo  ")
         #expect(state.submission == "/Users/demo")

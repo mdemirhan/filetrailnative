@@ -1,5 +1,4 @@
-// Port of tools/parity/exec/snapshot.ts: a normalized description of a folder's tree, to compare what
-// the Swift engine leaves on disk with what the reference engine leaves.
+// A normalized description of a folder's tree, for comparing what an operation leaves on disk.
 import CryptoKit
 import Darwin
 import Foundation
@@ -33,14 +32,14 @@ public enum TreeSnapshot {
         public var description: String { "\(call)(\(path)): \(String(cString: strerror(errno)))" }
     }
 
-    /// Every item below `root` (not `root` itself), sorted by path as JavaScript sorts strings.
+    /// Every item below `root` (not `root` itself), sorted by path, by UTF-16 code unit.
     public static func entries(of root: String) throws -> [Entry] {
         var entries: [Entry] = []
         try walk(root: root, relative: "", into: &entries)
         return entries.sorted { $0.path.utf16.lexicographicallyPrecedes($1.path.utf16) }
     }
 
-    /// The snapshot as snapshot.ts writes it: `JSON.stringify(entries, null, 2)` and a newline.
+    /// The snapshot as JSON: `JSON.stringify(entries, null, 2)` and a newline.
     public static func json(_ entries: [Entry]) -> String {
         JSONText.stringify(.array(entries.map(value))) + "\n"
     }

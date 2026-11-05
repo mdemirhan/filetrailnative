@@ -1,5 +1,4 @@
-// Port of the timers of apps/desktop/src/renderer/components/ToastViewport.test.tsx and "go by themselves" of
-// App.notifications.test.tsx: the window's ToastCenter on a clock the test moves
+// The window's ToastCenter on a clock the test moves
 import AppKit
 import FTFoundation
 import Foundation
@@ -48,7 +47,7 @@ private final class ToastTimers {
         return (center, timers)
     }
 
-    // T-129550df T-f6990b56 B-VIEW-198: a notification stays until its four seconds are up, then goes by itself.
+    // A notification stays until its four seconds are up, then goes by itself.
     @Test func eachGoesByItselfWhenItsFourSecondsAreUp() {
         let (center, timers) = center()
         let id = center.push(.info, title: "One")
@@ -58,7 +57,7 @@ private final class ToastTimers {
         #expect(center.entries.isEmpty)
     }
 
-    // B-VIEW-198: dismissing one cancels its timer and leaves the others'.
+    // Dismissing one cancels its timer and leaves the others'.
     @Test func dismissingOneCancelsItsTimerOnly() throws {
         let (center, timers) = center()
         let first = try #require(center.push(.info, title: "One"))
@@ -70,7 +69,7 @@ private final class ToastTimers {
         #expect(center.entries.isEmpty)
     }
 
-    // B-VIEW-198: a fourth drops the oldest with its timer; they stay in order, oldest first.
+    // A fourth drops the oldest with its timer; they stay in order, oldest first.
     @Test func aFourthDropsTheOldestAndItsTimer() {
         let (center, timers) = center()
         for title in ["One", "Two", "Three", "Four"] { center.push(.info, title: title) }
@@ -78,7 +77,7 @@ private final class ToastTimers {
         #expect(timers.timers.map(\.isCancelled) == [true, false, false, false])
     }
 
-    // B-VIEW-198: those turned off go with their timers.
+    // Those turned off go with their timers.
     @Test func clearingCancelsEveryTimer() {
         let (center, timers) = center()
         center.push(.info, title: "One")
@@ -92,7 +91,7 @@ private final class ToastTimers {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ToastCardTimerTests {
-        // T-f6990b56: the card in the window goes with its notification.
+        // The card in the window goes with its notification.
         @Test func theCardGoesWhenItsTimeIsUp() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

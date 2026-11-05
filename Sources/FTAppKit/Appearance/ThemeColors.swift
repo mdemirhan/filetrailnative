@@ -1,4 +1,4 @@
-// Colors and fonts of the stylesheet (apps/desktop/src/renderer/styles.css) as AppKit draws them
+// Colors and fonts of the stylesheet as AppKit draws them
 import AppKit
 import FTFoundation
 

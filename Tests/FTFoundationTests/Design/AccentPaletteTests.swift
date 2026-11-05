@@ -4,7 +4,7 @@ import Testing
 @testable import FTFoundation
 
 @Suite struct AccentPaletteTests {
-    /// The reference's `AccentTokens` keys, in the Swift palette.
+    /// The accent golden's token keys, in the Swift palette.
     nonisolated(unsafe) private static let tokenFields: [(String, KeyPath<AccentPalette, RGBA>)] = [
         ("solid", \.solid), ("solidDark", \.solidDark), ("solidButton", \.solidButton), ("onSolid", \.onSolid),
         ("selectionBg", \.selectionBg), ("onSelection", \.onSelection), ("hoverBg", \.hoverBg),
@@ -15,7 +15,7 @@ import Testing
         ("locationRing", \.locationRing), ("ringSoft", \.ringSoft),
     ]
 
-    /// `accentTokensToCssVariables`' keys.
+    /// The accent golden's CSS variable keys.
     nonisolated(unsafe) private static let variableFields: [(String, KeyPath<AccentPalette, RGBA>)] = [
         ("--bg-active", \.activeBg), ("--crumb-active-bg", \.activeBg), ("--ft-accent-solid", \.solid),
         ("--ft-accent-solid-dark", \.solidDark), ("--ft-accent-solid-button", \.solidButton),
@@ -30,7 +30,6 @@ import Testing
         ("--ft-accent-location-ring", \.locationRing), ("--ft-accent-ring-soft", \.ringSoft),
     ]
 
-    // T-ab2bf170 T-6af82aa6 T-c06ac759 T-1100e7f2
     @Test func everyGoldenCaseMatchesExactly() throws {
         let golden = try GoldenFile.json("accent.json")
         let cases = try #require(golden["cases"] as? [[String: Any]])

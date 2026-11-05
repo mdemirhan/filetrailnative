@@ -1,11 +1,10 @@
-// Port of openItemContextMenu, openTreeItemContextMenu and runContextMenuAction (apps/desktop/src/renderer/hooks/useExplorerActions.ts)
 import AppKit
 import FTFileSystem
 import FTFoundation
 
 /// The right-click menus of one tab: it builds a menu for a click on the file list, its background or a sidebar row,
 /// and carries out what is chosen. File operations (cut, paste, rename, trash and the rest) go to `fileOperation`, which
-/// P5-08 takes over; everything else is done here.
+/// Takes over; everything else is done here.
 @MainActor
 final class ContextMenuCoordinator: ContextMenuResponder {
     unowned let tab: MainWindowController
@@ -19,14 +18,13 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     /// Where Copy Path puts the paths; tests give it a private pasteboard.
     var pasteboard: NSPasteboard = .general
     /// A file operation chosen in a menu (cut, copy, paste, move, rename, duplicate, new folder, trash, delete
-    /// immediately, empty trash). By default it is sent as the matching command for what the menu acts on, which does
-    /// something once P5-08 has the commands; the sidebar's folders are P5-08's to act on.
+    /// immediately, empty trash). The window carries it out for what the menu acts on.
     var fileOperation: (ContextMenuActionID, ContextMenuSubject) -> Void = { _, _ in }
-    /// Search results' "Reveal in Folder" (P5-07).
+    /// Search results' "Reveal in Folder".
     var revealSearchResult: (String) -> Void = { _ in }
     /// Show Info for a path: the tab points its Info panel at it. Without one, the panel only opens.
     var showInfo: ((String) -> Void)?
-    /// What the clipboard holds, for Paste (P5-08 fills it; the app's shared clipboard by default).
+    /// What the clipboard holds, for Paste (the window fills it; the app's shared clipboard by default).
     var clipboardSourcePaths: () -> [String] = { [] }
     private(set) var current: ContextMenuSession?
 
@@ -123,7 +121,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     // MARK: What the window knows
 
-    /// A file operation is running, in any tab (`isWriteOperationLocked`); P5-08 sets this.
+    /// A file operation is running, in any tab; `WindowWriteUI` sets this.
     var isWriteOperationLocked = false
     /// Something is on the clipboard.
     var clipboardHasItems: Bool {
@@ -134,7 +132,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     // MARK: ContextMenuResponder
 
     func contextMenuDidOpen() {
-        // Changes made outside the app wait while a menu is open (B-VIEW-187).
+        // Changes made outside the app wait while a menu is open.
         tab.folderChangesHeld = true
     }
 
@@ -181,7 +179,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     func contextMenu(perform action: ContextMenuActionID, subject: ContextMenuSubject) {
         // A running operation blocks the others (the menu left them out, unless it began after the menu opened; a key
-        // can still ask), and says so (B-CLIP-060, B-VIEW-215). This comes before the actions, some of which ask a
+        // can still ask), and says so. This comes before the actions, some of which ask a
         // question first. A lock this tab hears of late is no refusal: the action goes ahead.
         if ContextMenuRules.writeLockedActions.contains(action), isWriteOperationLocked {
             guard let actions = tab.writeActions, !actions.refuseWhileBusy(busyAction(action, actions)) else { return }
@@ -358,7 +356,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         }
     }
 
-    /// `openPathExternally`: a failure is only logged.
+    /// A failure is only logged.
     private func openExternally(_ path: String) async {
         if tab.noteUseAndOpenDiskImage(path) { return }
         ActionNoticeText.logOpenFailure(await SystemActions.openPath(path, opener: opener))
@@ -422,12 +420,12 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             in: tab.window)
     }
 
-    /// `openPathInTerminal`, as the commands ask for it.
+    /// As the commands ask for it.
     func openInTerminal(_ path: String) {
         holdingTheTab { [self] in await openTerminal(path) }
     }
 
-    /// `showPathsInFinder`, as the commands ask for it.
+    /// As the commands ask for it.
     func revealInFinder(_ paths: [String]) {
         holdingTheTab { [self] in await showInFinder(paths) }
     }
@@ -454,7 +452,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     // MARK: Copy Path
 
-    /// `runCopyPathAction`: the paths, one to a line and shell-quoted where they have whitespace, on the pasteboard.
+    /// The paths, one to a line and shell-quoted where they have whitespace, on the pasteboard.
     func copyPath(_ paths: [String]) {
         guard !paths.isEmpty else { return }
         let text = paths.map(formatPathForShell).joined(separator: "\n")
@@ -471,7 +469,7 @@ final class ContextMenuCoordinator: ContextMenuResponder {
     }
 }
 
-/// `formatClipboardItemSummary`: the first name, and how many more.
+/// The first name, and how many more.
 enum ClipboardSummary {
     static func summary(_ paths: [String]) -> String {
         guard let first = paths.first else { return "item" }

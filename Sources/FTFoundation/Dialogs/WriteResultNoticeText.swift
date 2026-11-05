@@ -1,5 +1,4 @@
-// Port of buildCopyPasteResultMessage and buildCopyPasteResultDetailLines (apps/desktop/src/renderer/components/
-// AppDialogs.tsx:548-605): the words of the alert a finished operation shows when it is not the result sheet
+// The words of the alert a finished operation shows when it is not the result sheet
 import Foundation
 
 /// How an operation ended, as far as its result alert says it.
@@ -28,8 +27,8 @@ public struct WriteResultNoticeInput: Equatable, Sendable {
 }
 
 public enum WriteResultNoticeText {
-    /// Whether the action's result is the result sheet (`CopyPasteResultDialog`: the copy-like actions, batch rename,
-    /// Undo and Redo) rather than this alert.
+    /// Whether the action's result is the result sheet (the copy-like actions, batch rename, Undo and Redo) rather
+    /// than this alert.
     public static func hasResultSheet(_ action: WriteOperationAction) -> Bool {
         switch action {
         case .paste, .copyTo, .moveTo, .duplicate, .batchRename, .undo, .redo: true
@@ -37,7 +36,7 @@ public enum WriteResultNoticeText {
         }
     }
 
-    /// `buildCopyPasteResultMessage`: the operation's own error, else what became of the items.
+    /// The operation's own error, else what became of the items.
     public static func message(_ result: WriteResultNoticeInput?) -> String {
         guard let result else { return "Finished." }
         if let error = result.error, !error.isEmpty { return error }
@@ -50,7 +49,7 @@ public enum WriteResultNoticeText {
         return "Done."
     }
 
-    /// `buildCopyPasteResultDetailLines`: the counts, for several items only, then up to 3 reasons, each once and not
+    /// The counts, for several items only, then up to 3 reasons, each once and not
     /// the one the message already gives.
     public static func detailLines(_ result: WriteResultNoticeInput?) -> [String] {
         guard let result else { return [] }

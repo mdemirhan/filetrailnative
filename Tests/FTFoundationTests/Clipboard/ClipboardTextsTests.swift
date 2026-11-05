@@ -1,6 +1,3 @@
-// Port of the paste destination, top-level item, gone-item and busy-drag cases of
-// apps/desktop/src/renderer/lib/explorerAppUtils.test.ts, and of the issue messages and toasts of
-// hooks/useExplorerActions.ts
 import Foundation
 import Testing
 
@@ -20,14 +17,11 @@ struct ClipboardTextsTests {
         PasteDestination.Menu(target: .content, targetPath: target, paths: paths)
     }
 
-    // T-f987c23c
-    // T-11201414 T-5a36953e T-7778e453 T-85ab3d1a T-a9b252b4 T-ffb0bc5e
     @Test func pastesIntoTheFolderOnScreenFromTheKeyboardOrMenuBarWhateverIsSelected() {
         #expect(resolve() == "/Users/demo")
         #expect(resolve(currentPath: "") == nil)
     }
 
-    // T-a5707c40
     @Test func hasNoDestinationFromTheMenuOfSeveralItemsOrOfAFile() {
         #expect(
             resolve(
@@ -38,12 +32,10 @@ struct ClipboardTextsTests {
                 == nil)
     }
 
-    // T-862e2df5
     @Test func pastesIntoTheFolderOnScreenFromTheBackgroundsMenu() {
         #expect(resolve(menu: content([], "/Users/demo")) == "/Users/demo")
     }
 
-    // T-3f922ef9
     @Test func pastesIntoARightClickedFolderWhenItIsTheOnlyItem() {
         #expect(
             resolve(
@@ -51,7 +43,6 @@ struct ClipboardTextsTests {
                 == "/Users/demo/Folder")
     }
 
-    // T-09251d6a
     @Test func hasNoDestinationWhenTheFolderRightClickedIsItselfOnTheClipboard() {
         #expect(
             resolve(
@@ -59,8 +50,6 @@ struct ClipboardTextsTests {
                 clipboard: ["/Users/demo/Folder"]) == nil)
     }
 
-    // T-7b1bc91e
-    // T-1c693346
     @Test func pastesIntoAnAliasOfAFolderThroughIt() {
         #expect(
             resolve(
@@ -69,13 +58,10 @@ struct ClipboardTextsTests {
                 == "/Users/demo/Linked")
     }
 
-    // T-d4b3c2fe
     @Test func hasNoDestinationInSearchResults() {
         #expect(resolve(search: true) == nil)
     }
 
-    // T-cc6ebb98
-    // T-adb6c85c
     @Test func neverPastesIntoTheTrashOrAFolderInIt() {
         #expect(resolve(currentPath: "/Users/demo/.Trash") == nil)
         #expect(
@@ -90,14 +76,11 @@ struct ClipboardTextsTests {
                 == "/Users/demo/Docs")
     }
 
-    // T-068aeb28
     @Test func keepsItemsWithNothingListedAboveThemInTheirOriginalOrder() {
         let items: [String?] = ["/src/b", "/src/a/inner.txt", "/src/a", "/src/b/deep/x.txt", nil]
         #expect(PasteDestination.topLevelItems(items, path: { $0 }) == ["/src/b", "/src/a", nil])
     }
 
-    // T-cd5ad501
-    // T-37ebf0d0
     @Test func saysWhichClipboardItemsCouldNotBePastedBecauseTheyAreGone() {
         #expect(
             ClipboardTexts.missingClipboardItems(["/Users/demo/report.pdf"])
@@ -117,7 +100,6 @@ struct ClipboardTextsTests {
         )
     }
 
-    // T-5bf8ee8d
     @Test func namesWhatIsRunningAndTheItemItIsOn() {
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: "paste", currentSourcePath: "/Users/demo/Photos")
@@ -139,7 +121,6 @@ struct ClipboardTextsTests {
                 == "Can't drag while a folder is being made")
     }
 
-    // T-b0c5c6c6
     @Test func saysADropCantBeMadeForADragFromAnotherApp() {
         #expect(
             ClipboardTexts.dragRefusedWhileBusy(action: "paste", currentSourcePath: "/Users/demo/Photos", drop: true)
@@ -149,8 +130,6 @@ struct ClipboardTextsTests {
                 == "Can't drop while a folder is being made")
     }
 
-    // B-CLIP-070
-    // T-89efd829
     @Test func namesTheItemsAnAnalysisIssueIsAbout() {
         func issue(_ code: String, _ source: String?, _ message: String = "") -> ClipboardTexts.Issue {
             ClipboardTexts.Issue(code: code, sourcePath: source, destinationPath: nil, message: message)
@@ -179,8 +158,6 @@ struct ClipboardTextsTests {
                 == "File Trail couldn\u{2019}t finish checking the items. Nothing was changed.")
     }
 
-    // B-CLIP-073 B-CLIP-074
-    // T-7567e39d T-e04b3e03
     @Test func leavesOutItemsAlreadyInPlaceOrGoneAndNothingElse() {
         func issue(_ code: String, _ source: String?) -> ClipboardTexts.Issue {
             ClipboardTexts.Issue(code: code, sourcePath: source, destinationPath: nil, message: "")
@@ -209,7 +186,7 @@ struct ClipboardTextsTests {
         #expect(ClipboardTexts.missingClipboardItemsTitle(missing: 3, requested: 3, cut: false) == nil)
     }
 
-    // T-eeefccac B-CLIP-130 B-VIEW-202: an Undo or Redo is told only when nothing it changed is in the folder on screen
+    // An Undo or Redo is told only when nothing it changed is in the folder on screen
     // and all of it went (the rest is the result sheet's).
     @Test func tellsAnUndoOrRedoOnlyWhenItIsOutOfSight() {
         func write(
@@ -249,8 +226,6 @@ struct ClipboardTextsTests {
         #expect(WriteEndNotices.toast(write("undo", "failed"), currentPath: "/Users/demo") == nil)
     }
 
-    // B-CLIP-124 B-CLIP-126 B-CLIP-127 B-CLIP-128 B-CLIP-129
-    // B-VIEW-196 B-VIEW-201 T-0cb1f30c T-16157729 T-740a332a T-a40978f7 T-da0c847b T-e0d60d23 T-fa0e2e01
     @Test func tellsAFinishedOperationInAToastOrASheet() {
         func write(
             _ action: String, _ status: String, completed: Int = 1, skipped: Int = 0, failed: Int = 0, top: Int = 1

@@ -1,11 +1,8 @@
-// Port of apps/desktop/src/renderer/components/CopyPasteReviewDialog.tsx (the sheet, AllConflictsButtons and
-// ReviewRowItem) with the .copy-paste-sheet-bar and .copy-paste-sheet-row rules of styles.css
 import AppKit
 import FTFoundation
 import FTOperations
 
-/// The review's state (`copyPasteDialogState` of type `review` with the dialog's own): the choices for all conflicts
-/// and per item, what is shown, and whether it is starting.
+/// The review's state: the choices for all conflicts and per item, what is shown, and whether it is starting.
 @MainActor
 final class ReviewSheetModel {
     let report: CopyPasteAnalysisReport
@@ -49,7 +46,7 @@ final class ReviewSheetModel {
         refresh()
     }
 
-    /// A row's choice (`setChoice`).
+    /// A row's choice.
     func choose(_ choice: CopyPasteChoice, for node: ReviewNode) {
         overrides = CopyPasteReview.overrides(setting: choice, for: node, policy: policy, overrides: overrides)
         refresh()
@@ -70,7 +67,7 @@ final class ReviewSheetModel {
     }
 }
 
-/// The review sheet (`CopyPasteReviewDialog`): the items that already exist at the destination (or a very large
+/// The review sheet: the items that already exist at the destination (or a very large
 /// operation), each with what will happen to it. Nothing is replaced unless Replace is picked, and the start button
 /// says so when it is.
 @MainActor
@@ -167,7 +164,7 @@ final class CopyPasteReviewSheet: CopyPasteSheetView {
         var y = listInsets.top
         var separators: [CGFloat] = []
         var tintedSeparators: [CGFloat] = []
-        // `.copy-paste-sheet-row + .copy-paste-sheet-row`: each row after the first starts with its 1 pt line.
+        // Each row after the first starts with its 1 pt line.
         let line = CGFloat(CopyPasteSheetLayout.border)
         for (index, view) in shownRows.enumerated() {
             if index > 0 {
@@ -242,7 +239,7 @@ final class CopyPasteReviewSheet: CopyPasteSheetView {
     @objc private func showAllPressed(_ sender: Any?) { model.showAllRows = true }
 }
 
-/// "For all conflicts:", its buttons, the new items' link and the hint (`.copy-paste-sheet-bar`).
+/// "For all conflicts:", its buttons, the new items' link and the hint.
 @MainActor
 final class ReviewBarView: NSView, ThemeApplying {
     let label: ThemedText
@@ -346,7 +343,7 @@ final class ReviewBarView: NSView, ThemeApplying {
 
     override func draw(_ dirtyRect: NSRect) {
         let palette = theme.palette
-        // color-mix(in srgb, var(--neutral-ink) 2.5%, transparent) over the sheet.
+        // The neutral ink at 2.5% over the sheet.
         NSColor(palette.neutralInk.withAlpha(CopyPasteSheetLayout.barInkAlpha)).setFill()
         bounds.fill(using: .sourceOver)
         NSColor(palette.borderLight).setFill()
@@ -358,7 +355,7 @@ final class ReviewBarView: NSView, ThemeApplying {
     @objc private func linkPressed(_ sender: Any?) { onToggleNewItems() }
 }
 
-/// One item of the review (`ReviewRowItem`): its glyph, name ("→ new name" when kept next to the existing one),
+/// One item of the review: its glyph, name ("→ new name" when kept next to the existing one),
 /// where it is when nested deeper than the indent, what will happen to it, and its choice (or "Adds").
 @MainActor
 final class ReviewRowView: NSView, ThemeApplying {
@@ -460,10 +457,10 @@ final class ReviewRowView: NSView, ThemeApplying {
                 - CGFloat(layout.rowHorizontal))
     }
 
-    /// A line of the row's text as the original's lays it out (`line-height: normal`, 15 at 13 pt).
+    /// A line of the row's text (`line-height: normal`, 15 at 13 pt).
     private static let lineHeight = ThemeFonts.normalLineHeight(font)
 
-    /// The detail's height: it wraps where it is long, each line at the original's line height.
+    /// The detail's height: it wraps where it is long, each line at `lineHeight`.
     private func detailHeight(_ inner: CGFloat) -> CGFloat {
         max(Self.lineHeight, ceil(detailLabel.height(forWidth: inner)))
     }
@@ -499,7 +496,7 @@ final class ReviewRowView: NSView, ThemeApplying {
         x += CGFloat(layout.glyphColumn + layout.rowColumnGap)
         let inner = textWidth(bounds.width)
         let gap = CGFloat(layout.rowTextGap)
-        // Each line takes the original's 15; the labels keep their own height, so no descender is cut.
+        // Each line takes 15; the labels keep their own height, so no descender is cut.
         var y = (height - textHeight(inner)) / 2
         let nameHeight = ceil(nameLabel.height(forWidth: 10_000))
         nameLabel.frame = NSRect(x: x, y: y, width: inner, height: nameHeight)
@@ -524,7 +521,7 @@ final class ReviewRowView: NSView, ThemeApplying {
 
     override func draw(_ dirtyRect: NSRect) {
         guard isReplacing else { return }
-        // color-mix(in srgb, var(--danger) 7%, transparent).
+        // The danger color at 7%.
         NSColor(theme.palette.danger.withAlpha(CopyPasteSheetLayout.replacingAlpha)).setFill()
         bounds.fill(using: .sourceOver)
     }

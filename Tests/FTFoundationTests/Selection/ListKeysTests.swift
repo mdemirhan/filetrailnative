@@ -1,11 +1,9 @@
-// The keys of the file list: type-to-filter (hooks/useExplorerNavigationController.ts :579-683), the raw bindings of
-// hooks/useExplorerShortcuts.ts, and the inline rename's commit rules
+// The keys of the file list: type-to-filter, the raw key bindings, and the inline rename's commit rules
 import Testing
 
 @testable import FTFoundation
 
 struct ListFilterTypingTests {
-    // T-74e6332c F-787 B-SEL-071 B-SEL-078
     @Test func typingAppendsTheTextAsTyped() {
         var filter = ListFilterTyping()
         #expect(!filter.isActive)
@@ -18,7 +16,6 @@ struct ListFilterTypingTests {
         #expect(filter.isActive)
     }
 
-    // T-96d467f3 F-788 B-SEL-075 B-SEL-076
     @Test func backspaceTakesACharacterBackAndEscClears() {
         var filter = ListFilterTyping()
         filter.type("tr", at: 0)
@@ -33,8 +30,7 @@ struct ListFilterTypingTests {
         #expect(filter.query == "")
     }
 
-    // T-96d467f3 F-788 F-839 B-SEL-077 B-NAV-171: Space is part of the text for a second after the last input.
-    // B-VIEW-239
+    // Space is part of the text for a second after the last input.
     @Test func spaceBelongsToTheTextForASecond() {
         var filter = ListFilterTyping()
         #expect(!filter.takesSpace(at: 0))
@@ -45,15 +41,13 @@ struct ListFilterTypingTests {
         // Each input renews it.
         filter.eraseCharacter(at: 11.5)
         #expect(filter.takesSpace(at: 12.4))
-        // A filter brought back with a tab treats Space as Quick Look at once (B-SEL-085).
+        // A filter brought back with a tab treats Space as Quick Look at once.
         #expect(!ListFilterTyping(restoring: "abc").takesSpace(at: 0))
         // Without a filter Space is always Quick Look.
         filter.clear()
         #expect(!filter.takesSpace(at: 12))
     }
 
-    // T-eb1d7cfe B-SEL-070
-    // B-NAV-169 B-VIEW-007
     @Test func onlyPrintableNonWhitespaceCharactersAreTypeahead() {
         #expect(Typeahead.isCharacterKey("a"))
         #expect(Typeahead.isCharacterKey("A"))
@@ -78,7 +72,6 @@ struct ContentKeysTests {
             shortcuts: shortcuts, filter: filter, now: now, hasEntries: entries, hasSelection: selected)
     }
 
-    // T-3e8794f6 F-785 B-SEL-035 B-SEL-047
     @Test func arrowsHomeAndEndMoveTheSelectionAndShiftExtendsIt() {
         #expect(action("ArrowDown", code: "ArrowDown") == .move(.down, extend: false))
         #expect(action("ArrowUp", code: "ArrowUp", shift: true) == .move(.up, extend: true))
@@ -90,8 +83,6 @@ struct ContentKeysTests {
         #expect(action("ArrowDown", code: "ArrowDown", alt: true) == nil)
     }
 
-    // T-813589dc T-9b89ad1c F-595 F-786 B-SEL-048 B-SEL-052
-    // B-NAV-153 T-2df6b189
     @Test func pageKeysMoveAPageOrHalfAPageAndShiftExtends() {
         #expect(action("PageDown", code: "PageDown") == .page(forward: true, size: .full, extend: false))
         #expect(action("PageUp", code: "PageUp") == .page(forward: false, size: .full, extend: false))
@@ -100,8 +91,7 @@ struct ContentKeysTests {
         #expect(action("PageDown", code: "PageDown", shift: true) == .page(forward: true, size: .full, extend: true))
     }
 
-    // T-4fe83e7a B-SEL-053: ⇧ with a paging key extends unless that chord is a command's own.
-    // B-NAV-153
+    // ⇧ with a paging key extends unless that chord is a command's own.
     @Test func shiftWithAPageKeyRunsTheCommandWhenItIsBoundToOne() {
         var overrides = ShortcutOverrides()
         overrides["focusTreePane"] = ["Shift+PageDown"]
@@ -112,8 +102,6 @@ struct ContentKeysTests {
         #expect(result == .command(.focusTreePane))
     }
 
-    // T-74e6332c T-bf69c32f B-SEL-070 B-SEL-074
-    // B-VIEW-007
     @Test func typingFiltersAndQuestionMarkIsHelp() {
         #expect(action("t", code: "KeyT") == .filter(.type("t")))
         #expect(action("T", code: "KeyT", shift: true) == .filter(.type("T")))
@@ -124,8 +112,6 @@ struct ContentKeysTests {
         #expect(action("?", code: "Slash", shift: true) == .command(.openHelp))
     }
 
-    // T-96d467f3 B-SEL-075 B-SEL-076 B-SEL-077
-    // B-SEL-017
     @Test func backspaceEscapeAndSpaceEditTheFilterOnlyWhileThereIsOne() {
         var filter = ListFilterTyping()
         #expect(action("Backspace", code: "Backspace", filter: filter) == nil)
@@ -140,8 +126,6 @@ struct ContentKeysTests {
         #expect(action(" ", code: "Space") == .command(.quickLookSelection))
     }
 
-    // T-05cea347 F-827 B-SEL-106
-    // B-NAV-102
     @Test func returnWithAnItemSelectedAndTabSwitchesPanes() {
         #expect(action("Enter", code: "Enter") == .enter)
         #expect(action("Enter", code: "Enter", shift: true) == .enter)
@@ -153,7 +137,7 @@ struct ContentKeysTests {
         #expect(action("Tab", code: "Tab", ctrl: true) == .command(.selectNextTab))
     }
 
-    // F-595 B-SEL-108 B-SEL-113 B-SEL-116: keys the menu does not listen for run their command.
+    // Keys the menu does not listen for run their command.
     @Test func aKeyTheMenuDoesNotListenForRunsItsCommand() {
         #expect(action("F2", code: "F2") == .command(.renameSelection))
         #expect(action("ArrowLeft", code: "ArrowLeft", meta: true) == .command(.goBack))
@@ -163,8 +147,6 @@ struct ContentKeysTests {
 }
 
 struct InlineRenameRulesTests {
-    // T-501b53e4 T-85124c2a F-794 B-SEL-126 B-SEL-130
-    // T-fedfb7ae
     @Test func anUnchangedOrEmptyNameCancels() {
         func decide(_ draft: String, trigger: InlineRenameRules.Trigger = .enter) -> InlineRenameRules.Decision {
             InlineRenameRules.decide(draft: draft, original: "a.txt", refused: nil, trigger: trigger)
@@ -176,7 +158,7 @@ struct InlineRenameRulesTests {
         #expect(decide("b.txt", trigger: .blur) == .submit)
     }
 
-    // T-8cf23ed4 F-795 B-SEL-131 B-SEL-133: a refused name is not sent again until it has been edited.
+    // A refused name is not sent again until it has been edited.
     @Test func aRefusedNameIsNotSentAgainUntilEdited() {
         func decide(_ draft: String, trigger: InlineRenameRules.Trigger) -> InlineRenameRules.Decision {
             InlineRenameRules.decide(draft: draft, original: "a.txt", refused: "b/c", trigger: trigger)
@@ -186,7 +168,6 @@ struct InlineRenameRulesTests {
         #expect(decide("b-c", trigger: .enter) == .submit)
     }
 
-    // T-4a6f0277 B-SEL-135
     @Test func aNameThatBeginsWithADotAsksFirstWhileHiddenFilesAreHidden() {
         #expect(InlineRenameRules.needsDotConfirmation(name: ".env", hiddenFilesShown: false))
         #expect(!InlineRenameRules.needsDotConfirmation(name: ".env", hiddenFilesShown: true))

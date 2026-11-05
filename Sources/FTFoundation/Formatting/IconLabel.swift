@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/iconLabel.ts (shortenNameInMiddle; the DOM measuring is the view's)
 import Foundation
 
 /// Names under icons wrap onto at most two lines. A longer name is shortened like Finder does: the

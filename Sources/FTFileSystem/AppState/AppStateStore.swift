@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/appStateStore.ts (the I/O, the save tiers, the window records and the visited-folders file)
 import FTFoundation
 import Foundation
 import os
@@ -249,7 +248,7 @@ public final class AppStateStore: @unchecked Sendable {
     private var currentPreferences: AppPreferences { state.preferences ?? defaults }
     private var windows: [StoredExplorerWindow] { state.windows ?? [] }
 
-    // JavaScript compares ids as strings of UTF-16 units; Swift's == would treat canonically equal ones as the same.
+    // Ids are compared as strings of UTF-16 units; Swift's == would treat canonically equal ones as the same.
     private static func sameID(_ left: String, _ right: String) -> Bool {
         left.utf16.elementsEqual(right.utf16)
     }

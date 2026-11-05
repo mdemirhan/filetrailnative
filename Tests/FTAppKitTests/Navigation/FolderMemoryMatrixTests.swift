@@ -1,6 +1,3 @@
-// Port of the Back and fresh-navigation cases of apps/desktop/src/renderer/App.history.test.tsx and
-// App.scrollRestore.test.tsx, the loading rules of hooks/useExplorerNavigationController.ts (:1099-1141) and the
-// scroll kept across a read of components/ContentPane.test.tsx
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -55,7 +52,7 @@ extension ExplorerWindowlessTests {
             return selection
         }
 
-        // T-6250e1a8 B-NAV-059 B-SEL-120: the enclosing folder and any fresh opening start with nothing selected, at the
+        // The enclosing folder and any fresh opening start with nothing selected, at the
         // top; Back from there restores the folder left.
         @Test func aFreshOpeningStartsEmptyAtTheTopWhileBackRestores() async throws {
             let (harness, tab, outer, sub) = try await openLong()
@@ -86,7 +83,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-049: Back restores no gap: the folder left had one where its selected item stood, and the first arrow after
+        // Back restores no gap: the folder left had one where its selected item stood, and the first arrow after
         // Back starts from the top, not from there.
         @Test func backCarriesNoGap() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -114,7 +111,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-047: an item that went drops out of what Back restores; the anchor and lead fall to one still there.
+        // An item that went drops out of what Back restores; the anchor and lead fall to one still there.
         @Test func backDropsAnItemThatWentFromTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -134,7 +131,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-bcd1990e T-6250e1a8 B-NAV-043 B-NAV-047: each view goes back to where it was scrolled, with what was selected,
+        // Each view goes back to where it was scrolled, with what was selected,
         // the anchor and the lead.
         @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
         func backPutsEachViewWhereItWasScrolled(view: RendererCommand) async throws {
@@ -154,7 +151,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-6c281f26 (each view's is in LeadStaysInViewTests): an item more on disk, told by the folder watch, leaves a list
+        // (each view's is in LeadStaysInViewTests): an item more on disk, told by the folder watch, leaves a list
         // with nothing selected where it is.
         @Test func staysWhereItWasScrolledWhenReadAgainWithAnItemMore() async throws {
             let (harness, tab, outer, _) = try await openLong()
@@ -168,7 +165,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-113: the listing in front stays and the message goes while the next folder is read; on arrival they change.
+        // The listing in front stays and the message goes while the next folder is read; on arrival they change.
         @Test func theFolderInFrontStaysUntilTheNextArrives() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -198,7 +195,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-114: from a list with nothing in it "Loading…" shows, and not before 400 ms.
+        // From a list with nothing in it "Loading…" shows, and not before 400 ms.
         @Test func loadingShowsAfterItsDelayFromAnEmptyList() async throws {
             let harness = try ExplorerHarness.windowless()
             let empty = harness.folder.appending("Empty")
@@ -220,7 +217,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-114: from a list with items in it, never.
+        // From a list with items in it, never.
         @Test func loadingNeverShowsOverAListWithItems() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -238,7 +235,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-132 B-SEL-030: hidden files (an order and Folders First go the same way, `viewChanged`) and Go To the same
+        // Hidden files (an order and Folders First go the same way, `viewChanged`) and Go To the same
         // folder clear the selection; Refresh keeps it.
         @Test(arguments: [false, true])
         func readingAgainWithoutKeepingClearsTheSelection(goToTheSameFolder: Bool) async throws {
@@ -262,7 +259,7 @@ extension ExplorerWindowlessTests {
     /// The store the visits go to is the app's global: no other test at the same time.
     @MainActor
     @Suite struct FolderVisitMatrixTests {
-        // B-DLG-068: only going to a folder counts: Back to it and using it there records nothing.
+        // Only going to a folder counts: Back to it and using it there records nothing.
         @Test func backDoesNotCountAsAVisit() async throws {
             let harness = try ExplorerHarness.windowless()
             let store = harness.store

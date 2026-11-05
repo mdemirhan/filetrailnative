@@ -1,5 +1,3 @@
-// Port of the toast state of apps/desktop/src/renderer/hooks/useDialogStore.ts and hooks/useExplorerActions.ts
-// (pushToast, dismissToast) and the timers of components/ToastViewport.tsx
 import FTFoundation
 import Foundation
 
@@ -28,7 +26,6 @@ final class ToastCenter {
     private var timers: [String: (expiresAt: Double, cancel: Cancel)] = [:]
     private var counter = 0
 
-    /// `pushToast`.
     @discardableResult
     func push(_ kind: ToastKind, title: String, message: String? = nil) -> String? {
         guard isEnabled() else { return nil }
@@ -41,7 +38,6 @@ final class ToastCenter {
         return id
     }
 
-    /// `dismissToast`.
     func dismiss(_ id: String) {
         guard entries.contains(where: { $0.id == id }) else { return }
         entries.removeAll { $0.id == id }

@@ -1,10 +1,9 @@
-// Port of the rounded search field of apps/desktop/src/renderer/styles.css (.search-field) and components/ClearButton.tsx
 import AppKit
 import FTFoundation
 
-/// The × that empties a field (`.clear-button`): a disc of the primary text at 28% (42% under the pointer, 55% pressed),
-/// the cross stroked over it in the panel's color (`color: var(--bg-elevated)`), 2 wide on a 7 pt box. The field keeps
-/// the keyboard, unless the × is one of the stops of what Tab goes round (`isTabStop`).
+/// The × that empties a field: a disc of the primary text at 28% (42% under the pointer, 55% pressed), the cross
+/// stroked over it in the panel's color, 2 wide on a 7 pt box. The field keeps the keyboard, unless the × is one of
+/// the stops of what Tab goes round (`isTabStop`).
 public final class ClearButton: NSControl, ThemeApplying {
     public private(set) var theme: Theme
     private var isHovering = false { didSet { needsDisplay = true } }
@@ -20,7 +19,7 @@ public final class ClearButton: NSControl, ThemeApplying {
         }
     }
     public static let size = 16.0
-    /// `.clear-button svg`: 7 by 7, the path `M1 1l8 8M9 1l-8 8` on a 10 by 10 view box.
+    /// The cross: 7 by 7, the path `M1 1l8 8M9 1l-8 8` on a 10 by 10 view box.
     static let crossBox = 7.0
 
     public init(theme: Theme = AppearanceModel.shared.theme) {
@@ -135,7 +134,7 @@ final class SearchTextCell: NSTextFieldCell {
     }
 }
 
-/// An icon, the field, and the clear button once something is typed (`.search-field`): 24 tall, rounded, filled.
+/// An icon, the field, and the clear button once something is typed: 24 tall, rounded, filled.
 public final class ThemedSearchField: NSView, ThemeApplying, NSTextFieldDelegate {
     public private(set) var theme: Theme
     public let input: NSTextField
@@ -227,7 +226,7 @@ public final class ThemedSearchField: NSView, ThemeApplying, NSTextFieldDelegate
         let palette = theme.palette
         NSColor(palette.fieldBg).setFill()
         NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
-        // box-shadow: inset 0 0 0 0.5px var(--border-active)
+        // An inset 0.5 edge in the active border color.
         let edge = NSBezierPath(
             roundedRect: bounds.insetBy(dx: 0.25, dy: 0.25), xRadius: radius - 0.25, yRadius: radius - 0.25)
         edge.lineWidth = 0.5

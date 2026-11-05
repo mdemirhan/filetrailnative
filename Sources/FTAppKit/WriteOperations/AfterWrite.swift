@@ -1,7 +1,4 @@
-// Port of the after-write cases of apps/desktop/src/renderer/lib/explorerAppUtils.ts:
-// resolveWriteOperationSelectionDirectoryPath, resolveWriteOperationRefreshPath, resolveWriteOperationTreeSelectionPath,
-// isUndoOrRedo, pathsLeftByWrite, removedByWrite, onlyRemoved, resolveWriteOperationTreeReloadPaths, replacePathPrefix,
-// findDeepestMatchingSourcePath, findDeepestMatchingSourceItem and collapseNestedPaths
+// What follows a write: the folder read again, what is selected, where the tree goes, and what left the folder
 import FTFoundation
 import FTOperations
 import Foundation
@@ -19,7 +16,7 @@ enum AfterWrite {
         ExplorerTabs.isRenameOrMove(result.action.rawValue) || result.mode == .cut
     }
 
-    /// `resolveWriteOperationSelectionDirectoryPath`: the folder the items a write made are selected in: a rename's,
+    /// The folder the items a write made are selected in: a rename's,
     /// a new folder's or an Undo's is the folder of the first; a paste's is where it pasted.
     static func selectionDirectoryPath(_ result: WriteOperationResult, selectedPaths: [String]) -> String? {
         guard let first = selectedPaths.first, !first.isEmpty else { return nil }
@@ -31,7 +28,7 @@ enum AfterWrite {
         return result.targetPath
     }
 
-    /// `resolveWriteOperationRefreshPath`: the folder on screen after a write: where a folder renamed or moved went,
+    /// The folder on screen after a write: where a folder renamed or moved went,
     /// the folder holding one trashed or deleted.
     static func refreshPath(_ result: WriteOperationResult, currentPath: String) -> String {
         if result.action == .trash || result.action == .deleteImmediately {
@@ -50,7 +47,7 @@ enum AfterWrite {
         return currentPath
     }
 
-    /// `resolveWriteOperationTreeSelectionPath`: where the tree selection goes after a write; nil to leave it.
+    /// Where the tree selection goes after a write; nil to leave it.
     static func treeSelectionPath(_ result: WriteOperationResult, selectedTreePath: String?) -> String? {
         guard let selected = selectedTreePath, !selected.isEmpty else { return nil }
         if result.action == .trash || result.action == .deleteImmediately {
@@ -102,7 +99,7 @@ enum AfterWrite {
         result.items.filter { $0.status == .completed && $0.destinationPath == nil }
     }
 
-    /// `resolveWriteOperationTreeReloadPaths`: the parents of what a write took and made, and what it made.
+    /// The parents of what a write took and made, and what it made.
     static func treeReloadPaths(_ result: WriteOperationResult) -> [String] {
         let completed = result.items.filter { $0.status == .completed }
         let sourceRoots = collapseNestedPaths(completed.compactMap { nonEmpty($0.sourcePath) })
@@ -128,7 +125,7 @@ enum AfterWrite {
         return destinationPrefix + path[rest...]
     }
 
-    /// The selection a write leaves (`queueWriteOperationSelection`): the items it made or moved, when they are in the
+    /// The selection a write leaves: the items it made or moved, when they are in the
     /// folder on screen, nothing is searched, and the person didn't pick something else meanwhile.
     static func selection(
         _ result: WriteOperationResult, currentPath: String, isSearching: Bool, selectionChanged: Bool
@@ -172,7 +169,7 @@ enum AfterWrite {
         return roots
     }
 
-    /// Shorter first; of the same length, as `localeCompare` orders them.
+    /// Shorter first; of the same length, in the current locale's order.
     private static func shorterFirst(_ left: String, _ right: String) -> Bool {
         let leftCount = left.utf16.count
         let rightCount = right.utf16.count

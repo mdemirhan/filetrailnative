@@ -1,5 +1,4 @@
-// Node's `path.dirname` and `path.basename` (posix), as the paste engine of packages/core/src/fs/copyPasteExecution.ts
-// calls them for every item it writes
+// Posix `dirname` and `basename`, which the paste asks for of every item it writes
 import FTFoundation
 import Foundation
 
@@ -16,7 +15,7 @@ func dirnameOf(_ path: String) -> String {
     if slash == bytes.startIndex {
         return "/"
     }
-    // "//a" is "//"'s, as Node keeps a leading double slash.
+    // "//a" is "//"'s: a leading double slash is kept.
     if bytes.index(after: bytes.startIndex) == slash {
         return NodePath.dirname(path)
     }

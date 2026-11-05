@@ -6,7 +6,7 @@
 #include "ft_copyfile.h"
 #include "ft_foldersize.h"
 
-/// Placeholder so the target builds; later work packages add the real C code.
+/// A placeholder; nothing uses it.
 int ft_c_version(void);
 
 /// What an entry of a folder is (the object type getattrlistbulk reports).

@@ -1,5 +1,3 @@
-// Port of the recovery cases of packages/core/src/fs/copyPasteRecovery.test.ts (its large-file copying cases are in
-// Execution/)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -27,11 +25,10 @@ final class Hang: Sendable {
     }
 }
 
-/// How long a test lets a disk take to answer (the original's fake timers stand at 1000 ms).
+/// How long a test lets a disk take to answer.
 private let answerWithinMs = 1_000
 
 struct ReplaceRecoveryAtStartTests {
-    // T-2438126e F-353 F-525
     @Test func leavesAnEntryForLaterUntouchedWhenItsOriginalsDiskDoesntAnswer() {
         let fileSystem = MockWriteServiceFileSystem([
             ("/away/a.txt", .file(size: 1)), ("/target/.a.txt.filetrail-0000abcd", .file(size: 1)),
@@ -56,7 +53,6 @@ struct ReplaceRecoveryAtStartTests {
 
     // A copy never goes back to its original's place: a share there that hangs doesn't hold up the copy, already
     // whole, from being put in place.
-    // T-592ef0a4 F-353 F-525
     @Test func putsACopyInPlaceWhenOnlyItsOriginalsDiskDoesntAnswer() {
         let fileSystem = MockWriteServiceFileSystem([
             ("/away/a.txt", .file(size: 1)), ("/target/.a.txt.filetrail-0000abcd", .file(size: 1)),
@@ -77,7 +73,6 @@ struct ReplaceRecoveryAtStartTests {
 
     // Only an item under a hidden name this app makes is ever moved or removed: a record that names anything else
     // (a journal written wrong) leaves it alone.
-    // T-0bb5550b F-347 F-525
     @Test func leavesAloneAnItemThatIsntUnderAHiddenNameOfThisApps() {
         let fileSystem = MockWriteServiceFileSystem([("/target/notes.txt", .file(size: 3))])
         let entry = ReplaceJournalEntry(
@@ -99,7 +94,6 @@ struct PartialFileRemovalTests {
     private static let part = "/target/.movie.mov.filetrail-0000abcd"
     private static let entry = PartialFileJournalEntry(id: "p", partialPath: part, finalPath: "/target/movie.mov")
 
-    // T-22bd6a05 F-526
     @Test func removesTheHiddenFolderABuildAfterV043CopiedItIn() {
         let fileSystem = MockWriteServiceFileSystem([
             (Self.folder, .directory()), (Self.folder + "/part", .file(size: 9)),
@@ -111,14 +105,12 @@ struct PartialFileRemovalTests {
         #expect(!fileSystem.exists(Self.folder))
     }
 
-    // T-8399d35f F-526
     @Test func findsNothingLeftOnceThatFolderIsGone() {
         let fileSystem = MockWriteServiceFileSystem([("/target", .directory())])
 
         #expect(recoverPartialFiles([Self.legacyEntry], fileSystem).map(\.outcome) == [.nothingLeft])
     }
 
-    // T-24b6ef42 F-526
     @Test func leavesAPartForLaterWhenItsDiskDoesntAnswerOrAnotherWriteRuns() {
         let fileSystem = MockWriteServiceFileSystem([(Self.part, .file(size: 9))])
 
@@ -136,7 +128,6 @@ struct PartialFileRemovalTests {
         #expect(fileSystem.exists(Self.part))
     }
 
-    // T-e52d860b F-526
     @Test func saysWhyAPartCouldntBeRemoved() {
         let fileSystem = MockWriteServiceFileSystem([(Self.part, .file(size: 9))])
         fileSystem.rmImpl = { _, _, _ in throw codedError("EIO", "EIO: i/o error") }
@@ -157,7 +148,6 @@ struct PartialFileRemovalTests {
         #expect(fileSystem.exists(Self.part))
     }
 
-    // T-1ca9e8c1 F-526 F-354
     @Test func removesAPartByItsHiddenName() {
         let fileSystem = MockWriteServiceFileSystem([(Self.part, .file(size: 9))])
 

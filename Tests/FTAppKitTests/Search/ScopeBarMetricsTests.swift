@@ -1,6 +1,3 @@
-// Ports the search scope bar's and the empty states' metrics of apps/desktop/src/renderer/styles.css
-// (.search-scope-bar padding 6px 12px over .segmented's 2px track; .content-header's weight 500; .content-state strong
-// over .empty-state-title)
 import AppKit
 import FTFoundation
 import Foundation
@@ -12,7 +9,6 @@ import Testing
 @Suite struct ScopeBarMetricsTests {
     // The bar holds the scope track (24 pt segments in a 2 pt track) with 6 pt above and below: 40 tall, the header
     // 41 with its edge. Its text is the header's 500 weight.
-    // covered-by-feature F-750
     @Test func theScopeBarHoldsItsTrackAndTheHeadersWeight() throws {
         let header = SearchHeaderView(frame: NSRect(x: 0, y: 0, width: 912, height: 41))
         header.show(
@@ -38,8 +34,7 @@ import Testing
         #expect(weight(label.font) == weight(NSFont.systemFont(ofSize: 12, weight: .medium)))
     }
 
-    // "No matches" is drawn as the original's `.content-state strong`: the body size, 500, the primary text color.
-    // covered-by-feature F-754 F-753
+    // "No matches" is drawn in the body size, at weight 500, in the primary text color.
     @Test func anEmptyStatesTitleIsTheContentStatesStrongText() throws {
         let state = ContentStateView(frame: NSRect(x: 0, y: 0, width: 600, height: 400))
         let theme = AppearanceModel.shared.theme

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/helpContent.ts (the functions; the data is HelpTopics.swift)
 import Foundation
 
 public enum HelpTopicID: String, CaseIterable, Sendable, Hashable {
@@ -102,7 +101,7 @@ public struct HelpSearchResult: Equatable, Sendable {
 public enum HelpContent {
     public static let shortcutGroups: [HelpShortcutGroup] = [.navigation, .files, .search, .views]
 
-    /// The data of `HELP_TOPICS` is in `HelpTopics.swift`; the shortcuts topic is last and has no sections.
+    /// The topics' data is in `HelpTopics.swift`; the shortcuts topic is last and has no sections.
     public static func topic(_ id: HelpTopicID) -> HelpTopic {
         topics.first { $0.id == id } ?? topics[0]
     }
@@ -155,7 +154,7 @@ public enum HelpContent {
         return result + rest
     }
 
-    /// JavaScript's `\w`.
+    /// An ASCII letter, digit or underscore.
     private static func isWordCharacter(_ character: Character) -> Bool {
         character.unicodeScalars.count == 1
             && character.unicodeScalars.allSatisfy {

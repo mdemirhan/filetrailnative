@@ -1,5 +1,3 @@
-// Port of the toolbar's menus of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx with HistoryButton.tsx,
-// ThemeMenuButton.tsx and the entries of ToolbarOverflowButton.tsx
 import AppKit
 import FTFoundation
 
@@ -45,7 +43,7 @@ extension ExplorerToolbar {
 
     static let sortMenuWidth = 200.0
 
-    /// The window was resized: the Sort menu closes when its button goes to the » menu (`sortMenuResetKey`).
+    /// The window was resized: the Sort menu closes when its button goes to the » menu.
     func windowResized() {
         if item(.sort)?.isVisible == false { closeSortMenu() }
     }
@@ -165,7 +163,7 @@ extension ExplorerToolbar {
 
     // MARK: The » menu
 
-    /// What the system's » menu says for an item with no room, worded as in the menu bar (`getOverflowEntries`). The
+    /// What the system's » menu says for an item with no room, worded as in the menu bar. The
     /// items that are several choices (the view, the sort, the theme) are a submenu: the system's menu holds one entry
     /// per item.
     func overflowEntry(_ id: ToolbarItemID) -> NSMenuItem? {

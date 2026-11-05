@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/writeOperations.batchRename.test.ts
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -95,7 +94,6 @@ private func rename(
 
 @MainActor
 @Suite struct BatchRenameOperationTests {
-    // T-aaed3b5e F-403 F-570 B-DLG-155 B-DLG-161
     @Test func renamesThemReportingEachAndWhereItWent() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("IMG_1.jpg", "one"), ("IMG_2.jpg", "two"), ("notes.txt", "n")])
@@ -120,7 +118,6 @@ private func rename(
         }
     }
 
-    // T-3b2e4ee1 F-570 B-DLG-156
     @Test func swapsNamesAndPassesThemAroundACycleKeepingEachFilesContents() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("a", "A"), ("b", "B"), ("c", "C")])
@@ -131,7 +128,6 @@ private func rename(
         }
     }
 
-    // T-27700133 F-397 F-570 B-DLG-157
     @Test func renamesAFolderAndItemsInsideItTogetherAsSearchResultsCanAsk() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = directory.path
@@ -152,7 +148,6 @@ private func rename(
     }
 
     // On a disk that minds case, "Notes.txt" is simply another name: a test below covers it.
-    // T-a755f3d0 F-399 F-570
     @Test(.enabled(if: tmpIgnoresCase))
     func changesOnlyTheCaseOfNamesAndHowAnAccentedLetterIsWritten() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
@@ -170,7 +165,6 @@ private func rename(
         }
     }
 
-    // T-c76247d8 F-401 F-570 B-DLG-160
     @Test func finishesASwapUnderWayWhenTheAppQuitsLeavingNothingUnderAHiddenName() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("a", "A"), ("b", "B")])
@@ -199,7 +193,6 @@ private func rename(
         }
     }
 
-    // T-7a062dc3 F-399 F-570 B-DLG-158
     @Test func handlesANameTakenSinceTheSheetCheckedItAsTheSettingSays() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let numbered = directory.appending("numbered").path
@@ -224,7 +217,6 @@ private func rename(
         }
     }
 
-    // T-1776451f F-403 F-570 B-DLG-159
     @Test func goesOnPastALockedItemAndSaysItIsLocked() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("locked.txt", "l"), ("free.txt", "f")])
@@ -240,7 +232,6 @@ private func rename(
         }
     }
 
-    // T-63bbf4d9 F-570 B-DLG-159
     @Test func failsWhatCantBeRenamedInAFolderThatCantBeWrittenTo() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let folder = directory.appending("read-only").path
@@ -255,7 +246,6 @@ private func rename(
         }
     }
 
-    // T-d37a1cc4 F-570
     @Test(.tags(.diskImage), .diskImages)
     func swapsTwoItemsWhoseNamesDifferOnlyInCaseOnADiskThatMindsCase() async throws {
         try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
@@ -270,7 +260,6 @@ private func rename(
         }
     }
 
-    // T-b0ac4fa0 F-570
     @Test(.tags(.diskImage), .diskImages)
     func numbersANameAnotherLinkToTheSameFileHasOnADiskThatMindsCase() async throws {
         try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
@@ -284,7 +273,6 @@ private func rename(
         }
     }
 
-    // T-42f1eb39 F-570
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func swapsChainsAndChangesCase(on kind: DiskImage.Kind) async throws {
         try await DiskImage.withSharedVolume(kind) { volume in
@@ -324,7 +312,6 @@ private func rename(
         }
     }
 
-    // T-e301da2e F-396 B-DLG-153
     @Test func leavesOutItemsThatWouldKeepTheirNameAndRefusesWhenNoneIsLeft() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("a.txt", "a")])
@@ -332,7 +319,6 @@ private func rename(
         }
     }
 
-    // T-cf123f13 F-396 B-DLG-153
     @Test func refusesAnItemListedTwice() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("a.txt", "a")])
@@ -342,7 +328,6 @@ private func rename(
         }
     }
 
-    // T-15ed1286 F-396 B-DLG-153
     @Test func refusesTheTrashTheStartupDisksFoldersAndTheHomeFolder() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-home") { directory in
             let home = directory.path
@@ -359,7 +344,6 @@ private func rename(
         }
     }
 
-    // T-68348060 F-396 B-DLG-154
     @Test func waitsForNoOtherWriteAndReportsTheKindOfChangeWhileItRuns() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("a.txt", "a")])
@@ -391,7 +375,6 @@ private func rename(
         }
     }
 
-    // T-2fc37834 F-396
     @Test func stillEndsFailingEveryItemWhenSomethingUnexpectedGoesWrong() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("notes.txt", "n")])
@@ -407,7 +390,6 @@ private func rename(
         }
     }
 
-    // T-cbbee1fc F-401 F-570 B-DLG-160
     @Test func stopsWhenAskedLeavingTheRestAsTheyWere() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("a.txt", "a"), ("b.txt", "b"), ("c.txt", "c")])
@@ -423,7 +405,7 @@ private func rename(
             defer { gate.open() }
             let handle = try await coordinator.batchRename(
                 request(root, [("a.txt", "x.txt"), ("b.txt", "y.txt"), ("c.txt", "z.txt")]), window: window)
-            // Stopped while the first item is being renamed, as the original's is (its rename starts at once).
+            // Stopped while the first item is being renamed (its rename starts at once).
             _ = try await Coordinators.waitFor { gate.someoneWaits ? true : nil }
             #expect(coordinator.cancel(handle.operationId, window: window))
             gate.open()
@@ -436,7 +418,6 @@ private func rename(
     }
 
     // The undo record has the final names: a taken name numbered is undone from where it went.
-    // F-403 F-570
     @Test func recordsWhereEachItemWentForUndo() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-batch-rename") { directory in
             let root = try makeFolder(directory, [("a.txt", "a"), ("b.txt", "b"), ("taken.txt", "t")])

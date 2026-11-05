@@ -1,4 +1,3 @@
-// Port of formatArgs of apps/desktop/src/main/appLog.ts (strings raw, errors, `util.inspect` of the rest)
 import FTFoundation
 import Foundation
 
@@ -6,7 +5,7 @@ import Foundation
 public enum LogArg: Sendable, ExpressibleByStringLiteral {
     case text(String)
     case error(any Error)
-    /// Any other value, written as `util.inspect` writes it.
+    /// Any other value, written as `inspect` writes it.
     case value(JSONNode)
 
     public init(stringLiteral value: String) {
@@ -20,7 +19,7 @@ public enum LogArg: Sendable, ExpressibleByStringLiteral {
 }
 
 public enum LogFormat {
-    /// `toISOString`: `2026-10-14T09:30:00.123Z`.
+    /// `2026-10-14T09:30:00.123Z`.
     public static func timestamp(_ date: Date) -> String {
         let milliseconds = Int((date.timeIntervalSince1970 * 1000).rounded(.down))
         let seconds = Int(floor(Double(milliseconds) / 1000))
@@ -38,7 +37,7 @@ public enum LogFormat {
         "\(timestamp(date)) \(level.rawValue.uppercased()) \(arguments(args))"
     }
 
-    /// `formatArgs`: the arguments joined by a space.
+    /// The arguments joined by a space.
     public static func arguments(_ args: [LogArg]) -> String {
         args.map(format).joined(separator: " ")
     }
@@ -52,7 +51,7 @@ public enum LogFormat {
         }
     }
 
-    /// An error as `Name: message` (the original writes its stack, which has no counterpart here).
+    /// An error as `Name: message`.
     static func describe(_ error: any Error) -> String {
         let message = (error as? LocalizedError)?.errorDescription ?? String(describing: error)
         return "\(String(describing: type(of: error))): \(message)"
@@ -76,7 +75,7 @@ public enum LogFormat {
         case .object(let members):
             if members.isEmpty { return "{}" }
             if depth > maxDepth { return "[Object]" }
-            // Node sorts the rendered `key: value` strings by UTF-16 code unit, not the raw keys.
+            // The rendered `key: value` strings are sorted by UTF-16 code unit, not the raw keys.
             let entries = members.map { "\(inspectKey($0.key)): \(inspect($0.value, depth: depth + 1))" }
                 .sorted { $0.utf16.lexicographicallyPrecedes($1.utf16) }
             return "{ " + entries.joined(separator: ", ") + " }"

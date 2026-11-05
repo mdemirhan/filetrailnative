@@ -1,23 +1,22 @@
-// Port of apps/desktop/src/renderer/lib/internalDragAndDrop.ts
 import Foundation
 
-/// Where a drag comes from: the file list, search results, or Finder and other apps (`InternalMoveSourceSurface`).
+/// Where a drag comes from: the file list, search results, or Finder and other apps.
 public enum DragSourceSurface: String, Sendable, Codable {
     case content, search, external
 }
 
-/// What takes a drop (`InternalDropTargetSurface`): a row or the background of the file list, a folder of the tree,
+/// What takes a drop: a row or the background of the file list, a folder of the tree,
 /// a favorite or a location, a tab.
 public enum DropTargetSurface: String, Sendable, Codable {
     case content, tree, favorite, tab
 }
 
-/// What a drop does with the dragged items, and the cursor it shows (`InternalDropOperation`).
+/// What a drop does with the dragged items, and the cursor it shows.
 public enum DropOperation: String, Sendable, Codable {
     case move, copy
 }
 
-/// Why a drop is refused (`InternalDropValidationResult`'s codes).
+/// Why a drop is refused.
 public enum DropRefusal: String, Sendable, Codable {
     case blocked, empty
     case targetMissing = "target_missing"
@@ -29,7 +28,7 @@ public enum DropRefusal: String, Sendable, Codable {
     case parentIntoChild = "parent_into_child"
 }
 
-/// A dragged item (`InternalDragItem`).
+/// A dragged item.
 public struct DragItem: Equatable, Sendable, Codable {
     public var path: String
     public var kind: EntryKind
@@ -40,7 +39,7 @@ public struct DragItem: Equatable, Sendable, Codable {
     }
 }
 
-/// A drag going on (`InternalDragSession`). The facts its drag-overs ask about are worked out once, with it.
+/// A drag going on. The facts its drag-overs ask about are worked out once, with it.
 public final class DragSession: Sendable {
     public let sourceSurface: DragSourceSurface
     public let sourceItems: [DragItem]
@@ -61,7 +60,7 @@ public final class DragSession: Sendable {
 public struct DragFacts: Sendable {
     public let sourcePaths: [String]
     let paths: Set<ExactKey>
-    /// The folders whose disks decide a move (`getSourceFolderPaths`).
+    /// The folders whose disks decide a move.
     public let folderPaths: [String]
     /// The folder each item is in; "" stands for none ("/").
     let parentPaths: Set<ExactKey>
@@ -89,12 +88,12 @@ public struct DragFacts: Sendable {
 
 /// Finder's rules for a drag of files.
 public enum DragRules {
-    /// `isRealDirectoryEntry`: a folder, not an alias of one.
+    /// A folder, not an alias of one.
     public static func isRealDirectory(kind: EntryKind?, isSymlink: Bool) -> Bool {
         kind == .directory && !isSymlink
     }
 
-    /// `buildInternalDragSession`: the whole selection (in view order) when the dragged row is part of it,
+    /// The whole selection (in view order) when the dragged row is part of it,
     /// otherwise only the dragged row; nil when the dragged entry isn't known.
     public static func session(
         sourceSurface: DragSourceSurface, draggedPath: String, selectedPathsInViewOrder: [String],
@@ -109,7 +108,7 @@ public enum DragRules {
         return DragSession(sourceSurface: sourceSurface, sourceItems: items, leadPath: draggedPath, leadKind: leadKind)
     }
 
-    /// `resolveInternalDropOperation`: Option copies and Command moves, whatever the disks (Option-Command copies);
+    /// Option copies and Command moves, whatever the disks (Option-Command copies);
     /// otherwise the disks decide once they have answered, and the paths until then.
     public static func operation(
         sourcePaths: [String], targetPath: String, option: Bool, command: Bool, onSameDisk: Bool? = nil
@@ -138,7 +137,7 @@ public enum DragRules {
         operation == .move && !offersMove ? .copy : operation
     }
 
-    /// `getSourceFolderPaths`: the folders holding the items, once each, and dragged folders themselves (never
+    /// The folders holding the items, once each, and dragged folders themselves (never
     /// aliases): a disk's own folder is on that disk.
     public static func sourceFolderPaths(_ items: [DragItem]) -> [String] {
         var seen = Set<ExactKey>()
@@ -158,7 +157,7 @@ public enum DragRules {
         return paths
     }
 
-    /// `resolveOnSameDisk`: whether the items' folders and the target are all on one disk; nil while one is unknown
+    /// Whether the items' folders and the target are all on one disk; nil while one is unknown
     /// or can't be read (an id of nil).
     public static func onSameDisk(sourceFolderPaths: [String], targetPath: String, diskIds: [String: Int64?])
         -> Bool?
@@ -179,13 +178,13 @@ public enum DragRules {
         return same
     }
 
-    /// `EFFECTS_WITH_MOVE`: whether another app's drag (`effectAllowed`) offers a move; nil (not said) does.
+    /// Whether another app's drag (`effectAllowed`) offers a move; nil (not said) does.
     public static func offersMove(effectAllowed: String?) -> Bool {
         guard let effectAllowed else { return true }
         return ["move", "copyMove", "linkMove", "all", "uninitialized"].contains(effectAllowed)
     }
 
-    /// `validateInternalDrop`: nil when the drop is allowed, else why not; the first failure in this order wins.
+    /// Nil when the drop is allowed, else why not; the first failure in this order wins.
     public static func validate(
         session: DragSession?, blocked: Bool, targetSurface: DropTargetSurface, targetPath: String?,
         targetSupportsMove: Bool, targetIsSelected: Bool = false, operation: DropOperation = .move
@@ -217,7 +216,7 @@ public enum DragRules {
         return false
     }
 
-    /// `getVolumeRootPath` (volumes.ts), by code units: `/Volumes/<name>` for a path on another disk, else `/`.
+    /// By code units: `/Volumes/<name>` for a path on another disk, else `/`.
     public static func volumeRootPath(_ path: String) -> String {
         let prefix = Array("/Volumes/".utf16)
         let units = Array(path.utf16)
@@ -226,7 +225,7 @@ public enum DragRules {
         return name.isEmpty ? "/" : JSString.string(prefix + name)
     }
 
-    /// `parentDirectoryPath` (explorerNavigation.ts): nil for "/", "/" for a top folder.
+    /// `parentDirectoryPath`: nil for "/", "/" for a top folder.
     public static func parentDirectoryPath(_ path: String) -> String? {
         if JSString.equals(path, "/") { return nil }
         let parts = JSString.components(path, separator: 0x2F).filter { !$0.isEmpty }

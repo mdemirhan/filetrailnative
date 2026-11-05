@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/components/SettingsControls.tsx and the controls of SettingsView.tsx (Toggle,
-// SelectControl, SettingRow, OpenItemLimitInput), drawn as the .settings-* rules of styles.css draw them
 import AppKit
 import FTFoundation
 
@@ -29,24 +27,24 @@ enum SettingsStyle {
         return style
     }
 
-    /// `.settings-row-title`, `.settings-list-name`, `.shortcut-row-label`.
+    /// A row's title, a list row's name, a shortcut's label.
     static var body: TextStyle { style(DesignTokens.typeScale.body) { $0.palette.textPrimary } }
-    /// `.settings-section-title`.
+    /// A section's title.
     static var sectionTitle: TextStyle { style(DesignTokens.typeScale.body, .semibold) { $0.palette.textPrimary } }
-    /// `.settings-row-desc`: 11 on 14.
+    /// A row's description: 11 on 14.
     static var description: TextStyle {
         style(
             DesignTokens.typeScale.small,
             lineHeight: Double(SettingsMetrics.rowDescLineHeight) / DesignTokens.typeScale.small
         ) { $0.palette.settingsLabelSecondary }
     }
-    /// `.settings-section-note`.
+    /// A section's note.
     static var note: TextStyle {
         style(DesignTokens.typeScale.small, lineHeight: SettingsMetrics.noteLineHeight) {
             $0.palette.settingsLabelSecondary
         }
     }
-    /// `.settings-list-path`, `.settings-list-trailing-note`.
+    /// A list row's path, and the note at its end.
     static var secondarySmall: TextStyle {
         style(DesignTokens.typeScale.small) { $0.palette.settingsLabelSecondary }
     }
@@ -81,7 +79,7 @@ enum SettingsGlyph {
             color: NSColor(theme.palette.settingsLabelSecondary))
     }
 
-    /// The push button's bezel (`--push-button-bg`, `--push-button-bezel`), with its hover and pressed looks.
+    /// The push button's bezel and fill, with its hover and pressed looks.
     static func bezel(in bounds: NSRect, theme: Theme, hovering: Bool, pressed: Bool) {
         let radius = CGFloat(DesignTokens.radii.control)
         let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
@@ -99,7 +97,7 @@ enum SettingsGlyph {
         }
     }
 
-    /// A field's inset look (`--field-bg`, `--field-edge`).
+    /// A field's inset look: its fill and edge.
     static func field(in bounds: NSRect, theme: Theme, focused: Bool) {
         let radius = CGFloat(DesignTokens.radii.control)
         let palette = theme.palette
@@ -116,7 +114,7 @@ enum SettingsGlyph {
         if focused { focusRing(around: bounds, radius: radius, theme: theme) }
     }
 
-    /// `--focus-ring`: the accent at 50% around a control.
+    /// The focus ring: the accent at 50% around a control.
     static func focusRing(around bounds: NSRect, radius: CGFloat, theme: Theme) {
         let ring = NSBezierPath(
             roundedRect: bounds.insetBy(dx: -1.5, dy: -1.5), xRadius: radius + 1.5, yRadius: radius + 1.5)
@@ -220,7 +218,7 @@ class SettingsControlView: NSView, ThemeApplying {
 
 // MARK: Switch
 
-/// `Toggle`: the system's switch at the size System Settings draws one; `role=switch` with its state.
+/// The system's switch at the size System Settings draws one.
 final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
     var isOn: Bool {
         get { state == .on }
@@ -266,7 +264,7 @@ final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
     }
 
     override func keyDown(with event: NSEvent) {
-        // Space, Return or Enter: the original's switch is a button (SettingsView.tsx Toggle).
+        // Space, Return or Enter press the switch, as they press a button.
         if event.charactersIgnoringModifiers == " " || event.keyCode == 36 || event.keyCode == 76 {
             press()
         } else {
@@ -295,7 +293,7 @@ final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
 
 // MARK: Pop-up
 
-/// `SelectControl`: the system's own pop-up menu on a button with the push button's bezel, as wide as its longest
+/// The system's own pop-up menu on a button with the push button's bezel, as wide as its longest
 /// choice and never narrower than 120. A choice can be listed and not choosable.
 final class SettingsPopup: SettingsControlView, SettingsSized, NSMenuDelegate {
     struct Option: Equatable {
@@ -421,8 +419,8 @@ final class SettingsPopup: SettingsControlView, SettingsSized, NSMenuDelegate {
 
 // MARK: Number field
 
-/// `OpenItemLimitInput`: a short inset field for a whole number, followed by its unit ("items"). Committed when it is
-/// left or Return is pressed (B-DLG-191).
+/// A short inset field for a whole number, followed by its unit ("items"). Committed when it is
+/// left or Return is pressed.
 final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFieldDelegate {
     let field = NSTextField()
     private let unit = FlushTextField(labelWithString: "")
@@ -485,7 +483,7 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
         super.layout()
         let width = SettingsMetrics.numberFieldWidth
         let lineHeight = ceil(Self.font.ascender - Self.font.descender + Self.font.leading)
-        // Right-aligned before the room Chromium keeps for the number input's stepper. A field's cell draws its text 2
+        // Right-aligned before the room kept for a number field's stepper. A field's cell draws its text 2
         // in from each side of its frame, which is made wider to cancel it.
         let cellInset = SettingsMetrics.fieldCellInset
         field.frame = NSRect(
@@ -535,7 +533,7 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
 
 // MARK: Checkbox
 
-/// `.settings-checkbox input`: 14 by 14, the accent with a white tick when on.
+/// A checkbox: 14 by 14, the accent with a white tick when on.
 final class SettingsCheckbox: SettingsControlView {
     var isChecked: Bool {
         didSet {
@@ -581,7 +579,7 @@ final class SettingsCheckbox: SettingsControlView {
 // MARK: Small push button
 
 extension SystemButton {
-    /// `.push-button.is-small`: 22 tall, the callout size, 10 each side.
+    /// A small push button: 22 tall, the callout size, 10 each side.
     static func small(_ title: String, theme: Theme) -> SystemButton {
         let button = SystemButton(title: title, theme: theme)
         button.font = ThemeFonts.sans(DesignTokens.typeScale.callout)
@@ -598,7 +596,7 @@ extension SystemButton {
 
 // MARK: Rows and groups
 
-/// `SettingRow`: the title and its description at the left, the control at the right.
+/// The title and its description at the left, the control at the right.
 final class SettingsRowView: ThemedView, SettingsBlock {
     let titleText: ThemedText
     let descriptionText: ThemedText?
@@ -668,11 +666,11 @@ final class SettingsRowView: ThemedView, SettingsBlock {
     }
 }
 
-/// `.settings-card`: the rows of a group on a faint tint, a line under each but the last, the edge drawn over them.
+/// A card: the rows of a group on a faint tint, a line under each but the last, the edge drawn over them.
 /// A full-width row (a list) is laid from edge to edge.
 final class SettingsCardView: ThemedView, SettingsBlock {
     private(set) var rows: [any SettingsBlock] = []
-    /// Rows that fill the card from edge to edge (`.settings-row-list`).
+    /// Rows that fill the card from edge to edge (lists).
     private var fullWidth: Set<ObjectIdentifier> = []
     private let edge = SettingsCardEdge()
 
@@ -707,7 +705,7 @@ final class SettingsCardView: ThemedView, SettingsBlock {
             (row as? SettingsListBlock)?.drawsSeparator = !last
             let height = row.arrange(width: rowWidth)
             row.frame = NSRect(x: inset, y: y, width: rowWidth, height: height)
-            // A list sits at the top of its `.settings-row-list`, which keeps the row's 40 minimum: an empty list
+            // A list sits at the top of its row, which keeps the row's 40 minimum: an empty list
             // (only its bar) leaves room under it.
             y += full ? max(height, SettingsMetrics.rowMinHeight) : height
         }
@@ -716,7 +714,7 @@ final class SettingsCardView: ThemedView, SettingsBlock {
     }
 }
 
-/// `.settings-card::after`: the 1 px edge over the rows, so a selected list row doesn't paint over it.
+/// The card's 1 px edge over the rows, so a selected list row doesn't paint over it.
 final class SettingsCardEdge: ThemedView {
     override init(frame: NSRect = .zero, theme: Theme = AppearanceModel.shared.theme) {
         super.init(frame: frame, theme: theme)
@@ -729,7 +727,7 @@ final class SettingsCardEdge: ThemedView {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// `SectionCard`: an optional title over a card of rows, an optional note under it, and a button below at the right.
+/// An optional title over a card of rows, an optional note under it, and a button below at the right.
 final class SettingsSectionView: ThemedView, SettingsBlock {
     let titleText: ThemedText?
     let card: SettingsCardView

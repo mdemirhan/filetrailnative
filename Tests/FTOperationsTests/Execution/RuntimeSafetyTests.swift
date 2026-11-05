@@ -1,6 +1,5 @@
-// Port of the first half of packages/core/src/fs/copyPasteRuntimeSafety.realfs.test.ts, but for the cases that
-// Replace (P3-04's): what a paste does when the items it is about relate to each other, or change between the review
-// and the paste, on the real disk
+// What a paste does when the items it is about relate to each other, or change between the review and the paste, on the
+// real disk
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -56,7 +55,6 @@ private func becomePackage(_ path: String, _ files: [String: String]) throws {
 struct ReplaceNeverDestroysAnotherItemTests {
     // Cutting "src/a" and "dst/a/keep.txt" into "dst": replacing "dst/a" would send "keep.txt" to the Trash inside
     // it.
-    // T-4b7e1bb5 F-449
     @Test func isBlockedInTheReviewForAFolderHoldingAnotherItemBeingPasted() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/a/new.txt", "new")
@@ -71,7 +69,6 @@ struct ReplaceNeverDestroysAnotherItemTests {
     }
 
     // As the review shows it: Replace for all merges a folder it can't replace.
-    // T-a1bb1edb F-449
     @Test func mergesTheFolderInsteadWhenReplaceIsChosenForAllAndKeepsEveryItem() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/a/new.txt", "new")
@@ -91,7 +88,6 @@ struct ReplaceNeverDestroysAnotherItemTests {
 
     // Planned as a merge (the review saw the other item in it), so nothing goes to the Trash even though the other
     // item has left it by then.
-    // T-cc8bf910 F-449
     @Test func mergesTheFolderOnceTheOtherItemHasBeenMovedOutOfItFirst() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/a/new.txt", "new")
@@ -114,7 +110,6 @@ struct ReplaceNeverDestroysAnotherItemTests {
 struct ChangedAfterTheReviewTests {
     // Answering "use the changed file" is about the file being pasted; an item that appeared at the destination
     // meanwhile is asked about on its own.
-    // T-39385cd0 F-324 F-325 F-491
     @Test func asksAboutTheDestinationTooWhenBothSidesChanged() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/notes.txt", "draft")
@@ -135,7 +130,6 @@ struct ChangedAfterTheReviewTests {
         }
     }
 
-    // T-bab8f5be F-324 F-491
     @Test func asksOnceWhenOnlyTheItemBeingPastedChanged() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/notes.txt", "draft")
@@ -157,7 +151,6 @@ struct ChangedAfterTheReviewTests {
 
 /// Folders reached through a symlink, and duplicating several items.
 struct LinkedFolderTests {
-    // T-71bb66fd F-336
     @Test func pastesIntoASymlinkToAFolderAsIntoThatFolder() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/a.txt", "a")
@@ -172,7 +165,6 @@ struct LinkedFolderTests {
     }
 
     // "L/a.txt" where L links to dst is "dst/a.txt": copying it into dst duplicates it.
-    // T-942b8999 F-336
     @Test func duplicatesAnItemCopiedIntoItsOwnFolderThroughASymlink() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.dst + "/a.txt", "a")
@@ -186,7 +178,6 @@ struct LinkedFolderTests {
         }
     }
 
-    // T-be52855a F-450
     @Test func namesEachCopyApartWhenOneItemsCopyNameIsAnotherItemsName() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.dst + "/a.txt", "a")
@@ -206,7 +197,6 @@ struct LinkedFolderTests {
 // The person is asked when the item being pasted changed after the review; going on must paste what is there now,
 // not what the review saw.
 struct GoingOnAfterTheSourceChangedTests {
-    // T-e4a3d0a4 F-331
     @Test func copiesAFileThatBecameAPackageAsTheWholePackage() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/Doc.key", "flat")
@@ -223,7 +213,6 @@ struct GoingOnAfterTheSourceChangedTests {
     }
 
     // Keynote and Pages save a package as a new folder that takes the old one's name.
-    // T-5ef4dac6 F-331
     @Test func copiesAPackageSavedAnewWithTheFilesItHasNow() async throws {
         try await withSafetyFolders { f in
             try becomePackage(f.src + "/Photos.key", ["a.jpg": "a"])
@@ -243,7 +232,6 @@ struct GoingOnAfterTheSourceChangedTests {
         }
     }
 
-    // T-3de7ef98 F-331 F-469
     @Test func movesAFileThatBecameAFolderToAnotherPlaceAsTheWholeFolder() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/Doc.key", "flat")
@@ -260,7 +248,6 @@ struct GoingOnAfterTheSourceChangedTests {
         }
     }
 
-    // T-aca6c73a F-331
     @Test func copiesAFolderThatBecameAFileAsTheFile() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/notes/a.txt", "a")
@@ -278,7 +265,6 @@ struct GoingOnAfterTheSourceChangedTests {
         }
     }
 
-    // T-7ecd40ee F-331
     @Test func copiesASymlinkThatBecameAFileAsTheFile() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/target.txt", "target")
@@ -297,7 +283,6 @@ struct GoingOnAfterTheSourceChangedTests {
         }
     }
 
-    // T-c29d4a53 F-332
     @Test func leavesAnItemThatIsNoLongerAFolderWhenTheAnswerWasMerge() async throws {
         try await withSafetyFolders { f in
             try Disk.makeDirectories(f.src + "/notes")
@@ -321,7 +306,6 @@ struct GoingOnAfterTheSourceChangedTests {
 
     // An item the review saw at the destination and that changed there since is still asked about, even inside a
     // folder that was read again.
-    // T-75adad92 F-331 F-325
     @Test func stillAsksBeforeReplacingAnItemInsideItThatChangedAtTheDestination() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/Project/a.txt", "new a")
@@ -346,7 +330,6 @@ struct GoingOnAfterTheSourceChangedTests {
 
 /// Items added to a folder after the review; merging folders that both have Finder's .DS_Store.
 struct AddedAfterTheReviewTests {
-    // T-2df7cd78 F-272 F-495
     @Test func areNamedInTheResultOfACopyInsteadOfCallingItComplete() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -364,7 +347,6 @@ struct AddedAfterTheReviewTests {
         }
     }
 
-    // T-25681a6f F-272 F-495
     @Test func dontCountFindersOwnDSStore() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -379,7 +361,6 @@ struct AddedAfterTheReviewTests {
 
     // Finder writes .DS_Store into a folder just by showing it: merging two folders that both have one isn't a
     // clash to ask about, and the folder merged into keeps its own.
-    // T-e69a3b0c F-448 F-496
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func keepsTheDestinationsAskingNothing(mode: CopyPasteMode) async throws {
         try await withSafetyFolders { f in
@@ -401,7 +382,6 @@ struct AddedAfterTheReviewTests {
         }
     }
 
-    // T-17da6372 F-448 F-496
     @Test func copiesThePastedOneIntoAFolderThatHasNone() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/.DS_Store", "pasted view")
@@ -420,7 +400,6 @@ struct AddedAfterTheReviewTests {
 /// What is picked to paste, and the folder pasted into going away.
 struct WhatIsPickedTests {
     // "/" holds everything, so wherever it is pasted is inside it.
-    // T-17fe1e11 F-447 F-497
     @Test func refusesToPasteTheStartupDiskIntoOneOfItsOwnFolders() async throws {
         try await withSafetyFolders { f in
             let run = try await runPaste(mode: .copy, sources: ["/"], into: f.dst)
@@ -431,7 +410,6 @@ struct WhatIsPickedTests {
     }
 
     // Select All in search results picks a folder and items inside it.
-    // T-6bdd38a0 F-447 F-497
     @Test func copiesAnItemPickedWithItsFolderOnceInsideTheFolder() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/A/b.txt", "b")
@@ -444,7 +422,6 @@ struct WhatIsPickedTests {
         }
     }
 
-    // T-3b3f54f5 F-461 F-497
     @Test func movesAnItemPickedWithItsFolderAlongWithTheFolderWithoutAsking() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/A/b.txt", "b")
@@ -458,7 +435,6 @@ struct WhatIsPickedTests {
         }
     }
 
-    // T-070e93f1 F-280 F-497
     @Test func countsAFolderAsOneItemPickedNotTheItemsInsideIt() async throws {
         try await withSafetyFolders { f in
             for name in ["1.jpg", "2.jpg", "3.jpg"] {
@@ -471,7 +447,6 @@ struct WhatIsPickedTests {
         }
     }
 
-    // T-c73d9a4c F-269 F-498
     @Test func doesntMakeTheFolderPastedIntoAgainAndSaysItIsGone() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/a.txt", "a")

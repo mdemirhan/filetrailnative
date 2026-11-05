@@ -1,5 +1,3 @@
-// Port of the rename cases of apps/desktop/src/renderer/components/InlineRenameField.test.tsx and
-// hooks/useExplorerNavigationController.ts (:664-683), through F2 and the app's file operations
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -20,7 +18,7 @@ extension ExplorerWindowlessTests {
             try #require(identified("rename.field", in: tab.window?.contentView).first as? InlineRenameField)
         }
 
-        // T-b4cc6249: a folder's whole name is selected, dots and all.
+        // A folder's whole name is selected, dots and all.
         @Test func f2SelectsTheWholeNameOfAFolderWithDots() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -36,7 +34,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-2ced1d75 B-SEL-129: while text is being composed Return and Escape are the composition's, not the rename's.
+        // While text is being composed Return and Escape are the composition's, not the rename's.
         @Test func returnAndEscapeBelongToTheCompositionWhileTextIsMarked() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -63,7 +61,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-7f1c1f2a B-SEL-034 B-SEL-080: a rename to a name outside the filter selects the item and clears the filter.
+        // A rename to a name outside the filter selects the item and clears the filter.
         @Test func aRenameOutsideTheFilterSelectsItAndClearsTheFilter() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()

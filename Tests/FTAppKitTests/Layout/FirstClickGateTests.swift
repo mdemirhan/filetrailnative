@@ -1,5 +1,4 @@
-// Checks the rule of apps/desktop/src/main/main.ts:424-445 (no acceptFirstMouse): the click that brings a window forward
-// only brings it forward
+// The click that brings a window forward only brings it forward
 import AppKit
 import Testing
 
@@ -19,7 +18,7 @@ private final class ForwardWindow: NSWindow {
         #expect(FirstClickGate.bringsForward(pressedAt: 10, isKey: false, keyWindowIsItsOwn: false, cameForwardAt: 0))
     }
 
-    // Its popover or other child has the keyboard: the press is for the window, as the original's in-window ones were.
+    // Its popover or other child has the keyboard: the press is for the window.
     @Test func aPressWithTheWindowsOwnChildKeyGoesThrough() {
         #expect(!FirstClickGate.bringsForward(pressedAt: 10, isKey: false, keyWindowIsItsOwn: true, cameForwardAt: 0))
     }
@@ -168,8 +167,8 @@ private final class ForwardWindow: NSWindow {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct FirstClickGateWindowTests {
-        // main.ts:424-445: no first click reaches the toolbar's search options, a view of the field and no control of its
-        // own. The band's own room isn't in any item: it stays the frame's.
+        // No first click reaches the toolbar's search options, a view of the field and no control of its own. The
+        // band's own room isn't in any item: it stays the frame's.
         @Test func theToolbarsSearchOptionsCountAsAToolbarControl() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

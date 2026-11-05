@@ -1,5 +1,5 @@
-// Reads a folder with getattrlistbulk(2), the call the folder-size walk of the original uses
-// (packages/native-fs/src/native_foldersize.c), asking for what a listing shows besides the name.
+// Reads a folder with getattrlistbulk(2), the call the folder-size walk uses, asking for what a listing
+// shows besides the name.
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>

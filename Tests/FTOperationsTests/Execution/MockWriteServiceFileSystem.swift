@@ -1,4 +1,3 @@
-// Port of MockWriteServiceFileSystem and snapshotMockFileSystem (packages/core/src/fs/testUtils.ts)
 import FTFoundation
 import Foundation
 
@@ -9,7 +8,7 @@ import Foundation
 final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     enum Kind: Equatable { case file, directory, symlink }
 
-    /// One item. A class, so its flags go with it through renames, as the original keeps them by node.
+    /// One item. A class, so its flags go with it through renames.
     final class Node {
         var kind: Kind
         var size: Int64
@@ -66,7 +65,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     }
 
     private let lock = NSRecursiveLock()
-    // The items by path, in the order they were made, as a JavaScript Map keeps them.
+    // The items by path, in the order they were made.
     private var order: [String?] = []
     private var positions: [NameKeys.Exact: Int] = [:]
     private var table: [NameKeys.Exact: Node] = [:]
@@ -92,7 +91,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     var setFlagsImpl: ((String, UInt32) throws -> Void)?
     var isPackageImpl: ((String) throws -> Bool?)?
     var isAppleDoubleImpl: ((String) -> Bool)?
-    /// The calls the original's tests add to the mock as they need them.
+    /// The calls tests add to the mock as they need them.
     var canModifyFolderImpl: ((String) throws -> Void)?
     var copyMetadataImpl: ((String, String) throws -> Void)?
     var copyMetadataToRunInPlaceImpl: ((String, String) throws -> Void)?
@@ -427,7 +426,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         }
     }
 
-    /// Changes an item (a copy of it, as the original spreads it) and gives it a new date.
+    /// Changes an item (a copy of it, put in its place) and gives it a new date.
     func mutateNode(_ path: String, _ update: (Node) -> Void) {
         locked {
             let key = existingKey(path)

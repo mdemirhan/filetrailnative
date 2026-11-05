@@ -1,5 +1,3 @@
-// Port of the button order and default of apps/desktop/src/renderer/components/{Alert,CopyPasteDialog,
-// UndoQuestionAlert,EjectVolumeAlert}.tsx and the push button variants of components/PushButton.tsx
 import Foundation
 
 /// How a push button is drawn (`PushButtonVariant`): plain, filled with the accent as the one Return presses, or with
@@ -37,8 +35,8 @@ public enum AlertButtons {
         buttons.firstIndex { $0.variant == .default }
     }
 
-    /// `CopyPasteDialog`'s confirmation (and `UndoQuestionAlert`'s, whose go-ahead is never red): the primary action
-    /// and Cancel. A confirmation that can't be undone, or a question best answered no, makes Cancel the default, so a
+    /// A copy or paste confirmation (and the Undo question, whose go-ahead is never red): the primary action and
+    /// Cancel. A confirmation that can't be undone, or a question best answered no, makes Cancel the default, so a
     /// stray Return can't confirm it. The default is always the button on the right.
     public static func confirmation(
         _ label: String, destructive: Bool, cancelIsDefault: Bool
@@ -55,10 +53,10 @@ public enum AlertButtons {
         ]
     }
 
-    /// `ActionNoticeDialog`: one OK.
+    /// One OK.
     public static let notice: [AlertButtonSpec<ConfirmAnswer>] = [AlertButtonSpec("OK", .default, answer: .confirm)]
 
-    /// `TextPromptDialog`: Cancel, and the submit button as the default.
+    /// Cancel, and the submit button as the default.
     public static func prompt(submitLabel: String) -> [AlertButtonSpec<ConfirmAnswer>] {
         [AlertButtonSpec("Cancel", .plain, answer: .cancel), AlertButtonSpec(submitLabel, .default, answer: .confirm)]
     }

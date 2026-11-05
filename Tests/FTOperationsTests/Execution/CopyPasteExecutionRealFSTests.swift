@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteExecution.realfs.test.ts, but for the case that Replaces (P3-04's)
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -32,7 +31,6 @@ func setDate(_ path: String, _ milliseconds: Double) throws {
 }
 
 struct CopyPasteExecutionRealFSTests {
-    // T-a0287703 F-461
     @Test func cutMovesFileSourceGoneDestinationPresentWithCorrectContent() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -49,7 +47,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-13d8fe6e F-257 F-461
     @Test func midCancelCutLeavesACleanPartitionOnTheRealFilesystem() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -91,7 +88,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-26a4f537 F-279
     @Test func cutPreservesSourceWhenExternallyModifiedDuringCopy() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -115,7 +111,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-c26523a5 F-283 F-462
     @Test func renameWithinTheSameTmpdirPreservesInode() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -135,7 +130,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-cbbc9f49 F-462
     @Test func renamePreservesMtimeOnTheRealFilesystem() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -155,7 +149,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-a2325a77 F-271 F-452
     @Test func copyPreservesMtimeForDirectoriesViaUtimes() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -174,7 +167,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-2ba84c2f F-273 F-451
     @Test func copyPreservesMtimeForSymlinksViaUtimes() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -190,7 +182,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-ceffaec5 F-283
     @Test func renameAndInlineCutNoCopySourceMovedAtomically() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
@@ -211,7 +202,6 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
-    // T-0d18ea04 F-447
     @Test func copyModeWithUtimesSourcePreservedDestinationHasContent() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")

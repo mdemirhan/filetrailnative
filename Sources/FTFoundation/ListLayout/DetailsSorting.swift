@@ -1,5 +1,3 @@
-// Port of the header sort rules of apps/desktop/src/renderer/components/ContentPane.tsx (:343-359, folderListColumns) and
-// handleSortChange in hooks/useExplorerNavigationController.ts (:2002-2025)
 import Foundation
 
 public enum DetailsSorting {
@@ -21,7 +19,7 @@ public enum DetailsSorting {
         }
     }
 
-    /// `handleSortChange`: the same key toggles the direction; a new key starts descending for Date Modified and
+    /// The same key toggles the direction; a new key starts descending for Date Modified and
     /// Size, ascending for Name and Kind.
     public static func next(
         current: SortByPreference, direction: SortDirectionPreference, requested: SortByPreference

@@ -1,9 +1,6 @@
-// Port of shouldRenderCopyPasteResultDialog and isExpectedPlannedSkipResult (apps/desktop/src/renderer/lib/
-// explorerAppUtils.ts) and of pushTerminalCopyPasteToast, formatWriteOperationItemSummary,
-// formatPlannedSkipToastMessage and getPlannedSkipToastTitle (hooks/useExplorerActions.ts)
 import Foundation
 
-/// A finished operation, as what is said about it looks at it (`WriteOperationProgressEvent` with its result).
+/// A finished operation and its result, as what is said about it looks at it.
 public struct WriteEndSummary: Equatable, Sendable {
     public struct Item: Equatable, Sendable {
         public var sourcePath: String?
@@ -62,7 +59,7 @@ public struct WriteEndSummary: Equatable, Sendable {
     var isUndoOrRedo: Bool { action == "undo" || action == "redo" }
 }
 
-/// What a toast says (`pushToast`).
+/// What a toast says.
 public struct WriteEndToast: Equatable, Sendable {
     public enum Kind: String, Sendable {
         case success, info
@@ -75,7 +72,6 @@ public struct WriteEndToast: Equatable, Sendable {
 
 /// What is said when an operation ends: a result sheet when there is something to read, else a toast or nothing.
 public enum WriteEndNotices {
-    /// `shouldRenderCopyPasteResultDialog`.
     public static func needsResultSheet(_ write: WriteEndSummary) -> Bool {
         if write.action == "rename" || write.action == "new_folder" { return write.status == "failed" }
         if write.isUndoOrRedo {
@@ -89,7 +85,7 @@ public enum WriteEndNotices {
         return write.completedItemCount > 0 || write.failedItemCount > 0 || write.skippedItemCount > 0
     }
 
-    /// `isExpectedPlannedSkipResult`: a partial result made only of items the plan skipped.
+    /// A partial result made only of items the plan skipped.
     public static func isExpectedPlannedSkip(_ write: WriteEndSummary) -> Bool {
         guard write.status == "partial", write.skippedItemCount > 0, write.failedItemCount == 0,
             write.cancelledItemCount == 0
@@ -97,9 +93,9 @@ public enum WriteEndNotices {
         return write.items.filter { $0.status == "skipped" }.allSatisfy { $0.skipReason == "planned_conflict_policy" }
     }
 
-    /// `pushTerminalCopyPasteToast`: the toast for an operation that needs no sheet; nil for none. `quietOnScreen`:
+    /// The toast for an operation that needs no sheet; nil for none. `quietOnScreen`:
     /// items dropped from another app into the folder on screen are in sight there. `undoLabel`: what an Undo or Redo
-    /// did, in the words of its menu item (`runningUndoLabelRef`).
+    /// did, in the words of its menu item.
     public static func toast(
         _ write: WriteEndSummary, quietOnScreen: Bool = false, isSearchMode: Bool = false, currentPath: String = "",
         undoLabel: String? = nil
@@ -154,7 +150,6 @@ public enum WriteEndNotices {
         return nil
     }
 
-    /// `getWriteOperationRepresentativePath`.
     static func representativePath(_ write: WriteEndSummary) -> String? {
         func has(_ path: String?) -> Bool { !(path ?? "").isEmpty }
         let item = write.items.first { item in
@@ -172,7 +167,7 @@ public enum WriteEndNotices {
         return item?.sourcePath ?? item?.destinationPath ?? write.currentSourcePath ?? write.currentDestinationPath
     }
 
-    /// `formatWriteOperationItemSummary`: “notes.md”, or “notes.md” and 2 more.
+    /// “notes.md”, or “notes.md” and 2 more.
     public static func itemSummary(_ write: WriteEndSummary) -> String? {
         guard let path = representativePath(write) else { return nil }
         let count = write.topLevelItemCount
@@ -180,7 +175,6 @@ public enum WriteEndNotices {
         return count <= 1 ? name : "\(name) and \(count - 1) more"
     }
 
-    /// `getPlannedSkipToastTitle`.
     static func plannedSkipTitle(_ action: String, completed: Int) -> String {
         let some = completed > 0
         switch action {
@@ -191,7 +185,6 @@ public enum WriteEndNotices {
         }
     }
 
-    /// `formatPlannedSkipToastMessage`.
     static func plannedSkipMessage(_ write: WriteEndSummary) -> String? {
         var sentences: [String] = []
         if write.completedItemCount > 0 {
@@ -205,7 +198,7 @@ public enum WriteEndNotices {
         return sentences.isEmpty ? nil : sentences.joined(separator: " ")
     }
 
-    /// `formatResultCountLabel`: `toLocaleString()` grouping.
+    /// `toLocaleString()` grouping.
     private static func countLabel(_ count: Int, _ noun: String) -> String {
         "\(ClipboardSummary.grouped(count)) \(noun)\(count == 1 ? "" : "s")"
     }

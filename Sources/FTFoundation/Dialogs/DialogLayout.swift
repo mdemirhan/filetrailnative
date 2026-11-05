@@ -1,109 +1,107 @@
-// Port of the scrim, alert, text prompt, detail list and Go To box rules of apps/desktop/src/renderer/styles.css
-// (1229-1243, 1459-1558, 1740-1792, 3437-3666)
 import Foundation
 
 /// The metrics the in-window alert, the text prompt and the Go To / Move To box are drawn with. Type sizes, radii and
 /// control heights come from the design tokens; what is here is each rule's own number.
 public enum DialogLayout {
-    /// `.modal-scrim.is-sheet` (1242) and `.go-to-folder-backdrop` (3447): a sheet drops in 60 below the window's top.
+    /// A sheet, and the Go To box, drop in 60 below the window's top.
     public static let sheetTop = 60.0
 
-    /// `.alert` and its parts.
+    /// The alert and its parts.
     public enum Alert {
-        /// `width: 272px; max-width: calc(100vw - 32px)` (1473-1474).
+        /// 272 wide, and at least 32 narrower than the window.
         public static let width = 272.0
         public static let viewportInset = 32.0
-        /// `padding: 20px 16px 16px` (1477).
+        /// Padding: 20 on top, 16 at the sides and below.
         public static let paddingTop = 20.0
         public static let paddingHorizontal = 16.0
         public static let paddingBottom = 16.0
-        /// `.alert-title`: bold, `line-height: 1.3` (1493).
+        /// The title: bold, lines 1.3 times the text size.
         public static let titleLineHeight = 1.3
-        /// `.alert-message`: `margin: 6px 0 0`, `line-height: 1.4` (1498, 1501).
+        /// The message: 6 under the title, lines 1.4 times the text size.
         public static let messageGap = 6.0
         public static let messageLineHeight = 1.4
-        /// `.alert-accessory`: `margin-top: 12px` (1507).
+        /// The accessory: 12 under the message.
         public static let accessoryGap = 12.0
-        /// `.alert-buttons`: `gap: 8px; margin-top: 16px` (1516, 1518).
+        /// The buttons: 8 apart, 16 under what is above them.
         public static let buttonSpacing = 8.0
         public static let buttonsGap = 16.0
-        /// `.alert.is-wide`: `width: min(520px, calc(100vw - 48px)); padding: 20px` (1534-1535).
+        /// A wide alert: 520 wide, at least 48 narrower than the window, padded 20 all round.
         public static let wideWidth = 520.0
         public static let wideViewportInset = 48.0
         public static let widePadding = 20.0
-        /// `.alert.is-wide .alert-accessory`: `gap: 12px; margin-top: 14px` (1551-1552).
+        /// A wide alert's accessory: its parts 12 apart, 14 under the message.
         public static let wideAccessorySpacing = 12.0
         public static let wideAccessoryGap = 14.0
     }
 
-    /// `.copy-paste-detail-list` (1779-1792): what an alert lists under its message.
+    /// What an alert lists under its message.
     public enum DetailList {
-        /// `padding: 8px 10px` (1781).
+        /// Padding: 8 above and below, 10 at the sides.
         public static let paddingVertical = 8.0
         public static let paddingHorizontal = 10.0
-        /// `line-height: 1.4` (1786).
+        /// Lines 1.4 times the text size.
         public static let lineHeight = 1.4
-        /// `li + li { margin-top: 2px }` (1790).
+        /// The gap between two rows.
         public static let rowGap = 2.0
     }
 
-    /// `.text-prompt-form`, `.text-prompt-input` and `.text-prompt-error` (1740-1765).
+    /// The text prompt's field and the error under it.
     public enum TextPrompt {
-        /// `gap: 6px` (1742).
+        /// The error sits 6 under the field.
         public static let errorGap = 6.0
-        /// `padding: 0 8px` (1749).
+        /// The field's text is inset 8 at the sides.
         public static let fieldPaddingHorizontal = 8.0
-        /// `line-height: 1.4` (1767).
+        /// The error's lines are 1.4 times the text size.
         public static let errorLineHeight = 1.4
     }
 
-    /// `.go-to-folder-*` (3437-3666).
+    /// The Go To / Move To box.
     public enum GoTo {
-        /// `width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 84px); padding: 12px 0 0` (3456-3459).
+        /// 560 wide, at least 32 narrower and 84 shorter than the window, 12 of padding on top.
         public static let width = 560.0
         public static let viewportInset = 32.0
         public static let heightInset = 84.0
         public static let paddingTop = 12.0
-        /// `.go-to-folder-title`: `margin: 2px 16px 10px` (3471).
+        /// The title: 2 on top, 16 at the sides, 10 below.
         public static let titleTop = 2.0
         public static let titleHorizontal = 16.0
         public static let titleBottom = 10.0
-        /// `.go-to-folder-input-section`: `padding: 0 12px` (3478).
+        /// The field's section is inset 12 at the sides.
         public static let inputSectionHorizontal = 12.0
-        /// `.go-to-folder-input-shell`: `gap: 8px; padding: 0 8px` (3484, 3487).
+        /// The field: its icon and text 8 apart, inset 8 at the sides.
         public static let fieldGap = 8.0
         public static let fieldPaddingHorizontal = 8.0
-        /// `.go-to-folder-input-icon`: 14 by 14, stroked 1.5 (3499-3502).
+        /// The field's icon: 14 by 14, stroked 1.5.
         public static let fieldIconSize = 14.0
         public static let fieldIconStroke = 1.5
-        /// `.go-to-folder-error`: `margin-top: 6px; padding: 0 4px` (3534-3535).
+        /// The error: 6 under the field, inset 4 at the sides.
         public static let errorTop = 6.0
         public static let errorHorizontal = 4.0
-        /// `.go-to-folder-suggestions-section`: `padding: 10px 6px 6px` (3545).
+        /// The suggestions' section: padding 10 on top, 6 at the sides and below.
         public static let sectionTop = 10.0
         public static let sectionHorizontal = 6.0
         public static let sectionBottom = 6.0
-        /// `.go-to-folder-suggestions-label`: `gap: 12px; padding: 0 10px 4px` (3554-3555).
+        /// The suggestions' label: its parts 12 apart, inset 10 at the sides and 4 below.
         public static let labelGap = 12.0
         public static let labelHorizontal = 10.0
         public static let labelBottom = 4.0
-        /// `max-height: calc(8 * var(--control-height-large))` (3569).
+        /// The list shows at most 8 rows of the large control height.
         public static let visibleRows = 8
-        /// `.go-to-folder-empty-state`: `padding: 18px 16px 22px` (3577).
+        /// The empty state: padding 18 on top, 16 at the sides, 22 below.
         public static let emptyTop = 18.0
         public static let emptyHorizontal = 16.0
         public static let emptyBottom = 22.0
-        /// `.go-to-folder-suggestion`: `gap: 8px; padding: 0 10px` (3587, 3591).
+        /// A suggestion row: its parts 8 apart, inset 10 at the sides.
         public static let rowGap = 8.0
         public static let rowPaddingHorizontal = 10.0
-        /// `.go-to-folder-suggestion-icon svg`: 14 by 14, stroked 1.3 (3617-3620).
+        /// A suggestion's glyph: 14 by 14, stroked 1.3.
         public static let rowGlyphSize = 14.0
         public static let rowGlyphStroke = 1.3
-        /// `.go-to-folder-suggestion-name`: `max-width: 55%` (3625).
+        /// A suggestion's name takes at most 55% of the row.
         public static let nameMaxFraction = 0.55
-        /// `.go-to-folder-suggestion.is-selected .go-to-folder-suggestion-path`: the text on the accent at 80% (3652).
+        /// A selected suggestion's path: the text on the accent at 80%.
         public static let selectedPathAlpha = 0.8
-        /// `.go-to-folder-footer`: `gap: 8px; padding: 10px 12px 12px; border-top: 1px` (3659-3661).
+        /// The footer: its parts 8 apart, padding 10 on top and 12 at the sides and below, a 1 pt line on top.
         public static let footerGap = 8.0
         public static let footerTop = 10.0
         public static let footerHorizontal = 12.0

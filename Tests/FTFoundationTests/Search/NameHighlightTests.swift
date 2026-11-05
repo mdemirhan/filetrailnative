@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/nameHighlight.test.tsx
 import Foundation
 import Testing
 
@@ -9,7 +8,6 @@ import Testing
         try? JSLegacyRegExp(source: source, ignoreCase: ignoreCase)
     }
 
-    // T-8f3e7ab6
     @Test func findsTheMatchAndNothingForAnEmptyOne() {
         #expect(
             NameHighlight.match(pattern("rep", ignoreCase: true), in: "Annual Report.pdf")
@@ -18,8 +16,6 @@ import Testing
         #expect(NameHighlight.match(nil, in: "Report.pdf") == nil)
     }
 
-    // T-4885dae3
-    // B-VIEW-023
     @Test func marksTheMatchWhereItShowsInALabelShortenedInTheMiddle() {
         let name = "Panorama from the Miradouro do Monte.jpeg"
         let label = "Panorama from the…Monte.jpeg"
@@ -47,10 +43,8 @@ import Testing
                 == [HighlightRange(start: 0, end: 1)])
     }
 
-    // T-8b4f6a96
-    // T-a62c252e
     @Test func drawsTheMarks() {
-        // `renderMarkedText`: the marks of a text, the rest plain; the text itself is unchanged.
+        // The marks of a text, the rest plain; the text itself is unchanged.
         #expect(
             NameHighlight.marks(in: "report.ts", ranges: [HighlightRange(start: 0, end: 3)]) == [
                 HighlightRange(start: 0, end: 3)

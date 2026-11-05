@@ -1,12 +1,11 @@
-// Port of the menu of apps/desktop/src/renderer/components/ClipboardButton.tsx and its rules in styles.css (7504-7690):
-// the clipboard's list under its button, in a system popover, with the count, the hint, the items under their
-// folders, and Clear Clipboard
+// The clipboard's list under its button, in a system popover, with the count, the hint, the items under their folders,
+// and Clear Clipboard
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The content of `.toolbar-menu.clipboard-menu`: the header, the breakdown, the list of ten 24 pt rows (virtualized, the
-/// top folder heading pinned over it, a scrollbar of its own while it scrolls), and Clear Clipboard. The system's popover
+/// The content of the clipboard menu: the header, the breakdown, the list of ten 24 pt rows (virtualized, the top
+/// folder heading pinned over it, a scrollbar of its own while it scrolls), and Clear Clipboard. The system's popover
 /// draws what is behind it. The keyboard never goes into it: the keys come to it through the window while it is open.
 final class ClipboardMenuView: NSView {
     private(set) var model: ClipboardMenuModel
@@ -123,7 +122,7 @@ final class ClipboardMenuView: NSView {
         let width = bounds.width - 2 * inset
         var y = inset + layout.headerPaddingVertical
         let line = title.lineHeight
-        // `align-items: baseline`: the smaller hint sits on the title's baseline.
+        // The smaller hint sits on the title's baseline.
         let hintY = y + title.ascent - hint.ascent
         let hintWidth = min(hint.textWidth, width - 2 * layout.headerPaddingHorizontal)
         hint.frame = NSRect(
@@ -135,7 +134,7 @@ final class ClipboardMenuView: NSView {
             x: inset + layout.headerPaddingHorizontal, y: y, width: titleWidth, height: title.lineHeight)
         y += line + layout.headerPaddingVertical
         if !breakdown.isHidden {
-            // The box is the whole row's, its padding inside (`padding: 0 10px 4px`), as the original's element is.
+            // The box is the whole row's, its padding inside (`padding: 0 10px 4px`).
             breakdown.leadingInset = layout.headerPaddingHorizontal
             breakdown.frame = NSRect(
                 x: inset, y: y, width: width, height: breakdown.lineHeight + layout.breakdownPaddingBottom)
@@ -179,7 +178,7 @@ final class ClipboardMenuView: NSView {
         for index in drawn {
             let row = model.rows[index]
             // A view kept for a place in the list may have shown another row (an item removed shifts the rest): it is
-            // set again for the row there now, its buttons acting on that row's item, as the original's keyed rows do.
+            // set again for the row there now, its buttons acting on that row's item.
             var view = rowViews[index]
             if let kept = view, !Self.fits(kept, row) {
                 kept.removeFromSuperview()
@@ -443,7 +442,7 @@ final class ClipboardMenuList: NSView {
     }
 }
 
-/// A folder heading of the list (`.toolbar-menu-heading.clipboard-menu-heading`), or the one pinned over its top.
+/// A folder heading of the list, or the one pinned over its top.
 final class ClipboardMenuHeadingRow: NSView {
     private let label = ClipboardMenuText(identifier: "clipboardPopover.heading.label")
     private let isPinned: Bool
@@ -607,7 +606,7 @@ final class ClipboardMenuItemRow: NSView {
     }
 }
 
-/// The × of an item (`.clipboard-menu-item-remove`).
+/// The × that removes an item.
 final class ClipboardMenuRemoveButton: NSView {
     private let glyph = ToolbarIconView(.close)
     var onClick: () -> Void = {}
@@ -670,7 +669,7 @@ final class ClipboardMenuRemoveButton: NSView {
     }
 }
 
-/// Clear Clipboard (`.toolbar-menu-item.clipboard-menu-clear`).
+/// The Clear Clipboard row.
 final class ClipboardMenuClearRow: NSView {
     private let label = ClipboardMenuText(identifier: "clipboardPopover.clear.label")
     var isActive = false {
@@ -744,7 +743,7 @@ final class ClipboardMenuClearRow: NSView {
     }
 }
 
-/// The icons of what is on the clipboard (`ClipboardItemsIcon`).
+/// The icons of what is on the clipboard.
 enum ClipboardIcons {
     /// What the icon cache keys an item by.
     static func iconEntry(_ entry: ClipboardItemEntry) -> IconEntry {

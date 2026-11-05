@@ -1,4 +1,3 @@
-// Port of createFolderSizeHandlers and the folder-size listeners of apps/desktop/src/main/bootstrap/responseCache.ts
 import FTFoundation
 import Foundation
 
@@ -54,8 +53,7 @@ public typealias FolderSizeStatus = FolderSizeJob
 
 /// Each folder size job queue, told what a write changed, and when one starts and ends: a size stored while a
 /// write runs may have been measured after it had already removed something, so taking the removal off it when
-/// the write ends could count the removal twice. (`noteWriteStarting`, `noteWriteEnded` and the folder-size
-/// half of `clearResponseCaches` of the original.)
+/// the write ends could count the removal twice.
 @MainActor
 public enum FolderSizeWrites {
     private final class Listener {
@@ -142,7 +140,7 @@ public final class FolderSizeJobs {
     private var backgroundJobIds = Set<String>()
     // Set when the app quits: nothing more is measured.
     private var stopped = false
-    // Makes each job's id. The original's ids (the time in milliseconds and 24 random bits) can repeat
+    // Makes each job's id. Random ids (the time in milliseconds and 24 random bits) can repeat
     // among the hundreds of jobs a test starts in one millisecond, so such tests count on ids of their own.
     var makeJobId: () -> String = FolderSizeJobs.randomJobId
 
@@ -205,10 +203,10 @@ public final class FolderSizeJobs {
 
     // MARK: Jobs
 
-    /// How many jobs are kept (`getResponseCacheSizes().folderSizeJobs`).
+    /// How many jobs are kept.
     public var jobCount: Int { jobs.count }
 
-    /// Lets go of every job (`resetResponseCacheState`).
+    /// Lets go of every job.
     public func clearJobs() {
         jobs.removeAll()
         jobOrder.removeAll()

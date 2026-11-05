@@ -1,6 +1,5 @@
-// Covers the wave-2 checkpoint's selection and keyboard fixes on a window never shown: a List selection made from
-// outside reaches the window, Edit › Select All selects the list, Space is the filter's text while typing, the filter
-// pill's ✕ clears it, and a filter nothing matches is said in place of the whole view
+// A List selection made from outside reaches the window, Edit › Select All selects the list, Space is the filter's text
+// while typing, the filter pill's ✕ clears it, and a filter nothing matches is said in place of the whole view
 import AppKit
 import FTFoundation
 import Foundation
@@ -15,9 +14,8 @@ extension ExplorerWindowlessTests {
             tab.content.entries.first { $0.name == name }?.path
         }
 
-        // F-779 B-SEL-002: rows selected in the table from outside (the capture's select step, accessibility) are the
+        // Rows selected in the table from outside (the capture's select step, accessibility) are the
         // window's selection: the status line, the selection commands and the Info views read them.
-        // B-SEL-084 T-fb71ed4a
         @Test func aSelectionMadeInTheTableReachesTheWindow() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -39,9 +37,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-7d7b8def F-783 B-SEL-013: Edit › Select All selects every entry while the list has the keyboard, whether or
+        // Edit › Select All selects every entry while the list has the keyboard, whether or
         // not the window is the key window; with the tree focused it leaves the list alone.
-        // B-VIEW-229 T-49e9cc0d
         @Test func selectAllFromTheMenuSelectsTheList() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -58,10 +55,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-74e6332c T-36a01e7b F-787 F-788 B-SEL-073 B-SEL-078 B-SEL-082 B-SEL-085: Space sent through the window is the
+        // Space sent through the window is the
         // filter's text just after typing, not Quick Look; nothing matching hides the column header and says so in
         // place of the view; the ✕ brings the list back and leaves it the keyboard; Space after a pause is Quick Look.
-        // B-VIEW-068 B-VIEW-239
         @Test func spaceIsTheFiltersAndTheClearButtonClearsIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Files", files: 0)
@@ -104,9 +100,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-788 B-SEL-073: the state a filter nothing matches shows: the title at the body size in the primary color,
+        // The state a filter nothing matches shows: the title at the body size in the primary color,
         // centered in the whole pane, and Search Subfolders at the start of its row, 4 below the line.
-        // B-VIEW-067
         @Test func theNoMatchStateIsLaidOutAsTheOriginals() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()

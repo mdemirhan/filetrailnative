@@ -1,7 +1,5 @@
-// Port by feature of the rest of App.pasteFlow.test.tsx, App.fileOperations.test.tsx, App.menusAndTree.test.tsx,
-// App.openItems.test.tsx and ContentPane.reveal.test.tsx on how a paste can fail and what a write's end leaves
-// (useExplorerActions.ts:1056-1137, 2172-2264, 2584-2628, 3099-3106): first one window's side over a write service the test
-// answers for, then real tabs of a window that is never shown, with the app's real file operations on a temporary folder
+// First one window's side over a write service the test answers for, then real tabs of a window that is never shown,
+// with the app's real file operations on a temporary folder
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -177,10 +175,10 @@ private func report(
     private static let couldntPaste = "Couldn\u{2019}t Paste"
     private static let couldntCheck = "File Trail couldn\u{2019}t check the items to paste. Nothing was changed."
 
-    // T-0a889e91 T-53a1f491 T-0ed7aa96 T-85792b9b B-CLIP-069: the analysis refused, failed with its message or without one
+    // The analysis refused, failed with its message or without one
     // or found what can't be pasted: "Couldn't Paste", nothing started, the clipboard kept, and the next paste analyzes
     // again.
-    // B-CLIP-072 T-65506a7d: a paste refused as it starts says so once, in the words every busy notice has.
+    // A paste refused as it starts says so once, in the words every busy notice has.
     @Test func aPasteRefusedAsItStartsSaysSoOnce() async throws {
         let busy = WriteServiceMessages.writeOperationBusy
         let refused = "The disk went away."
@@ -198,7 +196,7 @@ private func report(
         #expect(fixture.shown.map(\.message) == [WriteDialogs.busyMessage])
     }
 
-    // B-NAV-140 B-SEL-026: a write's end says what it took out of its folder.
+    // A write's end says what it took out of its folder.
     @Test func aMovesEndSaysWhatLeft() async throws {
         let fixture = PasteFixture(.report(report(mode: .cut)), mode: .cut)
         let outcome = await fixture.actions.pasteFromClipboard(into: PasteFixture.destination)
@@ -210,7 +208,7 @@ private func report(
         #expect(await waitUntil { fixture.host.refreshes.last?.leftPaths == [PasteFixture.source] })
     }
 
-    // T-e0ffebfc: a drop from another app that went through the review is still one when it starts.
+    // A drop from another app that went through the review is still one when it starts.
     @Test func aReviewedDropFromAnotherAppIsOneWhenItStarts() async throws {
         let fixture = PasteFixture(.report(report()))
         let analysisId = "analysis-1"
@@ -252,7 +250,7 @@ private func report(
         }
     }
 
-    // T-1d4fe1c3 T-0af25258 B-CLIP-052: a cut that failed or was stopped with nothing moved stays on the clipboard, and
+    // A cut that failed or was stopped with nothing moved stays on the clipboard, and
     // can be pasted again; one that moved something is let go of.
     @Test func aCutThatMovedNothingStaysOnTheClipboard() async throws {
         let ends: [(CopyPasteOperationStatus, failed: Int, cancelled: Int)] = [
@@ -281,7 +279,7 @@ private func report(
         }
     }
 
-    // T-6df1af15 B-CLIP-141: something else picked while the paste ran stays, and isn't replaced by what it made; the
+    // Something else picked while the paste ran stays, and isn't replaced by what it made; the
     // selection left as it was gets what was made.
     @Test(arguments: [
         (["/Users/demo/Folder/other.txt"], true), (["/Users/demo/Folder/a.txt", "/Users/demo/Folder/b.txt"], true),
@@ -301,7 +299,7 @@ private func report(
         #expect(fixture.host.refreshes.last?.selecting == (picked ? nil : [PasteFixture.destination + "/source.txt"]))
     }
 
-    // T-f0c2b565 B-CLIP-193: what an Undo brought back into the folder on screen is selected; what it put elsewhere isn't.
+    // What an Undo brought back into the folder on screen is selected; what it put elsewhere isn't.
     @Test func anUndoSelectsWhatCameBackIntoTheFolderOnScreen() {
         func undo(to destination: String) -> WriteOperationResult {
             LocalWriteResults.result(
@@ -351,7 +349,7 @@ extension ExplorerWindowlessTests {
             return engine
         }
 
-        // B-CLIP-047: a copied item renamed is followed by the clipboard, which it still is; a cut of one
+        // A copied item renamed is followed by the clipboard, which it still is; a cut of one
         // renamed is cancelled.
         @Test func theClipboardFollowsARenameThroughTheRealOperation() async throws {
             let window = try await WritingWindow.open()
@@ -374,7 +372,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-f3d3ef14 B-CLIP-074: a paste whose only item is gone: "Couldn't Paste" naming it, nothing written, and the
+        // A paste whose only item is gone: "Couldn't Paste" naming it, nothing written, and the
         // clipboard empty.
         @Test func aPasteOfOnlyAGoneItemPastesNothingAndSaysSo() async throws {
             let window = try await WritingWindow.open()
@@ -397,7 +395,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-43a6da52 B-CLIP-143: results on screen stay through a write, and are found again when it
+        // Results on screen stay through a write, and are found again when it
         // changed something; a write that changed nothing, or one from another tab in front, leaves them.
         @Test func resultsOnScreenAreFoundAgainAfterAWriteThatChangedSomething() async throws {
             let window = try await WritingWindow.open()
@@ -448,7 +446,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-7f1c1f2a B-CLIP-144: a filter doesn't stop a renamed item being selected: it is shown and selected though the
+        // A filter doesn't stop a renamed item being selected: it is shown and selected though the
         // filter would hide its new name.
         @Test func aRenamedItemTheFilterWouldHideIsStillSelected() async throws {
             let window = try await WritingWindow.open()
@@ -463,7 +461,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-643b6df1: a file pasted far below the rows in sight is selected and brought into view once it is listed.
+        // A file pasted far below the rows in sight is selected and brought into view once it is listed.
         @Test func aFilePastedBelowTheRowsInSightIsBroughtIntoView() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -488,7 +486,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-1993a471: the Trash on screen is read again once it is emptied, its items gone.
+        // The Trash on screen is read again once it is emptied, its items gone.
         @Test func anEmptiedTrashOnScreenIsReadAgain() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab

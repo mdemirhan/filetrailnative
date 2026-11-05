@@ -1,21 +1,20 @@
-// Port of packages/native-fs/src/native_errors.c and native_errors.h
 import Darwin
 import Foundation
 
-/// An error with JavaScript's shape: a `message`, and the `code` the original's code branches on ("ENOENT",
-/// "ERR_FS_EISDIR", "ENOTRASH"), nil for an error without one.
+/// An error with a `message`, and the `code` the code branches on ("ENOENT", "ERR_FS_EISDIR", "ENOTRASH"), nil for
+/// an error without one.
 public protocol CodedError: Error {
     var code: String? { get }
     var message: String { get }
 }
 
-/// What the native calls throw, as `native_errno_error` builds it:
+/// What the native calls throw:
 /// `"<CODE>: <strerror>, <syscall> '<path>'[ -> '<dest>']"` with `code`, `errno`, `syscall`, `path` and `dest`.
 /// The Trash's failures carry its own sentence instead, and `cocoaCode` (see `NativeFS.trashItem`).
 public struct NativeError: CodedError, Equatable, Sendable, CustomStringConvertible {
     public var message: String
     public var code: String?
-    /// The errno, positive as the addon gives it (Node's own fs errors have it negative).
+    /// The errno, positive.
     public var errnum: Int32?
     public var syscall: String?
     public var path: String?
@@ -36,7 +35,7 @@ public struct NativeError: CodedError, Equatable, Sendable, CustomStringConverti
         self.cocoaCode = cocoaCode
     }
 
-    /// `native_errno_error(errnum, syscall, path, dest)`.
+    /// The error of a failed system call: `errnum`'s name and description, the call, and the paths.
     public static func errno(_ errnum: Int32, syscall: String, path: String, dest: String? = nil) -> NativeError {
         let code = NativeErrno.name(of: errnum)
         let description = NativeErrno.description(of: errnum)
@@ -61,7 +60,7 @@ public func errorCode(_ error: any Error) -> String? {
     return nil
 }
 
-/// `toErrorMessage`: the error's message.
+/// The error's message.
 public func errorMessage(_ error: any Error) -> String {
     if let coded = error as? any CodedError {
         return coded.message
@@ -91,9 +90,9 @@ public struct OperationError: CodedError, Sendable, CustomStringConvertible {
     public var description: String { message }
 }
 
-/// `native_errno_code` and `strerror`.
+/// The names of errnos, and `strerror`.
 public enum NativeErrno {
-    /// The errno's name ("ENOENT"), "UNKNOWN" for a value the original doesn't list.
+    /// The errno's name ("ENOENT"), "UNKNOWN" for a value not in `names`.
     public static func name(of errnum: Int32) -> String { table[errnum] ?? "UNKNOWN" }
 
     /// `strerror(errnum)`.
@@ -103,7 +102,7 @@ public enum NativeErrno {
         return String(decoding: buffer.prefix { $0 != 0 }.map { UInt8(bitPattern: $0) }, as: UTF8.self)
     }
 
-    /// Every errno the original names, in its order (the first name of a number wins, as in its switch).
+    /// Every errno with a name, in a fixed order (the first name of a number wins).
     public static let names: [(Int32, String)] = [
         (EPERM, "EPERM"), (ENOENT, "ENOENT"), (ESRCH, "ESRCH"), (EINTR, "EINTR"), (EIO, "EIO"),
         (ENXIO, "ENXIO"), (E2BIG, "E2BIG"), (ENOEXEC, "ENOEXEC"), (EBADF, "EBADF"), (ECHILD, "ECHILD"),

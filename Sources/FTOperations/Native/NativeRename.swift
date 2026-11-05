@@ -1,6 +1,3 @@
-// Port of packages/native-fs/src/native_rename.c (nativeRenameExclusive, nativeIsCaseSensitive,
-// nativeUsesAppleDouble) and isAppleDoubleOnItsVolume, startsWithAppleDoubleMagic
-// (packages/core/src/fs/writeServiceTypes.ts)
 import Darwin
 import FTFoundation
 import Foundation
@@ -16,9 +13,9 @@ struct RenameCalls {
 }
 
 extension NativeFS {
-    /// `nativeRenameExclusive(from, to)`: `renamex_np(RENAME_EXCL)`, failing with EEXIST instead of replacing
-    /// an item at `to`. A volume that can't do that (some network and FAT volumes, ENOTSUP) is checked first
-    /// with `lstat`, then `rename(2)`. Errors name the syscall `rename`, `from` and `to`.
+    /// `renamex_np(RENAME_EXCL)`, failing with EEXIST instead of replacing an item at `to`. A volume that can't do that
+    /// (some network and FAT volumes, ENOTSUP) is checked first with `lstat`, then `rename(2)`. Errors name the syscall
+    /// `rename`, `from` and `to`.
     public static func renameExclusive(_ from: String, _ to: String) throws {
         try renameExclusive(from, to, calls: RenameCalls())
     }
@@ -47,8 +44,8 @@ extension NativeFS {
         return calls.rename(from, to)
     }
 
-    /// `nativeIsCaseSensitive(path)`: `pathconf(_PC_CASE_SENSITIVE)` for the volume holding `path`; nil when
-    /// the volume doesn't say (EINVAL). Other failures (a missing path) throw, naming `pathconf`.
+    /// `pathconf(_PC_CASE_SENSITIVE)` for the volume holding `path`; nil when the volume doesn't say (EINVAL). Other
+    /// failures (a missing path) throw, naming `pathconf`.
     public static func isCaseSensitive(_ path: String) throws -> Bool? {
         Darwin.errno = 0
         let answer = pathconf(path, _PC_CASE_SENSITIVE)
@@ -62,9 +59,9 @@ extension NativeFS {
         throw NativeError.errno(errnum, syscall: "pathconf", path: path)
     }
 
-    /// `nativeUsesAppleDouble(path)`: whether the volume holding `path` keeps extended attributes in "._name"
-    /// files (FAT, exFAT, some network volumes) rather than natively: `getattrlist` `VOL_CAP_INT_EXTENDED_ATTR`.
-    /// nil when the volume doesn't say. Failures throw, naming `getattrlist`.
+    /// Whether the volume holding `path` keeps extended attributes in "._name" files (FAT, exFAT, some network volumes)
+    /// rather than natively: `getattrlist` `VOL_CAP_INT_EXTENDED_ATTR`. nil when the volume doesn't say. Failures
+    /// throw, naming `getattrlist`.
     public static func usesAppleDouble(_ path: String) throws -> Bool? {
         var request = attrlist()
         request.bitmapcount = u_short(ATTR_BIT_MAP_COUNT)

@@ -1,5 +1,4 @@
-// Port of the List's pointer and keys: entryItemEvents.ts, the DetailsView handlers of components/ContentPane.tsx
-// (:1822-1833) and hooks/useDragSelection.ts
+// The List view's presses, right-clicks and marquee selection
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -7,8 +6,8 @@ import FTFoundation
 extension ListViewController {
     // MARK: Who has the keyboard
 
-    /// Every primary press on an item or on empty space gives the keyboard to the list, whatever the gesture
-    /// (B-SEL-006, B-SEL-013). A rename going on ends: leaving its field commits it.
+    /// Every primary press on an item or on empty space gives the keyboard to the list, whatever the gesture.
+    /// A rename going on ends: leaving its field commits it.
     func giveKeyboard() {
         guard let window = table.window else { return }
         if window.firstResponder !== table { window.makeFirstResponder(table) }
@@ -70,10 +69,10 @@ extension ListViewController {
         }
     }
 
-    /// The click that completes a press on an item (`click` and `doubleClick` of `entryItemEvents.ts`).
+    /// The click that completes a press on an item.
     private func clicked(entry: DirectoryEntry, clickCount: Int, modifiers held: ContentSelection.Modifiers) {
         guard let host else { return }
-        // Only the second click: `dblclick` fires once, and a third click is just a click.
+        // Only the second click: a double-click acts once, and a third click is just a click.
         if clickCount == 2 {
             // ⌘-double-click on a folder opens it in a new tab.
             host.activate([entry], newTab: held.meta)
@@ -100,7 +99,7 @@ extension ListViewController {
         runMarquee(from: event, at: point, meta: meta, shift: shift)
     }
 
-    /// Drag-to-select (`useDragSelection`): the box follows the pointer, the selection follows the box, and the list
+    /// Drag-to-select: the box follows the pointer, the selection follows the box, and the list
     /// scrolls while the pointer is past one of its edges. Points are kept in the table's own coordinates, which stay
     /// put as it scrolls.
     private func runMarquee(from event: NSEvent, at start: NSPoint, meta: Bool, shift: Bool) {
@@ -163,7 +162,7 @@ extension ListViewController {
                 in: window, matching: [.leftMouseUp, .leftMouseDragged, .scrollWheel],
                 until: Date(timeIntervalSinceNow: 1.0 / 60.0))
             if let next {
-                // The wheel moves the list under a pointer that stays: the box follows (B-VIEW-081).
+                // The wheel moves the list under a pointer that stays: the box follows.
                 if next.type == .scrollWheel {
                     let (top, left) = (scrollPosition.top, scrollPosition.left)
                     scrollPosition = (top: top + next.wheelOffset.top, left: left + next.wheelOffset.left)
@@ -229,8 +228,8 @@ extension ListViewController: LayoutNavigation {
 // MARK: Rename
 
 extension ListViewController {
-    /// The frame of the rename field over a row's name (`.inline-rename-input`: 20 tall, 5 to the left of the label it
-    /// replaces, 3 short of the cell's right edge).
+    /// The frame of the rename field over a row's name: 20 tall, 5 to the left of the label it replaces, 3 short of the
+    /// cell's right edge.
     private func renameFrame(row: Int) -> NSRect {
         let metrics = layoutMetrics
         let rowRect = table.rect(ofRow: row)

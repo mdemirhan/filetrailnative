@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/components/HelpView.test.tsx; the zoom case uses another command's plus key
 import AppKit
 import FTFoundation
 import Testing
@@ -36,7 +35,6 @@ import Testing
     private func headings(_ view: HelpView) -> [String] { texts("help.sectionTitle", in: view) }
     private func shortcutTexts(_ view: HelpView) -> [String] { texts("help.shortcutRow.description", in: view) }
 
-    // T-774fa7ec F-664 B-DLG-258
     @Test func exposesTheSelectedLayoutMode() {
         #expect(make(layout: .compact).layoutMode == .compact)
         #expect(make(layout: .narrow).layoutMode == .narrow)
@@ -46,7 +44,6 @@ import Testing
         #expect(make(size: NSSize(width: 640, height: 680)).layoutMode == .compact)
     }
 
-    // T-31f053f9 F-663 B-DLG-250
     // Help doesn't describe what the system's tab bar and customizing sheet replaced.
     @Test func saysNothingOfWhatTheApprovedDeviationsRemoved() {
         let text = HelpContent.topics.flatMap(\.sections).flatMap(\.rows).map(\.description).joined(separator: "\n")
@@ -69,7 +66,6 @@ import Testing
         #expect(views("help.search", in: view).count == 1)
     }
 
-    // T-e207c847 F-665 F-666 B-DLG-252
     @Test func showsATopicsExplanationsFollowedByItsShortcuts() {
         let view = make()
         view.clickTopic(.search)
@@ -105,7 +101,6 @@ import Testing
         #expect(!shortcutTexts(view).contains("Move to Trash"))
     }
 
-    // T-1e2f1618 F-667 B-DLG-255
     @Test func listsEveryShortcutOnTheKeyboardShortcutsPageGroupedByTopic() {
         let view = make(topic: .shortcuts)
         #expect(headings(view) == ["Getting around", "Working with files", "Searching", "Views and panels"])
@@ -115,7 +110,6 @@ import Testing
         #expect(views("help.action", in: view).isEmpty)
     }
 
-    // T-2e306242 F-665 F-667 B-DLG-253 B-DLG-254 B-DLG-255
     @Test func showsTheKeysChosenInSettingsAndLeadsThereToChangeThem() {
         let overrides: JSONNode = .object([
             "duplicateSelection": .array([.string("Cmd+Shift+D")]), "newTab": .array([]),
@@ -144,7 +138,7 @@ import Testing
             })
     }
 
-    // T-833871bc F-667 B-DLG-254 (a plus key of Copy the path instead of Zoom in)
+    // (a plus key of Copy the path instead of Zoom in)
     @Test func rendersShortcutKeysAsSeparateKeycapsAndPreservesTrailingPlusKeys() {
         let overrides: JSONNode = .object(["copyPath": .array([.string("Cmd+Plus")])])
         let view = make(
@@ -158,7 +152,6 @@ import Testing
         #expect(ShortcutLabels.parts("Cmd+Option+C") == ["⌥", "⌘", "C"])
     }
 
-    // T-309164f3 F-668 B-DLG-256 B-DLG-257
     @Test func searchesAcrossAllTopicsAndShortcutsAndEscapeClearsTheSearch() {
         let view = make()
         type("trash", in: view)
@@ -189,7 +182,6 @@ import Testing
         #expect(!pressEscape(in: view))
     }
 
-    // T-edac6214 F-668 B-DLG-251
     @Test func choosingATopicLeavesSearchResults() {
         let view = make()
         type("view", in: view)
@@ -203,7 +195,6 @@ import Testing
         #expect(view.currentTopic == .views)
     }
 
-    // T-a1594b16 F-668 B-DLG-248
     @Test func tellsWhichPageIsOnScreenSoHelpCanOpenOnItAgain() {
         let view = make(topic: .search)
         var told: [HelpTopicID] = []
@@ -219,7 +210,7 @@ import Testing
         #expect(told == [.search, .files])
     }
 
-    // B-DLG-249: a topic asked for while Help is open replaces the whole view
+    // A topic asked for while Help is open replaces the whole view
     @Test func aTopicAskedForReplacesTheSearchAndTheScroll() {
         let view = make()
         type("trash", in: view)
@@ -230,7 +221,7 @@ import Testing
         #expect(view.currentTopic == .shortcuts)
     }
 
-    // F-663 F-664: the sidebar is 208 wide (188 narrow); compact moves the topics above the page
+    // The sidebar is 208 wide (188 narrow); compact moves the topics above the page
     @Test func laysTheSidebarOutByLayoutMode() {
         let wide = make(layout: .wide)
         #expect(wide.sidebar.frame.width == 208)
@@ -250,7 +241,7 @@ import Testing
         #expect((compact.page?.frame.minY ?? 0) == 16)
     }
 
-    // F-663 the window's sidebar runs under the traffic lights: its content and the page start 52 down
+    // The window's sidebar runs under the traffic lights: its content and the page start 52 down
     @Test func startsTheContentUnderTheTrafficLightsInTheWindow() {
         let view = make(topInset: 52)
         #expect(view.searchField.frame.minY == 52)
@@ -258,7 +249,7 @@ import Testing
         #expect(view.page?.frame.minY == 52)
     }
 
-    // F-663 the content column is at most 720 wide, padded 28 at the sides
+    // The content column is at most 720 wide, padded 28 at the sides
     @Test func holdsTheContentColumnTo720() {
         let view = make(layout: .wide, size: NSSize(width: 1600, height: 680))
         #expect(view.page?.frame.width == 720)
@@ -267,7 +258,7 @@ import Testing
         #expect((small.page?.frame.width ?? 0) <= 700 - 208 - 56)
     }
 
-    // F-667 the keycaps are 21 tall and at least 22 wide
+    // The keycaps are 21 tall and at least 22 wide
     @Test func drawsKeycapsOf21ByAtLeast22() {
         let view = make(topic: .shortcuts)
         let keycaps = views("help.keycap", in: view)
@@ -275,7 +266,7 @@ import Testing
         #expect(keycaps.allSatisfy { $0.frame.height == 21 && $0.frame.width >= 22 })
     }
 
-    // F-667 the two columns of the shortcuts page, groups kept whole
+    // The two columns of the shortcuts page, groups kept whole
     @Test func putsTheShortcutGroupsInTwoColumnsWhenThereIsRoom() {
         let wide = make(topic: .shortcuts, layout: .wide, size: NSSize(width: 1400, height: 680))
         let headingFrames = views("help.sectionTitle", in: wide).map { rect($0, in: wide) }

@@ -12,7 +12,6 @@ extension ExplorerWindowGUITests {
     @Suite struct WorkspaceGUITests {
         // On screen as off it: the content column at the sidebar's width with no divider, the items in the
         // band, a press in the title bar opening the Sort menu, and the search field taking the keyboard.
-        // covered-by-feature F-707 F-708 F-712 F-713
         @Test func placesTheBandAndTakesItsPressesOnScreen() async throws {
             let harness = try ExplorerHarness()
             let tab = try await harness.open()

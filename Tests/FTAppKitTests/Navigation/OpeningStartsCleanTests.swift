@@ -1,6 +1,5 @@
-// Covers what a folder opened shows and what reads it again: App.commands.test.tsx (no first item selected),
-// useExplorerNavigationController.ts:939-954, :1089, :1133-1141, :1764-1786, :1843-1863, :2002-2046 and
-// hooks/useFolderWatch.test.ts, over a tab whose window is never shown
+// Opening a folder starts clean: no first item selected, a new order read without a step, and the reads and folder
+// changes that overlap an opening, over a tab whose window is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -59,7 +58,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Nothing selected
 
-        // B-TREE-096 T-510b4768 T-e9c3b42d T-76f1b90b: however it is opened from the sidebar or the list, a folder with
+        // However it is opened from the sidebar or the list, a folder with
         // items opens with none of them selected.
         @Test func noFirstItemIsSelectedAfterAFolderOpensFromTheTreeAFavoriteOrTheList() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -102,7 +101,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Reading again with another order
 
-        // B-NAV-128: the order flips and back, in place: no step in the history.
+        // The order flips and back, in place: no step in the history.
         @Test func foldersFirstReadsTheFolderAgainInTheNewOrderWithoutAStep() async throws {
             let harness = try ExplorerHarness.windowless()
             try "x".write(to: harness.folder.appending("aaa.txt"), atomically: true, encoding: .utf8)
@@ -131,8 +130,8 @@ extension ExplorerWindowlessTests {
                 iconStore: nil, volumeWatcher: nil, clipboard: harness.windows.clipboard, preferences: harness.channel)
         }
 
-        // B-TREE-195: Refresh and a write's end, while another folder is being opened from the tree: neither takes the tree
-        // or the list back to the old folder, and neither reads anything (useExplorerNavigationController.ts:1864-1869).
+        // Refresh and a write's end, while another folder is being opened from the tree: neither takes the tree
+        // or the list back to the old folder, and neither reads anything.
         @Test func aRefreshOrAWritesEndDuringAnOpeningLeaveItAlone() async throws {
             let harness = try ExplorerHarness.windowless()
             let root = listed(harness, "")
@@ -174,8 +173,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-fc102300: a change heard while that same folder is being opened is read again 250 ms later, not at once: that
-        // read may have started before the change (hooks/useFolderWatch.ts:75-81).
+        // A change heard while that same folder is being opened is read again 250 ms later, not at once: that
+        // read may have started before the change.
         @Test func aChangeHeardDuringAnOpeningOfThatFolderIsReadAgainShortlyAfter() async throws {
             let harness = try ExplorerHarness.windowless()
             let root = listed(harness, "")
@@ -204,7 +203,7 @@ extension ExplorerWindowlessTests {
         }
 
         // A change to the folder left behind while another is being opened is dropped, and nothing reads the new folder
-        // for it (useExplorerNavigationController.ts:1979-1981).
+        // for it.
         @Test func aChangeHeardDuringAnOpeningOfAnotherFolderIsDropped() async throws {
             let harness = try ExplorerHarness.windowless()
             let root = listed(harness, "")
@@ -233,7 +232,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-1c663d4c: changes held back for a folder that was left meanwhile are forgotten when the hold ends.
+        // Changes held back for a folder that was left meanwhile are forgotten when the hold ends.
         @Test func changesHeldBackForAFolderLeftMeanwhileAreForgotten() async throws {
             let harness = try ExplorerHarness.windowless()
             let root = listed(harness, "")
@@ -254,7 +253,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-b8561d78: a change told of another folder than the one on screen is not read.
+        // A change told of another folder than the one on screen is not read.
         @Test func aChangeToAnotherFolderIsIgnored() async throws {
             let harness = try ExplorerHarness.windowless()
             let root = listed(harness, "")

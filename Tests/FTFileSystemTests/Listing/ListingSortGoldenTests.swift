@@ -4,7 +4,7 @@ import Testing
 
 @testable import FTFileSystem
 
-/// Tests/Golden/listing-sort.json: listDirectorySnapshot and listTreeChildren of the reference over a fake
+/// Tests/Golden/listing-sort.json: the folder listing and the tree's children over a fake
 /// file system.
 struct ListingSortGoldenTests {
     struct Item: Codable, Sendable {
@@ -62,7 +62,7 @@ struct ListingSortGoldenTests {
             sizeBytes = try values.decodeIfPresent(Int64.self, forKey: .sizeBytes)
         }
 
-        /// Like the reference's JSON: `sizeBytes` is null when sorted by size and the entry has none, and
+        /// Like the golden's JSON: `sizeBytes` is null when sorted by size and the entry has none, and
         /// left out when not sorted by size.
         func encode(to encoder: Encoder) throws {
             var values = encoder.container(keyedBy: Keys.self)
@@ -141,7 +141,7 @@ struct ListingSortGoldenTests {
     }
 
     /// Without ICU names are compared by `CollationTable`: the names it covers (ASCII and the accented
-    /// letters, but not Cyrillic, CJK or emoji) come out in the order the reference gives them.
+    /// letters, but not Cyrillic, CJK or emoji) come out in the order the golden gives them.
     @Test("listing-sort golden, names by the collation table")
     func sortsCoveredNamesAsTheReferenceDoesWithoutICU() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "listing-sort")

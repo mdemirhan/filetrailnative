@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/AboutWindowApp.tsx, openAboutWindow in apps/desktop/src/main/main.ts and the
-// .about-* rules of styles.css (ui.md section 7.2)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -177,8 +175,8 @@ public final class AboutView: ThemedView {
         let width = bounds.width
         let contentWidth = width - 2 * Self.sidePadding
         let iconTop = Self.titleStrip + 2
-        // The app's icon file has a margin around its artwork that the original's SVG has not: drawn a little larger so
-        // the artwork is as big as the original's.
+        // The app's icon file has a margin around its artwork: it is drawn a little larger so the artwork fills the
+        // icon's frame.
         let iconDraw = Self.iconSize * 1.085
         icon.frame = NSRect(x: Self.sidePadding, y: iconTop, width: Self.iconSize, height: Self.iconSize)
         iconImage.frame = NSRect(

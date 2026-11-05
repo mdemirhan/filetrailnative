@@ -1,6 +1,5 @@
-// Ports by feature the cases of apps/desktop/src/renderer/App.search.test.tsx and SearchOptionsMenu.test.tsx that act
-// on results in a real tab: Reveal in Folder, the path bar, Settings edits of the
-// search defaults, Return in an empty field and the options button from the keyboard, over the stand-in fd runtime
+// Reveal in Folder, the path bar, Settings edits of the search defaults, Return in an empty field and the options
+// button from the keyboard, over the stand-in fd runtime
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -44,7 +43,7 @@ extension ExplorerWindowlessTests {
                 keyCode: code)
         }
 
-        // F-813: results keep column widths of their own: searchColumnWidths set before the search is what the results
+        // Results keep column widths of their own: searchColumnWidths set before the search is what the results
         // are laid out with, Folder among them.
         @Test func theResultsUseTheSearchColumnWidths() async throws {
             let (harness, tab, engine, timers) = try await open()
@@ -70,9 +69,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-813: details are read per folder at once and shown as each comes (`loadSearchResultMetadata`): a slow folder
+        // Details are read per folder at once and shown as each comes: a slow folder
         // keeps only its own rows waiting.
-        // B-SRCH-112
         @Test func aSlowFolderKeepsOnlyItsOwnResultsWaiting() async throws {
             let (harness, tab, engine, timers) = try await open()
             tab.perform(.viewAsDetails)
@@ -99,8 +97,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-813 B-SRCH-104: with the search field being edited, the results still get their dates and sizes.
-        // B-SRCH-058 B-VIEW-012
+        // With the search field being edited, the results still get their dates and sizes.
         @Test func resultsGetTheirDetailsWhileTheFieldIsEdited() async throws {
             let (harness, tab, engine, timers) = try await open()
             tab.perform(.viewAsDetails)
@@ -119,9 +116,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-148 B-SEL-094 B-NAV-211: Reveal in Folder on a result in the folder on screen ends search mode and
+        // Reveal in Folder on a result in the folder on screen ends search mode and
         // selects it in the folder.
-        // B-NAV-075
         @Test func revealInTheFolderOnScreenPutsTheResultsAway() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt", "Alpha/Inner"], false, false) }
@@ -136,8 +132,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-094: the menu's Reveal in Folder goes to the folder of the lead result.
-        // B-NAV-075 T-f5252775
+        // The menu's Reveal in Folder goes to the folder of the lead result.
         @Test func revealGoesToTheLeadResult() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["Alpha/Inner", "Beta/Inner"], false, false) }
@@ -151,8 +146,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-111: the path bar shows the one selected result, or else where the search runs from.
-        // B-INFO-104 B-VIEW-103 T-78d2429c
+        // The path bar shows the one selected result, or else where the search runs from.
         @Test func thePathBarShowsTheSelectedResultOrTheSearchRoot() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt", "Alpha/Inner"], false, false) }
@@ -173,9 +167,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx:2438: the bar's segment of the selected result opens it as a double-click would, a file or an app
-        // alike, and leaves the results showing; any other segment goes to its folder.
-        // B-NAV-076 B-VIEW-103
+        // The bar's segment of the selected result opens it as a double-click would, a file or an app alike, and leaves
+        // the results showing; any other segment goes to its folder.
         @Test func theSelectedResultsSegmentOpensIt() async throws {
             let (harness, tab, engine, timers) = try await open()
             try FileManager.default.createDirectory(
@@ -201,9 +194,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-091: a Settings edit of one search default changes that option only; the others chosen in the
+        // A Settings edit of one search default changes that option only; the others chosen in the
         // options menu stay.
-        // B-DLG-186 T-8923e42b
         @Test func aSettingsEditChangesOnlyThatOption() async throws {
             let (harness, tab, _, _) = try await open()
             let session = tab.search.session
@@ -215,8 +207,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-011 B-SRCH-015: Return in an empty field gives the keyboard to the list.
-        // B-SRCH-057
+        // Return in an empty field gives the keyboard to the list.
         @Test func returnInAnEmptyFieldGivesTheKeyboardToTheList() async throws {
             let (harness, tab, _, _) = try await open()
             tab.searchField?.stringValue = "  "
@@ -226,9 +217,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-081 F-807: the options button takes the keyboard before the field; Return or Space on it opens the
+        // The options button takes the keyboard before the field; Return or Space on it opens the
         // menu with its first item marked, while a press leaves the keyboard in the field.
-        // B-SRCH-082
         @Test func theOptionsButtonOpensTheMenuFromTheKeyboard() async throws {
             let (harness, tab, _, _) = try await open()
             let window = try #require(tab.window)

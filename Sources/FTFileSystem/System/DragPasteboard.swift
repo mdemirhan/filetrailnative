@@ -1,10 +1,8 @@
-// Port of nativeReadDragPasteboard and nativeReadDragChangeCount (packages/native-fs/src/native_filedrag.m) and of
-// readDraggedIn and readDragChangeCount (apps/desktop/src/main/bootstrap/fileDrag.ts)
 import AppKit
 import FTFoundation
 import Foundation
 
-/// What a drag carries (`nativeReadDragPasteboard`): its change count, which every new drag changes, and its files.
+/// What a drag carries: its change count, which every new drag changes, and its files.
 public struct DragPasteboardContents: Equatable, Sendable {
     public var changeCount: Int
     public var paths: [String]
@@ -43,7 +41,7 @@ public enum DragPasteboard {
         return DragPasteboardContents(changeCount: changeCount, paths: paths)
     }
 
-    /// `nativeReadDragChangeCount`: which drag is going on, without reading what it carries.
+    /// Which drag is going on, without reading what it carries.
     public static func changeCount(_ pasteboard: NSPasteboard = NSPasteboard(name: .drag)) -> Int {
         pasteboard.changeCount
     }
@@ -74,7 +72,7 @@ public enum DragPasteboard {
         return Stat(isDirectory: info.st_mode & S_IFMT == S_IFDIR, isSymbolicLink: false)
     }
 
-    /// `readDraggedIn`: each dragged file's kind as it is on disk (a link is the link; its kind says where it
+    /// Each dragged file's kind as it is on disk (a link is the link; its kind says where it
     /// points), what can't be looked at left out. More files than one copy takes are refused as a whole.
     public static func draggedIn(
         _ contents: DragPasteboardContents, lstat: @Sendable (String) -> Stat? = DragPasteboard.lstat,

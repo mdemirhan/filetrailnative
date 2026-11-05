@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/components/ToastViewport.tsx and styles.css:1560-1630, 1727-1738
 import AppKit
 import FTFoundation
 

@@ -1,5 +1,3 @@
-// Port of the nativeRenameExclusive and nativeIsCaseSensitive cases of packages/native-fs/src/native-fs.test.ts,
-// with the fallback, AppleDouble volumes and case-sensitive disks on disk images
 import FTTestSupport
 import Foundation
 import Testing
@@ -9,7 +7,6 @@ import Testing
 private typealias Files = NativeTestFiles
 
 struct NativeRenameExclusiveTests {
-    // T-6de0bf0d F-348 F-406
     @Test func movesAnItemWithoutReplacingAnything() throws {
         try withTemporaryDirectory(prefix: "native-fs-rename") { root in
             try Files.write(root.appending("a.txt").path, "moved")
@@ -29,7 +26,6 @@ struct NativeRenameExclusiveTests {
     }
 
     // A volume without RENAME_EXCL: looked for first, then rename(2).
-    // F-348
     @Test func checksFirstThenRenamesOnAVolumeThatCantRenameExclusively() throws {
         var renamed: [String] = []
         let present: Set<String> = ["/v/b.txt"]
@@ -58,7 +54,6 @@ struct NativeRenameExclusiveTests {
     }
 
     // FAT and exFAT: a move that never replaces, whichever way the volume allows it.
-    // F-348 F-337
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func movesWithoutReplacingOnFATDisks(kind: DiskImage.Kind) async throws {
         try await DiskImage.withSharedVolume(kind) { volume in
@@ -76,7 +71,6 @@ struct NativeRenameExclusiveTests {
 }
 
 struct NativeCaseSensitivityTests {
-    // T-13d0fdf4 F-333 F-406
     @Test func answersForTheVolumeHoldingAPath() throws {
         try withTemporaryDirectory(prefix: "native-fs-case") { root in
             try Files.write(root.appending("Probe").path, "")
@@ -86,13 +80,11 @@ struct NativeCaseSensitivityTests {
         }
     }
 
-    // T-2fbea9df F-333
     @Test func rejectsAPathThatDoesntExist() {
         let error = #expect(throws: NativeError.self) { try NativeFS.isCaseSensitive("/nonexistent/path/xyz") }
         #expect(error?.code == "ENOENT" && error?.syscall == "pathconf")
     }
 
-    // F-333
     @Test(.tags(.diskImage), .diskImages)
     func answersTrueOnACaseSensitiveDisk() async throws {
         try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
@@ -105,7 +97,6 @@ struct NativeCaseSensitivityTests {
 struct NativeAppleDoubleTests {
     private static let magic: [UInt8] = [0x00, 0x05, 0x16, 0x07, 0, 2, 0, 0]
 
-    // F-414 F-406
     @Test func readsTheMagicNumber() throws {
         try withTemporaryDirectory(prefix: "native-fs-appledouble") { root in
             try Files.write(root.appending("._a").path, Self.magic)
@@ -131,7 +122,6 @@ struct NativeAppleDoubleTests {
         #expect(error?.code == "ENOENT" && error?.syscall == "getattrlist")
     }
 
-    // F-414
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func tellsADiskThatKeepsAttributesInAppleDoubleFiles(kind: DiskImage.Kind) async throws {
         try await DiskImage.withSharedVolume(kind) { volume in

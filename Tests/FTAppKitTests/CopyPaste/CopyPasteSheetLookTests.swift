@@ -1,7 +1,5 @@
-// Ports by feature what the wave-3-end checkpoint compared of the review and result sheets
-// (CopyPasteReviewDialog.tsx, CopyPasteResultDialog.tsx and the .copy-paste-sheet-* rules of styles.css): the sheet
-// growing with its rows, the rows' heights, the button it opens on, the list behind it, on an explorer window that is
-// never shown, with the app's real file operations on a temporary folder
+// The sheet growing with its rows, the rows' heights, the button it opens on, the list behind it, on an explorer window
+// that is never shown, with the app's real file operations on a temporary folder
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -39,10 +37,9 @@ extension ExplorerWindowlessTests {
             tab.perform(.pasteSelection)
         }
 
-        // Add Missing lists the merged folder's conflicts under it: the sheet grows to show them all, as the original's
-        // does, its footer below the last row. Each row after the first starts with its 1 pt line; a row of a name and
-        // its detail is 48 tall (two lines of 15, 2 between, 8 above and below).
-        // T-31ee02a9 T-fc88809d F-845 F-866 F-867 B-CLIP-087 B-CLIP-097
+        // Add Missing lists the merged folder's conflicts under it: the sheet grows to show them all, its footer below
+        // the last row. Each row after the first starts with its 1 pt line; a row of a name and its detail is 48 tall
+        // (two lines of 15, 2 between, 8 above and below).
         @Test func theSheetGrowsWithItsRowsWhenAddMissingListsThem() async throws {
             let window = try await WritingWindow.open()
             try FileManager.default.createDirectory(
@@ -72,9 +69,8 @@ extension ExplorerWindowlessTests {
         }
 
         // The sheet opens on its start button with no focus ring (it is marked by its fill); the ring comes once Tab
-        // is used. The button's focus blurs the list, so its selection is gray under the sheet (`explorerFocusSuppressed`
-        // keeps it so), and the list has the keyboard again once the sheet closes.
-        // T-74d708a8 F-866 B-CLIP-105
+        // is used. The button's focus blurs the list, so its selection is gray under the sheet, and the list has the
+        // keyboard again once the sheet closes.
         @Test func theStartButtonOpensWithoutARingAndTheListGoesGrayUnderIt() async throws {
             let window = try await WritingWindow.open()
             try write(window, "a.txt", "new a")
@@ -99,7 +95,6 @@ extension ExplorerWindowlessTests {
 
         // A row's choice reads Replace in red, its down chevron too (`.copy-paste-choice.is-danger` sets the color the
         // menu list's arrow is painted in); any other choice is in the primary color, chevron and all.
-        // F-867 B-CLIP-087
         @Test func theChoiceChevronIsRedWhileItReadsReplace() {
             let palette = AppearanceModel.shared.theme.palette
             let popUp = ReviewChoicePopUp()
@@ -113,7 +108,6 @@ extension ExplorerWindowlessTests {
 
         // The result sheet holds the folder's changes from outside, but the operation's own read of the folder goes
         // through under it: what was pasted shows behind the sheet.
-        // F-871 B-CLIP-114 B-CLIP-137
         @Test func theFolderBehindTheResultSheetShowsWhatWasPasted() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab

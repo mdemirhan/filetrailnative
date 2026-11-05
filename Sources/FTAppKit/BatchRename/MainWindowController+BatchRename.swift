@@ -1,7 +1,3 @@
-// Port of openRenameDialog's branch for several items, openBatchRenameFor, openBatchRenameSheet, startBatchRename and
-// the batch_rename branch of retryFailedCopyPasteItems (apps/desktop/src/renderer/hooks/useExplorerActions.ts
-// 2425-2443, 3649-3760), and of the sheet's part of apps/desktop/src/renderer/App.tsx (its mounting, Escape from
-// anywhere, explorerFocusSuppressed and copyPasteModalOpen)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -20,7 +16,7 @@ extension MainWindowController {
     }
 
     /// Which items of the last rename of several were folders, by explorer window and by the path asked for: the sheet
-    /// opens again on the items that weren't renamed, each numbered as it was (`batchRenameFoldersRef`).
+    /// opens again on the items that weren't renamed, each numbered as it was.
     private static var batchRenameFolders: [Int: [String: Bool]] = [:]
 
     /// The Rename sheet for several items, while it is up.
@@ -28,17 +24,17 @@ extension MainWindowController {
         dialogs.lazy.compactMap { $0.panel as? BatchRenameSheetView }.first
     }
 
-    /// Whether the Rename sheet is up: the panes take no keyboard and the list's shortcuts wait (B-DLG-091).
+    /// Whether the Rename sheet is up: the panes take no keyboard and the list's shortcuts wait.
     var isBatchRenameOpen: Bool { batchRenameSheet != nil }
 
-    /// Rename, F2 and Return on several items open the sheet (`openRenameDialog`).
+    /// Rename, F2 and Return on several items open the sheet.
     func installBatchRename() {
         openBatchRename = { [weak self] entries in self?.openBatchRename(for: entries) }
     }
 
     private var batchRenameWindowKey: Int { group?.windowID ?? windowID }
 
-    /// `openBatchRenameFor`: the items in the order the list (or the search results) shows them, which numbers them. A
+    /// The items in the order the list (or the search results) shows them, which numbers them. A
     /// folder, or a link to one, is renamed whole; a package keeps its extension.
     func openBatchRename(for entries: [DirectoryEntry]) {
         let wanted = Set(entries.map(\.path))

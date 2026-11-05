@@ -1,7 +1,6 @@
-// Port of apps/desktop/src/renderer/lib/nameHighlight.tsx (findNameMatch, mapMatchToLabel, and the ranges renderMarkedText draws)
 import Foundation
 
-/// A stretch of a string, in UTF-16 units as JavaScript counts them: `start` up to, not including, `end`.
+/// A stretch of a string, in UTF-16 units: `start` up to, not including, `end`.
 public struct HighlightRange: Equatable, Sendable, Codable {
     public var start: Int
     public var end: Int
@@ -18,13 +17,13 @@ public struct HighlightRange: Equatable, Sendable, Codable {
 public enum NameHighlight {
     private static let ellipsis = UInt16(0x2026)
 
-    /// `findNameMatch`: where `pattern` matches in `name`; nil when it does not, or matches nothing.
+    /// Where `pattern` matches in `name`; nil when it does not, or matches nothing.
     public static func match(_ pattern: JSLegacyRegExp?, in name: String) -> HighlightRange? {
         guard let found = pattern?.firstMatch(in: name), found.range.length > 0 else { return nil }
         return HighlightRange(start: found.range.location, end: found.range.location + found.range.length)
     }
 
-    /// `mapMatchToLabel`: the match in a name as it shows in a label that may have lost its middle
+    /// The match in a name as it shows in a label that may have lost its middle
     /// ("Annual…Report.pdf"). The part before the "…" is the start of the name and the part after it the end. What of
     /// the match is still on show is marked; a match (or part of one) that fell in the missing middle marks the "…", so
     /// it is not lost from sight. Ranges side by side come back as one.
@@ -70,9 +69,8 @@ public enum NameHighlight {
         return result
     }
 
-    /// The marks `renderMarkedText` draws in `text`, whose first unit is at `offset` of the string the ranges count
-    /// in: each range cut to the text, in the text's own units. Empty ones, and ones before what was already marked,
-    /// are left out.
+    /// The marks drawn in `text`, whose first unit is at `offset` of the string the ranges count in: each range cut
+    /// to the text, in the text's own units. Empty ones, and ones before what was already marked, are left out.
     public static func marks(in text: String, ranges: [HighlightRange], offset: Int = 0) -> [HighlightRange] {
         let length = text.utf16.count
         var at = 0

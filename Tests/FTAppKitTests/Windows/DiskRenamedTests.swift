@@ -1,5 +1,5 @@
-// The volume list's diff of apps/desktop/src/renderer/App.tsx:1218-1236: a listed disk no longer listed took its folders
-// with it, whether it was unmounted or renamed, on tabs in windows that are never shown
+// The volume list's diff: a listed disk no longer listed took its folders with it, whether it was unmounted or
+// renamed, on tabs in windows that are never shown
 import AppKit
 import FTFileSystem
 import Foundation
@@ -18,7 +18,6 @@ extension ExplorerWindowlessTests {
 
         // A disk renamed from Old to New is gone from where it was: the tab on it closes, the window stays with the
         // other, and Reopen Closed Tab doesn't offer it.
-        // B-TREE-177
         @Test func renamingADiskClosesTheTabsOnIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let first = try await harness.open()

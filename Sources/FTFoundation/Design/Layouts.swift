@@ -1,5 +1,3 @@
-// Port of renderer/lib/layoutTokens.ts, iconGridLayout.ts, detailsLayout.ts, flowListLayout.ts, topToolbarLayout.ts and
-// the sidebar rules of styles.css (.tree-pane, .sidebar-main-native, .tree-row, .sidebar-section-header)
 import Foundation
 
 /// How big the file views are: File Trail's own sizes, or Finder's (the defaults of its View Options).
@@ -22,7 +20,7 @@ public enum SidebarDensity: String, CaseIterable, Sendable {
     case large
 }
 
-/// Shell constraints from `EXPLORER_LAYOUT` and the preferences' default pane widths.
+/// Shell constraints and the preferences' default pane widths.
 public struct ExplorerLayout: Equatable, Sendable {
     public var treeMinWidth: Double
     public var treeMaxWidth: Double
@@ -34,8 +32,8 @@ public struct ExplorerLayout: Equatable, Sendable {
     public var minContentWidth: Double
     public var defaultTreeWidth: Double
     public var defaultInspectorWidth: Double
-    /// Toolbar padding-left with the sidebar hidden, clearing the traffic lights. The original's; the port's system
-    /// toolbar places its row past the traffic lights itself.
+    /// Toolbar padding-left with the sidebar hidden, clearing the traffic lights. The system toolbar
+    /// places its row past the traffic lights itself.
     public var toolbarInsetWithoutTree: Double
 
     static func make() -> ExplorerLayout {
@@ -46,8 +44,7 @@ public struct ExplorerLayout: Equatable, Sendable {
     }
 }
 
-/// Icon view metrics (`ICON_GRID_LAYOUT` and the `.icon-grid` rules). Finder's sizes keep the icons and the grid and
-/// take Finder's 12 point labels.
+/// Icon view metrics. Finder's sizes keep the icons and the grid and take Finder's 12 point labels.
 public struct IconGridLayout: Equatable, Sendable {
     public var iconSize: Double
     public var iconBoxSize: Double
@@ -76,14 +73,14 @@ public struct IconGridLayout: Equatable, Sendable {
             clipboardBadgeOffset: -4)
     }
 
-    /// How many columns fit across the pane (`computeIconGridColumns`); `containerWidth` is in
+    /// How many columns fit across the pane; `containerWidth` is in
     /// points.
     public func columns(containerWidth: Double) -> Int {
         Int(max(1, ((containerWidth - paddingInline * 2) / cellMinWidth).rounded(.down)))
     }
 }
 
-/// List view (`details`) metrics: `DETAILS_LAYOUT` plus the row and header rules of section 2.2.
+/// List view (`details`) metrics: the rows and the header.
 public struct DetailsLayout: Equatable, Sendable {
     public var rowHeight: Double
     public var columnGap: Double
@@ -102,7 +99,7 @@ public struct DetailsLayout: Equatable, Sendable {
     public var separatorHeight: Double
     public var separatorHitWidth: Double
     public var columnKeyboardStep: Double
-    /// The file icon in a Name cell (`.file-icon`) and its gap to the name (`.details-name`).
+    /// The file icon in a Name cell and its gap to the name.
     public var iconSize: Double
     public var nameIconGap: Double
     /// Left and right padding of one row (half of `rowPadding`).
@@ -110,20 +107,20 @@ public struct DetailsLayout: Equatable, Sendable {
     /// The gap between a header title and its sort chevron, and the chevron's margin before the column's end.
     public var headerButtonGap: Double
     public var sortChevronTrailingMargin: Double
-    /// The line under the header (`.details-header-shell` border-bottom).
+    /// The line under the header.
     public var headerBorderWidth: Double
     /// How far a separator's hit area reaches beyond the header cell, above and to the right.
     public var separatorHitOverhang: Double
-    /// Room kept free for the vertical scroller when the columns are fitted (`DETAILS_SCROLLBAR_WIDTH`).
+    /// Room kept free for the vertical scroller when the columns are fitted.
     public var scrollbarAllowance: Double
-    /// Size bars (`.details-size-bar`): inset from the cell's top and bottom, reach past its right edge, the least
-    /// width and the share of the colour (accent; the selection text on a selected row).
+    /// Size bars: inset from the cell's top and bottom, reach past its right edge, the least width and the share of
+    /// the colour (accent; the selection text on a selected row).
     public var sizeBarInsetVertical: Double
     public var sizeBarOverhang: Double
     public var sizeBarMinWidth: Double
     public var sizeBarAlpha: Double
     public var sizeBarSelectedAlpha: Double
-    /// Pixels of slack added to a fitted column (`FIT_SLACK`).
+    /// Pixels of slack added to a fitted column.
     public var fitSlack: Double
 
     static func make(density: Density) -> DetailsLayout {
@@ -172,7 +169,7 @@ public struct ColumnWidths: Equatable, Sendable {
     }
 }
 
-/// Compact List (`list`) metrics: `FLOW_LIST_LAYOUT`, and Finder's List view sizes (13 point text, 16 point icons).
+/// Compact List (`list`) metrics, and Finder's List view sizes (13 point text, 16 point icons).
 public struct FlowListLayout: Equatable, Sendable {
     public var rowHeight: Double
     public var rowGap: Double
@@ -196,7 +193,7 @@ public struct FlowListLayout: Equatable, Sendable {
     }
 }
 
-/// Top toolbar metrics: `TOP_TOOLBAR_LAYOUT` and the toolbar rules of section 1.2.
+/// Top toolbar metrics.
 public struct ToolbarLayout: Equatable, Sendable {
     public var itemGap: Double
     public var edgedItemInset: Double
@@ -252,7 +249,7 @@ public struct TabStripLayout: Equatable, Sendable {
     }
 }
 
-/// The type scale (`--font-size-*`).
+/// The type scale.
 public struct TypeScale: Equatable, Sendable {
     public var mini: Double
     public var small: Double
@@ -309,40 +306,39 @@ public struct SidebarInsets: Equatable, Sendable {
     }
 }
 
-/// Sidebar metrics: every length of the sidebar for a density, in points (the original's CSS pixels; the sidebar rules
-/// of styles.css, `.tree-pane`, `.sidebar-main-native`, `.tree-row`, `.sidebar-section-header`, ui.md section 1.4). The
+/// Sidebar metrics: every length of the sidebar for a density, in points. The
 /// small, medium and large sizes are AppKit's source list rows and text; fonts, radii and durations come from
 /// `DesignTokens`.
 public struct SidebarLayout: Equatable, Sendable {
     public let density: SidebarDensity
 
-    /// `.sidebar-titlebar`: the sidebar's parts start this far down, under the window's toolbar band and its traffic
-    /// lights (the band is the system toolbar's, over the sidebar; the sidebar draws nothing there).
+    /// The sidebar's parts start this far down, under the window's toolbar band and its traffic lights (the band is
+    /// the system toolbar's, over the sidebar; the sidebar draws nothing there).
     public let titlebarHeight = 52.0
-    /// `.sidebar-sections` takes at most this share of the sidebar below the title bar.
+    /// The sections take at most this share of the sidebar below the title bar.
     public let sectionsMaxHeightShare = 0.6
 
-    // MARK: Rows (`.sidebar-main-native .tree-row`)
+    // MARK: Rows
 
     public let rowHeight: Double
-    /// `margin: 0 10px`.
+    /// The row's inset from the sidebar's sides.
     public let rowMarginX = 10.0
-    /// `padding-left: calc(8px + depth * var(--tree-indent))`.
+    /// The row's padding; the left one grows by `indent` per level.
     public let rowPaddingLeft = 8.0
     public let rowPaddingRight = 8.0
     public let indent: Double
-    /// `gap` between the disclosure button, the label and the eject button.
+    /// The gap between the disclosure button, the label and the eject button.
     public let rowGap = 6.0
     public let rowRadius: Double
 
     // MARK: Inside the row
 
-    /// `.tree-expand`.
+    /// The disclosure button's box.
     public let chevronBox: Double
-    /// The chevron's stroke, `.toolbar-icon { width: 16px }` (it overflows its 14 pt box).
+    /// The chevron's size and stroke (it overflows its 14 pt box).
     public let chevronIcon = 16.0
     public let chevronStroke = 1.8
-    /// `.tree-label`: the icon, then the text.
+    /// The label: the icon, then the text.
     public let iconSize: Double
     /// A favorite's or location's symbol, centered over the icon's box. A source list's symbols are the size of its
     /// text.
@@ -358,22 +354,22 @@ public struct SidebarLayout: Equatable, Sendable {
     public let ejectIcon = 14.0
     public let ejectStroke = 1.8
     public let ejectMarginRight = -4.0
-    /// `.favorite-drop-line`.
+    /// The line that shows where a dragged favorite will drop.
     public let dropLineHeight = 2.0
     public let dropLineInset = 6.0
     public let draggedRowOpacity = 0.45
-    /// `.menu-target`: an inset ring.
+    /// The row a context menu is open for: an inset ring.
     public let menuRingWidth = 2.0
 
     // MARK: Lists
 
-    /// `.tree-list { padding: 6px 0 16px }`, and `4px 0 12px` for the small size.
+    /// A tree list's padding: 6 on top and 16 below, and 4 and 12 for the small size.
     public let treeListPaddingTop: Double
     public let treeListPaddingBottom: Double
-    /// The Folders tree of the separate layout keeps 6 pt on top in every density (`.filesystem-tree-section .tree-list`).
+    /// The Folders tree of the separate layout keeps 6 pt on top in every density.
     public let foldersTreePaddingTop = 6.0
 
-    // MARK: Section headers (`.sidebar-section-header`)
+    // MARK: Section headers
 
     public let sectionHeaderHeight: Double
     public let sectionHeaderMarginTop: Double
@@ -385,12 +381,12 @@ public struct SidebarLayout: Equatable, Sendable {
     public let sectionChevronStroke = 2.0
     public let headingFontSizeSmall: Double
 
-    // MARK: The "Folders" label (`.sidebar-header`)
+    // MARK: The "Folders" label
 
     public let foldersTitlePadding = SidebarInsets(top: 14, right: 12, bottom: 0, left: 20)
-    /// The height the label box is left with in the original's flex column (measured: 14.7 pt with its padding).
+    /// The height the label box is left with (measured: 14.7 pt with its padding).
     public let foldersTitleContentHeight = 0.7
-    /// `mask-image: linear-gradient(to bottom, transparent 0, #000 6px)` over the folders tree.
+    /// The folders tree fades in from clear over this many points at its top.
     public let treeFadeHeight = 6.0
 
     public init(density: SidebarDensity) {
@@ -424,7 +420,7 @@ public struct SidebarLayout: Equatable, Sendable {
     /// The left edge of a row's content: `8 + depth * indent` from the row's left edge.
     public func contentLeading(depth: Int) -> Double { rowPaddingLeft + Double(depth) * indent }
 
-    /// `margin-left: 38px + depth * indent` of a loading line or an error under a row.
+    /// The left edge of a loading line or an error under a row: `38 + depth * indent`.
     public func noteLeading(depth: Int) -> Double { 38 + Double(depth) * indent }
 
     public let noteFontSize = DesignTokens.typeScale.callout
@@ -432,14 +428,14 @@ public struct SidebarLayout: Equatable, Sendable {
 
     // MARK: Behavior timings
 
-    /// "Loading folder…" shows when a read has lasted this long (`TREE_LOADING_DELAY_MS`).
+    /// "Loading folder…" shows when a read has lasted this long.
     public static let loadingDelayMilliseconds = 400
-    /// A click opens the row this long after (`activateTreeItem` timer).
+    /// A click opens the row this long after.
     public static let clickDelayMilliseconds = 180
-    /// After a hand toggle the sidebar does not scroll to the selection for this long (`HAND_TOGGLE_SETTLE_MS`).
+    /// After a hand toggle the sidebar does not scroll to the selection for this long.
     public static let handToggleSettleMilliseconds = 1500
     /// A valid drag over a collapsed folder expands it after this long.
     public static let dragHoverExpandMilliseconds = 700
-    /// The "Jump to" prefix is forgotten this long after the last key (`TREE_TYPEAHEAD_RESET_MS`).
+    /// The "Jump to" prefix is forgotten this long after the last key.
     public static let typeaheadResetMilliseconds = 1000
 }

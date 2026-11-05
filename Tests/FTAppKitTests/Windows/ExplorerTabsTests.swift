@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/explorerTabs.test.ts
 import FTFileSystem
 import FTFoundation
 import Testing
@@ -8,8 +7,6 @@ import Testing
 @Suite struct ExplorerTabsTests {
     private let tabs = ["a", "b", "c"]
 
-    // T-e787702a F-068 B-VIEW-144
-    // B-SRCH-059
     @Test func namesATabAfterItsFolderOrAfterItsSearchWhileResultsAreShowing() {
         func describe(
             _ path: String, visible: Bool = false, query: String = "", root: String = "", running: Bool = false
@@ -33,7 +30,6 @@ import Testing
         #expect(describe("/Users/demo/Documents", query: "invoice").kind == .folder)
     }
 
-    // T-c703a3b8 F-673
     @Test func handsAClosedTabsPlaceToTheTabOnItsRightOrItsLeftWhenItWasLast() {
         #expect(ExplorerTabs.tabAfterClose(tabs, closing: "a") == "b")
         #expect(ExplorerTabs.tabAfterClose(tabs, closing: "b") == "c")
@@ -42,7 +38,6 @@ import Testing
         #expect(ExplorerTabs.tabAfterClose(tabs, closing: "missing") == nil)
     }
 
-    // T-e479ad17 F-675
     @Test func stepsToTheNextAndPreviousTabWrappingAround() {
         #expect(ExplorerTabs.adjacentTab(tabs, active: "a", .next) == "b")
         #expect(ExplorerTabs.adjacentTab(tabs, active: "c", .next) == "a")
@@ -50,8 +45,6 @@ import Testing
         #expect(ExplorerTabs.adjacentTab(["a"], active: "a", .next) == nil)
     }
 
-    // T-2404af85 F-834
-    // B-NAV-193 B-TREE-180
     @Test func stopsASavedTreeFromWaitingForAnswersThatWentToAnotherTab() {
         let node = TreeNodeState(path: "/a", name: "a", expanded: true, loaded: true)
         let settled = TreeNodes([node])
@@ -64,7 +57,6 @@ import Testing
         #expect(nodes["/a"] == node)
     }
 
-    // T-b0759acc F-834
     @Test func movesATabAlongTheRowWithoutDisturbingTheOrderOfTheOthers() {
         func ids(_ list: [String]) -> String { list.joined() }
         #expect(ids(ExplorerTabs.moveTab(tabs, "a", to: 2)) == "bca")
@@ -74,8 +66,6 @@ import Testing
         #expect(ids(ExplorerTabs.moveTab(tabs, "missing", to: 0)) == "abc")
     }
 
-    // T-6d407a9e F-674
-    // B-NAV-012
     @Test func keepsAClosedTabsFolderAndViewNotItsHistoryOrWhatItHadOnScreen() {
         var view = TabViewState()
         view.contentSelection = .single("/Users/demo/work/a")
@@ -93,8 +83,7 @@ import Testing
         #expect(ExplorerTabs.reopenable(snapshot) == expected)
     }
 
-    // F-673 `openNewTab`
-    // B-NAV-010
+    // `openNewTab`
     @Test func startsANewTabWithTheTreeAndAHistoryOfItsOwnAndNothingSelectedOrTyped() {
         var view = TabViewState()
         view.treeNodes = TreeNodes([TreeNodeState(path: "/Users/demo/open", expanded: true)])
@@ -147,7 +136,6 @@ import Testing
             truncated: false, error: nil)
     }
 
-    // T-4240a387 F-834
     @Test func addsWhatWasFoundSinceAndKeepsAskingWhileTheSearchRuns() {
         let next = ExplorerTabs.applyBackgroundSearchUpdate(session, update([result("b.txt")], done: false))
         #expect(next.results.map(\.name) == ["a.txt", "b.txt"])
@@ -156,7 +144,6 @@ import Testing
         #expect(next.jobID == "job-1")
     }
 
-    // T-1403402d F-834
     @Test func letsGoOfASearchThatHasFinished() {
         let next = ExplorerTabs.applyBackgroundSearchUpdate(session, update([result("b.txt")], done: true))
         #expect(next.status == .complete)
@@ -165,7 +152,6 @@ import Testing
         #expect(next.results.count == 2)
     }
 
-    // T-56d3adf6 F-834
     @Test func leavesOutResultsThatWereKeptFromTheSearchBefore() {
         var kept = session
         kept.keptResultPaths = ["/Users/demo/a.txt"]
@@ -174,7 +160,6 @@ import Testing
         #expect(next.results.map(\.name) == ["a.txt", "b.txt"])
     }
 
-    // T-ad557b96 F-834
     @Test func marksTheSearchToRunAgainWhenItsLastAnswerWasThrownAway() {
         var inFlight = session
         inFlight.pollInFlight = true
@@ -189,8 +174,6 @@ import Testing
         #expect(!running.interrupted)
     }
 
-    // T-84234a52 F-068 B-VIEW-144
-    // B-NAV-199
     @Test func tellsTabsOnFoldersOfTheSameNameApartByTheFolderEachIsIn() {
         func tab(_ label: String, _ path: String, _ kind: TabDescription.Kind = .folder) -> TabLabel {
             TabLabel(label: label, kind: kind, path: path)
@@ -210,7 +193,6 @@ import Testing
             ])
     }
 
-    // T-654ba719 F-673
     @Test func listsAFolderAndTheFoldersAboveItNearestFirst() {
         #expect(
             ExplorerTabs.pathAndAncestors("/Users/demo/Folder") == ["/Users/demo/Folder", "/Users/demo", "/Users", "/"])
@@ -225,8 +207,6 @@ import Testing
             treeRootPath: "/Users/demo", selectedTreeItemID: "fs:\(currentPath)", view: TabViewState())
     }
 
-    // T-7f43e078 F-676 B-NAV-139
-    // B-NAV-196 T-3122bd51 T-f829833f
     @Test func followsARenamedOrMovedFolderAndFoldersInsideIt() {
         let moves = [PathMove(from: "/Users/demo/Projects", to: "/Users/demo/Work")]
 
@@ -239,14 +219,13 @@ import Testing
         #expect(followed.view == nil)
     }
 
-    // T-1fff82ea F-676
     @Test func leavesATabOnAnotherFolderAsItIs() {
         let tab = snapshot("/Users/demo/Projects2")
         #expect(
             ExplorerTabs.followMovedItems(tab, [PathMove(from: "/Users/demo/Projects", to: "/Users/demo/Work")]) == tab)
     }
 
-    // MARK: collectFollowedMoves (explorerAppUtils.test.ts)
+    // MARK: collectFollowedMoves
 
     private func result(_ action: String, mode: CopyPasteMode? = nil) -> WriteOperationOutcome {
         WriteOperationOutcome(
@@ -259,7 +238,6 @@ import Testing
             ])
     }
 
-    // T-b0dde00f
     @Test func followsWhatWasRenamedAndAnItemOfSeveralPutBackUnderAnotherName() {
         #expect(
             ExplorerTabs.collectFollowedMoves(result("batch_rename")) == [
@@ -267,15 +245,12 @@ import Testing
             ])
     }
 
-    // T-52ae9489
     @Test func followsOnlyWhatAMoveFinishedAFailedItemStayedWhereItWas() {
         #expect(ExplorerTabs.collectFollowedMoves(result("move_to")) == [PathMove(from: "/a", to: "/b")])
     }
 
-    // The filter of the original's `onWriteOperationProgress` listener (useExplorerTabs.ts): only a finished
+    // The filter of the write progress the tabs follow: only a finished
     // operation that gave items new paths moves the tabs.
-    // F-676 B-VIEW-172
-    // B-CLIP-146
     @Test func followsTheMovesOfAFinishedRenameMoveOrCutPasteOnly() {
         func moves(_ status: String, _ result: WriteOperationOutcome?) -> [PathMove] {
             ExplorerTabs.followedMoves(WriteOperationProgress(status: status, result: result))
@@ -308,8 +283,6 @@ import Testing
             selectedTreeItemID: "location:/Volumes/Backup", leftPaneSubview: .favorites, view: TabViewState())
     }
 
-    // T-29bd3543 F-676 B-TREE-178
-    // B-NAV-197
     @Test func sendsATabOnAnUnmountedDiskHomeKeepingItsHistoryElsewhere() {
         let left = ExplorerTabs.leaveUnmountedDisks(
             onDisk("/Volumes/Backup/Photos", ["/Users/demo/Desktop", "/Volumes/Backup/Photos"]),
@@ -324,7 +297,6 @@ import Testing
         #expect(left.view == nil)
     }
 
-    // T-594eb68d F-676
     @Test func leavesATabOnAnotherDiskOrOnAFolderNamedAlikeAsItIs() {
         let onArchive = onDisk("/Volumes/Archive/2025", ["/Volumes/Archive/2025"], root: "/Volumes/Archive")
         #expect(
@@ -336,8 +308,6 @@ import Testing
                 == onBackup2)
     }
 
-    // T-7174190f F-676
-    // B-NAV-196
     @Test func followsTheDeepestMoveThatHoldsAPath() {
         // "/P" moved to "/Q", and "/P/A" inside it to "/Q/B": the deepest move decides.
         let moves = [PathMove(from: "/P", to: "/Q"), PathMove(from: "/P/A", to: "/Q/B")]

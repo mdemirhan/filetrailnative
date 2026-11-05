@@ -1,5 +1,3 @@
-// Port of the resolveNewFolderTargetPath describe and of the New Folder name and Empty Trash failure cases of
-// apps/desktop/src/renderer/lib/explorerAppUtils.test.ts
 import FTFoundation
 import FTOperations
 import Foundation
@@ -22,8 +20,6 @@ import Testing
 
     // As in Finder: ⇧⌘N makes it in the folder on screen whatever is selected, so two in a row don't nest the
     // second inside the first (which is selected once made).
-    // F-297 T-7da9398e
-    // T-24bd7058 T-b4a8467b T-cf63a4df
     @Test func makesTheFolderInTheFolderOnScreenFromTheKeyboardWhateverIsSelected() {
         #expect(target([]) == "/Users/demo")
         #expect(target([folder]) == "/Users/demo")
@@ -32,8 +28,6 @@ import Testing
         #expect(target([file, ("/Users/demo/more.txt", false)]) == "/Users/demo")
     }
 
-    // F-297 T-a99d1d96
-    // T-56b88ca6 T-9f23bfcd
     @Test func makesItInsideAFolderFromThatFoldersOwnMenuAndOffersNothingForAFileOrSeveralItems() {
         #expect(target([folder], scope: .selection) == "/Users/demo/Folder")
         #expect(target([file], scope: .selection) == nil)
@@ -43,7 +37,6 @@ import Testing
         #expect(target([file], scope: .background) == "/Users/demo")
     }
 
-    // F-297 T-79a02757
     @Test func makesNothingInTheTrash() {
         #expect(
             LocalWriteRules.newFolderTargetPath(
@@ -56,7 +49,6 @@ import Testing
                 scope: .selection) == nil)
     }
 
-    // T-e009a148
     @Test func hasNoTargetInSearchResultsOrWithoutAFolderOnScreen() {
         #expect(target([], isSearchMode: true) == nil)
         #expect(target([file], isSearchMode: true) == nil)
@@ -66,8 +58,6 @@ import Testing
                 == nil)
     }
 
-    // F-297 T-e872cd80 T-8cdccb11
-    // B-CLIP-199
     @Test func suggestsAFreeNewFolderNameIgnoringCaseLikeTheDiskDoes() {
         #expect(LocalWriteRules.freeNewFolderName([]) == "untitled folder")
         #expect(LocalWriteRules.freeNewFolderName(["untitled folder"]) == "untitled folder 2")
@@ -75,7 +65,6 @@ import Testing
         #expect(LocalWriteRules.freeNewFolderName(["untitled folder", "untitled folder 3"]) == "untitled folder 2")
     }
 
-    // F-304 F-305 T-9407a866
     @Test func explainsAnEmptyTrashFailureAndHowToAllowFileTrailToControlFinder() {
         let title = "Couldn\u{2019}t Empty the Trash"
         let denied = LocalWriteRules.describeEmptyTrashFailure(

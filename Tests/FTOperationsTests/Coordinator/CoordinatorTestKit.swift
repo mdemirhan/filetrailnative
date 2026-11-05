@@ -1,5 +1,4 @@
-// Port of the helpers of apps/desktop/src/main/bootstrap/writeOperations.test.ts and writeOperations.windows.test.ts:
-// a write service whose events the test sends, windows that record what they hear, a clock the test moves
+// A write service whose events the test sends, windows that record what they hear, a clock the test moves
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -7,7 +6,7 @@ import os
 
 @testable import FTOperations
 
-/// `createSubscribingWriteService`: a write service stub that hands out sequential operation ids and lets the test
+/// A write service stub that hands out sequential operation ids and lets the test
 /// emit progress events the way the real service does. Every call is recorded.
 final class StubWriteService: CoordinatorWriteService, @unchecked Sendable {
     struct Calls {
@@ -74,7 +73,7 @@ final class StubWriteService: CoordinatorWriteService, @unchecked Sendable {
     }
 }
 
-/// `createLifecycleSender` / `createWindow`: a window that records what it is sent, and can be closed.
+/// A window that records what it is sent, and can be closed.
 @MainActor
 final class TestWindow: WriteOperationWindow {
     var isClosed = false
@@ -88,7 +87,6 @@ final class TestWindow: WriteOperationWindow {
         onReceive?(message)
     }
 
-    /// `progressSentTo`.
     var progress: [WriteOperationEvent] {
         messages.compactMap { if case .progress(let event) = $0 { event } else { nil } }
     }
@@ -102,7 +100,7 @@ final class TestWindow: WriteOperationWindow {
     }
 }
 
-/// A clock the test moves (`vi.useFakeTimers`).
+/// A clock the test moves.
 @MainActor
 final class ManualClock {
     var now: Double = 1_000_000
@@ -120,7 +118,6 @@ final class ManualClock {
             })
     }
 
-    /// `vi.advanceTimersByTime`.
     func advance(_ milliseconds: Double) {
         let end = now + milliseconds
         while let next = timers.filter({ $0.at <= end }).min(by: { $0.at < $1.at }) {
@@ -152,7 +149,7 @@ final class TestGate {
     }
 }
 
-/// What the coordinator logged (`console.error`).
+/// What the coordinator logged.
 @MainActor
 final class LogRecorder {
     private(set) var messages: [String] = []
@@ -193,7 +190,6 @@ enum Coordinators {
         NodeFingerprint(exists: true, kind: .file, size: 1, mtimeMs: 1, mode: 0o644, ino: 1, dev: 1)
     }
 
-    /// `createRuntimeConflict`.
     static func conflict(_ conflictId: String) -> CopyPasteRuntimeConflict {
         CopyPasteRuntimeConflict(
             conflictId: conflictId, analysisId: "analysis-1", sourcePath: "/Users/demo/source/b.txt",
@@ -203,7 +199,7 @@ enum Coordinators {
             currentDestinationFingerprint: fingerprint())
     }
 
-    /// `createCopyPasteTerminalEvent` / `copyEvent`.
+    /// A copy's progress event, with its result once `status` ends it.
     static func event(
         _ status: CopyPasteOperationStatus, operationId: String = "copy-op-1", mode: CopyPasteMode = .copy,
         completedItemCount: Int = 0, totalItemCount: Int = 1, runtimeConflict: CopyPasteRuntimeConflict? = nil,
@@ -230,7 +226,7 @@ enum Coordinators {
             result: result)
     }
 
-    /// `copiedEvent`: the end of a paste that copied (or moved) a.txt into /Volumes/Share, with what it did for Undo.
+    /// The end of a paste that copied (or moved) a.txt into /Volumes/Share, with what it did for Undo.
     static func copied(_ mode: CopyPasteMode = .copy) -> CopyPasteProgressEvent {
         event(
             .completed, mode: mode, completedItemCount: 1,
@@ -244,9 +240,8 @@ enum Coordinators {
             ]))
     }
 
-    /// A local operation that says it runs, waits for `gate`, then ends with `status`: what the original's tests do
-    /// with a rename or delete whose disk call the test holds (the local operations themselves are P3-06's). Stopped
-    /// while it waits, it ends "cancelled".
+    /// A local operation that says it runs, waits for `gate`, then ends with `status`: a rename or delete whose disk
+    /// call the test holds. Stopped while it waits, it ends "cancelled".
     @MainActor
     @discardableResult
     static func heldLocalOperation(
@@ -284,7 +279,6 @@ enum Coordinators {
         }
     }
 
-    /// `waitForTerminalEvent`.
     @MainActor
     static func end(of operationId: String, in window: TestWindow) async throws -> WriteOperationEvent {
         try await waitFor { window.end(of: operationId) }

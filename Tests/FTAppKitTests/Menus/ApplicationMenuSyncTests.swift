@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/main/applicationMenuSync.test.ts
 import AppKit
 import FTFoundation
 import Testing
@@ -58,7 +57,6 @@ import Testing
 
     private let oneTab = ApplicationMenuState(disabledCommands: [.moveTabToNewWindow])
 
-    // T-3c256a0b F-601 F-604
     @Test func showsTheStateOfTheFocusedExplorerWindowFollowingTheFocus() {
         let f = Fixture()
         let a = f.open(1)
@@ -75,7 +73,6 @@ import Testing
         #expect(f.item("mergeAllWindows").isEnabled)
     }
 
-    // T-9dea35da F-641
     @Test func doesntHearWindowsThatArentExplorerWindows() {
         let f = Fixture()
         let a = f.open(1)
@@ -86,7 +83,6 @@ import Testing
         #expect(f.item("moveTabToNewWindow").isEnabled)
     }
 
-    // T-72c562dc F-599 F-600
     @Test func offersNewWindowAndTheGoMenusPlacesWithOnlySettingsOpen() {
         let f = Fixture()
         f.focused = makeOffscreenWindow()
@@ -99,7 +95,6 @@ import Testing
         #expect(!f.item("emptyTrash").isEnabled)
     }
 
-    // T-a6db3ae1 F-604
     @Test func sendsCommandsToTheFocusedExplorerWindowOrTheFrontOneFromAnotherWindow() {
         let f = Fixture()
         #expect(f.sync.explorerFor(nil) == nil)
@@ -134,7 +129,6 @@ import Testing
         #expect(f.sync.explorerFor(sheet)?.handle === a)
     }
 
-    // T-7bf0123d F-604
     @Test func actsOnNoWindowAndOffersOnlyWhatOpensOneWhileEveryWindowIsMinimized() {
         let f = Fixture()
         let a = f.open(1)
@@ -166,7 +160,6 @@ import Testing
         #expect(f.item("trashSelection").isEnabled)
     }
 
-    // T-e19dcd55 F-604
     @Test func actsOnTheWindowInFrontOnceSettingsClosesAndLeavesNoWindowFocused() {
         let f = Fixture()
         _ = f.open(1)
@@ -182,7 +175,6 @@ import Testing
         #expect(!f.item("undo").isHidden)
     }
 
-    // T-ee9cb945 F-598
     @Test func buildsTheMenuAgainOnlyWhenUndoOrRedoShouldSaySomethingElse() {
         let f = Fixture()
         f.focused = f.open(1).window
@@ -196,7 +188,6 @@ import Testing
         #expect(f.builds == 1)
     }
 
-    // T-679e824e F-605
     @Test func buildsTheMenuAfterTheTaskThatChangedTheHistoryOnceForAllItsChanges() {
         let f = Fixture()
         f.focused = f.open(1).window
@@ -212,8 +203,6 @@ import Testing
         #expect(f.sync.undoLabels().undo == "Undo Rename")
     }
 
-    // T-8a4dbd2c F-602
-    // T-7b2fe094
     @Test func switchesToATextFieldsOwnUndoWithoutBuildingTheMenuAgain() {
         let f = Fixture()
         f.focused = f.open(1).window
@@ -232,7 +221,6 @@ import Testing
         #expect(f.builds == built)
     }
 
-    // T-0e5abac8 F-602
     @Test func usesTheTextFieldsOwnUndoWhileSettingsHasTheKeyboardAndNoExplorerWindowIsOpen() {
         let f = Fixture()
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”"))
@@ -247,7 +235,6 @@ import Testing
         #expect(f.item("newWindow").isEnabled)
     }
 
-    // T-151dc0d2 F-602
     @Test func stopsNamingTheLastOperationInUndoOnceTheLastWindowHasClosed() {
         let f = Fixture()
         let a = f.open(1)
@@ -267,7 +254,6 @@ import Testing
         #expect(!f.item("redo:text").isEnabled)
     }
 
-    // T-32be2fc0
     @Test func letsGoOfAClosedWindowsState() {
         let f = Fixture()
         let a = f.open(1)
@@ -280,7 +266,6 @@ import Testing
         #expect(f.item("moveTabToNewWindow").isEnabled)
     }
 
-    // T-0641022e
     @Test func doesNothingBeforeTheMenuIsBuilt() {
         let f = Fixture(built: false)
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Rename"))
@@ -290,8 +275,7 @@ import Testing
         #expect(f.sync.undoLabels().undo == "Undo Rename")
     }
 
-    // F-603: radio items are only ever switched on, and switching one on switches the others of its menu off
-    // B-VIEW-226 T-a1688568
+    // Radio items are only ever switched on, and switching one on switches the others of its menu off
     @Test func checksWhatTheWindowShowsAndSwitchesTheRadioGroupOver() {
         let f = Fixture()
         f.focused = f.open(1).window
@@ -306,7 +290,7 @@ import Testing
         #expect(f.item("sortBySize").state == .on)
         #expect(f.item("sortByName").state == .off)
         #expect(f.item("toggleFoldersFirst").state == .on)
-        // F-575 F-586: one of each pair shows.
+        // One of each pair shows.
         #expect(!f.item("toggleFavorite:add").isHidden)
         #expect(f.item("toggleFavorite:remove").isHidden)
         #expect(!f.item("toggleFolderTree:hide").isHidden)

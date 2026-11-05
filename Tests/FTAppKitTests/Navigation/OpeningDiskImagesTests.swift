@@ -1,4 +1,4 @@
-// A disk image opened in the app (useExplorerActions.ts openPathExternally, openDiskImage), by what a double-click does
+// A disk image opened in the app, by what a double-click does
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -25,8 +25,7 @@ extension ExplorerWindowlessTests {
             var urls: [URL] = []
         }
 
-        // T-712b64dd: it mounts, and its disk opens in a new window.
-        // B-NAV-231
+        // It mounts, and its disk opens in a new window.
         @Test func opensItsDiskInANewWindow() async throws {
             let (harness, tab, image, handedToMacOS) = try await openWithImage()
             let volume = harness.folder.appending("Beta").path
@@ -44,8 +43,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-111e25b3: "Open disk images in" a tab.
-        // T-aa290e2d
+        // "Open disk images in" a tab.
         @Test func opensItsDiskInANewTabWhenSettingsSaySo() async throws {
             let (harness, tab, image, handedToMacOS) = try await openWithImage()
             let volume = harness.folder.appending("Beta").path
@@ -59,7 +57,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-213e5bdd: the dialog says why.
+        // The dialog says why.
         @Test func saysWhyItCouldNotBeOpened() async throws {
             let (harness, tab, image, handedToMacOS) = try await openWithImage()
             harness.windows.mountDiskImage = { _ in
@@ -73,7 +71,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-072: a link to an image opens it the same.
+        // A link to an image opens it the same.
         @Test func aLinkToAnImageOpensTheImage() async throws {
             let (harness, tab, _, handedToMacOS) = try await openWithImage()
             try FileManager.default.createSymbolicLink(
@@ -114,7 +112,7 @@ extension ExplorerWindowlessTests {
             pressed.mouseUp(with: try #require(MouseEvents.event(.leftMouseUp, at: point, in: window)))
         }
 
-        // App.tsx onOpen, `openPathExternally`: the Info panel's Open mounts it, and its disk opens in a new window.
+        // The Info panel's Open mounts it, and its disk opens in a new window.
         @Test func theInfoPanelsOpenMountsItAndOpensItsDisk() async throws {
             let (harness, tab, image, handedToMacOS) = try await openWithImage()
             let spy = OpenSpy()
@@ -200,7 +198,6 @@ extension ExplorerWindowlessTests {
 @MainActor
 @Suite(.holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct RealDiskImageTests {
-    // T-712b64dd
     @Test func aRealImageMountsAndItsDiskOpensInATab() async throws {
         let harness = try ExplorerHarness.windowless()
         let name = "FT Port Test \(UUID().uuidString.prefix(6))"

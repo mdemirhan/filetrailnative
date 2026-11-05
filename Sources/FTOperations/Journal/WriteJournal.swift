@@ -1,5 +1,3 @@
-// Port of the journal types of packages/core/src/fs/writeServiceTypes.ts (ReplaceJournalEntry, PartialFileJournalEntry,
-// BatchRenameJournalEntry, WriteJournal, isReplaceJournalEntry)
 import Foundation
 
 /// A Replace in progress: the new item is built under `stagingPath`, a hidden name next to `finalPath`, then
@@ -89,7 +87,6 @@ public enum WriteJournalEntry: Equatable, Sendable {
         }
     }
 
-    /// `isReplaceJournalEntry`.
     public var isReplace: Bool {
         if case .replace = self { return true }
         return false
@@ -105,10 +102,10 @@ public protocol WriteJournal: Sendable {
     func remove(_ id: String) throws
 }
 
-// MARK: JSON, as the original writes it
+// MARK: JSON
 
 extension WriteJournalEntry {
-    /// The entry as `JSON.stringify` writes it: its keys in the original's order, optional ones left out.
+    /// The entry as JSON: its keys in a fixed order, optional ones left out.
     var jsonObject: [(String, Any)] {
         switch self {
         case .replace(let entry):
@@ -145,7 +142,7 @@ extension WriteJournalEntry {
         }
     }
 
-    /// `isEntry`: an entry read back from the file, or nil for anything that isn't one.
+    /// An entry read back from the file, or nil for anything that isn't one.
     init?(json value: Any) {
         guard let entry = value as? [String: Any], let id = entry["id"] as? String else { return nil }
         let kind = entry["kind"]

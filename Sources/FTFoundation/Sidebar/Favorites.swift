@@ -1,10 +1,9 @@
-// Port of apps/desktop/src/renderer/lib/favorites.ts
 import Foundation
 
 public enum Favorites {
     // MARK: Locations
 
-    /// `buildSidebarLocations`: Home, Macintosh HD and the Trash always come first and keep their rows; the disks
+    /// Home, Macintosh HD and the Trash always come first and keep their rows; the disks
     /// come and go after them.
     public static func locations(volumes: [SidebarVolume], homePath: String) -> [SidebarLocation] {
         var places: [SidebarLocation] = []
@@ -35,7 +34,7 @@ public enum Favorites {
         case before, after
     }
 
-    /// `reorderFavorites`: the favorites with one of them put just before or after another. The very same list comes
+    /// The favorites with one of them put just before or after another. The very same list comes
     /// back when nothing changes (the moved path is the target, is not a favorite, the target is not found, or the
     /// order stays), so nothing is saved.
     public static func reorder(
@@ -53,7 +52,7 @@ public enum Favorites {
         return rest == favorites ? favorites : rest
     }
 
-    /// `getDefaultFavorites`: Finder's sidebar places, all ordinary favorites the user can remove or reorder. Home,
+    /// Finder's sidebar places, all ordinary favorites the user can remove or reorder. Home,
     /// Macintosh HD and the Trash are under Locations, as in Finder.
     public static func defaults(homePath: String) -> [FavoritePreference] {
         if homePath.isEmpty {
@@ -67,7 +66,7 @@ public enum Favorites {
         ]
     }
 
-    /// `inferFavoriteIcon`: the icon a folder added to the favorites gets, from its path.
+    /// The icon a folder added to the favorites gets, from its path.
     public static func inferIcon(path: String, homePath: String) -> FavoriteIconID {
         if JSString.equals(path, homePath) { return .home }
         if JSString.equals(path, "/Applications") { return .applications }
@@ -87,12 +86,10 @@ public enum Favorites {
         }
     }
 
-    /// `createFavorite`.
     public static func create(path: String, homePath: String) -> FavoritePreference {
         FavoritePreference(path: path, icon: inferIcon(path: path, homePath: homePath))
     }
 
-    /// `isFavoritePath`.
     public static func contains(_ favorites: [FavoritePreference], path: String) -> Bool {
         favorites.contains { JSString.equals($0.path, path) }
     }
@@ -134,7 +131,6 @@ public enum Favorites {
 
     // MARK: Rows
 
-    /// `buildLocationItems`.
     public static func locationItems(_ locations: [SidebarLocation], parent: TreeItemID?, depth: Int)
         -> [TreePresentationItem]
     {
@@ -146,7 +142,7 @@ public enum Favorites {
         }
     }
 
-    /// What `buildTreePresentation` takes.
+    /// What `presentation` takes.
     public struct PresentationInput {
         public var favorites: [FavoritePreference]
         public var favoritesExpanded: Bool
@@ -174,7 +170,7 @@ public enum Favorites {
         }
     }
 
-    /// `buildTreePresentation`: Favorites and Locations as heading rows ahead of the tree (the integrated layout),
+    /// Favorites and Locations as heading rows ahead of the tree (the integrated layout),
     /// then the tree itself from its root.
     public static func presentation(_ input: PresentationInput) -> TreePresentation {
         var result = TreePresentation()

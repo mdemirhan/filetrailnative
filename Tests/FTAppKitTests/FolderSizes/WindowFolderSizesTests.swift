@@ -1,5 +1,3 @@
-// Ports the cases of apps/desktop/src/renderer/hooks/useFolderSizeCache.test.tsx (by feature row F-828 F-831, B-INFO-131 to
-// B-INFO-146) over a stand-in for the folder size jobs and timers moved by hand
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -84,7 +82,7 @@ struct WindowFolderSizesTests {
         }
     }
 
-    // T-000906ee T-8e6d096f B-INFO-131: a size not in the cache reads as idle, and the questions of a redraw go out
+    // A size not in the cache reads as idle, and the questions of a redraw go out
     // as one request.
     @Test func foldersAskedAboutGoOutInOneRequest() async {
         #expect(sizes.entry("/a") == .idle)
@@ -94,7 +92,7 @@ struct WindowFolderSizesTests {
         #expect(jobs.probes == [["/a", "/b"]])
     }
 
-    // T-aa614e35 B-INFO-132: a folder the jobs did not know is not asked about again for 5 s.
+    // A folder the jobs did not know is not asked about again for 5 s.
     @Test func anUnknownFolderIsAskedAboutAgainOnlyAfterTheCooldown() async {
         _ = sizes.entry("/a")
         await settle()
@@ -107,7 +105,7 @@ struct WindowFolderSizesTests {
         #expect(jobs.probes.count == 2)
     }
 
-    // T-fea150dc B-INFO-133: answers store sizes and repaint once.
+    // Answers store sizes and repaint once.
     @Test func answersAreStoredWithOneRepaint() async {
         jobs.known = ["/a": 10, "/b": 20]
         var repaints = 0
@@ -119,9 +117,8 @@ struct WindowFolderSizesTests {
         #expect(repaints == 1)
     }
 
-    // T-4c6145e3 T-222fa570 B-INFO-134 B-INFO-135 B-INFO-136: Calculate goes calculating at once; a size the jobs
+    // Calculate goes calculating at once; a size the jobs
     // hold goes straight to ready; the flags go through.
-    // T-804d4f23 T-f0c677aa
     @Test func aKnownSizeGoesStraightToReady() {
         jobs.nextStart = JobStart(jobId: "job-9", status: .ready)
         jobs.finish("job-9", "/a", size: 42)
@@ -130,7 +127,7 @@ struct WindowFolderSizesTests {
         #expect(jobs.starts.first?.recalculate == true && jobs.starts.first?.automatic == true)
     }
 
-    // B-INFO-134: otherwise it is polled every 200 ms until ready.
+    // Otherwise it is polled every 200 ms until ready.
     @Test func aRunningCalculationIsPolledUntilReady() {
         sizes.calculate("/a")
         #expect(sizes.cachedEntry("/a") == .calculating(jobID: "job-1"))
@@ -141,9 +138,8 @@ struct WindowFolderSizesTests {
         #expect(sizes.readySize("/a") == 7)
     }
 
-    // B-INFO-145: a message that the measurement ended is looked at at once, and one that came early when the
+    // A message that the measurement ended is looked at at once, and one that came early when the
     // wait begins.
-    // T-4340cba9
     @Test func aSettledMeasurementIsLookedAtAtOnce() {
         sizes.calculate("/a")
         jobs.finish("job-1", "/a", size: 3)
@@ -156,7 +152,7 @@ struct WindowFolderSizesTests {
         #expect(sizes.readySize("/b") == 4)
     }
 
-    // T-6b8ebfe3 B-INFO-137: Stop cancels the job and returns the entry to idle.
+    // Stop cancels the job and returns the entry to idle.
     @Test func stopCancelsAndReturnsToIdle() {
         sizes.calculate("/a")
         sizes.cancel("/a")
@@ -164,8 +160,7 @@ struct WindowFolderSizesTests {
         #expect(sizes.cachedEntry("/a") == .idle)
     }
 
-    // B-INFO-138: a job error shows its message.
-    // T-bd964763
+    // A job error shows its message.
     @Test func aJobErrorShowsItsMessage() {
         sizes.calculate("/a")
         jobs.statuses["job-1"] = JobState(status: .error)
@@ -173,8 +168,7 @@ struct WindowFolderSizesTests {
         #expect(sizes.cachedEntry("/a") == .error(message: "Unknown error"))
     }
 
-    // B-INFO-140: a finished walk asks again about the folders inside it.
-    // B-INFO-182 T-514fe05b
+    // A finished walk asks again about the folders inside it.
     @Test func aFinishedWalkAsksAboutTheFoldersInside() async {
         _ = sizes.entry("/a/inner")
         await settle()
@@ -186,7 +180,7 @@ struct WindowFolderSizesTests {
         #expect(sizes.readySize("/a/inner") == 5)
     }
 
-    // T-dd1cef4e B-INFO-141: repaints come at most every 100 ms; the first at once.
+    // Repaints come at most every 100 ms; the first at once.
     @Test func repaintsAreMergedWithinAHundredMilliseconds() {
         var repaints = 0
         sizes.onChange = { repaints += 1 }
@@ -199,8 +193,7 @@ struct WindowFolderSizesTests {
         #expect(repaints == 2)
     }
 
-    // B-INFO-143: isCalculating is true while any entry in this window is.
-    // T-61d57efd
+    // isCalculating is true while any entry in this window is.
     @Test func isCalculatingWhileAnyEntryIs() {
         #expect(!sizes.isCalculating)
         sizes.calculate("/a")
@@ -209,8 +202,7 @@ struct WindowFolderSizesTests {
         #expect(!sizes.isCalculating)
     }
 
-    // B-INFO-144: letting go of the cache stops the polling.
-    // T-6bdc9fd8
+    // Letting go of the cache stops the polling.
     @Test func stoppingEndsThePolling() {
         sizes.calculate("/a")
         sizes.stopAll()
@@ -220,7 +212,6 @@ struct WindowFolderSizesTests {
     }
 
     // A write forgets what it touched: a folder holding the change is asked about again, one inside it is forgotten.
-    // B-INFO-147 T-6dae4083 T-e72bbb5f
     @Test func aWriteMakesTheFoldersHoldingItAskedAboutAgain() async {
         jobs.known = ["/a": 10, "/a/b": 5]
         _ = sizes.entry("/a")

@@ -1,5 +1,4 @@
-// Port of the drop-target rules of apps/desktop/src/renderer/styles.css (1844, 2642-2653, 2795-2813, 8054-8094):
-// how a row, an icon and the pane say what a drop on them would do
+// How a row, an icon and the pane say what a drop on them would do
 import AppKit
 import FTFoundation
 

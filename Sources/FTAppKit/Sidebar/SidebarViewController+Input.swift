@@ -1,5 +1,3 @@
-// Port of TreeItemRow's handlers (apps/desktop/src/renderer/components/TreePane.tsx), the sidebar keys of
-// hooks/useExplorerShortcuts.ts (B-TREE-106..136) and the favorites' reordering
 import AppKit
 import FTFoundation
 
@@ -63,7 +61,7 @@ extension SidebarViewController {
         activate(state, expandFirst: true)
     }
 
-    /// `activateTreeItem`: opens the row's folder; a folder of the tree toggles first when asked to.
+    /// Opens the row's folder; a folder of the tree toggles first when asked to.
     private func activate(_ state: SidebarRowState, expandFirst: Bool) {
         let item = state.item
         guard let path = item.path else { return }
@@ -218,7 +216,7 @@ extension SidebarViewController {
     }
 
     /// Page Up/Down and Ctrl+U/Ctrl+D (or what Settings gives them): a page or half a page of rows. With ⇧ too, when ⇧
-    /// and the key are not a command's keys of their own (`findShiftedPageMove`): the tree has one selection, so it
+    /// and the key are not a command's keys of their own: the tree has one selection, so it
     /// moves as without ⇧.
     private func pageMove(for event: NSEvent) -> Bool? {
         guard let shortcut = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)) else { return nil }
@@ -239,7 +237,7 @@ extension SidebarViewController {
         return movePage(forward: forward, size: size)
     }
 
-    /// `B-TREE-134..136`: the selection moves a page; the sidebar scrolls only if the target would be outside, by the
+    /// The selection moves a page; the sidebar scrolls only if the target would be outside, by the
     /// distance between the old and new row tops.
     func movePage(forward: Bool, size: SidebarKeyboard.PageSize) -> Bool {
         model.clearTypeahead()
@@ -328,7 +326,7 @@ enum TreeKey {
         }
     }
 
-    /// The event as the original's window key handler would see it, for the shortcut table.
+    /// The event as the shortcut table reads it.
     static func shortcutEvent(_ event: NSEvent) -> ShortcutKeyEvent {
         let flags = event.modifierFlags
         var key = event.charactersIgnoringModifiers ?? ""

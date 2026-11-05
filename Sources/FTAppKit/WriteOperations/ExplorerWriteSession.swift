@@ -1,8 +1,4 @@
-// Port of the busy, progress and adoption parts of apps/desktop/src/renderer/hooks/useExplorerActions.ts (handleProgress,
-// adoptWriteOperation, noteForeignWriteOperation, followForeignMoveOnScreen, takeAdoption, askForAdoption,
-// applyWriteOperationCardState, isWriteOperationInFlight, releaseEndedForeignWriteOperation,
-// selectionChangedSinceWriteStarted, queueWriteOperationSelection, resolveCompletedTreeSelectionPath, and the New Folder
-// end of handleProgress) and of the refs of hooks/useWriteOperations.ts: one explorer window's side of the file operations
+// One explorer window's side of the file operations
 import FTFoundation
 import FTOperations
 import Foundation
@@ -16,8 +12,7 @@ struct ForeignWriteOperation: Equatable, Sendable {
     var currentSourcePath: String?
 }
 
-/// What a window hears of the file operations, for its progress card, questions and results (P5-08 connects them to
-/// P5-09's progress card and toasts).
+/// What a window hears of the file operations, for its progress card, questions and results.
 enum WindowWriteEvent: Equatable, Sendable {
     /// Its own operation's card changed: starting, analyzing, queued, running, waiting for an answer (nil: gone).
     case card(WriteOperationCardState?)
@@ -26,15 +21,15 @@ enum WindowWriteEvent: Equatable, Sendable {
     /// Its own operation ended. `inTabOnScreen`: it was started in the tab on screen (not taken over), so what it
     /// leaves selected and the questions about it (no Trash) belong here.
     case ended(WriteOperationEvent, inTabOnScreen: Bool)
-    /// Another window's operation started or ended: this window is locked meanwhile (B-CLIP-182).
+    /// Another window's operation started or ended: this window is locked meanwhile.
     case foreign(ForeignWriteOperation?)
 }
 
-/// What a write's end does to the tab on screen (`refreshDirectory` with its options).
+/// What a write's end does to the tab on screen.
 struct WriteEndRefresh: Equatable, Sendable {
     /// The folder the tab shows from now on: where the one on screen went, or its parent when it was removed.
     var path: String
-    /// What to select once it is read: what the write made in it (B-CLIP-140); nil to keep the selection.
+    /// What to select once it is read: what the write made in it; nil to keep the selection.
     var selecting: [String]?
     /// Where the tree selection goes; nil to leave it.
     var treeSelectionPath: String?
@@ -49,18 +44,18 @@ struct WriteEndRefresh: Equatable, Sendable {
 @MainActor
 protocol WriteSessionHost: AnyObject {
     var isClosed: Bool { get }
-    /// The tab on screen (`activeTabIdRef`).
+    /// The tab on screen.
     var activeTabID: Int? { get }
-    /// Its folder (`currentPathRef`).
+    /// Its folder.
     var currentPath: String { get }
-    /// Its selection, in the order it is shown (`selectedPathsInViewOrderRef`).
+    /// Its selection, in the order it is shown.
     var selectedPaths: [String] { get }
     var isSearching: Bool { get }
-    /// The folder selected in its tree (`getFileSystemItemPath(selectedTreeItemIdRef)`).
+    /// The folder selected in its tree.
     var selectedTreePath: String? { get }
-    /// Reads the folder again after a write, follows it, selects what the write made (`refreshDirectory`).
+    /// Reads the folder again after a write, follows it, selects what the write made.
     func applyWriteEnd(_ refresh: WriteEndRefresh)
-    /// A folder another window renamed or moved takes the tab on screen along (`followForeignMoveOnScreen`).
+    /// A folder another window renamed or moved takes the tab on screen along.
     func followMovesOnScreen(_ moves: [PathMove])
     /// Whether this window may start a write changed: the menu dims its write commands meanwhile.
     func writeLockChanged()
@@ -75,36 +70,35 @@ final class ExplorerWriteSession: WriteOperationWindow {
     /// The explorer window it is (`ExplorerTabGroup.windowID`), for the window an operation goes to when it closes.
     var explorerWindowID = 0
     let clipboard: SharedClipboard?
-    /// Tells the window of each event (for tests, and P5-08's card and toasts).
+    /// Tells the window of each event (for tests, and the card and toasts).
     private var observers: [(token: Weak<ExplorerWindowObservation>, handler: (WindowWriteEvent) -> Void)] = []
 
-    /// `activeWriteOperationIdRef`: the operation this window started, or took over.
+    /// The operation this window started, or took over.
     private(set) var activeOperationId: String?
-    /// `foreignWriteOperationRef`.
     private(set) var foreign: ForeignWriteOperation?
-    /// `writeOperationCardState`: set from the moment a write starts here until its end.
+    /// Set from the moment a write starts here until its end.
     private(set) var card: WriteOperationCardState?
-    /// `writeOperationProgressEvent`: the latest progress of this window's operation.
+    /// The latest progress of this window's operation.
     private(set) var progressEvent: WriteOperationEvent?
     let early = EarlyWriteOperationEvents()
     // The operations this window took over from one that closed.
     private var adoptedOperationIds: Set<String> = []
     // The operation taken over last: what it leaves selected belonged to the window that closed.
     private var adoptedOperationId: String?
-    // The tab the running operation was started from (`writeOperationTabIdRef`).
+    // The tab the running operation was started from.
     private var startedTabID: Int?
     // What was selected, and in which folder, when the running operation started.
     private var selectionAtStart: (directoryPath: String, paths: [String])?
-    // The cut a move clears once it moved something (`clipboardClearAfterMoveRef`).
+    // The cut a move clears once it moved something.
     private var clipboardClearAfterMove: (operationId: String, capturedAt: String)?
-    // `moveOperationSourceSurfaceRef`, for the one surface read at the end: the analysis of a move dragged out of
+    // For the one surface read at the end: the analysis of a move dragged out of
     // search results, and the operation it became. A review may stand between the two.
     private var moveFromSearchResults: (analysisId: String, operationId: String?)?
-    /// The folder the tree selects once the write is done (Move To, Duplicate from the tree; P5-08 sets it).
+    /// The folder the tree selects once the write is done (Move To, Duplicate from the tree).
     var pendingTreeSelectionPath: String?
-    /// What the Undo or Redo running does, in the words of its menu item (`runningUndoLabelRef`).
+    /// What the Undo or Redo running does, in the words of its menu item.
     var runningUndoLabel: String?
-    /// `pendingInlineRenamePathRef`: a folder made in the folder on screen, to be renamed in its row once it is listed
+    /// A folder made in the folder on screen, to be renamed in its row once it is listed
     /// (and selected). Leaving the folder forgets it.
     var pendingInlineRenamePath: String?
 
@@ -143,7 +137,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
         }
     }
 
-    /// Another window's operation, as every window hears it (the original's broadcast reaches the same listener).
+    /// Another window's operation, as every window hears it.
     func otherWindowProgress(_ event: WriteOperationEvent) {
         handleProgress(event)
     }
@@ -176,7 +170,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
 
     // MARK: Starting
 
-    /// `applyWriteOperationCardState`: the card of this window's operation; the first one taken records the tab and
+    /// The card of this window's operation; the first one taken records the tab and
     /// the selection it started from.
     func applyCard(_ next: WriteOperationCardState?) {
         if next != nil, card == nil {
@@ -227,7 +221,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
 
     // MARK: Another window's operation
 
-    /// `noteForeignWriteOperation`: another window's operation, or none.
+    /// Another window's operation, or none.
     private func noteForeign(_ running: ForeignWriteOperation?) {
         let previous = foreign
         foreign = running
@@ -237,8 +231,8 @@ final class ExplorerWriteSession: WriteOperationWindow {
         }
     }
 
-    /// `releaseEndedForeignWriteOperation`: lets go of another window's operation the coordinator says has ended;
-    /// true when it did. This window may have missed its end (B-CLIP-108).
+    /// Lets go of another window's operation the coordinator says has ended;
+    /// true when it did. This window may have missed its end.
     @discardableResult
     func releaseEndedForeign() -> Bool {
         guard let held = foreign else { return false }
@@ -348,7 +342,6 @@ final class ExplorerWriteSession: WriteOperationWindow {
         host.applyWriteEnd(refresh)
     }
 
-    /// `resolveCompletedTreeSelectionPath`.
     private func completedTreeSelectionPath(_ event: WriteOperationEvent, _ result: WriteOperationResult) -> String? {
         if let explicit = pendingTreeSelectionPath, event.status == .completed || event.status == .partial {
             if result.items.contains(where: { $0.status == .completed && $0.destinationPath == explicit }) {

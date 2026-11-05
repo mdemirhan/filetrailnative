@@ -1,6 +1,4 @@
-// Port by feature of components/ClipboardButton.test.tsx, components/ClipboardMarks.test.tsx, the paste-flow cases of
-// App.pasteFlow.test.tsx and App.fileOperations.test.tsx, and "the clipboard" of App.windows.test.tsx: the clipboard of
-// an explorer window that is never shown, with the app's real file operations on a temporary folder
+// The clipboard of an explorer window that is never shown, with the app's real file operations on a temporary folder
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -81,9 +79,8 @@ extension ExplorerWindowlessTests {
             window.folder.appendingPathComponent(name).path
         }
 
-        // T-5ce8b24a T-d3e678fd F-643 F-800 B-CLIP-001 B-CLIP-005 B-CLIP-019: Copy fills the app's clipboard; the
+        // Copy fills the app's clipboard; the
         // button counts it, its title names the item, its name says how many; the list opens only when clicked.
-        // B-CLIP-006 T-ac3dbdb3 T-ad0a5cc6
         @Test func copyFillsTheClipboardAndTheButtonSaysSo() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -102,9 +99,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-b6500c53 T-32b9cf2d T-409a0b20 T-3553aecb F-791 B-CLIP-013 B-CLIP-014 B-CLIP-015: the copy glyph after
+        // The copy glyph after
         // a copied item's name, the scissors and a dimmed name for a cut one, and none with the setting off.
-        // B-VIEW-076 T-de752420
         @Test func marksCopiedAndCutRowsAndNoneWithTheSettingOff() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -125,10 +121,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-4914f3c3 T-59f31d60 T-42e70625 T-acd2e0bd F-801 F-802 B-CLIP-020 B-CLIP-021 B-CLIP-029 B-CLIP-030
-        // B-CLIP-031 B-CLIP-038: Show Clipboard opens the list; ↓ and ⌫ take one item off and the list stays; Clear
+        // Show Clipboard opens the list; ↓ and ⌫ take one item off and the list stays; Clear
         // Clipboard empties it and the list goes with the button.
-        // B-CLIP-039 T-0c69a005 T-4851fd44
         @Test func theListIsWorkedWithItsKeysAndClearEmptiesIt() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -170,7 +164,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-9ce97f0a F-801 B-CLIP-028: an item of the list is shown in its folder, selected.
+        // An item of the list is shown in its folder, selected.
         @Test func anItemOfTheListIsShownInItsFolder() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -182,10 +176,9 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-2540d465 T-ea5c50e9 F-684 B-CLIP-051 B-CLIP-054 B-CLIP-075: Paste goes into the folder on screen at once
+        // Paste goes into the folder on screen at once
         // with the safe policy when nothing clashes; the copy stays on the clipboard for more pastes, and a toast says
         // where it went.
-        // B-CLIP-077 T-85ab3d1a T-a9b252b4 T-ac3dbdb3
         @Test func pasteCopiesIntoTheFolderOnScreen() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -206,9 +199,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-b945ba5e T-2cdfbe92 B-CLIP-062 B-CLIP-073 B-CLIP-078: a cut is moved by Paste and cleared once it moved
+        // A cut is moved by Paste and cleared once it moved
         // something; pasting a cut into the folder it is in quietly does nothing.
-        // B-CLIP-064 B-CLIP-077 T-6789eb23 T-9bc2c171 T-de752420
         @Test func pasteMovesACutAndClearsIt() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -237,9 +229,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-fc49f1f2 T-f3d3ef14 B-CLIP-074: items gone since they were copied are taken off the clipboard, the rest
+        // Items gone since they were copied are taken off the clipboard, the rest
         // are pasted, and a notice names what was left out.
-        // T-7567e39d T-e04b3e03
         @Test func pasteLeavesOutItemsGoneSinceTheyWereCopied() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -263,8 +254,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-ba10f104 T-aca62778 B-CLIP-063 B-CLIP-107: while a write runs, Paste says so and starts nothing.
-        // T-5389fe11
+        // While a write runs, Paste says so and starts nothing.
         @Test func pasteIsRefusedWhileAWriteRuns() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -283,8 +273,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-cc6ebb98 T-d4b3c2fe B-CLIP-057 B-CLIP-058: nothing is pasted into search results.
-        // B-CLIP-053 T-adb6c85c
+        // Nothing is pasted into search results.
         @Test func noPasteDestinationInSearchResults() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -298,9 +287,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-317cfcc8 T-450db1e9 T-688aee9c B-VIEW-184: what is copied in one window is told to the others, and a new
+        // What is copied in one window is told to the others, and a new
         // window opens with it.
-        // B-CLIP-011
         @Test func anotherWindowSeesTheClipboard() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -318,9 +306,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-317cfcc8 F-638 F-643 B-VIEW-171 B-VIEW-184: what is copied in one window is pasted in another (scenario 38),
+        // What is copied in one window is pasted in another (scenario 38),
         // the file listed and selected there.
-        // B-CLIP-011 B-SEL-032 T-2a23a39f
         @Test func anotherWindowPastesWhatWasCopied() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -340,9 +327,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-001 B-CLIP-055 B-CLIP-056: Copy from an item's menu takes its items; "Paste into" a folder's
+        // Copy from an item's menu takes its items; "Paste into" a folder's
         // menu pastes there.
-        // T-0516f92a T-1c693346 T-32391861 T-84eec894
         @Test func theRightClickMenusCopyAndPasteIntoAFolder() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -364,8 +350,7 @@ extension ExplorerWindowlessTests {
         }
 
         // A click inside can give the popover the keyboard: a key with ⌘, ⌃ or ⌥ closes the list and still acts, in the
-        // window the list hangs from, and the list's own keys stop there (ClipboardButton.tsx:147-151).
-        // B-CLIP-032
+        // window the list hangs from, and the list's own keys stop there.
         @Test func aKeyThePopoverHasGoesOnToTheWindowOnlyWithAModifier() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -389,8 +374,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-cd735b31 F-801 B-CLIP-037: a press outside the list closes it, and goes on to where it was pressed.
-        // N/A T-35d9394c AppKit's own window frame takes no clicks from an open menu: nothing marks the page.
+        // A press outside the list closes it, and goes on to where it was pressed.
         @Test func aPressOutsideTheListClosesIt() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab

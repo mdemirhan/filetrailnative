@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/fileDrag.test.ts and of the nativeStartFileDrag and nativeReadDragPasteboard
-// cases of packages/native-fs/src/native-fs.test.ts
 import AppKit
 import FTFoundation
 import FTTestSupport
@@ -25,7 +23,7 @@ struct FileDragTests {
 
     // MARK: Starting
 
-    // T-e58d38a7 (the page's zoom is N/A: points are measured where they are drawn)
+    // (the page's zoom is N/A: points are measured where they are drawn)
     @Test func answersWithWhatTheDropDidAndWhereItEnded() {
         var ended: [(FileDragEnd, FileDragEndedOver)] = []
         let source = FileDragSource(windowNumber: 7) { ended.append(($0, $1)) }
@@ -43,7 +41,7 @@ struct FileDragTests {
         #expect(FileDrag.end(of: [.delete, .move]) == .delete)
     }
 
-    // F-689: Copy and Move within the app, everything a drop elsewhere may do outside it; the keys narrow the drag
+    // Copy and Move within the app, everything a drop elsewhere may do outside it; the keys narrow the drag
     // only away from the app's windows.
     @Test func allowsCopyAndMoveInsideTheAppAndMoreOutside() {
         #expect(FileDrag.sourceOperationMask(.withinApplication) == [.copy, .move])
@@ -57,7 +55,6 @@ struct FileDragTests {
         #expect(!source.isAppWindow(source.windowNumberAt(source.mouseLocation())))
     }
 
-    // T-12657965 T-a3e51508
     @Test func doesntStartAndNeverCallsBackWithoutAWindowOrWithTheButtonUp() async {
         var called = false
         let view = NSView(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
@@ -122,8 +119,6 @@ struct FileDragTests {
         #expect(two.frames[1] == NSRect(x: step, y: 0, width: 120, height: 20))
     }
 
-    // T-7b0702ec
-    // N/A T-b7c6cc04 Swift's types hold the arguments to their kinds: a view, paths, flags, images and a callback.
     @Test func refusesAnImageForAPlaceNoPathCanHave() {
         let view = NSView()
         for index in [-1, Int(UInt32.max), Int.max] {
@@ -137,7 +132,6 @@ struct FileDragTests {
         #expect(FileDrag.imagesAreValid([image(index: 0), image(index: 5)]))
     }
 
-    // F-688
     @Test func drawsTheNameAsACapsuleNoWiderThan240Points() {
         let short = FileDrag.labelImage("a.txt", fontSize: 13)
         let long = FileDrag.labelImage(String(repeating: "long name ", count: 40), fontSize: 13)
@@ -151,14 +145,12 @@ struct FileDragTests {
             FileDrag.fit(.zero, in: NSRect(x: 1, y: 2, width: 3, height: 4)) == NSRect(x: 1, y: 2, width: 3, height: 4))
     }
 
-    // N/A T-f72c34af a thumbnail is handed over as the image Quick Look made, never as a data URL.
     @Test func takesThumbnailsAsImages() {
         #expect(FileDrag.labelFontSize == 12)
     }
 
     // MARK: Afterwards
 
-    // T-feb9d2aa
     @Test func findsTheItemsNoLongerThereAndHasWhatTheyLeftReadAgain() {
         let answer = FileDrag.findDraggedAway(
             ["/Users/demo/moved.txt", "/Users/demo/stayed.txt", "/Volumes/Asleep/a.txt"],
@@ -170,8 +162,6 @@ struct FileDragTests {
         #expect(answer.cleared == ["/Users/demo/moved.txt"])
     }
 
-    // T-404ee5d8
-    // T-a560f3a4
     @Test func hasTheTrashMeasuredAgainWhenTheDocksTrashTookThem() {
         let answer = FileDrag.findDraggedAway(
             ["/Users/demo/old.zip"], intoTrash: true, homePath: "/Users/demo", lstatError: { _ in ENOENT })
@@ -179,8 +169,6 @@ struct FileDragTests {
         #expect(answer.gone == ["/Users/demo/old.zip"])
     }
 
-    // T-616177b9
-    // T-626e8068
     @Test func leavesTheCachesAloneWhenEverythingIsStillThere() throws {
         let folder = try TemporaryDirectory(prefix: "filetrail-dragged-away")
         let file = folder.appending("a.txt")
@@ -191,7 +179,6 @@ struct FileDragTests {
         #expect(FileDrag.findDraggedAway([file.path]).gone == [file.path])
     }
 
-    // T-26a08ce9
     @Test func givesEachDraggedItemsKindAsItIsOnDiskAndLeavesOutWhatIsntThere() {
         typealias Stat = DragPasteboard.Stat
         let onDisk: [String: Stat] = [
@@ -223,14 +210,12 @@ struct FileDragTests {
             ])
     }
 
-    // T-c555af62
     @Test func hasNothingForADragWithoutFiles() {
         let answer = DragPasteboard.draggedIn(DragPasteboardContents(changeCount: 3, paths: []))
         #expect(answer.changeCount == 3)
         #expect(answer.items.isEmpty)
     }
 
-    // T-bb9cb527
     @Test func refusesMoreItemsThanOneCopyTakesRatherThanDroppingSome() {
         let paths = (0...FileDragImages.maxPaths).map { "/f/\($0)" }
         let looked = Counter()
@@ -244,7 +229,6 @@ struct FileDragTests {
         #expect(looked.count == 0)
     }
 
-    // T-d4fd334c
     @Test func readsTheFilesAnotherAppsDragCarriesFileReferencesAsPaths() throws {
         let folder = try TemporaryDirectory(prefix: "filetrail-drag-pasteboard")
         let file = folder.appending("a b.txt")
@@ -266,8 +250,6 @@ struct FileDragTests {
         #expect(contents.changeCount == pasteboard.changeCount)
     }
 
-    // T-47384a01
-    // T-0e1460d5
     @Test func findsNoFilesInADragOfText() {
         let pasteboard = NSPasteboard(name: NSPasteboard.Name("filetrail-test-\(UUID().uuidString)"))
         defer { pasteboard.releaseGlobally() }
@@ -277,7 +259,6 @@ struct FileDragTests {
             DragPasteboard.read(pasteboard) == DragPasteboardContents(changeCount: pasteboard.changeCount, paths: []))
     }
 
-    // T-4fa0cf14 T-0472eefd
     @Test func tellsWhichDragIsGoingOnByItsChangeCountAlone() {
         let pasteboard = NSPasteboard(name: NSPasteboard.Name("filetrail-test-\(UUID().uuidString)"))
         defer { pasteboard.releaseGlobally() }
@@ -303,7 +284,6 @@ struct FileDragTests {
         var isFocused: Bool { focusedAfter }
     }
 
-    // T-d7f434f3
     @Test func bringsTheAppAndTheWindowForward() async {
         let window = FakeWindow(focusedAfter: true)
         var focused = 0
@@ -314,7 +294,6 @@ struct FileDragTests {
         #expect(focused == 1 && window.shown == 1 && bounced == 0)
     }
 
-    // T-efac16df
     @Test func bouncesTheDockIconWhenMacOSKeepsAnotherAppInFront() async {
         var bounced = 0
         let answer = await FileDrag.bringToFront(
@@ -323,7 +302,6 @@ struct FileDragTests {
         #expect(bounced == 1)
     }
 
-    // T-c6b44a0b
     @Test func doesNothingWithoutAWindowOrOnceItHasClosed() async {
         #expect(!(await FileDrag.bringToFront(nil, waitMs: 0)))
         let closed = FakeWindow(focusedAfter: false)

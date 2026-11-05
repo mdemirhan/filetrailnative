@@ -1,6 +1,6 @@
-// Port of packages/core/src/fs/copyPasteEdgeCases.test.ts: races and failures in the middle of a paste that the plain
-// paths don't reach (items appearing or changing while they are written, stops part way, and a Replace whose last
-// step fails), on the mock disk, where each can be made to happen at an exact step
+// Races and failures in the middle of a paste that the plain paths don't reach (items appearing or changing while they
+// are written, stops part way, and a Replace whose last step fails), on the mock disk, where each can be made to happen
+// at an exact step
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -80,7 +80,6 @@ func itemFor(_ result: CopyPasteOperationResult, _ sourcePath: String) -> CopyPa
 struct EdgeCasesTests {
     // MARK: Items that keep changing while they are pasted
 
-    // T-0798260c F-485
     @Test func leavesAnItemThatChangesAfterEveryAnswerInsteadOfAskingForever() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
 
@@ -99,7 +98,6 @@ struct EdgeCasesTests {
         #expect(!fileSystem.exists("/target/a.txt"))
     }
 
-    // T-db8b709d F-485
     @Test func givesUpOnANameThatIsTakenEveryTimeItIsWritten() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
         fileSystem.copyFileImpl = { _, _, _, _ in throw codedError("EEXIST") }
@@ -110,7 +108,6 @@ struct EdgeCasesTests {
         #expect(itemFor(result, "/source/a.txt")?.error == "An item with this name already exists.")
     }
 
-    // T-b7419d24 F-486 F-267
     @Test func asksAboutAFolderThatTookItsNameWhileItWasBeingCopied() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/Docs/a.txt", .file(size: 1)), ("/target", .directory())])
         fileSystem.copyFileImpl = { source, destination, stop, _ in
@@ -128,7 +125,6 @@ struct EdgeCasesTests {
         #expect(!fileSystem.exists("/target/Docs/a.txt"))
     }
 
-    // T-f0ab943e F-486
     @Test func asksAboutAnItemThatAppearedWhereASymlinkWasBeingMade() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/link", .symlink("/elsewhere")), ("/target", .directory()),
@@ -148,7 +144,6 @@ struct EdgeCasesTests {
         #expect(fileSystem.readNode("/target/link")?.kind == .file)
     }
 
-    // T-74803d40 F-486
     @Test func asksBeforeMergingIntoAFolderThatBecameAFile() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/target/Docs/old.txt", .file(size: 1)),
@@ -171,7 +166,6 @@ struct EdgeCasesTests {
 
     // MARK: Stopping part way
 
-    // T-e400fd00 F-487 F-265
     @Test func stoppedInsideAFolderBeingCopiedLeavesNothingOfIt() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/source/Docs/b.txt", .file(size: 1)),
@@ -193,7 +187,6 @@ struct EdgeCasesTests {
         #expect(try fileSystem.readdir("/target") == [])
     }
 
-    // T-b77c0ada F-487 F-362
     @Test func stoppedWhileBuildingAReplacementLeavesTheExistingItemAsItWas() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/source/Docs/b.txt", .file(size: 1)),
@@ -231,7 +224,6 @@ struct EdgeCasesTests {
         return fileSystem
     }
 
-    // T-47161f4f F-488 F-339
     @Test func asksAgainWhenSomethingTookTheNameInTheMomentTheOldItemWasGone() async throws {
         let fileSystem = replaceSetup()
         let sneaked = Locked(false)
@@ -253,7 +245,6 @@ struct EdgeCasesTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
-    // T-c307a1a7 F-488 F-344
     @Test func leavesTheNewItemToTheNextStartWhenNoNameCanBeGivenToIt() async throws {
         let fileSystem = replaceSetup()
         fileSystem.renameImpl = { from, to in
@@ -275,7 +266,6 @@ struct EdgeCasesTests {
         #expect(journal.live.map(\.staged) == [true])
     }
 
-    // T-1478492d F-488
     @Test func refusesToReplaceWithAnItemLockedInAWayItsOwnerCantUndo() async throws {
         let fileSystem = replaceSetup()
         fileSystem.getFlagsImpl = { path in path.contains(".filetrail-") ? 0x20000 : 0 }
@@ -288,7 +278,6 @@ struct EdgeCasesTests {
         #expect(fileSystem.trashed == [])
     }
 
-    // T-6b0956b8 F-488 F-343
     @Test func asksBeforeDeletingTheOldItemForGoodOnADiskWithoutATrash() async throws {
         let fileSystem = replaceSetup()
         fileSystem.trashImpl = { _ in throw NativeError(message: "no Trash", code: CopyPasteErrors.noTrashErrorCode) }
@@ -306,7 +295,6 @@ struct EdgeCasesTests {
 
     // MARK: A replacing move to another disk
 
-    // T-de9dc645 F-489 F-482
     @Test func reportsAnOriginalItCouldntRemoveOnceItsCopyWasInPlace() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/source/Docs/Inner/b.txt", .file(size: 1)),
@@ -332,7 +320,6 @@ struct EdgeCasesTests {
         #expect(!fileSystem.exists("/source/Docs/a.txt"))
     }
 
-    // T-8e72bbd7 F-489
     @Test func namesHowManyItemsWereAddedToAFolderWhileItWasBeingMoved() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/target", .directory(dev: 2)),
@@ -355,7 +342,6 @@ struct EdgeCasesTests {
 
     // A hard link to the item being pasted took the place of the item to replace: sending it to the Trash would
     // send the item being pasted with it.
-    // T-643d9877 F-489 F-338
     @Test func refusesToReplaceAnItemWithItselfEvenWhenThatBecameSoAfterTheReview() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 2, ino: 500)), ("/target/a.txt", .file(size: 1)),
@@ -379,7 +365,6 @@ struct EdgeCasesTests {
 
     // MARK: Putting right a Replace cut short
 
-    // T-e3e85732 F-489
     @Test func locksTheHiddenItemAgainWhenItCantBeMovedIntoPlace() {
         let fileSystem = MockWriteServiceFileSystem([("/target/.a.txt.filetrail-00000001", .file(size: 2))])
         let calls = Locked<[[String]]>([])
@@ -403,7 +388,6 @@ struct EdgeCasesTests {
 
     // MARK: Pasting into the top of the disk
 
-    // T-92f3f799
     @Test func mergesAFolderIntoOneAtTheTopOfTheDisk() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/Docs/old.txt", .file(size: 1)),
@@ -418,7 +402,6 @@ struct EdgeCasesTests {
 
     // MARK: Helpers
 
-    // T-6af58154
     @Test func seesASymlinkToAFileOrABrokenOneAsTheLinkItself() {
         let fileSystem = MockWriteServiceFileSystem([
             ("/a.txt", .file()), ("/link-to-file", .symlink("/a.txt")), ("/broken", .symlink("/missing")),
@@ -428,7 +411,6 @@ struct EdgeCasesTests {
         #expect(captureFolderFingerprint(fileSystem, "/broken").kind == .symlink)
     }
 
-    // T-af438668
     @Test func treatsAnItemWhoseFlagsCantBeReadAsUnlocked() {
         #expect(!isLocked({ throw codedError("ENOENT", "ENOENT: \($0)") }, "/missing"))
         #expect(!isLocked(nil, "/a.txt"))

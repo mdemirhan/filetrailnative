@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/eject.ts
 import Foundation
 
 /// What Eject does with a disk: eject it at once, or first ask whether to eject the other volumes on the same

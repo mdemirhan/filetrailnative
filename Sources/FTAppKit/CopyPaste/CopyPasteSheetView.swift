@@ -1,11 +1,9 @@
-// Port of the sheet both CopyPasteReviewDialog.tsx and CopyPasteResultDialog.tsx draw (.copy-paste-sheet, its header,
-// list and footer in apps/desktop/src/renderer/styles.css 7171-7420) and of the focus trap of useDialogFocus.ts
 import AppKit
 import FTFoundation
 
-/// The review and result sheets' panel: dropped in below the toolbar (`.modal-scrim.is-sheet`), 680 wide, every
-/// corner rounded; the title and message, an optional bar, the list that scrolls, the footer with its note and
-/// buttons. What goes in the bar and the list is the sheet's own.
+/// The review and result sheets' panel: dropped in below the toolbar, 680 wide, every corner rounded; the title and
+/// message, an optional bar, the list that scrolls, the footer with its note and buttons. What goes in the bar and the
+/// list is the sheet's own.
 @MainActor
 class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
     let titleLabel: ThemedText
@@ -30,13 +28,13 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
             needsLayout = true
         }
     }
-    /// The list's padding (`.copy-paste-sheet-list`, or the result list's).
+    /// The list's padding, or the result list's.
     var listInsets: (top: CGFloat, bottom: CGFloat) = (
         CGFloat(CopyPasteSheetLayout.listVertical), CGFloat(CopyPasteSheetLayout.listVertical)
     )
     private(set) var theme = AppearanceModel.shared.theme
     /// Whether Tab has been used: until then the button the sheet opens on shows no focus ring (it is already marked
-    /// by its fill), as the original's sheets open.
+    /// by its fill).
     private(set) var keyboardMoved = false
 
     init(identifier: String) {
@@ -104,8 +102,8 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
         needsDisplay = true
     }
 
-    /// The sheet's content changed (rows shown or hidden, a longer note): the sheet is sized again, as the original's
-    /// grows with its list.
+    /// The sheet's content changed (rows shown or hidden, a longer note): the sheet is sized again, growing with its
+    /// list.
     func contentChanged() {
         needsLayout = true
         superview?.needsLayout = true
@@ -144,7 +142,7 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
         return false
     }
 
-    /// Tab and ⇧Tab go round the sheet's controls, wrapping at either end (`useDialogFocus`).
+    /// Tab and ⇧Tab go round the sheet's controls, wrapping at either end.
     func cycleFocus(backward: Bool) {
         guard let window else { return }
         let order = focusOrder()
@@ -247,14 +245,14 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
     private var footerLine: CGFloat = 0
 
     override func draw(_ dirtyRect: NSRect) {
-        // The footer's line (`border-top: 1px solid var(--border-light)`).
+        // The footer's line: 1 px in the light border color.
         NSColor(theme.palette.borderLight).setFill()
         NSRect(x: 0, y: footerLine, width: bounds.width, height: CGFloat(CopyPasteSheetLayout.border))
             .fill(using: .sourceOver)
     }
 }
 
-/// The list's content: rows one under another, a line between them (`.copy-paste-sheet-row + .copy-paste-sheet-row`).
+/// The list's content: rows one under another, a line between them.
 @MainActor
 final class SheetListContent: NSView, ThemeApplying {
     /// Where a line goes between two rows, and the full-width lines between sections.
@@ -285,7 +283,7 @@ final class SheetListContent: NSView, ThemeApplying {
     }
 }
 
-/// The footer's note (`.copy-paste-sheet-footer-note`): the summary, or the warning with its triangle.
+/// The footer's note: the summary, or the warning with its triangle.
 @MainActor
 final class FooterNoteView: NSView {
     let glyph = SheetGlyphView(.warning)

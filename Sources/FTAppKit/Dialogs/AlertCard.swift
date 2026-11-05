@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/components/Alert.tsx (with useDialogFocus.ts) and the .alert, .alert-* and
-// .copy-paste-detail-list rules of apps/desktop/src/renderer/styles.css (1459-1558, 1779-1792)
 import AppKit
 import FTFoundation
 
@@ -41,8 +39,8 @@ struct AlertContent {
 }
 
 /// A macOS alert: a bold title and a short message on a compact panel over the window, the buttons across the bottom,
-/// no icon. A plain one lies on glass from macOS 26; otherwise the panel is opaque with the text centred, as the original
-/// draws it. A click outside does nothing; it is answered with a button, Return or Escape.
+/// no icon. A plain one lies on glass from macOS 26; otherwise the panel is opaque with the text centred. A click
+/// outside does nothing; it is answered with a button, Return or Escape.
 @MainActor
 final class AlertCard: NSView, DialogPanel, ThemeApplying {
     let content: AlertContent
@@ -101,7 +99,7 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
             button.target = self
             button.action = #selector(pressed(_:))
             button.tag = index
-            // The default opens focused, without a ring until Tab is used (styles.css:1462).
+            // The default opens focused, without a ring until Tab is used.
             button.suppressesFocusRing = button.isDefault
             addSubview(button)
         }
@@ -166,7 +164,7 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
         }
         let plain = event.modifierFlags.intersection([.command, .control, .option]).isEmpty
         guard KeyCode.isReturn(event), plain else {
-            // The keys typed while an alert without a field is up go nowhere (B-NAV-217); Space presses the focused
+            // The keys typed while an alert without a field is up go nowhere; Space presses the focused
             // button.
             guard plain, !(content.accessory is TextPromptAccessory) else { return false }
             if event.charactersIgnoringModifiers == " ", let button = window?.firstResponder as? SystemButton,
@@ -285,8 +283,8 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
                 y += buttonHeight + spacing
             }
         } else if !buttons.isEmpty || asideButton != nil {
-            // The width split evenly (`grid-auto-columns: minmax(0, 1fr)`). The aside button takes the first cell but
-            // not its width (`margin-right: auto`): it sits at the cell's left, as wide as its title.
+            // The width split evenly. The aside button takes the first cell but not its width: it sits at the cell's
+            // left, as wide as its title.
             let cells = buttons.count + (asideButton == nil ? 0 : 1)
             let count = CGFloat(cells)
             let width = (inner - spacing * (count - 1)) / count
@@ -309,7 +307,7 @@ final class AlertCard: NSView, DialogPanel, ThemeApplying {
     }
 }
 
-/// The lines an alert lists under its message (`.copy-paste-detail-list`): a tinted box, the names one under another.
+/// The lines an alert lists under its message: a tinted box, the names one under another.
 @MainActor
 final class DetailListView: NSView, AlertAccessory, ThemeApplying {
     let rows: [ThemedText]

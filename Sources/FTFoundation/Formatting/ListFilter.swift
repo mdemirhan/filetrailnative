@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/listFilter.ts
 import Foundation
 
 public protocol ListFilterEntry {

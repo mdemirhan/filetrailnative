@@ -1,5 +1,3 @@
-// Port of the tabs of apps/desktop/src/renderer/components/SettingsView.tsx (General, Browsing, Search, Files,
-// Shortcuts) and their handlers in apps/desktop/src/renderer/SettingsWindowApp.tsx
 import AppKit
 import FTFoundation
 
@@ -72,7 +70,7 @@ final class SettingsPageView: NSView {
             let height = block.arrange(width: width)
             block.frame = NSRect(x: 0, y: y, width: width, height: height)
             y += height
-            // `.settings-section` margin-bottom 20; the Shortcuts list ends with its footer.
+            // Sections are 20 apart; the Shortcuts list ends with its footer.
             if !(block is ShortcutSettingsView) || index < blocks.count - 1 { y += SettingsMetrics.sectionGap }
         }
         return y
@@ -195,13 +193,13 @@ final class SettingsPageView: NSView {
         favorites.card.add(favoritesList(), fullWidth: true)
     }
 
-    /// `ColumnList`: Name first and fixed, the other columns checked and in their order.
+    /// Name first and fixed, the other columns checked and in their order.
     private func columnList<Key: Hashable & RawRepresentable>(
         label: String, name: String, labels: @escaping (Key) -> String, defaultOrder: [Key],
         order: WritableKeyPath<AppPreferences, [Key]>, visible: @escaping (AppPreferences, Key) -> Bool,
         toggle: @escaping (inout AppPreferences, Key) -> Void
     ) -> SettingsListView where Key.RawValue == String {
-        // `<input checked disabled>`: `.settings-checkbox input:disabled` dims it; the name beside it stays as it is.
+        // A checked box that can't be changed: the box dims; the name beside it stays as it is.
         let fixedCheckbox = SettingsCheckbox(label: name, isChecked: true, theme: theme)
         fixedCheckbox.isEnabled = false
         let list = SettingsListView(
@@ -479,7 +477,7 @@ final class SettingsPageView: NSView {
         openWith.card.add(openWithList(), fullWidth: true)
     }
 
-    /// `ApplicationPopup`: the app in use, the default, Choose…; choosing the default clears the custom app.
+    /// The app in use, the default, Choose…; choosing the default clears the custom app.
     private func appPopup(
         _ label: String, default defaultApp: ApplicationSelection,
         current: @escaping (AppPreferences) -> ApplicationSelection, failure: String,

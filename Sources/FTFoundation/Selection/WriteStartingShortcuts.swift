@@ -1,11 +1,9 @@
-// Port of WRITE_STARTING_SHORTCUTS (apps/desktop/src/renderer/hooks/useExplorerShortcuts.ts:215-224)
-
-/// The shortcuts that start a file operation (or its sheet), which a held key must not repeat (B-SEL-114).
+/// The shortcuts that start a file operation (or its sheet), which a held key must not repeat.
 public enum WriteStartingShortcuts {
     private static let names: Set<String> = [
         "pasteSelection", "duplicateSelection", "trashSelection", "renameSelection", "moveSelection", "newFolder",
         "emptyTrash", "ejectVolume",
-        // ⌘V is the Edit menu's Paste here; the original's window hears it first, as `pasteSelection`.
+        // ⌘V is the Edit menu's Paste.
         "editPaste",
     ]
 

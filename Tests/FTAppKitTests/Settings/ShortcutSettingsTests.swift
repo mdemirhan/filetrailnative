@@ -1,5 +1,4 @@
-// Ports apps/desktop/src/renderer/components/ShortcutSettings.test.tsx on Settings › Shortcuts, built and never shown:
-// the recorder is driven with key events as the window hands them over (performKeyEquivalent, keyDown)
+// The recorder is driven with key events as the window hands them over (performKeyEquivalent, keyDown)
 import AppKit
 import FTFoundation
 import Testing
@@ -33,7 +32,6 @@ import Testing
 
     private func notes(_ view: ShortcutSettingsView) -> [String] { texts("settings.shortcuts.note", in: view) }
 
-    // T-6d52f792 T-ea83b599 F-902 F-903 F-904 F-907 B-DLG-210 B-DLG-211 B-DLG-212 B-DLG-227 B-DLG-228
     @Test func listsEveryCommandWithItsKeysGroupedAndTheStandardOnesAsFixed() throws {
         let (_, _, view) = try make()
         #expect(
@@ -60,7 +58,6 @@ import Testing
         #expect(!view.restoreAllButton.isEnabled)
     }
 
-    // T-0787ae28 F-904 F-905 B-DLG-213 B-DLG-222 B-DLG-223
     @Test func recordsANewKeyForACommandAndSavesOnlyWhatDiffersFromTheDefaults() throws {
         let (controller, recorder, view) = try make()
         let place = try slot(.newFolder, 1, in: view)
@@ -81,7 +78,6 @@ import Testing
         #expect(view.row(.newFolder)?.restoreButton.isHidden == false)
     }
 
-    // T-dab397c1 F-905 B-DLG-213 B-DLG-214 B-DLG-215 B-DLG-217
     @Test func waitsForAKeyWhileOnlyModifiersAreDownAndEscCancels() throws {
         let (controller, recorder, view) = try make()
         let place = try slot(.newFolder, 1, in: view)
@@ -109,7 +105,6 @@ import Testing
         #expect(recorder.patches.isEmpty)
     }
 
-    // T-69d1ef79 T-43b51528 F-906 B-DLG-219 B-DLG-220
     @Test func saysWhyAKeyCanNotBeUsedAndGoesOnRecording() throws {
         let (controller, _, view) = try make()
         let place = try slot(.newFolder, 1, in: view)
@@ -138,7 +133,7 @@ import Testing
         #expect(notes(view).isEmpty)
     }
 
-    // B-DLG-218: a key the command has already, in either place, ends the recording with no change and no note.
+    // A key the command has already, in either place, ends the recording with no change and no note.
     @Test func aKeyTheCommandAlreadyHasEndsTheRecordingWithNoChange() throws {
         let (controller, recorder, view) = try make()
         // Quick Look's Space and New Folder's ⌘⇧N are their main keys: from the alternate place the key is its own.
@@ -162,7 +157,6 @@ import Testing
         #expect(!view.restoreAllButton.isEnabled)
     }
 
-    // T-5c15dfb9 F-906 B-DLG-221
     @Test func asksBeforeTakingAKeyFromAnotherCommand() throws {
         let (controller, recorder, view) = try make()
         try slot(.newFolder, 1, in: view).perform()
@@ -185,8 +179,8 @@ import Testing
         #expect(view.row(.duplicateSelection)?.slots.first?.stringValue != "⌘D")
     }
 
-    // F-906 B-DLG-221: the conflict as the checkpoint drew it (265-shortcut-conflict): after a refusal, the recorder
-    // still takes ⌘D before the menu would; the row grows to 60 with the note and its buttons on one line under the keys
+    // The conflict: after a refusal, the recorder still takes ⌘D before the menu would; the row grows to 60 with the
+    // note and its buttons on one line under the keys.
     @Test func drawsTheConflictUnderTheKeysWithReassignAndCancelAtTheEnd() throws {
         let (controller, _, view) = try make()
         view.setQuery("Move to Trash")
@@ -216,8 +210,8 @@ import Testing
         #expect(view.row(.trashSelection)?.arrange(width: width) == 32)
     }
 
-    // `.shortcut-slot-key.empty` has opacity 0 unless its row is hovered, it records or it is `:focus-visible`: a click's
-    // focus doesn't lift it, nor does a key with ⌘ (265); a plain key's does (a09). F-904 B-DLG-221
+    // An empty key place is hidden unless its row is hovered, it records or its focus is visible: a click's focus
+    // doesn't lift it, nor does a key with ⌘; a plain key's does.
     @Test func aClickedEmptyPlaceHidesOffTheRowUntilAKeyMakesItsFocusVisible() throws {
         let (controller, _, view) = try make()
         let window = try #require(controller.window)
@@ -241,9 +235,8 @@ import Testing
         #expect(place.isShown)
     }
 
-    // The conflict's "+" and the key's badge under the pointer, as a capture of the original has them with its pointer
-    // left where it clicked: `button.shortcut-slot-key:hover` fills the slot (10% of the text color, #e2e2e2 on the page's
-    // #f8f8f8), and `.shortcut-row:hover` shows the badge. F-905 B-DLG-221
+    // The conflict's "+" and the key's badge under the pointer, left where it clicked: the slot under it is filled
+    // (10% of the text color, #e2e2e2 on the page's #f8f8f8), and the row under it shows the badge.
     @Test func aRowUnderThePointerShowsTheBadgeAndTheSlotItsFill() throws {
         let (controller, _, view) = try make()
         let window = try #require(controller.window)
@@ -271,8 +264,7 @@ import Testing
         #expect(try fillAlpha() > 0)
     }
 
-    // `.shortcut-slot:focus-within .shortcut-slot-clear` (styles.css:6190-6193): the badge comes with the keyboard, with
-    // no pointer on the row, and goes with it. F-905
+    // A place's remove badge comes with the keyboard, with no pointer on the row, and goes with it.
     @Test func aKeysRemoveBadgeShowsWhileTheKeyboardIsOnIt() throws {
         let (controller, _, view) = try make()
         let window = try #require(controller.window)
@@ -292,7 +284,6 @@ import Testing
         #expect(badge.isHidden)
     }
 
-    // T-05bc9d4f F-905 B-DLG-217 B-DLG-225
     @Test func removesAKeyWithBackspaceOrItsClearButtonAndTheAlternateBecomesTheMainKey() throws {
         let preferences = AppPreferences.defaults(theme: .light).with {
             $0.shortcutOverrides = ["newFolder": ["Cmd+Shift+N", "Cmd+Option+J"]]
@@ -313,7 +304,7 @@ import Testing
         #expect(!empty.isRecording)
     }
 
-    // F-906 B-DLG-221: ⌘D while the recorder records, with the app's menu (a09, 265). AppKit offers a key equivalent to the
+    // ⌘D while the recorder records, with the app's menu (a09, 265). AppKit offers a key equivalent to the
     // key window before the menu bar; the menu would claim ⌘D (Duplicate), even dimmed, so the recorder only has it when
     // the window goes first.
     @Test func theRecorderHasAMenuKeyBeforeTheMenuDoes() throws {
@@ -331,7 +322,6 @@ import Testing
         #expect(notes(view) == ["⌘D is used by Duplicate."])
     }
 
-    // T-3e1be978 F-904 F-907 B-DLG-226 B-DLG-227
     @Test func resetsOneCommandTakingItsDefaultKeyBackOrAllOfThem() throws {
         let (controller, recorder, view) = try make()
         // Duplicate's ⌘D goes to New Folder.
@@ -358,7 +348,6 @@ import Testing
         #expect(!view.restoreAllButton.isEnabled)
     }
 
-    // T-9420a319 F-906 B-DLG-224
     @Test func warnsWhenMacOSMayTakeTheKeyFirst() throws {
         let (controller, _, view) = try make()
         try slot(.newFolder, 1, in: view).perform()
@@ -372,7 +361,6 @@ import Testing
         #expect(view.row(.newFolder)?.slots.map(\.stringValue) == ["⇧⌘N", "⌃↑"])
     }
 
-    // T-d2e51ec9 F-902 B-DLG-229
     @Test func findsCommandsByNameOrByKey() throws {
         let (controller, _, view) = try make()
         view.setQuery("new folder")

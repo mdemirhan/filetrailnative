@@ -1,5 +1,3 @@
-// Checks against useDialogFocus.ts:22 and useExplorerTabs.ts:862-867: an open dialog keeps the keyboard, so a tab shown
-// again under its own dialog leaves it there.
 import AppKit
 import FTFoundation
 import Foundation

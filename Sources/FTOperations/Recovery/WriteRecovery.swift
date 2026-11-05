@@ -1,5 +1,3 @@
-// Port of recoverWrites, putBackRenamedItems, describePutBack, removePartialFiles, recoverReplaces, diskName,
-// retryRecovery and RECOVERY_RETRY_INTERVAL_MS (apps/desktop/src/main/bootstrap/writeJournal.ts)
 import FTFoundation
 import Foundation
 import os
@@ -66,7 +64,7 @@ public struct RecoveryCaches: Sendable {
 
     public static let none = RecoveryCaches(clearListings: {}, forgetSizes: { _ in })
 
-    /// `clearResponseCaches(changedPaths)`.
+    /// Clears the listings, and forgets the sizes of `changedPaths` when there are any.
     func clear(_ changedPaths: [String]) {
         clearListings()
         if !changedPaths.isEmpty {
@@ -338,7 +336,7 @@ public let dispatchRecoveryTimer: RecoveryTimer = { intervalMs, tick in
 }
 
 /// Tries the entries left at start again every minute, while no operation runs, until none of them is left.
-/// Tells what was put in place (`retryRecovery`).
+/// Tells what was put in place.
 public final class RecoveryRetry: Sendable {
     private struct State {
         var waiting: Set<String>

@@ -1,5 +1,4 @@
-// Port of "per-file cut flow" (packages/core/src/fs/copyPasteExecution.test.ts): the items are on another disk
-// (dev 2), so a move copies each, then removes its original
+// The items are on another disk (dev 2), so a move copies each, then removes its original
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -31,7 +30,6 @@ struct CopyPasteExecutionCutTests {
         }
     }
 
-    // T-da4e0088 F-461
     @Test func deletesSourceFileImmediatelyAfterSuccessfulCopy() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 3)), ("/source/b.txt", .file(size: 4)),
@@ -58,7 +56,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/target/b.txt"))
     }
 
-    // T-7128aaad F-461
     @Test func deletesSourceSymlinkImmediatelyAfterSuccessfulCopy() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/link", .symlink("actual.txt")), ("/target", .directory()),
@@ -72,7 +69,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.readNode("/target/link")?.target == "actual.txt")
     }
 
-    // T-fff0c98c F-257 F-262
     @Test func stoppedPartWayThroughAFolderLeavesEveryOriginalAndNothingCopied() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
@@ -102,7 +98,6 @@ struct CopyPasteExecutionCutTests {
         }
     }
 
-    // T-e684da1c F-279
     @Test func preservesSourceFileWhenSourceMutatedAfterCopy() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -120,7 +115,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/target/a.txt"))
     }
 
-    // T-b974155f F-461
     @Test func preservesSourceFileWhenSourceDeletedExternallyAfterCopy() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -137,7 +131,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/target/a.txt"))
     }
 
-    // T-2d3a3dc0 F-284 F-461
     @Test func removesEmptySourceDirectoryAfterAllChildrenDeleted() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
@@ -153,7 +146,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/target/dir/b.txt"))
     }
 
-    // T-b5739b37 F-284 F-461
     @Test func preservesNonEmptySourceDirectoryWhenSomeChildrenSkipped() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
@@ -170,7 +162,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/target/dir/a.txt"))
     }
 
-    // T-4072637e F-285
     @Test func preservesSourceDirectoryWhenDirectoryModeChangedExternally() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/dir", .directory(mode: 0o755)),
@@ -190,7 +181,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/target/dir/a.txt"))
     }
 
-    // T-e85b5090 F-284
     @Test func emptySourceDirectoryRmFailureReportsItemAsFailed() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
@@ -213,7 +203,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/source/dir"))
     }
 
-    // T-446f7a30 F-461
     @Test func inlineDeletionRmFailureReportsItemAsFailedButContinuesOperation() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 1)), ("/source/b.txt", .file(size: 2)),
@@ -237,7 +226,6 @@ struct CopyPasteExecutionCutTests {
         #expect(!fileSystem.exists("/source/b.txt"))
     }
 
-    // T-41ba71f5 F-284
     @Test func handlesNestedDirectoryCutWithMixedActions() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/new.txt", .file(size: 1)),
@@ -256,7 +244,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/source/dir"))
     }
 
-    // T-2e830d91 F-461
     @Test func sourceRmCalledOnlyOncePerFileNoRedundantCleanupPass() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -273,7 +260,6 @@ struct CopyPasteExecutionCutTests {
         #expect(removals.withLock { $0 }.filter { $0 == "/source/a.txt" }.count == 1)
     }
 
-    // T-7bb1f9cf F-461
     @Test func cutWithRuntimeConflictResolvedAsSkipPreservesSource() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -288,7 +274,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 2)
     }
 
-    // T-9257a90b F-284
     @Test func nestedChildFileDeletionFailurePropagatesToParentDirectoryStatus() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 1)),
@@ -308,7 +293,6 @@ struct CopyPasteExecutionCutTests {
         #expect(fileSystem.exists("/target/dir/b.txt"))
     }
 
-    // T-4391a680 F-279
     @Test func mutatedSourceFileReportsAsFailedNotCompleted() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),

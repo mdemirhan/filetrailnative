@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/theme.ts, hooks/useWindowAppearance.ts and applyNativeAppearance in main.ts
 import AppKit
 import FTFoundation
 
@@ -18,14 +17,13 @@ public struct Theme: Equatable, Sendable {
 
     public var isDark: Bool { appearance == .dark }
 
-    /// The color behind a window that is not an explorer window, shown before its views paint and while it resizes
-    /// (`windowBackgroundColor`).
+    /// The color behind a window that is not an explorer window, shown before its views paint and while it resizes.
     public var pageWindowBackground: RGBA {
         isDark ? RGBA(r: 0x16, g: 0x16, b: 0x18) : RGBA(r: 0xf4, g: 0xf5, b: 0xf8)
     }
 }
 
-/// What a selected row is painted with (F-932, `windowActivity.ts`).
+/// What a selected row is painted with.
 public struct SelectionColors: Equatable, Sendable {
     public var background: RGBA
     public var text: RGBA
@@ -48,7 +46,7 @@ extension Theme {
 
 /// Holds the current theme for the whole app and tells everything that draws with it when it changes. The theme is
 /// the preference (Auto, Light or Dark), or for Auto the macOS appearance, followed live; the accent is any hex color.
-/// Nothing here uses `controlAccentColor` or the system selection highlight (PLAN.md section 3.5).
+/// Nothing here uses `controlAccentColor` or the system selection highlight.
 @MainActor
 public final class AppearanceModel {
     /// The one the app's windows use.
@@ -116,7 +114,7 @@ public final class AppearanceModel {
         refresh()
     }
 
-    /// Follows the macOS appearance while the app runs (`nativeTheme`'s update event).
+    /// Follows the macOS appearance while the app runs.
     public func startFollowingSystem(_ application: NSApplication = NSApplication.shared) {
         systemObservation = application.observe(\.effectiveAppearance, options: []) { [weak self] _, _ in
             DispatchQueue.main.async { MainActor.assumeIsolated { self?.systemAppearanceChanged() } }

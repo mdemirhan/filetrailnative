@@ -1,6 +1,5 @@
-// The batch-rename scenarios of tools/parity/exec/batch-rename.ts (suite exec-batch-rename): the
-// scenario, its cases, and running one through an engine in fresh folders to compare with its
-// recording.
+// The batch-rename scenarios (suite exec-batch-rename): the scenario, its cases, and running one
+// through an engine in fresh folders to compare with its recording.
 import Foundation
 
 public struct ExecBatchRenameScenario: Codable, Equatable, Sendable {
@@ -61,7 +60,7 @@ public struct ExecBatchRenameScenario: Codable, Equatable, Sendable {
     }
 
     /// `maskInspection`: the dates the disk gives depend on when the tree was made, so only whether each is there
-    /// counts; folder names in JavaScript's order.
+    /// counts; folder names sorted by UTF-16 code unit.
     public static func maskInspection(_ answer: JSONValue) -> JSONValue {
         guard case .object(var members) = answer else { return answer }
         if case .array(let items) = members["items"] {

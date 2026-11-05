@@ -1,4 +1,3 @@
-// Port of the sidebar keys of apps/desktop/src/shared/appPreferences.ts, as capture scenarios set them (`prefs` steps), and the drag seams
 #if DEBUG
     import AppKit
     import FTFoundation
@@ -10,8 +9,8 @@
             return tree.index(ofItem: selected) != nil
         }
 
-        /// The original's driver seeds the density before launch, so its tree reveals the folder with the row heights
-        /// of that density; here the density comes after the tree has been filled in, and the reveal is done again.
+        /// The density comes after the tree has been filled in, so the folder is revealed again with the row heights of
+        /// that density.
         func revealSelectionFromTheTop() {
             guard let selected = model.selected, let index = tree.index(ofItem: selected) else { return }
             tree.scrollTop = 0
@@ -20,7 +19,7 @@
     }
 
     /// The `prefs` keys of the sidebar: where Favorites are, single-click expand, the favorites and
-    /// whether their sections are open. Registered from here, as P5-01 does for the window's layout.
+    /// whether their sections are open. Registered from here.
     @MainActor
     enum AutomationSidebarPrefs {
         private static var registered = false
@@ -87,7 +86,7 @@
             }
         }
 
-        /// Files dropped on a row go to the drop hook (P5-08).
+        /// Files dropped on a row go to the drop hook.
         func automationDrop(_ items: [URL], at point: NSPoint, allowed: NSDragOperation) -> Bool {
             guard let list else { return false }
             let index = row(at: point)

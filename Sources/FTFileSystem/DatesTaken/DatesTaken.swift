@@ -1,4 +1,3 @@
-// Port of packages/native-fs/src/native_datestaken.m (and nativeDatesTaken in packages/native-fs/index.js)
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers

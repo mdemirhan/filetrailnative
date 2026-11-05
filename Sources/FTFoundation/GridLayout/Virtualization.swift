@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/virtualization.ts
 import Foundation
 
 /// A half-open `[startIndex, endIndex)` window of items to show.
@@ -12,7 +11,7 @@ public struct VirtualRange: Equatable, Sendable, Codable {
     }
 }
 
-/// The sizes of a Compact List as rows per column depend on them (`FlowListLayout` of `virtualization.ts`).
+/// The sizes of a Compact List as rows per column depend on them.
 public struct FlowRowsLayout: Equatable, Sendable, Codable {
     public var rowHeight: Double
     public var rowGap: Double
@@ -28,7 +27,7 @@ public struct FlowRowsLayout: Equatable, Sendable, Codable {
 }
 
 public enum Virtualization {
-    /// `getVirtualRange`: the items to show around the viewport. Tolerant of bad inputs (a size of zero or less, a
+    /// The items to show around the viewport. Tolerant of bad inputs (a size of zero or less, a
     /// scroll past the end of a shorter list), as live measurements can be.
     public static func range(
         itemCount: Int, itemSize: Double, viewportSize: Double, scrollOffset: Double, overscan: Int
@@ -46,13 +45,13 @@ public enum Virtualization {
         return VirtualRange(startIndex: start, endIndex: end)
     }
 
-    /// `chunkItemsIntoRows`: rows of `columns` items, in order; the last may be shorter.
+    /// Rows of `columns` items, in order; the last may be shorter.
     public static func chunkIntoRows<T>(_ items: [T], columns: Int) -> [[T]] {
         let step = max(1, columns)
         return stride(from: 0, to: items.count, by: step).map { Array(items[$0..<min(items.count, $0 + step)]) }
     }
 
-    /// `computeRowsPerColumn`: how many rows of a Compact List fit in a pane this tall. The height is the pane's; a
+    /// How many rows of a Compact List fit in a pane this tall. The height is the pane's; a
     /// height of zero or less (not measured yet) gives one row.
     public static func rowsPerColumn(containerHeight: Double, layout: FlowRowsLayout) -> Int {
         guard containerHeight > 0 else { return 1 }
@@ -60,7 +59,7 @@ public enum Virtualization {
         return max(1, clampedInt((max(content, layout.rowHeight) / layout.rowHeight).rounded(.down)))
     }
 
-    /// `buildColumnMajorRows`: the Compact List's rows, filled top to bottom first and then on in the next column.
+    /// The Compact List's rows, filled top to bottom first and then on in the next column.
     public static func columnMajorRows<T>(_ items: [T], rowsPerColumn: Int) -> [[T]] {
         let rows = max(1, rowsPerColumn)
         let columnCount = max(1, (items.count + rows - 1) / rows)

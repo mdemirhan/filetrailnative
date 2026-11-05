@@ -1,8 +1,8 @@
-// The AbortSignal and AbortError the original's engine stops with (packages/core/src/fs/stoppableCopy.ts and its callers)
+// The signal and the error an operation stops with
 import Foundation
 import os
 
-/// Stops an operation from any thread: what the original's `AbortController` signal does.
+/// Stops an operation from any thread.
 public final class StopSignal: Sendable {
     private struct State {
         var stopped = false
@@ -30,15 +30,15 @@ public final class StopSignal: Sendable {
         }
     }
 
-    /// `throwIfAborted()`.
+    /// Throws `StopError` once the signal has stopped.
     public func throwIfStopped() throws {
         if isStopped {
             throw StopError()
         }
     }
 
-    /// Runs `handler` once when the signal stops (`addEventListener("abort", …, { once: true })`). Returns a token
-    /// for `removeHandler`, or nil when already stopped (the handler then doesn't run).
+    /// Runs `handler` once when the signal stops. Returns a token for `removeHandler`, or nil when already stopped
+    /// (the handler then doesn't run).
     @discardableResult
     public func onStop(_ handler: @escaping @Sendable () -> Void) -> Int? {
         state.withLock { state in

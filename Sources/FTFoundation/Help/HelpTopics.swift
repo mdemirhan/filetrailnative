@@ -1,6 +1,4 @@
-// The Help window's topics; generated once from the Electron app, now edited by hand.
-// The Zoom In, Zoom Out and Actual Size rows and the Zoom row of Appearance are left out, and words
-// about the tab strip and the customizing panel are put right.
+// The Help window's topics; generated once, now edited by hand.
 
 extension HelpContent {
     public static let topics: [HelpTopic] = [

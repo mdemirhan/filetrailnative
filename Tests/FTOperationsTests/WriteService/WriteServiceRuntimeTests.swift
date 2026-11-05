@@ -1,5 +1,3 @@
-// Port of packages/core/src/fs/writeService.runtime.test.ts and of the runtime cases of
-// packages/core/src/fs/writeService.analysis.test.ts
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -89,7 +87,6 @@ private func runServicePaste(
 private let keepBoth = CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .skip)
 
 struct WriteServiceRuntimeTests {
-    // T-bf2a01fb F-327
     @Test func appliesAStandingAnswerOnlyToConflictsOfTheSameKind() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 1)), ("/source/b.txt", .file(size: 2)), ("/source/c.txt", .file(size: 3)),
@@ -120,7 +117,6 @@ struct WriteServiceRuntimeTests {
             ])
     }
 
-    // T-23fe5269 F-327
     @Test func doesntReuseAKeepBothAnswerWhereTheDestinationNoLongerExists() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 1)), ("/source/b.txt", .file(size: 2)), ("/target", .directory()),
@@ -150,7 +146,6 @@ struct WriteServiceRuntimeTests {
 
     // Replace answers the question about the item it showed: one put there while it was open is asked about
     // again, never sent to the Trash unseen.
-    // T-7c41629f F-325 F-328
     @Test func asksAgainWhenTheItemAReplaceAnswerWasAboutChangedWhileItWasAsked() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 1)), ("/target", .directory()), ("/target/a.txt", .file(size: 5)),
@@ -181,7 +176,6 @@ struct WriteServiceRuntimeTests {
 
     // A file saved again while its question was open is asked about again, as a new question: the window
     // remembers which question it answered by its id.
-    // T-294d7878 F-328
     @Test func givesAQuestionAskedAgainAboutTheSameItemAnIdOfItsOwn() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
         let questions = OSAllocatedUnfairLock(initialState: 0)
@@ -204,7 +198,6 @@ struct WriteServiceRuntimeTests {
         #expect(run.result?.items.map(\.status) == [.completed])
     }
 
-    // T-2b37961e F-328
     @Test func acceptsAnAnswerGivenWhileTheQuestionIsBeingAnnounced() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
         let run = try await runServicePaste(
@@ -216,7 +209,6 @@ struct WriteServiceRuntimeTests {
         #expect(fileSystem.readNode("/target/a copy.txt")?.size == 1)
     }
 
-    // T-82406f22 F-326
     @Test func refusesAnAnswerTheConflictDoesntOfferAndKeepsWaitingForAValidOne() async throws {
         let fileSystem = MockWriteServiceFileSystem([("/source/a.txt", .file(size: 1)), ("/target", .directory())])
         let service = WriteService(.init(fileSystem: fileSystem))
@@ -245,7 +237,6 @@ struct WriteServiceRuntimeTests {
         #expect(item?.skipReason == .runtimeConflictResolution)
     }
 
-    // T-45ccf3ee F-327
     @Test func givesARuntimeKeepBothCopyANameNoLaterItemOfThePasteWillUse() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/X.txt", .file(size: 1)), ("/source/X copy.txt", .file(size: 2)), ("/target", .directory()),
@@ -268,9 +259,6 @@ struct WriteServiceRuntimeTests {
 }
 
 struct WriteServiceRuntimeCoordinationTests {
-    // Port of "answers later changes the same way when asked to, through the write service"
-    // (packages/core/src/fs/copyPasteReviewData.realfs.test.ts).
-    // T-248b9b50 F-242 F-327
     @Test func answersLaterChangesTheSameWayWhenAskedToThroughTheWriteService() async throws {
         try await withTemporaryDirectory { root in
             let (source, target) = (root.path + "/source", root.path + "/target")
@@ -311,7 +299,6 @@ struct WriteServiceRuntimeCoordinationTests {
         }
     }
 
-    // T-384a8f35 F-242
     @Test func rejectsRuntimeConflictResolutionsForUnknownConflicts() {
         let service = WriteService(.init(fileSystem: MockWriteServiceFileSystem()))
 
@@ -321,7 +308,6 @@ struct WriteServiceRuntimeCoordinationTests {
         #expect(throws: (any Error).self) { try service.getCopyPasteAnalysisUpdate("missing-analysis") }
     }
 
-    // T-986eb932 F-242 F-257
     @Test func cancelsOperationsThatArePausedOnARuntimeConflict() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -346,9 +332,8 @@ struct WriteServiceRuntimeCoordinationTests {
         #expect(await waitFor { log.events.contains { $0.status == .cancelled } })
     }
 
-    // A listener can't throw in Swift; what the original guards is that one listener can't keep the next from
-    // its events: here the first one drops itself while an event is going out.
-    // T-4b4ee729 F-242
+    // A listener can't throw in Swift; what is guarded is that one listener can't keep the next from its events:
+    // here the first one drops itself while an event is going out.
     @Test func isolatesListenerFailuresSoLaterSubscribersStillReceiveTerminalEvents() async throws {
         let service = WriteService(
             .init(

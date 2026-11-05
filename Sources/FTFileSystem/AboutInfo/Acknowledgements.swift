@@ -1,5 +1,3 @@
-// Port of readAcknowledgements and resolveDistDir in apps/desktop/src/main/aboutInfo.ts (the list is made at build time
-// by tools/acknowledgements, as scripts/thirdPartyLicenses.ts makes the original's)
 import Foundation
 
 /// One piece of bundled software and its license (`app:getAcknowledgements`).

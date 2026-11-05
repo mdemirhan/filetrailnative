@@ -1,23 +1,20 @@
-// Port of nativeStartFileDrag and FileTrailDragSource (packages/native-fs/src/native_filedrag.m, behavior only: the
-// real mouse event replaces the synthesized one) and of startFileDrag, findDraggedAway and bringWindowToFront
-// (apps/desktop/src/main/bootstrap/fileDrag.ts)
 import AppKit
 import FTFoundation
 import Foundation
 
-/// What a drag of files ended as (`DRAG_ENDED_*`): the drop's operation, Delete first.
+/// What a drag of files ended as: the drop's operation, Delete first.
 public enum FileDragEnd: String, Sendable, Equatable {
     case copy, move, link, delete, none
 }
 
-/// Where a drag of files ended (`DRAG_ENDED_OVER_*`): a window of the app takes a drop on it itself.
+/// Where a drag of files ended: a window of the app takes a drop on it itself.
 public enum FileDragEndedOver: String, Sendable, Equatable {
     case thisWindow = "this_window"
     case anotherWindow = "another_window"
     case elsewhere
 }
 
-/// The drag's side in AppKit (`FileTrailDragSource`): what it allows, whether the keys narrow it, and how it ended.
+/// The drag's side in AppKit: what it allows, whether the keys narrow it, and how it ended.
 @MainActor
 public final class FileDragSource: NSObject, NSDraggingSource {
     /// The window the drag started from.
@@ -70,8 +67,7 @@ public final class FileDragSource: NSObject, NSDraggingSource {
 
 /// A drag of files out of a view, and what follows it.
 public enum FileDrag {
-    /// `DRAG_LABEL_MAX_WIDTH`, `DRAG_LABEL_PADDING_X`, `DRAG_LABEL_PADDING_Y`, `DRAG_ICON_SIZE`, `DRAG_LABEL_GAP`,
-    /// `DRAG_LABEL_FONT_SIZE`.
+    /// The sizes of the drag image's icon and label.
     public static let labelMaxWidth: CGFloat = 240
     public static let labelPaddingX: CGFloat = 6
     public static let labelPaddingY: CGFloat = 1
@@ -97,7 +93,6 @@ public enum FileDrag {
         return (NSSize(width: width, height: height), frames)
     }
 
-    /// `sourceOperationMaskForDraggingContext`.
     public static func sourceOperationMask(_ context: NSDraggingContext) -> NSDragOperation {
         context == .withinApplication ? [.copy, .move] : [.copy, .move, .generic, .link, .delete]
     }
@@ -116,7 +111,7 @@ public enum FileDrag {
         images.allSatisfy { $0.index >= 0 && $0.index < Int(UInt32.max) }
     }
 
-    /// `nativeStartFileDrag`: starts a drag of `paths` from `view`'s window (file URLs only, no promises). Up to
+    /// Starts a drag of `paths` from `view`'s window (file URLs only, no promises). Up to
     /// `FileDragImages.maxImages` items are drawn as they show (`images`, rects in the view's coordinates), or the first
     /// item with no picture measured, and they go beside the pointer whatever their number; the rest go along unseen.
     /// False when it could not start: no window, nothing to drag, the button already up, or an image no path can have.
@@ -175,7 +170,7 @@ public enum FileDrag {
         return true
     }
 
-    /// `label_image`: the name as Finder draws it in a drag, white on the accent in a capsule, shortened in the
+    /// The name as Finder draws it in a drag, white on the accent in a capsule, shortened in the
     /// middle when it is long.
     @MainActor
     public static func labelImage(_ name: String, fontSize: Double) -> NSImage {
@@ -198,7 +193,7 @@ public enum FileDrag {
         }
     }
 
-    /// `fit_rect`: a picture fitted inside `box`, its proportions kept.
+    /// A picture fitted inside `box`, its proportions kept.
     public static func fit(_ size: NSSize, in box: NSRect) -> NSRect {
         guard size.width > 0, size.height > 0 else { return box }
         let scale = min(box.width / size.width, box.height / size.height)
@@ -217,7 +212,7 @@ public enum FileDrag {
         var frame: NSRect { iconRect.union(labelRect) }
     }
 
-    /// `set_item_picture_at_pointer`: an item with no place on screen, its icon over its name.
+    /// An item with no place on screen, its icon over its name.
     @MainActor
     static func pictureOfPath(_ path: String) -> Picture {
         let label = labelImage(FileManager.default.displayName(atPath: path), fontSize: labelFontSize)
@@ -266,7 +261,7 @@ public enum FileDrag {
         return (gone, intoTrash ? gone + [(homePath as NSString).appendingPathComponent(".Trash")] : gone)
     }
 
-    /// `bringWindowToFront`: brings the app and `window` forward for a question about a drop made while another app
+    /// Brings the app and `window` forward for a question about a drop made while another app
     /// was in front; when macOS keeps the other app in front, the Dock icon bounces once. True when it came forward.
     @MainActor
     public static func bringToFront(

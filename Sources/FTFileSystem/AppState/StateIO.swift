@@ -1,4 +1,3 @@
-// Port of the injectable file system and timer of apps/desktop/src/main/appStateStore.ts (AppStateStoreFileSystem, AppStateStoreTimer)
 import Darwin
 import Foundation
 import os

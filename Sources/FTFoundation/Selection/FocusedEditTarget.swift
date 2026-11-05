@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/focusedEditTarget.ts
 import Foundation
 
 /// What the element that has the keyboard does with typing.
@@ -8,8 +7,7 @@ public enum FocusedEditTarget: String, Sendable, Codable {
     case nonText = "non-text"
 }
 
-/// A focused element as the rules look at it: the original reads it from the page, the native app from the responder
-/// (`FocusedEditTargets` in FTAppKit).
+/// A focused element as the rules look at it, read from the responder (`FocusedEditTargets` in FTAppKit).
 public struct FocusedElement: Equatable, Sendable {
     public enum Kind: Equatable, Sendable {
         case textarea
@@ -55,7 +53,6 @@ public enum FocusedEditTargets {
         "range", "reset", "submit", "time", "week",
     ]
 
-    /// `resolveFocusedEditTarget`.
     public static func resolve(_ element: FocusedElement?) -> FocusedEditTarget {
         guard let element else { return .nonText }
         switch element.marker {

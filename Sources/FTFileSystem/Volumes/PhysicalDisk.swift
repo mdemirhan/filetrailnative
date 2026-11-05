@@ -1,4 +1,3 @@
-// Port of volume_physical_disk in packages/native-fs/src/native_volumes.c
 import Foundation
 import IOKit
 

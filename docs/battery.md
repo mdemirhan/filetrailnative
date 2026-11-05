@@ -22,9 +22,9 @@ Reading the details of 20,000 selected files took under 0.9 s once, in a debug b
 | Item | Decision | Why |
 |---|---|---|
 | Folder watcher | Latency is 0.25 s. It keeps running while the window is hidden or covered. | The longer latency nearly halves the cost under extreme activity, and the first change still arrives at once. Stopping while hidden would save little and force a full read on each return. |
-| Info panel re-reads | Left as is: with the panel open, every outside change re-reads its item. (`B-INFO-018`, `B-VIEW-190`, `T-cb87a875`) | One extra read per settled change, at most a few a second. With nothing selected it has to re-read anyway. |
-| Details during search | Left as is: details of selected files are read during search too, where the Electron app waited. (`B-INFO-089`) | The worst case is a second, once, and waiting would leave the selection's total unknown until the search ends. |
-| Date refresh timer | Rests while no window can be seen. (`B-INFO-083`, `B-INFO-197`) | The pause logic already existed. |
+| Info panel re-reads | Left as is: with the panel open, every outside change re-reads its item. | One extra read per settled change, at most a few a second. With nothing selected it has to re-read anyway. |
+| Details during search | Left as is: details of selected files are read during search too, where the Electron app waited. | The worst case is a second, once, and waiting would leave the selection's total unknown until the search ends. |
+| Date refresh timer | Rests while no window can be seen. | The pause logic already existed. |
 
 The Info panel's free space is read once a minute while the panel is on a volume, on the same timer.
 

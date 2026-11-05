@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/openWith.ts
 import FTFoundation
 import Foundation
 import UniformTypeIdentifiers
@@ -95,7 +94,7 @@ public enum OpenWithMenu {
         return Sections(defaultApp: defaultApp, pinned: pinnedApps, others: others)
     }
 
-    /// `Intl.Collator(undefined, { sensitivity: "base", numeric: true })`. `sorted` is stable, as `Array.sort`.
+    /// Names in the current locale's order, ignoring case and accents, with numbers by value. `sorted` is stable.
     static func compareNames(_ left: String, _ right: String) -> ComparisonResult {
         left.compare(
             right, options: [.caseInsensitive, .diacriticInsensitive, .numeric], range: nil, locale: Locale.current)

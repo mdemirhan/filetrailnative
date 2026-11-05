@@ -1,4 +1,4 @@
-// Review round 1 of P5-03: rows follow the pane's width, on an explorer window that is never shown, and an outside change
+// Rows follow the pane's width, on an explorer window that is never shown, and an outside change
 // keeps the details shown
 import AppKit
 import FTFileSystem
@@ -10,9 +10,6 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor @Suite struct ReviewRowWidthTests {
-        // covered-by-feature F-765 T-bc6fc27c B-VIEW-044 B-VIEW-045 (a narrow pane drops columns from the right and
-        // keeps the saved widths: FTFoundation's DetailsLayoutTests; the rows follow the pane here)
-        // B-VIEW-043
         @Test func rowsFollowAWiderPane() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -62,8 +59,7 @@ struct ReviewStaleDetailsTests {
         return (controller, entries)
     }
 
-    // An item that changed on disk keeps what is shown for it until it is read again (B-NAV-134).
-    // B-VIEW-191
+    // An item that changed on disk keeps what is shown for it until it is read again.
     @MainActor @Test func changedItemsKeepTheirDetailsUntilReadAgain() async {
         let (controller, entries) = await loadedController()
         controller.show(

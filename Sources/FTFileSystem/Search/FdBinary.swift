@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/fdBinary.ts
 import Foundation
 
 /// The `fd` that ships with the app: Resources/fd in the repository, copied by scripts/build-app.sh into
@@ -51,7 +50,7 @@ public enum FdBinary {
         .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
         .deletingLastPathComponent()
 
-    /// `resolveBundledFdBinaryPath`. File Trail ships for Apple silicon only.
+    /// File Trail ships for Apple silicon only.
     public static func resolveBundledPath(
         arch: String = currentArchitecture, locations: Locations = .standard,
         fileExists: (String) -> Bool = { FileManager.default.isExecutableFile(atPath: $0) }

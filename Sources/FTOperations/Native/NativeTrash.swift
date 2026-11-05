@@ -1,14 +1,12 @@
-// Port of packages/native-fs/src/native_trash.m (nativeTrashItem)
 import Darwin
 import Foundation
 
 extension NativeFS {
-    /// `nativeTrashItem(path)`: moves the item to the Trash of its disk, as Finder's Move to Trash does, and
-    /// returns the path it has there: the Trash renames it when its name is taken there ("notes 2.txt"), so
-    /// the path is the only way to find it again. nil when the item went to the Trash but the Trash didn't say
-    /// where. A failure carries the Trash's own sentence as its message and, when it can be told, an errno
-    /// `code` ("EACCES", "ENOENT", "ENOSPC", "ENOTSUP" for a disk without a Trash), plus the Cocoa error's
-    /// number as `cocoaCode` when it was one; syscall `trash`.
+    /// Moves the item to the Trash of its disk, as Finder's Move to Trash does, and returns the path it has there: the
+    /// Trash renames it when its name is taken there ("notes 2.txt"), so the path is the only way to find it again. nil
+    /// when the item went to the Trash but the Trash didn't say where. A failure carries the Trash's own sentence as
+    /// its message and, when it can be told, an errno `code` ("EACCES", "ENOENT", "ENOSPC", "ENOTSUP" for a disk
+    /// without a Trash), plus the Cocoa error's number as `cocoaCode` when it was one; syscall `trash`.
     public static func trashItem(_ path: String) throws -> String? {
         let url = URL(fileURLWithPath: path)
         var resulting: NSURL?
@@ -22,7 +20,7 @@ extension NativeFS {
         return resulting?.path
     }
 
-    /// The error a failed Trash call gives: the Trash's sentence, or Node's errno wording without one.
+    /// The error a failed Trash call gives: the Trash's sentence, or the errno's wording without one.
     static func trashError(_ error: NSError?, path: String) -> NativeError {
         var errnum = error.map(trashErrno(of:)) ?? 0
         let cocoaCode = error.flatMap { $0.domain == NSCocoaErrorDomain ? $0.code : nil }
@@ -41,7 +39,7 @@ extension NativeFS {
     /// The file system's "operation not supported" (errFSOperationNotSupported, MacErrors.h).
     static let fsOperationNotSupported = -1426
 
-    /// `errno_of`: the errno an NSError from the Trash stands for: the POSIX error under it when there is one,
+    /// The errno an NSError from the Trash stands for: the POSIX error under it when there is one,
     /// otherwise what its Cocoa code means; 0 when it can't be told.
     /// ENOTSUP says the disk has no Trash, and only what says so positively gives it: the Trash's
     /// NSFeatureUnsupportedError ("the volume doesn't have one"), or a failure resting on the file system's

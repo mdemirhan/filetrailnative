@@ -1,6 +1,4 @@
-// Port by feature of "after an Undo" of App.undo.test.tsx (hooks/useExplorerActions.ts pushTerminalCopyPasteToast), of
-// refreshDirectory's tree selection (useExplorerNavigationController.ts) and of "marks the folder that is on the
-// clipboard" of TreePane.test.tsx: what a write's end does in a real tab, through the commands and menus a person uses
+// What a write's end does in a real tab, through the commands and menus a person uses
 import AppKit
 import FTFoundation
 import FTOperations
@@ -28,7 +26,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { !window.exists(name) && !window.tab.isWriteLocked })
         }
 
-        // T-eeefccac B-CLIP-130 B-VIEW-202: ⌘Z and ⇧⌘Z whose changes are out of sight say so, with what they did.
+        // ⌘Z and ⇧⌘Z whose changes are out of sight say so, with what they did.
         @Test func anUndoOutOfSightIsToldWithItsLabel() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -48,7 +46,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-eeefccac T-f0c2b565 B-CLIP-130 B-CLIP-193: an Undo that changes the folder on screen is in sight there: what
+        // An Undo that changes the folder on screen is in sight there: what
         // came back is selected, and nothing is said.
         @Test func anUndoInTheFolderOnScreenSaysNothing() async throws {
             let window = try await WritingWindow.open()
@@ -63,7 +61,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-TREE-094: New Folder from a row's menu selects the new folder's row; the folder on screen and the history
+        // New Folder from a row's menu selects the new folder's row; the folder on screen and the history
         // stay as they are. The next write that asks for no row brings the tree back to the folder on screen.
         @Test func aFolderMadeFromTheTreeIsSelectedWithoutOpeningIt() async throws {
             let window = try await WritingWindow.open()
@@ -92,7 +90,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-TREE-094: Duplicate from a row's menu copies that folder, next to it, whatever the list has selected, and
+        // Duplicate from a row's menu copies that folder, next to it, whatever the list has selected, and
         // the copy's row is selected, unopened.
         @Test func aFolderDuplicatedFromTheTreeIsSelectedWithoutOpeningIt() async throws {
             let window = try await WritingWindow.open()
@@ -113,9 +111,9 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-TREE-094: the folder on screen, trashed from its row, gives way to its parent, whose row is selected; a
-        // write's end adds no step to the history but overwrites the folder's (`navigateTo` "replace"), so the trashed
-        // one is not offered by Back or Forward.
+        // The folder on screen, trashed from its row, gives way to its parent, whose row is selected; a
+        // write's end adds no step to the history but overwrites the folder's, so the trashed one is not offered by
+        // Back or Forward.
         @Test func aFolderTrashedFromTheTreeLeavesItsParentSelected() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -137,7 +135,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-97a1b5a0 B-TREE-016: a favorite and a location point at a folder; only the folder's own row in the tree
+        // A favorite and a location point at a folder; only the folder's own row in the tree
         // takes the mark, the dimmed name and with them the flash, which asks the row's mark.
         @Test func onlyTheFoldersOwnRowIsMarked() async throws {
             let window = try await WritingWindow.open()

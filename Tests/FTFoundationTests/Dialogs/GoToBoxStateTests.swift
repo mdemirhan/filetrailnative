@@ -1,5 +1,5 @@
-// The rules of apps/desktop/src/renderer/components/GoToFolderDialog.tsx and hooks/usePathSuggestions.ts without the
-// views: mode, rows, selection, keys, label, hint, empty texts, submit, and when completions are asked for
+// The rules of the Go To box without its views: mode, rows, selection, keys, label, hint, empty texts, submit, and
+// when completions are asked for
 import Foundation
 import Testing
 
@@ -27,7 +27,6 @@ struct GoToBoxStateTests {
     private func names(_ state: GoToBoxState) -> [String] { state.rows.map(\.name) }
     private func selected(_ state: GoToBoxState) -> String? { state.selectedRow?.name }
 
-    // B-DLG-021 B-DLG-028 B-DLG-031 B-DLG-032
     @Test func opensListingThePlacesInUseWithTheTopOneSelected() {
         let state = GoToBoxState(places: Self.places)
         #expect(state.text.isEmpty)
@@ -39,7 +38,6 @@ struct GoToBoxStateTests {
         #expect(state.hint == "⌘⌫ Removes from List")
     }
 
-    // B-DLG-022 B-DLG-023 B-DLG-026 B-DLG-027 B-DLG-029 B-DLG-030 B-DLG-033 B-DLG-036
     @Test func findsByLettersMarksThemAndMovesTheSelectionWithinTheEnds() {
         var state = GoToBoxState(places: Self.places)
         #expect(state.setText("d") == .none)
@@ -66,7 +64,6 @@ struct GoToBoxStateTests {
     }
 
     // ⌘⌫ forgets an opened folder, never a favorite that was never opened.
-    // B-DLG-037
     @Test func forgetsTheSelectedOpenedFolderOnly() {
         var state = GoToBoxState(places: Self.places)
         #expect(state.forgetKey() == .forget("/Users/demo/src/filetrail"))
@@ -82,8 +79,6 @@ struct GoToBoxStateTests {
         #expect(noForget.hint == nil)
     }
 
-    // B-DLG-041 B-DLG-042 B-DLG-048 B-DLG-049 B-DLG-051
-    // B-DLG-017
     @Test func completesAPathFolderByFolder() {
         var state = GoToBoxState(places: Self.places)
         #expect(state.setText("de") == .none)
@@ -116,7 +111,6 @@ struct GoToBoxStateTests {
     }
 
     // A typed path opens as typed, trimmed.
-    // B-DLG-050 B-DLG-015
     @Test func opensATypedPathWithoutChoosingACompletion() {
         var state = GoToBoxState(places: Self.places)
         _ = state.setText(" ~/Documents ")
@@ -127,7 +121,6 @@ struct GoToBoxStateTests {
     }
 
     // A click on a completion puts it into the field without a slash, and selects nothing.
-    // B-DLG-052
     @Test func aClickOnACompletionFillsTheField() {
         var state = GoToBoxState(places: [])
         _ = state.setText("/Users/")
@@ -137,7 +130,6 @@ struct GoToBoxStateTests {
         #expect(state.selectedIndex == -1)
     }
 
-    // B-DLG-030 B-DLG-040
     @Test func saysHowToTypeAPathWhenThereIsNothingToList() {
         var state = GoToBoxState(places: [])
         #expect(state.emptyText == "Folders you open are listed here. Start with / or ~ to type a path.")
@@ -150,7 +142,6 @@ struct GoToBoxStateTests {
     }
 
     // Move To selects nothing until something is typed or ↓ is pressed.
-    // B-DLG-058 B-DLG-059
     @Test func moveToSelectsNothingUntilTyped() {
         var state = GoToBoxState(places: Self.places, selectFirstPlace: false)
         #expect(names(state) == ["filetrail", "Downloads", "render-farm", "Desktop"])
@@ -167,7 +158,6 @@ struct GoToBoxStateTests {
     }
 
     // Only a pointer that really moved selects a row.
-    // B-DLG-034
     @Test func aPointerSelectsOnlyOnceItMoved() {
         var state = GoToBoxState(places: Self.places)
         state.pointerMoved(over: 2, at: CGPoint(x: 10, y: 10))
@@ -207,8 +197,6 @@ final class StepTimers: TimerScheduling {
 @MainActor
 struct PathCompletionRequestsTests {
     // One request 350 ms after the last change; an answer for older text is dropped.
-    // B-DLG-043 B-DLG-045
-    // B-DLG-017
     @Test func asksAfterThePauseAndDropsStaleAnswers() async {
         let timers = StepTimers()
         var asked: [String] = []
@@ -242,7 +230,6 @@ struct PathCompletionRequestsTests {
     }
 
     // The request is trimmed with ~ expanded; a failed one is no completions.
-    // B-DLG-044 B-DLG-045
     @Test func expandsTheHomeFolderAndTakesAFailureAsNothing() async {
         #expect(PathCompletionRequests.requestPath(" ~/src ", homePath: "/Users/demo") == "/Users/demo/src")
         #expect(PathCompletionRequests.requestPath("~", homePath: "/Users/demo") == "/Users/demo")

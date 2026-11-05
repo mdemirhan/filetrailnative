@@ -1,11 +1,9 @@
-// Port of apps/desktop/src/shared/appPreferences.test.ts
 import Foundation
 import Testing
 
 @testable import FTFoundation
 
 struct AppPreferencesTests {
-    // T-e5881b9a F-013 F-021
     @Test func clampsNumericPreferencesAndRoundsToWholePixels() {
         #expect(AppPreferenceLimits.clampPaneWidth(279.6, 200...320) == 280)
         #expect(AppPreferenceLimits.clampPaneWidth(99.2, 200...320) == 200)
@@ -13,7 +11,6 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.clampOpenItemLimit(51.2) == 50)
     }
 
-    // T-c3b4e67c F-013 F-070
     @Test func clampsDetailColumnWidthsUsingPerColumnLimits() {
         #expect(AppPreferenceLimits.clampDetailColumnWidth(.name, 719.8) == 720)
         #expect(AppPreferenceLimits.clampDetailColumnWidth(.size, 10) == DetailColumnKey.size.widthLimits.lowerBound)
@@ -24,12 +21,10 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.clampSearchColumnWidth(.folder, 4000) == 720)
     }
 
-    // T-23ddd45d F-011
     @Test func offersAutoLightAndDark() {
         #expect(AppPreferenceLimits.themeOptions.map(\.label) == ["Auto", "Light", "Dark"])
     }
 
-    // T-d4a12946 F-011
     @Test func defaultsToBlueTheFirstAccentOffered() {
         let options = AppPreferenceLimits.accentOptions
         #expect(options[0].value == "#007aff")
@@ -40,7 +35,6 @@ struct AppPreferencesTests {
         #expect(options.count == 9)
     }
 
-    // T-b6a18486 F-011 F-012 F-013 F-014 F-016 F-018 F-019 F-020 F-021 F-022
     @Test func shipsExpectedDefaultsForThePersistedPreferenceShape() {
         let defaults = AppPreferences.defaults()
         #expect(defaults.theme == .auto)
@@ -105,7 +99,6 @@ struct AppPreferencesTests {
         #expect(defaults.shortcutOverrides == [:])
     }
 
-    // T-83f9c734
     @Test func resolvesAutoToLightOrDarkFromTheMacOSAppearance() {
         #expect(AppPreferenceLimits.resolveEffectiveTheme(.auto, systemPrefersDark: false) == .light)
         #expect(AppPreferenceLimits.resolveEffectiveTheme(.auto, systemPrefersDark: true) == .dark)
@@ -113,7 +106,6 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.resolveEffectiveTheme(.light, systemPrefersDark: true) == .light)
     }
 
-    // F-015
     @Test func savedColumnOrdersDropUnknownOrDuplicateKeysAndAppendNewColumns() {
         let order = JSONNode.array(["size", "size", "name", "bogus", "modified"].map(JSONNode.string) + [.number(5)])
         #expect(
@@ -137,7 +129,6 @@ struct AppPreferencesTests {
         #expect(AppPreferenceLimits.normalizeAccentColor("#12345g") == nil)
     }
 
-    // F-025 F-073
     @Test func aWindowKeepsTwentyTwoSessionKeysOfItsOwn() {
         #expect(WindowSessionKeys.all.count == 22)
         #expect(WindowSessionKeys.isSessionKey("openTabs"))
@@ -145,7 +136,7 @@ struct AppPreferencesTests {
         #expect(!WindowSessionKeys.isSessionKey("theme"))
         let encoded = (try? JSONNode.of(AppPreferences.defaults().windowSession))?.object ?? [:]
         #expect(Set(encoded.keys) == Set(WindowSessionKeys.all))
-        // Every preference key is listed: the original's, with one density for its four Compact switches.
+        // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
         #expect(Set(preferenceKeys.keys) == Set(AppPreferences.keys))
         #expect(AppPreferences.keys.count == 53)
@@ -170,7 +161,7 @@ struct AppPreferencesTests {
         let data = try JSONEncoder().encode(state)
         let read = try AppStateReader.read(data: data, defaults: .defaults(theme: .dark))
         #expect(read == state)
-        // Missing values are written as null, as the original writes them.
+        // Missing values are written as null.
         let json = try #require(try JSONNode.parse(data).object?["preferences"]?.object)
         #expect(json["treeRootPath"] == JSONNode.null)
         #expect(json["terminalApp"]?.object?["appName"] == JSONNode.string("iTerm"))

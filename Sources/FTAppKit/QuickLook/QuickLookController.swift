@@ -1,4 +1,3 @@
-// Port of the Quick Look part of apps/desktop/src/main/bootstrap/systemHandlers.ts (system:quickLook, BrowserWindow.previewFile)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -39,8 +38,8 @@ final class SystemQuickLookPanel: QuickLookPanelControlling {
     }
 }
 
-/// Quick Look: the system's preview panel for one item (the original previews a single file, PLAN.md §3.3), opened
-/// with Space, the menu and the Info panel's button, zooming out of the item's row.
+/// Quick Look: the system's preview panel for one item, opened with Space, the menu and the Info panel's button,
+/// zooming out of the item's row.
 @MainActor
 final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSource,
     @preconcurrency QLPreviewPanelDelegate
@@ -59,7 +58,7 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
 
     var isShowing: Bool { panel.isVisible && url != nil }
 
-    /// `previewFile`: the panel shows the item. Showing the item it already shows closes the panel, as Space does.
+    /// The panel shows the item. Showing the item it already shows closes the panel, as Space does.
     func toggle(_ path: String, from window: NSWindow?, sourceFrame: @escaping (URL) -> NSRect?) {
         let target = URL(fileURLWithPath: path)
         if isShowing, url == target {

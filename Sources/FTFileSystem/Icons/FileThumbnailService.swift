@@ -1,4 +1,3 @@
-// Port of nativeGetFileThumbnail (packages/native-fs/src/native_thumbnail.m) and getFileThumbnailHandler (apps/desktop/src/main/bootstrap/systemHandlers.ts)
 import AppKit
 import Darwin
 import QuickLookThumbnailing
@@ -7,9 +6,8 @@ import UniformTypeIdentifiers
 /// Quick Look's picture of a file's content.
 public struct ThumbnailPicture: @unchecked Sendable {
     public let image: NSImage
-    /// Whether every pixel is fully opaque. The original sends such pictures (photos, video frames) as
-    /// JPEG and draws an outline around them; one with transparency is a cut-out image or a page drawn with
-    /// its own outline.
+    /// Whether every pixel is fully opaque. Such pictures (photos, video frames) get an outline around
+    /// them; one with transparency is a cut-out image or a page drawn with its own outline.
     public let isOpaque: Bool
 
     public init(image: NSImage, isOpaque: Bool) {
@@ -18,7 +16,7 @@ public struct ThumbnailPicture: @unchecked Sendable {
     }
 }
 
-/// The answer to a preview request (`IpcResponse<"system:getFileThumbnail">`).
+/// The answer to a preview request.
 public struct ThumbnailResponse: Sendable {
     /// The file's state the preview was made from; nil when the file could not be read.
     public var version: String?
@@ -76,7 +74,7 @@ public struct FileThumbnailService: ThumbnailProviding {
         return "\(javaScriptNumber(mtimeMs)):\(info.st_size)"
     }
 
-    /// How JavaScript writes a number into a string: no ".0" on a whole number.
+    /// A number written into a string: no ".0" on a whole number.
     static func javaScriptNumber(_ value: Double) -> String {
         if value == value.rounded(), abs(value) < 1e15 {
             return String(Int64(value))

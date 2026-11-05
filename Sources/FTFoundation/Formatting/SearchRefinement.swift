@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/searchRefinement.ts
 import Foundation
 
 public protocol SearchRefinementItem {

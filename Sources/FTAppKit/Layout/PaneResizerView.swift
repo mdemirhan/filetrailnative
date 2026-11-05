@@ -1,5 +1,3 @@
-// Port of the .pane-resizer of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx, its drag in
-// hooks/useExplorerPaneLayout.ts and its keys in hooks/useExplorerNavigationController.ts:2072-2086
 import AppKit
 import FTFoundation
 

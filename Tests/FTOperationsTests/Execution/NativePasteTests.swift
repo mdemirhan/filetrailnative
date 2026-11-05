@@ -1,5 +1,4 @@
-// Port of packages/core/src/fs/copyPasteNative.realfs.test.ts and copyPasteSymlinkMetadata.realfs.test.ts: the
-// paste on the app's native copy (copyfile(3))
+// The paste on the app's native copy (copyfile(3))
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -46,7 +45,6 @@ struct NativePasteTests {
         return await execute(fileSystem, (report, resolvedNodes), operationId: "op-native").last?.result
     }
 
-    // T-91071836 F-454
     @Test func copiesALockedFileAndTheCopyStaysLocked() async throws {
         try await withTemporaryDirectory { root in
             let source = root.path + "/src/locked.txt"
@@ -61,7 +59,6 @@ struct NativePasteTests {
         }
     }
 
-    // T-36fd50a5 F-454 F-457
     @Test func keepsAFoldersFinderTagsModeAndDate() async throws {
         try await withTemporaryDirectory { root in
             let source = root.path + "/src/Tagged"
@@ -83,7 +80,6 @@ struct NativePasteTests {
         }
     }
 
-    // T-42cd2b28 F-454
     @Test func copiesALockedFolderWithItsItemsInside() async throws {
         try await withTemporaryDirectory { root in
             let source = root.path + "/src/Vault"
@@ -100,7 +96,6 @@ struct NativePasteTests {
 
     // A link pasted keeps its own tags, as Finder's copy does: it is copied as the link itself. A move copies, as
     // to another disk.
-    // T-d81c40a3 F-273 F-451
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func keepsTheLinksOwnExtendedAttributes(mode: CopyPasteMode) async throws {
         try await withTemporaryDirectory { root in

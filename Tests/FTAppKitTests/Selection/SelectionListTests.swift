@@ -1,6 +1,3 @@
-// Covers the selection, the keyboard, the type-to-filter and the inline rename of the List in a window, by feature row
-// (App.selection.test.tsx, App.listPaging.test.tsx, ContentPane.dragSelection.test.tsx, ContentPane.rename.test.tsx,
-// InlineRenameField.test.tsx and the open and Return cases of App.openItems.test.tsx), on a window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -27,10 +24,8 @@ extension ExplorerWindowlessTests {
             editor.didChangeText()
         }
 
-        // T-f642ee14 T-cab63d6a T-e0a904c7 F-779 F-780 F-781 F-782 F-790 B-SEL-002 B-SEL-003 B-SEL-004
-        // B-SEL-005 B-SEL-006 B-SEL-007 B-SEL-008 B-SEL-009 B-SEL-011: the pointer selects, extends and flips; a plain
+        // The pointer selects, extends and flips; a plain
         // click on one of several narrows on the click, not on the press.
-        // T-40efc5c6
         @Test func clicksSelectExtendAndToggle() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -59,9 +54,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-5335903c F-781 B-SEL-003: pressing a selected item changes nothing until the click completes, so a drag can
+        // Pressing a selected item changes nothing until the click completes, so a drag can
         // still carry the whole selection.
-        // T-5b6c37ca
         @Test func pressingASelectedItemKeepsTheSelectionUntilTheClick() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -83,8 +77,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-7d7b8def F-783 B-SEL-013 B-SEL-014 B-SEL-021 B-SEL-023: ⌘A selects everything, a press on empty space clears.
-        // T-49e9cc0d
+        // ⌘A selects everything, a press on empty space clears.
         @Test func selectAllAndEmptySpace() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -102,9 +95,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-bd16fca2 F-783 B-SEL-015 B-SEL-016: a right-click on one of the selection keeps it, on another item selects it
+        // A right-click on one of the selection keeps it, on another item selects it
         // alone, and on empty space clears the selection.
-        // B-VIEW-204 B-VIEW-205 T-a6a86d62
         @Test func aRightClickKeepsOrReplacesTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -123,10 +115,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-153802d4 T-2ef51053 T-7fc4a5bc F-784 B-SEL-145 B-SEL-147 B-SEL-149 B-SEL-150 B-SEL-151 B-SEL-152: a drag from
+        // A drag from
         // empty space draws a box and selects the rows it touches; the lead is the touched row nearest the pointer;
         // barely moving only clears; ⇧ adds and ⌘ flips.
-        // B-SEL-148 B-SEL-159 B-VIEW-078 B-VIEW-079 B-VIEW-080
         @Test func theMarqueeSelectsTheRowsItTouches() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -151,9 +142,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-faa59834 F-785 B-SEL-035 B-SEL-036 B-SEL-037 B-SEL-038 B-SEL-042 B-SEL-043: the arrow keys move the lead and
+        // The arrow keys move the lead and
         // select what they land on; ⇧ stretches; Home and End go to the ends; with nothing selected the first item.
-        // B-NAV-143 B-NAV-144 B-NAV-148 B-VIEW-060
         @Test func arrowKeysMoveTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -176,7 +166,7 @@ extension ExplorerWindowlessTests {
             // Left and Right move through the List as Up and Down do.
             list.key("ArrowRight")
             #expect(list.selectedNames == ["note.txt"])
-            // The selected item left the list: the arrow keys carry on from where it stood (B-SEL-044).
+            // The selected item left the list: the arrow keys carry on from where it stood.
             let removed = try #require(tab.content.entries.first { $0.name == "Beta" })
             tab.content.select(paths: [removed.path])
             try FileManager.default.removeItem(atPath: removed.path)
@@ -188,10 +178,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-54190e0b T-53bf4809 T-947ae7a6 T-625f60e6 T-9b89ad1c T-dd13c356 F-786 B-SEL-049 B-SEL-051 B-SEL-052
-        // B-SEL-054 B-SEL-055 B-SEL-056 B-SEL-058: a page is the rows that fit less one, half a page half of them; the
+        // A page is the rows that fit less one, half a page half of them; the
         // list scrolls as far as the selection moved only when it lands off screen; ⇧ extends.
-        // B-NAV-153 B-NAV-157 B-NAV-158 B-SEL-046 B-SEL-050 B-VIEW-060 T-39bda507
         @Test func pagingMovesByRowsAndScrollsToFollow() async throws {
             let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Many", files: 200)
@@ -234,11 +222,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-74e6332c T-96d467f3 T-0d4539c1 T-36a01e7b F-787 F-788 F-839 B-SEL-071 B-SEL-072 B-SEL-073 B-SEL-075
-        // B-SEL-076 B-SEL-077 B-SEL-078 B-SEL-081 B-SEL-082: typing narrows the list and selects the best match;
+        // Typing narrows the list and selects the best match;
         // Backspace edits; Esc brings the list back and keeps the selection. (Space, nothing matching and the ✕ are in
         // SelectionCheckpointTests.)
-        // B-NAV-053 B-NAV-169 B-NAV-170 B-NAV-172 B-SEL-084 B-VIEW-007 B-VIEW-067 B-VIEW-068 B-VIEW-239
         @Test func typingFiltersTheList() async throws {
             let harness = try ExplorerHarness.windowless()
             let folder = try harness.makeFolder(named: "Files", files: 0)
@@ -274,9 +260,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-cac2192f T-8bf020bb T-501b53e4 F-793 F-794 B-SEL-122 B-SEL-123 B-SEL-126 B-SEL-141: F2 opens the field over
+        // F2 opens the field over
         // the name with the stem selected, Return commits once, and the renamed item is selected.
-        // B-SEL-032 B-SEL-128 B-SEL-143 B-VIEW-093
         @Test func f2RenamesInPlace() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -311,9 +296,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-85124c2a T-9b9ea76b F-794 B-SEL-126 B-SEL-127 B-SEL-130: an unchanged or emptied name cancels; leaving the field
+        // An unchanged or emptied name cancels; leaving the field
         // commits a changed one.
-        // B-VIEW-093
         @Test func unchangedEmptyAndBlurredNames() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -339,9 +323,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-e1ec5a35 T-bfbb338c T-8cf23ed4 F-795 B-SEL-131 B-SEL-132 B-SEL-133: a refused name keeps the field open with a
+        // A refused name keeps the field open with a
         // red ring and the reason under it; the same name is not sent again; leaving the field gives up.
-        // B-VIEW-094
         @Test func aRefusedNameKeepsTheFieldOpen() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -379,9 +362,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-7eb52bf1 T-1d034fb5 T-01684270 F-795 B-SEL-137 B-SEL-138: the name being edited keeps the keyboard and what
+        // The name being edited keeps the keyboard and what
         // was typed when its row scrolls away and back, and Escape still gives up.
-        // B-SEL-128 B-SEL-143 B-VIEW-091
         @Test func theDraftSurvivesScrolling() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -409,7 +391,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-05cea347 T-efab6cb2 T-7ff56dd9 T-ce3a4ee4 F-793 F-827 B-SEL-106 B-SEL-107 B-SEL-108 B-NAV-064: Return renames,
+        // Return renames,
         // or opens when the Return key setting says; ⌘↓ opens whatever the setting; double-click opens a folder.
         @Test func returnRenamesOrOpensAsTheSettingSays() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -436,8 +418,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-109 B-NAV-066: more items than "open at most N" shows a notice and opens none.
-        // B-DLG-192 B-SEL-170
+        // More items than "open at most N" shows a notice and opens none.
         @Test func tooManyItemsShowANotice() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -447,7 +428,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.editSelectAll)
             #expect(list.selectedNames.count == 4)
             list.key("Enter")
-            // The notice is an alert drawn in the window (`ActionNoticeDialog`).
+            // The notice is an alert drawn in the window.
             #expect(await waitUntil { tab.frontAlert != nil })
             let alert = try #require(tab.frontAlert)
             #expect(alert.titleLabel.stringValue.hasPrefix("Too Many Items to"))

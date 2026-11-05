@@ -1,5 +1,4 @@
-// Port of apps/desktop/src/main/bootstrap/undoRealDisk.testkit.ts: Undo and Redo on a real disk, through the write
-// coordinator as the app runs them
+// Undo and Redo on a real disk, through the write coordinator as the app runs them
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -10,7 +9,7 @@ import os
 @testable import FTOperations
 
 /// The disk itself (the app's native file system) with a Trash that is a plain folder, every call of which a test may
-/// answer for instead (`fsOverrides`). Each override is given the disk to pass the call on to.
+/// answer for instead. Each override is given the disk to pass the call on to.
 final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
     let base: NativeWriteFileSystem
     private let lock = NSRecursiveLock()
@@ -30,7 +29,7 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
     var rmImpl: ((String, Bool, Bool) throws -> Void)?
     var itemSizeImpl: ((String) throws -> ItemSize)?
 
-    /// `createOriginalWriteOperationFs(folderTrash(trashDir))`.
+    /// The disk, with a Trash that is the folder `trashDir`.
     init(trashDir: String) {
         base = NativeWriteFileSystem(trash: UndoTestFileSystem.folderTrash(trashDir))
     }
@@ -124,7 +123,7 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
     }
 }
 
-/// `setUpUndo`: a coordinator with a history, its Trash in `trashDir`, and helpers that run each operation to its end.
+/// A coordinator with a history, its Trash in `trashDir`, and helpers that run each operation to its end.
 @MainActor
 final class UndoTest {
     let root: String
@@ -154,10 +153,10 @@ final class UndoTest {
                 undoCheckWithinMs: undoCheckWithinMs, logError: { log.log($0, $1) }))
     }
 
-    /// Waits for the end of `handle`'s operation, told by the window when it comes. The original polls for it until a
-    /// 10 s deadline; here other suites can keep the main actor waiting for longer than that in a full run, and the
-    /// poll then woke past the deadline before the end it had been waiting for was delivered. A hang is caught by the
-    /// suite's time limit (`localOperationHang`).
+    /// Waits for the end of `handle`'s operation, told by the window when it comes. A poll with a 10 s deadline
+    /// doesn't do: other suites can keep the main actor waiting for longer than that in a full run, and the poll then
+    /// woke past the deadline before the end it had been waiting for was delivered. A hang is caught by the suite's
+    /// time limit (`localOperationHang`).
     func finish(_ handle: WriteOperationHandle) async throws -> WriteOperationEvent {
         await window.ended(handle.operationId)
     }
@@ -191,7 +190,7 @@ final class UndoTest {
         try await batchRename(pairs.map { ($0.0, $0.1, false) })
     }
 
-    /// `writeOperation:batchRename` with the request as it is.
+    /// A rename of several items with the request as it is.
     @discardableResult
     func batchRename(_ request: BatchRenameRequest) async throws -> WriteOperationEvent {
         try await finish(coordinator.batchRename(request, window: window))
@@ -229,7 +228,7 @@ final class UndoTest {
         return result
     }
 
-    /// `snapshotOf`: every item under `root` but the Trash: path, kind and id.
+    /// Every item under `root` but the Trash: path, kind and id.
     func snapshot() -> [String] {
         UndoDisk.snapshot(root, skipping: trashDir)
     }
@@ -271,7 +270,7 @@ func withUndoFolder(
     try await body(directory.path, trashDir)
 }
 
-/// The disk as the undo tests read and change it (node:fs's sync calls).
+/// The disk as the undo tests read and change it.
 enum UndoDisk {
     static func write(_ path: String, _ text: String) throws {
         try Data(text.utf8).write(to: URL(fileURLWithPath: path))
@@ -316,7 +315,6 @@ enum UndoDisk {
         }
     }
 
-    /// `snapshotOf`.
     static func snapshot(_ root: String, skipping trashDir: String) -> [String] {
         var lines: [String] = []
         func walk(_ folder: String) {
@@ -336,7 +334,7 @@ enum UndoDisk {
     }
 }
 
-/// An error with a Node code, as the original's tests throw them (`Object.assign(new Error(code), { code })`).
+/// An error with a code.
 func codedError(_ code: String, _ message: String? = nil, cause: (any Error)? = nil) -> OperationError {
     OperationError(message ?? code, code: code, cause: cause)
 }

@@ -1,4 +1,4 @@
-// Port of apps/desktop/src/main/windowIpcHandlers.ts: what knows which window is asking
+// What knows which window is asking
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -80,7 +80,7 @@ public struct PreferencesChange: Equatable, Sendable {
 
 /// A window that follows the app's preferences while it is open: told each change, with only the keys the whole app
 /// shares (`filetrail:preferencesChanged`). An explorer window conforms to redraw with a new theme or accent and to
-/// follow the other settings (P5-01).
+/// follow the other settings.
 @MainActor
 public protocol PreferenceChangeReceiver: AnyObject {
     func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange)

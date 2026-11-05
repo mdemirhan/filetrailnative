@@ -1,4 +1,3 @@
-// Port of createVolumeWatcher in apps/desktop/src/main/volumes.ts
 import Dispatch
 import Foundation
 

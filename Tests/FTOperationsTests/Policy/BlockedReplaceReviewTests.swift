@@ -1,6 +1,5 @@
-// Port of the review cases of packages/core/src/fs/copyPasteBlockedReplace.test.ts: Replace for all, over another item
-// being pasted, is made the safe choice before anything is pasted. What the paste then writes (and that it refuses a
-// Replace planned anyway) is checked with the engine (P3-03, P3-04).
+// Replace for all, over another item being pasted, is made the safe choice before anything is pasted. What the paste
+// then writes (and that it refuses a Replace planned anyway) is checked with the engine.
 import FTFoundation
 import Foundation
 import Testing
@@ -21,7 +20,6 @@ private func analyze(
 struct BlockedReplaceReviewTests {
     // Search results from two folders, pasted into one of them: "/d/a.txt" is pasted too, and "/x/a.txt" would
     // land on it.
-    // T-a0bdac5b F-446 F-318
     @Test func replaceForAllOverAnotherItemBeingPastedKeepsBothAsTheReviewSheetSays() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/x", .directory()), ("/x/a.txt", .file(size: 3)), ("/d", .directory()), ("/d/a.txt", .file(size: 7)),
@@ -40,7 +38,6 @@ struct BlockedReplaceReviewTests {
     }
 
     // "/data/d" is "/d" by another spelling (a firmlink): the same folder, by identity.
-    // T-6d3f7e31 F-446 F-318
     @Test func neverReplacesAFolderHoldingAnotherItemBeingPastedReachedByAnotherSpelling() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/x", .directory(dev: 2)), ("/x/a", .directory(dev: 2)), ("/x/a/new.txt", .file(size: 3, dev: 2)),

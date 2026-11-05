@@ -1,5 +1,5 @@
-// Ports by feature the scenarios of the wave-3-end checkpoint that differed: 38 (paste in another window), 10 (dates of
-// results), a17 (a date in the list), 78 and 80 (the folder let go of) and 101, 106 and 107 (where the tree stands)
+// 38 (paste in another window), 10 (dates of results), a17 (a date in the list), 78 and 80 (the folder let go of) and
+// 101, 106 and 107 (where the tree stands)
 #if DEBUG
     import AppKit
     import FTFoundation
@@ -72,10 +72,9 @@
                 return runner
             }
 
-            // T-317cfcc8 F-638 F-643 B-VIEW-171 B-VIEW-184: scenario 38 with the app in the background, as a capture run
+            // Scenario 38 with the app in the background, as a capture run
             // may leave it: no window is key, so ⌘C and ⌘V go through the menu to the window picked last. The copy
             // reaches the other window's clipboard button, and the paste lists, selects and tells of the file there.
-            // B-VIEW-229
             @Test func keyStepsCopyInThePickedWindowAndPasteInTheOther() async throws {
                 let window = try await WritingWindow.open()
                 let harness = window.harness
@@ -131,7 +130,7 @@
                 await window.close()
             }
 
-            // F-813 B-SRCH-104: scenario 10. A step does not count as finished while the details of the rows on screen
+            // Scenario 10. A step does not count as finished while the details of the rows on screen
             // are being read: the snapshot after it has the dates and sizes of the results (the field being edited).
             @Test func aStepWaitsForTheDetailsOfTheRowsOnScreen() async throws {
                 let harness = try ExplorerHarness.windowless()
@@ -176,7 +175,7 @@
                 await harness.close()
             }
 
-            // F-831 B-NAV-134: a17 step 13. "list row date" of the elements names the list's Date Modified cells: there
+            // a17 step 13. "list row date" of the elements names the list's Date Modified cells: there
             // is one to a row, and it reads what a person sees there.
             @Test func aListRowDateIsTheDateCell() async throws {
                 let harness = try ExplorerHarness.windowless()
@@ -198,9 +197,8 @@
                 await harness.close()
             }
 
-            // F-737 B-TREE-059 B-TREE-060: scenario 80. A press on a section's heading lets go of the folder: no title, no
+            // Scenario 80. A press on a section's heading lets go of the folder: no title, no
             // path, "Select a folder…" and no reading it again, until a folder is opened.
-            // B-INFO-103 B-NAV-117 B-NAV-123
             @Test func aFolderLetGoOfShowsNoFolder() async throws {
                 let harness = try ExplorerHarness.windowless()
                 harness.startsTheTreeAtTheDisk()
@@ -231,7 +229,7 @@
                 await harness.close()
             }
 
-            // B-TREE-060: with no folder the tab is "Favorites" and keeps no path: not in its snapshot or its saved tab, and
+            // With no folder the tab is "Favorites" and keeps no path: not in its snapshot or its saved tab, and
             // it isn't remembered when closed. Hidden files only change the setting. A new tab has no folder either.
             @Test func aFolderLetGoOfKeepsNoPath() async throws {
                 let harness = try ExplorerHarness.windowless()
@@ -278,7 +276,6 @@
 
             // A density change reveals nothing (TreePane's reveal doesn't depend on it): the tree stays at its offset,
             // unless the rows no longer reach that far, where it stands at their end, as a browser's scrollTop does.
-            // B-TREE-137 T-7bee4986
             @Test func aDensityChangeLeavesTheTreeWhereItStands() async throws {
                 // Finder's sizes at the system's small sidebar size: rows shorter than File Trail's.
                 let system = SystemSidebarSize.shared.size
@@ -319,9 +316,9 @@
                 await harness.close()
             }
 
-            // F-832: the prefs before the first step that needs the window are the original's seeded preferences: its
+            // The prefs before the first step that needs the window are the seeded preferences: its
             // tree reveals the folder with them, and the row stands last in view. The window made smaller after that
-            // leaves the tree where it stands, the row below the fold (101, 106, 107).
+            // leaves the tree where it stands, the row below the fold.
             @Test func seededPreferencesComeBeforeTheWindowsSize() async throws {
                 let harness = try ExplorerHarness.windowless()
                 for index in 0..<60 {

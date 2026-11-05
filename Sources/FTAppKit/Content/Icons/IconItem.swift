@@ -1,18 +1,15 @@
-// Port of IconGridItem and IconLabel (apps/desktop/src/renderer/components/IconGridView.tsx:439-521), FileThumbnail
-// (lib/fileThumbnails.tsx:134-160), the badge of ClipboardMarkIcon (lib/clipboardMarks.tsx) and their rules in
-// styles.css:7767-7782 and 7899-8111
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The previews of icon view, one cache for the app (`thumbnailCache` of `fileThumbnails.tsx`).
+/// The previews of icon view, one cache for the app.
 @MainActor
 enum IconThumbnails {
     static let store = ThumbnailStore()
 }
 
-/// The name under an icon (`.icon-item-label`): centred lines, at most two, on the selection's pill when the item is
-/// selected. The field holds the label's text (the name as shortened) and draws it itself.
+/// The name under an icon: centred lines, at most two, on the selection's pill when the item is selected. The field
+/// holds the label's text (the name as shortened) and draws it itself.
 final class IconNameLabel: ListLabel {
     var density = Density.standard
     var pillColor: NSColor? {
@@ -22,7 +19,7 @@ final class IconNameLabel: ListLabel {
     var lines: [String] = [] {
         didSet { needsDisplay = true }
     }
-    /// What a search matched, in the label's text (P5-07): no padding of its own under an icon.
+    /// What a search matched, in the label's text: no padding of its own under an icon.
     var marks: [HighlightRange] = [] {
         didSet { needsDisplay = true }
     }
@@ -70,7 +67,7 @@ final class IconNameLabel: ListLabel {
         let inset = CGFloat(layout.labelPaddingHorizontal)
         let width = max(0, bounds.width - inset * 2)
         var shown = Array(lines.prefix(IconLabel.lineCount))
-        // `-webkit-line-clamp: 2`: what does not fit ends the second line with an ellipsis.
+        // What does not fit in two lines ends the second line with an ellipsis.
         if lines.count > IconLabel.lineCount, !shown.isEmpty {
             shown[shown.count - 1] = lines[(IconLabel.lineCount - 1)...].joined()
         }
@@ -101,7 +98,7 @@ final class IconNameLabel: ListLabel {
 }
 
 /// A Quick Look preview that keeps its file's proportions; a photo or a video frame is framed with a hairline and a
-/// soft shadow (`.file-thumbnail-img.framed`).
+/// soft shadow.
 final class IconThumbnailView: PassThroughView {
     private let imageLayer = CALayer()
     private let ring = CALayer()
@@ -158,7 +155,7 @@ final class IconThumbnailView: PassThroughView {
     }
 }
 
-/// `.clipboard-mark-badge`: an 18 pt circle on the corner of the picture with the copy or the scissors glyph.
+/// The clipboard badge: an 18 pt circle on the corner of the picture with the copy or the scissors glyph.
 final class ClipboardBadgeView: PassThroughView {
     var mark: ContentClipboardMark = .copy {
         didSet { needsDisplay = true }
@@ -184,7 +181,7 @@ final class ClipboardBadgeView: PassThroughView {
     }
 }
 
-/// The tile the icon sits on (`.icon-item-image`): a backdrop of the text colour while the item is selected.
+/// The tile the icon sits on: a backdrop of the text colour while the item is selected.
 final class IconTileView: PassThroughView {
     var backdrop: NSColor? {
         didSet { needsDisplay = true }
@@ -198,8 +195,8 @@ final class IconTileView: PassThroughView {
     }
 }
 
-/// The root of an item (`.icon-item`): the pointer goes through to the collection, which asks the item whether a press
-/// is on its tile or its name. It draws what a drop on the item would do while a drag is over it (P5-08).
+/// The root of an item: the pointer goes through to the collection, which asks the item whether a press is on its tile
+/// or its name. It draws what a drop on the item would do while a drag is over it.
 final class IconItemRootView: PassThroughView {
     var drop: (state: DropTargetState, theme: Theme)? {
         didSet { needsDisplay = true }
@@ -217,16 +214,16 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
 
     let root = IconItemRootView()
     let tile = IconTileView()
-    /// `.icon-item-image .file-icon`: the box the icon or the preview is drawn in.
+    /// The box the icon or the preview is drawn in.
     let iconBox = PassThroughView()
     let iconView = NSImageView()
     let thumbnail = IconThumbnailView()
     let badge = ClipboardBadgeView()
     let label = IconNameLabel()
     let pill = GridMarkerView(id: "icons.item.pill")
-    /// Marks the item a drag would drop into, for the capture.
+    /// Marks the item a drag would drop into, for automation.
     let dropMarker = GridMarkerView(id: "icons.item.dropTarget")
-    /// The whole name, for what reads the item's text field (the capture's `select` step).
+    /// The whole name, for what reads the item's text field (a scenario's `select` step).
     private let nameField = NSTextField(labelWithString: "")
 
     private(set) var path: String?
@@ -376,7 +373,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
             fitName(entry, host: host, layout: pane.layout)
             layoutParts()
         }
-        // Cut items look taken out already: the name and the picture (not its badge) dimmed (P5-08).
+        // Cut items look taken out already: the name and the picture (not its badge) dimmed.
         let cut = host.clipboardMark(for: entry.path) == .cut
         label.alphaValue = cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
         iconBox.alphaValue =
@@ -402,7 +399,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         iconBox.frame = NSRect(x: inset, y: inset, width: layout.iconSize, height: layout.iconSize)
         iconView.frame = iconBox.bounds
         if hasThumbnail, thumbnailSize.width > 0, thumbnailSize.height > 0 {
-            // `max-width: 100%; max-height: 100%`: shrunk to fit the box, never enlarged.
+            // Shrunk to fit the box, never enlarged.
             let side = layout.iconSize
             let scale = min(1, side / Double(thumbnailSize.width), side / Double(thumbnailSize.height))
             let width = Double(thumbnailSize.width) * scale
@@ -426,9 +423,9 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         layoutParts()
     }
 
-    // MARK: Clipboard and drags (P5-08)
+    // MARK: Clipboard and drags
 
-    /// The item was just copied or cut (`.icon-item.clipboard-flash::after`): the whole item, in the accent.
+    /// The item was just copied or cut: the whole item flashes in the accent.
     func flashClipboardMark(in pane: ItemGridPane) {
         guard let path, let host = pane.host, host.clipboardMarks?.mark(for: path) != nil else { return }
         ClipboardFlash.flash(
@@ -438,7 +435,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
 
     /// Where the picture and the name are drawn, in `view`'s coordinates, for the drag's images.
     func dragPlacement(in view: NSView, visible: NSRect) -> FileDragPlacement {
-        // `.file-icon`: the box the icon or the preview is drawn in.
+        // The box the icon or the preview is drawn in.
         let icon = iconBox.convert(iconBox.bounds, to: view)
         return FileDragPlacement(
             iconRect: icon, nameRect: label.convert(label.bounds, to: view),

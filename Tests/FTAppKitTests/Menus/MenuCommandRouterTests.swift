@@ -1,4 +1,3 @@
-// Ports the routing cases of apps/desktop/src/main/appMenu.test.ts (createApplicationMenuTemplate)
 import AppKit
 import FTFoundation
 import Testing
@@ -63,7 +62,6 @@ import Testing
     }
 
     // A held ⌘V reaches the Edit menu's Paste again and again: the files are pasted once for the press.
-    // T-9bcb8c5f B-CLIP-061
     @Test func aHeldCommandVPastesOnce() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -88,7 +86,6 @@ import Testing
     }
 
     // In a text field the held key goes on pasting into the text, there and in another window, as the system's does.
-    // B-CLIP-061
     @Test func aHeldCommandVKeepsPastingIntoAField() {
         let (built, router, log) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -107,8 +104,7 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    // ⌘C, ⌘X and ⌘A are not in the original's set: a held one repeats, and it starts nothing on disk.
-    // B-CLIP-061
+    // ⌘C, ⌘X and ⌘A are not among the write-starting keys: a held one repeats, and it starts nothing on disk.
     @Test func theOtherEditItemsRepeat() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -120,7 +116,6 @@ import Testing
         #expect(explorer.performed == [.editCut, .editCopy, .editSelectAll])
     }
 
-    // T-ea45c4fc F-597
     @Test func sendsEachItemsCommandToTheExplorerWindow() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -144,9 +139,6 @@ import Testing
         #expect(sent > 50)
     }
 
-    // N/A T-b4b74d32 performEditAction dispatches to web contents; the edit commands go through the responder chain
-    // F-647
-    // B-VIEW-229 T-10fc92d7 T-b9bc9308
     @Test func dispatchesTheEditCommandsToTheResponderChainWhileATextFieldHasTheKeyboard() {
         let (built, router, log) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -169,7 +161,6 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    // T-37853846 F-600
     @Test func appliesEditCommandsNativelyInAnotherFocusedWindowInsteadOfTheExplorer() {
         let (built, router, log) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -183,7 +174,6 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    // T-bec9858f F-579 F-600
     @Test func undoesAndRedoesTheTypingOfAnotherFocusedWindowNeverTheFiles() {
         let (built, router, log) = make(options: .init(undoLabels: (undo: "Undo Move of “a.txt”", redo: "Redo")))
         let explorer = FakeExplorerWindow(id: 1)
@@ -208,7 +198,6 @@ import Testing
         #expect(explorer.performed == [.undo])
     }
 
-    // T-d728e786 F-600
     @Test func closesAnotherFocusedWindowWithCommandWInsteadOfATabOfTheExplorer() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -224,7 +213,6 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    // T-57799e7a F-604
     @Test func sendsACommandToTheExplorerWindowThatHasTheKeyboard() {
         let (built, router, _) = make()
         let front = FakeExplorerWindow(id: 1)
@@ -244,7 +232,6 @@ import Testing
         #expect(front.performed == [.goForward])
     }
 
-    // T-3c672ecf F-600
     @Test func hasTheHostOpenANewWindowWhileAnotherWindowIsFocused() {
         let (built, router, _) = make()
         let front = FakeExplorerWindow(id: 1)
@@ -262,7 +249,6 @@ import Testing
         #expect(front.performed.isEmpty)
     }
 
-    // T-1b991ea9 F-599
     @Test func doesNothingWithNoExplorerWindowToSendTo() {
         let (built, router, _) = make()
         router.explorerFor = { _ in nil }
@@ -271,7 +257,6 @@ import Testing
         choose(menuItem(built, "Go", "Back"), router)
     }
 
-    // T-5fa81f0e F-599
     @Test func withNoExplorerWindowOpensOneForNewWindowAndTheGoMenusPlaces() {
         let (built, router, log) = make()
         let settings = makeOffscreenWindow()
@@ -294,7 +279,6 @@ import Testing
         #expect(log.calls == [NSStringFromSelector(#selector(NSText.copy(_:)))])
     }
 
-    // T-a26df59b F-600
     @Test func leavesTheExplorerAloneWhenAnotherWindowIsFocused() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -306,7 +290,6 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    // T-96221c32 F-572
     @Test func opensTheSettingsWindowDirectlyWhenTheHostProvidesIt() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -320,7 +303,6 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    // T-2567a453 F-572
     @Test func opensTheAppsOwnAboutWindowInPlaceOfTheStandardPanel() {
         let (built, router, _) = make()
         var opened = 0
@@ -331,8 +313,6 @@ import Testing
         #expect(opened == 1)
     }
 
-    // T-6ec0c9ff F-594 B-DLG-247
-    // B-VIEW-231
     @Test func opensHelpsWindowFromAnyWindowOnTheKeyboardShortcutsPageForThatItem() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -350,7 +330,6 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    // T-e3dfecd3 F-598
     @Test func tellsTheHostAfterEachCommandSoItCanPutTheCheckmarksBack() {
         let (built, router, _) = make()
         let explorer = FakeExplorerWindow(id: 1)
@@ -364,7 +343,7 @@ import Testing
         #expect(explorer.performed == [.toggleHiddenFiles])
     }
 
-    // F-601 F-603: the menu validates an item by the state the explorer window reported
+    // The menu validates an item by the state the explorer window reported
     @Test func validatesAnItemByWhatTheStateSays() {
         let (built, router, _) = make()
         let goBack = menuItem(built, "Go", "Back")

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/startupNavigation.ts (the tabs a window opens with)
 import FTFoundation
 import Foundation
 
@@ -33,7 +32,6 @@ public enum StartupTabs {
         return path.utf16.elementsEqual(rootPath.utf16) || path.utf16.starts(with: (rootPath + "/").utf16)
     }
 
-    /// `resolvePersistedStartupRoot`.
     static func persistedRoot(_ persistedRootPath: String?, homePath: String, startupPath: String) -> String {
         let volumeRoot = ExplorerTabs.volumeRootPath(startupPath)
         // Macintosh HD holds its own folders only: a folder on another disk is shown from that disk's top.
@@ -49,7 +47,7 @@ public enum StartupTabs {
         return isPathWithinRoot(startupPath, homePath) ? homePath : volumeRoot
     }
 
-    /// `toStartupTab`: a saved tab in its folder, with the tree rooted where it was when the folder is still inside it.
+    /// A saved tab in its folder, with the tree rooted where it was when the folder is still inside it.
     public static func startupTab(_ tab: OpenTabPreference, homePath: String) -> StartupTab {
         guard let path = tab.path, !path.isEmpty else {
             return StartupTab(
@@ -66,8 +64,7 @@ public enum StartupTabs {
             favoritesExpanded: tab.favoritesExpanded, locationsExpanded: tab.locationsExpanded)
     }
 
-    /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it
-    /// (B-NAV-186, B-TREE-050).
+    /// A tab saved on a favorite removed since opens as the folder it is, so a row is selected and the tree follows it.
     public static func withoutRemovedFavorite(_ tab: StartupTab, _ preferences: AppPreferences) -> StartupTab {
         guard preferences.favoritesInitialized, let favorite = tab.favoritePath,
             !preferences.favorites.contains(where: { $0.path == favorite })
@@ -77,7 +74,7 @@ public enum StartupTabs {
         return plain
     }
 
-    /// `resolveStartupTabs`: "Reopen the last folder and tabs" brings back the tabs that were open; without it the
+    /// "Reopen the last folder and tabs" brings back the tabs that were open; without it the
     /// window opens one tab at home. A window opened while the app runs (`restoreTabs`) always opens the tabs it was
     /// given. A folder the app was launched with is shown in a tab of its own, unless a restored tab already has it.
     public static func resolve(

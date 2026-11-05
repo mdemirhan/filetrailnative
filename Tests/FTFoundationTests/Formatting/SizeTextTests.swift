@@ -1,5 +1,3 @@
-// Port of the size, permission, duration and name cases of apps/desktop/src/renderer/lib/formatting.test.ts,
-// with the sizes golden recorded from the reference (tools/parity/golden/sizes.ts).
 import FTTestSupport
 import Foundation
 import Testing
@@ -14,8 +12,6 @@ struct SizeTextTests {
 
     let en = Locale(identifier: "en_US")
 
-    // T-1a458436 F-089
-    // B-INFO-032 T-c6d101c9
     @Test func formatsBytesAndDeferredStates() {
         #expect(SizeText.size(2048) == "2.0 KB")
         #expect(SizeText.size(nil, status: .deferred) == "Not yet available")
@@ -23,8 +19,6 @@ struct SizeTextTests {
         #expect(SizeText.size(nil) == "Unavailable")
     }
 
-    // T-c1d84397 F-089
-    // B-INFO-033
     @Test func countsSizesInStepsOfOneThousand() {
         #expect(SizeText.size(999) == "999 B")
         #expect(SizeText.size(1000) == "1.0 KB")
@@ -35,8 +29,6 @@ struct SizeTextTests {
         #expect(SizeText.size(2_000_000_000_000) == "2.0 TB")
     }
 
-    // T-cf726d7a F-089
-    // B-INFO-033
     @Test func stepsUpAUnitInsteadOfShowingAThousandOfOne() {
         #expect(SizeText.size(999_700) == "1.0 MB")
         #expect(SizeText.size(9_960) == "10 KB")
@@ -50,15 +42,12 @@ struct SizeTextTests {
         #expect(SizeText.size(9_950) == "10 KB")
     }
 
-    // F-089
-    // B-INFO-033
     @Test func sizesMatchTheReference() throws {
         let cases: [GoldenCase<SizeInput, String>] = try Golden.load(suite: "sizes")
         #expect(cases.count >= 300)
         Golden.expectMatches(cases) { SizeText.size($0.bytes, status: $0.status) }
     }
 
-    // T-4d93eedd F-091
     @Test func formatsUnixPermissionModes() {
         #expect(PermissionText.mode(0o755) == "755")
         #expect(PermissionText.mode(0o7) == "007")
@@ -67,13 +56,11 @@ struct SizeTextTests {
         #expect(PermissionText.mode(0o100644) == "644")
     }
 
-    // T-b9212962 F-091
     @Test func splitsPermissionModesIntoSymbolicAndOctalParts() {
         #expect(PermissionText.split(0o644) == PermissionParts(symbolic: "rw-r--r--", octal: "644"))
         #expect(PermissionText.split(nil) == nil)
     }
 
-    // F-091
     @Test func describesTheOwnersAccess() {
         #expect(PermissionText.ownerAccess(symbolic: "rw-r--r--") == "Read & Write")
         #expect(PermissionText.ownerAccess(symbolic: "r--r--r--") == "Read only")
@@ -82,7 +69,6 @@ struct SizeTextTests {
         #expect(PermissionText.ownerAccess(symbolic: "") == "No access")
     }
 
-    // T-55337866
     @Test func splitsPathSegmentsIncludingRoot() {
         #expect(
             PathText.segments("/Users/demo/Documents") == [
@@ -95,7 +81,6 @@ struct SizeTextTests {
         #expect(PathText.segments("") == [PathSegment(label: "/", path: "/")])
     }
 
-    // T-4c7f5482
     @Test func preservesTheExtensionSeparatelyForDisplayTruncation() {
         #expect(
             DisplayName.split("long filename.txt", extension: "txt")
@@ -107,14 +92,12 @@ struct SizeTextTests {
         #expect(DisplayName.split("name.txt", extension: "") == DisplayNameParts(stem: "name.txt", extensionSuffix: ""))
     }
 
-    // T-5005707e
     @Test func durationInMilliseconds() {
         #expect(SizeText.relativeDuration(milliseconds: 500) == "500 ms")
         // File timestamps carry sub-millisecond precision.
         #expect(SizeText.relativeDuration(milliseconds: 9.737548828125) == "10 ms")
     }
 
-    // T-7d10f1e9
     @Test func durationInSeconds() {
         #expect(SizeText.relativeDuration(milliseconds: 2000) == "2 seconds")
         #expect(SizeText.relativeDuration(milliseconds: 1000) == "1 second")
@@ -123,41 +106,34 @@ struct SizeTextTests {
         #expect(SizeText.relativeDuration(milliseconds: 999.4) == "999 ms")
     }
 
-    // T-8e864ba0
     @Test func durationInMinutes() {
         #expect(SizeText.relativeDuration(milliseconds: 90000) == "1 min")
         #expect(SizeText.relativeDuration(milliseconds: 45 * 60 * 1000) == "45 min")
     }
 
-    // T-e25f9802
     @Test func durationInHours() {
         #expect(SizeText.relativeDuration(milliseconds: 3_600_000) == "1 hour")
         #expect(SizeText.relativeDuration(milliseconds: 5 * 3_600_000) == "5 hours")
     }
 
-    // T-a4a87e81
     @Test func durationInDays() {
         #expect(SizeText.relativeDuration(milliseconds: 86_400_000) == "1 day")
         #expect(SizeText.relativeDuration(milliseconds: 7 * 86_400_000) == "7 days")
     }
 
-    // T-cd1e192a
     @Test func durationInMonths() {
         #expect(SizeText.relativeDuration(milliseconds: 30 * 86_400_000) == "1 month")
     }
 
-    // T-e7f2053e
     @Test func durationInYears() {
         #expect(SizeText.relativeDuration(milliseconds: 365 * 86_400_000) == "1 year")
         #expect(SizeText.relativeDuration(milliseconds: 730 * 86_400_000) == "2 years")
     }
 
-    // T-8b884841
     @Test func durationOfNegativeValues() {
         #expect(SizeText.relativeDuration(milliseconds: -5000) == "5 seconds")
     }
 
-    // T-8cbd4faa T-ba805edb T-b03aa542 T-cb8fc5ea T-4f128644
     @Test func hintSizes() {
         #expect(SizeText.hint(nil) == nil)
         #expect(SizeText.hint(0) == "0 B")
@@ -166,7 +142,6 @@ struct SizeTextTests {
         #expect(SizeText.hint(1_000_000) == "1.0 MB")
     }
 
-    // T-dc463c3e T-9e77b684 T-f1ae4d99 T-b5c00c19 T-d4e8025e T-2bb3f254
     @Test func sizeComparisonWithoutADelta() {
         #expect(SizeText.comparison(src: nil, dest: 1024) == nil)
         #expect(SizeText.comparison(src: 1024, dest: nil) == nil)
@@ -176,7 +151,6 @@ struct SizeTextTests {
         #expect(SizeText.comparison(src: 0, dest: 0) == SizeComparison(src: "0 B", dest: "0 B", delta: nil))
     }
 
-    // T-ba7ea15a T-a082619c T-74a26cc5
     @Test func sizeComparisonWithADelta() {
         // 1010000 and 1011000 both format to "1.0 MB".
         let larger = SizeText.comparison(src: 1_011_000, dest: 1_010_000)
@@ -188,7 +162,6 @@ struct SizeTextTests {
         #expect(larger?.delta == "+1.0 KB")
     }
 
-    // T-08e47033 T-8ca2198e F-090
     @Test func folderSizeDetailSaysTheSizeOnDisk() {
         let different = SizeText.folderDetail(
             sizeBytes: 1_000_000, diskBytes: 1_500_000, fileCount: 500, folderCount: 20, locale: en)
@@ -200,7 +173,6 @@ struct SizeTextTests {
         #expect(same.disk == nil)
     }
 
-    // T-7099a412 T-49b7ee5d T-9451db68 T-34419f12 F-090
     @Test func folderSizeDetailNamesWhatTheFolderHolds() {
         func items(_ files: Int, _ folders: Int) -> String {
             SizeText.folderDetail(sizeBytes: 1, diskBytes: 1, fileCount: files, folderCount: folders, locale: en).items

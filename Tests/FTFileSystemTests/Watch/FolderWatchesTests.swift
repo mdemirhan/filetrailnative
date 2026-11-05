@@ -1,10 +1,9 @@
 import Foundation
 import Testing
 
-// Port of apps/desktop/src/main/folderWatch.test.ts
 @testable import FTFileSystem
 
-/// A clock and timers the test moves by hand, as vi.useFakeTimers does.
+/// A clock and timers the test moves by hand.
 @MainActor
 final class ManualScheduler: FolderWatchScheduler {
     private struct Timer {
@@ -96,7 +95,7 @@ private final class Harness {
 
     func change(_ path: String, _ name: String?) { listeners[path]?(name) }
 
-    /// The watch stops by itself, as Node closes one on its first error.
+    /// The watch stops by itself on its first error.
     func fail(_ path: String) {
         listeners[path] = nil
         failures[path]?()
@@ -113,8 +112,6 @@ private final class Harness {
 
 @MainActor
 struct FolderWatchesTests {
-    // T-929e8af9 F-200 B-VIEW-185
-    // T-4272a158 T-5a8447d3 T-e42b2463
     @Test func followsEachWindowFromFolderToFolderAndStopsWhenAsked() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -149,7 +146,6 @@ struct FolderWatchesTests {
         harness.watches.stopAll()
     }
 
-    // T-2ae9187d F-201 F-202 B-VIEW-188
     @Test func tellsOfABurstOfChangesOnceWhenItSettlesNamingWhatChanged() {
         let harness = Harness()
         harness.watches.watch(windowID: 7, path: "/a")
@@ -169,7 +165,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.first?.change == FolderChange(path: "/a", changedPaths: ["/a/one.txt", "/a/two.txt"]))
     }
 
-    // T-8039a474 F-201
     @Test func tellsOfAFolderThatKeepsChangingOnceASecond() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -182,7 +177,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.count == 2)
     }
 
-    // T-fb04b248 F-201 B-NAV-137 B-VIEW-188
     @Test func saysAnythingMayHaveChangedWhenAChangeHasNoName() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -197,7 +191,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: ["/a/two.txt"]))
     }
 
-    // B-NAV-137 B-VIEW-188
     @Test func saysAnythingMayHaveChangedWhenMoreThanAThousandItemsChanged() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -210,8 +203,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: nil))
     }
 
-    // T-8b92b0be B-NAV-135 B-VIEW-186
-    // T-859ecde4
     @Test func dropsAChangeStillSettlingWhenTheWindowMovesOn() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -221,7 +212,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.isEmpty)
     }
 
-    // T-9378b518 F-203
     @Test func catchesAChangeTheWatchMissedByTheFoldersModificationTime() async {
         let harness = Harness()
         harness.modifiedTimes["/share"] = 100
@@ -243,7 +233,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.count == 1)
     }
 
-    // T-defbeeca
     @Test func tellsOfAFolderGoneWhenTheWindowComesBack() async {
         let harness = Harness()
         harness.modifiedTimes["/a"] = 100
@@ -256,7 +245,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: nil))
     }
 
-    // T-16b63448
     @Test func tellsOfAChangeToTheFolderItselfAsAnythingMayHaveChanged() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a/Project")
@@ -268,7 +256,6 @@ struct FolderWatchesTests {
         #expect(harness.forgotten.last?.changed == nil)
     }
 
-    // T-53f2d960 F-202
     @Test func startsAWatchAgainWhenTheWindowAsksForTheFolderAfterItFailed() {
         let harness = Harness()
         harness.watches.watch(windowID: 1, path: "/a")
@@ -283,7 +270,6 @@ struct FolderWatchesTests {
         #expect(harness.watched == ["/a"])
     }
 
-    // T-fadbeb03
     @Test func startsAWatchAgainThatCouldNotStartOnceTheFolderCanBeWatched() {
         let harness = Harness()
         harness.unwatchable.insert("/a")
@@ -296,7 +282,6 @@ struct FolderWatchesTests {
         #expect(harness.watched == ["/a"])
     }
 
-    // T-7b842cb9 F-203
     @Test func startsAFailedWatchAgainWhenTheWindowComesBackToTheFront() async {
         let harness = Harness()
         harness.modifiedTimes["/a"] = 100
@@ -314,7 +299,6 @@ struct FolderWatchesTests {
         #expect(harness.changes.last?.change == FolderChange(path: "/a", changedPaths: ["/a/one.txt"]))
     }
 
-    // T-85a61f44
     @Test func tellsOfAChangeOnceWhenTheWindowComesToTheFrontWhileItIsStillNoted() async {
         let harness = Harness()
         harness.modifiedTimes["/a"] = 100
@@ -335,8 +319,4 @@ struct FolderWatchesTests {
         await drain()
         #expect(harness.changes.count == 1)
     }
-
-    // N/A T-4e9216a4 End-to-end scenario of the original's e2e suite, which needs the app window; the stream is
-    // tested on real folders in FolderWatchStreamTests.
-    // N/A T-ba2aad0d End-to-end scenario of the original's e2e suite, which needs the app window.
 }

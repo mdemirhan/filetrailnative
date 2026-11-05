@@ -1,4 +1,4 @@
-// A clock and timers that only move when a test says so (the original's tests use vitest's fake timers).
+// A clock and timers that only move when a test says so.
 import Foundation
 
 @testable import FTFoundation

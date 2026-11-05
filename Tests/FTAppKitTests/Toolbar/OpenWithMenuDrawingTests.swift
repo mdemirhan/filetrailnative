@@ -31,7 +31,6 @@ import Testing
         #expect(menu.nsMenu.items[1].image == nil)
     }
 
-    // T-8727f2e5
     @Test func theAlwaysOpenWithLineIsAHeadingAndNotARow() throws {
         let menu = AppMenu(
             items: [InfoController.alwaysOpenWithHeading, InfoController.openWithRow(Self.app)], identifier: "menu",

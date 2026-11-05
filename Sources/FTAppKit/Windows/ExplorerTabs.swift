@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/explorerTabs.ts
 import CoreGraphics
 import FTFileSystem
 import FTFoundation
@@ -138,7 +137,7 @@ public struct TabSnapshot: Equatable, Sendable {
     }
 }
 
-/// A tab's label with what telling it apart from the others needs (`disambiguateTabLabels`' items).
+/// A tab's label with what telling it apart from the others needs (the items of `ExplorerTabs.disambiguate`).
 public struct TabLabel: Equatable, Sendable {
     public var label: String
     public var kind: TabDescription.Kind
@@ -177,7 +176,7 @@ public struct WriteOperationOutcome: Equatable, Sendable {
     }
 }
 
-/// A file operation's progress, as every window hears it (`WriteOperationProgressEvent`).
+/// A file operation's progress, as every window hears it.
 public struct WriteOperationProgress: Equatable, Sendable {
     /// "queued", "running", "awaiting_resolution", or how it ended: "completed", "failed", "cancelled", "partial".
     public var status: String
@@ -203,7 +202,7 @@ public enum ExplorerTabs {
         return "/" + parts.dropLast().joined(separator: "/")
     }
 
-    /// `getVolumeRootPath`: `/Volumes/<name>` for a path on another disk, else `/`.
+    /// `/Volumes/<name>` for a path on another disk, else `/`.
     public static func volumeRootPath(_ path: String) -> String {
         let prefix = "/Volumes/"
         guard path.hasPrefix(prefix) else { return "/" }
@@ -211,12 +210,12 @@ public enum ExplorerTabs {
         return name.isEmpty ? "/" : prefix + name
     }
 
-    /// `getFolderDisplayName`: "Macintosh HD" for `/`.
+    /// "Macintosh HD" for `/`.
     public static func folderDisplayName(_ path: String) -> String {
         TabText.folderDisplayName(path)
     }
 
-    /// `getPathAndAncestors`: `path` and the folders above it, nearest first: where a tab goes when its folder is gone.
+    /// `path` and the folders above it, nearest first: where a tab goes when its folder is gone.
     public static func pathAndAncestors(_ path: String) -> [String] {
         var paths: [String] = []
         var current: String? = path
@@ -229,7 +228,7 @@ public enum ExplorerTabs {
 
     // MARK: Labels
 
-    /// `describeTab`: its folder, or its search while results are showing.
+    /// Its folder, or its search while results are showing.
     public static func describe(
         currentPath: String, searchVisible: Bool, searchQuery: String, searchRootPath: String, searchRunning: Bool
     ) -> TabDescription {
@@ -238,7 +237,6 @@ public enum ExplorerTabs {
             searchRootPath: searchRootPath, searchRunning: searchRunning)
     }
 
-    /// `describeTabSnapshot`.
     public static func describe(_ snapshot: TabSnapshot) -> TabDescription {
         let search = snapshot.search
         return describe(
@@ -247,7 +245,7 @@ public enum ExplorerTabs {
             searchRunning: search?.status == .running)
     }
 
-    /// `disambiguateTabLabels`: tabs on folders with the same name are told apart by the folder each one is in. Tabs
+    /// Tabs on folders with the same name are told apart by the folder each one is in. Tabs
     /// on the same folder, and search tabs, keep their labels.
     public static func disambiguate(_ items: [TabLabel]) -> [TabLabel] {
         items.enumerated().map { index, item in
@@ -264,7 +262,7 @@ public enum ExplorerTabs {
 
     // MARK: The row of tabs
 
-    /// `resolveTabAfterClose`: the tab that takes over when `closed` closes: the one to its right, or to its left when
+    /// The tab that takes over when `closed` closes: the one to its right, or to its left when
     /// it was last.
     public static func tabAfterClose<ID: Equatable>(_ tabs: [ID], closing closed: ID) -> ID? {
         guard let index = tabs.firstIndex(of: closed) else { return nil }
@@ -274,14 +272,14 @@ public enum ExplorerTabs {
 
     public enum Direction: Sendable { case next, previous }
 
-    /// `resolveAdjacentTab`: the next or previous tab, wrapping around at the ends.
+    /// The next or previous tab, wrapping around at the ends.
     public static func adjacentTab<ID: Equatable>(_ tabs: [ID], active: ID, _ direction: Direction) -> ID? {
         guard tabs.count >= 2, let index = tabs.firstIndex(of: active) else { return nil }
         let step = direction == .next ? 1 : -1
         return tabs[(index + step + tabs.count) % tabs.count]
     }
 
-    /// `moveTabInList`: moves a tab to `toIndex` in the row; the other tabs keep their order.
+    /// Moves a tab to `toIndex` in the row; the other tabs keep their order.
     public static func moveTab<ID: Equatable>(_ tabs: [ID], _ tab: ID, to toIndex: Int) -> [ID] {
         var next = tabs
         guard let from = next.firstIndex(of: tab) else { return next }
@@ -317,7 +315,7 @@ public enum ExplorerTabs {
         return new
     }
 
-    /// `toReopenableSnapshot`: what is kept of a closed tab: its folder, its tree root, and how it showed the folder.
+    /// What is kept of a closed tab: its folder, its tree root, and how it showed the folder.
     /// Its history, selection and search go with it.
     public static func reopenable(_ snapshot: TabSnapshot) -> TabSnapshot {
         var kept = snapshot
@@ -360,7 +358,7 @@ public enum ExplorerTabs {
     }
 
     /// `leaveUnmountedDisks`: a background tab on a disk that was unmounted goes Home, as the tab on screen does.
-    /// `volumeRoot` says which disk a path is on (`getVolumeRootPath`).
+    /// `volumeRoot` says which disk a path is on.
     public static func leaveUnmountedDisks(
         _ snapshot: TabSnapshot, unmounted: Set<String>, homePath: String,
         volumeRoot: (String) -> String = volumeRootPath
@@ -380,7 +378,7 @@ public enum ExplorerTabs {
 
     /// `followMovedPath`: where `path` is after `moves`. The deepest move that holds it decides.
     public static func followMovedPath(_ path: String, _ moves: [PathMove]) -> String {
-        // Compared as JavaScript compares strings: unit by unit, not by canonical equivalence.
+        // Compared by UTF-16 unit, not by canonical equivalence.
         func startsWith(_ text: String, _ prefix: String) -> Bool { text.utf16.starts(with: prefix.utf16) }
         var deepest: PathMove?
         for move in moves
@@ -395,7 +393,7 @@ public enum ExplorerTabs {
         return deepest.to + path[rest...]
     }
 
-    /// `isRenameOrMove` (explorerAppUtils.ts).
+    /// `isRenameOrMove`.
     public static func isRenameOrMove(_ action: String) -> Bool {
         ["rename", "batch_rename", "move_to", "undo", "redo"].contains(action)
     }
@@ -415,8 +413,8 @@ public enum ExplorerTabs {
         }
     }
 
-    /// The moves a window's tabs follow on hearing `event` (the `onWriteOperationProgress` listener of
-    /// useExplorerTabs.ts): none until the operation has ended, and only from one that moved items.
+    /// The moves a window's tabs follow on hearing `event`: none until the operation has ended, and only from one that
+    /// moved items.
     public static func followedMoves(_ event: WriteOperationProgress) -> [PathMove] {
         guard !["queued", "running", "awaiting_resolution"].contains(event.status), let result = event.result,
             movedItems(result)

@@ -1,13 +1,10 @@
-// Port of apps/desktop/src/renderer/lib/formatting.ts (the date functions)
 import Foundation
 
-/// Dates as the original's lists and tooltips write them, in the system's time zone and the locale Chromium gives
-/// `Intl.DateTimeFormat(undefined, …)`: the app's language alone, not the system's region (`InfoLocale.original`), so
-/// the list, the Info Row and the Info panel agree. Tests pass their own.
+/// Dates as the lists and tooltips write them, in the system's time zone and the app's language alone, not the
+/// system's region (`InfoLocale.original`), so the list, the Info Row and the Info panel agree. Tests pass their own.
 ///
-/// The original runs on Chromium, whose English date patterns join a medium date and a time with a
-/// comma and a plain space ("Oct 5, 2026, 4:45 PM") where macOS writes "at" and a narrow no-break
-/// space, so those two are put back to Chromium's.
+/// A medium date and a time are joined with a comma and a plain space ("Oct 5, 2026, 4:45 PM") where macOS
+/// writes "at" and a narrow no-break space.
 public final class DateText: @unchecked Sendable {
     public static let shared = DateText()
 
@@ -56,7 +53,7 @@ public final class DateText: @unchecked Sendable {
     }
 
     // `commaGlue`: the short and medium forms join date and time with a comma where macOS says "at"
-    // (the long and full forms say "at" in Chromium too).
+    // (the long and full forms keep "at").
     private static func formatter(pattern: String, locale: Locale, timeZone: TimeZone, commaGlue: Bool) -> DateFormatter
     {
         let formatter = DateFormatter()

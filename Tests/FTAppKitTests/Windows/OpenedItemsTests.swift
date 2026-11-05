@@ -1,5 +1,3 @@
-// Ports the "items opened with File Trail from another app" cases of apps/desktop/src/renderer/App.openItems.test.tsx, in an
-// explorer window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -15,7 +13,6 @@ extension ExplorerWindowlessTests {
             tab.content.entries.first { $0.name == name }?.path ?? ""
         }
 
-        // T-0adbc934 F-136 B-NAV-227
         @Test func opensAFolderInANewTabWithTheListGivenTheKeyboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -34,7 +31,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-424b62a7 F-136 B-NAV-228
         @Test func selectsAnyOtherItemInItsFolderInANewTabWithTheListGivenTheKeyboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -53,8 +49,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-136 B-NAV-228: an item the list doesn't show (hidden items off) is selected all the same, and the Info panel
-        // describes it: `setSingleContentSelection` asks nothing of the listing.
+        // An item the list doesn't show (hidden items off) is selected all the same, and the Info panel
+        // describes it: selecting it asks nothing of the listing.
         @Test func selectsAnItemTheListDoesNotShow() async throws {
             let harness = try ExplorerHarness.windowless()
             let hidden = harness.folder.appending(".secret")
@@ -74,7 +70,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-136 B-NAV-229: the item isn't selected once another tab has been shown.
+        // The item isn't selected once another tab has been shown.
         @Test func selectsNothingOnceAnotherTabHasBeenShown() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -92,7 +88,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-136 B-NAV-229: nor when the folder is gone.
+        // Nor when the folder is gone.
         @Test func selectsNothingWhenTheFolderIsGone() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -110,7 +106,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-a4715c8c T-bb5cec67 F-136 B-NAV-230
         @Test func selectsTheItemAWindowWasOpenedOnItsFolderForInTheTabItOpenedWith() async throws {
             let harness = try ExplorerHarness.windowless()
             let note = harness.folder.appending("note.txt").path

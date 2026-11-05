@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/HelpWindowApp.tsx and openHelpWindow in apps/desktop/src/main/main.ts
 import AppKit
 import FTFoundation
 

@@ -1,6 +1,4 @@
-// Port of what apps/desktop/src/renderer/App.tsx (:512-700, 2192-2260, 2535-2660) and hooks/useExplorerNavigationController.ts
-// (:2300-2430) keep for the Info panel and the Info Row: the target, its properties, the volume and Open With answers, and the
-// folder size controls
+// The target, its properties, the volume and Open With answers, and the folder size controls
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -16,7 +14,7 @@ final class InfoController {
     let auto: AutoFolderSizeController
 
     // The target.
-    /// "Show Info" on an item: the panel describes this path whatever the selection (B-INFO-009).
+    /// "Show Info" on an item: the panel describes this path whatever the selection.
     private(set) var targetOverride: String?
     private var seenSelection = ContentSelection.empty
     // Properties.
@@ -54,12 +52,12 @@ final class InfoController {
             guard let self else { return }
             switch change {
             case .folder:
-                // A change from outside keeps what the panel shows (`keepInfoTarget`).
+                // A change from outside keeps what the panel shows.
                 if !self.host.isTakingInOutsideChange { self.targetOverride = nil }
                 self.folderChanged()
             case .selection:
-                // The tree's selection says so too, as the tree refreshes: only the list's lets Show Info's item go
-                // (`applyContentSelection`). Items that left the folder aren't a selection made: they just drop out of it.
+                // The tree's selection says so too, as the tree refreshes: only the list's lets Show Info's item go.
+                // Items that left the folder aren't a selection made: they just drop out of it.
                 if self.content.selection != self.seenSelection {
                     self.seenSelection = self.content.selection
                     if !self.host.isTakingInOutsideChange { self.targetOverride = nil }
@@ -118,14 +116,14 @@ final class InfoController {
 
     // MARK: The target
 
-    /// Where the views point: the Show Info target, else the selection's lead, else the folder on screen (B-INFO-001).
+    /// Where the views point: the Show Info target, else the selection's lead, else the folder on screen.
     var targetPath: String? {
         if let targetOverride { return targetOverride }
         if let lead = content.selection.leadPath { return lead }
         return folderPath.isEmpty ? nil : folderPath
     }
 
-    /// "Show Info": the panel opens and describes `path` (B-INFO-009).
+    /// "Show Info": the panel opens and describes `path`.
     func showInfo(for path: String) {
         targetOverride = path
         if !panelOpen { host.updatePanels { $0.propertiesOpen = true } }
@@ -170,7 +168,7 @@ final class InfoController {
             path: path, currentPath: folderPath, entries: found, metadataByPath: metadata, properties: properties)
     }
 
-    // MARK: Properties (B-INFO-012 to 019)
+    // MARK: Properties
 
     private func folderChanged() {
         // The folder reloaded or another one opened: what is shown stays, and is asked for again.
@@ -224,7 +222,7 @@ final class InfoController {
         }
     }
 
-    // MARK: Volume (B-INFO-047 to 049)
+    // MARK: Volume
 
     /// A seam of the tests.
     static var volumeSizes: @Sendable (String) -> VolumeInfo.Sizes = { VolumeInfo.sizes(atPath: $0) }
@@ -241,7 +239,7 @@ final class InfoController {
         }
     }
 
-    // MARK: Open With (B-INFO-065)
+    // MARK: Open With
 
     private func requestLookup(_ path: String) {
         guard lookup?.path != path else { return }
@@ -474,8 +472,7 @@ final class InfoController {
         return rowSizeTargets
     }
 
-    /// The folder paths the Info Row's size controls work on: what the row shows, whatever item the panel is on
-    /// (B-INFO-166).
+    /// The folder paths the Info Row's size controls work on: what the row shows, whatever item the panel is on.
     private var rowSizeTargets: [String] {
         if let selection = selectionDetails() { return selection.size.folderPaths }
         if let single = content.selectedEntries.first, content.selection.paths.count == 1 {
@@ -505,7 +502,7 @@ final class InfoController {
         update()
     }
 
-    /// The Calculate Size command (B-INFO-160 to 163): what `calculateSizePaths` names, one folder measured again. Unlike
+    /// The Calculate Size command: what `calculateSizePaths` names, one folder measured again. Unlike
     /// the menus' item it never opens the panel.
     func calculateSizeCommand() {
         let sizes = host.folderSizes
@@ -564,7 +561,7 @@ final class InfoController {
         DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.copiedDelay, execute: work)
     }
 
-    /// `.pull-down-menu`: under its button, 4 pt below, its right edge on the button's.
+    /// The menu: under its button, 4 pt below, its right edge on the button's.
     private func showMenu(_ menu: AppMenu, anchor: NSView, window: NSWindow, onClose: @escaping () -> Void) {
         guard let host = AppMenuPresenter.overlayHost(of: window) else { return }
         let rect = anchor.convert(anchor.bounds, to: host)
@@ -573,7 +570,7 @@ final class InfoController {
             menu, in: window, at: NSPoint(x: rect.maxX - menu.size.width, y: top), owner: anchor, onClose: onClose)
     }
 
-    /// A row of the Open With menus (`SubmenuItemList`): an app with its own icon, else plain text from the same edge.
+    /// A row of the Open With menus: an app with its own icon, else plain text from the same edge.
     static func openWithRow(_ action: OpenWithAction) -> AppMenuItem {
         var row = AppMenuItem(title: action.label)
         if case .application(_, _, let appPath, _, _) = action { row.appPath = appPath }

@@ -1,9 +1,7 @@
-// Port of destinationPathKey (packages/core/src/fs/copyPasteNames.ts), nameKey (apps/desktop/src/shared/batchRename.ts),
-// looseKey (batchRenameExecution.ts), placeKey (undoPlan.ts) and namesMatchIgnoringCase (writeOperations.ts)
 import Foundation
 
-/// Keys that make two names or paths compare equal as the disk takes them for one name. Each place in
-/// the original has its own, with its own normalization; keys are compared scalar for scalar.
+/// Keys that make two names or paths compare equal as the disk takes them for one name. Each place has
+/// its own, with its own normalization; keys are compared scalar for scalar.
 public enum NameKeys {
     /// A key compared scalar for scalar: `String`'s own `==` and hashing take NFC and NFD as equal.
     public struct Exact: Hashable, Sendable {

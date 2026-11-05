@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/undoPlan.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -7,7 +6,7 @@ import os
 @testable import FTOperations
 
 /// `disk`: a disk of paths, each with a kind and an id (ino on dev 1; nil for none, as on FAT). A link leads to the
-/// path it names. Listing a folder gives its items' whole paths, as the original's stand-in does.
+/// path it names. Listing a folder gives its items' whole paths.
 final class PlanDisk: IdentityFileSystem, @unchecked Sendable {
     enum Item {
         case file(ino: UInt64?, size: Int64 = 0)
@@ -16,7 +15,7 @@ final class PlanDisk: IdentityFileSystem, @unchecked Sendable {
     }
 
     let items: [String: Item]
-    /// `troubled`: each look is answered by `fails` first, which names the error it throws, if any. Counted per kind
+    /// Each look is answered by `fails` first, which names the error it throws, if any. Counted per kind
     /// of look and path, from 1.
     var fails: ((_ look: String, _ path: String, _ count: Int) -> String?)?
     /// Each lstat, before it answers (the test may hold it).
@@ -113,7 +112,6 @@ struct UndoPlanTests {
         return nil
     }
 
-    // T-cd8b61bf F-378 F-549
     @Test func reversesEachKindOfStep() {
         let moved = UndoStep.Moved(from: "/a", to: "/b", id: id(5), itemKind: .file, parentId: id(1))
         #expect(
@@ -143,7 +141,6 @@ struct UndoPlanTests {
                 == .trash(PlannedTrash(path: "/c", id: id(5), stamp: nil, putBack: false, unlock: true)))
     }
 
-    // T-1d13eb1d F-380 F-549
     @Test func takesTheVeryItemOrAFileSavedUnderANewIdButNotAFolderInItsPlace() {
         #expect(nameTaken(UndoPlan.checkMove(disk(docs, ["/Docs/b.txt": .file(ino: 10)]), moveBack())) == false)
         #expect(isOK(UndoPlan.checkMove(disk(docs, ["/Docs/b.txt": .file(ino: 99)]), moveBack())))
@@ -152,7 +149,6 @@ struct UndoPlanTests {
                 == .refused(Refusal(reason: "The “b.txt” in “Docs” is another item now.", missing: false)))
     }
 
-    // T-5380c332 F-380 F-549
     @Test func putsBackFromTheTrashOnlyTheVeryItem() {
         let step = moveBack(from: "/T/b.txt", itemKind: nil, putBack: true)
         let trash: [String: PlanDisk.Item] = ["/T": .dir(ino: 2)]
@@ -160,7 +156,6 @@ struct UndoPlanTests {
         #expect(isOK(UndoPlan.checkMove(disk(docs, trash, ["/T/b.txt": .file(ino: 10)]), step)))
     }
 
-    // T-10550edd F-381 F-549
     @Test func saysTheDiskWasDisconnectedWhenTheSameIdsComeBackOnAnotherDevice() {
         // Recorded on device 2; the disk was ejected and is device 1 now.
         func ejected(_ ino: UInt64) -> ItemId { ItemId(dev: 2, ino: ino) }
@@ -189,7 +184,6 @@ struct UndoPlanTests {
                 == "The “a.txt” in the Trash is another item now.")
     }
 
-    // T-182b55dd F-380 F-549
     @Test func goesByTheKindAloneOnADiskWithoutUsableIds() {
         let fat = disk(docs, ["/Docs/b.txt": .file(ino: nil)])
         #expect(isOK(UndoPlan.checkMove(fat, moveBack())))
@@ -197,7 +191,6 @@ struct UndoPlanTests {
         #expect(isOK(UndoPlan.checkMove(fat, moveBack(itemKind: nil, putBack: true))))
     }
 
-    // T-271a4e3f F-380 F-549
     @Test func putsBackFromTheTrashAnItemWithoutAnIdOnlyWhenItLooksAsItDid() {
         guard
             case .move(let step) = PlannedStep(
@@ -215,14 +208,12 @@ struct UndoPlanTests {
         #expect(!isOK(UndoPlan.checkMove(disk(docs, trash, ["/T/a.txt": .dir(ino: nil)]), step)))
     }
 
-    // T-cd2676fe F-381 F-549
     @Test func saysSoWhenTheItemsDiskIsntConnected() {
         #expect(
             UndoPlan.checkMove(disk(), moveBack(from: "/Volumes/Backup/b.txt"))
                 == .refused(Refusal(reason: "“b.txt” is on “Backup”, which isn't connected.", missing: true)))
     }
 
-    // T-89cb3677 F-381 F-549
     @Test func namesAnItemGoneFromTheTrashAsItWasBeforeAndTellsADisconnectedDiskApart() {
         // Put back from a disk's own Trash folder (".Trashes/501"), under the name it had there.
         let step = moveBack(from: "/Volumes/Stick/.Trashes/501/1-a.txt", to: "/Volumes/Stick/a.txt", putBack: true)
@@ -240,7 +231,6 @@ struct UndoPlanTests {
                 == .refused(Refusal(reason: "The “a.txt” in the Trash is another item now.", missing: false)))
     }
 
-    // T-49e9777a F-381 F-549
     @Test func refusesAFolderThatIsNowAFileAndGoesByTheFoldersNameWithoutItsId() {
         let item: [String: PlanDisk.Item] = ["/Docs/b.txt": .file(ino: 10)]
         #expect(
@@ -249,7 +239,6 @@ struct UndoPlanTests {
         #expect(isOK(UndoPlan.checkMove(disk(["/Docs": .dir(ino: nil)], item), moveBack())))
     }
 
-    // T-4c33b607 F-549 F-555
     @Test func followsALinkToTheFolderTheItemGoesBackTo() {
         let fileSystem = disk([
             "/Data/Docs": .dir(ino: 1), "/Docs": .link(to: "/Data/Docs"), "/Docs/b.txt": .file(ino: 10),
@@ -260,7 +249,6 @@ struct UndoPlanTests {
                 == "Its folder “Docs” was replaced by another folder.")
     }
 
-    // T-83f0aadc F-382 F-549
     @Test func findsTheNameFreeWhenAStepBeforeItEmptiesIt() {
         let fileSystem = disk(docs, ["/Docs/b.txt": .file(ino: 10), "/Docs/a.txt": .file(ino: 11)])
         #expect(nameTaken(UndoPlan.checkMove(fileSystem, moveBack())) == true)
@@ -269,7 +257,6 @@ struct UndoPlanTests {
         #expect(nameTaken(UndoPlan.checkMove(fileSystem, moveBack(), changes)) == false)
     }
 
-    // T-31bcd956 F-382 F-549
     @Test func findsANameTakenWhenAStepBeforeItFillsIt() {
         let fileSystem = disk(docs, ["/Docs/b.txt": .file(ino: 10)])
         var changes = UnitChanges()
@@ -277,7 +264,6 @@ struct UndoPlanTests {
         #expect(nameTaken(UndoPlan.checkMove(fileSystem, moveBack(), changes)) == true)
     }
 
-    // T-c964d2b0 F-382 F-549
     @Test func findsAnItemWithoutAnIdGoneByItsPlaceWhateverItsCase() {
         let fileSystem = disk(docs, ["/Docs/b.txt": .file(ino: 10), "/Docs/a.txt": .file(ino: nil)])
         var changes = UnitChanges()
@@ -285,7 +271,6 @@ struct UndoPlanTests {
         #expect(nameTaken(UndoPlan.checkMove(fileSystem, moveBack(), changes)) == false)
     }
 
-    // T-885a9dc8 F-383 F-549
     @Test func doesntTakeAnItemWhoseKindChangedOnADiskWithoutIds() {
         let fileSystem = disk(["/Docs": .dir(ino: nil), "/Docs/a": .dir(ino: nil)])
         let check = UndoPlan.checkTrash(
@@ -296,7 +281,6 @@ struct UndoPlanTests {
         }
     }
 
-    // T-2730d4c5 F-383 F-549
     @Test func findsAnItemChangedWhenItCantBeLookedAtAgain() {
         let fileSystem = disk(["/a": .file(ino: 10)])
         fileSystem.fails = { look, _, count in look == "lstat" && count > 1 ? "EIO" : nil }
@@ -306,7 +290,6 @@ struct UndoPlanTests {
                 == .ok(changed: true, id: id(10)))
     }
 
-    // T-13a024a3 F-549
     @Test func letsItemsOfTheBatchSwapNamesAndRefusesOneThatIsntTheItemRenamed() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/a": .file(ino: 10), "/D/b": .file(ino: 11), "/D/c": .dir(ino: 99),
@@ -335,7 +318,6 @@ struct UndoPlanTests {
         .trashed(from: from, trashPath: trashPath, id: id(ino), parentId: id(1), stamp: nil)
     }
 
-    // T-c7705fb0 F-385 F-549
     @Test func asksAboutEveryUnitAndLooksPastAnItemThatIsGone() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/abc": .file(ino: 6, size: 5), "/D/T": .dir(ino: 2), "/D/T/x": .file(ino: 20),
@@ -355,7 +337,6 @@ struct UndoPlanTests {
                     changed: [ChangedItem(name: "abc", path: "/D/abc", putBack: false, replaced: false)]))
     }
 
-    // T-1ca6ffdf F-385 F-549
     @Test func saysWhichChangedItemsReplacedAnOldOneAndWhichWerePutBack() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/T": .dir(ino: 2), "/D/T/old": .file(ino: 20), "/D/new": .file(ino: 4, size: 9),
@@ -382,7 +363,6 @@ struct UndoPlanTests {
                     ]))
     }
 
-    // T-ff8f115c F-385 F-549
     @Test func stopsAtAnItemThatIsAnotherItemNow() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/T": .dir(ino: 2), "/D/T/x": .file(ino: 20), "/D/x": .dir(ino: 30),
@@ -392,7 +372,6 @@ struct UndoPlanTests {
                 == UndoQuestions())
     }
 
-    // T-066e2902 F-382 F-549
     @Test func asksWhenAStepBeforePutsAnotherItemWhereAnItemGoesBack() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/T": .dir(ino: 2), "/D/T/1": .file(ino: 20), "/D/T/2": .file(ino: 21),
@@ -405,7 +384,6 @@ struct UndoPlanTests {
                 == UndoQuestions(nameTaken: [TakenName(name: "x", path: "/D/x")]))
     }
 
-    // T-d455864e F-382 F-549 F-557
     @Test func findsTheOldItemsNameFreeOnceTheNewItemSpelledOtherwiseMovesAway() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/T": .dir(ino: 2), "/D/T/x": .file(ino: 20),
@@ -419,7 +397,6 @@ struct UndoPlanTests {
                 == UndoQuestions())
     }
 
-    // T-5de52fd2 F-383 F-549
     @Test func asksAboutAMadeItemItKeptNothingOf() {
         // The copy couldn't be read once made (EIO), so neither its id nor its looks were kept: what is at its place
         // now may be another item, and isn't taken to the Trash unasked.
@@ -429,7 +406,6 @@ struct UndoPlanTests {
                 == UndoQuestions(changed: [ChangedItem(name: "x", path: "/D/x", putBack: false, replaced: false)]))
     }
 
-    // T-becb3d03 F-549
     @Test func asksAboutATakenNameInABatch() {
         let fileSystem = disk(["/D": .dir(ino: 1), "/D/b": .file(ino: 10), "/D/a": .file(ino: 11)])
         #expect(
@@ -442,7 +418,6 @@ struct UndoPlanTests {
                 ]) == UndoQuestions(nameTaken: [TakenName(name: "a", path: "/D/a")]))
     }
 
-    // T-8c262482 F-549
     @Test func asksAboutANameARefusedItemOfABatchStillHolds() {
         // "a.txt" and "b.txt" swapped names, then the item now at "a.txt" was replaced by a folder: that one stays,
         // holding "a.txt", so the other can't go back there unasked.
@@ -460,7 +435,6 @@ struct UndoPlanTests {
                 ]) == UndoQuestions(nameTaken: [TakenName(name: "a.txt", path: "/D/a.txt")]))
     }
 
-    // T-2d1c0ea4 F-385 F-549
     @Test func looksAtSeveralUnitsAtOnceAndAnswersInTheirOrder() {
         var items: [String: PlanDisk.Item] = ["/D": .dir(ino: 1)]
         var units: [UndoUnit] = []
@@ -506,7 +480,6 @@ struct UndoPlanTests {
         .refused(Refusal(reason: "“\(name)” couldn't be checked: A disk error occurred.", missing: false, retry: true))
     }
 
-    // T-65ceb4ef F-379 F-554
     @Test func keepsAStepWhoseItemInTheTrashCantBeLookedAtAgain() {
         // Found, then not read for how it looks (gone or not): kept, to be looked at next time.
         for second in ["EIO", "ENOENT"] {
@@ -518,7 +491,6 @@ struct UndoPlanTests {
         }
     }
 
-    // T-1bc9f657 F-380 F-554
     @Test func keepsAStepWhoseFolderInTheTrashCantBeListed() {
         let unlisted = disk(["/Docs": .dir(ino: 1), "/T": .dir(ino: nil), "/T/F": .dir(ino: nil)])
         unlisted.fails = { look, _, _ in look == "readdir" ? "EACCES" : nil }
@@ -532,7 +504,6 @@ struct UndoPlanTests {
                 == .refused(Refusal(reason: "“F” couldn't be checked.", missing: false, retry: true)))
     }
 
-    // T-22475f27 F-379 F-554
     @Test func keepsAStepWhoseFolderOrThePlaceItGoesBackToCantBeLookedAt() {
         let folder = disk(docs, ["/Docs/b.txt": .file(ino: 10)])
         folder.fails = { look, path, _ in look == "stat" && path == "/Docs" ? "EIO" : nil }
@@ -542,7 +513,6 @@ struct UndoPlanTests {
         #expect(UndoPlan.checkMove(place, moveBack()) == cantCheck("a.txt"))
     }
 
-    // T-0d59aa22 F-382 F-557
     @Test func findsANameTakenByAnotherItemThatDiffersFromItOnlyInCase() {
         let fileSystem = disk(docs, ["/Docs/b.txt": .file(ino: 10), "/Docs/B.txt": .file(ino: 11)])
         guard
@@ -556,7 +526,6 @@ struct UndoPlanTests {
         #expect(!renamesItself)
     }
 
-    // T-708f3d3a F-379 F-554
     @Test func keepsAStepToMoveToTheTrashAnItemItCantLookAt() {
         let fileSystem = disk(["/a": .file(ino: 10)])
         fileSystem.fails = { _, _, _ in "EIO" }
@@ -567,7 +536,6 @@ struct UndoPlanTests {
                     Refusal(reason: "“a” couldn't be checked: A disk error occurred.", missing: false, retry: true)))
     }
 
-    // T-be5280e5 F-383 F-549
     @Test func findsAnItemChangedWhenTheVeryItemIsNowAnotherKind() {
         #expect(
             UndoPlan.checkTrash(
@@ -576,7 +544,6 @@ struct UndoPlanTests {
                 == .ok(changed: true, id: id(10)))
     }
 
-    // T-a291d40b F-554
     @Test func keepsTheItemsOfABatchItCantLookAtOrWhoseNamesItCant() {
         let fileSystem = disk([
             "/D": .dir(ino: 1), "/D/a": .file(ino: 10), "/D/b": .file(ino: 11), "/D/c": .file(ino: 12),

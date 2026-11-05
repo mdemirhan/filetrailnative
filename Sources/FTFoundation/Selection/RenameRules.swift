@@ -1,5 +1,3 @@
-// Port of the commit rules of apps/desktop/src/renderer/components/InlineRenameField.tsx (:145-165) and
-// hooks/useExplorerActions.ts (:3649-3786)
 import Foundation
 
 /// What the inline rename field does with the name in it.
@@ -24,15 +22,15 @@ public enum InlineRenameRules {
     }
 
     /// The app trims spaces around the typed name before checking it; a name equal to the current one closes the field
-    /// with nothing renamed (B-SEL-130).
+    /// with nothing renamed.
     public static func trimmedName(_ typed: String) -> String { JSText.trimmed(typed) }
 
-    /// A name that begins with "." while hidden files are not shown asks first (B-SEL-135).
+    /// A name that begins with "." while hidden files are not shown asks first.
     public static func needsDotConfirmation(name: String, hiddenFilesShown: Bool) -> Bool {
         !hiddenFilesShown && name.hasPrefix(".")
     }
 
     /// Folders, and links to them, whose names are selected whole when renamed. Packages (an app) keep their extension
-    /// outside the selection, as files do (`isFolderKind`).
+    /// outside the selection, as files do.
     public static func selectsWholeName(isDirectoryKind: Bool) -> Bool { isDirectoryKind }
 }

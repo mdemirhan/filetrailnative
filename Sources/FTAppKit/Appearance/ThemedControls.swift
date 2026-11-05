@@ -1,10 +1,8 @@
-// Port of the push button, the segmented control, the link button and the keycap of
-// apps/desktop/src/renderer/styles.css, the first two as system controls
 import AppKit
 import FTFoundation
 
 /// A control that is also a label: the field draws its text, and `drawChrome` paints what lies under it (a fill, a key).
-/// Being a text field is what lets the capture's geometry dump read its text, font and color.
+/// Being a text field is what lets the geometry dump read its text, font and color.
 @MainActor
 public class TextControl: NSTextField, ThemeApplying {
     public override class var cellClass: AnyClass? {
@@ -106,22 +104,22 @@ public class TextControl: NSTextField, ThemeApplying {
 
 // MARK: Push button
 
-/// The push button (`.push-button`) as the system's button: its bezel, press and focus ring. The default one is
+/// The push button as the system's button: its bezel, press and focus ring. The default one is
 /// tinted with the theme's accent and never takes Return from the system: the panels press it themselves (they know
-/// what has the keyboard). It is as wide as the original's: the text and 12 each side, at least 76.
+/// what has the keyboard). It is as wide as the text and 12 each side, at least 76.
 public class SystemButton: NSButton, ThemeApplying {
     public private(set) var theme: Theme
     public var isDefault = false { didSet { applyLook() } }
-    /// Red text on the plain bezel (`.is-destructive`), for a button that destroys something and is not the default.
+    /// Red text on the plain bezel, for a button that destroys something and is not the default.
     public var isDestructive = false { didSet { applyLook() } }
-    /// The button's height: 24 (`--control-height`) unless a panel says otherwise (an alert's are 28, a small one's 22).
+    /// The button's height: 24 unless a panel says otherwise (an alert's are 28, a small one's 22).
     public var controlHeight = SystemButton.height {
         didSet {
             applySize()
             invalidateIntrinsicContentSize()
         }
     }
-    /// No focus ring while focused, until the keyboard moves the focus (an alert's default button, styles.css:1462).
+    /// No focus ring while focused, until the keyboard moves the focus.
     public var suppressesFocusRing = false {
         didSet { if suppressesFocusRing { showsFocusRing = false } }
     }
@@ -167,8 +165,8 @@ public class SystemButton: NSButton, ThemeApplying {
         didSet { applyLook() }
     }
 
-    /// Tab comes here whatever the system's keyboard navigation setting says, as it does to the original's, unless the
-    /// button refuses the keyboard (`refusesFirstResponder`: one in a pane or a card leaves it where it is).
+    /// Tab comes here whatever the system's keyboard navigation setting says, unless the button refuses the keyboard
+    /// (`refusesFirstResponder`: one in a pane or a card leaves it where it is).
     public override var acceptsFirstResponder: Bool { isEnabled && !refusesFirstResponder }
     public override var canBecomeKeyView: Bool { acceptsFirstResponder }
 
@@ -372,7 +370,7 @@ class SystemSegmentedControl: NSSegmentedControl, ThemeApplying {
 
 // MARK: Link
 
-/// A button that looks like text in the accent color (`.page-window-link`).
+/// A button that looks like text in the accent color.
 public final class LinkButton: TextControl {
     public var fontSize: Double { didSet { applyStyle() } }
 
@@ -431,7 +429,7 @@ public final class LinkButton: TextControl {
 
 // MARK: Keycaps
 
-/// One key of a shortcut (`.help-key`): 21 tall, at least 22 wide, a 1 pt border and a rounded corner.
+/// One key of a shortcut: 21 tall, at least 22 wide, a 1 pt border and a rounded corner.
 public final class KeycapView: TextControl {
     public var key: String { stringValue }
 

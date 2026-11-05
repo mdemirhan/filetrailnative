@@ -1,4 +1,4 @@
-// Checks the port against goldens recorded from the reference: tools/parity/golden/toolbar-sanitize.ts
+// Checks how the toolbar's saved items are sanitized, against the toolbar-sanitize golden
 import FTTestSupport
 import Foundation
 import Testing

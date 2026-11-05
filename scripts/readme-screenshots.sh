@@ -1,6 +1,6 @@
 #!/bin/bash
-# Takes the README's screenshots, as the original's were taken: a real window with its shadow, showing the Lighthouse
-# demo project in /Users/Shared and a home folder called "demo". Nothing of the real home folder or settings shows.
+# Takes the README's screenshots of a real window with its shadow, showing the Lighthouse demo project in
+# /Users/Shared and a home folder called "demo". Nothing of the real home folder or settings shows.
 # Usage: scripts/readme-screenshots.sh [scene...]   (no scene: all of tools/capture/readme/*.json)
 # The app needs Screen Recording once: macOS asks, or allow "File Trail" in Privacy & Security. Leave the Mac alone
 # while it runs (about 2 minutes): the windows have to stay in front. A disk other than the startup disk shows in the

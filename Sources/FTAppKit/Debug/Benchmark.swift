@@ -1,4 +1,3 @@
-// Port of the spike's Benchmark (no TypeScript source); drives tools/bench/run.sh.
 import AppKit
 import QuartzCore
 

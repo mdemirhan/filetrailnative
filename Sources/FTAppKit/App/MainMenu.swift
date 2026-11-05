@@ -1,4 +1,3 @@
-// Port of buildApplicationMenu and the focus wiring of apps/desktop/src/main/main.ts
 import AppKit
 import FTFoundation
 
@@ -28,7 +27,7 @@ public final class MainMenu {
     }
 
     /// The window actions of the menu: About, Settings, Help and the windows the Go menu and New Window open with
-    /// none open. P4-03's windows and P4-02's controller plug in here.
+    /// none open. The page windows and the window controller plug in here.
     func connect(
         openAbout: (() -> Void)? = nil, openSettings: (() -> Void)? = nil, openHelp: ((HelpTopicID?) -> Void)? = nil,
         openWindowFor: @escaping (RendererCommand) -> Void, openNewWindowFromFront: @escaping () -> Void
@@ -37,7 +36,7 @@ public final class MainMenu {
         router.onOpenSettings = openSettings
         router.onOpenHelp = openHelp
         // With no window open or on screen, the Go menu's places open one. New Window opens one on the front window's
-        // folder, a minimized window's too (main.ts:698-701).
+        // folder, a minimized window's too.
         router.onCommandWithoutExplorerWindow = { command in
             if command == .newWindow { openNewWindowFromFront() } else { openWindowFor(command) }
         }

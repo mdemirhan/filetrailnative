@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/rendererCommandAvailability.ts, with the few helpers it uses from
-// entriesAtPaths.ts, explorerAppUtils.ts and explorerNavigation.ts
 import Foundation
 
 /// What kind of item a listing row is (`DirectoryEntry["kind"]`).
@@ -11,13 +9,13 @@ public enum EntryKind: String, Codable, CaseIterable, Sendable, Hashable {
     case bundle
     case other
 
-    /// `isDirectoryLikeEntry`: a folder, or a link to one.
+    /// A folder, or a link to one.
     public var isDirectoryLike: Bool { self == .directory || self == .symlinkDirectory }
 
-    /// `isEditableFileEntry`: a file, or a link to one.
+    /// A file, or a link to one.
     public var isEditableFile: Bool { self == .file || self == .symlinkFile }
 
-    /// `isFolderSizeEligibleKind`: a link to a folder is not measured, and the folder it points to is not counted twice.
+    /// A link to a folder is not measured, and the folder it points to is not counted twice.
     public var isFolderSizeEligible: Bool { self == .directory || self == .bundle }
 }
 
@@ -32,7 +30,7 @@ public struct CommandEntry: Equatable, Sendable {
     }
 }
 
-/// What the window knows when it asks whether a command can run (`RendererCommandAvailabilityContext`).
+/// What the window knows when it asks whether a command can run.
 public struct CommandAvailabilityContext: Equatable, Sendable {
     public var shortcutContext: ShortcutContext
     public var currentPath: String
@@ -40,7 +38,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var activeContentEntries: [CommandEntry]
     public var selectedEntry: CommandEntry?
     public var selectedTreeTargetPath: String?
-    /// `hasClipboardItems(copyPasteClipboard)`.
+    /// The clipboard holds items to paste.
     public var clipboardHasItems: Bool
     public var pasteDestinationPath: String?
     public var isSearchMode: Bool
@@ -100,15 +98,15 @@ public enum CommandAvailability {
         .trashSelection, .emptyTrash,
     ]
 
-    // MARK: Helpers of the original's other files
+    // MARK: Helpers
 
-    /// `findEntryAtPath`: the first item at `path`.
+    /// The first item at `path`.
     static func entry(at path: String?, in entries: [CommandEntry]) -> CommandEntry? {
         guard let path else { return nil }
         return entries.first { JSString.equals($0.path, path) }
     }
 
-    /// `resolveEntriesAtPaths`: the items at `paths`, in the order of `paths`, leaving out paths not there.
+    /// The items at `paths`, in the order of `paths`, leaving out paths not there.
     static func entries(at paths: [String], in entries: [CommandEntry]) -> [CommandEntry] {
         if paths.isEmpty { return [] }
         var index: [[UInt8]: CommandEntry] = [:]
@@ -133,7 +131,7 @@ public enum CommandAvailability {
         return "/" + parts.dropLast().joined(separator: "/")
     }
 
-    /// `resolveNewFolderTargetPath` as the Eject, New Folder and menu rules use it (no context scope).
+    /// Where New Folder makes a folder, as the Eject, New Folder and menu rules use it (no context scope).
     static func newFolderTargetPath(
         currentPath: String, selectedPaths: [String], isSearchMode: Bool, homePath: String
     ) -> String? {
@@ -150,7 +148,7 @@ public enum CommandAvailability {
 
     // MARK: Targets
 
-    /// What the target rules look at (`CommandTargetContext`).
+    /// What the target rules look at.
     public struct TargetContext: Equatable, Sendable {
         public var currentPath: String
         public var selectedPathsInViewOrder: [String]
@@ -192,7 +190,7 @@ public enum CommandAvailability {
         return entry.path
     }
 
-    /// `resolveNewTabTargetPath`: the folder File > Open in New Tab opens: the tree's folder when the tree has the
+    /// The folder File > Open in New Tab opens: the tree's folder when the tree has the
     /// keyboard, otherwise the one folder selected in the list.
     public static func newTabTargetPath(_ context: TargetContext) -> String? {
         if context.focusedPane == .tree {
@@ -201,7 +199,7 @@ public enum CommandAvailability {
         return singleSelectedFolderPath(context)
     }
 
-    /// `resolveFavoriteTargetPath`: the folder File > Add to Favorites acts on: the tree's folder when the tree has the
+    /// The folder File > Add to Favorites acts on: the tree's folder when the tree has the
     /// keyboard, otherwise the one folder selected in the list, or the folder on screen when nothing is selected.
     public static func favoriteTargetPath(_ context: TargetContext) -> String? {
         if context.isSearchMode {
@@ -220,7 +218,7 @@ public enum CommandAvailability {
         return target
     }
 
-    /// `resolveShowInFinderPaths`: what File > Show in Finder reveals: the tree's folder, the selection, or with
+    /// What File > Show in Finder reveals: the tree's folder, the selection, or with
     /// nothing selected the folder on screen.
     public static func showInFinderPaths(_ context: TargetContext) -> [String] {
         if context.focusedPane == .tree, let tree = context.selectedTreeTargetPath, !tree.isEmpty {
@@ -232,7 +230,7 @@ public enum CommandAvailability {
         return context.currentPath.isEmpty ? [] : [context.currentPath]
     }
 
-    /// `resolveCalculateSizePaths`: the folders File > Calculate Size measures: the tree's folder when the tree has the
+    /// The folders File > Calculate Size measures: the tree's folder when the tree has the
     /// keyboard, the folders among the selection, or with nothing selected the folder on screen.
     public static func calculateSizePaths(_ context: TargetContext) -> [String] {
         if context.focusedPane == .tree, let tree = context.selectedTreeTargetPath, !tree.isEmpty {
@@ -253,7 +251,6 @@ public enum CommandAvailability {
 
     // MARK: Rules
 
-    /// `canRunToolbarRendererCommand`.
     public static func canRun(_ command: RendererCommand, _ context: CommandAvailabilityContext) -> Bool {
         if !ShortcutPolicy.canHandle(command, context.shortcutContext) {
             return false

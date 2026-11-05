@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/AboutWindowApp.test.tsx and the About window's size and behavior (main.ts, B-DLG-259)
 import AppKit
 import FTFoundation
 import Testing
@@ -55,7 +54,6 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         return controller
     }
 
-    // T-50f842b6 F-669 F-670 B-DLG-260
     @Test func showsTheAppItsIconAndTheVersionsABugReportNeeds() {
         let controller = make(info, Recorder())
         let view = controller.aboutView
@@ -72,7 +70,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(controller.window?.title == "About File Trail")
     }
 
-    // B-DLG-260 the version without a commit; B-DLG-262 the rows stay empty when the info cannot be read
+    // The version without a commit; the rows stay empty when the info cannot be read
     @Test func showsTheVersionAloneWithoutACommitAndNoRowsWithoutInfo() {
         var plain = info
         plain.commit = nil
@@ -83,7 +81,6 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(!empty.aboutView.copyButton.isEnabled)
     }
 
-    // T-18937749 F-670 B-DLG-261
     @Test func copiesTheDetailsAndSaysSoFor1500Milliseconds() {
         let recorder = Recorder()
         let scheduler = HandScheduler()
@@ -99,7 +96,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(view.copyButton.title == "Copy Details")
     }
 
-    // B-DLG-261 a copy that fails changes nothing; a second copy starts the note again
+    // A copy that fails changes nothing; a second copy starts the note again
     @Test func aFailedCopyChangesNothingAndASecondCopyRestartsTheNote() {
         let recorder = Recorder()
         let scheduler = HandScheduler()
@@ -119,7 +116,6 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(view.copyButton.title == "Copy Details")
     }
 
-    // T-57cd1b43 F-670 B-DLG-262
     @Test func linksToTheProjectAndOpensAcknowledgements() {
         let recorder = Recorder()
         let view = make(info, recorder).aboutView
@@ -133,7 +129,6 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(recorder.acknowledgements == 1)
     }
 
-    // T-0ec7feeb F-670 B-DLG-263
     @Test func closesWithEscape() {
         let controller = make(info, Recorder())
         var closed = 0
@@ -143,7 +138,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(closed == 1)
     }
 
-    // F-635 B-DLG-259: 460 by 356, not resizable or minimizable, not full-screenable
+    // 460 by 356, not resizable or minimizable, not full-screenable
     @Test func isAFixedWindowOf460By356() {
         let controller = make(info, Recorder())
         let window = controller.window
@@ -153,11 +148,11 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(window?.collectionBehavior.contains(.fullScreenNone) == true)
         #expect(window?.standardWindowButton(.zoomButton)?.isEnabled == false)
         #expect(window?.standardWindowButton(.miniaturizeButton)?.isEnabled == false)
-        // F-636 the window's background is the page window's, not transparent.
+        // The window's background is the page window's, not transparent.
         #expect(window?.backgroundColor == NSColor(AppearanceModel.shared.theme.pageWindowBackground))
     }
 
-    // F-669 the layout, from the stylesheet (ui.md 7.2): the 72 point icon, the rows of 31 under a hairline, the buttons
+    // The layout, from the stylesheet (ui.md 7.2): the 72 point icon, the rows of 31 under a hairline, the buttons
     @Test func laysTheWindowOutAsTheStylesheetDoes() {
         let view = make(info, Recorder()).aboutView
         let icon = views("about.icon", in: view).first?.frame

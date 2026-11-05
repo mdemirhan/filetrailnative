@@ -1,14 +1,12 @@
-// Port of sortEntriesBySize, isFolderSizeEligibleKind and folderRank of apps/desktop/src/renderer/lib/explorerAppUtils.ts
-// (:589-640)
 import Foundation
 
 /// What the size order needs to know of an item.
 public struct SizeSortKey: Equatable, Sendable {
     public var path: String
     public var name: String
-    /// A folder or a link to one (`folderRank` 0): what Folders First puts ahead.
+    /// A folder or a link to one: what Folders First puts ahead.
     public var isDirectoryKind: Bool
-    /// A folder or a bundle: its size is calculated, not listed (`isFolderSizeEligibleKind`).
+    /// A folder or a bundle: its size is calculated, not listed.
     public var isFolderSizeEligible: Bool
     /// The size the listing reported (files).
     public var listedSize: Int64?

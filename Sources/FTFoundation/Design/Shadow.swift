@@ -1,4 +1,3 @@
-// Port of the box-shadow tokens in apps/desktop/src/renderer/styles.css
 import Foundation
 
 public enum ThemeAppearance: String, CaseIterable, Sendable {

@@ -1,4 +1,3 @@
-// Port of the design tokens in apps/desktop/src/renderer/styles.css (:root) and lib/layoutTokens.ts
 import Foundation
 
 public struct CubicBezier: Equatable, Sendable {

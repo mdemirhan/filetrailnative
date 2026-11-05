@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/explorerWindowController.ts
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -7,10 +6,10 @@ import FTFoundation
 // themselves, the question before closing the last one while an operation runs, and Merge All Windows. Quitting is the
 // QuitCoordinator's. The windows themselves are made by the host, so all of this runs on stand-ins in the tests.
 //
-// An explorer window here is the original's: one window with its tabs. Natively it is a group of tabbed NSWindows,
-// one per tab (`ExplorerTabGroup`).
+// An explorer window is one window with its tabs. Natively it is a group of tabbed NSWindows, one per tab
+// (`ExplorerTabGroup`).
 
-/// What the controller is told of a window, as Electron's window events tell it.
+/// What the controller is told of a window.
 @MainActor
 public struct ExplorerWindowEvents {
     /// The window has drawn its first folder (`ready-to-show`).
@@ -29,7 +28,7 @@ public struct ExplorerWindowEvents {
     public init() {}
 }
 
-/// What the controller is told a window can be told (the original's `webContents.send`).
+/// What the controller can tell a window.
 public enum ExplorerWindowMessage: Equatable, Sendable {
     /// Items opened with File Trail from another app are waiting for it (`filetrail:openRequestsWaiting`).
     case openRequestsWaiting
@@ -38,7 +37,7 @@ public enum ExplorerWindowMessage: Equatable, Sendable {
 /// The parts of a window the controller uses (`ExplorerWindowLike`).
 @MainActor
 public protocol ExplorerWindowLike: AnyObject {
-    /// Its number while the app runs (the original's web contents id).
+    /// Its number while the app runs.
     var windowID: Int { get }
     var events: ExplorerWindowEvents { get set }
     var isDestroyed: Bool { get }
@@ -302,7 +301,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return tabs
     }
 
-    /// `launchContextFor`: what the window opened with.
+    /// What the window opened with.
     public func launchContext(for windowID: Int?) -> ExplorerLaunchContext {
         windows.byWindowID(windowID)?.launch ?? ExplorerLaunchContext()
     }
@@ -353,7 +352,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return openWindows().first { $0.windowID != windowID }?.window
     }
 
-    /// `closeWindowOf`: ⌘W on a window's last tab: closed as its close button closes it, so the question before
+    /// ⌘W on a window's last tab: closed as its close button closes it, so the question before
     /// stopping a copy is asked and its place is recorded.
     @discardableResult
     public func closeWindow(of windowID: Int?) -> Bool {
@@ -388,8 +387,8 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     // MARK: Windows the system made
 
-    /// A window the system made of a tab dragged out of another (the original has no such thing): it becomes an
-    /// explorer window of its own, with the panels and the size of the one it came from.
+    /// A window the system made of a tab dragged out of another: it becomes an explorer window of its own, with the
+    /// panels and the size of the one it came from.
     public func adopt(_ window: W, id: String, from sourceID: Int?, overrides session: [String: JSONNode]) {
         let source = windows.byWindowID(sourceID)
         var overrides = source.map { Self.node(host.store.windowPreferences($0.id).windowSession) } ?? [:]

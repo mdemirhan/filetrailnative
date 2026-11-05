@@ -1,4 +1,3 @@
-// Port of runHdiutilProcess and openWithDiskImageMounterApp in apps/desktop/src/main/diskImages.ts
 import AppKit
 import Foundation
 

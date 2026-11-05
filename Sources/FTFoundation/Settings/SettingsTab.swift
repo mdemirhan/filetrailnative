@@ -1,7 +1,6 @@
-// Port of apps/desktop/src/main/settingsWindowTab.ts and SETTINGS_TABS of apps/desktop/src/renderer/SettingsWindowApp.tsx
 import Foundation
 
-/// A section of the Settings window, in the order of its sidebar (`settingsTabSchema`).
+/// A section of the Settings window, in the order of its sidebar.
 public enum SettingsTab: String, CaseIterable, Sendable, Hashable {
     case general, browsing, search, files, shortcuts
 
@@ -40,8 +39,8 @@ public enum SettingsTab: String, CaseIterable, Sendable, Hashable {
         }
     }
 
-    /// `readSettingsTabFromUrl`: the tab named after "#settings/" in a Settings window's address, or nil. The Swift
-    /// window keeps its tab in memory, but the address form is kept so the tab can be named the original's way.
+    /// The tab named after "#settings/" in a Settings window's address, or nil. The window keeps its tab in
+    /// memory, but the address form is kept so a tab can still be named by an address.
     public static func read(fromURL url: String) -> SettingsTab? {
         guard let hash = url.firstIndex(of: "#") else { return nil }
         let fragment = url[hash...]

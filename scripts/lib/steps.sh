@@ -1,6 +1,4 @@
-# Port of apps/desktop/scripts/lib/steps.sh
-# Prints a build as one line per step: its name, then how it went. The tools a step runs write to LOG_FILE instead, and a
-# failure shows the end of the log.
+# Its name, then how it went. The tools a step runs write to LOG_FILE instead, and a failure shows the end of the log.
 #
 # Sourced by the scripts that build the app. Set LOG_FILE and STEP_COUNT first; sourcing empties the log and stops the
 # script at the first command that fails.

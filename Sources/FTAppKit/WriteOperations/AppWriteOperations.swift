@@ -1,5 +1,5 @@
-// Port of the write half of apps/desktop/src/main/bootstrap.ts: the crash journal and its recovery before any window
-// can write, the write service and the coordinator with its windows, and the retries of what recovery couldn't reach
+// The crash journal and its recovery before any window can write, the write service and the coordinator with its
+// windows, and the retries of what recovery couldn't reach
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -114,7 +114,7 @@ final class AppWriteOperations {
         let session = ExplorerWriteSession(coordinator: coordinator, host: group, clipboard: windows?.clipboard)
         session.explorerWindowID = group.windowID
         sessions[group.windowID] = session
-        // Its card, toasts and results show in the window's tabs (P5-08).
+        // Its card, toasts and results show in the window's tabs.
         WindowWriteUI.attach(to: session, group: group)
         // An operation handed to it before it listened is asked for.
         session.askForAdoption()
@@ -135,7 +135,7 @@ final class AppWriteOperations {
         coordinator.windowClosed(session)
     }
 
-    /// A tab came to the front: another window's operation whose end its window missed is let go of (B-CLIP-108).
+    /// A tab came to the front: another window's operation whose end its window missed is let go of.
     func tabCameToFront(_ tab: MainWindowController) {
         guard let group = tab.group else { return }
         sessions[group.windowID]?.cameToFront()
@@ -150,7 +150,7 @@ final class AppWriteOperations {
     }
 
     /// Every window but the owner hears how the operation is doing; every window's tabs follow what it moved, and
-    /// every window's folder sizes forget what it changed (B-VIEW-172, B-INFO-147 to 149).
+    /// every window's folder sizes forget what it changed.
     private func broadcast(_ event: WriteOperationEvent, owner: any WriteOperationWindow) {
         guard let windows else { return }
         for group in windows.liveGroups {
@@ -190,7 +190,7 @@ final class AppWriteOperations {
 
     /// Items that waited for their disk and are in place now.
     private func showRecoveryNotices(_ messages: [String]) {
-        // A native message box in main.ts, not the window's alert.
+        // A native message box, not the window's alert.
         Self.showRecoveryNotices(messages, dialogs: .native, window: windows?.front?.window)
     }
 
@@ -201,7 +201,7 @@ final class AppWriteOperations {
         Self.showStartupNotices(notices, dialogs: .native, window: windows?.front?.window)
     }
 
-    /// `showRecoveryNotices` (main.ts): an information, on the window in front or on its own.
+    /// `showRecoveryNotices`: an information, on the window in front or on its own.
     static func showRecoveryNotices(_ messages: [String], dialogs: WriteDialogs, window: NSWindow?) {
         guard !messages.isEmpty else { return }
         let title =
@@ -210,7 +210,7 @@ final class AppWriteOperations {
         dialogs.showInfo(title, messages.joined(separator: "\n\n"), window)
     }
 
-    /// `showPendingStartupNotices` (main.ts): a warning on the first window.
+    /// A warning on the first window.
     static func showStartupNotices(_ notices: [String], dialogs: WriteDialogs, window: NSWindow?) {
         guard !notices.isEmpty else { return }
         dialogs.show("Work was cut short when File Trail last stopped", notices.joined(separator: "\n\n"), window)
@@ -259,8 +259,8 @@ extension ExplorerTabGroup: WriteSessionHost {
         selected?.followOnScreen(moves)
     }
 
-    /// The folder watch is held while a write is locked (`held: … || isWriteOperationLocked`, B-CLIP-147,
-    /// B-VIEW-187): each tab reads what waited once it is let go.
+    /// The folder watch is held while a write is locked (`held: … || isWriteOperationLocked`): each tab reads what
+    /// waited once it is let go.
     func writeLockChanged() {
         noteWriteLock(tabs.first?.isWriteLocked ?? false)
         for tab in tabs { tab.writeLockChanged() }

@@ -1,11 +1,8 @@
-// Port of the glyphs (FolderGlyph, FileGlyph, WarningGlyph), the "For all conflicts" segmented control
-// (AllConflictsButtons) and the row choice popup of apps/desktop/src/renderer/components/CopyPasteReviewDialog.tsx,
-// with the .segmented, .copy-paste-choice and .copy-paste-*-glyph rules of styles.css
 import AppKit
 import FTFoundation
 
-/// The 20 pt glyph of a row (`FolderGlyph`, `FileGlyph`) or the footer's warning triangle (`WarningGlyph`), drawn
-/// from the original's SVG paths.
+/// The 20 pt glyph of a row or the footer's warning triangle, drawn
+/// from SVG paths.
 @MainActor
 final class SheetGlyphView: NSView, ThemeApplying {
     enum Shape {
@@ -89,7 +86,7 @@ final class SheetGlyphView: NSView, ThemeApplying {
         }
     }
 
-    /// The path scaled from its view box into the view, centered (`preserveAspectRatio` meet), filled then stroked 1.
+    /// The path scaled from its view box to fit the view, centered, filled then stroked 1.
     private func draw(_ path: NSBezierPath, viewBox: NSSize, fill: RGBA?, stroke: RGBA, keepsWidth: Bool = false) {
         let scale = min(bounds.width / viewBox.width, bounds.height / viewBox.height)
         let transform = AffineTransform(
@@ -110,7 +107,7 @@ final class SheetGlyphView: NSView, ThemeApplying {
 
 // MARK: Segmented control
 
-/// "For all conflicts:" (`AllConflictsButtons`): the system's segmented control as a radio group, so Tab lands on
+/// "For all conflicts:": the system's segmented control as a radio group, so Tab lands on
 /// it and the arrow keys move the choice. Replace is red once chosen.
 @MainActor
 final class AllConflictsControl: SystemSegmentedControl {
@@ -180,8 +177,8 @@ final class AllConflictsControl: SystemSegmentedControl {
     }
 }
 
-/// Where one segment of "For all conflicts" lies (`.segmented-item.copy-paste-segment`), for captures to find, read and
-/// click: it draws nothing and a click goes through it to the control.
+/// Where one segment of "For all conflicts" lies, for automation to find, read and click: it draws nothing and a click
+/// goes through it to the control.
 @MainActor
 final class AllConflictsSegment: TextControl {
     let choice: AllConflictsChoice
@@ -227,15 +224,16 @@ final class AllConflictsSegment: TextControl {
 
 // MARK: Choice popup
 
-/// A row's choice (`.copy-paste-choice`): a native popup button, whose platform menu opens on click, in the push
-/// button's bezel with the menu list's single down chevron; red while it reads Replace. Replace is disabled, with its reason, where it can't be done.
+/// A row's choice: a native popup button, whose platform menu opens on click, in the push button's bezel with the
+/// menu list's single down chevron; red while it reads Replace. Replace is disabled, with its reason, where it can't
+/// be done.
 @MainActor
 final class ReviewChoicePopUp: NSPopUpButton, ThemeApplying {
     private var theme = AppearanceModel.shared.theme
     private static let font = ThemeFonts.sans(DesignTokens.typeScale.body)
     /// The room the native popup's arrows take at its right.
     static let arrowWidth = 16.0
-    /// Where the menu list's text starts past its padding, and its chevron (measured on the original's capture).
+    /// Where the menu list's text starts past its padding, and its chevron.
     static let textInset = 4.5
     static let chevronInset = 7.5
     static let chevronWidth = 7.0
@@ -288,9 +286,9 @@ final class ReviewChoicePopUp: NSPopUpButton, ThemeApplying {
         needsDisplay = true
     }
 
-    /// The chosen item's color: red while it reads Replace (`.copy-paste-choice.is-danger`).
+    /// The chosen item's color: red while it reads Replace.
     var titleColor: NSColor { NSColor(choice == .overwrite ? theme.palette.danger : theme.palette.textPrimary) }
-    /// The menu list paints its arrow in the element's `color`, so the chevron follows the text.
+    /// The chevron follows the text's color.
     var chevronColor: NSColor { titleColor }
 
     override func draw(_ dirtyRect: NSRect) {

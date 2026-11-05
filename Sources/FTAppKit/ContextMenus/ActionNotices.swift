@@ -1,20 +1,17 @@
-// Port of showModalNotice and askAlwaysOpenWith (apps/desktop/src/renderer/hooks/useExplorerActions.ts) and the
-// confirmAlwaysOpenWith dialog of components/AppDialogs.tsx, as a seam P6-01's alerts take over
 import AppKit
 import FTFileSystem
 
-/// Where the original's notices and questions about an action are shown. P6-01 draws them as the original's alert; until
-/// then they are a plain alert with the exact text.
+/// Where the notices and questions about an action are shown: in the window (`InWindowNoticePresenter`), or as a
+/// plain alert with the exact text (`AlertNoticePresenter`).
 @MainActor
 protocol ActionNoticePresenting: AnyObject {
-    /// A notice with one button (`showModalNotice`).
+    /// A notice with one button.
     func show(title: String, message: String, in window: NSWindow?)
     /// Finder's question before every file of a kind changes app; true to go ahead.
     func confirmAlwaysOpenWith(appName: String, kindName: String?, in window: NSWindow?) async -> Bool
 }
 
 enum ActionNoticeText {
-    /// `createOpenItemLimitMessage`.
     static func openItemLimit(_ action: String, selected: Int, limit: Int) -> String {
         let verb = action == "Open" ? "opens" : "edits"
         return
@@ -47,7 +44,7 @@ enum ActionNoticeText {
         "Finder couldn’t show \(count == 1 ? "it" : "them"). \(detail ?? "Finder didn’t answer.")"
     }
 
-    /// The end of `openPathExternally`: an item macOS didn't open is only logged, whichever control asked.
+    /// After an open in macOS: an item macOS didn't open is only logged, whichever control asked.
     @MainActor static func logOpenFailure(_ result: OperationResult) {
         guard !result.ok else { return }
         (NSApplication.shared.delegate as? AppDelegate)?.logger?

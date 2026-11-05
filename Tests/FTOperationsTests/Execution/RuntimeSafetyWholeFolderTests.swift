@@ -1,5 +1,4 @@
-// Port of the second half of packages/core/src/fs/copyPasteRuntimeSafety.realfs.test.ts, but for the cases that
-// Replace (P3-04's): folders copied or moved whole, large files, AppleDouble files and the smaller cases
+// Folders copied or moved whole, large files, AppleDouble files and the smaller cases
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -12,7 +11,7 @@ import os
 /// The start of an AppleDouble file (its magic number and version).
 private let appleDoubleData: [UInt8] = [0x00, 0x05, 0x16, 0x07, 0x00, 0x02, 0x00, 0x00]
 
-/// Runs a command line tool, as the original's tests run chmod and chflags.
+/// Runs a command line tool, such as chmod or chflags.
 func runTool(_ tool: String, _ arguments: [String]) throws {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: tool)
@@ -52,7 +51,6 @@ struct WholeFolderTests {
 
     // An incomplete package inside a folder being copied, which the disk won't let go of: the folder around it
     // isn't put in place either, and nothing of it is left.
-    // T-54f698c7 F-262 F-499
     @Test func copiesNothingOfAFolderWhoseIncompletePackageCantBeClearedAway() async throws {
         try await withSafetyFolders { f in
             let fileSystem = try packageWithAFailingFile(f)
@@ -75,7 +73,6 @@ struct WholeFolderTests {
     }
 
     // As to another disk: no part of the package is left in either place.
-    // T-35f69497 F-262 F-349 F-266 F-499
     @Test func movesNothingOfAFolderSomeOfWhoseItemsCouldntBeCopied() async throws {
         try await withSafetyFolders { f in
             let run = try await runPaste(
@@ -93,7 +90,6 @@ struct WholeFolderTests {
         }
     }
 
-    // T-c349cb2e F-262 F-266 F-499
     @Test func copiesNothingOfAPackageSomeOfWhoseItemsCouldntBeCopied() async throws {
         try await withSafetyFolders { f in
             let run = try await runPaste(
@@ -108,7 +104,6 @@ struct WholeFolderTests {
     }
 
     // An ordinary folder is put in place with what could be copied, the rest named.
-    // T-9cf509ef F-262 F-455 F-499
     @Test func putsAnOrdinaryFolderInPlaceWithWhatCouldBeCopied() async throws {
         try await withSafetyFolders { f in
             let fileSystem = try packageWithAFailingFile(f)
@@ -130,7 +125,6 @@ struct WholeFolderTests {
 
     // A copy of a folder with a rule against deleting it (as ~/Documents has) carries the rule: a move that can't
     // go on still removes all of its hidden copy.
-    // T-e15d6061 F-262 F-499
     @Test func removesAHiddenCopyHoldingAFolderWithARuleAgainstDeletingIt() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/A/a.txt", "a")
@@ -150,7 +144,6 @@ struct WholeFolderTests {
 
     // The item Replace was to replace went away before the paste: the package is then moved as any other, whole or
     // not at all.
-    // T-27d96a21 F-260 F-262 F-499
     @Test func movesAPackageWholeWhenTheItemItWasToReplaceIsGone() async throws {
         try await withSafetyFolders { f in
             let fileSystem = try packageWithAFailingFile(f)
@@ -169,7 +162,6 @@ struct WholeFolderTests {
 
     // A file in the package changed after the review and was skipped: the rest of it isn't a whole package, so
     // none of it is put in place.
-    // T-23bded0b F-262 F-499
     @Test func copiesNothingOfAPackageAnItemOfWhichWasSkipped() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/Talk.key/Index.zip", "index")
@@ -189,7 +181,6 @@ struct WholeFolderTests {
     }
 
     // A folder in a moved folder became a file after the review and was skipped: it stays, and the rest moves.
-    // T-c942e4a8 F-284 F-499
     @Test func leavesASkippedFolderWhereItWasWhenMovingTheRest() async throws {
         try await withSafetyFolders { f in
             try Disk.makeDirectories(f.src + "/F/E")
@@ -210,7 +201,6 @@ struct WholeFolderTests {
     }
 
     // An app inside an ordinary folder is whole or not at all, like the folder's own items.
-    // T-cb7aad68 F-262 F-499
     @Test func leavesOutAnAppInsideAFolderThatCouldntBeCopiedWhole() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/readme.txt", "readme")
@@ -230,7 +220,6 @@ struct WholeFolderTests {
     }
 
     // Skipped deep inside: "Contents" was done, the app it is in wasn't.
-    // T-92c1b1a5 F-262 F-499
     @Test func leavesOutAnAppWithAnItemSkippedDeepInsideIt() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/readme.txt", "readme")
@@ -245,7 +234,6 @@ struct WholeFolderTests {
     }
 
     // Stopped as its last file is written, before the folder is put in place.
-    // T-4eecb35e F-257 F-262
     @Test func movesNothingWhenStoppedAsItsLastItemIsCopied() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -267,7 +255,6 @@ struct WholeFolderTests {
     }
 
     // What couldn't be cleared away (its disk went away) stays written down for the next start.
-    // T-2ddde128 F-262
     @Test func keepsTheRecordOfAHiddenFolderItCouldntClearAway() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -295,7 +282,6 @@ struct WholeFolderTests {
         }
     }
 
-    // T-0000505f F-257 F-262
     @Test func movesNothingWhenStoppedPartWayAndLeavesNothingHidden() async throws {
         try await withSafetyFolders { f in
             for name in ["a.txt", "b.txt", "c.txt"] {
@@ -321,7 +307,6 @@ struct WholeFolderTests {
     }
 
     // Written down while it is built, so a crash leaves nothing under the hidden name.
-    // T-1cb4e462 F-262 F-264
     @Test func writesTheFolderDownWhileItIsBuiltAndLetsGoOnceItIsInPlace() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -354,7 +339,6 @@ struct LargeFileBeingCopiedTests {
         #expect(truncate(path, off_t(journaledFileBytes)) == 0)
     }
 
-    // T-38c3693a F-275 F-500
     @Test func isWrittenDownInTheJournalWhileItIsCopied() async throws {
         try await withSafetyFolders { f in
             try sparseLargeFile(f.src + "/movie.mov")
@@ -379,7 +363,6 @@ struct LargeFileBeingCopiedTests {
         }
     }
 
-    // T-49a4c4c7 F-275 F-500
     @Test func letsGoOfTheEntryWhenTheCopyFails() async throws {
         try await withSafetyFolders { f in
             try sparseLargeFile(f.src + "/movie.mov")
@@ -406,7 +389,6 @@ struct AppleDoubleLookalikeTests {
     }
 
     // On APFS a "._name" file is an ordinary file unless it really is AppleDouble data.
-    // T-613b5a9a F-472 F-502
     @Test func copiesADotUnderscoreFileThatIsntAppleDoubleDataAndOneWithoutItsItem() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -422,7 +404,6 @@ struct AppleDoubleLookalikeTests {
 
     // APFS keeps attributes natively, so AppleDouble data in "._a.txt" (left by rsync, tar or a NAS) isn't "a.txt"'s
     // attributes: copying "a.txt" wouldn't carry it.
-    // T-0de4a663 F-472 F-502
     @Test func copiesAppleDoubleDataBesideItsItemOnAPFSAndMovesIt() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -443,7 +424,6 @@ struct AppleDoubleLookalikeTests {
 
     // On APFS "._a.txt" is never "a.txt"'s attributes, even when it holds AppleDouble data: one put in the folder
     // while it was being moved stays there, and is named.
-    // T-e5be2962 F-286 F-502
     @Test func keepsADotUnderscoreFileAddedToAMovedFolderOnAPFSAndNamesIt() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -461,7 +441,6 @@ struct AppleDoubleLookalikeTests {
         }
     }
 
-    // T-5b26e1f2 F-272 F-502
     @Test func namesADotUnderscoreFileAddedToAFolderWhileItWasCopiedOnAPFS() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/new", "n")
@@ -479,7 +458,6 @@ struct AppleDoubleLookalikeTests {
 
     // The move empties "F" but for the "._a.txt" the person chose to keep: it isn't cleared away with the folder
     // as if it were "a.txt"'s attributes.
-    // T-14b4f80b F-286 F-502
     @Test func keepsADotUnderscoreFileTheMoveSkippedInAFolderItOtherwiseEmptied() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -499,7 +477,6 @@ struct AppleDoubleLookalikeTests {
         }
     }
 
-    // T-1344eee6 F-286 F-503
     @Test func keepsFindersViewSettingsInAMovedFolderThatStaysBecauseSomethingInItStayed() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "new")
@@ -517,7 +494,6 @@ struct AppleDoubleLookalikeTests {
 
 /// Smaller cases a copy gets right, and a file being copied.
 struct SmallerCasesTests {
-    // T-ff522c26 F-276 F-460
     @Test func saysAPipeCantBeCopiedInsteadOfBlamingTheDisk() async throws {
         try await withSafetyFolders { f in
             #expect(mkfifo(f.src + "/pipe", 0o644) == 0)
@@ -530,7 +506,6 @@ struct SmallerCasesTests {
         }
     }
 
-    // T-be5a8d6f F-450
     @Test func namesCopiesTheSameWayWhateverOrderTheItemsComeIn() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.dst + "/a.txt", "a")
@@ -547,7 +522,6 @@ struct SmallerCasesTests {
     }
 
     // "/d/a.txt" is copied too (it becomes "a copy.txt"), so it isn't there to be replaced.
-    // T-840f82e5 F-449
     @Test func doesntOfferToReplaceAnItemThatIsItselfBeingPasted() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.dst + "/a.txt", "dst a")
@@ -560,7 +534,6 @@ struct SmallerCasesTests {
         }
     }
 
-    // T-53ea433c F-449
     @Test func checksReplaceInsideAMergedFolderToo() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/inner/n.txt", "n")
@@ -573,7 +546,6 @@ struct SmallerCasesTests {
         }
     }
 
-    // T-4fa6d913 F-285
     @Test func saysAMovedFolderWasKeptWhenItChangedDuringTheMove() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/F/a.txt", "a")
@@ -591,7 +563,6 @@ struct SmallerCasesTests {
     }
 
     // Quitting or a crash part way must never leave a cut-short file under the real name.
-    // T-738c2652 F-274
     @Test func isWrittenUnderAHiddenNameAndTakesItsOwnOnlyOnceComplete() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/report.pdf", "contents")
@@ -615,7 +586,6 @@ struct SmallerCasesTests {
         }
     }
 
-    // T-a1c9680d F-274 F-454
     @Test func keepsALockedFilesLockOnceItHasItsName() async throws {
         try await withSafetyFolders { f in
             try Disk.write(f.src + "/locked.txt", "keep")

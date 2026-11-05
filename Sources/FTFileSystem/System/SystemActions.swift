@@ -1,17 +1,16 @@
-// Port of apps/desktop/src/main/bootstrap/systemHandlers.ts (open, Open With, Always Open With, Terminal, the pickers, Full Disk Access) and apps/desktop/src/main/bootstrap/diskIds.ts
 import AppKit
 import FTFoundation
 import Foundation
 
 /// The system calls behind the open actions, injectable so tests never open anything.
 public struct SystemOpener: Sendable {
-    /// Opens the item with its default app; returns the reason it could not, "" when it did (`shell.openPath`).
+    /// Opens the item with its default app; returns the reason it could not, "" when it did.
     public var openPath: @Sendable (String) async -> String
     /// Opens the items with the app (`open -a`).
     public var openWithApplication: @Sendable (_ applicationPath: String, _ paths: [String]) async throws -> Void
     /// Shows the items selected in their folders (`open -R`).
     public var reveal: @Sendable ([String]) async throws -> Void
-    /// Opens a URL (`shell.openExternal`).
+    /// Opens a URL.
     public var openURL: @Sendable (URL) async throws -> Void
 
     public init(
@@ -31,14 +30,14 @@ public struct SystemOpener: Sendable {
         var errorDescription: String? { message }
     }
 
-    /// What `open -R` does with an item that is gone: nothing is shown, and it fails, in Node's words (the message of
-    /// `execFile`'s error). `NSWorkspace.activateFileViewerSelecting` says nothing of it. Nil when all are there.
+    /// What `open -R` does with an item that is gone: nothing is shown, and it fails with a failed command's
+    /// message. `NSWorkspace.activateFileViewerSelecting` says nothing of it. Nil when all are there.
     static func revealFailure(_ paths: [String]) -> String? {
         guard let gone = paths.first(where: { !FileManager.default.fileExists(atPath: $0) }) else { return nil }
         return "Command failed: open -R \(paths.joined(separator: " "))\nThe file \(gone) does not exist.\n"
     }
 
-    /// `NSWorkspace`: the same results as the original's `shell.openPath`, `open -a`, `open -R` and `openExternal`.
+    /// `NSWorkspace`, with the same results as `open`, `open -a` and `open -R`.
     public static let workspace = SystemOpener(
         openPath: { path in
             do {
@@ -91,7 +90,7 @@ public enum SystemActions {
         }
     }
 
-    /// system:openPathsWithApplication
+    /// Opens the paths with an application.
     public static func openPaths(
         _ paths: [String], withApplication applicationPath: String, opener: SystemOpener = .workspace
     ) async -> OperationResult {
@@ -112,7 +111,7 @@ public enum SystemActions {
         }
     }
 
-    /// system:getOpenWithApplications. The apps Launch Services offers for the items, and the pinned apps that are
+    /// The apps Launch Services offers for the items, and the pinned apps that are
     /// still there. When it can't be asked, the menu still lists the pinned apps found on disk, and Other….
     public static func openWithApplications(
         paths: [String], pinnedAppPaths: [String],
@@ -176,7 +175,7 @@ public enum SystemActions {
                 ok: false, error: ApplicationPaths.invalidPathMessage(launchApplicationPath), targetPath: targetPath,
                 terminalName: terminalName)
         }
-        // The original asks `open -a` for the bundle path, falling back to the Terminal app by name.
+        // The chosen app's bundle path, or the Terminal app's when none is chosen.
         let application =
             launchApplicationPath.isEmpty
             ? ApplicationFallback.terminalPath : launchApplicationPath
@@ -189,7 +188,7 @@ public enum SystemActions {
         }
     }
 
-    /// Edit in the text editor: `openPathsWithApplication([path], defaultTextEditor.appPath)`.
+    /// Edit in the text editor: opens `path` with the text editor chosen in Settings.
     public static func editInTextEditor(
         path: String, editor: ApplicationSelection, opener: SystemOpener = .workspace
     ) async -> OperationResult {
@@ -214,7 +213,7 @@ public enum SystemActions {
 
     // MARK: Disks
 
-    /// system:getDiskIds. Which disk each path is on: the device number of what it names, followed through
+    /// Which disk each path is on: the device number of what it names, followed through
     /// symlinks (a drop on a link to a folder lands in that folder). Nil where the path can't be read.
     public static func diskIds(
         paths: [String],

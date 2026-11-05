@@ -56,7 +56,7 @@ final class FakeWindowHost: ExplorerWindowHost {
     }
 }
 
-/// The menu in the words of the original's tests: titles, with "-" for a separator.
+/// The menu as titles, with "-" for a separator.
 @MainActor
 func titles(_ menu: NSMenu) -> [String] {
     menu.items.map { $0.isSeparatorItem ? "-" : $0.title }
@@ -79,7 +79,7 @@ func item(_ menu: NSMenu, _ title: String) -> NSMenuItem {
     return found
 }
 
-/// An item's key written as Electron's accelerators are, "Command+Shift+N"; nil without one.
+/// An item's key written as an accelerator, "Command+Shift+N"; nil without one.
 @MainActor
 func accelerator(_ item: NSMenuItem) -> String? {
     guard !item.keyEquivalent.isEmpty else { return nil }

@@ -1,4 +1,4 @@
-// Fast form of compareEntriesByName (packages/core/src/fs/explorerService.ts) for a whole listing
+// Sort keys for the names of a whole listing, compared faster than name by name
 import Foundation
 
 /// The names of a listing prepared for sorting. Each name becomes a key whose bytes compare, with `memcmp`,
@@ -16,7 +16,7 @@ struct NameKeys {
 
     var count: Int { names.count }
 
-    /// How names are turned into keys: by the system's ICU (what V8's localeCompare uses), where it is
+    /// How names are turned into keys: by the system's ICU, where it is
     /// there, or by `CollationTable`.
     enum Mode {
         case automatic

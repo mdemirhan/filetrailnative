@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/undoHistory.ts
 import FTFoundation
 import Foundation
 
@@ -42,7 +41,7 @@ public struct UndoHistoryError: Error, Equatable, Sendable, CustomStringConverti
 /// disk first (see UndoPlan.swift).
 @MainActor
 public final class UndoHistory {
-    /// `UNDO_HISTORY_MAX_ITEM_STEPS`: how many item steps the Undo and Redo lists may hold together (each item of a
+    /// How many item steps the Undo and Redo lists may hold together (each item of a
     /// batch rename is one): a few hundred bytes each, so a few hundred MB at most. Past it, the oldest operations are
     /// let go, never the one just done.
     public static let maxItemStepsDefault = 1_000_000

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/places.ts (with getFavoriteLabel and getTrashPath from lib/favorites.ts)
 import Foundation
 
 public struct Place: Codable, Equatable, Sendable {
@@ -28,7 +27,7 @@ public struct PlaceMatch: Equatable, Sendable {
     public var nameRanges: [Range<Int>]
 }
 
-/// The names the sidebar gives places (lib/favorites.ts).
+/// The names the sidebar gives places.
 public enum FavoriteLabel {
     public static func trashPath(homePath: String) -> String {
         homePath.isEmpty ? "" : "\(homePath)/.Trash"

@@ -1,5 +1,4 @@
-// Covers by feature what Chromium's drag autoscroll gives the original's Icons view, Compact List and tree: a drag held
-// at an edge scrolls, on a window that is never shown
+// A drag held at an edge scrolls, on a window that is never shown
 import AppKit
 import FTFoundation
 import Foundation

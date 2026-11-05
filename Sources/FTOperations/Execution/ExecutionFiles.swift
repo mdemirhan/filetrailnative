@@ -1,6 +1,3 @@
-// Port of copyFileContents, writeIntoHiddenFolder, writeFileContents and the hidden-name helpers (temporarySiblingPath,
-// reserveStagingFolder, recordIncomplete, removeOwnStaging, removeStagedItem, unlockForMove, openForMove,
-// restoreAfterMove) of packages/core/src/fs/copyPasteExecution.ts
 import Darwin
 import FTFoundation
 import Foundation
@@ -8,7 +5,7 @@ import Foundation
 /// Files at least this large are written down in the journal while they are copied.
 public let journaledFileBytes: Int64 = 32 * 1024 * 1024
 
-/// `randomBytes(count).toString("hex")`.
+/// `count` random bytes as lowercase hex, two characters per byte.
 func randomHex(bytes count: Int) -> String {
     var generator = SystemRandomNumberGenerator()
     return (0..<count).map { _ in

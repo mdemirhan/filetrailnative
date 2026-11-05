@@ -1,12 +1,10 @@
-// Port of the hookups of apps/desktop/src/renderer/hooks/useExplorerDragAndDrop.ts into the panes (the content rows and
-// background, the tree's folders, favorites and locations), and of the capture driver's drops: what a tab plugs into
-// its panes' drag seams
+// What a tab plugs into its panes' drag seams
 import AppKit
 import FTFileSystem
 import FTFoundation
 
 extension MainWindowController {
-    /// Plugs the clipboard's marks and the drags into the panes (P5-08).
+    /// Plugs the clipboard's marks and the drags into the panes.
     func installClipboardAndDrags() {
         let drags = dragDrop
         content.dragHooks.beginDrag = { [weak drags] entries, event, view in
@@ -41,7 +39,7 @@ extension MainWindowController {
 }
 
 extension SidebarViewController {
-    /// Files dragged over the rows of both lists go to `fileDrops` (B-TREE-157); headings and empty space take
+    /// Files dragged over the rows of both lists go to `fileDrops`; headings and empty space take
     /// nothing.
     func installFileDrops() {
         for list in [sections, tree] {
@@ -84,7 +82,7 @@ extension SidebarViewController {
 
 #if DEBUG
     extension TabDragDrop {
-        /// The capture's `drag` step: the items it carries are the window's own drag until it is dropped.
+        /// A scenario's `drag` step: the items it carries are the window's own drag until it is dropped.
         func automationDragStarted(_ entries: [DirectoryEntry]) -> [URL] {
             guard let tab, let window = tab.window, !entries.isEmpty else { return entries.map(\.url) }
             if let session = DragRules.session(

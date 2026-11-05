@@ -1,12 +1,10 @@
-// Port of the toolbar items of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx (title block, view
-// switch, search slot, clipboard button) as the views of system toolbar items
 import AppKit
 import FTFoundation
 
-/// `.toolbar-title-block`: the folder's name in 15 pt semibold, cut short with an ellipsis, its full path as the
+/// The toolbar's title: the folder's name in 15 pt semibold, cut short with an ellipsis, its full path as the
 /// tooltip. It takes the room the other items leave, and it drags the window.
 final class ToolbarTitleView: NSView, TextStyleSource {
-    /// The `.toolbar-title` box: its text starts at the block's padding.
+    /// The title's field: its text starts at the block's padding.
     let field = FlushTextField(labelWithString: "")
     static let lineHeight = 1.2
     /// The title dims while its window isn't key.
@@ -73,8 +71,8 @@ final class ToolbarTitleView: NSView, TextStyleSource {
     }
 }
 
-/// The view switch (`.toolbar-segmented`), the system's segmented control: three icons, one selected. Search results
-/// are one table: it is disabled in search mode.
+/// The view switch, the system's segmented control: three icons, one selected. Search results are one table: it is
+/// disabled in search mode.
 final class ToolbarViewSwitch: NSSegmentedControl {
     static let modes: [(ExplorerViewMode, ToolbarIconName, String, ShortcutCommandID)] = [
         (.icons, .icons, "View as Icons", .viewAsIcons), (.details, .details, "View as List", .viewAsDetails),
@@ -83,7 +81,7 @@ final class ToolbarViewSwitch: NSSegmentedControl {
     /// Finder's selected segment, read from its screenshots; the system's fit around these icons is 30.
     static let segmentWidth = 34.0
     var onChoose: (ExplorerViewMode) -> Void = { _ in }
-    /// The segment Tab is at: each is a button of its own in the original.
+    /// The segment Tab is at: each segment is a stop of its own.
     private(set) var keyboardSegment = 0 {
         didSet { noteFocusRingMaskChanged() }
     }
@@ -180,8 +178,8 @@ final class ToolbarViewSwitch: NSSegmentedControl {
     }
 }
 
-/// The clipboard button (`.clipboard-button`): the copy or cut icon and how many items wait to be pasted, in the
-/// accent color. Its list is P5-08's. The button's own title, in no color, keeps the room the system's bezel measures;
+/// The clipboard button: the copy or cut icon and how many items wait to be pasted, in the
+/// accent color. The button's own title, in no color, keeps the room the system's bezel measures;
 /// the count is a label of its own over that room, as the scenarios read it.
 final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     let count = FlushTextField(labelWithString: "")
@@ -243,9 +241,9 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     }
 }
 
-/// The toolbar's search field (`.toolbar-search`), the system's, in an `NSSearchToolbarItem`: the magnifier with its
-/// small chevron is the Search Options button, the placeholder is "Search", the system's clear button shows once the
-/// trimmed text is not empty.
+/// The toolbar's search field, the system's, in an `NSSearchToolbarItem`: the magnifier with its small chevron is the
+/// Search Options button, the placeholder is "Search", the system's clear button shows once the trimmed text is not
+/// empty.
 final class ToolbarSearchField: NSSearchField {
     /// The field took the keyboard (`onFocus` of the field: the cached search may come back).
     var onFocus: () -> Void = {}
@@ -254,7 +252,7 @@ final class ToolbarSearchField: NSSearchField {
     var onOptions: (_ fromKeyboard: Bool) -> Void = { _ in }
     /// The ✕ was clicked.
     var onClear: () -> Void = {}
-    /// The press target over the system's magnifier, for the capture and the accessibility tree.
+    /// The press target over the system's magnifier, for automation and the accessibility tree.
     let optionsButton = ToolbarSearchOptionsButton()
     /// Where Tab stops at the system's ✕, which takes no keyboard itself.
     let clearStop = KeyboardStopView()
@@ -300,13 +298,13 @@ final class ToolbarSearchField: NSSearchField {
         (cell as? NSSearchFieldCell)?.cancelButtonCell?.controlView as? NSButton
     }
 
-    /// The ✕ shows once the trimmed text is not empty (`searchDraftQuery.trim()`).
+    /// The ✕ shows once the trimmed text is not empty.
     var clearButtonShows: Bool {
         !SearchTiming.trimmed(currentEditor()?.string ?? stringValue).isEmpty
     }
 
-    /// The system's button says what the original's does. The system shows and hides it by whether there is any text,
-    /// as it updates the field, so its `isHidden` isn't ours: for text of only spaces it is see-through and does nothing.
+    /// The system shows and hides the button by whether there is any text, as it updates the field, so its `isHidden`
+    /// isn't ours: for text of only spaces it is see-through and does nothing.
     private func syncClearButton() {
         let shows = clearButtonShows
         clearStop.isHidden = !shows
@@ -350,11 +348,10 @@ final class ToolbarSearchField: NSSearchField {
     }
 }
 
-/// The magnifier and chevron of the search field (`.toolbar-search-options-button`, "Search Options"): a press opens the
-/// options menu and leaves the keyboard in the field. Shift-Tab from the field gives it the keyboard, as the button
-/// before the field in the original; Return or Space on it then opens the menu from the keyboard. The system's field
-/// draws it; this view takes the keys and has the keyboard's focus ring, and the press comes from the toolbar
-/// (`ExplorerToolbar.pressSearchOptions`).
+/// The magnifier and chevron of the search field, "Search Options": a press opens the options menu and leaves the
+/// keyboard in the field. Shift-Tab from the field gives it the keyboard, as a button before the field; Return or
+/// Space on it then opens the menu from the keyboard. The system's field draws it; this view takes the keys and has
+/// the keyboard's focus ring, and the press comes from the toolbar (`ExplorerToolbar.pressSearchOptions`).
 final class ToolbarSearchOptionsButton: NSView {
     var onPress: (_ fromKeyboard: Bool) -> Void = { _ in }
     /// Set while the keyboard is given to the button: a press never takes it (`onMouseDown: preventDefault`).

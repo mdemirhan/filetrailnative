@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/AcknowledgementsWindowApp.test.tsx and the window's size (main.ts, ui.md section 7.3)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -33,7 +32,6 @@ import Testing
 
     struct Unreadable: Error {}
 
-    // T-03f3be8d F-671 F-640
     @Test func listsEachComponentWithItsVersionLicenseSiteAndLicenseText() throws {
         let opened = Opened()
         let controller = make({ self.components }, opened: opened)
@@ -74,8 +72,6 @@ import Testing
         #expect(views("acknowledgements.text", in: view).count == 1)
     }
 
-    // T-4ef72a1c N/A the notices that ship as a file of their own are Chromium's; every native component has its text
-    // T-1b0b2a79 F-671
     @Test func saysSoWhenTheLicensesCanNotBeRead() {
         let controller = make { throw Unreadable() }
         let view = controller.listView
@@ -84,13 +80,13 @@ import Testing
             texts("acknowledgements.intro", in: view).last == "Couldn’t load the licenses.")
     }
 
-    // F-921 the window lists what the repository ships: fd
+    // The window lists what the repository ships: fd
     @Test func listsWhatTheBundleShips() {
         let controller = make({ try Acknowledgements.read() })
         #expect(controller.listView.entries.map(\.component.id) == ["fd"])
     }
 
-    // F-635 F-671: 620 by 640, at least 460 by 360; Escape closes it
+    // 620 by 640, at least 460 by 360; Escape closes it
     @Test func isAWindowOf620By640ThatEscapeCloses() {
         let controller = make({ self.components })
         let window = controller.window
@@ -105,7 +101,7 @@ import Testing
         #expect(closed == 1)
     }
 
-    // F-671 the layout (ui.md 7.3): a title strip of 40, then the intro 16 below it, and entries of 31 under a hairline
+    // The layout (ui.md 7.3): a title strip of 40, then the intro 16 below it, and entries of 31 under a hairline
     @Test func laysTheWindowOutAsTheStylesheetDoes() {
         let view = make({ self.components }).listView
         #expect(views("acknowledgements.title", in: view).first?.frame == NSRect(x: 0, y: 0, width: 620, height: 40))

@@ -1,4 +1,3 @@
-// Port of the "emptying the Trash" describe of apps/desktop/src/main/bootstrap/writeOperations.test.ts
 import FTFileSystem
 import FTFoundation
 import FTTestSupport
@@ -37,7 +36,6 @@ import Testing
     }
 
     // Items replaced by a running paste are on their way to the Trash; emptying it then would delete them for good.
-    // F-304 T-932ae3fa
     @Test func waitsItsTurnRefusedWhileAnotherOperationRuns() async throws {
         let held = HeldCall()
         let fileSystem = TestLocalFileSystem.stub()
@@ -69,7 +67,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-304 T-7a64b1e5
     @Test func holdsTheWriteSlotWhileEmptyingSoNothingStartsAlongside() async throws {
         let coordinator = WriteCoordinator.local(.stub())
         let held = HeldEmpty()
@@ -87,7 +84,6 @@ import Testing
     }
 
     // Other windows were refused with nothing to show for it, and quitting didn't ask.
-    // F-304 T-d8a45f00
     @Test func runsAsAnOperationOfItsOwnWhichTheOtherWindowsAndQuittingSee() async throws {
         let coordinator = WriteCoordinator.local(.stub())
         let held = HeldEmpty()
@@ -106,7 +102,6 @@ import Testing
     }
 
     // Finder goes on emptying it after File Trail quits.
-    // F-305 T-59d7a463
     @Test func doesntHoldQuittingUpWhileFinderEmptiesTheTrash() async throws {
         let coordinator = WriteCoordinator.local(.stub())
         let held = HeldEmpty()
@@ -121,7 +116,6 @@ import Testing
     }
 
     // The coordinator forgot the Trash's size, but each window kept showing its own.
-    // F-305 T-63f49a11
     @Test func tellsTheWindowsOnceTheTrashWasEmptiedOrTriedToBeAndNotWhenRefused() async throws {
         var told = 0
         let coordinator = WriteCoordinator.local(

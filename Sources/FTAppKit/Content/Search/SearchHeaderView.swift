@@ -1,6 +1,3 @@
-// Port of SearchBar (apps/desktop/src/renderer/components/SearchBar.tsx), SystemButton's small size, the segmented control
-// and the rounded search field, as styles.css draws them (:1245-1300, 1353-1440, 3021-3040, 3372-3388, 4502-4527,
-// 6556-6583)
 import AppKit
 import FTFoundation
 
@@ -60,7 +57,7 @@ final class SearchHeaderView: NSView {
             guard let self else { return }
             self.moveKeyboard(from: self.track, backward: backward)
         }
-        // A press in the header gives the pane the keyboard (ContentPane.tsx `onMouseDownCapture`).
+        // A press in the header gives the pane the keyboard.
         track.onMouseDown = { [weak self] in self?.onFocusResults() }
         for button in [stopButton, doneButton] {
             button.onMouseDown = { [weak self] in self?.onFocusResults() }
@@ -87,13 +84,12 @@ final class SearchHeaderView: NSView {
         return max(layout.scopeBarMinHeight, trackHeight + 2 * layout.scopeBarPaddingVertical)
     }
 
-    /// A press on the header itself gives the pane the keyboard (ContentPane.tsx `onMouseDownCapture`).
+    /// A press on the header itself gives the pane the keyboard.
     override func mouseDown(with event: NSEvent) { onFocusResults() }
 
-    /// Tab or Shift-Tab from one of the bar's stops. Only the filter is the browser's to Tab out of (a form control keeps
-    /// its keys, useExplorerShortcuts.ts:1528): on to its ✕, Stop or Done, whichever comes next, or back to the last
-    /// scope. Every other stop is in the content pane, where `paneTabSwitch` takes Tab and Shift-Tab alike, so the row is
-    /// never walked past it.
+    /// Tab or Shift-Tab from one of the bar's stops. Only the filter is the browser's to Tab out of: on to its ✕, Stop
+    /// or Done, whichever comes next, or back to the last scope. Every other stop is in the content pane, where
+    /// `paneTabSwitch` takes Tab and Shift-Tab alike, so the row is never walked past it.
     fileprivate func moveKeyboard(from view: NSView, backward: Bool) {
         guard view === filter.input else {
             onSwitchPane()
@@ -114,7 +110,7 @@ final class SearchHeaderView: NSView {
         if !track.takeKeyboard() { window?.makeFirstResponder(filter.input) }
     }
 
-    /// The header's text: `.content-header`'s weight (500), which the bar's text inherits.
+    /// The header's text, at a weight of 500, which the bar's text inherits.
     static func font(_ size: Double) -> NSFont { ThemeFonts.sans(size, .medium) }
 
     /// The bar, then the banner and its margin, then the 1 pt edge.
@@ -229,7 +225,7 @@ final class SearchHeaderView: NSView {
     }
 }
 
-/// `.search-scope-bar`: the row of the bar (the capture's "search scope bar").
+/// The row of the search scope bar.
 final class SearchScopeBarView: NSView {
     override var isFlipped: Bool { true }
 }
@@ -237,7 +233,7 @@ final class SearchScopeBarView: NSView {
 // MARK: The scope
 
 /// `.segmented.search-scope-segmented` as the system's control: its segments are the places to search in. They
-/// are plain buttons of the pane in the original, not a radio group: a click gives the keyboard to the results, so the
+/// are plain buttons of the pane, not a radio group: a click gives the keyboard to the results, so the
 /// arrows and typeahead go on working there, and no arrow changes the scope. Tab stops at each in turn, where Return or
 /// Space presses it.
 final class SearchSegmentTrack: SystemSegmentedControl {
@@ -297,7 +293,7 @@ final class SearchSegmentTrack: SystemSegmentedControl {
         }
     }
 
-    /// The ring goes round the segment Tab is at, each being a button of its own in the original.
+    /// The ring goes round the segment Tab is at, each being a button of its own.
     override func drawFocusRingMask() {
         var x = 0.0
         for index in 0..<keyboardSegment { x += width(forSegment: index) }
@@ -413,7 +409,7 @@ final class SearchScopeButton: TextControl {
     }
 }
 
-/// A transparent view that marks a part for the capture (the selected scope), reporting its text.
+/// A transparent view that marks a part for automation (the selected scope), reporting its text.
 final class SearchMarkerView: NSView, TextStyleSource {
     weak var source: NSTextField?
     var styleTextField: NSTextField? { source }
@@ -431,7 +427,7 @@ final class SearchMarkerView: NSView, TextStyleSource {
 
 // MARK: Buttons
 
-/// `.push-button.is-small` as the system's button: 22 tall, 10 each side of the label, the callout size; Stop has the
+/// A small push button as the system's button: 22 tall, 10 each side of the label, the callout size; Stop has the
 /// spinner before its label. A click gives the keyboard to the results; Tab stops here, where Return or Space presses it.
 final class SearchSmallButton: SystemButton {
     var onPress: () -> Void = {}
@@ -512,7 +508,7 @@ final class SearchSmallButton: SystemButton {
 
 // MARK: The banner
 
-/// `.search-results-banner`: "Showing the first 20,000 matches."
+/// The banner over cut-short results: "Showing the first 20,000 matches."
 final class SearchBannerView: NSView, TextStyleSource {
     var styleTextField: NSTextField? { text }
     private let text = FlushTextField(labelWithString: SearchBarText.truncatedBanner)
@@ -582,8 +578,8 @@ final class SearchBannerView: NSView, TextStyleSource {
 
 // MARK: The filter field
 
-/// `.search-field.search-results-filter`: the filter lines, the field ("Filter by name or folder"), and the clear button
-/// once something is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
+/// The results' filter: the filter lines, the field ("Filter by name or folder"), and the clear button once something
+/// is typed. Esc clears it first, then gives the keyboard back to the results; Return and ↓ do so too.
 final class SearchFilterField: NSView, NSTextFieldDelegate {
     let input = NSTextField()
     let clearButton = ClearButton()
@@ -684,7 +680,7 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
         let palette = theme.palette
         NSColor(palette.fieldBg).setFill()
         NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
-        // `--field-edge`: an inset hairline; focused, the focus ring.
+        // The field's edge: an inset hairline; focused, the focus ring.
         let edge = NSBezierPath(
             roundedRect: bounds.insetBy(dx: 0.25, dy: 0.25), xRadius: radius - 0.25, yRadius: radius - 0.25)
         edge.lineWidth = 0.5

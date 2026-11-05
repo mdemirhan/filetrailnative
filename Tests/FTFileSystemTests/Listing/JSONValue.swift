@@ -1,6 +1,6 @@
 import Foundation
 
-/// JSON of any shape, for comparing with what the reference recorded.
+/// JSON of any shape, for comparing with what a golden recorded.
 enum JSONValue: Codable, Equatable, Sendable {
     case null
     case bool(Bool)

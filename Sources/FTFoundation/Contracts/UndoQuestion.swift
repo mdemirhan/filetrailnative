@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/undoQuestion.ts (and UndoDirection of packages/contracts/src/ipc.ts)
 import Foundation
 
 /// Which list a file Undo works from: Undo, or Redo once something was undone.
@@ -29,7 +28,7 @@ public enum UndoQuestion: Equatable, Sendable {
         }
     }
 
-    /// Names listed under the question (`LISTED_NAMES` of `UndoQuestionAlert`); more are counted.
+    /// Names listed under the question; more are counted.
     public static let listedNameLimit = 5
 
     /// The names of the items it is about, in order.
@@ -40,7 +39,7 @@ public enum UndoQuestion: Equatable, Sendable {
         }
     }
 
-    /// The lines listed under the question (`UndoQuestionAlert`): when it is about several items, up to 5 names, then
+    /// The lines listed under the question: when it is about several items, up to 5 names, then
     /// "and N more". One item is named in the title, so nothing is listed. Two items can have one name (from different
     /// folders): each is listed.
     public var listedNames: [String] {
@@ -72,7 +71,7 @@ public struct UndoQuestionText: Equatable, Sendable {
         self.confirmIsDefault = confirmIsDefault
     }
 
-    /// `describeUndoQuestion`: the question in the words of what it undoes: "“1 copy.kt” was changed after it was
+    /// The question in the words of what it undoes: "“1 copy.kt” was changed after it was
     /// duplicated", rather than only "changed since".
     public static func of(_ question: UndoQuestion, direction: UndoDirection, action: WriteOperationAction?)
         -> UndoQuestionText

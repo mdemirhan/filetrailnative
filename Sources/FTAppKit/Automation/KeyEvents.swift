@@ -1,4 +1,3 @@
-// Port of the key names of tools/capture/electron/driver.ts (DOM `KeyboardEvent.key`); no TypeScript source.
 #if DEBUG
     import AppKit
 

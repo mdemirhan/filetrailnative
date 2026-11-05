@@ -1,5 +1,3 @@
-// Port of the date cases of apps/desktop/src/renderer/lib/formatting.test.ts, and the relative-dates golden
-// recorded from the reference (tools/parity/golden/relative-dates.ts: Electron's Node, America/Los_Angeles, en-US).
 import FTTestSupport
 import Foundation
 import Testing
@@ -35,8 +33,7 @@ struct DateTextTests {
             ?? .distantPast
     }
 
-    // Checkpoint resume-2026-10-19 (148): the list writes its dates in the locale the Info panel uses, the app's
-    // language alone, as Chromium's `Intl.DateTimeFormat(undefined)` does, not the machine's region.
+    // The list writes its dates in the locale the Info panel uses, the app's language alone, not the machine's region.
     @Test func listDatesUseTheOriginalsLocale() {
         #expect(DateText.shared.locale == InfoLocale.original)
         #expect(DateText().locale == InfoLocale.original)
@@ -49,7 +46,6 @@ struct DateTextTests {
         #expect(region.relative(date, now: now) != language.relative(date, now: now))
     }
 
-    // T-ebb3347d
     @Test func formatsInvalidDatesDefensively() {
         #expect(text.dateTime(iso: "bad-date") == "Not available")
         #expect(text.dateTime(iso: nil) == "Not available")
@@ -63,8 +59,6 @@ struct DateTextTests {
         text.relative(Self.local(year, month, day, hour, minute), now: now)
     }
 
-    // T-96aba066 F-087
-    // B-INFO-079 T-d7679d79
     @Test func countsInMinutesWithinTheHour() {
         #expect(text.relative(now.addingTimeInterval(-20), now: now) == "Just now")
         #expect(text.relative(now.addingTimeInterval(-60), now: now) == "1 min ago")
@@ -73,14 +67,11 @@ struct DateTextTests {
         #expect(text.relative(now.addingTimeInterval(-60 * 60), now: now) == "Today, 1:45 PM")
     }
 
-    // T-bd895bd6
     @Test func keepsCountingMinutesAcrossMidnight() {
         let justAfterMidnight = Self.local(2026, 10, 2, 0, 10)
         #expect(text.relative(Self.local(2026, 10, 1, 23, 50), now: justAfterMidnight) == "20 min ago")
     }
 
-    // T-7fc420f5
-    // B-INFO-080 T-0eafbeb8
     @Test func namesTodayYesterdayAndTheWeekdaysBeforeThem() {
         #expect(at(10, 1, 9, 12) == "Today, 9:12 AM")
         #expect(at(10, 1, 0, 0) == "Today, 12:00 AM")
@@ -91,42 +82,32 @@ struct DateTextTests {
         #expect(at(9, 24, 23, 59) == "Sep 24, 11:59 PM")
     }
 
-    // T-082754d2
-    // B-INFO-080
     @Test func dropsTheYearForThisYearAndTheTimeForOlderOnes() {
         #expect(at(6, 12, 8, 30) == "Jun 12, 8:30 AM")
         #expect(at(12, 31, 22, 0, year: 2025) == "Dec 31, 2025")
         #expect(at(3, 3, 11, 15, year: 2024) == "Mar 3, 2024")
     }
 
-    // T-54369463
-    // B-INFO-080
     @Test func countsDaysOnTheCalendarAcrossDaylightSavingChanges() {
         let afterFallBack = Self.local(2026, 11, 2, 10, 0)
         #expect(text.relative(Self.local(2026, 11, 1, 0, 30), now: afterFallBack) == "Yesterday, 12:30 AM")
         #expect(text.relative(Self.local(2026, 10, 31, 23, 30), now: afterFallBack) == "Sat, 11:30 PM")
     }
 
-    // T-97fcf72a
-    // B-INFO-081
     @Test func showsADateInTheFutureInFull() {
         #expect(text.relative(now.addingTimeInterval(30), now: now) == "Just now")
         #expect(text.relative(now.addingTimeInterval(2 * 3600), now: now) == "Oct 1, 2026, 4:45 PM")
     }
 
-    // T-2c10658e F-088
-    // B-INFO-082
     @Test func givesTheWholeDateForTheTooltip() {
         #expect(text.exactDateTime(Self.local(2026, 10, 1, 14, 44, 7)) == "Thursday, October 1, 2026 at 2:44:07 PM")
     }
 
-    // T-45659169
     @Test func formatsAShortDateTime() {
         #expect(!text.shortDateTime(Date(epochMilliseconds: 1_709_913_600_000)).isEmpty)
         #expect(text.shortDateTime(Self.local(2026, 10, 5, 0, 5, 3)) == "Oct 5, 00:05:03")
     }
 
-    // F-087 F-088
     @Test func relativeDatesMatchTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "relative-dates")
         #expect(cases.count >= 500)

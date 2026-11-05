@@ -1,4 +1,3 @@
-// Port of the selection, paging and tree cases of apps/desktop/src/renderer/lib/explorerNavigation.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -12,8 +11,6 @@ struct SelectionNavigationTests {
             itemCount: count, currentIndex: index, key: key, columns: columns, viewMode: mode, gapIndex: gap)
     }
 
-    // T-7216f450 F-785 B-SEL-038 B-SEL-041
-    // B-NAV-145 B-NAV-146
     @Test func movesSelectionByVisualColumnsInListViewAndSingleRowsInDetailsView() {
         #expect(next(.down, from: 6, in: .list) == 7)
         #expect(next(.right, from: 6, in: .list) == 10)
@@ -27,8 +24,6 @@ struct SelectionNavigationTests {
         #expect(next(.right, from: 28, in: .list) == 29)
     }
 
-    // T-70433c0d F-785 B-SEL-039 B-SEL-040
-    // B-NAV-147
     @Test func movesByItemsSidewaysAndByRowsUpAndDownInIconView() {
         func move(_ index: Int, _ key: SelectionKey) -> Int {
             SelectionNavigation.nextIndex(
@@ -51,7 +46,6 @@ struct SelectionNavigationTests {
         #expect(move(7, .down) == 9)
     }
 
-    // T-8888c974 B-SEL-043 B-NAV-149
     @Test func startsFromTheFirstItemWhenArrowNavigationBeginsWithNoContentSelection() {
         #expect(next(.down, from: -1, in: .list) == 0)
         #expect(next(.right, from: -1, in: .list) == 0)
@@ -61,8 +55,6 @@ struct SelectionNavigationTests {
         #expect(next(.down, from: -1, in: .details, count: 0) == -1)
     }
 
-    // T-dec54fc2 F-786 B-SEL-049 B-NAV-154
-    // T-2df6b189
     @Test func movesAPageAsOneLineLessThanFitAndHalfAPageAsHalfOfThem() {
         func lines(_ viewport: Double, _ extent: Double, _ size: SelectionNavigation.PageSize) -> Int {
             SelectionNavigation.pageStepLineCount(viewportSize: viewport, lineExtent: extent, size: size)
@@ -78,7 +70,6 @@ struct SelectionNavigationTests {
         #expect(lines(0, 0, .full) == 1)
     }
 
-    // T-bfae9359 F-786 B-SEL-051 B-NAV-156
     @Test func movesByWholeLinesAndSaysHowManyLinesItMoved() {
         func move(_ index: Int, _ direction: SelectionNavigation.PageDirection, perLine: Int = 1) -> (Int, Int) {
             let result = SelectionNavigation.pagedLineMove(
@@ -92,7 +83,6 @@ struct SelectionNavigationTests {
         #expect(move(30, .backward, perLine: 4) == (6, -6))
     }
 
-    // T-d17ebdc9 B-SEL-051 B-SEL-058
     @Test func stopsAtTheFirstAndLastItemsMovingOnlyTheLinesItCould() {
         func move(_ index: Int, _ direction: SelectionNavigation.PageDirection, perLine: Int = 1) -> (Int, Int) {
             let result = SelectionNavigation.pagedLineMove(
@@ -111,8 +101,6 @@ struct SelectionNavigationTests {
         #expect(none.index == -1 && none.movedLines == 0)
     }
 
-    // T-58ce0423 B-SEL-044 B-SEL-045 B-NAV-151
-    // B-NAV-158
     @Test func carriesOnFromWhereTheSelectedItemLeftTheList() {
         func gap(_ key: SelectionKey, _ mode: ExplorerViewMode, _ gapIndex: Int) -> Int {
             SelectionNavigation.nextIndex(
@@ -138,7 +126,6 @@ struct SelectionNavigationTests {
         #expect(gap(.left, .list, 5) == 1)
     }
 
-    // T-8c9d1cf6
     @Test func flattensVisibleTreePathsInExpandedOrder() {
         let nodes: [String: TypeaheadTreeNode] = [
             "/Users/demo": .init(
@@ -162,8 +149,6 @@ struct SelectionNavigationTests {
         #expect(SelectionNavigation.flattenVisibleTreePaths(rootPath: "/nowhere", nodes: nodes) == [])
     }
 
-    // T-4ab16ef0 B-NAV-057
-    // B-NAV-058
     @Test func computesParentDirectories() {
         #expect(TreePaths.parent(of: "/Users/demo/Documents") == "/Users/demo")
         #expect(TreePaths.parent(of: "/Users") == "/")

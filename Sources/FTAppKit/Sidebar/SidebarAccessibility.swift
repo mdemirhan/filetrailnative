@@ -1,4 +1,4 @@
-// What VoiceOver hears of the sidebar's lists (B-TREE-015): AppKit's rows ask the outline for their level, disclosure and
+// What VoiceOver hears of the sidebar's lists: AppKit's rows ask the outline for their level, disclosure and
 // selection, and these outlines are flat and keep all three to themselves. So the rows are told here.
 import AppKit
 

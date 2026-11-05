@@ -1,6 +1,5 @@
-// The Icons view's and the Compact List's parts P5-04's review left to P5-07: a renaming item takes presses everywhere
-// on it (IconGridView.tsx:324-340, styles.css:2676-2688), a wheel notch moves the Compact List 40 sideways (B-VIEW-035),
-// and both views read the details of search results on screen (App.tsx onVisiblePathsChange)
+// The Icons view and the Compact List: a renaming item takes presses everywhere on it, a wheel notch moves the
+// Compact List 40 sideways, and both views read the details of search results on screen
 import AppKit
 import CoreGraphics
 import FTFileSystem
@@ -13,8 +12,7 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct GridCarryOverTests {
-        // F-778: a press beside the tile of an item being renamed keeps the selection and the field.
-        // B-SEL-136
+        // A press beside the tile of an item being renamed keeps the selection and the field.
         @Test func aRenamingIconItemTakesPressesEverywhereOnIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
@@ -34,7 +32,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-136
         @Test func aRenamingCompactListItemTakesPressesEverywhereOnIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList)
@@ -48,8 +45,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-035: a line-based wheel notch moves the Compact List 40 sideways, as Chromium moves it.
-        // B-SEL-069
+        // A line-based wheel notch moves the Compact List 40 sideways.
         @Test func aWheelNotchMovesTheCompactListFortySideways() async throws {
             let harness = try ExplorerHarness.windowless()
             let (_, probe) = try await harness.openGrid(.viewAsList, files: 400)
@@ -69,7 +65,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The details of the results on screen are read in the Icons view too, for the status line's sizes.
-        // B-VIEW-012
         @Test func theIconsViewReadsTheDetailsOfSearchResultsOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)

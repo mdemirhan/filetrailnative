@@ -1,7 +1,6 @@
-// The Undo and Redo of a pasted scenario, as the differential drives them: what tools/parity/exec/engine.ts
-// (undoCoordinator, runUndoAndRedo, undoEnd) records of the reference. The app's coordinator on the same write service,
-// with the Undo history, on the scenario's file system and Trash; Undo and Redo as the Edit menu runs them (prepare,
-// the questions, start), each recorded with the menu before and after, the tree and the Trash.
+// The Undo and Redo of a pasted scenario, as the scenario checks drive them: the app's coordinator on the same write
+// service, with the Undo history, on the scenario's file system and Trash; Undo and Redo as the Edit menu runs them
+// (prepare, the questions, start), each recorded with the menu before and after, the tree and the Trash.
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -43,7 +42,6 @@ final class SwiftUndoRun {
         }
     }
 
-    /// `runUndoAndRedo`.
     func run(_ script: ExecScenario.UndoScript, _ places: ExecPlaces) async throws -> [JSONValue] {
         var answers = script.answers ?? []
         var steps: [JSONValue] = []
@@ -92,7 +90,7 @@ final class SwiftUndoRun {
         return steps
     }
 
-    /// `undoEnd`: how an Undo or Redo ended, as its window is told.
+    /// How an Undo or Redo ended, as its window is told.
     private func end(_ operationId: String) async throws -> WriteOperationEvent {
         let deadline = Date().addingTimeInterval(20)
         while true {
@@ -102,7 +100,7 @@ final class SwiftUndoRun {
         }
     }
 
-    // MARK: JSON, every key as engine.ts writes it
+    // MARK: JSON, every key present
 
     private static func optional(_ text: String?) -> JSONValue { text.map { .string($0) } ?? .null }
 
@@ -137,7 +135,7 @@ final class SwiftUndoRun {
         ])
     }
 
-    /// The changes as engine.ts is given them: each op with its path made absolute.
+    /// The changes as JSON: each op with its path made absolute.
     static func json(_ ops: [ExecScenario.Change.Op], _ places: ExecPlaces) -> JSONValue {
         .array(
             ops.map { op in

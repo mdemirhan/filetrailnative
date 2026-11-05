@@ -1,6 +1,3 @@
-// Ports the window-level cases of apps/desktop/src/renderer/App.search.test.tsx, components/SearchBar.test.tsx,
-// components/SearchOptionsMenu.test.tsx and the search-field case of App.commands.test.tsx (by feature row F-713,
-// F-714, F-750, F-751, F-754, F-775, F-807) on a real tab whose window is never shown, over the stand-in fd runtime
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -31,9 +28,8 @@ extension ExplorerWindowlessTests {
 
         private func names(_ tab: MainWindowController) -> [String] { tab.content.entries.map(\.name) }
 
-        // F-807: the field's ✕ is the system's: it clears the search and leaves the keyboard in the field, and the
+        // The field's ✕ is the system's: it clears the search and leaves the keyboard in the field, and the
         // system's item doesn't take the keyboard away with it.
-        // B-SRCH-053 B-SRCH-054
         @Test func theClearButtonClearsTheSearchAndKeepsTheKeyboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -51,8 +47,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-b49c92ba T-06c0cfba F-713 F-750
-        // B-INFO-100 B-SRCH-059 B-SRCH-109 T-fb71ed4a
         @Test func typingSearchesTheFolderAndTheResultsTakeTheList() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { request in (request.query == "no" ? ["note.txt", "Alpha/notes.md"] : [], false, false) }
@@ -81,7 +75,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-071 B-SRCH-072 T-e23e16c1
         @Test func puttingTheResultsAwayBringsTheFolderBackAndTheCommandBringsThemBack() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt"], false, false) }
@@ -103,8 +96,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-061 B-NAV-210: results have a view of their own.
-        // B-VIEW-003
+        // Results have a view of their own.
         @Test func resultsShowInTheTabsSearchView() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt"], false, false) }
@@ -120,8 +112,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-751 F-754 T-2aaf9a83 T-c08713b3
-        // B-VIEW-066
         @Test func theBarSaysHowTheSearchWent() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { request in request.query == "zz" ? ([], false, false) : (["note.txt"], false, true) }
@@ -139,8 +129,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-f31f663b: with the search field focused, the edit commands are the field's.
-        // B-CLIP-008 B-NAV-218 B-VIEW-229 T-b9bc9308
+        // With the search field focused, the edit commands are the field's.
         @Test func editCommandsGoToTheSearchFieldWhileItHasTheKeyboard() async throws {
             let (harness, tab, _, _) = try await open()
             let field = try #require(tab.searchField)
@@ -153,8 +142,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-bb52ae88 T-73242d97 F-807
-        // B-SRCH-079 B-SRCH-083
         @Test func theOptionsMenuShowsTheOptionsAndAChoiceRunsTheSearchAgain() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt"], false, false) }
@@ -183,9 +170,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-4fdb6b39 T-89efb9bf T-ada18c17 F-807: the arrows and Return are the system menu's while it is open.
+        // The arrows and Return are the system menu's while it is open.
         // Opened from the keyboard, the first item is marked; chosen, it does what it says.
-        // B-SRCH-085 B-SRCH-088
         @Test func theOptionsMenuOpensMarkedFromTheKeyboard() async throws {
             let (harness, tab, _, _) = try await open()
             tab.search.openOptions(fromKeyboard: true)
@@ -199,8 +185,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-5615383e T-bccba4a0 F-750
-        // B-SRCH-063 B-SRCH-124
         @Test func stopShowsOnlyForASearchThatRunsOnAndDoneClosesTheResults() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt"], true, false) }
@@ -224,8 +208,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-6de3068b T-24fd84fd: Esc in the filter field clears it, then gives the keyboard back to the results.
-        // B-SEL-087 B-SEL-088 B-SRCH-116 B-SRCH-119 B-SRCH-121
+        // Esc in the filter field clears it, then gives the keyboard back to the results.
         @Test func theFilterFieldClearsWithEscapeThenGivesTheKeyboardBack() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt", "Alpha/notes.md"], false, false) }
@@ -250,8 +233,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-069 B-NAV-211: opening a folder puts the results away and empties the field.
-        // B-TREE-104 B-TREE-188
+        // Opening a folder puts the results away and empties the field.
         @Test func openingAFolderPutsTheResultsAway() async throws {
             let (harness, tab, engine, timers) = try await open()
             engine.finds = { _ in (["note.txt"], false, false) }
@@ -271,8 +253,7 @@ extension ExplorerWindowlessTests {
 /// The search field by itself.
 @MainActor
 @Suite struct ToolbarSearchFieldTests {
-    // F-807 F-713 (ExplorerWorkspace.tsx: `searchDraftQuery.trim().length > 0`): text of only spaces has no ✕.
-    // B-SRCH-053
+    // : text of only spaces has no ✕.
     @Test func theClearButtonWaitsForTrimmedText() {
         let field = ToolbarSearchField(frame: NSRect(x: 0, y: 0, width: 200, height: 28))
         #expect(!field.clearButtonShows)
@@ -284,8 +265,8 @@ extension ExplorerWindowlessTests {
         #expect(!field.clearStop.isHidden)
     }
 
-    // T-8b5cf7e7: covered-by-feature F-807. The native toolbar measures its items without a copy of them, so there is no
-    // copy whose magnifier could open a menu: the one options button is the field's own.
+    // The native toolbar measures its items without a copy of them, so there is no copy whose magnifier could open a
+    // menu: the one options button is the field's own.
     @Test func theFieldHasOneOptionsButton() {
         let field = ToolbarSearchField(frame: NSRect(x: 0, y: 0, width: 200, height: 28))
         #expect(field.subviews.filter { $0.accessibilityIdentifier() == "toolbar.search.options" }.count == 1)

@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/components/ToolbarIcon.test.tsx
 import AppKit
 import FTFoundation
 import Testing
@@ -37,7 +36,6 @@ struct ToolbarIconTests {
         return points.joined(separator: " ")
     }
 
-    // T-041e07d7 F-830 B-VIEW-121
     @Test func rendersAnIconForEverySupportedToolbarGlyphName() {
         for name in ToolbarIconName.allCases {
             let path = outline(name)
@@ -49,7 +47,6 @@ struct ToolbarIconTests {
         for id in ToolbarItemID.allCases { #expect(!outline(ToolbarItems.definition(id).icon).isEmpty) }
     }
 
-    // T-09f56d9d
     @Test func rendersSpecializedShapesForListDetailsSearchClearAndStopIcons() {
         let shapes: [ToolbarIconName] = [.list, .details, .search, .clear, .stop]
         #expect(Set(shapes.map(signature)).count == shapes.count)
@@ -57,19 +54,16 @@ struct ToolbarIconTests {
         #expect(ToolbarGlyph.drawing(.stop).box == 16)
     }
 
-    // T-93d6707c
     @Test func rendersDistinctIconsForCopyVsCopyPath() {
         #expect(signature(.copy) != signature(.copyPath))
     }
 
-    // T-f5eb72c4
     @Test func centersTheDisclosureChevronInItsBoxSoItTurnsInPlaceWhenRotated() {
         let bounds = outline(.chevron).bounds
         #expect(abs(bounds.midX - 12) < 0.01)
         #expect(abs(bounds.midY - 12) < 0.01)
     }
 
-    // T-f9b932ba
     @Test func rendersDistinctIconsForEditVsRename() {
         #expect(signature(.edit) != signature(.rename))
     }

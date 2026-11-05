@@ -1,8 +1,6 @@
-// Port of the toolbar row rules of apps/desktop/src/renderer/styles.css (.toolbar-row, [data-capsule],
-// .toolbar-title-block, .toolbar-search-slot) as CSS flexbox lays them out
 import Foundation
 
-/// Where each item of the toolbar's row goes, as the original's flexbox puts it: items `itemGap` apart, a capsule's
+/// Where each item of the toolbar's row goes: items `itemGap` apart, a capsule's
 /// first and last button kept `capsulePadding + edgedItemInset` clear of their neighbours, the title taking the room
 /// the others leave (down to its minimum), and the search field giving up room once the title is at its minimum.
 public struct TopToolbarRow: Equatable, Sendable {

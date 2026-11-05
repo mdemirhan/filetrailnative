@@ -1,4 +1,3 @@
-// Port of the analysis-job cases of packages/core/src/fs/writeService.analysis.test.ts and writeService.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -6,7 +5,7 @@ import os
 
 @testable import FTOperations
 
-/// Ids "analysis-1", "analysis-2", … from a counter of the test's own, as the original's tests inject them.
+/// Ids "analysis-1", "analysis-2", … from a counter of the test's own.
 private func countingIds() -> @Sendable () -> String {
     let index = OSAllocatedUnfairLock(initialState: 0)
     return {
@@ -70,7 +69,6 @@ struct WriteServiceAnalysisTests {
         return fileSystem
     }
 
-    // T-55f4c6a8 F-241
     @Test func runsAndReportsACopyPasteAnalysisJobToCompletion() async throws {
         let service = WriteService(.init(fileSystem: Self.fileToCopy(), createAnalysisId: { "analysis-1" }))
 
@@ -83,7 +81,6 @@ struct WriteServiceAnalysisTests {
         #expect(update.report?.destinationDirectoryPath == "/target")
     }
 
-    // T-ea7e3449 F-241
     @Test func cancelsInFlightAnalysisJobs() async throws {
         let service = WriteService(.init(fileSystem: Self.slowFolder(), createAnalysisId: { "analysis-1" }))
 
@@ -97,7 +94,6 @@ struct WriteServiceAnalysisTests {
             })
     }
 
-    // T-a477e632 F-241
     @Test func reportsAnalysisErrorsAndRejectsExecutionForUnknownAnalysisIds() async throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 1)), ("/target", .directory()),
@@ -126,7 +122,6 @@ struct WriteServiceAnalysisTests {
             } == "Unknown copy/paste analysis job: missing-analysis")
     }
 
-    // T-9358c957 F-241
     @Test func rejectsStartingASecondAnalysisWhileAnotherAnalysisIsStillRunning() throws {
         let service = WriteService(.init(fileSystem: Self.slowFolder(), createAnalysisId: countingIds()))
 
@@ -139,7 +134,6 @@ struct WriteServiceAnalysisTests {
     }
 
     // The window whose start was refused still has its review open.
-    // T-62ca8fa5 F-241 F-252
     @Test func dropsNoFinishedAnalysisWhenANewOneIsRefused() async throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/file.txt", .file(size: 5)),
@@ -165,7 +159,6 @@ struct WriteServiceAnalysisTests {
         gate.open()
     }
 
-    // T-751ce3bd F-241
     @Test func rejectsStartingAnalysisWhileAWriteOperationIsActive() async throws {
         let pasting = Gate()
         let service = WriteService(
@@ -182,7 +175,6 @@ struct WriteServiceAnalysisTests {
         pasting.open()
     }
 
-    // T-e8b5e138 F-241 F-252
     @Test func prunesTerminalAnalysisJobsWhenANewAnalysisStarts() async throws {
         let service = WriteService(.init(fileSystem: Self.fileToCopy(), createAnalysisId: countingIds()))
         _ = try service.startCopyPasteAnalysis(request(["/source/file.txt"], into: "/target"))
@@ -196,7 +188,6 @@ struct WriteServiceAnalysisTests {
     }
 
     // Another window's review is still open, and can still be pasted from.
-    // T-2eb88377 F-241 F-252
     @Test func keepsTheFinishedAnalysesItIsAskedToKeepButNotCancelledOnes() async throws {
         let service = WriteService(.init(fileSystem: Self.fileToCopy(), createAnalysisId: countingIds()))
         let analysis = request(["/source/file.txt"], into: "/target")
@@ -224,7 +215,7 @@ struct WriteServiceAnalysisTests {
     }
 }
 
-/// Port of createMockFileSystem (packages/core/src/fs/writeService.test.ts): items by path, with no ids or dates.
+/// Items by path, with no ids or dates.
 private struct PathSetFileSystem: ReadOnlyWriteFileSystem {
     var existingPaths: Set<String>
     var directoryPaths: Set<String> = []
@@ -271,7 +262,6 @@ struct WriteServiceReviewTests {
         return try #require(update.report, Comment(rawValue: "The analysis failed: \(update.error ?? "")"))
     }
 
-    // T-8ccc2f06 F-241
     @Test func staysUsableAfterBeingAskedToStartAnUnknownAnalysis() throws {
         let service = WriteService(.init(fileSystem: NativeWriteFileSystem()))
         #expect(
@@ -285,7 +275,6 @@ struct WriteServiceReviewTests {
         #expect(message { _ = try service.startCopyPasteAnalysis(request(["/tmp/a"], into: "/tmp")) } == nil)
     }
 
-    // T-4503dd53 F-256 F-419
     @Test func plansSameDirectoryCopyPasteAsDuplicateNamingInsteadOfAConflict() async throws {
         let service = WriteService(
             .init(
@@ -302,7 +291,6 @@ struct WriteServiceReviewTests {
         #expect(report.issues.isEmpty)
     }
 
-    // T-62330910 F-288 F-419
     @Test func keepsSameDirectoryCutPasteBlockedAsASelfTarget() async throws {
         let service = WriteService(
             .init(
@@ -315,7 +303,6 @@ struct WriteServiceReviewTests {
         #expect(report.issues.map(\.code) == [.samePath])
     }
 
-    // T-dbb2545f F-420 F-314
     @Test func findsAFileAlreadyAtTheDestinationAsAConflict() async throws {
         let service = WriteService(
             .init(
@@ -330,7 +317,6 @@ struct WriteServiceReviewTests {
         #expect(report.nodes.first?.conflictClass == .fileConflict)
     }
 
-    // T-26a0c664 F-421
     @Test func rejectsCopyingADirectoryIntoItsOwnChild() async throws {
         let service = WriteService(
             .init(
@@ -347,7 +333,6 @@ struct WriteServiceReviewTests {
     }
 
     // Ensures the analysis sees .asar as a regular file rather than reading into it as a folder.
-    // T-9c9fbb8d F-435
     @Test func analyzesAsarFilesAsFilesNotDirectoryTraversals() async throws {
         let service = WriteService(
             .init(

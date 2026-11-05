@@ -43,8 +43,7 @@ import Testing
         return (name, pointSize, color)
     }
 
-    // The mapping the user approved (in place of the original's line icons), every symbol there on this system.
-    // T-fe3f2758 F-732
+    // The mapping the user approved, every symbol there on this system.
     @Test func everyIconHasTheApprovedSymbol() {
         let approved: [FavoriteIconID: String] = [
             .home: "house", .applications: "square.grid.2x2", .desktop: "menubar.dock.rectangle", .documents: "doc",
@@ -62,7 +61,7 @@ import Testing
         #expect(SidebarIcons.symbol("internaldrive", pointSize: 16) != nil)
     }
 
-    // `.tree-expand`: the chevron turns over 120 ms, ending where the row is.
+    // The disclosure chevron turns over 120 ms, ending where the row is.
     @Test func theChevronTurnsToWhereItIs() async {
         let chevron = SidebarChevronView()
         chevron.expanded = true
@@ -111,7 +110,6 @@ import Testing
         #expect(InkScan.ink(row, in: left) != nil)
     }
 
-    // T-0ec3e044
     @Test func favoritesTakeTheAppsAccentAndLocationsTheSystemsGray() throws {
         let row = favorite(.folder)
         #expect(try symbol(row).color == ChromeColors.color(SidebarColors.theme(for: row).accent.solid))
@@ -123,7 +121,6 @@ import Testing
     }
 
     // The headings aren't among the rows the user chose: their line icons stay, in the accent the app is set to.
-    // T-0ec3e044
     @Test func headingsKeepTheirLineIconsInTheAppsAccent() throws {
         let headings = [
             cell(.favoritesRoot, id: .favoritesRoot, icon: .star, path: nil),
@@ -139,7 +136,7 @@ import Testing
             #expect(view.subviews.compactMap { $0 as? NSImageView }.first?.isHidden == true)
             #expect(InkScan.ink(view) != nil)
         }
-        // The original's paths (`resolveFavoriteIconPath`).
+        // The headings' line icons keep their SVG paths.
         #expect(SidebarIcons.Heading.favorites.path.hasPrefix("M12 4.5l2.2 4.45"))
         #expect(SidebarIcons.Heading.locations.path.hasPrefix("M5 7.5h14l1.5 4.5H3.5z"))
     }

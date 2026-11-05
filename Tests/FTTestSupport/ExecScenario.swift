@@ -1,6 +1,4 @@
-// Port of the scenario format of tools/parity/exec/places.ts (described in tools/parity/README.md):
-// the execution and analysis scenarios the reference engine was run on, and how their trees and
-// their changes on disk are made, so the Swift engine runs the same ones.
+// The execution and analysis scenarios of Tests/Golden, and how their trees and their changes on disk are made.
 import Darwin
 import Foundation
 
@@ -109,7 +107,7 @@ public struct ExecScenario: Codable, Equatable, Sendable {
     /// After the paste: its Undo, then (unless `redo` is false) its Redo, as the Edit menu runs them.
     public var undo: UndoScript?
 
-    /// What happens after the paste (places.ts `UndoScript`): `changes` made on disk before the Undo and `redoChanges`
+    /// What happens after the paste: `changes` made on disk before the Undo and `redoChanges`
     /// before the Redo, and `answers` given to the questions in the order asked (true goes ahead; missing ones are
     /// true).
     public struct UndoScript: Codable, Equatable, Sendable {
@@ -145,8 +143,8 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         public let description: String
     }
 
-    /// Makes the scenario's tree, as places.ts does: items in order, then modes and flags deepest
-    /// first (equally deep ones last item first).
+    /// Makes the scenario's tree: items in order, then modes and flags deepest first (equally deep
+    /// ones last item first).
     public func build(in places: ExecPlaces) throws {
         for item in tree {
             let path = places.resolve(item.path)
@@ -196,8 +194,7 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         }
     }
 
-    /// `mkdir -p` with the names spelled exactly as given, as Node's mkdir makes them: FileManager
-    /// would store "Café" decomposed.
+    /// `mkdir -p` with the names spelled exactly as given: FileManager would store "Café" decomposed.
     static func makeDirectories(_ path: String) throws {
         var made = ""
         for part in path.split(separator: "/", omittingEmptySubsequences: true) {
@@ -208,7 +205,7 @@ public struct ExecScenario: Codable, Equatable, Sendable {
         }
     }
 
-    /// Writes `content` in place as Node's writeFile does (open, truncate, write): an existing
+    /// Writes `content` in place (open, truncate, write): an existing
     /// file keeps its inode, which the engine's fingerprints compare.
     static func writeFile(_ path: String, _ content: String) -> Bool {
         let descriptor = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0o666)

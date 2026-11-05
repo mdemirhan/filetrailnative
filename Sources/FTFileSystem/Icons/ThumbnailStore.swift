@@ -1,4 +1,3 @@
-// Port of the cache and useFileThumbnail of apps/desktop/src/renderer/lib/fileThumbnails.tsx
 import Foundation
 
 /// Previews of the content of files, for icon view.

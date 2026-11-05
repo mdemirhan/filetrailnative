@@ -1,13 +1,12 @@
-// Port of formatReviewDate, formatCount and pluralize (apps/desktop/src/renderer/lib/copyPasteReview.ts)
 import Foundation
 
-/// The dates of the review rows and the conflict cards (`formatReviewDate`), in the system's time zone and the locale
-/// Chromium gives `Intl.DateTimeFormat(undefined, …)` (`InfoLocale.original`), with Chromium's comma and plain space
-/// where macOS writes "at" and a narrow no-break space. Tests pass their own locale and zone.
+/// The dates of the review rows and the conflict cards, in the system's time zone and the app's language alone
+/// (`InfoLocale.original`), with a comma and a plain space where macOS writes "at" and a narrow no-break space.
+/// Tests pass their own locale and zone.
 public final class ReviewDateText: @unchecked Sendable {
     public static let shared = ReviewDateText()
 
-    /// `FUTURE_TOLERANCE_MS`: a clock a little ahead of this one is still "today".
+    /// A clock a little ahead of this one is still "today".
     private static let futureTolerance = 60_000.0
 
     private let calendar: Calendar
@@ -60,7 +59,7 @@ public final class ReviewDateText: @unchecked Sendable {
 
 /// The counts the copy and paste dialogs write.
 public enum ReviewCount {
-    /// `formatCount`: "1,200", as `toLocaleString()` writes it.
+    /// "1,200", as `toLocaleString()` writes it.
     public static func format(_ count: Int) -> String {
         ContextMenuRules.groupedCount(count)
     }

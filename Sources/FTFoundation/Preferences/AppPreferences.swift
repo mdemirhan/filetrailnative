@@ -1,8 +1,7 @@
-// Port of AppPreferences and DEFAULT_APP_PREFERENCES in apps/desktop/src/shared/appPreferences.ts
 import Foundation
 
-/// The durable shape written to `app-state.json`. A saved value the loader does not recognize falls back to its
-/// default. It reads and writes the same JSON keys as the original, so files round-trip.
+/// The durable shape written to `app-state.json`. A saved value the loader does not recognize falls back to
+/// its default.
 public struct AppPreferences: Codable, Equatable, Sendable {
     public var theme: ThemePreference
     public var accent: String
@@ -69,7 +68,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var batchRenameSettings: JSONNode
     public var batchRenamePresets: JSONNode
 
-    /// DEFAULT_APP_PREFERENCES, with the theme a new install starts with (`createDefaultPreferences`).
+    /// DEFAULT_APP_PREFERENCES, with the theme a new install starts with.
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
         AppPreferences(
             theme: theme, accent: AppPreferenceLimits.defaultAccent, viewMode: .icons,
@@ -92,7 +91,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     }
 }
 
-/// The keys the original keeps per window (WINDOW_SESSION_PREFERENCE_KEYS); the other keys belong to the app.
+/// The keys kept per window; the other keys belong to the app.
 public enum WindowSessionKeys {
     public static let all: [String] = [
         "openTabs", "activeTabIndex", "treeRootPath", "lastVisitedPath", "lastVisitedFavoritePath", "viewMode",
@@ -103,7 +102,6 @@ public enum WindowSessionKeys {
 
     private static let set = Set(all)
 
-    /// `isWindowSessionKey`.
     public static func isSessionKey(_ key: String) -> Bool { set.contains(key) }
 }
 
@@ -134,7 +132,7 @@ public struct WindowSession: Codable, Equatable, Sendable {
     public var detailColumnWidths: DetailColumnWidths
     public var searchColumnWidths: SearchColumnWidths
 
-    /// `pickWindowSession` given whole preferences: a whole session.
+    /// The whole session of whole preferences.
     public init(_ preferences: AppPreferences) {
         openTabs = preferences.openTabs
         activeTabIndex = preferences.activeTabIndex
@@ -160,7 +158,7 @@ public struct WindowSession: Codable, Equatable, Sendable {
         searchColumnWidths = preferences.searchColumnWidths
     }
 
-    /// The preferences as a window with this session sees them (`{ ...preferences, ...window.session }`).
+    /// The preferences as a window with this session sees them: the session's values over `preferences`.
     public func applied(to preferences: AppPreferences) -> AppPreferences {
         var merged = preferences
         merged.openTabs = openTabs
@@ -195,6 +193,6 @@ public struct WindowSession: Codable, Equatable, Sendable {
 }
 
 extension AppPreferences {
-    /// `pickWindowSession(preferences)`.
+    /// The window session these preferences hold.
     public var windowSession: WindowSession { WindowSession(self) }
 }

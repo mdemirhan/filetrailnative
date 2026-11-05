@@ -1,6 +1,4 @@
-// Port by feature of "renders the first rows of a long list", "caps the list of a large operation without conflicts" and
-// "won't offer Replace for an item that contains what is being pasted" of
-// apps/desktop/src/renderer/components/CopyPasteReviewDialog.test.tsx: the review as it opens on a window that is never shown
+// The review as it opens on a window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -40,7 +38,7 @@ private func report(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport
             report: report(nodes), action: .paste, policy: WindowWriteActions.safePolicy, now: 0)
     }
 
-    // T-f10b2d4f B-CLIP-086: 300 rows, then all of them once asked for.
+    // 300 rows, then all of them once asked for.
     @Test(arguments: [(301, 1), (1_400, 1_100)])
     func aLongListOfConflictsDrawsItsFirstRows(_ count: Int, _ hidden: Int) {
         let model = model(count, conflict: true)
@@ -62,7 +60,7 @@ private func report(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport
         #expect(model.hiddenRowCount == 0)
     }
 
-    // T-15f564ad B-CLIP-086: the list of a large operation without conflicts has the same limit.
+    // The list of a large operation without conflicts has the same limit.
     @Test func aLargeOperationWithoutConflictsHasTheSameLimit() {
         let model = model(500, conflict: false)
         #expect(!model.hasConflicts)
@@ -87,7 +85,7 @@ extension ExplorerWindowlessTests {
             findViews("reviewSheet.showAll", in: sheet).first as? SheetLink
         }
 
-        // T-f10b2d4f B-CLIP-086: the link after the first rows draws the rest, once.
+        // The link after the first rows draws the rest, once.
         @Test func theLinkDrawsTheRestOfALongList() async throws {
             let window = try await WritingWindow.open()
             try open((0..<301).map { node("f\($0).txt", conflict: true) }, on: window)
@@ -102,7 +100,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-15f564ad B-CLIP-086: an operation without conflicts has no "For all", and its rows say "Adds".
+        // An operation without conflicts has no "For all", and its rows say "Adds".
         @Test func anOperationWithoutConflictsListsWhatItAdds() async throws {
             let window = try await WritingWindow.open()
             try open((0..<2).map { node("f\($0).txt", conflict: false) }, on: window)
@@ -114,7 +112,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-d7a7c28b B-CLIP-093: Replace is offered on a row only where it can be done: elsewhere it is there, disabled,
+        // Replace is offered on a row only where it can be done: elsewhere it is there, disabled,
         // saying why.
         @Test func aRowReplaceCantTakeHasItDisabledWithTheReason() async throws {
             let window = try await WritingWindow.open()
@@ -135,7 +133,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-d7a7c28b: the one item of a paste being one Replace can't take, the alert offers Keep Both and no Replace, and
+        // The one item of a paste being one Replace can't take, the alert offers Keep Both and no Replace, and
         // says nothing of the Trash (with Replace possible: CopyPasteDialogsTests).
         @Test func aSingleConflictReplaceCantTakeOffersNoReplace() async throws {
             let window = try await WritingWindow.open()

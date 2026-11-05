@@ -1,5 +1,5 @@
-// Port of the list logic of apps/desktop/src/renderer/components/ClipboardButton.tsx: its rows, the row the keys are
-// on, the keys, the rows drawn for a scroll position and the folder heading pinned over them
+// Its rows, the row the keys are on, the keys, the rows drawn for a scroll position and the folder heading pinned over
+// them
 import Foundation
 
 /// A row of the clipboard's list (`ClipboardMenuRow`).
@@ -21,13 +21,13 @@ public enum ClipboardMenuKeyResult: Equatable, Sendable {
     case clear
 }
 
-/// The keys of the menu, as `KeyboardEvent.key` names them.
+/// The keys of the menu.
 public enum ClipboardMenuKey: Equatable, Sendable {
     case escape, tab, down, up, home, end, enter, space, backspace, delete
     case other
 }
 
-/// The clipboard's list as the menu shows it (`ClipboardButton`).
+/// The clipboard's list as the menu shows it.
 public struct ClipboardMenuModel: Equatable, Sendable {
     public private(set) var rows: [ClipboardMenuRow] = []
     /// The items in the order the list shows them, which the arrow keys go through.
@@ -89,7 +89,7 @@ public struct ClipboardMenuModel: Equatable, Sendable {
         return start..<max(start, end)
     }
 
-    /// The folder of whatever is at the top of the list, kept in view while its items scroll (`findHeading`).
+    /// The folder of whatever is at the top of the list, kept in view while its items scroll.
     public var pinnedHeading: (label: String, parentPath: String)? {
         guard !rows.isEmpty else { return nil }
         var index = min(firstVisibleRow, rows.count - 1)

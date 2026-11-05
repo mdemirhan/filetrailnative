@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/treeView.ts
 import Foundation
 
 /// A row of the expanded tree with its depth.
@@ -26,7 +25,7 @@ public enum TreeView {
         case up, down, left, right, home, end
     }
 
-    /// `flattenVisibleTree`: the exact visual order of the expanded tree, depth included, for keyboard navigation and
+    /// The exact visual order of the expanded tree, depth included, for keyboard navigation and
     /// typeahead. Collapsed descendants are left out.
     public static func flatten(rootPath: String, nodes: TreeNodes) -> [FlattenedTreeNode] {
         guard nodes[rootPath] != nil else { return [] }
@@ -41,7 +40,7 @@ public enum TreeView {
         return flattened
     }
 
-    /// `getTreeKeyboardAction`: maps arrow, Home and End keys to what to do, instead of changing state directly.
+    /// Maps arrow, Home and End keys to what to do, instead of changing state directly.
     public static func keyboardAction(key: Key, currentPath: String, rootPath: String, nodes: TreeNodes)
         -> TreeKeyboardAction
     {
@@ -76,7 +75,7 @@ public enum TreeView {
         }
     }
 
-    /// The local `parentDirectoryPath` of treeView.ts: `/` for the top and for a top-level folder.
+    /// The parent folder's path: `/` for the top and for a top-level folder.
     private static func parentPath(_ path: String) -> String {
         if JSString.equals(path, "/") { return "/" }
         let parts = path.utf16.split(separator: 0x2F, omittingEmptySubsequences: false).dropLast()

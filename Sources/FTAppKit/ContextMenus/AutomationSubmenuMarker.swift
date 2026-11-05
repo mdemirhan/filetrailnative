@@ -1,10 +1,9 @@
-// Port of the context submenu element of tools/capture/elements.json; no TypeScript source.
 #if DEBUG
     import AppKit
 
     /// A native submenu can't be found in a window's views, so a scenario that opens one (`contextMenu` choosing
-    /// "Open With", then `expectSheet` for "context submenu") is shown a one-point marker in the window for a moment, named
-    /// as the original's `.context-submenu` is.
+    /// "Open With", then `expectSheet` for "context submenu") is shown a one-point marker named for it in the window
+    /// for a moment.
     @MainActor
     enum AutomationSubmenuMarker {
         private static weak var marker: NSView?

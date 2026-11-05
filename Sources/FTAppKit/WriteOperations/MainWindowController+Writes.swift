@@ -1,13 +1,10 @@
-// Port of the write commands of apps/desktop/src/renderer/hooks/useExplorerShortcuts.ts (runGenericEditCommand, the
-// write cases of runRendererCommand) and of refreshDirectory's after-write options
-// (apps/desktop/src/renderer/hooks/useExplorerNavigationController.ts): what a tab does with a write command, and with
-// a write's end
+// What a tab does with a write command, and with a write's end
 import AppKit
 import FTFoundation
 import FTOperations
 
 extension MainWindowController {
-    /// The commands that write (`WRITE_LOCKED_COMMANDS` with the clipboard's): each goes to the file operations.
+    /// The commands that write, the clipboard's among them: each goes to the file operations.
     static let writeCommands: Set<RendererCommand> = [
         .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .trashSelection, .emptyTrash, .cutSelection,
         .copySelection, .pasteSelection, .moveSelection, .editCut, .editCopy, .editPaste,
@@ -34,13 +31,13 @@ extension MainWindowController {
     }
 
     /// Whether the files' Undo (Redo) runs for the event that chose it: a held ⌘Z repeats the menu's command, and Undo
-    /// runs once per press (`options.repeated` of `runRendererCommand`, B-CLIP-185, B-SEL-114). A click always runs it.
+    /// runs once per press. A click always runs it.
     static func undoRuns(for event: NSEvent?) -> Bool {
         guard let event, event.type == .keyDown else { return true }
         return !event.isARepeat
     }
 
-    /// `startDuplicatePaths`: nothing is made in the Trash (the menus offer no Duplicate there).
+    /// Nothing is made in the Trash (the menus offer no Duplicate there).
     static func duplicatesInTrash(_ paths: [String], destination: String, homePath: String) -> Bool {
         Paths.isInsideTrash(destination, homePath: homePath)
             || paths.contains { Paths.isInsideTrash($0, homePath: homePath) }
@@ -58,13 +55,13 @@ extension MainWindowController {
             actions.putOnClipboard(.cut, paths: clipboardSourcePaths, entries: clipboardSourceEntries)
         case .pasteSelection, .editPaste:
             // Pastes into the folder on screen from the keyboard or menu bar, whatever is selected; never into
-            // search results or the Trash (`resolvePasteDestinationPath`).
+            // search results or the Trash.
             guard let destination = pasteDestinationPath else { return true }
             Task { await actions.pasteFromClipboard(into: destination) }
         case .duplicateSelection:
             let paths = selectedPaths
             guard !paths.isEmpty else { return true }
-            // Next to the items (`startDuplicateOfSelection`): search results may be from several folders, and then
+            // Next to the items: search results may be from several folders, and then
             // there is no one folder for their copies.
             let destination: String
             if searchRootPath == nil {
@@ -82,7 +79,7 @@ extension MainWindowController {
             actions.session.pendingTreeSelectionPath = nil
             Task { actions.reviewIfAsked(await actions.duplicate(paths, in: destination), action: .duplicate) }
         case .moveSelection:
-            // Move To says so as soon as pressed, not after a folder was chosen (B-CLIP-107).
+            // Move To says so as soon as pressed, not after a folder was chosen.
             let paths = selectedPaths
             guard !paths.isEmpty, !actions.refuseWhileBusy(.operation(.moveTo)) else { return true }
             chooseMoveDestination(for: paths, actions)
@@ -131,7 +128,7 @@ extension MainWindowController {
         content.beginRename(path: row.path)
     }
 
-    /// The file operations of the right-click menus (`runContextMenuAction`): Rename, New Folder, Move to Trash,
+    /// The file operations of the right-click menus: Rename, New Folder, Move to Trash,
     /// Delete Immediately, Empty Trash, Move and Duplicate. They act on what the menu was opened on, whichever pane has
     /// the keyboard: right-clicking a sidebar folder focuses the tree, where the commands of the same names refuse.
     func performContextFileOperation(_ action: ContextMenuActionID, _ subject: ContextMenuSubject) {
@@ -174,7 +171,7 @@ extension MainWindowController {
         case .copy: actions.putOnClipboard(.copy, paths: paths)
         case .paste: _ = performWriteCommand(.pasteSelection)
         case .move:
-            // Says so as soon as chosen, not after a folder was chosen (B-CLIP-107).
+            // Says so as soon as chosen, not after a folder was chosen.
             guard !paths.isEmpty, !actions.refuseWhileBusy(.operation(.moveTo)) else { return }
             openMoveDialog(paths, actions)
         case .duplicate:
@@ -183,7 +180,7 @@ extension MainWindowController {
         }
     }
 
-    /// Duplicate of `runContextMenuAction`: a tree folder's copy goes next to it and is selected in the tree; a search
+    /// Duplicate from the context menu: a tree folder's copy goes next to it and is selected in the tree; a search
     /// result's goes next to it; anything else's into the folder on screen.
     private func duplicateFromMenu(_ subject: ContextMenuSubject, _ actions: WindowWriteActions) {
         let paths = subject.paths
@@ -217,9 +214,9 @@ extension MainWindowController {
         }
     }
 
-    /// `canHandleRendererCommand`, asked before a write command acts (`runRendererCommand`; Cut, Copy and Paste of
-    /// the Edit menu as `runGenericEditCommand` asks it): the list's commands only with the list focused, Cut and
-    /// Copy from the tree only on a folder of it (a favorite only points to one), Paste also with no pane focused.
+    /// Asked before a write command acts (Cut, Copy and Paste of the Edit menu as the list's own): the list's commands
+    /// only with the list focused, Cut and Copy from the tree only on a folder of it (a favorite only points to one),
+    /// Paste also with no pane focused.
     static func canRunWriteCommand(_ command: RendererCommand, _ context: ShortcutContext) -> Bool {
         let asked: RendererCommand =
             switch command {
@@ -241,7 +238,7 @@ extension MainWindowController {
         return ShortcutContext(focusedPane: pane, selectedTreeTargetKind: sidebarController.selectedTreeTargetKind)
     }
 
-    /// What Copy and Cut take (`resolveClipboardSource`): the folder selected in the tree while it has the keyboard
+    /// What Copy and Cut take: the folder selected in the tree while it has the keyboard
     /// (nothing for a favorite, which only points to one), else the items selected in the list.
     static func clipboardSource(
         focusedPane: ExplorerPane?, treeTargetKind: SelectedTreeTargetKind?, treeTargetPath: String?,
@@ -263,11 +260,11 @@ extension MainWindowController {
         openMoveDialog(paths, actions)
     }
 
-    /// A write ended (`refreshDirectory` with `treeSelectionPath` and `extraTreeReloadPaths`): the folder on screen is
-    /// read again, at its new place if the write moved it, overwriting its step of the history, what the write made is
-    /// selected once it is listed, and the tree comes back to the folder, or to the row the write asks for.
+    /// A write ended: the folder on screen is read again, at its new place if the write moved it, overwriting its step
+    /// of the history, what the write made is selected once it is listed, and the tree comes back to the folder, or to
+    /// the row the write asks for.
     func applyWriteEnd(_ refresh: WriteEndRefresh) {
-        // No folder on screen, none to read: `refreshDirectory` stops here, before the tree too.
+        // No folder on screen, none to read: this stops here, before the tree too.
         guard !refresh.path.isEmpty else { return }
         let session = group.flatMap { AppWriteOperations.current?.session(for: $0) }
         if refresh.selecting != nil || session?.pendingInlineRenamePath != nil {
@@ -308,8 +305,8 @@ extension MainWindowController {
 }
 
 extension SidebarModel {
-    /// `extraTreeReloadPaths` (`refreshDirectory`): the tree branches a write touched are read again, each from its
-    /// folder down through its open folders, a folder read once for all of them (`refreshVisibleTreePath`). The rest
+    /// The tree branches a write touched are read again, each from its
+    /// folder down through its open folders, a folder read once for all of them. The rest
     /// of the tree stays as it is.
     func refreshWriteBranches(_ paths: [String]) async {
         var visited = Set<ExactKeyBox>()

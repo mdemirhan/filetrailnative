@@ -1,4 +1,3 @@
-// Port of queueThumbnailLoad and startQueuedLoads (apps/desktop/src/renderer/lib/fileThumbnails.tsx)
 import Foundation
 
 /// Previews wanted at once are loaded a few at a time, so one scrolled past before its turn can still be

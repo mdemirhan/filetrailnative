@@ -1,8 +1,6 @@
-// Port by feature of the Undo cases of apps/desktop/src/renderer/App.undo.test.tsx (startUndo, askUndoQuestion of
-// apps/desktop/src/renderer/hooks/useExplorerActions.ts): what one window asks of the coordinator for ⌘Z and ⇧⌘Z, and
-// what it asks the person first, driven on a real folder. The text field's own Undo (T-af1c755a, T-7b2fe094) is the
-// menu router's (P4-01); what happens after an Undo (T-f0c2b565, T-8339f67a, T-ec337946) is P5-08's result flow, and
-// its toast is in Clipboard/WriteEndInWindowTests.swift.
+// What one window asks of the coordinator for ⌘Z and ⇧⌘Z, and what it asks the person first, driven on a real folder.
+// The text field's own Undo is the menu router's; what happens after an Undo is the write's result flow, and its toast is
+// in Clipboard/WriteEndInWindowTests.swift.
 import AppKit
 import Darwin
 import FTFileSystem
@@ -145,7 +143,6 @@ private final class UndoFixture {
 
 @MainActor
 @Suite(.serialized) struct UndoActionsTests {
-    // F-246 F-377 T-74e34ae7 T-1f83c7c1
     @Test func undoesTheLastFileOperation() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt")
@@ -166,7 +163,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-246 T-ea9c0a16 T-1f83c7c1
     @Test func redoesWhatWasUndone() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt")
@@ -182,7 +178,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-386 T-8c7fea26
     @Test func doesNothingMoreForAKeyHeldDown() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt")
@@ -198,7 +193,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-386 T-8c7fea26 B-CLIP-185 B-SEL-114
     @Test func aHeldCommandZRunsOneUndoAPress() throws {
         func key(_ characters: String, _ flags: NSEvent.ModifierFlags, repeat isARepeat: Bool) throws -> NSEvent {
             try #require(
@@ -220,7 +214,6 @@ private final class UndoFixture {
         #expect(MainWindowController.undoRuns(for: nil))
     }
 
-    // F-551 T-1d67a013 B-CLIP-191
     @Test func givesTheQuestionTheNamesItLists() {
         let names = ["a.txt", "b.txt", "c.txt", "d.txt", "e.txt", "f.txt"]
         let question = WindowWriteActions.undoQuestion(.nameTaken(names: names), .undo, .trash)
@@ -230,8 +223,6 @@ private final class UndoFixture {
         #expect(WindowWriteActions.undoQuestion(.changed(items: [one]), .undo, .duplicate).list.isEmpty)
     }
 
-    // F-386 F-552 T-ba10f104
-    // B-CLIP-186 T-c2f18eb0
     @Test func startsNothingWhileAnotherOperationRunsAndSaysSo() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt")
@@ -253,7 +244,7 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // T-7a4e47ef B-CLIP-192: another operation starts while the question is up: answering it says so, and nothing is undone.
+    // Another operation starts while the question is up: answering it says so, and nothing is undone.
     @Test func saysAnotherOperationStartedWhileTheQuestionWasUp() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt", "a")
@@ -281,7 +272,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-551 T-07c23f02
     @Test func asksAboutANameTakenAndGoesAheadWithKeepBoth() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt", "a")
@@ -303,7 +293,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-551 T-94e67861
     @Test func saysWhyACopyThatChangedWouldGoToTheTrashAfterAskingAboutNames() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt", "a")
@@ -333,7 +322,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-551 T-af05c51d
     @Test func startsNothingWhenAQuestionIsCancelled() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt", "a")
@@ -349,8 +337,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-386 F-395 T-92802a36
-    // B-CLIP-187
     @Test func startsNothingWhenThereIsNothingToUndo() async throws {
         let fixture = try UndoFixture()
         #expect(await fixture.actions.undo() == .cancelled)
@@ -366,8 +352,6 @@ private final class UndoFixture {
         await fixture.close()
     }
 
-    // F-388 T-f676628a
-    // B-CLIP-187 B-CLIP-196 T-babf6471
     @Test func saysWhyAnUndoCouldntStart() async throws {
         let fixture = try UndoFixture()
         try fixture.write("a.txt", "a")

@@ -1,6 +1,3 @@
-// Covers the commands that choose between the tree and the list (useExplorerShortcuts.ts:1415-1425, :760-766,
-// lib/shortcutTargets.ts:72-88), Remove from Favorites from a favorite's own row (useExplorerActions.ts:2795-2813,
-// :2941-2950) and Copy Path in the tree (App.menusAndTree.test.tsx) on a tab whose window is never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -29,7 +26,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Enclosing Folder
 
-        // B-NAV-062: the tree's parent with the tree focused, the list's otherwise. The row and the folder on screen differ
+        // The tree's parent with the tree focused, the list's otherwise. The row and the folder on screen differ
         // here, so each route goes somewhere the other doesn't.
         @Test func enclosingFolderFollowsTheFocusedPane() async throws {
             let (harness, tab, controller) = try await open()
@@ -61,7 +58,6 @@ extension ExplorerWindowlessTests {
 
         // MARK: Home
 
-        // B-NAV-099
         @Test func homeRootsTheTreeThereAddingAStepOnlyFromElsewhere() async throws {
             let (harness, tab, controller) = try await open()
             let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -83,7 +79,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Use as Tree Root
 
-        // B-TREE-077: the row the menu is open on, else the tree's row with the tree focused, else the list's one folder,
+        // The row the menu is open on, else the tree's row with the tree focused, else the list's one folder,
         // else the folder on screen.
         @Test func useAsTreeRootActsOnWhatHasTheFocus() async throws {
             let (harness, tab, controller) = try await open()
@@ -165,7 +161,7 @@ extension ExplorerWindowlessTests {
             return (harness, tab, controller, path)
         }
 
-        // B-TREE-039: the folder on screen is shown as a row of the tree, its history step replaced.
+        // The folder on screen is shown as a row of the tree, its history step replaced.
         @Test func removingTheFavoriteOnScreenFromItsRowSelectsItInTheTreeAndReplacesTheStep() async throws {
             let (harness, tab, controller, gamma) = try await withFavorite("Gamma")
             controller.model.selectItem(.favorite(gamma))
@@ -183,7 +179,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-TREE-039: another folder is gone to, one step more.
+        // Another folder is gone to, one step more.
         @Test func removingAnotherFavoriteFromItsRowOpensItFromTheTree() async throws {
             let (harness, tab, controller, gamma) = try await withFavorite("Gamma")
             let history = tab.navigationHistory.paths
@@ -196,7 +192,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-TREE-039: chosen from the tree it only removes.
+        // Chosen from the tree it only removes.
         @Test func removingAFavoriteFromATreeRowOnlyRemovesIt() async throws {
             let (harness, tab, controller, gamma) = try await withFavorite("Gamma")
             let (selected, shown, history) = (
@@ -220,7 +216,7 @@ extension ExplorerWindowlessTests {
             harness.pasteboard.string(forType: .string)
         }
 
-        // T-a3480ced: the menu's command, with a selection left behind in the list.
+        // The menu's command, with a selection left behind in the list.
         @Test func copyPathInTheTreeCopiesTheTreesFolderNotTheListsSelection() async throws {
             let (harness, tab, _) = try await open()
             let alpha = listed(harness, "Alpha")
@@ -237,7 +233,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-081ac5a0: ⌘⌥C reaching the window from the focused tree.
+        // ⌘⌥C reaching the window from the focused tree.
         @Test func commandOptionCInTheTreeCopiesTheTreesFolder() async throws {
             let (harness, tab, _) = try await open()
             let alpha = listed(harness, "Alpha")

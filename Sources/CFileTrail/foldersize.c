@@ -1,4 +1,4 @@
-// Port of packages/native-fs/src/native_foldersize.c, without N-API: Swift drives the walk.
+// The folder size walker, for Swift, which drives the walk.
 //
 // Recursive folder size calculation with macOS getattrlistbulk(2) on 4 worker threads.
 // getattrlistbulk returns metadata for all entries in a directory in one syscall (avoiding per-file
@@ -711,7 +711,7 @@ int ft_item_size_of(const char *path, ft_item_size *out) {
   return 0;
 }
 
-/* ── errno names (packages/native-fs/src/native_errors.c) ─────────── */
+/* ── errno names ──────────────────────────────────────────────────── */
 
 #define ERRNO_NAME(name)                                                        \
   case name:                                                                    \

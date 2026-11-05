@@ -1,7 +1,3 @@
-// Port of the Cmd-double-click of apps/desktop/src/renderer/App.tabs.test.tsx and components/entryItemEvents.ts, the
-// per-tab view of lib/explorerTabs.ts, the merge of App.windows.test.tsx, the sideways header of
-// components/ContentPane.items.test.tsx, the path field's keys of components/ContentPane.test.tsx and the Info panel
-// across a reload of App.commands.test.tsx
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -27,7 +23,7 @@ extension ExplorerWindowlessTests {
             #expect(group.selected === opened, sourceLocation: sourceLocation)
         }
 
-        // T-2153a91a B-VIEW-071: with Command, a double-click on a folder's row opens a tab on it after the current one.
+        // With Command, a double-click on a folder's row opens a tab on it after the current one.
         @Test func commandDoubleClickOnAFoldersRowOpensANewTab() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -38,7 +34,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-2153a91a B-VIEW-071: on an icon too.
+        // On an icon too.
         @Test func commandDoubleClickOnAnIconOpensANewTab() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
@@ -48,7 +44,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-2153a91a: and from its menu.
+        // And from its menu.
         @Test func aFoldersMenuOpensANewTab() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -60,7 +56,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-071: without Command it opens in place, and a file with Command just opens.
+        // Without Command it opens in place, and a file with Command just opens.
         @Test func onlyAFolderWithCommandGetsANewTab() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -77,7 +73,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-cc3773a9: the other windows' tabs come after this one's, which stays in front; one whose folder went is left out.
+        // The other windows' tabs come after this one's, which stays in front; one whose folder went is left out.
         @Test func mergedTabsComeAfterItsOwnWithoutAGoneFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -98,7 +94,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-a691ba1c: the column titles move with the rows scrolled sideways.
+        // The column titles move with the rows scrolled sideways.
         @Test func theColumnTitlesFollowTheRowsSideways() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
@@ -116,7 +112,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-f80edb39: Tab goes from the field into the suggestions, previewing; the arrows move; Shift-Tab goes back out;
+        // Tab goes from the field into the suggestions, previewing; the arrows move; Shift-Tab goes back out;
         // Return on a row takes it and leaves the field open.
         @Test func tabMovesBetweenThePathFieldAndItsSuggestions() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -163,7 +159,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-321434ce: the folder's own info stays in the panel over a reload, and is asked for again.
+        // The folder's own info stays in the panel over a reload, and is asked for again.
         @Test func theInfoPanelKeepsTheFolderAcrossAReload() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

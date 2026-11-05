@@ -1,5 +1,4 @@
-// Port of the SVG path drawing the original's icons rely on (apps/desktop/src/renderer/components/ToolbarIcon.tsx):
-// a parser for the path data its icons use
+// A parser for the path data its icons use
 import AppKit
 
 /// Reads SVG path data (`M L H V C S A Z`, absolute and relative) into an `NSBezierPath`, in the path's own

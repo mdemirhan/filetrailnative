@@ -12,7 +12,6 @@ import Testing
             for: IconEntry(path: path, name: name, extension: fileExtension, kind: kind, isExecutable: executable))
     }
 
-    // F-225
     @Test func filesShareOneIconPerExtensionIgnoringCase() {
         #expect(key("/a/one.txt", extension: "txt") == "ext:txt")
         #expect(key("/a/ONE.TXT", extension: "TXT") == "ext:txt")
@@ -24,7 +23,6 @@ import Testing
         #expect(key("/found/Makefile", name: "Makefile") == "path:/found/Makefile")
     }
 
-    // T-41333069 F-225
     @Test func symlinksBundlesAndOtherItemsAreAskedForByPath() {
         #expect(key("/a/link.txt", extension: "txt", kind: .symlinkFile) == "path:/a/link.txt")
         #expect(key("/a/link", kind: .symlinkDirectory) == "path:/a/link")

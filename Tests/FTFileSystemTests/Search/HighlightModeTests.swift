@@ -1,5 +1,5 @@
-// The search highlight's pattern is compiled as buildSearchHighlightPattern of
-// apps/desktop/src/renderer/lib/searchResults.ts compiles it: `new RegExp(source, "" | "i")`, without the unicode flag
+// The search highlight's pattern is compiled as JavaScript compiles `new RegExp(source, "" | "i")`, without the
+// unicode flag
 import FTFileSystem
 import FTFoundation
 import Testing
@@ -12,22 +12,22 @@ import Testing
         return NameHighlight.match(pattern, in: name)
     }
 
-    // B-SEL-182: an escape of a character that names nothing is the character.
+    // An escape of a character that names nothing is the character.
     @Test func identityEscapeIsMarked() {
         #expect(match("foo\\-bar", in: "foo-bar.txt") == HighlightRange(start: 0, end: 7))
     }
 
-    // B-SEL-182: a lone bracket is a character.
+    // A lone bracket is a character.
     @Test func loneBracketIsMarked() {
         #expect(match("a]", in: "a].txt") == HighlightRange(start: 0, end: 2))
     }
 
-    // B-SEL-182: `.` is one UTF-16 unit.
+    // `.` is one UTF-16 unit.
     @Test func dotIsOneCodeUnit() {
         #expect(match("^.", in: "🎉 party.txt") == HighlightRange(start: 0, end: 1))
     }
 
-    // B-SEL-182: smart case folds as JavaScript's default mode does, in plain text too.
+    // Smart case folds as JavaScript's default mode does, in plain text too.
     @Test func caseFoldsByUppercaseForms() {
         #expect(match("ſ", in: "Sun.txt") == nil)
         #expect(match("ſ", .text, in: "Sun.txt") == nil)

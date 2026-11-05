@@ -33,7 +33,6 @@ private func service(_ renderer: FakeRenderer, version: String?) -> FileThumbnai
 private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, height: 1)), isOpaque: true)
 
 @Suite struct FileThumbnailServiceTests {
-    // T-e57f3c9f F-147 F-226
     @Test func returnsThePreviewWithTheFilesVersion() async {
         let renderer = FakeRenderer(result: sample)
         let response = await service(renderer, version: "1700:42").response(
@@ -44,7 +43,6 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(renderer.rendered == ["/a/photo.jpeg@128"])
     }
 
-    // T-b9916804
     @Test func passesOnWhetherThePreviewHasTransparency() async {
         let transparent = ThumbnailPicture(image: sample.image, isOpaque: false)
         let response = await service(FakeRenderer(result: transparent), version: "1700:42").response(
@@ -52,7 +50,6 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(response.picture?.isOpaque == false)
     }
 
-    // T-b5bd0c66
     @Test func doesNotMakeThePreviewAgainForAVersionTheCallerAlreadyHolds() async {
         let renderer = FakeRenderer(result: sample)
         let response = await service(renderer, version: "1700:42").response(
@@ -61,7 +58,6 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(renderer.rendered.isEmpty)
     }
 
-    // T-b6b84124
     @Test func makesANewPreviewWhenTheFileHasChangedSince() async {
         let response = await service(FakeRenderer(result: sample), version: "1800:50").response(
             path: "/a/photo.jpeg", size: 128, knownVersion: "1700:42")
@@ -70,14 +66,12 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(response.picture != nil)
     }
 
-    // T-22414abc T-be9407bf
     @Test func reportsNoPreviewForAFileQuickLookCannotDrawKeepingItsVersion() async {
         let response = await service(FakeRenderer(result: nil), version: "5:10").response(
             path: "/a.bin", size: 64, knownVersion: nil)
         #expect(response.version == "5:10" && !response.unchanged && response.picture == nil)
     }
 
-    // T-7d2e2494 T-be9407bf
     @Test func reportsNothingForAFileThatCannotBeRead() async {
         let renderer = FakeRenderer(result: sample)
         let response = await service(renderer, version: nil).response(path: "/a/gone.png", size: 128, knownVersion: nil)
@@ -85,7 +79,6 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         #expect(renderer.rendered.isEmpty)
     }
 
-    // F-226
     @Test func theVersionIsTheModificationTimeInMillisecondsAndTheSize() throws {
         try withTemporaryDirectory { directory in
             let file = directory.appending("a.txt")
@@ -114,7 +107,6 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         base64Encoded:
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
 
-    // T-8b85b255 F-157
     @Test func returnsAPictureOfAnImageFile() async throws {
         let png = try #require(Self.png)
         try await withTemporaryDirectory { directory in
@@ -126,7 +118,6 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         }
     }
 
-    // T-96f815d3
     @Test func givesNothingForAFolderAndForAFileThatDoesNotExist() async throws {
         try await withTemporaryDirectory { directory in
             #expect(await QuickLookThumbnailRenderer().renderThumbnail(path: directory.path, size: 128) == nil)

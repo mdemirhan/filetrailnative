@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/batchRenameInspect.ts and createOriginalBatchRenameInspectDeps
-// (apps/desktop/src/main/originalFileSystem.ts)
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -96,7 +94,7 @@ public struct BatchRenameInspectDeps: Sendable {
         self.homePath = homePath
     }
 
-    /// `createOriginalBatchRenameInspectDeps`: the disk itself. The app refuses the same folders as for a rename of
+    /// The disk itself. The app refuses the same folders as for a rename of
     /// one (`assertNotSystemLocation`).
     public static func native(homePath: String, assertRenamable: @escaping @Sendable (String) throws -> Void)
         -> BatchRenameInspectDeps
@@ -119,7 +117,7 @@ public struct BatchRenameInspectDeps: Sendable {
 }
 
 public enum BatchRenameInspect {
-    /// `inspectBatchRename`: the items' dates, whether each can be renamed, and every name in their folders.
+    /// The items' dates, whether each can be renamed, and every name in their folders.
     public static func inspect(_ request: BatchRenameInspectRequest, _ deps: BatchRenameInspectDeps) async
         -> BatchRenameInspection
     {
@@ -187,15 +185,15 @@ public enum BatchRenameInspect {
         return BatchRenameInspection(items: items, folders: folders.map(\.folder))
     }
 
-    /// `localDateTimeOrNull`: a date the disk doesn't really have (no birth time on some disks) is left out.
+    /// A date the disk doesn't really have (no birth time on some disks) is left out.
     static func localDateTimeOrNil(_ milliseconds: Double?) -> LocalDateTime? {
         guard let milliseconds, milliseconds.isFinite, milliseconds > 0 else { return nil }
-        // A JavaScript Date keeps whole milliseconds.
+        // Dates keep whole milliseconds.
         let local = BatchRename.toLocalDateTime(Date(timeIntervalSince1970: milliseconds.rounded(.down) / 1000))
         return isLocalDateTime(local) ? local : nil
     }
 
-    /// `LOCAL_DATE_TIME`: `/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/u`.
+    /// `/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/u`.
     static func isLocalDateTime(_ text: String) -> Bool {
         let scalars = Array(text.unicodeScalars)
         guard scalars.count == 19 else { return false }

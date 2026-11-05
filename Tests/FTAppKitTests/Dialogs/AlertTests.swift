@@ -1,6 +1,4 @@
-// Ports by feature the cases of apps/desktop/src/renderer/components/{ActionNoticeDialog,CopyPasteDialog,
-// TextPromptDialog,UndoQuestionAlert,AppDialogs}.test.tsx and the tree's Trash confirmation of
-// App.menusAndTree.test.tsx: the in-window alerts on a window that is never shown, with a tab where they need one
+// The in-window alerts on a window that is never shown, with a tab where they need one
 import AppKit
 import FTFoundation
 import FTOperations
@@ -27,8 +25,6 @@ extension ExplorerWindowlessTests {
 
         // A notice has one OK, focused; a click outside does nothing; Return dismisses it, and the keys typed meanwhile
         // go nowhere.
-        // T-ac167682 T-5d1384c4 F-872 B-NAV-217
-        // B-SEL-170 B-TREE-191
         @Test func aNoticeHasOneFocusedOKAndClosesOnlyFromIt() async throws {
             let (harness, tab, window) = try await open()
             tab.showNotice(title: "Couldn’t Open", message: "Something went wrong.")
@@ -51,7 +47,6 @@ extension ExplorerWindowlessTests {
         }
 
         // A rename that failed is told by its reason alone, once, under "Rename", with no "0 of 1 item done".
-        // T-00cac55d
         @Test func aFailedRenameIsToldByItsReasonAlone() async throws {
             let (harness, tab, _) = try await open()
             let error = "An item named “b.txt” already exists."
@@ -118,8 +113,6 @@ struct AlertCardTests {
     }
 
     // Move to Trash opens with its button focused; Return (or the button) confirms it, and the alert goes at once.
-    // T-50080f20 T-c659113c T-89eb2fb5 T-c4830123 T-b0545566 F-872
-    // B-CLIP-132 B-TREE-146
     @Test func moveToTrashIsConfirmedWithReturnAndClosesAtOnce() async throws {
         let window = window()
         let question = LocalWriteRules.trashQuestion(["/folder/Alpha"])
@@ -140,8 +133,6 @@ struct AlertCardTests {
     }
 
     // What can't be undone, and the dot name, open on Cancel.
-    // T-e8357d8c T-e7e44bb0 T-f763b70f F-872 B-CLIP-198
-    // B-CLIP-132 B-CLIP-133
     @Test func irreversibleQuestionsDefaultToCancel() async throws {
         let window = window()
         for question in [
@@ -161,8 +152,6 @@ struct AlertCardTests {
     }
 
     // Tab goes round the alert's buttons and wraps; Escape answers Cancel.
-    // T-26c267d3 T-f00c1c15 F-872
-    // B-SEL-170 B-TREE-191
     @Test func tabStaysInsideTheAlertAndEscapeCancels() async throws {
         let window = window()
         let answer = ask(LocalWriteRules.trashQuestion(["/folder/Alpha"]), in: window)
@@ -179,7 +168,6 @@ struct AlertCardTests {
         #expect(await waitUntil { answer.value == false })
     }
 
-    // T-5495c714 T-32447e02 F-880 F-881 B-CLIP-188 B-CLIP-189 B-CLIP-190 B-CLIP-191
     @Test func theUndoQuestionListsTheNamesWithItsDefault() async throws {
         let window = window()
         let names = (1...7).map { "File \($0).txt" }
@@ -207,7 +195,6 @@ struct AlertCardTests {
 
     // The name prompt selects the whole name, can't submit an empty one, keeps what was typed with the reason under
     // it, and starts again from the name when it opens again.
-    // T-debddd61 T-2c3367f6 T-1d6d1c20 T-8a6aa0b0 T-00961b8a F-882 F-883 B-SEL-124
     @Test func theNamePromptSelectsTheNameAndShowsWhyItWasRefused() async throws {
         let window = window()
         let path = "/folder/Alpha"
@@ -266,7 +253,6 @@ struct AlertCardTests {
     }
 
     // The eject questions stack their three buttons, the default on top; Escape cancels.
-    // F-884 F-885 B-TREE-170 B-TREE-171 B-TREE-172
     @Test func theEjectQuestionsStackTheirButtons() async throws {
         let window = window()
         let presenter = InWindowEjectPresenter(window: { window })

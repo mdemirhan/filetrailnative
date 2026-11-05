@@ -1,6 +1,5 @@
-// Port by feature of the "an operation another window runs" cases of apps/desktop/src/renderer/App.windows.test.tsx and
-// of T-00a2c789 of App.tabs.test.tsx: one explorer window's side of the file operations, driven as the coordinator
-// drives it (its own operations' progress, other windows' broadcasts, hand-overs)
+// One explorer window's side of the file operations, driven as the coordinator drives it (its own operations' progress,
+// other windows' broadcasts, hand-overs)
 import FTFoundation
 import Foundation
 import Testing
@@ -166,7 +165,7 @@ private let arrived = WriteOperationItem(
 
 @MainActor
 @Suite struct ExplorerWriteSessionTests {
-    // T-1035f81e: its end arrives before the start request returns: it is finished when the window hears the handle.
+    // Its end arrives before the start request returns: it is finished when the window hears the handle.
     @Test func finishesANewFolderWhoseCompletionArrivesBeforeItsStartRequestReturns() async throws {
         let fixture = Fixture()
         let session = fixture.session
@@ -200,8 +199,6 @@ private let arrived = WriteOperationItem(
         #expect(fixture.shown.isEmpty)
     }
 
-    // F-247 F-244 T-b1bf94e1
-    // B-CLIP-182 B-SEL-181 B-VIEW-183
     @Test func keepsThisWindowFromStartingAnotherUntilItEnds() async throws {
         let fixture = Fixture()
         let (_, operationId) = try await fixture.otherWindowPastes()
@@ -220,8 +217,6 @@ private let arrived = WriteOperationItem(
         await fixture.coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-244 T-3ddcdaa4
-    // B-CLIP-108 B-CLIP-182 B-VIEW-183
     @Test func letsGoOfItWhenItMissedItsEndAndSaysNothingRan() {
         let fixture = Fixture()
         fixture.session.otherWindowProgress(otherWindowsCopy(.running))
@@ -237,8 +232,6 @@ private let arrived = WriteOperationItem(
         #expect(!fixture.actions.refuseWhileBusy(.operation(.trash)))
     }
 
-    // F-244 T-65a1aee0
-    // B-CLIP-108 B-VIEW-183
     @Test func letsGoOfItWhenItMissedItsEndAsItComesToTheFront() {
         let fixture = Fixture()
         fixture.session.otherWindowProgress(otherWindowsCopy(.running))
@@ -249,8 +242,6 @@ private let arrived = WriteOperationItem(
         #expect(!fixture.session.isWriteLocked)
     }
 
-    // F-247 F-244 T-bfd5ac7b
-    // B-CLIP-108 B-CLIP-182
     @Test func keepsRefusingWhileTheCoordinatorSaysItStillRuns() async throws {
         let fixture = Fixture()
         _ = try await fixture.otherWindowPastes()
@@ -262,8 +253,6 @@ private let arrived = WriteOperationItem(
         await fixture.coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-240 F-307 T-70c3fa89
-    // B-CLIP-113 B-CLIP-183 T-49de7117
     @Test func takesItOverWhenItWasHandedOver() async throws {
         let successor = Fixture.SessionBox()
         let fixture = Fixture(successor: { successor.session })
@@ -280,8 +269,6 @@ private let arrived = WriteOperationItem(
         await fixture.coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-289 F-240 T-29cc2d4b
-    // B-CLIP-079 T-14f9df04 T-42ef2e11
     @Test func showsHowItWentAndClearsItsCutWhenItEndedBeforeTheWindowHeard() throws {
         let fixture = Fixture()
         fixture.clipboard.set(
@@ -303,8 +290,6 @@ private let arrived = WriteOperationItem(
         #expect(fixture.clipboard.contents == .empty)
     }
 
-    // F-240 T-c135e08d
-    // B-CLIP-183 B-VIEW-183
     @Test func takesAnOperationItHearsOfTwiceOnce() throws {
         let fixture = Fixture()
         var running = otherWindowsCopy(.running)
@@ -329,8 +314,6 @@ private let arrived = WriteOperationItem(
         #expect(fixture.events.filter { if case .ended = $0 { true } else { false } }.count == 1)
     }
 
-    // F-240 T-f4897f9f
-    // B-CLIP-183
     @Test func showsItHereOnceThisWindowTakesItOverAndLeavesTheSelectionAlone() throws {
         let fixture = Fixture()
         fixture.session.otherWindowProgress(otherWindowsCopy(.running))
@@ -354,7 +337,7 @@ private let arrived = WriteOperationItem(
         #expect(!fixture.session.isWriteLocked)
     }
 
-    // T-8abb8fa0 B-SEL-033: an operation this window started leaves the selection alone when the person picked something
+    // An operation this window started leaves the selection alone when the person picked something
     // else while it ran, when results are on screen, and when it landed in another folder than the one on screen.
     @Test func leavesTheSelectionAloneWhenItWasPickedOrIsNotOnScreen() async throws {
         enum Meanwhile: CaseIterable { case nothing, picked, searching, elsewhere }
@@ -400,10 +383,8 @@ private let arrived = WriteOperationItem(
         }
     }
 
-    // B-VIEW-171: the operation's progress shows whichever tab is in front; what arrived is selected only in the
+    // The operation's progress shows whichever tab is in front; what arrived is selected only in the
     // tab it was started from.
-    // T-00a2c789
-    // B-CLIP-142 B-NAV-141 B-SEL-032 T-49de7117
     @Test func showsARunningOperationInEveryTabAndSelectsWhatArrivedOnlyWhereItStarted() async throws {
         for switchesTab in [true, false] {
             let fixture = Fixture()

@@ -1,11 +1,10 @@
-// Port of the toolbar buttons ExplorerWorkspace.tsx draws with ToolbarIcon, as system toolbar buttons
 import AppKit
 import FTFoundation
 
-/// An icon-only toolbar button: the system's toolbar button, which draws its own Liquid Glass, with the original's
-/// stroke icon as a template image. A toggle that is on, and a menu button with its menu open, show the system's pressed
-/// look, a gray pill as on Finder's selected view: the button's real on state fills it with the accent color, whatever
-/// its `tintProminence`, `bezelColor` or `contentTintColor`, so the button's `state` stays off. The presses are its own,
+/// An icon-only toolbar button: the system's toolbar button, which draws its own Liquid Glass, with its stroke icon as
+/// a template image. A toggle that is on, and a menu button with its menu open, show the system's pressed look, a gray
+/// pill as on Finder's selected view: the button's real on state fills it with the accent color, whatever its
+/// `tintProminence`, `bezelColor` or `contentTintColor`, so the button's `state` stays off. The presses are its own,
 /// for the buttons that do more than click (Back's and Forward's hold and right-click). Tab reaches it from the search
 /// field and from the buttons beside it (`ToolbarKeyboard`), where Return or Space presses it; a click leaves the
 /// keyboard where it is.
@@ -18,7 +17,7 @@ class ToolbarButton: NSButton, TooltipAnchor {
     /// A click: a press released over the button.
     var onClick: (() -> Void)?
     /// What a press, its end and a right-click do, for buttons that do more than click (Back, Forward). A press ends with
-    /// its release, or as soon as the pointer slides off the button (`onPointerLeave`), where `inside` is false.
+    /// its release, or as soon as the pointer slides off the button, where `inside` is false.
     var onPress: (() -> Void)?
     var onRelease: ((_ inside: Bool) -> Void)?
     var onRightClick: (() -> Void)?
@@ -52,8 +51,7 @@ class ToolbarButton: NSButton, TooltipAnchor {
     /// image, and the glyph's box has room to spare.
     static let iconOnlyWidth = 36.0
 
-    /// The buttons that open a menu (HistoryButton, ThemeMenuButton, ClipboardButton and the two menus of
-    /// ExplorerWorkspace.tsx).
+    /// The buttons that open a menu.
     private static let menuIdentifiers: Set<String> = [
         "toolbar.back", "toolbar.forward", "toolbar.sort", "toolbar.viewOptions", "toolbar.theme", "toolbar.clipboard",
     ]
@@ -171,7 +169,7 @@ class ToolbarButton: NSButton, TooltipAnchor {
     // MARK: Mouse
 
     override func mouseDown(with event: NSEvent) {
-        // No click follows a Mac control-click: it is the right-click (`onContextMenu`).
+        // No click follows a Mac control-click: it is the right-click.
         if event.modifierFlags.contains(.control) {
             rightMouseDown(with: Self.rightPress(for: event) ?? event)
             return
@@ -283,11 +281,10 @@ final class KeyboardStopView: NSView {
     }
 }
 
-/// Tab through the toolbar, in the order of its items on screen, as the browser's Tab goes through the original's plain
-/// buttons: the search field's parts are the options button, the field and the ✕ while it shows, and the view switch
-/// walks its segments itself. `paneTabSwitch` only matches the panes, so the row is the browser's to walk. Before the row
-/// is the tree's resizer, with the tree open (ExplorerWorkspace.tsx:1813-1833), and after it the results bar in search
-/// mode; otherwise the content has the keyboard.
+/// Tab through the toolbar, in the order of its items on screen: the search field's parts are the options button, the
+/// field and the ✕ while it shows, and the view switch walks its segments itself. `paneTabSwitch` only matches the
+/// panes, so the row is walked here. Before the row is the tree's resizer, with the tree open, and after it the results
+/// bar in search mode; otherwise the content has the keyboard.
 @MainActor
 enum ToolbarKeyboard {
     /// What Tab stops at now.
@@ -360,7 +357,7 @@ enum ToolbarKeyboard {
 }
 
 extension TooltipController {
-    /// A tooltip showing for `anchor` takes up its new text (`mousemove` in the original).
+    /// A tooltip showing for `anchor` takes up its new text.
     static func refreshIfShowing(_ anchor: TooltipAnchor & NSView) {
         guard let window = anchor.window else { return }
         let controller = of(window)

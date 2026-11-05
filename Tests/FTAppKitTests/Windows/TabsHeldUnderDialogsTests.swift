@@ -1,5 +1,4 @@
-// Checks against useExplorerTabs.ts:394-397,423 (`canChangeTabs`, `activateTab`) and App.tsx:1150 (`blocked`): while a
-// dialog is open the tab on screen stays; on a tab group that is never shown
+// While a dialog is open the tab on screen stays; on a tab group that is never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -46,9 +45,8 @@ extension ExplorerWindowlessTests {
                     windowNumber: window.windowNumber, context: nil, eventNumber: 0, clickCount: 1, pressure: 1))
         }
 
-        // The tabs lie under `.go-to-folder-backdrop` (styles.css:3435, fixed over the whole window), whose `onMouseDown`
-        // closes the box (GoToFolderDialog.tsx:271): a left press on a tab closes it and the tab on screen stays.
-        // B-SRCH-167
+        // The tabs lie under the Go To box's backdrop, which a press closes the box on: a left press on a tab closes
+        // it and the tab on screen stays.
         @Test func aLeftPressOnATabIsAPressOnTheScrim() async throws {
             let harness = try ExplorerHarness.windowless()
             let (first, _) = try await twoTabs(harness)
@@ -106,8 +104,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // An alert drawn in the window and a name being edited hold the tabs the same way (`renameDialogState`).
-        // B-SRCH-167
+        // An alert drawn in the window and a name being edited hold the tabs the same way.
         @Test func anAlertAndAnInlineRenameHoldTheTabsToo() async throws {
             let harness = try ExplorerHarness.windowless()
             let (first, second) = try await twoTabs(harness)

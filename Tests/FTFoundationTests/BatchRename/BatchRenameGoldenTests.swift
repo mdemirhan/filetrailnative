@@ -1,4 +1,4 @@
-// Checks the batch-rename port against tools/parity/golden/batch-rename-propose.ts and batch-rename-plan.ts
+// Checks batch rename against the batch-rename-propose and batch-rename-plan goldens
 import FTTestSupport
 import Foundation
 import Testing
@@ -33,7 +33,7 @@ struct BatchRenameGoldenTests {
         }
     }
 
-    /// The part of an error message that is the same on every JavaScript engine.
+    /// The part of an invalid pattern's message that doesn't depend on the regex engine's own words.
     static func normalizedError(_ error: String?) -> String? {
         guard let error else { return nil }
         let prefix = "The pattern isn\u{2019}t valid:"
@@ -76,7 +76,6 @@ struct BatchRenameGoldenTests {
         return ProposeOutput(settingsError: normalizedError(result.settingsError), names: names)
     }
 
-    // B-DLG-131 B-DLG-135
     @Test func proposeNamesMatchesTheReference() throws {
         let cases: [GoldenCase<ProposeInput, ProposeOutput>] = try Golden.load(suite: "batch-rename-propose")
         #expect(cases.count == 600)
@@ -160,7 +159,6 @@ struct BatchRenameGoldenTests {
             blockingCount: result.blockingCount)
     }
 
-    // B-DLG-140
     @Test func planMatchesTheReference() throws {
         let cases: [GoldenCase<PlanInput, PlanOutput>] = try Golden.load(suite: "batch-rename-plan")
         #expect(cases.count == 300)

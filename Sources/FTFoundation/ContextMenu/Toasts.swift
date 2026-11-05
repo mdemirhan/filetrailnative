@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/toasts.ts
 import Foundation
 
 /// Notifications carry information only: something finished ("success") or something worth knowing happened ("info").
@@ -25,7 +24,7 @@ public enum Toasts {
     /// How many show at once.
     public static let maxVisible = 3
 
-    /// `createToastEntry`. An empty message is none.
+    /// An empty message is none.
     public static func entry(
         id: String, kind: ToastKind, title: String, message: String? = nil, now: Double
     ) -> ToastEntry {
@@ -34,7 +33,7 @@ public enum Toasts {
             durationMs: durationMs, expiresAt: now + durationMs)
     }
 
-    /// `enqueueToast`: the newest `maxVisible` stay.
+    /// The newest `maxVisible` stay.
     public static func enqueue(_ current: [ToastEntry], _ next: ToastEntry, maxVisible: Int = maxVisible)
         -> [ToastEntry]
     {
@@ -42,7 +41,7 @@ public enum Toasts {
     }
 }
 
-/// How the bottom right of the window is stacked (`lib/bottomStack.ts`): a running operation's card rests above the
+/// How the bottom right of the window is stacked: a running operation's card rests above the
 /// path bar and the Info Row, and notifications above the card when there is one.
 public enum BottomStack {
     /// The gap above a bar.
@@ -69,7 +68,7 @@ public enum BottomStack {
     }
 }
 
-/// How long an operation runs before its progress card shows (`lib/progressCardDelay.ts`), and the other delays before
+/// How long an operation runs before its progress card shows, and the other delays before
 /// something shows (ui.md §9).
 public enum ShowDelays {
     public static let progressCardMs = 500.0

@@ -1,5 +1,4 @@
-// Port of springWhenHeld and resetSpringHold (apps/desktop/src/renderer/hooks/useExplorerDragAndDrop.ts): a folder a
-// drag rests on springs open, as in Finder
+// A folder a drag rests on springs open, as in Finder
 import Foundation
 
 /// The hold of a drag over a folder of the file list: after 700 ms the folder shows it is about to open (its icon
@@ -35,7 +34,6 @@ public struct SpringHold: Sendable {
         return hover.path
     }
 
-    /// `resetSpringHold`.
     public mutating func reset() {
         hover = nil
     }

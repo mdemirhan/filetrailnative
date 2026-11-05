@@ -1,5 +1,3 @@
-// Ports the search cases of apps/desktop/src/renderer/App.search.test.tsx and App.tabs.test.tsx (by feature row F-713,
-// F-714, B-SRCH-001 to B-SRCH-169) over one tab's search session, a stand-in for the fd runtime and timers moved by hand
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -102,9 +100,6 @@ final class FakeSearchHost: SearchSessionHost {
         engine.finds = { request in (table[request.query] ?? [], running, false) }
     }
 
-    // T-b49c92ba F-713
-    // B-SRCH-001 B-SRCH-002 B-SRCH-003 B-SRCH-005 B-SRCH-006 B-SRCH-008 B-SRCH-010 B-SRCH-017 B-SRCH-019
-    // B-SRCH-070 B-SRCH-132
     @Test func searchesAsYouTypeOnceTheKeyboardRestsFromTwoCharacters() {
         finding(["so": ["source.txt", "sonar.txt"]])
         let search = session()
@@ -144,8 +139,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(search.draftQuery == "s")
     }
 
-    // T-06c0cfba
-    // B-SRCH-020 B-SRCH-022 B-SRCH-023 B-SRCH-024 B-SRCH-025 B-SRCH-133
     @Test func narrowsWhatASearchFoundAsMoreIsTypedWithoutSearchingAgain() {
         finding(["so": ["source.txt", "sonar.txt", "soup.md"], "on": ["sonar.txt", "one.txt"]])
         let search = session()
@@ -171,8 +164,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(Set(names(search)) == ["sonar.txt", "one.txt"])
     }
 
-    // T-c68ee1c1
-    // B-SRCH-035 B-SRCH-067 B-SRCH-074 B-SRCH-132
     @Test func neverShowsTheResultsOfOneSearchUnderTheTextOfAnother() {
         engine.finds = { request in request.query == "so" ? (["source.txt"], false, false) : ([], true, false) }
         let search = session()
@@ -196,8 +187,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.count == 3)
     }
 
-    // T-40eae612
-    // B-SRCH-005 B-SRCH-020 B-SRCH-030 B-SRCH-033
     @Test func searchesForTheLongerTextItselfWhenTheSearchItWouldNarrowStoppedAtItsLimit() {
         engine.finds = { request in
             request.query == "so" ? (["source.txt", "sonar.txt"], false, true) : (["soup.md"], false, false)
@@ -216,7 +205,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(Set(names(search)) == ["source.txt", "soup.md"])
     }
 
-    // B-SRCH-019 B-SRCH-020 B-SRCH-031 B-SRCH-133
     @Test func aWalkThatStopsShortWhileNarrowerTextIsTypedIsSearchedAgain() {
         engine.finds = { request in (["source.txt"], request.query == "so", false) }
         let search = session()
@@ -231,8 +219,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts[1].query == "sou")
     }
 
-    // T-985cc237
-    // B-SRCH-004 B-SRCH-051 B-SRCH-054 B-SRCH-055 B-SRCH-070
     @Test func forgetsTextTypedBeforeItIsSearchedWithEscapeOrTheClearButton() {
         finding(["so": ["source.txt"]])
         let search = session()
@@ -254,9 +240,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(host.applied.last == .empty)
     }
 
-    // T-0d7af669 T-e6c30f5d
-    // B-SEL-091 B-SRCH-041 B-SRCH-045 B-SRCH-046 B-SRCH-060 B-SRCH-064 B-SRCH-065 B-SRCH-066 B-SRCH-072
-    // B-SRCH-073
     @Test func escapeHidesResultsClearsTheFieldAndTheCachedResultsComeBackWithTheirQuery() {
         finding(["so": ["source.txt", "sonar.txt"]])
         let search = session()
@@ -288,8 +271,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(host.focusedPane == 1)
     }
 
-    // B-SRCH-090 B-SRCH-097 T-73242d97
-    // B-SRCH-006 B-SRCH-040 B-SRCH-041 B-SRCH-042
     @Test func optionsAndScopesRunTheSearchAgainWithoutKeepingResults() {
         finding(["so": ["source.txt"]])
         let search = session()
@@ -317,8 +298,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.last?.rootPath == "/Users/demo")
     }
 
-    // B-SRCH-104
-    // T-78d2429c
     @Test func headersSortTheResultsTheSameColumnFlipsADifferentOneStartsAscending() {
         finding(["a": ["b/zeta.txt", "a/alpha.md", "c/mid.txt"]])
         let search = session()
@@ -333,8 +312,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(search.sortDirection == .asc)
     }
 
-    // T-c57f08a1 T-5e66d49e
-    // B-SRCH-135 B-SRCH-159
     @Test func aBackgroundTabsSearchKeepsRunningAndSaysWhenItHasFinished() {
         finding(["so": []], running: true)
         let search = session()
@@ -361,7 +338,7 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.count == 1)
     }
 
-    // T-2fb3ea31: an answer on its way when the tab is left is not lost. The session stays with its tab, so the answer
+    // An answer on its way when the tab is left is not lost. The session stays with its tab, so the answer
     // is applied when it comes, and the search need not run again.
     @Test func anAnswerOnItsWayWhenTheTabIsLeftIsKept() {
         finding(["so": ["source.txt"]], running: true)
@@ -376,8 +353,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.count == 1)
     }
 
-    // T-f4af2113
-    // B-SRCH-156
     @Test func whatWasBeingTypedWhenTheTabWasLeftIsSearchedOnceItIsBack() {
         finding(["so": ["source.txt"]])
         let search = session()
@@ -394,8 +369,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(names(search) == ["source.txt"])
     }
 
-    // B-SRCH-139 B-SRCH-158
-    // B-SRCH-006 B-SRCH-079 B-SRCH-132 T-548f7c9c
     @Test func resultsFoundWithTheOtherHiddenFilesSettingAreSearchedAgain() {
         finding(["so": ["source.txt"]])
         let search = session()
@@ -411,8 +384,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.count == 3)
     }
 
-    // B-SRCH-125
-    // B-SRCH-020
     @Test func stopKeepsWhatWasFoundAndLongerTextIsSearchedAfresh() {
         finding(["so": ["source.txt"]], running: true)
         let search = session()
@@ -427,8 +398,6 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.count == 2)
     }
 
-    // B-SRCH-129 F-754
-    // B-SRCH-005 B-SRCH-008 T-d8e16e8e
     @Test func aPatternThatDoesNotParseWhileTypedIsQuietUntilReturn() {
         let search = session()
         search.setPatternMode(.regex)
@@ -441,8 +410,7 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(!search.errorIsQuiet)
     }
 
-    // B-SRCH-099 B-SRCH-100: results streaming in are shown in the order a sort of them all gives.
-    // B-SRCH-133
+    // Results streaming in are shown in the order a sort of them all gives.
     @Test func resultsThatStreamInAreKeptInTheChosenOrder() {
         engine.finds = { _ in (["b/Same.txt", "a/same.txt", "c/zeta.md"], true, false) }
         let search = session()

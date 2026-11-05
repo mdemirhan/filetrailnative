@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/hooks/useEjectVolume.test.ts
 import FTFileSystem
 import Foundation
 import Testing
@@ -57,7 +56,6 @@ private func volume(_ name: String, _ disk: String) -> Volume {
 }
 
 struct EjectCoordinatorTests {
-    // T-ada36497 F-731 B-TREE-165 B-TREE-172
     @Test @MainActor func ejectsADiskOfItsOwnWithItsWholeDiskAtOnce() async {
         let harness = Harness(volumes: [volume("USB", "disk4")])
         harness.coordinator.requestEject(path: "/Volumes/USB")
@@ -67,7 +65,6 @@ struct EjectCoordinatorTests {
         #expect(harness.coordinator.ejectingPaths.isEmpty)
     }
 
-    // T-21da80a1 B-TREE-167
     @Test @MainActor func doesNothingForAPathThatIsNotAListedVolume() async {
         let harness = Harness(volumes: [volume("USB", "disk4")])
         harness.coordinator.requestEject(path: "/Volumes/Missing")
@@ -75,7 +72,6 @@ struct EjectCoordinatorTests {
         #expect(harness.requests.isEmpty)
     }
 
-    // T-6663df6c B-TREE-170 B-TREE-171
     @Test @MainActor func asksAboutTheOtherVolumesOfTheDiskThenEjectsAllOrOnlyThisOne() async {
         let harness = Harness(volumes: [volume("Photos", "disk7"), volume("Video", "disk7")])
         harness.coordinator.requestEject(path: "/Volumes/Photos")
@@ -97,7 +93,6 @@ struct EjectCoordinatorTests {
             ])
     }
 
-    // T-80c34c9d B-TREE-173 B-TREE-174
     @Test @MainActor func asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced() async {
         let harness = Harness(
             volumes: [volume("Photos", "disk7"), volume("Video", "disk7")],
@@ -118,7 +113,6 @@ struct EjectCoordinatorTests {
         #expect(harness.requests.count == 2)
     }
 
-    // T-3a1e6407 B-TREE-176
     @Test @MainActor func tellsOfAnyOtherFailureInANotice() async {
         let harness = Harness(
             volumes: [volume("USB", "disk4")],
@@ -130,8 +124,6 @@ struct EjectCoordinatorTests {
         #expect(harness.presenter.notices.first?.message == "An unexpected error occurred (EIO).")
     }
 
-    // T-ada36497 B-TREE-172
-    // B-TREE-166
     @Test @MainActor func ignoresARequestForADiskAlreadyBeingEjectedAndReleasesIt() async {
         let gate = Gate()
         var count = 0

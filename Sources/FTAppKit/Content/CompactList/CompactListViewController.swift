@@ -1,5 +1,4 @@
-// Port of FlowListView (apps/desktop/src/renderer/components/ContentPane.tsx:1082-1404): the Compact List, names in
-// columns that fill top to bottom and scroll sideways, placed from lib/flowListLayout.ts and virtualization.ts
+// The Compact List, names in columns that fill top to bottom and scroll sideways
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -48,7 +47,7 @@ final class CompactListViewController: ItemGridPane {
 
     // MARK: Placement
 
-    /// `computeRowsPerColumn` of the pane's height; the arrow keys move by it sideways.
+    /// The rows per column at the pane's height; the arrow keys move by it sideways.
     var rowsPerColumn: Int { layout.rowsPerColumn(containerHeight: Double(viewport.height)) }
 
     private func nameWidth(_ name: String) -> Double {
@@ -76,7 +75,7 @@ final class CompactListViewController: ItemGridPane {
     }
 
     /// The name's width, and what follows it with its gap: the tag dots, and the clipboard glyph on an item on the
-    /// clipboard (P5-08).
+    /// clipboard.
     private func markedNameWidth(_ entry: DirectoryEntry) -> Double {
         var width = nameWidth(entry.name)
         let tags = host?.tagColors(for: entry.path).count ?? 0
@@ -111,7 +110,7 @@ final class CompactListViewController: ItemGridPane {
 
     // MARK: Drag-to-select
 
-    /// `getFlowListItemsInBox`, in the coordinates of the list's rows (inside its padding).
+    /// In the coordinates of the list's rows (inside its padding).
     override func marqueeHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
         let left = layout.paddingInline
         let top = layout.paddingTop
@@ -131,10 +130,10 @@ final class CompactListViewController: ItemGridPane {
 
     // MARK: Keeping the selection in view
 
-    /// The lead only: the item being renamed and a refused name aren't brought into view here (ContentPane.tsx:1236).
+    /// The lead only: the item being renamed and a refused name aren't brought into view here.
     override var keepsRenameInView: Bool { false }
 
-    /// Sideways only: the lead's column is brought whole into view (B-VIEW-037).
+    /// Sideways only: the lead's column is brought whole into view.
     override func revealOffset(for index: Int) -> NSPoint? {
         let clip = scroll.contentView.bounds
         guard clip.width > 0, clip.height > 0 else { return nil }
@@ -150,7 +149,7 @@ final class CompactListViewController: ItemGridPane {
     override var itemsPerLine: Int { rowsPerColumn }
 
     /// A line is a column and its gap; the viewport is the width less the padding, plus the gap the last column needs
-    /// not (B-VIEW-088).
+    /// not.
     override var pageGeometry: (viewportSize: Double, lineExtent: Double) {
         (layout.pageViewport(viewportWidth: Double(scroll.contentView.bounds.width)), layout.columnStep)
     }
@@ -167,8 +166,8 @@ final class CompactListViewController: ItemGridPane {
 
     // MARK: Rename
 
-    /// `.inline-rename-input` in the item's name cell: 5 to the left of the name it replaces, 3 short of the item's
-    /// right edge, 20 tall, in the middle of the row.
+    /// The rename field in the item's name cell: 5 to the left of the name it replaces, 3 short of the item's right
+    /// edge, 20 tall, in the middle of the row.
     override func renameFrame(at index: Int) -> NSRect {
         let item = itemFrame(at: index, viewport: viewport)
         let rename = SelectionLayout.Rename.self
@@ -179,6 +178,6 @@ final class CompactListViewController: ItemGridPane {
             x: x, y: item.minY + (item.height - rename.height) / 2, width: max(0, right - x), height: rename.height)
     }
 
-    /// `font-size: var(--font-size-name)` in both densities.
+    /// The name's font size in both densities.
     override func renameFont() -> NSFont { ThemeFonts.sans(DesignTokens.typeScale.name) }
 }

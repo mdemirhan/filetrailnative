@@ -1,4 +1,3 @@
-// Port of executeReplace, applyStagedFolderMetadata and recordReplacement (packages/core/src/fs/copyPasteExecution.ts)
 import FTFoundation
 import Foundation
 

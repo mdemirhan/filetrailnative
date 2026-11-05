@@ -1,5 +1,3 @@
-// Port of the JavaScript RegExp behavior without the unicode flag (flags "" or "i", ECMA-262 Annex B) that
-// buildSearchHighlightPattern of apps/desktop/src/renderer/lib/searchResults.ts relies on
 import Foundation
 
 /// A JavaScript regular expression in its default mode (`new RegExp(source, "")` or `"i"`), run by
@@ -101,7 +99,7 @@ struct JSUnitSet {
 
     var isEmpty: Bool { words.allSatisfy { $0 == 0 } }
 
-    /// Every unit whose canonical form (`Canonicalize`) is that of a member: what the set matches under `i`.
+    /// Every unit whose canonical form is that of a member: what the set matches under `i`.
     func caseClosed() -> JSUnitSet {
         var result = self
         for members in JSLegacyCase.groups.values where members.contains(where: contains) {
@@ -547,7 +545,7 @@ struct JSLegacyRegExpTranslator {
         }
     }
 
-    /// `LegacyOctalEscapeSequence`, its first digit read: up to three digits, at most \377.
+    /// Its first digit read: up to three digits, at most \377.
     private mutating func octalEscape(first: UInt16) -> UInt16 {
         var value = first - Self.code("0")
         let most = first <= Self.code("3") ? 2 : 1

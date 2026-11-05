@@ -1,22 +1,20 @@
-// Port of isFolderGoneError, sameDirectoryEntries, keepUnchangedEntries and sameDetailsByPath
-// (apps/desktop/src/renderer/lib/explorerNavigation.ts:293-380)
 import Foundation
 
 public enum DirectoryListingDiff {
-    /// `isFolderGoneError`: whether reading a folder failed because it is no longer there (removed, renamed or
+    /// Whether reading a folder failed because it is no longer there (removed, renamed or
     /// replaced by a file), not because it can't be read. Only the start of the message counts: the path it ends with
     /// may have any of these words in it.
     public static func isFolderGone(message: String) -> Bool {
         message.hasPrefix("ENOENT:") || message.hasPrefix("ENOTDIR:") || message.hasPrefix("Path is not a directory: ")
     }
 
-    /// `sameDirectoryEntries`: whether two listings show the same items the same way, each with the same details in
+    /// Whether two listings show the same items the same way, each with the same details in
     /// the same order.
     public static func sameEntries<T: Equatable>(_ left: [T], _ right: [T]) -> Bool {
         left == right
     }
 
-    /// What `keepUnchangedEntries` decided.
+    /// What `keepUnchanged` decided.
     public struct Kept<T: Equatable>: Equatable {
         /// The new listing, in its order.
         public var entries: [T]
@@ -28,7 +26,7 @@ public enum DirectoryListingDiff {
         public var changedPaths: [String]
     }
 
-    /// `keepUnchangedEntries`: a folder read again, as `next`, keeping each item of `shown` that is still there as it
+    /// A folder read again, as `next`, keeping each item of `shown` that is still there as it
     /// was, so that only the rows of the items that changed are drawn again. A value has no identity here, so what
     /// is kept is told by path.
     public static func keepUnchanged<T: Equatable>(

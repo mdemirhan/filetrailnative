@@ -1,8 +1,7 @@
-// Port of the rows of the .content-pane of apps/desktop/src/renderer/components/ContentPane.tsx (styles.css:4377-4385)
 import AppKit
 import FTFoundation
 
-/// The content pane's rows: the search header in search mode (P5-07) or the Trash's bar, the list and the Info Row. The
+/// The content pane's rows: the search header in search mode or the Trash's bar, the list and the Info Row. The
 /// path bar row is the pane's too, but lies in the workspace's status cell, which runs under the Info panel as well.
 final class ContentPaneView: NSView {
     /// The search results' header; nil outside search mode.

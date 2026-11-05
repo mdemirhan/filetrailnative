@@ -1,5 +1,3 @@
-// Port of apps/desktop/scripts/lib/releaseNotes.test.ts, releaseState.test.ts and the nextVersion cases of version.test.ts,
-// against scripts/lib/release-lib.sh, and of what scripts/release.sh decides, by --dry-run in a temporary repository
 import FTTestSupport
 import Foundation
 import Testing
@@ -63,7 +61,6 @@ import Testing
         return output.split(separator: "\n").map(String.init)
     }
 
-    // T-65616c71
     @Test func listsTheCommitsSinceTheLastReleaseUnderWhatsNew() throws {
         let subjects = """
             Spring into folders in the content pane under a held drag
@@ -82,12 +79,10 @@ import Testing
                 """)
     }
 
-    // T-c5cdfd37
     @Test func leavesALineToFillInWhenThereIsNothingToList() throws {
         #expect(try Self.call("draft_release_notes", input: "\n").output.contains("### What's new\n- \n"))
     }
 
-    // T-f885ffd5
     @Test func hasNothingToSayWhenEveryReleaseTagIsOnGitHubAndReleased() throws {
         #expect(
             try Self.unfinished(
@@ -96,7 +91,6 @@ import Testing
         #expect(try Self.unfinished(local: [], remote: []).isEmpty)
     }
 
-    // T-2c904d8a
     @Test func stopsAtATagLeftOnThisMacByAReleaseThatStoppedBeforePushingIt() throws {
         let problems = try Self.unfinished(
             local: ["v0.1.0", "v0.2.0"], remote: ["v0.1.0"], latest: "v0.1.0", state: "published")
@@ -105,7 +99,6 @@ import Testing
         #expect(problems.first?.contains("git tag -d v0.2.0") == true)
     }
 
-    // T-43af9fe1
     @Test func stopsAtAReleaseStillADraftOrATagOnGitHubWithNoRelease() throws {
         let draft = try Self.unfinished(local: ["v0.2.0"], remote: ["v0.2.0"], latest: "v0.2.0", state: "draft")
         #expect(draft.count == 1)
@@ -115,7 +108,6 @@ import Testing
         #expect(missing.first?.hasPrefix("v0.2.0 is on GitHub without a release") == true)
     }
 
-    // T-077e3bf1
     @Test func bumpsTheLastRelease() throws {
         #expect(try Self.nextVersion("0.1.3", "patch") == "0.1.4")
         #expect(try Self.nextVersion("0.1.3", "minor") == "0.2.0")
@@ -123,7 +115,6 @@ import Testing
         #expect(try Self.nextVersion("", "minor") == "0.1.0")
     }
 
-    // T-3cd0af0d
     @Test func takesAnExactVersionOnlyAfterTheLastRelease() throws {
         #expect(try Self.nextVersion("0.1.3", "0.2.0") == "0.2.0")
         let same = try Self.call("next_version", ["0.1.3", "0.1.3"])
@@ -248,7 +239,7 @@ import Testing
         }
     }
 
-    // The original's release runs `bun run ci`, which includes the tests that write large files. A stand-in for
+    // The release's check includes the tests that write large files. A stand-in for
     // scripts/ci.sh records what it was given and fails, so the release stops there: nothing is tagged or pushed.
     @Test func theReleaseCheckIncludesTheLargeFileTests() throws {
         try withCheckout { checkout throws in

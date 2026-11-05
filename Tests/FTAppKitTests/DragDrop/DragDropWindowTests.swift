@@ -1,6 +1,5 @@
-// Port by feature of App.dragOut.test.tsx and App.dragIn.test.tsx (and the drag cases of App.fileOperations.test.tsx):
-// drags out of and onto an explorer window that is never shown, through the drop seams the capture uses, with the
-// app's real file operations on a temporary folder
+// Drags out of and onto an explorer window that is never shown, through the drop seams the capture uses, with the app's
+// real file operations on a temporary folder
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -21,9 +20,8 @@ extension ExplorerWindowlessTests {
             window.folder.appendingPathComponent(name)
         }
 
-        // T-c5552cf7 T-d8c5f3b8 F-684 F-695 B-CLIP-148 B-CLIP-159 B-CLIP-163 B-CLIP-176: an item dragged onto a
+        // An item dragged onto a
         // folder of the same disk moves into it.
-        // B-VIEW-074 T-0f30452a T-2b370a85 T-53a42a0a T-62d562b1 T-f4ffed39
         @Test func aDropOnAFolderOfTheSameDiskMoves() async throws {
             let window = try await WritingWindow.open()
             let drags = window.tab.dragDrop
@@ -35,8 +33,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // F-031 F-683 B-CLIP-161: ⌥ copies, whatever the disks.
-        // T-740a332a T-8fd59900
+        // ⌥ copies, whatever the disks.
         @Test func optionCopies() async throws {
             let window = try await WritingWindow.open()
             let drags = window.tab.dragDrop
@@ -47,9 +44,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-3d199f86 F-739 B-TREE-157 B-TREE-159 B-TREE-160: a drop on a folder of the tree goes into it, and the
+        // A drop on a folder of the tree goes into it, and the
         // tree stays on the folder it was on: the target is selected only when an item lands exactly there.
-        // T-26eb6e20
         @Test func aDropOnAFolderOfTheTreeGoesIntoIt() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -67,7 +63,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-84c8114c T-783e8e67 T-46e5bcfc B-CLIP-170 B-CLIP-173: the folder on screen takes a drag from another app
+        // The folder on screen takes a drag from another app
         // dropped on its empty space; the app's own drag doesn't (it hasn't sprung into it).
         @Test func theFolderOnScreenTakesDropsFromOtherApps() async throws {
             let window = try await WritingWindow.open()
@@ -81,9 +77,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-648c9eab T-f898989a T-e3b16fef B-CLIP-150 B-CLIP-151 B-CLIP-177: while a write runs a drag doesn't
+        // While a write runs a drag doesn't
         // start and a toast says why; a drop from another app is refused, told once.
-        // B-TREE-162 B-VIEW-203
         @Test func dragsAreRefusedWhileAWriteRuns() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -111,7 +106,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-35a8bef5 B-CLIP-050 B-SRCH-142: each drag is followed on its own. A second drag ending while the first's
+        // Each drag is followed on its own. A second drag ending while the first's
         // slow move is still going doesn't stop the first being looked for: when it leaves, a cut of it is cancelled and
         // the results are found again.
         @Test func aSecondDragDoesntStopTheFirstBeingLookedFor() async throws {
@@ -151,7 +146,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-35a8bef5: with no search on screen, nothing is searched.
+        // With no search on screen, nothing is searched.
         @Test func noSearchStartsWhenAnotherAppMovedAnItemAwayFromAFolder() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -166,7 +161,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-SRCH-142: Empty Trash from the menu with a Trash item on the clipboard: it leaves the clipboard, and the results
+        // Empty Trash from the menu with a Trash item on the clipboard: it leaves the clipboard, and the results
         // on screen are found again.
         @Test func emptyTrashWithTrashedItemsOnTheClipboardFindsResultsAgain() async throws {
             let window = try await WritingWindow.open()
@@ -197,7 +192,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // F-688 B-CLIP-149: a drag sets off from where its rows show: the icon and the name of each row in sight.
+        // A drag sets off from where its rows show: the icon and the name of each row in sight.
         @Test func theDragImagesComeFromTheRowsInSight() async throws {
             let window = try await WritingWindow.open()
             let note = url(window, "note.txt").path

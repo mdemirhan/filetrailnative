@@ -1,4 +1,3 @@
-// Port of the element names of tools/capture/elements.json; no TypeScript source.
 #if DEBUG
     import AppKit
 
@@ -27,14 +26,14 @@
 
         /// AppKit's private view classes, matched by name: they have no public type to test against.
         static func systemName(of view: NSView) -> String? {
-            // The Shortcuts page's card is a plain view of its group, the same card as the original's `.settings-card`.
+            // The Shortcuts page's card is a plain view of its group, named as the Settings card.
             if let group = view.superview as? ShortcutGroupView, group.card === view { return "settings.card" }
             switch String(describing: type(of: view)) {
             case "NSToolbarView": return "toolbar"
             case "_NSToolbarTitleField": return "toolbar.title"
             case "NSToolbarItemGroupPickerView": return "toolbar.viewSwitch"
             case "NSToolbarClippedItemsIndicator": return "toolbar.overflow"
-            // A tab of the window's native tab bar (P4-02).
+            // A tab of the window's native tab bar.
             case "NSTabButton": return "tabBar.tab"
             case "NSToolbarButton":
                 switch (view as? NSButton)?.image?.accessibilityDescription {

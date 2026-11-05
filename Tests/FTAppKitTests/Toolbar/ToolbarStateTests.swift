@@ -1,5 +1,3 @@
-// Ports the search-mode and menu-resize states of
-// apps/desktop/src/renderer/components/ExplorerWorkspace.tsx on an explorer window that is never shown
 import AppKit
 import FTFoundation
 import Testing
@@ -7,7 +5,7 @@ import Testing
 @testable import FTAppKit
 
 extension ExplorerWindowlessTests.ToolbarTests {
-    // B-VIEW-119: in search mode the title names the folder searched; Sort waits (search results are sorted in their
+    // In search mode the title names the folder searched; Sort waits (search results are sorted in their
     // headers).
     @Test func titlesTheToolbarWithTheSearchedFolderInSearchMode() async throws {
         let harness = try ExplorerHarness.windowless()
@@ -23,7 +21,7 @@ extension ExplorerWindowlessTests.ToolbarTests {
         await harness.close()
     }
 
-    // B-VIEW-126 B-VIEW-127: the Sort menu closes when the toolbar's items change. No window is resized under a system
+    // The Sort menu closes when the toolbar's items change. No window is resized under a system
     // menu, which holds the pointer while it is open.
     @Test func closesTheSortMenuWhenTheItemsChange() async throws {
         let harness = try ExplorerHarness.windowless()

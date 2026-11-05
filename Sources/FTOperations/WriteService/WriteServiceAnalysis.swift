@@ -1,5 +1,3 @@
-// Port of the analysis jobs of packages/core/src/fs/writeService.ts (startCopyPasteAnalysis,
-// getCopyPasteAnalysisUpdate, cancelCopyPasteAnalysis, executeAnalysisJob)
 import FTFoundation
 import Foundation
 
@@ -19,7 +17,7 @@ extension WriteService {
             }
             // Only once it starts: a refused start leaves the caller's own review as it was.
             state.pruneTerminalAnalysisJobs(keep: keep)
-            // Already "analyzing" when this returns, as the original's job is by then.
+            // Already "analyzing" when this returns.
             let job = AnalysisJob(
                 analysisId: nextAnalysisId(&state), request: normalizedRequest, signal: StopSignal(),
                 status: .analyzing, report: nil, error: nil)

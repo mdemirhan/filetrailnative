@@ -1,4 +1,3 @@
-// Port of the history of apps/desktop/src/renderer/hooks/useExplorerNavigationController.ts (applyHistoryUpdate :315-335, goBack, goForward and goToHistoryIndex :735-768)
 import Foundation
 
 /// A tab's history: an ordered list of folder paths and the index of the one on screen.
@@ -6,7 +5,7 @@ public struct NavigationHistory: Equatable, Sendable {
     /// How a navigation changes the history.
     public enum Mode: Equatable, Sendable {
         /// A new step: the entries after the current one are cut off and the folder is added. The folder already on
-        /// screen is added again, as a second entry (B-NAV-003).
+        /// screen is added again, as a second entry.
         case push
         /// Overwrites the current entry (a reload-type read: Refresh, a new sort, hidden files, Folders First).
         case replace
@@ -14,7 +13,7 @@ public struct NavigationHistory: Equatable, Sendable {
         case skip
     }
 
-    /// A spot in the history (`SearchReturnPlace`): its position and the folder there, since a later step can put
+    /// A spot in the history: its position and the folder there, since a later step can put
     /// another folder at that position.
     public struct Place: Equatable, Sendable {
         public let index: Int
@@ -66,7 +65,7 @@ public struct NavigationHistory: Equatable, Sendable {
         paths.indices.contains(place.index) && paths[place.index] == place.path
     }
 
-    /// `applyHistoryUpdate`: a folder was opened and drawn.
+    /// A folder was opened and drawn.
     public mutating func record(_ path: String, mode: Mode) {
         switch mode {
         case .push:

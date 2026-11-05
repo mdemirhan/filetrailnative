@@ -1,8 +1,7 @@
-// Port of packages/contracts/src/paths.ts and packages/contracts/src/trash.ts, and the path rules of assertNotSystemLocation (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import Foundation
 
-/// Path rules shared by every operation. Paths are compared by their exact Unicode scalars, as the
-/// original compares JavaScript strings; Swift's `==` on `String` would treat NFC and NFD as equal.
+/// Path rules shared by every operation. Paths are compared by their exact Unicode scalars; Swift's
+/// `==` on `String` would treat NFC and NFD as equal.
 public enum Paths {
     /// The paths picked, without any that sit inside another one picked (or repeat one): a folder and
     /// an item inside it picked together (Select All in search results) are acted on as the folder,
@@ -124,8 +123,7 @@ public enum Paths {
         Array(text.unicodeScalars)
     }
 
-    /// NFD, then lowercased as JavaScript's `toLowerCase` does (with the final-sigma rule, which
-    /// Swift's own `lowercased()` leaves out).
+    /// NFD, then lowercased (with the final-sigma rule, which Swift's own `lowercased()` leaves out).
     private static func comparable(_ path: String) -> Scalars {
         scalars(JSText.lowercased(path.decomposedStringWithCanonicalMapping))
     }

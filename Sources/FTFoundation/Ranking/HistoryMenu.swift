@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/historyMenu.ts
 import Foundation
 
 public struct HistoryMenuEntry: Equatable, Sendable {

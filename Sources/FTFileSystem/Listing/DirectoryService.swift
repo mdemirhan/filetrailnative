@@ -1,5 +1,3 @@
-// Port of the browsing channels of apps/desktop/src/main/bootstrap.ts over packages/core/src/fs/explorerService.ts
-// (the explorer worker is replaced by this actor)
 import Foundation
 
 /// Reading folders: snapshot listing with sort and folders-first, tree children, item details, path

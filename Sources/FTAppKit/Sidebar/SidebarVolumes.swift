@@ -1,4 +1,3 @@
-// Port of the volume list the renderer keeps (apps/desktop/src/renderer/hooks/useVolumes.ts) over VolumeWatcher
 import AppKit
 import FTFileSystem
 

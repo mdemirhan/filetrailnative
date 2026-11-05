@@ -1,11 +1,10 @@
-// Port of resolveFavoriteIconPath and FavoriteItemIcon (apps/desktop/src/renderer/lib/fileIcons.tsx), EjectIcon.tsx and the chevron of ToolbarIcon.tsx
 import AppKit
 import FTFoundation
 
 /// The icons of favorites and locations, the system's symbols as Finder's; the headings, the eject and the
-/// chevron stay the original's line icons.
+/// chevron are line icons drawn from SVG paths.
 enum SidebarIcons {
-    /// A heading's line icon, in the original's SVG path: 24-unit box, stroke 1.7, round caps and joins, no fill.
+    /// A heading's line icon, as an SVG path: 24-unit box, stroke 1.7, round caps and joins, no fill.
     enum Heading {
         case favorites
         case locations
@@ -26,7 +25,7 @@ enum SidebarIcons {
         stroke(SVGPath.path(heading.path), box: 24, in: rect, width: headingStroke, color: color)
     }
 
-    /// The symbol of an icon. The saved preference stays the original's id.
+    /// The symbol of an icon. The saved preference keeps the icon's id, not the symbol's name.
     static func symbolName(for icon: FavoriteIconID) -> String {
         switch icon {
         case .home: "house"
@@ -82,7 +81,7 @@ enum SidebarIcons {
         image.draw(in: fitted, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
     }
 
-    /// Finder's eject symbol: a triangle over a bar (`EjectIcon`).
+    /// Finder's eject symbol: a triangle over a bar.
     static func drawEject(in rect: NSRect, color: NSColor, stroke width: Double) {
         let triangle = SVGPath.path("M12 5.5l7 8H5z")
         let bar = SVGPath.path("M5 18.5h14")
@@ -90,7 +89,7 @@ enum SidebarIcons {
         stroke(bar, box: 24, in: rect, width: width, color: color)
     }
 
-    /// The disclosure chevron of rows (`ToolbarIcon name="chevron"`), pointing right; `rotation` turns it about the
+    /// The disclosure chevron of rows (the toolbar's `chevron` icon), pointing right; `rotation` turns it about the
     /// center of `rect` (90° when open).
     static func drawChevron(in rect: NSRect, color: NSColor, stroke width: Double, rotation: CGFloat) {
         NSGraphicsContext.saveGraphicsState()

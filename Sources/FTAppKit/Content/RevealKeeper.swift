@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/hooks/useRevealIndex.ts
 import AppKit
 import FTFileSystem
 
@@ -66,7 +65,7 @@ final class RevealKeeper {
 
 extension ContentPaneHost {
     /// What asks a view to show its item. The Compact List follows only the lead: not the item being renamed, nor a
-    /// refused name (ContentPane.tsx:1236).
+    /// refused name.
     func revealAsk(followingRename: Bool) -> RevealKeeper.Ask {
         let lead = selection.leadPath
         let sortKey =

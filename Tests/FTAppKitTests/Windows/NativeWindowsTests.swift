@@ -1,4 +1,3 @@
-// Ports the flows of apps/desktop/e2e/windows.spec.ts that need no screen on tab groups that are never shown, in process
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -60,8 +59,6 @@ extension ExplorerWindowlessTests {
             return menu
         }
 
-        // F-673 F-674 F-675 B-VIEW-159 B-VIEW-161 B-VIEW-163
-        // T-5fd895a0 T-c0291740 T-d21e2e6d
         @Test func closesAndReopensTabsAndStepsThroughThem() async throws {
             let folder = try folders()
             defer { folder.remove() }
@@ -94,8 +91,6 @@ extension ExplorerWindowlessTests {
             await closeAll(app)
         }
 
-        // F-675 F-672 B-VIEW-158 B-TREE-183 B-VIEW-155 T-ed89ad6e T-c5b59b87
-        // T-31b584e6
         @Test func duplicatesATabWithItsHistoryRightAfterItAndInFrontButNoTabPastTheLimit() async throws {
             let folder = try folders()
             defer { folder.remove() }
@@ -137,8 +132,6 @@ extension ExplorerWindowlessTests {
             await closeAll(app)
         }
 
-        // F-676 B-VIEW-172
-        // B-CLIP-146 B-NAV-196 T-3122bd51 T-f829833f
         @Test func tabsFollowAFolderRenamedOrMovedByAnyWindow() async throws {
             let folder = try folders()
             defer { folder.remove() }
@@ -165,8 +158,8 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { other.folder.lastPathComponent == "Sub" })
 
             try FileManager.default.moveItem(at: folder.appending("Sub"), to: folder.appending("Moved"))
-            // Every window hears the operation's progress, as the original's `onWriteOperationProgress`: nothing moves
-            // while it runs, and the tabs follow it once it has finished.
+            // Every window hears the operation's progress: nothing moves while it runs, and the tabs follow it once it
+            // has finished.
             let rename = WriteOperationOutcome(
                 action: "rename", mode: nil,
                 items: [
@@ -209,8 +202,6 @@ extension ExplorerWindowlessTests {
             return diskPath
         }
 
-        // F-676 B-VIEW-173 B-VIEW-162
-        // B-NAV-197 B-TREE-177 T-4d1a03d4 T-d1308c95 T-ec5e59a2
         @Test func tabsOnAnUnmountedDiskCloseAndAWindowAllOnItCloses() async throws {
             let folder = try folders()
             defer { folder.remove() }
@@ -268,8 +259,6 @@ extension ExplorerWindowlessTests {
             #expect(clipboard.contents == .empty)
         }
 
-        // F-676 B-VIEW-173 B-VIEW-154 B-VIEW-180 B-NAV-189
-        // B-NAV-197 T-2e942ee8
         @Test func tabsOnAnUnmountedDiskGoHomeWhileASheetIsOpen() async throws {
             let folder = try folders()
             defer { folder.remove() }
@@ -317,7 +306,6 @@ extension ExplorerWindowlessTests {
             await closeAll(app)
         }
 
-        // T-116b9db2 T-ba0fcc0a
         @Test func restoredTabsWaitUnreadUntilShownAndOnesWhoseFolderIsGoneAreDropped() async throws {
             let folder = try folders()
             defer { folder.remove() }

@@ -1,4 +1,3 @@
-// Port of pickApplication, pickDirectory and getVolumeInfo (apps/desktop/src/main/bootstrap/systemHandlers.ts)
 import AppKit
 import Foundation
 import UniformTypeIdentifiers

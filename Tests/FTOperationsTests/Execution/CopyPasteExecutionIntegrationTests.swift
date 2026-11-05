@@ -1,6 +1,3 @@
-// Port of "cross-phase integration", "leaving other people's items alone" and "folder metadata, unreadable folders
-// and the Replace journal" (packages/core/src/fs/copyPasteExecution.test.ts), but for the journal cases of a Replace
-// (P3-04's)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -10,7 +7,6 @@ import os
 @testable import FTOperations
 
 struct CopyPasteExecutionIntegrationTests {
-    // T-61d7f137 F-283
     @Test func renameAndInlineCutRenameMovesTheFileWithNoCopyOrSeparateDelete() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 1)),
@@ -26,7 +22,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(fileSystem.exists("/target/a.txt"))
     }
 
-    // T-8fe86ace F-462
     @Test func exdevFallbackAndInlineCutCopyThenInlineDelete() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 1)),
@@ -46,7 +41,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(fileSystem.exists("/target/a.txt"))
     }
 
-    // T-70fbe786 F-461
     @Test func copyFileAndInlineCutNativeCopyThenInlineDelete() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 2)),
@@ -66,7 +60,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(fileSystem.exists("/target/a.txt"))
     }
 
-    // T-73f268a2 F-283
     @Test func renameAndCopyFileRenamePrioritizedOverCopyFileForSameDevCut() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 10, dev: 1)), ("/target", .directory(dev: 1)),
@@ -88,7 +81,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(!copied.isSet)
     }
 
-    // T-75c9bbcc F-465
     @Test func mergeWithRenamedChildrenAndCopyFileFallbackMixesPathsInOneOperation() async throws {
         // Some items on the same disk (renamed), some on another (copied).
         let fileSystem = MockWriteServiceFileSystem([
@@ -108,7 +100,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(!fileSystem.exists("/source/dir/cross-dev.txt"))
     }
 
-    // T-9baa95fc F-277 F-456
     @Test func doesntRemoveAnItemAfterAFailedCopyUnlessTheCopyCreatedIt() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -138,7 +129,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 7)
     }
 
-    // T-a99cea4c F-258 F-456
     @Test func asksAboutAFileThatTakesItsNameWhileItIsBeingCopiedInsteadOfFailing() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -185,7 +175,6 @@ struct CopyPasteExecutionIntegrationTests {
         return await execute(fileSystem, operation, operationId: "op-metadata").last?.result
     }
 
-    // T-38e6bd1e F-271 F-457
     @Test func putsAFoldersOwnMetadataOnAfterItsItemsAndItsDateBackAfterAMove() async throws {
         let fileSystem = otherVolumeFolder()
         let order = Recorded<String>()
@@ -247,7 +236,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(notAnApp.inPlace.isEmpty)
     }
 
-    // T-90b2d9bd F-271 F-457
     @Test func fallsBackToTheModeAndDateWhenAFoldersMetadataCantBeCopied() async throws {
         let fileSystem = otherVolumeFolder()
         let chmods = Recorded<[String]>()
@@ -261,7 +249,6 @@ struct CopyPasteExecutionIntegrationTests {
         #expect(fileSystem.readNode("/target/dir")?.mtimeMs == 1234)
     }
 
-    // T-ce91450a F-261 F-458
     @Test func leavesAnUnreadableFolderInPlaceWhenMovingAndSaysItWasntMoved() async throws {
         let fileSystem = otherVolumeFolder()
         fileSystem.readdirImpl = { path in

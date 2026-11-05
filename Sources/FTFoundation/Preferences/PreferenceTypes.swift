@@ -1,4 +1,3 @@
-// Port of the types and constants of apps/desktop/src/shared/appPreferences.ts
 import Foundation
 
 /// The app's two looks, macOS light and macOS dark.
@@ -323,7 +322,7 @@ public struct FavoritePreference: Codable, Equatable, Sendable {
     }
 }
 
-/// Encodes an absent value as JSON `null`, as the original's files hold it, rather than leaving the key out.
+/// Encodes an absent value as JSON `null`, rather than leaving the key out.
 @propertyWrapper
 public struct NullEncoded<Value: Codable & Equatable & Sendable>: Codable, Equatable, Sendable {
     public var wrappedValue: Value?
@@ -386,7 +385,7 @@ public struct OpenTabPreference: Codable, Equatable, Sendable {
 /// The saved shortcuts that differ from their defaults, by command id.
 public typealias ShortcutOverrides = [String: [String]]
 
-/// Constants and small functions of appPreferences.ts.
+/// Constants and small functions of the preferences.
 public enum AppPreferenceLimits {
     public static let openTabsLimit = 25
     public static let openItemLimitMin = 1

@@ -1,5 +1,4 @@
-// The Rename sheet's pure parts (BatchRenameSheet.tsx's describeRow, Summary, describeSettingsError, the Presets
-// pull-down, NumberField and insertToken, useBatchRename's savePreset)
+// The Rename sheet's pure parts
 import Foundation
 import Testing
 
@@ -125,7 +124,6 @@ import Testing
         #expect(draft.shown(value: 7) == "7")
     }
 
-    // B-DLG-099
     @Test func aTokenGoesWhereTheSelectionIs() {
         #expect(BatchRenameTextRules.insert("MM", into: "YYYY-DD", selection: 5..<5) == ("YYYY-MMDD", 7))
         #expect(BatchRenameTextRules.insert("ss", into: "YYYY-DD", selection: 0..<4) == ("ss-DD", 2))

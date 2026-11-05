@@ -1,5 +1,3 @@
-// Port of the case of packages/core/src/fs/copyPasteBlockedReplace.test.ts where the paste itself refuses a Replace
-// planned over another item being pasted (the review cases are in Policy/BlockedReplaceReviewTests.swift)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -8,7 +6,6 @@ import Testing
 @testable import FTOperations
 
 struct BlockedReplaceTests {
-    // T-b743943a F-338 F-490
     @Test func isRefusedByThePasteItselfWhenThePlanSaysReplace() async throws {
         // Search results from two folders, pasted into one of them: "/d/a.txt" is pasted too, and "/x/a.txt" would
         // land on it.

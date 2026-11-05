@@ -1,11 +1,8 @@
-// Port of packages/native-fs/src/native_flags.c (nativeGetFlags, nativeSetFlags) and native_acl.c (nativeGetAcl,
-// nativeSetAcl)
 import Darwin
 import Foundation
 
 extension NativeFS {
-    /// `nativeGetFlags(path)`: the item's BSD flags, `lstat` `st_flags` (a symlink is not followed).
-    /// `UF_IMMUTABLE` is Finder's "Locked".
+    /// The item's BSD flags, `lstat` `st_flags` (a symlink is not followed). `UF_IMMUTABLE` is Finder's "Locked".
     public static func getFlags(_ path: String) throws -> UInt32 {
         var info = stat()
         if lstat(path, &info) != 0 {
@@ -14,7 +11,7 @@ extension NativeFS {
         return info.st_flags
     }
 
-    /// `nativeSetFlags(path, flags)`: `lchflags(2)` (a symlink is not followed). Only the owner can change the
+    /// Sets the item's BSD flags with `lchflags(2)` (a symlink is not followed). Only the owner can change the
     /// user flags (UF_*); the system flags (SF_*) need root.
     public static func setFlags(_ path: String, _ flags: UInt32) throws {
         if lchflags(path, flags) != 0 {
@@ -22,8 +19,8 @@ extension NativeFS {
         }
     }
 
-    /// `nativeGetAcl(path)`: the item's access control list as text (`acl_to_text`), nil when it has none.
-    /// A symlink's own ACL is read, never its target's.
+    /// The item's access control list as text (`acl_to_text`), nil when it has none. A symlink's own ACL is read,
+    /// never its target's.
     public static func getAcl(_ path: String) throws -> String? {
         guard let acl = acl_get_link_np(path, ACL_TYPE_EXTENDED) else {
             // ENOENT from acl_get_link_np also means an item with no ACL: told apart by looking for the item.
@@ -45,7 +42,7 @@ extension NativeFS {
         return String(cString: text)
     }
 
-    /// `nativeSetAcl(path, acl)`: gives the item the ACL `acl` (text from `getAcl`), or none at all for nil.
+    /// Gives the item the ACL `text` (text from `getAcl`), or none at all for nil.
     /// A copy of ~/Documents carries its "group:everyone deny delete" entry, which keeps the Trash from taking
     /// it: Undo takes the entry off an item it made, and puts it back once the item is in the Trash.
     public static func setAcl(_ path: String, _ text: String?) throws {

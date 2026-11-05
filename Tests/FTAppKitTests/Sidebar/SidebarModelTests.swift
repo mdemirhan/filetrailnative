@@ -1,5 +1,4 @@
-// The sidebar's tree and selection as the original's navigation controller keeps them
-// (apps/desktop/src/renderer/hooks/useExplorerNavigationController.ts, B-TREE-073..102), without views
+// The sidebar's tree and selection, without views
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -76,8 +75,6 @@ private final class Rig {
 }
 
 struct SidebarModelTests {
-    // T-07c435a7 T-620275a3 T-8012dbd4 T-0b507270 F-729 B-TREE-075 B-TREE-097
-    // B-NAV-020 B-NAV-096
     @Test @MainActor func opensTheTreeDownToAFolderSelectingItsRowAndLeavingItClosed() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", .other)
@@ -93,8 +90,6 @@ struct SidebarModelTests {
         #expect(rig.model.nodes["/Users/demo/src"]?.expanded == false)
     }
 
-    // T-36c41abf T-c6941446 T-7d4e382e T-52453124 B-TREE-073 B-TREE-078
-    // B-NAV-081 B-NAV-097 B-TREE-076
     @Test @MainActor func keepsAHandPickedRootWhileFoldersOpenInsideItAndMovesItForAFolderOutside() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", SidebarOpen(rerootTree: true))
@@ -110,8 +105,6 @@ struct SidebarModelTests {
         #expect(rig.model.rootPath == "/Volumes/Backup")
     }
 
-    // T-8b29ba2d T-7170adb7 B-TREE-079 B-TREE-080 B-TREE-101
-    // B-NAV-020 B-NAV-080 B-NAV-081 B-TREE-098 T-6c54c49c
     @Test @MainActor func aFavoriteKeepsItsRowSelectedAndALocationRootsTheTreeAtItsTop() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", .other)
@@ -134,8 +127,6 @@ struct SidebarModelTests {
         #expect(rig.model.selected == .filesystem("/Applications"))
     }
 
-    // T-8b29ba2d T-ed81b82b B-TREE-081
-    // B-NAV-082 B-TREE-083
     @Test @MainActor func aFolderInADisksTrashLeavesTheTreeAloneAndSelectsTheTrash() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", .other)
@@ -304,8 +295,6 @@ struct SidebarModelTests {
         #expect(rig.model.nodes["/"]?.childPaths.contains("/usr") == false)
     }
 
-    // T-1fb6401c T-1a68f61e B-TREE-100
-    // B-NAV-079 B-TREE-099
     @Test @MainActor func aLinkKeepsItsRowAndDoesNotMoveOrReadTheTree() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", .other)
@@ -318,8 +307,7 @@ struct SidebarModelTests {
         #expect(rig.model.nodes["/Users/demo/Linked"]?.isSymlink == true)
     }
 
-    // T-431cfb70 T-56d4103f B-TREE-084 B-TREE-091
-    // B-TREE-094: `refreshDirectory`'s `treeSelectionPath`: the row is selected and the tree read down to it, with
+    // A write's end with a `treeSelectionPath`: the row is selected and the tree read down to it, with
     // nothing opened; a folder opened meanwhile wins.
     @Test @MainActor func aWritesEndSelectsARowWithoutOpeningIt() async {
         let rig = Rig()
@@ -346,7 +334,7 @@ struct SidebarModelTests {
         #expect(rig.model.currentItemID == .filesystem("/Users/demo"))
     }
 
-    // B-TREE-094: `getSelectedTreeReloadOptions`: the row of a link stays through a write that asks for none, the tree
+    // The row of a link stays through a write that asks for none, the tree
     // left as it is; a row the write asks for is still selected.
     @Test @MainActor func aWritesEndKeepsALinksRowUnlessItAsksForARow() async {
         let rig = Rig()
@@ -364,7 +352,6 @@ struct SidebarModelTests {
         #expect(rig.model.selected == .filesystem("/Users/demo/src"))
     }
 
-    // B-NAV-095 B-NAV-130 T-4e880a90
     @Test @MainActor func hiddenFoldersShowOnlyWithShowHiddenExceptTheOneOnThePathToTheFolderOnScreen() async {
         let rig = Rig()
         rig.disk.folder("/Users/demo/.config", ["app"])
@@ -389,8 +376,6 @@ struct SidebarModelTests {
                 || rig.model.nodes["/Users/demo/Documents"]?.expanded == false)
     }
 
-    // T-223415d5 T-4becddde T-38c52395 B-TREE-085 B-TREE-086
-    // B-NAV-095
     @Test @MainActor func aPackageOnThePathIsAddedInOrderAndVolumesLeavesMacintoshHDUnlessHiddenShow() async {
         let rig = Rig(home: "")
         rig.disk.folder("/Applications", ["Alpha", "Zed"])
@@ -403,7 +388,6 @@ struct SidebarModelTests {
         #expect(rig.model.nodes["/"]?.childPaths.contains("/Volumes") == false)
     }
 
-    // T-de93e592 B-TREE-088 B-TREE-089 B-TREE-090
     @Test @MainActor func aFailedReadLeavesTheFolderUnreadAndShowsWhyAndTheLoadingLineWaits() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo", .other)
@@ -425,8 +409,6 @@ struct SidebarModelTests {
         #expect(!rig.model.handle(.right))
     }
 
-    // T-0cd8f183 T-2404af85 B-TREE-087
-    // B-NAV-096 B-NAV-193 B-TREE-180
     @Test @MainActor func aFolderLoadedOrLoadingIsNotReadTwiceButAForcedReloadAlwaysReads() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo", .other)
@@ -440,8 +422,6 @@ struct SidebarModelTests {
         #expect(rig.model.nodes["/Users/demo"] == nil)
     }
 
-    // T-fc0da8c2 T-eaf07a43 T-6625a938 F-740 B-TREE-111 B-TREE-113
-    // B-NAV-086 B-NAV-088
     @Test @MainActor func theArrowKeysOpenABranchGoIntoItAndComeBackOut() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo", .other)
@@ -464,8 +444,6 @@ struct SidebarModelTests {
         #expect(rig.model.selected == .filesystem("/Users/demo/src"))
     }
 
-    // T-e976a231 T-faee0026 B-TREE-128 B-TREE-129 B-TREE-130 B-TREE-133
-    // B-NAV-093 B-SEL-096 B-SEL-097 T-c48862d7
     @Test @MainActor func typingBuildsAPrefixForASecondAndSelectsTheFirstMatch() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo", .other)
@@ -489,7 +467,6 @@ struct SidebarModelTests {
         #expect(rig.model.typeaheadQuery.isEmpty)
     }
 
-    // T-3612c2bf T-04cd2bf4 T-5203f9f2 T-54e05341 T-11c34a3c B-TREE-059 B-TREE-060 B-TREE-061
     @Test @MainActor func clearingTheSelectionLetsGoOfTheFolderOnScreen() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo/src", .other)
@@ -498,7 +475,6 @@ struct SidebarModelTests {
         #expect(rig.released == 1)
     }
 
-    // T-e6bdc21c B-TREE-051 B-TREE-056
     @Test @MainActor func aPressedRowShowsSelectedAtOnceAndNotOnceItsFolderFailsToOpen() async {
         let rig = Rig()
         await rig.model.folderOpened("/Users/demo", .other)
@@ -509,7 +485,6 @@ struct SidebarModelTests {
         #expect(rig.model.currentItemID == .filesystem("/Users/demo"))
     }
 
-    // T-70dc8460 T-88a6a54c F-738 B-TREE-043 B-TREE-044
     @Test @MainActor func reorderingFavoritesSavesOnlyWhenTheOrderChanges() async {
         let rig = Rig()
         rig.model.reorder(moved: "/Applications", target: "/Applications", position: .after)
@@ -519,8 +494,6 @@ struct SidebarModelTests {
         #expect(rig.model.favorites.first?.path == "/Users/demo/Downloads")
     }
 
-    // T-f18d8812 T-8cb3e771 T-4d6ca227 B-TREE-066 B-TREE-067 B-TREE-068
-    // B-TREE-095
     @Test @MainActor func closingTheFavoritesListSwitchesTheKeyboardToTheTree() async {
         let rig = Rig()
         rig.model.placement = .separate
@@ -537,14 +510,12 @@ struct SidebarModelTests {
         #expect(rig.opened.isEmpty)
     }
 
-    // T-3d2da726 B-TREE-103 B-TREE-081
-    // B-TREE-105
     @Test @MainActor func theCommandsOfTheSidebarRowSelection() async {
         let rig = Rig()
         rig.model.restore(
             rootPath: "/Users/demo", selected: .location("/"), subview: .tree, favoritesExpanded: true,
             locationsExpanded: true)
-        // A location row gives the commands no target (B-TREE-105).
+        // A location row gives the commands no target.
         #expect(rig.model.selectedTreeTargetPath == nil)
         rig.model.restore(
             rootPath: "/Users/demo", selected: .favorite("/Applications"), subview: .tree, favoritesExpanded: true,

@@ -1,4 +1,4 @@
-// Port of packages/native-fs/src/native_copyfile.c, without N-API: Swift supplies the thread.
+// The copyfile(3) calls of the write engine, for Swift, which supplies the thread.
 //
 // `stop` is the caller's stop flag: once set, copyfile's status callback quits the copy between chunks
 // and the copy fails with ECANCELED. Without it a large file can only be stopped once it has been copied

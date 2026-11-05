@@ -1,4 +1,3 @@
-// Port of addNumberToName and splitItemName (apps/desktop/src/shared/batchRename.ts) and nextFreeFolderPath (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import Foundation
 
 /// "name 2.ext" numbering: Undo of Keep Both and batch rename ("Lisbon 2.jpg"), and New Folder ("untitled folder 2").
@@ -11,7 +10,7 @@ public enum NumberedNames {
 
     public struct Numbered: Equatable, Sendable {
         public let name: String
-        /// Lengths in UTF-16 units, as the original counts them: the stem kept, and the stem before cutting.
+        /// Lengths in UTF-16 units: the stem kept, and the stem before cutting.
         public let keptStemLength: Int
         public let stemLength: Int
     }

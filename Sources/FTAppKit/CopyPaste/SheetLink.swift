@@ -1,4 +1,4 @@
-// Port of .copy-paste-sheet-link (apps/desktop/src/renderer/styles.css): a button that reads as text in the accent
+// A button that reads as text in the accent
 import AppKit
 import FTFoundation
 

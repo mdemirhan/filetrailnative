@@ -1,5 +1,3 @@
-// Ports the UI cases of apps/desktop/src/renderer/components/ExplorerWorkspace.test.tsx on an explorer window that
-// is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -66,12 +64,6 @@ extension ToolbarTesting {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ToolbarTests: ToolbarTesting {
-        // N/A T-950f5cb5 T-52a1e901 T-31c46dd8 T-e5501fcb T-0d626566 T-af6e6f0a T-a669a0e1 T-9b0b8821 T-91333069 T-3e4a1c9f
-        // T-12547eab T-0a9009c4 T-05bfc5d2 T-5f4a2239 T-4dabc4eb T-1be0c4f9 T-2fd182cd (TabStrip.test.tsx): the tab strip is
-        // the system's tab bar (P4-02/P4-04); F-721 F-722 F-723 F-725 F-726 likewise.
-        // N/A T-36bede3d (HistoryButton): the toolbar is not measured from a hidden copy; its widths are computed.
-        // N/A T-b4ef483c (only a primary press on a handle starts a drag): the system's customizing has no handles.
-        // T-88f9e2d3 T-bcb2497c T-e090ff70 F-708 F-709 B-VIEW-107 B-VIEW-108 B-VIEW-109 B-VIEW-110 B-VIEW-112
         @Test func drawsTheItemsInTheirSavedOrderAndLeavesOutAnEmptyClipboardButton() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -81,7 +73,7 @@ extension ExplorerWindowlessTests {
                     "folderTree", "topSeparator", "back", "forward", "title", "view", "sort", "search", "viewOptions",
                     "infoPanel",
                 ])
-            // One system item per command; the original's space is the system's.
+            // One system item per command; a space is the system's.
             #expect(toolbar.toolbar.items.first?.itemIdentifier == .sidebarTrackingSeparator)
             #expect(toolbar.toolbar.items.contains { $0.itemIdentifier == .space })
             #expect(toolbar.searchItem != nil)
@@ -108,8 +100,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-708 `selectTopToolbarSlots`: a space at the start, right after another or at the end divides nothing, so it
-        // isn't drawn; the saved order keeps it until the user changes the toolbar, as the original's does.
+        // A space at the start, right after another or at the end divides nothing, so it
+        // isn't drawn; the saved order keeps it until the user changes the toolbar.
         @Test func dropsTheSpacesThatDivideNothing() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -135,9 +127,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-708 (`resolveToolbarCapsules`): a capsule is a run of buttons, the view switch and the search field off them.
-        // The original has no fixed groups, so the system's platters are the capsules, an empty clipboard button leaving
-        // no break in its run. Private class name: there is no public way to ask which items share glass.
+        // A capsule is a run of buttons, the view switch and the search field off them. There are no fixed groups, so
+        // the system's platters are the capsules, an empty clipboard button leaving no break in its run. Private class name: there is no public way to ask which items share glass.
         @Test func theSystemsPlattersAreTheOriginalsCapsules() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -201,7 +192,6 @@ extension ExplorerWindowlessTests {
         }
 
         // No toggle draws the system's accent-filled on state: on shows the gray pressed look, also after a press.
-        // B-INFO-067
         @Test func aToggleIsOnInGrayThroughAPress() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -229,8 +219,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The list closes on any press outside it, as the original's capture-phase `pointerdown` on the window does, so
-        // the magnifier's own press doesn't keep it open beside the options.
+        // The list closes on any press outside it, so the magnifier's own press doesn't keep it open beside the
+        // options.
         @Test func aPressOnTheMagnifierClosesTheClipboardList() async throws {
             let w = try await WritingWindow.open()
             let tab = w.tab
@@ -255,7 +245,7 @@ extension ExplorerWindowlessTests {
 
         // A press on the magnifier goes through the window, as a real one does: the system's field keeps it from the
         // button under the mouse unless the toolbar takes it first. It never reaches the step of AppKit that brings a window
-        // forward (SearchOptionsMenu.tsx: opened with the mouse, typing still goes to the search field). A sheet keeps the
+        // forward. A sheet keeps the
         // press, and the keyboard where it is.
         @Test func aPressOnTheMagnifierOpensTheOptionsAndBringsABackWindowForwardUnlessASheetIsUp() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -298,7 +288,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-843: the system's » menu lists what it hides in a menu of its own, which a dialog's scrim covers: nothing in
+        // The system's » menu lists what it hides in a menu of its own, which a dialog's scrim covers: nothing in
         // it runs while a dialog is up, the theme's choices, which run no command, included.
         @Test func theOverflowMenuWaitsUnderADialog() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -317,11 +307,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-fa22d272 T-b5ab76c0 T-cd18e312 T-5ee43c38 F-716 B-VIEW-114 B-VIEW-115 B-VIEW-116 B-VIEW-117: the system's »
+        // The system's »
         // menu takes the removable items, each with what the menu bar calls it; the required ones go last. Which items
         // go is the system's: aNarrowWindowMovesTheRemovableItemsOut on screen.
-        // N/A B-VIEW-118 the system places and closes its » menu, as it does the toolbar's other menus
-        // F-716 B-VIEW-116 B-VIEW-117
         @Test func listsTheItemsUnderTheOverflowMenuAsTheMenuBarWordsThem() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -352,8 +340,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-419c42ea T-f1212345 T-b996c44a T-d3420fb9 T-2dedcc21 F-709 B-VIEW-120 B-VIEW-122 B-VIEW-123 B-VIEW-131
-        // B-NAV-056
         @Test func togglesSayWhatAClickWillDoAndButtonsRunTheirCommands() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(harness.folder.appending("Alpha").path)
@@ -384,9 +370,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-f0cce867 F-711 B-VIEW-234: the View menu switches to icons, the toolbar's view switch back to the list;
+        // The View menu switches to icons, the toolbar's view switch back to the list;
         // the switch's segments say their keys.
-        // B-VIEW-002
         @Test func switchesTheViewFromTheMenuAndBackFromTheToolbar() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -403,7 +388,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-dbfcc99f F-806 B-DLG-244 B-VIEW-130
         @Test func choosesAutoLightOrDarkFromTheThemeButtonsMenu() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -421,11 +405,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // N/A T-ad6435d1 T-709e0d2c T-612dbec6 T-addfcb64 T-0d8f5ac1 T-3da726ea T-090c3038 T-92946215 T-b58bb216 T-47e212cb
-        // T-78565d8f (the original's edit layer, panel and drag ghost): the customizing is the system's. What the
-        // app still owes is below. F-718 F-719 F-720 B-VIEW-132 B-VIEW-133 B-VIEW-134 B-VIEW-135 B-VIEW-136 B-VIEW-137
-        // B-VIEW-138 B-VIEW-140 B-VIEW-141
-        // F-718 F-719 F-720
+        // The customizing is the system's. What the app still owes is below.
         @Test func keepsWhatTheUserChangesInTheToolbarInThePreference() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -478,7 +458,6 @@ extension ExplorerWindowlessTests {
 
         // Under a name being edited or a dialog nothing can customize the toolbar, the system's right-click menu included.
         // That menu is the system's and offers Customize Toolbar… by this flag; opening it is a hand check.
-        // F-717
         @Test func customizingWaitsUnderARenameOrADialog() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -515,7 +494,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-97a63c67 T-2e1aa716 T-27aa0227 T-e7cc3251 F-712 F-715 B-VIEW-125 B-VIEW-127
         @Test func listsTheViewOptionsAndSortsFromTheSortMenu() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -540,7 +518,7 @@ extension ExplorerWindowlessTests {
             #expect(titles(menu) == ["Name", "Kind", "Date Modified", "Size", "-", "Ascending", "Descending"])
             #expect(menu?.nsMenu.minimumWidth == 200)
             choose("Size")
-            // A new Size order starts descending (B-NAV-127).
+            // A new Size order starts descending.
             #expect(tab.viewState.sortBy == .size && tab.viewState.sortDirection == .desc)
             _ = sort.accessibilityPerformPress()
             choose("Ascending")
@@ -553,7 +531,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-715: AppKit routes a right press on the toolbar itself: sent to the window, it reaches Forward, whose menu
+        // AppKit routes a right press on the toolbar itself: sent to the window, it reaches Forward, whose menu
         // lists the folders ahead, and not the toolbar's own menu, whose tracking would hold the window.
         @Test func aRightPressOnForwardOpensItsHistory() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -590,8 +568,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-807: the system's ✕ says what the original's does, and text of only spaces has none.
-        // B-SRCH-053
+        // The system's ✕ has the search bar's tooltip and name, and text of only spaces has none.
         @Test func theSystemsClearButtonSaysWhatTheOriginalsDoes() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/folderSizeAdjust.ts
 import FTFoundation
 import Foundation
 

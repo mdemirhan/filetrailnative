@@ -1,4 +1,3 @@
-// Port of the buildFdSearchArgs cases of packages/core/src/search/fdSearch.test.ts
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -17,8 +16,6 @@ private func request(
 }
 
 @Suite struct FdSearchArgsTests {
-    // T-43cff062
-    // B-SRCH-170 B-SRCH-174
     @Test func buildsArgsForGlobPathSearchesWithDepthAndHiddenFlags() {
         let args = FdSearchArgs.build(
             request(query: "src/*.ts", mode: .glob, scope: .path, recursive: false, hidden: true))
@@ -30,8 +27,6 @@ private func request(
             ])
     }
 
-    // T-4db03fbc
-    // B-SRCH-171 B-SRCH-172
     @Test func skipsGitFoldersAndGitIgnoredFilesOnlyWhenAskedTo() {
         func flags(folders: Bool, ignored: Bool) -> [String] {
             let args = FdSearchArgs.build(request(hidden: true, gitFolders: folders, gitIgnored: ignored))
@@ -46,8 +41,6 @@ private func request(
         #expect(flags(folders: true, ignored: true) == ["--exclude", ".git", "--hidden"])
     }
 
-    // T-d1d5f835
-    // B-SRCH-173
     @Test func searchesMacintoshHDWithoutTheOtherDisksMountedAtVolumes() {
         func args(_ root: String) -> String {
             FdSearchArgs.build(request(root: root, query: "report", mode: .text, gitFolders: false)).joined(
@@ -59,7 +52,6 @@ private func request(
         #expect(!args("/Users/demo").contains("--exclude"))
     }
 
-    // T-1fb059e6
     @Test func matchesTheQueryLiterallyInPlainTextModeAndAsAPatternOtherwise() {
         func args(_ mode: SearchPatternModePreference) -> [String] {
             FdSearchArgs.build(request(query: "report (1).pdf", mode: mode))
@@ -74,14 +66,12 @@ private func request(
         #expect(Array(args(.text).suffix(2)) == ["report (1).pdf", "/Users/demo/project"])
     }
 
-    // T-d3ef54f8
-    // B-SRCH-175
     @Test func endsOptionParsingBeforeTheQuerySoALeadingDashIsNotAnFdFlag() {
         let args = FdSearchArgs.build(request(query: "-xrm", scope: .path))
         #expect(Array(args.suffix(3)) == ["--", "-xrm", "/Users/demo/project"])
     }
 
-    // The golden: every combination of the options, from the reference's own argument builder.
+    // The golden: every combination of the options and the arguments it gives.
     @Test func matchesTheReferenceForEveryCombinationOfOptions() throws {
         let cases: [GoldenCase<SearchRequest, [String]>] = try Golden.load(suite: "search-args")
         #expect(cases.count > 300)

@@ -2,7 +2,6 @@ import FTTestSupport
 import Foundation
 import Testing
 
-// Port of packages/core/src/fs/explorerService.test.ts
 @testable import FTFileSystem
 
 struct ExplorerServiceTests {
@@ -24,7 +23,6 @@ struct ExplorerServiceTests {
         return fake
     }
 
-    // T-7ec6b6b8 F-064 F-065 F-139 F-166 F-174
     @Test func sortsFoldersBeforeFilesAndHidesDotfilesByDefault() async throws {
         let fake = workspace(
             [
@@ -43,7 +41,6 @@ struct ExplorerServiceTests {
         #expect(tree.children.map(\.name) == ["Alpha"])
     }
 
-    // T-c0e9bbe1 F-170 F-171
     @Test func saysWhetherAFileWithoutAnExtensionIsExecutableAndLooksAtNoOtherEntry() async throws {
         let fake = workspace(
             [
@@ -68,7 +65,6 @@ struct ExplorerServiceTests {
         #expect(!looked.contains("folder"))
     }
 
-    // T-a5c355cb F-140 F-173
     @Test func readsRealFileProperties() async throws {
         try await withTemporaryDirectory { directory in
             let path = directory.path + "/notes.txt"
@@ -82,7 +78,6 @@ struct ExplorerServiceTests {
         }
     }
 
-    // T-8ae57f6a F-169 F-173
     @Test func readsThePropertiesOfTheRootFolderNamedMacintoshHD() async {
         let item = await DirectoryService().itemProperties(path: "/")
         #expect(item.path == "/")
@@ -93,7 +88,6 @@ struct ExplorerServiceTests {
         #expect(item.permissionMode != nil)
     }
 
-    // T-ad4406bb F-158
     @Test func namesKindsAsTheSystemDoesAskingOncePerExtension() async throws {
         try await withTemporaryDirectory { directory in
             for name in ["a.md", "b.md", "c.xyz"] {
@@ -115,7 +109,6 @@ struct ExplorerServiceTests {
         }
     }
 
-    // T-271cbd94 F-064
     @Test func sortsFilesByModifiedTime() async throws {
         let fake = workspace(
             [fakeDirent("newer.txt", file: true), fakeDirent("older.txt", file: true)],
@@ -130,7 +123,6 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.name) == ["newer.txt", "older.txt"])
     }
 
-    // T-59fe90f1 F-065
     @Test func sortsByKindLabelAndKeepsFoldersAheadOfFiles() async throws {
         let fake = workspace(
             [
@@ -146,7 +138,6 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.name) == ["Folder", "script.ts", "archive.zip"])
     }
 
-    // T-b81f5543 F-064 F-171
     @Test func sortsBySizeDescendingForFiles() async throws {
         let fake = workspace(
             [fakeDirent("small.txt", file: true), fakeDirent("large.txt", file: true)],
@@ -159,7 +150,6 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.name) == ["large.txt", "small.txt"])
     }
 
-    // T-57e20151 F-172
     @Test func sortsALinkToAFolderByTheSizeOfTheLinkItself() async throws {
         let fake = workspace(
             [
@@ -183,7 +173,6 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.sizeBytes) == [40, 16, nil])
     }
 
-    // T-db410023 F-064 F-171
     @Test func reportsFileSizesAndKeepsItemsWithoutASizeLastWhenSortingBySize() async throws {
         let fake = workspace(
             [
@@ -209,7 +198,6 @@ struct ExplorerServiceTests {
         #expect(byName.entries.allSatisfy { $0.sizeBytes == nil })
     }
 
-    // T-c73d0ed0 F-064
     @Test func combinesFoldersAndFilesWhenFoldersFirstIsOff() async throws {
         let fake = workspace(
             [fakeDirent("zeta", directory: true), fakeDirent("alpha.txt", file: true)],
@@ -222,8 +210,6 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.name) == ["alpha.txt", "zeta"])
     }
 
-    // T-6fad73c0 F-167 F-168 F-174
-    // B-TREE-011
     @Test func includesSymlinkedDirectoriesInTreeChildrenAndMarksThemAsAliases() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in [fakeDirent("Alias", symbolicLink: true)] }
@@ -237,7 +223,6 @@ struct ExplorerServiceTests {
             ])
     }
 
-    // T-a3b4b5e6 F-167
     @Test func keepsDanglingSymlinksInSortedSnapshotsWithoutFailingNavigation() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in [fakeDirent("dangling", symbolicLink: true), fakeDirent("notes.txt", file: true)] }
@@ -263,7 +248,6 @@ struct ExplorerServiceTests {
         #expect(size.entries.map { [$0.name, $0.kind.rawValue] } == [["notes.txt", "file"], ["dangling", "other"]])
     }
 
-    // T-6da49ddf F-172
     @Test func rejectsMetadataRequestsForPathsOutsideTheRequestedDirectory() async {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 0) }
@@ -287,7 +271,6 @@ struct ExplorerServiceTests {
         return fake
     }
 
-    // T-2ca64a85 F-175
     @Test func returnsDirectoryPathSuggestionsForTheActiveParentFolder() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in
@@ -303,8 +286,6 @@ struct ExplorerServiceTests {
         #expect(response.suggestions.map(\.path) == ["/Users/demo/Documents", "/Users/demo/Downloads"])
     }
 
-    // T-ac631da9
-    // B-DLG-046
     @Test func returnsAllImmediateChildDirectoriesForAnExistingTrailingSlashPath() async throws {
         let fake = suggestionFileSystem(["/Users/demo": ["Applications", "Desktop", "Pictures"]])
         let response = try await service(fake).pathSuggestions(inputPath: "/Users/demo/")
@@ -315,8 +296,6 @@ struct ExplorerServiceTests {
             ])
     }
 
-    // T-b2c5d677
-    // B-DLG-047
     @Test func returnsAnExactDirectorySuggestionWhenTheFullPathExistsWithoutATrailingSlash() async throws {
         let fake = suggestionFileSystem([
             "/Users/demo": ["Desktop", "Pictures"],
@@ -328,8 +307,6 @@ struct ExplorerServiceTests {
         #expect(response.suggestions.map(\.path) == ["/Users/demo/Pictures/Photos Library.photoslibrary"])
     }
 
-    // T-ec627d21
-    // B-DLG-046
     @Test func filtersAgainstImmediateChildrenOfTheNearestExistingParentWhenTheFinalSegmentIsPartial() async throws {
         let fake = suggestionFileSystem([
             "/Users/demo/src/pythonproj": ["cch", "dux", "lotus123", "OutlookMcp_AppleScript"]
@@ -339,7 +316,6 @@ struct ExplorerServiceTests {
         #expect(response.suggestions.map(\.path) == ["/Users/demo/src/pythonproj/lotus123"])
     }
 
-    // T-176ff9e8
     @Test func fallsBackToTheNearestExistingParentInsteadOfABroaderLoadedAncestor() async throws {
         let fake = suggestionFileSystem([
             "/Users/demo": ["Applications", "Desktop", "src"],
@@ -353,7 +329,6 @@ struct ExplorerServiceTests {
             ])
     }
 
-    // T-1f4a779f
     @Test func filtersHiddenDirectorySuggestionsUnlessHiddenItemsAreEnabled() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in [fakeDirent(".config", directory: true), fakeDirent("Desktop", directory: true)] }
@@ -366,7 +341,6 @@ struct ExplorerServiceTests {
         #expect(hiddenOn.suggestions.map(\.name) == [".config", "Desktop"])
     }
 
-    // T-7b7245cf
     @Test func usesTheNearestExistingParentForPathSuggestions() async throws {
         let fake = suggestionFileSystem([
             "/Users/demo": ["Documents", "dotfiles"], "/Users/demo/dotfiles": ["scripts", "shell"],
@@ -380,7 +354,6 @@ struct ExplorerServiceTests {
         #expect(childMatches.suggestions.map(\.path) == ["/Users/demo/dotfiles/scripts", "/Users/demo/dotfiles/shell"])
     }
 
-    // T-da9ba256 F-140
     @Test func resolvesSymlinkTargetsForActivation() async {
         let fake = FakeFileSystem()
         fake.realpathHandler = { _ in "/resolved/path" }
@@ -388,7 +361,6 @@ struct ExplorerServiceTests {
         #expect(resolved == ResolvedPath(inputPath: "/input/path", resolvedPath: "/resolved/path"))
     }
 
-    // T-2158f121 F-140
     @Test func fallsBackToTheResolvedInputPathWhenPathActivationCannotResolveAliases() async {
         let fake = FakeFileSystem()
         fake.realpathHandler = { _ in throw FakeError() }
@@ -396,7 +368,6 @@ struct ExplorerServiceTests {
         #expect(resolved == ResolvedPath(inputPath: "/input/path", resolvedPath: nil))
     }
 
-    // T-4b9e11a6
     @Test func fallsBackToTheOriginalDirectoryPathWhenRealpathNormalizationFails() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in [fakeDirent("Desktop", directory: true)] }
@@ -411,7 +382,6 @@ struct ExplorerServiceTests {
         #expect(snapshot.entries.map(\.path) == ["/Users/demo/Desktop"])
     }
 
-    // T-6d606cea F-173
     @Test func reportsSymlinkDirectoryPropertiesAndDropsInvalidDatesToNull() async {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 0, mtimeMs: nil, birthtimeMs: nil) }
@@ -426,8 +396,6 @@ struct ExplorerServiceTests {
                     sizeBytes: 16, sizeStatus: .ready, permissionMode: 0o755))
     }
 
-    // T-e76b1aa9
-    // B-INFO-195
     @Test func returnsUnavailableItemPropertiesForDanglingSymlinks() async {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in throw FakeError() }
@@ -444,7 +412,6 @@ struct ExplorerServiceTests {
                     permissionMode: 0o644))
     }
 
-    // T-6f8fafd9
     @Test func skipsBrokenAndNonDirectorySuggestionEntriesWhileApplyingTheResultLimit() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in
@@ -466,7 +433,6 @@ struct ExplorerServiceTests {
         #expect(response.suggestions.map(\.path) == ["/Users/demo/Desktop"])
     }
 
-    // T-808743d3 F-172
     @Test func preservesRequestOrderForMetadataBatchesEvenWhenLstatIsUnavailable() async throws {
         let fake = FakeFileSystem()
         fake.statHandler = { path in
@@ -482,7 +448,6 @@ struct ExplorerServiceTests {
         #expect(response.items.map(\.sizeStatus) == [.ready, .ready])
     }
 
-    // T-cb2d45b7 F-172
     @Test func sizesALinkToAFolderAsTheLinkItselfWhileFoldersWaitToBeCalculated() async throws {
         let fake = FakeFileSystem()
         fake.statHandler = { _ in fakeStats(directory: true, file: false, size: 96) }
@@ -498,7 +463,6 @@ struct ExplorerServiceTests {
         #expect(response.items.map(\.sizeStatus) == [.ready, .deferred])
     }
 
-    // T-3eb178ad
     @Test func returnsUnavailableMetadataForDanglingSymlinksInsteadOfFailingTheBatch() async throws {
         let fake = FakeFileSystem()
         fake.statHandler = { path in
@@ -544,7 +508,7 @@ final class CallCounter: @unchecked Sendable {
     }
 }
 
-/// Port of packages/core/src/fs/explorerService.fixtures.test.ts, on the real file system.
+/// The explorer service over fixtures on the real file system.
 struct ExplorerServiceFixtureTests {
     private func write(_ text: String, to path: String) throws {
         try text.write(toFile: path, atomically: true, encoding: .utf8)
@@ -554,8 +518,6 @@ struct ExplorerServiceFixtureTests {
         try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
     }
 
-    // T-0bd98463
-    // B-TREE-011
     @Test func listsRealDirectoriesAndDirectorySymlinksInTreeChildren() async throws {
         try await withTemporaryDirectory { directory in
             try makeFolder(directory.path + "/Documents")
@@ -571,7 +533,6 @@ struct ExplorerServiceFixtureTests {
         }
     }
 
-    // T-0b96632f
     @Test func sortsByFileSizeAndReturnsMetadataForDirectoryEntries() async throws {
         try await withTemporaryDirectory { directory in
             try write("a", to: directory.path + "/alpha")
@@ -590,7 +551,6 @@ struct ExplorerServiceFixtureTests {
         }
     }
 
-    // T-a8ad2b97
     @Test func readsDeferredFolderPropertiesAndReadyFileProperties() async throws {
         try await withTemporaryDirectory { directory in
             try makeFolder(directory.path + "/Folder")
@@ -604,7 +564,6 @@ struct ExplorerServiceFixtureTests {
         }
     }
 
-    // T-d408f522
     @Test func returnsImmediateChildDirectorySuggestionsForExistingAndPartialPaths() async throws {
         try await withTemporaryDirectory { directory in
             for name in ["lotus123/screenshots", "lotus123/specs", "dux", "tmp"] {

@@ -1,5 +1,3 @@
-// Port of packages/core/src/fs/writeServiceTypes.ts (the types the review, the policy and the write service share;
-// WriteServiceStats and the reading calls are in Identity/WriteServiceStats.swift)
 import FTFoundation
 import Foundation
 

@@ -1,5 +1,5 @@
-// Port of IconGridView (apps/desktop/src/renderer/components/IconGridView.tsx): the Icon view, an NSCollectionView whose
-// items are placed from the icon grid's tokens (lib/iconGridLayout.ts), with the Info panel's glide of the items
+// The Icon view, an NSCollectionView whose items are placed from the icon grid's tokens, with the Info panel's glide of
+// the items
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -45,7 +45,7 @@ final class IconViewController: ItemGridPane {
 
     // MARK: Placement
 
-    /// How many columns the pane holds (`computeIconGridColumns`); the arrow keys and pages step by them.
+    /// How many columns the pane holds; the arrow keys and pages step by them.
     var columns: Int { layout.columns(containerWidth: Double(viewport.width)) }
 
     override func contentSize(viewport: NSSize) -> NSSize {
@@ -71,7 +71,7 @@ final class IconViewController: ItemGridPane {
 
     // MARK: Drag-to-select
 
-    /// `getIconGridItemsInBox`, in the coordinates of the grid's items (inside the pane's padding).
+    /// In the coordinates of the grid's items (inside the pane's padding).
     override func marqueeHits(box: DragSelectionBox, sizes: [String: DragSelectionSize]) -> [DragSelectionHit] {
         let left = layout.paddingInline
         let top = layout.paddingTop
@@ -133,7 +133,7 @@ final class IconViewController: ItemGridPane {
 
     override var renameAlignment: NSTextAlignment { .center }
 
-    // MARK: The Info panel's glide (B-VIEW-026)
+    // MARK: The Info panel's glide
 
     /// The Info panel opening or closing changes the pane's width in one step: where the items were is kept, to move each
     /// from there to its new place. Items that move for another reason (a resize, new items) jump.

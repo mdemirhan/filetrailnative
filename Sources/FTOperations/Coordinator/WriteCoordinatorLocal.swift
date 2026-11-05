@@ -1,7 +1,5 @@
-// Port of queueLocalWriteOperation, emitUnexpectedEnd, releaseLocalWriteOperation, emitLocalWriteOperationEvent,
-// createLocalWriteOperationResult, resolveLocalTerminalStatus, stoppedMessage and notStartedItems
-// (apps/desktop/src/main/bootstrap/writeOperations.ts): the one entry point through which rename, New Folder, Trash,
-// Delete Immediately (P3-06), Undo and Redo (P3-07) and batch rename (P3-08) take the write slot
+// The one entry point through which rename, New Folder, Trash, Delete Immediately, Undo and Redo and batch rename take
+// the write slot
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -119,9 +117,8 @@ extension WriteCoordinator {
     }
 }
 
-/// How a local operation's result is put together (`createLocalWriteOperationResult` and its helpers).
+/// How a local operation's result is put together.
 public enum LocalWriteResults {
-    /// `createLocalWriteOperationResult`.
     public static func result(
         operationId: String, action: WriteOperationAction, targetPath: String?, startedAt: Date, finishedAt: Date,
         totalItemCount: Int, completedItemCount: Int, items: [WriteOperationItem], status: WriteOperationStatus,
@@ -139,7 +136,6 @@ public enum LocalWriteResults {
             items: items, error: error)
     }
 
-    /// `resolveLocalTerminalStatus`.
     public static func terminalStatus(cancelled: Bool, completedItemCount: Int, failedItemCount: Int)
         -> WriteOperationStatus
     {

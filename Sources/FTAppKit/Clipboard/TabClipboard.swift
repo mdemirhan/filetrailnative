@@ -1,6 +1,4 @@
-// Port of the clipboard's parts of apps/desktop/src/renderer/App.tsx (:761-812, 1584) and of ClipboardButton.tsx's
-// open state and placement, and of hooks/useExplorerActions.ts (revealClipboardItem, removeClipboardItem,
-// clearClipboard, the clipboard source): one tab's side of the app's clipboard
+// One tab's side of the app's clipboard
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -16,7 +14,7 @@ final class TabClipboard {
     private var popover: AnchoredPopover?
     private var popoverKeys: Any?
     private weak var anchor: NSView?
-    /// The list was opened by a click on the button, which has the page's focus in the original.
+    /// The list was opened by a click on the button: a key typed then shows the button's keyboard ring.
     private var openedByClick = false
     private var keys: Int?
     private var observers: [any NSObjectProtocol] = []
@@ -236,7 +234,7 @@ extension MainWindowController {
         go(to: URL(fileURLWithPath: parent, isDirectory: true))
     }
 
-    /// What Copy records of each item (B-CLIP-006): from the list, its kind, link and executable flags; from the tree,
+    /// What Copy records of each item: from the list, its kind, link and executable flags; from the tree,
     /// a folder.
     var clipboardSourceEntries: [String: ClipboardSourceEntry] {
         if focusedPane == .tree {
@@ -252,7 +250,7 @@ extension MainWindowController {
         return entries
     }
 
-    /// `resolvePasteDestinationPath` for the keyboard and the menu bar: the folder on screen, never search results
+    /// Where a paste from the keyboard or the menu bar goes: the folder on screen, never search results
     /// or the Trash.
     var pasteDestinationPath: String? {
         PasteDestination.resolve(
@@ -262,7 +260,7 @@ extension MainWindowController {
 }
 
 extension MainWindowController {
-    /// A file operation chosen in a right-click menu (`runContextMenuAction`): Copy and Cut take the menu's items
+    /// A file operation chosen in a right-click menu: Copy and Cut take the menu's items
     /// (the folder of a tree row or favorite), Paste goes where the menu says (into its folder, or the folder on
     /// screen from the background); the others are the matching commands.
     func contextMenuFileOperation(_ action: ContextMenuActionID, _ subject: ContextMenuSubject) {

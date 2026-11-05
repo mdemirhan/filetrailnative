@@ -1,4 +1,3 @@
-// Port of the openWriteJournal cases of apps/desktop/src/main/bootstrap/writeJournal.test.ts
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -16,7 +15,6 @@ struct FileWriteJournalTests {
                 moved: false, staged: staged))
     }
 
-    // T-ca751261
     @Test func keepsItsEntriesAcrossAReopen() throws {
         try withTemporaryDirectory { directory in
             let filePath = directory.path + "/replace-journal.json"
@@ -32,7 +30,6 @@ struct FileWriteJournalTests {
         }
     }
 
-    // T-e034bee2 F-350
     @Test func replacesAnEntryAddedAgainWithTheSameId() throws {
         try withTemporaryDirectory { directory in
             let filePath = directory.path + "/replace-journal.json"
@@ -45,7 +42,6 @@ struct FileWriteJournalTests {
         }
     }
 
-    // T-09fd9df2
     @Test func takesOutARemovedEntryOnDiskToo() throws {
         try withTemporaryDirectory { directory in
             let filePath = directory.path + "/replace-journal.json"
@@ -63,7 +59,6 @@ struct FileWriteJournalTests {
 
     // The journal is on the startup disk: when that is full, the copy to another disk with room isn't blamed on the
     // destination.
-    // T-baf8d9d1 F-351
     @Test func saysTheStartupDiskIsFullWhenItCantBeWrittenForLackOfSpace() async throws {
         try await withTemporaryDirectory { directory in
             let journal = FileWriteJournal.open(directory.path + "/replace-journal.json") { path, _ in
@@ -89,8 +84,7 @@ struct FileWriteJournalTests {
         }
     }
 
-    // The original shows this through a rename of several (P3-08's); the journal's own failure is what it says.
-    // T-e596cc6d F-351
+    // The journal's own failure is what it says.
     @Test func saysItCouldntSaveItsRecoveryInformationWhenItCantBeWrittenOtherwise() throws {
         try withTemporaryDirectory { directory in
             let filePath = directory.path + "/replace-journal.json"
@@ -116,7 +110,6 @@ struct FileWriteJournalTests {
         }
     }
 
-    // T-39c8a445 F-351
     @Test func opensEmptyWhenTheFileIsMissingUnreadableAsJSONOrNotAListOfEntries() throws {
         try withTemporaryDirectory { directory in
             #expect(FileWriteJournal.open(directory.path + "/missing.json").entries() == [])
@@ -141,8 +134,7 @@ struct FileWriteJournalTests {
         }
     }
 
-    /// The file holds what JSON.stringify writes: the original's keys, and none it leaves out.
-    // F-350
+    /// The file holds each entry's keys in a fixed order, and none an entry leaves out.
     @Test func writesEntriesAsTheOriginalDoes() throws {
         try withTemporaryDirectory { directory in
             let filePath = directory.path + "/replace-journal.json"

@@ -1,4 +1,3 @@
-// Port of the search:start / search:getUpdate contracts (packages/contracts/src/ipc.ts) and the types of packages/core/src/search/fdSearch.ts
 import FTFoundation
 import Foundation
 
@@ -35,7 +34,7 @@ public enum SearchJobStatus: String, Codable, Sendable, Equatable {
     case running, complete, cancelled, truncated, error
 }
 
-/// One result: `searchResultItemSchema`.
+/// One result.
 public struct SearchResultItem: Codable, Sendable, Equatable {
     public var path: String
     public var name: String

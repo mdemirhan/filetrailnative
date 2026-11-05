@@ -1,5 +1,3 @@
-// Port of the enable, check and label cases of apps/desktop/src/main/appMenu.test.ts (resolveApplicationMenuItemStates,
-// applyApplicationMenuItemStates, undoMenuLabels). The menu's layout cases are P4-01's.
 import Testing
 
 @testable import FTFoundation
@@ -22,7 +20,6 @@ struct ApplicationMenuTests {
         }
     }
 
-    // T-656a5201 F-083
     @Test func withNoExplorerWindowOpenOffersOnlyWhatOpensOneBesidesAnotherWindowsOwn() {
         let placesAndNewWindow: [RendererCommand] = [
             .openLocationSheet, .goHomeRootTree, .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD,
@@ -38,8 +35,6 @@ struct ApplicationMenuTests {
                 + placesAndNewWindow.dropLast() + [.newWindow, .closeTab])
     }
 
-    // T-824991c2
-    // T-aaa40113
     @Test func offersMergeAllWindowsOnlyWithAnotherExplorerWindowOpen() {
         let state = Self.initial
         #expect(Self.stateOf("mergeAllWindows", state).enabled == false)
@@ -56,8 +51,7 @@ struct ApplicationMenuTests {
                 == false)
     }
 
-    // The original checks the menu template's ids against the states (P4-01 ports that); this checks that a state
-    // exists for every command the menu can send.
+    // A state exists for every command the menu can send.
     @Test func hasAStateForEveryCommand() {
         let ids = Set(ApplicationMenu.itemStates(Self.initial, window: Self.explorerWindow).map(\.id))
         for command in RendererCommand.allCases where command != .toggleFavorite && command != .toggleFolderTree {
@@ -72,7 +66,6 @@ struct ApplicationMenuTests {
         #expect(ids.count == RendererCommand.allCases.count - 2 + 6)
     }
 
-    // T-0bd02d42 F-083
     @Test func dimsTheCommandsTheWindowSaysCanNotRun() {
         var state = Self.initial
         state.disabledCommands = [.renameSelection, .goBack, .toggleFavorite]
@@ -84,8 +77,6 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("newTab", state).enabled == true)
     }
 
-    // T-0b01a1ef
-    // B-INFO-067 B-VIEW-226
     @Test func checksWhatTheWindowShows() {
         var state = Self.initial
         state.viewMode = .details
@@ -106,8 +97,6 @@ struct ApplicationMenuTests {
             ])
     }
 
-    // T-23b75a4b
-    // B-TREE-038
     @Test func offersToAddTheFolderToTheFavoritesOrToRemoveItOnceItIsOne() {
         var added = Self.initial
         added.favoriteIsSet = true
@@ -117,8 +106,6 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("toggleFavorite:remove", added).visible == true)
     }
 
-    // T-ad3a5766
-    // B-TREE-029
     @Test func offersHideFolderTreeWhileTheTreeIsShownAndShowFolderTreeWhileHidden() {
         var hidden = Self.initial
         hidden.folderTreeOpen = false
@@ -128,8 +115,6 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("toggleFolderTree:show", hidden).visible == true)
     }
 
-    // T-03e46e54
-    // B-CLIP-186
     @Test func turnsTheFilesUndoAndRedoOnOnlyWhenThereIsSomethingToDo() {
         let window = Window(explorerFocused: true, undoAvailable: (undo: true, redo: false))
         #expect(Self.stateOf("undo", Self.initial, window).enabled == true)
@@ -140,9 +125,7 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("undo", locked, window).enabled == false)
     }
 
-    // T-475f0b44
-    // The menu items themselves (their accelerators and what they send) are P4-01's; this is the state half.
-    // B-CLIP-184
+    // The menu items themselves (their accelerators and what they send) are tested elsewhere; this is the state half.
     @Test func showsATextFieldsOwnUndoAndRedoInPlaceOfTheFilesWhileOneIsEdited() {
         var typing = Self.initial
         typing.textEditing = true
@@ -157,8 +140,6 @@ struct ApplicationMenuTests {
         #expect(textUndo.enabled == false)
     }
 
-    // T-6b4c5aa9
-    // B-VIEW-227
     @Test func keepsATextFieldsUndoAndRedoOnWithNothingToUndoInTheFiles() {
         let window = Window(explorerFocused: true, undoAvailable: (undo: false, redo: false))
         var typing = Self.initial
@@ -167,7 +148,6 @@ struct ApplicationMenuTests {
         #expect(Self.stateOf("redo", typing, window).enabled == true)
     }
 
-    // T-49986070
     @Test func keepsOnlyTheEditCommandsCmdWAndNewWindowWhileAnotherWindowHasTheKeyboard() {
         let settingsFocused = Window(explorerFocused: false)
         #expect(
@@ -191,7 +171,6 @@ struct ApplicationMenuTests {
         }
     }
 
-    // T-187b0b19
     @Test func setsWhatChangedAndSkipsItemsTheMenuDoesNotHave() {
         let rename = FakeItem()
         let hidden = FakeItem()
@@ -209,7 +188,6 @@ struct ApplicationMenuTests {
         #expect(hidden.isChecked)
     }
 
-    // T-363746ce
     @Test func onlyEverSwitchesARadioItemOn() {
         let list = FakeItem(checked: true, radio: true)
         let details = FakeItem(checked: false, radio: true)
@@ -226,7 +204,6 @@ struct ApplicationMenuTests {
 
     // MARK: Undo and Redo labels
 
-    // T-798fb5ef F-580
     @Test func namesWhatTheFilesUndoAndRedoWouldDo() {
         let named = ApplicationMenu.undoLabels(
             undo: "Move of “a.txt”", redo: "Rename", cantUndo: false, textEditing: false)
@@ -237,13 +214,11 @@ struct ApplicationMenuTests {
         #expect(plain.redo == "Redo")
     }
 
-    // T-dcc0a432 F-374 F-580
     @Test func saysCantUndoAfterAnOperationThatCantBeUndone() {
         let labels = ApplicationMenu.undoLabels(undo: nil, redo: nil, cantUndo: true, textEditing: false)
         #expect(labels.undo == "Can’t Undo")
     }
 
-    // T-f8aba840
     @Test func saysJustUndoAndRedoWhileATextFieldHasTheKeyboard() {
         let labels = ApplicationMenu.undoLabels(
             undo: "Move of “a.txt”", redo: "Rename", cantUndo: false, textEditing: true)
@@ -253,7 +228,6 @@ struct ApplicationMenuTests {
 
     // MARK: The menu state of the window
 
-    // B-VIEW-226
     @Test func buildsTheMenuStateFromWhatTheWindowCanRun() {
         let state = ApplicationMenuState.build(
             viewMode: .icons, sortBy: .kind, foldersFirst: false, hiddenFilesShown: true, folderTreeOpen: false,

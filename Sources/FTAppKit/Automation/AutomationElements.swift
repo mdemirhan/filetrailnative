@@ -1,4 +1,3 @@
-// Port of the element lookup of tools/capture/electron/driver.ts (elements.json names); no TypeScript source.
 #if DEBUG
     import AppKit
 
@@ -7,7 +6,7 @@
     struct AutomationElements: Equatable, Sendable {
         /// Logical name → accessibility identifier.
         var identifiers: [String: String]
-        /// The names whose text the original reads from `aria-label` (`textAttribute`): their accessibility label.
+        /// The names whose `textAttribute` in `elements.json` is `aria-label`: their text is their accessibility label.
         var labelled: Set<String> = []
 
         struct LoadError: Error, CustomStringConvertible {
@@ -133,15 +132,15 @@
         }
 
         /// Whether the view shows `text`: as its own text, a text field inside it, or (an icon button) as
-        /// its accessibility label, as the original's `aria-label` names such buttons.
+        /// its accessibility label.
         static func shows(_ text: String, _ view: NSView) -> Bool {
             if GeometryDump.text(of: view)?.string == text { return true }
             if view.accessibilityLabel() == text { return true }
             return Views.first(NSTextField.self, in: view) { $0.stringValue == text } != nil
         }
 
-        /// The text of the element `name` for `expect {text}`, as the original's driver reads it: the accessibility
-        /// label where it reads `aria-label`, otherwise what the view shows.
+        /// The text of the element `name` for `expect {text}`: the accessibility label for a `labelled` name,
+        /// otherwise what the view shows.
         static func text(of view: NSView, named name: String, elements: AutomationElements) -> String {
             elements.labelled.contains(name) ? (view.accessibilityLabel() ?? "") : text(of: view)
         }

@@ -1,5 +1,3 @@
-// Port of the window-toolbar of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx (items, enabled states) with
-// HistoryButton.tsx, as the window's system toolbar
 import AppKit
 import FTFoundation
 
@@ -28,7 +26,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     private var views: [ToolbarItemID: NSView] = [:]
     private var clipboardCount = 0
     private var clipboardCut = false
-    /// What the clipboard button says (P5-08).
+    /// What the clipboard button says.
     private var clipboardSummary: FTFoundation.ClipboardSummary?
     private var observation: ExplorerWindowObservation?
     private var identifiersObservation: NSKeyValueObservation?
@@ -91,7 +89,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
 
     // MARK: Identifiers
 
-    /// The system's space is the original's `topSeparator`: it ends one group of items and starts the next.
+    /// The system's space is `topSeparator`: it ends one group of items and starts the next.
     static func identifier(_ id: ToolbarItemID) -> NSToolbarItem.Identifier {
         id == .topSeparator ? .space : NSToolbarItem.Identifier("filetrail.toolbar.\(id.rawValue)")
     }
@@ -107,8 +105,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         [.sidebarTrackingSeparator] + items.map(identifier)
     }
 
-    /// The items a saved order draws, with room for them all: a space that divides nothing isn't one of them
-    /// (`selectTopToolbarSlots`). The saved order keeps it, as the original's does.
+    /// The items a saved order draws, with room for them all: a space that divides nothing isn't one of them.
+    /// The saved order keeps it.
     private static func row(_ items: [ToolbarItemID]) -> [ToolbarItemID] {
         TopToolbarLayout.select(TopToolbarLayout.slots(items), optionalCount: items.count).map(\.id)
     }
@@ -404,7 +402,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             let search = NSSearchToolbarItem(itemIdentifier: itemIdentifier)
             if flag {
                 search.searchField = searchField
-                // A field while there is room at all, as the original's (`searchWidth`, `searchMinWidth`): the title
+                // A field while there is room at all (`searchWidth`, `searchMinWidth`): the title
                 // gives way first.
                 searchField.widthAnchor.constraint(greaterThanOrEqualToConstant: DesignTokens.toolbar.searchMinWidth)
                     .isActive = true
@@ -561,7 +559,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         }
     }
 
-    /// The buttons' `aria-label`s (`ExplorerWorkspace.tsx`), which the capture names them by.
+    /// The buttons' accessibility labels.
     static func accessibilityLabel(_ id: ToolbarItemID) -> String {
         switch id {
         case .back: "Back"

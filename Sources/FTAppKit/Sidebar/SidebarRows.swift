@@ -1,4 +1,3 @@
-// Port of the props TreeItemRow (apps/desktop/src/renderer/components/TreePane.tsx) draws a row from
 import AppKit
 import FTFoundation
 
@@ -45,7 +44,7 @@ struct SidebarRowState: Equatable {
     var density: SidebarDensity
     /// Favorites and Locations of the separate lists are flat rows without a disclosure button.
     var hasDisclosure: Bool
-    /// The item is on the clipboard: a copy or cut glyph after its name (P5-08).
+    /// The item is on the clipboard: a copy or cut glyph after its name.
     var clipboardMark: ClipboardMark? = nil
 
     var isFolder: Bool { item.kind == .filesystem }

@@ -1,4 +1,3 @@
-// Port of the state and the key rules of apps/desktop/src/renderer/components/GoToFolderDialog.tsx
 import Foundation
 
 /// One row of the Go To list: a folder to go to, however it was found (`GoToRow`).
@@ -56,7 +55,7 @@ public struct GoToBoxState: Equatable, Sendable {
     /// Whether the top place is selected before anything is typed (Go To), so Return goes there at once. Off for Move
     /// To, where Return must never act on a folder nobody chose.
     public let selectFirstPlace: Bool
-    /// Whether ⌘⌫ forgets a folder (`onForgetPlace`).
+    /// Whether ⌘⌫ forgets a folder.
     public let canForgetPlaces: Bool
     public private(set) var text = ""
     public private(set) var completions: [GoToCompletion] = []
@@ -65,7 +64,7 @@ public struct GoToBoxState: Equatable, Sendable {
     public private(set) var selectedIndex = -1
     public var submitting = false
     public var error: String?
-    /// The pointer's last place over the list (`lastPointerRef`): a row is selected only once it really moved.
+    /// The pointer's last place over the list: a row is selected only once it really moved.
     public var lastPointer: CGPoint?
 
     public init(places: [Place], selectFirstPlace: Bool = true, canForgetPlaces: Bool = true) {
@@ -218,7 +217,7 @@ public struct GoToBoxState: Equatable, Sendable {
         let row = rows[index]
         guard isPathMode else { return .submit(row.path) }
         let effect = acceptCompletion(row, descend: false)
-        // `setSelectedIndex(index)` follows, but the text changed in path mode, so the selection is none again.
+        // The click doesn't select the row: the text changed in path mode, so the selection is none again.
         return effect
     }
 

@@ -1,9 +1,8 @@
-// Port of apps/desktop/src/main/bootstrap/trashItem.ts
 import FTFileSystem
 import FTFoundation
 import Foundation
 
-/// `createTrashItem`: moves an item to the Trash and returns the path it has there (nil when the Trash didn't
+/// Moves an item to the Trash and returns the path it has there (nil when the Trash didn't
 /// say), with a failure that says why.
 /// The Trash gives its reason as a sentence, with the errno it stands for when that can be told (see
 /// `NativeFS.trashItem`). A locked item says so. A disk without a Trash (a network share, some USB drives)
@@ -35,7 +34,7 @@ public struct TrashItem: Sendable {
     }
 
     /// The app's Trash: `NativeFS.trashItem`, with the disk's flags and the mount table's idea of which disks
-    /// have a Trash (P2-05's `makeDiskHasTrash`).
+    /// have a Trash (`makeDiskHasTrash`).
     public static func live(homePath: String = NSHomeDirectory()) -> TrashItem {
         let fileSystem = PosixFileSystem()
         return TrashItem(

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/launchContext.ts
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -35,7 +34,6 @@ public enum LaunchContext {
         return FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) ? isDirectory.boolValue : nil
     }
 
-    /// `resolveLaunchWorkingDirectory`.
     public static func resolveWorkingDirectory(envPWD: String?, cwd: String) -> String {
         if !cwd.isEmpty, cwd.hasPrefix("/") { return cwd }
         if let envPWD, envPWD.hasPrefix("/") { return envPWD }

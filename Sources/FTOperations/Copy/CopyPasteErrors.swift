@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteErrors.ts
 import Darwin
 import Foundation
 
@@ -19,7 +18,7 @@ public enum CopyPasteErrors {
         "EIO": "A disk error occurred.",
         "EXDEV": "The item can't be moved directly to a different disk.",
         "EISDIR": "A folder is in the way where a file was expected.",
-        // Node's own code for removing a folder as if it were a file.
+        // The write service's own code for removing a folder as if it were a file.
         "ERR_FS_EISDIR": "A folder is in the way where a file was expected.",
         "ENOTDIR": "Part of the path isn't a folder any more.",
         "ENOTSUP": "This volume doesn't support this operation.",

@@ -1,5 +1,3 @@
-// Covers the List view and the content pane's states in an explorer window that is never shown, by feature row
-// (ContentPane.test.tsx and ContentPane.items.test.tsx, ContentPane.rowRenders.test.tsx and the hooks' tests)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -51,9 +49,8 @@ extension ContentPaneController {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ListTests: ListTesting {
-        // T-6f96314a F-764 F-765 F-766 B-VIEW-040 B-VIEW-053 B-INFO-180: the rows are 28 high and inset 10, the header
+        // The rows are 28 high and inset 10, the header
         // titles are the columns', and a folder shows "--" for its size.
-        // B-VIEW-001 B-VIEW-041 B-VIEW-043 T-b0215a2e T-c6d101c9
         @Test func drawsTheRowsAndTheHeader() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -75,11 +72,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-80505d69 F-770 B-VIEW-050 B-VIEW-051 B-VIEW-052: a drag on a separator resizes within the limits and keeps
+        // A drag on a separator resizes within the limits and keeps
         // the width; the arrow keys step by 12; a double-click fits.
-        // covered-by-feature F-768 F-771 T-f43eb8e0 T-b0215a2e B-VIEW-047 (header clicks sort; Created and Permissions
-        // can't: FTFoundation's DetailsLayoutTests.headerClicksSortLikeTheOriginal, and scenario 94's real click)
-        // T-077e781e T-2b76e848
         @Test func separatorsResizeTheColumns() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -103,9 +97,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-71a43ef8 T-115ec808 T-af56cfdc T-30f649b6 T-0ab3ac42 F-752 F-778 B-VIEW-062 B-VIEW-063 B-VIEW-064
-        // B-VIEW-065: the empty, error and Full Disk Access states.
-        // B-NAV-083 B-NAV-117 B-NAV-118 B-SEL-177 T-33845a65
+        // The empty, error and Full Disk Access states.
         @Test func theStates() async throws {
             let harness = try ExplorerHarness.windowless()
             let empty = harness.folder.appending("Empty")
@@ -126,9 +118,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-756 F-828 B-VIEW-008 B-VIEW-009 B-SEL-175: a selection stays through a change made outside the app, which
+        // A selection stays through a change made outside the app, which
         // appears without Loading….
-        // B-NAV-124 B-SEL-027 B-SEL-031 T-742803ad T-8b8a3319
         @Test func aChangeOutsideKeepsTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -142,14 +133,14 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.entries.contains { $0.name == "new.txt" } })
             #expect(tab.selectedPaths == [note])
             #expect(tab.content.container(for: .none))
-            // A selected item removed outside drops out (B-VIEW-192).
+            // A selected item removed outside drops out.
             try FileManager.default.removeItem(atPath: note)
             tab.refresh()
             #expect(await waitUntil { tab.selectedPaths.isEmpty })
             await harness.close()
         }
 
-        // B-VIEW-064: the card comes before the rows (ContentPane.tsx:591, 1319, 1865), so a folder left on screen under
+        // The card comes before the rows, so a folder left on screen under
         // an error has its items below the card, in every view, and back at the top once the error goes.
         @Test func aFolderLeftOnScreenHasItsItemsBelowTheErrorCard() async throws {
             let harness = try ExplorerHarness.windowless()

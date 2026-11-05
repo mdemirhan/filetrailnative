@@ -1,5 +1,4 @@
-// "Preparing to Paste…" comes only when the analysis is slow and never flashes (the dialog itself is
-// components/AppDialogs.tsx:290-308), on the timers moved by hand
+// "Preparing to Paste…" comes only when the analysis is slow and never flashes, on the timers moved by hand
 import AppKit
 import FTFoundation
 import Foundation
@@ -105,8 +104,7 @@ private final class Finishing {
         PreparingDialog(timers: timers, present: { [sheet] in sheet.present($0) }, onCancel: onCancel)
     }
 
-    // F-863: an analysis over within 500 ms never shows the dialog, and nothing waits.
-    // T-43d49580
+    // An analysis over within 500 ms never shows the dialog, and nothing waits.
     @Test func aFastAnalysisShowsNoDialog() async {
         let preparing = dialog()
         timers.advance(0.499)
@@ -117,7 +115,7 @@ private final class Finishing {
         #expect(sheet.shown == 0 && sheet.dismissed == 0)
     }
 
-    // F-863: still running at 500 ms, the dialog comes; Cancel stops the analysis.
+    // Still running at 500 ms, the dialog comes; Cancel stops the analysis.
     @Test func aSlowAnalysisShowsTheDialogAndCancelStopsIt() async throws {
         var cancels = 0
         let preparing = dialog { cancels += 1 }
@@ -132,7 +130,7 @@ private final class Finishing {
         #expect(sheet.dismissed == 0)
     }
 
-    // F-863: once up, the dialog stays 300 ms, however soon the analysis ends.
+    // Once up, the dialog stays 300 ms, however soon the analysis ends.
     @Test func theDialogStaysUpTheMinimumTime() async {
         let preparing = dialog()
         timers.advance(0.5)
@@ -180,8 +178,7 @@ private final class Finishing {
         #expect(!cancelled)
     }
 
-    // F-863: all four titles.
-    // B-CLIP-066
+    // All four titles.
     @Test func hasATitleForEachAction() {
         #expect(PreparingSheet.title(.paste) == "Preparing to Paste\u{2026}")
         #expect(PreparingSheet.title(.moveTo) == "Preparing to Move\u{2026}")
@@ -219,7 +216,6 @@ private final class Finishing {
     }
 
     // A slow check shows the dialog named for the action, and its Cancel stops the analysis and the flow.
-    // B-CLIP-066 B-CLIP-067 T-3862a35c T-43d49580 T-8c905b93 T-b0ae40c8
     @Test func aSlowCopyShowsTheDialogAndCancelEndsTheFlow() async throws {
         let service = HeldAnalysisService()
         let (actions, keep) = makeActions(service)
@@ -241,7 +237,6 @@ private final class Finishing {
     }
 
     // A check that ended while the dialog stays up doesn't start the write once Cancel was pressed.
-    // B-CLIP-067 T-1152bed3
     @Test func cancelWhileTheDialogStaysUpEndsTheFlow() async throws {
         let service = HeldAnalysisService()
         let (actions, keep) = makeActions(service)

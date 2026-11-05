@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/undoLog.test.ts
 import FTTestSupport
 import Foundation
 import Testing
@@ -17,7 +16,6 @@ private func makeFolder(_ url: URL) throws {
 }
 
 struct ItemIdTests {
-    // T-80e8e785 F-520 F-925
     @Test func isKnownOnlyWhenTheDiskGivesAUsableId() {
         #expect(itemIdOf(dev: 1, ino: 2) == ItemId(dev: 1, ino: 2))
         #expect(itemIdOf(dev: nil, ino: 2) == nil)
@@ -25,14 +23,12 @@ struct ItemIdTests {
         #expect(itemIdOf(dev: 1, ino: UInt64.max) == nil)
     }
 
-    // T-0d404d7a F-520
     @Test func isNullForAnItemThatCantBeRead() throws {
         try withTemporaryDirectory(prefix: "filetrail-undo-ids") { root in
             #expect(readItemId(disk.lstat, root.appending("gone").path) == nil)
         }
     }
 
-    // T-53270e4c F-520
     @Test func tellsTheSameItemOnlyByTwoKnownIds() {
         #expect(sameItemId(ItemId(dev: 1, ino: 2), ItemId(dev: 1, ino: 2)))
         #expect(!sameItemId(ItemId(dev: 1, ino: 2), ItemId(dev: 3, ino: 2)))
@@ -59,7 +55,6 @@ struct ItemIdTests {
 }
 
 struct ReadItemStampTests {
-    // T-c55b06fa F-520
     @Test func tellsFilesFoldersAndLinksApartAndCountsWhatAFolderHolds() throws {
         try withTemporaryDirectory(prefix: "filetrail-undo-ids") { root in
             try write(root.appending("a.txt"), "abc")
@@ -80,7 +75,6 @@ struct ReadItemStampTests {
         }
     }
 
-    // T-94d98c05 F-520
     @Test func doesntCountTheFilesFinderWritesIntoAFolderOnItsOwn() throws {
         try withTemporaryDirectory(prefix: "filetrail-undo-ids") { root in
             let folder = root.appending("Folder")
@@ -97,7 +91,6 @@ struct ReadItemStampTests {
     }
 
     // A folder whose item was renamed holds as many items, but not the same ones.
-    // T-4e34e63a F-520
     @Test func tellsAFolderWhoseItemsWereRenamedFromOneLeftAsItWas() throws {
         try withTemporaryDirectory(prefix: "filetrail-undo-ids") { root in
             let folder = root.appending("Folder")
@@ -112,14 +105,12 @@ struct ReadItemStampTests {
         }
     }
 
-    // T-15dd73aa F-520
     @Test func isNullForAnItemThatCantBeRead() throws {
         try withTemporaryDirectory(prefix: "filetrail-undo-ids") { root in
             #expect(readItemStamp(reader, root.appending("gone").path) == nil)
         }
     }
 
-    // T-5ee2a302 F-520
     @Test func leavesWhatItCantTellUnknown() {
         let folder = WriteServiceStats(type: .directory)
         #expect(
@@ -131,7 +122,7 @@ struct ReadItemStampTests {
         #expect(readItemStamp(device, "/dev/thing")?.kind == .other)
     }
 
-    // The digest is SHA-1 of the names sorted by UTF-16 code unit and joined by NUL, as the original's.
+    // The digest is SHA-1 of the names sorted by UTF-16 code unit and joined by NUL.
     @Test func digestsNamesAsTheOriginalDoes() {
         // printf 'a.txt\0b.txt' | shasum
         #expect(digestOfNames(["b.txt", "a.txt"]) == "6ce2420bc45fdd0df9530431b9bd05b5c9a7daf1")
@@ -142,7 +133,6 @@ struct ReadItemStampTests {
 }
 
 struct StampWithoutIdTests {
-    // T-9b741525 F-520
     @Test func keepsHowAnItemLooksOnlyWhenItHasNoIdToGoBy() throws {
         try withTemporaryDirectory(prefix: "filetrail-undo-ids") { root in
             try write(root.appending("a.txt"), "abc")
@@ -156,7 +146,7 @@ struct StampWithoutIdTests {
 }
 
 struct UndoLogCodingTests {
-    // The original's JSON: nulls where it writes null, optional keys only when set.
+    // The JSON has null for some keys without a value, and other optional keys only when set.
     @Test func encodesStepsInTheOriginalsShape() throws {
         let stamp = ItemStamp(kind: .file, size: 3, mtimeMs: 1.5, entryCount: nil)
         let log = UndoLog.undoable(units: [

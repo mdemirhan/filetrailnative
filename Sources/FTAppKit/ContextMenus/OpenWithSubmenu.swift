@@ -1,4 +1,3 @@
-// Port of the Open With parts of useExplorerActions.ts (contextMenuOpenWith) and openWith.ts, as NSMenu submenus
 import AppKit
 import FTFileSystem
 import FTFoundation

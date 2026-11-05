@@ -1,10 +1,8 @@
-// Port of the "writeOperation:rename" handler, prepareRenameOperation, executeRenameOperation, emitSingleItemResult and
-// listsSeparateEntry (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFileSystem
 import FTFoundation
 import Foundation
 
-/// A rename checked and ready to run (`PreparedRenameOperation`).
+/// A rename checked and ready to run.
 struct PreparedRename: Sendable {
     var sourcePath: String
     var destinationPath: String
@@ -22,13 +20,13 @@ extension WriteCoordinator {
         return fileSystem
     }
 
-    /// `writeOperation:rename`: renames one item in its folder. What the name and the disk allow is checked while
-    /// the write slot is held for it, so nothing starts meanwhile; a refusal throws with the sentence to show.
+    /// Renames one item in its folder. What the name and the disk allow is checked while the write slot is held for
+    /// it, so nothing starts meanwhile; a refusal throws with the sentence to show.
     @discardableResult
     public func rename(sourcePath: String, destinationName: String, window: any WriteOperationWindow) async throws
         -> WriteOperationHandle
     {
-        // The contract's name check (`itemNameSchema`).
+        // The contract's name check.
         if let refusal = ItemNames.error(for: destinationName) {
             throw WriteCoordinatorError(refusal)
         }
@@ -41,7 +39,6 @@ extension WriteCoordinator {
         }
     }
 
-    /// `prepareRenameOperation`.
     func prepareRename(sourcePath rawSourcePath: String, destinationName rawName: String) async throws
         -> PreparedRename
     {
@@ -96,7 +93,6 @@ extension WriteCoordinator {
         return entries.contains { sameText($0, name) }
     }
 
-    /// `executeRenameOperation`.
     static func executeRename(
         _ prepared: PreparedRename, _ operation: LocalWriteOperation, _ fileSystem: any LocalWriteFileSystem
     ) async {

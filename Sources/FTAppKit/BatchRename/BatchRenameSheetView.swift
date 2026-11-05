@@ -1,5 +1,3 @@
-// Port of BatchRenameSheet, ReplaceOptions, AddOptions, FormatOptions and CaseOptions of
-// apps/desktop/src/renderer/components/BatchRenameSheet.tsx, as styles.css lays them out (6696-7170)
 import AppKit
 import FTFoundation
 import FTOperations
@@ -61,7 +59,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     let adviceGlyph = BatchRenameGlyphView(.warning, identifier: "batchRename.warning")
     let adviceText: ThemedText
     // Preview and footer
-    /// The header's box (`.batch-rename-header`), for the captures; it draws nothing.
+    /// The header's box, for the geometry dumps; it draws nothing.
     let headerBox = NSView()
     let preview = BatchRenamePreviewView()
     let footerLine = BatchRenameFooterLine()
@@ -249,7 +247,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
 
     // MARK: Numbers
 
-    /// `NumberField`: the digits typed are kept as typed; the setting takes the nearest whole number allowed.
+    /// The digits typed are kept as typed; the setting takes the nearest whole number allowed.
     func typedNumber(_ text: String, step: Bool) {
         if step {
             if let value = stepDraft.typed(text, least: 1) { set { $0.step = value } }
@@ -344,9 +342,8 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
 
     var initialResponder: NSView? { firstField?.field ?? self }
 
-    /// `useBatchRename.open` reads the preferences before the sheet comes, and in that gap no dialog suppresses the focus
-    /// restore (`restoreExplorerPaneFocus`), which sets the content focused again: unlike under the other dialogs, the
-    /// list keeps the accent (the original's capture of 240).
+    /// Unlike under the other dialogs, the list keeps the accent while this sheet is open: the folder pane stays
+    /// focused.
     var keepsPaneFocus: Bool { true }
 
     override var acceptsFirstResponder: Bool { true }
@@ -1006,7 +1003,7 @@ struct BatchRenameGridCell {
     var marginTop: CGFloat = 0
 }
 
-/// The footer's top line (`border-top: 1px solid var(--border-light)`).
+/// The footer's top line: 1 px in the light border color.
 @MainActor
 final class BatchRenameFooterLine: NSView, ThemeApplying {
     private var theme = AppearanceModel.shared.theme

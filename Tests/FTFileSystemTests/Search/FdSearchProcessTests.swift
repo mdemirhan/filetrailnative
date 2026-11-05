@@ -1,4 +1,4 @@
-// Searches run by the real bundled fd: the reference's results on the fixtures, and no fd left after quitting.
+// Searches run by the real bundled fd: the golden results on the fixtures, and no fd left after quitting.
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -66,7 +66,6 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         FdSearchRuntime(fdBinaryPath: try FdBinary.resolveBundledPath())
     }
 
-    // F-193 F-194 F-195 F-196 F-199
     @Test(.enabled(if: hasFd))
     func matchesTheReferenceOnTheScratchTreeAndTheLighthouseFixture() throws {
         let cases: [GoldenCase<ResultsInput, ResultsOutput>] = try Golden.load(suite: "search-results")
@@ -104,7 +103,7 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
     }
 
     /// Made with POSIX calls, which keep a name's bytes as given: Foundation would write "é" decomposed, and fd (and the
-    /// reference, made with Node) would list it as such.
+    /// golden) would list it as such.
     private func build(_ entries: [ResultsInput.Entry], in top: URL) throws {
         for entry in entries {
             let path = top.path + "/" + entry.path
@@ -195,7 +194,6 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
         }
     }
 
-    // T-1481cd4f F-198
     @Test(.enabled(if: hasFd))
     func quittingWhileASearchRunsLeavesNoFdBehind() async throws {
         let runtime = try makeRuntime()
@@ -238,7 +236,7 @@ private func waitUntil(seconds: Double, _ condition: () -> Bool) async throws ->
     return condition()
 }
 
-/// The ids of the fd processes searching for `query` (found by their command line, as the original's test does).
+/// The ids of the fd processes searching for `query` (found by their command line).
 private func fdProcesses(for query: String) -> [String] {
     let process = Process()
     process.executableURL = URL(fileURLWithPath: "/bin/ps")

@@ -1,5 +1,4 @@
-// The drop decisions of apps/desktop/src/renderer/lib/internalDragAndDrop.ts, checked against goldens recorded from
-// the reference (tools/parity/golden/drag-operations.ts)
+// The drop decisions, checked against the drag-operations golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -53,8 +52,6 @@ struct DragOperationsGoldenTests {
         let refusal: String?
     }
 
-    // F-031 F-032 F-033 F-683 F-695 B-CLIP-157 B-CLIP-158 B-CLIP-159 B-CLIP-160 B-CLIP-161
-    // B-SRCH-145
     @Test func dropDecisionsMatchTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "drag-operations")
         #expect(cases.count >= 400)

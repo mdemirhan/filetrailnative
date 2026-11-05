@@ -1,19 +1,16 @@
-// Port of the writing half of WriteServiceFileSystem and removeEmptyFolder (packages/core/src/fs/writeServiceTypes.ts),
-// and of nativeFileSystem (packages/core/src/fs/testNativePaste.ts), the app's file system on node:fs
 import Darwin
 import FTFoundation
 import Foundation
 
 /// What a paste does to the disk, on top of what its review reads. The calls a disk may not have are nil when
-/// it hasn't them, as the original's optional methods are left out.
+/// it hasn't them.
 public protocol WriteServiceFileSystem: AnalysisFileSystem {
     /// rename(2) that fails with EEXIST instead of replacing an item at `to` (`renamex_np(RENAME_EXCL)`, checking
     /// first on a volume that can't do that).
     func renameExclusive(_ from: String, _ to: String) throws
     /// Makes one folder; never its parents, and fails (EEXIST) when anything is at `path`.
     func mkdir(_ path: String) throws
-    /// Node's `rm(path, { recursive, force })`: `force` ignores an item that isn't there; a folder needs
-    /// `recursive`.
+    /// Removes the item at `path`: `force` ignores an item that isn't there; a folder needs `recursive`.
     func rm(_ path: String, recursive: Bool, force: Bool) throws
     /// Removes an empty folder; fails (ENOTEMPTY or EEXIST) when anything is inside, "._name" files included
     /// (see `removeEmptyFolder`).
@@ -143,7 +140,7 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
     }
 }
 
-/// Node's `rm` and `rmdir` on the disk.
+/// `rm` and `rmdir` on the disk.
 enum NativeRemoval {
     static func rm(_ path: String, recursive: Bool, force: Bool) throws {
         var info = Darwin.stat()

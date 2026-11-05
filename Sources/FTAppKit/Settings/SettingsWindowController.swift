@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/SettingsWindowApp.tsx and openSettingsWindow in apps/desktop/src/main/main.ts
 import AppKit
 import FTFoundation
 

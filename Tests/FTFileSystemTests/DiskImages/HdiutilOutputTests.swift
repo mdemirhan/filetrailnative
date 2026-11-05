@@ -17,7 +17,6 @@ private func attachOutput(_ mountPoints: String...) -> String {
 }
 
 @Suite struct HdiutilOutputTests {
-    // T-31e7e6e9
     @Test func readsEveryValueOfAKeyWithXMLEscapesUndone() {
         #expect(
             HdiutilOutput.strings(in: attachOutput("/Volumes/Tom &amp; Jerry", "/Volumes/A&#38;B"), key: "mount-point")
@@ -25,12 +24,11 @@ private func attachOutput(_ mountPoints: String...) -> String {
         #expect(HdiutilOutput.strings(in: attachOutput(), key: "mount-point") == [])
     }
 
-    // T-cc58861d
     @Test func readsABooleanOrNilWhenTheKeyIsntThere() {
         #expect(HdiutilOutput.boolean(in: plist("<key>encrypted</key>\n\t<true/>"), key: "encrypted") == true)
         #expect(HdiutilOutput.boolean(in: plist("<key>encrypted</key><false/>"), key: "encrypted") == false)
         #expect(HdiutilOutput.boolean(in: plist(""), key: "encrypted") == nil)
-        // Only a boolean counts, as in the original.
+        // Only a boolean counts.
         #expect(HdiutilOutput.boolean(in: plist("<key>encrypted</key><integer>1</integer>"), key: "encrypted") == nil)
     }
 
@@ -39,7 +37,6 @@ private func attachOutput(_ mountPoints: String...) -> String {
         #expect(HdiutilOutput.boolean(in: "", key: "encrypted") == nil)
     }
 
-    // T-f00e9d77
     @Test func readsWhyAnAttachFailedPastTheDeprecationWarning() {
         let image = HdiutilOutput.attachFailure(
             stderr: "\(deprecated)hdiutil: attach failed - image not recognized\n")
@@ -55,14 +52,12 @@ private func attachOutput(_ mountPoints: String...) -> String {
 }
 
 @Suite struct DiskImageNamesTests {
-    // T-283a48d5
     @Test func namesTheImageAndGivesHdiutilsReasonAsASentence() {
         let notice = DiskImageNames.describeFailure(path: "/Users/demo/Broken.dmg", reason: "no mountable file systems")
         #expect(notice.title == "The disk image \u{201C}Broken.dmg\u{201D} couldn\u{2019}t be opened.")
         #expect(notice.message == "No mountable file systems.")
     }
 
-    // T-82f5a19e
     @Test func saysAnUnexpectedErrorOccurredWithoutAReason() {
         #expect(
             DiskImageNames.describeFailure(path: "/Users/demo/Broken.dmg", reason: nil).message
@@ -73,7 +68,6 @@ private func attachOutput(_ mountPoints: String...) -> String {
         #expect(DiskImageNames.describeFailure(path: "/Users/demo/Broken.dmg", reason: " busy. ").message == "Busy.")
     }
 
-    // T-9e5c81d0 F-216
     @Test func knowsDiskImagesByTheExtensionsDiskImageMounterOpensInAnyCase() {
         #expect(DiskImageNames.isDiskImagePath("/Users/demo/Install.dmg"))
         #expect(DiskImageNames.isDiskImagePath("/Users/demo/Backup.SPARSEBUNDLE"))
@@ -86,7 +80,7 @@ private func attachOutput(_ mountPoints: String...) -> String {
 }
 
 @MainActor @Suite struct OpenFileEntryPointTests {
-    // The app's open-file handling (apps/desktop/src/main/main.ts): what `describe` says of each, queued until windows exist.
+    // The app's open-file handling: what `describe` says of each, queued until windows exist.
     @Test func takesWhatItIsToldAndWaitsForTheWindows() {
         var opened: [String] = []
         let entry = OpenFileEntryPoint(

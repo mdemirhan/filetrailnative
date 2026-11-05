@@ -1,5 +1,5 @@
-// The Rename sheet's metrics (apps/desktop/src/renderer/styles.css 6696-7170), laid out on a window that is never shown
-// and compared with BatchRenameSheetLayout, as the original's CSS places each part
+// The Rename sheet's metrics, laid out on a window that is never shown
+// and compared with where BatchRenameSheetLayout places each part
 import AppKit
 import FTFoundation
 import Foundation
@@ -16,7 +16,7 @@ extension ExplorerWindowlessTests {
             view.convert(view.bounds, to: sheet)
         }
 
-        // F-873 F-874 F-878 F-879: 680 wide and 60 below the window's top; the header, the centered mode control, the
+        // 680 wide and 60 below the window's top; the header, the centered mode control, the
         // grid's 112 / 1fr / 132 / 1fr columns, the preview's header and rows, and the footer.
         @Test func laysTheSheetOutAsTheStylesheetDoes() async throws {
             let fixture = await BatchRenameSheetFixture([
@@ -111,7 +111,7 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-873: naming a preset puts a 180 wide field, Cancel and Save where the pull-down was.
+        // Naming a preset puts a 180 wide field, Cancel and Save where the pull-down was.
         @Test func namingAPresetShowsTheFieldAndItsButtonsInTheHeader() async throws {
             let fixture = await BatchRenameSheetFixture([BatchRenameSheetFixture.target("a.jpg")])
             fixture.pick(fixture.sheet.presetsPopUp, "Save as Preset\u{2026}")
@@ -128,7 +128,7 @@ extension ExplorerWindowlessTests {
             fixture.close()
         }
 
-        // F-876: Format by a custom date pattern: the pattern field, the tokens 20 tall under it, and the example.
+        // Format by a custom date pattern: the pattern field, the tokens 20 tall under it, and the example.
         @Test func laysTheDatePatternAndItsTokensOut() async throws {
             let fixture = await BatchRenameSheetFixture([BatchRenameSheetFixture.target("a.jpg")]) {
                 $0.mode = .format

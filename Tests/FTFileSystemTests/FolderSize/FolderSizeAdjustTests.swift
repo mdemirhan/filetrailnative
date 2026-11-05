@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/main/bootstrap/folderSizeAdjust.test.ts
 import Foundation
 import Testing
 
@@ -50,7 +49,6 @@ private func adjust(
 }
 
 @Suite struct FolderSizeAdjustTests {
-    // T-3c0430d8 F-238 F-191
     @Test func takesADeletedFileOffEveryMeasuredFolderThatHeldIt() {
         #expect(
             adjust(
@@ -69,7 +67,6 @@ private func adjust(
                 ])
     }
 
-    // T-ea6f97e9 F-238 F-191
     @Test func takesADeletedFolderOffWithEverythingInItAndForgetsItsOwnSizes() {
         // 4 files, and the folder with the 1 folder inside it.
         #expect(
@@ -82,7 +79,6 @@ private func adjust(
                 [deleted("/Users/demo/Old", folder())]) == ["/Users/demo": sized(600, 6, 2)])
     }
 
-    // T-dd18e601 F-238
     @Test func takesOffNothingForItemsAMeasurementDoesntCountLikeAPipe() {
         let entries = ["/Users/demo": sized(1_000, 10)]
         #expect(
@@ -92,7 +88,6 @@ private func adjust(
                 == entries)
     }
 
-    // T-ab3b624e F-238 F-191
     @Test func forgetsTheFoldersThatHeldWhatCouldntBeReadFirstOrMeasured() {
         let entries = [
             "/Users/demo": sized(1_000, 10, 2),
@@ -106,7 +101,6 @@ private func adjust(
             adjust(entries, [deleted("/Users/demo/Old", folder())]) == ["/Users/demo/Music": sized(300, 3)])
     }
 
-    // T-db4495e6 F-238
     @Test func forgetsAFolderWhoseMeasurementMayNotHaveReachedTheItem() {
         // Nothing known for Private: it may not have been readable when Users/demo was measured.
         #expect(
@@ -119,7 +113,6 @@ private func adjust(
                 == ["/Users/demo/Private/notes": sized(60, 0)])
     }
 
-    // T-6aa64f5c F-238
     @Test func leavesAFolderMeasuredOnAnotherDiskWhoseMeasurementStoppedAtTheDisk() {
         #expect(
             adjust(
@@ -136,7 +129,6 @@ private func adjust(
                 ])
     }
 
-    // T-629cdeb7 F-238
     @Test func countsAFolderOnAnotherDiskAMountPointAsOneFolderAndNothingInside() {
         #expect(
             adjust(
@@ -145,7 +137,6 @@ private func adjust(
                 == ["/Users/demo": sized(1_000, 10, 2)])
     }
 
-    // T-48af9715 F-238
     @Test func forgetsAFolderItsChangeWouldTakeBelowZero() {
         #expect(
             adjust(["/Users/demo": sized(100, 1)], [deleted("/Users/demo/a.txt", file(500))]).isEmpty)
@@ -153,7 +144,6 @@ private func adjust(
 
     // Folder 100 MB with Inner 50 MB in it; Inner grew to 80 MB and was measured again on its own. Taking 80 MB
     // off Folder's 100 left 20 MB where 50 MB remained.
-    // T-db1e3133 F-238
     @Test func forgetsAFolderRatherThanTakeOffAFolderInsideMeasuredAgainSince() {
         #expect(
             adjust(
@@ -165,7 +155,6 @@ private func adjust(
             ).isEmpty)
     }
 
-    // T-89ca3d02 F-238
     @Test func forgetsAFolderRatherThanReachTheItemThroughAFolderMeasuredOnItsOwn() {
         // "/" was measured, and /Users measured again by itself later.
         #expect(
@@ -182,7 +171,6 @@ private func adjust(
                 ])
     }
 
-    // T-985ec077 F-238 F-191
     @Test func takesAMeasuredFolderOffTheMeasuredFolderHoldingItAndForgetsItsOwnSizes() {
         #expect(
             adjust(
@@ -205,7 +193,6 @@ private func adjust(
 
     // A link to a folder is counted as itself and never walked: what is reached through it was never counted by
     // the folders holding the link.
-    // T-d52535d2 F-238
     @Test func forgetsTheFoldersHoldingALinkThatAnItemWasRemovedThrough() {
         #expect(
             adjust(
@@ -217,7 +204,6 @@ private func adjust(
                 == ["/Users/demo/link/notes": measuredAgain(200, 2)])
     }
 
-    // T-a1acc72e F-238 F-191
     @Test func takesSeveralItemsOffOneAfterAnother() {
         #expect(
             adjust(
@@ -235,7 +221,6 @@ private func adjust(
             trash: sized(50, 1),
         ]
 
-        // T-6ed18d4a F-238 F-192
         @Test func keepsTheSizeOfAFolderThatCountedTheTrashAndAddsToTheTrash() {
             #expect(
                 adjust(entries, [trashed("/Users/demo/Downloads/a.zip", file(200))], counted: true)
@@ -246,7 +231,6 @@ private func adjust(
                     ])
         }
 
-        // T-52c8a54b F-238
         @Test func takesItOffAFolderThatCouldntReadTheTrash() {
             var unreadable = entries
             unreadable[trash] = nil
@@ -258,7 +242,6 @@ private func adjust(
                     ])
         }
 
-        // T-7a063fd6 F-238
         @Test func forgetsTheFoldersHoldingTheTrashWhileItIsntKnownWhetherItWasRead() {
             #expect(
                 adjust(entries, [trashed("/Users/demo/Downloads/a.zip", file(200))], counted: nil)
@@ -269,7 +252,6 @@ private func adjust(
                     ])
         }
 
-        // T-3fced040 F-238 F-192
         @Test func addsWhatComesFromOutsideTheHomeFolderToTheFoldersHoldingTheTrash() {
             #expect(
                 adjust(
@@ -291,7 +273,6 @@ private func adjust(
                     ])
         }
 
-        // T-e7fd8fe4 F-238 F-192
         @Test func forgetsTheFoldersHoldingTheTrashWhenItIsntKnownWhereAnItemWent() {
             #expect(
                 adjust(entries, [trashed("/Users/demo/Downloads/a.zip", nil, nil)], counted: true).isEmpty)
@@ -307,7 +288,6 @@ private func adjust(
             ]
             let inTrash = "\(trash)/old.zip"
 
-            // T-fc36d4d5 F-238 F-192
             @Test func takesItOffTheTrashAndTheFoldersThatCountedTheTrash() {
                 for counted in [true, false, nil] as [Bool?] {
                     #expect(
@@ -320,7 +300,6 @@ private func adjust(
                 }
             }
 
-            // T-13e3ec68 F-238
             @Test func forgetsTheFoldersHoldingTheTrashWhenItHasNoSizeOfTheSameMeasurement() {
                 var unread = entries
                 unread[trash] = nil
@@ -337,7 +316,6 @@ private func adjust(
             }
         }
 
-        // T-4dd5fe3e F-238
         @Test func takesOffWhatWentToAnotherDisksTrashWhichNoMeasurementReads() {
             #expect(
                 adjust(entries, [trashed("/Users/demo/Downloads/a.zip", file(200), false)], counted: true)

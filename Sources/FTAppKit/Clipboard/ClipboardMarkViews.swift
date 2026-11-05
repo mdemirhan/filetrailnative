@@ -1,10 +1,8 @@
-// Port of ClipboardMarkIcon (apps/desktop/src/renderer/lib/clipboardMarks.tsx) and of the mark, cut and flash rules of
-// styles.css:7700-7835: the glyph after a name, the dimming of cut items and the flash at the moment of a copy or cut
 import AppKit
 import FTFoundation
 
-/// The copy or scissors glyph after an item's name (`.clipboard-mark-icon`): 12 pt, in the accent, or the color of
-/// the text on a selected row. It ignores the pointer.
+/// The copy or scissors glyph after an item's name: 12 pt, in the accent, or the color of the text on a selected row.
+/// It ignores the pointer.
 final class ClipboardMarkGlyph: NSView {
     private let glyph = ToolbarIconView(.copy)
 
@@ -47,8 +45,8 @@ final class ClipboardMarkGlyph: NSView {
     }
 }
 
-/// The flash of items at the moment they are copied or cut (`.clipboard-flash::after`): an overlay in the accent (the
-/// text color on a selected row), 0.45 → 0.12 → 0 over 700 ms. With Reduce Motion it doesn't run.
+/// The flash of items at the moment they are copied or cut: an overlay in the accent (the text color on a selected
+/// row), 0.45 → 0.12 → 0 over 700 ms. With Reduce Motion it doesn't run.
 @MainActor
 enum ClipboardFlash {
     static var reducesMotion: () -> Bool = { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }

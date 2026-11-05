@@ -1,4 +1,3 @@
-// Port of packages/native-fs/src/native_volumes.c (nativeListVolumes, nativeListMounts)
 import Darwin
 import Foundation
 
@@ -43,12 +42,12 @@ public enum VolumeListing {
         return (0..<Int(count)).map { MountRecord(table[$0]) }
     }
 
-    /// `nativeListMounts`: every mount, wherever it is mounted and however it is marked.
+    /// Every mount, wherever it is mounted and however it is marked.
     public static func listMounts() -> [MountPoint] {
         mounts().map { MountPoint(path: $0.path, isLocal: $0.isLocal) }
     }
 
-    /// `nativeListVolumes`, in the order of the mount table (see `Volume.sorted`).
+    /// In the order of the mount table (see `Volume.sorted`).
     public static func listVolumes(
         physicalDisk: (String) -> PhysicalDisk? = PhysicalDisk.lookup(bsdName:)
     ) -> [Volume] {

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/toolbarItems.ts
 import Foundation
 
 public struct ToolbarItemDefinition: Sendable, Equatable {
@@ -41,12 +40,10 @@ public enum ToolbarItems {
     private static let definitionByID: [ToolbarItemID: ToolbarItemDefinition] = Dictionary(
         uniqueKeysWithValues: definitions.map { ($0.id, $0) })
 
-    /// `isToolbarItemId`.
     public static func isToolbarItemID(_ value: String) -> Bool {
         ToolbarItemID(rawValue: value) != nil
     }
 
-    /// `getToolbarItemDefinition`.
     public static func definition(_ id: ToolbarItemID) -> ToolbarItemDefinition {
         definitionByID[id] ?? definitions[0]
     }
@@ -67,7 +64,6 @@ public enum ToolbarItems {
         return result
     }
 
-    /// `isRequiredTopToolbarItem`.
     public static func isRequiredTopItem(_ id: ToolbarItemID) -> Bool {
         definition(id).topRequired
     }
@@ -75,31 +71,31 @@ public enum ToolbarItems {
     /// The four items every top toolbar holds, in the default's order.
     private static let requiredTopItems = defaultTopItems.filter(isRequiredTopItem)
 
-    /// `sanitizeTopToolbarItems`: every top toolbar holds the title, the clipboard button, search and View Options;
+    /// Every top toolbar holds the title, the clipboard button, search and View Options;
     /// a list without one of them gets it at the end.
     public static func sanitizeTopItems(_ value: JSONNode?) -> [ToolbarItemID] {
         let next = sanitizeItemList(value)
         return next + requiredTopItems.filter { !next.contains($0) }
     }
 
-    /// `getTopToolbarPaletteItems`: what can still be put in the toolbar. Every item it does not hold yet, and the
+    /// What can still be put in the toolbar. Every item it does not hold yet, and the
     /// space, which it can hold any number of times.
     public static func paletteItems(excluding items: [ToolbarItemID]) -> [ToolbarItemID] {
         paletteOrder.filter { definition($0).allowDuplicates || !items.contains($0) }
     }
 
-    /// `addTopToolbarItem`: an item clicked in the palette goes at the far right.
+    /// An item clicked in the palette goes at the far right.
     public static func addTopItem(_ items: [ToolbarItemID], _ id: ToolbarItemID) -> [ToolbarItemID] {
         insertTopItem(items, id, at: items.count)
     }
 
-    /// `insertTopToolbarItem`: an item dropped into the toolbar, at `index` (clamped to the ends).
+    /// An item dropped into the toolbar, at `index` (clamped to the ends).
     public static func insertTopItem(_ items: [ToolbarItemID], _ id: ToolbarItemID, at index: Int) -> [ToolbarItemID] {
         let position = max(0, min(index, items.count))
         return Array(items[..<position]) + [id] + Array(items[position...])
     }
 
-    /// `moveTopToolbarItem`: the item at `from` taken out and put back at `to`, an index in the order without it.
+    /// The item at `from` taken out and put back at `to`, an index in the order without it.
     public static func moveTopItem(_ items: [ToolbarItemID], from: Int, to: Int) -> [ToolbarItemID] {
         guard items.indices.contains(from) else { return items }
         let id = items[from]
@@ -108,7 +104,7 @@ public enum ToolbarItems {
         return insertTopItem(rest, id, at: to)
     }
 
-    /// `removeTopToolbarItem`: the item at `index` taken off the toolbar, unless it is one that always stays.
+    /// The item at `index` taken off the toolbar, unless it is one that always stays.
     public static func removeTopItem(_ items: [ToolbarItemID], at index: Int) -> [ToolbarItemID] {
         guard items.indices.contains(index), !isRequiredTopItem(items[index]) else { return items }
         var rest = items

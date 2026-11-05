@@ -1,4 +1,3 @@
-// Port of packages/contracts/src/writeEffects.test.ts, checked against tools/parity/golden/write-effects.ts
 import FTTestSupport
 import Foundation
 import Testing
@@ -8,8 +7,7 @@ import Testing
 struct WriteEffectsTests {
     typealias Item = WriteEffectItem
 
-    /// A small seeded generator, so a failure can be run again from its seed. (The original's has
-    /// float rounding in its multiply that a port can't reproduce; this one wraps in 64 bits.)
+    /// A small seeded generator, so a failure can be run again from its seed. It wraps in 64 bits.
     static func randomPaths(seed: Int, count: Int) -> [String] {
         var state = UInt64(seed)
         func next(_ limit: Int) -> Int {
@@ -40,7 +38,6 @@ struct WriteEffectsTests {
 
     // MARK: pathsChangedByWrite
 
-    // T-8699fb80 F-122
     @Test func listsTheFolderWrittenIntoAndEveryItemMovedMadeOrRemoved() {
         let paths = Self.changed(
             [("/Users/demo/a.txt", "/Users/demo/Dest/a.txt"), ("/Users/demo/Old", nil)],
@@ -48,7 +45,6 @@ struct WriteEffectsTests {
         #expect(paths.sorted() == ["/Users/demo/Dest", "/Users/demo/Old", "/Users/demo/a.txt"])
     }
 
-    // T-d0291da8 F-122
     @Test func listsWhereInTheTrashTheItemsAReplaceMovedOutOfTheWayWent() {
         let paths = Self.changed(
             [("/Users/demo/a.txt", "/Users/demo/Dest/a.txt")], directory: "/Users/demo/Dest",
@@ -56,7 +52,6 @@ struct WriteEffectsTests {
         #expect(paths.sorted() == ["/Users/demo/.Trash/a.txt", "/Users/demo/Dest", "/Users/demo/a.txt"])
     }
 
-    // T-f361383c F-122
     @Test func leavesOutAPathInsideAnotherWhichChangesNothingItCovers() {
         for seed in 1...200 {
             let all = Self.randomPaths(seed: seed, count: 1 + seed % 9)
@@ -73,7 +68,6 @@ struct WriteEffectsTests {
         }
     }
 
-    // T-28acaf45 F-122
     @Test func keepsOnlyTheFolderOfACopyOfManyFiles() {
         var items: [(String?, String?)] = (0..<100_000).map {
             ("/Users/demo/Photos/\($0 % 100)/IMG_\($0).jpg", "/Volumes/Backup/Photos/\($0 % 100)/IMG_\($0).jpg")
@@ -90,7 +84,6 @@ struct WriteEffectsTests {
 
     // MARK: isAffectedByChange
 
-    // T-831c2592 F-122
     @Test func coversTheItemWhatHoldsItAndWhatIsInsideIt() {
         let changed = ["/Users/demo/Projects/app"]
         #expect(WriteEffects.isAffectedByChange("/Users/demo/Projects/app", changedPaths: changed))
@@ -99,7 +92,6 @@ struct WriteEffectsTests {
         #expect(WriteEffects.isAffectedByChange("/Users/demo/Projects/app/src", changedPaths: changed))
     }
 
-    // T-f9bd792e
     @Test func leavesFoldersBesideItAlone() {
         let changed = ["/Users/demo/Projects/app"]
         #expect(!WriteEffects.isAffectedByChange("/Users/demo/Projects/application", changedPaths: changed))
@@ -121,7 +113,6 @@ struct WriteEffectsTests {
         }
     }
 
-    // T-257b6c57
     @Test func answersAsAskingAboutEachChangeInTurnDoes() {
         for seed in 1...200 {
             let changed = Self.randomPaths(seed: seed, count: 1 + seed % 7)
@@ -138,7 +129,6 @@ struct WriteEffectsTests {
         }
     }
 
-    // T-37d2531e F-122
     @Test func coversTheChangeWhatHoldsItAndWhatIsInsideItAndNothingBesideIt() {
         let matcher = ChangeMatcher(changedPaths: ["/Users/demo/Projects/app"])
         #expect(matcher.holdsChange("/Users/demo/Projects"))
@@ -152,7 +142,6 @@ struct WriteEffectsTests {
         #expect(!matcher.isAffected("/Users/demo/Music"))
     }
 
-    // T-9fedc531
     @Test func answersForManyPathsAgainstManyChangesQuickly() {
         let changed = (0..<5_000).map { "/Users/demo/Projects/p\($0 % 50)/src/file\($0).ts" }
         let cached = (0..<50_000).map { "/Users/demo/Library/Caches/c\($0 % 500)/d\($0)/e" }
@@ -172,7 +161,6 @@ struct WriteEffectsTests {
         Item(sourcePath: source, destinationPath: destination, status: status)
     }
 
-    // T-754ce4b0 F-122
     @Test func leavesOutAnItemInAFolderAlreadyKnownToHoldWhatChanged() {
         let items = [
             Self.item("/a/F", "/b/F"), Self.item("/a/F/x", "/b/F/x"), Self.item("/a/F/y", "/b/F/y"),
@@ -182,14 +170,11 @@ struct WriteEffectsTests {
             WriteEffects.itemsForOtherWindows(action: "paste", targetPath: "/b", items: items) == Array(items[0..<2]))
     }
 
-    // T-5ab80483
     @Test func takesAChangeWrittenWithATrailingSlashAsHoldingWhatIsInsideIt() {
         let items = [Self.item("/b/x", nil), Self.item("/b/y", nil)]
         #expect(WriteEffects.itemsForOtherWindows(action: "trash", targetPath: "/b/", items: items) == [])
     }
 
-    // T-f59648a8 F-122
-    // B-CLIP-042
     @Test func keepsAnItemATabWouldFollowOnItsOwn() {
         let items = [Self.item("/a/F", "/b/F", "failed"), Self.item("/a/F/x", "/b/F/x")]
         #expect(WriteEffects.itemsForOtherWindows(action: "move_to", items: items) == items)
@@ -197,7 +182,6 @@ struct WriteEffectsTests {
         #expect(!WriteEffects.isFollowedMove(Self.item("/a", "/a"), action: "rename"))
     }
 
-    // T-6c6a5043
     @Test func goesByTheNamesAloneForPathsThatArentAbsolute() {
         let items = [Self.item("x", nil), Self.item("x", nil), Self.item("y", "")]
         let kept = WriteEffects.itemsForOtherWindows(action: "trash", items: items)

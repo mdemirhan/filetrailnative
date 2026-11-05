@@ -1,20 +1,17 @@
-// Port of writeOperationProgressEventSchema, writeOperationResultSchema and writeOperationAdoptionSchema
-// (packages/contracts/src/ipc.ts), with the window's view of a write service event (toProgressEvent, forOtherWindows
-// and parseOwnProgressEvent of apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFoundation
 import Foundation
 
-/// `WriteOperationProgressEvent["status"]`: the same as a paste's.
+/// A write operation's status: the same as a paste's.
 public typealias WriteOperationStatus = CopyPasteOperationStatus
 
 extension CopyPasteOperationStatus {
-    /// `isTerminalStatus`: it finished, failed, stopped or partly worked.
+    /// It finished, failed, stopped or partly worked.
     public var isTerminal: Bool {
         self == .completed || self == .failed || self == .cancelled || self == .partial
     }
 }
 
-/// An item of a finished operation, as a window hears of it (`writeOperationItemResultSchema`).
+/// An item of a finished operation, as a window hears of it.
 public struct WriteOperationItem: Equatable, Sendable {
     public var sourcePath: String?
     public var destinationPath: String?
@@ -116,7 +113,7 @@ public struct WriteOperationResult: Equatable, Sendable {
     }
 }
 
-/// How a running operation is doing, as every window hears it (`WriteOperationProgressEvent`).
+/// How a running operation is doing, as every window hears it.
 public struct WriteOperationEvent: Equatable, Sendable {
     public var operationId: String
     public var action: WriteOperationAction
@@ -151,8 +148,8 @@ public struct WriteOperationEvent: Equatable, Sendable {
         self.result = result
     }
 
-    /// `toProgressEvent`: the window's view of a write service event, checked as every message to a window is
-    /// (`parseOwnProgressEvent`). Throws for an event a window can't be sent.
+    /// The window's view of a write service event, checked as every message to a window is.
+    /// Throws for an event a window can't be sent.
     public static func of(_ event: CopyPasteProgressEvent, action: WriteOperationAction) throws -> WriteOperationEvent {
         let result = event.result.map { result in
             WriteOperationResult(
@@ -179,7 +176,7 @@ public struct WriteOperationEvent: Equatable, Sendable {
         return event
     }
 
-    /// `parseOwnProgressEvent`: the event, when it passes the checks every message to a window goes through, except
+    /// The event, when it passes the checks every message to a window goes through, except
     /// for its result's items (made here, typed from the same contract). The checks are what the contract's schema
     /// holds that a Swift type doesn't: counts and sizes that are never negative, names that are never empty.
     public func checked() throws -> WriteOperationEvent {
@@ -210,7 +207,7 @@ public struct WriteOperationEventError: Error, Equatable, Sendable, CustomString
     public var description: String { "Invalid write operation event: \(field)" }
 }
 
-/// The checks of `writeOperationProgressEventSchema` that a Swift type doesn't hold by itself.
+/// The checks on an event that a Swift type doesn't hold by itself.
 enum WriteOperationEventCheck {
     static func event(_ event: WriteOperationEvent) throws {
         try nonEmpty(event.operationId, "operationId")

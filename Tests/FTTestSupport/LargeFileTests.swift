@@ -1,4 +1,3 @@
-// Port of the FILETRAIL_LARGE_FILE_TESTS gate in packages/core/src/fs/testDiskImage.ts
 import Darwin
 import Foundation
 import Testing

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/diskImages.ts (createDiskImageOpener)
 import Foundation
 
 public struct HdiutilResult: Sendable, Equatable {

@@ -1,5 +1,3 @@
-// Port of removeReplacedItem, assertReplacedItemUnchanged, countItemsInside and findLockedInside
-// (packages/core/src/fs/copyPasteExecution.ts)
 import FTFoundation
 import Foundation
 

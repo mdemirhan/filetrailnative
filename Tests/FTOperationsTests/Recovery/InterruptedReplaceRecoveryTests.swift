@@ -1,5 +1,3 @@
-// Port of the recovery cases of packages/core/src/fs/copyPasteFolderSafety.realfs.test.ts ("recovering interrupted
-// Replaces")
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -30,7 +28,6 @@ struct RecoveringInterruptedReplacesTests {
             staged: staged)
     }
 
-    // T-302e20ea F-355 F-524
     @Test func finishesAMoveWhoseOldItemAlreadyWentToTheTrash() throws {
         try withPlaces { root in
             let interrupted = entry(root, moved: true, staged: true)
@@ -44,7 +41,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-37290acb F-524
     @Test func touchesNothingWhileAnotherOperationWritesAndSaysTheEntryIsPutOff() throws {
         try withPlaces { root in
             let interrupted = entry(root, moved: true, staged: true)
@@ -59,7 +55,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-86936628 F-524
     @Test func makesItsChangesInsideRunWriteAloneWhenItIsGiven() throws {
         try withPlaces { root in
             let interrupted = entry(root, moved: true, staged: true)
@@ -85,7 +80,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-9b428919 F-355 F-524
     @Test func putsAMovedItemBackWhenTheOldItemWasNeverRemoved() throws {
         try withPlaces { root in
             let interrupted = entry(root, moved: true, staged: true)
@@ -100,7 +94,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-4110113e F-355 F-524
     @Test func givesAMovedItemAVisibleNameWhenBothOfItsPlacesAreTaken() throws {
         try withPlaces { root in
             let interrupted = entry(root, moved: true, staged: true)
@@ -115,7 +108,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-9d4d733c F-355 F-524
     @Test func finishesACompleteCopyWhoseOldItemAlreadyWentToTheTrash() throws {
         try withPlaces { root in
             let interrupted = entry(root, staged: true)
@@ -129,7 +121,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-10d0620f F-355 F-524 F-346
     @Test func removesAnUnfinishedCopyAndLeavesTheOldItemAlone() throws {
         try withPlaces { root in
             let interrupted = entry(
@@ -145,7 +136,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-be6c64e9 F-355 F-524
     @Test func removesAnUnfinishedCopyEvenWhenTheOldItemIsGone() throws {
         try withPlaces { root in
             let interrupted = entry(root, staged: false)
@@ -158,7 +148,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-19055326 F-524
     @Test func hasNothingToDoWhenTheReplaceHadFinished() throws {
         try withPlaces { root in
             try Disk.write(root + "/dst/report.txt", "done")
@@ -170,7 +159,6 @@ struct RecoveringInterruptedReplacesTests {
         }
     }
 
-    // T-c87860f8 F-524
     @Test func reportsAnEntryItCouldntRecoverAndGoesOnWithTheRest() throws {
         try withPlaces { root in
             let stuck = entry(root, id: "stuck", moved: true, staged: true)

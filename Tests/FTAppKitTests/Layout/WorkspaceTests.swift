@@ -1,6 +1,3 @@
-// Ports the grid cases of apps/desktop/src/renderer/components/ExplorerWorkspace.test.tsx, the window cases of
-// hooks/useExplorerPaneLayout.test.tsx, useElementSize.test.tsx and styles.responsive.test.ts, on an explorer window
-// that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -12,8 +9,6 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct WorkspaceTests {
-        // T-880733c9 T-6d329198 F-698 F-699 F-700 F-701 F-702 B-INFO-190 B-VIEW-236
-        // B-VIEW-105
         @Test func hidesTheFolderTreeGivingItsRoomToTheListAndTheToolbar() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -27,7 +22,7 @@ extension ExplorerWindowlessTests {
             #expect(workspace.frame(of: workspace.mainCell).minX == 288)
             #expect(workspace.frame(of: workspace.mainCell).minY == 52)
             // The content column starts at the sidebar's width, with no divider of the split's between them, and the band
-            // the capture names "toolbar" is the original's header over it. covered-by-feature F-707
+            // the capture names "toolbar" is the header over it.
             #expect(workspace.split.splitView.dividerThickness == 0)
             #expect(workspace.split.splitView is WorkspaceSplitView)
             let column = workspace.frame(of: workspace.contentColumn)
@@ -51,7 +46,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-707 F-698: the window is a sidebar split under a unified system toolbar, as Finder's: the sidebar runs the
+        // The window is a sidebar split under a unified system toolbar, as Finder's: the sidebar runs the
         // window's height, and the system tab bar shows over the content column only.
         @Test func putsTheTabBarOverTheContentColumnOnly() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -131,8 +126,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-5c92ae3b T-6932d3fd T-5d509651 F-705 B-INFO-183 B-INFO-184 B-INFO-185
-        // B-VIEW-104
         @Test func slidesTheInfoPanelInAndOutOverTheContent() async throws {
             let harness = try ExplorerHarness.windowless()
             // A panel open when the window is restored does not slide.
@@ -149,7 +142,7 @@ extension ExplorerWindowlessTests {
             #expect(workspace.frame(of: workspace.inspectorCell).minY == 52)
             #expect(workspace.frame(of: workspace.mainCell).maxX == width - 328)
             #expect(workspace.frame(of: workspace.inspectorResizer).minX == width - 328)
-            // The toolbar's band runs over the panel, as the original's.
+            // The toolbar's band runs over the panel.
             #expect(workspace.frame(of: workspace.contentColumn.band).maxX == width)
 
             tab.perform(.toggleInfoPanel)
@@ -209,7 +202,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-21dbb5e8 T-f539501b T-f1326c67 F-703 F-704 B-INFO-187 B-INFO-188 B-INFO-189
         @Test func squeezesThePanesInANarrowWindowAndKeepsTheChosenWidths() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -237,8 +229,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-afab159e T-ffa12885 T-f37b9997 T-39ebe2dd T-a8ad7dc0: N/A, scrollbarVisibility.ts shows a pane's scrollbars
-        // while it scrolls; AppKit's overlay scrollers already do, and the panes' scroll views let them hide.
         @Test func leavesTheScrollersToTheSystemsOverlayScrollers() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

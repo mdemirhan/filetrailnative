@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteMoveCleanup.test.ts
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -64,7 +63,6 @@ struct CopyPasteMoveCleanupTests {
         }
     }
 
-    // T-486dca97 F-468
     @Test func keepsTheOriginalOfACopyDeletedBeforeTheOriginalsGo() async throws {
         let fileSystem = folderOnAnotherDisk()
         let report = try analyze(fileSystem, ["/source/dir"])
@@ -78,7 +76,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(has(result, "/source/dir/b.txt", .completed))
     }
 
-    // T-59bb011e F-468
     @Test func keepsTheOriginalOfACopyCutShortOrOfALinkChanged() async throws {
         let fileSystem = folderOnAnotherDisk()
         let report = try analyze(fileSystem, ["/source/dir"])
@@ -96,7 +93,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(result.status == .partial)
     }
 
-    // T-522a608d F-468
     @Test func keepsTheOriginalOfASingleFileWhoseCopyCameOutShort() async throws {
         let fileSystem = folderOnAnotherDisk()
         let report = try analyze(fileSystem, ["/source/dir/a.txt"])
@@ -109,7 +105,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(result.items.map(\.error) == [Self.copyNotWhole])
     }
 
-    // T-08be9fda F-469
     @Test func removesAnOriginalThatChangedAfterTheReviewOnceThePersonGoesOnWithIt() async throws {
         let fileSystem = folderOnAnotherDisk()
         let report = try analyze(fileSystem, ["/source/dir"])
@@ -131,7 +126,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(!fileSystem.exists("/source/dir"))
     }
 
-    // T-81e70f11 F-331 F-469
     @Test func removesTheOriginalsAFolderSavedAnewHoldsOnceThePersonGoesOnWithIt() async throws {
         let fileSystem = folderOnAnotherDisk()
         fileSystem.addDirectory("/source/dir/sub", .directory(dev: 2))
@@ -157,7 +151,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(!fileSystem.exists("/source/dir"))
     }
 
-    // T-191f0b93 F-331 F-469
     @Test func removesAFolderSavedAnewAsAFileOnceThePersonGoesOnWithIt() async throws {
         let fileSystem = folderOnAnotherDisk()
         fileSystem.addDirectory("/source/dir/sub", .directory(dev: 2))
@@ -175,7 +168,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(!fileSystem.exists("/source/dir"))
     }
 
-    // T-b7549a25 F-331 F-469
     @Test func removesAFileSavedAnewAsAFolderOnceThePersonGoesOnWithIt() async throws {
         let fileSystem = folderOnAnotherDisk()
         let report = try analyze(fileSystem, ["/source/dir"])
@@ -192,7 +184,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(!fileSystem.exists("/source/dir"))
     }
 
-    // T-29b6a0dc F-469
     @Test func saysSoWhenAFileSavedAnewAsAFolderKeepsItsOriginalFolder() async throws {
         let fileSystem = folderOnAnotherDisk()
         let report = try analyze(fileSystem, ["/source/dir"])
@@ -219,7 +210,6 @@ struct CopyPasteMoveCleanupTests {
             })
     }
 
-    // T-45b926ae F-469
     @Test func namesAFolderSavedAnewAsAFileByWhatItIsWhenItsCopyFails() async throws {
         let fileSystem = folderOnAnotherDisk()
         fileSystem.addDirectory("/source/dir/sub", .directory(dev: 2))
@@ -238,7 +228,6 @@ struct CopyPasteMoveCleanupTests {
         #expect(fileSystem.readNode("/source/dir/sub")?.size == 7)
     }
 
-    // T-fc3aa466 F-271 F-468
     @Test func keepsAnOriginalFolderWhoseOwnMetadataItsCopyCouldntTake() async throws {
         let fileSystem = folderOnAnotherDisk()
         fileSystem.addDirectory("/source/dir/sub", .directory(dev: 2))

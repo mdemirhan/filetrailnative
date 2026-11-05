@@ -1,4 +1,3 @@
-// Port of the menu steps of tools/capture/electron/driver.ts (the original's Menu item clicks); no TypeScript source.
 #if DEBUG
     import AppKit
 

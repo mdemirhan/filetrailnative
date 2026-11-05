@@ -1,12 +1,10 @@
-// Port of what IconGridView.tsx and FlowListView (apps/desktop/src/renderer/components/ContentPane.tsx:1082-1448) share:
-// the scroll container, items placed from layout tokens instead of measured, and the selection colours of styles.css:4470-4500
-// and 8041-8053
+// The scroll container, items placed from layout tokens instead of measured, and the selection colours
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// What the clipboard holds of an item, as the views of the folder mark it (`ClipboardMarks` of `clipboardMarks.tsx`):
-/// copied, cut, or nothing. The window's clipboard (P5-08) tells the content pane.
+/// What the clipboard holds of an item, as the views of the folder mark it:
+/// copied, cut, or nothing. The window's clipboard tells the content pane.
 enum ContentClipboardMark: Equatable, Sendable {
     case copy, cut
 }
@@ -103,12 +101,12 @@ final class ItemGridLayout: NSCollectionViewLayout {
     }
 }
 
-/// The scroll container (`.content-scroll`): thin overlay scrollers, no background of its own. The Compact List turns
+/// The scroll container: thin overlay scrollers, no background of its own. The Compact List turns
 /// the wheel's up and down into sideways travel.
 final class ItemGridScrollView: NSScrollView {
-    /// The vertical wheel scrolls sideways (B-VIEW-035).
+    /// The vertical wheel scrolls sideways.
     var wheelScrollsSideways = false
-    /// How far one notch of a wheel without precise deltas moves: Chromium's 40 px per Cocoa line (B-VIEW-035).
+    /// How far one notch of a wheel without precise deltas moves: 40 px per line.
     static let wheelLineStep = 40.0
 
     /// The collection view gives its scroll view the scrollers of its layout's direction, which is vertical for a custom
@@ -125,7 +123,7 @@ final class ItemGridScrollView: NSScrollView {
             super.scrollWheel(with: event)
             return
         }
-        // DOM `deltaY` is down-positive; AppKit's is the other way round. A wheel without precise deltas moves by lines.
+        // AppKit's delta is up-positive, so it is turned over. A wheel without precise deltas moves by lines.
         let delta = -event.scrollingDeltaY * (event.hasPreciseScrollingDeltas ? 1 : CGFloat(Self.wheelLineStep))
         scrollSideways(by: Double(delta))
     }
@@ -199,10 +197,10 @@ final class ItemGridView: NSCollectionView, NSUserInterfaceValidations {
         return item.action.map { responds(to: $0) } ?? false
     }
 
-    /// Escape and ⌘. while nothing else takes them do nothing here (Escape never clears a selection, B-SEL-017).
+    /// Escape and ⌘. while nothing else takes them do nothing here (Escape never clears a selection).
     override func cancelOperation(_ sender: Any?) {}
 
-    /// Setting the selection from outside (the capture's `select` step) selects those items in the pane's model.
+    /// Setting the selection from outside (a scenario's `select` step) selects those items in the pane's model.
     override var selectionIndexPaths: Set<IndexPath> {
         get { super.selectionIndexPaths }
         set { pane?.selectFromOutside(newValue.map(\.item).sorted()) }
@@ -231,8 +229,8 @@ final class ItemGridRootView: NSView, RowsBelowCard {
     }
 }
 
-/// A transparent view over an item that names a state of it for the capture (selected, the name's pill); it reports the
-/// item's text, as the original's element does.
+/// A transparent view over an item that names a state of it for automation (selected, the name's pill); it reports
+/// the item's text.
 final class GridMarkerView: NSView, TextStyleSource {
     weak var source: NSTextField?
     var styleTextField: NSTextField? { source }

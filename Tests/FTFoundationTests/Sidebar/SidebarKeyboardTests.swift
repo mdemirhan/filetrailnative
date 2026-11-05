@@ -1,5 +1,4 @@
-// The sidebar's keyboard as decisions: apps/desktop/src/renderer/hooks/useExplorerNavigationController.ts (B-TREE-106..136)
-// and the cases of App.treeKeys.test.tsx that depend on it
+// The sidebar's keyboard as decisions, without views
 import Testing
 
 @testable import FTFoundation
@@ -56,8 +55,6 @@ struct SidebarKeyboardTests {
             nodes: nodes, rootPath: Self.home)
     }
 
-    // T-9f474d2b T-b523bf72 F-740 B-TREE-107 B-TREE-108
-    // B-NAV-084 B-NAV-087 B-SEL-099 B-TREE-095 B-TREE-106 B-TREE-110
     @Test func movesThroughTheRowsAndSkipsTheHeadings() {
         // Integrated: the first row is the first favorite, never the heading.
         let top = context(separate: false, selected: .favorite("/Applications"))
@@ -73,7 +70,6 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.decide(.down, end) == .select(.filesystem("/Users/demo/link"), subview: nil))
     }
 
-    // T-1389208f B-TREE-109
     @Test func withNothingSelectedDownTakesTheSecondRowAndUpTheFirst() {
         let none = context(separate: false, selected: nil)
         #expect(SidebarKeyboard.decide(.down, none) == .select(.favorite("/Users/demo/Desktop"), subview: nil))
@@ -83,8 +79,6 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.decide(.up, separate) == .select(.location("/Users/demo/.Trash"), subview: .favorites))
     }
 
-    // T-fc0da8c2 T-eaf07a43 T-05d06d43 T-6625a938 F-740 B-TREE-111 B-TREE-113
-    // B-NAV-079 B-NAV-088 B-NAV-089 B-SEL-100 B-SEL-101
     @Test func opensABranchWithRightGoesIntoItAndComesBackOutWithLeft() {
         let tree = context(separate: true, selected: .filesystem("/Users/demo/b"))
         // Never read: read and expand, the selection stays.
@@ -115,8 +109,6 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.decide(.right, closed) == .toggle(path: "/Users/demo/a"))
     }
 
-    // T-12edaacc B-TREE-112 B-TREE-114 B-TREE-125
-    // B-NAV-088 B-NAV-090 B-SEL-100 B-SEL-101 B-SEL-104
     @Test func leftAndRightDoNothingOnAFavoriteOrALocation() {
         for selected in [TreeItemID.favorite("/Applications"), .location("/")] {
             let integrated = context(separate: false, selected: selected)
@@ -128,8 +120,6 @@ struct SidebarKeyboardTests {
         }
     }
 
-    // T-12edaacc T-0be11137 T-06c248dd B-TREE-122 B-TREE-123 B-TREE-124
-    // B-NAV-090 B-SEL-104 B-TREE-126
     @Test func goesUpFromTheTopOfTheTreeIntoFavoritesAndDownAgain() {
         // Up from the top row of the tree: the last favorite or open location.
         let top = context(separate: true, selected: .filesystem("/Users/demo"))
@@ -149,16 +139,12 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.decide(.end, desktop) == .select(.location("/Users/demo/.Trash"), subview: nil))
     }
 
-    // T-1389208f B-TREE-123
-    // B-SEL-104
     @Test func goesUpIntoFavoritesFromAnEmptyTree() {
         let empty = context(separate: true, selected: nil, nodes: TreeNodes())
         #expect(SidebarKeyboard.decide(.up, empty) == .select(.location("/Users/demo/.Trash"), subview: .favorites))
         #expect(SidebarKeyboard.decide(.down, empty) == .none)
     }
 
-    // T-7ff56dd9 T-1a68f61e T-5ccadc2f F-740 B-TREE-115 B-TREE-116
-    // B-NAV-091 B-SEL-102 T-98ca3397
     @Test func returnOpensAFavoriteAgainReadsAnUnreadFolderAndTogglesTheOthers() {
         let favorite = context(separate: false, selected: .favorite("/Applications"))
         #expect(SidebarKeyboard.decideOpen(favorite) == .select(.favorite("/Applications"), subview: nil))
@@ -180,8 +166,6 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.decideOpen(context(separate: false, selected: nil)) == .none)
     }
 
-    // T-5acdef9e T-0b507270 T-5ccadc2f B-TREE-117
-    // B-NAV-060 B-NAV-061 B-SEL-103
     @Test func commandUpSelectsTheParentFolderButNotForAFavoriteALocationOrADiskRoot() {
         #expect(
             SidebarKeyboard.decideParent(context(separate: false, selected: .filesystem("/Users/demo/a")))
@@ -199,8 +183,6 @@ struct SidebarKeyboardTests {
                 context(separate: true, subview: .favorites, selected: .filesystem("/Users/demo/a"))) == .none)
     }
 
-    // T-e976a231 T-faee0026 T-df5c84b6 B-TREE-130 B-TREE-131 B-TREE-132
-    // B-NAV-093 B-SEL-096 B-SEL-098
     @Test func selectsTheFirstRowWhoseNameStartsWithWhatIsTyped() {
         let integrated = context(separate: false, selected: nil)
         #expect(SidebarKeyboard.typeaheadMatch("des", integrated) == .favorite("/Users/demo/Desktop"))
@@ -222,8 +204,6 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.typeaheadMatch("deep", tree) == .filesystem("/Users/demo/a/deep"))
     }
 
-    // T-13ea5c0d T-0782664c T-d651771b T-d5a14beb F-733 B-TREE-134 B-TREE-135
-    // B-NAV-100 B-NAV-155 B-SEL-061
     @Test func pagesByTheRowsOnScreenAndStopsAtTheEnds() {
         // rows on screen = floor(height / row height); a page is one less, half a page half of them, at least 1.
         let regular = DesignTokens.sidebar(density: .standard).rowHeight

@@ -1,4 +1,3 @@
-// Port of sanitizePreferences and its helpers in apps/desktop/src/main/appStateStore.ts (:556-884)
 import Foundation
 
 /// How the Rename sheet's saved settings and presets are checked: by the batch-rename package (`standard`).
@@ -13,7 +12,7 @@ public struct BatchRenameSanitizers: Sendable {
         self.presets = presets
     }
 
-    /// DEFAULT_BATCH_RENAME_SETTINGS (shared/batchRename.ts).
+    /// DEFAULT_BATCH_RENAME_SETTINGS.
     public static let defaultSettings: JSONNode = .object([
         "mode": .string("replace"), "find": .string(""), "replaceWith": .string(""), "matchCase": .bool(false),
         "useRegex": .bool(false), "addText": .string(""), "addWhere": .string("after"),
@@ -24,7 +23,7 @@ public struct BatchRenameSanitizers: Sendable {
         "caseStyle": .string("lower"), "applyTo": .string("name"), "onConflict": .string("number"),
     ])
 
-    /// The batch-rename package's checks (`sanitizeBatchRenameSettings`, `sanitizeBatchRenamePresets`).
+    /// The batch-rename package's checks.
     public static let standard = BatchRenameSanitizers(
         settings: { value in BatchRename.node(of: BatchRename.sanitizeSettings(value)) },
         presets: { value in
@@ -57,7 +56,6 @@ public enum PreferencesSanitizer {
         return compact.allSatisfy { record[$0]?.bool == true } ? .finder : .standard
     }
 
-    /// `sanitizeViewMode`.
     private static func viewMode(_ value: JSONNode?, _ fallback: ExplorerViewMode = .icons) -> ExplorerViewMode {
         value?.string.flatMap { ExplorerViewMode(rawValue: $0) } ?? fallback
     }
@@ -195,7 +193,7 @@ public enum PreferencesSanitizer {
 
     // MARK: Preferences
 
-    /// `sanitizePreferences`: every saved value is checked; one that is missing or invalid takes its default from
+    /// Every saved value is checked; one that is missing or invalid takes its default from
     /// `defaults` (what a new install starts with, or the preferences a change is applied to).
     public static func sanitize(
         _ value: JSONNode?, defaults: AppPreferences, batchRename: BatchRenameSanitizers = .standard

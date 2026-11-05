@@ -1,4 +1,4 @@
-// Views that draw with the app's palette (apps/desktop/src/renderer/styles.css), redrawn when the theme changes
+// Views that draw with the app's palette, redrawn when the theme changes
 import AppKit
 import FTFoundation
 

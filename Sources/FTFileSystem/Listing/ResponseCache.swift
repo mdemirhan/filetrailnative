@@ -1,5 +1,3 @@
-// Port of the listing, tree and metadata parts of apps/desktop/src/main/bootstrap/responseCache.ts
-// (the folder-size parts are P2-02's)
 import FTFoundation
 import Foundation
 

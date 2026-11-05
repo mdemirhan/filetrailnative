@@ -1,5 +1,3 @@
-// Port of AppearanceThumbnail, AppearanceModePicker and AccentSelector of
-// apps/desktop/src/renderer/components/SettingsView.tsx, drawn as styles.css:5588-5740 draws them
 import AppKit
 import FTFoundation
 
@@ -119,7 +117,7 @@ final class AppearanceOption: SettingsControlView {
     }
 }
 
-/// `AppearanceModePicker`: Auto, Light and Dark, like System Settings.
+/// Auto, Light and Dark, like System Settings.
 final class AppearancePicker: NSView, SettingsSized {
     private(set) var options: [AppearanceOption] = []
     var onChange: (ThemePreference) -> Void = { _ in }
@@ -224,7 +222,7 @@ final class AccentSwatch: SettingsControlView {
         edge.stroke()
     }
 
-    /// `conic-gradient(from 210deg, …)`: wedges of the colors between the stops, clockwise from 210 degrees.
+    /// A conic gradient: wedges of the colors between the stops, clockwise from 210 degrees.
     private func drawConic(in rect: NSRect) {
         NSGraphicsContext.saveGraphicsState()
         NSBezierPath(ovalIn: rect).addClip()
@@ -261,12 +259,12 @@ final class AccentSwatch: SettingsControlView {
 typealias ColorPicker = @MainActor (String, @escaping @MainActor (String) -> Void) -> Void
 
 /// `AccentSelector`: the accent colors as a row of swatches, with a custom color at the end that opens the system's
-/// color picker (B-DLG-236).
+/// color picker.
 final class AccentSelector: NSView, SettingsSized {
     private(set) var swatches: [AccentSwatch] = []
     var onChange: (String) -> Void = { _ in }
     private(set) var accent: String
-    /// Opens the color picker on a color; P6-04 uses NSColorPanel, tests replace it.
+    /// Opens the color picker on a color: NSColorPanel, which tests replace.
     var openColorPicker: ColorPicker = AccentSelector.openColorPanel
 
     init(accent: String, theme: Theme) {

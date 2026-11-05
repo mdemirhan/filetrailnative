@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteAnalysis.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -28,7 +27,6 @@ private func findChild(_ node: CopyPasteAnalysisNode?, endingWith suffix: String
 }
 
 struct CopyPasteAnalysisTests {
-    // T-899e0083 F-418
     @Test func normalizesSourceAndDestinationPaths() {
         #expect(
             normalizeCopyPasteAnalysisRequest(
@@ -41,7 +39,6 @@ struct CopyPasteAnalysisTests {
                     destinationDirectoryPath: "/target"))
     }
 
-    // T-dddfa761 F-418 F-241
     @Test func analyzesANewFileCopyIntoAnEmptyDestination() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/workspace", .directory()), ("/workspace/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -62,7 +59,6 @@ struct CopyPasteAnalysisTests {
         #expect(node.disposition == .new)
     }
 
-    // T-fe65bc63 F-419 F-256
     @Test func resolvesSameDirectoryCopyToAKeepBothDestinationName() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/workspace", .directory()), ("/workspace/file.txt", .file(size: 5)),
@@ -75,7 +71,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.issues.isEmpty)
     }
 
-    // T-88b2ff73 F-419 F-288
     @Test func blocksSameDirectoryCutAsASelfTarget() throws {
         let fileSystem = MockAnalysisFileSystem([("/workspace", .directory()), ("/workspace/file.txt", .file(size: 5))])
 
@@ -84,7 +79,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.issues.map(\.code) == [.samePath])
     }
 
-    // T-aa3a458d F-420 F-314
     @Test func flagsTopLevelAndNestedConflictsRecursivelyForFolders() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/Photos", .directory()), ("/source/Photos/logo.png", .file(size: 10)),
@@ -105,7 +99,6 @@ struct CopyPasteAnalysisTests {
             findChild(findChild(topLevel, endingWith: "/icons"), endingWith: "a.svg")?.conflictClass == .typeMismatch)
     }
 
-    // T-0d6c67b0 F-420 F-309
     @Test func detectsDestinationAndSourceIssues() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/workspace", .directory()), ("/workspace/file.txt", .file(size: 3)), ("/not-a-dir", .file(size: 1)),
@@ -123,7 +116,6 @@ struct CopyPasteAnalysisTests {
                 \.code) == [.sourceMissing])
     }
 
-    // T-7c7cd228 F-421 F-310
     @Test func rejectsCopyingADirectoryIntoItsOwnDescendant() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/workspace", .directory()), ("/workspace/folder", .directory()),
@@ -139,7 +131,6 @@ struct CopyPasteAnalysisTests {
 
     // A firmlink: "/Users/me/A" and "/System/Volumes/Data/Users/me/A" are one folder, and each keeps its own real
     // path.
-    // T-70baa7f0 F-421 F-310
     @Test func blocksPastingAFolderIntoItsOwnInsideReachedByAnotherSpelling() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/Users", .directory(ino: 900, dev: 1)), ("/Users/me", .directory(ino: 901, dev: 1)),
@@ -162,7 +153,6 @@ struct CopyPasteAnalysisTests {
         #expect(intoHolder.nodes.map(\.sourcePath) == ["/Users/me/B"])
     }
 
-    // T-be429cac F-422 F-318
     @Test func cantReplaceAnItemPastedTooUnderAnotherSpellingOfItsPath() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/x", .directory()), ("/x/a.txt", .file(size: 1)), ("/d", .directory(ino: 910, dev: 1)),
@@ -177,7 +167,6 @@ struct CopyPasteAnalysisTests {
         #expect(node.replaceBlockedReason == "It is another item being pasted.")
     }
 
-    // T-48e82758 F-423 F-311
     @Test func blocksSourcesFromDifferentFoldersThatWouldLandOnTheSameDestinationName() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/a", .directory()), ("/a/report.pdf", .file(size: 5)), ("/b", .directory()),
@@ -192,7 +181,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.issues.first?.destinationPath == "/target/Report.pdf")
     }
 
-    // T-622ce2f9 F-424
     @Test func fallsBackToASourceMissingIssueWhenParentChildRealpathChecksFail() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/workspace", .directory()), ("/workspace/folder", .directory()),
@@ -235,7 +223,6 @@ struct CopyPasteAnalysisTests {
         var paths: [String] = []
     }
 
-    // T-1b2630a3 F-425 F-281
     @Test func aFolderMovedOnItsOwnDiskIsRenamedWholeWithoutReadingWhatIsInIt() throws {
         let (fileSystem, read) = Self.folderToMove()
 
@@ -256,7 +243,6 @@ struct CopyPasteAnalysisTests {
         case whenCopied = "when copied"
     }
 
-    // T-0b446690 F-425 F-281
     @Test(arguments: ReadThrough.allCases)
     func aFolderMovedOnItsOwnDiskIsReadThrough(_ variant: ReadThrough) throws {
         let (mode, extra): (CopyPasteMode, [(String, MockAnalysisFileSystem.Seed)]) =
@@ -274,7 +260,6 @@ struct CopyPasteAnalysisTests {
         #expect(read.paths.contains("/source/Project/lib"))
     }
 
-    // T-f5015ebd F-426 F-320
     @Test func includesLargeBatchAndCutWarnings() throws {
         // On another disk, so the folder is read through rather than renamed whole.
         let fileSystem = MockAnalysisFileSystem([
@@ -292,7 +277,6 @@ struct CopyPasteAnalysisTests {
 
     // MARK: destinationTotalNodeCount
 
-    // T-001a2232 F-427 F-317
     @Test func countsDestinationItemsRecursivelyForADirectoryConflict() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/Photos", .directory()), ("/source/Photos/a.png", .file(size: 10)),
@@ -308,7 +292,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == 4)
     }
 
-    // T-ef2ab173 F-427
     @Test func countsHiddenDotfilesInTheDestinationDirectory() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/file.txt", .file(size: 1)),
@@ -322,7 +305,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == 3)
     }
 
-    // T-1525cf75 F-427
     @Test func returnsZeroForAnEmptyDestinationDirectory() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/file.txt", .file(size: 1)),
@@ -334,7 +316,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == 0)
     }
 
-    // T-28c543bb F-427
     @Test func countsSymlinksAsItemsInTheDestination() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/f.txt", .file(size: 1)),
@@ -347,7 +328,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == 1)
     }
 
-    // T-ddbc07b6 F-427
     @Test func returnsNullForFileConflictNodes() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -360,7 +340,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == nil)
     }
 
-    // T-789848b4 F-427 F-317
     @Test func countsTheExistingFolderOfATypeMismatch() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/item", .file(size: 5)), ("/target", .directory()),
@@ -375,7 +354,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationOnly == CopyPasteDestinationOnlySummary(count: 0, samplePaths: []))
     }
 
-    // T-22b17976 F-427
     @Test func returnsNullForNewItemsWithNoConflict() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -387,7 +365,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == nil)
     }
 
-    // T-0b4507a2 F-427
     @Test func returnsNullWhenDestinationReaddirFails() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/f.txt", .file(size: 1)),
@@ -407,7 +384,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == nil)
     }
 
-    // T-88d14058 F-427
     @Test func handlesDeeplyNestedDestinationTrees() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/root", .directory()), ("/source/root/f.txt", .file(size: 1)),
@@ -422,7 +398,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == 5)
     }
 
-    // T-96ce005a F-427
     @Test func countsMixedFileTypesCorrectlyInDestination() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/x.txt", .file(size: 1)),
@@ -436,7 +411,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.first?.destinationTotalNodeCount == 3)
     }
 
-    // T-7b971083 F-427
     @Test func reusesCachedCountsForNestedDestinationConflicts() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/root", .directory()), ("/source/root/sub", .directory()),
@@ -460,7 +434,6 @@ struct CopyPasteAnalysisTests {
         #expect(reads.paths.filter { $0 == "/target/root/sub" }.count == 1)
     }
 
-    // T-50c57947 F-427
     @Test func propagatesAbortsWhileCountingDestinationItems() {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/file.txt", .file(size: 1)),
@@ -475,7 +448,6 @@ struct CopyPasteAnalysisTests {
         }
     }
 
-    // T-ad772b7c F-314
     @Test func handlesSymlinkSourcesAsFirstClassNodes() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/alias", .symlink("actual.txt")), ("/target", .directory()),
@@ -491,7 +463,6 @@ struct CopyPasteAnalysisTests {
 
     // MARK: On a case-sensitive volume
 
-    // T-e9ca5d72 F-428 F-311
     @Test func onACaseSensitiveVolumeNamesThatDifferOnlyByCaseLandSideBySide() throws {
         let seed: [(String, MockAnalysisFileSystem.Seed)] = [
             ("/a/report.pdf", .file(size: 5)), ("/b/Report.pdf", .file(size: 7)), ("/target", .directory()),
@@ -509,7 +480,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.destinationCaseSensitive)
     }
 
-    // T-7849033d F-428 F-319
     @Test func onACaseSensitiveVolumeKeepBothNamesAreReservedByExactCase() throws {
         let seed: [(String, MockAnalysisFileSystem.Seed)] = [
             ("/source/notes.txt", .file(size: 5)), ("/source/Notes copy.txt", .file(size: 5)),
@@ -528,7 +498,6 @@ struct CopyPasteAnalysisTests {
                 == "/target/notes copy.txt")
     }
 
-    // T-21536dfd F-428 F-309
     @Test func onACaseSensitiveVolumeTheVolumeIsAskedOncePerAnalysis() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source/a.txt", .file(size: 5)), ("/source/b.txt", .file(size: 5)), ("/target/a.txt", .file(size: 1)),
@@ -547,7 +516,6 @@ struct CopyPasteAnalysisTests {
 
     // Each item in the way is checked against the others pasted by a lookup, not by reading every item pasted
     // again: 2,000 items in the way took 4 million reads.
-    // T-88e17c92 F-428
     @Test func readsTheDiskInProportionToTheItemsPasted() throws {
         func readsFor(_ count: Int) throws -> Int {
             let fileSystem = MockAnalysisFileSystem([("/src", .directory()), ("/dst", .directory())])
@@ -578,7 +546,6 @@ struct CopyPasteAnalysisTests {
     }
 
     // A move to another disk copies the folder and then removes it, the mounted disk's items with it.
-    // T-1d226fa8 F-429 F-287
     @Test func aDiskMountedInsideAFolderRefusesToMoveTheFolderToAnotherDisk() throws {
         let report = try analyze(Self.withMountedDisk(), .cut, ["/Users/me/project"], into: "/Volumes/Other")
 
@@ -593,7 +560,6 @@ struct CopyPasteAnalysisTests {
         #expect(report.nodes.isEmpty)
     }
 
-    // T-4b9c30b7 F-429
     @Test func aDiskMountedInsideAFolderIsCopiedDiskAndAll() throws {
         let report = try analyze(Self.withMountedDisk(), .copy, ["/Users/me/project"], into: "/Volumes/Other")
 
@@ -602,7 +568,6 @@ struct CopyPasteAnalysisTests {
     }
 
     // On the same disk the folder is renamed whole, and the disk stays mounted in it.
-    // T-9a10332f F-429
     @Test func aDiskMountedInsideAFolderMovesTheFolderOnItsOwnDisk() throws {
         let report = try analyze(Self.withMountedDisk(), .cut, ["/Users/me/project"], into: "/Users/me/target")
 
@@ -611,7 +576,6 @@ struct CopyPasteAnalysisTests {
 
     // Merged into a folder of the same name, its items are moved one by one: the mounted disk's would be copied
     // and removed.
-    // T-624982bf F-429 F-287
     @Test func aDiskMountedInsideAFolderRefusesToMergeTheFolderIntoAnotherOnItsOwnDisk() throws {
         let report = try analyze(
             Self.withMountedDisk([("/Users/me/target/project", .directory(dev: 1))]), .cut, ["/Users/me/project"],

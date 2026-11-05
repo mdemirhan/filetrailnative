@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteErrors.test.ts, and the copy-paste-errors golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -6,20 +5,17 @@ import Testing
 @testable import FTOperations
 
 struct CopyPasteErrorsTests {
-    // T-ccbbc9bb F-519
     @Test func givesAReasonWithoutThePathForAKnownErrorCode() {
         let error = OperationError("ENOSPC: no space left on device, write '/x/y'", code: "ENOSPC")
         #expect(describeCopyPasteError(error) == "There isn't enough free space on the destination disk.")
     }
 
-    // Node's fs.rm says "Path is a directory: rm returned EISDIR (is a directory) /var/…".
-    // T-69b20e09 F-519
+    // The write service's rm says "Path is a directory: rm returned EISDIR (is a directory) /var/…".
     @Test func readsNodesOwnCodeForAFolderRemovedAsAFile() {
         let error = OperationError("Path is a directory: rm returned EISDIR /var/x", code: "ERR_FS_EISDIR")
         #expect(describeCopyPasteError(error) == "A folder is in the way where a file was expected.")
     }
 
-    // T-f430c597 F-519
     @Test func fallsBackToTheErrorsOwnMessage() {
         #expect(describeCopyPasteError(OperationError("Something else")) == "Something else")
         #expect(describeCopyPasteError(OperationError("plain")) == "plain")
@@ -30,7 +26,6 @@ struct CopyPasteErrorsTests {
         #expect(errorCode(POSIXError(.ENOTSUP)) == "ENOTSUP")
     }
 
-    // F-334
     @Test func tellsALockedItemByItsFlags() {
         #expect(CopyPasteErrors.lockFlags == 0x2 | 0x4 | 0x20000 | 0x40000)
         #expect(CopyPasteErrors.userLockFlags == 0x2 | 0x4)
@@ -64,7 +59,7 @@ struct CopyPasteErrorsGoldenTests {
         var value: String?
     }
 
-    /// A Node error's `code`: a string, or a number (which `describeCopyPasteError` doesn't read).
+    /// An error's `code`: a string, or a number (which `describeCopyPasteError` doesn't read).
     enum Code: Codable, Sendable {
         case text(String)
         case number(Double)
@@ -93,8 +88,6 @@ struct CopyPasteErrorsGoldenTests {
         var described: String
     }
 
-    // F-409 F-519
-    // T-c8c37a58
     @Test func matchesTheReferenceForEveryErrnoAndNodeShapedErrors() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "copy-paste-errors")
         #expect(cases.count > 200)

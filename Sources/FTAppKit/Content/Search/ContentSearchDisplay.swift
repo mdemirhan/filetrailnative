@@ -1,5 +1,4 @@
-// Port of what App.tsx hands ContentPane in search mode (entries, listColumns with getFolderLabel, nameHighlight,
-// contentStateOverride, statusSummary, viewKey): search results shown by the folder's own views
+// Search results shown by the folder's own views
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -48,7 +47,7 @@ final class ContentSearchContext {
         self.requestSort = requestSort
     }
 
-    /// `formatSearchResultFolder`: "src › renderer", or the root's name for a result right in it.
+    /// "src › renderer", or the root's name for a result right in it.
     func folderLabel(_ path: String) -> String {
         if let known = folderLabels[path] { return known }
         let made = SearchResults.folderText(path: path, rootPath: rootPath)
@@ -56,7 +55,7 @@ final class ContentSearchContext {
         return made
     }
 
-    /// The match in a whole name (`findNameMatch`), remembered per name.
+    /// The match in a whole name, remembered per name.
     func match(in name: String) -> HighlightRange? {
         guard highlight != nil else { return nil }
         if let known = matches[name] { return known }
@@ -65,6 +64,6 @@ final class ContentSearchContext {
         return found
     }
 
-    /// The sort key the header's columns compare against (`listColumns.sortBy`).
+    /// The sort key the header's columns compare against.
     var headerSortKey: String { sortBy.rawValue }
 }

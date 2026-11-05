@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/finder.ts, isValidApplicationBundlePath and resolveApplicationDisplayName (apps/desktop/src/main/bootstrap/systemHandlers.ts) and formatPathForShell (apps/desktop/src/renderer/lib/explorerAppUtils.ts)
 import Foundation
 
 public enum ApplicationPaths {
@@ -28,8 +27,7 @@ public enum ApplicationPaths {
         return bundleName.isEmpty ? trimmed : bundleName
     }
 
-    /// Node's `path.normalize` for absolute paths: collapses repeated slashes and `.` parts; a
-    /// trailing slash is kept.
+    /// Normalizes an absolute path: collapses repeated slashes and `.` parts; a trailing slash is kept.
     static func normalize(_ path: String) -> String {
         let parts = path.split(separator: "/", omittingEmptySubsequences: true).filter { $0 != "." }
         var result = "/" + parts.joined(separator: "/")
@@ -37,14 +35,14 @@ public enum ApplicationPaths {
         return result
     }
 
-    /// Node's `path.basename`.
+    /// The last part of a path, trailing slashes ignored: "" for `/`.
     static func basename(_ path: String) -> String {
         var end = path.endIndex
         while end > path.startIndex, path[path.index(before: end)] == "/" { end = path.index(before: end) }
         return path[path.startIndex..<end].split(separator: "/").last.map(String.init) ?? ""
     }
 
-    /// Node's `path.dirname`.
+    /// The path without its last part: `/` for a top-level item or `/` itself, `.` for a bare name.
     static func dirname(_ path: String) -> String {
         var end = path.endIndex
         while end > path.startIndex, path[path.index(before: end)] == "/" { end = path.index(before: end) }
@@ -55,7 +53,7 @@ public enum ApplicationPaths {
         return head.isEmpty ? "/" : String(head)
     }
 
-    /// JavaScript's `String.prototype.trim` (whitespace and line terminators).
+    /// The text without the whitespace and line terminators at either end.
     static func trimmed(_ text: String) -> String {
         text.trimmingCharacters(in: .whitespacesAndNewlines)
     }

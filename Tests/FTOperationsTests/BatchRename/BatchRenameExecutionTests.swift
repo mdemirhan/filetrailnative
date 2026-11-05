@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/batchRenameExecution.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -39,7 +38,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 }
 
 @Suite struct BatchRenameExecutionTests {
-    // T-5a287b0b F-399 F-403 F-562
     @Test func renamesEachItemSaysAsEachStartsAndReportsWhereEachWent() {
         let disk = MemoryDisk(["/trip/a.jpg", "/trip/b.jpg"])
         var started: [(String, Int)] = []
@@ -57,7 +55,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
                     ], completedItemCount: 2, cancelled: false))
     }
 
-    // T-e4b62d85 F-398 F-562
     @Test func swapsTwoNamesByMovingOneAsideFirst() throws {
         let disk = MemoryDisk(["/trip/a.txt", "/trip/b.txt"])
         let result = run(disk, request([("a.txt", "b.txt"), ("b.txt", "a.txt")]))
@@ -76,7 +73,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(try disk.lstat("/trip/b.txt").ino == 10)
     }
 
-    // T-32934f6e F-398 F-562
     @Test func passesNamesAlongAChainAndAroundACycle() {
         let chain = MemoryDisk(["/trip/File 1", "/trip/File 2", "/trip/File 3"])
         _ = run(chain, request([("File 1", "File 2"), ("File 2", "File 3"), ("File 3", "File 4")]))
@@ -89,7 +85,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(!cycle.names().contains { $0.hasPrefix(".tmp") })
     }
 
-    // T-bd1f6314 F-399 F-562
     @Test func changesOnlyTheCaseOfANameWithAPlainRenameOnADiskThatIgnoresCase() {
         let disk = MemoryDisk(["/trip/notes.txt"])
         let result = run(disk, request([("notes.txt", "Notes.txt")]))
@@ -98,7 +93,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.calls.contains("rename:/trip/notes.txt->/trip/Notes.txt"))
     }
 
-    // T-bc483a74 F-399 F-562
     @Test func tellsTwoItemsApartOnADiskThatMindsCaseAndSwapsThem() throws {
         let disk = MemoryDisk(["/trip/a", "/trip/A"], caseSensitive: true)
         let result = run(disk, request([("a", "A"), ("A", "a")]))
@@ -111,7 +105,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(numbered.items.first?.destinationPath == "/trip/A 2")
     }
 
-    // T-76dc4fba F-399 F-562
     @Test func aTakenNameGetsTheFirstFreeNumberBeforeTheExtensionOrAtTheEndOfAFoldersName() {
         let disk = MemoryDisk([
             "/trip/a.jpg", "/trip/Lisbon.jpg", "/trip/Lisbon 2.jpg", "/trip/folder", "/trip/Photos",
@@ -123,7 +116,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(withDash.items.first?.destinationPath == "/trip/Lisbon-2.jpg")
     }
 
-    // T-6ba2cd08 F-399 F-562
     @Test func aTakenNameLeavesTheItemAsItIsWithSkip() {
         let disk = MemoryDisk(["/trip/a.jpg", "/trip/b.jpg", "/trip/Lisbon.jpg"])
         let result = run(disk, request([("a.jpg", "Lisbon.jpg"), ("b.jpg", "Lisbon 1.jpg")], onConflict: .skip))
@@ -135,7 +127,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["Lisbon 1.jpg", "Lisbon.jpg", "a.jpg"])
     }
 
-    // T-c1870fe5 F-399 F-562
     @Test func aTakenNameFailsTheItemWithDontRename() {
         let disk = MemoryDisk(["/trip/a.jpg", "/trip/Lisbon.jpg"])
         let result = run(disk, request([("a.jpg", "Lisbon.jpg")], onConflict: .block))
@@ -144,7 +135,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["Lisbon.jpg", "a.jpg"])
     }
 
-    // T-e3303b9c F-400 F-562
     @Test func putsAnItemMovedAsideBackUnderItsOldNameWhenItCantTakeItsNewOne() {
         // "b" moves aside for "c", finds "c" taken outside the batch, and goes back to "b".
         let disk = MemoryDisk(["/trip/a", "/trip/b", "/trip/c"])
@@ -153,7 +143,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["a", "b", "c"])
     }
 
-    // T-746da8a7 F-400 F-562
     @Test func givesAnItemItsOldNameWithANumberWhenAnotherItemTookItMeanwhile() {
         // "b" moves aside for "a", which takes "b"; then "b" can't become "c" (taken), and its old name is "a"'s now.
         let disk = MemoryDisk(["/trip/a", "/trip/b", "/trip/c"])
@@ -166,7 +155,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["b", "b 2", "c"])
     }
 
-    // T-7a01f4d1 F-400 F-562
     @Test func saysWhereAnItemIsWhenNotEvenANumberedOldNameCanBeGivenBack() {
         // Both move aside; "b" takes "a"; "a" can't take "b" (no permission), and can't go back under "a" ("b" has
         // it) or "a 2" (no permission either): it stays hidden, and says so.
@@ -184,7 +172,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == [".tmp-1", "a"])
     }
 
-    // T-6cf7b8eb F-400 F-562
     @Test func failsAnItemThatCouldntMoveAsideAndTheItemWantingItsNameFindsItTaken() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         disk.failures["renameExclusive:/trip/b->/trip/.tmp-0"] = errno("EACCES")
@@ -196,7 +183,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["b", "b 2"])
     }
 
-    // T-c258997a F-400 F-562
     @Test func putsAWaitingItemBackWhenItsRenameFailsForAnotherReason() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         disk.failures["renameExclusive:/trip/.tmp-0->/trip/c"] = errno("EIO")
@@ -209,7 +195,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["b", "b 2"])
     }
 
-    // T-a714c7dd F-403 F-562
     @Test func namesAMissingItemAndALockedOne() {
         let disk = MemoryDisk(["/trip/locked.txt"])
         disk.lockedPaths.insert("/trip/locked.txt")
@@ -223,7 +208,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(result.completedItemCount == 0)
     }
 
-    // T-65a07296 F-399 F-562
     @Test func reportsAFailedChangeOfCaseAndChangesTheCaseOfANameNotThereYet() {
         let failing = MemoryDisk(["/trip/notes.txt"])
         failing.failures["rename:/trip/notes.txt->/trip/Notes.txt"] = errno("EIO")
@@ -238,7 +222,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(sensitive.calls.contains("renameExclusive:/trip/a->/trip/A"))
     }
 
-    // T-ff5b764d F-399 F-562
     @Test func decidesAChangeOfCaseWithoutAFolderListingOrWithOneThatCantBeRead() {
         let noListing = MemoryDisk(["/trip/notes.txt"])
         noListing.listing = .none
@@ -250,7 +233,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(unreadable.names() == ["Notes.txt"])
     }
 
-    // T-8862cf5d F-399 F-562
     @Test func changesTheCaseOfNamesWithoutReadingTheFolderOnADiskKnownToIgnoreCase() {
         let disk = MemoryDisk(["/trip/a.txt", "/trip/b.txt", "/home/c.txt"])
         disk.caseAnswer = .answer(false)
@@ -267,7 +249,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.caseCalls == ["/trip", "/home"])
     }
 
-    // T-cc80b3a5 F-399 F-562
     @Test func readsTheFolderWhenTheDiskMindsCaseDoesntSayOrAnAccentsEncodingChanges() {
         for answer in [true, nil] as [Bool?] {
             let disk = MemoryDisk(["/trip/notes.txt"])
@@ -290,7 +271,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(accent.names().map { Array($0.unicodeScalars) } == [Array(decomposed.unicodeScalars)])
     }
 
-    // T-afcac389 F-398 F-562
     @Test func failsAnItemWhoseHiddenNameIsTakenWithoutMovingAnythingOntoIt() {
         let disk = MemoryDisk(["/trip/a", "/trip/b", "/trip/.tmp-0"])
         let result = run(disk, request([("a", "b"), ("b", "a")], onConflict: .skip))
@@ -302,7 +282,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == [".tmp-0", "a", "b"])
     }
 
-    // T-a2470bf1 F-562
     @Test func describesAnErrorWithoutACodeAsAPlainFailure() {
         struct Strange: Error, CustomStringConvertible { var description: String { "strange" } }
         let disk = MemoryDisk(["/trip/a"])
@@ -312,7 +291,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(result.items.first?.error?.isEmpty == false)
     }
 
-    // T-b56733f2 F-399 F-562
     @Test func givesUpNumberingAfterManyTries() {
         var files = ["/trip/a", "/trip/b"]
         for number in 2...10_001 {
@@ -323,7 +301,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(result.items.first?.status == .failed)
     }
 
-    // T-6a75658e F-562
     @Test func goesOnWhenSayingHowFarItGotFails() {
         struct WindowGone: Error {}
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
@@ -334,7 +311,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     // MARK: A folder and items inside it
 
-    // T-63880233 F-397 F-563
     @Test func renamesTheItemsInsideFirstAndSaysWhereTheyAreUnderTheFoldersNewName() {
         let disk = MemoryDisk(["/trip/sub", "/trip/sub/x.jpg", "/trip/sub/deeper/z.jpg"])
         var started: [String] = []
@@ -352,7 +328,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(result.completedItemCount == 3)
     }
 
-    // T-8c696bd9 F-397 F-563
     @Test func saysWhereTheItemsInsideARenamedPackageAreThoughItIsntNumberedAsAFolder() {
         let disk = MemoryDisk(["/trip/Tool.app", "/trip/Tool.app/x.jpg", "/trip/y.jpg"])
         let result = run(disk, request([("Tool.app", "Kit.app"), ("Tool.app/x.jpg", "z.jpg"), ("y.jpg", "w.jpg")]))
@@ -360,7 +335,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names("/trip/Kit.app") == ["z.jpg"])
     }
 
-    // T-5780085a F-397 F-563
     @Test func stillRenamesTheFolderWhenAnItemInsideItFailsAndSaysWhereThatItemIs() {
         let disk = MemoryDisk(["/trip/sub", "/trip/sub/x.jpg"])
         disk.failures["renameExclusive:/trip/sub/x.jpg->/trip/sub/y.jpg"] = errno("EACCES")
@@ -371,7 +345,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names("/trip/Day 1") == ["x.jpg"])
     }
 
-    // T-5ecda2e8 F-401 F-563
     @Test func leavesTheFolderAloneWhenStoppedWhileTheItemInsideIsRenamed() {
         let disk = MemoryDisk(["/trip/sub", "/trip/sub/x.jpg"])
         let signal = StopSignal()
@@ -384,7 +357,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["sub"])
     }
 
-    // T-e0b91db8 F-397 F-563
     @Test func swapsNamesInsideAFolderThatIsRenamedToo() {
         let disk = MemoryDisk(["/trip/sub", "/trip/sub/a", "/trip/sub/b"])
         let result = run(disk, request([("sub", "Day 1"), ("sub/a", "b"), ("sub/b", "a")], folders: ["sub"]))
@@ -395,7 +367,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     // MARK: Stopping
 
-    // T-2ada096a F-401 F-564
     @Test func renamesNothingWhenStoppedBeforeItStarts() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         let signal = StopSignal()
@@ -406,7 +377,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["a", "b"])
     }
 
-    // T-81c1b0f1 F-401 F-564
     @Test func stopsAfterTheItemUnderWayAndPutsTheWaitingOnesBack() {
         let disk = MemoryDisk(["/trip/a", "/trip/b", "/trip/c"])
         let signal = StopSignal()
@@ -421,7 +391,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(result.completedItemCount == 2)
     }
 
-    // T-9183ae51 F-401 F-564
     @Test func isntStoppedByAStopThatComesAsTheLastItemFinishes() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         let signal = StopSignal()
@@ -437,7 +406,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     // A deeper folder's item was renamed already; at this depth the stop comes after "a1" moved aside but before
     // "b1" did. "a1" can't finish its swap: "b1" still has the name.
-    // T-12cd3ad4 F-401 F-564
     @Test func putsADepthBackAsItWasWhenStoppedBeforeAllItsItemsMovedAside() {
         let disk = MemoryDisk(["/trip/A/x", "/trip/a1", "/trip/b1"])
         let signal = StopSignal()
@@ -453,7 +421,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     // "b" couldn't be moved aside for "a": a stop after "z" was renamed doesn't let "a" finish into a name "b" still
     // has.
-    // T-f9c6975e F-401 F-564
     @Test func putsADepthBackWhenOneOfItsItemsCouldntBeMovedAside() {
         let disk = MemoryDisk(["/trip/z", "/trip/a", "/trip/b"])
         let signal = StopSignal()
@@ -469,7 +436,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(result.cancelled)
     }
 
-    // T-2b39d19d F-401 F-564
     @Test func putsBackWhatWasMovedAsideWhenStoppedWhileMovingItemsAside() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         let signal = StopSignal()
@@ -485,7 +451,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 }
 
 @Suite struct BatchRenameJournalTests {
-    // T-80f7ca03 F-398 F-565
     @Test func writesThemDownBeforeAnyMovesOnceForEachFolderDepthAndLetsGoAfter() {
         let disk = MemoryDisk(["/trip/a", "/trip/b", "/trip/c"])
         let journal = RenameJournal()
@@ -506,7 +471,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     }
 
     // An item that could go back nowhere stays under its hidden name: it stays written down.
-    // T-a35dc807 F-402 F-565
     @Test func keepsWrittenDownAnItemLeftUnderItsHiddenName() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         disk.failures["renameExclusive:/trip/.tmp-0->/trip/b"] = errno("EACCES")
@@ -521,7 +485,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     // "a" is stuck under its hidden name in "P": "P" isn't renamed, so the next start finds it where it is written
     // down.
-    // T-79459252 F-402 F-565
     @Test func doesntRenameTheFolderOfAnItemLeftHidden() {
         let disk = MemoryDisk(["/trip/P", "/trip/P/a", "/trip/P/b"])
         disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/b"] = errno("EACCES")
@@ -538,7 +501,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
 
     // "P" and "Q" swap names, but "P" holds an item still hidden: "P" is never moved aside, so it keeps its name and
     // the item stays where it is written down.
-    // T-0ae41dcf F-402 F-565
     @Test func doesntMoveAsideAFolderHoldingAnItemLeftHiddenForASwap() {
         let disk = MemoryDisk(["/trip/P", "/trip/Q", "/trip/P/a", "/trip/P/b"])
         disk.failures["renameExclusive:/trip/P/.tmp-0->/trip/P/b"] = errno("EACCES")
@@ -554,7 +516,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
             ])
     }
 
-    // T-ae81ce58 F-398 F-565
     @Test func renamesNothingOfADepthWhoseItemsCantBeWrittenDown() {
         let disk = MemoryDisk(["/trip/a", "/trip/b"])
         let journal = RenameJournal()
@@ -571,7 +532,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         "/trip/.filetrail-rename-\(String(String(repeating: name, count: 12).prefix(12)))"
     }
 
-    // T-c19e3c8e F-356 F-566
     @Test func putsEachItemUnderItsOldNameElseItsNewOneElseItsOldOneNumbered() {
         let disk = MemoryDisk([
             hidden("a"), hidden("b"), hidden("c"), "/trip/x.txt", "/trip/y.txt", "/trip/z.txt", "/trip/w.txt",
@@ -603,7 +563,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(disk.names() == ["p.txt", "q.txt", "w.txt", "x.txt", "y 2.txt", "y.txt", "z.txt"])
     }
 
-    // T-30e67e05 F-356 F-566
     @Test func keepsWrittenDownWhatCantBeReachedOrMoved() {
         let disk = MemoryDisk([hidden("a")])
         disk.folderPaths = ["/trip"]
@@ -622,7 +581,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         BatchRenameExecution.numberedName(name, isFolder: isFolder, separator: separator, number: number)
     }
 
-    // T-03932ac1 F-567
     @Test func putsTheNumberBeforeTheExtensionAndAtTheEndOfAFoldersName() {
         #expect(numbered("Lisbon.jpg", false, " ", 2) == "Lisbon 2.jpg")
         #expect(numbered("archive.tar.gz", false, "_", 3) == "archive.tar_3.gz")
@@ -630,7 +588,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
         #expect(numbered(".env", false, "-", 2) == ".env-2")
     }
 
-    // T-72d6d60c F-567
     @Test func shortensANameTheNumberWouldMakeTooLongNeverCuttingALetterFromItsAccent() {
         let long = String(repeating: "a", count: 251) + ".jpg"
         #expect(numbered(long, false, " ", 2) == String(repeating: "a", count: 249) + " 2.jpg")
@@ -645,7 +602,6 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
                 == String(repeating: "a", count: 246) + " 12.jpg")
     }
 
-    // T-2bf174d3 F-399 F-567
     @Test func numbersANameTakenAtTheLastMomentWithinTheLengthANameCanHave() {
         let long = String(repeating: "a", count: 251) + ".jpg"
         let disk = MemoryDisk(["/trip/x.jpg"])

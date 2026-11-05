@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/windowActivity.ts
 import AppKit
 
 /// Selections turn grey while the window is in the background, as on macOS: a window that is not the key window (another

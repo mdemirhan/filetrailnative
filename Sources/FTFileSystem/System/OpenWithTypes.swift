@@ -1,4 +1,3 @@
-// Port of the answer shapes of packages/native-fs/src/native_openwith.m and system:getOpenWithApplications
 import Foundation
 
 /// An app as Open With knows it.
@@ -29,7 +28,7 @@ public struct OpenWithKind: Equatable, Sendable, Codable {
     }
 }
 
-/// What Launch Services says about the items (`nativeOpenWithApplications`).
+/// What Launch Services says about the items.
 public struct LaunchServicesAnswer: Equatable, Sendable {
     public var defaultApp: ApplicationInfo?
     public var apps: [ApplicationInfo]
@@ -77,7 +76,7 @@ public struct OperationResult: Equatable, Sendable {
     }
 }
 
-/// `toErrorMessage`: the error's own message.
+/// The error's own message.
 func errorMessage(_ error: any Error) -> String {
     if let error = error as? LocalizedError, let description = error.errorDescription { return description }
     return (error as NSError).localizedDescription

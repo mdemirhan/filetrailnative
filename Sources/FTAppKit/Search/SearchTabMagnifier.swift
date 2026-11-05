@@ -1,4 +1,3 @@
-// Port of the search tab's glyph of apps/desktop/src/renderer/components/TabStrip.tsx (.tab-strip-search, B-VIEW-143)
 import AppKit
 import FTFoundation
 

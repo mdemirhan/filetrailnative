@@ -1,6 +1,6 @@
-// Recorded from the Electron app's localeCompare; a frozen table, edited by hand.
+// A frozen table, edited by hand.
 
-/// How the reference's name comparison (numeric, base sensitivity) takes non-ASCII characters.
+/// How the name comparison (numeric, base sensitivity) takes non-ASCII characters.
 enum CollationTable {
     /// Characters the comparison ignores: the combining accents of a decomposed name, and the like.
     static let ignorable: Set<UInt32> = [

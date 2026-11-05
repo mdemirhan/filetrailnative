@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/searchResults.test.ts
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -17,7 +16,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
 }
 
 @Suite struct SearchResultsOrderingTests {
-    // T-920069db
     @Test func appendsIncrementalBatchesWithoutReorderingTheExistingList() {
         let current = [result("/Users/demo/project/z-dir/alpha.ts"), result("/Users/demo/project/a-dir/zeta.ts")]
         let next = [result("/Users/demo/project/b-dir/beta.ts"), result("/Users/demo/project/a-dir/gamma.ts")]
@@ -29,8 +27,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(SearchResults.append(current, []) == current)
     }
 
-    // T-4802ec5b
-    // B-SRCH-101
     @Test func sortsByPathWhenRequested() {
         let items = [result("/Users/demo/project/z-dir/alpha.ts"), result("/Users/demo/project/a-dir/zeta.ts")]
         #expect(
@@ -39,8 +35,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
             ])
     }
 
-    // T-bc11048e
-    // B-SRCH-102
     @Test func sortsByNameInDescendingOrderWhenRequested() {
         let items = [
             result("/Users/demo/project/z-dir/alpha.ts"), result("/Users/demo/project/a-dir/zeta.ts"),
@@ -50,8 +44,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
             SearchResults.sort(items, by: .name, direction: .desc).map(\.name) == ["zeta.ts", "beta.ts", "alpha.ts"])
     }
 
-    // T-cbadd337
-    // B-SRCH-103
     @Test func putsFoldersFirstThenFilesByExtensionThoseWithoutOneLast() {
         let items = [
             result("/Users/demo/project/b.ts"), result("/Users/demo/project/Makefile"),
@@ -90,7 +82,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         return .some(range.map { String(text[Range($0.range, in: text)!]) })
     }
 
-    // T-a2a3a813
     @Test func marksTheMatchedPartOfNamesForPlainTextAndRegexNameSearches() {
         #expect(match("app", .regex, .name, in: "MyApp.tsx") == .some("App"))
         #expect(match("App", .regex, .name, in: "MyApp.tsx") == .some("App"))
@@ -105,8 +96,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(match("a.c", .text, .name, in: "abc") == .some(nil))
     }
 
-    // T-7d602a4b
-    // T-78d2429c
     @Test func saysWhichFolderAResultIsInFromWhereTheSearchStarted() {
         #expect(SearchResults.folderText(path: "/Users/demo/app/src/main.ts", rootPath: "/Users/demo/app") == "src")
         #expect(
@@ -117,8 +106,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(SearchResults.folderText(path: "/notes.txt", rootPath: "/") == "Macintosh HD")
     }
 
-    // T-88a11cc8 T-56a22bbc
-    // B-INFO-099 B-INFO-100 B-SRCH-109
     @Test func theSearchStatusLineIsTheFoundationOne() {
         let size = StatusSize.ready(sizeBytes: 3000)
         #expect(
@@ -136,7 +123,6 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
                 == "12 results")
     }
 
-    // B-SRCH-113 B-SRCH-174 B-SRCH-176
     @Test func buildsItemsFromFdOutput() {
         let hidden = SearchResults.item(rootPath: "/Users/demo", outputPath: "/Users/demo/.config/.env.Local")
         #expect(hidden.name == ".env.Local")
@@ -155,7 +141,7 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
     }
 }
 
-// The order, the folder column and the highlight, against the reference. The order is the machine's locale's, so the
+// The order, the folder column and the highlight, against the golden. The order is the machine's locale's, so the
 // golden is machine-local.
 private struct SortInput: Codable {
     struct Entry: Codable {
@@ -213,8 +199,6 @@ private enum SortOutput: Codable, Equatable {
 }
 
 @Suite struct SearchSortGoldenTests {
-    // F-071
-    // B-SRCH-101 B-SRCH-102 B-SRCH-103
     @Test func matchesTheReferenceForOrderFolderColumnAndHighlight() throws {
         let cases: [GoldenCase<SortInput, SortOutput>] = try Golden.load(suite: "search-sort")
         #expect(cases.count > 100)

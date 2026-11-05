@@ -1,7 +1,7 @@
-// No TypeScript source: how an explorer window's events reach the open menu, the tooltips and the toolbar's customizing
+// How an explorer window's events reach the open menu, the tooltips and the toolbar's customizing
 import AppKit
 
-/// A view that shows its text through a text field inside it: the capture compares that field's font and color.
+/// A view that shows its text through a text field inside it: the geometry dump compares that field's font and color.
 @MainActor
 protocol TextStyleSource: AnyObject {
     var styleTextField: NSTextField? { get }

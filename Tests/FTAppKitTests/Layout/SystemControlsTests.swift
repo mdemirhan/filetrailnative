@@ -32,8 +32,7 @@ struct SystemControlsTests {
     }
 
     /// A click on a segment as the system's tracking ends it: the segment under `mark` selected and the action sent.
-    /// (Real presses go through the checkpoint's scenarios: posting mouse events here would end the test process's run
-    /// loop.)
+    /// (Real presses aren't posted here: posting mouse events would end the test process's run loop.)
     private func click(_ mark: NSView, on control: SystemSegmentedControl, in window: NSWindow) throws {
         let point = MouseEvents.center(of: mark)
         let root = try #require(window.contentView?.superview)
@@ -45,7 +44,7 @@ struct SystemControlsTests {
         control.sendAction(control.action, to: control.target)
     }
 
-    // F-646 B-DLG-238: a click reaches each control where its mark says it is; the marks take none themselves.
+    // A click reaches each control where its mark says it is; the marks take none themselves.
     @Test func clicksReachTheSystemControlsThroughTheMarks() throws {
         let (window, host) = hostWindow()
         defer { window.close() }
@@ -127,8 +126,8 @@ struct SystemControlsTests {
                 context: nil, characters: "", charactersIgnoringModifiers: "", isARepeat: false, keyCode: 125))
     }
 
-    // F-750: a scope is a plain button of the pane: a click searches there and the keyboard stays with the results, so
-    // the arrows move through them and never change the scope (SearchBar.tsx:57-71, useExplorerShortcuts.ts:878-915).
+    // A scope is a plain button of the pane: a click searches there and the keyboard stays with the results, so
+    // the arrows move through them and never change the scope.
     @Test func aClickOnAScopeLeavesTheKeyboardWithTheResults() throws {
         let (window, host) = hostWindow()
         defer { window.close() }
@@ -182,7 +181,7 @@ struct SystemControlsTests {
         return header
     }
 
-    // F-750, SearchBar.tsx: only the filter is the browser's to Tab out of: to the next button, or back to the last scope.
+    // Only the filter is the key view loop's to Tab out of: to the next button, or back to the last scope.
     // There Return or Space presses it, and no arrow changes the scope.
     @Test func tabFromTheFilterReachesTheNextButtonAndTheLastScopeAndReturnPressesThem() throws {
         let (window, host) = hostWindow()
@@ -218,8 +217,8 @@ struct SystemControlsTests {
         #expect(scopes == ["/b", "/b"])
     }
 
-    // useExplorerShortcuts.ts:360-396: every button of the bar is in the content pane, where `paneTabSwitch` takes Tab and
-    // Shift-Tab alike. The row is never walked: Tab can't step from scope to scope, nor from the ✕ to Done.
+    // Every button of the bar is in the content pane, where `paneTabSwitch` takes Tab and Shift-Tab alike. The row is
+    // never walked: Tab can't step from scope to scope, nor from the ✕ to Done.
     @Test func tabFromAButtonOfTheBarSwitchesPanes() throws {
         let (window, host) = hostWindow()
         defer { window.close() }
@@ -297,7 +296,7 @@ struct SystemControlsTests {
         #expect(header.filter.isFocused)
     }
 
-    // ContentPane.tsx:472-486: a press on a scope, Stop or Done gives the pane the keyboard, even from the filter.
+    // A press on a scope, Stop or Done gives the pane the keyboard, even from the filter.
     @Test func aPressInTheHeaderGivesThePaneTheKeyboard() throws {
         let (window, host) = hostWindow()
         defer { window.close() }
@@ -323,7 +322,7 @@ struct SystemControlsTests {
         #expect(window.firstResponder === results)
     }
 
-    // SettingsView.tsx Toggle is a button: Return and Space both toggle it.
+    // A Settings switch is a button: Return and Space both toggle it.
     @Test func returnAndSpaceToggleASettingsSwitch() throws {
         let (window, host) = hostWindow()
         defer { window.close() }
@@ -340,7 +339,7 @@ struct SystemControlsTests {
         #expect(changes == [true, false, true])
     }
 
-    // F-750: Stop, Done and the card's Stop leave the keyboard where it is, as they did when drawn by hand; a dialog's
+    // Stop, Done and the card's Stop leave the keyboard where it is, as they did when drawn by hand; a dialog's
     // buttons still take it.
     @Test func theSearchBarsAndTheCardsButtonsDoNotTakeTheKeyboard() {
         _ = NSApplication.shared

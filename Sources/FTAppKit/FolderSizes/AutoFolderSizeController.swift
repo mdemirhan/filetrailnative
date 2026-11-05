@@ -1,4 +1,3 @@
-// Port of useAutoFolderSize (apps/desktop/src/renderer/hooks/useAutoFolderSize.ts)
 import FTFoundation
 import Foundation
 

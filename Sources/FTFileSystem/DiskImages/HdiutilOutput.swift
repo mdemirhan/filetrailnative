@@ -1,7 +1,6 @@
-// Port of the output readers in apps/desktop/src/main/diskImages.ts
 import Foundation
 
-/// What hdiutil printed. The original reads its plists with regular expressions; this parses them.
+/// What hdiutil printed, its plists parsed.
 public enum HdiutilOutput {
     /// The values hdiutil's plist output gives a key, wherever it is in the plist.
     public static func strings(in plist: String, key: String) -> [String] {

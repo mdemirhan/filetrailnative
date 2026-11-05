@@ -1,5 +1,3 @@
-// Port of "asks to confirm a large operation without conflicts" and "keeps a choice made for a row Replace can't take" of
-// apps/desktop/src/renderer/components/CopyPasteReviewDialog.test.tsx, on the sheet's words and setChoice
 import Foundation
 import Testing
 
@@ -19,7 +17,7 @@ struct ReviewChoicesMatrixTests {
             replaceBlockedReason: blocked, renameOnly: false)
     }
 
-    // T-e2456922: nothing clashes, but the operation is large: it asks, with no "For all conflicts".
+    // Nothing clashes, but the operation is large: it asks, with no "For all conflicts".
     @Test func aLargeOperationWithoutConflictsIsAsked() {
         let report = ReviewReport(
             analysisId: "analysis-1", mode: .copy, destinationDirectoryPath: "/dest",
@@ -33,7 +31,7 @@ struct ReviewChoicesMatrixTests {
         #expect(!text.hasConflicts)
     }
 
-    // T-aae8fec2 B-CLIP-093: a row Replace can't take keeps the choice made for it though the policy would give it the
+    // A row Replace can't take keeps the choice made for it though the policy would give it the
     // same; on any other row a choice equal to the policy is no choice.
     @Test func aChoiceOnARowReplaceCantTakeIsKept() {
         let replaceAll = CopyPasteReview.policy(for: .overwrite)

@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/startupNavigation.test.ts
 import FTFoundation
 import Testing
 
@@ -7,7 +6,7 @@ import Testing
 @Suite struct StartupTabsTests {
     private static let home = "/Users/demo"
 
-    // B-NAV-186 B-TREE-050: a tab saved on a favorite removed since opens as the folder it is.
+    // A tab saved on a favorite removed since opens as the folder it is.
     @Test func aRemovedFavoriteOpensAsItsFolder() throws {
         var preferences = AppPreferences.defaults()
         preferences.favoritesInitialized = true
@@ -27,7 +26,7 @@ import Testing
         #expect(StartupTabs.withoutRemovedFavorite(tab("/gone"), preferences).favoritePath == "/gone")
     }
 
-    /// `resolveStartupNavigation`: the single view a window opens with when no tabs were saved.
+    /// The single view a window opens with when no tabs were saved.
     private func single(
         restore: Bool, last: String?, favorite: String?, root: String?, startupFolder: String? = nil
     ) -> StartupTab? {
@@ -53,40 +52,33 @@ import Testing
         #expect(tab?.favoritePath == favorite, sourceLocation: sourceLocation)
     }
 
-    // T-5c8a8dd9 B-NAV-177 B-NAV-178
-    // B-TREE-185
     @Test func keepsAHandPickedTreeRootWhenTheLastVisitedFolderIsInsideIt() {
         let tab = single(
             restore: true, last: "/Users/demo/projects/filetrail", favorite: nil, root: "/Users/demo/projects")
         expect(tab, path: "/Users/demo/projects/filetrail", root: "/Users/demo/projects", favorite: nil)
     }
 
-    // T-d09ea64b B-NAV-178
     @Test func keepsAHandPickedTreeRootThatIsTheLastVisitedFolderItself() {
         let tab = single(restore: true, last: "/Applications", favorite: nil, root: "/Applications")
         expect(tab, path: "/Applications", root: "/Applications", favorite: nil)
     }
 
-    // T-68eb3d87 B-NAV-178
     @Test func usesHomeAsTheTreeRootWhenTheLastVisitedFolderIsInsideHomeButOutsideTheSavedRoot() {
         let tab = single(restore: true, last: "/Users/demo/Documents", favorite: nil, root: "/Users/demo/projects")
         expect(tab, path: "/Users/demo/Documents", root: "/Users/demo", favorite: nil)
     }
 
-    // T-b8580b99 B-NAV-178
     @Test func usesSlashAsTheTreeRootWhenTheLastVisitedFolderIsAboveHomeAndOutsideTheSavedRoot() {
         let tab = single(restore: true, last: "/Applications", favorite: nil, root: "/Users/demo/projects")
         expect(tab, path: "/Applications", root: "/", favorite: nil)
     }
 
-    // T-b43fba42 B-NAV-178
     @Test func usesThePersistedSlashRootWhenRestoringAPathInsideHome() {
         let tab = single(
             restore: true, last: "/Users/demo/Documents", favorite: "/Users/demo/Documents", root: "/")
         expect(tab, path: "/Users/demo/Documents", root: "/", favorite: "/Users/demo/Documents")
     }
 
-    // T-d612583c B-NAV-175
     @Test func usesTheExplicitStartupFolderInsteadOfTheLastVisitedFolder() {
         let tab = single(
             restore: true, last: "/Users/demo/projects/filetrail", favorite: "/Users/demo/projects/filetrail",
@@ -94,7 +86,6 @@ import Testing
         expect(tab, path: "/Applications", root: "/", favorite: nil)
     }
 
-    // T-ae917c88 B-NAV-175
     @Test func usesHomeAsTheTreeRootWhenTheExplicitStartupFolderIsInsideHome() {
         let tab = single(
             restore: false, last: nil, favorite: nil, root: "/Users/demo/projects",
@@ -102,8 +93,6 @@ import Testing
         expect(tab, path: "/Users/demo/src/filetrail", root: "/Users/demo", favorite: nil)
     }
 
-    // T-d3b23be1 B-NAV-176
-    // T-fbbe09e1
     @Test func startsAtHomeWhenTheLastSessionIsNotReopened() {
         let tab = single(
             restore: false, last: "/Users/demo/projects/filetrail", favorite: "/Users/demo/projects/filetrail",
@@ -111,15 +100,13 @@ import Testing
         expect(tab, path: "/Users/demo", root: "/Users/demo", favorite: nil)
     }
 
-    // T-d0468635 B-NAV-180
-    // T-d4d05739
     @Test func restoresASelectedFavoritePathWhenTheRestoredFolderExactlyMatchesIt() {
         let tab = single(
             restore: true, last: "/Users/demo/Documents", favorite: "/Users/demo/Documents", root: "/Users/demo")
         expect(tab, path: "/Users/demo/Documents", root: "/Users/demo", favorite: "/Users/demo/Documents")
     }
 
-    // MARK: resolveStartupTabs
+    // MARK: The tabs a window starts with
 
     private static func savedTab(_ path: String?, _ change: (inout OpenTabPreference) -> Void = { _ in })
         -> OpenTabPreference
@@ -181,8 +168,6 @@ import Testing
             preferences, homePath: Self.home, startupFolderPath: startupFolder, restoreTabs: restoreTabs)
     }
 
-    // T-d8fbdd46 B-NAV-179 B-NAV-181
-    // B-TREE-187 B-VIEW-164 T-b7541fe2
     @Test func bringsEveryTabBackAtItsOwnFolderWithItsOwnView() {
         let resolved = resolve(Self.preferences)
         #expect(resolved.activeIndex == 1)
@@ -197,8 +182,6 @@ import Testing
             ])
     }
 
-    // T-25e74d78 B-NAV-184 B-VIEW-176
-    // T-020497b2 T-fbbe09e1
     @Test func opensASingleViewAtHomeWhenTheLastSessionIsNotReopened() {
         var off = Self.preferences
         off.restoreSessionOnStartup = false
@@ -214,7 +197,6 @@ import Testing
         #expect(resolved.tabs.first?.favoritePath == "/Users/demo/Documents")
     }
 
-    // T-ff6743f1 B-NAV-185
     @Test func showsAFolderTheAppWasLaunchedWithInARestoredTabOrInANewOne() {
         #expect(resolve(Self.preferences, startupFolder: "/Users/demo/work").activeIndex == 0)
         let launched = resolve(Self.preferences, startupFolder: "/Users/demo/Pictures")
@@ -224,8 +206,6 @@ import Testing
         #expect(launched.tabs.last?.rootPath == "/Users/demo")
     }
 
-    // T-bd036e34 B-NAV-183 B-VIEW-181
-    // T-180a5b4f
     @Test func opensTheTabsAWindowWasGivenWhateverTheSettingSays() {
         var off = Self.preferences
         off.restoreSessionOnStartup = false
@@ -235,7 +215,6 @@ import Testing
         #expect(given.tabs.map(\.path) == ["/Users/demo/work", "/Users/demo/Documents", "/Volumes/Backup"])
     }
 
-    // T-0a1f16d6 B-NAV-182
     @Test func fallsBackToTheLastTabWhenTheSavedActiveTabIsOutOfRange() {
         var outOfRange = Self.preferences
         outOfRange.activeTabIndex = 9

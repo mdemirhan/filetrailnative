@@ -1,5 +1,4 @@
-// Port of the .content-pathbar-row of apps/desktop/src/renderer/components/ContentPane.tsx (:677-857): the path bar, its
-// editor and the status text
+// The path bar, its editor and the status text
 import AppKit
 import FTFoundation
 

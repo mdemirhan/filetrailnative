@@ -1,4 +1,3 @@
-// Port of the nativeTrashItem cases of packages/native-fs/src/native-fs.test.ts, with native_trash.m's error mapping
 import Darwin
 import FTTestSupport
 import Foundation
@@ -12,7 +11,6 @@ struct NativeTrashTests {
     // /dev is a disk without a Trash, which the Trash tells with NSFeatureUnsupportedError: the one failure for which
     // deleting for good may be offered (see TrashItem). Nothing there can be moved by anyone but root, who doesn't
     // run this. It is the process's first Trash call (see TrashProbe).
-    // T-5a759850 F-406 F-407
     @Test(.enabled(if: getuid() != 0, "root could move /dev/null"))
     func failsWithENOTSUPOnADiskWithoutATrash() throws {
         let result = try #require(TrashProbe.devNull)
@@ -23,7 +21,6 @@ struct NativeTrashTests {
         #expect(error?.syscall == "trash" && error?.path == "/dev/null")
     }
 
-    // T-357aad4e F-406
     @Test(.tags(.diskImage), .diskImages)
     func movesItemsToTheirDisksTrashAndSaysWhereEachWentEvenUnderANewName() async throws {
         TrashProbe.touch()
@@ -37,8 +34,8 @@ struct NativeTrashTests {
             let fileIno = try disk.stat(file).ino
             let folderIno = try disk.stat(folder).ino
 
-            // Fails, as the original's does, whenever the Trash can't move the item; then says whether the Mac
-            // gave the disk a volume reference at all (see TrashProbe.volumeReference).
+            // Fails whenever the Trash can't move the item; then says whether the Mac gave the disk a volume
+            // reference at all (see TrashProbe.volumeReference).
             let fileMoved: String?
             do {
                 fileMoved = try NativeFS.trashItem(file)
@@ -72,7 +69,6 @@ struct NativeTrashTests {
         #expect(TrashProbe.volumeReferenceReport(of: NSHomeDirectory()).contains("knows the disk"))
     }
 
-    // T-897ba460 F-406 F-407
     @Test func failsWithENOENTAndTheTrashsOwnSentenceForAnItemThatIsntThere() throws {
         TrashProbe.touch()
         try withTemporaryDirectory(prefix: "native-fs-trash") { root in
@@ -85,9 +81,6 @@ struct NativeTrashTests {
         }
     }
 
-    // N/A T-d235c612 the path is a typed String: a call without one doesn't compile.
-
-    // F-407
     @Test func mapsTheTrashsErrorsToErrnos() {
         func cocoa(_ code: Int, underlying: NSError? = nil) -> NSError {
             NSError(
@@ -119,8 +112,7 @@ struct NativeTrashTests {
         #expect(NativeFS.trashErrno(of: NSError(domain: "Other", code: 1)) == 0)
     }
 
-    // The Trash's sentence when it gave one, with the errno's name and the Cocoa code; Node's errno wording without.
-    // F-407
+    // The Trash's sentence when it gave one, with the errno's name and the Cocoa code; the errno's wording without.
     @Test func shapesTheTrashsFailures() {
         let unknown = NSError(
             domain: NSCocoaErrorDomain, code: NSFileWriteUnknownError,

@@ -1,5 +1,3 @@
-// Port of the run half of apps/desktop/src/main/bootstrap/batchRenamePlanAndRun.test.ts (the plan half is in
-// FTFoundationTests/BatchRename/BatchRenameTests.swift)
 import FTFoundation
 import Foundation
 import Testing
@@ -76,7 +74,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
 }
 
 @Suite struct BatchRenamePlanAndRunTests {
-    // T-a966a460 F-119
     @Test func numberATakenNameAlikeWhenFormatHasNoSeparator() {
         let disk = MemoryDisk(["/trip/IMG_a.jpg", "/trip/IMG_b.jpg", "/trip/File1.jpg"])
         let paths = ["/trip/IMG_a.jpg", "/trip/IMG_b.jpg"]
@@ -90,7 +87,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
         #expect(disk.names() == ["File1 2.jpg", "File1.jpg", "File2.jpg"])
     }
 
-    // T-5fb53308 F-119
     @Test func numberATakenNameAlikeWithFormatsSeparator() {
         let disk = MemoryDisk(["/trip/a.jpg", "/trip/b.jpg", "/trip/File_1.jpg"])
         let paths = ["/trip/a.jpg", "/trip/b.jpg"]
@@ -101,7 +97,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
         #expect(planKept(disk, paths, result))
     }
 
-    // T-2c22d4ff F-119
     @Test func swapTwoNamesAndPassNamesAlongAChainWithoutNumbers() {
         let swap = MemoryDisk(["/trip/File 1.jpg", "/trip/File 2.jpg"])
         // Listed in reverse: the second becomes "File 1" and the first "File 2".
@@ -119,7 +114,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
         #expect(chain.names() == ["File 2.jpg", "File 3.jpg", "File 4.jpg"])
     }
 
-    // T-bfffc022 F-119
     @Test func giveItemsInSeveralFoldersTheNamesPlannedForEachFolder() {
         let disk = MemoryDisk([
             "/trip/a.jpg", "/trip/b.jpg", "/trip/File 3.jpg", "/home/c.jpg", "/home/File 1.jpg", "/home/File 2.jpg",
@@ -135,7 +129,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
         #expect(disk.names("/home") == ["File 2 2.jpg", "File 2.jpg", "File 4.jpg"])
     }
 
-    // T-661d40ce F-119
     @Test func changeOnlyTheCaseOfANameInPlaceAndNumberItOnADiskThatMindsCase() {
         let lower = BatchRenameSettings(mode: .changeCase, caseStyle: .lower)
         let insensitive = MemoryDisk(["/trip/Notes.txt", "/trip/Todo.txt"])
@@ -150,7 +143,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
         #expect(planKept(sensitive, paths, numbered))
     }
 
-    // T-669eb707 F-119
     @Test func treatANameWithItsAccentsTypedAnotherWayAsTakenAsTheDiskDoes() {
         let nfd = "Re\u{301}sume\u{301}"
         let disk = MemoryDisk(["/trip/a.txt", "/trip/b.txt", "/trip/R\u{E9}sum\u{E9}.txt"])
@@ -163,7 +155,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
         #expect(planKept(disk, paths, result))
     }
 
-    // T-988f1c26 F-119
     @Test func leaveTheItemsSkipLeavesAndGiveTheRestTheirPlannedNames() {
         let disk = MemoryDisk(["/trip/a.jpg", "/trip/b.jpg", "/trip/c.jpg", "/trip/File 2.jpg"])
         let paths = ["/trip/a.jpg", "/trip/b.jpg", "/trip/c.jpg"]
@@ -178,7 +169,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
 
     // "File 1 2.jpg" asks for "File 1.jpg", which is taken, and would be numbered " 2": its own name. Asked for, the
     // rename would find that name taken by the item itself and make it "File 1 2 2.jpg".
-    // T-20addbaa F-119
     @Test func leaveAnItemAloneWhenTheNumberedNameItGetsIsTheOneItHas() {
         let disk = MemoryDisk(["/trip/File 1.jpg", "/trip/File 1 2.jpg", "/trip/a.jpg"])
         let paths = ["/trip/File 1 2.jpg", "/trip/a.jpg"]
@@ -189,7 +179,6 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
         #expect(planKept(disk, paths, result))
     }
 
-    // T-107fe08c F-119
     @Test func agreeAtRandomForNamesThatClashInEveryWay() {
         let names = [
             "a.jpg", "A.jpg", "b.jpg", "File 1.jpg", "File 2.jpg", "File 3.jpg", "File1.jpg", "File-1.jpg",
@@ -216,7 +205,7 @@ private func addedNumber(_ planItem: BatchRenamePlanItem) -> Int? {
             }
             let disk = MemoryDisk(onDisk.map { "/trip/\($0)" }, caseSensitive: caseSensitive)
             let paths = rng.shuffle(onDisk).prefix(rng.integer(1, onDisk.count)).map { "/trip/\($0)" }
-            // Every choice is drawn before one is picked, as the original's array of them is.
+            // Every choice is drawn before one is picked.
             var separated = format
             separated.separator = rng.pick([.space, .hyphen, .underscore, .none])
             let counted = BatchRenameSettings(

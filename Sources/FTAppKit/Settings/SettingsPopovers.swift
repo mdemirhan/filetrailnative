@@ -1,5 +1,4 @@
-// Port of FavoriteIconPicker, useSettingsMenu and ApplicationPopup of apps/desktop/src/renderer/components/SettingsView.tsx:
-// the icon grid in a system popover, the app pop-up's menu a system menu
+// The icon grid in a system popover, the app pop-up's menu a system menu
 import AppKit
 import FTFoundation
 
@@ -11,7 +10,7 @@ enum SettingsAppIcon {
 
 /// The panels of Settings: the favorite icon grid, in a system popover, one at a time. It takes Escape before the window
 /// does, closes on a press elsewhere and when the window goes to the back, and gives the keyboard back to the control
-/// that opened it (B-DLG-168, 203, 209). The app menus are system menus (`menus`).
+/// that opened it (203, 209). The app menus are system menus (`menus`).
 @MainActor
 final class SettingsPopovers {
     private(set) var view: NSView?
@@ -90,7 +89,7 @@ final class FavoriteIconButton: SettingsControlView {
     /// Tells whether the grid it opened is open, for its look.
     var isExpanded: () -> Bool = { false }
     /// Told when it has taken or left the keyboard, once the window says so: the row it is in is selected while it
-    /// has it, as the original's row selects itself when the button in it is focused.
+    /// has it.
     var onFocusChange: () -> Void = {}
 
     init(icon: FavoriteIconID, name: String, theme: Theme) {
@@ -133,7 +132,7 @@ final class FavoriteIconButton: SettingsControlView {
         pressShift = NSSize(width: after.x - before.x, height: after.y - before.y)
     }
 
-    /// A press takes the keyboard as the button goes down, as Chromium focuses a clicked button: its row is selected
+    /// A press takes the keyboard as the button goes down: its row is selected
     /// and the list shows the accent before the grid opens.
     func focusForPress() {
         window?.makeFirstResponder(self)
@@ -142,8 +141,7 @@ final class FavoriteIconButton: SettingsControlView {
     }
 
     /// The row the press focused, cut by the page's edge, is brought into view: the page goes as far as it can toward
-    /// centring it, as Chromium scrolls a focused element in (260: the original's page goes to its end). A row wholly
-    /// in view stays where it is.
+    /// centring it. A row wholly in view stays where it is.
     private func revealRow() {
         let row = superview ?? self
         guard let scroll = row.enclosingScrollView, let document = scroll.documentView else { return }
@@ -178,8 +176,8 @@ final class FavoriteIconButton: SettingsControlView {
     }
 }
 
-/// A cell of the icon grid: 30 by 30, accent-filled when it is the favorite's icon. The other icons keep
-/// `.file-icon-favorite`'s neutral color; only the chosen one takes the accent's ink.
+/// A cell of the icon grid: 30 by 30, accent-filled when it is the favorite's icon. The other icons keep the
+/// neutral color of a favorite's icon; only the chosen one takes the accent's ink.
 final class FavoriteIconCell: SettingsControlView {
     let icon: FavoriteIconID
     let isSelected: Bool
@@ -207,7 +205,7 @@ final class FavoriteIconCell: SettingsControlView {
             NSColor(theme.palette.bgHover).setFill()
             NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
         }
-        // `.file-icon.favorite`: 18 by 18.
+        // A favorite's icon: 18 by 18.
         let size = SettingsMetrics.gridIconSize
         let rect = NSRect(x: (bounds.width - size) / 2, y: (bounds.height - size) / 2, width: size, height: size)
         SidebarIcons.drawFavorite(icon, in: rect, color: NSColor(iconColor))
@@ -260,7 +258,7 @@ final class FavoriteIconGrid: ThemedView {
 
 // MARK: App pop-up
 
-/// An app chosen in Settings, shown as a pop-up button with the app's icon (`ApplicationPopup`).
+/// An app chosen in Settings, shown as a pop-up button with the app's icon.
 final class SettingsAppPopup: SettingsControlView, SettingsSized {
     private(set) var application: ApplicationSelection
     let defaultApplication: ApplicationSelection

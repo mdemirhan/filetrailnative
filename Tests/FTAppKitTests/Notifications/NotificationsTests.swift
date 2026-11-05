@@ -1,5 +1,3 @@
-// Ports the UI cases of components/ToastViewport.test.tsx, CopyPasteProgressCard.test.tsx and
-// App.notifications.test.tsx on an explorer window that is never shown
 import AppKit
 import FTFoundation
 import FTTestSupport
@@ -25,8 +23,6 @@ extension ExplorerWindowlessTests {
             return tab
         }
 
-        // T-f86ada36 T-6fd36956 T-b7394559 T-f7eafb7c F-817
-        // B-VIEW-106 B-VIEW-196 B-VIEW-197 B-VIEW-199 T-2709df93
         @Test func notificationsStackAtTheBottomRightNewestLowestWithTheirMark() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -56,10 +52,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-501968da F-817
-        // F-817 (each goes after four seconds: ToastTimersTests; no more than three show: FTFoundation's ToastsTests; the
+        // (each goes after four seconds: ToastTimersTests; no more than three show: FTFoundation's ToastsTests; the
         // cards follow the entries here and in the stack test)
-        // B-CLIP-131 B-VIEW-200 T-574c64da
         @Test func noNotificationComesWhenTheyAreTurnedOffAndThoseShowingGo() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -73,8 +67,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-818: the 101st tab
-        // F-817 F-818 T-31b584e6
+        // The 101st tab
         @Test func theTabLimitNoticeIsAnInfoToastInTheWindow() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -85,8 +78,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-b7bbe121 T-f8116c96 F-799
-        // B-CLIP-111 B-CLIP-113 B-INFO-191 B-INFO-192 T-49de7117 T-596b528f
         @Test func theProgressCardComesAfterTheDelayAndShowsWhatRunsAndStops() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
@@ -143,7 +134,6 @@ extension ExplorerWindowlessTests {
 
 @MainActor
 struct ProgressCardModelTests {
-    // T-596b528f
     @Test func anOperationOverBeforeTheDelayShowsNoCard() {
         let model = ProgressCardModel()
         var changes = 0

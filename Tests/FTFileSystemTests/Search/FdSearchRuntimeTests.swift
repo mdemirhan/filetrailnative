@@ -1,4 +1,3 @@
-// Port of the FdSearchRuntime cases of packages/core/src/search/fdSearch.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -148,8 +147,6 @@ private final class LookedAt: @unchecked Sendable {
         #expect(spawned.args == FdSearchArgs.build(demo("a b")))
     }
 
-    // T-502a84b4
-    // B-SRCH-113 B-SRCH-170 B-SRCH-176
     @Test func reportsFoldersAndPackagesWhichFdMarksWithATrailingSlash() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(
@@ -169,8 +166,6 @@ private final class LookedAt: @unchecked Sendable {
             ])
     }
 
-    // T-c5416c0d F-141 F-197
-    // B-SRCH-177 B-SRCH-179
     @Test func streamsNullDelimitedResultsInIncrementalBatches() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.tsx", mode: .glob))
@@ -199,8 +194,6 @@ private final class LookedAt: @unchecked Sendable {
                     error: nil))
     }
 
-    // T-f6427548 F-141 F-197
-    // B-SRCH-180
     @Test func keepsGetUpdateIdempotentAfterACompletedJobHasBeenDrained() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.tsx", mode: .glob))
@@ -223,8 +216,6 @@ private final class LookedAt: @unchecked Sendable {
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0) == done(0))
     }
 
-    // T-850d45cb
-    // B-SRCH-178
     @Test func reassemblesEntriesThatAreSplitAcrossStdoutChunks() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.tsx", mode: .glob))
@@ -245,8 +236,6 @@ private final class LookedAt: @unchecked Sendable {
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).items.map(\.name) == ["日本語.txt"])
     }
 
-    // T-b00e33ee F-141
-    // B-SRCH-182
     @Test func terminatesCancelledJobsAndAnswersLaterPollsWithACancelledTerminalState() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.ts", mode: .glob))
@@ -263,14 +252,11 @@ private final class LookedAt: @unchecked Sendable {
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).status == .cancelled)
     }
 
-    // B-SRCH-182
     @Test func cancellingAnUnknownJobIsFine() {
         let (runtime, _) = make()
         runtime.cancelSearch(jobId: "search-99")
     }
 
-    // T-68fe0d57
-    // B-SRCH-184 B-SRCH-194
     @Test func surfacesStderrContentForFailedSearches() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("(", mode: .regex))
@@ -283,8 +269,6 @@ private final class LookedAt: @unchecked Sendable {
                     error: "regex parse error"))
     }
 
-    // T-b3e43aa8
-    // B-SRCH-185
     @Test func reportsWhatFdSaidAboutABadPatternWithoutItsCommandLineAdvice() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("no(te", mode: .regex))
@@ -297,8 +281,6 @@ private final class LookedAt: @unchecked Sendable {
                 == "regex parse error:\n    no(te\n      ^\nerror: unclosed group")
     }
 
-    // T-bf72fb90
-    // B-SRCH-116 B-SRCH-177 B-SRCH-178 B-SRCH-184
     @Test func flushesATrailingStdoutBufferOnCloseAndPreservesRootRelativeParents() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo(".env", mode: .glob, hidden: true))
@@ -315,8 +297,6 @@ private final class LookedAt: @unchecked Sendable {
                     ], nextCursor: 1, done: true, truncated: false, error: nil))
     }
 
-    // T-3af83ea8
-    // B-SRCH-184
     @Test func surfacesProcessErrorEventsAsSearchFailures() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.ts", mode: .glob))
@@ -328,8 +308,6 @@ private final class LookedAt: @unchecked Sendable {
                     error: "spawn failed"))
     }
 
-    // T-c942ad03
-    // B-SRCH-184
     @Test func reportsUnexpectedExitSignalsWhenFdIsTerminatedExternally() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.ts", mode: .glob))
@@ -341,7 +319,6 @@ private final class LookedAt: @unchecked Sendable {
                     error: "fd exited via signal SIGKILL"))
     }
 
-    // B-SRCH-185
     @Test func reportsTheExitCodeWhenFdFailsWithoutSayingWhy() throws {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo())
@@ -349,8 +326,6 @@ private final class LookedAt: @unchecked Sendable {
         #expect(try runtime.getUpdate(jobId: started.jobId, cursor: 0).error == "fd exited with code 2")
     }
 
-    // T-9db0e2f7
-    // B-SRCH-181 B-SRCH-186
     @Test func cancelsRunningJobsAndClearsTheRegistryWhenTheRuntimeCloses() {
         let (runtime, process) = make()
         let started = runtime.startSearch(demo("*.ts", mode: .glob))
@@ -376,8 +351,6 @@ private final class LookedAt: @unchecked Sendable {
         #expect(update.error == nil)
     }
 
-    // F-197
-    // B-SRCH-180
     @Test func remembersAtMostSixtyFourFinishedJobs() throws {
         let runtime = FdSearchRuntime(fdBinaryPath: "/tmp/fd") { _, _, _, _ in MockSearchProcess() }
         let ids = (0..<70).map { _ in runtime.startSearch(demo()).jobId }
@@ -386,7 +359,6 @@ private final class LookedAt: @unchecked Sendable {
         #expect(try runtime.getUpdate(jobId: ids[69], cursor: 0).status == .cancelled)
     }
 
-    // F-141
     @Test func streamsBatchesUntilTheJobIsDone() async throws {
         let (runtime, process) = make()
         let stream = runtime.results(for: demo(), interval: .milliseconds(5))

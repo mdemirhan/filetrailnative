@@ -1,8 +1,7 @@
-// Port of the focus Playwright gives the original's window in tools/capture/electron/driver.ts; no TypeScript source.
 #if DEBUG
     import AppKit
 
-    /// The capture's window has the look a user's has: the app in front and the window key or main.
+    /// An automation run's window has the look a user's has: the app in front and the window key or main.
     ///
     /// A run starts in the background. While another app has the front, macOS's cooperative activation refuses
     /// `NSApp.activate()` and `NSRunningApplication.activate(options:)`, so captures came out inactive for as long as

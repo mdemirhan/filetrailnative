@@ -8,7 +8,7 @@
         @MainActor
         @Suite struct P023ParityProbeTests {
             /// The driver sends Select All to the scenario's window, which need not be key: the list it focuses selects
-            /// every entry (`runGenericEditCommand`, `selectAllContentEntries`).
+            /// every entry.
             @Test func selectAllCommandSelectsTheList() async throws {
                 let harness = try ExplorerHarness.windowless()
                 let tab = try await harness.open()

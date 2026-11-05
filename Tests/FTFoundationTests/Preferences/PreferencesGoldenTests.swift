@@ -1,4 +1,4 @@
-// Checks the port against goldens recorded from the reference: tools/parity/golden/prefs-sanitize.ts
+// Checks how saved preferences are sanitized, against the prefs-sanitize golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -16,7 +16,6 @@ struct PreferencesGoldenTests {
         return (try? AppStateReader.read(data: Data(input.text.utf8), defaults: .defaults(theme: theme))) ?? AppState()
     }
 
-    // B-DLG-078 B-DLG-174 B-TREE-046
     @Test func savedStatesAreReadLikeTheOriginalReadsThem() throws {
         let cases: [GoldenCase<Input, AppState>] = try Golden.load(suite: "prefs-sanitize")
         #expect(cases.count >= 300)

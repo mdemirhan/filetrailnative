@@ -1,4 +1,3 @@
-// Port of the I/O, save-tier and window cases of apps/desktop/src/main/appStateStore.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -22,7 +21,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-6bdc54b6 F-011 F-126
     @Test func persistsThroughATempFileSoAFailedWriteKeepsThePreviousState() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -52,8 +50,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-20da35cd F-011 F-127
-    // T-0b53ac62
     @Test func writesADeliberateChangePromptly() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -75,7 +71,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-46ebfbd8 F-011 F-128 B-NAV-190
     @Test func keepsWhereTheUserIsForTheQuitTimeWrite() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -121,7 +116,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-15a224c9 F-011 B-NAV-190
     @Test func keepsTheOpenTabsForTheQuitTimeWriteButWritesTheSettingAtOnce() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -168,7 +162,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-1ddc673f F-011 F-128 F-129
     @Test func writesNavigationAlongWithTheNextDeliberateChangeAndNothingForNoChange() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)
@@ -194,7 +187,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-ace2e3ee F-026
     @Test func remembersTheFoldersThatAreOpenedAcrossRestarts() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -228,7 +220,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-6d50f244 F-011
     @Test func keepsEachWindowsTabsPanelsAndColumnWidthsToItself() throws {
         try Kit.withFolder { folder in
             let store = Kit.store(Kit.statePath(folder))
@@ -262,7 +253,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-50f7477b F-011
     @Test func keepsTheWindowsFrontToBackAcrossARestartWithoutThoseClosed() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -283,7 +273,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-51e0a908 F-011 F-129
     @Test func writesAWindowsPanelsAtOnceAndWhereItIsAtQuit() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -380,7 +369,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-c0f2b5e6 F-011
     @Test func remembersTheWindowClosedLastWithItsFrontTabAcrossARestart() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -410,7 +398,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-7b834aba F-011
     @Test func neverForgetsAWindowThatIsOpenHoweverManyAre() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -426,7 +413,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-bc1fb7c7 F-011
     @Test func takesAChangeFromAWindowItDoesntKnowAsTheAppsAlone() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -445,7 +431,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-c05abda2 F-011
     @Test func keepsRenameSettingsAndPresetsThatArentTheDefaultsAcrossARestart() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -471,10 +456,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-85076d5a F-011
-    // N/A T-85076d5a the zod schema check (appPreferencesSchema) has no counterpart; what remains is that a value the
-    // sanitizers accepted is one they accept again. (A preset name cut to 80 characters can end in a space that the next
-    // read trims, as in the original, so the value settles after one read back rather than none.)
     @Test func renameSettingsTheStoreHoldsAreStableUnderReSanitizing() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -492,9 +473,6 @@ struct AppStateStoreTests {
         }
     }
 
-    // T-4842d062 F-011
-    // N/A T-4842d062 the zod schema check has no counterpart; a damaged file reads back as preferences that are
-    // themselves a fixed point of the sanitizer.
     @Test func renameSettingsOfADamagedFileReadBackAsPreferencesTheWindowAccepts() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -535,7 +513,7 @@ struct AppStateStoreTests {
         case 3:
             return .string(
                 rng.pick(["", " ", "auto", "replace", "format", "date", "-", "_", String(repeating: "x", count: 300)]))
-        // Not the original's 254 letters and an emoji: cut at 255 units that leaves half a pair, which a Swift String cannot hold.
+        // 253 letters and an emoji, not 254: cut at 255 units that leaves half a pair, which a Swift String cannot hold.
         case 4: return .string(String(repeating: "a", count: 253) + "\u{1F600}")
         case 5: return depth < 2 ? .array([garbage(&rng, depth: depth + 1)]) : .array([])
         default: return depth < 2 ? .object(["value": garbage(&rng, depth: depth + 1)]) : .object([:])

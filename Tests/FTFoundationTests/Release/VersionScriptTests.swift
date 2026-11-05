@@ -1,4 +1,3 @@
-// Port of apps/desktop/scripts/lib/version.test.ts, against scripts/version.sh in a temporary repository
 import FTTestSupport
 import Foundation
 import Testing
@@ -66,7 +65,6 @@ import Testing
         }
     }
 
-    // T-e6301997
     @Test func releaseTagsAreVXYZAndATagWithASuffixIsNotARelease() throws {
         try withRepository { repository in
             try repository.git("tag", "v0.3.0-beta")
@@ -77,7 +75,6 @@ import Testing
         }
     }
 
-    // T-bfefc1a5
     @Test func releasesAreOrderedByVersionNotByWhenTheyWereMade() throws {
         try withRepository { repository in
             for tag in ["v0.1.0-beta", "v0.3.0-beta", "v0.1.0", "v0.1.10", "v0.1.9"] {
@@ -89,7 +86,6 @@ import Testing
         }
     }
 
-    // T-0d03d8ba
     @Test func aBuildOfATaggedCommitIsThatRelease() throws {
         try withRepository { repository in
             try repository.git("tag", "v0.2.0")
@@ -98,7 +94,6 @@ import Testing
         }
     }
 
-    // T-1edb5f23
     @Test func anyOtherBuildIsTheLastReleaseAndHowManyCommitsPastIt() throws {
         try withRepository { repository in
             try repository.git("tag", "v0.1.0")
@@ -110,7 +105,6 @@ import Testing
         }
     }
 
-    // T-01401fc4
     @Test func followsTheTagsAsReleasesAreMade() throws {
         try withRepository { repository in
             #expect(try repository.version() == "0.0.0+dev.1")
@@ -137,7 +131,6 @@ import Testing
         }
     }
 
-    // T-813c0bad
     @Test func isUnknownOutsideARepository() throws {
         try withTemporaryDirectory(prefix: "filetrail-version") { root throws in
             let folder = Repository(path: root.path)

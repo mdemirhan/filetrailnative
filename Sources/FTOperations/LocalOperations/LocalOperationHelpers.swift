@@ -1,5 +1,3 @@
-// Port of AskedItem, canBeToldApart, looksTheSame, lstatOrNull, readItemSize, lstatUnlessMissing, isSameItem,
-// hasFileId, describeWriteError and describeTrashError (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -104,9 +102,9 @@ enum LocalOperations {
         return described.isEmpty ? "\u{201C}\(name)\u{201D} couldn\u{2019}t be moved to the Trash." : described
     }
 
-    /// Disk work, off the main actor, as the original's main process awaits its fs calls. It runs on a queue of its
-    /// own rather than in Swift's shared pool: a call can block for long (the Trash, a large folder deleted, a disk
-    /// that stops answering), and blocked pool threads would hold up every other task.
+    /// Disk work, off the main actor. It runs on a queue of its own rather than in Swift's shared pool: a call can
+    /// block for long (the Trash, a large folder deleted, a disk that stops answering), and blocked pool threads
+    /// would hold up every other task.
     static func onDisk<T: Sendable>(_ work: @escaping @Sendable () throws -> T) async throws -> T {
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {

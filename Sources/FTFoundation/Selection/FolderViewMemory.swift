@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/folderViewMemory.ts
 import Foundation
 
 /// How a folder looked when it was left: what was selected and where the list was scrolled. Back and Forward show it that
@@ -19,7 +18,7 @@ public struct FolderViewMemory: Equatable, Sendable, Codable {
 public typealias FolderViewMemories = [String: FolderViewMemory]
 
 extension Dictionary where Key == String, Value == FolderViewMemory {
-    /// `rememberFolderView`: keeps the memories of the folders in `historyPaths` and sets the one of `path`.
+    /// Keeps the memories of the folders in `historyPaths` and sets the one of `path`.
     public func remembering(_ memory: FolderViewMemory, at path: String, historyPaths: [String]) -> FolderViewMemories {
         let kept = Set(historyPaths)
         var next = filter { kept.contains($0.key) }

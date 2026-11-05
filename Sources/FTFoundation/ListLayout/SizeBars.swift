@@ -1,5 +1,3 @@
-// Port of getSizeBarFraction (apps/desktop/src/renderer/components/ContentPane.tsx:2135-2144), the bar rules of
-// styles.css:2894-2948 and the sizeBars memo of App.tsx:513-528
 import Foundation
 
 public enum SizeBars {

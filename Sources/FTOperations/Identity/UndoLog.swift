@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/undoLog.ts
 import CryptoKit
 import FTFoundation
 import Foundation
@@ -169,7 +168,7 @@ extension UndoStep: Codable {
         }
     }
 
-    // The original's shape: nulls where it writes null, optional keys left out when it leaves them out.
+    // Some keys are written as null when they have no value, others are left out.
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
@@ -385,8 +384,8 @@ func withoutFinderBookkeeping(_ names: [String]) -> [String] {
     }
 }
 
-/// A short digest of a folder's item names, whatever order they were listed in: SHA-1 of the names sorted as
-/// JavaScript sorts strings (by UTF-16 code unit) and joined by NUL.
+/// A short digest of a folder's item names, whatever order they were listed in: SHA-1 of the names sorted by
+/// UTF-16 code unit and joined by NUL.
 func digestOfNames(_ names: [String]) -> String {
     let sorted = names.sorted { $0.utf16.lexicographicallyPrecedes($1.utf16) }
     let digest = Insecure.SHA1.hash(data: Data(sorted.joined(separator: "\0").utf8))

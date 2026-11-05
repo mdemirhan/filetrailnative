@@ -1,5 +1,3 @@
-// Port of the "moving to the Trash and deleting", "the Trash" and "New Folder and Trash, picked items and names"
-// describes of apps/desktop/src/main/bootstrap/writeOperations.test.ts
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -23,7 +21,6 @@ import Testing
 
     // MARK: Moving to the Trash and deleting
 
-    // F-291 F-417 T-bbdad287
     @Test func countsAnItemThatIsAlreadyGoneAsDoneAndNamesTheItemWhenTheTrashRefuses() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.trashImpl = { path in
@@ -54,7 +51,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-291 F-293 T-957c5285
     @Test func stopsMovingItemsToTheTrashWhenCancelled() async throws {
         let held = HeldCall()
         let fileSystem = TestLocalFileSystem.stub()
@@ -76,7 +72,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-253 F-254 T-255b6063
     @Test func refusesToDeleteOrTrashTheDiskTheSystemFoldersAVolumeOrTheHomeFolder() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         let coordinator = WriteCoordinator.local(fileSystem, homePath: home)
@@ -109,7 +104,6 @@ import Testing
         await coordinator.shutDown()
     }
 
-    // F-295 T-dccdd6c7
     @Test func protectsTheTrashFolderHoweverItsNameIsWritten() async throws {
         let coordinator = WriteCoordinator.local(.stub())
 
@@ -124,7 +118,6 @@ import Testing
     }
 
     // Delete Immediately deletes only what is in a Trash, never a Trash itself.
-    // F-295 T-1848ceae
     @Test func protectsAnotherDisksTrashAndEachUsersTrashInIt() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         let coordinator = WriteCoordinator.local(fileSystem)
@@ -146,7 +139,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-295 T-22afff39
     @Test func doesntDeleteAnotherDisksTrashThroughALinkInTheTrash() async throws {
         let homeTrash = NodePath.join(NSHomeDirectory(), ".Trash")
         let fileSystem = TestLocalFileSystem.stub()
@@ -163,7 +155,6 @@ import Testing
 
     // The same folder can be reached by other paths: on macOS the home folder is also at
     // /System/Volumes/Data/Users/<name>. What is on disk is compared, not only the path.
-    // F-254 F-255 T-20578928
     @Test(.enabled(if: FileManager.default.fileExists(atPath: "/System/Volumes/Data")))
     func refusesTheHomeFolderAndTheDisksHoweverTheyAreReached() async throws {
         let disk = NativeWriteFileSystem()
@@ -183,7 +174,6 @@ import Testing
         }
     }
 
-    // F-255 T-ecb01d2e
     @Test(.tags(.diskImage), .diskImages)
     func refusesADiskMountedSomewhereOtherThanVolumes() async throws {
         try await DiskImage.withVolume(.apfs, ownMountPoint: true) { volume in
@@ -197,7 +187,6 @@ import Testing
     }
 
     // Moving to another disk copies, then deletes the originals: as final as deleting.
-    // F-251 F-255 T-8f45ec8a
     @Test func refusesToMoveTheHomeFolderOrASystemFolderButCopiesIt() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
@@ -218,7 +207,6 @@ import Testing
     }
 
     // The home folder it is given, as for everything else it checks.
-    // F-254 T-af2a8e72
     @Test func protectsTheFoldersOfTheHomeFolderItIsGiven() async throws {
         let service = StubWriteService()
         let fileSystem = TestLocalFileSystem.stub()
@@ -247,7 +235,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-254 F-300 T-15a38c04
     @Test func refusesToRenameTheHomeFoldersOwnFolders() async throws {
         let coordinator = WriteCoordinator.local(.stub())
 
@@ -259,8 +246,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-296 T-52aeacf2
-    // T-c8c37a58
     @Test func explainsAFailedDeleteInPlainWords() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.rmImpl = { _, _, _ in
@@ -279,7 +264,6 @@ import Testing
 
     // MARK: The Trash
 
-    // F-250 F-297 T-06050e82
     @Test func refusesToPasteMoveOrMakeAnythingInIt() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(
@@ -302,7 +286,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-290 T-4822ea4c
     @Test func doesntMoveWhatIsAlreadyInItToTheTrashAgain() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         let coordinator = WriteCoordinator.local(fileSystem, homePath: home)
@@ -314,7 +297,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-295 T-f6553345
     @Test func deletesForGoodOnlyWhatIsInATrash() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         let coordinator = WriteCoordinator.local(fileSystem, homePath: home)
@@ -333,7 +315,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-294 F-295 T-697480a5
     @Test func deletesForGoodWhatJustCouldntGoToTheTrashBecauseItsDiskHasNone() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.trashImpl = { path in
@@ -377,7 +358,6 @@ import Testing
     // Move to Trash through the app's TrashItem: only what it marks as being on a disk with no Trash (ENOTSUP, or no
     // code on a disk taken to have none, never on the startup disk) is offered for deleting for good; a locked item
     // says so, and any other reason is the Trash's own.
-    // F-408 F-571
     @Test func offersToDeleteOnlyWhatTheTrashItemMarksAsOnADiskWithNoTrash() async throws {
         let startupDev: Int64 = 16_777_231
         let devices: [String: Int64] = [
@@ -450,7 +430,6 @@ import Testing
 
     // While the question is open, another window (or another Mac on the share) puts a different item at that path:
     // confirming deletes nothing it wasn't asked about.
-    // F-295 T-f704e86b
     @Test func doesntDeleteAnotherItemPutAtThePathWhileTheNoTrashQuestionWasOpen() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-no-trash-swap") { root in
             try write(root.appending("a.txt").path, "asked about")
@@ -483,7 +462,6 @@ import Testing
 
     // On a disk without usable ids (some network volumes), a folder put in its place holding as many items isn't
     // taken for it: its date differs.
-    // F-295 T-224b2971
     @Test func tellsAFolderWithoutAnIdFromAnotherOneHoldingAsManyItems() async throws {
         let looks = Locked<(mtimeMs: Double, entries: [String])>((1_000, ["a.txt"]))
         let fileSystem = TestLocalFileSystem.stub()
@@ -510,7 +488,6 @@ import Testing
     }
 
     // A symlink inside the Trash to a folder elsewhere: what is "in" it through the link is really outside the Trash.
-    // F-295 T-b8ba37a4
     @Test func doesntDeleteThroughALinkInTheTrashThatLeadsOutOfIt() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-trash-link") { root in
             try FileManager.default.createDirectory(
@@ -534,7 +511,6 @@ import Testing
     // MARK: New Folder and Trash, picked items and names
 
     // The window suggests a free name from what it lists, which may be out of date.
-    // F-243 F-297 T-d7664236
     @Test func takesTheNextFreeNameWhenTheOneSuggestedWasTakenMeanwhile() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-new-folder") { root in
             for name in ["New Folder", "New Folder 2", "Untitled 3"] {
@@ -563,7 +539,6 @@ import Testing
         }
     }
 
-    // F-291 T-4151775f
     @Test func movesAFolderAndAnItemInsideItToTheTrashAsOneItem() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         let coordinator = WriteCoordinator.local(fileSystem)

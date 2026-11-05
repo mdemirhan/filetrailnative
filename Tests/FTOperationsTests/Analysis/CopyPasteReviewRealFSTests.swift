@@ -1,5 +1,4 @@
-// Port of packages/core/src/fs/copyPasteAnalysis.realfs.test.ts, copyPasteReviewData.realfs.test.ts and the review
-// cases of copyPastePackages.realfs.test.ts: what the review finds on the real disk.
+// What the review finds on the real disk.
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -41,7 +40,6 @@ struct CopyPasteAnalysisRealFSTests {
 
     // The temporary folder is under /private (or /Users), a firmlink: its real path keeps whichever spelling it is
     // given.
-    // T-a58143a5 F-421 F-310
     @Test(.enabled(if: FileManager.default.fileExists(atPath: "/System/Volumes/Data")))
     func refusesToPasteAFolderIntoItsOwnInsideSpelledThroughTheDataVolume() throws {
         try withTemporaryDirectory(prefix: "filetrail-analysis") { directory in
@@ -79,7 +77,6 @@ struct CopyPasteReviewDataTests {
         }
     }
 
-    // T-e7e10177 F-433 F-319
     @Test func namesTheKeepBothCopyOfEveryConflictReservingNamesAcrossThePaste() throws {
         try withPlaces { places in
             try write(places.source + "/a.txt", "a")
@@ -101,7 +98,6 @@ struct CopyPasteReviewDataTests {
         }
     }
 
-    // T-19fe0166 F-433 F-317
     @Test func listsWhatExistsOnlyInTheExistingFolderNestedItemsIncluded() throws {
         try withPlaces { places in
             try makeFolder(places.source + "/photos/2025")
@@ -124,7 +120,6 @@ struct CopyPasteReviewDataTests {
         }
     }
 
-    // T-fa481367 F-433 F-317
     @Test func countsAFolderThatAPastedFileWouldReplaceAsLostEntirely() throws {
         try withPlaces { places in
             try write(places.source + "/config", "file")
@@ -140,7 +135,6 @@ struct CopyPasteReviewDataTests {
         }
     }
 
-    // T-0c5958cd F-433 F-318
     @Test func marksAnItemThatCantBeReplacedBecauseItContainsThePastedItem() throws {
         try withPlaces { places in
             try makeFolder(places.target + "/foo/foo")
@@ -151,8 +145,7 @@ struct CopyPasteReviewDataTests {
         }
     }
 
-    // The paste that follows (a.txt replaced, b.txt kept, "c copy.txt" made) is checked with the engine (P3-03).
-    // T-394e8556 F-433 F-323
+    // The paste that follows (a.txt replaced, b.txt kept, "c copy.txt" made) is checked with the engine.
     @Test func appliesPerItemChoicesOverThePolicyForTheirKind() throws {
         try withPlaces { places in
             for name in ["a.txt", "b.txt", "c.txt"] {
@@ -185,7 +178,6 @@ struct CopyPastePackageReviewTests {
         try write(folder + "/Foo.app/Contents/" + extraFile, extraFile)
     }
 
-    // T-8cb73442 F-314 F-315
     @Test func aPackageThatClashesWithOneAlreadyThereIsReviewedAsOneItem() throws {
         try withTemporaryDirectory(prefix: "filetrail-packages") { directory in
             let source = directory.path + "/src"
@@ -202,7 +194,6 @@ struct CopyPastePackageReviewTests {
         }
     }
 
-    // T-fa3c5111 F-314
     @Test func isPackageFolderAsksMacOSAndKnowsAFolderWithoutAPackageExtensionIsntOne() throws {
         try withTemporaryDirectory(prefix: "filetrail-packages") { directory in
             try makeFolder(directory.path + "/Foo.app")
@@ -238,7 +229,6 @@ struct CopyPastePackageReviewTests {
         }
     }
 
-    // T-ec63ba2e F-314
     @Test func isPackageFolderGoesByTheExtensionWhenMacOSCantBeAskedOrDoesntKnow() throws {
         try withTemporaryDirectory(prefix: "filetrail-packages") { directory in
             for fileSystem in [PackageAnswer(.none), PackageAnswer(.unknown), PackageAnswer(.failing)] {

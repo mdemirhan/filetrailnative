@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteConflictSafety.realfs.test.ts
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -7,7 +6,7 @@ import Testing
 
 @testable import FTOperations
 
-/// What the app's Trash reports on a disk that may have no Trash (createTrashItem).
+/// What the app's Trash reports on a disk that may have no Trash.
 func noTrashHere() -> NativeError {
     NativeError(message: "no Trash on this volume", code: CopyPasteErrors.noTrashErrorCode)
 }
@@ -86,7 +85,6 @@ struct ConflictSafetyTests {
         (items ?? []).map { [NodePath.basename($0.sourcePath), $0.status.rawValue] }
     }
 
-    // T-ef1c6877 F-338 F-476
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func refusesToReplaceAFolderThatContainsTheItemBeingPasted(mode: CopyPasteMode) async throws {
         try await withPlaces { root, trashDir in
@@ -108,7 +106,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-90781e38 F-338 F-476
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func refusesToReplaceAFolderThatHoldsTheItemPastedThroughASymlinkedFolder(mode: CopyPasteMode) async throws {
         try await withPlaces { root, trashDir in
@@ -132,7 +129,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-0636af7c F-338 F-476
     @Test func refusesToReplaceAFolderWithAFileItContains() async throws {
         try await withPlaces { root, trashDir in
             let outer = root + "/foo"
@@ -150,7 +146,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-e715e742 F-476 F-493
     @Test func treatsADestinationReachedThroughASymlinkedFolderAsTheSourceFolder() async throws {
         try await withPlaces { root, trashDir in
             // "alias/docs" is "real/docs" reached through a symlinked parent folder.
@@ -175,7 +170,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-fcb4b870 F-342 F-477
     @Test func movesReplacedItemsToTheTrashInsteadOfDeletingThem() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -197,7 +191,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-a68d8dc9 F-342 F-477
     @Test func movesAnItemReplacedByASameDiskMoveToTheTrashToo() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -215,7 +208,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-b8ddfea8 F-343 F-477
     @Test(arguments: [(CopyPasteChoice.skip, "old notes"), (.overwrite, "new notes")])
     func asksBeforeDeletingPermanentlyWhenTheTrashIsUnavailable(answer: CopyPasteChoice, expected: String)
         async throws
@@ -239,7 +231,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-5aa57002 F-262 F-478
     @Test func neverShowsTheHiddenNameAReplacementIsBuiltUnder() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source/photos"
@@ -265,7 +256,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-565e3d5a F-339 F-479
     @Test func asksAgainWhenAnItemToBeReplacedChangedAfterReview() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -289,7 +279,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-5b1bda8b F-479
     @Test func copiesWithoutAskingWhenAnItemToBeReplacedIsAlreadyGone() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -308,7 +297,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-0a6d7635 F-480
     @Test(.enabled(if: getuid() != 0, "files that can't be read are readable anyway as root"))
     func keepsGoingAfterAnItemFailsAndReportsEveryItem() async throws {
         try await withPlaces { root, trashDir in
@@ -335,7 +323,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-4b52b1fd F-480
     @Test(.enabled(if: getuid() != 0, "files that can't be read are readable anyway as root"))
     func keepsGoingInsideAFolderAfterOneOfItsItemsFails() async throws {
         try await withPlaces { root, trashDir in
@@ -357,7 +344,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-b6e1f69d F-480 F-362
     @Test func reportsItemsThatWereNeverStartedWhenThePasteIsStopped() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -383,7 +369,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-0d7a2a22 F-481
     @Test func mergesIntoAFolderThatAppearedDuringThePasteUsingTheChosenPolicy() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -407,7 +392,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-dd08d729 F-343 F-477
     @Test func asksRatherThanDeletingPermanentlyWhenThereIsNoTrashAtAll() async throws {
         try await withPlaces { root, _ in
             let source = root + "/source"
@@ -426,7 +410,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-394acb48 F-481 F-345
     @Test func keepsTheExistingFileInPlaceWhenTheReplacementCantBeWritten() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -457,7 +440,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-ee58de08 F-341 F-481
     @Test(.enabled(if: getuid() != 0, "files that can't be read are readable anyway as root"))
     func keepsTheExistingFolderWhenItemsInsideTheReplacementCantBeCopied() async throws {
         try await withPlaces { root, trashDir in
@@ -486,7 +468,6 @@ struct ConflictSafetyTests {
 
     // On the startup disk the Trash always exists: a failure there (a busy item, a permission) is reported, and
     // deleting for good is never offered instead.
-    // T-fd669458 F-477
     @Test func failsTheItemWithoutOfferingToDeleteForGoodWhenTheTrashRefusesIt() async throws {
         try await withPlaces { root, _ in
             let source = root + "/source"
@@ -507,7 +488,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-a95de86e F-343 F-345 F-477
     @Test func movesAReplacingFolderBackWhenTheTrashIsUnavailableAndThePersonSkips() async throws {
         try await withPlaces { root, _ in
             let source = root + "/source"
@@ -539,7 +519,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-c44da6d3 F-482
     @Test func replacesAFolderWithOneMovedFromAnotherDiskRemovingTheOriginalsLast() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -577,7 +556,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-78e72cea F-482
     @Test func keepsAMovedFolderWhoseItemsWereSkippedWhileMerging() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -597,7 +575,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-2b3173c1 F-483
     @Test func asksInsteadOfMovingOverAnItemThatAppearsAtTheLastMoment() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -624,7 +601,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-b79eeb1a F-483
     @Test func doesntAskAgainWhenOnlyAFoldersTimestampChanged() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -647,7 +623,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-7f58cc34 F-483
     @Test(arguments: [(CopyPasteChoice.overwrite, ["a.txt"] as [String]?), (.skip, nil)])
     func asksWhenTheFolderToMergeIntoWasDeleted(answer: CopyPasteChoice, expected: [String]?) async throws {
         try await withPlaces { root, trashDir in
@@ -673,7 +648,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-e18bad5b F-484 F-268
     @Test(.enabled(if: getuid() != 0, "files that can't be read are readable anyway as root"))
     func reportsAFolderWhoseEveryItemFailedAsFailedWithTheCount() async throws {
         try await withPlaces { root, trashDir in
@@ -701,7 +675,6 @@ struct ConflictSafetyTests {
 
     // The folder is built under a hidden name: stopped, it goes, and no half folder is left under its real name to
     // pass for the whole one.
-    // T-c1242d6a F-265 F-362
     @Test func leavesNoPartOfAFolderBehindWhenThePasteIsStopped() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -726,7 +699,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-06516805
     @Test func givesAKeepBothCopyANameNoOtherPastedItemUses() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"
@@ -747,7 +719,6 @@ struct ConflictSafetyTests {
         }
     }
 
-    // T-e19c988d
     @Test func shortensAKeepBothNameThatWouldBeLongerThanTheFileSystemAllows() async throws {
         try await withPlaces { root, trashDir in
             let source = root + "/source"

@@ -1,11 +1,9 @@
-// Port of FileIcon with `deferLoad` (apps/desktop/src/renderer/lib/fileIcons.tsx) as the Info views use it
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// What the original's icon request gives: `nativeGetFileIcon` draws the icon into this many pixels (`ICON_PIXEL_SIZE`),
-/// whatever size it then shows at. macOS has other art for other sizes, so an icon only has the original's shape when
-/// it is scaled from these pixels.
+/// The pixels an icon is drawn into, whatever size it then shows at. macOS has other art for other sizes, so an
+/// icon keeps one shape at every size only when it is scaled from these pixels.
 @MainActor
 enum NativeIconPixels {
     static let side = 64

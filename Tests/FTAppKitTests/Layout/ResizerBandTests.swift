@@ -1,6 +1,5 @@
 // The chrome that follows Finder: the sidebar's straight edge, the band's line under the pointer. Finder's
-// numbers are measured from its 2x screenshots; the Info panel's resizer keeps .pane-resizer of
-// apps/desktop/src/renderer/styles.css:1950-1955
+// numbers are measured from its 2x screenshots; the Info panel's resizer stays an opaque gutter with its hairline
 import AppKit
 import FTFoundation
 import Foundation
@@ -152,7 +151,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // W3-INT-13: with the Info panel open the band's line goes across the panel too, and the pointer over the band of
+        // With the Info panel open the band's line goes across the panel too, and the pointer over the band of
         // either column shows it; moving from one to the other keeps it.
         @Test func theBandsLineCoversTheInfoPanelToo() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -180,7 +179,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The levels below are the screenshots' stored values, not converted from their display profile: the same files
-        // store the port's #1d1d1f title as 29,29,31 (port-left.png), so those are the values to compare with what a view
+        // store the app's #1d1d1f title as 29,29,31 (port-left.png), so those are the values to compare with what a view
         // sets. Converted to sRGB the #1d1d1f reads 39, and Finder's title 94.
 
         // Stored as 229 over white, Finder's, which is the system's separator; in dark it follows by itself.

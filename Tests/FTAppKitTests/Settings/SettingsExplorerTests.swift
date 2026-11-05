@@ -1,5 +1,3 @@
-// Ports App.commands.test.tsx T-d16d186c and App.menuCommands.test.tsx T-1e8b265a, and checks that what Settings changes
-// reaches an explorer window (windowless)
 import AppKit
 import FTFoundation
 import Testing
@@ -26,8 +24,6 @@ extension ExplorerWindowlessTests {
             return pages
         }
 
-        // T-d16d186c T-1e8b265a F-572 F-639 B-DLG-162
-        // B-VIEW-231
         @Test func commandCommaTheMenuAndTheToolbarOpenSettingsInItsWindow() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -59,7 +55,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-891 F-895 F-896 F-904 B-DLG-172 B-DLG-180 B-DLG-181 B-DLG-222 B-DLG-231
         @Test func whatSettingsChangesReachesTheExplorerWindow() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

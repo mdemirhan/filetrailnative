@@ -1,8 +1,7 @@
-// Port of getAutoFolderSizePath of apps/desktop/src/renderer/hooks/useAutoFolderSize.ts
 import Foundation
 
 public enum AutoFolderSize {
-    /// How long a folder stays selected, or in the Info panel, before it is measured (`AUTO_FOLDER_SIZE_DELAY_MS`). The
+    /// How long a folder stays selected, or in the Info panel, before it is measured. The
     /// Info panel and the Info Row both wait it out: they share one measurement.
     public static let delayMilliseconds = 500.0
 

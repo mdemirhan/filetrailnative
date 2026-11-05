@@ -1,4 +1,4 @@
-// The engine's dirname and basename answer as Node's path module does (Sources/FTOperations/Execution/ExecutionPaths.swift)
+// The engine's dirname and basename answer as NodePath does (Sources/FTOperations/Execution/ExecutionPaths.swift)
 import FTFoundation
 import Testing
 

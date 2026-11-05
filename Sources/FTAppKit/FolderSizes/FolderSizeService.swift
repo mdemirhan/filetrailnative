@@ -1,5 +1,3 @@
-// Port of the folder size channels of apps/desktop/src/main/bootstrap (folderSize:* and the settled message), as the windows
-// of the app use them
 import FTFileSystem
 import FTFoundation
 import Foundation

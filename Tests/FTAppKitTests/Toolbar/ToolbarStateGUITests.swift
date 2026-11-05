@@ -1,5 +1,4 @@
-// Ports the right-click and customizing states of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx on a
-// real explorer window on screen: real mouse events through the window, and the system's customizing sheet
+// Real mouse events through the window, and the system's customizing sheet
 import AppKit
 import FTFoundation
 import Testing
@@ -10,8 +9,6 @@ extension ExplorerWindowGUITests {
     @MainActor
     @Suite struct ToolbarGUITests: ToolbarTesting {
         // On screen: the hold's timer fires outside the test's task, so it opens the app's menu, not a windowless test's own.
-        // T-b9cc1ec4 T-01a9e06b T-943ef637 T-84e77094 T-2cb340ef F-698 B-NAV-025 B-NAV-027 B-NAV-028 B-NAV-029 B-NAV-031
-        // B-NAV-032 B-NAV-034 B-NAV-036 B-NAV-037
         @Test func stepsOnAClickAndListsTheFoldersWhenHeld() async throws {
             let harness = try ExplorerHarness()
             let root = harness.folder.url
@@ -65,11 +62,8 @@ extension ExplorerWindowGUITests {
 }
 
 extension ExplorerWindowGUITests.ToolbarGUITests {
-    // N/A T-19d51434 T-bb62d104 the toolbar's right-click menu is the system's, with Customize Toolbar…; F-717
-    // likewise. Back's and Forward's history stay theirs: stepsOnAClickAndListsTheFoldersWhenHeld.
-    // F-718 F-719 F-720: Customize Toolbar… opens the system's sheet on the window, and the items wait under it, as under
+    // Customize Toolbar… opens the system's sheet on the window, and the items wait under it, as under
     // any sheet. Ending the sheet lets them go.
-    // F-718 F-719 F-720
     @Test func customizesInTheSystemsSheetAndTheItemsWaitUnderIt() async throws {
         let harness = try ExplorerHarness()
         let tab = try await harness.open()
@@ -103,7 +97,6 @@ extension ExplorerWindowGUITests.ToolbarGUITests {
     }
 
     // In a narrow window the system moves the removable items to its » menu; the required ones stay.
-    // F-716
     @Test func aNarrowWindowMovesTheRemovableItemsOut() async throws {
         let harness = try ExplorerHarness()
         let tab = try await harness.open()

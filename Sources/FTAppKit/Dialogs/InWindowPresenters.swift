@@ -1,10 +1,8 @@
-// Port of apps/desktop/src/renderer/components/EjectVolumeAlert.tsx and of the notices and the Always Open With question
-// of components/AppDialogs.tsx (ActionNoticeDialog, confirmAlwaysOpenWith), drawn in the window
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The eject questions and notices as the original's alerts over the window.
+/// The eject questions and notices as alerts over the window.
 @MainActor
 final class InWindowEjectPresenter: EjectPresenter {
     private let window: () -> NSWindow?

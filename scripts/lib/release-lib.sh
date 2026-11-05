@@ -1,6 +1,3 @@
-# Port of apps/desktop/scripts/lib/releaseNotes.ts, releaseState.ts, and nextVersion and readReleaseTags of version.ts
-# What scripts/release.sh decides, apart from what it does. Sourced; each function prints its answer.
-
 # The tags on stdin that are releases (vX.Y.Z; a tag with a suffix isn't one).
 release_tags() {
     { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; }

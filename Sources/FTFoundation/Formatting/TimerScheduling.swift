@@ -1,5 +1,4 @@
 // Timers the clock and the visit tracker ask for, behind a seam so tests run them on a virtual clock.
-// (The original calls setTimeout/clearTimeout, or the timers a test passes in.)
 import Foundation
 
 /// A timer that has been scheduled; `cancel()` stops it if it has not fired.

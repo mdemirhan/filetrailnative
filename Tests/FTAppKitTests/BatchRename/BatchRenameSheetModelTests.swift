@@ -1,5 +1,4 @@
-// Port of apps/desktop/src/renderer/hooks/useBatchRename.test.tsx: the sheet's state over a stand-in for the items'
-// checks and a record of the saved preferences
+// The sheet's state over a stand-in for the items' checks and a record of the saved preferences
 import AppKit
 import FTFoundation
 import FTOperations
@@ -19,8 +18,8 @@ private let takenSettings = BatchRenameSettings(
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct BatchRenameSheetModelTests {
-        /// A model whose checks answer as `setup` of the original does: the dates, the dates taken when asked, and
-        /// the folder holding the two items.
+        /// A model whose checks answer with the dates, the dates taken when asked, and the folder holding the two
+        /// items.
         private func setup(
             settings: BatchRenameSettings? = nil, presets: [BatchRenamePreset]? = nil,
             inspect: BatchRenameInspectBox.Mode = .answer
@@ -38,8 +37,6 @@ extension ExplorerWindowlessTests {
             await waitUntil { model.sheet?.inspect != nil }
         }
 
-        // B-DLG-077 B-DLG-085 B-DLG-086
-        // T-7517206e
         @Test func opensWithTheSettingsLastUsedAndThePresetsSavedAndChecksTheItems() async throws {
             let (model, box, _) = setup(
                 settings: BatchRenameSettings(find: "IMG_", replaceWith: "x"),
@@ -59,8 +56,6 @@ extension ExplorerWindowlessTests {
                         ], onConflict: .number, numberSeparator: " "))
         }
 
-        // B-DLG-082 B-DLG-086
-        // T-dd4acfd2
         @Test func asksForTheDatesTakenOnceTheyAreUsedAndOnlyThen() async throws {
             let (model, box, _) = setup()
             model.open(targets)
@@ -73,8 +68,6 @@ extension ExplorerWindowlessTests {
             #expect(model.request?.numberSeparator == "_")
         }
 
-        // B-DLG-082 B-DLG-086
-        // T-759edbf6
         @Test func asksForTheDatesTakenAtOnceWhenTheSettingsOpenedWithAlreadyUseThem() async throws {
             var settings = takenSettings
             settings.separator = .none
@@ -86,8 +79,6 @@ extension ExplorerWindowlessTests {
             #expect(model.request?.numberSeparator == " ")
         }
 
-        // B-DLG-081 B-DLG-085
-        // T-40de0695
         @Test func sendsNothingWhileCheckingWithANameToFixOrWithNothingToRename() async throws {
             let (model, box, _) = setup(
                 settings: BatchRenameSettings(find: "IMG_1", onConflict: .block), inspect: .hold)
@@ -106,8 +97,6 @@ extension ExplorerWindowlessTests {
             #expect(model.request == nil)
         }
 
-        // B-DLG-089 B-DLG-121
-        // T-a477a68b
         @Test func keepsTheSettingsForNextTimeWhenItCloses() async throws {
             let (model, _, saved) = setup()
             model.open(targets)
@@ -117,8 +106,6 @@ extension ExplorerWindowlessTests {
             #expect(saved.savedSettings == BatchRenameSettings(mode: .changeCase))
         }
 
-        // B-DLG-119 B-DLG-121
-        // T-acbedec1
         @Test func savesPresetsByNameReplacingOneOfTheSameNameAndDeletesThem() async throws {
             let (model, _, saved) = setup(presets: [BatchRenamePreset(name: "Photos", settings: .defaults)])
             model.open(targets)
@@ -132,8 +119,6 @@ extension ExplorerWindowlessTests {
             #expect(saved.patches.last == ["batchRenamePresets": .array([])])
         }
 
-        // B-DLG-084
-        // T-eae80eb6
         @Test func saysWhenTheItemsCouldntBeCheckedAndRenamesNothing() async throws {
             let (model, _, _) = setup(settings: BatchRenameSettings(find: "IMG"), inspect: .fail)
             model.open(targets)
@@ -144,8 +129,6 @@ extension ExplorerWindowlessTests {
             #expect(model.request == nil)
         }
 
-        // B-DLG-076 B-DLG-077
-        // T-8abbca64
         @Test func opensWithTheDefaultsWhenThePreferencesCantBeReadAndNotAtAllForNothing() async throws {
             let (model, _, saved) = setup()
             saved.fails = true
@@ -156,8 +139,6 @@ extension ExplorerWindowlessTests {
             #expect(model.settings == .defaults)
         }
 
-        // B-DLG-083
-        // T-1e58856e
         @Test func forgetsAnAnswerThatComesAfterTheSheetClosed() async throws {
             let (model, box, _) = setup(inspect: .hold)
             model.open(targets)
@@ -167,8 +148,6 @@ extension ExplorerWindowlessTests {
             #expect(model.sheet == nil)
         }
 
-        // B-DLG-085 B-DLG-086
-        // T-d4ab4379
         @Test func sendsOnlyTheItemsToRenameWithTheNumberedNamesAndLeavesOutWhatCantBeRenamed() async throws {
             let mixed = [
                 BatchRenameTarget(path: "/trip/x locked.jpg", name: "x locked.jpg", isFolder: false),
@@ -205,8 +184,6 @@ extension ExplorerWindowlessTests {
                         ], onConflict: .number, numberSeparator: " "))
         }
 
-        // B-DLG-083
-        // T-379e2696
         @Test func doesntTakeTheAnswerForASheetClosedBeforeItCameIntoTheNextOne() async throws {
             let (model, box, _) = setup(settings: BatchRenameSettings(find: "IMG"), inspect: .hold)
             let other = [BatchRenameTarget(path: "/home/IMG_9.jpg", name: "IMG_9.jpg", isFolder: false)]
@@ -231,8 +208,6 @@ extension ExplorerWindowlessTests {
                 ])
         }
 
-        // B-DLG-082 B-DLG-083
-        // T-659e657d
         @Test func asksForTheDatesTakenOnceAndKeepsTheNewestSheetsAnswerWhenAnswersCross() async throws {
             let (model, box, _) = setup(inspect: .hold)
             let paths = targets.map(\.path)
@@ -266,8 +241,6 @@ extension ExplorerWindowlessTests {
             #expect(model.request?.items.map(\.destinationName) == ["File_2026-05-14.jpg", "File_2026-05-14_2.jpg"])
         }
 
-        // B-DLG-119
-        // T-40af10cc
         @Test func keepsTheNewestPresetsDroppingTheOldestWhenThereAreTooMany() async throws {
             let many = (1...BatchRename.maxPresets).map { BatchRenamePreset(name: "Preset \($0)", settings: .defaults) }
             let (model, _, saved) = setup(presets: many)
@@ -312,7 +285,7 @@ extension ExplorerWindowlessTests {
         MainWindowController.retryTargets(ended(items), folders: folders)
     }
 
-    // B-DLG-094 T-8a768343 T-5360e1dd: what failed is left, what was renamed isn't.
+    // What failed is left, what was renamed isn't.
     @Test func leavesOutWhatWasRenamed() {
         #expect(
             targets([item("/t/a.txt", "/t/a-old.txt", .completed), item("/t/b.txt", nil, .failed)]) == [
@@ -320,14 +293,14 @@ extension ExplorerWindowlessTests {
             ])
     }
 
-    // B-DLG-094 T-720c5e50 T-6026c9fd: so are those skipped because their new names were taken, and those not started when
+    // So are those skipped because their new names were taken, and those not started when
     // the rename was stopped.
     @Test(arguments: [CopyPasteItemResult.Status.skipped, .cancelled])
     func triesAgainItemsNotReached(_ status: CopyPasteItemResult.Status) {
         #expect(targets([item("/t/b.txt", nil, status)]).map(\.path) == ["/t/b.txt"])
     }
 
-    // B-DLG-094 T-84fd5b18 T-2534ef40: an item left under another name, a number or a hidden temporary one, is tried again
+    // An item left under another name, a number or a hidden temporary one, is tried again
     // where it is now, under the name it has now.
     @Test(arguments: ["b 2.txt", ".filetrail-rename-abc123"])
     func triesAgainAnItemWhereItIsNow(_ name: String) {
@@ -337,7 +310,7 @@ extension ExplorerWindowlessTests {
             ])
     }
 
-    // B-DLG-074 B-DLG-094 T-cec4474d: a folder as it was asked for, under its old path.
+    // A folder as it was asked for, under its old path.
     @Test func keepsAFolderAFolderUnderItsNewName() {
         #expect(
             targets([item("/t/Alpha", "/t/Alpha 2", .failed)], folders: ["/t/Alpha": true]) == [

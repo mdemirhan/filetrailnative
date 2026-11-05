@@ -1,4 +1,4 @@
-// The content-selection golden recorded from the reference (tools/parity/golden/content-selection.ts): gestures, arrow
+// The content-selection golden: gestures, arrow
 // keys, page moves and list changes over random lists, layouts and modifier sequences, and the marquee's boxes.
 import FTTestSupport
 import Foundation
@@ -102,7 +102,7 @@ struct ContentSelectionGoldenTests {
         (sizes ?? [:]).mapValues { DragSelectionSize(width: $0.width, height: $0.height) }
     }
 
-    /// The icon layout the reference recorded: ours, compared token by token, or its compact grid, which File Trail no
+    /// The icon layout the golden recorded: ours, compared token by token, or its compact grid, which File Trail no
     /// longer has and is taken as recorded.
     private static func iconLayout(_ recorded: [String: Double]) -> IconGridLayout {
         var layout = DesignTokens.iconGrid(density: .standard)
@@ -250,7 +250,6 @@ struct ContentSelectionGoldenTests {
         return Output(results: results)
     }
 
-    // F-779 F-780 F-781 F-784 F-785 F-786 B-SEL-001 B-SEL-009 B-SEL-024 B-SEL-025 B-SEL-044 B-SEL-049 B-SEL-149 B-SEL-156
     @Test func theSelectionModelAndMovesMatchTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "content-selection")
         #expect(cases.count > 100)

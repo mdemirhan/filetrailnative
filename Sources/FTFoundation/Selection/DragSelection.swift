@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/dragSelection.ts
 import Foundation
 
 /// A rectangle in points. Each view's hit test takes it relative to the top-left corner of the view that holds its items.
@@ -55,13 +54,12 @@ public enum DragSelection {
         case replace, add, toggle
     }
 
-    /// `getDragSelectionMode`: ⌘ wins when both are held.
+    /// ⌘ wins when both are held.
     public static func mode(meta: Bool, shift: Bool) -> Mode {
         if meta { return .toggle }
         return shift ? .add : .replace
     }
 
-    /// `makeDragSelectionBox`.
     public static func box(from start: (x: Double, y: Double), to end: (x: Double, y: Double)) -> DragSelectionBox {
         DragSelectionBox(
             left: min(start.x, end.x), top: min(start.y, end.y), right: max(start.x, end.x), bottom: max(start.y, end.y)
@@ -78,7 +76,7 @@ public enum DragSelection {
         return Int(max(-1e15, min(1e15, value.rounded(.up))))
     }
 
-    /// `getDetailsItemsInBox`: one row per item, at least as wide as the pane, so only the box's height matters.
+    /// One row per item, at least as wide as the pane, so only the box's height matters.
     public static func detailsItems(box: DragSelectionBox, entryPaths: [String], rowHeight: Double)
         -> [DragSelectionHit]
     {
@@ -94,7 +92,7 @@ public enum DragSelection {
         }
     }
 
-    /// `getFlowListItemsInBox`: items fill a column top to bottom, then go on in the next column. An item is as wide as
+    /// Items fill a column top to bottom, then go on in the next column. An item is as wide as
     /// its icon and name, at most its column's width.
     public static func flowListItems(
         box: DragSelectionBox, entryPaths: [String], rowsPerColumn: Int, rowHeight: Double, itemWidth: Double,
@@ -124,7 +122,7 @@ public enum DragSelection {
         return hits
     }
 
-    /// `getIconGridItemsInBox`: items read left to right in columns that share the grid's width, each item in the middle
+    /// Items read left to right in columns that share the grid's width, each item in the middle
     /// of its column. An item is touched on its icon's tile or on its name, not on the space around them.
     public static func iconGridItems(
         box: DragSelectionBox, entryPaths: [String], columns: Int, gridWidth: Double, layout: IconGridLayout,
@@ -134,7 +132,7 @@ public enum DragSelection {
         let columnWidth = gridWidth / Double(columnCount)
         let tileTop = layout.itemPaddingTop
         let labelTop = tileTop + layout.iconBoxSize + layout.labelGap
-        // `.icon-item` is 2 px shorter than its row.
+        // An icon item is 2 px shorter than its row.
         let tallestLabel = layout.rowHeight - 2 - labelTop
         let rowCount = (entryPaths.count + columnCount - 1) / columnCount
         let firstRow = max(0, floorInt(box.top / layout.rowHeight))
@@ -169,7 +167,7 @@ public enum DragSelection {
         return hits
     }
 
-    /// `combineDragSelection`: the selection while the box is drawn, what it touches combined with the selection the
+    /// The selection while the box is drawn, what it touches combined with the selection the
     /// drag started with.
     public static func combine(startPaths: [String], hitPaths: [String], mode: Mode) -> [String] {
         if mode == .replace { return hitPaths }
@@ -179,7 +177,7 @@ public enum DragSelection {
         return startPaths.filter { !hit.contains($0) } + hitPaths.filter { !start.contains($0) }
     }
 
-    /// `getDragSelectionAutoScrollStep`: how far to scroll this frame while the pointer is `overshoot` points past an
+    /// How far to scroll this frame while the pointer is `overshoot` points past an
     /// edge of the pane: faster the further out it is.
     public static func autoScrollStep(overshoot: Double) -> Double {
         if overshoot == 0 { return 0 }
@@ -187,8 +185,8 @@ public enum DragSelection {
         return sign * min(40, 4 + abs(overshoot) / 3)
     }
 
-    /// The selection's lead at button up (`handleMouseUp` of `useDragSelection`): the touched item nearest the pointer
-    /// (the distance from the pointer to each item's box), or the last item selected when the box touches none.
+    /// The selection's lead at button up: the touched item nearest the pointer (the distance from the pointer to each
+    /// item's box), or the last item selected when the box touches none.
     public static func nearestLead(hits: [DragSelectionHit], pointer: (x: Double, y: Double), shownPaths: [String])
         -> String?
     {

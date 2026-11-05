@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/earlyWriteOperationEvents.test.ts, and the N/A marks of
-// apps/desktop/src/renderer/hooks/useWriteOperations.test.ts
 import FTFoundation
 import FTOperations
 import Foundation
@@ -44,8 +42,6 @@ private final class StartRequest {
         return task
     }
 
-    // F-542 T-7fb2bc2c
-    // B-CLIP-180
     @Test func keepsNothingOfOtherWindowsOperationsWhileThisWindowStartsNone() {
         let early = EarlyWriteOperationEvents()
 
@@ -58,8 +54,6 @@ private final class StartRequest {
         #expect(early.take("other-op") == [])
     }
 
-    // F-542 T-1c1eaa0a
-    // B-CLIP-180 B-CLIP-181
     @Test func keepsTheNewestProgressAndTheEndOfAnOperationWhileAStartWaits() async throws {
         let early = EarlyWriteOperationEvents()
         let request = StartRequest()
@@ -80,8 +74,6 @@ private final class StartRequest {
         #expect(early.size == 0)
     }
 
-    // F-542 T-e0929847
-    // B-CLIP-180
     @Test func keepsOnlyTheNewestFewOperations() async throws {
         let early = EarlyWriteOperationEvents()
         let request = StartRequest()
@@ -98,8 +90,6 @@ private final class StartRequest {
         #expect(early.take("op-7") == [])
     }
 
-    // F-542 T-39a98554
-    // B-CLIP-181
     @Test func letsGoOfWhatItKeptWhenTheStartIsRefused() async {
         let early = EarlyWriteOperationEvents()
         let request = StartRequest()
@@ -112,8 +102,6 @@ private final class StartRequest {
         #expect(early.size == 0)
     }
 
-    // F-542 T-6145c121
-    // B-CLIP-181
     @Test func forgetsAnOperationItHeardOfInAnotherWay() async {
         let early = EarlyWriteOperationEvents()
         let request = StartRequest()
@@ -128,9 +116,3 @@ private final class StartRequest {
         _ = try? await started.value
     }
 }
-
-// useWriteOperations' reducer is React's useReducer with useState-style setters; the window's write state is plain
-// stored properties of ExplorerWriteSession, with nothing to patch field by field.
-// N/A T-b808b63d React reducer: one field patched with a value has no counterpart.
-// N/A T-430cc037 React reducer: functional updaters have no counterpart.
-// N/A T-a75b62af React reducer: returning the same state object has no counterpart.

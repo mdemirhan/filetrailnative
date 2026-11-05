@@ -1,4 +1,3 @@
-// Port of getIconSamples and createIconSamples (apps/desktop/src/main/bootstrap/systemHandlers.ts)
 import Foundation
 
 /// Items we own, so macOS returns the ordinary icon for their kind: a folder holding something and an empty one

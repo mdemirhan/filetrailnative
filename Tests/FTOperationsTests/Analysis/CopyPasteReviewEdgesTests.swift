@@ -1,6 +1,5 @@
-// Port of packages/core/src/fs/copyPasteReviewEdges.test.ts: what the review finds out before a paste, where the disk
-// doesn't answer plainly: whether it tells letter case apart, what a Replace would delete when part of it can't be
-// read, and how a very long name gets " copy".
+// What the review finds out before a paste, where the disk doesn't answer plainly: whether it tells letter case apart,
+// what a Replace would delete when part of it can't be read, and how a very long name gets " copy".
 import FTFoundation
 import Foundation
 import Testing
@@ -22,7 +21,6 @@ private func withoutNativeAnswer(_ fileSystem: MockAnalysisFileSystem) -> MockAn
 struct CopyPasteReviewEdgesTests {
     // MARK: Telling whether the destination minds letter case
 
-    // T-f233c298 F-430
     @Test func caseLooksForItselfWhenAskingTheVolumeFails() {
         let fileSystem = MockAnalysisFileSystem([("/target/Readme", .file())])
         fileSystem.isCaseSensitiveImpl = { _ in throw OperationError("pathconf failed") }
@@ -30,7 +28,6 @@ struct CopyPasteReviewEdgesTests {
         #expect(detectCaseSensitivity(fileSystem, in: "/target") == false)
     }
 
-    // T-cea1d1d6 F-430
     @Test func caseUsesTheFoldersOwnNameWhenTheFolderIsEmptyOrCantBeListed() {
         let sensitive = withoutNativeAnswer(MockAnalysisFileSystem([("/Target", .directory())]))
         sensitive.caseSensitive = true
@@ -41,14 +38,12 @@ struct CopyPasteReviewEdgesTests {
         #expect(detectCaseSensitivity(insensitive, in: "/Target") == false)
     }
 
-    // T-425febe7 F-430
     @Test func caseSkipsNamesWithNoLettersAndAssumesTheMacOSDefaultWhenNothingAnswers() {
         let fileSystem = withoutNativeAnswer(MockAnalysisFileSystem([("/2024/123.456", .file())]))
 
         #expect(detectCaseSensitivity(fileSystem, in: "/2024") == false)
     }
 
-    // T-c8c360e6 F-430
     @Test func caseCantTellFromALookupThatGivesNoFileIdsNorFromOneThatFails() {
         let noIds = withoutNativeAnswer(MockAnalysisFileSystem([("/target/Readme", .file())]))
         let noIdsBase = noIds.base
@@ -72,7 +67,6 @@ struct CopyPasteReviewEdgesTests {
 
     // MARK: What the review says a Replace would delete
 
-    // T-ef9f2f23 F-431 F-317
     @Test func replaceCantSayWhenAFolderInsideTheExistingOneCantBeRead() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/target/Docs/a.txt", .file(size: 1)),
@@ -93,7 +87,6 @@ struct CopyPasteReviewEdgesTests {
     }
 
     // Finder writes .DS_Store into a folder just by showing it; it isn't anyone's item.
-    // T-4004f3be F-431 F-926
     @Test func replaceDoesntCountFindersDSStoreAsAnItemItWouldDelete() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/source/Docs/a.txt", .file(size: 1)), ("/target/Docs/.DS_Store", .file(size: 1)),
@@ -106,7 +99,6 @@ struct CopyPasteReviewEdgesTests {
         #expect(report.nodes.first?.destinationOnly == CopyPasteDestinationOnlySummary(count: 1, samplePaths: ["Old"]))
     }
 
-    // T-2cf74644 F-426 F-320
     @Test func warnsAboutAPasteThatIsLargeBySizeNotOnlyByCount() throws {
         let fileSystem = MockAnalysisFileSystem([("/source/big.bin", .file(size: 500)), ("/target", .directory())])
 
@@ -117,7 +109,6 @@ struct CopyPasteReviewEdgesTests {
 
     // MARK: Fitting a name
 
-    // T-e63c16b4 F-432
     @Test func keepsAnAbsurdlyLongExtensionAsPartOfTheName() {
         let ext = "." + String(repeating: "x", count: 260)
         let name = CopyPasteNames.fitName("report", suffix: " copy", extension: ext)

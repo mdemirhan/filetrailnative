@@ -1,4 +1,4 @@
-// Checks the app's menus as system menus: what their items say and do, not how they are drawn
+// What their items say and do, not how they are drawn
 import AppKit
 import FTFoundation
 import Testing
@@ -40,7 +40,7 @@ import Testing
         #expect(menu.rows.map(\.title) == ["On", "Off", "Note", "App"])
     }
 
-    // B-NAV-033: the history menu's folder comes after the name, smaller; a long name stops at 220.
+    // The history menu's folder comes after the name, smaller; a long name stops at 220.
     @Test func aRowsDetailFollowsItsNameAndLongTextIsCut() throws {
         let name = String(repeating: "long folder name ", count: 20)
         let menu = AppMenu(
@@ -135,7 +135,6 @@ import Testing
     }
 
     // Option swaps Open With to Always Open With while the menu is open.
-    // B-INFO-061 T-8727f2e5
     @Test func optionChangesTheRowsOfAMenuThatAsks() {
         let menu = AppMenu(items: [AppMenuItem(title: "Zed")], identifier: "menu", rowIdentifier: "row")
         menu.watchOption(held: false) { held in
@@ -150,7 +149,7 @@ import Testing
     }
 
     // The swap builds new rows: the row the keyboard or the pointer is on stays marked, counted without the heading and
-    // the separators (`activeIndex` in PullDownMenu.tsx:32, 92), so Option+Return chooses it.
+    // the separators, so Option+Return chooses it.
     @Test func optionKeepsTheHighlightedRowMarked() throws {
         let plain: [AppMenuItem] = [AppMenuItem(title: "Zed"), .separator, AppMenuItem(title: "Other…")]
         let menu = AppMenu(items: plain, identifier: "menu", rowIdentifier: "row")

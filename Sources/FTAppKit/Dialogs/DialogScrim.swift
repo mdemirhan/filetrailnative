@@ -1,5 +1,3 @@
-// Port of .modal-scrim and .go-to-folder-backdrop (apps/desktop/src/renderer/styles.css:1229-1243, 3440-3449) and of the
-// focus trap of apps/desktop/src/renderer/components/useDialogFocus.ts
 import AppKit
 import FTFoundation
 
@@ -21,9 +19,9 @@ extension DialogPanel {
     var keepsPaneFocus: Bool { false }
 }
 
-/// A dialog drawn in the window, the way the original draws its alerts and boxes: a scrim (`--scrim`) over the whole
-/// window, the panel centred on it or dropped 60 below the window's top. The window behind takes no mouse and no key
-/// while it is up. It needs no screen: a window that is never shown draws and answers it the same way.
+/// A dialog drawn in the window, an alert or a box: a scrim over the whole window, the panel centred on it or dropped
+/// 60 below the window's top. The window behind takes no mouse and no key while it is up. It needs no screen: a window
+/// that is never shown draws and answers it the same way.
 @MainActor
 final class DialogScrim: NSView {
     enum Placement {
@@ -98,8 +96,8 @@ final class DialogScrim: NSView {
         refreshToolbar(of: window)
     }
 
-    /// The toolbar's items ask `canPerform`, whose answer the dialog just changed: they dim under it at once, as the
-    /// original's `disabled` follows its state, not only at the next change of selection.
+    /// The toolbar's items ask `canPerform`, whose answer the dialog just changed: they dim under it at once, not
+    /// only at the next change of selection.
     private func refreshToolbar(of window: NSWindow?) {
         (window as? ExplorerTabWindow)?.explorerTab?.explorerToolbar.refreshStates()
     }
@@ -128,7 +126,7 @@ final class DialogScrim: NSView {
     /// The field that was being typed in when the dialog opened, and what was selected in it.
     private var previousField: (view: NSView, selected: NSRange)?
 
-    /// Takes the dialog away; the keyboard goes back where it was (`useDialogFocus`).
+    /// Takes the dialog away; the keyboard goes back where it was.
     func dismiss(restoringFocus: Bool = true) {
         guard !isDismissed else { return }
         isDismissed = true
@@ -149,7 +147,7 @@ final class DialogScrim: NSView {
     }
 
     /// To the field that was being typed in, with what was selected in it; else to what had the keyboard. When neither
-    /// is there any more (the opening took the field away) a pane takes it, unless a dialog is still up (B-NAV-223).
+    /// is there any more (the opening took the field away) a pane takes it, unless a dialog is still up.
     private func restoreKeyboard(in window: NSWindow) {
         if let (field, selected) = previousField, field.window === window, !field.isHiddenOrHasHiddenAncestor {
             window.makeFirstResponder(field)
@@ -194,8 +192,8 @@ final class DialogScrim: NSView {
     override func draw(_ dirtyRect: NSRect) {
         NSColor(AppearanceModel.shared.theme.palette.scrim).setFill()
         for rect in dimmedRects { rect.fill() }
-        // The original's sidebar reads darker under its scrim than the content does (its page there is clear over the
-        // window's material); the sidebar item's own material takes a little more to match.
+        // The sidebar reads darker under the scrim than the content does: the sidebar item's own material takes a
+        // little more.
         if let sidebar = sidebarRect, !sidebar.isEmpty {
             NSColor.black.withAlphaComponent(CGFloat(Self.sidebarExtraAlpha)).setFill()
             sidebar.fill(using: .sourceOver)
@@ -203,9 +201,9 @@ final class DialogScrim: NSView {
         drawPanelShadow()
     }
 
-    /// The soft drops of `--elevation-dialog` under the panel, largest first as CSS paints them. They are drawn here,
-    /// not by the panel's layer: a layer's `shadowOffset` went upward under the sheets (17, 218) though down under the
-    /// alert with the same value, and a layer takes only one of the two drops. A context's shadow goes the same way.
+    /// The dialog's soft drop shadows under the panel, largest first. They are drawn here, not by the panel's layer: a
+    /// layer's `shadowOffset` went upward under the sheets though down under the alert with the same value, and a layer
+    /// takes only one of the two drops. A context's shadow goes the same way.
     private func drawPanelShadow() {
         // Glass has its own shadow, and the fill here would cover what it shows through.
         guard !GlassSurface.holds(panel) else { return }
@@ -238,8 +236,8 @@ final class DialogScrim: NSView {
         return [above, left, right, below].filter { !$0.isEmpty }
     }
 
-    /// The black laid over the sidebar on top of the scrim (measured against the original's captures: its sidebar
-    /// dims to 80% under the light scrim, the content to 88%).
+    /// The black laid over the sidebar on top of the scrim (the sidebar dims to 80% under the light scrim, the content
+    /// to 88%).
     static let sidebarExtraAlpha = 0.075
 
     /// The sidebar, up to its edge, in the scrim's coordinates; nil in a window without one or with the tree hidden.
@@ -254,7 +252,7 @@ final class DialogScrim: NSView {
 
     /// The system's title bar (the toolbar's items, and the tab bar) is drawn over the window's content, so the scrim
     /// in the content can't reach it: a veil laid into the title bar under the window's buttons dims the band over
-    /// the content column, as the original's scrim covers its toolbar; the band's items' presses are the scrim's.
+    /// the content column, so the scrim covers the toolbar too; the band's items' presses are the scrim's.
     private func installTitlebarVeil(in window: NSWindow) {
         guard let close = window.standardWindowButton(.closeButton), let titlebar = close.superview else { return }
         let veil = DialogTitlebarVeil(scrim: self)
@@ -283,8 +281,8 @@ final class DialogScrim: NSView {
         /// The press is on one of the band's no-drag items (a toolbar button, the search field, the view switch),
         /// which the scrim covers: it is a press on the scrim.
         case scrim
-        /// The press is on the band's empty room (`.window-toolbar` is `-webkit-app-region: drag`, and the scrim sets
-        /// no `no-drag`): macOS takes it to move the window, and the page, scrim and all, never sees it.
+        /// The press is on the band's empty room, which stays the window's drag region under the scrim: macOS takes it
+        /// to move the window, and neither the scrim nor the views under it see it.
         case dragWindow
     }
 
@@ -387,7 +385,7 @@ final class DialogScrim: NSView {
         window.makeFirstResponder(focusable[next])
     }
 
-    /// `getFocusableElements`: the panel's editable fields and enabled buttons, in the order they are drawn.
+    /// The panel's editable fields and enabled buttons, in the order they are drawn.
     static func focusable(in root: NSView) -> [NSView] {
         var found: [NSView] = []
         func visit(_ view: NSView) {
@@ -411,7 +409,7 @@ final class DialogScrim: NSView {
     }
 }
 
-/// The scrim's part over the toolbar band (`.modal-scrim` covers the whole window): the scrim's color, laid into the
+/// The scrim's part over the toolbar band (the scrim covers the whole window): the scrim's color, laid into the
 /// system's title bar under the window's buttons. The band stays the window's drag region: a press on its empty room
 /// moves the window, and only a press on one of its items is a press on the scrim.
 @MainActor
@@ -474,7 +472,7 @@ enum KeyCode {
     static let up: UInt16 = 126
     static let period: UInt16 = 47
 
-    /// Escape, or ⌘. (`isModalCancelKey`).
+    /// Escape, or ⌘..
     static func isCancel(_ event: NSEvent) -> Bool {
         if event.keyCode == escape { return true }
         return event.modifierFlags.contains(.command) && event.charactersIgnoringModifiers == "."

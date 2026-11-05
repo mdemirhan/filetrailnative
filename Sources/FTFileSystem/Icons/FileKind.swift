@@ -1,4 +1,3 @@
-// Port of js_kind_for_path (packages/native-fs/src/native_thumbnail.m)
 import CoreServices
 import Foundation
 
@@ -6,12 +5,11 @@ import Foundation
 /// Document"). nil when there is none. Callers cache it per extension, since files with the same extension
 /// share it.
 public enum FileKind {
-    /// The path buffer of the original; longer paths are cut there.
+    /// The longest path read, in bytes; longer paths are cut there.
     static let maxPathBytes = 4095
 
     public static func kind(forPath path: String) -> String? {
         guard !path.isEmpty else { return nil }
-        // The original reads the path into a 4096-byte buffer, which cuts a longer one.
         let path =
             path.utf8.count > maxPathBytes
             ? String(decoding: Array(path.utf8.prefix(maxPathBytes)), as: UTF8.self) : path

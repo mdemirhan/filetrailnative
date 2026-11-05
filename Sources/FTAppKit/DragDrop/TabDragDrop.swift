@@ -1,8 +1,7 @@
-// Port of apps/desktop/src/renderer/hooks/useExplorerDragAndDrop.ts on AppKit's dragging: a tab's drags out (the system
-// file drag, its images and its end, the items other apps took away) and the drags over it (the targets, move or
-// copy by the disks and the keys, the highlights, springing folders, the tree's hover expand, the drop). AppKit's
-// dragging callbacks replace the web page's guesses about when a drag came, left and ended; `draggingSequenceNumber`
-// tells one drag from the next.
+// A tab's drags out (the system file drag, its images and its end, the items other apps took away) and the drags over
+// it (the targets, move or copy by the disks and the keys, the highlights, springing folders, the tree's hover expand,
+// the drop). AppKit's dragging callbacks replace the web page's guesses about when a drag came, left and ended;
+// `draggingSequenceNumber` tells one drag from the next.
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -37,7 +36,7 @@ final class TabDragDrop {
     /// What the drop asks the disks (injectable for tests).
     static var readDiskIds: @Sendable ([String]) -> [Int64?] = { SystemActions.diskIds(paths: $0) }
     /// Brings the window forward for a question or a result about a drop from another app or another window, when it
-    /// isn't in front (B-CLIP-178, T-9c4c006c; injectable for tests).
+    /// isn't in front (injectable for tests).
     static var bringForward: (NSWindow?) -> Void = { window in
         guard needsBringingForward(appActive: NSApp.isActive, windowIsKey: window?.isKeyWindow == true) else { return }
         Task { _ = await FileDrag.bringToFront(window) }
@@ -46,20 +45,20 @@ final class TabDragDrop {
     /// The modifier keys held now.
     static var modifiers: () -> NSEvent.ModifierFlags = { NSEvent.modifierFlags }
     /// Whether a drag is still held anywhere over the window (injectable for tests). Only the list, the grid and the
-    /// sidebar hear drag-overs from AppKit; the original hears them from the whole window.
+    /// sidebar hear drag-overs from AppKit, so this looks at the pointer and the button.
     static var dragIsHeldOver: (NSWindow?) -> Bool = { window in
         guard let window, window.isVisible else { return false }
         return NSEvent.pressedMouseButtons & 1 != 0 && window.frame.contains(NSEvent.mouseLocation)
     }
 
     /// Whether a drag that was over the window just now was let go there: the button is up, with the pointer still over
-    /// it (`noteExternalDragLetGo`; injectable for tests).
+    /// it (injectable for tests).
     static var dragWasLetGoOver: (NSWindow?) -> Bool = { window in
         guard let window, window.isVisible else { return false }
         return NSEvent.pressedMouseButtons & 1 == 0 && window.frame.contains(NSEvent.mouseLocation)
     }
 
-    /// `EXTERNAL_DRAG_GONE_MS`: another app's drag is taken to be gone when its drag-overs stop this long.
+    /// Another app's drag is taken to be gone when its drag-overs stop this long.
     private static let externalDragGoneMs = 400.0
     /// How long a drop with no keys held waits for the disks (settable for tests).
     static var diskAnswerWaitMs = DragTimings.diskAnswerWaitMs
@@ -83,7 +82,7 @@ final class TabDragDrop {
     private var quiet: TimerToken?
     private var hoverExpand: (path: String, timer: TimerToken)?
     private var refusedDropToastSequence: Int?
-    /// What the disks have said about one drag's folders (`diskAnswersRef`): asked again for each drag.
+    /// What the disks have said about one drag's folders: asked again for each drag.
     private var disks: (session: DragSession, answers: DiskAnswers)?
 
     init(tab: MainWindowController) {
@@ -91,7 +90,7 @@ final class TabDragDrop {
     }
 
     /// A window is blocked for drags: a write runs (here or in another window), a sheet, a dialog drawn in the window
-    /// or a copy and paste dialog is open, or the toolbar is being customized (`dragDropBlocked`).
+    /// or a copy and paste dialog is open, or the toolbar is being customized.
     var isBlocked: Bool {
         guard let tab else { return true }
         return tab.isWriteLocked || tab.window?.attachedSheet != nil || tab.isDialogOpen
@@ -100,7 +99,7 @@ final class TabDragDrop {
 
     // MARK: Drag out
 
-    /// A press on an item moved far enough: a system drag of the items it carries starts (B-CLIP-148, B-CLIP-149).
+    /// A press on an item moved far enough: a system drag of the items it carries starts.
     /// While a write runs it doesn't, and a toast says why; the gesture is taken either way.
     func beginDrag(_ entries: [DirectoryEntry], event: NSEvent, from view: NSView) -> Bool {
         guard let tab, let window = tab.window, !entries.isEmpty else { return false }
@@ -163,9 +162,9 @@ final class TabDragDrop {
             selectedPathsInViewOrder: entries.map(\.path), kindOf: { kinds[PathBox($0)] })
     }
 
-    /// `endFileDrag`: the app's own drag ended. Dropped elsewhere with a move or a delete (the Dock's Trash), the
-    /// items another app took are looked for (B-CLIP-165); a drag that ended without a drop in this tab (one on
-    /// another window included) brings the tab back from the folders it sprang into (B-CLIP-169). A drop here has
+    /// The app's own drag ended. Dropped elsewhere with a move or a delete (the Dock's Trash), the
+    /// items another app took are looked for; a drag that ended without a drop in this tab (one on
+    /// another window included) brings the tab back from the folders it sprang into. A drop here has
     /// let go of where the tab was already.
     func ownDragEnded(paths: [String], operation: FileDragEnd, over: FileDragEndedOver) {
         Self.ownDrag = nil
@@ -184,7 +183,7 @@ final class TabDragDrop {
         over == .elsewhere && (operation == .move || operation == .delete)
     }
 
-    /// `followDraggedAway`: asks the disk which dragged items are gone, after each wait in turn; gone ones are told at
+    /// Asks the disk which dragged items are gone, after each wait in turn; gone ones are told at
     /// once and not asked about again. Each drag is followed on its own, however many end meanwhile, until the tab goes.
     func checkDraggedAway(_ paths: [String], intoTrash: Bool, after waits: [Double]) {
         guard let wait = waits.first, !paths.isEmpty else { return }
@@ -218,8 +217,7 @@ final class TabDragDrop {
         findSearchResultsAgain()
     }
 
-    /// `followItemsGoneElsewhere`: search results on screen are found again, as after a write of the app's own
-    /// (B-SRCH-142).
+    /// Search results on screen are found again, as after a write of the app's own.
     func findSearchResultsAgain() {
         guard let tab else { return }
         let shown = tab.group?.selected ?? tab
@@ -309,7 +307,7 @@ final class TabDragDrop {
                 supportsMove: real && !Paths.isInsideTrash(entry.path, homePath: home),
                 isSelected: session.facts.sourcePaths.contains { samePath($0, entry.path) })
         }
-        // Search results have no background to drop on (App.tsx leaves out its background handlers in search).
+        // Search results have no background to drop on.
         guard tab.searchRootPath == nil else { return nil }
         let folder = tab.shownFolderPath
         guard !folder.isEmpty, session.sourceSurface == .external || springOpenedHere(session) else { return nil }
@@ -394,7 +392,7 @@ final class TabDragDrop {
         Task { await tab.comeBack(to: start.place) }
     }
 
-    /// `checkExternalDragStillOver`: drag-overs of another app's drag stopped. Held over a part of the window that hears
+    /// Drag-overs of another app's drag stopped. Held over a part of the window that hears
     /// none (the path bar, the toolbar, the Info panel), it is still there; otherwise it left the window, was let go or
     /// was cancelled. AppKit tells no destination of that; one that was dropped here has let go of where the tab was
     /// already.
@@ -418,7 +416,7 @@ final class TabDragDrop {
     // MARK: The sidebar
 
     /// The target of a drag over a sidebar row: a folder of the tree (not an alias), a favorite or a location (not
-    /// the Trash); nothing inside the Trash (B-TREE-157, B-TREE-159).
+    /// the Trash); nothing inside the Trash.
     func sidebarTarget(_ row: SidebarRowState?) -> Target? {
         guard let row, let path = row.item.path, row.item.kind != .favoritesRoot, row.item.kind != .locationsRoot
         else { return nil }
@@ -502,7 +500,7 @@ final class TabDragDrop {
         tellDropRefusedIfLetGo()
     }
 
-    /// `noteExternalDragLetGo`: a drag from another app was let go over the window while a write holds it. "The page
+    /// A drag from another app was let go over the window while a write holds it. "The page
     /// hears nothing else of a drop it refused": neither does a view here. Not for a drag that only passes over.
     private func tellDropRefusedIfLetGo() {
         guard let external, external.session != nil, isBlocked, Self.dragWasLetGoOver(tab?.window) else { return }
@@ -548,7 +546,7 @@ final class TabDragDrop {
     }
 
     /// A drop: checked again, then a copy or a move through the paste's flow. Without ⌥ or ⌘, a drop whose disks
-    /// haven't answered waits up to 1.5 s for them, and is refused if they still haven't (B-CLIP-162).
+    /// haven't answered waits up to 1.5 s for them, and is refused if they still haven't.
     func drop(_ info: any NSDraggingInfo, session: DragSession?, target: Target?) -> Bool {
         let offers = session.map { offersMove(info, $0) } ?? true
         return drop(
@@ -570,7 +568,7 @@ final class TabDragDrop {
         if decision.refusal == .blocked, session?.sourceSurface == .external { tellDropRefused(sequence: sequence) }
         guard let session, let target, decision.refusal == nil else { return false }
         if springStart?.sequence == sequence { springStart = nil }
-        // `endExternalDrag`: a drag taken here is over, and its own write's card is no refusal of it.
+        // A drag taken here is over, and its own write's card is no refusal of it.
         if external?.sequence == sequence {
             external = nil
             externalGone?.cancel()
@@ -602,8 +600,8 @@ final class TabDragDrop {
     }
 
     /// `copy_to` or `move_to` through the paste's flow, with the tree's target selected after it. The destination is
-    /// checked first (`validateDestinationBeforeAnalyze`): only a real folder takes a drop, so a favorite that links
-    /// to one refuses it, as the original does (an accepted risk: the drop showed as taken).
+    /// checked first: only a real folder takes a drop, so a favorite that links
+    /// to one refuses it (an accepted risk: the drop showed as taken).
     private func start(_ session: DragSession, target: Target, operation: DropOperation) async {
         guard let tab, let actions = tab.writeActions else { return }
         let action: WriteOperationAction = operation == .copy ? .copyTo : .moveTo
@@ -633,7 +631,7 @@ final class TabDragDrop {
         }
     }
 
-    /// `validateMoveDestinationDirectory`: why `path` can't take a drop (not a folder, or a link to one), or nil.
+    /// Why `path` can't take a drop (not a folder, or a link to one), or nil.
     static func destinationRefusal(_ path: String, _ service: DirectoryService) async -> String? {
         let item = await service.itemProperties(path: path)
         return item.kind != .directory || item.isSymlink ? "Destination must be an existing folder." : nil

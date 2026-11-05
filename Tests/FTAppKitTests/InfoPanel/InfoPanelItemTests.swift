@@ -1,6 +1,5 @@
-// Ports by feature App.tsx's Info panel callbacks (:2614-2640) and revealFavoriteInTree (useExplorerActions.ts:2795): the
-// Quick Look button previews the item the panel describes, and the Where link and Reveal in Tree add no second step for
-// the folder on screen, on a window that is never shown
+// The Quick Look button previews the item the panel describes, and the Where link and Reveal in Tree add no second step
+// for the folder on screen, on a window that is never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -25,8 +24,7 @@ extension ExplorerWindowlessTests {
             withExtendedLifetime(watching) {}
         }
 
-        // B-INFO-001: with nothing selected the panel describes the folder on screen, and its button previews that.
-        // B-INFO-058
+        // With nothing selected the panel describes the folder on screen, and its button previews that.
         @Test func quickLookPreviewsTheFolderWithNothingSelected() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -41,8 +39,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-805 B-INFO-009: Show Info's target is previewed, not the selection under it.
-        // B-INFO-058
+        // Show Info's target is previewed, not the selection under it.
         @Test func quickLookPreviewsShowInfosTarget() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -62,8 +59,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx:2614: Where pointing at the folder on screen overwrites its step; any other folder is a new step.
-        // B-NAV-077
+        // Where pointing at the folder on screen overwrites its step; any other folder is a new step.
         @Test func whereAddsNoStepForTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -83,9 +79,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerActions.ts:2795: Reveal in Tree of the folder on screen overwrites its step, and its tree row is
-        // selected; of another folder it is a new step.
-        // B-TREE-040
+        // Reveal in Tree of the folder on screen overwrites its step, and its tree row is selected; of another folder
+        // it is a new step.
         @Test func revealInTreeAddsNoStepForTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

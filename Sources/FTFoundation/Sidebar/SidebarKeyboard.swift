@@ -1,5 +1,3 @@
-// Port of the sidebar keyboard of apps/desktop/src/renderer/hooks/useExplorerNavigationController.ts (handleTreeKeyboardAction, openTreeNode,
-// navigateTreeSelectionToParent, handleTypeaheadInput, the tree branch of the page move) and getPageStepLineCount/getPagedLineMove of lib/explorerNavigation.ts
 import Foundation
 
 /// The sidebar has two lists when Favorites are in their own section: the favorites (with the open Locations below
@@ -14,9 +12,9 @@ public struct SidebarKeyContext: Sendable {
     public var separate: Bool
     public var subview: SidebarSubview
     public var selected: TreeItemID?
-    /// `getFavoriteItemIds`: the favorites, then the Locations when they are open, with the labels they carry.
+    /// The favorites, then the Locations when they are open, with the labels they carry.
     public var favoriteList: [(id: TreeItemID, label: String)]
-    /// The tree's rows (`getTreePresentationState`): the filesystem alone in the separate layout.
+    /// The tree's rows: the filesystem alone in the separate layout.
     public var presentation: TreePresentation
     public var nodes: TreeNodes
     public var rootPath: String
@@ -54,7 +52,6 @@ public enum SidebarKeyAction: Equatable, Sendable {
 public enum SidebarKeyboard {
     public static let typeaheadResetMilliseconds = 1000
 
-    /// `handleTreeKeyboardAction`.
     public static func decide(_ key: TreeView.Key, _ context: SidebarKeyContext) -> SidebarKeyAction {
         if context.favoritesListActive {
             return decideInFavorites(key, context)
@@ -126,7 +123,7 @@ public enum SidebarKeyboard {
         }
     }
 
-    /// `openTreeNode` (Return, and Cmd+Down): what opening the selected row does.
+    /// Return, and Cmd+Down: what opening the selected row does.
     public static func decideOpen(_ context: SidebarKeyContext) -> SidebarKeyAction {
         guard let current = context.selected else { return .none }
         if context.favoritesListActive {
@@ -141,7 +138,7 @@ public enum SidebarKeyboard {
         return .toggle(path: path)
     }
 
-    /// `navigateTreeSelectionToParent` (Cmd+Up): the parent folder's row of the selected folder.
+    /// Cmd+Up: the parent folder's row of the selected folder.
     public static func decideParent(_ context: SidebarKeyContext) -> SidebarKeyAction {
         if context.favoritesListActive { return .none }
         guard let current = context.selected, current.favoritePath == nil, current.locationPath == nil,
@@ -158,7 +155,7 @@ public enum SidebarKeyboard {
 
     // MARK: Type to select
 
-    /// `handleTypeaheadInput`: the first row whose label starts with what was typed, case aside. In the separate
+    /// The first row whose label starts with what was typed, case aside. In the separate
     /// layout's Favorites list the candidates are the favorites and the open Locations; otherwise the visible tree
     /// rows, headings included (a prefix whose first match is a heading selects nothing). Nil when none matches.
     public static func typeaheadMatch(_ query: String, _ context: SidebarKeyContext) -> TreeItemID? {
@@ -176,15 +173,15 @@ public enum SidebarKeyboard {
 
     public enum PageSize: Sendable { case half, full }
 
-    /// `getPageStepLineCount`: a full page is one row less than fit on screen, so the last one stays in view; half a
+    /// A full page is one row less than fit on screen, so the last one stays in view; half a
     /// page is half of those that fit.
     public static func pageStepLines(viewportHeight: Double, rowHeight: Double, size: PageSize) -> Int {
         let visible = max(1, Int((max(0, viewportHeight) / max(1, rowHeight)).rounded(.down)))
         return max(1, size == .full ? visible - 1 : visible / 2)
     }
 
-    /// The row a page move lands on (`getPagedLineMove` over the rows the arrow keys reach), or nil when it would not
-    /// move (the key is then not taken).
+    /// The row a page move lands on (over the rows the arrow keys reach), or nil when it would not move (the key is
+    /// then not taken).
     public static func pageTarget(
         forward: Bool, lines: Int, _ context: SidebarKeyContext
     ) -> TreeItemID? {

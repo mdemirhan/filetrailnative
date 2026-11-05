@@ -1,6 +1,3 @@
-// Covers the path bar, the Info Row, the Info panel and the folder sizes in an explorer window that is never shown,
-// by feature row (App.commands.test.tsx's Info panel cases, App.menusAndTree.test.tsx's Calculate Size cases,
-// ContentPane.test.tsx's path bar)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -26,7 +23,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The Info panel's Always Open With asks first, then goes to the actions' own seams: never this Mac's defaults.
-        // B-INFO-061 T-8727f2e5
         // A timer of the panel can fire once the tab has gone, while something still holds the controller.
         @Test func anUpdateAfterTheTabHasGoneDoesNothing() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -66,7 +62,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Copy Path and Copy Name put the text on the pasteboard they were given, not on the user's clipboard.
-        // B-INFO-057
         @Test func copyUsesItsPasteboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -79,8 +74,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `openPathExternally` only logs a failed open; the others show the original's notices, word for word.
-        // T-8a7d2ddb
+        // The panel's Open only logs a failed open; the other actions show their notices, word for word.
         @Test func thePanelsFailedActionsShowTheOriginalsNotices() async throws {
             struct Refused: Error, LocalizedError {
                 var errorDescription: String? { "It refused." }
@@ -114,8 +108,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-209d6f52 F-697 F-748 F-820 B-INFO-001 B-INFO-066 B-INFO-069: the panel and the row follow the selection.
-        // B-INFO-090 B-INFO-194 B-NAV-205
+        // The panel and the row follow the selection.
         @Test func thePanelAndTheRowDescribeTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -134,10 +127,9 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-805 B-INFO-009: Show Info points the panel at an item that is not selected, and a selection takes it back.
-        // F-832 B-INFO-065: a press on the chevron of the split Open button opens the Open With menu under the button, its
+        // Show Info points the panel at an item that is not selected, and a selection takes it back.
+        // A press on the chevron of the split Open button opens the Open With menu under the button, its
         // right edge on the button's.
-        // T-8727f2e5
         @Test func theChevronOpensTheOpenWithMenu() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -171,7 +163,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-205 B-SEL-018
         @Test func showInfoPointsThePanelAtAnUnselectedItem() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -185,7 +176,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-166: the Info Row's buttons act on what the row shows, not on the item the panel is open on.
+        // The Info Row's buttons act on what the row shows, not on the item the panel is open on.
         @Test func theRowsButtonsActOnWhatTheRowShows() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -200,7 +191,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-049: free space is read again when the folder changes, and when the clock ticks.
+        // Free space is read again when the folder changes, and when the clock ticks.
         @Test func freeSpaceIsReadAgain() async throws {
             final class Reads: @unchecked Sendable {
                 let lock = NSLock()
@@ -238,7 +229,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-111 B-VIEW-006 T-01ad97ab: a press on a segment or a separator gives the list the keyboard, as a press on
+        // A press on a segment or a separator gives the list the keyboard, as a press on
         // the bar beside them does.
         @Test func aPressOnASegmentOrSeparatorGivesTheListTheKeyboard() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -257,9 +248,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-a322b806 B-INFO-008 B-INFO-202: Show Info on an app measures it; a change from outside keeps the item, and so
+        // Show Info on an app measures it; a change from outside keeps the item, and so
         // its measurement.
-        // B-NAV-206 B-SEL-018
         @Test func anOutsideChangeKeepsShowInfosItem() async throws {
             let harness = try ExplorerHarness.windowless()
             try FileManager.default.createDirectory(
@@ -278,7 +268,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-008: so does one that takes a selected item away: only a selection made in the list lets the item go.
+        // So does one that takes a selected item away: only a selection made in the list lets the item go.
         @Test func anOutsideChangeThatTakesASelectedItemKeepsShowInfosItem() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -294,8 +284,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-008: Refresh is no change from outside (`refreshDirectory`): the item goes.
-        // B-NAV-206
+        // Refresh is no change from outside: the item goes.
         @Test func aRefreshLetsShowInfosItemGo() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -306,7 +295,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-33598034 B-INFO-203: with only the Info Row open, the one app selected is measured.
+        // With only the Info Row open, the one app selected is measured.
         @Test func theInfoRowAloneMeasuresTheSelectedApp() async throws {
             let harness = try ExplorerHarness.windowless()
             try FileManager.default.createDirectory(
@@ -319,7 +308,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-650e6f58 T-df07c21f F-824 B-INFO-160 B-INFO-161: Calculate Size measures the selected folders; with nothing
+        // Calculate Size measures the selected folders; with nothing
         // selected, the folder on screen.
         @Test func calculateSizeMeasuresTheSelectedFolders() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -343,9 +332,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-3c985219 T-487ad066 F-743 F-805 B-INFO-120 B-INFO-121 B-INFO-123 B-INFO-124: a separator lists the folders next to the
+        // A separator lists the folders next to the
         // one that follows it, with that one ticked; choosing another goes there.
-        // T-b514ec81
         @Test func aSeparatorsMenuStepsSideways() async throws {
             let harness = try ExplorerHarness.windowless()
             let alphaPath = harness.folder.appending("Alpha").path
@@ -370,8 +358,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-745 F-746 B-INFO-110 B-INFO-112 B-INFO-114: a double click opens the editor on the current path; Escape closes it.
-        // B-VIEW-015 T-73dec6db
+        // A double click opens the editor on the current path; Escape closes it.
         @Test func theEditorOpensOnTheCurrentPathAndEscapeClosesIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -389,8 +376,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-c3292381 F-745 B-INFO-113: Return goes to the typed path.
-        // T-5f7427b6
+        // Return goes to the typed path.
         @Test func returnGoesToTheTypedPath() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

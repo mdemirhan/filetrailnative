@@ -1,5 +1,3 @@
-// Port of the rows, the field shell and their glyphs of apps/desktop/src/renderer/components/GoToFolderDialog.tsx and
-// the .go-to-folder-input-* and .go-to-folder-suggestion* rules of apps/desktop/src/renderer/styles.css (3481-3654)
 import AppKit
 import FTFoundation
 
@@ -58,7 +56,7 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
     override var isFlipped: Bool { true }
     var styleTextField: NSTextField? { nameLabel }
 
-    /// A row is in the Tab cycle as the original's buttons are, but a click leaves the keyboard in the field.
+    /// A row is in the Tab cycle as a button is, but a click leaves the keyboard in the field.
     override var acceptsFirstResponder: Bool {
         NSApp.currentEvent?.type != .leftMouseDown
     }
@@ -110,7 +108,7 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
         glyph.frame = NSRect(
             x: padding, y: ((bounds.height - glyphSize) / 2).rounded(), width: glyphSize, height: glyphSize)
         // The name takes its own width up to 55% of the row; the location the rest. A label's cell draws its text 2 in
-        // from each side, so each frame reaches 2 past where the original's text box is.
+        // from each side, so each frame reaches 2 past where the text goes.
         let natural = ceil(nameLabel.attributedStringValue.size().width)
         let nameWidth = min(natural, (inner * CGFloat(layout.nameMaxFraction)).rounded(.down))
         let nameHeight = Self.lineHeight(Self.nameFont)
@@ -245,7 +243,7 @@ final class GoToFieldShell: NSView, ThemeApplying {
         clearButton.setAccessibilityLabel("Clear")
         clearButton.setAccessibilityIdentifier("goToFolder.clear")
         clearButton.toolTip = "Clear"
-        // A plain button of the dialog: Tab goes from the field to here (GoToFolderDialog.tsx:408-416, focusUtils.ts).
+        // A plain button of the dialog: Tab goes from the field to here.
         clearButton.isTabStop = true
         clearButton.isHidden = true
         addSubview(field)
@@ -282,7 +280,7 @@ final class GoToFieldShell: NSView, ThemeApplying {
         let left = padding + icon + gap
         let right = clearButton.isHidden ? padding : padding + clear + gap
         let lineHeight = GoToRowView.lineHeight(Self.font)
-        // The field's cell draws its text 2 in: the frame starts 2 early so the text starts where the original's does.
+        // The field's cell draws its text 2 in: the frame starts 2 early so the text starts at the padding.
         let inset = GoToRowView.cellInset
         field.frame = NSRect(
             x: left - inset, y: ((bounds.height - lineHeight) / 2).rounded(),

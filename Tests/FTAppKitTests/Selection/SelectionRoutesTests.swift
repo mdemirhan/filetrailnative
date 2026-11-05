@@ -1,6 +1,3 @@
-// Covers ⌘-double-click (components/entryItemEvents.ts:59-61, App.tsx:2398-2405), a rename refused while another write
-// runs (hooks/useExplorerActions.ts:3662-3666) and a view switch (components/ExplorerWorkspace.tsx:1196-1200) by the keys
-// and presses that reach them, on a window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -43,7 +40,7 @@ private final class AnotherWindow: WriteOperationWindow {
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct SelectionRoutesTests {
-        // B-SEL-125 T-a40a49e4: F2 with another window's write running opens no field and says why at once.
+        // F2 with another window's write running opens no field and says why at once.
         @Test func f2WhileAnotherWindowWritesOpensNoFieldAndSaysWhy() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -67,7 +64,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-VIEW-004: another view keeps the selection, folder and history; no folder is read; the new view starts at the
+        // Another view keeps the selection, folder and history; no folder is read; the new view starts at the
         // top and brings the lead into view.
         @Test func aViewSwitchKeepsTheSelectionAndReadsNothing() async throws {
             let harness = try ExplorerHarness.windowless()

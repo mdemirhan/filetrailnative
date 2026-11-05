@@ -1,7 +1,3 @@
-// Port of the createWriteOperationCoordinator, "with several windows" and "folder listings after a write" describes of
-// apps/desktop/src/main/bootstrap/writeOperations.test.ts. The slot, cancel and window cases here run a stand-in local
-// operation through the same entry point as rename, New Folder, Trash and delete (`Coordinators.heldLocalOperation`);
-// the rows that drive those operations themselves are in Tests/FTOperationsTests/LocalOperations/.
 import FTFileSystem
 import FTFoundation
 import FTTestSupport
@@ -12,7 +8,6 @@ import Testing
 
 @MainActor
 @Suite struct WriteCoordinatorTests {
-    // F-529 T-35a8fecf
     @Test func forgetsTheTrashWhenAReplaceMovedItemsIntoItAndTellsTheWindow() async throws {
         let service = StubWriteService()
         var forgotten: [[String]] = []
@@ -30,7 +25,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-529 F-247 F-358 T-1fcc9ee2
     @Test func holdsTheBusyLockWhileLocalWriteOperationsAreInFlightAndReleasesItOnTerminalEvents() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -51,7 +45,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-529 T-761afb52
     @Test func routesLocalAndDelegatedCancellationRequestsToTheCorrectOperationOwner() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -70,7 +63,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-529 F-307 T-f3e4ba0e
     @Test func cancelsAPasteWhoseWindowClosedSoWritesDontStayLocked() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -84,7 +76,6 @@ import Testing
         #expect(coordinator.watchCount(window) == 0)
     }
 
-    // F-530 F-308 T-75d211c0
     @Test func tellsEveryOtherWindowHowTheOperationIsDoing() async throws {
         let service = StubWriteService()
         var broadcasts: [(WriteOperationStatus, ObjectIdentifier)] = []
@@ -104,7 +95,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 F-240 F-307 T-3791698e
     @Test func handsARunningOperationToAnotherWindowWhenItsOwnCloses() async throws {
         let service = StubWriteService()
         let successor = TestWindow()
@@ -134,7 +124,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 F-307 T-a95bad91
     @Test func handsItOnAgainWhenTheWindowThatTookItOverClosesToo() async throws {
         let service = StubWriteService()
         let first = TestWindow()
@@ -159,7 +148,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 F-358 T-b29571bc
     @Test func rejectsAPasteThatArrivesWhileARenameIsStillBeingPrepared() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -178,7 +166,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-d775d86b
     @Test func passesPerItemChoicesAndStandingRuntimeAnswersToTheWriteService() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -205,9 +192,7 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // The original's reload of the window's page (a committed main-frame load) has no native meaning: a window closes.
     // A close cancels the paste and lets go of the window; an operation started afterwards listens for itself.
-    // F-530 F-307 T-14f606ef
     @Test func cancelsAPasteWhenItsWindowClosesAndListensAfreshForTheNextOne() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -229,7 +214,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-62b53139
     @Test func cancelsALocalWriteWhenItsWindowClosesAndFreesTheWriteSlot() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -249,7 +233,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-f6bb24f2
     @Test func freesTheWriteSlotWhenALocalOperationsWindowThrowsOnSend() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         // A window torn down mid-operation: it doesn't say it is closed yet, but sending to it already throws.
@@ -271,7 +254,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-0fc03f99
     @Test func skipsSendingToAClosedWindowAndStillFreesTheSlotForWriteServiceOperations() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -290,7 +272,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-405a9724
     @Test func freesTheSlotEvenWhenSendingAWriteServiceTerminalEventThrows() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -305,7 +286,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-c2fe7147
     @Test func cancelsRightAwayWhenTheStartingWindowIsAlreadyClosed() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -321,7 +301,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-d22043b8
     @Test func stopsListeningToTheWindowWhenAnOperationFinishesNormally() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -336,7 +315,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 F-308 T-8cffec4e
     @Test func sendsTheWindowATrimmedAnalysisReportKeepsItsOwnWholeAndCopiesEverything() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-trim") { root in
             let source = root.appending("source").path
@@ -402,7 +380,6 @@ import Testing
         }
     }
 
-    // F-530 F-367 T-a07308c3
     @Test func sendsAtMostOnePlainProgressUpdatePerIntervalAndTheNewestAlwaysArrives() async throws {
         let service = StubWriteService()
         let time = ManualClock()
@@ -446,7 +423,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-e2603cef
     @Test func passesBackTheWriteServicesRejectionOfAConflictAnswer() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -462,7 +438,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-530 T-25fcde45
     @Test func onlyAcceptsCancelAndConflictAnswersFromTheWindowThatStartedTheOperation() async throws {
         let service = StubWriteService()
         let coordinator = WriteCoordinator(writeService: service)
@@ -492,7 +467,6 @@ import Testing
 
     // MARK: folder listings after a write
 
-    // F-533 F-360 T-472c303e
     @Test func forgetsCachedListingsBeforeALocalOperationsEndIsSent() async throws {
         var forgets = 0
         let coordinator = WriteCoordinator(
@@ -512,7 +486,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-533 F-360 T-753b287c
     @Test func forgetsCachedListingsBeforeAPastesEndIsSent() async throws {
         let service = StubWriteService()
         var forgets = 0

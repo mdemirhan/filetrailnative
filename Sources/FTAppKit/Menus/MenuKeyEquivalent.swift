@@ -1,4 +1,3 @@
-// Port of the toMenuAccelerator use in apps/desktop/src/main/appMenu.ts, written for NSMenuItem instead of Electron
 import AppKit
 import FTFoundation
 

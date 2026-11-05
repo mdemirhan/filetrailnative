@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/undoExecution.ts
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -758,7 +757,7 @@ public enum UndoExecution {
     }
 }
 
-/// `recordingErrors`: the file system for a batch rename, keeping the error each item's rename failed with, by where
+/// The file system for a batch rename, keeping the error each item's rename failed with, by where
 /// the item was before it: an item moved aside under a hidden name keeps its own. A name found taken is kept only when
 /// nothing else went wrong (the batch numbers it).
 final class RecordingErrorsFileSystem: UndoFileSystem, @unchecked Sendable {

@@ -1,4 +1,3 @@
-// Port of the drag steps of tools/capture/electron/driver.ts; no TypeScript source.
 #if DEBUG
     import AppKit
 
@@ -190,7 +189,7 @@
         }
 
         /// Whether a press at `point` (window coordinates) in a list or grid is on none of its items (empty space),
-        /// where a drag is the view's own (a marquee), as the original's driver finds no entry under the press.
+        /// where a drag is the view's own (a marquee).
         static func pressesNoItem(_ view: NSView, at point: NSPoint) -> Bool {
             var current: NSView? = view
             while let candidate = current {

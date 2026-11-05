@@ -1,4 +1,4 @@
-// Wave-3 rerun (P5-18): text baselines, the rename field staying over the rows, the
+// Wave-3 rerun: text baselines, the rename field staying over the rows, the
 // tree's fade, the search folder column and the shadows that fall down
 import AppKit
 import FTFoundation

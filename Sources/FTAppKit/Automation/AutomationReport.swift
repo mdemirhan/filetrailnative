@@ -1,4 +1,3 @@
-// Port of the capture report format shared with tools/capture/electron/driver.ts; no TypeScript source.
 #if DEBUG
     import Foundation
 

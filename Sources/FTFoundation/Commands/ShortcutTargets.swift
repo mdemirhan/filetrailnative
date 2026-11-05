@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/shortcutTargets.ts
 import Foundation
 
 /// Which paths a command acts on, from which pane has the keyboard.
@@ -24,7 +23,6 @@ public enum ShortcutTargets {
         }
     }
 
-    /// `resolveOpenInTerminalPaths`.
     public static func openInTerminalPaths(_ input: Selection) -> [String] {
         if !input.contextMenuPaths.isEmpty {
             return input.contextMenuPaths
@@ -56,12 +54,10 @@ public enum ShortcutTargets {
         return input.selectedContentPaths
     }
 
-    /// `resolveOpenSelectionPaths`.
     public static func openSelectionPaths(_ input: Selection) -> [String] {
         selectionPaths(input)
     }
 
-    /// `resolveEditSelectionPaths`.
     public static func editSelectionPaths(_ input: Selection) -> [String] {
         selectionPaths(input)
     }
@@ -87,7 +83,7 @@ public enum ShortcutTargets {
         }
     }
 
-    /// `resolveRootTreeTargetPath`: the folder "Root Tree at Selected Folder" acts on: the folder selected in the
+    /// The folder "Root Tree at Selected Folder" acts on: the folder selected in the
     /// focused pane, or the folder on screen when the selection is not a single folder.
     public static func rootTreeTargetPath(_ input: RootTreeInput) -> String? {
         if let menu = input.contextMenuFolderPath, !menu.isEmpty {

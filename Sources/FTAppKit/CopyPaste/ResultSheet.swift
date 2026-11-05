@@ -1,9 +1,7 @@
-// Port of apps/desktop/src/renderer/components/CopyPasteResultDialog.tsx (the sheet and ResultSection) with the
-// .copy-paste-result-* rules of styles.css
 import AppKit
 import FTFoundation
 
-/// The result sheet (`CopyPasteResultDialog`): shown when a copy-like operation, a rename of several items, an Undo
+/// The result sheet: shown when a copy-like operation, a rename of several items, an Undo
 /// or a Redo finished with problems; every failed, unstarted and skipped item with its reason, and a retry for the
 /// ones worth retrying. Done (and Escape) dismisses it.
 @MainActor
@@ -72,7 +70,7 @@ final class CopyPasteResultSheet: CopyPasteSheetView {
     @objc private func retryPressed(_ sender: Any?) { onRetry() }
 }
 
-/// A section of the result (`ResultSection`): its title, then each item's path and why.
+/// A section of the result: its title, then each item's path and why.
 @MainActor
 final class ResultSectionView: NSView {
     let section: ResultSectionText
@@ -168,7 +166,7 @@ final class ResultSectionView: NSView {
         separators = []
         for (index, row) in rows.enumerated() {
             if index > 0 { separators.append(y) }
-            // Each line takes the original's height; the labels keep their own, so no descender is cut.
+            // Each line takes its normal line box; the labels keep their own height, so no descender is cut.
             let pathHeight = ceil(row.path.height(forWidth: 10_000))
             row.path.frame = NSRect(x: x, y: y + CGFloat(layout.resultRowVertical), width: inner, height: pathHeight)
             let detailTop =

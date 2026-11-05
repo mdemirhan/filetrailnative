@@ -1,10 +1,8 @@
-// Port of DetailsHeaderCell, SortButton and SortIndicator (apps/desktop/src/renderer/components/ContentPane.tsx:2063-2131,
-// 2259-2281; components/SortIndicator.tsx) and the header rules of styles.css:2722-2800, 2820-2872 and 4410-4432
 import AppKit
 import FTFoundation
 
 /// The sort direction beside a column title, drawn as Finder draws it: a chevron that points up for ascending and
-/// down for descending (`SortIndicator`).
+/// down for descending.
 final class SortChevronView: NSView {
     var ascending = true {
         didSet { needsDisplay = true }
@@ -41,8 +39,8 @@ final class SortChevronView: NSView {
     }
 }
 
-/// The line between two column titles, which is also where the column is resized (`.details-column-resizer`): a short
-/// line that darkens under the pointer, while dragging and when focused.
+/// The line between two column titles, which is also where the column is resized: a short line that darkens under the
+/// pointer, while dragging and when focused.
 final class ColumnSeparatorView: NSView {
     var column: DetailColumn = .name
     var lineColor: NSColor = .separatorColor {
@@ -223,7 +221,7 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
         return bounds.contains(local) && sortable ? self : nil
     }
 
-    /// A press gives the content pane the keyboard (ContentPane.tsx:472-486); the sort waits for the release.
+    /// A press gives the content pane the keyboard; the sort waits for the release.
     override func mouseDown(with event: NSEvent) { onPress() }
 
     override func mouseUp(with event: NSEvent) {
@@ -238,8 +236,8 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
     }
 }
 
-/// The header row: a cell per visible column, laid out like the rows below it (`.details-header`: padding 0 12, a
-/// 12 gap).
+/// The header row: a cell per visible column, laid out like the rows below it (12 of padding each side, 12 between
+/// cells).
 final class DetailsHeaderView: NSView {
     private var cells: [DetailsHeaderCell] = []
     private(set) var layoutMetrics = DesignTokens.details(density: .standard)

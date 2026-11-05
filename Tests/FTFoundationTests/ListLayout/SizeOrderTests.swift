@@ -1,4 +1,3 @@
-// Ports the sortEntriesBySize cases of apps/desktop/src/renderer/lib/explorerAppUtils.test.ts
 import Foundation
 import Testing
 
@@ -30,8 +29,6 @@ struct SizeOrderTests {
         ).map(\.name)
     }
 
-    // T-bb1a779b F-828 B-INFO-181
-    // B-VIEW-058
     @Test func foldersAreOrderedByTheirCalculatedSizeWithUnknownSizesLast() {
         #expect(
             Self.names(descending: false, foldersFirst: true) == [
@@ -40,7 +37,6 @@ struct SizeOrderTests {
             ])
     }
 
-    // T-edfcab3f
     @Test func unknownSizesStayLastWhenSortingLargestFirst() {
         #expect(
             Self.names(descending: true, foldersFirst: true) == [
@@ -49,7 +45,6 @@ struct SizeOrderTests {
             ])
     }
 
-    // T-8b3df64d
     @Test func foldersAndFilesMixBySizeWhenFoldersAreNotFirst() {
         #expect(
             Self.names(descending: false, foldersFirst: false) == [

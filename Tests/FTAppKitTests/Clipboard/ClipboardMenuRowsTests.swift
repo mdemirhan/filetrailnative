@@ -1,5 +1,4 @@
-// Port by feature of the rows of components/ClipboardButton.test.tsx: the clipboard's list keeps each row's buttons on
-// the item it shows, as the original's rows keyed by path do, after the list changes under it
+// The clipboard's list keeps each row's buttons on the item it shows after the list changes under it
 import AppKit
 import FTFoundation
 import Testing
@@ -108,8 +107,8 @@ import Testing
         #expect(menu.modelForTests.scrollTop == limit)
     }
 
-    // F-800 F-801: the list reads from the top down: the folder's heading, then its items in the order they were copied,
-    // none under the pinned heading; the texts are not cut short and start at the padding, as the original's.
+    // The list reads from the top down: the folder's heading, then its items in the order they were copied,
+    // none under the pinned heading; the texts are not cut short and start at the padding.
     @Test func theListIsDrawnFromTheTopDown() throws {
         let file = ClipboardSourceEntry(kind: .file, isSymlink: false)
         let both = ClipboardRules.set(
@@ -129,7 +128,7 @@ import Testing
             try #require(identified(id, in: menu).first as? ClipboardMenuText)
         }
         let title = try text("clipboardPopover.title")
-        // (P5-14 finding: the text is cut short when its cell insets it.)
+        // (The text is cut short when its cell insets it.)
         #expect(title.frame.width >= 92)
         #expect(title.frame.height == 15)
         #expect(title.frame.minY == 9.5)
@@ -141,7 +140,7 @@ import Testing
         #expect(breakdown.frame == NSRect(x: 5.5, y: 28.5, width: 249, height: 17))
     }
 
-    // F-800 B-CLIP-029: once one item is removed, the row that now shows the next one removes and shows that one.
+    // Once one item is removed, the row that now shows the next one removes and shows that one.
     @Test func aRowThatShiftsActsOnTheItemItShows() throws {
         let both = ClipboardRules.set(.copy, ["/f/a.txt", "/f/b.txt"], capturedAt: "t")
         let menu = try menu(both)
@@ -159,7 +158,7 @@ import Testing
         #expect(rows(menu).first?.toolTip == "/f/b.txt")
     }
 
-    // F-800 B-CLIP-024: when the folders shift, a heading kept in its place names the folder under it now.
+    // When the folders shift, a heading kept in its place names the folder under it now.
     @Test func aHeadingThatShiftsNamesItsFolder() throws {
         let three = ClipboardRules.set(.copy, ["/f/a.txt", "/f/b.txt", "/g/c.txt"], capturedAt: "t")
         let menu = try menu(three)

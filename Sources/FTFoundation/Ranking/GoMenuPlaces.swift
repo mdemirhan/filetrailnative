@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/goMenuPlaces.ts
 import Foundation
 
 /// The places the Go menu goes to, as Finder's does. Macintosh HD and the Trash are rows of the

@@ -1,4 +1,3 @@
-// Port of the text of apps/desktop/src/renderer/styles.css in a see-through color (var(--text-secondary) and the like)
 import AppKit
 
 /// A label where a plain one has its text, with the text drawn once. An unbordered cell with no field editor draws text

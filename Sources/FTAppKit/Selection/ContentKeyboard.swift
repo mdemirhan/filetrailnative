@@ -1,14 +1,12 @@
-// Port of the file list's keys in apps/desktop/src/renderer/hooks/useExplorerShortcuts.ts (contentArrowNavigation, the page
-// moves, listFilterEdit, typeahead, contentEnter) and handlePagedMove of hooks/useExplorerNavigationController.ts (:437-573)
 import AppKit
 import FTFoundation
 
 /// What a view of the folder tells the keyboard about its layout: how arrows and pages move through it. The List
-/// implements it here; the Icon view and the Compact List (P5-04) implement it the same way and hand their key events to
+/// implements it here; the Icon view and the Compact List implement it the same way and hand their key events to
 /// `ContentKeyboard`.
 @MainActor
 protocol LayoutNavigation: AnyObject {
-    /// The view's mode: arrows move differently in each (`getNextSelectionIndex`).
+    /// The view's mode: arrows move differently in each.
     var navigationViewMode: ExplorerViewMode { get }
     /// Items on a line: icons per row (Icons), rows per column (Compact List), 1 for the List. Arrows and pages use it.
     var itemsPerLine: Int { get }
@@ -33,14 +31,14 @@ final class ContentKeyboard {
         self.navigation = navigation
     }
 
-    /// `KeyboardEvent.code` of the keys whose character ⇧ or ⌥ changes (⌘⇧] types "}"): the shortcut goes by the key.
+    /// The `code` of the keys whose character ⇧ or ⌥ changes (⌘⇧] types "}"): the shortcut goes by the key.
     private static let positionCodes: [UInt16: String] = [
         29: "Digit0", 18: "Digit1", 19: "Digit2", 20: "Digit3", 21: "Digit4", 23: "Digit5", 22: "Digit6", 26: "Digit7",
         28: "Digit8", 25: "Digit9", 27: "Minus", 24: "Equal", 33: "BracketLeft", 30: "BracketRight", 42: "Backslash",
         41: "Semicolon", 39: "Quote", 43: "Comma", 47: "Period", 44: "Slash", 50: "Backquote",
     ]
 
-    /// The key as the original's window key handler sees it.
+    /// The key as the shortcut table reads it.
     static func shortcutEvent(_ event: NSEvent) -> ShortcutKeyEvent {
         let flags = event.modifierFlags
         let named = flags.intersection([.command, .control, .option]).isEmpty ? event.characters : nil
@@ -120,7 +118,7 @@ final class ContentKeyboard {
             host.switchPane()
             return true
         case .command(let command):
-            // A held key repeats no shortcut that starts a write (B-SEL-114): the repeat is taken and dropped.
+            // A held key repeats no shortcut that starts a write: the repeat is taken and dropped.
             if !WriteStartingShortcuts.runs(command.rawValue, isRepeat: event.isARepeat) { return true }
             return host.runCommand(command)
         }
@@ -139,7 +137,7 @@ final class ContentKeyboard {
             columns: navigation.navigationViewMode == .details ? 1 : navigation.itemsPerLine,
             viewMode: navigation.navigationViewMode, gapIndex: host.selection.gapIndex)
         guard paths.indices.contains(next) else { return true }
-        // The lead is brought into view by the pane when the selection reports a new one (B-SEL-046).
+        // The lead is brought into view by the pane when the selection reports a new one.
         select(index: next, extend: extend, host: host)
         return true
     }

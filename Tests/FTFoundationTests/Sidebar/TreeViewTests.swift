@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/treeView.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -11,7 +10,6 @@ struct TreeViewTests {
         return node
     }
 
-    // T-a5280d40
     @Test func returnsOnlyExpandedBranchesInDisplayOrder() {
         let nodes = TreeNodes([
             node("/root", expanded: true, loaded: true, children: ["/root/a", "/root/b"]),
@@ -37,7 +35,6 @@ struct TreeViewTests {
         ])
     }
 
-    // T-c3c420b1 F-740
     @Test func movesThroughVisibleTreeRows() {
         #expect(
             TreeView.keyboardAction(key: .down, currentPath: "/root", rootPath: "/root", nodes: nodes)
@@ -53,7 +50,6 @@ struct TreeViewTests {
                 == .navigate(path: "/root/loading"))
     }
 
-    // T-eaf07a43 F-740
     @Test func expandsAndCollapsesTreeNodesOnHorizontalArrows() {
         #expect(
             TreeView.keyboardAction(key: .right, currentPath: "/root/b", rootPath: "/root", nodes: nodes)
@@ -66,7 +62,6 @@ struct TreeViewTests {
                 == .navigate(path: "/root/a/deep"))
     }
 
-    // T-05d06d43 F-740
     @Test func navigatesToParentAndRequestsLoadingForUnloadedNodes() {
         #expect(
             TreeView.keyboardAction(key: .left, currentPath: "/root/a/deep", rootPath: "/root", nodes: nodes)

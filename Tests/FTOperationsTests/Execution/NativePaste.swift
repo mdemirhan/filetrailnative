@@ -1,6 +1,5 @@
-// Port of packages/core/src/fs/testNativePaste.ts: the paste engine as the app runs it, for real-disk tests (the
-// native copy, exclusive rename, lock flags, and a Trash that keeps what goes into it), and the mock helpers of
-// copyPasteExecution.test.ts (createResolvedOperation)
+// The paste engine as the app runs it, for real-disk tests (the native copy, exclusive rename, lock flags, and a Trash
+// that keeps what goes into it), and the mock helpers (createResolvedOperation)
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -9,7 +8,7 @@ import os
 
 @testable import FTOperations
 
-/// A file system with any call replaced, as the original's tests spread one (`{ ...nativeFileSystem, copyFile }`).
+/// A file system with any call replaced.
 /// The optional calls are copied from `base`, so a test can also take one away.
 final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     let base: any WriteServiceFileSystem
@@ -94,8 +93,8 @@ enum NativePaste {
     static let replaceAll = CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite)
     static let keepExisting = CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)
 
-    /// `nativeFileSystemWithTrash(trashDir)`: the native file system with a Trash, a folder items are moved into
-    /// as "<n>-<name>", so a test can see what a Replace removed.
+    /// The native file system with a Trash, a folder items are moved into as "<n>-<name>", so a test can see what a
+    /// Replace removed.
     static func withTrash(_ trashDir: String) -> NativeWriteFileSystem {
         let count = OSAllocatedUnfairLock(initialState: 0)
         return NativeWriteFileSystem(trash: { path in
@@ -263,7 +262,7 @@ func execute(
     return recorder.events
 }
 
-/// A journal in memory, as the original's tests keep one: each add and remove, in order.
+/// A journal in memory: each add and remove, in order.
 final class MemoryJournal: WriteJournal {
     enum Write: Equatable {
         case add(WriteJournalEntry)
@@ -307,7 +306,7 @@ final class MemoryJournal: WriteJournal {
     var writes: [Write] { state.withLock { $0.writes } }
 }
 
-/// Files and folders for real-disk tests, made as Node's fs makes them.
+/// Files and folders for real-disk tests, each made with the folders it needs.
 enum Disk {
     static func write(_ path: String, _ content: String) throws {
         let parent = NodePath.dirname(path)
@@ -336,7 +335,7 @@ enum Disk {
         return Darwin.lstat(path, &info) == 0
     }
 
-    /// The names in a folder, sorted as JavaScript sorts strings; [] when it can't be read.
+    /// The names in a folder, sorted by UTF-16 code unit; [] when it can't be read.
     static func list(_ path: String) -> [String] {
         ((try? PosixFileSystem().readdir(path)) ?? []).sorted { $0.utf16.lexicographicallyPrecedes($1.utf16) }
     }
@@ -364,7 +363,7 @@ enum Disk {
     }
 }
 
-/// `writeFileSync`: opens, truncates and writes in place, so an existing file keeps its inode.
+/// Opens, truncates and writes in place, so an existing file keeps its inode.
 enum ExecScenarioFiles {
     static func writeFile(_ path: String, _ content: String) -> Bool {
         let descriptor = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0o666)

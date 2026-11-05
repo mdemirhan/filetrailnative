@@ -1,5 +1,3 @@
-// Port of packages/core/src/fs/copyPasteScenarioMatrix.test.ts, with snapshotMockFileSystem
-// (packages/core/src/fs/testUtils.ts)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -7,7 +5,7 @@ import Testing
 
 @testable import FTOperations
 
-/// One item as `snapshotMockFileSystem` describes it.
+/// One item as `snapshot()` describes it.
 struct MockSnapshotEntry: Equatable, CustomStringConvertible {
     var kind: MockWriteServiceFileSystem.Kind
     var size: Int64?
@@ -20,7 +18,7 @@ struct MockSnapshotEntry: Equatable, CustomStringConvertible {
 }
 
 extension MockWriteServiceFileSystem {
-    /// `snapshotMockFileSystem`: every item, by path.
+    /// Every item, by path.
     func snapshot() -> [String: MockSnapshotEntry] {
         var entries: [String: MockSnapshotEntry] = [:]
         for path in paths {
@@ -104,27 +102,22 @@ struct ScenarioMatrixTests {
         }
     }
 
-    // T-a67327a8 F-506
     @Test func keepBothRegressions() async throws {
         try await check(Self.keepBothRegressionScenarios())
     }
 
-    // T-8483d2b5 F-506
     @Test func directoryPolicies() async throws {
         try await check(Self.directoryPolicyScenarios())
     }
 
-    // T-06fe2b2e F-506
     @Test func filePolicies() async throws {
         try await check(Self.filePolicyScenarios())
     }
 
-    // T-e1436157 F-506
     @Test func mismatchPolicies() async throws {
         try await check(Self.mismatchPolicyScenarios())
     }
 
-    // T-0d4cc0d5 F-506
     @Test func promptsOnceWhenTheResolvedKeepBothDestinationIsActuallyCreatedAfterPlanning() async throws {
         let run = try await runScenario(
             mode: .copy,
@@ -154,7 +147,6 @@ struct ScenarioMatrixTests {
 
     // A folder is known by its identity: an item added to it after the review goes to the Trash with it, where it
     // can be got back, without asking.
-    // T-802dd144 F-506 F-342
     @Test func sendsAFolderThatGainedAnItemAfterTheReviewToTheTrashWithIt() async throws {
         let run = try await runScenario(
             mode: .copy, seed: Self.folderGainedItemSeed, sources: ["/source/Folder"], policy: NativePaste.replaceAll,
@@ -171,7 +163,6 @@ struct ScenarioMatrixTests {
     }
 
     // Finder writes .DS_Store into a folder just by showing it: that is no reason to ask.
-    // T-485aa719 F-506
     @Test func doesntAskAgainWhenOnlyFindersDSStoreAppearedInTheFolder() async throws {
         let run = try await runScenario(
             mode: .copy, seed: Self.folderGainedItemSeed, sources: ["/source/Folder"], policy: NativePaste.replaceAll,

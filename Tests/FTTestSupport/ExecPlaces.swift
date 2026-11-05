@@ -1,6 +1,6 @@
-// Port of tools/parity/exec/places.ts: where a scenario runs. A fresh work folder holds the
-// scenario's tree ("$ROOT"), a Trash folder ("$TRASH") and the journal file; top-level folders the
-// scenario puts on another disk get a tree and a Trash on a mounted copy of a blank disk image.
+// Where a scenario runs. A fresh work folder holds the scenario's tree ("$ROOT"), a Trash folder ("$TRASH") and the
+// journal file; top-level folders the scenario puts on another disk get a tree and a Trash on a mounted copy of a blank
+// disk image.
 import Darwin
 import Foundation
 

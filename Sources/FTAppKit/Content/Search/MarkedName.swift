@@ -1,5 +1,3 @@
-// Port of renderMarkedText (apps/desktop/src/renderer/lib/nameHighlight.tsx:60-86), FileNameLabel's marks
-// (components/ContentPane.tsx:2422-2445) and the .search-result-match rules of styles.css:6605-6627
 import AppKit
 import FTFoundation
 
@@ -102,7 +100,7 @@ enum MarkedName {
         }
     }
 
-    /// `FileNameLabel` with marks: the stem, cut short with an ellipsis when the room is too small, then the extension,
+    /// The name with marks: the stem, cut short with an ellipsis when the room is too small, then the extension,
     /// which always shows; `ranges` are counted in the whole name.
     static func drawSplitName(
         stem: String, suffix: String, ranges: [HighlightRange], in bounds: NSRect, of view: NSView,

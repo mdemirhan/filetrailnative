@@ -1,11 +1,8 @@
-// Ports apps/desktop/src/renderer/lib/toasts.test.ts, and checks lib/bottomStack.ts and the progress card's words
 import Testing
 
 @testable import FTFoundation
 
 struct ToastsTests {
-    // T-27fe44c2
-    // B-CLIP-131
     @Test func dropsTheOldestVisibleToastWhenAFourthToastIsQueued() {
         func entry(_ number: Int) -> ToastEntry {
             Toasts.entry(id: "toast-\(number)", kind: .info, title: "Toast \(number)", now: 0)
@@ -14,8 +11,6 @@ struct ToastsTests {
         #expect(queued.map(\.id) == ["toast-2", "toast-3", "toast-4"])
     }
 
-    // T-0638bf68
-    // B-CLIP-131
     @Test func keepsEveryNotificationOnScreenForFourSeconds() {
         for kind in [ToastKind.info, .success] {
             let toast = Toasts.entry(id: "toast-1", kind: kind, title: "Moved 1 item", now: 1_000)
@@ -29,8 +24,7 @@ struct ToastsTests {
         #expect(Toasts.entry(id: "a", kind: .success, title: "t", message: "m", now: 0).message == "m")
     }
 
-    // F-797..F-799 B-INFO-192 B-INFO-193: where the stack rests (lib/bottomStack.ts)
-    // B-INFO-191 B-INFO-192 B-INFO-193 B-VIEW-199 T-2709df93 T-a1bd6809
+    // Where the stack rests
     @Test func theStackRestsTenPointsAboveTheHighestBarAndTwelveFromTheEdgeWithNone() {
         #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: []) == 12)
         // The path bar's top is 33 up from the bottom: 33 + 10.
@@ -43,13 +37,12 @@ struct ToastsTests {
         #expect(BottomStack.offsetAboveBars(windowHeight: 760, barTops: [759]) == 12)
     }
 
-    // B-INFO-192 B-VIEW-199
     @Test func notificationsRestAboveTheCardWhenThereIsOne() {
         #expect(BottomStack.offsetAboveBarsAndCard(windowHeight: 760, barTops: [727], cardHeight: nil) == 43)
         #expect(BottomStack.offsetAboveBarsAndCard(windowHeight: 760, barTops: [727], cardHeight: 90) == 43 + 90 + 8)
     }
 
-    // F-840: the delays before something shows
+    // The delays before something shows
     @Test func theDelaysBeforeSomethingShowsAreTheOriginals() {
         #expect(ShowDelays.progressCardMs == 500)
         #expect(ShowDelays.loadingFolderMs == 400)
@@ -70,7 +63,6 @@ struct ProgressCardTextTests {
             completedByteCount: bytes, totalBytes: totalBytes, currentSourcePath: current)
     }
 
-    // B-CLIP-064
     @Test func anOperationIsNamedByWhatItDoesWhileItRunsAndWhatItWasAfterwards() {
         let progress: [(WriteOperationAction, String, String)] = [
             (.moveTo, "Moving…", "Move"), (.copyTo, "Copying…", "Copy"), (.duplicate, "Duplicating…", "Duplicate"),
@@ -85,7 +77,6 @@ struct ProgressCardTextTests {
         }
     }
 
-    // B-CLIP-112
     @Test func theBarFollowsTheBytesThenTheItems() {
         #expect(ProgressCardText.percent(state(done: 1, total: 4, bytes: 500, totalBytes: 1_000)) == 50)
         #expect(ProgressCardText.percent(state(done: 1, total: 4)) == 25)
@@ -94,7 +85,6 @@ struct ProgressCardTextTests {
         #expect(ProgressCardText.percent(state(stage: .running)) == 0)
     }
 
-    // B-CLIP-064 B-CLIP-077 B-CLIP-112
     @Test func theMetaLineSaysWhatIsHappeningWhenThereAreNoBytes() {
         #expect(ProgressCardText.byteLabel(state(stage: .starting)) == "Preparing…")
         #expect(ProgressCardText.byteLabel(state(stage: .analyzing)) == "Preparing…")
@@ -105,7 +95,6 @@ struct ProgressCardTextTests {
             ProgressCardText.byteLabel(state(bytes: 1_200_000_000, totalBytes: 3_000_000_000)) == "1.2 GB of 3.0 GB")
     }
 
-    // B-CLIP-111
     @Test func theCardNamesTheItemItIsOnAndHowManyAreDone() {
         let text = ProgressCardText(
             state(
@@ -119,7 +108,6 @@ struct ProgressCardTextTests {
         #expect(text.percentLabel == "40%")
     }
 
-    // B-CLIP-111
     @Test func aNewFolderNamesItsDestinationAndTheFolderOnScreenStandsInForAMissingItem() {
         let made = ProgressCardText(state(.newFolder, total: 1, target: "/a/Docs"), currentPath: "/folder")
         #expect(made.detailLabel == "Destination")

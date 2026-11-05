@@ -1,5 +1,3 @@
-// Port of the recoverWrites and retryRecovery cases of apps/desktop/src/main/bootstrap/writeJournal.test.ts (the two
-// rename-of-several cases are in BatchRenameRecoveryTests.swift; openWriteJournal's in Journal/FileWriteJournalTests.swift)
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -59,7 +57,7 @@ private struct FailingWritesJournal: RecoverableWriteJournal {
     func remove(_ id: String) throws { throw codedError("ENOSPC", "ENOSPC: no space left on device") }
 }
 
-/// A timer ticked by hand, as the original's tests advance fake timers.
+/// A timer ticked by hand.
 private final class ManualTimer: Sendable {
     private let tickHandler = Locked<(@Sendable () -> Void)?>(nil)
     private let cancelled = Locked(false)
@@ -104,7 +102,6 @@ struct WriteRecoveryTests {
         journal.entries().map(\.id)
     }
 
-    // T-39c40f5b F-528 F-637
     @Test func removesTheEntriesItRecoveredAndKeepsTheOnesItCouldnt() throws {
         try withJournal { root, journal in
             // A complete copy whose old item already went to the Trash: it is put in place.
@@ -139,7 +136,6 @@ struct WriteRecoveryTests {
 
     // Its disk isn't connected now: the item may be the only copy of something, so the entry stays until it can be
     // dealt with, and the person is told where the item waits.
-    // T-bbfba98c F-528 F-637
     @Test func keepsAnEntryWhoseHiddenItemCantBeReachedAndSaysWhereItWaits() throws {
         try withJournal { root, journal in
             let unreachable = createEntry(
@@ -162,7 +158,6 @@ struct WriteRecoveryTests {
     }
 
     // A network share that doesn't answer mustn't hold up the window.
-    // T-01f0d271 F-353 F-528
     @Test func leavesForLaterAnEntryWhoseDiskDoesntAnswerInTime() throws {
         try withJournal { root, journal in
             let hanging = createEntry(root, "hanging", moved: true)
@@ -187,7 +182,6 @@ struct WriteRecoveryTests {
     }
 
     // Once the disk is back the item is put in place, and the person told.
-    // T-b9902d4e F-357 F-528
     @Test func finishesAWaitingEntryOnARetryAndSaysSo() throws {
         try withJournal { root, journal in
             let waiting = createEntry(root, "waiting", moved: true)
@@ -204,7 +198,6 @@ struct WriteRecoveryTests {
         }
     }
 
-    // T-209072c1 F-528
     @Test func forgetsTheFolderListingsReadBeforeARetryPutAnItemInPlace() throws {
         try withJournal { root, journal in
             let waiting = createEntry(root, "waiting", moved: true)
@@ -226,7 +219,6 @@ struct WriteRecoveryTests {
         }
     }
 
-    // T-b2efb3f5 F-528
     @Test func keepsTheFolderListingsWhenARetryChangedNothing() throws {
         try withJournal { root, journal in
             let waiting = createEntry(root, "waiting", moved: true)
@@ -245,7 +237,6 @@ struct WriteRecoveryTests {
 
     // A retry runs while the app is in use: it waits for a moment when nothing else writes, and touches nothing
     // while an operation runs.
-    // T-49414386 F-357 F-528
     @Test func leavesAWaitingEntryAloneWhileAnotherOperationWritesAndFinishesItAfter() throws {
         try withJournal { root, journal in
             let waiting = createEntry(root, "waiting", moved: true)
@@ -292,7 +283,6 @@ struct WriteRecoveryTests {
         }
     }
 
-    // T-4f7f9c91 F-357
     @Test func retriesEverySoOftenWhileNothingRunsUntilNothingIsLeft() {
         let left = Locked<Set<String>>(["a"])
         let recovered = Locked(0)
@@ -323,7 +313,6 @@ struct WriteRecoveryTests {
     }
 
     // A crash during a Replace that filled the disk must not keep the app from starting.
-    // T-c7bfc4aa F-528
     @Test func neverThrowsWhenTheJournalCantBeWritten() throws {
         try withJournal { root, journal in
             let finished = createEntry(root, "finished")
@@ -341,7 +330,6 @@ struct WriteRecoveryTests {
 
     // A large file a crash cut short while it was being copied: only part of a copy, its original in place. It is
     // removed; an item of another name stays.
-    // T-a6a8250b F-354 F-513
     @Test func removesThePartOfALargeFileLeftByACrashAndNothingElse() throws {
         try withJournal { root, journal in
             let partial = root + "/.movie.mov.filetrail-0a1b2c3d"
@@ -374,7 +362,6 @@ struct WriteRecoveryTests {
     }
 
     // A copy of a locked file is locked as it is finished, before it takes its name.
-    // T-6f64ddff F-354 F-346
     @Test func removesALockedPartOfALargeFile() throws {
         try withJournal { root, journal in
             let partial = root + "/.movie.mov.filetrail-0a1b2c3d"
@@ -398,7 +385,6 @@ struct WriteRecoveryTests {
 
     // v0.4.3 wrote down a large file copied inside a folder a paste was building, and ids along with each folder:
     // read back from its file, the folder and the part both go, by their paths, and neither record stays.
-    // T-6378e158 F-354 F-355
     @Test func clearsAFolderAndThePartOfALargeFileInItWrittenDownByV043() throws {
         try withTemporaryDirectory { directory in
             let root = directory.path
@@ -425,7 +411,6 @@ struct WriteRecoveryTests {
     // A folder being moved to another disk, complete under its hidden name when v0.4.3 stopped: put in place by its
     // path (the ids it was written down with don't matter), and the person is told the original is still where it
     // was.
-    // T-47906982 F-355 F-637
     @Test func putsInPlaceAMovedFoldersCopyWrittenDownByV043AndSaysSo() throws {
         try withTemporaryDirectory { directory in
             let root = directory.path
@@ -452,7 +437,6 @@ struct WriteRecoveryTests {
 
     // Builds after v0.4.3 that were never released copied a large file as "part" in a hidden folder of its own:
     // that folder goes, and a record of one already gone clears.
-    // T-b34cde9f F-354 F-526
     @Test func removesTheHiddenFolderALargeFileWasCopiedInByABuildAfterV043() throws {
         try withTemporaryDirectory { directory in
             let root = directory.path
@@ -473,8 +457,6 @@ struct WriteRecoveryTests {
         }
     }
 
-    // A rename of several is P3-08's to put back: its entry is read, and left as it is.
-    // T-7a6bb677 F-352 F-527
     @Test func readsBothKindsOfEntryBackAndLeavesOutWhatItCantRead() throws {
         try withTemporaryDirectory { directory in
             let root = directory.path
@@ -489,7 +471,6 @@ struct WriteRecoveryTests {
         }
     }
 
-    // T-fb074512 F-528
     @Test func doesNothingWhenThereIsNothingToRecover() throws {
         try withJournal { root, journal in
             let log = RecordingLogger()

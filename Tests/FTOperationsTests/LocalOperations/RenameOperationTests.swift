@@ -1,5 +1,3 @@
-// Port of the "renaming on a real disk" and "locked items" describes of
-// apps/desktop/src/main/bootstrap/writeOperations.test.ts
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -23,7 +21,6 @@ import Testing
         try FileManager.default.contentsOfDirectory(atPath: folder).filter { !$0.hasPrefix(".") }.sorted()
     }
 
-    // F-302 T-64bdda6c
     @Test func refusesToReplaceAnItemThatTookTheNewNameAfterItWasChecked() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-rename-race") { root in
             let source = root.appending("a.txt").path
@@ -54,7 +51,6 @@ import Testing
         }
     }
 
-    // F-301 T-1e716faa
     @Test func changesOnlyTheCaseOfANameOnADiskThatIgnoresCase() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-rename-case") { root in
             try write(root.appending("notes.txt").path, "notes")
@@ -75,7 +71,6 @@ import Testing
         }
     }
 
-    // F-301 T-8a9072dc
     @Test func changesOnlyHowAnAccentedLetterIsEncodedOnADiskThatIgnoresThat() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-rename-nfc") { root in
             let decomposed = "cafe\u{301}.txt"
@@ -98,7 +93,6 @@ import Testing
     }
 
     // On a disk that minds case, "Notes.txt" next to "notes.txt" is another file.
-    // F-302 T-9f913ecf
     @Test func stillRefusesANameTakenByADifferentItemThatDiffersOnlyInCase() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.lstatImpl = { path in Stats.file(dev: 1, ino: path.hasSuffix("notes.txt") ? 10 : 11) }
@@ -113,7 +107,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-301 F-302 T-00189ff5
     @Test func refusesANameHeldByAHardLinkToTheSameFile() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-rename-link") { root in
             try write(root.appending("a.txt").path, "shared")
@@ -131,7 +124,6 @@ import Testing
 
     // Two hard links to one file whose names differ only in case can exist on a disk that minds case; renaming one
     // onto the other would do nothing, yet report success.
-    // F-301 T-fef51c5b
     @Test(.tags(.diskImage), .diskImages)
     func refusesANameHeldByAHardLinkThatDiffersOnlyInCaseOnADiskThatMindsCase() async throws {
         try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
@@ -147,7 +139,6 @@ import Testing
         }
     }
 
-    // F-301 T-bf53ad2b
     @Test(.tags(.diskImage), .diskImages)
     func changesOnlyTheCaseOfANameOnADiskThatMindsCase() async throws {
         try await DiskImage.withSharedVolume(.apfsCaseSensitive) { volume in
@@ -167,7 +158,6 @@ import Testing
 
     // FAT and exFAT give empty files ids too large to compare: an empty file must still be recognized as itself when
     // only the case of its name changes.
-    // F-301 T-974f57fe
     @Test(.tags(.diskImage), .diskImages)
     func changesOnlyTheCaseOfAnEmptyFilesNameOnAFAT32Disk() async throws {
         try await DiskImage.withSharedVolume(.fat32) { volume in
@@ -191,7 +181,6 @@ import Testing
         }
     }
 
-    // F-297 F-300 T-5a782d53
     @Test func saysPlainlyThatAnItemIsGoneInsteadOfPassingOnTheSystemsError() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-rename-gone") { root in
             let coordinator = WriteCoordinator.local(.real())
@@ -208,7 +197,6 @@ import Testing
         }
     }
 
-    // F-302 T-3ff4b570
     @Test func explainsARenameThatFailsWhileRunningInPlainWords() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.lstatImpl = { path in
@@ -231,7 +219,6 @@ import Testing
 
     // What goes wrong while a finished rename is reported (keeping it for Undo, telling the other windows, the
     // window going away) never turns it into a failure, and the slot is free again.
-    // F-302 T-2b819be4
     @Test func doesntReportAFinishedRenameAsFailedWhenReportingItGoesWrong() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.lstatImpl = { path in
@@ -275,7 +262,6 @@ import Testing
         #expect(Darwin.lchflags(path, flags) == 0)
     }
 
-    // F-302 T-ec5348d1
     @Test func saysALockedItemIsLockedWhenItCantBeRenamed() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-locked-ops") { root in
             try write(root.appending("notes.txt").path, "notes")
@@ -293,7 +279,6 @@ import Testing
         }
     }
 
-    // F-296 T-3e6c5d4f
     @Test func namesTheLockedItemInsideAFolderThatCouldntBeDeleted() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-locked-ops") { root in
             let trash = root.appending(".Trash").path

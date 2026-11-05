@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/topToolbarLayout.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -30,7 +29,6 @@ struct TopToolbarLayoutTests {
         layout.itemGap + layout.overflowButtonWidth + 2 * (layout.capsulePadding + layout.edgedItemInset)
     }
 
-    // T-d4d1b659 B-VIEW-109
     @Test func keysEachItemByItsIdAndRepeatedSeparatorsByTheirCount() {
         #expect(
             keys(slots([.back, .topSeparator, .title, .topSeparator, .search]))
@@ -39,7 +37,6 @@ struct TopToolbarLayoutTests {
 
     let selection: [ToolbarItemID] = [.back, .forward, .title, .view, .sort, .viewOptions, .search, .copyPath]
 
-    // T-776a8dab B-VIEW-115
     @Test func keepsTheRemovableItemsFromTheStartAndEveryRequiredItem() {
         let row = slots(selection)
         #expect(keys(TopToolbarLayout.select(row, optionalCount: 5)) == keys(row))
@@ -50,7 +47,6 @@ struct TopToolbarLayoutTests {
         #expect(keys(TopToolbarLayout.select(row, optionalCount: 0)) == ["title", "viewOptions", "search"])
     }
 
-    // T-5bde4d3e B-VIEW-113
     @Test func dropsSeparatorsLeftWithNothingToDivide() {
         let row = slots([
             .topSeparator, .back, .topSeparator, .topSeparator, .title, .view, .topSeparator, .sort, .search,
@@ -65,7 +61,6 @@ struct TopToolbarLayoutTests {
 
     var fitRow: [TopToolbarSlot] { slots([.back, .forward, .title, .view, .sort, .clipboard, .viewOptions, .search]) }
 
-    // T-fd0b32ba B-VIEW-114
     @Test func keepsEveryItemWhileTheTitleAndSearchFieldCanStillGiveRoom() {
         let row = fitRow
         let measured = widths(row)
@@ -76,7 +71,6 @@ struct TopToolbarLayoutTests {
                 availableWidth: minRowWidth(TopToolbarLayout.select(row, optionalCount: 4))) == 4)
     }
 
-    // T-0ff98e2e B-VIEW-114 B-VIEW-115
     @Test func hidesTheRemovableItemsNearestTheEndFirstAndNeverARequiredOne() {
         let row = fitRow
         let measured = widths(row)
@@ -97,7 +91,6 @@ struct TopToolbarLayoutTests {
         #expect(fit(40) == 0)
     }
 
-    // T-30d2ceed
     @Test func countsAWiderClipboardButtonAgainstTheButtons() {
         let row = fitRow
         var measured = widths(row)
@@ -108,7 +101,6 @@ struct TopToolbarLayoutTests {
                 availableWidth: minRowWidth(TopToolbarLayout.select(row, optionalCount: 4))) < 4)
     }
 
-    // T-de64243f
     @Test func doesNotCountASeparatorThatWouldBeDropped() {
         let row = slots([.back, .title, .search, .topSeparator, .sort])
         var measured = widths(row)
@@ -120,14 +112,12 @@ struct TopToolbarLayoutTests {
         #expect(keys(TopToolbarLayout.select(row, optionalCount: 2)) == ["back", "title", "search"])
     }
 
-    // T-f7127f9d B-VIEW-115
     @Test func keepsTheWholeToolbarUntilItHasBeenLaidOut() {
         let row = fitRow
         #expect(TopToolbarLayout.visibleOptionalCount(slots: row, widths: [:], availableWidth: 300) == 4)
         #expect(TopToolbarLayout.visibleOptionalCount(slots: row, widths: widths(row), availableWidth: 0) == 4)
     }
 
-    // T-804fd7a7 B-VIEW-112
     @Test func putsButtonsSideBySideOnOneCapsuleAndLeavesTheTitleSearchAndViewSwitchOff() {
         let row = slots([.back, .forward, .title, .clipboard, .view, .sort, .search, .viewOptions, .infoPanel])
         #expect(
@@ -138,7 +128,6 @@ struct TopToolbarLayoutTests {
             ])
     }
 
-    // T-519f9c74 B-VIEW-112
     @Test func joinsTheButtonsOnEitherSideOfAnItemThatIsNotShown() {
         let row = slots([.sort, .clipboard, .viewOptions])
         #expect(
@@ -147,7 +136,6 @@ struct TopToolbarLayoutTests {
             ])
     }
 
-    // T-8e161dd6 B-VIEW-135
     @Test func landsADraggedItemAfterEveryItemWhoseMiddleIsLeftOfThePointer() {
         let centers: [Double] = [20, 60, 300, 520]
         #expect(TopToolbarLayout.dropIndex(centers: centers, pointerX: 5) == 0)
@@ -156,8 +144,7 @@ struct TopToolbarLayoutTests {
         #expect(TopToolbarLayout.dropIndex(centers: [], pointerX: 100) == 0)
     }
 
-    // F-708 F-709 F-710: the default toolbar, laid out as the original's flexbox lays it out (1200 pt window,
-    // 280 pt tree): every item where the Electron capture has it.
+    // The default toolbar, laid out in a 1200 pt window with a 280 pt tree.
     @Test func laysTheDefaultRowOutWhereTheOriginalDrawsIt() {
         let row = TopToolbarLayout.slots(ToolbarItems.defaultTopItems).filter { $0.id != .clipboard }
         let widths: [String: Double] = [
@@ -181,7 +168,7 @@ struct TopToolbarLayoutTests {
         #expect(placed.contentWidth == 892)
     }
 
-    // F-716: the title gives up its room before the search field does, and the search field stops at its minimum.
+    // The title gives up its room before the search field does, and the search field stops at its minimum.
     @Test func shrinksTheTitleFirstThenTheSearchField() {
         let row = TopToolbarLayout.slots([.title, .search])
         func place(_ width: Double) -> TopToolbarRow {

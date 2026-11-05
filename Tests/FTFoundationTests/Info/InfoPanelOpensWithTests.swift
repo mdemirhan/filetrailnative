@@ -1,5 +1,3 @@
-// Ports by behavior row the Opens with row of apps/desktop/src/renderer/components/GetInfoPanel.tsx:417-418 while macOS
-// has not answered
 import FTFoundation
 import Foundation
 import Testing
@@ -21,7 +19,7 @@ import Testing
         ).rows
     }
 
-    // T-3ae2ee91 B-INFO-065: a file keeps the row, muted with a dash, with the rows below where the answer will leave them.
+    // A file keeps the row, muted with a dash, with the rows below where the answer will leave them.
     @Test func aFileKeepsTheRowUntilMacOSAnswers() throws {
         let pending = rows(.file, .pending)
         let available = rows(.file, .available)
@@ -32,7 +30,7 @@ import Testing
         #expect(!rows(.file, .hidden).contains { $0.label == "Opens with" })
     }
 
-    // B-INFO-065: a folder has no such row, waiting or not.
+    // A folder has no such row, waiting or not.
     @Test func aFolderNeverHasTheRow() {
         for opens in [InfoPanelModel.OpensWithState.pending, .available, .hidden] {
             #expect(!rows(.directory, opens).contains { $0.label == "Opens with" })

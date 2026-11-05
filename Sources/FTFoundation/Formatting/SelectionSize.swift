@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/selectionSize.ts (with FolderSizeEntry from hooks/useFolderSizeCache.ts)
 import Foundation
 
 /// What is known of one folder's size (the folder size cache's entry).

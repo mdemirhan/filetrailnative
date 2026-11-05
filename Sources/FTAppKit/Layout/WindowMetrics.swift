@@ -1,4 +1,3 @@
-// Port of the metrics the explorer window reads from apps/desktop/src/renderer/lib/layoutTokens.ts and styles.css
 import AppKit
 import FTFoundation
 
@@ -6,7 +5,7 @@ import FTFoundation
 /// change to how metrics are made (density) is one line.
 @MainActor
 enum WindowMetrics {
-    /// The metrics for a density (the original's 100% sizes; UI zoom is not ported).
+    /// The metrics for a density, at 100% sizes (there is no UI zoom).
     static func metrics(density: Density = .standard) -> Metrics {
         Metrics(density: density)
     }
@@ -65,7 +64,7 @@ enum ChromeColors {
         return label.withAlphaComponent(label.alphaComponent * toolbarTitleStrength)
     }
 
-    /// The font the original names with `--font-sans` at a size and CSS weight.
+    /// The system font at a size and a CSS-style weight (400, 500, 600 or 700).
     static func font(size: Double, weight: Int = 400) -> NSFont {
         let weights: [Int: NSFont.Weight] = [500: .medium, 600: .semibold, 700: .bold]
         return NSFont.systemFont(ofSize: size, weight: weights[weight] ?? .regular)

@@ -1,4 +1,4 @@
-// Port of a tab of apps/desktop/src/renderer/hooks/useExplorerTabs.ts: one tab of an explorer window, as a native window tab
+// One tab of an explorer window, as a native window tab
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -14,8 +14,8 @@ struct NavigationTiming: Sendable {
     let display: Duration
 }
 
-/// The window of one tab. Its close button and Close Window close the whole explorer window, as the original's close
-/// button does; the close button of a tab in the tab bar closes the tab.
+/// The window of one tab. Its close button and Close Window close the whole explorer window; the close button of a
+/// tab in the tab bar closes the tab.
 final class ExplorerTabWindow: NSWindow {
     weak var explorerTab: MainWindowController?
 
@@ -33,8 +33,8 @@ final class ExplorerTabWindow: NSWindow {
         return refusingFieldEditor
     }
 
-    /// What the Window menu calls the window: its tab's label, as the original's window title is. The title itself
-    /// stays the folder's name, which the toolbar shows.
+    /// What the Window menu calls the window: its tab's label. The title itself stays the folder's name, which the
+    /// toolbar shows.
     var windowsMenuTitle: String? {
         didSet {
             // Set for every tab each time one opens, and finding the item goes through the whole menu.
@@ -107,7 +107,7 @@ final class ExplorerTabWindow: NSWindow {
         return super.performKeyEquivalent(with: event)
     }
 
-    /// A key nothing in the window took: its own table, which serves every pane (`onKeyDown`).
+    /// A key nothing in the window took: its own table, which serves every pane.
     override func keyDown(with event: NSEvent) {
         if explorerTab?.windowKeyDown(event) == true { return }
         super.keyDown(with: event)
@@ -142,14 +142,13 @@ final class ExplorerTabWindow: NSWindow {
     }
 }
 
-/// One tab of an explorer window (the original's tab): sidebar, toolbar, current folder and its history, and how it
-/// shows its folder. Each tab is a window of its own, in the native tab group of its explorer window.
+/// One tab of an explorer window: sidebar, toolbar, current folder and its history, and how it shows its folder. Each
+/// tab is a window of its own, in the native tab group of its explorer window.
 final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuItemValidation {
     enum HistoryMove {
-        /// A new step: the entries after the current one are cut off (B-NAV-002).
+        /// A new step: the entries after the current one are cut off.
         case push
-        /// Back and Forward move the index at once, before the folder is read, and show the folder as it was left
-        /// (B-NAV-014, B-NAV-015, B-SEL-118).
+        /// Back and Forward move the index at once, before the folder is read, and show the folder as it was left.
         case back, forward
         /// Touches nothing (startup, a quiet read, a tab brought back).
         case none
@@ -177,7 +176,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// `persistOnError`: what a folder that can't be read does.
+    /// What a folder that can't be read does.
     enum ReadFailure {
         /// The folder on screen stays, with the read's message over it, and nothing goes in the history.
         case leavesFolderOnScreen
@@ -202,7 +201,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     static let logsTimings = ProcessInfo.processInfo.environment["FILETRAIL_TIMING"] != nil
-    /// The default size of an explorer window, and the smallest it can be (`main.ts:401-447`).
+    /// The default size of an explorer window, and the smallest it can be.
     static let defaultContentSize = NSSize(width: 1200, height: 760)
     static let minimumSize = NSSize(width: 760, height: 480)
     private static var nextWindowID = 1
@@ -212,9 +211,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// The explorer window it is a tab of.
     weak var group: ExplorerTabGroup?
     private(set) var folder: URL
-    /// The tab let go of its folder (B-TREE-060): it shows none until one is opened, and keeps none: its label, snapshot
-    /// and saved tab have an empty path (`shownFolderPath`), as the original's currentPath is empty. `folder` is then
-    /// only where a new read would start from.
+    /// The tab let go of its folder: it shows none until one is opened, and keeps none: its label, snapshot and saved
+    /// tab have an empty path (`shownFolderPath`). `folder` is then only where a new read would start from.
     private var folderLetGo = false
     /// How the tab shows its folder, kept between launches with its folder. The sidebar keeps its tree and sections.
     var treeRootPath: String { sidebar.treeRootPath }
@@ -243,14 +241,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// The sidebar, for the parts of the window that put a menu on a row or follow its selection.
     var sidebarController: SidebarViewController { sidebar }
     let content: ContentPaneController
-    /// What this window knows of folder sizes (`useFolderSizeCache`).
+    /// What this window knows of folder sizes.
     let folderSizes: WindowFolderSizes
     /// The window's grid: sidebar, content, Info panel and the toolbar.
     let workspace: WorkspaceView
     /// The window's system toolbar, which holds the workspace's toolbar row.
     let explorerToolbar: ExplorerToolbar
-    /// The right-click menus of the tab (P5-09). Their file operations go to the write coordinator (WriteOperations/),
-    /// Copy, Cut and Paste through the clipboard (P5-08).
+    /// The right-click menus of the tab. Their file operations go to the write coordinator (WriteOperations/),
+    /// Copy, Cut and Paste through the clipboard.
     lazy var contextMenus: ContextMenuCoordinator = {
         let menus = ContextMenuCoordinator(tab: self)
         menus.fileOperation = { [weak self] action, subject in
@@ -264,11 +262,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         menus.notices = InWindowNoticePresenter()
         return menus
     }()
-    /// The clipboard's marks, button list and paste, and the drags out of and onto the tab (P5-08).
+    /// The clipboard's marks, button list and paste, and the drags out of and onto the tab.
     lazy var clipboardUI = TabClipboard(tab: self)
     lazy var dragDrop = TabDragDrop(tab: self)
     private let infoPanel = InfoPanelView()
-    /// What the Info panel and the Info Row describe (P5-06).
+    /// What the Info panel and the Info Row describe.
     private(set) var infoController: InfoController?
     /// The system's Customize Toolbar sheet is up.
     var isCustomizingToolbar: Bool { explorerToolbar.isCustomizing }
@@ -281,7 +279,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
     private var searchStore: TabSearch?
-    /// The tab's search: its session, the toolbar field, the results bar (P5-07).
+    /// The tab's search: its session, the toolbar field, the results bar.
     var search: TabSearch {
         if let searchStore { return searchStore }
         let made = TabSearch(tab: self)
@@ -295,15 +293,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// Opens an activated file or app in what macOS chooses; tests give their own.
     var openFile: @MainActor (URL) -> Void = { NSWorkspace.shared.open($0) }
     private var observers: [(token: Weak<ExplorerWindowObservation>, handler: (ExplorerWindowChange) -> Void)] = []
-    /// The tab's history: folder paths and the one on screen (B-NAV-001).
+    /// The tab's history: folder paths and the one on screen.
     private(set) var navigationHistory: NavigationHistory
-    /// How the folders in the history were left, for Back and Forward (B-NAV-043).
+    /// How the folders in the history were left, for Back and Forward.
     private(set) var folderMemories: FolderViewMemories = [:]
     /// The rename being carried out, so a second one does not start meanwhile.
     private var renameTask: Task<Void, Never>?
     /// Told when the folder is used for something (a file opened): the visits the Go To box counts.
     var onFolderUsed: (() -> Void)?
-    /// What the Rename sheet needs when several items are selected and Return, F2 or Rename is chosen (P6-03 opens it).
+    /// What the Rename sheet needs when several items are selected and Return, F2 or Rename is chosen.
     var openBatchRename: (([DirectoryEntry]) -> Void)?
     /// Opens Settings (⌘,, the toolbar's Settings button): the app's Settings window, unless a test puts its own.
     var openSettings: (() -> Void)?
@@ -311,23 +309,23 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     var openHelp: ((HelpTopicID?) -> Void)?
     /// Previews an item: the system's Quick Look panel, unless a test puts its own, so nothing comes on screen.
     var showQuickLook: ((String) -> Void)?
-    /// ⌘F with text typed into the list, and Search Subfolders: the text to search the folder for (P5-07 runs the search).
+    /// ⌘F with text typed into the list, and Search Subfolders: the text to search the folder for.
     var onSearchRequested: ((String) -> Void)?
     /// Carries out a rename and answers with its outcome, in place of the write coordinator (tests). Without it the
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.
     var renameItem: ((_ path: String, _ name: String) async -> RenameOutcome)?
-    /// While a name is being typed, changes made outside the app wait (B-SEL-139).
+    /// While a name is being typed, changes made outside the app wait.
     private var renameHoldsChanges = false
     private var navigationToken = 0
     private(set) var isNavigating = false
-    /// The folder the navigation under way is opening (`pendingNavigationRef`).
+    /// The folder the navigation under way is opening.
     private var navigationTarget: URL?
     private(set) var pendingChange: PendingChange?
-    /// A change waits for an opening of its folder to end: it is looked at again when this runs out (`retryTimerRef`).
+    /// A change waits for an opening of its folder to end: it is looked at again when this runs out.
     private var changeRetryWaiting = false
     private var quietReadInFlight = false
-    /// A change from outside is being taken in: Show Info's item stays (`keepInfoTarget`).
+    /// A change from outside is being taken in: Show Info's item stays.
     private(set) var isTakingInOutsideChange = false
     /// A tab brought back, or merged in, waits unread until it is first shown.
     private(set) var loaded = false
@@ -337,8 +335,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// The tab was sent to another folder while in the background (its folder moved, or its disk went): the folder
     /// is read when the tab is next shown.
     private(set) var stale = false
-    /// A file operation ended with the tab at the back (the original's `stale`): as it comes back, its open tree branches
-    /// are read again with its folder.
+    /// A file operation ended with the tab at the back: as it comes back, its open tree branches are read again with
+    /// its folder.
     var treeOutOfDate = false
     /// See `init`.
     private let startsTheWindow: Bool
@@ -407,8 +405,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
                 ToolbarKeyboard.enterFromStart(of: window)
             }
         }
-        // The Info panel's resizer too. Its Hide button is the next in the original, but nothing in the port's panel takes
-        // the keyboard: Tab goes on past it, to the start of the row.
+        // The Info panel's resizer too. Nothing in the panel takes the keyboard: Tab goes on past it, to the start of
+        // the row.
         workspace.inspectorResizer.onTab = { [weak self] backward in
             guard let self else { return }
             if backward {
@@ -476,7 +474,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         if let view = snapshot.view { carry(view, of: snapshot) }
     }
 
-    /// `showSnapshot`: the tab starts with the view the other one had. Its folder is read as it first shows, the task
+    /// The tab starts with the view the other one had. Its folder is read as it first shows, the task
     /// for that not having run yet.
     private func carry(_ view: TabViewState, of snapshot: TabSnapshot) {
         carriedView = view
@@ -488,7 +486,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         sidebar.startScrolled(tree: view.treeScrollTop, sections: view.sidebarSectionsScrollTop)
     }
 
-    /// `openPathInNewTab`: the tab starts with the tree of the tab it came from, scrolled as that one is, with its own
+    /// The tab starts with the tree of the tab it came from, scrolled as that one is, with its own
     /// folder's row in view if the tree has it yet. The tree then follows the folder from there.
     func startSidebar(like source: MainWindowController) {
         sidebar.holdsScrollPosition = true
@@ -503,7 +501,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     // MARK: The tab
 
-    /// The tab as it is saved between launches (`toOpenTabPreference`).
+    /// The tab as it is saved between launches.
     var openTab: OpenTabPreference {
         let path = shownFolderPath
         return OpenTabPreference(
@@ -531,7 +529,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return editor.isFieldEditor
     }
 
-    /// Reveal in Folder (B-SRCH-148): the folder a result is in opens, with the result selected and the list focused.
+    /// Reveal in Folder: the folder a result is in opens, with the result selected and the list focused.
     func revealSearchResult(_ path: String) {
         AppMenuPresenter.shared.close()
         guard let parent = ExplorerTabs.parentDirectoryPath(path) else { return }
@@ -550,7 +548,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// What the tab keeps of itself (`captureLiveTab`).
+    /// What the tab keeps of itself.
     var snapshot: TabSnapshot {
         let pane = focusedPane ?? lastFocusedPane
         return TabSnapshot(
@@ -565,7 +563,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             locationsExpanded: locationsExpanded, view: liveView)
     }
 
-    /// The view on screen (`captureLiveTab`): none for a tab whose folder is yet to be read somewhere else. A tab that
+    /// The view on screen: none for a tab whose folder is yet to be read somewhere else. A tab that
     /// has not read its first folder still has what it was started with. With search results showing, their selection,
     /// filter and scroll are what is taken: a tab has one set of them.
     private var liveView: TabViewState? {
@@ -612,7 +610,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     private var carriedView: TabViewState?
     /// The pane the keyboard goes to as the tab shows its first folder: the one the tab it came from had it in.
     var startingPane = TabSnapshot.FocusedPane.content
-    /// The tab was opened on a folder (`openPathInNewTab`): its first folder can count as a visit for the Go To box.
+    /// The tab was opened on a folder: its first folder can count as a visit for the Go To box.
     var opensAsArrival = false
 
     func ensureLoaded() {
@@ -678,16 +676,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             arrives: opensAsArrival)
     }
 
-    /// What a failed read does to the tab's first folder. The original doesn't read a carried folder (`mode: "none"`):
-    /// the tab stays on it as it was, with its error if it had one. Here it is read, so one that was fine and has since
-    /// gone gives way, as it does there on hearing of that.
+    /// What a failed read does to the tab's first folder. A carried folder stays on screen as it was, with its error if
+    /// it had one; one that was fine and has since gone gives way.
     private var firstReadFailure: ReadFailure {
         guard let carriedView else { return .leavesFolderOnScreen }
         return carriedView.directoryError != nil ? .opens : .opensUnlessGone
     }
 
-    /// The tab on screen as its window opens (`App.tsx`): a saved favorite opens even if it can't be read, showing why;
-    /// any other folder that can't be read gives way to Home, with the tree at Home (B-NAV-122, B-TREE-186).
+    /// The tab on screen as its window opens: a saved favorite opens even if it can't be read, showing why;
+    /// any other folder that can't be read gives way to Home, with the tree at Home.
     private func readStartupFolder() async -> Bool {
         if let open = openKeepingFavoriteRow() {
             return await attemptNavigation(to: folder, history: .none, open: open, readFailure: .opens).didOpen
@@ -747,8 +744,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         group?.tabChanged(self)
     }
 
-    /// `followForeignMoveOnScreen`: the folder on screen, or one it is inside, was renamed or moved: it is read at its
-    /// new place, in place in the history.
+    /// The folder on screen, or one it is inside, was renamed or moved: it is read at its new place, in place in the
+    /// history.
     func followOnScreen(_ moves: [PathMove]) {
         let path = shownFolderPath
         let followed = ExplorerTabs.followMovedPath(path, moves)
@@ -771,17 +768,17 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         flushPendingChange()
     }
 
-    /// The folder read again because the app asks (`refreshDirectory`), not because of a change from outside: Show Info's
+    /// The folder read again because the app asks, not because of a change from outside: Show Info's
     /// item goes.
     func readAgain() {
         infoController?.letShowInfosItemGo()
-        // Nothing is said to have changed: the rows keep the details they have (`navigateTo` keeps the metadata cache), so
-        // a folder a write went into shows its old date until something outside says otherwise.
+        // Nothing is said to have changed: the rows keep the details they have, so a folder a write went into shows its
+        // old date until something outside says otherwise.
         reload(changedPaths: [])
     }
 
     /// Changes made outside the app wait while something the list changing under would upset is going on: a name being
-    /// typed, a menu or a sheet open, a file operation running, a drag (B-VIEW-187).
+    /// typed, a menu or a sheet open, a file operation running, a drag.
     var folderChangesHeld = false {
         didSet {
             if !folderChangesHeld { flushPendingChange() }
@@ -789,13 +786,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// The changes waiting to be read, merged: the set of changed items is the union, or nil (a full read) if any change
-    /// did not say which items changed, or there are more than 1,000 (B-VIEW-188).
+    /// did not say which items changed, or there are more than 1,000.
     struct PendingChange {
         /// The folder that changed.
         var path: String
         var changedPaths: Set<String>?
 
-        /// What was waiting of another folder gives way (`addPending`).
+        /// What was waiting of another folder gives way.
         @MainActor static func merging(_ pending: PendingChange?, path: String, _ paths: [String]?) -> PendingChange {
             guard let pending, pending.path == path else {
                 return PendingChange(path: path, changedPaths: paths.map(Set.init))
@@ -809,9 +806,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// While a dialog is open or a name is being typed a press on the tab bar does nothing and the keyboard stays: the
-    /// original's tabs sit under the dialog's scrim, keep the focus where it is (`onMouseDown` `preventDefault` in
-    /// TabStrip.tsx) and refuse to change (`canChangeTabs`). A left press is still a press on that scrim, which may close
-    /// the dialog. Last, so what closes on a press outside it still hears it.
+    /// tabs keep the focus where it is and refuse to change. A left press is still a press on the dialog's scrim, which
+    /// may close the dialog. Last, so what closes on a press outside it still hears it.
     private func holdTabBar(of window: NSWindow) {
         WindowEventRouting.add(window, last: true) { [weak self, weak window] event in
             guard let self, let window, [.leftMouseDown, .rightMouseDown, .otherMouseDown].contains(event.type),
@@ -823,19 +819,19 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     func flushPendingChange() {
-        // A file operation running here or in another window holds them too (B-CLIP-147, WriteOperations/).
+        // A file operation running here or in another window holds them too (WriteOperations/).
         guard let pending = pendingChange, !changeRetryWaiting, !folderChangesHeld, !renameHoldsChanges, !isWriteLocked,
             !quietReadInFlight
         else { return }
-        // Changes to a folder no longer on screen don't matter (useFolderWatch.ts:60), and another folder being opened leaves
-        // this one behind: reading it again would go back to it, or read the new one for them (B-VIEW-195).
+        // Changes to a folder no longer on screen don't matter, and another folder being opened leaves
+        // this one behind: reading it again would go back to it, or read the new one for them.
         guard pending.path == folder.path, !isNavigating || navigationTarget?.comparablePath == folder.comparablePath
         else {
             pendingChange = nil
             return
         }
         // The folder on screen is being read already, by a read that may have started before the change: it is tried again
-        // shortly (B-VIEW-189).
+        // shortly.
         if isNavigating {
             changeRetryWaiting = true
             DispatchQueue.main.asyncAfter(deadline: .now() + Self.retryDelay) { [weak self] in
@@ -855,12 +851,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// A folder read again in place: the selection, scroll and details stay; the error clears when the answer arrives
-    /// (B-NAV-115, B-NAV-134).
+    /// A folder read again in place: the selection, scroll and details stay; the error clears when the answer arrives.
     private func quietRead(_ changedPaths: [String]?) async {
         let url = folder
         let result = await readFolder(url)
-        // The folder was left meanwhile: the user's folder wins (B-VIEW-195).
+        // The folder was left meanwhile: the user's folder wins.
         guard url == folder, !isNavigating, !folderLetGo else { return }
         switch result.snapshot {
         case .success(let snapshot):
@@ -880,7 +875,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// The folder on screen is gone: the nearest folder above it that still exists is opened in its place, and the
-    /// selection is not carried over (B-VIEW-194).
+    /// selection is not carried over.
     @discardableResult
     private func openNearestExistingFolder(above path: String) async -> Bool {
         for candidate in ExplorerTabs.pathAndAncestors(path).dropFirst() {
@@ -893,7 +888,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return false
     }
 
-    /// `navigateToNearestExistingFolder`: opens `path`, or the nearest folder above it that can be read. A newer navigation
+    /// Opens `path`, or the nearest folder above it that can be read. A newer navigation
     /// that takes over ends the attempt. Whether `path` itself opened.
     @discardableResult
     private func openNearestExistingFolder(
@@ -932,13 +927,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         waitingReadAgain = nil
     }
 
-    /// The tab is on screen again after another one, or for the first time (`showSnapshot`). Show Info's item doesn't
-    /// outlast it (B-INFO-008).
+    /// The tab is on screen again after another one, or for the first time. Show Info's item doesn't
+    /// outlast it.
     func cameBack() {
         infoController?.letShowInfosItemGo()
-        // The keyboard goes back to the pane the tab had it in, not the search field a window remembers on its own
-        // (useExplorerTabs.ts). A tab just made gives it out when its first folder comes. A dialog open on the tab keeps
-        // it (useDialogFocus.ts) and hands it back to the pane when it closes.
+        // The keyboard goes back to the pane the tab had it in, not the search field a window remembers on its own.
+        // A tab just made gives it out when its first folder comes. A dialog open on the tab keeps
+        // it and hands it back to the pane when it closes.
         if hasShownFolder, DialogScrim.front(in: window) == nil { keyboardBackToPane() }
         // Its dates stood still while it was at the back.
         RelativeClock.shared.windowStateDidChange()
@@ -1017,9 +1012,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// Reads `url`, then shows it. Returns nil when a later navigation replaced this one or the folder didn't open. `open`
     /// says how the sidebar reached it, which decides how the sidebar's tree follows and which of its rows is selected.
-    /// The listing in front stays on screen until the new one arrives (B-NAV-113).
+    /// The listing in front stays on screen until the new one arrives.
     /// With `goToFailure` it is Go To (`viaGoTo`): a folder that can't be read leaves the one on screen, and the
-    /// read's message goes there instead (B-DLG-013).
+    /// read's message goes there instead.
     @discardableResult
     func navigate(
         to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
@@ -1034,13 +1029,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// What the folder just shown takes from the tab it was started with, besides what `content.show` restored.
     private func showCarried(_ carried: TabViewState, folderWasRead: Bool) {
         content.setFilter(carried.listFilterQuery)
-        // Something selected outside the filter shows the whole list again (useExplorerNavigationController.ts).
+        // Something selected outside the filter shows the whole list again.
         if let lead = content.selection.leadPath, !content.filter.isEmpty,
             !content.entries.contains(where: { $0.path == lead }), content.listed.contains(where: { $0.path == lead })
         {
             content.clearFilter()
         }
-        // A folder with a message over it (a Go To that failed) has it still, for the original reads nothing here.
+        // A folder with a message over it (a Go To that failed) has it still.
         // `beginLoading` first: `showReadError` goes back to the state from before it.
         if folderWasRead, let message = carried.directoryError {
             content.beginLoading(quiet: false)
@@ -1066,10 +1061,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return navigationHistory.holds(place)
     }
 
-    /// `navigateTo`. `readFailure` is what a folder that can't be read does; by default only the sidebar's favorites,
-    /// locations and links open anyway (B-NAV-006, B-NAV-007, B-NAV-022). `quiet`: the folder is on screen and is only
+    /// `readFailure` is what a folder that can't be read does; by default only the sidebar's favorites,
+    /// locations and links open anyway. `quiet`: the folder is on screen and is only
     /// read again, so no "Loading…". `keepingSelection`: it is read in place, its selection and scroll staying. `arrives`:
-    /// the tab's first folder counts as gone to, as `openPathInNewTab`'s does (the one step of its history is there already).
+    /// the tab's first folder counts as gone to (the one step of its history is there already).
     private func attemptNavigation(
         to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil, readFailure: ReadFailure? = nil, quiet: Bool = false,
@@ -1084,7 +1079,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         let clock = ContinuousClock()
         let started = clock.now
         let move = open.pushesHistory ? move : HistoryMove.none
-        // The folder being left is remembered first: what was selected and where the list was scrolled (B-NAV-043).
+        // The folder being left is remembered first: what was selected and where the list was scrolled.
         // Nothing is remembered when search results are showing.
         if !folderLetGo, url.comparablePath != folder.comparablePath, searchRootPath == nil,
             let memory = content.captureFolderView()
@@ -1096,7 +1091,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         // are those left where this goes.
         let bringsResultsBack = !keepingSearch && searchResultsWereLeft(at: move)
         let leftPlace = NavigationHistory.Place(index: navigationHistory.index, path: folder.path)
-        // Back, Forward and the hold menus move within the history at once, before the folder is read (B-NAV-014).
+        // Back, Forward and the hold menus move within the history at once, before the folder is read.
         switch move {
         case .back: navigationHistory.goBack()
         case .forward: navigationHistory.goForward()
@@ -1111,7 +1106,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
         var entries: [DirectoryEntry] = []
         // The folder is known by the real path its listing gives (`response.path`), not the spelling it was asked by; one
-        // that can't be listed has only that spelling (B-NAV-006).
+        // that can't be listed has only that spelling.
         var shown = url
         var opensWithError = false
         switch read.snapshot {
@@ -1139,16 +1134,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             }
         }
 
-        // Opening a folder puts search results away, once it has arrived (B-NAV-021), the folder on screen too (Reveal in
-        // Folder there, B-NAV-211); only a read in place that asks to keep them (an order, hidden files, a tab coming back)
-        // leaves them (B-SRCH-069, B-NAV-215).
+        // Opening a folder puts search results away, once it has arrived, the folder on screen too (Reveal in
+        // Folder there); only a read in place that asks to keep them (an order, hidden files, a tab coming back)
+        // leaves them.
         if !keepsSearch, let search = searchStore, search.session.isSearchMode {
             // Back and Forward can bring them back; choosing the folder they cover closes them.
             let sameFolder = shown.comparablePath == folder.comparablePath
             search.session.hideResults(returnPlace: sameFolder ? nil : leftPlace)
         }
 
-        // A folder is added to the history only after its listing has arrived and been applied (B-NAV-006).
+        // A folder is added to the history only after its listing has arrived and been applied.
         switch move {
         case .push:
             navigationHistory.record(shown.path, mode: .push)
@@ -1156,7 +1151,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         case .replace:
             navigationHistory.record(shown.path, mode: .replace)
         case .back, .forward, .jump:
-            // Back and Forward never count as a visit (B-NAV-019).
+            // Back and Forward never count as a visit.
             if !opensWithError { visitTracker.showing(shown.path) }
         case .none:
             // A tab that starts on a folder by another spelling: its one step is the folder as it is.
@@ -1170,7 +1165,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         folder = shown
         folderLetGo = false
 
-        // Opening a folder normally starts with nothing selected, and the list at the top (B-SEL-029, B-NAV-059).
+        // Opening a folder normally starts with nothing selected, and the list at the top.
         let memory =
             carried.map {
                 FolderViewMemory(
@@ -1185,8 +1180,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         let sidebarKeyboard = sidebar.isFocused && !isFirstFolder ? window?.firstResponder : nil
         switch read.snapshot {
         case .success:
-            // The rows of a folder read again keep the details they have, as `navigateTo` keeps the metadata cache, and
-            // not only when it is read in place: nothing is said to have changed (hidden files shown, a new sort).
+            // The rows of a folder read again keep the details they have, and not only when it is read in place:
+            // nothing is said to have changed (hidden files shown, a new sort).
             content.show(
                 folder: shown.path, entries: entries, selecting: keepingSelection ? nil : [],
                 keepingScroll: keepingSelection, changedPaths: [], restoring: memory)
@@ -1200,11 +1195,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         if let sidebarKeyboard {
             window?.makeFirstResponder(sidebarKeyboard)
         } else if let window, isFirstFolder, startingPane == .tree, panels.folderTreeOpen {
-            // The keyboard goes back to the pane the tab had it in (useExplorerTabs.ts).
+            // The keyboard goes back to the pane the tab had it in.
             sidebar.focusTree()
             window.initialFirstResponder = window.firstResponder as? NSView
         } else if let window, isFirstFolder || window.firstResponder == nil || window.firstResponder === window {
-            // When no pane has the keyboard it goes to the file list (B-SEL-167, B-NAV-191: a fresh tab focuses the list).
+            // When no pane has the keyboard it goes to the file list (a fresh tab focuses the list).
             content.focusList()
             if isFirstFolder { window.initialFirstResponder = content.focusView }
         }
@@ -1269,7 +1264,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     // MARK: Opening items
 
-    /// The folder visits the Go To box counts (B-NAV-200 to B-NAV-204).
+    /// The folder visits the Go To box counts.
     private lazy var visitTracker = FolderVisitTracker { path, kind in
         MainWindowController.visitStore()?.recordFolderVisit(path, kind: kind)
     }
@@ -1279,15 +1274,15 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         entries.map { CommandEntry(path: $0.path, kind: FTFoundation.EntryKind(rawValue: $0.kind.rawValue) ?? .other) }
     }
 
-    /// Double-click, Return (set to Open) and ⌘↓: opens the items, or edits them as "Double-click a file to" says
-    /// (`activateContentPaths`). ⌘-double-click on a folder opens it in a new tab, as in Finder.
+    /// Double-click, Return (set to Open) and ⌘↓: opens the items, or edits them as "Double-click a file to" says.
+    /// ⌘-double-click on a folder opens it in a new tab, as in Finder.
     func open(_ entries: [DirectoryEntry], inNewTab: Bool = false) {
         if inNewTab, entries.count == 1, entries[0].isDirectoryLike {
             openFolderInNewTab(entries[0])
             return
         }
         let prefs = preferences
-        // Search results always open, never the edit-in-editor activation (B-SRCH-147).
+        // Search results always open, never the edit-in-editor activation.
         let activation = searchRootPath != nil ? FileActivationAction.open : prefs.fileActivationAction
         perform(
             OpenItems.activation(commandEntries(entries), fileActivation: activation, limit: prefs.openItemLimit))
@@ -1377,13 +1372,13 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// `openPathExternally`: a file or app opens in what macOS chooses, a disk image here, as in Finder (B-NAV-072).
-    /// Either counts as using the folder (B-NAV-071).
+    /// A file or app opens in what macOS chooses, a disk image here, as in Finder.
+    /// Either counts as using the folder.
     func openExternally(_ path: String) {
         if !noteUseAndOpenDiskImage(path) { openFile(URL(fileURLWithPath: path)) }
     }
 
-    /// The start of `openPathExternally`, whichever control asks. True when `path` was a disk image, and is dealt with here.
+    /// The start of opening a path, whichever control asks. True when `path` was a disk image, and is dealt with here.
     func noteUseAndOpenDiskImage(_ path: String) -> Bool {
         onFolderUsed?()
         guard DiskImageNames.isDiskImagePath(path), let group else { return false }
@@ -1407,14 +1402,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// A notice the person dismisses (`showModalNotice`): the open limit.
+    /// A notice the person dismisses: the open limit.
     private func notice(title: String, message: String) {
         showNotice(title: title, message: message)
     }
 
     // MARK: Keys and rename
 
-    /// Return in the file list (with an item selected): Open or Rename, as the Return key setting says (B-SEL-106).
+    /// Return in the file list (with an item selected): Open or Rename, as the Return key setting says.
     private func pressedReturn() {
         let selected = content.selectedEntries
         guard !selected.isEmpty else { return }
@@ -1425,8 +1420,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// A command the list's keys ask for: the key is one the menu does not listen for (a command's second key, Space,
-    /// F2, ⌘←). Whether the window ran it. Keys don't go by what dims the menu (`onKeyDown` asks only
-    /// `canHandleRendererCommand`): a command that can't start says why itself.
+    /// F2, ⌘←). Whether the window ran it. Keys don't go by what dims the menu (only `ShortcutPolicy.canHandle` is
+    /// asked): a command that can't start says why itself.
     private func runKeyCommand(_ id: ShortcutCommandID) -> Bool {
         if id == .openSelectedItem { return openSelectedItem() }
         guard let command = RendererCommand(rawValue: id.rawValue), ShortcutPolicy.canHandle(command, shortcutContext)
@@ -1435,9 +1430,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return true
     }
 
-    /// A key whose menu item is dimmed: the item would keep it and do nothing, where the original's window hears the key
-    /// before its menu (useExplorerShortcuts.ts:1569-1603) and runs the command, which shows why it can't start: the
-    /// busy notice, the open limit's notice, Duplicate's toast. An item that is on keeps its own key.
+    /// A key whose menu item is dimmed: the item would keep it and do nothing, so the window takes the key before the
+    /// menu and runs the command, which shows why it can't start: the busy notice, the open limit's notice,
+    /// Duplicate's toast. An item that is on keeps its own key.
     func keyOfDimmedItem(_ event: NSEvent) -> Bool {
         guard !isTextFieldEditing, !isDialogOpen,
             let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
@@ -1464,7 +1459,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return true
     }
 
-    /// `isTextEditingShortcut` with a text field that has the keyboard (useExplorerShortcuts.ts:1089-1098).
+    /// `isTextEditingShortcut` with a text field that has the keyboard.
     func textFieldKeepsKey(_ event: NSEvent) -> Bool {
         guard isTextFieldEditing, !event.modifierFlags.intersection([.command, .control]).isEmpty,
             let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event))
@@ -1472,8 +1467,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return Shortcuts.isTextEditingShortcut(pressed)
     }
 
-    /// A key that reached the window: the commands that the focused pane left alone (`onKeyDown`, its one table for
-    /// every pane). A key that has a command is the command's, even when it can't run now.
+    /// A key that reached the window: the commands that the focused pane left alone (one table for every pane). A key
+    /// that has a command is the command's, even when it can't run now.
     func windowKeyDown(_ event: NSEvent) -> Bool {
         guard !isTextFieldEditing, !isDialogOpen,
             let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
@@ -1483,7 +1478,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         return true
     }
 
-    /// F2, Rename and Return: one item is renamed in its row, several in the Rename sheet (B-SEL-106, B-SEL-113).
+    /// F2, Rename and Return: one item is renamed in its row, several in the Rename sheet.
     /// While another write runs it is said now, before a name is typed that couldn't be used until it ends.
     func renameSelected() {
         let selected = content.selectedEntries
@@ -1527,7 +1522,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
                 }
             guard self.content.inlineRename?.path == path else {
                 // The folder was left while the name was checked (a click on another folder ends the field and opens
-                // that folder): with no field to show it under, the refusal gets a dialog of its own (B-SEL-140).
+                // that folder): with no field to show it under, the refusal gets a dialog of its own.
                 if case .refused(let message) = outcome, !self.content.listed.contains(where: { $0.path == path }) {
                     let name = NodePath.basename(path)
                     self.renameNotice(title: "\u{201C}\(name)\u{201D} couldn\u{2019}t be renamed", message: message)
@@ -1560,7 +1555,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             return .unchanged
         }
         let target = source.deletingLastPathComponent().appendingPathComponent(name)
-        // The file system is asked off the main thread, as the original's worker does.
+        // The file system is asked off the main thread.
         return await Task.detached(priority: .userInitiated) { Self.renameOnDisk(from: source, to: target) }.value
     }
 
@@ -1593,7 +1588,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// ⌘F: the search field takes the keyboard. Text typed into the list's filter goes into it, and is searched at
-    /// once (B-SEL-083, B-SRCH-048, B-SRCH-052).
+    /// once.
     func focusFileSearch() {
         let text = content.filter
         search.focusField()
@@ -1610,7 +1605,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// The folder Open in New Tab and Open in New Window open: the one folder selected, or with the sidebar focused its
-    /// selected folder (B-TREE-155).
+    /// selected folder.
     private var selectedFolder: URL? {
         if focusedPane == .tree { return sidebar.selectedTreeTargetPath.map { URL(fileURLWithPath: $0) } }
         let items = content.selectedEntries
@@ -1655,7 +1650,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             ShortcutCommands.resolve(self?.preferences.shortcutOverrides ?? [:])
         }
         content.onReturn = { [weak self] in self?.pressedReturn() }
-        // With the tree hidden Tab stays in the list (useExplorerShortcuts.ts paneTabSwitch).
+        // With the tree hidden Tab stays in the list.
         content.onSwitchPane = { [weak self] in
             guard let self else { return }
             if self.panels.folderTreeOpen { self.perform(.focusTreePane) } else { self.content.focusList() }
@@ -1668,7 +1663,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             if !self.renameHoldsChanges { self.flushPendingChange() }
             self.notify(.focusedPane)
         }
-        // A refusal the field was showing when its item left the list (`getCopyLikePreStartFailureTitle("rename")`).
+        // A refusal the field was showing when its item left the list.
         content.onRenameLost = { [weak self] _, refusal in
             guard let refusal else { return }
             self?.renameNotice(title: WriteStartAction.operation(.rename).failureTitle, message: refusal)
@@ -1718,14 +1713,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// The search changed how it stands (P5-07): the tab's label and magnifier, and the commands.
+    /// The search changed how it stands: the tab's label and magnifier, and the commands.
     func searchStateChanged() {
         group?.refreshTitles()
         updateSearchTabAccessory()
         notify(.search)
     }
 
-    /// `.tab-strip-search`: a search tab shows a magnifier before its label, in the accent while it searches.
+    /// A search tab shows a magnifier before its label, in the accent while it searches.
     private func updateSearchTabAccessory() {
         guard let window, let session = searchStore?.session else { return }
         guard session.isSearchMode else {
@@ -1737,12 +1732,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         if window.tab.accessoryView !== view { window.tab.accessoryView = view }
     }
 
-    /// Refresh: the caches of the listing are let go of, and the folder is read again with the selection kept
-    /// (B-NAV-124).
+    /// Refresh: the caches of the listing are let go of, and the folder is read again with the selection kept.
     func refresh() {
         services.directoryService.cache.clear()
         readAgain()
-        // `refreshDirectory`: the tree's way to hear of subfolders added or removed outside the app, for the folder watch
+        // The tree's way to hear of subfolders added or removed outside the app, for the folder watch
         // leaves it alone.
         guard treeFollowsReadingAgain else { return }
         let open = sidebar.model.openReadingAgain(folder.path)
@@ -1766,7 +1760,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         if lastFocusedPane == .tree, panels.folderTreeOpen { sidebar.focusTree() } else { content.focusList() }
     }
 
-    /// The pane that last had the keyboard (`lastExplorerFocusPaneRef`).
+    /// The pane that last had the keyboard.
     private func noteFocusedPane() {
         if let pane = focusedPane { lastFocusedPane = pane }
     }
@@ -1774,7 +1768,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// What the commands read of the keyboard, as it last was.
     private var keyboardHolder: (pane: ExplorerPane?, editing: Bool) = (nil, false)
 
-    /// The keyboard moved in the window (`setFocusedPane`, `useTextEditingFocus`).
+    /// The keyboard moved in the window.
     func keyboardMoved() {
         noteFocusedPane()
         let now = (pane: focusedPane, editing: isTextFieldEditing)
@@ -1790,7 +1784,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// The folder File ▸ Add to Favorites acts on (`resolveFavoriteTargetPath`).
+    /// The folder File ▸ Add to Favorites acts on.
     var favoriteTargetPath: String? {
         CommandAvailability.favoriteTargetPath(commandTargets)
     }
@@ -1846,9 +1840,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         ejectCoordinator.didFinish = { SidebarVolumes.shared.refresh() }
     }
 
-    /// The folder on screen is let go of: the file list shows nothing (B-TREE-059, B-TREE-060).
+    /// The folder on screen is let go of: the file list shows nothing.
     private func releaseFolder() {
-        // `applyEmptyDirectorySnapshot` puts the results away too.
+        // Letting go of the folder puts the search results away too.
         searchStore?.session.putResultsAway()
         showNoFolder()
         sidebar.focusTree()
@@ -1867,7 +1861,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     // MARK: Menu state
 
-    /// What the application menu shows of this tab (`buildApplicationMenuState`), from what the toolbar and the keys
+    /// What the application menu shows of this tab, from what the toolbar and the keys
     /// read.
     var menuState: ApplicationMenuState {
         let context = commandContext
@@ -1897,7 +1891,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// Whether the Trash has anything in it (nil: it can't be told), asked when the window comes to the front and after
-    /// every file operation (`useTrashState`).
+    /// every file operation.
     var trashIsEmpty: Bool?
     /// Reads whether the Trash has anything in it; tests use their own.
     var trashIsEmptyReader: @Sendable () -> Bool? = {
@@ -1959,7 +1953,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         go(to: folder.deletingLastPathComponent())
     }
 
-    /// `navigateToParentFolder`, the toolbar's Enclosing Folder: it doesn't look at which pane has the keyboard, and
+    /// The toolbar's Enclosing Folder: it doesn't look at which pane has the keyboard, and
     /// with no folder on screen it opens the top of the disk (`parentDirectoryPath("")`).
     func goToParentFolder() {
         guard !isCustomizingToolbar, !isDialogOpen, let parent = ExplorerTabs.parentDirectoryPath(shownFolderPath)
@@ -2017,15 +2011,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         group?.tabChanged(self)
     }
 
-    /// The sort commands and the column headers (`handleSortChange`): the field already in use reverses the direction;
+    /// The sort commands and the column headers: the field already in use reverses the direction;
     /// another sorts by it, descending for Date Modified and Size and ascending for Name and Kind.
     func sort(by field: SortByPreference) {
         let next = DetailsSorting.next(current: sortBy, direction: sortDirection, requested: field)
         setSort(next.sortBy, next.direction)
     }
 
-    /// Puts the folder in this order: it is read again ("replace"), and the selection is not kept (B-NAV-127,
-    /// B-NAV-132).
+    /// Puts the folder in this order: it is read again ("replace"), and the selection is not kept.
     func setSort(_ field: SortByPreference, _ direction: SortDirectionPreference) {
         sortBy = field
         sortDirection = direction
@@ -2042,7 +2035,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         group?.tabChanged(self)
         // No folder to read again (`toggleHiddenFiles` with an empty currentPath).
         guard loaded, !folderLetGo else { return }
-        // `getSelectedTreeReloadOptions`: the row of a favorite, a location or a link stays, and the tree where it is.
+        // The row of a favorite, a location or a link stays, and the tree where it is.
         let open = keepingTree ? SidebarOpen(origin: .alias) : sidebar.model.openKeepingRow(folder.path) ?? .other
         Task { await navigate(to: folder, history: .replace, open: open, keepingSearch: true) }
     }
@@ -2078,7 +2071,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     func windowWillClose(_ notification: Notification) {
-        // Closing a tab stops its search (B-SRCH-138).
+        // Closing a tab stops its search.
         searchStore?.session.close()
         group?.tabWillClose(self)
         visitTracker.dispose()
@@ -2091,7 +2084,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         guard group?.acceptsKey(self) != false else { return }
         ensureLoaded()
         refreshTrashState()
-        // The tab on screen is the one live search; the others of its window go on in the background (B-SRCH-153).
+        // The tab on screen is the one live search; the others of its window go on in the background.
         for other in group?.tabs ?? [] where other !== self { other.searchStore?.session.enterBackground() }
         searchStore?.session.returnToForeground()
         group?.frontSearch = searchStore
@@ -2143,7 +2136,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     func preferencesChanged(_ change: PreferencesChange) {
-        // A Settings edit of the search options updates the live values without running anything again (B-SRCH-091).
+        // A Settings edit of the search options updates the live values without running anything again.
         let searchDefaults = [
             "searchPatternMode", "searchMatchScope", "searchRecursive", "searchSkipGitFolders", "searchSkipGitIgnored",
         ]
@@ -2178,7 +2171,7 @@ extension MainWindowController: ExplorerWindowHandle {
         if isCustomizingToolbar, MenuCommandRouter.nativeEditSelector(command) == nil, command != .customizeToolbar {
             return
         }
-        // So it does under the Go To box or an alert: only a field's editing commands act (B-DLG-064, B-NAV-112).
+        // So it does under the Go To box or an alert: only a field's editing commands act.
         if isDialogOpen {
             if let selector = MenuCommandRouter.nativeEditSelector(command), isTextFieldEditing {
                 performFieldEdit(selector)
@@ -2186,12 +2179,12 @@ extension MainWindowController: ExplorerWindowHandle {
             return
         }
         // A text field with the keyboard (the search field, the results' filter) does Cut, Copy, Paste, Select All and
-        // Undo itself (`NATIVE_EDIT_COMMANDS`, T-f31f663b).
+        // Undo itself.
         if let selector = MenuCommandRouter.nativeEditSelector(command), isTextFieldEditing {
             performFieldEdit(selector)
             return
         }
-        // `canHandleRendererCommand`: a name being edited in its row waits for nothing but Settings and the field's own
+        // A name being edited in its row waits for nothing but Settings and the field's own
         // editing, and the list's commands need the list (or the tree, for those it takes).
         guard ShortcutPolicy.canHandle(command, shortcutContext) else { return }
         // Cut, Copy, Paste and the file operations go to the write coordinator (WriteOperations/).
@@ -2234,17 +2227,17 @@ extension MainWindowController: ExplorerWindowHandle {
             viewChanged(keepingTree: !sidebar.model.rootPath.isEmpty)
             searchStore?.session.hiddenFilesChanged(includeHidden)
         case .refreshOrApplySearchSort:
-            // In search mode ⌘R runs the same search again (B-SRCH-140).
+            // In search mode ⌘R runs the same search again.
             if let session = searchStore?.session, session.isSearchMode { session.rerun() } else { refresh() }
         case .showLastSearchResults:
             if searchStore?.session.hasCachedSearch == true { search.showLastResults() }
         case .revealInFolder:
-            // The lead result's folder, or the first selected's when there is no lead (`selectionLeadOrSelectedPath`).
+            // The lead result's folder, or the first selected's when there is no lead.
             if searchRootPath != nil, let path = content.selection.leadPath ?? selectedPaths.first {
                 revealSearchResult(path)
             }
         case .customizeToolbar: beginCustomizingToolbar()
-        // The places of the Go menu (`GoMenuPlaces`): Macintosh HD and the Trash act exactly as a click on their Locations
+        // The places of the Go menu: Macintosh HD and the Trash act exactly as a click on their Locations
         // rows, the folders as Go to Folder opens them.
         case .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash:
             let home = fileManager.homeDirectoryForCurrentUser.path
@@ -2266,7 +2259,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .toggleFavorite:
             if let target = favoriteTargetPath { sidebar.toggleFavorite(target) }
         case .focusTreePane:
-            // A hidden tree comes back first (useExplorerShortcuts.ts focusTreePane).
+            // A hidden tree comes back first.
             if !panels.folderTreeOpen { updatePanels { $0.folderTreeOpen = true } }
             sidebar.focusTree()
         case .ejectVolume:
@@ -2298,7 +2291,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .focusFileSearch: focusFileSearch()
         case .quickLookSelection: quickLookSelection()
         case .editSelectAll:
-            // `runGenericEditCommand`: every entry while the file list has the keyboard, sent to the pane and not up a
+            // Every entry while the file list has the keyboard, sent to the pane and not up a
             // responder chain that needs the window to be key; any other view does its own Select All.
             if focusedPane == .content {
                 content.selectAllEntries()
@@ -2355,8 +2348,8 @@ extension MainWindowController: ExplorerWindowHandle {
         {
             workspace.restore(treeWidth: Double(panels.treeWidth), inspectorWidth: Double(panels.inspectorWidth))
         }
-        // App.tsx: hiding the tree while it has the keyboard gives the keyboard to the list. Asked first: a view going
-        // hidden lets go of the keyboard.
+        // Hiding the tree while it has the keyboard gives the keyboard to the list. Asked first: a view going hidden
+        // lets go of the keyboard.
         let treeLosesKeyboard = !panels.folderTreeOpen && focusedPane == .tree
         workspace.show(folderTree: panels.folderTreeOpen, infoPanel: panels.propertiesOpen)
         if treeLosesKeyboard { content.focusList() }
@@ -2393,20 +2386,20 @@ extension MainWindowController: ExplorerWindowContext {
         CommandAvailability.canRun(command, commandContext)
     }
 
-    /// What decides whether a command or a key can act now (`shortcutContext` of App.tsx).
+    /// What decides whether a command or a key can act now.
     var shortcutContext: ShortcutContext {
         ShortcutContext(
             actionNoticeOpen: frontAlert != nil,
-            // `copyPasteModalOpen` holds `renameDialogState` and `newFolderDialogState`, inline ones too.
+            // `copyPasteModalOpen` holds the Rename sheet and a name being typed in its row too.
             copyPasteModalOpen: isBatchRenameOpen || CopyPasteDialogs.isOpen(in: window)
                 || content.inlineRename != nil,
             focusedPane: commandPane,
-            // Customizing the toolbar is a sheet over the window (`sheetOpen`): the commands wait for it to end.
+            // Customizing the toolbar is a sheet over the window: the commands wait for it to end.
             locationSheetOpen: isCustomizingToolbar || goToBox != nil,
             selectedTreeTargetKind: sidebar.selectedTreeTargetKind)
     }
 
-    /// Everything the command rules read (App.tsx `canRunRendererCommand`): the one state of the menu bar, the toolbar
+    /// Everything the command rules read: the one state of the menu bar, the toolbar
     /// and the keys.
     private var commandContext: CommandAvailabilityContext {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -2440,7 +2433,7 @@ extension MainWindowController: ExplorerWindowContext {
     var selectedPaths: [String] { content.selection.paths }
 
     var focusedPane: ExplorerPane? {
-        // Starting a rename leaves no pane focused: the window's own shortcuts wait (B-SEL-123). So does any other text
+        // Starting a rename leaves no pane focused: the window's own shortcuts wait. So does any other text
         // field (the path bar's, the results' filter): only the panes' own focus counts (`onFocusChange`).
         if content.inlineRename != nil || isTextFieldEditing { return nil }
         guard let responder = window?.firstResponder as? NSView else { return nil }

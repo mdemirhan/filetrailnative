@@ -1,13 +1,10 @@
-// Port of openLocationSheet, the places read on open, forgetPlace and goToPath (apps/desktop/src/renderer/App.tsx
-// 2119-2205, 2977-2998), submitLocationPath (hooks/useExplorerNavigationController.ts 2049-2066) and openMoveDialog,
-// submitMoveDialog and browseForDirectoryPath (hooks/useExplorerActions.ts 3570-3647): the Go To and Move To boxes of a
-// tab
+// The Go To and Move To boxes of a tab
 import AppKit
 import FTFileSystem
 import FTFoundation
 import FTOperations
 
-/// How a Go To ended (`submitLocationPath`'s answer).
+/// How a Go To ended.
 enum GoToOutcome: Equatable {
     case opened
     /// The folder couldn't be read: the read's message.
@@ -36,7 +33,7 @@ extension MainWindowController {
     var goToBox: GoToFolderBox? { dialogs.lazy.compactMap { $0.panel as? GoToFolderBox }.first }
     /// The alert in front, while one is up.
     var frontAlert: AlertCard? { dialogs.last?.panel as? AlertCard }
-    /// Whether a box or an alert is up: the tab's commands and keys wait (B-DLG-064, B-NAV-112).
+    /// Whether a box or an alert is up: the tab's commands and keys wait.
     var isDialogOpen: Bool { !dialogs.isEmpty }
 
     // MARK: Go To
@@ -53,7 +50,7 @@ extension MainWindowController {
         }
     }
 
-    /// Shows a Go To box over `window`, its places read and ranked as of now (B-DLG-016).
+    /// Shows a Go To box over `window`, its places read and ranked as of now.
     @discardableResult
     func presentGoToBox(_ options: GoToBoxOptions, in window: NSWindow) -> GoToFolderBox {
         let box = GoToFolderBox(
@@ -80,7 +77,7 @@ extension MainWindowController {
             now: AppClock.now.timeIntervalSince1970 * 1000)
     }
 
-    /// `requestPathSuggestions`: the typed text trimmed, `~` expanded, hidden folders only when the tab shows them,
+    /// The typed text trimmed, `~` expanded, hidden folders only when the tab shows them,
     /// 12 at most.
     func pathCompletions(_ input: String) async -> [GoToCompletion]? {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -93,9 +90,9 @@ extension MainWindowController {
         return answer.suggestions.map { GoToCompletion(path: $0.path, name: $0.name) }
     }
 
-    /// `goToPath` with `submitLocationPath`: trimmed, `~` expanded, a push counted as a Go To visit. The box closes
+    /// Opens the typed path: trimmed, `~` expanded, a push counted as a Go To visit. The box closes
     /// only if the folder opened; otherwise it shows the read's message. An opened folder chosen from the list that is
-    /// gone is forgotten; one that only couldn't be opened is kept (B-DLG-039).
+    /// gone is forgotten; one that only couldn't be opened is kept.
     func submitGoTo(_ path: String, box: GoToFolderBox) {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let expanded = PathText2.expandHome(GoToBoxState.trim(path), homePath: home)
@@ -116,7 +113,7 @@ extension MainWindowController {
             }
             guard wasVisited else { return }
             let exists = await Task.detached { FileManager.default.fileExists(atPath: path) }.value
-            // `forgetPlace`: the folder leaves the list of the box, still up with the error (B-DLG-038).
+            // `forgetPlace`: the folder leaves the list of the box, still up with the error.
             guard !exists else { return }
             Self.visitStore()?.forgetVisitedFolder(path)
             if self.goToBox === box { box.setPlaces(self.placesNow()) }
@@ -140,7 +137,7 @@ extension MainWindowController {
         let current = shownFolderPath
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         let options = GoToBoxOptions.moveTo(currentPath: current) { [weak window] path in
-            // `browseForDirectoryPath`: the picker starts at the path, `~` expanded.
+            // The picker starts at the path, `~` expanded.
             await Self.pickDirectory(path.isEmpty ? nil : PathText2.expandHome(path, homePath: home), window)
         }
         let box = presentGoToBox(options, in: window)
@@ -174,7 +171,7 @@ extension MainWindowController {
         }
     }
 
-    /// `startMoveToDestination` with `validateDestinationBeforeAnalyze`, from the Move To box.
+    /// A move from the Move To box, its destination checked first.
     private func startMoveFromDialog(_ paths: [String], to destination: String, _ actions: WindowWriteActions) async
         -> CopyLikeOutcome
     {
@@ -190,7 +187,7 @@ extension MainWindowController {
 
     // MARK: Alerts
 
-    /// A notice with one OK over the tab's window (`showModalNotice`), its detail list under the message.
+    /// A notice with one OK over the tab's window, its detail list under the message.
     func showNotice(title: String, message: String, detailLines: [String] = []) {
         guard let window else { return }
         InWindowAlerts.notice(title: title, message: message, detailLines: detailLines, in: window)

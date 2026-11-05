@@ -1,6 +1,5 @@
-// Port of tools/parity/exec/normalize.ts: turns an outcome as an engine recorded it (absolute temp
-// paths, random hidden names and journal ids, file ids, dates) into what two runs of any engine
-// share. The rules are listed in normalize.ts; exec/selftest.sh checks both give the same JSON.
+// Turns an outcome as an engine recorded it (absolute temp paths, random hidden names and journal ids, file ids, dates)
+// into what two runs of any engine share.
 
 public enum ExecNormalize {
     /// A place on disk and the token it becomes ("$ROOT", "$TRASH", ...).

@@ -1,6 +1,4 @@
-// Port by feature of "keeps showing the folder's info in the Info panel after the folder reloads" of App.commands.test.tsx
-// and "shows the Info of a sidebar folder" of App.menusAndTree.test.tsx (App.tsx:2238-2244, :2619-2621): the Info panel
-// through a reload and from a row of the tree, on a window that is never shown
+// The Info panel through a reload and from a row of the tree, on a window that is never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -11,7 +9,7 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct InfoPanelWritesMatrixTests {
-        // T-321434ce B-INFO-017: the folder read again keeps what the panel shows on screen, and asks for the properties
+        // The folder read again keeps what the panel shows on screen, and asks for the properties
         // again: the new size comes without the selection changing.
         @Test func aReloadKeepsTheInfoOnScreenAndAsksAgain() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -40,7 +38,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-9cb4c249 B-TREE-049: Show Info on a row of the tree is about that folder, not the list's selection; the panel
+        // Show Info on a row of the tree is about that folder, not the list's selection; the panel
         // adds it to the Favorites and takes it away, and roots the tree there.
         @Test func showInfoOfARowIsAboutThatFolderAndActsOnIt() async throws {
             let harness = try ExplorerHarness.windowless()

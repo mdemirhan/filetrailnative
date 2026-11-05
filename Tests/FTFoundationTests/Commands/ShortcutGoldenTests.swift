@@ -1,4 +1,4 @@
-// Checks the port against goldens recorded from the reference: tools/parity/golden/shortcut-resolution.ts
+// Checks shortcut resolution against the shortcut-resolution golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -76,7 +76,7 @@ struct ShortcutGoldenTests {
     }
 
     static func named(_ bindings: ShortcutBindings) -> [String: [String]] {
-        // Duplicate Tab is the port's own command: the reference has no key for it.
+        // Duplicate Tab is left out: the golden has no key for it.
         Dictionary(
             uniqueKeysWithValues: bindings.filter { $0.key != .duplicateTab }.map { ($0.key.rawValue, $0.value) })
     }
@@ -131,7 +131,6 @@ struct ShortcutGoldenTests {
             events: events)
     }
 
-    // B-DLG-230 B-NAV-107
     @Test func keysAreResolvedLikeTheOriginalResolvesThem() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "shortcut-resolution")
         #expect(cases.count >= 300)

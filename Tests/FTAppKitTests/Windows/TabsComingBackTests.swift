@@ -1,5 +1,3 @@
-// Ports what the round 3 sweep found of useExplorerTabs.ts (the keyboard on a tab shown), of `navigateTo` keeping the
-// metadata cache, and of TreePane.tsx's `treeVisibilityVersion`, on windows that are never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -10,7 +8,7 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct TabsComingBackTests: SidebarTesting {
-        // A tab shown again gives the keyboard to its pane, not to the search field it was left in (209). F-724 B-SRCH-164
+        // A tab shown again gives the keyboard to its pane, not to the search field it was left in (209).
         @Test func aTabComingBackGivesTheKeyboardToItsPaneNotTheSearchField() async throws {
             let harness = try ExplorerHarness.windowless()
             let first = try await harness.open()
@@ -47,7 +45,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The folder is read again with hidden files shown: a folder a move went into keeps the date read before,
-        // as `navigateTo` keeps the metadata cache (a17). F-683 B-NAV-130
+        // as the metadata cache is kept.
         @Test func showingHiddenFilesLeavesTheDetailsAlreadyRead() async throws {
             let harness = try ExplorerHarness.windowless()
             let manager = FileManager.default
@@ -72,7 +70,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A favorite more makes the tree shorter: the selected row is brought back into view (a16). F-732 B-TREE-034
+        // A favorite more makes the tree shorter: the selected row is brought back into view (a16).
         @Test func aFavoriteAddedKeepsTheSelectedTreeRowInView() async throws {
             let harness = try ExplorerHarness.windowless()
             for index in 0..<80 {

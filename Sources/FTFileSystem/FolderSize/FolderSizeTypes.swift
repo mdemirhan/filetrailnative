@@ -1,7 +1,6 @@
-// Port of the types of apps/desktop/src/main/bootstrap/folderSizeAdjust.ts and responseCache.ts (folder-size jobs)
 import Foundation
 
-/// A path as a dictionary key: compared and hashed by its exact UTF-8, as JavaScript compares strings.
+/// A path as a dictionary key: compared and hashed by its exact UTF-8.
 /// Swift's `String` takes NFC and NFD spellings as equal, and a folder can have either as its name.
 struct PathKey: Hashable, Sendable {
     let value: String
@@ -52,7 +51,7 @@ public struct FolderSizeStats: Equatable, Sendable {
     }
 }
 
-/// One item as a measurement counts it inside its folder (`nativeItemSize`): a file or symlink by its
+/// One item as a measurement counts it inside its folder: a file or symlink by its
 /// sizes, a folder only as one (its contents are its own measurement's), anything else not at all.
 public struct ItemSize: Equatable, Sendable {
     public enum Kind: String, Sendable {
@@ -115,7 +114,7 @@ public struct FolderTotals: Equatable, Sendable {
     }
 }
 
-/// Folders a walk finished, each whole: `{"dev":N,"dirs":{...}}` in the original. Folders are in the order
+/// Folders a walk finished, each whole. Folders are in the order
 /// they were finished, a folder after the folders inside it.
 public struct FinishedFolders: Equatable, Sendable {
     public var dev: Int64?
@@ -159,7 +158,7 @@ public struct FolderSizeResult: Equatable, Sendable {
     }
 }
 
-/// A walk that failed or was stopped: the original's Node error with a `code` and a message.
+/// A walk that failed or was stopped: an error with a `code` and a message.
 public struct FolderSizeError: Error, Equatable, Sendable, CustomStringConvertible {
     public var code: String?
     public var message: String

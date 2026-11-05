@@ -1,4 +1,3 @@
-// Port of TreeItemRow and renderSectionHeader (apps/desktop/src/renderer/components/TreePane.tsx) with the sidebar rules of styles.css
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -113,7 +112,7 @@ final class SidebarIconView: SidebarPlainView {
         }
     }
 
-    /// The filled blue folder with a tab that stands in for an icon that has not arrived (`FolderSvg`, a 64-unit box).
+    /// The filled blue folder with a tab that stands in for an icon that has not arrived (a 64-unit box).
     static func drawFolderStandIn(in rect: NSRect) {
         let scale = rect.width / 64
         func point(_ x: Double, _ y: Double) -> NSPoint { NSPoint(x: rect.minX + x * scale, y: rect.minY + y * scale) }
@@ -168,7 +167,7 @@ final class SidebarChevronView: SidebarPlainView {
     }
     private var turnTimer: Timer?
     var isTurning: Bool { turnTimer != nil }
-    /// `.tree-expand`: `transition: transform var(--duration-fast) ease`.
+    /// How long the chevron takes to turn, easing in and out.
     private static let turnDuration = 0.12
 
     /// The row just opened or closed: the chevron, set where it ends, turns there from where it was.
@@ -307,7 +306,7 @@ final class SidebarEjectView: SidebarPlainView {
     }
 }
 
-/// A pill of text in a row: the "Alias" badge after a link's name (`.tree-label-badge`).
+/// A pill of text in a row: the "Alias" badge after a link's name.
 final class SidebarBadgeView: SidebarPlainView {
     private let label = TextBoxField(labelWithString: "")
     var fill = NSColor.clear

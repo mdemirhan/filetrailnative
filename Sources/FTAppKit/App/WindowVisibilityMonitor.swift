@@ -1,4 +1,4 @@
-// Whether any explorer window can be seen, for what needn't run when none can (B-INFO-083, B-INFO-197)
+// Whether any explorer window can be seen, for what needn't run when none can
 import AppKit
 
 /// Says when the answer to "can a window be seen?" changes: covered, minimized, hidden with the app, or back.

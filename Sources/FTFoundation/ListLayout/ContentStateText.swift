@@ -1,9 +1,7 @@
-// Port of the texts of ContentState and EmptyState (apps/desktop/src/renderer/components/ContentPane.tsx:2355-2466) and
-// the filter state (:546-561), and the cards of styles.css:2972-3050
 import Foundation
 
 public enum ContentStateText {
-    /// `FOLDER_LOADING_DELAY_MS`: a folder that lists quickly never flashes "Loading…".
+    /// A folder that lists quickly never flashes "Loading…".
     public static let loadingDelayMilliseconds = 400.0
 
     public static let loading = "Loading…"
@@ -29,7 +27,7 @@ public enum ContentStateText {
     public static let searchSubfolders = "Search Subfolders"
 }
 
-/// The cards of the empty, loading and error states (`.content-state` and its variants).
+/// The cards of the empty, loading and error states.
 public struct ContentStateLayout: Equatable, Sendable {
     public var paddingVertical: Double
     public var paddingHorizontal: Double
@@ -38,7 +36,7 @@ public struct ContentStateLayout: Equatable, Sendable {
     public var cardMarginBottom: Double
     public var emptyPaddingVertical: Double
     public var emptyPaddingHorizontal: Double
-    /// `.content-empty` is `min-height: calc(100% - 24px)`.
+    /// The empty state is at least the pane's height less this.
     public var emptyHeightReduction: Double
     public var actionsTopMargin: Double
 

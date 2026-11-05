@@ -1,4 +1,4 @@
-// Helpers of packages/native-fs/src/native-fs.test.ts: fillDisk, waitForSync, and files made byte by byte
+// Helpers for the native tests: fillDisk, waitUntil, and files made byte by byte
 import Darwin
 import Foundation
 
@@ -10,7 +10,7 @@ enum NativeTestFiles {
         var code: String { NativeErrno.name(of: errnum) }
     }
 
-    /// `writeFileSync`: creates or truncates the file and writes `bytes`, also to a named fork
+    /// Creates or truncates the file and writes `bytes`, also to a named fork
     /// ("file/..namedfork/rsrc").
     static func write(_ path: String, _ bytes: [UInt8]) throws(WriteFailure) {
         let descriptor = open(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0o644)
@@ -86,7 +86,7 @@ enum NativeTestFiles {
         return stat(path, &info) == 0 ? Int(info.st_size) : -1
     }
 
-    /// `waitForSync`: watched without yielding, so a busy machine can't delay what follows.
+    /// Watched without yielding, so a busy machine can't delay what follows.
     static func waitUntil(timeout: TimeInterval = 10, _ condition: () -> Bool) throws {
         let deadline = Date().addingTimeInterval(timeout)
         while !condition() {
@@ -110,8 +110,7 @@ enum NativeTestFiles {
     }
 }
 
-/// Runs a closure on a thread of its own and lets the test wait for it, as the original's copies run on the
-/// libuv pool while the test watches the disk.
+/// Runs a closure on a thread of its own and lets the test wait for it, while the test watches the disk.
 final class Background<T: Sendable>: @unchecked Sendable {
     private let done = DispatchSemaphore(value: 0)
     private var result: Result<T, any Error>?
@@ -131,11 +130,10 @@ final class Background<T: Sendable>: @unchecked Sendable {
 }
 
 /// /dev answers the Trash with NSFeatureUnsupportedError only until the process has moved something to the
-/// Trash; then with a bare NSFileWriteUnknownError. The original runs that case first in its file. Here every test
-/// of this target that calls the real Trash touches `devNull` first, so the /dev case is always the process's
-/// first Trash call, whatever order the tests run in.
+/// Trash; then with a bare NSFileWriteUnknownError. Every test of this target that calls the real Trash touches
+/// `devNull` first, so the /dev case is always the process's first Trash call, whatever order the tests run in.
 enum TrashProbe {
-    /// nil when running as root, who could move /dev/null (the original skips the case then).
+    /// nil when running as root, who could move /dev/null (the case is skipped then).
     static let devNull: Result<String?, any Error>? =
         getuid() == 0 ? nil : Result { try NativeFS.trashItem("/dev/null") }
 

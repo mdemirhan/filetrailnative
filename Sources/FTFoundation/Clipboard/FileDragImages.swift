@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/fileDragImages.ts and the drag limits of packages/contracts/src/limits.ts
 import CoreGraphics
 import Foundation
 
@@ -49,12 +48,12 @@ public struct FileDragPlacement: Equatable, Sendable {
 }
 
 public enum FileDragImages {
-    /// `MAX_FILE_DRAG_IMAGES`: a few pictures say a drag of many, and the rest go along unseen.
+    /// A few pictures say a drag of many, and the rest go along unseen.
     public static let maxImages = Limits.maxFileDragImages
-    /// `MAX_PATHS_PER_REQUEST`: a drag of more files than one copy takes is refused as a whole.
+    /// A drag of more files than one copy takes is refused as a whole.
     public static let maxPaths = 100_000
 
-    /// `measureFileDragImages`: each dragged item where it shows, up to `maxImages`. Items out of sight, or not drawn
+    /// Each dragged item where it shows, up to `maxImages`. Items out of sight, or not drawn
     /// at all, are left out and go along unseen. `placements` is what the view draws, looked up once.
     public static func measure(_ paths: [String], placements: [String: FileDragPlacement]) -> [FileDragImage] {
         var images: [FileDragImage] = []

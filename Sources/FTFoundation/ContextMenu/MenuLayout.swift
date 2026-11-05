@@ -1,8 +1,7 @@
-// Port of the menu, toast and progress card rules of apps/desktop/src/renderer/styles.css (973-1205, 1560-1740)
 import Foundation
 
-/// The look every app-drawn menu shares (`.toolbar-menu`, `.context-menu`, `.context-submenu`): the toolbar menus, the
-/// history and path-bar menus, and the right-click menu's submenu rows.
+/// The look every app-drawn menu shares: the toolbar menus, the history and path-bar menus, and the right-click
+/// menu's submenu rows.
 public struct MenuLayout: Equatable, Sendable {
     public var minWidth: Double
     public var submenuMinWidth: Double
@@ -22,7 +21,7 @@ public struct MenuLayout: Equatable, Sendable {
     public var iconSize: Double
     public var iconStrokeWidth: Double
     public var chevronSize: Double
-    /// The menu is kept this far inside the window (`menuPlacement.ts`).
+    /// The menu is kept this far inside the window.
     public var viewportMargin: Double
     public var historyMaxWidth: Double
     public var historyNameMaxWidth: Double
@@ -36,11 +35,11 @@ public struct MenuLayout: Equatable, Sendable {
     }
 }
 
-/// `.toast-viewport` and `.toast-card`.
+/// The notifications and where they stack.
 public struct ToastLayout: Equatable, Sendable {
     public var rightInset: Double
     public var maxWidth: Double
-    /// The window's width less this is the widest a card gets in a narrow window (`calc(100vw - 24px)`).
+    /// The window's width less this is the widest a card gets in a narrow window.
     public var windowMargin: Double
     public var stackGap: Double
     public var paddingTop: Double
@@ -63,7 +62,7 @@ public struct ToastLayout: Equatable, Sendable {
     }
 }
 
-/// `.copy-paste-progress-card`.
+/// The progress card of a running operation.
 public struct ProgressCardLayout: Equatable, Sendable {
     public var rightInset: Double
     public var width: Double
@@ -77,7 +76,7 @@ public struct ProgressCardLayout: Equatable, Sendable {
     public var detailGap: Double
     public var footerGap: Double
     public var borderWidth: Double
-    /// The small Stop button (`.push-button.is-small`).
+    /// The small Stop button.
     public var stopHeight: Double
     public var stopMinWidth: Double
     public var stopPaddingHorizontal: Double
@@ -91,7 +90,7 @@ public struct ProgressCardLayout: Equatable, Sendable {
     }
 }
 
-/// `.toolbar-customize-panel` (styles.css) and its push buttons.
+/// The toolbar's Customize panel and its buttons.
 public struct CustomizePanelLayout: Equatable, Sendable {
     public var maxWidth: Double
     public var sideMargin: Double
@@ -121,7 +120,7 @@ public struct CustomizePanelLayout: Equatable, Sendable {
     }
 }
 
-/// `.app-tooltip` (styles.css).
+/// The app's tooltips.
 public struct TooltipLayout: Equatable, Sendable {
     public var paddingTop: Double
     public var paddingLeading: Double

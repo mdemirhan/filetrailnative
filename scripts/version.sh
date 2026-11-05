@@ -1,10 +1,9 @@
 #!/bin/bash
-# Port of apps/desktop/scripts/lib/version.ts (latestRelease, buildVersion, bundleVersion, versionFromGit)
-# File Trail's version comes from git: a release is a commit tagged vX.Y.Z, and that tag is its version. Any other build
-# is named after the last release before it, with how many commits it is past it ("0.1.0+dev.4"); with no release at all,
-# "0.0.0+dev.N". Tags with a suffix ("v0.3.0-beta") are not releases.
-# Prints the version of the commit checked out in the current folder, and fails with no output outside a repository.
-# Usage: scripts/version.sh [--bundle]   --bundle: numbers only, what macOS shows (CFBundleShortVersionString).
+# A release is a commit tagged vX.Y.Z, and that tag is its version. Any other build is named after the last release
+# before it, with how many commits it is past it ("0.1.0+dev.4"); with no release at all, "0.0.0+dev.N". Tags with a
+# suffix ("v0.3.0-beta") are not releases. Prints the version of the commit checked out in the current folder, and fails
+# with no output outside a repository. Usage: scripts/version.sh [--bundle]   --bundle: numbers only, what macOS shows
+# (CFBundleShortVersionString).
 set -euo pipefail
 
 # The highest release among the tags on stdin; nothing when there is none.

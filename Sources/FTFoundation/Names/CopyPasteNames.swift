@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteNames.ts (the pure naming logic; disk checks are injected)
 import Foundation
 
 /// Keep Both and duplicate naming: Finder-style "name copy.ext", "name copy 2.ext", names within the
@@ -75,7 +74,7 @@ public enum CopyPasteNames {
             baseName = existing.base
             firstIndex = existing.number + 1
         }
-        // Doubles, as in JavaScript: past 2^53 adding one changes nothing, so the loop ends early or
+        // Doubles: past 2^53 adding one changes nothing, so the loop ends early or
         // repeats a number; `attempts` keeps the repeat finite.
         var index = firstIndex
         var attempts = 0
@@ -276,7 +275,7 @@ public enum CopyPasteNames {
         return false
     }
 
-    /// An inode a JavaScript number holds exactly; FAT and exFAT empty files get ids near 2^64.
+    /// An inode a double holds exactly (up to 2^53 - 1); FAT and exFAT empty files get ids near 2^64.
     private static func hasFileId(_ ino: UInt64) -> Bool {
         ino <= 9_007_199_254_740_991
     }

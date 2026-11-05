@@ -1,6 +1,5 @@
-// What a search marks in names, against the reference (tools/parity/golden/name-highlight.ts): the pattern the query
-// makes, its match in the name, and where that shows in a label shortened in the middle, with the JavaScript-compatible
-// matcher
+// What a search marks in names, against the golden: the pattern the query makes, its match in the name, and where
+// that shows in a label shortened in the middle, with the JavaScript-compatible matcher
 import FTFileSystem
 import FTFoundation
 import FTTestSupport
@@ -23,8 +22,6 @@ import Testing
         var ranges: [HighlightRange]
     }
 
-    // F-792 B-SEL-182 B-SEL-183
-    // T-a62c252e
     @Test func marksWhatTheReferenceMarks() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "name-highlight")
         #expect(cases.count >= 400)

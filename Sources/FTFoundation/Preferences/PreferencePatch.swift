@@ -1,8 +1,7 @@
-// Port of apps/desktop/src/main/bootstrap/preferencesPatch.ts
 import Foundation
 
 extension AppPreferences {
-    /// The preference keys, in the order of `DEFAULT_APP_PREFERENCES`.
+    /// The preference keys, in a fixed order.
     public static let keys: [String] = [
         "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst",
         "density", "singleClickExpandTreeItems",
@@ -19,7 +18,7 @@ extension AppPreferences {
 
     private static let keySet = Set(keys)
 
-    /// `toPreferencePatch`: a change sent by a window, as the store applies it. Keys are mapped explicitly so a new
+    /// A change sent by a window, as the store applies it. Keys are mapped explicitly so a new
     /// preference is added on purpose rather than flowing through as an unchecked payload: what is not a preference is
     /// dropped. Values that are false, zero, empty or null are changes too.
     public static func patch(from value: [String: JSONNode]) -> [String: JSONNode] {

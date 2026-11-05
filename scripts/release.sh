@@ -1,6 +1,5 @@
 #!/bin/bash
-# Port of apps/desktop/scripts/release.ts
-# Makes a release: scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]
+# Scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]
 #
 # From a clean main that is already on GitHub, it checks the commit (scripts/ci.sh with the large-file tests), tags it vX.Y.Z (the version
 # comes from the tag, see scripts/version.sh), builds the signed and notarized app, pushes the tag, and makes a draft GitHub

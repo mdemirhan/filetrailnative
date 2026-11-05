@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/contentSelection.ts
 import Foundation
 
 /// What is selected in the file list: the paths in the order the list shows them, the anchor a ⇧-range extends from, the
@@ -20,7 +19,6 @@ public struct ContentSelection: Equatable, Sendable, Codable {
         self.gapIndex = gapIndex
     }
 
-    /// `EMPTY_CONTENT_SELECTION`.
     public static let empty = ContentSelection()
 
     public var isEmpty: Bool { paths.isEmpty }
@@ -32,14 +30,13 @@ public struct ContentSelection: Equatable, Sendable, Codable {
         return ContentSelection(paths: paths, anchorPath: paths.first, leadPath: paths.last)
     }
 
-    /// `setSingleContentSelection`.
     public static func single(_ path: String) -> ContentSelection {
         ContentSelection(paths: [path], anchorPath: path, leadPath: path)
     }
 
     // MARK: Keeping the selection valid
 
-    /// `sanitizeContentSelection`: the selection stored apart from the folder's contents is cleaned each time the
+    /// The selection stored apart from the folder's contents is cleaned each time the
     /// visible entries change (navigation, sorting, filtering, search). `previousPaths`, the list the selection was
     /// made in, lets a selection whose items have all gone keep their place (`gapIndex`).
     public func sanitized(entryPaths: [String], previousPaths: [String] = []) -> ContentSelection {
@@ -67,7 +64,7 @@ public struct ContentSelection: Equatable, Sendable, Codable {
 
     // MARK: Building a selection
 
-    /// `getSelectionRangePaths`: a range is in visual order, not path order.
+    /// A range is in visual order, not path order.
     public static func rangePaths(entryPaths: [String], anchor: String, target: String) -> [String] {
         guard let anchorIndex = entryPaths.firstIndex(of: anchor), let targetIndex = entryPaths.firstIndex(of: target)
         else { return target.isEmpty ? [] : [target] }
@@ -75,14 +72,14 @@ public struct ContentSelection: Equatable, Sendable, Codable {
         return Array(entryPaths[start...end])
     }
 
-    /// `mergeSelectionPathsInEntryOrder`: a merge is put back in the order of the entries, so keyboard navigation,
+    /// A merge is put back in the order of the entries, so keyboard navigation,
     /// clipboard actions and context menus all see a stable ordering.
     public static func merged(entryPaths: [String], current: [String], next: [String]) -> [String] {
         let wanted = Set(current).union(next)
         return entryPaths.filter { wanted.contains($0) }
     }
 
-    /// `toggleContentSelection`: ⌘-click. Keeps the existing anchor when it can, so a following ⇧-range still behaves
+    /// ⌘-click. Keeps the existing anchor when it can, so a following ⇧-range still behaves
     /// like a desktop file manager.
     public func toggled(entryPaths: [String], path: String) -> ContentSelection {
         if paths.contains(path) {
@@ -96,7 +93,7 @@ public struct ContentSelection: Equatable, Sendable, Codable {
             paths: Self.merged(entryPaths: entryPaths, current: paths, next: [path]), anchorPath: path, leadPath: path)
     }
 
-    /// `extendContentSelectionToPath`: a range either replaces the selection (⇧-click, ⇧-arrow) or adds to it (⌘⇧-click).
+    /// A range either replaces the selection (⇧-click, ⇧-arrow) or adds to it (⌘⇧-click).
     public func extended(entryPaths: [String], to path: String, additive: Bool = false) -> ContentSelection {
         let anchor = anchorPath ?? leadPath ?? path
         let range = Self.rangePaths(entryPaths: entryPaths, anchor: anchor, target: path)
@@ -105,13 +102,12 @@ public struct ContentSelection: Equatable, Sendable, Codable {
             anchorPath: anchor, leadPath: path)
     }
 
-    /// `selectAllContentEntries`.
     public static func all(entryPaths: [String]) -> ContentSelection {
         guard let first = entryPaths.first else { return .empty }
         return ContentSelection(paths: entryPaths, anchorPath: first, leadPath: entryPaths.last)
     }
 
-    /// The marquee's selection (`selectContentPaths`): the touched paths in list order, the lead the anchor.
+    /// The marquee's selection: the touched paths in list order, the lead the anchor.
     public static func marquee(entryPaths: [String], picked: [String], lead: String?) -> ContentSelection {
         let wanted = Set(picked)
         let ordered = entryPaths.filter { wanted.contains($0) }
@@ -135,7 +131,7 @@ public struct ContentSelection: Equatable, Sendable, Codable {
         public static let none = Modifiers()
     }
 
-    /// `handleContentSelectionGesture`: ⌘⇧ adds a range, ⇧ makes one, ⌘ flips one item, a plain press selects one.
+    /// ⌘⇧ adds a range, ⇧ makes one, ⌘ flips one item, a plain press selects one.
     public func afterGesture(entryPaths: [String], path: String, meta: Bool, shift: Bool) -> ContentSelection {
         if meta, shift { return extended(entryPaths: entryPaths, to: path, additive: true) }
         if shift { return extended(entryPaths: entryPaths, to: path) }
@@ -143,7 +139,7 @@ public struct ContentSelection: Equatable, Sendable, Codable {
         return .single(path)
     }
 
-    /// Pointer down on an item (`pointerDown` of `entryItemEvents.ts`): a press on a selected item with no ⌘ and no ⇧
+    /// Pointer down on an item: a press on a selected item with no ⌘ and no ⇧
     /// changes nothing, so the whole selection can still be dragged out; any other press makes the gesture at once.
     public func afterPress(entryPaths: [String], path: String, selected: Bool, modifiers: Modifiers)
         -> ContentSelection?
@@ -152,7 +148,7 @@ public struct ContentSelection: Equatable, Sendable, Codable {
         return afterGesture(entryPaths: entryPaths, path: path, meta: modifiers.meta, shift: modifiers.shift)
     }
 
-    /// `isSelectionNarrowingClick`: a plain click on one of several selected items narrows the selection to that item.
+    /// A plain click on one of several selected items narrows the selection to that item.
     /// Rows act on the click rather than on pointer down, so pressing a selected item can still start a drag of the
     /// whole selection. `detail` is 0 for keyboard-generated clicks.
     public static func isNarrowingClick(

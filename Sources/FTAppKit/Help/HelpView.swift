@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/components/HelpView.tsx and the .help-view rules of styles.css (ui.md section 7.1)
 import AppKit
 import FTFoundation
 
@@ -208,7 +207,7 @@ public final class HelpView: ThemedView {
         func column(_ width: CGFloat) -> CGFloat { min(HelpPageView.maxWidth, max(0, width - 2 * sidePadding)) }
         var columnWidth = column(scrollWidth)
         var height = page.arrange(width: columnWidth, compact: compact)
-        // The original's scroll bar (8 wide) takes room from the page once it has something to scroll.
+        // The scroll bar (8 wide) takes room from the page once it has something to scroll.
         if top + height + bottom > scroll.contentSize.height {
             columnWidth = column(scrollWidth - 8)
             height = page.arrange(width: columnWidth, compact: compact)

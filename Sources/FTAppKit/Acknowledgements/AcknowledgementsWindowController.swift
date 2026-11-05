@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/AcknowledgementsWindowApp.tsx, openAcknowledgementsWindow in main.ts and the
-// .acknowledgement* rules of styles.css (ui.md section 7.3)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -212,7 +210,7 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
     private static let textFont = ThemeFonts.mono(DesignTokens.typeScale.small)
     /// Where the name starts: the disclosure marker's width.
     private static let nameIndent: CGFloat = 11.17
-    /// `.acknowledgement-body`: padding-left.
+    /// How far the body is indented.
     private static let bodyIndent: CGFloat = 16
     private static let boxMaxHeight: CGFloat = 300
 

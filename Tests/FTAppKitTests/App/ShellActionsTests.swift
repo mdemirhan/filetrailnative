@@ -1,4 +1,3 @@
-// Ports the Dock and open-file cases of apps/desktop/src/main/explorerWindowController.test.ts
 import AppKit
 import FTFileSystem
 import Testing
@@ -7,7 +6,6 @@ import Testing
 
 @MainActor
 @Suite struct ShellActionsTests {
-    // T-055e457e F-645 F-606
     @Test func opensAWindowFromTheDockIconOnlyWithNoneOpen() {
         let host = FakeWindowHost()
         ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: false, host: host)
@@ -18,7 +16,6 @@ import Testing
         #expect(host.calls == ["default -"])
     }
 
-    // T-3803d3ce F-645
     @Test func bringsBackTheWindowInFrontFromTheDockIconWhenEveryWindowIsMinimized() {
         let host = FakeWindowHost()
         host.list.add(FakeExplorerWindow(id: 1))
@@ -28,14 +25,13 @@ import Testing
         #expect(host.calls == ["bringToFront"])
     }
 
-    // T-1e0a75b0 F-645
     @Test func opensNoWindowWhileQuitting() {
         let host = FakeWindowHost()
         ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: true, host: host)
         #expect(host.calls.isEmpty)
     }
 
-    // main.ts:332-337 second-instance: the running app brings its window forward, or opens one with none; not while
+    // A second launch: the running app brings its window forward, or opens one with none; not while
     // quitting. The announcement goes through the system's distributed notifications.
     @Test func aSecondLaunchBringsAWindowForward() async {
         let host = FakeWindowHost()
@@ -54,7 +50,6 @@ import Testing
         #expect(host.calls == ["bringToFront"])
     }
 
-    // T-fe1d53aa F-606 F-645
     @Test func hasADockMenuWithOneItemNewWindow() {
         let target = NSObject()
         let menu = ShellActions.makeDockMenu(target: target, action: #selector(NSObject.description))
@@ -62,7 +57,6 @@ import Testing
         #expect(menu.items.first?.target === target)
     }
 
-    // T-b8d258a3 F-135 F-136
     @Test func givesADiskImageToTheWindowInFront() async {
         let host = FakeWindowHost()
         var mounted: [String] = []
@@ -78,7 +72,6 @@ import Testing
         #expect(mounted.isEmpty)
     }
 
-    // T-2955ff8c T-e6a2360a F-136
     @Test func mountsADiskImageWithNoWindowToTakeItAndOpensAWindowOnItsDisk() async {
         let host = FakeWindowHost()
         host.takesFilesFromOtherApps = false
@@ -90,7 +83,7 @@ import Testing
         #expect(host.calls == ["fromOtherApp /tmp/a.dmg", "onFolder /Volumes/A"])
     }
 
-    // F-136: a failure is shown on its own, with no window to show it in
+    // A failure is shown on its own, with no window to show it in
     @Test func showsAFailureOnItsOwn() async {
         let host = FakeWindowHost()
         host.takesFilesFromOtherApps = false
@@ -105,7 +98,6 @@ import Testing
         #expect(host.calls == ["fromOtherApp /tmp/a.dmg"])
     }
 
-    // T-d27361b6 F-135
     @Test func opensNothingWhileQuitting() async {
         let host = FakeWindowHost()
         host.takesFilesFromOtherApps = false
@@ -122,7 +114,7 @@ import Testing
         #expect(mounted == 0)
     }
 
-    // T-bb5cec67 F-135 F-631: with no window to take them, a folder opens in a window of its own, and another item's folder
+    // With no window to take them, a folder opens in a window of its own, and another item's folder
     // too, with the item selected
     @Test func opensAWindowOnAFolderOrAnItemsFolderWithNoWindowToTakeThem() async {
         let host = FakeWindowHost()
@@ -148,8 +140,7 @@ import Testing
         #expect(mounted == 0)
     }
 
-    // F-135 F-631: items wait until the windows exist, and one that isn't there is left out
-    // B-NAV-231 T-aa290e2d
+    // Items wait until the windows exist, and one that isn't there is left out
     @Test func queuesItemsUntilTheWindowsExistAndLeavesOutOnesThatAreNotThere() {
         var opened: [String] = []
         let entry = OpenFileEntryPoint(

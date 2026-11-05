@@ -1,4 +1,3 @@
-// Ports the tab order of apps/desktop/e2e/windows.spec.ts on a tab group that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -10,8 +9,6 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct TabGroupTests {
-        // F-615 B-VIEW-149
-        // T-31189f5f T-7b3e0b35
         @Test func savesTheTabsInTheOrderOfTheTabBar() async throws {
             let harness = try ExplorerHarness.windowless()
             let first = try await harness.open()

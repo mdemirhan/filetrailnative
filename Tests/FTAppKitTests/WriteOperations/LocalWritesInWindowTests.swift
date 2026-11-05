@@ -1,6 +1,5 @@
-// Port by feature of the New Folder and rename cases of apps/desktop/src/renderer/App.fileOperations.test.tsx that need
-// a real tab: the folder made in the folder on screen named in its row, and the rename field's name carried out by the
-// write coordinator
+// The folder made in the folder on screen named in its row, and the rename field's name carried out by the write
+// coordinator
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -54,8 +53,6 @@ extension ExplorerWindowlessTests {
 
         // New Folder from the keyboard makes "untitled folder" in the folder on screen and opens its name in its
         // row, the filter cleared to show it.
-        // F-243 F-297 T-c1a82f6c T-ac17441a T-be6a681a
-        // B-NAV-173 B-SEL-144 T-574fdd65
         @Test func namesANewFolderInItsRowWhileTheListIsFiltered() async throws {
             let (harness, tab, operations, notices) = try await open()
             tab.content.setFilter("Alp")
@@ -75,7 +72,6 @@ extension ExplorerWindowlessTests {
         }
 
         // A second press while the first folder is being made is refused, and the first one's name still opens in its row.
-        // T-f4c7e32e
         @Test func stillEditsTheFirstFoldersNameAfterASecondPressIsRefused() async throws {
             let (harness, tab, operations, notices) = try await open()
             tab.perform(.newFolder)
@@ -89,7 +85,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The name typed in the row goes to the write coordinator; its end selects the item where it is now.
-        // F-243 F-302 T-5fe733dc T-fe6c45d8
         @Test func renamesTheItemInItsRowThroughTheCoordinator() async throws {
             let (harness, tab, operations, notices) = try await open()
             let note = try #require(tab.content.entries.first { $0.name == "note.txt" }?.path)
@@ -109,9 +104,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The folder is left while the name is checked: the refusal comes back with no field to show it under, and
-        // is said in a dialog of its own (B-SEL-140).
-        // F-302 T-4649783b
-        // B-CLIP-197 B-SEL-140 T-fedfb7ae
+        // is said in a dialog of its own.
         @Test func saysARefusalThatCameAfterItsFolderWasLeftInADialog() async throws {
             let (harness, tab, operations, notices) = try await open()
             let note = try #require(tab.content.entries.first { $0.name == "note.txt" }?.path)
@@ -139,8 +132,6 @@ extension ExplorerWindowlessTests {
 
         // A name another item has is refused in the field, which stays open with the reason; a refusal the field was
         // showing when its folder was left is said in a dialog, so it isn't lost.
-        // F-302 T-4649783b
-        // B-CLIP-197 B-SEL-140
         @Test func saysTheFieldsRefusalInADialogWhenItsFolderIsLeft() async throws {
             let (harness, tab, operations, notices) = try await open()
             let note = try #require(tab.content.entries.first { $0.name == "note.txt" }?.path)

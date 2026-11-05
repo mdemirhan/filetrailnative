@@ -1,8 +1,6 @@
-// Port of the response shapes of packages/contracts/src/ipc.ts for tree:getChildren, directory:getSnapshot,
-// directory:getMetadataBatch, item:getProperties, path:getSuggestions and path:resolve
 import Foundation
 
-/// What an entry of a folder is, as the listing classifies it (`classifyEntry` in explorerService.ts).
+/// What an entry of a folder is, as the listing classifies it.
 public enum EntryKind: String, Sendable, Hashable, Codable, CaseIterable {
     case directory
     case file
@@ -119,7 +117,7 @@ public struct ResolvedPath: Sendable, Hashable, Codable {
     public var resolvedPath: String?
 }
 
-/// A change made to the folder a window watches (`folderChangeSchema`).
+/// A change made to the folder a window watches.
 public struct FolderChange: Sendable, Hashable, Codable {
     public var path: String
     /// The items in the folder that changed, or nil when that isn't known (too many, or a change noticed
@@ -136,10 +134,10 @@ public struct FolderChange: Sendable, Hashable, Codable {
 public enum ExplorerError: Error, Equatable, CustomStringConvertible, Sendable {
     case notADirectory(String)
     case outsideDirectory(path: String, directory: String)
-    /// A system call refused: `call` is the one Node names in its message (`scandir`, `stat`).
+    /// A system call refused: `call` is the one the message names (`scandir`, `stat`).
     case system(code: Int32, path: String, call: String = "scandir")
 
-    /// The original's message, which is Node's: "EACCES: permission denied, scandir '/x'" (`toErrorMessage`, ipc.ts).
+    /// A system error's text, "EACCES: permission denied, scandir '/x'".
     public var description: String {
         switch self {
         case .notADirectory(let path): "Path is not a directory: \(path)"
@@ -148,7 +146,7 @@ public enum ExplorerError: Error, Equatable, CustomStringConvertible, Sendable {
         }
     }
 
-    /// The start of Node's message, the code first: libuv's words, which are the system's in lower case but for a few.
+    /// The start of the message, the code first: libuv's words, which are the system's in lower case but for a few.
     private static func nodeText(_ code: Int32) -> String {
         guard let name = errnoNames[code] else { return "Unknown system error -\(code): Unknown system error -\(code)" }
         if let words = libuvWords[code] { return "\(name): \(words)" }

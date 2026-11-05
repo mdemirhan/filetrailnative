@@ -1,5 +1,4 @@
-// Port of the pure parts of apps/desktop/src/main/appStateStore.ts (:470-510, :1021-1098): reading a saved state, with
-// its migrations. File I/O is the state store's.
+// Reading a saved state, with its migrations. File I/O is the state store's.
 import Foundation
 
 /// A window's place and size; its position is optional.
@@ -99,7 +98,7 @@ public enum AppStateReader {
         read(try JSONNode.parse(data), defaults: defaults, batchRename: batchRename)
     }
 
-    /// `sanitizeExplorerWindows`: the saved windows, or nil when the file has no list of them (it was saved before there
+    /// The saved windows, or nil when the file has no list of them (it was saved before there
     /// could be several). A window that doesn't make sense is dropped; one whose session is missing a value takes the
     /// app's.
     static func sanitizeWindows(
@@ -124,7 +123,7 @@ public enum AppStateReader {
         return windows
     }
 
-    /// `sanitizeWindowState`: the position is optional, but the size is always put into a safe range.
+    /// The position is optional, but the size is always put into a safe range.
     public static func windowState(_ value: JSONNode?) -> StoredWindowState {
         guard let record = value?.object else { return .default }
         func size(_ key: String, _ fallback: Double) -> Double {
@@ -141,15 +140,15 @@ public enum AppStateReader {
 }
 
 extension WindowSessionKeys {
-    /// `pickWindowSession` given a patch: the session keys of `value`.
+    /// The session keys of `value`, a patch.
     public static func pick(_ value: [String: JSONNode]) -> [String: JSONNode] {
         value.filter { isSessionKey($0.key) }
     }
 }
 
 extension PreferencesSanitizer {
-    /// `sanitizePreferences({ ...current, ...patch }, defaults)`: a change applied to preferences. A patch value that
-    /// is not valid for its key gives the key's default from `defaults`, as in the original's `updatePreferences`.
+    /// A change applied to preferences: `patch` over `current`, sanitized. A patch value that is not valid for its key
+    /// gives the key's default from `defaults`.
     public static func apply(
         _ patch: [String: JSONNode], to current: AppPreferences, defaults: AppPreferences,
         batchRename: BatchRenameSanitizers = .standard

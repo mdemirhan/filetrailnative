@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/fdBinary.test.ts
 import FTTestSupport
 import Foundation
 import Testing
@@ -6,7 +5,6 @@ import Testing
 @testable import FTFileSystem
 
 @Suite struct FdBinaryTests {
-    // T-a14ca4ed F-922
     @Test func resolvesTheMatchingBundledFdBinaryFromTheHelpersFolder() throws {
         try withTemporaryDirectory { root in
             let helpers = root.appending("File Trail.app/Contents/Helpers")
@@ -47,7 +45,6 @@ import Testing
         }
     }
 
-    // F-922
     @Test func theManifestInTheRepositoryIsTheOneCompiledIn() throws {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -61,7 +58,6 @@ import Testing
         #expect((arm64["relativeBinaryPath"] as? String)?.hasSuffix(FdBinary.manifest.relativeBinaryPath) == true)
     }
 
-    // T-91fa006c
     @Test(.enabled(if: FdBinary.currentArchitecture == "arm64"))
     func executesTheVendoredFdBinary() throws {
         let process = Process()

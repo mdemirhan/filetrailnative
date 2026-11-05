@@ -1,6 +1,3 @@
-// Port of the Presets pull-down of apps/desktop/src/renderer/components/BatchRenameSheet.tsx (choosePreset,
-// savePreset, the closed title, presetNameTaken) and of savePreset and deletePreset of
-// apps/desktop/src/renderer/hooks/useBatchRename.ts
 import Foundation
 
 /// The Presets pull-down: the saved presets, a separator, Save as Preset…, and Update and Delete once one is loaded.
@@ -99,7 +96,7 @@ public struct BatchRenamePresetMenu: Equatable, Sendable {
     /// The longest name a preset takes (`maxLength={80}`).
     public static let maxNameLength = 80
 
-    /// `presetNameTaken`: the typed name, trimmed, is a saved preset's, ignoring case.
+    /// The typed name, trimmed, is a saved preset's, ignoring case.
     public func isTaken(_ typed: String) -> Bool {
         let wanted = JSString.lowercased(JSString.trimmed(typed))
         return presets.contains { JSString.lowercased($0.name) == wanted }
@@ -120,7 +117,7 @@ public struct BatchRenamePresetMenu: Equatable, Sendable {
     }
 }
 
-/// The saved presets, as the sheet's state changes them (`savePreset`, `deletePreset` of `useBatchRename`).
+/// The saved presets, as the sheet's state changes them (`savePreset`, `deletePreset`).
 public enum BatchRenamePresetList {
     /// Saves `settings` under `name`, trimmed: a preset of that name ignoring case leaves its place and the new one
     /// goes to the end under the spelling typed; the newest 50 are kept. Nil for a blank name.

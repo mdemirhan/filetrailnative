@@ -1,5 +1,3 @@
-// Port of the path editor of apps/desktop/src/renderer/components/ContentPane.tsx (:680-755), components/PathSuggestionDropdown.tsx and
-// hooks/usePathSuggestions.ts, with .pathbar-input and .pathbar-suggestions (styles.css:2184-2265, 4417)
 import AppKit
 import FTFoundation
 
@@ -353,9 +351,8 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
         field.stringValue = state.displayed
     }
 
-    /// `acceptSuggestion`. A click never took the keyboard from the field. Return was on the row, in the original a
-    /// button that has the focus and goes with the list: the field isn't given it back (no `refocusInputOnAccept`), so
-    /// the editor stays open with no keyboard until the field is clicked.
+    /// A click never took the keyboard from the field. Return was on the row, which has the focus and goes with the
+    /// list: the field isn't given it back, so the editor stays open with no keyboard until the field is clicked.
     private func acceptRow(_ index: Int, fromKeyboard: Bool) {
         guard state.suggestions.indices.contains(index) else { return }
         let row = state.suggestions[index]

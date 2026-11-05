@@ -1,5 +1,3 @@
-// Port of the row colors of apps/desktop/src/renderer/styles.css:2890-2950 and 4455-4500 (stripes, the selection of a
-// focused and an unfocused list, the window in the background)
 import FTFoundation
 
 /// The colors a List row is drawn in.

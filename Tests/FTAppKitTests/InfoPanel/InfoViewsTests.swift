@@ -1,5 +1,3 @@
-// Covers the Info panel, the Info Row, the folder size cell and the path bar's views by feature row
-// (components/GetInfoPanel.test.tsx, InfoRow.test.tsx, PathbarFolderMenu.test.tsx and the path bar part of ContentPane.test.tsx)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -33,8 +31,7 @@ struct FolderSizeCellTests {
         FolderSizeCellView(style: style, identifier: "test.cell")
     }
 
-    // T-066643da T-467d3b3d T-77dc3eda T-71aaa15e F-824 B-INFO-037 B-INFO-038: unknown (and failed) sizes offer Calculate.
-    // B-INFO-194 T-fff4ef4a
+    // Unknown (and failed) sizes offer Calculate.
     @Test func anUnknownSizeOffersCalculate() throws {
         let panel = cell(.panel)
         var calculated = 0
@@ -48,7 +45,7 @@ struct FolderSizeCellTests {
         #expect(!link.isHidden)
     }
 
-    // T-17491c5e T-74492d44 T-ae767f86 F-824 B-INFO-039 B-INFO-040: nothing shows for the first 300 ms, then a spinner and Stop.
+    // Nothing shows for the first 300 ms, then a spinner and Stop.
     @Test func aCalculationShowsASpinnerOnlyOnceItTakesAMoment() async throws {
         let view = cell(.panel)
         var cancelled = 0
@@ -69,7 +66,7 @@ struct FolderSizeCellTests {
         #expect(view.subviews.compactMap { $0 as? TextLinkView }.first?.isHidden == false)
     }
 
-    // T-1161c790 T-a9d4fb5b F-824 B-INFO-043: the Info Row keeps the size and the counts on one line.
+    // The Info Row keeps the size and the counts on one line.
     @Test func aReadySizeInTheRowShowsTheSizeAndTheCounts() throws {
         let entry = FolderSizeEntry.ready(
             sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 1, folderCount: 0)
@@ -117,7 +114,7 @@ struct InfoPanelViewTests {
         return laidOut(view, width: 320, height: 700)
     }
 
-    // T-209d6f52 F-697 F-820 F-821 F-822 F-823 F-825 B-INFO-020 B-INFO-027 B-INFO-029: the header, the hero, Open, the rows and the actions.
+    // The header, the hero, Open, the rows and the actions.
     @Test func aFileIsDescribedFromTheHeaderToTheQuickActions() throws {
         let view = panel(display())
         let header = try #require(findViews("infoPanel.header", in: view).first)
@@ -145,7 +142,7 @@ struct InfoPanelViewTests {
         #expect(fieldText(try #require(findViews("infoPanel.row.code", in: view).first)) == "644")
     }
 
-    // T-68714b91 F-822 B-INFO-059: a folder only says Open.
+    // A folder only says Open.
     @Test func aFolderOnlySaysOpen() throws {
         var folder = Self.file
         folder.kind = .directory
@@ -173,9 +170,7 @@ struct InfoPanelViewTests {
         findViews("infoPanel.row.label", in: view).map { Double($0.frame.minY) }
     }
 
-    // F-821 F-824 B-INFO-041: every row is in the same place for an unmeasured folder, a measured one and a file.
-    // T-e858a418
-    // B-INFO-019
+    // Every row is in the same place for an unmeasured folder, a measured one and a file.
     @Test func theRowsStayInPlaceWhileAFolderIsMeasuredAndFromAFileToAFolder() async throws {
         let file = panel(display())
         let fileRows = findViews("infoPanel.row.label", in: file).map(fieldText)
@@ -218,7 +213,7 @@ struct InfoPanelViewTests {
         #expect(findViews("infoPanel.folderSize.stop", in: live).isEmpty)
     }
 
-    // T-513524fc F-824 B-INFO-041: Size has the size and disk size, and the counts are in the Contains row beside its label.
+    // Size has the size and disk size, and the counts are in the Contains row beside its label.
     @Test func aReadyFolderShowsItsSizeAndWhatItContains() throws {
         let view = panel(
             folderDisplay(.ready(sizeBytes: 1_048_576, diskBytes: 1_572_864, fileCount: 43016, folderCount: 3)))
@@ -232,7 +227,7 @@ struct InfoPanelViewTests {
         #expect(refresh.accessibilityLabel() == "Recalculate folder size")
     }
 
-    // F-824 B-INFO-042: the measured Size row recalculates from its one line.
+    // The measured Size row recalculates from its one line.
     @Test func theMeasuredSizeRecalculates() throws {
         let view = panel(folderDisplay(.ready(sizeBytes: 1000, diskBytes: 1000, fileCount: 1, folderCount: 0)))
         var recalculated = 0
@@ -242,7 +237,7 @@ struct InfoPanelViewTests {
         #expect(recalculated == 1)
     }
 
-    // F-826 B-INFO-041: several items with folders among them have Contains above Size.
+    // Several items with folders among them have Contains above Size.
     @Test func severalItemsWithFoldersHaveAContainsRow() {
         let summary = InfoSelection(count: 2, folderCount: 1, fileCount: 1, totalBytes: nil, parentPath: "/Users/demo")
         let selection = InfoPanelDisplay(
@@ -255,8 +250,7 @@ struct InfoPanelViewTests {
         #expect(findViews("infoPanel.row.label", in: panel(selection)).map(fieldText) == ["Contains", "Size", "Where"])
     }
 
-    // T-0287f845 F-825 B-INFO-055: the Copy buttons say Copied with a check after a copy.
-    // B-INFO-057
+    // The Copy buttons say Copied with a check after a copy.
     @Test func theCopiedButtonSaysSo() throws {
         let item = Self.file
         let actions = InfoPanelModel.quickActions(
@@ -266,7 +260,7 @@ struct InfoPanelViewTests {
         #expect(actions.first { $0.id == .copyName }?.label == "Copy Name")
     }
 
-    // T-0033a16b F-826 B-INFO-050 B-INFO-051: several items are summed up, with no Open button and no quick actions.
+    // Several items are summed up, with no Open button and no quick actions.
     @Test func severalItemsAreSummedUp() throws {
         let summary = InfoSelection(count: 4, folderCount: 1, fileCount: 3, totalBytes: 4000, parentPath: "/Users/demo")
         let selection = InfoPanelDisplay(
@@ -285,8 +279,7 @@ struct InfoPanelViewTests {
         #expect(findViews("infoPanel.row.label", in: view).map(fieldText) == ["Size", "Where"])
     }
 
-    // B-INFO-022 F-826: with nothing to show the panel says so.
-    // B-INFO-005
+    // With nothing to show the panel says so.
     @Test func theEmptyPanelSaysWhatToDo() throws {
         let view = panel(InfoPanelDisplay(body: .empty, wantsSpinner: false))
         #expect(
@@ -296,7 +289,7 @@ struct InfoPanelViewTests {
         #expect(findViews("infoPanel.empty", in: blank).isEmpty && findViews("infoPanel.name", in: blank).isEmpty)
     }
 
-    // T-b2656378 T-08ec3aa8 F-820 B-INFO-021 B-INFO-023: the spinner shows only after 300 ms, and goes with the wait.
+    // The spinner shows only after 300 ms, and goes with the wait.
     @Test func theSpinnerShowsOnlyAfterAMoment() async throws {
         let view = panel(display(pending: true))
         #expect(findViews("infoPanel.spinner", in: view).isEmpty)
@@ -305,8 +298,7 @@ struct InfoPanelViewTests {
         #expect(findViews("infoPanel.spinner", in: view).isEmpty)
     }
 
-    // T-08ec3aa8 F-823 B-INFO-024: values still on their way keep their rows with a dash.
-    // B-INFO-019
+    // Values still on their way keep their rows with a dash.
     @Test func pendingValuesKeepTheirRows() throws {
         var item = Self.file
         item.createdAt = nil
@@ -318,7 +310,7 @@ struct InfoPanelViewTests {
         #expect(values.filter { $0 == "—" }.count >= 4)
     }
 
-    // T-b9e1ffc4 F-697 F-823 B-INFO-047: a volume root shows Capacity, Available and Used.
+    // A volume root shows Capacity, Available and Used.
     @Test func aVolumeRootShowsItsCapacity() throws {
         var root = Self.file
         root.kind = .directory
@@ -342,7 +334,7 @@ struct InfoPanelViewTests {
 
 @MainActor
 struct OpensWithPopupViewTests {
-    // B-INFO-064: with no app it reads None.
+    // With no app it reads None.
     @Test func opensWithReadsNoneWithNoApp() {
         let row = OpensWithPopupView()
         row.kindLabel = "Plain Text"
@@ -364,7 +356,7 @@ struct InfoRowViewTests {
         return laidOut(view, width: 600, height: 30)
     }
 
-    // T-3b2397f6 T-0773b3fe F-748 B-INFO-069 B-INFO-071: the icon, the name, then the facts with dots, and nothing for what is not known.
+    // The icon, the name, then the facts with dots, and nothing for what is not known.
     @Test func theFactsAreListedWithoutLabels() throws {
         let view = row(
             InfoRowDisplay(
@@ -385,7 +377,7 @@ struct InfoRowViewTests {
         #expect(view.height == 30)
     }
 
-    // F-748 B-INFO-066: closed it keeps its line, out of sight and reach.
+    // Closed it keeps its line, out of sight and reach.
     @Test func aClosedRowIsOutOfReach() {
         let view = InfoRowView()
         #expect(view.height == 1)
@@ -395,7 +387,7 @@ struct InfoRowViewTests {
         #expect(view.height == 30 && view.alphaValue == 1)
     }
 
-    // F-749 B-INFO-075 B-INFO-076: several items show the count and the size cell.
+    // Several items show the count and the size cell.
     @Test func severalItemsShowTheCountAndTheFolderSize() throws {
         let view = row(
             InfoRowDisplay(
@@ -405,7 +397,7 @@ struct InfoRowViewTests {
         #expect(findViews("infoRow.folderSize.calculate", in: view).count == 1)
     }
 
-    // F-748 B-INFO-077: in a narrow row the facts give way before the name.
+    // In a narrow row the facts give way before the name.
     @Test func theFactsGiveWayBeforeTheName() throws {
         let display = InfoRowDisplay(
             name: "a-long-file-name.txt", nameTooltip: nil, icon: nil,
@@ -431,8 +423,7 @@ struct PathBarViewTests {
         return laidOut(view, width: width, height: 27)
     }
 
-    // F-742 B-INFO-102: 20 tall segments, labels, the last one active.
-    // B-VIEW-095
+    // 20 tall segments, labels, the last one active.
     @Test func segmentsAreTwentyTall() throws {
         let view = bar("/Users/demo/Projects", width: 600)
         let segments = findViews("pathBar.segment", in: view)
@@ -443,8 +434,7 @@ struct PathBarViewTests {
         #expect(segments.first?.toolTip == "/")
     }
 
-    // F-744 B-INFO-105 B-INFO-106: a deep path in a narrow bar collapses behind "…", which expands it.
-    // T-18fe33a6
+    // A deep path in a narrow bar collapses behind "…", which expands it.
     @Test func aDeepPathCollapsesAndTheEllipsisExpandsIt() throws {
         let view = bar("/Users/demo/a/b/c/d/e/Projects", width: 260)
         let collapsed = findViews("pathBar.segment", in: view).map(fieldText)
@@ -458,8 +448,7 @@ struct PathBarViewTests {
         #expect(all.count == 9 && !all.contains("…"))
     }
 
-    // T-c7c36ac9-style: a folder's separators have labels "Folders in <parent>" (B-INFO-120).
-    // B-VIEW-100 T-b514ec81
+    // -style: a folder's separators have labels "Folders in <parent>".
     @Test func separatorsAreFolderButtons() {
         let view = bar("/Users/demo", width: 400)
         let labels = findViews("pathBar.separator", in: view).compactMap { $0.accessibilityLabel() }
@@ -471,8 +460,7 @@ struct PathBarViewTests {
         #expect(findViews("pathBar.separator", in: view).isEmpty)
     }
 
-    // F-745 B-INFO-109: a click navigates after 320 ms; command-click opens a new tab at once.
-    // B-VIEW-099 T-f657b6b8
+    // A click navigates after 320 ms; command-click opens a new tab at once.
     @Test func aSingleClickNavigatesAfterTheDelay() async throws {
         let view = bar("/Users/demo/Projects", width: 600)
         var navigated: [String] = []
@@ -520,8 +508,7 @@ struct PathBarViewTests {
         }
     }
 
-    // T-3c985219 F-805 B-INFO-123: the folders at that level, the one on the path ticked.
-    // B-INFO-122 B-INFO-130 B-VIEW-100
+    // The folders at that level, the one on the path ticked.
     @Test func theFolderOnThePathIsTicked() async throws {
         let folders = ["components", "lib", "pages"].map { PathbarFolder(path: "/src/\($0)", name: $0) }
         let menu = try await open(active: "/src/components") { _ in folders }
@@ -532,7 +519,7 @@ struct PathBarViewTests {
         #expect(menu.rows.map(\.tooltip) == folders.map(\.path))
     }
 
-    // T-2fb99a85 T-ca1e9d7a F-805 B-INFO-128 B-INFO-129: notes for an empty folder, and for the folders left out.
+    // Notes for an empty folder, and for the folders left out.
     @Test func notesStandInForMissingFolders() async throws {
         let empty = try await open(active: "") { _ in [] }
         #expect(empty.rows.map(\.title) == ["No Folders"])
@@ -547,9 +534,8 @@ struct PathBarViewTests {
         #expect(limited.items[limited.markedIndex ?? 0].title == "200")
     }
 
-    // PathbarFolderMenu.tsx:71, 77: the folders that replace "Loading…" keep the menu's bottom 6 pt over the button, and
-    // a list too tall for that opens with the ticked folder at the button.
-    // B-INFO-122
+    // The folders that replace "Loading…" keep the menu's bottom 6 pt over the button, and a list too tall for that
+    // opens with the ticked folder at the button.
     @Test func aSlowFoldersListIsPlacedForItsOwnHeight() async throws {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 600, height: 500), styleMask: [.titled], backing: .buffered,
@@ -591,7 +577,6 @@ struct PathBarViewTests {
         }
     }
 
-    // B-INFO-195
     @Test func aFolderThatCantBeReadSaysSo() async throws {
         struct Failure: Error {}
         let menu = try await open(active: "") { _ in throw Failure() }

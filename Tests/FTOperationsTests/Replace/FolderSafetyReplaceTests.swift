@@ -1,5 +1,3 @@
-// Port of the Replace and Replace journal cases of packages/core/src/fs/copyPasteFolderSafety.realfs.test.ts (its
-// recovery cases are in Recovery/InterruptedReplaceRecoveryTests.swift, the others in Execution/FolderSafetyTests.swift)
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -83,7 +81,6 @@ struct FolderSafetyReplaceTests {
         }
     }
 
-    // T-465253ad F-508
     @Test func replacesAFolderWithAReadOnlyOne() async throws {
         try await withWritableCleanup { root in
             let source = root + "/src/module"
@@ -104,7 +101,6 @@ struct FolderSafetyReplaceTests {
 
     // MARK: Replace journal
 
-    // T-2336e156 F-340 F-523
     @Test func writesAReplaceDownBeforeStagingItAndClearsItOnceSwappedIn() async throws {
         try await withWritableCleanup { root in
             try Disk.write(root + "/src/a.txt", "new")
@@ -122,7 +118,6 @@ struct FolderSafetyReplaceTests {
         }
     }
 
-    // T-a3681238 F-340 F-523
     @Test func recordsASameVolumeMoveAsMovedBeforeTheSourceLeavesItsPlace() async throws {
         try await withWritableCleanup { root in
             try Disk.write(root + "/src/a.txt", "new")

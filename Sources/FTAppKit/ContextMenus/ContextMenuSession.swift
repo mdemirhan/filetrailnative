@@ -1,4 +1,3 @@
-// Port of ItemContextMenu.tsx and SubmenuItemList.tsx (apps/desktop/src/renderer/components), built as an NSMenu
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -33,8 +32,8 @@ protocol ContextMenuResponder: AnyObject {
     func contextMenuDidClose()
 }
 
-/// One right-click menu: builds the `NSMenu` from the original's item lists and rules, and carries out what is
-/// chosen. It stays alive as long as its menu does.
+/// One right-click menu: builds the `NSMenu` from the item lists and rules, and carries out what is chosen. It stays
+/// alive as long as its menu does.
 @MainActor
 final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
     let request: ContextMenuRequest
@@ -124,7 +123,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
     private static let tagStateLimit = 1000
     private(set) weak var tagColors: TagColorsMenuRow?
 
-    /// Option turns Open With into Always Open With: offered for files only, and only for one kind (B-VIEW-223). The
+    /// Option turns Open With into Always Open With: offered for files only, and only for one kind. The
     /// names decide before the menu opens whether it has the row at all: a hidden alternate, or one that appears under
     /// the pointer while Option is held, doesn't open its submenu. Its apps can't be chosen until macOS has answered.
     private var offersAlwaysOpenWith: Bool {
@@ -146,7 +145,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
 
     private weak var alwaysOpenWith: NSMenuItem?
 
-    /// The names were wrong (`OpenWithSubmenu` has already made the rows plain): the row says so and stays in the menu,
+    /// The names were wrong (the rows have already been made plain): the row says so and stays in the menu,
     /// so a pointer on it keeps its submenu.
     func openWithAnswered(_ lookup: OpenWithLookup) {
         guard !OpenWithMenu.canAlwaysOpenWith(lookup) else { return }

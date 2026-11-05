@@ -1,4 +1,3 @@
-// Port of the element, dialog and window steps of tools/capture/electron/driver.ts; no TypeScript source.
 #if DEBUG
     import AppKit
 
@@ -141,7 +140,7 @@
                 return result == .dropped ? Outcome(.ok) : Outcome(.failed, "the drop was refused (\(result))")
             }
             // No items under the press (empty space of a list): the view runs the drag itself with the pointer (a
-            // marquee), as the original's driver plays a drag that starts on no entry.
+            // marquee), as a drag that starts on no entry does.
             let items = AutomationDrag.nearest(AutomationDragSource.self, from: source.view).map { found in
                 found.1.automationDragItems(at: found.0.convert(start, from: nil))
             }
@@ -173,7 +172,7 @@
             return done ? Outcome(.ok) : Outcome(.failed, "could not make the mouse events")
         }
 
-        /// A drag of files from another app, as `e2e/dragIn.spec.ts` plays it: what it carries goes on a pasteboard,
+        /// A drag of files from another app: what it carries goes on a pasteboard,
         /// and the view AppKit would send the drag to is asked what it makes of it.
         func dragFiles(_ files: [String], to: Scenario.ElementRef, hold: Bool, refused: Bool, window: NSWindow) async
             -> Outcome
@@ -273,10 +272,10 @@
             NotificationCenter.default.post(name: NSWindow.didBecomeKeyNotification, object: window)
         }
 
-        /// The `prefs` steps before the first step that needs the window, carried out before any of the steps: the
-        /// original's driver seeds them before launch, so its tree reveals the folder with them, at the size the window
-        /// opens with. A `window` step among them comes after that, and leaves the tree where it stands. Answers what each
-        /// did, by its step's index, for the run to report when it reaches that step.
+        /// The `prefs` steps before the first step that needs the window, carried out before any of the steps, as if
+        /// seeded before launch: the tree reveals the folder with them, at the size the window opens with. A `window`
+        /// step among them comes after that, and leaves the tree where it stands. Answers what each did, by its step's
+        /// index, for the run to report when it reaches that step.
         func seedPreferences() async -> [Int: Outcome] {
             guard let scenario else { return [:] }
             var outcomes: [Int: Outcome] = [:]
@@ -301,7 +300,7 @@
 
         /// By title, any window (Settings, an alert); by index, the explorer windows in the order they
         /// opened, each counted once with its tabs. A window still opening (Open in New Window shows it once its
-        /// folder is read) is waited for up to 5 s, as the original's driver waits.
+        /// folder is read) is waited for up to 5 s.
         func selectWindow(index: Int?, title: String?) async -> Outcome {
             let deadline = ContinuousClock.now + .seconds(5)
             var outcome = pickWindow(index: index, title: title)

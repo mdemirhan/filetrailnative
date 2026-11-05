@@ -1,5 +1,3 @@
-// Covers Tab with the folder tree hidden (B-SEL-105, useExplorerShortcuts.ts paneTabSwitch and focusTreePane) and the
-// held-key repeat of shortcuts that start a write (B-SEL-114), windowless
 import AppKit
 import FTFoundation
 import Foundation
@@ -10,8 +8,7 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct SelectionFixesTests {
-        // B-SEL-105: with the tree hidden Tab from the list stays in the list.
-        // B-NAV-102
+        // With the tree hidden Tab from the list stays in the list.
         @Test func tabFromTheListStaysInTheListWhileTheTreeIsHidden() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -26,8 +23,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-105: with the tree shown, Tab hands the keyboard to it.
-        // B-NAV-102
+        // With the tree shown, Tab hands the keyboard to it.
         @Test func tabFromTheListGoesToTheTreeWhileItIsShown() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -38,7 +34,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-114: a held key repeats no shortcut that starts a write, and still repeats the others.
+        // A held key repeats no shortcut that starts a write, and still repeats the others.
         @Test func aHeldKeyDoesNotRepeatAWriteStartingShortcut() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -63,7 +59,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The focus-tree command brings a hidden tree back before it takes the keyboard.
-        // B-TREE-018 B-TREE-119 T-110bd505
         @Test func focusingTheTreeShowsAHiddenTree() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -75,9 +70,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SEL-123, App.tsx `copyPasteModalOpen` holds `renameDialogState`: while a name is edited in its row the
-        // toolbar's view switch and sort dim, and the window's commands wait. Settings and the field's editing don't.
-        // B-NAV-218 T-3baf2a61
+        // While a name is edited in its row the toolbar's view switch and sort dim, and the window's commands wait.
+        // Settings and the field's editing don't.
         @Test func theWindowsCommandsWaitWhileANameIsEdited() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()
@@ -101,9 +95,9 @@ extension ExplorerWindowlessTests {
             }
             #expect(tab.canPerform(.editPaste))
             #expect(tab.canPerform(.openSettings))
-            // `canChangeTabs`: the tabs don't change either (`blocked: copyPasteModalOpen`, App.tsx:1150).
+            // The tabs don't change either.
             #expect(tab.group?.isBlocked == true)
-            // The menu's items and their keys go by the same rule (`runRendererCommand`).
+            // The menu's items and their keys go by the same rule.
             tab.perform(.viewAsIcons)
             #expect(tab.viewMode == viewMode)
             #expect(tab.content.inlineRename != nil)
@@ -118,8 +112,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // App.tsx `copyPasteModalOpen` holds `newFolderDialogState`: a new folder's name is edited in its row, as a
-        // rename's.
+        // A new folder's name is edited in its row, as a rename's.
         @Test func theToolbarDimsWhileANewFolderIsNamed() async throws {
             let harness = try ExplorerHarness.windowless()
             let writes = try harness.writeOperations()

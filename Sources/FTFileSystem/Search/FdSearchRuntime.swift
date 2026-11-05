@@ -1,4 +1,3 @@
-// Port of FdSearchRuntime (packages/core/src/search/fdSearch.ts) and the search parts of packages/core/src/worker/explorerWorker.ts
 import FTFoundation
 import Foundation
 
@@ -6,7 +5,7 @@ import Foundation
 public struct SearchProcessEvents: Sendable {
     public var onStdout: @Sendable (Data) -> Void
     public var onStderr: @Sendable (Data) -> Void
-    /// The process could not be started (or failed): the Node `error` event.
+    /// The process could not be started (or failed).
     public var onError: @Sendable (String) -> Void
     /// The process ended: its exit code, or the signal that ended it.
     public var onClose: @Sendable (_ code: Int32?, _ signal: Int32?) -> Void
@@ -28,7 +27,7 @@ public protocol SearchProcess: AnyObject, Sendable {
     func terminate()
 }
 
-/// `SpawnLike`: starts the program in `cwd` with no input, and reports through `events`.
+/// Starts the program in `cwd` with no input, and reports through `events`.
 public typealias SearchSpawn =
     @Sendable (
         _ file: String, _ args: [String], _ cwd: String, _ events: SearchProcessEvents

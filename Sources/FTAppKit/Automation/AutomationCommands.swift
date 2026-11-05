@@ -1,13 +1,11 @@
-// Port of apps/desktop/src/shared/rendererCommands.ts (the command ids), sent to the window as the driver sends them.
 #if DEBUG
     import AppKit
     import FTFoundation
 
-    /// Runs a scenario's `command` step. Ids are the original's renderer command types
-    /// (the Electron app's command list).
+    /// Runs a scenario's `command` step. Ids are the `RendererCommand` types.
     @MainActor
     enum AutomationCommands {
-        /// Every command id the original has.
+        /// Every command id.
         static let all: Set<String> = [
             "undo", "redo", "editCut", "editCopy", "editPaste", "editSelectAll", "focusFileSearch", "openSelection",
             "editSelection", "openLocationSheet", "openSettings", "zoomIn", "zoomOut", "resetZoom", "openInTerminal",
@@ -27,12 +25,11 @@
         /// The zoom commands, which this app leaves to the system.
         static let leftToTheSystem: Set<String> = ["zoomIn", "zoomOut", "resetZoom"]
 
-        /// The ids `run` carries out: every command of the original but the zoom ones.
+        /// The ids `run` carries out: every command but the zoom ones.
         static let supported: Set<String> = all.subtracting(leftToTheSystem)
 
-        /// Carries out a command as the original's driver sends it (`filetrail:command` to the window): through the
-        /// window's own command handler, as the menu bar reaches it. Help and Keyboard Shortcuts open the Help window,
-        /// as the menu does.
+        /// Carries out a command through the window's own command handler, as the menu bar reaches it. Help and
+        /// Keyboard Shortcuts open the Help window, as the menu does.
         static func run(_ id: String, controller: MainWindowController, window: NSWindow) -> AutomationRunner.Outcome {
             guard all.contains(id) else { return .init(.failed, "unknown command \(id)") }
             guard supported.contains(id), let command = RendererCommand(rawValue: id) else {
@@ -56,7 +53,7 @@
                     }
                     return .init(.ok)
                 }
-                // Select All outside a field is the focused pane's (`selectAllContentEntries` with the list focused).
+                // Select All outside a field is the focused pane's.
                 // The window's command sends it to the key window, so here it goes up this window's responder chain.
                 if command == .editSelectAll, !controller.isDialogOpen, let responder = window.firstResponder {
                     _ = responder.tryToPerform(#selector(NSResponder.selectAll(_:)), with: nil)
@@ -68,7 +65,7 @@
         }
 
         /// Sorts through the List view's column headers, as a click on one does. In the Icon view the List
-        /// view is shown for a moment, since the sort lives with it in the spike.
+        /// view is shown for a moment, since the sort lives with it.
         static func sort(by key: String, ascending: Bool, controller: MainWindowController, window: NSWindow) -> Bool {
             guard ["name", "modified", "size", "kind"].contains(key) else { return false }
             let wasIcons = Views.folderTable(in: window) == nil

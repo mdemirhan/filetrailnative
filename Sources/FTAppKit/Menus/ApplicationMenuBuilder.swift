@@ -1,4 +1,3 @@
-// Port of createApplicationMenuTemplate (apps/desktop/src/main/appMenu.ts), the layout and keys; View > Zoom is dropped
 import AppKit
 import FTFoundation
 
@@ -61,7 +60,7 @@ enum ApplicationMenuBuilder {
         context.addSubmenu(to: main, title: "File") { menu in
             menu.addItem(context.command(.newWindow, "New Window"))
             menu.addItem(context.command(.newTab, "New Tab"))
-            // The original's tab strip menu has it; the system tab bar has no menu of the app's.
+            // The system tab bar has no menu of the app's, so the File menu has it.
             menu.addItem(context.command(.duplicateTab, "Duplicate Tab"))
             menu.addItem(context.command(.newFolder, "New Folder"))
             menu.addItem(.separator())

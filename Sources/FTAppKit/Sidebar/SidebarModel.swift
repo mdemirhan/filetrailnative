@@ -1,5 +1,3 @@
-// Port of the tree and sidebar parts of apps/desktop/src/renderer/hooks/useExplorerNavigationController.ts (tree nodes,
-// loadTreeChildren, syncTreeToPath, selectTreeItem, the keyboard and typeahead) and of the state TreePane.tsx keeps
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -26,7 +24,7 @@ struct SidebarOpen: Equatable {
     var forceTreeReload = false
     /// Reveal in Tree: the folder already on screen overwrites its own step of the history instead of adding one.
     var replacesFolderOnScreen = false
-    /// A write ended (`refreshDirectory`'s `treeSelectionPath`): this row is selected in place of the folder's own.
+    /// A write ended (its `treeSelectionPath`): this row is selected in place of the folder's own.
     var selectingRow: String?
 
     static let other = SidebarOpen()
@@ -123,7 +121,7 @@ final class SidebarModel {
         onChange()
     }
 
-    /// A tab started as another was (`showSnapshot`): its tree's folders and the row selected.
+    /// A tab started as another was: its tree's folders and the row selected.
     func restoreView(nodes: TreeNodes, selected: TreeItemID?, subview: SidebarSubview) {
         treeRequests = [:]
         if !nodes.isEmpty { self.nodes = nodes }
@@ -156,7 +154,7 @@ final class SidebarModel {
                 locationsExpanded: locationsExpanded))
     }
 
-    /// The separate Favorites list (`favoriteItems`).
+    /// The separate Favorites list.
     var favoriteRows: [TreePresentationItem] {
         favorites.map {
             TreePresentationItem(
@@ -177,7 +175,7 @@ final class SidebarModel {
             favoriteList: favoriteList, presentation: treePresentation, nodes: nodes, rootPath: rootPath)
     }
 
-    /// `getFavoriteItemIds`: the favorites, then the Locations when open.
+    /// The favorites, then the Locations when open.
     private var favoriteList: [(id: TreeItemID, label: String)] {
         favoriteRows.map { ($0.id, $0.label) }
             + (locationsExpanded ? locationRows.map { ($0.id, $0.label) } : [])
@@ -240,7 +238,7 @@ final class SidebarModel {
         return child
     }
 
-    /// `loadTreeChildren`: reads the folder's subfolders, and expands it when asked to.
+    /// Reads the folder's subfolders, and expands it when asked to.
     func loadChildren(
         _ path: String, includeHiddenOverride: Bool? = nil, expandOnSuccess: Bool = false, activePath: String? = nil,
         forceReload: Bool = false
@@ -347,12 +345,12 @@ final class SidebarModel {
         }
     }
 
-    /// The text of an error as the original's IPC carries it ("EACCES: permission denied, scandir '…'").
+    /// The text of an error, such as "EACCES: permission denied, scandir '…'".
     static func message(of error: Error) -> String {
         (error as? ExplorerError)?.description ?? (error as NSError).localizedDescription
     }
 
-    /// `syncTreeToPath`: opens the tree down to `path` (each ancestor read in turn), moving the root when `path` is
+    /// Opens the tree down to `path` (each ancestor read in turn), moving the root when `path` is
     /// outside it. The folder itself is read only if it is already open.
     func syncTree(to path: String, includeHidden: Bool? = nil, forceReload: Bool = false, version: Int? = nil) async {
         let includeHidden = includeHidden ?? self.includeHidden
@@ -387,7 +385,6 @@ final class SidebarModel {
         onChange()
     }
 
-    /// `toggleTreeNode`.
     func toggle(_ path: String) {
         guard let node = nodes[path], !node.isSymlink else { return }
         if !node.loaded {
@@ -487,14 +484,14 @@ final class SidebarModel {
         onChange()
     }
 
-    /// `getSelectedTreeReloadOptions`: how the folder on screen is read again. The row of a favorite or location that is the
+    /// How the folder on screen is read again. The row of a favorite or location that is the
     /// folder, or of a link in the tree, stays; otherwise the tree follows, its branch read again.
     func openReadingAgain(_ path: String) -> SidebarOpen {
         openKeepingRow(path) ?? SidebarOpen(forceTreeReload: true)
     }
 
-    /// `getSelectedTreeReloadOptions` itself: how a folder read again keeps the row of a favorite or location that is the
-    /// folder, or of a link in the tree. Nil with no such row: the tree follows the folder.
+    /// How a folder read again keeps the row of a favorite or location that is the folder, or of a link in the tree.
+    /// Nil with no such row: the tree follows the folder.
     func openKeepingRow(_ path: String) -> SidebarOpen? {
         guard let selected else { return nil }
         if selected.shortcutPath == path { return SidebarOpen(origin: .alias) }
@@ -502,7 +499,7 @@ final class SidebarModel {
         return nil
     }
 
-    /// The window opened a folder it can't read, showing why (`persistOnError`): the tree isn't followed down to it. A
+    /// The window opened a folder it can't read, showing why: the tree isn't followed down to it. A
     /// favorite's or location's row is selected, and a location still takes the tree back to its top.
     func folderOpenedWithError(_ path: String, _ request: SidebarOpen) async {
         currentPath = path
@@ -541,7 +538,7 @@ final class SidebarModel {
         }
     }
 
-    /// Selects a row and opens its folder (`selectTreeItem`): headings are never selected.
+    /// Selects a row and opens its folder: headings are never selected.
     func selectItem(
         _ id: TreeItemID, subview newSubview: SidebarSubview? = nil, replacingFolderOnScreen: Bool = false
     ) {
@@ -573,7 +570,7 @@ final class SidebarModel {
         openFolder(URL(fileURLWithPath: path), request)
     }
 
-    /// A row pressed with the primary button: shown selected at once (`setOptimisticSelectedItemId`).
+    /// A row pressed with the primary button: shown selected at once.
     func markPressed(_ id: TreeItemID?) {
         guard optimistic != id else { return }
         optimistic = id
@@ -614,7 +611,7 @@ final class SidebarModel {
         Task { await syncTree(to: path, version: version) }
     }
 
-    /// The tree's open branches read again, from `path` down (`refreshVisibleTreePath`). All of them are read before
+    /// The tree's open branches read again, from `path` down. All of them are read before
     /// any is applied, parents first, so the tree changes in one step and draws once.
     func refreshBranches(from path: String? = nil, recursive: Bool = true) async {
         struct BranchRead {
@@ -713,8 +710,8 @@ final class SidebarModel {
         perform(SidebarKeyboard.decideOpen(keyContext))
     }
 
-    /// The Open command with the tree focused (useExplorerShortcuts.ts:1109-1117): a folder's row opens the folder and
-    /// leaves its branch as it is (`navigateTreeFileSystemPath`), where Return and ⌘↓ fold it (`openTreeNode`).
+    /// The Open command with the tree focused: a folder's row opens the folder and
+    /// leaves its branch as it is, where Return and ⌘↓ fold it.
     func openSelectedFolder() -> Bool {
         guard let current = selected, current.filesystemPath != nil else { return openSelected() }
         selectItem(current)
@@ -731,7 +728,7 @@ final class SidebarModel {
         return true
     }
 
-    /// A printable key typed in the sidebar (`handleTypeaheadInput`).
+    /// A printable key typed in the sidebar.
     func type(_ character: String) {
         typeaheadQuery += character
         cancelTypeaheadTimer?()
@@ -770,8 +767,8 @@ extension SidebarOpen.Origin {
         return false
     }
 
-    /// `persistOnError: true`: what the sidebar opens by a favorite, a location or a link opens even if it can't be read,
-    /// showing why. Everything else leaves the folder on screen where it is.
+    /// What the sidebar opens by a favorite, a location or a link opens even if it can't be read, showing why.
+    /// Everything else leaves the folder on screen where it is.
     var opensWhenUnreadable: Bool {
         switch self {
         case .favorite, .location, .alias: true

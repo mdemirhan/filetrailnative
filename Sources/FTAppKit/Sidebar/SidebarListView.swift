@@ -1,4 +1,3 @@
-// Port of the lists of apps/desktop/src/renderer/components/TreePane.tsx (TreeList, the favorites and locations lists) on an NSOutlineView
 import AppKit
 import FTFoundation
 
@@ -77,7 +76,7 @@ final class SidebarOutlineView: NSOutlineView {
         return self
     }
 
-    // MARK: Accessibility (B-TREE-015, SidebarAccessibility.swift)
+    // MARK: Accessibility (SidebarAccessibility.swift)
 
     override func accessibilityChildren() -> [Any]? { list?.accessibilityRows }
     override func accessibilityRows() -> [any NSAccessibilityRow]? { list?.accessibilityRows }
@@ -203,7 +202,7 @@ final class SidebarOutlineView: NSOutlineView {
     }
 }
 
-/// A scroll view whose vertical scroller sits in a gutter of its own, 8 pt wide, as `scrollbar-gutter: stable` leaves it.
+/// A scroll view whose vertical scroller sits in a gutter of its own, 8 pt wide, kept whether or not it shows.
 final class SidebarScrollView: NSScrollView {
     var gutter = 8.0
 
@@ -231,7 +230,7 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     /// Where a dragged favorite will land. It sits on the gap between two rows, so it belongs to the list: a row clips
     /// what it holds to its own bounds.
     private let dropLine = SidebarPlainView()
-    /// Where the list's content is scrolled to, as `scrollTop` of the original.
+    /// Where the list's content is scrolled to, from its top.
     var scrollTop: Double {
         get { Double(scroll.contentView.bounds.origin.y) }
         set {
@@ -663,7 +662,7 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
         return fileDrop?(self, info, point) ?? false
     }
 
-    /// Files dragged over a row (P5-08 fills these).
+    /// Files dragged over a row.
     var fileDropOperation: ((SidebarListView, any NSDraggingInfo, NSPoint) -> NSDragOperation)?
     var fileDrop: ((SidebarListView, any NSDraggingInfo, NSPoint) -> Bool)?
     /// Files handed to a row by the debug seam (`AutomationDropTarget`).

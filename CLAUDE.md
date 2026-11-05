@@ -15,7 +15,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 
 - `Tests/Golden/*.json` were recorded from the Electron app and are now frozen expected results. When behavior changes on purpose, update them by hand.
 - Fixtures are built by `tools/fixtures/` into `~/Library/Caches/filetrail-dev`.
-- Comments citing `T-`, `F-` and `B-` IDs or "Port of …" point at the port's records, kept in a private archive. They don't need maintaining.
+- Comments describe this app on its own terms: no record IDs (`B-…`, `F-…`, `T-…`), "Port of …" headers, Electron file or function names, or comparisons with "the original".
 
 ## Design
 

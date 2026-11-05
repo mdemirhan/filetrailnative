@@ -1,4 +1,4 @@
-// Port of apps/desktop/src/renderer/hooks/usePreferencesSync.test.tsx: a manual clock stands for the fake timers
+// A manual clock stands for the fake timers
 import Testing
 
 @testable import FTFoundation
@@ -49,7 +49,6 @@ struct PreferencesSyncTests {
         return (sync, clock, writes)
     }
 
-    // T-447f9f1a F-891 B-DLG-169
     @Test func diffsOnlyKeysWhoseValuesChanged() {
         let favorites = JSONNode.array([.object(["path": .string("/Users/demo"), "icon": .string("home")])])
         #expect(
@@ -59,8 +58,6 @@ struct PreferencesSyncTests {
                 == ["theme": .string("dark")])
     }
 
-    // T-868a1763 F-891 B-DLG-169
-    // B-TREE-046
     @Test func writesWhatIsWaitingAtOnceWhenTheWindowCloses() {
         let (sync, clock, writes) = make()
         sync.changed(["lastVisitedPath": .string("/Users/demo")])
@@ -73,8 +70,6 @@ struct PreferencesSyncTests {
         #expect(writes.patches.count == 1)
     }
 
-    // T-5725a0d1 F-891 B-DLG-169 B-DLG-171 B-DLG-173
-    // B-TREE-046
     @Test func writesOnlyChangedKeysAfterTheDebounceAndDoesNotEchoRemoteChanges() {
         let (sync, clock, writes) = make()
         sync.markSynced(["theme": .string("auto"), "accent": .string("#d4845a")])
@@ -94,7 +89,6 @@ struct PreferencesSyncTests {
         #expect(writes.patches.count == 1)
     }
 
-    // T-190d650a F-891 B-DLG-170
     @Test func sendsAValueAgainWithTheNextChangeWhenItsWriteWasRefused() {
         let (sync, clock, writes) = make()
         sync.markSynced(["theme": .string("auto"), "accent": .string("#d4845a")])

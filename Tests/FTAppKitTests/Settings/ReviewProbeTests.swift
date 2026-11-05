@@ -1,5 +1,3 @@
-// Ports SettingsWindowApp.tsx's tab state and SettingsView.tsx's menus, column lists and folder-size row, as found in
-// review of the Settings window
 import AppKit
 import FTFoundation
 import Testing
@@ -10,7 +8,7 @@ import Testing
 @Suite struct ReviewProbeTests {
     typealias Kit = SettingsTestKit
 
-    /// setActiveTab to the tab on screen changes nothing: the Shortcuts search stays (SettingsWindowApp.tsx:176-184).
+    /// Asking for the tab on screen changes nothing: the Shortcuts search stays.
     @Test func askingForTheTabOnScreenKeepsTheShortcutsSearch() throws {
         let (controller, _) = Kit.make(tab: .shortcuts)
         let before = try #require(controller.settingsView.page?.shortcuts)
@@ -21,8 +19,7 @@ import Testing
         #expect(after.searchField.text == "dup")
     }
 
-    /// The menu takes only Esc, Tab, the arrows and the keys that choose; ⌘W still closes the window
-    /// (SettingsView.tsx:902-917).
+    /// The menu takes only Esc, Tab, the arrows and the keys that choose; ⌘W still closes the window.
     @Test func anOpenAppMenuLetsCommandWThrough() throws {
         let (controller, _) = Kit.make(tab: .files)
         let popup = try Kit.control("Text editor", SettingsAppPopup.self, in: controller)
@@ -32,7 +29,7 @@ import Testing
         #expect(!controller.handle(commandW))
     }
 
-    /// ColumnList keeps the selected key, so the selection follows its column (SettingsView.tsx:683-687).
+    /// ColumnList keeps the selected key, so the selection follows its column.
     @Test func columnSelectionFollowsTheColumnAfterRestoreDefaults() throws {
         let (controller, _) = Kit.make(tab: .browsing)
         let list = try Kit.list("Columns in List view", in: controller)
@@ -49,8 +46,7 @@ import Testing
         #expect(restored.rows[restored.selectedIndex ?? -1].spec.name == chosen)
     }
 
-    /// The description at the pinned commit (SettingsView.tsx at ab48e55, B-INFO-173).
-    // B-INFO-173
+    /// The description at the pinned commit.
     @Test func folderSizeSwitchHasThePinnedDescription() throws {
         let (controller, _) = Kit.make(tab: .general)
         let row = try Kit.row("Calculate folder sizes automatically", in: controller)

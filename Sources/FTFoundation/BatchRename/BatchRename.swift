@@ -1,4 +1,4 @@
-// Port of apps/desktop/src/shared/batchRename.ts: the new name each item gets, from the Rename sheet's settings
+// The new name each item gets, from the Rename sheet's settings
 import Foundation
 
 /// Renaming several items at once. Pure functions only: the folders' contents and the items' dates are passed in.

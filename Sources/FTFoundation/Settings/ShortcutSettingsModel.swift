@@ -1,5 +1,4 @@
-// Port of the logic of apps/desktop/src/renderer/components/ShortcutSettings.tsx: the rows, the search, the recorder and
-// the notes under a row
+// The rows, the search, the recorder and the notes under a row
 import Foundation
 
 /// A place for a key: a command and its main (0) or alternate (1) key.
@@ -42,7 +41,7 @@ public enum ShortcutSettingsText {
         "The same in every Mac app, or shared with text fields. They can not be changed here."
     public static let searchPlaceholder = "Search commands or keys"
 
-    /// `ROW_HINTS`, and Rename's while Return renames.
+    /// And Rename's while Return renames.
     public static func hint(_ id: ShortcutCommandID, returnKeyAction: ReturnKeyAction) -> String? {
         switch id {
         case .renameSelection: returnKeyAction == .rename ? "Return renames too: Settings → Files." : nil
@@ -66,7 +65,6 @@ public enum ShortcutSettingsText {
         withoutEllipsis(ShortcutCommands.definition(id).label)
     }
 
-    /// `describeRefusal`.
     public static func refusal(_ refusal: ShortcutCommands.Refusal, _ shortcut: String) -> String {
         let keys = ShortcutLabels.format(shortcut)
         switch refusal {
@@ -205,7 +203,7 @@ public struct ShortcutSettingsModel: Equatable, Sendable {
         return [:]
     }
 
-    /// What a key press while recording `slot` does (B-DLG-214 to 217): nil keeps waiting (only modifiers down).
+    /// What a key press while recording `slot` does: nil keeps waiting (only modifiers down).
     public enum RecorderAction: Equatable, Sendable {
         case cancel
         case remove

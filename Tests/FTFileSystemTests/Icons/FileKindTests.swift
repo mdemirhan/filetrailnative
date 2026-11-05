@@ -18,9 +18,8 @@ private let fixtures: URL = {
 private let hasFixtures = FileManager.default.fileExists(atPath: fixtures.appendingPathComponent("names").path)
 
 @Suite struct FileKindTests {
-    // Machine-local: Spotlight's kind strings depend on the macOS version, language and installed apps, so this
-    // checks the port against what the reference addon said on the machine that recorded the golden.
-    // F-156
+    // Machine-local: Spotlight's kind strings depend on the macOS version, language and installed apps, so the golden
+    // holds only on the machine that recorded it.
     @Test(.enabled(if: hasFixtures, "needs the shared fixtures"))
     func kindStringsMatchTheReferenceOnTheFixtures() throws {
         let cases: [GoldenCase<KindInput, String?>] = try Golden.load(suite: "kind-strings")

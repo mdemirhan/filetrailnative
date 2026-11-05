@@ -1,6 +1,5 @@
-// The review of very large and very deep trees (file-operations.md §8 note 6; copyPasteLargeTree.test.ts's paste is
-// P3-03's): 150,000 items, more than the original's engine could take in one call, and a tree as deep as a path
-// goes, both reviewed by the write service off the caller's thread.
+// The review of very large and very deep trees:
+// 150,000 items, and a tree as deep as a path goes, both reviewed by the write service off the caller's thread.
 import FTFoundation
 import Foundation
 import Testing
@@ -66,7 +65,6 @@ private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sen
 struct LargeTreeAnalysisTests {
     // More items than V8 takes as the arguments of one call (from about 124,000): LargeTreeExecutionTests' folder,
     // reviewed once through the write service for both tests.
-    // F-434
     @Test func reviewsAFolderOfMoreThan125000ItemsReadingEachOnlyAFewTimes() async throws {
         let fileCount = LargeFolder.fileCount
         let reviewed = try await LargeFolder.reviewed.value
@@ -83,7 +81,6 @@ struct LargeTreeAnalysisTests {
     // A path names at most 1,024 bytes: "/source" and 508 folders "/d" deep is as deep as one goes. The review goes
     // one call deeper for each folder level, on its own thread with room for it, and so does the resolution of the
     // review when the paste starts.
-    // F-434
     @Test func reviewsAndResolvesATreeAsDeepAsAPathGoes() async throws {
         let depth = 508
         let fileSystem = LargeTreeFileSystem()
@@ -124,12 +121,10 @@ struct LargeTreeAnalysisTests {
 }
 
 /// How long the review of a big folder takes against the least any review must do: look up each item and the
-/// name it would take. Building each item's paths once cost several times the lookups themselves, which made the
-/// review of a large paste no faster than the original's.
+/// name it would take. Building each item's paths once cost several times the lookups themselves.
 struct LargeTreeAnalysisSpeedTests {
     private static let fileCount = 50_000
 
-    // F-434
     @Test func reviewsABigFolderInFewTimesTheCostOfLookingUpItsItems() throws {
         let fileSystem = LargeTreeFileSystem()
         for folder in ["/source", "/source/project", "/source/project/files", "/target"] {

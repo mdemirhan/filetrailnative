@@ -1,11 +1,9 @@
-// Port of the child_process.spawn call in packages/core/src/search/fdSearch.ts (stdin ignored, stdout and stderr piped)
 import Darwin
 import Foundation
 
-/// A real `fd` process, started with `posix_spawn` so the arguments reach it byte for byte, as Node passes them
-/// (Foundation's `Process` would write "é" decomposed, and a query typed as "é" would no longer find a file named so).
-/// Output is read on one thread per pipe; `onClose` comes after the process has ended and both pipes have been read to
-/// the end, as Node's `close` event does.
+/// A real `fd` process, started with `posix_spawn` so the arguments reach it byte for byte (Foundation's `Process`
+/// would write "é" decomposed, and a query typed as "é" would no longer find a file named so). Output is read on one
+/// thread per pipe; `onClose` comes after the process has ended and both pipes have been read to the end.
 public final class FdProcess: SearchProcess, @unchecked Sendable {
     private let pid: pid_t
     private let lock = NSLock()
@@ -22,7 +20,7 @@ public final class FdProcess: SearchProcess, @unchecked Sendable {
         let result = spawnLock.withLock { start(file: file, args: args, cwd: cwd) }
         switch result {
         case .failure(let failure):
-            // Reported afterwards, as an event, like Node's `error`.
+            // Reported afterwards, as an event.
             DispatchQueue.global().async { events.onError(failure.message) }
             return FdProcess(pid: 0)
         case .success(let started):
@@ -52,7 +50,7 @@ public final class FdProcess: SearchProcess, @unchecked Sendable {
                 while waitpid(started.pid, &status, 0) < 0 && errno == EINTR {}
                 process.lock.withLock { process.reaped = true }
                 finished.leave()
-                // The exit status as Node reports it: the code, or the signal that ended the process.
+                // The exit status: the code, or the signal that ended the process.
                 let signaled = (status & 0x7f) != 0 && (status & 0x7f) != 0x7f
                 finished.notify(queue: .global()) {
                     events.onClose(signaled ? nil : (status >> 8) & 0xff, signaled ? status & 0x7f : nil)
@@ -99,7 +97,7 @@ public final class FdProcess: SearchProcess, @unchecked Sendable {
         posix_spawnattr_init(&attributes)
         defer { posix_spawnattr_destroy(&attributes) }
         // Only the descriptors set up above reach the child, and it starts with every signal at its default and none
-        // blocked (as Node starts children), whatever this process has ignored or blocked: it must die on SIGTERM.
+        // blocked, whatever this process has ignored or blocked: it must die on SIGTERM.
         var defaults = sigset_t()
         sigfillset(&defaults)
         var noSignals = sigset_t()

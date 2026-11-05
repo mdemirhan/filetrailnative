@@ -1,4 +1,3 @@
-// Port of the ExplorerFileSystem seam of packages/core/src/fs/explorerService.ts, read with getattrlistbulk
 import CFileTrail
 import Darwin
 import Foundation
@@ -111,8 +110,8 @@ public struct NativeFileSystem: ExplorerFileSystem {
     }
 
     /// What the read says of an entry, or nil when the disk left out something the listing sorts or decides by: the
-    /// listing then asks `lstat`, as the original does for every entry that needs stats. No creation time is no matter:
-    /// nothing sorts by it. A folder never has a size from the read.
+    /// listing then asks `lstat`. No creation time is no matter: nothing sorts by it. A folder never has a size from
+    /// the read.
     static func knownStats(_ entry: FTDirEntry, type: FileType) -> FileStats? {
         guard entry.mode_valid != 0, entry.mtime_valid != 0, type == .directory || entry.size_valid != 0 else {
             return nil
@@ -161,7 +160,7 @@ public struct NativeFileSystem: ExplorerFileSystem {
         }
     }
 
-    /// A Date in JavaScript is whole milliseconds, cut towards zero.
+    /// Times are whole milliseconds, cut towards zero.
     private static func milliseconds(_ seconds: Int64, _ nanoseconds: Int32) -> Int64 {
         seconds * 1000 + Int64(nanoseconds) / 1_000_000
     }

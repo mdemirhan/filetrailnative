@@ -1,6 +1,4 @@
-// Ports the bundle case of apps/desktop/src/renderer/lib/explorerAppUtils.test.ts and the nativeIsPackage case of
-// packages/native-fs/src/native-fs.test.ts (the listing classifies packages), and covers the content pane's rules by
-// feature row: the order and bars of a folder sorted by size, the states, the selection colors and the cells
+// The order and bars of a folder sorted by size, the states, the selection colors and the cells
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -21,8 +19,6 @@ struct ContentModelTests {
         return (try? JSONDecoder().decode(DirectoryEntry.self, from: data))!
     }
 
-    // T-42401906
-    // T-fff4ef4a
     @Test func bundlesAreEligibleForFolderSizesWithoutBeingFolders() {
         let bundle = Self.entry("App.app", kind: .bundle)
         #expect(bundle.isFolderSizeEligible)
@@ -33,7 +29,7 @@ struct ContentModelTests {
         #expect(Self.entry("link", kind: .symlinkDirectory).isDirectoryLike)
     }
 
-    // T-3056a773: the listing tells a package from a plain folder, and a missing folder fails.
+    // The listing tells a package from a plain folder, and a missing folder fails.
     @Test func theListingTellsAPackageFromAPlainFolder() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("content-model-\(UUID().uuidString)")
         try FileManager.default.createDirectory(
@@ -51,9 +47,8 @@ struct ContentModelTests {
         }
     }
 
-    // B-INFO-175 B-INFO-176 B-INFO-177 B-INFO-181 F-828: while sorted by size, folders order by their calculated size, and
+    // While sorted by size, folders order by their calculated size, and
     // the bars scale to the largest size of all the entries.
-    // B-VIEW-058
     @Test func aSizeSortIsFinishedWithTheFolderSizes() {
         let listed = [
             Self.entry("big.bin", size: 900), Self.entry("dir", kind: .directory),
@@ -69,7 +64,7 @@ struct ContentModelTests {
         #expect(FolderContents(path: "/f", listed: [Self.entry("d", kind: .directory)]).largestSize { _ in nil } == nil)
     }
 
-    // F-771: other orders are kept as the listing made them; the filter narrows by name.
+    // Other orders are kept as the listing made them; the filter narrows by name.
     @Test func otherOrdersAndTheFilter() {
         let listed = [Self.entry("b.txt"), Self.entry("a.txt"), Self.entry("Notes.md")]
         var contents = FolderContents(path: "/f", listed: listed)
@@ -84,8 +79,7 @@ struct ContentModelTests {
             ])
     }
 
-    // B-NAV-119 B-VIEW-065: only a folder that is gone counts as gone; the Trash needs Full Disk Access.
-    // B-SEL-177
+    // Only a folder that is gone counts as gone; the Trash needs Full Disk Access.
     @Test func readFailuresAreToldApart() {
         #expect(FolderReadFailure.isGone(ExplorerError.system(code: ENOENT, path: "/x")))
         #expect(FolderReadFailure.isGone(ExplorerError.system(code: ENOTDIR, path: "/x")))
@@ -101,8 +95,7 @@ struct ContentModelTests {
         #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", message: nil, homePath: "/Users/demo"))
     }
 
-    // B-VIEW-009 B-VIEW-008 F-756: the selection is the accent in the focused list of the front window, grey otherwise.
-    // B-SEL-020 B-SEL-166
+    // The selection is the accent in the focused list of the front window, grey otherwise.
     @Test func selectionColorsFollowFocus() {
         let theme = Theme(appearance: .light, accentHex: "#007aff")
         let layout = DesignTokens.details(density: .standard)
@@ -127,8 +120,7 @@ struct ContentModelTests {
                 == theme.palette.neutralInk.withAlpha(0.035))
     }
 
-    // B-VIEW-054 B-VIEW-055 B-VIEW-056 B-INFO-180 F-773: the cells' texts.
-    // T-0d7c5f62 T-507c9d0f T-b0215a2e T-c6d101c9
+    // The cells' texts.
     @Test func cellTexts() {
         let folder = Self.entry("dir", kind: .directory)
         let file = Self.entry("a.txt")
@@ -162,8 +154,7 @@ struct ContentModelTests {
         #expect(ListCellText.readsInMinutes(metadata.modifiedAt, now: now))
     }
 
-    // B-NAV-132 B-VIEW-192: a selection keeps the paths that still exist (an anchor that left falls back to the lead).
-    // B-NAV-141 B-SEL-027 B-SEL-032 T-5e21e75c T-742803ad
+    // A selection keeps the paths that still exist (an anchor that left falls back to the lead).
     @Test func aSelectionKeepsWhatStillExists() {
         let selection = ContentSelection(paths: ["/a", "/b", "/c"], anchorPath: "/a", leadPath: "/c")
         let kept = selection.sanitized(entryPaths: ["/b", "/c"])

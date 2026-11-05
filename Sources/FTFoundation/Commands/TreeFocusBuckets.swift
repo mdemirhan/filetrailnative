@@ -1,4 +1,4 @@
-// Generated once from apps/desktop/src/renderer/lib/shortcutPolicy.ts (the tree-focus bucket tables) in the Electron app; now edited by hand.
+// The tree-focus bucket tables. Generated once; now edited by hand.
 
 /// What a command or key does while the folder tree has the keyboard.
 public enum TreeFocusShortcutBucket: String, Sendable, Hashable {
@@ -28,7 +28,7 @@ extension ShortcutPolicy {
     }
 }
 
-/// The explorer's raw key handlers (`RAW_EXPLORER_SHORTCUT_IDS`).
+/// The explorer's raw key handlers.
 public enum RawExplorerShortcutID: String, CaseIterable, Sendable, Hashable {
     case paneTabSwitch
     case copySelection

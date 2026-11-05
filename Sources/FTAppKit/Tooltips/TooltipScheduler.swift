@@ -1,9 +1,9 @@
-// Port of installTitleTooltips in apps/desktop/src/renderer/lib/titleTooltips.ts: when an app-drawn tooltip shows
+// When an app-drawn tooltip shows
 import FTFoundation
 import Foundation
 
 /// A control that names itself in an app-drawn tooltip: an icon-only button. A control with a visible label, a row,
-/// or a control inside a row never adopts this (the original's `findTooltipElement` leaves those alone).
+/// or a control inside a row never adopts this.
 @MainActor
 protocol TooltipAnchor: AnyObject {
     /// The tooltip's text as it is now; blank shows nothing.

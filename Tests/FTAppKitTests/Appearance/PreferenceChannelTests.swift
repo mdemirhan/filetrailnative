@@ -1,4 +1,4 @@
-// The preference channel the app makes (F-610, B-DLG-233, B-DLG-245): a change of theme or accent made in any window
+// The preference channel the app makes: a change of theme or accent made in any window
 // reaches the appearance, and with it every window that draws with it
 import AppKit
 import FTFileSystem
@@ -14,7 +14,7 @@ import Testing
         var change: PreferencesChange
     }
 
-    // F-610 B-DLG-233 B-DLG-244: the theme and accent chosen in a window (the toolbar's Theme menu, Settings) are
+    // The theme and accent chosen in a window (the toolbar's Theme menu, Settings) are
     // stored, and the appearance follows
     @Test func aChangeOfThemeAndAccentReachesTheAppearance() throws {
         _ = NSApplication.shared
@@ -42,7 +42,7 @@ import Testing
         observation.cancel()
     }
 
-    // B-DLG-245 F-610: a window that only follows (About, Help, Acknowledgements) is redrawn with the new theme
+    // A window that only follows (About, Help, Acknowledgements) is redrawn with the new theme
     @Test func aPageWindowIsRedrawnWithANewThemeAndAccent() {
         _ = NSApplication.shared
         let model = AppearanceModel(

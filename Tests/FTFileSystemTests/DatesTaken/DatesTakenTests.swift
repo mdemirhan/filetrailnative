@@ -1,4 +1,3 @@
-// Ports the nativeDatesTaken cases of packages/native-fs/src/native-fs.test.ts
 import FTTestSupport
 import Foundation
 import Testing
@@ -21,7 +20,6 @@ import Testing
         try write(data, url)
     }
 
-    // T-f2411f69
     @Test func readsTheDateAPhotoWasTakenOnePerPath() async throws {
         let root = try TemporaryDirectory()
         defer { root.remove() }
@@ -45,7 +43,6 @@ import Testing
         #expect(await DatesTaken.read([]).isEmpty)
     }
 
-    // N/A T-aa124d90 the argument is typed as a list of paths, so the addon's TypeError has no counterpart
     @Test func exifDatesAreStrictlyDigits() {
         #expect(DatesTaken.localDate(fromExif: "2026:05:14 18:02:11") == "2026-05-14T18:02:11")
         #expect(DatesTaken.localDate(fromExif: "2026:05:14 18:02:1x") == nil)
@@ -54,7 +51,6 @@ import Testing
         #expect(DatesTaken.localDate(fromExif: nil) == nil)
     }
 
-    // T-eee6f364
     @Test func readsAPhotoWhoseExtensionIsInCapitals() async throws {
         let root = try TemporaryDirectory()
         defer { root.remove() }
@@ -63,7 +59,6 @@ import Testing
         #expect(await DatesTaken.read([path.path]) == ["2021-07-04T09:15:30"])
     }
 
-    // T-5874efa5
     @Test func readsAPhotoWhoseFolderAndNameHaveAccents() async throws {
         let root = try TemporaryDirectory()
         defer { root.remove() }
@@ -72,7 +67,6 @@ import Testing
         #expect(await DatesTaken.read([path.path]) == ["2021-07-04T09:15:30"])
     }
 
-    // T-663d0a15
     @Test func readsTheDateAHeicPhotoWasTaken() async throws {
         let root = try TemporaryDirectory()
         defer { root.remove() }
@@ -81,7 +75,6 @@ import Testing
         #expect(await DatesTaken.read([path.path]) == ["2021-07-04T09:15:30"])
     }
 
-    // T-4461d73c
     @Test func findsNoDateInAPhotoWhoseCameraWroteZerosOrSpaces() async throws {
         let root = try TemporaryDirectory()
         defer { root.remove() }

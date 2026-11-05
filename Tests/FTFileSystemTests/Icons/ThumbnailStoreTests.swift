@@ -82,7 +82,6 @@ private func request(
 }
 
 @MainActor @Suite struct ThumbnailStoreTests {
-    // T-0dec6037 F-227 F-226
     @Test func givesNothingUntilThePreviewArrivesThenThePreview() async {
         let provider = ScriptedProvider()
         let queue = ThumbnailLoadQueue()
@@ -101,7 +100,6 @@ private func request(
         #expect(receiver.last?.image === delivered.image)
     }
 
-    // T-116cbc3d
     @Test func keepsTheIconForAFileQuickLookHasNoPreviewFor() async {
         let provider = ScriptedProvider { _ in ThumbnailResponse(version: "10:20", unchanged: false, picture: nil) }
         let queue = ThumbnailLoadQueue()
@@ -114,7 +112,6 @@ private func request(
         #expect(store.loadedPicture(forPath: "/Users/demo/archive.zip") == nil)
     }
 
-    // T-7bbee55b F-762
     @Test func tellsAPhotoFromAPictureWithTransparency() async {
         let provider = ScriptedProvider { call in
             ThumbnailResponse(version: "1:1", unchanged: false, picture: picture(opaque: call.path.hasSuffix(".jpeg")))
@@ -127,13 +124,12 @@ private func request(
         _ = request(store, "/Users/demo/photo.jpeg", listing: listing, into: photo)
         _ = request(store, "/Users/demo/notes.txt", listing: listing, into: page)
         await idle(queue)
-        // An opaque picture (JPEG data in the original) gets an outline; the other is a cut-out or a page
+        // An opaque picture gets an outline; the other is a cut-out or a page
         // drawn with its own outline.
         #expect(photo.last?.isOpaque == true)
         #expect(page.last?.isOpaque == false)
     }
 
-    // T-07b0947c
     @Test func asksForPreviewsOfFilesOnly() async {
         let provider = ScriptedProvider { _ in ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()) }
         let queue = ThumbnailLoadQueue()
@@ -149,7 +145,6 @@ private func request(
         #expect(provider.calls.map(\.path) == ["/Users/demo/link.png"])
     }
 
-    // T-60dc09cd F-227
     @Test func givesACachedPreviewAtOnceAndDoesNotAskAgainForTheSameListing() async {
         let provider = ScriptedProvider { _ in ThumbnailResponse(version: "10:20", unchanged: false, picture: picture())
         }
@@ -169,7 +164,6 @@ private func request(
         #expect(provider.calls.count == 1)
     }
 
-    // T-ddc3b1bd F-226
     @Test func checksACachedPreviewAgainstTheFileWhenTheFolderIsReadAgain() async {
         let responses = ResponseQueue([
             ThumbnailResponse(version: "10:20", unchanged: false, picture: picture()),
@@ -198,7 +192,6 @@ private func request(
         #expect(store.loadedPicture(forPath: "/Users/demo/photo.jpeg")?.image === receiver.last?.image)
     }
 
-    // T-ab9b358d F-227
     @Test func loadsAFewPreviewsAtATimeAndDropsQueuedOnesThatAreNoLongerShown() async {
         let provider = ScriptedProvider()
         let queue = ThumbnailLoadQueue()

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/undoQuestion.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -10,7 +9,6 @@ struct UndoQuestionTests {
         UndoQuestion.ChangedItem(name: name, putBack: kind == .putBack, replaced: kind == .replaced)
     }
 
-    // T-0304b141 F-551
     @Test func namesTheOperationAnItemThatChangedCameFrom() {
         let cases: [([UndoQuestion.ChangedItem], UndoDirection, WriteOperationAction)] = [
             ([item("1 copy.kt")], .undo, .duplicate),
@@ -45,7 +43,6 @@ struct UndoQuestionTests {
             ])
     }
 
-    // T-86561a8d F-551
     @Test func neverGoesAheadWithChangedWorkByDefaultAndKeepsBothNamesByDefault() {
         let changed = UndoQuestionText.of(.changed(items: [item("a")]), direction: .undo, action: .duplicate)
         #expect(changed.confirmLabel == "Move to Trash")
@@ -58,7 +55,6 @@ struct UndoQuestionTests {
                     confirmIsDefault: true))
     }
 
-    // T-1d67a013 B-CLIP-191
     @Test func listsTheFirstNamesOfSeveralAndCountsTheRest() {
         let names = ["a", "b", "c", "d", "e", "f", "g"]
         #expect(UndoQuestion.nameTaken(names: names).listedNames == ["a", "b", "c", "d", "e", "and 2 more"])
@@ -71,7 +67,6 @@ struct UndoQuestionTests {
         #expect(UndoQuestion.nameTaken(names: many).listedNames.last == "and 1,000 more")
     }
 
-    // T-643127df B-CLIP-191
     @Test func listsItemsWithTheSameNameFromDifferentFoldersEachOnce() {
         #expect(
             UndoQuestion.nameTaken(names: ["a.txt", "b.txt", "a.txt"]).listedNames == ["a.txt", "b.txt", "a.txt"])

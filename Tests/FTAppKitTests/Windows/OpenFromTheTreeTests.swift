@@ -1,5 +1,4 @@
-// Checks against useExplorerShortcuts.ts:1109-1117 and useExplorerNavigationController.ts:1447
-// (`navigateTreeFileSystemPath`): with the tree focused, Open opens the folder; only Return and ⌘↓ fold it
+// With the tree focused, Open opens the folder; only Return and ⌘↓ fold it
 import AppKit
 import FTFoundation
 import Foundation
@@ -23,7 +22,6 @@ extension ExplorerWindowlessTests {
         }
 
         // File > Open and ⌘O
-        // B-NAV-092 B-TREE-152
         @Test func openOpensTheSelectedFolderAndLeavesItsBranchAlone() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, alpha) = try await openedOnARow(harness)
@@ -39,7 +37,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The toolbar's Open is the same command.
-        // B-NAV-092
         @Test func theToolbarsOpenOpensTheSelectedFolderToo() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, alpha) = try await openedOnARow(harness)
@@ -51,8 +48,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // Return and ⌘↓ stay `openTreeNode`: they read and unfold the folder, and what is on screen stays.
-        // B-NAV-091
+        // Return and ⌘↓ still open the tree's node: they read and unfold the folder, and what is on screen stays.
         @Test func openingTheNodeStillFoldsTheBranch() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, alpha) = try await openedOnARow(harness)

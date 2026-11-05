@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteAnalysis.ts
 import FTFoundation
 import Foundation
 

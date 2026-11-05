@@ -1,6 +1,5 @@
-// Port of the Map-based caches of apps/desktop/src/renderer/lib/fileIcons.tsx and fileThumbnails.tsx
 /// A cache that drops its least recently used entry when it is full. Reading an entry makes it the most
-/// recently used, as the original does by deleting and re-inserting the key.
+/// recently used.
 struct LRUCache<Key: Hashable, Value> {
     let capacity: Int
     private var entries: [Key: (value: Value, stamp: Int)] = [:]

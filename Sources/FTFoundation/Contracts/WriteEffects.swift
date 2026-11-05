@@ -1,4 +1,3 @@
-// Port of packages/contracts/src/writeEffects.ts
 import Foundation
 
 /// An item of a finished operation, as far as `WriteEffects` looks at it.
@@ -21,8 +20,7 @@ public struct WriteEffectItem: WrittenItem, Equatable, Sendable {
 }
 
 /// What a finished file operation changed, for whatever was worked out from the folders it touched
-/// (folder sizes). Paths are compared by their exact bytes, as the original compares JavaScript
-/// strings; Swift's `==` on `String` would take NFC and NFD as equal.
+/// (folder sizes). Paths are compared by their exact bytes; Swift's `==` on `String` would take NFC and NFD as equal.
 public enum WriteEffects {
     typealias Bytes = [UInt8]
     private static let slash = UInt8(ascii: "/")

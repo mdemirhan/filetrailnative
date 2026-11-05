@@ -1,10 +1,9 @@
-// Port of the stacking of apps/desktop/src/renderer/styles.css: the app's menus and tooltips (z-index over
-// .window-toolbar) and the window-toolbar header taking its right-click (ExplorerWorkspace.tsx handleToolbarContextMenu)
+// The app's menus and tooltips (z-index over .window-toolbar) and the window-toolbar header taking its right-click
 import AppKit
 
 /// The explorer window's top layer, over the title bar and the system toolbar the window's frame draws above its
 /// content. The app's menus and tooltips go here, so the part of them in the toolbar band is drawn over the band and
-/// takes its presses, as the original's sit over its toolbar.
+/// takes its presses.
 ///
 /// Anything else goes through to the views below: the toolbar's items and its empty room are the system's.
 final class WindowOverlayView: NSView {

@@ -1,4 +1,3 @@
-// Port of the drawing of apps/desktop/src/renderer/lib/titleTooltips.ts and the .app-tooltip rule of styles.css
 import AppKit
 import FTFoundation
 
@@ -95,7 +94,7 @@ final class TooltipController {
     }
 }
 
-/// `.app-tooltip`: 11 pt text on the menu background, 3/8 padding, a hairline edge, radius 6, a soft shadow.
+/// A tooltip: 11 pt text on the menu background, 3/8 padding, a hairline edge, radius 6, a soft shadow.
 final class TooltipBubble: NSView {
     private let label = NSTextField(labelWithString: "")
     private static var padding: NSEdgeInsets {

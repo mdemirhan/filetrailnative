@@ -1,5 +1,3 @@
-// Port of the after-write cases of apps/desktop/src/renderer/lib/explorerAppUtils.test.ts, and of
-// apps/desktop/src/renderer/lib/otherWindowsWriteResult.test.ts
 import FTFoundation
 import FTOperations
 import Foundation
@@ -27,7 +25,7 @@ private func item(
 }
 
 @Suite struct AfterWriteTests {
-    // T-8abb8fa0 T-f4897f9f B-SEL-033: what a write made is selected, unless results are showing, the person picked
+    // What a write made is selected, unless results are showing, the person picked
     // something else meanwhile, or it landed in another folder than the one on screen.
     @Test func whatAWriteMadeIsSelectedOnlyInTheFolderOnScreenWithNothingElsePicked() {
         let pasted = result(
@@ -54,7 +52,6 @@ private func item(
 
     private let renamed = result(.rename, [item("/Users/demo/tmp/old-name", "/Users/demo/tmp/new-name")])
 
-    // T-328dfd1f
     @Test func remapsTheRefreshedPathAfterARenameInsideTheCurrentFolder() {
         #expect(AfterWrite.refreshPath(renamed, currentPath: "/Users/demo/tmp/old-name") == "/Users/demo/tmp/new-name")
         #expect(
@@ -62,8 +59,6 @@ private func item(
                 == "/Users/demo/tmp/new-name/child/grandchild")
     }
 
-    // T-50cc12ba
-    // T-ea1c3e0e
     @Test func fallsBackToTheParentPathAfterTrashingTheSelectedTreeFolder() {
         let trashed = result(.trash, [item("/Users/demo/tmp/old-name", nil)])
 
@@ -73,7 +68,6 @@ private func item(
                 == "/Users/demo/tmp")
     }
 
-    // T-62928bb0
     @Test func followsAFolderMovedByCutAndPasteOrADragButNotOneCopied() {
         func pasted(_ mode: FTOperations.CopyPasteMode) -> WriteOperationResult {
             result(
@@ -93,7 +87,6 @@ private func item(
         #expect(AfterWrite.treeSelectionPath(pasted(.copy), selectedTreePath: "/Users/demo/Folder") == nil)
     }
 
-    // T-30820ca8
     @Test func tellsWhatAWriteTookOutOfItsFolderTrashedDeletedOrMovedElsewhereNotRenamed() {
         func left(
             _ action: WriteOperationAction, _ from: String, _ to: String?, mode: FTOperations.CopyPasteMode? = nil
@@ -112,23 +105,18 @@ private func item(
         #expect(left(.paste, "/a/x", "/b/x", mode: .copy) == [])
     }
 
-    // T-fe6d449f
     @Test func remapsTreeSelectionAfterARenameWhenTheSelectedNodeIsInsideTheRenamedFolder() {
         #expect(
             AfterWrite.treeSelectionPath(renamed, selectedTreePath: "/Users/demo/tmp/old-name/child")
                 == "/Users/demo/tmp/new-name/child")
     }
 
-    // T-1a5b3e96
-    // T-f9cf83f4
     @Test func remapsTreeSelectionAfterARenameWhenTheRenamedFolderItselfIsSelected() {
         #expect(
             AfterWrite.treeSelectionPath(renamed, selectedTreePath: "/Users/demo/tmp/old-name")
                 == "/Users/demo/tmp/new-name")
     }
 
-    // T-8b97aa3f
-    // B-TREE-093 T-0c451ae2
     @Test func reloadsImpactedDestinationBranchesAsWellAsTheirParentsForACompletedSubtreeMove() {
         let moved = result(
             .moveTo,
@@ -196,7 +184,6 @@ private func item(
         return compact
     }
 
-    // F-308 T-dcc6ba8a
     @Test func leavesOutAllButOneItemInEachFolderInsideAPastedFolder() {
         func inFolder(_ path: String, _ status: CopyPasteItemResult.Status = .completed) -> WriteOperationItem {
             item("/Users/me/Folder\(path)", "/Users/me/b/Folder\(path)", status)
@@ -214,7 +201,6 @@ private func item(
             ])
     }
 
-    // F-308 T-e9c19665
     @Test func keepsWhatMovedInsideAFolderWhoseOwnMoveFailed() {
         let compact = expectSameForOtherWindows(
             result(
@@ -232,7 +218,6 @@ private func item(
             ])
     }
 
-    // F-308 T-c7e9d231
     @Test func keepsARenamedItemPutBackUnderAnotherName() {
         expectSameForOtherWindows(
             result(
@@ -243,7 +228,6 @@ private func item(
                 ]))
     }
 
-    // F-308 T-edb58541
     @Test func keepsEveryItemATrashOrAnUndoMovedOnItsOwn() {
         expectSameForOtherWindows(
             result(.trash, [item("/Users/me/a", nil), item("/Users/me/a/b", nil), item("/Users/me/c", nil, .failed)]))
@@ -257,7 +241,6 @@ private func item(
     }
 
     // Paths drawn from a few names, so that items fall inside one another in every way.
-    // F-308 T-f2ccf41b
     @Test func doesAsAllTheItemsWouldForAnyOperation() {
         // In doubles, as JavaScript multiplies them.
         var seed = 7.0

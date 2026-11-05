@@ -1,12 +1,10 @@
-// Port of apps/desktop/src/main/bootstrap/batchRenameMemoryDisk.testkit.ts (and the MemoryDisk of
-// batchRenameExecution.test.ts)
 import FTFoundation
 import Foundation
 import os
 
 @testable import FTOperations
 
-/// An error with a code, as Node's fs gives them.
+/// An error with a code, as the disk calls give them.
 func errno(_ code: String) -> OperationError {
     OperationError("\(code): test", code: code)
 }
@@ -20,8 +18,7 @@ struct MemoryDiskCall: Sendable {
 
 /// An in-memory folder tree that compares names as a disk does (ignoring case unless told otherwise, and accent
 /// encoding always), refuses to replace with an exclusive rename, and fails on demand. Every item has an ino of its
-/// own, which moves with it; a folder's items move along with it. Paths compare scalar for scalar, as JavaScript's
-/// do.
+/// own, which moves with it; a folder's items move along with it. Paths compare scalar for scalar.
 final class MemoryDisk: BatchRenameFileSystem, @unchecked Sendable {
     enum Listing {
         case normal
@@ -88,7 +85,7 @@ final class MemoryDisk: BatchRenameFileSystem, @unchecked Sendable {
         }
     }
 
-    /// The names in a folder, sorted as JavaScript sorts them.
+    /// The names in a folder, sorted by UTF-16 code unit.
     func names(_ folder: String = "/trip") -> [String] {
         locked {
             (folders[bytes(folder)]?.entries.values.map(\.name) ?? []).sorted(by: jsLess)
@@ -289,7 +286,7 @@ final class RenameJournal: WriteJournal, @unchecked Sendable {
     }
 }
 
-/// mulberry32, as the original's tests draw their random cases: the same numbers for the same seed.
+/// mulberry32, which draws the random cases: the same numbers for the same seed.
 struct Mulberry32 {
     private var state: UInt32
 

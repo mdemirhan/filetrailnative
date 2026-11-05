@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/relativeClock.ts
 import Foundation
 
 /// The time relative dates ("24 min ago", "Today, 9:12 AM") are measured from: the minute that is
@@ -90,7 +89,7 @@ public final class RelativeClock {
 
     /// Coming back to the window (it became visible or key): time has passed with no timer running,
     /// so the dates are read again, and the minute timer starts again if it is wanted. Also to be
-    /// called when the window is hidden, as the original's visibility handler is.
+    /// called when the window is hidden.
     public func windowStateDidChange() {
         notify()
         syncTimers()

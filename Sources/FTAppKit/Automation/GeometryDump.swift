@@ -1,9 +1,7 @@
-// Port of the geometry dump format shared with tools/capture/electron/driver.ts; no TypeScript source.
 #if DEBUG
     import AppKit
 
-    /// The frames and text styles of named views, as `tools/capture` compares them with the original's
-    /// DOM. Views are named by their `accessibilityIdentifier`.
+    /// The frames and text styles of named views. Views are named by their `accessibilityIdentifier`.
     struct GeometryDump: Codable, Equatable, Sendable {
         static let format = "filetrail-geometry/1"
 
@@ -29,7 +27,7 @@
         struct Text: Codable, Equatable, Sendable {
             var string: String
             var fontSize: Double?
-            /// CSS weight (100…900), so it compares with `getComputedStyle().fontWeight`.
+            /// The weight on the CSS scale (100…900).
             var fontWeight: Int?
             /// `#rrggbb`, or `#rrggbbaa` when not opaque, in sRGB.
             var color: String?
@@ -100,7 +98,7 @@
             let id = AutomationTags.mirrorsItsItem(view) ? "" : view.accessibilityIdentifier()
             if !id.isEmpty || allViews {
                 let frame = frame(of: view, in: window)
-                // Scrolled out of the window: not on screen to compare (the original's dump skips these too).
+                // Scrolled out of the window: not on screen to compare.
                 let size = window.contentView?.bounds.size ?? .zero
                 // Scrolled out of its list or tree (clipped away by a scroll view): not on screen either.
                 let onScreen =

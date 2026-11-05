@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/components/CopyPasteRuntimeConflictDialog.tsx (the alert, FingerprintCard) and of
-// where AppDialogs.tsx (:497-511) shows it, with the .copy-paste-conflict-* rules of styles.css
 import AppKit
 import FTFoundation
 import FTOperations
@@ -83,7 +81,7 @@ final class RuntimeConflictAccessory: NSView, AlertAccessory, ThemeApplying {
     }
 }
 
-/// One card of the comparison (`FingerprintCard`): what it is, its name, and "Folder" or its size and date.
+/// One card of the comparison: what it is, its name, and "Folder" or its size and date.
 @MainActor
 final class ConflictCardView: NSView, ThemeApplying {
     let label: ThemedText
@@ -163,7 +161,7 @@ final class ConflictCardView: NSView, ThemeApplying {
     }
 }
 
-/// The question a paused operation asks (`CopyPasteRuntimeConflictDialog`): a wide alert over the window, one per
+/// The question a paused operation asks: a wide alert over the window, one per
 /// conflict. One answer per alert: everything is disabled after the first click; a new conflict gets a fresh alert.
 /// If the answer can't be sent, the question stays.
 @MainActor
@@ -227,7 +225,7 @@ final class RuntimeConflictAlertController {
             title: text.title, message: text.message,
             buttons: text.secondary.map { resolve($0.choice) } + [resolve(text.primary.choice)], stacked: false,
             wide: true, aside: stop, accessory: accessory,
-            // Escape stops the operation, as Stop does (B-CLIP-116).
+            // Escape stops the operation, as Stop does.
             onEscape: { [weak tab] in _ = tab?.writeActions?.cancel() },
             // Return on anything but a button does nothing.
             onReturn: {})

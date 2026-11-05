@@ -115,7 +115,6 @@ private func setUp(_ answers: Answers) -> (opener: DiskImageOpener, recorder: Re
 }
 
 @Suite struct DiskImageOpenerTests {
-    // T-4b359f14 F-137 F-217
     @Test func mountsTheImageWithoutAFinderWindowAndSaysWhereItsDiskIs() async {
         let (opener, recorder) = setUp(Answers { _ in ok(attachOutput("/Volumes/Install")) })
         let response = await opener.open("/Users/demo/Install.dmg")
@@ -124,14 +123,12 @@ private func setUp(_ answers: Answers) -> (opener: DiskImageOpener, recorder: Re
         #expect(recorder.mountedCount == 1)
     }
 
-    // T-101d805d F-218
     @Test func opensTheFirstVolumeByNameWhenTheImageHasSeveral() async {
         let (opener, _) = setUp(
             Answers { _ in ok(attachOutput("/Volumes/Tools 10", "/Volumes/Tools 9", "/Volumes/apps")) })
         #expect(await opener.open("/Users/demo/Bundle.dmg").volumePath == "/Volumes/apps")
     }
 
-    // T-4919f6f3 F-137 F-217
     @Test func handsAnImageThatAsksForAPasswordToDiskImageMounterWithoutMountingIt() async {
         let (opener, recorder) = setUp(
             Answers(encrypted: true) { _ in ok(attachOutput("/Volumes/Secret")) })
@@ -142,7 +139,6 @@ private func setUp(_ answers: Answers) -> (opener: DiskImageOpener, recorder: Re
         #expect(recorder.firstWords == ["isencrypted"])
     }
 
-    // T-fe7b25ff F-137 F-217
     @Test func handsAnImageWithALicenceToAgreeToToDiskImageMounter() async {
         let (opener, recorder) = setUp(
             Answers(licence: true) { _ in ok(attachOutput("/Volumes/Licensed")) })
@@ -151,7 +147,6 @@ private func setUp(_ answers: Answers) -> (opener: DiskImageOpener, recorder: Re
         #expect(recorder.firstWords == ["isencrypted", "imageinfo"])
     }
 
-    // T-177794c7
     @Test func handsItOverWhenHdiutilGivesUpOnAQuestionTheChecksDidntForesee() async {
         let (opener, recorder) = setUp(Answers { _ in failed("hdiutil: attach canceled\n") })
         #expect(await opener.open("/Users/demo/Odd.dmg").status == .handedOff)
@@ -159,7 +154,6 @@ private func setUp(_ answers: Answers) -> (opener: DiskImageOpener, recorder: Re
         #expect(recorder.mountedCount == 0)
     }
 
-    // T-bf6ef132
     @Test func saysWhyAnImageCouldntBeMounted() async {
         let (opener, recorder) = setUp(
             Answers { _ in failed("hdiutil: attach failed - no mountable file systems\n") })
@@ -177,7 +171,6 @@ private func setUp(_ answers: Answers) -> (opener: DiskImageOpener, recorder: Re
                 == DiskImageOpenResponse(status: .failed, volumePath: nil, reason: "no mountable file systems"))
     }
 
-    // T-b3942d55 F-218
     @Test func doesNothingForAnImageOpenedAgainWhileItIsBeingMounted() async throws {
         let gate = Gate()
         let (opener, recorder) = setUp(

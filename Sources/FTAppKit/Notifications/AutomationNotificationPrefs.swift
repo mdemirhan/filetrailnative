@@ -1,5 +1,3 @@
-// Port of the notifications preference of apps/desktop/src/shared/appPreferences.ts, as capture scenarios set it
-// (`prefs` steps)
 #if DEBUG
     import FTFoundation
 

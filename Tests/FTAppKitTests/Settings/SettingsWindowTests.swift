@@ -1,5 +1,3 @@
-// Ports apps/desktop/src/renderer/SettingsWindowApp.test.tsx and SettingsView.test.tsx on the Settings window, built and
-// never shown; openSettingsWindow (main.ts) through PageWindows; main.test.tsx's opaque Settings window
 import AppKit
 import FTFoundation
 import Testing
@@ -12,7 +10,6 @@ import Testing
 
     // MARK: The window
 
-    // T-d914b204 F-633 F-887 B-DLG-162 B-DLG-234
     @Test func isAWindowOf720By540ThatIsOpaqueAndNotFullScreenable() throws {
         let (controller, _) = Kit.make()
         let window = try #require(controller.window)
@@ -26,7 +23,6 @@ import Testing
         #expect(window.backgroundColor == NSColor(controller.model.theme.pageWindowBackground))
     }
 
-    // T-39107d68 T-4abe070b F-633 F-887 F-888 F-889 B-DLG-163 B-DLG-229
     @Test func namesTheSectionOnScreenAboveItWithTheShortcutsSearchBesideTheName() throws {
         let (controller, _) = Kit.make()
         let view = controller.settingsView
@@ -50,7 +46,6 @@ import Testing
         #expect(view.header.frame.height == 52)
     }
 
-    // T-71bef353 T-4abe070b F-633 B-DLG-164
     @Test func opensOnTheTabAskedForOrTheOneItWasLeftOn() throws {
         let (pages, _) = PageWindowsTests.make()
         pages.settingsServices.schedule = { _, _ in {} }
@@ -77,7 +72,6 @@ import Testing
         pages.settingsWindow?.close()
     }
 
-    // T-4f43cba4 T-7e5d1158 F-891 F-886 B-DLG-167 B-DLG-168 B-DLG-203
     @Test func escapeClosesAnOpenPopUpBeforeTheWindow() throws {
         let preferences = AppPreferences.defaults(theme: .light).with {
             $0.favorites = Favorites.defaults(homePath: "/Users/demo")
@@ -98,7 +92,6 @@ import Testing
         #expect(!controller.handle(escape))
     }
 
-    // F-891 B-DLG-165
     @Test func showsOnlyTheSidebarAndANoticeWhenThePreferencesDontLoad() throws {
         let (controller, _) = Kit.make(loads: false)
         let view = controller.settingsView
@@ -110,7 +103,6 @@ import Testing
         #expect(view.notice == nil)
     }
 
-    // F-889 B-DLG-166
     @Test func drawsTheLineUnderTheTitleOnlyOnceThePageHasScrolled() throws {
         let (controller, _) = Kit.make(tab: .shortcuts)
         let view = controller.settingsView
@@ -121,8 +113,7 @@ import Testing
         #expect(!view.headerShowsLine)
     }
 
-    // F-889 F-890: the page is at most 560 wide, 20 in from the sidebar and 4 under the header; groups are cards
-    // T-f1f09224
+    // The page is at most 560 wide, 20 in from the sidebar and 4 under the header; groups are cards
     @Test func laysThePageOutAsTheStylesheetDoes() throws {
         let (controller, _) = Kit.make()
         let page = try Kit.page(controller)
@@ -136,13 +127,12 @@ import Testing
         let rows = behavior.card.rows.compactMap { $0 as? SettingsRowView }
         #expect(rows.count == 4)
         #expect(rows.allSatisfy { $0.frame.height >= 40 && $0.frame.minX == 12 })
-        // No line under the last row of a group, whichever row that is (T-f1f09224).
+        // No line under the last row of a group, whichever row that is.
         #expect(rows.map(\.drawsSeparator) == [true, true, true, false])
     }
 
     // MARK: General
 
-    // T-81e624d1 T-e24d31cb T-515dbe35 T-495a7b2e T-08189372 F-892 F-893 F-895 B-DLG-175 B-DLG-197
     @Test func offersAutoLightAndDarkOneAccentAndNothingElseToStyle() throws {
         let (controller, recorder) = Kit.make()
         let view = controller.settingsView
@@ -163,7 +153,6 @@ import Testing
         #expect(options[0].frame.size.width == 60)
     }
 
-    // T-e4637185 T-cacbdcd8 F-893 B-DLG-176 B-DLG-235 B-DLG-236
     @Test func offersTheAccentsAndACustomColorForAnyOther() throws {
         let preferences = AppPreferences.defaults(theme: .light).with { $0.accent = "#a550a7" }
         let (controller, recorder) = Kit.make(preferences: preferences)
@@ -196,7 +185,7 @@ import Testing
         #expect(recorder.saved["accent"] == .string("#123abc"))
     }
 
-    // T-914587da T-10d689b4 F-894 B-DLG-178: Restore Defaults puts back the theme and the accent only
+    // Restore Defaults puts back the theme and the accent only
     @Test func restoresTheDefaultAppearanceWithThePushButton() throws {
         let preferences = AppPreferences.defaults(theme: .dark).with {
             $0.accent = "#e0383e"
@@ -211,8 +200,6 @@ import Testing
         #expect(recorder.patches == [["theme": .string("auto"), "accent": .string("#007aff")]])
     }
 
-    // T-40aa4b53 T-e054b024 T-9cccb915 T-9b1e3197 F-895 B-DLG-179
-    // B-INFO-173
     @Test func changesTheBehaviorWithOneSwitchEach() throws {
         let (controller, recorder) = Kit.make()
         let switches = views("settings.switch", in: controller.settingsView).compactMap { $0 as? SettingsSwitch }
@@ -239,7 +226,6 @@ import Testing
 
     // MARK: Saving
 
-    // F-891 B-DLG-169 B-DLG-170 B-DLG-171 B-DLG-173
     @Test func savesEditsAndShowsTheOnesMadeElsewhere() throws {
         let (controller, recorder) = Kit.make()
         Kit.flush(controller)
@@ -268,7 +254,6 @@ import Testing
 
     // MARK: Browsing
 
-    // T-5c2e2b1c T-b7c4ec80 F-072 F-896 B-DLG-181 B-DLG-182
     @Test func setsEveryViewsSizesAtOnce() throws {
         let (controller, recorder) = Kit.make(tab: .browsing, preferences: .defaults(theme: .light))
         let density = try Kit.control("Sizes", SettingsPopup.self, in: controller)
@@ -287,7 +272,6 @@ import Testing
         #expect(density.frame.height == 24)
     }
 
-    // T-b272528a T-8098e331 F-898 B-DLG-184
     @Test func listsFavoritesInTheFolderTreeFirst() throws {
         let (controller, recorder) = Kit.make(tab: .browsing)
         let placement = try Kit.control("Show favorites", SettingsPopup.self, in: controller)
@@ -298,8 +282,6 @@ import Testing
         #expect(recorder.saved == ["favoritesPlacement": .string("separate")])
     }
 
-    // T-78748d9f T-357ae792 T-74a645ae T-6a7e76c6 F-886 F-898 B-DLG-198 B-DLG-199 B-DLG-201 B-DLG-202 B-DLG-203
-    // B-TREE-045
     @Test func editsTheFavoritesWithTheListItsBarAndTheIconGrid() async throws {
         let home = "/Users/demo"
         let preferences = AppPreferences.defaults(theme: .light).with {
@@ -375,7 +357,6 @@ import Testing
         #expect(Kit.names(list) == start)
     }
 
-    // T-5cefcb66 F-898 B-DLG-202
     @Test func letsATrashFavoriteBeRemoved() throws {
         let home = "/Users/demo"
         let preferences = AppPreferences.defaults(theme: .light).with {
@@ -394,7 +375,7 @@ import Testing
             Kit.button("Remove", in: controller.settingsView).map { ($0 as? SettingsControlView)?.isEnabled } == false)
     }
 
-    // F-898 B-DLG-195: a picker that fails says so; a cancelled one changes nothing
+    // A picker that fails says so; a cancelled one changes nothing
     @Test func saysWhenAPickerCouldNotBeShown() async throws {
         let (controller, recorder) = Kit.make(tab: .browsing)
         recorder.pickerFails = true
@@ -407,8 +388,6 @@ import Testing
         #expect(controller.settingsView.noticeText?.stringValue == "Couldn’t choose an app.")
     }
 
-    // T-89b64fc1 T-d3457b5a T-113ec9a4 T-608dd674 F-897 B-DLG-205 B-DLG-206 B-DLG-207
-    // B-DLG-183 B-DLG-200
     @Test func listsTheColumnsInTheirOrderWithNameFirstAndFixed() throws {
         let (controller, recorder) = Kit.make(tab: .browsing)
         let list = try Kit.list("Columns in List view", in: controller)
@@ -450,7 +429,6 @@ import Testing
 
     // MARK: Search
 
-    // T-9220003b F-899 B-DLG-185 B-DLG-187 B-DLG-208
     @Test func listsSearchResultsColumnsOnTheSearchTabApartFromAFolders() throws {
         let (controller, recorder) = Kit.make(tab: .search)
         let titles = views("settings.row.title", in: controller.settingsView).compactMap {
@@ -480,7 +458,6 @@ import Testing
 
     // MARK: Files
 
-    // T-cb0050b5 T-60a2dfc5 F-900 B-DLG-188 B-DLG-189 B-DLG-190 B-DLG-191
     @Test func rendersAndUpdatesFileOpeningPreferences() throws {
         let (controller, recorder) = Kit.make(tab: .files)
         let titles = views("settings.row.title", in: controller.settingsView).compactMap {
@@ -515,7 +492,6 @@ import Testing
             ])
     }
 
-    // T-7f2056be F-901 B-DLG-193
     @Test func choosesTheTerminalAppFromItsPopUpOrGoesBackToTheDefault() async throws {
         let (controller, recorder) = Kit.make(tab: .files)
         let terminal = try Kit.control("Terminal", SettingsAppPopup.self, in: controller)
@@ -551,7 +527,6 @@ import Testing
         #expect(editor.application.appName == "TextEdit")
     }
 
-    // T-5d780e3c T-2b0f3eff T-43a5730e F-901 B-DLG-194 B-DLG-201 B-DLG-204
     @Test func editsTheAppsAlwaysInOpenWithByTheirIDs() async throws {
         let apps = [
             OpenWithApplication(id: "a", appPath: "/Applications/Zed.app", appName: "Zed"),
@@ -587,7 +562,7 @@ import Testing
         #expect(Kit.names(list) == ["Zed", "Nova"])
     }
 
-    // F-900 F-901: the press on a favorite's icon scrolls the page before the release (260): the release still lands on
+    // The press on a favorite's icon scrolls the page before the release (260): the release still lands on
     // the button it pressed, and the grid opens under where the button went.
     @Test func aPressThatScrollsThePageStillOpensTheIconGrid() throws {
         let home = "/Users/demo"
@@ -617,8 +592,8 @@ import Testing
         #expect(!controller.popovers.isOpen)
     }
 
-    // F-900: `.settings-row` keeps its border in its height (a row of a pop-up is 41, the last 40), and the checkbox of
-    // the column that is always on is dimmed (263).
+    // A settings row keeps its line in its height (a row of a pop-up is 41, the last 40), and the checkbox of the
+    // column that is always on is dimmed.
     @Test func rowsCountTheirLineAndTheFixedColumnsCheckboxIsDimmed() throws {
         let (controller, _) = Kit.make(tab: .files)
         let rows = views("settings.row", in: controller.settingsView).compactMap { $0 as? SettingsRowView }
@@ -636,7 +611,7 @@ import Testing
         #expect(boxes.filter(\.isEnabled).count > 1)
     }
 
-    // F-900 F-901: a list row's name starts its gap after the control before it.
+    // A list row's name starts its gap after the control before it.
     @Test func aListRowsNameStartsAfterItsLeadingControl() throws {
         let (controller, _) = Kit.make(tab: .browsing)
         let names = views("settings.list.name", in: controller.settingsView).compactMap { $0 as? FlushTextField }
@@ -646,11 +621,10 @@ import Testing
         #expect(name.frame.minX == leading.frame.maxX + SettingsMetrics.listRowGap)
     }
 
-    // F-900 F-901 B-DLG-191 B-DLG-209: the Files tab as the checkpoint drew it (262-settings-files-app-popup)
+    // The Files tab, row by row, with its app menu.
     @Test func laysTheFilesTabOutAsTheOriginalWithItsAppMenuFoundRowByRow() throws {
         let (controller, _) = Kit.make(tab: .files)
-        // The number sits right-aligned before the room Chromium keeps for a number input's stepper: 48 less 8 of
-        // padding on each side and 15.
+        // The number sits right-aligned before the room kept for a stepper: 48 less 8 of padding on each side and 15.
         let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)
         limit.layoutSubtreeIfNeeded()
         #expect(limit.field.alignment == .right)
@@ -675,8 +649,8 @@ import Testing
         #expect(menu.nsMenu.items[0].image != nil && menu.nsMenu.items[2].image == nil)
     }
 
-    // F-898 B-DLG-198 B-DLG-203: a press on a favorite's icon focuses the button in the row, so the row is selected
-    // and the list shows the accent, as the original's row does when a control in it takes the focus
+    // A press on a favorite's icon focuses the button in the row, so the row is selected
+    // and the list shows the accent
     @Test func aPressOnAFavoritesIconSelectsItsRowWithTheAccent() async throws {
         let home = "/Users/demo"
         let preferences = AppPreferences.defaults(theme: .light).with {
@@ -709,11 +683,11 @@ import Testing
         #expect(!list.rows[2].showsAccent && list.rows[2].isSelected)
     }
 
-    // F-898 B-DLG-203: a press on the icon of a favorite cut by the window's bottom brings its row into view, the
+    // A press on the icon of a favorite cut by the window's bottom brings its row into view, the
     // page going as far as it can toward centring it, so the grid then hangs under the button
-    // (260-settings-browsing-icon-grid: the original's page moves 195 up, to its end).
+    // (the page moves 195 up, to its end).
     // The rows are made anew with the icon chosen: the keyboard stays on the row's new button, so the row keeps the
-    // accent and the keys go on working (a16).
+    // accent and the keys go on working.
     @Test func choosingAFavoritesIconLeavesTheKeyboardOnItsRow() throws {
         let home = "/Users/demo"
         let preferences = AppPreferences.defaults(theme: .light).with {
@@ -763,11 +737,6 @@ import Testing
         icons[1].focusForPress()
         #expect(clip.bounds.minY == end - 20)
     }
-
-    // N/A T-f7150cd1 the Settings window has one layout: the single-panel layout modes are Help's (F-664)
-    // N/A T-418f2d7d T-0a67899e there is no stylesheet or inline style: the controls draw with ThemePalette tokens,
-    // one control height (DesignTokens.controlHeights) and the push button's bezel, checked by the frames above
-    // N/A T-c8bd0b66 T-c91ec44b T-a6ffd8db the Zoom row is not drawn
 }
 
 extension AppPreferences {

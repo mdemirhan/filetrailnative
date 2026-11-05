@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/diskHasTrash.ts and nativeListMounts (packages/native-fs/src/native_volumes.c)
 import Darwin
 import Foundation
 
@@ -14,7 +13,7 @@ public struct Mount: Equatable, Sendable {
 }
 
 public enum MountTable {
-    /// `nativeListMounts`: `getmntinfo(MNT_NOWAIT)`.
+    /// `getmntinfo(MNT_NOWAIT)`.
     public static func list() -> [Mount] {
         let count = getfsstat(nil, 0, MNT_NOWAIT)
         guard count > 0 else { return [] }
@@ -54,7 +53,7 @@ public func makeDiskHasTrash(
         for mount in listMounts() {
             let mountKey = mount.path.lowercased()
             let inside = key == mountKey || key.hasPrefix(mountKey.hasSuffix("/") ? mountKey : mountKey + "/")
-            // JavaScript compares string lengths in UTF-16 units.
+            // The longest mount path holds it, lengths counted in UTF-16 units.
             if inside && (holding == nil || mount.path.utf16.count > (holding?.path.utf16.count ?? 0)) {
                 holding = mount
             }

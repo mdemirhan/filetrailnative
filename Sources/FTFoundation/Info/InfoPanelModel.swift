@@ -1,7 +1,6 @@
-// Port of what apps/desktop/src/renderer/components/GetInfoPanel.tsx and InfoRow.tsx decide to show, apart from how it is drawn
 import Foundation
 
-/// A volume's capacity and free space (`InfoPanelVolume`).
+/// A volume's capacity and free space.
 public struct InfoVolume: Equatable, Sendable {
     public var totalBytes: Int64?
     public var availableBytes: Int64?
@@ -12,7 +11,7 @@ public struct InfoVolume: Equatable, Sendable {
     }
 }
 
-/// Several selected items (`InfoPanelSelection`).
+/// Several selected items.
 public struct InfoSelection: Equatable, Sendable {
     public var count: Int
     public var folderCount: Int
@@ -48,8 +47,8 @@ public struct InfoRow: Equatable, Sendable {
     public var muted: Bool
 }
 
-/// The locale the original formats numbers and dates in: its language alone (Chromium reads the system's languages, not its
-/// region), so "48,611 files" and "Sep 17, 2026, 2:08 PM" on a machine set to a European region.
+/// The locale numbers and dates are formatted in: the app's language alone, not the system's region, so
+/// "48,611 files" and "Sep 17, 2026, 2:08 PM" on a machine set to a European region.
 public enum InfoLocale {
     public static let original: Locale = {
         let language =
@@ -61,7 +60,7 @@ public enum InfoLocale {
 public enum InfoPanelModel {
     public static let pending = "—"
 
-    /// `toLocaleString()`: thousands separators.
+    /// With thousands separators.
     static func integer(_ value: Int, locale: Locale = InfoLocale.original) -> String {
         let formatter = NumberFormatter()
         formatter.locale = locale
@@ -143,7 +142,7 @@ public enum InfoPanelModel {
         return index == 0 ? "/" : String(trimmed.prefix(index))
     }
 
-    /// The rows and the subtitle of one item, in the order of B-INFO-029.
+    /// The rows and the subtitle of one item, in the order of.
     public static func itemContent(
         item: InfoItem, pending isPending: Bool, volume: InfoVolume?, isVolumeRoot: Bool, hasFolderSize: Bool,
         folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared
@@ -243,7 +242,7 @@ public enum InfoPanelModel {
         public var disabled = false
     }
 
-    /// B-INFO-055/056: which quick actions an item gets.
+    /// /056: which quick actions an item gets.
     public static func quickActions(
         item: InfoItem, textEditorName: String, isFavorite: Bool, canFavorite: Bool, copied: QuickAction.ID?,
         shortcut: (ShortcutCommandID) -> String?

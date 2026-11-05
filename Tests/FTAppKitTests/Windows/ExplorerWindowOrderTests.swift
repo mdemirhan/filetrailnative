@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/main/explorerWindows.test.ts and apps/desktop/src/main/windowIpcHandlers.test.ts
 import FTFileSystem
 import FTFoundation
 import Testing
@@ -13,7 +12,6 @@ import Testing
         ExplorerWindowEntry(id: id, window: Window(), windowID: windowID)
     }
 
-    // T-a84c36b5 F-621
     @Test func keepsTheWindowsFrontToBackTheOneFocusedLastInFront() {
         let list = ExplorerWindowOrder<Window>()
         list.add(entry("a", 1), .back)
@@ -29,7 +27,6 @@ import Testing
         #expect(list.count == 2)
     }
 
-    // T-ead73bd2 F-621
     @Test func findsAWindowByItsIDItsNumberAndItself() {
         let list = ExplorerWindowOrder<Window>()
         let a = entry("a", 7)
@@ -47,7 +44,6 @@ import Testing
 @Suite struct PlaceNewWindowTests {
     private let screen = WindowBounds(x: 0, y: 25, width: 1440, height: 875)
 
-    // T-784d1ee5 F-620
     @Test func putsANewWindowAStepDownAndToTheRightTheSameSize() {
         let offset = ExplorerWindowPlacement.newWindowOffset
         #expect(
@@ -56,7 +52,6 @@ import Testing
                 == WindowBounds(x: 100 + offset, y: 120 + offset, width: 900, height: 600))
     }
 
-    // T-733ee08f F-620
     @Test func startsAgainAtTheTopLeftWhenTheStepWouldLeaveTheScreen() {
         #expect(
             ExplorerWindowPlacement.placeNewWindow(
@@ -64,7 +59,6 @@ import Testing
                 == WindowBounds(x: 0, y: 25, width: 900, height: 600))
     }
 
-    // T-a70179ab F-620
     @Test func isNeverBiggerThanTheScreen() {
         #expect(
             ExplorerWindowPlacement.placeNewWindow(
@@ -94,7 +88,6 @@ import Testing
         return (store, channel)
     }
 
-    // T-527d2849 F-608
     @Test func showsAnExplorerWindowTheAppsPreferencesWithItsOwnSession() throws {
         let (store, channel) = try channel()
         store.updateWindowPreferences("window-a", ["treeWidth": .number(333)])
@@ -104,8 +97,6 @@ import Testing
         #expect(channel.preferences(for: 2).treeWidth == 280)
     }
 
-    // T-f1cf1841 F-609
-    // T-f870df59
     @Test func keepsAWindowsOwnKeysToItAndTellsTheOtherWindowsOnlyTheSharedOnes() throws {
         var changes: [Changed] = []
         let (store, channel) = try channel { changes.append($0) }
@@ -123,7 +114,6 @@ import Testing
         #expect(changes.last?.change == PreferencesChange(patch: ["theme": .string("light")], senderID: 2))
     }
 
-    // T-0d731708 F-638 F-642
     @Test func asksTheControllerAboutTheWindowAsking() async throws {
         let setup = try WindowSetup.withWindows(2)
         let back = setup.windows[0]
@@ -143,8 +133,6 @@ import Testing
         .ready(mode: .copy, sourcePaths: [path], sourceEntries: [:], capturedAt: capturedAt)
     }
 
-    // T-cd0d21e0 F-638
-    // T-eb9edd5d
     @Test func keepsOneClipboardForEveryWindowAndTellsTheOthersOfAChange() {
         var told: [(Int?, CopyPasteClipboard)] = []
         let clipboard = SharedClipboard { told.append(($0, $1)) }
@@ -162,8 +150,6 @@ import Testing
         #expect(told.first?.1 == contents)
     }
 
-    // T-fb9b840b F-638
-    // T-f6731037
     @Test func followsWhatItHolds() {
         var told: [(Int?, CopyPasteClipboard)] = []
         let clipboard = SharedClipboard { told.append(($0, $1)) }
@@ -176,8 +162,6 @@ import Testing
         #expect(told.last?.1 == moved)
     }
 
-    // T-6087f9c6 F-638
-    // B-CLIP-012 T-14f9df04 T-42ef2e11 T-f6731037
     @Test func doesntTakeACopyMadeSinceInAnotherWindowOff() {
         var told: [(Int?, CopyPasteClipboard)] = []
         let clipboard = SharedClipboard { told.append(($0, $1)) }
@@ -195,7 +179,6 @@ import Testing
         #expect(told.isEmpty)
     }
 
-    // T-16f9a4d9 F-628
     @Test func handsOverTheAnswerOfTheWindowAskedAndNoOthers() async {
         let requests = WindowTabsRequests(scheduler: HandScheduler())
         let sent = Sent()
@@ -217,7 +200,6 @@ import Testing
 
     private struct Gone: Error {}
 
-    // T-e66d7657 F-628
     @Test func givesUpOnAWindowThatDoesntAnswerInTimeOrCantBeAsked() async {
         let scheduler = HandScheduler()
         let requests = WindowTabsRequests(scheduler: scheduler)

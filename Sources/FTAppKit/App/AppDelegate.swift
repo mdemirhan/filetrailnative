@@ -1,9 +1,8 @@
-// Port of apps/desktop/src/main/main.ts (launch, Dock, open-file, quit) and the Dock parts of explorerWindowController.ts
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The app shell. Launch order, as the original's: the logger, the state store, the window host, the native appearance,
+/// The app shell. Launch order: the logger, the state store, the window host, the native appearance,
 /// the services, the menu and the Dock menu, the startup windows, then the items that came before them.
 @MainActor
 public final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -18,21 +17,21 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
 
     public private(set) var logger: AppLogger?
     public private(set) var store: AppStateStore?
-    /// One directory service for the app, and the one folder watch the windows share (P2-01).
+    /// One directory service for the app, and the one folder watch the windows share.
     public let directoryService = DirectoryService()
     public private(set) var folderWatches: FolderWatches?
 
-    /// The theme and accent every window draws with, followed live (B-DLG-232, 233).
+    /// The theme and accent every window draws with, followed live (233).
     public let appearance = AppearanceModel.shared
     /// Settings, Help, About and Acknowledgements.
     public private(set) var pageWindows: PageWindows!
     /// What a window changes of the preferences goes through here: it is stored, and told to the appearance, to every
-    /// explorer window and to the menu. P5-01's toolbar and P6-04's Settings change the look through it.
+    /// explorer window and to the menu. The toolbar and Settings change the look through it.
     public private(set) var preferenceChannel: WindowPreferenceChannel?
 
-    /// Quit and close while busy. P3-05's write coordinator fills `quit.hooks.activeOperation` and `shutDown`.
+    /// Quit and close while busy. The write coordinator fills `quit.hooks.activeOperation` and `shutDown`.
     public let quit = QuitCoordinator()
-    /// The file operations: the crash journal's recovery, the write coordinator, each window's side (P3-05).
+    /// The file operations: the crash journal's recovery, the write coordinator, each window's side.
     private(set) var writeOperations: AppWriteOperations?
     private var userDataDirectory: URL?
 
@@ -227,7 +226,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         self.diskImages = diskImages
         windows.mountDiskImage = { await diskImages.open($0) }
 
-        // The journal's recovery runs before any window can write (P3-05).
+        // The journal's recovery runs before any window can write.
         let writes = AppWriteOperations(
             userData: userDataDirectory ?? AppStatePaths.userDataDirectory(), directoryService: directoryService,
             windows: windows, trash: .live(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
@@ -255,7 +254,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             // The running operation stops (not Empty Trash), waited for up to 15 s; the folder sizes stop measuring.
             await self?.writeOperations?.shutDown()
             self?.folderWatches?.stopAll()
-            // No fd goes on searching after the app (P5-07).
+            // No fd goes on searching after the app.
             SearchRuntime.shared.close()
             self?.logger?.info("[filetrail] app stop", .context(["phase": .string("before-quit")]))
             self?.logger?.flush()
@@ -295,7 +294,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// A preference changed in a window (`app:updatePreferences`): the appearance follows a new theme or accent, every
-    /// explorer window and Help are told, and the menu is built again with new keys or a new text editor (B-DLG-233).
+    /// explorer window and Help are told, and the menu is built again with new keys or a new text editor.
     private func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
         appearance.preferencesChanged(preferences, change)
         explorerWindows.preferencesChanged(preferences, change)

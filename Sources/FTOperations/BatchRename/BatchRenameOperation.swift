@@ -1,5 +1,3 @@
-// Port of the "writeOperation:batchRename" handler, prepareBatchRenameOperation and executeBatchRenameOperation
-// (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFoundation
 import Foundation
 
@@ -17,9 +15,8 @@ extension WriteCoordinator {
             request, fileSystem: fileSystem, signal: signal, onItemStart: onItemStart, journal: journal)
     }
 
-    /// `writeOperation:batchRename`: renames several items at once, each in its own folder. What the request asks
-    /// is checked while the write slot is held for it, so nothing starts meanwhile; a refusal throws with the
-    /// sentence to show.
+    /// Renames several items at once, each in its own folder. What the request asks is checked while the write slot
+    /// is held for it, so nothing starts meanwhile; a refusal throws with the sentence to show.
     @discardableResult
     public func batchRename(_ payload: BatchRenameRequest, window: any WriteOperationWindow) async throws
         -> WriteOperationHandle
@@ -31,7 +28,7 @@ extension WriteCoordinator {
         }
     }
 
-    /// `prepareBatchRenameOperation`: what the request asks is checked before the write slot is taken: nothing
+    /// What the request asks is checked before the write slot is taken: nothing
     /// protected, no item twice. An item asked to keep its own name is left out.
     func prepareBatchRename(_ payload: BatchRenameRequest) async throws -> BatchRenameRequest {
         var request = payload
@@ -56,7 +53,6 @@ extension WriteCoordinator {
         return request
     }
 
-    /// `executeBatchRenameOperation`.
     func executeBatchRename(
         _ request: BatchRenameRequest, _ operation: LocalWriteOperation, _ fileSystem: LocalBatchRenameFileSystem
     ) async {

@@ -1,5 +1,3 @@
-// Port of the cases of apps/desktop/src/renderer/lib/explorerAppUtils.test.ts and App.undo.test.tsx on what an operation
-// says when it ends and how an Undo follows the clipboard (shouldRenderCopyPasteResultDialog, followClipboardThroughWrite)
 import Foundation
 import Testing
 
@@ -15,7 +13,7 @@ struct WriteEndMatrixTests {
             failedItemCount: failed, skippedItemCount: skipped, cancelledItemCount: cancelled, items: items)
     }
 
-    // T-8339f67a B-CLIP-125: an Undo or Redo gets the sheet when an item has a note, when it failed or went part way, or
+    // An Undo or Redo gets the sheet when an item has a note, when it failed or went part way, or
     // when it was stopped after doing something; nothing to read otherwise.
     @Test(arguments: ["undo", "redo"]) func anUndoGetsTheSheetOnlyWithSomethingToRead(_ action: String) {
         let noted = WriteEndSummary.Item(sourcePath: "/a", destinationPath: "/b", status: "completed", note: true)
@@ -27,7 +25,7 @@ struct WriteEndMatrixTests {
         #expect(!WriteEndNotices.needsResultSheet(summary(action, "cancelled", cancelled: 1)))
     }
 
-    // T-f9caa915: an item skipped at run time was not what the review planned: the sheet tells of it.
+    // An item skipped at run time was not what the review planned: the sheet tells of it.
     @Test func aPartialResultOfARuntimeSkipKeepsTheSheet() {
         func skipped(_ reason: String) -> WriteEndSummary {
             summary(
@@ -45,13 +43,13 @@ struct WriteEndMatrixTests {
         #expect(!WriteEndNotices.needsResultSheet(planned))
     }
 
-    // T-b07dc4c5: a rename of several that skipped an item says so, even though the rest went.
+    // A rename of several that skipped an item says so, even though the rest went.
     @Test func aRenameOfSeveralThatSkippedAnItemGetsTheSheet() {
         #expect(WriteEndNotices.needsResultSheet(summary("batch_rename", "completed", completed: 2, skipped: 1)))
         #expect(!WriteEndNotices.needsResultSheet(summary("batch_rename", "completed", completed: 2)))
     }
 
-    // T-7e45ff37: a Trash stopped part way is never told as done, and needs the sheet.
+    // A Trash stopped part way is never told as done, and needs the sheet.
     @Test func aStoppedTrashIsNeverToldAsDone() {
         let stopped = WriteResultNoticeInput(
             error: nil, totalItemCount: 3, completedItemCount: 1, failedItemCount: 0, skippedItemCount: 0,
@@ -70,7 +68,7 @@ struct WriteEndMatrixTests {
             items: items.map { WriteEffectItem(sourcePath: $0.0, destinationPath: $0.1, status: "completed") })
     }
 
-    // T-ec337946 B-CLIP-048: what an Undo sent to the Trash leaves the clipboard, what it moved is followed.
+    // What an Undo sent to the Trash leaves the clipboard, what it moved is followed.
     @Test(arguments: ["undo", "redo"]) func anUndoIsFollowedByTheClipboard(_ action: String) {
         let copied = ClipboardRules.set(.copy, ["/d/gone.txt", "/d/moved.txt", "/d/other.txt"], capturedAt: "t")
         let followed = ClipboardRules.followThroughWrite(
@@ -79,7 +77,7 @@ struct WriteEndMatrixTests {
         #expect(followed.capturedAt == "t")
     }
 
-    // B-CLIP-048: a cut any of whose items an Undo touched is cancelled; one it left alone stays.
+    // A cut any of whose items an Undo touched is cancelled; one it left alone stays.
     @Test func anUndoThatTouchedACutCancelsIt() {
         let cut = ClipboardRules.set(.cut, ["/d/a.txt", "/d/b.txt"], capturedAt: "t")
         #expect(ClipboardRules.followThroughWrite(cut, undo([("/d/a.txt", nil)])) == .empty)

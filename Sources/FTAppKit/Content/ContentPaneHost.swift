@@ -1,5 +1,3 @@
-// Port of the props apps/desktop/src/renderer/components/ContentPane.tsx hands its views (entries, metadata, selection,
-// columns, sort and the gestures they report), as one seam the views of the folder share
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -28,7 +26,7 @@ struct ListColumnState: Equatable {
     static let standard = ListColumnState(preferences: .defaults())
 }
 
-/// Where the drag and drop package (P5-08) plugs in: rows and the pane's background adopt the automation seams and
+/// Where the drag and drop package plugs in: rows and the pane's background adopt the automation seams and
 /// call these.
 struct ContentDragHooks {
     /// The files a drag of these entries carries (nil: the entries' own).
@@ -115,7 +113,7 @@ protocol ContentPaneHost: AnyObject {
     func activate(_ entries: [DirectoryEntry], newTab: Bool)
     /// A header asked for the folder to be ordered by this column.
     func requestSort(_ sortBy: SortByPreference)
-    /// The view's sort descriptor was set directly (the capture's sort step): the folder is put in exactly this order.
+    /// The view's sort descriptor was set directly (a scenario's sort step): the folder is put in exactly this order.
     func sortSetFromOutside(_ sortBy: SortByPreference, ascending: Bool)
     /// A column was resized (drag, arrow keys or double-click): the widths to keep.
     func columnWidthsChanged(_ widths: [DetailColumn: Double])
@@ -123,7 +121,7 @@ protocol ContentPaneHost: AnyObject {
     func contextMenu(for entries: [DirectoryEntry]?) -> NSMenu?
     var dragHooks: ContentDragHooks { get }
 
-    // MARK: The clipboard and drops (P5-08)
+    // MARK: The clipboard and drops
 
     /// The items on the clipboard, while Settings marks them; nil for no marks.
     var clipboardMarks: ClipboardMarks? { get }
@@ -132,7 +130,7 @@ protocol ContentPaneHost: AnyObject {
     func clipboardMark(for path: String) -> ContentClipboardMark?
     /// What a drop on the row of `path` would do, while a drag is over it.
     func dropState(for path: String) -> DropTargetState?
-    /// While search results show: the Folder column, the marks in names and the results' order (P5-07); nil for a
+    /// While search results show: the Folder column, the marks in names and the results' order; nil for a
     /// folder.
     var search: ContentSearchContext? { get }
 }
@@ -178,11 +176,11 @@ protocol FolderPane: NSViewController {
     /// A filter nothing matches is said in place of the view: what the view draws besides its items (the List's
     /// column header) goes meanwhile.
     func showNothingMatches(_ shown: Bool)
-    /// The items on the clipboard changed, or marks were switched on or off: their rows are drawn again (P5-08).
+    /// The items on the clipboard changed, or marks were switched on or off: their rows are drawn again.
     func clipboardMarksChanged()
-    /// The items on the clipboard were just copied or cut: their rows flash (P5-08).
+    /// The items on the clipboard were just copied or cut: their rows flash.
     func flashClipboardMarks()
-    /// Where the rows of `paths` are drawn, in `dragView`'s coordinates, for the drag's images (P5-08).
+    /// Where the rows of `paths` are drawn, in `dragView`'s coordinates, for the drag's images.
     func dragPlacements(for paths: [String]) -> [String: FileDragPlacement]
     /// The view a drag of items starts from.
     var dragView: NSView { get }

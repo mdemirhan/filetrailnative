@@ -1,11 +1,10 @@
-// Port of the undo:prepare and undo:start handlers, executeUndoOperation, undoNotAnswered, describeUnaskedQuestion and
-// answerWithin (apps/desktop/src/main/bootstrap/writeOperations.ts): Undo and Redo through the write slot
+// Undo and Redo through the write slot
 import FTFileSystem
 import FTFoundation
 import Foundation
 import os
 
-/// What an Undo (or Redo) was looked at for (`undoQuestionsAsked`'s value).
+/// What an Undo (or Redo) was looked at for.
 struct UndoLook {
     var direction: UndoDirection
     var entryId: Int
@@ -61,7 +60,7 @@ public struct UndoPrepared: Equatable, Sendable {
 }
 
 extension WriteCoordinator {
-    /// `UNDO_CHECK_WITHIN_MS`: how long the disks may take to answer when an Undo looks at what it would ask, when it
+    /// How long the disks may take to answer when an Undo looks at what it would ask, when it
     /// is chosen and again as it starts. As it starts it holds the write slot, and a disk that doesn't answer (a
     /// network share gone away) mustn't keep every other operation waiting; when chosen, ⌘Z mustn't seem to do
     /// nothing.
@@ -154,7 +153,6 @@ extension WriteCoordinator {
         }
     }
 
-    /// `executeUndoOperation`.
     func executeUndo(
         _ history: UndoHistory, _ direction: UndoDirection, _ entry: UndoEntry, changedAgreed: Set<String>,
         _ operation: LocalWriteOperation, _ fileSystem: any UndoFileSystem

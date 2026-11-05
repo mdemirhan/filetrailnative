@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/infoPreview.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -15,8 +14,6 @@ struct InfoPreviewTests {
         sizeStatus: .ready,
         permissionMode: 0o644)
 
-    // T-1a0ba4b2
-    // B-INFO-004
     @Test func usesTheItemsPropertiesOnceTheyMatchTheTarget() {
         let resolved = InfoPreview.resolve(
             path: Self.entry.path, currentPath: "/Users/demo", entries: [Self.entry], metadataByPath: [:],
@@ -24,8 +21,6 @@ struct InfoPreviewTests {
         #expect(resolved == InfoPreview.Resolved(item: Self.properties, pending: false))
     }
 
-    // T-f59e299b
-    // B-INFO-003 B-INFO-004
     @Test func previewsAListedItemFromTheListingWhileItsPropertiesLoad() throws {
         var stale = Self.properties
         stale.path = "/Users/demo/other.txt"
@@ -41,8 +36,6 @@ struct InfoPreviewTests {
         #expect(resolved.item.createdAt == nil)
     }
 
-    // T-19c2787c
-    // B-INFO-003 B-INFO-007 B-INFO-195
     @Test func previewsTheFolderOnScreenWhenNothingIsSelected() throws {
         let resolved = try #require(
             InfoPreview.resolve(
@@ -54,8 +47,6 @@ struct InfoPreviewTests {
         #expect(resolved.item.sizeStatus == .deferred)
     }
 
-    // T-c1ae5c70
-    // B-INFO-005
     @Test func hasNothingToShowForAnUnknownPath() {
         #expect(
             InfoPreview.resolve(
@@ -65,8 +56,6 @@ struct InfoPreviewTests {
             InfoPreview.resolve(path: nil, currentPath: "/x", entries: [], metadataByPath: [:], properties: nil) == nil)
     }
 
-    // T-714e79e7
-    // B-INFO-007
     @Test func labelsKindsBeforeTheSystemsDescriptionIsKnown() {
         #expect(InfoPreview.fallbackKindLabel(kind: .bundle, fileExtension: "app") == "Application")
         #expect(InfoPreview.fallbackKindLabel(kind: .bundle, fileExtension: "key") == "Package")

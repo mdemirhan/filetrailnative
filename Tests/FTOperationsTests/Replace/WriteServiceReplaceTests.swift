@@ -1,5 +1,3 @@
-// Port of the Replace cases of packages/core/src/fs/writeService.runtime.test.ts and writeService.analysis.test.ts
-// (their other cases are in WriteService/WriteServiceRuntimeTests.swift), through the write service
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -68,7 +66,6 @@ private let overwriteFiles = CopyPastePolicy(file: .overwrite, directory: .merge
 private let overwriteFilesAndFolders = CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .skip)
 
 struct WriteServiceReplaceTests {
-    // T-30a95e18 F-339 F-522
     @Test func asksAgainWhenTheItemAReplaceAnswerWasAboutChangesJustBeforeTheReplace() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/a.txt", .file(size: 1)), ("/target", .directory()), ("/target/a.txt", .file(size: 5)),
@@ -104,7 +101,6 @@ struct WriteServiceReplaceTests {
 
     // On a disk with no Trash a folder replaced is deleted for good: one that took in an item since the review, or
     // while the question about deleting it was open, is kept, never deleted with an item the person didn't see.
-    // T-16d927c2 F-343 F-501
     @Test(arguments: ["afterAnalysis", "answer"])
     func keepsAFolderThatTookInAnItemInsteadOfDeletingItForGood(at: String) async throws {
         let fileSystem = MockWriteServiceFileSystem([
@@ -139,7 +135,6 @@ struct WriteServiceReplaceTests {
 
     // The folder a question about the destination showed wasn't counted by the review: it is counted before the
     // no-Trash question, so an item it takes in meanwhile still keeps it.
-    // T-0973956f F-343 F-501
     @Test func keepsAFolderAgreedToAtAQuestionThatTookInAnItemWhileDeletingItWasAsked() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/F", .directory()), ("/source/F/a.txt", .file(size: 1)), ("/target", .directory()),
@@ -168,7 +163,6 @@ struct WriteServiceReplaceTests {
         #expect(result?.items.first { $0.sourcePath == "/source/F" }?.status == .failed)
     }
 
-    // T-89d07db7 F-522
     @Test func keepsTheReviewsChoicesForItemsInsideAFolderMergedAtRuntime() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/D", .directory()), ("/source/D/c.txt", .file(size: 1)), ("/source/D/d.txt", .file(size: 2)),
@@ -194,7 +188,6 @@ struct WriteServiceReplaceTests {
         #expect(fileSystem.readNode("/target/D/d.txt")?.size == 2)
     }
 
-    // T-f21a582c F-521
     @Test func startsExecutionFromAnExistingAnalysisIdAndResolvesRuntimeConflicts() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -236,7 +229,6 @@ struct VolumeReplaceTests {
         Disk.list(folder).filter { !$0.hasPrefix(".") }
     }
 
-    // T-b2ed4325 F-482
     @Test(.tags(.diskImage), .diskImages)
     func replacesAFileThereRemovingTheOriginalOnlyOnceTheNewOneIsInPlace() async throws {
         try await withTemporaryDirectory { root in
@@ -261,7 +253,6 @@ struct VolumeReplaceTests {
         }
     }
 
-    // T-632ee76c F-342
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func replacesEmptyFilesInsideAMergedFolder(kind: DiskImage.Kind) async throws {
         try await DiskImage.withSharedVolume(kind) { stick in
@@ -279,7 +270,6 @@ struct VolumeReplaceTests {
 }
 
 struct PackageReplaceTests {
-    // T-e5058a23 F-494 F-342
     @Test func replacesTheExistingOneWholeKeepingNothingOfIt() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, trash) = (root.path + "/src", root.path + "/dst", root.path + "/trash")

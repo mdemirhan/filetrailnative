@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/components/InlineRenameField.tsx
 import AppKit
 import FTFoundation
 
@@ -77,7 +76,7 @@ final class RenameFieldCell: NSTextFieldCell {
     }
 }
 
-/// The reason a name was refused, shown under the field (`.inline-rename-error`).
+/// The reason a name was refused, shown under the field.
 final class RenameErrorView: NSView {
     private let text = ListLabel()
     private var theme = AppearanceModel.shared.theme
@@ -164,7 +163,7 @@ final class InlineRenameField: NSTextField, NSTextFieldDelegate {
     private var errorView: RenameErrorView?
     private let ring = CALayer()
     private let ringClip = CALayer()
-    /// The List's row cell is no taller than the field and cuts the ring off above and below it (`.details-name`).
+    /// The List's Name cell is no taller than the field and cuts the ring off above and below it.
     var ringClippedToHeight = false {
         didSet { updateRing() }
     }
@@ -360,7 +359,7 @@ final class InlineRenameField: NSTextField, NSTextFieldDelegate {
         view.isHidden = false
     }
 
-    /// The window or the pane changed size: the box on screen stays under the field (B-SEL-134). One that scrolling
+    /// The window or the pane changed size: the box on screen stays under the field. One that scrolling
     /// hid stays hidden.
     func repositionError() {
         guard isShowingError, let view = errorView, let host = window?.contentView else { return }

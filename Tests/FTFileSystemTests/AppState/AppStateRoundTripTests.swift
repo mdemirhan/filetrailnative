@@ -1,4 +1,4 @@
-// No TypeScript source: a file in the Electron app's shape is read, sanitized and written back with the same meaning
+// A full app-state.json is read, sanitized and written back with the same meaning
 import FTFoundation
 import Foundation
 import Testing
@@ -8,8 +8,7 @@ import Testing
 struct AppStateRoundTripTests {
     typealias Kit = StateTestKit
 
-    /// A hand-made `app-state.json` with a value for every preference key, two windows and a window closed last, as the
-    /// Electron app writes one.
+    /// A hand-made `app-state.json` with a value for every preference key, two windows and a window closed last.
     static let everyKey = """
         {
           "preferences": {
@@ -80,10 +79,8 @@ struct AppStateRoundTripTests {
         }
         """
 
-    // The reference writes a file this way, and the store reads and rewrites it; the meaning is the same after one pass
-    // and the text does not move after the second.
-    // F-123 F-125
-    // B-INFO-200
+    // The store reads and rewrites a file like this; the meaning is the same after one pass and the text does not move
+    // after the second.
     @Test func aFileWithEveryKeyReadsSanitizesAndWritesBackWithTheSameMeaning() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)
@@ -108,7 +105,7 @@ struct AppStateRoundTripTests {
             #expect(second.explorerWindows() == first.explorerWindows())
             #expect(second.lastClosedWindow() == first.lastClosedWindow())
 
-            // Every key the reference wrote is still there with the value it had.
+            // Every key the file had is still there with the value it had.
             let original = try #require(Kit.json(Self.everyKey)["preferences"]?.object)
             let rewritten = try #require(Kit.readFile(path)["preferences"]?.object)
             for (key, value) in original where key != "batchRenameSettings" {
@@ -130,8 +127,7 @@ struct AppStateRoundTripTests {
         }
     }
 
-    // The keys come out in the order the original's object literals give them.
-    // F-123 F-125
+    // The keys come out in a fixed order.
     @Test func writesKeysInTheOriginalsOrder() throws {
         let state = try AppStateReader.read(data: Data(Self.everyKey.utf8), defaults: .defaults(theme: .auto))
         let text = try AppStateJSON.serialize(state)
@@ -153,7 +149,6 @@ struct AppStateRoundTripTests {
     }
 
     // The tolerant reading: a file that is not JSON gives the defaults, and is replaced at the next write.
-    // F-126
     @Test func aDamagedFileGivesTheDefaultsAndIsReplacedAtTheNextWrite() throws {
         try Kit.withFolder { folder in
             let path = Kit.statePath(folder)

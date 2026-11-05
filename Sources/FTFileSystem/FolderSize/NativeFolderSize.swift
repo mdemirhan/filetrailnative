@@ -1,9 +1,8 @@
-// Port of packages/native-fs/index.js (the single-flight wrapper) over the walker of native_foldersize.c
 import CFileTrail
 import Foundation
 import os
 
-/// What the folder size jobs need of a walker: the original's `getFolderSize` and `cancelFolderSize`.
+/// What the folder size jobs need of a walker: `getFolderSize` and `cancelFolderSize`.
 @MainActor
 public protocol FolderSizeNative: AnyObject {
     /// Starts measuring `path` now, and returns what the measurement ends with. `onFinished` is handed the
@@ -105,7 +104,7 @@ public final class NativeFolderSize: FolderSizeNative {
         return FolderSizeError(code: code, message: "\(code): \(description), \(syscall) '\(path)'")
     }
 
-    /// One item as measuring its folder counts it (`nativeItemSize`), so what a delete took off the folders
+    /// One item as measuring its folder counts it, so what a delete took off the folders
     /// that held it is what they counted of it.
     public nonisolated static func itemSize(_ path: String) async throws -> ItemSize {
         try await withCheckedThrowingContinuation { continuation in
@@ -131,8 +130,8 @@ public final class NativeFolderSize: FolderSizeNative {
 }
 
 /// Tells the consumer the finished list stopped being empty. Called from a worker thread, as often as folders finish:
-/// the consumer is woken at most once per `interval`, so it takes folders in batches (as the original's polling did,
-/// but only when there are some) and the workers pay almost nothing for being watched.
+/// the consumer is woken at most once per `interval`, so it takes folders in batches (but only
+/// when there are some) and the workers pay almost nothing for being watched.
 private final class FolderWalkNotifier: @unchecked Sendable {
     static let interval: DispatchTimeInterval = .milliseconds(20)
 

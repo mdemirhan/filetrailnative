@@ -1,5 +1,4 @@
-// Self-test of FTTestSupport's DiskImage.withSharedVolume (no TypeScript source: the original mounted one disk per
-// test file in beforeAll)
+// Self-test of FTTestSupport's DiskImage.withSharedVolume
 import Darwin
 import FTTestSupport
 import Foundation

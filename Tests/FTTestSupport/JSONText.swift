@@ -1,8 +1,8 @@
-// JSON text exactly as JavaScript's `JSON.stringify(value, null, 2)` writes it, so a Swift tool and a
-// Bun tool can produce byte-identical files (Foundation's JSONEncoder spaces and escapes differently).
+// JSON text exactly as JavaScript's `JSON.stringify(value, null, 2)` writes it, byte for byte
+// (Foundation's JSONEncoder spaces and escapes differently).
 
 public enum JSONText: Sendable {
-    /// A JSON value; an object keeps its keys in the order given, as a JavaScript object does.
+    /// A JSON value; an object keeps its keys in the order given.
     public indirect enum Value: Sendable, Equatable {
         case null
         case bool(Bool)

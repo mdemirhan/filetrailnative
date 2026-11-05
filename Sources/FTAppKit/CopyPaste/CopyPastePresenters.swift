@@ -1,6 +1,3 @@
-// Port of where apps/desktop/src/renderer/components/AppDialogs.tsx shows the review (:309-330) and the result
-// (:512-537), the single-conflict alert of CopyPasteReviewDialog.tsx (:179-226), and of requestCopyLikePlanStart,
-// retryFailedCopyPasteItems and dismissCopyPasteDialog (apps/desktop/src/renderer/hooks/useExplorerActions.ts)
 import AppKit
 import FTFoundation
 import FTOperations
@@ -11,7 +8,7 @@ import FTOperations
 final class CopyPasteReviewPresenter: PasteReviewPresenting {
     static let shared = CopyPasteReviewPresenter()
 
-    /// `reviewStartInFlightRef`: the analysis being started; a second start of it is refused.
+    /// The analysis being started; a second start of it is refused.
     private var startInFlight: String?
     /// The time the rows' dates are written against.
     var now: () -> Double = { AppClock.now.epochMilliseconds }
@@ -42,7 +39,7 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         }
     }
 
-    /// `requestCopyLikePlanStart`: true once the operation is under way; false when it didn't start (busy, an
+    /// True once the operation is under way; false when it didn't start (busy, an
     /// expired analysis, a refusal, which is told), so the review can let the person try again.
     func start(
         _ report: CopyPasteAnalysisReport, policy: CopyPastePolicy, overrides: [CopyPasteNodeOverride],
@@ -125,8 +122,7 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
 }
 
 /// What a finished operation with something to read shows: the result sheet for the copy-like actions, batch rename,
-/// Undo and Redo; the original's alert for the others (`CopyPasteDialog` with `buildCopyPasteResultMessage` and
-/// `buildCopyPasteResultDetailLines`).
+/// Undo and Redo; an alert with the message and its detail lines for the others.
 @MainActor
 final class CopyPasteResultPresenter: WriteResultPresenting {
     static let shared = CopyPasteResultPresenter()
@@ -158,8 +154,8 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         let sheet = CopyPasteResultSheet(text: text)
         let scrim = CopyPasteDialogs.present(sheet, placement: .sheet, on: tab, in: window)
         self.sheet = sheet
-        // The sheet holds the folder's changes from outside, but not the operation's own read of the folder
-        // (`refreshDirectory`), which the write's end asks for right after this: it goes through under the sheet, so
+        // The sheet holds the folder's changes from outside, but not the operation's own read of the folder,
+        // which the write's end asks for right after this: it goes through under the sheet, so
         // what the operation made shows, selected, behind it.
         Task { @MainActor [weak tab, weak scrim] in
             guard let tab, let scrim, !scrim.isDismissed, tab.folderChangesHeld else { return }
@@ -174,7 +170,7 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         }
     }
 
-    /// `retryFailedCopyPasteItems`: the failed and never-started top-level items, analyzed again into the same folder
+    /// The failed and never-started top-level items, analyzed again into the same folder
     /// with the retry policy (files that arrived are skipped, half-copied folders are merged), which the review opens
     /// with and a retry with nothing to review runs with. A retried move clears its cut once it moved them. A rename
     /// is tried again from its sheet.

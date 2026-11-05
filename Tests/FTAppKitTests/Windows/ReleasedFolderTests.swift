@@ -1,5 +1,4 @@
-// A tab that let go of its folder has an empty currentPath in the original (useExplorerTabs.ts, useExplorerActions.ts,
-// useExplorerDragAndDrop.ts, useExplorerSearchController.ts, useExplorerShortcuts.ts): nothing acts on the folder it left
+// A tab that let go of its folder has no current folder: nothing acts on the folder it left
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -11,7 +10,7 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct ReleasedFolderTests {
-        // B-TREE-060, `backgroundTakesDrop`: a drag from elsewhere has no folder to go to, over or on the pane.
+        // A drag from elsewhere has no folder to go to, over or on the pane.
         @Test func aFileDragFromElsewhereIsNotTaken() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(harness.folder.appending("Alpha").path)
@@ -26,7 +25,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `resolvePasteDestinationPath`: no folder to paste into, by the keys or the menu.
+        // No folder to paste into, by the keys or the menu.
         @Test func pasteHasNoDestination() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -37,7 +36,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `disambiguateTabLabels` with the empty currentPath of both: no clash.
+        // Two tabs without a folder: their labels don't clash.
         @Test func twoReleasedTabsAreBothFavorites() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -75,8 +74,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `openContextMenu`: empty space has no menu without a folder.
-        // B-VIEW-205
+        // Empty space has no menu without a folder.
         @Test func emptySpaceHasNoMenu() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -86,7 +84,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `closeTabsOnUnmountedDisks`: the folder let go of is not the tab's any more, only its tree root counts.
+        // The folder let go of is not the tab's any more, only its tree root counts.
         @Test func aDiskUnderAReleasedFolderLeavesTheTab() async throws {
             let harness = try ExplorerHarness.windowless()
             harness.startsTheTreeAtTheDisk()
@@ -120,7 +118,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `navigateToParentFolder`, the toolbar's button: `parentDirectoryPath("")` is the top of the disk.
+        // The toolbar's button: `parentDirectoryPath("")` is the top of the disk.
         @Test func theToolbarsEnclosingFolderOpensTheTopOfTheDisk() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -135,7 +133,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `refreshDirectory`: a write that ends with no folder on screen reads none.
+        // A write that ends with no folder on screen reads none.
         @Test func aWriteEndingReadsNoFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

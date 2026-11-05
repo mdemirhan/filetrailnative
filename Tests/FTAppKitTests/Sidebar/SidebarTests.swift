@@ -1,5 +1,3 @@
-// Ports the UI cases of components/TreePane.test.tsx, TreePane.rows.test.tsx and the sidebar cases of
-// App.menusAndTree.test.tsx on an explorer window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -100,7 +98,6 @@ extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct SidebarTests: SidebarTesting {
         // A sidebar with the keyboard draws its selection in the accent only while its window has the focus.
-        // B-TREE-017
         @Test func theSelectionGoesGrayWithTheWindowInTheBackground() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(listed(harness, ""))
@@ -125,8 +122,6 @@ extension ExplorerWindowlessTests {
             window.close()
         }
 
-        // T-cdf3463c T-2caf696c T-9aa3fb64 T-01d458a9 F-728 F-729 B-TREE-001 B-TREE-004
-        // B-TREE-034
         @Test func drawsFavoritesInTheirOwnSectionAboveTheFoldersOrAsRowsOfTheTree() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(listed(harness, ""))
@@ -152,7 +147,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-69575bf4 F-733 B-TREE-007 B-TREE-008
         @Test func rowsHaveTheOriginalsHeightIndentAndPadding() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(listed(harness, ""))
@@ -175,7 +169,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-8cb3e771 T-764e53b9 T-8722d999 F-730 B-TREE-006 B-TREE-066
         @Test func aHeaderOpensAndClosesItsSection() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(listed(harness, ""))
@@ -193,7 +186,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-cf9aab91 F-731 B-TREE-163 B-TREE-164
         @Test func aDiskThatCanBeEjectedHasAnEjectButtonAndOtherPlacesHaveNone() async throws {
             let harness = try ExplorerHarness.windowless()
             SidebarVolumes.shared.override = [
@@ -224,8 +216,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-ace3a16c T-263ef807 T-5ac955ab B-TREE-064 B-TREE-065
-        // B-TREE-193
         @Test func aRightClickRingsOnlyThatRowAndLeavesTheSelection() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(listed(harness, ""))

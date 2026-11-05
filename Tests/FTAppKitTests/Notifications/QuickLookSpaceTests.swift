@@ -1,5 +1,4 @@
-// Ports the Quick Look cases of App.menusAndTree.test.tsx on an explorer window that is never shown: Space sent through
-// the window to the focused list
+// Space sent through the window to the focused list
 import AppKit
 import FTFoundation
 import FTTestSupport
@@ -32,7 +31,7 @@ extension ExplorerWindowlessTests {
             return tab
         }
 
-        // T-0db05884 F-686 F-145: Space previews the selected item, and Space again closes the panel
+        // Space previews the selected item, and Space again closes the panel
         @Test func spacePreviewsTheSelectedItemWithQuickLookAndSpaceAgainClosesIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)

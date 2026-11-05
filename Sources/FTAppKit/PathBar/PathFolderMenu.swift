@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/components/PathbarFolderMenu.tsx, shown as a system menu
 import AppKit
 import FTFoundation
 

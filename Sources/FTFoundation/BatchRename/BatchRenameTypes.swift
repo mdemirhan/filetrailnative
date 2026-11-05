@@ -1,4 +1,3 @@
-// Port of the types and constants of apps/desktop/src/shared/batchRename.ts
 import Foundation
 
 public enum BatchRenameMode: String, Codable, Sendable, CaseIterable {

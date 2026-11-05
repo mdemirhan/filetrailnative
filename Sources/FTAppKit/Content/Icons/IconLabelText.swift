@@ -1,10 +1,9 @@
-// Port of fitIconLabel and its measurer (apps/desktop/src/renderer/lib/iconLabel.ts:55-177): the name under an icon,
-// wrapped on two lines and shortened in the middle when longer, measured with TextKit in the label's font and width
+// The name under an icon, wrapped on two lines and shortened in the middle when longer, measured with TextKit in the
+// label's font and width
 import AppKit
 import FTFoundation
 
-/// The text of names under icons, laid out as `.icon-item-label` lays it out: centred lines of the label's width, at
-/// most two.
+/// The text of names under icons, laid out as the label lays it out: centred lines of the label's width, at most two.
 @MainActor
 enum IconLabelText {
     /// The label's font: 13 px (12 px with Finder's sizes), the sans font.
@@ -22,7 +21,7 @@ enum IconLabelText {
 
         init(layout: IconGridLayout) {
             font = IconLabelText.font(layout)
-            // `.icon-label-measurer`: the label's width less its padding.
+            // The label's width less its padding.
             container = NSTextContainer(
                 size: NSSize(width: layout.labelTextWidth, height: CGFloat.greatestFiniteMagnitude))
             container.lineFragmentPadding = 0
@@ -68,7 +67,7 @@ enum IconLabelText {
         Double((text as NSString).size(withAttributes: [.font: wrapper(density).font]).width)
     }
 
-    /// `fitIconLabel`: the name whole when it fits on two lines, shortened in the middle otherwise. The first line stays
+    /// The name whole when it fits on two lines, shortened in the middle otherwise. The first line stays
     /// as it wraps, after the tag dots if there are any; what follows is shortened to one line. Remembered per density,
     /// indent and name.
     static func fit(
@@ -92,7 +91,7 @@ enum IconLabelText {
         if lines.count <= IconLabel.lineCount { return name }
         let string = name as NSString
         let firstLength = lines.first.map { $0.location + $0.length } ?? 0
-        // Half a pixel of slack, as the original's measurer allows.
+        // Half a pixel of slack.
         let lineWidth = layout.labelTextWidth + 0.5
         let rest = IconLabel.shortenInMiddle(
             name: string.substring(from: firstLength), extension: fileExtension

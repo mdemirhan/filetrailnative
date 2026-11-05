@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/bottomStack.ts and the placement rules of ToastViewport.tsx and
-// CopyPasteProgressCard.tsx
 import AppKit
 import FTFoundation
 
@@ -10,7 +8,7 @@ final class NotificationOverlay: NSView {
     let toasts = ToastCenter()
     let progress = ProgressCardModel()
 
-    /// The bars at the bottom of the window the stack rests above (`.content-pathbar-row`, `.info-row.open`).
+    /// The bars at the bottom of the window the stack rests above: the path bar row, and the Info Row while it's open.
     var bars: () -> [NSView] = { [] }
     private var theme = AppearanceModel.shared.theme
     private var themeObservation: AppearanceModel.Observation?
@@ -35,7 +33,7 @@ final class NotificationOverlay: NSView {
         return window?.contentView?.subviews.lazy.compactMap { $0 as? NotificationOverlay }.first
     }
 
-    /// Shows a notification in the window (`pushToast`); false when no window can take one.
+    /// Shows a notification in the window; false when no window can take one.
     @discardableResult
     static func push(_ kind: ToastKind, title: String, message: String? = nil, in window: NSWindow?) -> Bool {
         guard let overlay = overlay(for: window) else { return false }

@@ -1,4 +1,3 @@
-// Port of the bounds recording of apps/desktop/src/main/explorerWindowController.ts (WINDOW_BOUNDS_SAVE_DELAY_MS, recordBounds, scheduleBoundsSave)
 import FTFoundation
 import Foundation
 
@@ -57,7 +56,7 @@ public final class WindowBoundsRecorder: @unchecked Sendable {
         self.record = record
     }
 
-    /// `scheduleBoundsSave`: the window moved, resized, zoomed, unzoomed or left full screen.
+    /// The window moved, resized, zoomed, unzoomed or left full screen.
     public func windowBoundsDidChange() {
         lock.lock()
         defer { lock.unlock() }

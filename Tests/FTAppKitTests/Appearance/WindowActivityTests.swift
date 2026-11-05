@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/windowActivity.test.ts and the selection colors of styles.css (F-932)
 import AppKit
 import FTFoundation
 import Testing
@@ -12,7 +11,6 @@ import Testing
         var has = true
     }
 
-    // T-955da199 F-932 F-649
     @Test func marksTheWindowInactiveWhileItDoesNotHaveTheFocus() {
         let window = makeOffscreenWindow()
         let center = NotificationCenter()
@@ -33,7 +31,6 @@ import Testing
         activity.stop()
     }
 
-    // T-a21ed124 F-932 F-649
     @Test func startsInactiveWhenTheWindowOpensInTheBackground() {
         let window = makeOffscreenWindow()
         let center = NotificationCenter()
@@ -44,7 +41,7 @@ import Testing
         #expect(activity.isActive)
     }
 
-    // F-932 only the notifications of the window tracked count
+    // Only the notifications of the window tracked count
     @Test func ignoresOtherWindows() {
         let window = makeOffscreenWindow()
         let other = makeOffscreenWindow()
@@ -59,14 +56,14 @@ import Testing
         activity.stop()
     }
 
-    // F-932 F-649: a window not on screen has not been made key
+    // A window not on screen has not been made key
     @Test func aWindowThatWasNeverMadeKeyIsInactive() {
         let activity = WindowActivity(window: makeOffscreenWindow(), center: NotificationCenter())
         #expect(!activity.isActive)
         activity.stop()
     }
 
-    // F-932 selection colors: the accent with white text in the focused pane, grey otherwise
+    // Selection colors: the accent with white text in the focused pane, grey otherwise
     @Test func selectsWithTheAccentInTheFocusedPaneOfTheActiveWindow() {
         for appearance in ThemeAppearance.allCases {
             let theme = Theme(appearance: appearance, accentHex: "#a550a7")
@@ -84,8 +81,8 @@ import Testing
         }
     }
 
-    // F-932 the grey selection is #dcdce1 in the light theme and #2a2d36 in the dark one, as the built stylesheet has it:
-    // its minifier drops the source's later #3a3a3e rule (styles.css:6284)
+    // The grey selection is #dcdce1 in the light theme and #2a2d36 in the dark one, as the built stylesheet has it:
+    // its minifier drops the source's later #3a3a3e rule
     @Test func theUnfocusedSelectionColors() {
         #expect(Theme(appearance: .light, accentHex: "#007aff").palette.bgActiveInactive.hexString == "#dcdce1")
         #expect(ThemePalette.dark.bgActiveInactive.hexString == "#2a2d36")

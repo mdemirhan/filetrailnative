@@ -1,5 +1,3 @@
-// Port of the props apps/desktop/src/renderer/components/ExplorerWorkspace.tsx hands its panes (folder, history,
-// selection, view, preferences and the commands), as one seam the native panes share
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -27,7 +25,7 @@ struct ExplorerViewState: Equatable, Sendable {
     var foldersFirst: Bool
 }
 
-/// The search a tab shows (P5-07): where it runs from, what it looks for, and whether it is still running. The toolbar's
+/// The search a tab shows: where it runs from, what it looks for, and whether it is still running. The toolbar's
 /// title ("Searching “X”") and the sidebar's search mode follow it.
 struct ExplorerSearchState: Equatable, Sendable {
     var rootPath: String
@@ -63,7 +61,7 @@ struct ExplorerServices {
     var volumeWatcher: VolumeWatcher?
     /// What Copy and Cut put on the app's clipboard.
     var clipboard: SharedClipboard
-    /// Preference changes, as every window sees them (P4-03 makes the app's one).
+    /// Preference changes, as every window sees them.
     var preferences: WindowPreferenceChannel?
 
     /// The services the app delegate runs; what it doesn't have yet is made here once.
@@ -77,7 +75,7 @@ struct ExplorerServices {
             preferences: fallbackChannel(app))
     }
 
-    /// Set once by the app (sharedFileRequest to P4-03: `ExplorerServices.installed = …` in `startServices`).
+    /// Set once by the app (`ExplorerServices.installed = …` in `startServices`).
     static var installed: ExplorerServices?
 
     private static let fallbackDirectoryService = DirectoryService()
@@ -134,8 +132,7 @@ final class ExplorerWindowObservation {
 
 /// What every pane of an explorer window (sidebar, content, path bar, Info Row, Info panel, toolbar) gets of the
 /// window: its folder and history, the selection and which pane has the keyboard, how the tab shows its folder, the
-/// window's panels and preferences, the app's services, and the commands. `MainWindowController` is it. Members
-/// stay as they are; later work packages add to it.
+/// window's panels and preferences, the app's services, and the commands. `MainWindowController` is it.
 @MainActor
 protocol ExplorerWindowContext: AnyObject {
     /// The window the panes are in.
@@ -144,7 +141,7 @@ protocol ExplorerWindowContext: AnyObject {
     // MARK: Folder and history
 
     var currentFolder: URL { get }
-    /// The folder on screen; empty once the tab has let go of it (`currentPath` of the original is then empty).
+    /// The folder on screen; empty once the tab has let go of it.
     var shownFolderPath: String { get }
     /// Opens the folder above the one on screen, as the toolbar's Enclosing Folder does.
     func goToParentFolder()
@@ -160,7 +157,7 @@ protocol ExplorerWindowContext: AnyObject {
 
     /// Carries out a command, as the menu bar, a key or a toolbar button sends it.
     func perform(_ command: RendererCommand)
-    /// Whether the command can run now (`canRunRendererCommand`).
+    /// Whether the command can run now.
     func canPerform(_ command: RendererCommand) -> Bool
 
     // MARK: Selection and focus
@@ -185,7 +182,7 @@ protocol ExplorerWindowContext: AnyObject {
     // MARK: Search
 
     /// While the tab shows search results, the folder the search runs from (`searchRootPath` in search mode);
-    /// nil otherwise. P5-07 starts and ends searches.
+    /// nil otherwise.
     var searchRootPath: String? { get }
     /// The search on screen while the tab shows results; nil otherwise.
     var searchState: ExplorerSearchState? { get }

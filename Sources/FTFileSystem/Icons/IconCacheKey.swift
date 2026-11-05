@@ -1,7 +1,6 @@
-// Port of nativeIconCacheKey, SPECIAL_FOLDER_NAMES and GENERIC_ICON_KINDS (apps/desktop/src/renderer/lib/fileIcons.tsx), isVolumeRootPath (renderer/lib/volumes.ts)
 import Foundation
 
-/// The kinds of listing entry an icon is asked for (`kind` of the original's directory entries).
+/// The kinds of listing entry an icon is asked for.
 public enum IconEntryKind: Sendable, Equatable {
     case file, directory, symlinkFile, symlinkDirectory, bundle, other
 }
@@ -37,8 +36,7 @@ public struct IconEntry: Sendable, Equatable {
     }
 }
 
-/// The plain icons shared by a whole kind of item, drawn from a sample item of that kind
-/// (`generic` in the original's `system:getFileIcon`).
+/// The plain icons shared by a whole kind of item, drawn from a sample item of that kind.
 public enum GenericIconKind: String, Sendable, CaseIterable {
     case folder, emptyFolder, file, executable
 

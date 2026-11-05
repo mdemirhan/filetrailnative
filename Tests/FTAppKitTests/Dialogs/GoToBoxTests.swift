@@ -1,5 +1,3 @@
-// Ports by feature the cases of apps/desktop/src/renderer/components/GoToFolderDialog.test.tsx and the Go To cases of
-// App.menusAndTree.test.tsx and App.tabs.test.tsx, on a real tab whose window is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -80,8 +78,6 @@ extension ExplorerWindowlessTests {
             return box
         }
 
-        // T-0bbe034c T-a910de54 F-843 F-844 F-847 F-856 B-DLG-001 B-DLG-002 B-DLG-003 B-DLG-004 B-DLG-021 B-DLG-031
-        // B-DLG-014 B-DLG-016 B-NAV-108
         @Test func opensEmptyListsTheFoldersInUseAndReturnGoesToTheTopOne() async throws {
             let (harness, tab, _) = try await open()
             harness.store.recordFolderVisit(path(harness, "Beta"), kind: .stay)
@@ -111,7 +107,7 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // B-DLG-008: Tab goes round the box and stays in it, the rows included, and Return on a row opens that folder.
+        // Tab goes round the box and stays in it, the rows included, and Return on a row opens that folder.
         @Test func tabGoesRoundTheBoxAndReturnOnARowOpensIt() async throws {
             let (harness, tab, _) = try await open()
             for name in ["Alpha", "Beta"] { harness.store.recordFolderVisit(path(harness, name), kind: .stay) }
@@ -159,7 +155,7 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // B-DLG-008: the × is a button of the box like the others: with the keyboard on it, Return or Space empties the
+        // The × is a button of the box like the others: with the keyboard on it, Return or Space empties the
         // field, and the keyboard goes back there. With nothing typed it isn't there, so Tab no longer stops on it.
         @Test func returnOrSpaceOnTheClearButtonEmptiesTheField() async throws {
             let (harness, tab, _) = try await open()
@@ -182,7 +178,6 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // T-3ddf1311 F-848 F-849 B-DLG-027 B-DLG-029 B-DLG-033 B-DLG-036
         @Test func findsAFolderFromAFewLettersMarksThemAndOpensTheOneClicked() async throws {
             let (harness, tab, _) = try await open()
             for name in ["Alpha", "Beta", "Gamma"] { harness.store.recordFolderVisit(path(harness, name), kind: .stay) }
@@ -207,7 +202,6 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // T-ffd68e0d F-850 B-DLG-037 B-DLG-038
         @Test func forgetsTheSelectedFolderWithCommandDeleteButNotAFavoriteNeverOpened() async throws {
             let (harness, tab, _) = try await open()
             harness.store.recordFolderVisit(path(harness, "Alpha"), kind: .stay)
@@ -229,8 +223,6 @@ extension ExplorerWindowlessTests {
 
         // An opened folder chosen from the list that turns out gone leaves the list of the box, still up with the
         // error, at once.
-        // B-DLG-038 B-DLG-039 B-NAV-111
-        // T-cf60aff8
         @Test func aGoneFolderLeavesTheListOfTheBoxStillUp() async throws {
             let (harness, tab, _) = try await open()
             let gone = harness.folder.appending("Gone")
@@ -251,8 +243,6 @@ extension ExplorerWindowlessTests {
 
         // A Go To that fails leaves the folder on screen with "Couldn’t open this folder" and the read's message over
         // it, until the next folder opens.
-        // B-DLG-013 B-NAV-110
-        // B-NAV-118
         @Test func aFailedGoToShowsTheErrorOverTheFolderOnScreen() async throws {
             let (harness, tab, _) = try await open()
             let before = tab.folder
@@ -273,7 +263,6 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // T-82891b64 T-ecb997da F-857 F-858 F-859 F-860 F-592 B-DLG-041 B-DLG-042 B-DLG-043 B-DLG-048 B-DLG-049
         @Test func completesAPathFolderByFolderAndOpensIt() async throws {
             let (harness, tab, timers) = try await open()
             let box = try openBox(tab)
@@ -307,7 +296,6 @@ extension ExplorerWindowlessTests {
         }
 
         // What is submitted is trimmed, and ~ is the home folder.
-        // T-60be886a T-337b2091 B-DLG-015 B-NAV-109
         @Test func expandsTheHomeFolderWhenSubmitting() async throws {
             let (harness, tab, _) = try await open()
             let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -319,8 +307,6 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // T-17987532 T-682ba66d T-6418c592 F-852 F-853 F-854 B-DLG-005 B-DLG-009 B-DLG-012 B-DLG-013 B-DLG-040
-        // B-DLG-014 B-DLG-063 B-NAV-108
         @Test func showsTheReadErrorClosesOnEscapeAndOpensEmptyAgain() async throws {
             let (harness, tab, _) = try await open()
             let before = tab.folder
@@ -356,7 +342,6 @@ extension ExplorerWindowlessTests {
 
         // A press on the box itself goes to the box: only the backdrop closes it, and what was typed stays. Move To is the
         // same box under another title, which is the box's too.
-        // B-DLG-010
         @Test func aPressOnTheBoxOrTheMoveToBoxsTitleKeepsItOpen() async throws {
             let (harness, tab, _) = try await open()
             harness.layout(tab)
@@ -387,7 +372,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The keyboard comes back to the field when it falls out of the box.
-        // T-74355cd6 B-DLG-006
         @Test func theKeyboardComesBackToTheField() async throws {
             let (harness, tab, _) = try await open()
             let box = try openBox(tab)
@@ -400,8 +384,6 @@ extension ExplorerWindowlessTests {
         }
 
         // While the box is up the tab's commands wait.
-        // T-70f2c752 F-855 B-DLG-064 B-NAV-112
-        // B-SEL-172 T-fc829ef9
         @Test func theTabsCommandsWaitWhileTheBoxIsUp() async throws {
             let (harness, tab, _) = try await open()
             harness.layout(tab)

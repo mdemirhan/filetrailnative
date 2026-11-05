@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/favorites.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -6,8 +5,6 @@ import Testing
 struct FavoritesTests {
     static let home = "/Users/demo"
 
-    // T-599e45b7 F-732
-    // B-TREE-034
     @Test func buildsDefaultFavoritesInTheRequestedOrderLeavingHomeMacintoshHDAndTheTrashToLocations() {
         #expect(
             Favorites.defaults(homePath: Self.home) == [
@@ -20,8 +17,6 @@ struct FavoritesTests {
         #expect(Favorites.defaults(homePath: "") == [FavoritePreference(path: "/Applications", icon: .applications)])
     }
 
-    // T-a8edbb95 F-731
-    // B-TREE-020
     @Test func listsHomeMacintoshHDAndTheTrashUnderLocationsThenTheDisksMounted() {
         let volumes = [
             SidebarVolume(path: "/Volumes/Backup", name: "Backup", isLocal: true, canEject: true),
@@ -42,8 +37,6 @@ struct FavoritesTests {
             ])
     }
 
-    // T-ffcc48a5 F-729
-    // B-TREE-003 B-TREE-021
     @Test func showsLocationsAfterFavoritesInTheTreeItsPlacesAsRowsWithoutFolders() {
         let locations = Favorites.locations(
             volumes: [SidebarVolume(path: "/Volumes/Backup", name: "Backup", isLocal: true, canEject: true)],
@@ -80,7 +73,6 @@ struct FavoritesTests {
         #expect(separate.visibleItemIDs.isEmpty)
     }
 
-    // T-88a6a54c F-738
     @Test func putsADraggedFavoriteJustBeforeOrAfterAnother() {
         let favorites = [
             FavoritePreference(path: "/Applications", icon: .applications),
@@ -118,8 +110,6 @@ struct FavoritesTests {
             Favorites.reorder(favorites, moved: "/Applications", target: "/Missing", position: .before) == favorites)
     }
 
-    // T-4e9e3ea2 B-TREE-030
-    // B-NAV-083
     @Test func recognizesMacOSRefusingToListTheTrash() {
         let refusal = "EPERM: operation not permitted, scandir '/Users/demo/.Trash'"
         #expect(Favorites.isTrashListingRefused(path: "/Users/demo/.Trash", error: refusal, homePath: Self.home))
@@ -135,7 +125,6 @@ struct FavoritesTests {
                 path: "/Users/demo/.Trash", error: "Operation Not Permitted", homePath: Self.home))
     }
 
-    // T-3e7f9b72 B-TREE-033 F-732
     @Test func infersCuratedIconsForCommonAddedFolders() {
         #expect(Favorites.create(path: "/Users/demo/Music", homePath: Self.home).icon == .music)
         #expect(Favorites.create(path: "/Users/demo/Projects", homePath: Self.home).icon == .projects)
@@ -156,7 +145,6 @@ struct FavoritesTests {
         return node
     }
 
-    // T-16f90fcb F-729
     @Test func includesASyntheticFavoritesRootAheadOfTheFilesystemTree() {
         let nodes = TreeNodes([
             node("/Users/demo", expanded: true, loaded: true, children: ["/Users/demo/src"]),
@@ -174,12 +162,11 @@ struct FavoritesTests {
         #expect(presentation.items[.favoritesRoot]?.icon == .star)
         #expect(presentation.items[.favorite("/Users/demo/Documents")]?.icon == .documents)
         #expect(presentation.items[.filesystem("/Users/demo/src")]?.depth == 1)
-        // The heading's depth and a favorite's (B-TREE-007).
+        // The heading's depth and a favorite's.
         #expect(presentation.items[.favoritesRoot]?.depth == 0)
         #expect(presentation.items[.favorite("/Users/demo/Documents")]?.depth == 1)
     }
 
-    // T-8eb7708a B-TREE-009
     @Test func keepsFavoritesFlatEvenWhenTheFilesystemTreeContainsDescendants() {
         let nodes = TreeNodes([
             node("/Users/demo", expanded: true, loaded: true, children: ["/Users/demo/Documents"]),
@@ -196,7 +183,6 @@ struct FavoritesTests {
         #expect(!presentation.visibleItemIDs.contains(.favorite("/Users/demo/Documents/Subfolder")))
     }
 
-    // T-b44008b1 T-1aad8fe9 F-837 B-TREE-035
     @Test func addsAtTheEndRemovesThatPathOnlyAndRefusesTheTrash() {
         let favorites = Favorites.defaults(homePath: Self.home)
         let added = Favorites.adding("/Users/demo/Music", to: favorites, homePath: Self.home)

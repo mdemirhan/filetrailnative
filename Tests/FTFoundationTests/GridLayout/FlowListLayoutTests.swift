@@ -1,5 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/flowListLayout.test.ts and virtualization.test.ts, and checks the Compact List's
-// math against the golden recorded from the reference (tools/parity/golden/flow-list-layout.ts)
 import FTTestSupport
 import Foundation
 import Testing
@@ -8,16 +6,14 @@ import Testing
 
 struct FlowListLayoutTests {
     static let layout = DesignTokens.flowList(density: .standard)
-    /// Finder's sizes have the reference's compact rows: 24 points, columns 252 wide.
+    /// Finder's sizes have compact rows: 24 points, columns 252 wide.
     static let finder = DesignTokens.flowList(density: .finder)
 
-    // T-dfa350d4 F-776 B-VIEW-031
     @Test func usesTheDetailsViewRowPitchSoBothViewsHaveTheSameDensity() {
         #expect(Self.layout.rowHeight == DesignTokens.details(density: .standard).rowHeight)
         #expect(Self.finder.rowHeight == DesignTokens.details(density: .finder).rowHeight)
     }
 
-    // T-9796e9b1 F-776 B-VIEW-031
     @Test func returnsTheCorrectColumnStepForEitherDensity() {
         #expect(Self.layout.columnStep == Self.layout.itemWidth + Self.layout.columnGap)
         #expect(Self.finder.columnStep == Self.finder.itemWidth + Self.finder.columnGap)
@@ -31,33 +27,27 @@ struct FlowListLayoutTests {
             maxScrollLeft: maxScrollLeft)
     }
 
-    // T-99e7a81a B-VIEW-037
     @Test func keepsTheCurrentScrollWhenTheSelectedItemIsAlreadyFullyVisible() {
         #expect(Self.reveal(310, 24) == 310)
     }
 
-    // T-48e5acb1 B-VIEW-037
     @Test func scrollsLeftToRevealAColumnThatMovedOutOfViewToTheLeft() {
         #expect(Self.reveal(620, 10) == 0)
     }
 
-    // T-53ebfc45 B-VIEW-037
     @Test func scrollsRightJustEnoughToRevealAColumnThatMovedOutOfViewToTheRight() {
         #expect(Self.reveal(0, 36) == 262)
     }
 
-    // T-3e02a4a6 B-VIEW-037
     @Test func usesTheCompactColumnWidthWhenRevealingCompactListItems() {
         #expect(Self.reveal(0, 36, finder: true) == 102)
     }
 
-    // T-ac80a981 B-VIEW-037
-    // B-NAV-166
     @Test func clampsTheRevealScrollOffsetToTheAvailableBounds() {
         #expect(Self.reveal(0, 120, maxScrollLeft: 1400) == 1400)
     }
 
-    // F-776 F-777 B-VIEW-033 B-VIEW-038: column-major places inside `padding: 8 10 4`; an item hugs its icon and name.
+    // Column-major places inside `padding: 8 10 4`; an item hugs its icon and name.
     @Test func itemsFillAColumnThenTheNext() {
         let style = FlowItemStyle.make()
         #expect(Self.layout.cellFrame(index: 0, rowsPerColumn: 10) == GridRect(x: 10, y: 8, width: 292, height: 28))
@@ -161,8 +151,6 @@ struct FlowListLayoutTests {
         }
     }
 
-    // T-dfa350d4 T-9796e9b1 T-99e7a81a T-48e5acb1 T-53ebfc45 T-3e02a4a6 T-ac80a981 T-5a9c708a T-40d31bcf T-1c606029
-    // T-e85b82eb F-776
     @Test func theCompactListMathMatchesTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "flow-list-layout")
         #expect(cases.count >= 500)
@@ -178,61 +166,50 @@ struct VirtualizationTests {
         Virtualization.rowsPerColumn(containerHeight: height, layout: layout)
     }
 
-    // T-5a9c708a B-VIEW-032
     @Test func computesRowsForAStandardViewport() {
         // 500 - 10 - 4 + 4 = 490; floor(490 / 44) = 11.
         #expect(Self.rows(500) == 11)
     }
 
-    // T-935bc5ae B-VIEW-032
     @Test func computesRowsWhenScrollbarHasAlreadyReducedClientHeight() {
         #expect(Self.rows(492) == 10)
     }
 
-    // T-0f2a46ca B-VIEW-032
     @Test func returns1ForZeroOrNegativeContainerHeight() {
         #expect(Self.rows(0) == 1)
         #expect(Self.rows(-10) == 1)
     }
 
-    // T-d059b4d6 B-VIEW-032
     @Test func handlesExactFitWithNoRemainder() {
         #expect(Self.rows(494) == 11)
     }
 
-    // T-776dc5fe B-VIEW-032
     @Test func dropsARowWhen1pxShortOfExactFit() {
         #expect(Self.rows(493) == 10)
     }
 
-    // T-ab454290 B-VIEW-032
     @Test func handlesTheScrollbarBoundaryCorrectly() {
         #expect(Self.rows(494) == 11)
         #expect(Self.rows(486) == 10)
     }
 
-    // T-53facfff B-VIEW-032
     @Test func worksWithCompactLayout() {
         #expect(Self.rows(500, Self.compact) == 13)
     }
 
-    // T-b3d2b8e0 B-VIEW-032
     @Test func worksWithCompactLayoutReducedByScrollbar() {
         #expect(Self.rows(492, Self.compact) == 13)
         #expect(Self.rows(472, Self.compact) == 12)
     }
 
-    // T-21cb2091 B-VIEW-032
     @Test func handlesVerySmallContainerGracefully() {
         #expect(Self.rows(50) == 1)
     }
 
-    // T-e2bda432 B-VIEW-032
     @Test func handlesContainerSmallerThanASingleRow() {
         #expect(Self.rows(20) == 1)
     }
 
-    // T-318f48ce B-VIEW-032
     @Test func handlesARangeOfHeightsMatchingExpectedRowCounts() {
         #expect(Self.rows(230) == 5)
         #expect(Self.rows(229) == 4)
@@ -242,33 +219,28 @@ struct VirtualizationTests {
         #expect(Self.rows(669) == 14)
     }
 
-    // T-e85b82eb B-VIEW-010
     @Test func computesAStableVirtualRangeWithOverscan() {
         #expect(
             Virtualization.range(itemCount: 100, itemSize: 40, viewportSize: 200, scrollOffset: 160, overscan: 2)
                 == VirtualRange(startIndex: 2, endIndex: 11))
     }
 
-    // T-24b079aa B-VIEW-010
     @Test func returnsAnEmptyRangeWhenThereAreNoItems() {
         #expect(
             Virtualization.range(itemCount: 0, itemSize: 40, viewportSize: 200, scrollOffset: 0, overscan: 2)
                 == VirtualRange(startIndex: 0, endIndex: 0))
     }
 
-    // T-75399507 B-VIEW-010
     @Test func clampsStaleScrollOffsetsSoANewShorterListStillRendersImmediately() {
         #expect(
             Virtualization.range(itemCount: 3, itemSize: 40, viewportSize: 200, scrollOffset: 4000, overscan: 2)
                 == VirtualRange(startIndex: 0, endIndex: 3))
     }
 
-    // T-1c606029 B-VIEW-034
     @Test func chunksItemsIntoEvenRowGroups() {
         #expect(Virtualization.chunkIntoRows([1, 2, 3, 4, 5], columns: 2) == [[1, 2], [3, 4], [5]])
     }
 
-    // T-40d31bcf B-VIEW-033
     @Test func buildsColumnMajorRowsForVerticalFirstLayouts() {
         #expect(
             Virtualization.columnMajorRows([1, 2, 3, 4, 5, 6, 7], rowsPerColumn: 3) == [[1, 4, 7], [2, 5], [3, 6]])

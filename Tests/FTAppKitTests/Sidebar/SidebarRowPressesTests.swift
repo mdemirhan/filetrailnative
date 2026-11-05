@@ -1,5 +1,4 @@
-// Ports the press, focus and scroll cases of components/TreePane.test.tsx, TreePane.rows.test.tsx and the Tab case of
-// App.menusAndTree.test.tsx: each test presses the row's list as the window does, with the sidebar's clock moved by hand
+// Each test presses the row's list as the window does, with the sidebar's clock moved by hand
 import AppKit
 import FTFoundation
 import Foundation
@@ -79,7 +78,6 @@ extension ExplorerWindowlessTests {
 
         // MARK: Clicks
 
-        // B-TREE-052
         @Test func aClickOpensTheRowAfterTheDelayAndAnotherClickStartsItAgain() async throws {
             let opened = try await open()
             let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
@@ -153,7 +151,6 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // T-f872fab2
         @Test func aSingleClickExpandsTheFolderOnlyWithTheSettingOn() async throws {
             let opened = try await open()
             let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
@@ -177,7 +174,6 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-TREE-054 T-c018e887
         @Test func aDoubleClickOnAFolderTogglesAndOpensItOnce() async throws {
             let opened = try await open()
             let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
@@ -195,7 +191,6 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-TREE-054 T-9371df14
         @Test func aDoubleClickOnAFavoriteOpensItOnceAndExpandsNothing() async throws {
             let opened = try await open()
             let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
@@ -219,7 +214,6 @@ extension ExplorerWindowlessTests {
 
         // MARK: ⌘-click
 
-        // B-TREE-057 T-83af561d
         @Test func aCommandClickOpensTheFolderInANewTabAndLeavesThisOneAlone() async throws {
             let opened = try await open()
             let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
@@ -243,7 +237,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-TREE-057: nothing while a dialog holds the tabs.
+        // Nothing while a dialog holds the tabs.
         @Test func aCommandClickOpensNoTabWhileADialogIsUp() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
@@ -257,7 +251,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-TREE-057: at the limit the notice says why.
+        // At the limit the notice says why.
         @Test func aCommandClickAtTheTabLimitTellsTheLimit() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
@@ -274,7 +268,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Empty space
 
-        // T-c0357324 B-TREE-028 T-6f692b35: a press off the rows lets go of the folder on screen: in the separate list's
+        // A press off the rows lets go of the folder on screen: in the separate list's
         // empty space and beside a header's button, and on the spacer at the top of the list favorites are rows of.
         @Test func aPressOffTheRowsClearsTheSelection() async throws {
             let opened = try await open()
@@ -321,7 +315,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-TREE-015: VoiceOver hears a row's selection, level and disclosure, and the lists' names.
+        // VoiceOver hears a row's selection, level and disclosure, and the lists' names.
         @Test func rowsTellVoiceOverTheirStateAndTheListsHaveNames() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
@@ -368,7 +362,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: The chevron
 
-        // B-TREE-070 T-945f8c88: a folder's chevron opens the branch and changes nothing else.
+        // A folder's chevron opens the branch and changes nothing else.
         @Test func theChevronTogglesTheBranchWithoutSelectingOrOpening() async throws {
             let opened = try await open()
             let (tab, controller, clock) = (opened.tab, opened.controller, opened.clock)
@@ -391,7 +385,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-TREE-070 T-945f8c88: an alias of a folder has nothing to open, so its chevron is disabled.
+        // An alias of a folder has nothing to open, so its chevron is disabled.
         @Test func anAliasRowsChevronIsDisabledWithNoSubfolders() async throws {
             let harness = try ExplorerHarness.windowless()
             try FileManager.default.createSymbolicLink(
@@ -408,7 +402,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-TREE-070: the headings say their section, an empty Favorites that there are none, and a row being read waits.
+        // The headings say their section, an empty Favorites that there are none, and a row being read waits.
         @Test func aHeadingsChevronNamesItsSectionAndAnEmptyOneSaysSo() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
@@ -445,9 +439,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: The keyboard
 
-        // T-9f474d2b T-fc0da8c2 T-6625a938 F-740 B-TREE-108 B-TREE-111 B-TREE-113
-        // T-945f8c88 F-736 B-TREE-070 B-TREE-012: a folder opens to show what is inside it
-        // B-NAV-224 B-SEL-099 B-SEL-100 B-SEL-101 B-TREE-106
+        // A folder opens to show what is inside it
         @Test func theArrowKeysMoveOpenAndCloseBranchesInTheFocusedSidebar() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
@@ -465,7 +457,6 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // T-fda19010
         @Test func theSidebarIsFocusedWhileEitherOfItsListsHasTheKeyboard() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
@@ -489,7 +480,6 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-TREE-118 T-6ab02fc0
         @Test func tabAndShiftTabGoBetweenTheSidebarAndTheListAndOtherModifiersDoNot() async throws {
             let opened = try await open()
             let (tab, controller) = (opened.tab, opened.controller)
@@ -560,7 +550,6 @@ extension ExplorerWindowlessTests {
             return controller.tree.isFullyVisible(try #require(controller.tree.index(ofItem: selected)))
         }
 
-        // B-TREE-138 T-e11a44ff
         @Test func aSectionToggledByHandLeavesTheScrollForTheSettleTimeOnly() async throws {
             let (harness, tab, clock) = try await open()
             let controller = sidebar(tab)
@@ -613,7 +602,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-e4d47b84
         @Test func theFirstSectionToggledAfterATabComesBackLeavesTheScroll() async throws {
             let (harness, tab, _) = try await open()
             let group = try #require(tab.group)
@@ -639,7 +627,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-7074ac30
         @Test func hiddenFilesMovingTheSelectedRowOffScreenBringItBack() async throws {
             let harness = try ExplorerHarness.windowless()
             // Hidden folders come ahead of the first row: shown, they push it out of the list.

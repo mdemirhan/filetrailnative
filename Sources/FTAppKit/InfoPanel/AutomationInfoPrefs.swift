@@ -1,5 +1,3 @@
-// Port of the preference keys propertiesOpen, detailRowOpen and autoCalculateFolderSizes of apps/desktop/src/shared/appPreferences.ts,
-// as capture scenarios set them (`prefs` steps)
 #if DEBUG
     import FTFoundation
 

@@ -1,10 +1,10 @@
-// Port of the string comparisons of packages/core/src/fs/explorerService.ts (names are sorted by `NameKeys`):
-//   compareEntriesByName: a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
-//   the Kind column: a.localeCompare(b)
+// The string comparisons of listings (names are sorted by `NameKeys`):
+//   names: numbers by value, case and accents ignored (`compareNumericBase`)
+//   the Kind column: case matters last (`compareVariant`)
 import Foundation
 
 /// A name prepared for many comparisons: plain ASCII names (nearly all of them) are compared on their bytes
-/// with the root collation's order, which is what JavaScript's localeCompare uses; others go to Foundation.
+/// with the root collation's order; others go to Foundation.
 struct CollationKey: Sendable {
     let text: String
     /// The UTF-8 bytes of an ASCII text; nil for any other.
@@ -23,7 +23,7 @@ struct CollationKey: Sendable {
 }
 
 enum Collation {
-    /// `localeCompare(b)`: case matters last (a lowercase letter comes before its capital).
+    /// The plain comparison: case matters last (a lowercase letter comes before its capital).
     static func compareVariant(_ left: CollationKey, _ right: CollationKey) -> Int {
         if let a = left.ascii, let b = right.ascii {
             return a.withUnsafeBufferPointer { a in
@@ -39,7 +39,7 @@ enum Collation {
     }
 
     /// The text with the characters `CollationTable` knows replaced by the ASCII ones they compare as, so
-    /// that what Foundation compares differs from the reference's collation only in the characters it
+    /// that what Foundation compares differs from the root collation only in the characters it
     /// doesn't know (other scripts, emoji).
     static func foldingKnown(_ text: String) -> String {
         guard text.unicodeScalars.contains(where: { $0.value >= 0x80 }) else { return text }
@@ -66,8 +66,8 @@ enum Collation {
     static func weight(of byte: UInt8) -> UInt8 { weights[Int(byte)] }
 
     /// The primary weight of each ASCII character in the root collation (ICU), 0 for those it ignores
-    /// (control characters). Letters share a weight with their capitals. Recorded from the reference's
-    /// localeCompare; the listing-sort golden checks it.
+    /// (control characters). Letters share a weight with their capitals.
+    /// A frozen table; the listing-sort golden checks it.
     private static let weights: [UInt8] = {
         var table = [UInt8](repeating: 0, count: 128)
         let order: [UInt8] = Array("\t\n\u{0B}\u{0C}\r _-,;:!?.'\"()[]{}@*/\\&#%`^+<=>|~$".utf8)
@@ -131,7 +131,7 @@ enum Collation {
     }
 }
 
-/// A sort that keeps the order of items that compare equal, as JavaScript's does.
+/// A sort that keeps the order of items that compare equal.
 func stableSorted<T>(_ items: [T], by compare: (T, T) -> Int) -> [T] {
     var order = Array(items.indices)
     order.sort { left, right in

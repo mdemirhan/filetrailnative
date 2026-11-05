@@ -1,4 +1,3 @@
-// Port of what apps/desktop/src/renderer/hooks/useExplorerTabs.ts does for openPathInNewTab's focusContent and selectPath (the .then after navigateToNearestExistingFolder), and of the "select" request in App.tsx
 import FTFoundation
 import Foundation
 
@@ -23,7 +22,7 @@ extension MainWindowController {
 
     /// By its name in the folder opened, if not by its path: the listing gives its rows the folder's real path, which may be
     /// spelled otherwise than the one the other app sent (/private/tmp for /tmp). One with no row (a hidden item, hidden
-    /// items off) is selected all the same: `setSingleContentSelection` asks nothing of the listing, and the Info panel
+    /// items off) is selected all the same: the selection asks nothing of the listing, and the Info panel
     /// describes it.
     private func selectOpenedItem(_ path: String) {
         let name = NodePath.basename(path)

@@ -1,5 +1,3 @@
-// Port of the request rules of apps/desktop/src/renderer/hooks/usePathSuggestions.ts (and requestPathSuggestions of
-// apps/desktop/src/renderer/App.tsx)
 import Foundation
 
 /// When a box asks the disk for completions, and which answers it drops: a request 350 ms after the last change
@@ -7,9 +5,8 @@ import Foundation
 /// still holds the text asked about. A request that failed counts as no completions.
 @MainActor
 public final class PathCompletionRequests {
-    /// `PATH_SUGGESTION_DEBOUNCE_MS`.
     public static let debounce = 0.35
-    /// `requestPathSuggestions`'s `limit`.
+    /// The most suggestions asked for.
     public static let limit = 12
 
     public var timers: any TimerScheduling
@@ -69,7 +66,7 @@ public final class PathCompletionRequests {
         }
     }
 
-    /// `requestPathSuggestions`: what is sent for a typed text, trimmed with `~` expanded.
+    /// What is sent for a typed text, trimmed with `~` expanded.
     public static func requestPath(_ input: String, homePath: String) -> String {
         PathText2.expandHome(JSString.trimmed(input), homePath: homePath)
     }

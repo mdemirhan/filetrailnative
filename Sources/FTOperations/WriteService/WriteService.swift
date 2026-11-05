@@ -1,6 +1,5 @@
-// Port of the WriteService class of packages/core/src/fs/writeService.ts: its dependencies, its state, its one write
-// slot and its listeners. Analysis jobs are in WriteServiceAnalysis.swift, the paste in WriteServicePaste.swift, its
-// questions and Stop in WriteServiceRuntime.swift.
+// Its dependencies, its state, its one write slot and its listeners. Analysis jobs are in WriteServiceAnalysis.swift,
+// the paste in WriteServicePaste.swift, its questions and Stop in WriteServiceRuntime.swift.
 import FTFoundation
 import Foundation
 import os

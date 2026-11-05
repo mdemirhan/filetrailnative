@@ -1,5 +1,3 @@
-// Ports the cases "Back and Forward with search results" of apps/desktop/src/renderer/App.history.test.tsx on a real
-// tab whose window is never shown, over the stand-in fd runtime
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -101,7 +99,6 @@ extension ExplorerWindowlessTests {
 
         // Back brings back the results a folder was opened from, as they were left; Forward leaves them, and
         // Back from them goes on to the folder before them.
-        // T-6f2fa78f B-SRCH-197 B-SRCH-198
         @Test func bringsBackTheResultsAFolderWasOpenedFromAsItWasLeft() async throws {
             let place = try await start()
             try await search(place)
@@ -126,8 +123,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Esc closes them for good.
-        // T-09d7d736 B-SRCH-199
-        // B-SRCH-051
         @Test func showsTheFolderAfterTheResultsWereClosed() async throws {
             let place = try await start()
             try await search(place)
@@ -149,8 +144,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Done closes them as Esc does.
-        // B-SRCH-199
-        // B-SRCH-063
         @Test func doneClosesThemToo() async throws {
             let place = try await start()
             try await search(place)
@@ -164,7 +157,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Choosing the folder they cover closes them.
-        // B-SRCH-199
         @Test func choosingTheSearchedFolderClosesThem() async throws {
             let place = try await start()
             try await search(place)
@@ -181,7 +173,6 @@ extension ExplorerWindowlessTests {
 
         // A newer search over the folder opened from the results: Back shows the plain folder, not the new
         // results over it.
-        // T-6e993392 B-SRCH-199
         @Test func showsTheFolderWhereOlderResultsWereLeftAfterANewerSearch() async throws {
             let place = try await start()
             try await search(place)
@@ -195,7 +186,6 @@ extension ExplorerWindowlessTests {
 
         // It is the results on screen when leaving that count: the newer ones come back where they were left, and the
         // folder of the older ones stays plain.
-        // B-SRCH-198
         @Test func theNewerResultsComeBackWhereTheyWereLeft() async throws {
             let place = try await start()
             try await search(place)
@@ -215,7 +205,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Another folder took their place in the history: it opens as itself.
-        // T-c7131e0d B-SRCH-200
         @Test func showsTheFolderWhenAnotherOneHasTakenTheResultsPlaceInTheHistory() async throws {
             let place = try await start()
             try await search(place)
@@ -233,7 +222,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The hold lists behave the same when they jump to that spot, from either side.
-        // B-SRCH-197
         @Test func theHoldListsBringThemBackToo() async throws {
             let place = try await start()
             try await search(place)
@@ -253,7 +241,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Narrowing what was brought back makes those results the ones that count: the place left is forgotten.
-        // B-SRCH-199
         @Test func narrowingForgetsThePlace() async throws {
             let place = try await start()
             try await search(place)
@@ -267,7 +254,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Emptying the field clears the search, and the place with it.
-        // B-SRCH-199
         @Test func emptyingTheFieldForgetsThePlace() async throws {
             let place = try await start()
             try await search(place)
@@ -282,7 +268,6 @@ extension ExplorerWindowlessTests {
         }
 
         // A search still running when it was left is searched again, rather than showing what it had found.
-        // B-SRCH-201
         @Test func aSearchStillRunningIsSearchedAgain() async throws {
             let place = try await start()
             place.engine.finds = { _ in (["Inner/"], true, false) }
@@ -297,8 +282,6 @@ extension ExplorerWindowlessTests {
         }
 
         // So is one found with the other hidden-files setting.
-        // B-SRCH-201
-        // B-NAV-131 B-SRCH-074 B-SRCH-079
         @Test func aChangedHiddenFilesSettingSearchesAgain() async throws {
             let place = try await start()
             try await search(place)
@@ -314,7 +297,6 @@ extension ExplorerWindowlessTests {
 
         // The plain folder never shows: by the time the tab tells of the folder, ahead of the window drawing, the results
         // are in the list.
-        // B-SRCH-201
         @Test func thePlainFolderDoesNotFlash() async throws {
             let place = try await start()
             try await search(place)
@@ -330,7 +312,6 @@ extension ExplorerWindowlessTests {
 
         // A result that can no longer be opened leaves the results as they are: nothing is put away until the folder has
         // been read.
-        // B-NAV-021
         @Test func aResultThatCannotBeOpenedLeavesTheResults() async throws {
             let place = try await start()
             try searchInFolder(place)
@@ -347,7 +328,6 @@ extension ExplorerWindowlessTests {
         }
 
         // So does a Back that can't be read: the place in the history moved at once, the results did not go.
-        // B-NAV-021
         @Test func aBackThatCannotBeReadLeavesTheResults() async throws {
             let place = try await start()
             let gone = place.harness.folder.appending("Beta/Gone").path
@@ -366,7 +346,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The results stay until the folder arrives: the plain searched folder never shows while it is read.
-        // B-NAV-021
         @Test func theResultsStayWhileTheFolderIsRead() async throws {
             let place = try await start()
             try searchInFolder(place)
@@ -389,7 +368,6 @@ extension ExplorerWindowlessTests {
         }
 
         // Each tab has its own: a new one starts with none, and the first keeps its own.
-        // B-SRCH-202
         @Test func aNewTabStartsWithNone() async throws {
             let place = try await start()
             try await search(place)
@@ -406,7 +384,6 @@ extension ExplorerWindowlessTests {
         }
 
         // At the very start of the history Back stays disabled, and Esc closes the results.
-        // B-NAV-009
         @Test func resultsAtTheStartOfTheHistoryHaveNoBack() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

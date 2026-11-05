@@ -1,4 +1,3 @@
-// Port of the error shape of packages/native-fs/src/native_eject.c and native_errno_code in native_errors.c
 import Darwin
 import Foundation
 
@@ -15,11 +14,11 @@ public struct EjectError: Error, Equatable, Sendable {
         self.reason = reason
     }
 
-    /// The errno name ("EBUSY"), as the original's errors carry in `code`.
+    /// The errno name ("EBUSY").
     public var code: String { ErrnoName.name(of: errnum) }
 }
 
-/// `native_errno_code`: the name of an errno, "UNKNOWN" for any not listed.
+/// The name of an errno, "UNKNOWN" for any not listed.
 enum ErrnoName {
     static func name(of errnum: Int32) -> String { table[errnum] ?? "UNKNOWN" }
 

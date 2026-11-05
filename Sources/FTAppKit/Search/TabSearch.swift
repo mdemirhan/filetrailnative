@@ -1,6 +1,3 @@
-// Port of the search wiring of apps/desktop/src/renderer/App.tsx (the field's handlers :2690-2760, ⌘F :2091-2108,
-// selecting the first result :2050-2088, the results' columns :579-597, the search bar's props :2455-2553) and of
-// components/ExplorerWorkspace.tsx (the search shell, :1319-1400) and SearchOptionsMenu.tsx
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -59,8 +56,8 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     private var escapeInterceptor: Int?
 
-    /// Esc in the results, with no filter to clear first, puts them away and leaves the keyboard in the list
-    /// (B-SRCH-062). Keys of a text field (a rename, the filter field) are left alone.
+    /// Esc in the results, with no filter to clear first, puts them away and leaves the keyboard in the list.
+    /// Keys of a text field (a rename, the filter field) are left alone.
     private func escapeInResults(_ event: NSEvent) -> Bool {
         guard event.type == .keyDown, event.keyCode == 53,
             event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty, session.isSearchMode
@@ -96,7 +93,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     private var writesToken: ExplorerWindowObservation?
 
     /// Search results on screen stay there after a write that changed at least one item: they are found again, so
-    /// they show what is on disk. So do those a move was dragged out of, put away before it ended (B-SRCH-141).
+    /// they show what is on disk. So do those a move was dragged out of, put away before it ended.
     private func observeWrites() {
         guard writesToken == nil, let group = tab.group, let writes = AppWriteOperations.current else { return }
         let writeSession = writes.session(for: group)
@@ -216,12 +213,12 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         }
     }
 
-    /// Return (`submitSearch`): what is on screen and final has its first result selected at once; anything else, once
+    /// Return: what is on screen and final has its first result selected at once; anything else, once
     /// the search has finished.
     private func submit() {
         let text = field?.stringValue ?? session.draftQuery
         let onScreen = session.submit(text)
-        // The list takes the keyboard every time, also after an empty field put the search away (B-SRCH-011).
+        // The list takes the keyboard every time, also after an empty field put the search away.
         dismissField()
         guard session.isSearchMode else { return }
         if onScreen {
@@ -232,7 +229,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         }
     }
 
-    /// The field lets go of the keyboard, which goes to the results (`dismissFileSearch({ focusBelow: true })`).
+    /// The field lets go of the keyboard, which goes to the results.
     private func dismissField() {
         AppMenuPresenter.shared.close()
         tab.explorerToolbar.endSearch()
@@ -270,7 +267,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     // MARK: ⌘F, ⇧⌘F
 
     /// `focusFileSearch`: the field takes the keyboard with its text selected. Text typed into the folder list goes into
-    /// it, and is searched at once, with the caret after it so typing goes on (B-SRCH-052).
+    /// it, and is searched at once, with the caret after it so typing goes on.
     func focusField() {
         let content = tab.content
         let typed = content.filter
@@ -304,7 +301,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         saveSort()
     }
 
-    /// The results' order is kept with the window, as the original's preference sync keeps it.
+    /// The results' order is kept with the window's preferences.
     private func saveSort() {
         tab.updatePreferences([
             "searchResultsSortBy": .string(session.sortBy.rawValue),
@@ -315,7 +312,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
     // MARK: The options menu
 
     /// The magnifier: the options as a menu with checkmarks. Opened with the mouse, the keyboard stays in the field;
-    /// from the keyboard (Return or Space on the button), the first item is marked (B-SRCH-081).
+    /// from the keyboard (Return or Space on the button), the first item is marked.
     func openOptions(fromKeyboard: Bool = false) {
         guard let field else { return }
         let presenter = AppMenuPresenter.shared

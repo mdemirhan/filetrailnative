@@ -1,5 +1,3 @@
-// Port of the logic of apps/desktop/src/renderer/components/SettingsView.tsx (describeKeys, OpenItemLimitInput,
-// moveItem) and the notices and payload of apps/desktop/src/renderer/SettingsWindowApp.tsx
 import Foundation
 
 extension Density {
@@ -29,7 +27,7 @@ public enum SettingsValues {
         return all.filter { payloadKeys.contains($0.key) }
     }
 
-    /// `preferences` with the values of `patch` (`applyPreferencesPatch`); keys it doesn't know are left out.
+    /// `preferences` with the values of `patch`; keys it doesn't know are left out.
     public static func applying(_ patch: PreferencesPatch, to preferences: AppPreferences) -> AppPreferences {
         guard !patch.isEmpty, var all = (try? JSONNode.of(preferences).object) else { return preferences }
         all.merge(patch) { _, new in new }
@@ -51,7 +49,7 @@ public enum SettingsValues {
             separator: " and ")
     }
 
-    /// The item limit field when it is left or Return is pressed (B-DLG-191): what is not whole digits is the default
+    /// The item limit field when it is left or Return is pressed: what is not whole digits is the default
     /// 5; a number is brought into 1 to 50. The field shows the result; the value is nil when nothing changes.
     public static func commitOpenItemLimit(_ draft: String, current: Int) -> (text: String, value: Int?) {
         let trimmed = JSString.trimmed(draft)
@@ -72,7 +70,7 @@ public enum SettingsValues {
         return next
     }
 
-    /// `createOpenWithApplicationId`: an id no other pinned app has.
+    /// An id no other pinned app has.
     public static func openWithApplicationID(now: Date = Date(), random: UInt32 = .random(in: 0...UInt32.max))
         -> String
     {

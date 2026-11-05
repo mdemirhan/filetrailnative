@@ -1,4 +1,3 @@
-// Port of the mouse actions of tools/capture/electron/driver.ts (Playwright clicks); no TypeScript source.
 #if DEBUG
     import AppKit
 
@@ -6,9 +5,8 @@
     /// app doesn't have to be frontmost.
     @MainActor
     enum MouseEvents {
-        /// The window a press lands on is key first, with the app in front, as the original's driver has it: the first
-        /// click on a window not in front only brings it forward (`FirstClickGate`). One whose sheet or popover has the
-        /// keyboard stays as it is.
+        /// The window a press lands on is key first, with the app in front: the first click on a window not in front
+        /// only brings it forward (`FirstClickGate`). One whose sheet or popover has the keyboard stays as it is.
         static func comeForward(_ window: NSWindow) {
             guard !window.isKeyWindow, window.attachedSheet == nil, NSApp.keyWindow?.parent !== window,
                 NSApp.modalWindow == nil
@@ -21,8 +19,8 @@
         private static var hovered: [NSView] = []
 
         /// The pointer moves to `point`: this moves no real pointer, but the views whose tracking areas it leaves and
-        /// enters are told, as they are with the pointer Playwright moves in the original's captures, which stays where
-        /// it clicked. Tracking areas go by the pointer alone, whatever lies over them.
+        /// enters are told, as they are with a real pointer, which stays where it clicked. Tracking areas go by the
+        /// pointer alone, whatever lies over them.
         static func movePointer(to point: NSPoint, in window: NSWindow) {
             guard let frameView = window.contentView?.superview else { return }
             var under: [NSView] = []

@@ -1,5 +1,3 @@
-// Port of the Replace cases of packages/core/src/fs/copyPasteExecution.test.ts (on the mock disk) and of
-// copyPasteExecution.realfs.test.ts (its others are in Execution/)
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -27,7 +25,6 @@ private func node(_ fileSystem: MockWriteServiceFileSystem, _ path: String) thro
 }
 
 struct ExecutionReplaceTests {
-    // T-dc9ef314 F-342
     @Test func overwritesConflictingFilesWhenTheResolvedActionRequiresIt() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5, mode: 0o755)), ("/target", .directory()),
@@ -45,7 +42,6 @@ struct ExecutionReplaceTests {
         #expect(file.mode == 0o755)
     }
 
-    // T-b6120d61 F-343
     @Test func treatsADestinationThatVanishesWhileBeingDeletedPermanentlyAsAlreadyRemoved() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -76,7 +72,6 @@ struct ExecutionReplaceTests {
         #expect(file.size == 5)
     }
 
-    // T-ac6200ce
     @Test func mergesExistingFoldersAndAppliesNestedFileActions() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/new.txt", .file(size: 1)),
@@ -94,7 +89,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.readNode("/target/Folder/shared.txt")?.mode == 0o755)
     }
 
-    // T-c924e277 F-342
     @Test func replacesConflictingFoldersAndDeletesDestinationOnlyNestedItems() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()),
@@ -116,7 +110,6 @@ struct ExecutionReplaceTests {
         #expect(!fileSystem.exists("/target/Folder/nested/left-behind.txt"))
     }
 
-    // T-23f2ab89
     @Test func doesNotPromptForNestedDescendantConflictsUnderAReplacedFolder() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/nested", .directory()),
@@ -138,7 +131,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.readNode("/target/Folder/nested/deep.txt")?.mode == 0o755)
     }
 
-    // T-aa23acf2
     @Test func overwritesAConflictingFileWithASourceDirectoryWhenMismatchPolicyRequestsOverwrite() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Photos", .directory()), ("/source/Photos/a.jpg", .file(size: 3)),
@@ -155,7 +147,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.readNode("/target/Photos/a.jpg")?.size == 3)
     }
 
-    // T-71769d45 F-339
     @Test func pausesForRuntimeDestinationConflictsAndResumesWithTheChosenResolution() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -175,7 +166,6 @@ struct ExecutionReplaceTests {
 
     // The destination-mutation step of the case whose other steps are in Execution/CopyPasteExecutionEdgeTests.swift:
     // a destination changed after the review, answered with Replace.
-    // T-706c8576 F-339
     @Test func replacesADestinationChangedAfterTheReviewOnceAnswered() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -197,7 +187,6 @@ struct ExecutionReplaceTests {
 
     // MARK: Per-file cut flow
 
-    // T-c889312f
     @Test func cutWithRuntimeConflictResolvedAsOverwriteDeletesSourceInline() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -216,7 +205,6 @@ struct ExecutionReplaceTests {
 
     // MARK: Same-filesystem rename
 
-    // T-192af090 F-342 F-463
     @Test func renameWithOverwriteMovesTheItemInAndTheReplacedOneToTheTrash() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 10)), ("/target", .directory()),
@@ -234,7 +222,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
-    // T-ee6a7a32 F-342 F-463
     @Test func renameOfDirectoryWithOverwriteActionMovesTheReplacedDirectoryToTheTrash() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 3)),
@@ -254,7 +241,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
-    // T-8cf7f825 F-343 F-463
     @Test func renameOverwriteWithoutATrashDeletesTheExistingItemOnlyWhenThePersonAgrees() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 10)), ("/target", .directory()),
@@ -276,7 +262,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
-    // T-03dcc5bc F-343 F-345 F-463
     @Test func renameOverwriteWithoutATrashPutsEverythingBackWhenThePersonSkips() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 3)),
@@ -300,7 +285,6 @@ struct ExecutionReplaceTests {
         #expect(item?.skipReason == .runtimeConflictResolution)
     }
 
-    // T-342e6072 F-463
     @Test func renameOverwriteOfADirectoryByAFile() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/item", .file(size: 6)), ("/target", .directory()),
@@ -320,7 +304,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
-    // T-5cb81f6b F-463
     @Test func renameOverwriteOfAFileByADirectory() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/item", .directory()), ("/source/item/a.txt", .file(size: 4)),
@@ -340,7 +323,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
-    // T-de750b08 F-340
     @Test func renameWithRuntimeConflictResolvedAsOverwriteUsesRename() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -363,7 +345,6 @@ struct ExecutionReplaceTests {
 
     // MARK: Native copyFile
 
-    // T-8c371eee F-342
     @Test func copyFileWithOverwriteDestinationMovedToTheTrashThenReplaced() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 10)), ("/target", .directory()),
@@ -382,7 +363,6 @@ struct ExecutionReplaceTests {
 
     // MARK: The Replace journal
 
-    // T-b53285ff F-345 F-523
     @Test func clearsAReplaceFromTheJournalWhenItsStagedCopyFailsAndIsUndone() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -404,7 +384,6 @@ struct ExecutionReplaceTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
-    // T-68d8d731 F-345 F-523
     @Test func clearsAMovedReplaceFromTheJournalWhenTheMoveToTheHiddenNameFails() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -428,7 +407,6 @@ struct ExecutionReplaceTests {
 }
 
 struct ExecutionReplaceRealFSTests {
-    // T-4dbcade3 F-342 F-463 F-413
     @Test func renameOverwriteMovesTheFileIntoPlaceAndTheOldOneToTheTrash() async throws {
         try await withTemporaryDirectory { root in
             let (srcDir, dstDir, trashDir) = (root.path + "/src", root.path + "/dst", root.path + "/trash")

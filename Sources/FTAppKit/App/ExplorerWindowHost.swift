@@ -1,17 +1,16 @@
-// Port of the ExplorerWindowHost seam of apps/desktop/src/main/explorerWindowController.ts and the ExplorerWindowList of explorerWindows.ts
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// One explorer window as the app shell and the menu see it. P4-02's window controller conforms to it.
+/// One explorer window as the app shell and the menu see it. The window controller conforms to it.
 @MainActor
 public protocol ExplorerWindowHandle: AnyObject {
-    /// The id the window's folder watch and menu state are filed under (the original's web contents id).
+    /// The id the window's folder watch and menu state are filed under.
     var windowID: Int { get }
     var window: NSWindow? { get }
     /// Visible and not minimized: a menu command may act on it unseen only when it is not.
     var isOnScreen: Bool { get }
-    /// Carries out a menu command (the original's `filetrail:command`).
+    /// Carries out a menu command.
     func perform(_ command: RendererCommand)
     /// What the application menu should show of it now; nil when it doesn't say.
     var currentMenuState: ApplicationMenuState? { get }
@@ -36,8 +35,8 @@ public protocol ExplorerWindowListing: AnyObject {
     func handle(windowID: Int) -> (any ExplorerWindowHandle)?
 }
 
-/// What the app shell needs of the explorer windows it does not open itself. P4-02's controller provides it; the
-/// shell keeps one reference so the two plug together.
+/// What the app shell needs of the explorer windows it does not open itself. The window controller provides it;
+/// the shell keeps one reference so the two plug together.
 @MainActor
 public protocol ExplorerWindowHost: AnyObject {
     var windows: any ExplorerWindowListing { get }

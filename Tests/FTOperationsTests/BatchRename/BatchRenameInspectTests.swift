@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/batchRenameInspect.test.ts
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -56,8 +55,6 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
 }
 
 @Suite struct BatchRenameInspectTests {
-    // T-1b10005b F-245 F-569
-    // B-DLG-150
     @Test func givesEachItemsDatesAndEveryNameInItsFolderHiddenOnesToo() async {
         let answer = await inspect(["/trip/a.jpg", "/trip/b.jpg"], deps())
         let dated = { (path: String) in
@@ -72,7 +69,6 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
                     folders: [.init(path: "/trip", names: ["a.jpg", "b.jpg", ".hidden"], caseSensitive: false)]))
     }
 
-    // T-73191f3a F-245 F-569
     @Test func readsTheDatesTakenOnlyWhenAskedAndKeepsOnlyWellFormedOnes() async {
         let calls = Calls()
         let without = deps(readDatesTaken: { paths in
@@ -88,7 +84,6 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
         #expect(none.items.first?.takenAt == nil)
     }
 
-    // T-0c6885bc F-245 F-569
     @Test func groupsItemsByFolderAndReportsEachFolderOnce() async {
         let calls = Calls()
         let answer = await inspect(
@@ -102,8 +97,6 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
         #expect(calls.all.count == 2)
     }
 
-    // T-761e9009 F-245 F-569
-    // B-DLG-151
     @Test func saysWhyAnItemCantBeRenamed() async {
         let missing = await inspect(["/trip/gone.txt"], deps(lstat: { _ in throw errno("ENOENT") }))
         #expect(missing.items.first?.cannotRename == "“gone.txt” no longer exists.")
@@ -130,8 +123,6 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
         #expect(protectedFolder.items.first?.cannotRename == "“Documents” can't be renamed.")
     }
 
-    // T-64776c2c F-245 F-569
-    // B-DLG-152
     @Test func leavesOutDatesTheDiskDoesntReallyHaveAndNamesItCantRead() async {
         let answer = await inspect(
             ["/trip/a.jpg"],
@@ -150,7 +141,6 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
         BatchRenameInspectDeps.native(homePath: home) { _ in }
     }
 
-    // T-da7f5d79 F-163 F-245 F-569
     @Test func readsNamesDatesAndTheDateAPhotoWasTaken() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-inspect") { root in
             try takenJpeg.write(to: root.appending("photo.jpg"))
@@ -176,7 +166,6 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
         }
     }
 
-    // T-807fc7d3 F-245 F-569
     @Test func findsLockedItemsAndFoldersThatCantBeWrittenTo() async throws {
         try await withTemporaryDirectory(prefix: "filetrail-inspect") { root in
             let locked = root.appending("locked.txt").path
@@ -201,7 +190,7 @@ private func inspect(_ paths: [String], dateTaken: Bool = false, _ deps: BatchRe
     }
 }
 
-/// packages/native-fs/test-fixtures/taken.jpg: taken on 2021-07-04 at 09:15:30.
+/// A JPEG taken on 2021-07-04 at 09:15:30.
 private let takenJpeg =
     Data(
         base64Encoded:

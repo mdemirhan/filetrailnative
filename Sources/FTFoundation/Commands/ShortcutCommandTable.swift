@@ -1,4 +1,4 @@
-// Generated once from SHORTCUT_COMMANDS in apps/desktop/src/shared/shortcuts.ts in the Electron app; now edited by hand.
+// Generated once; now edited by hand.
 
 public enum ShortcutGroup: String, CaseIterable, Sendable, Hashable {
     case navigation
@@ -21,7 +21,7 @@ public enum ShortcutGroup: String, CaseIterable, Sendable, Hashable {
     }
 }
 
-/// The id of a command in the shortcut table; the raw value is the original's id.
+/// The id of a command in the shortcut table; the raw value is its id.
 public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable {
     case goBack
     case goForward
@@ -45,7 +45,6 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
     case halfPageDown
     case newWindow
     case newTab
-    /// Not in the original's table: its Duplicate Tab is in the tab strip's menu only.
     case duplicateTab
     case closeTab
     case reopenClosedTab
@@ -107,7 +106,7 @@ public enum ShortcutCommandID: String, Codable, CaseIterable, Sendable, Hashable
 }
 
 extension ShortcutCommands {
-    /// SHORTCUT_COMMANDS, in the original's order.
+    /// Every shortcut command, in the table's order.
     public static let all: [ShortcutCommandDefinition] = [
         ShortcutCommandDefinition(
             id: .goBack, label: "Back", group: .navigation, defaults: ["Cmd+[", "Cmd+Left"], menuPath: "Go > Back"),

@@ -1,5 +1,3 @@
-// Port of the window of apps/desktop/src/renderer/SettingsWindowApp.tsx (sidebar, pane header, notice, page), drawn as
-// styles.css:4884-5047 draws it
 import AppKit
 import FTFoundation
 
@@ -14,7 +12,7 @@ final class SettingsSidebarItem: TextControl {
             needsDisplay = true
         }
     }
-    /// The ring of `:focus-visible`: when the keyboard brought the focus, not after a click (styles.css:4930).
+    /// The ring of `:focus-visible`: when the keyboard brought the focus, not after a click.
     private(set) var focusIsVisible = false { didSet { needsDisplay = true } }
 
     private static func font(_ current: Bool) -> NSFont {
@@ -64,7 +62,7 @@ final class SettingsSidebarItem: TextControl {
 
     // MARK: Keyboard
 
-    // A native button (SettingsWindowApp.tsx:327-333): Tab stops here, and Space, Return or Enter chooses the section.
+    // A native button: Tab stops here, and Space, Return or Enter chooses the section.
     override var acceptsFirstResponder: Bool { true }
     override var canBecomeKeyView: Bool { true }
 
@@ -221,7 +219,7 @@ final class SettingsView: ThemedView {
     }
 
     /// Shows a tab: its page starts at the top, without the line under the title. The tab already on screen is left
-    /// as it is (its search, recording and scroll stay), as React skips setActiveTab to the same tab.
+    /// as it is (its search, recording and scroll stay).
     func select(tab: SettingsTab) {
         guard tab != activeTab else { return }
         activeTab = tab

@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPastePolicy.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -33,7 +32,6 @@ func makeReport(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport {
 }
 
 struct CopyPastePolicyTests {
-    // T-0e982448 F-437 F-321 F-322
     @Test func resolvesFileConflictsWithOverwriteSkipAndKeepBothActions() throws {
         let fileSystem = MockAnalysisFileSystem([
             ("/target", .directory()), ("/target/report copy.txt", .file(size: 1)),
@@ -59,7 +57,6 @@ struct CopyPastePolicyTests {
         #expect(keepBoth?.destinationPath == "/target/report copy 2.txt")
     }
 
-    // T-e5a3e87e F-438 F-323
     @Test func resolvesDirectoryConflictsAsMergeSkipOrKeepBothAndPropagatesChildActions() throws {
         let fileSystem = MockAnalysisFileSystem([("/target", .directory()), ("/target/Folder copy", .directory())])
         let directoryNode = makeNode(
@@ -112,7 +109,6 @@ struct CopyPastePolicyTests {
         #expect(overwrite.children.first?.destinationPath == "/target/Folder/a.txt")
     }
 
-    // T-de732ae4 F-439
     @Test func usesMismatchPolicyForTypeConflicts() throws {
         let fileSystem = MockAnalysisFileSystem([("/target", .directory())])
         let node = makeNode(
@@ -127,9 +123,8 @@ struct CopyPastePolicyTests {
         #expect(resolved.first?.action == .overwrite)
     }
 
-    // A policy is a whole CopyPastePolicy here, so an incomplete one can't be given: the rule is reached as the
-    // original reaches it while the paste runs, by a Merge answered with no policy to decide what is inside.
-    // T-e505f05f F-440 F-321
+    // A policy is a whole CopyPastePolicy here, so an incomplete one can't be given: the rule is reached while
+    // the paste runs, by a Merge answered with no policy to decide what is inside.
     @Test(arguments: [
         (ConflictClass.directoryConflict, "Missing directory conflict policy."),
         (ConflictClass.typeMismatch, "Missing mismatch conflict policy."),
@@ -152,7 +147,6 @@ struct CopyPastePolicyTests {
         #expect(error.map(errorMessage) == expectedMessage)
     }
 
-    // T-eb2b7cd5 F-441
     @Test func joinsChildDestinationsUnderFilesystemRootWithoutDuplicateSeparators() throws {
         let fileSystem = MockAnalysisFileSystem([("/Folder copy", .directory())])
         let directoryNode = makeNode(
@@ -172,7 +166,6 @@ struct CopyPastePolicyTests {
         #expect(resolved.children.first?.destinationPath == "/Folder copy 2/a.txt")
     }
 
-    // T-117acdd0 F-442
     @Test func allowsExplicitRuntimeActionsToOverrideTheStoredPolicy() throws {
         let fileSystem = MockAnalysisFileSystem([("/target", .directory()), ("/target/file copy.txt", .file(size: 1))])
         let node = makeNode(
@@ -186,7 +179,6 @@ struct CopyPastePolicyTests {
         #expect(resolved.destinationPath == "/target/file copy 2.txt")
     }
 
-    // T-1afed77f F-443
     @Test func treatsDirectoryOverwriteChildrenAsCreatesBecauseTheParentIsReplacedFresh() throws {
         let fileSystem = MockAnalysisFileSystem([("/target", .directory())])
         let node = makeNode(

@@ -1,5 +1,3 @@
-// Port of the recovery cases of packages/core/src/fs/copyPasteLocked.realfs.test.ts ("putting right a Replace a crash
-// cut short"), on the real disk
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -25,7 +23,6 @@ struct LockedRecoveryTests {
             id: id, stagingPath: staging, finalPath: final, sourcePath: source, moved: moved, staged: staged)
     }
 
-    // T-00cf8c5b F-355 F-489
     @Test func finishesAReplaceWhoseNewItemIsLocked() throws {
         try withPlaces { _, src, dst in
             let staged = dst + "/.f.txt.filetrail-00001234"
@@ -42,7 +39,6 @@ struct LockedRecoveryTests {
         }
     }
 
-    // T-8de531ef F-355 F-346
     @Test func removesAnUnfinishedLockedCopy() throws {
         try withPlaces { _, src, dst in
             let staged = dst + "/.f.txt.filetrail-00001234"
@@ -59,7 +55,6 @@ struct LockedRecoveryTests {
         }
     }
 
-    // T-bc3d1d00 F-353 F-525
     @Test(.enabled(if: getuid() != 0, "folders that can't be read are readable anyway as root"))
     func keepsAnEntryWhoseHiddenItemCantBeReachedAndDropsOneThatIsGone() throws {
         try withPlaces { root, src, dst in

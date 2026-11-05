@@ -1,5 +1,3 @@
-// Port of the <nav class="pathbar"> of apps/desktop/src/renderer/components/ContentPane.tsx (:760-848) with the .pathbar rules
-// of styles.css:2032-2185 and 4387-4422
 import AppKit
 import FTFoundation
 

@@ -1,6 +1,5 @@
-// Port of apps/desktop/src/main/bootstrap/undoExecution.failures.test.ts: what an Undo leaves to do: a step whose write
-// failed stays on the Undo list to be tried again, a stopped Undo goes on from where it stopped, and what changed
-// outside the app is dropped. Redo only ever does again what Undo really did.
+// What an Undo leaves to do: a step whose write failed stays on the Undo list to be tried again, a stopped Undo goes on
+// from where it stopped, and what changed outside the app is dropped. Redo only ever does again what Undo really did.
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -20,7 +19,6 @@ struct UndoFailuresTests {
         t.snapshot().filter { !$0.hasPrefix("paste-trash") }
     }
 
-    // T-6f8df3a6 F-379 F-554
     @Test func keepsTheOperationOnTheUndoListAndUndoesItOnceItCanBeRead() async throws {
         // A folder that can't be read for a moment (no permission, a share that doesn't answer) hides whether the
         // item is there: it isn't taken for gone.
@@ -51,7 +49,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-d3086208 F-554
     @Test func keepsTheOperationOnTopOfTheUndoListToBeTriedAgain() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -78,7 +75,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-3a9ef84f F-554
     @Test func keepsOnlyTheItemsWhoseWriteFailedTheRestGoToRedo() async throws {
         try await withUndoFolder { root, trashDir in
             for name in ["a.txt", "b.txt", "c.txt"] {
@@ -109,7 +105,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-230db385 F-554
     @Test func keepsTheStepsOfAReplaceAfterOneThatFailedAndGoesOnFromThere() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -143,7 +138,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-47bc83e5 F-392 F-554
     @Test func keepsTheItemsOfABatchWhoseRenameBackFailed() async throws {
         try await withUndoFolder { root, trashDir in
             for name in ["a.txt", "b.txt", "c.txt"] {
@@ -171,7 +165,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-94c29349 F-392 F-554
     @Test func swapsTwoNamesBackInTwoTriesWhenOneItemFailedTheFirstTime() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -212,7 +205,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-afc36e80 F-392 F-554
     @Test func recordsWhereAnItemThatWaitsUnderANumberWentForRedoAndUndo() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -253,7 +245,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-dc3d68ab F-392 F-554
     @Test func saysWhereTheItemsInsideAFolderThatWaitsUnderANumberAre() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/A")
@@ -284,7 +275,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-5da8a730 F-393 F-554
     @Test func letsGoOfACopyOnADiskWithoutATrashWhichWouldFailEachTimeAndSaysWhy() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
@@ -305,7 +295,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-9ecb5aae F-393 F-554
     @Test func keepsACopyTheTrashRefusedWithoutSayingWhyOnADiskThatHasATrash() async throws {
         try await withUndoFolder { root, trashDir in
             let unsaid = codedError("ENOTRASH", "couldn't be moved")
@@ -335,7 +324,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-589ac013 F-393 F-554
     @Test func classifiesEachErrorCode() {
         #expect(UndoExecution.classifyUndoWriteError("ENOENT") == .outsideChange)
         #expect(UndoExecution.classifyUndoWriteError("ENOTDIR") == .outsideChange)
@@ -357,7 +345,6 @@ struct UndoFailuresTests {
         ("EEXIST", .skipped, "An item named “a", nil),
     ]
 
-    // T-7dd74c4a F-393 F-554
     @Test(arguments: renameFailures)
     func renamingBackFailsWith(code: String, status: CopyPasteItemResult.Status, error: String, left: String?)
         async throws
@@ -382,7 +369,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-3dbe93f7 F-393 F-554
     @Test(
         arguments: [
             ("EACCES", CopyPasteItemResult.Status.failed, "New Folder"), ("ENOENT", .skipped, nil),
@@ -400,7 +386,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-ea0980a4 F-393 F-554
     @Test(
         arguments: [("EACCES", CopyPasteItemResult.Status.failed), ("EROFS", .skipped)]
             as [(String, CopyPasteItemResult.Status)])
@@ -432,7 +417,6 @@ struct UndoFailuresTests {
 
     // MARK: A stop as the last item of a batch is renamed back
 
-    // T-5f254296 F-389 F-554
     @Test func stopsNothingAndLeavesNothingToUndo() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -460,7 +444,6 @@ struct UndoFailuresTests {
 
     // MARK: A batch rename another app got in the way of
 
-    // T-f451fcc2 F-384 F-553
     @Test func renamesBackAnItemLeftUnderANumberedName() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -525,7 +508,6 @@ struct UndoFailuresTests {
         return (t, before, after)
     }
 
-    // T-44543bce F-554
     @Test func putsTheOldItemBackOnTheNextUndo() async throws {
         try await withUndoFolder { root, trashDir in
             let (t, before, _) = try await stoppedHalfway(root, trashDir)
@@ -538,7 +520,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-456f9e84 F-554
     @Test func bringsTheNewItemBackOnRedoWithTheRestStillToUndo() async throws {
         try await withUndoFolder { root, trashDir in
             let (t, before, after) = try await stoppedHalfway(root, trashDir)
@@ -563,7 +544,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-8ff8503a F-370 F-554
     @Test func makesAMoveToTrashOneThatCantBeUndone() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -579,7 +559,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-0589d02a F-370 F-554
     @Test func makesAPasteWhoseReplacePutTheOldItemThereOneThatCantBeUndone() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -594,7 +573,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-11cd3b00 F-554
     @Test func countsAnUndosTripToTheTrashAsDoneWithNothingToRedo() async throws {
         try await withUndoFolder { root, trashDir in
             let silent = silentTrash(trashDir)
@@ -607,7 +585,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-e3f31ede F-554
     @Test func leavesNothingToRedoOfAReplaceWhoseNewItemWentThere() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -641,7 +618,6 @@ struct UndoFailuresTests {
         return fileSystem
     }
 
-    // T-47f55637 F-554
     @Test func keepsAWholeRenameOfSeveralToBeTriedAgain() {
         // Its items may swap names with each other: none of them is renamed until all can be checked, and the whole
         // batch stays to be tried again.
@@ -658,7 +634,6 @@ struct UndoFailuresTests {
         #expect(run.leftover == units)
     }
 
-    // T-d02a5c8e F-554
     @Test func keepsAnItemToMoveToTheTrashToBeTriedAgain() {
         let units = [UndoUnit(steps: [.created(path: "/D/a copy", id: ItemId(dev: 1, ino: 10), stamp: nil)])]
         let run = UndoExecution.runUndo(
@@ -669,7 +644,6 @@ struct UndoFailuresTests {
         #expect(run.leftover == units)
     }
 
-    // T-efe7f3fe F-554
     @Test func reportsEachOfVeryManyItemsMoreThanACallCanTakeAtOnce() {
         let count = 130_000
         let items = (0..<count).map {
@@ -685,7 +659,6 @@ struct UndoFailuresTests {
 
     // MARK: An Undo's progress
 
-    // T-5acda2d3 F-554
     @Test func countsWhatItHasDoneOutOfAllItHasToDoStepsAndBatchItemsAlike() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -723,7 +696,6 @@ struct UndoFailuresTests {
 
     // MARK: An item of a batch that goes away as it is renamed back
 
-    // T-028d8b83 F-554
     @Test func isSkippedAsOneTheCheckFindsGoneAndNotKept() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -746,7 +718,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-005f3bea F-554
     @Test func doesAgainOnlyWhatUndoReallyDid() async throws {
         try await withUndoFolder { root, trashDir in
             for name in ["a.txt", "b.txt", "c.txt"] {
@@ -767,7 +738,6 @@ struct UndoFailuresTests {
         }
     }
 
-    // T-e40e148f F-394 F-554
     @Test func keepsTheOperationOnTheUndoListWhenAnUndoStopsUnexpectedly() async throws {
         try await withUndoFolder { root, trashDir in
             let broken = UndoFlag()

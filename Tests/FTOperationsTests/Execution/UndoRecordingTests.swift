@@ -1,5 +1,4 @@
-// Port of packages/core/src/fs/copyPasteUndoLog.realfs.test.ts, but for the cases that Replace (P3-04's): what a
-// paste records for Undo, one unit per item picked, with the steps it really took, or why it can't be undone
+// What a paste records for Undo, one unit per item picked, with the steps it really took, or why it can't be undone
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -68,7 +67,6 @@ private func folders(_ root: TemporaryDirectory) throws -> (src: String, dst: St
 }
 
 struct CopyUndoRecordingTests {
-    // T-f94ca69b F-447
     @Test func recordsEachItemItMadeNotWhatIsInsideACopiedFolder() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -98,7 +96,6 @@ struct CopyUndoRecordingTests {
     }
 
     // A file's id is read along with how it looks once it is copied.
-    // T-eb8aa002 F-447
     @Test func looksAtEachFileItMadeOnceForUndo() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -124,7 +121,6 @@ struct CopyUndoRecordingTests {
         }
     }
 
-    // T-9a853576 F-447
     @Test func recordsADuplicateUnderTheNameItWasGiven() async throws {
         try await withTemporaryDirectory { root in
             let (src, _, _) = try folders(root)
@@ -137,7 +133,6 @@ struct CopyUndoRecordingTests {
         }
     }
 
-    // T-2fe30a89 F-447
     @Test func recordsNothingForAnItemSkippedAsAlreadyThere() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -152,7 +147,6 @@ struct CopyUndoRecordingTests {
         }
     }
 
-    // T-612d57eb F-447
     @Test func recordsAFolderWhoseCopyFailedPartWaySinceTheFolderIsThere() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -179,7 +173,6 @@ struct CopyUndoRecordingTests {
         }
     }
 
-    // T-6b2fab99 F-257 F-447
     @Test func recordsOnlyWhatWasDoneBeforeAStop() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -201,7 +194,6 @@ struct CopyUndoRecordingTests {
         }
     }
 
-    // T-cbb7658c F-448
     @Test func cantBeUndoneOnceAFolderIsMergedIntoOneAlreadyThere() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -215,7 +207,6 @@ struct CopyUndoRecordingTests {
         }
     }
 
-    // T-f2580505 F-448
     @Test func cantBeUndoneWhenAllAMergeDidWasAddALink() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -231,7 +222,6 @@ struct CopyUndoRecordingTests {
     }
 
     // Nothing was changed, so Undo must still undo what came before.
-    // T-dc09a208 F-448
     @Test func leavesUndoAsItWasWhenAMergeFindsEveryItemAlreadyThere() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -247,7 +237,6 @@ struct CopyUndoRecordingTests {
 }
 
 struct MoveUndoRecordingTests {
-    // T-2ec40398 F-283
     @Test func recordsWhereEachItemCameFromOnItsDiskAndTheFolderItWasIn() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -276,7 +265,6 @@ struct MoveUndoRecordingTests {
 
     // A move on one disk keeps the item's id: it isn't looked at again where it went, and the folder the items came
     // from is looked at once for all of them.
-    // T-25d0e5b0 F-283
     @Test func looksAtEachMovedItemTwiceAndAtTheFolderItWasInOnce() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -302,7 +290,6 @@ struct MoveUndoRecordingTests {
         }
     }
 
-    // T-02179678 F-283
     @Test func recordsAMovedItemThatIsNeitherAFileAFolderNorALinkAsSuch() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -322,7 +309,6 @@ struct MoveUndoRecordingTests {
         }
     }
 
-    // T-ffceccbe F-448
     @Test func cantBeUndoneOnceAFolderIsMergedOnItsOwnDiskAsAMerge() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -336,7 +322,6 @@ struct MoveUndoRecordingTests {
         }
     }
 
-    // T-efaf4179 F-448
     @Test func cantBeUndoneOnceAnEmptyFolderMergedIntoAnotherIsRemoved() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -350,7 +335,6 @@ struct MoveUndoRecordingTests {
         }
     }
 
-    // T-1786aaec F-448
     @Test func leavesUndoAsItWasWhenAMergingMoveFindsEveryItemAlreadyThere() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -366,7 +350,6 @@ struct MoveUndoRecordingTests {
 
     // The source seems to be on a disk of its own (another device number, EXDEV out of it): the engine tells
     // disks apart by device number alone.
-    // T-b03f7dc5 F-467
     @Test func cantBeUndoneWhenItWentToAnotherDisk() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -384,7 +367,6 @@ struct MoveUndoRecordingTests {
 /// A move to another disk, when nothing was changed. The source seems to be on a disk of its own (another device
 /// number, EXDEV out of it), so the move copies and then removes, as one to a real other disk does.
 struct OtherDiskUndoRecordingTests {
-    // T-8e3b55e9 F-467
     @Test func leavesUndoAsItWasWhenTheItemCantBeRead() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, trash) = try folders(root)
@@ -402,7 +384,6 @@ struct OtherDiskUndoRecordingTests {
         }
     }
 
-    // T-9b6dc618 F-257 F-467
     @Test func leavesUndoAsItWasWhenStoppedBeforeAnythingWasWritten() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)
@@ -426,7 +407,6 @@ struct OtherDiskUndoRecordingTests {
 
     // The folder was being built under a hidden name on the other disk: stopped, it goes, and nothing was changed,
     // so Undo is left as it was.
-    // T-9b055e08 F-257 F-262
     @Test func changesNothingWhenStoppedJustAfterMakingTheFolderThere() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst, _) = try folders(root)

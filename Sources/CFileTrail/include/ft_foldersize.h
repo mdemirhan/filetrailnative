@@ -1,4 +1,4 @@
-// Interface to foldersize.c, the folder size walker (a port of packages/native-fs/src/native_foldersize.c).
+// Interface to foldersize.c, the folder size walker.
 #ifndef FT_FOLDERSIZE_H
 #define FT_FOLDERSIZE_H
 
@@ -72,10 +72,10 @@ typedef struct {
     int64_t dev;
 } ft_item_size;
 
-/// One item as the walk counts it inside its folder (nativeItemSize). Returns 0, or the errno.
+/// One item as the walk counts it inside its folder. Returns 0, or the errno.
 int ft_item_size_of(const char *path, ft_item_size *out);
 
-/// The name of an errno as Node spells it ("ENOENT"), "UNKNOWN" for one not listed.
+/// The name of an errno ("ENOENT"), "UNKNOWN" for one not listed.
 const char *ft_errno_code(int errnum);
 
 #endif

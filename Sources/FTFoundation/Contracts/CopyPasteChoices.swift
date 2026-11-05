@@ -1,4 +1,3 @@
-// Port of packages/contracts/src/copyPasteChoices.ts
 import Foundation
 
 public enum CopyPasteChoice: String, Codable, CaseIterable, Sendable {

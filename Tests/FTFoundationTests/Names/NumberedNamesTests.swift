@@ -1,4 +1,4 @@
-// Tests of addNumberToName and the New Folder numbering, against tools/parity/golden/number-names.ts and the original's code
+// Tests of addNumberToName and the New Folder numbering, against the number-names golden
 import FTTestSupport
 import Testing
 
@@ -18,7 +18,6 @@ struct NumberedNamesTests {
         let stemLength: Int
     }
 
-    // F-042 F-063
     @Test func addNumberToNameMatchesTheReference() throws {
         let cases: [GoldenCase<NumberInput, NumberOutput>] = try Golden.load(suite: "number-names")
         #expect(cases.count >= 200)
@@ -34,13 +33,11 @@ struct NumberedNamesTests {
         try NumberedNames.nextFreeFolderPath(in: "/p", name: name, exists: { taken.contains($0) })
     }
 
-    // F-298
     @Test func newFolderCountsUpFromTwo() throws {
         #expect(try Self.folder("untitled folder", taken: []) == "/p/untitled folder 2")
         #expect(try Self.folder("untitled folder", taken: ["/p/untitled folder 2"]) == "/p/untitled folder 3")
     }
 
-    // F-298
     @Test func newFolderContinuesFromTheNumberItAlreadyEndsIn() throws {
         #expect(try Self.folder("untitled folder 3", taken: []) == "/p/untitled folder 4")
         #expect(try Self.folder("Photos 2024", taken: []) == "/p/Photos 2025")
@@ -52,7 +49,6 @@ struct NumberedNamesTests {
         #expect(try Self.folder("a\n 5", taken: []) == "/p/a\n 5 2")
     }
 
-    // F-298
     @Test func newFolderGivesUpAfterTenThousandTries() {
         let error = #expect(throws: NumberedNames.NameTaken.self) {
             try NumberedNames.nextFreeFolderPath(in: "/p", name: "x", exists: { _ in true })
@@ -60,7 +56,6 @@ struct NumberedNamesTests {
         #expect(error?.description == "An item named \u{201C}x\u{201D} already exists.")
     }
 
-    // F-298
     @Test func newFolderWritesNumbersAsJavaScriptDoes() throws {
         #expect(try Self.folder("x 99999999999999999999", taken: []) == "/p/x 100000000000000000000")
         #expect(JSText.integerText(1e21) == "1e+21")

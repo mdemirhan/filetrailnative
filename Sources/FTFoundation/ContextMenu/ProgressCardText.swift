@@ -1,5 +1,3 @@
-// Port of getWriteOperationTitle, getWriteOperationProgressPercent and formatWriteOperationByteLabel
-// (apps/desktop/src/renderer/components/AppDialogs.tsx) and the props of CopyPasteProgressCard.tsx
 import Foundation
 
 /// `WriteOperationAction`.
@@ -78,7 +76,6 @@ public struct ProgressCardText: Equatable, Sendable {
         return result ? pair.1 : pair.0
     }
 
-    /// `getWriteOperationProgressPercent`.
     public static func percent(_ state: WriteOperationCardState) -> Double {
         if let total = state.totalBytes, total > 0 {
             return Double(state.completedByteCount) / Double(total) * 100
@@ -89,7 +86,6 @@ public struct ProgressCardText: Equatable, Sendable {
         return Double(state.completedItemCount) / Double(state.totalItemCount) * 100
     }
 
-    /// `formatWriteOperationByteLabel`.
     public static func byteLabel(_ state: WriteOperationCardState) -> String {
         if let total = state.totalBytes {
             return "\(SizeText.size(state.completedByteCount)) of \(SizeText.size(total))"

@@ -1,5 +1,5 @@
-// Checks the toolbar's keys and presses against apps/desktop/src/renderer/components/ExplorerWorkspace.tsx,
-// HistoryButton.tsx and ClearButton.tsx, on a real tab whose window is never shown
+// Checks the toolbar's keys and presses, the history buttons' and the clear button's among them, on a real tab whose
+// window is never shown
 import AppKit
 import FTFoundation
 import Testing
@@ -19,10 +19,8 @@ extension ExplorerWindowlessTests {
                     charactersIgnoringModifiers: characters, isARepeat: false, keyCode: code))
         }
 
-        // ExplorerWorkspace.tsx:1183-1186: a plain button goes disabled, and nothing focuses the search input. The
-        // keyboard goes back to the pane.
-        // T-0d7af669 T-e6c30f5d B-SRCH-062 F-714
-        // App.tsx:2761: only the input's own focus shows cached results, so a finished search stays away.
+        // A plain button goes disabled, and nothing focuses the search input. The keyboard goes back to the pane. Only
+        // the input's own focus shows cached results, so a finished search stays away.
         @Test func aButtonThatDimsWithTheKeyboardGivesItToThePaneNotTheSearchField() async throws {
             let harness = try ExplorerHarness.windowless()
             let opened = try await harness.open()
@@ -68,8 +66,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // ExplorerWorkspace.tsx:1846-1855: the Info panel's resizer handles only ←/→, so Tab is the browser's: on from
-        // it, and back to the content. Its Hide button takes no keyboard in the port, so Tab goes past the panel.
+        // The Info panel's resizer handles only ←/→, so Tab is the key view loop's: on from it, and back to the
+        // content. Its Hide button takes no keyboard, so Tab goes past the panel.
         @Test func tabLeavesTheInfoPanelsResizerBothWays() async throws {
             let harness = try ExplorerHarness.windowless()
             let opened = try await harness.open()
@@ -92,7 +90,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-714: the items are plain buttons in the Tab order: Tab from the field reaches the ✕ and the next buttons, where
+        // The items are plain buttons in the Tab order: Tab from the field reaches the ✕ and the next buttons, where
         // Return or Space presses them; Shift-Tab goes back through the options button to the buttons before it. Past the
         // last the content has the keyboard. A click still leaves the keyboard where it is.
         @Test func tabFromTheFieldReachesTheClearButtonAndTheToolbarButtons() async throws {
@@ -134,8 +132,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-714, ExplorerWorkspace.tsx:1197-1231: the view switch is three plain buttons in the row. Tab walks them; Return or
-        // Space presses the one it is at; a click leaves the keyboard where it is. Disabled in search mode, none is a stop.
+        // The view switch is three plain buttons in the row. Tab walks them; Return or Space presses the one it is at;
+        // a click leaves the keyboard where it is. Disabled in search mode, none is a stop.
         @Test func tabWalksTheViewSwitchAndSpacePressesASegment() async throws {
             let harness = try ExplorerHarness.windowless()
             let opened = try await harness.open()
@@ -181,8 +179,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // ExplorerWorkspace.tsx:1813-1833: the tree's resizer comes right before the toolbar, and with the tree closed it
-        // isn't there. Neither is in a pane, so Tab there is the browser's too.
+        // The tree's resizer comes right before the toolbar, and with the tree closed it isn't there. Neither is in a
+        // pane, so Tab there is the key view loop's too.
         @Test func shiftTabPastTheFirstStopReachesTheTreesResizer() async throws {
             let harness = try ExplorerHarness.windowless()
             let opened = try await harness.open()
@@ -263,7 +261,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // ClearButton.tsx: with text in the field, Tab stops at the ✕, and Return there clears it.
+        // With text in the field, Tab stops at the ✕, and Return there clears it.
         @Test func returnOnTheClearStopClearsTheField() async throws {
             let harness = try ExplorerHarness.windowless()
             let opened = try await harness.open()
@@ -284,8 +282,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // HistoryButton.tsx:183-187, ExplorerWorkspace.tsx:999-1003: a Mac control-click is the right-click, with no click
-        // after it. On Back it opens the history and doesn't step back.
+        // A Mac control-click is the right-click, with no click after it. On Back it opens the history and doesn't step
+        // back.
         @Test func aControlClickOnBackListsTheHistoryInsteadOfSteppingBack() throws {
             let button = ToolbarButton(icon: .back, label: "Back", identifier: "toolbar.back")
             var clicks = 0
@@ -309,7 +307,7 @@ extension ExplorerWindowlessTests {
             #expect(clicks == 0)
         }
 
-        // HistoryButton.tsx:181 `onPointerLeave={cancelHold}`: sliding off ends the hold at once.
+        // Sliding off ends the hold at once.
         @Test func slidingOffAHeldHistoryButtonEndsTheHold() throws {
             let button = ToolbarButton(icon: .back, label: "Back", identifier: "toolbar.back")
             var ended: [Bool] = []
@@ -334,7 +332,7 @@ extension ExplorerWindowlessTests {
             #expect(clicks == 0)
         }
 
-        // HistoryButton.tsx:158-163: a dimmed Back or Forward opens no menu, the toolbar's own included.
+        // A dimmed Back or Forward opens no menu, the toolbar's own included.
         @Test func aRightClickOnADimmedHistoryButtonDoesNothing() throws {
             let button = ToolbarButton(icon: .back, label: "Back", identifier: "toolbar.back")
             var rights = 0

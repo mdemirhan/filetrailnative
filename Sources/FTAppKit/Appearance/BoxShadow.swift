@@ -1,11 +1,10 @@
-// Port of `box-shadow` as apps/desktop/src/renderer/styles.css uses it on controls (.push-button, the segments, the switch)
 import AppKit
 import FTFoundation
 
 /// A box's soft drops, around it and not under it, falling the way CSS says wherever the view is drawn. In the view's
 /// own context a shadow's offset goes up or down by how the view reaches the screen or a capture (`NSShadow` turns it
 /// over in a flipped context, and a layer under a flipped ancestor is turned over again), while an image lands the right
-/// way up in all of them. So the drops are drawn apart, as `SettingsPopoverShadow` draws a pop-up's.
+/// way up in all of them. So the drops are drawn apart.
 @MainActor
 enum BoxShadow {
     /// A soft edge loses nothing at this density on any screen.
@@ -88,8 +87,8 @@ final class BoxShadowView: NSView {
     }
 }
 
-/// `--push-button-bezel`: the 0.5 edge and the soft line under it, outside the button as a box shadow is. The other
-/// `.push-button`s of the app (a pop-up, a small button) draw theirs with this as well.
+/// The push button's bezel: the 0.5 edge and the soft line under it, outside the button as a box shadow is. The app's
+/// other push buttons (a pop-up, a small button) draw theirs with this as well.
 @MainActor
 func drawPushButtonBezel(_ palette: ThemePalette, around bounds: NSRect, radius: CGFloat) {
     BoxShadow.draw(palette.pushButtonBezel.filter { $0.blur > 0 }, around: bounds, radius: radius)

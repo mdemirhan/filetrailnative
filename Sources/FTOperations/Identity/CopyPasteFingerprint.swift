@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteFingerprint.ts
 import FTFoundation
 import Foundation
 import os
@@ -282,12 +281,12 @@ public func pathExists(_ fileSystem: some IdentityFileSystem, _ path: String) ->
     captureFingerprint(fileSystem, path).exists
 }
 
-/// The first id that a JavaScript number can't hold exactly.
+/// The first id that is treated as unknown: 2^53, past which a JSON number (a double) can't hold every id exactly.
 private let firstUnsafeFileId: UInt64 = 1 << 53
 
-/// A file id usable to tell items apart, or nil. FAT and exFAT give empty files ids near 2^64, which the
-/// original (a JavaScript number) can't hold exactly: they all round to the same value, so every empty file
-/// would look like the same item. Such an id, and any other of 2^53 or more, is treated as unknown.
+/// A file id usable to tell items apart, or nil. FAT and exFAT give empty files ids near 2^64, which round to the
+/// same value as a double, so every empty file would look like the same item. Such an id, and any other of 2^53 or
+/// more, is treated as unknown.
 public func fileIdOf(_ ino: UInt64?) -> UInt64? {
     guard let ino, ino < firstUnsafeFileId else { return nil }
     return ino

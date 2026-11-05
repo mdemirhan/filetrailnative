@@ -79,7 +79,6 @@ private func wholeDevice(of path: String) throws -> String {
 }
 
 @Suite(.serialized) struct VolumeEjectorTests {
-    // T-cfcc0c26 F-144 F-211 F-212
     @Test(.tags(.diskImage), .diskImages) func unmountsTheVolumeAndEjectsItsDiskDetachingADiskImage() async throws {
         try await DiskImage.withVolume(.apfs) { folder in
             let image = try image(mountedAt: folder.path)
@@ -92,7 +91,6 @@ private func wholeDevice(of path: String) throws -> String {
         }
     }
 
-    // T-7e94f3e8 F-211
     @Test(.tags(.diskImage), .diskImages) func unmountsOnlyTheVolumeWithoutWholeDiskLeavingItsDiskAttached()
         async throws
     {
@@ -109,7 +107,6 @@ private func wholeDevice(of path: String) throws -> String {
         }
     }
 
-    // T-087a7de6 F-211
     @Test(.tags(.diskImage), .diskImages) func refusesWithEBUSYWhileAFileIsOpenOnTheVolumeAndForcesWhenAsked()
         async throws
     {
@@ -132,7 +129,6 @@ private func wholeDevice(of path: String) throws -> String {
         }
     }
 
-    // T-49c761e5 F-211 F-215
     @Test func failsWithENOENTWhereNothingIsMounted() async throws {
         let folder = try TemporaryDirectory(prefix: "native-eject")
         defer { folder.remove() }

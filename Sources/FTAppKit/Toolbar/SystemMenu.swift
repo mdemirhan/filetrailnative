@@ -1,12 +1,10 @@
-// Port of the toolbar menus of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx, HistoryButton.tsx,
-// ThemeMenuButton.tsx, ToolbarOverflowButton.tsx, PullDownMenu.tsx and MenuCheck.tsx, shown as system menus
 import AppKit
 import FTFoundation
 
 /// One row of an app's menu.
 struct AppMenuItem {
     enum Kind {
-        /// `heading`: a small title over the items that follow (`.toolbar-menu-heading`).
+        /// `heading`: a small title over the items that follow.
         case item, separator, heading
     }
 
@@ -21,7 +19,7 @@ struct AppMenuItem {
     var tooltip: String?
     /// The app whose icon the row shows before its label (`AppIcon`).
     var appPath: String?
-    /// What the capture calls this row, when it isn't the menu's name for its rows (a note in the folder menu).
+    /// What automation calls this row, when it isn't the menu's name for its rows (a note in the folder menu).
     var rowIdentifier: String?
     var action: () -> Void = {}
 
@@ -37,7 +35,7 @@ final class AppMenu: NSObject, NSMenuDelegate {
     let rowIdentifier: String
     let nsMenu = NSMenu()
     private(set) var items: [AppMenuItem] = []
-    /// The item the keyboard starts on (`HistoryButton`'s first row, the folder menu's ticked one), by its index in
+    /// The item the keyboard starts on (the history menu's first row, the folder menu's ticked one), by its index in
     /// `items`. Nil: none, and the first ↓ goes to the first row.
     var markedIndex: Int?
     private let maxWidth: Double?
@@ -46,7 +44,7 @@ final class AppMenu: NSObject, NSMenuDelegate {
     var onChoose: (Int) -> Void = { _ in }
     /// The system closed the menu: a choice, Escape or a press elsewhere.
     var onSystemClose: () -> Void = {}
-    /// Tells a stand-in for the menu that the rows changed (the capture's).
+    /// Tells automation's stand-in for the menu that the rows changed.
     var onItemsChange: () -> Void = {}
     /// The rows for Option up or down, for a menu that changes with it (Open With).
     private(set) var itemsForOption: ((Bool) -> [AppMenuItem])?
@@ -106,7 +104,7 @@ final class AppMenu: NSObject, NSMenuDelegate {
         }
     }
 
-    /// A menu has no width of its own to cut text at: a long name or folder is cut here, as the original's row cuts it.
+    /// A menu has no width of its own to cut text at: a long name or folder is cut here.
     private func applyText(of item: AppMenuItem, to entry: NSMenuItem) {
         let font = NSFont.menuFont(ofSize: 0)
         let small = NSFont.menuFont(ofSize: NSFont.smallSystemFontSize)
@@ -311,7 +309,7 @@ final class AppMenuPresenter {
         }
     }
 
-    /// Below `anchor`, from the edge of it that leaves the most room (`placeDropdownMenu`).
+    /// Below `anchor`, from the edge of it that leaves the most room.
     func drop(_ menu: AppMenu, from anchor: NSView, owner: NSView? = nil, onClose: (() -> Void)? = nil) {
         guard let window = anchor.window, let host = Self.overlayHost(of: window) else { return }
         let rect = anchor.convert(anchor.bounds, to: host)

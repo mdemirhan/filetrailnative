@@ -1,5 +1,3 @@
-// Port of the cases of apps/desktop/src/renderer/App.commands.test.tsx (the background's menu) and App.openItems.test.tsx
-// (a folder alias, Always Open With cancelled), chosen from the menus themselves
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -16,7 +14,7 @@ extension ExplorerWindowlessTests {
             _ = NSApp.sendAction(try #require(item.action), to: item.target, from: item)
         }
 
-        // T-891ee398: with nothing right-clicked, the menu's actions are on the folder on screen, whatever is selected.
+        // With nothing right-clicked, the menu's actions are on the folder on screen, whatever is selected.
         @Test func theBackgroundsActionsRunOnTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -45,7 +43,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-ce789a8a: a folder alias opens the folder it points to, in a new tab.
+        // A folder alias opens the folder it points to, in a new tab.
         @Test func anAliasOfAFolderOpensInANewTabAtItsFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             try FileManager.default.createSymbolicLink(
@@ -66,7 +64,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-6e357c2b: Always Open With cancelled changes nothing and opens nothing.
+        // Always Open With cancelled changes nothing and opens nothing.
         @Test func alwaysOpenWithCancelledChangesAndOpensNothing() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

@@ -1,5 +1,4 @@
-// Port of executeCopyPasteFromAnalysis and its runtime conflicts (packages/core/src/fs/copyPasteExecution.ts):
-// the paste loop, the undo recording, progress, and what changed since the review
+// The paste loop, the undo recording, progress, and what changed since the review
 import Darwin
 import FTFoundation
 import Foundation
@@ -563,8 +562,8 @@ private func findRuntimeConflict(
 }
 
 /// Whether the item now at a destination (`current`) is the one the review, or the answer to a question, agreed
-/// to replace (`planned`). A folder's timestamps change whenever anything inside it does (Finder writes
-/// .DS_Store just by showing it), so for folders only their identity counts: an item added to one since goes to
+/// to replace (`planned`). A folder's timestamps change whenever anything inside it does (Finder writes.
+/// DS_Store just by showing it), so for folders only their identity counts: an item added to one since goes to
 /// the Trash with it, where it can be got back (a folder deleted for good is counted first).
 func isAsApproved(_ planned: NodeFingerprint, _ current: NodeFingerprint) -> Bool {
     if planned.kind == .directory && current.kind == .directory {

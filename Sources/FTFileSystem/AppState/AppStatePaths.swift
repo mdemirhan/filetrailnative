@@ -1,4 +1,3 @@
-// Port of resolveAppStatePath and resolveVisitedFoldersPath (apps/desktop/src/main/appStateStore.ts) and resolveAppLogFilePath (appLog.ts)
 import Foundation
 
 /// Where the app keeps its own files: one folder under Application Support, named for the bundle id.

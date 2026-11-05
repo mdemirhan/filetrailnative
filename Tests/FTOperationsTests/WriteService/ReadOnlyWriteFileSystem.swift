@@ -1,5 +1,5 @@
-// The reading file systems of the review's tests, given to a write service: what the original's tests give it,
-// objects without the writing calls, which a paste then fails on
+// The reading file systems of the review's tests, given to a write service: without the writing calls, which a
+// paste then fails on
 import Darwin
 import Foundation
 

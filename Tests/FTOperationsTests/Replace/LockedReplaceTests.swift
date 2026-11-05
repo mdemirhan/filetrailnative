@@ -1,5 +1,3 @@
-// Port of the Replace cases of packages/core/src/fs/copyPasteLocked.realfs.test.ts ("Replace with locked items",
-// "moving to another disk with Replace"), on the real disk with the native copy
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -25,7 +23,6 @@ struct LockedReplaceTests {
         }
     }
 
-    // T-1ae04534 F-510 F-505
     @Test func replacesAnItemWithALockedFileAndTheNewFileStaysLocked() async throws {
         try await withPlaces { src, dst, trash in
             try Disk.write(src + "/f.txt", "new")
@@ -44,7 +41,6 @@ struct LockedReplaceTests {
         }
     }
 
-    // T-4fa90b14 F-510
     @Test func replacesAFolderWithALockedFolderAndEverythingInIt() async throws {
         try await withPlaces { src, dst, trash in
             try Disk.write(src + "/Vault/a.txt", "a")
@@ -62,7 +58,6 @@ struct LockedReplaceTests {
         }
     }
 
-    // T-bbaefeb3 F-510 F-338
     @Test func refusesToReplaceALockedItemBeforeAnythingChanges() async throws {
         try await withPlaces { src, dst, trash in
             try Disk.write(src + "/f.txt", "new")
@@ -86,7 +81,6 @@ struct LockedReplaceTests {
     // The Replace stages a plain copy and removes the originals only after the swap: a locked original used to be
     // found out then, after the old item had gone to the Trash. The source seems to be on a disk of its own
     // (another device number, EXDEV out of it), so the move copies and then removes, as one to a real other disk.
-    // T-d236f420 F-475 F-510
     @Test func refusesALockedFileBeforeAnythingIsReplaced() async throws {
         try await withPlaces { src, disk, otherTrash in
             try Disk.write(src + "/f.txt", "new")
@@ -107,7 +101,6 @@ struct LockedReplaceTests {
         }
     }
 
-    // T-751f9048 F-475 F-510
     @Test func refusesAFolderHoldingALockedItemBeforeAnythingIsReplaced() async throws {
         try await withPlaces { src, disk, otherTrash in
             try Disk.write(src + "/Docs/keep.txt", "keep")

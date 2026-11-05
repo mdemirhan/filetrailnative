@@ -1,5 +1,3 @@
-// Port of "same-filesystem rename optimization" (packages/core/src/fs/copyPasteExecution.test.ts), but for the cases
-// that Replace (P3-04's)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -27,7 +25,6 @@ func copyingSize(_ fileSystem: MockWriteServiceFileSystem, _ called: Flag? = nil
 }
 
 struct CopyPasteExecutionRenameTests {
-    // T-a2db2911 F-283 F-462
     @Test func usesRenameForSameDevCutFile() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -43,7 +40,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
-    // T-62a90ca4 F-283 F-462
     @Test func usesRenameForSameDevCutSymlink() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/link", .symlink("actual.txt")), ("/target", .directory()),
@@ -57,7 +53,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/link")?.target == "actual.txt")
     }
 
-    // T-09b8c7ae F-283 F-462
     @Test func usesRenameForSameDevCutDirectoryMovingTheWholeSubtreeAtOnce() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 3)),
@@ -78,7 +73,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/dir/sub/b.txt")?.size == 7)
     }
 
-    // T-cc2feb3b F-462
     @Test func fallsBackToCopyAndDeleteForCrossDevCut() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 1)), ("/source/a.txt", .file(size: 5, dev: 1)),
@@ -95,7 +89,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
-    // T-69474f3e F-466
     @Test func treatsExternallyRemovedSourceDirectoriesAsAlreadyCleanedUpInCutMode() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 5)),
@@ -130,7 +123,6 @@ struct CopyPasteExecutionRenameTests {
         }
     }
 
-    // T-ff15a058 F-283 F-462
     @Test func fallsBackToCopyAndDeleteOnEXDEVError() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -147,7 +139,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
-    // T-690f0044 F-283 F-462
     @Test func reportsNonEXDEVRenameErrorsAsOperationFailures() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -163,7 +154,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(!fileSystem.exists("/target/a.txt"))
     }
 
-    // T-e6eab4e1 F-462
     @Test func doesNotUseRenameForCopyModeOnlyCut() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -179,7 +169,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
-    // T-1fd60fb6 F-462
     @Test func mergesDirectoriesInsteadOfRenamingWhenActionIsMerge() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 3)),
@@ -198,7 +187,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/dir/b.txt")?.size == 4)
     }
 
-    // T-347d1040 F-462
     @Test func renameWithKeepBothUsesAlternateDestinationName() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 8)), ("/target", .directory()),
@@ -215,7 +203,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a copy.txt")?.size == 8)
     }
 
-    // T-49ec9582 F-283 F-462
     @Test func renamePreservesInode() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5, mode: 0o755)), ("/target", .directory()),
@@ -232,7 +219,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(moved?.mtimeMs == originalMtimeMs)
     }
 
-    // T-49147656 F-465
     @Test func mixedDevBatchRenamesSomeItemsAndCopiesAndDeletesOthers() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source1", .directory(dev: 1)), ("/source1/a.txt", .file(size: 3, dev: 1)),
@@ -255,7 +241,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/b.txt")?.size == 7)
     }
 
-    // T-61a311d1 F-462
     @Test func exdevFallbackStillPerformsInlineSourceDeletion() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -269,7 +254,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
-    // T-ffc2a129 F-260
     @Test func renameOverwriteSkipsPreDeleteWhenTheDestinationVanishedBeforeExecution() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 10)), ("/target", .directory()),
@@ -293,7 +277,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 10)
     }
 
-    // T-4486c341 F-257 F-464
     @Test func cancellationBetweenRenameOperations() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 3)), ("/source/b.txt", .file(size: 4)),
@@ -323,7 +306,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.exists("/source/c.txt"))
     }
 
-    // T-57bc373d F-462
     @Test func renameWithRuntimeConflictResolvedAsSkipPreservesSource() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -339,7 +321,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 99)
     }
 
-    // T-8769504f F-325 F-464
     @Test func classifiesARuntimeCreatedDestinationDirectoryForAFileAsATypeMismatch() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -358,7 +339,6 @@ struct CopyPasteExecutionRenameTests {
         #expect(events.last?.status == .partial)
     }
 
-    // T-fe3bbf2d F-325
     @Test(arguments: [RuntimeConflictReason.destinationDeleted, .destinationChanged])
     func promptsWhenAnOverwriteDestinationChangesAfterAnalysis(reason: RuntimeConflictReason) async throws {
         let fileSystem = MockWriteServiceFileSystem([
@@ -386,7 +366,6 @@ struct CopyPasteExecutionRenameTests {
         }
     }
 
-    // T-71dfe8b1 F-281 F-464
     @Test func countsAFolderRenamedWholeAsOneItemOfASizeNotKnown() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 100)),

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/tooltips.ts and the placement of lib/titleTooltips.ts
 import Foundation
 
 /// What the toolbar's on/off buttons need to know to say what a click will do, and the text editor
@@ -39,13 +38,13 @@ public enum Tooltips {
         return "\(label) (\(shortcutLabel))"
     }
 
-    /// `formatTooltip`: the shortcut is written as in the app's data ("Cmd+Backspace") and shown as symbols.
+    /// The shortcut is written as in the app's data ("Cmd+Backspace") and shown as symbols.
     public static func format(_ label: String, shortcut: String?) -> String {
         guard let shortcut, !shortcut.isEmpty else { return label }
         return format(label, shortcutLabel: ShortcutLabels.format(shortcut))
     }
 
-    /// `getToolbarItemLabel`: the item's name where it is listed or pointed at: its tooltip, and the » menu.
+    /// The item's name where it is listed or pointed at: its tooltip, and the » menu.
     public static func toolbarItemLabel(itemID: ToolbarItemID, state: ToolbarTooltipState = ToolbarTooltipState())
         -> String
     {
@@ -71,7 +70,7 @@ public enum Tooltips {
         return definition.tooltipLabel ?? definition.label
     }
 
-    /// `getToolbarItemTooltip`: the item's name, then the key it has now.
+    /// The item's name, then the key it has now.
     public static func toolbarItemTooltip(
         itemID: ToolbarItemID, state: ToolbarTooltipState = ToolbarTooltipState(),
         shortcuts: ShortcutDisplay = .defaults
@@ -82,7 +81,7 @@ public enum Tooltips {
     }
 }
 
-/// Where the app draws the tooltip of an icon-only button (port of `resolveTooltipPlacement`).
+/// Where the app draws the tooltip of an icon-only button.
 public enum TitleTooltips {
     public static let showDelay: TimeInterval = 0.6
     /// Moving straight on to another control shows its tooltip at once.

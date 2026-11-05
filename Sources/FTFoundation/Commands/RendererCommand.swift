@@ -1,6 +1,7 @@
-// Generated once from apps/desktop/src/shared/rendererCommands.ts (RENDERER_COMMAND_TYPES) in the Electron app; now edited by hand.
+// Generated once; now edited by hand.
 
-/// The commands the application menu, the toolbar and the keys send to the explorer window. The raw value is the original's command name.
+/// The commands the application menu, the toolbar and the keys send to the explorer window. The raw value is the
+/// command's name.
 public enum RendererCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case undo
     case redo
@@ -44,7 +45,6 @@ public enum RendererCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case newWindow
     case newTab
     case reopenClosedTab
-    /// Not a command of the original, whose Duplicate Tab is in the tab strip's menu only.
     case duplicateTab
     case closeTab
     case selectNextTab

@@ -1,5 +1,4 @@
-// Port of the sheet's part of apps/desktop/src/renderer/App.tsx: `.modal-scrim.is-sheet` covers the tab strip
-// (styles.css:1229-1243) and `copyPasteModalOpen` refuses newTab and closeTab (App.tsx:1089-1098) while it is up
+// `.modal-scrim.is-sheet` covers the tab strip and `copyPasteModalOpen` refuses newTab and closeTab while it is up
 import AppKit
 import FTFileSystem
 import FTFoundation

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/folderWatch.ts
 import FTFoundation
 import Foundation
 

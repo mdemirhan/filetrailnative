@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/batchRenameExecution.fuzz.test.ts
 import FTFoundation
 import Foundation
 import Testing
@@ -6,7 +5,7 @@ import Testing
 @testable import FTOperations
 
 // Random folders and random renames, with random failures and stops: whatever happens, no item is lost or replaced,
-// and every result says where its item really is. The cases come from seeds 1 to 400, as the original's do.
+// and every result says where its item really is. The cases come from seeds 1 to 400.
 private let firstSeed = 1
 private let cases = 400
 
@@ -265,14 +264,12 @@ private let everyOutcome: Set<String> = [
 ]
 
 @Suite struct BatchRenameFuzzTests {
-    // T-ab6035f3 F-568
     @Test func neverLosesAnItemAndSaysWhereEachOneIsForItemsInFoldersSideBySide() {
         let (failure, outcomes) = fuzz(nested: false)
         #expect(failure == nil, Comment(rawValue: failure ?? ""))
         #expect(outcomes == everyOutcome)
     }
 
-    // T-0a6d6bd4 F-568
     @Test func neverLosesAnItemAndSaysWhereEachOneIsWhenFoldersAreRenamedWithItemsInsideThem() {
         let (failure, outcomes) = fuzz(nested: true)
         #expect(failure == nil, Comment(rawValue: failure ?? ""))
@@ -281,7 +278,6 @@ private let everyOutcome: Set<String> = [
 
     // A folder that can't take its new name and is put back under another one takes the paths of the items inside it
     // along, as a renamed folder does: "/trip/sub/y" is now inside "a", the item that took the folder's name.
-    // T-61ab1c72 F-397 F-568
     @Test func saysWhereAnItemIsWhenItsFolderWasPutBackUnderANumberedName() throws {
         let disk = MemoryDisk(["/trip/a", "/trip/sub", "/trip/sub/x", "/trip/c"])
         let xIno = try #require(disk.inoOf("/trip/sub/x"))

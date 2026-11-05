@@ -1,12 +1,10 @@
-// Port of the List's drag hooks of apps/desktop/src/renderer/components/ContentPane.tsx (data-drag-path, the rows'
-// drag and drop events) and of lib/fileDragImages.ts for its rows: where a drag of its items sets off from, what a
-// drag over it is offered to, and the flash of copied and cut rows
+// Where a drag of its items sets off from, what a drag over it is offered to, and the flash of copied and cut rows
 import AppKit
 import FTFileSystem
 import FTFoundation
 
 extension ListViewController {
-    /// The table takes drags of files (B-CLIP-156); the rows draw their own drop highlight.
+    /// The table takes drags of files; the rows draw their own drop highlight.
     func registerForFileDrops() {
         table.registerForDraggedTypes([.fileURL])
         table.draggingDestinationFeedbackStyle = .none

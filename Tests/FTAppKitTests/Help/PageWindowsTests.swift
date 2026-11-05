@@ -1,5 +1,4 @@
-// The Help, About and Acknowledgements windows as the app opens them (main.ts openHelpWindow, openAboutWindow,
-// openAcknowledgementsWindow; B-DLG-246..249, 259) and Help's documentation of the application menu (helpContent.test.ts)
+// The Help, About and Acknowledgements windows as the app opens them and Help's documentation of the application menu
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -14,7 +13,6 @@ import Testing
         menu.items.flatMap { [$0] + ($0.submenu.map(menuItems) ?? []) }
     }
 
-    // T-ff1d7b21 F-594 F-665 F-667
     @Test func documentsEveryKeyboardShortcutInTheApplicationMenu() {
         _ = NSApplication.shared
         let router = MenuCommandRouter()
@@ -55,7 +53,7 @@ import Testing
         init(_ preferences: AppPreferences) { self.preferences = preferences }
     }
 
-    // B-DLG-246 F-634: Help is titled "File Trail Help", 900 by 680, at least 560 by 420
+    // Help is titled "File Trail Help", 900 by 680, at least 560 by 420
     @Test func helpIsAWindowOf900By680() {
         _ = NSApplication.shared
         var told: [HelpTopicID] = []
@@ -75,7 +73,7 @@ import Testing
         #expect((window as? PageWindow)?.closesOnEscape == false)
     }
 
-    // F-667 B-DLG-255: Customize… opens Settings on the shortcuts tab
+    // Customize… opens Settings on the shortcuts tab
     @Test func customizeOpensSettingsOnTheShortcutsTab() throws {
         let (pages, _) = Self.make()
         pages.settingsServices.schedule = { _, _ in {} }
@@ -88,9 +86,8 @@ import Testing
         help.window?.close()
     }
 
-    // F-639 F-648 B-DLG-246 B-DLG-249 B-DLG-259: one window of each kind, off the screen here; asking again shows the one
+    // One window of each kind, off the screen here; asking again shows the one
     // open, on the topic asked for.
-    // B-VIEW-231
     @Test func opensOneWindowOfEachKindAndRemembersHelpsPage() {
         let (pages, _) = Self.make()
         pages.openHelp()
@@ -141,7 +138,7 @@ import Testing
         #expect(pages.acknowledgementsWindow == nil)
     }
 
-    // B-DLG-254 F-610: the keys Help shows are the ones chosen in Settings, and Return renames while Settings says so
+    // The keys Help shows are the ones chosen in Settings, and Return renames while Settings says so
     @Test func helpShowsTheKeysChosenInSettings() {
         let (pages, _) = Self.make()
         var changed = AppPreferences.defaults()
@@ -166,7 +163,7 @@ import Testing
 @MainActor
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct PageWindowsGUITests {
-    // F-639 F-648: asked to show, each one comes on screen.
+    // Asked to show, each one comes on screen.
     @Test func showsItsWindowsOnScreen() {
         let (pages, _) = PageWindowsTests.make()
         pages.presentsWindows = true

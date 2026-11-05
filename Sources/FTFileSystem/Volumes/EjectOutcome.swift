@@ -1,4 +1,3 @@
-// Port of ejectVolume in apps/desktop/src/main/volumes.ts
 import Foundation
 
 public struct EjectRequest: Sendable, Equatable {

@@ -1,5 +1,5 @@
-// Tab through a section of Settings (SettingsView.tsx:92-100, SettingsControls.tsx:20-24: native focusable elements), and
-// the keys its recorder hears (ShortcutSettings.tsx:378, shortcuts.ts:763-790)
+// Tab through a section of Settings, and
+// the keys its recorder hears
 import AppKit
 import FTFoundation
 import Testing
@@ -49,7 +49,7 @@ import Testing
         #expect(window.firstResponder !== first)
     }
 
-    // ShortcutSettings.tsx:378: ⇧ and ⌥ with a digit or punctuation are answers, and so are F13 to F20.
+    // ⇧ and ⌥ with a digit or punctuation are answers, and so are F13 to F20.
     @Test(arguments: [
         (UInt16(18), CGEventFlags([.maskCommand, .maskShift]), "⇧⌘1"),
         (UInt16(18), CGEventFlags([.maskCommand, .maskAlternate]), "⌥⌘1"),
@@ -109,7 +109,7 @@ import Testing
         return stops
     }
 
-    // ShortcutSettings.tsx:326: Restore Default is there only for a row that is customized.
+    // Restore Default is there only for a row that is customized.
     @Test func tabNeverLandsOnAHiddenControl() throws {
         let (controller, _) = Kit.make(tab: .shortcuts)
         Kit.layout(controller)
@@ -129,7 +129,7 @@ import Testing
         #expect(labels.filter { $0.hasPrefix("Restore Default for") } == ["Restore Default for New Folder"])
     }
 
-    // SettingsWindowApp.tsx:327-333: the sections are buttons, first in the page's order.
+    // The sections are buttons, first in the page's order.
     @Test func tabReachesTheSectionsBeforeTheSectionOnScreen() throws {
         let (controller, _) = Kit.make(tab: .browsing)
         Kit.layout(controller)
@@ -142,7 +142,7 @@ import Testing
         }
     }
 
-    // The browser brings what the keyboard reached into view (SettingsView.tsx:92-100).
+    // The browser brings what the keyboard reached into view.
     @Test func tabScrollsTheControlIntoView() throws {
         let (controller, _) = Kit.make(tab: .shortcuts)
         Kit.layout(controller)
@@ -209,7 +209,7 @@ import Testing
         #expect(window.firstResponder !== section)
     }
 
-    // styles.css:4930: the ring comes and goes with the keyboard.
+    // The ring comes and goes with the keyboard.
     @Test func aSectionShowsItHasTheKeyboard() throws {
         let (controller, _) = Kit.make(tab: .general)
         Kit.layout(controller)

@@ -1,5 +1,4 @@
-// Port of packages/core/src/fs/copyPasteStagedDiscard.test.ts: a complete hidden copy given up, whose removal stops
-// part way
+// A complete hidden copy given up, whose removal stops part way
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -42,7 +41,6 @@ struct StagedDiscardTests {
         MockWriteServiceFileSystem([("/source/dir/a.txt", .file(size: 1)), ("/source/dir/b.txt", .file(size: 2))])
     }
 
-    // T-7797882e F-507
     @Test func isRemovedAtTheNextStartNotPutInPlaceAsIfWhole() async throws {
         let fileSystem = dirSource()
         fileSystem.addDirectory("/target")
@@ -78,7 +76,6 @@ struct StagedDiscardTests {
         #expect(hiddenCopies(fileSystem) == [])
     }
 
-    // T-1de855e4 F-507 F-345
     @Test func isRemovedAtTheNextStartWhenAReplaceIsUndone() async throws {
         let fileSystem = dirSource()
         fileSystem.addFile("/target/dir/old.txt", .file(size: 3))
@@ -108,7 +105,6 @@ struct StagedDiscardTests {
         #expect(hiddenCopies(fileSystem) == [])
     }
 
-    // T-ab0f33ba F-507
     @Test func isLeftWholeForTheNextStartToPutInPlaceWhenItsRecordCantBeChanged() async throws {
         let fileSystem = dirSource()
         fileSystem.addDirectory("/target")

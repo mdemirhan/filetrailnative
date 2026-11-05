@@ -1,5 +1,3 @@
-// Port of the .get-info-panel of apps/desktop/src/renderer/components/GetInfoPanel.tsx with styles.css:3127-3270 and
-// 4555-4850: the header, the hero, the split Open button, the Information rows and the Quick Actions
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -138,7 +136,7 @@ final class InfoPanelView: NSView {
     }
 }
 
-/// `.get-info-header`: "Info", the spinner, the close button.
+/// The panel's header: "Info", the spinner, the close button.
 final class InfoPanelHeader: NSView {
     let title = TextBoxField(labelWithString: "Info")
     let spinner = InfoSpinnerView(diameter: 10, lineWidth: 1.5)
@@ -190,7 +188,7 @@ final class InfoPanelHeader: NSView {
     }
 }
 
-/// The box a value that is not plain text sits in, which the capture reads the size and style of.
+/// The box a value that is not plain text sits in, which automation reads the size and style of.
 final class RowValueBox: NSView, TextStyleSource {
     let sample = TextBoxField(labelWithString: "")
     var styleTextField: NSTextField? { sample }
@@ -209,7 +207,7 @@ final class RowValueBox: NSView, TextStyleSource {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// The main half of the split button: it carries the label's style for the capture.
+/// The main half of the split button: it carries the label's style for automation.
 final class SplitMainPart: NSView, TextStyleSource {
     weak var label: NSTextField?
     var styleTextField: NSTextField? { label }
@@ -217,7 +215,7 @@ final class SplitMainPart: NSView, TextStyleSource {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// The Open With half, which the capture names (`.get-info-open-with-button`). The button takes its presses: it takes
+/// The Open With half, which automation names (`infoPanel.openWith`). The button takes its presses: it takes
 /// the first click of a window not in front, as a click on the chevron opens the menu there too.
 final class SplitChevronPart: NSView {
     override var isFlipped: Bool { true }
@@ -238,7 +236,7 @@ final class SplitOpenButton: NSView, TextStyleSource {
     private(set) var menuOpen = false { didSet { needsDisplay = true } }
     let label = TextBoxField(labelWithString: "")
     let chevron = SplitChevronPart()
-    /// The main half, which the capture names (`.get-info-open-main`).
+    /// The main half, which automation names (`infoPanel.open`).
     let mainPart = SplitMainPart()
 
     override init(frame: NSRect) {
@@ -271,7 +269,7 @@ final class SplitOpenButton: NSView, TextStyleSource {
     }
 
     private var mainWidth: Double { isSplit ? bounds.width - InfoMetrics.openChevronWidth : bounds.width }
-    /// `.file-icon.native-file-icon`, later in the stylesheet than the 16 of `.get-info-open-main .file-icon`.
+    /// The app's icon, 18 rather than 16.
     private let iconSize = 18.0
 
     override func layout() {
@@ -489,7 +487,7 @@ final class OpensWithPopupView: NSView {
     }
 }
 
-/// The panel's scrolled content: laid out from the display as the stylesheet stacks it.
+/// The panel's scrolled content, laid out from the display.
 final class InfoPanelContentView: NSView {
     weak var owner: InfoPanelView?
     var iconStore: FileIconStore? {
@@ -513,7 +511,7 @@ final class InfoPanelContentView: NSView {
         var label: TextBoxField
         var value: NSView
         var extra: TextBoxField?
-        /// The `<dd>` of a value that is not plain text, which the capture names.
+        /// The box of a value that is not plain text, which automation names.
         var box: RowValueBox?
     }
 
@@ -684,7 +682,7 @@ final class InfoPanelContentView: NSView {
                 box = RowValueBox()
                 box?.sample.stringValue = words
                 let code = TextBoxField(labelWithString: octal)
-                // `--font-mono`: of its names, the original's window ends up on Menlo (three digits are 19.87 wide).
+                // The mono font is Menlo (three digits are 19.87 wide).
                 code.font =
                     NSFont(name: "Menlo-Regular", size: DesignTokens.typeScale.small)
                     ?? ThemeFonts.mono(DesignTokens.typeScale.small)
@@ -799,7 +797,7 @@ final class InfoPanelContentView: NSView {
         for view in [heroIcon, name, subtitle] as [NSView] { view.isHidden = !hasHero }
         open.isHidden = true
         if isEmpty {
-            // `.get-info-empty`: padding-top 18.
+            // The empty message, 18 from the top.
             let height = ceil(
                 emptyLabel.cell?.cellSize(forBounds: NSRect(x: 0, y: 0, width: width, height: 1000)).height ?? 0)
             emptyLabel.frame = NSRect(x: inset, y: 18, width: width, height: height)
@@ -922,7 +920,7 @@ final class InfoPanelContentView: NSView {
         y += InfoMetrics.sectionGap
         if case .item = body {
             if titleIndex < sectionTitles.count { place(title: sectionTitles[titleIndex]) }
-            // `.get-info-actions`: margin 2 -8 0, a 2 gap, wrapping.
+            // The action buttons: 2 above, reaching 8 past each side, 2 apart, wrapping.
             var x = inset - 8
             for (_, button) in actionButtons {
                 if x + InfoMetrics.actionWidth > inset + width + 8 {

@@ -1,4 +1,4 @@
-// No TypeScript source: the system's popover for the panels the original draws itself (ClipboardButton, FavoriteIconPicker)
+// The system's popover for the app's own panels (the clipboard list, the favorite icon picker)
 import AppKit
 
 /// An `NSPopover` under a control. The app closes it (a press outside the control's own toggle has to go on to where it

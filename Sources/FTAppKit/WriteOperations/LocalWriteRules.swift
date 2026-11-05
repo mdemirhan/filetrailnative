@@ -1,8 +1,3 @@
-// Port of NEW_FOLDER_NAME, resolveFreeNewFolderName, resolveNewFolderTargetPath and describeEmptyTrashFailure
-// (apps/desktop/src/renderer/lib/explorerAppUtils.ts), of itemsWithoutTrash, needsDotNameConfirmation and
-// formatItemSummaryFromPathCount (apps/desktop/src/renderer/hooks/useExplorerActions.ts), and of the confirmTrash,
-// confirmDeleteImmediately, confirmDeleteWithoutTrash, confirmEmptyTrash and confirmDotName questions
-// (apps/desktop/src/renderer/components/AppDialogs.tsx)
 import FTFoundation
 import FTOperations
 import Foundation
@@ -10,10 +5,9 @@ import Foundation
 /// What the window decides around rename, New Folder, Trash, Delete Immediately and Empty Trash, before and after
 /// the coordinator runs them.
 enum LocalWriteRules {
-    /// `NEW_FOLDER_NAME`.
     static let newFolderName = "untitled folder"
 
-    /// `resolveFreeNewFolderName`: the first of "untitled folder", "untitled folder 2", … the folder doesn't have,
+    /// The first of "untitled folder", "untitled folder 2", … the folder doesn't have,
     /// names compared without case as the disk does.
     static func freeNewFolderName(_ existingNames: [String]) -> String {
         let taken = Set(existingNames.map { $0.lowercased() })
@@ -29,13 +23,13 @@ enum LocalWriteRules {
         return newFolderName
     }
 
-    /// Where a menu's New Folder is about (`contextScope`): the selection it was opened on, or the empty space of
+    /// Where a menu's New Folder is about: the selection it was opened on, or the empty space of
     /// the folder on screen.
     enum Scope: Equatable, Sendable {
         case selection, background
     }
 
-    /// `resolveNewFolderTargetPath`: from the keyboard or the menu bar (no scope), the folder on screen whatever is
+    /// From the keyboard or the menu bar (no scope), the folder on screen whatever is
     /// selected, so two in a row don't nest the second inside the first; from a folder's own menu, inside it, and
     /// nothing for a file or several items. Never in search results, nor in the Trash.
     static func newFolderTargetPath(
@@ -85,7 +79,7 @@ enum LocalWriteRules {
         text.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
     }
 
-    /// The first match of `pattern` taken out (JavaScript's `replace` with a pattern without `g`).
+    /// The first match of `pattern` taken out; later ones stay.
     private static func replacing(_ text: String, _ pattern: String) -> String {
         guard let range = text.range(of: pattern, options: .regularExpression) else { return text }
         return text.replacingCharacters(in: range, with: "")
@@ -107,13 +101,13 @@ enum LocalWriteRules {
             && !(currentName ?? "").hasPrefix(".")
     }
 
-    /// `formatItemSummaryFromPathCount`: "notes.md", or "notes.md and 2 more".
+    /// "notes.md", or "notes.md and 2 more".
     static func itemSummary(_ paths: [String]) -> String {
         let firstName = NodePath.basename(paths.first ?? "item")
         return paths.count <= 1 ? firstName : "\(firstName) and \(paths.count - 1) more"
     }
 
-    /// `quoteItems`: one item's name in quotes; "notes.md and 2 more" as it is.
+    /// One item's name in quotes; "notes.md and 2 more" as it is.
     private static func quoted(_ paths: [String]) -> String {
         paths.count == 1 ? "\u{201C}\(itemSummary(paths))\u{201D}" : itemSummary(paths)
     }
@@ -124,7 +118,7 @@ enum LocalWriteRules {
 
     // MARK: Questions
 
-    /// `confirmTrash`: a folder of the tree is moved to the Trash after asking.
+    /// A folder of the tree is moved to the Trash after asking.
     static func trashQuestion(_ paths: [String]) -> WriteQuestion {
         WriteQuestion(
             title: "Move \(quoted(paths)) to the Trash?",
@@ -134,7 +128,7 @@ enum LocalWriteRules {
             confirmLabel: "Move to Trash", destructive: true, cancelIsDefault: false)
     }
 
-    /// `confirmDeleteImmediately`: Finder's question, word for word.
+    /// Finder's question, word for word.
     static func deleteImmediatelyQuestion(_ paths: [String]) -> WriteQuestion {
         WriteQuestion(
             title: paths.count == 1
@@ -146,7 +140,7 @@ enum LocalWriteRules {
             confirmLabel: "Delete", destructive: true, cancelIsDefault: true)
     }
 
-    /// `confirmDeleteWithoutTrash`: Finder's question for an item on a disk without a Trash.
+    /// Finder's question for an item on a disk without a Trash.
     static func deleteWithoutTrashQuestion(_ paths: [String]) -> WriteQuestion {
         WriteQuestion(
             title: paths.count == 1
@@ -158,7 +152,7 @@ enum LocalWriteRules {
             confirmLabel: "Delete", destructive: true, cancelIsDefault: true)
     }
 
-    /// `confirmEmptyTrash`: Finder's question, word for word; Cancel is the default.
+    /// Finder's question, word for word; Cancel is the default.
     static let emptyTrashQuestion = WriteQuestion(
         title: "Are you sure you want to permanently erase the items in the Trash?",
         message: "You can\u{2019}t undo this action.", confirmLabel: "Empty Trash", destructive: true,
@@ -172,7 +166,7 @@ enum LocalWriteRules {
         confirmLabel: "Use \u{201C}.\u{201D}", destructive: false, cancelIsDefault: true)
 }
 
-/// A question asked before a write starts (`CopyPasteDialog` with a primary and a Cancel button).
+/// A question asked before a write starts (a dialog with a primary and a Cancel button).
 struct WriteQuestion: Equatable, Sendable {
     var title: String
     var message: String
@@ -180,6 +174,6 @@ struct WriteQuestion: Equatable, Sendable {
     var destructive: Bool
     /// Return answers Cancel (the action can't be undone, or would hide the item).
     var cancelIsDefault: Bool
-    /// The lines listed under the message: the names of the items an undo question is about (`UndoQuestionAlert`).
+    /// The lines listed under the message: the names of the items an undo question is about.
     var list: [String] = []
 }

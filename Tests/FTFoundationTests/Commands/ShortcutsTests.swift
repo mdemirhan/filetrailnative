@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/shortcuts.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -15,11 +14,9 @@ struct ShortcutsTests {
 
     // MARK: Shortcut commands
 
-    // T-f0344551 F-007
     @Test func namesEveryCommandOnceAndGivesNoKeyToTwoCommands() {
         let ids = ShortcutCommands.all.map(\.id)
         #expect(Set(ids).count == ids.count)
-        // The original's 79, and Duplicate Tab.
         #expect(ids.count == 80)
 
         let keys = ShortcutCommands.all.flatMap { Self.defaults[$0.id] ?? [] }
@@ -31,9 +28,7 @@ struct ShortcutsTests {
         }
     }
 
-    // T-ea83b599 F-082
-    // The original lets 69 commands be changed; Zoom In, Zoom Out and Actual Size are dropped and Duplicate
-    // Tab is added, so 67 are.
+    // 67 commands can be changed; the standard ones stay fixed.
     @Test func letsSixtySevenCommandsBeChangedAndKeepsTheStandardOnesFixed() {
         let fixed = ShortcutCommands.all.filter(\.fixed)
         #expect(ShortcutCommands.all.count - fixed.count == 67)
@@ -45,7 +40,6 @@ struct ShortcutsTests {
         #expect(fixed.allSatisfy { $0.group == .standard })
     }
 
-    // T-1512badd
     @Test func coversEveryCommandTheMenusAndToolbarsCanSend() {
         // These have a fixed key of their own (⌘C, ⌘,) under another name.
         let fixedElsewhere: Set<RendererCommand> = [
@@ -58,9 +52,8 @@ struct ShortcutsTests {
         }
     }
 
-    // MARK: normalizeShortcut
+    // MARK: Normalizing a shortcut
 
-    // T-ad71912c F-007
     @Test func writesAShortcutOneWayWhateverOrderAndNamesItCameIn() {
         #expect(Shortcuts.normalize("shift+cmd+g") == "Cmd+Shift+G")
         #expect(Shortcuts.normalize("Alt+CommandOrControl+T") == "Cmd+Option+T")
@@ -73,7 +66,6 @@ struct ShortcutsTests {
         #expect(Shortcuts.normalize("Shift+?") == "?")
     }
 
-    // T-5638bddb
     @Test func refusesTextThatNamesNoShortcut() {
         for value in ["", "Cmd", "Cmd+", "Cmd+Shift", "Hyper+K", "Cmd+F25", "Cmd+?", "Cmd+ab"] {
             #expect(Shortcuts.normalize(value) == nil, "\(value)")
@@ -82,7 +74,6 @@ struct ShortcutsTests {
 
     // MARK: Page keys
 
-    // T-4524620d F-075
     @Test func movesHalfAPageWithCtrlDAndCtrlUAndAPageWithThePageKeysAnyOfThemChangeable() {
         #expect(Self.defaults[.halfPageDown] == ["Ctrl+D"])
         #expect(Self.defaults[.halfPageUp] == ["Ctrl+U"])
@@ -94,7 +85,6 @@ struct ShortcutsTests {
         }
     }
 
-    // T-d1f043f8
     @Test func letsGoOfShiftInAShortcutForShiftWithAPageKeyToExtendTheSelection() {
         #expect(Shortcuts.withoutShift("Ctrl+Shift+D") == "Ctrl+D")
         #expect(Shortcuts.withoutShift("Shift+PageDown") == "PageDown")
@@ -103,10 +93,8 @@ struct ShortcutsTests {
         #expect(Shortcuts.withoutShift("not a shortcut") == nil)
     }
 
-    // MARK: shortcutFromKeyboardEvent
+    // MARK: A shortcut from a key press
 
-    // T-78e330e0
-    // B-DLG-216
     @Test func readsLettersFromTheCharacterSoTheKeyboardLayoutIsFollowed() {
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "d", code: "KeyD", meta: true)) == "Cmd+D")
         // Dvorak: the key at the QWERTY "D" position types "e".
@@ -117,8 +105,6 @@ struct ShortcutsTests {
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "u", code: "KeyU", ctrl: true)) == "Ctrl+U")
     }
 
-    // T-dcb5f3f4
-    // B-DLG-216
     @Test func readsTheKeyItselfWhenOptionOrShiftChangesTheCharacter() {
         #expect(
             Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "ç", code: "KeyC", meta: true, alt: true))
@@ -132,8 +118,6 @@ struct ShortcutsTests {
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: " ", code: "Space", alt: true)) == "Option+Space")
     }
 
-    // T-ebeea59d
-    // B-DLG-216
     @Test func namesTheKeysThatHaveNoCharacter() {
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "ArrowUp", meta: true)) == "Cmd+Up")
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "Backspace", meta: true)) == "Cmd+Backspace")
@@ -145,8 +129,6 @@ struct ShortcutsTests {
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "+", code: "NumpadAdd", meta: true)) == "Cmd+Plus")
     }
 
-    // T-7c4c4ecc
-    // B-DLG-216
     @Test func takesAQuestionMarkAsTheCharacterHoweverItIsTyped() {
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "?", code: "Slash", shift: true)) == "?")
         #expect(
@@ -154,16 +136,14 @@ struct ShortcutsTests {
                 == "Cmd+Shift+/")
     }
 
-    // T-d713631e
     @Test func isNothingWhileOnlyModifiersAreDownOrForAKeyItHasNoNameFor() {
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "Meta", code: "MetaLeft", meta: true)) == nil)
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "Shift", code: "ShiftLeft", shift: true)) == nil)
         #expect(Shortcuts.fromKeyboardEvent(Self.keyEvent(key: "ö", code: "", meta: true)) == nil)
     }
 
-    // MARK: getShortcutRefusal
+    // MARK: Refused shortcuts
 
-    // T-637c8655 F-009
     @Test func needsCommandOrControlOnAKeyThatTypes() {
         for shortcut in ["D", "Shift+D", "Option+D", "7", "Space", "Shift+Space", "/"] {
             #expect(ShortcutCommands.refusal(for: shortcut) == .needsCommandOrControl, "\(shortcut)")
@@ -173,7 +153,6 @@ struct ShortcutsTests {
         }
     }
 
-    // T-c778d5e2 F-009
     @Test func needsAModifierOnAKeyThatMovesAroundOrEditsTheList() {
         for shortcut in ["Up", "Shift+Down", "Home", "Tab", "Return", "Esc", "Backspace"] {
             #expect(ShortcutCommands.refusal(for: shortcut) == .needsModifier, "\(shortcut)")
@@ -183,14 +162,12 @@ struct ShortcutsTests {
         }
     }
 
-    // T-f2c50761 F-009
     @Test func allowsFunctionKeysForwardDeleteAndThePageKeysOnTheirOwn() {
         for shortcut in ["F2", "F12", "Shift+F5", "Delete", "PageUp", "PageDown"] {
             #expect(ShortcutCommands.refusal(for: shortcut) == nil, "\(shortcut)")
         }
     }
 
-    // T-1957a02e F-009 F-082
     @Test func keepsTheKeysOfTheFixedCommandsOfCancellingAndOfMacOS() {
         #expect(ShortcutCommands.refusal(for: "Cmd+C") == .fixedCommand(.copy))
         #expect(ShortcutCommands.refusal(for: "Cmd+Shift+Z") == .fixedCommand(.redo))
@@ -203,7 +180,6 @@ struct ShortcutsTests {
         }
     }
 
-    // T-3f23eb43 F-009
     @Test func warnsAboutButAllowsKeysMacOSUsesUntilTheyAreSwitchedOff() {
         #expect(ShortcutCommands.refusal(for: "Ctrl+Up") == nil)
         #expect(ShortcutCommands.isUsedByMacOSByDefault("Ctrl+Up"))
@@ -211,9 +187,8 @@ struct ShortcutsTests {
         #expect(!ShortcutCommands.isUsedByMacOSByDefault("Cmd+Up"))
     }
 
-    // MARK: resolveShortcuts
+    // MARK: Resolving the shortcuts
 
-    // T-73ef18c3 F-008 F-074
     @Test func givesEveryCommandItsDefaultKeysWhenNothingWasSaved() {
         let saved: [JSONNode?] = [nil, .null, .string("x"), .array([]), .object([:])]
         for value in saved {
@@ -228,7 +203,6 @@ struct ShortcutsTests {
         #expect(resolved.commandByShortcut["Cmd+C"] == nil)
     }
 
-    // T-971cad93 F-008
     @Test func replacesTheKeysOfTheCommandsThatWereChangedAndLeavesTheRest() {
         let resolved = ShortcutCommands.resolve([
             "newTab": ["Cmd+Option+N"], "showInFinder": ["Cmd+Shift+J", "F5"], "duplicateSelection": [],
@@ -242,8 +216,6 @@ struct ShortcutsTests {
         #expect(resolved.commandByShortcut["F5"] == .showInFinder)
     }
 
-    // T-6fb14033 F-008
-    // B-DLG-230 T-e3c189ac
     @Test func givesAKeyTwoCommandsClaimToTheOneThatWasGivenIt() {
         // New Folder was given ⌘D; Duplicate only has it by default.
         let given = ShortcutCommands.resolve(["newFolder": ["Cmd+Shift+N", "Cmd+D"]]).bindings
@@ -256,8 +228,6 @@ struct ShortcutsTests {
         #expect(both[.closeTab] == ["Cmd+W"])
     }
 
-    // T-f7cd3e97 F-007
-    // B-DLG-230
     @Test func dropsWhatMakesNoSenseUnknownCommandsUnusableKeysAThirdKey() {
         let bindings = ShortcutCommands.resolve(
             .object([
@@ -275,7 +245,6 @@ struct ShortcutsTests {
         #expect(bindings[.closeTab] == ["Cmd+W"])
     }
 
-    // T-16e588fd
     @Test func letsACommandKeepAKeyOfItsOwnDefaultsThatCouldNotBeGivenOutToday() {
         #expect(
             ShortcutCommands.resolve(["quickLookSelection": ["Cmd+Y", "Space"]]).bindings[.quickLookSelection]
@@ -287,7 +256,6 @@ struct ShortcutsTests {
 
     // MARK: Saving shortcuts
 
-    // T-d18debbf F-007
     @Test func savesOnlyTheCommandsThatDifferFromTheirDefaults() {
         #expect(ShortcutCommands.overrides(for: Self.defaults) == [:])
         let saved = ShortcutCommands.sanitizeOverrides(
@@ -298,7 +266,6 @@ struct ShortcutsTests {
         #expect(saved == ["newTab": ["Cmd+Option+N"], "duplicateSelection": []])
     }
 
-    // T-41956293 F-008
     @Test func writesDownTheKeyACommandLostToAnotherSoItStaysLost() {
         let saved = ShortcutCommands.sanitizeOverrides(.object(["newFolder": .array([.string("Cmd+D")])]))
         #expect(saved == ["newFolder": ["Cmd+D"], "duplicateSelection": []])
@@ -306,7 +273,6 @@ struct ShortcutsTests {
 
     // MARK: Changing shortcuts
 
-    // T-2a45b5f7 F-009
     @Test func saysWhetherAKeyCanBeGivenToACommand() {
         let bindings = Self.defaults
         #expect(ShortcutCommands.checkAssignment(bindings, .showInFinder, "Cmd+Shift+J") == .ok)
@@ -321,7 +287,6 @@ struct ShortcutsTests {
         if case .refused = other {} else { Issue.record("Space should be refused for New Tab") }
     }
 
-    // T-28cb4cb3
     @Test func putsAKeyInTheMainOrTheAlternatePlace() {
         let bindings = Self.defaults
         let main = ShortcutCommands.assign(bindings, .duplicateSelection, slot: 0, "Cmd+Shift+D")
@@ -338,7 +303,6 @@ struct ShortcutsTests {
         #expect(!ShortcutCommands.isCustomized(main, .newFolder))
     }
 
-    // T-c3bff820
     @Test func takesAReassignedKeyAwayFromTheCommandThatHadIt() {
         let next = ShortcutCommands.assign(Self.defaults, .newFolder, slot: 1, "Cmd+D")
         #expect(next[.newFolder] == ["Cmd+Shift+N", "Cmd+D"])
@@ -347,13 +311,11 @@ struct ShortcutsTests {
             ShortcutCommands.overrides(for: next) == ["newFolder": ["Cmd+Shift+N", "Cmd+D"], "duplicateSelection": []])
     }
 
-    // T-b864c54c
     @Test func makesTheAlternateTheMainKeyWhenTheMainKeyIsRemoved() {
         #expect(ShortcutCommands.remove(Self.defaults, .goBack, slot: 0)[.goBack] == ["Cmd+Left"])
         #expect(ShortcutCommands.remove(Self.defaults, .goBack, slot: 1)[.goBack] == ["Cmd+["])
     }
 
-    // T-658f2c72
     @Test func resetsACommandToItsDefaultsTakingThemBackFromACommandGivenOneSince() {
         let reassigned = ShortcutCommands.assign(Self.defaults, .newFolder, slot: 1, "Cmd+D")
         let result = ShortcutCommands.reset(reassigned, .duplicateSelection)
@@ -366,7 +328,6 @@ struct ShortcutsTests {
 
     // MARK: Shortcuts in the application menu
 
-    // T-b39157ff
     @Test func givesTheMenuTheFirstKeyThatHasCommandOrControl() {
         #expect(Shortcuts.menuShortcut(["Cmd+[", "Cmd+Left"]) == "Cmd+[")
         #expect(Shortcuts.menuShortcut(["Space", "Cmd+Y"]) == "Cmd+Y")
@@ -375,7 +336,6 @@ struct ShortcutsTests {
         #expect(Shortcuts.menuShortcut([]) == nil)
     }
 
-    // T-e349b4dc
     @Test func writesAShortcutTheWayElectronsMenusDo() {
         #expect(Shortcuts.menuAccelerator("Cmd+Option+T") == "Command+Alt+T")
         #expect(Shortcuts.menuAccelerator("Ctrl+Shift+Tab") == "Control+Shift+Tab")
@@ -386,8 +346,6 @@ struct ShortcutsTests {
         #expect(Shortcuts.menuAccelerator("nonsense") == nil)
     }
 
-    // T-e203ab51 F-010
-    // B-NAV-218 B-NAV-219
     @Test func knowsTheKeysATextFieldUsesForItself() {
         for shortcut in ["Cmd+Up", "Cmd+Backspace", "Option+Left", "Ctrl+A", "Delete"] {
             #expect(Shortcuts.isTextEditingShortcut(shortcut), "\(shortcut)")
@@ -399,8 +357,6 @@ struct ShortcutsTests {
 
     // MARK: Default keys of the table (the Settings list)
 
-    // F-074 F-075 F-076 F-077 F-078 F-079 F-080 F-081 F-082
-    // B-NAV-108 B-TREE-083 B-TREE-119
     @Test func theTableHoldsTheDocumentedDefaultKeys() {
         let expected: [(ShortcutCommandID, [String])] = [
             (.goBack, ["Cmd+[", "Cmd+Left"]), (.goForward, ["Cmd+]", "Cmd+Right"]), (.goEnclosingFolder, ["Cmd+Up"]),

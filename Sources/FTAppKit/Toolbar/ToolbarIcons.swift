@@ -1,8 +1,7 @@
-// Port of apps/desktop/src/renderer/components/ToolbarIcon.tsx and MenuCheck.tsx
 import AppKit
 import FTFoundation
 
-/// The original's stroke icons, redrawn from the same SVG shapes: round caps and joins, no fill, in a 24-unit box
+/// The toolbar's stroke icons, drawn from SVG shapes: round caps and joins, no fill, in a 24-unit box
 /// (16 for clear, stop and the vertical separator), stroked in the view's color.
 enum ToolbarGlyph {
     enum Shape {
@@ -162,7 +161,7 @@ enum ToolbarGlyph {
         return image
     }
 
-    /// Strokes `name` into `rect` in the current context, `strokeWidth` in box units, as `.toolbar-icon` does.
+    /// Strokes `name` into `rect` in the current context, `strokeWidth` in box units.
     static func draw(_ name: ToolbarIconName, in rect: NSRect, strokeWidth: Double, color: NSColor, flipped: Bool) {
         draw(drawing(name), in: rect, strokeWidth: strokeWidth, color: color, flipped: flipped)
     }
@@ -198,7 +197,7 @@ enum ToolbarGlyph {
         }
     }
 
-    /// `MenuCheck`'s tick: an 11 pt mark in a 12-unit box, stroke 1.8.
+    /// A tick: an 11 pt mark in a 12-unit box, stroke 1.8.
     static func drawCheck(in rect: NSRect, color: NSColor, flipped: Bool) {
         let path = SVGPath.path("M2.5 6.3 5 8.8l4.6-5.6")
         let scale = rect.width / 12

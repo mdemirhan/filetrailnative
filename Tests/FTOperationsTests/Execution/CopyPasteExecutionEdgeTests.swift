@@ -1,5 +1,3 @@
-// Port of the edge cases and cut cleanups of packages/core/src/fs/copyPasteExecution.test.ts ("copyPasteExecution"),
-// on the mock disk
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -8,8 +6,7 @@ import Testing
 @testable import FTOperations
 
 struct CopyPasteExecutionEdgeTests {
-    // The step where a changed destination is answered with Replace is P3-04's: it is left out here.
-    // T-706c8576 F-269 F-271 F-278 F-324
+    // The step where a changed destination is answered with Replace is left out here.
     @Test func handlesSourceDeletionRuntimeDirectoryMergesPartialCancellationAndChmodEdgeCases() async throws {
         let deletedSource = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -84,7 +81,6 @@ struct CopyPasteExecutionEdgeTests {
         #expect(chmodFailure.exists("/target/file.txt"))
     }
 
-    // T-eb95d949 F-466
     @Test func removesSourceDirectoriesAfterSuccessfulCutCopiesAndSupportsFilesystemsWithoutChmod() async throws {
         let cutDirectory = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/file.txt", .file(size: 5)),
@@ -110,7 +106,6 @@ struct CopyPasteExecutionEdgeTests {
         #expect(base.exists("/target/file.txt"))
     }
 
-    // T-637bb845 F-466
     @Test func movesDirectoriesWithHiddenFilesAndHiddenFoldersDuringCut() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/.env", .file(size: 7)),
@@ -130,7 +125,6 @@ struct CopyPasteExecutionEdgeTests {
         #expect(!fileSystem.exists("/source/Folder"))
     }
 
-    // T-7f71a8fd F-466
     @Test func removesEmptiedCutSourceFoldersWhenChildDeletionsOnlyChangeParentMtime() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/file.txt", .file(size: 5)),
@@ -151,7 +145,6 @@ struct CopyPasteExecutionEdgeTests {
         #expect(fileSystem.exists("/target/Folder/file.txt"))
     }
 
-    // T-125afc8b F-285
     @Test func preservesCutSourceDirectoriesWhenTheSourceFolderChangesBeforeCleanup() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory(dev: 2)), ("/source/Folder", .directory()),

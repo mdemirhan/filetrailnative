@@ -1,5 +1,3 @@
-// Port of the watchFolder wiring of apps/desktop/src/main/bootstrap.ts (Node's fs.watch on a folder, which on
-// macOS is an FSEvents stream that reports the folder's direct children)
 import CoreServices
 import Darwin
 import FTFoundation

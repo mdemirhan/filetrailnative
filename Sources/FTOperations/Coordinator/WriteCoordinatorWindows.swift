@@ -1,16 +1,13 @@
-// Port of attachSender, handOver, detachSender, isOperationOwner, sendProgress, broadcast, watchAnalysisOwner,
-// forgetAnalysis, analysesOfOtherWindows, assertAnalysisOwner and "writeOperation:getAdopted"
-// (apps/desktop/src/main/bootstrap/writeOperations.ts): each operation and analysis belongs to the window that started
-// it, and is handed on or cancelled when that window closes
+// Each operation and analysis belongs to the window that started it, and is handed on or cancelled when that window
+// closes
 import FTFoundation
 import Foundation
 
 extension WriteCoordinator {
     // MARK: A window closing
 
-    /// A window closed (the original's "destroyed", "render-process-gone" and "did-navigate"): an operation it
-    /// started goes on in the window `successorOf` names, or is cancelled when there is none; an analysis it started
-    /// is cancelled, as nobody can answer its review.
+    /// A window closed: an operation it started goes on in the window `successorOf` names, or is cancelled when
+    /// there is none; an analysis it started is cancelled, as nobody can answer its review.
     public func windowClosed(_ window: any WriteOperationWindow) {
         for operationId in watchedOperations.sorted() where senders[operationId] === window {
             handOverOrCancel(operationId, from: window)
@@ -19,12 +16,11 @@ extension WriteCoordinator {
             forgetAnalysis(analysisId)
             _ = writeService.cancelCopyPasteAnalysis(analysisId)
         }
-        // The window that was asked about deleting what had no Trash is gone (the original lets go on a reload of
-        // its page, which a native window has no counterpart of).
+        // The window that was asked about deleting what had no Trash is gone.
         forgetItemsWithoutTrash(of: window)
     }
 
-    /// How many of the window's operations and analyses listen for it to close (the original's listener count).
+    /// How many of the window's operations and analyses listen for it to close.
     public func watchCount(_ window: any WriteOperationWindow) -> Int {
         watchedOperations.filter { senders[$0] === window }.count
             + watchedAnalyses.filter { analysisOwners[$0] === window }.count
@@ -90,8 +86,8 @@ extension WriteCoordinator {
         return pending
     }
 
-    /// `writeOperation:getAdopted`: the operation handed to the window asking, if it hasn't heard of it yet, with
-    /// where it is now or how it ended. Each hand-over is told once; asking again answers nil.
+    /// The operation handed to the window asking, if it hasn't heard of it yet, with where it is now or how it
+    /// ended. Each hand-over is told once; asking again answers nil.
     public func adoptedOperation(window: any WriteOperationWindow) -> WriteOperationAdoption? {
         let pending = pendingAdoption(of: window)
         pendingAdoptions[ObjectIdentifier(window)] = nil

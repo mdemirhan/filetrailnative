@@ -1,4 +1,3 @@
-// Port of the .drag-select-box rule of apps/desktop/src/renderer/styles.css:2273-2283
 import AppKit
 import FTFoundation
 

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/formatting.ts (sizes, permissions, durations, names)
 import Foundation
 
 public enum SizeStatus: String, Codable, Sendable {
@@ -137,7 +136,6 @@ public enum PermissionText {
     }
 
     /// Finder phrases permissions from the owner's point of view; the octal code stays visible.
-    /// Port of `describeOwnerAccess` (apps/desktop/src/renderer/components/GetInfoPanel.tsx).
     public static func ownerAccess(symbolic: String) -> String {
         let units = Array(symbolic.utf16)
         let owner =
@@ -171,7 +169,6 @@ public enum PathText {
     }
 
     /// The last name of a path with the trailing slashes dropped; the path itself when there is none.
-    /// Port of `getPathLeafName` (apps/desktop/src/renderer/lib/explorerAppUtils.ts).
     public static func leafName(_ path: String) -> String {
         var units = Array(path.utf16)
         while units.last == 0x2F { units.removeLast() }

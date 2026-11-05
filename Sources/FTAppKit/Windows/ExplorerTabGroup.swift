@@ -1,10 +1,9 @@
-// Port of the tab row of apps/desktop/src/renderer/hooks/useExplorerTabs.ts, on native window tabs: one explorer
-// window of the original, whose tabs are the windows of one NSWindowTabGroup
+// One explorer window, whose tabs are the windows of one NSWindowTabGroup
 import AppKit
 import FTFoundation
 
-/// One explorer window of the original. Each of its tabs is a window of its own, all in one native tab group; what
-/// the original keeps per window (panels, widths, Reopen Closed Tab) they share through `session`.
+/// One explorer window. Each of its tabs is a window of its own, all in one native tab group; what is kept per window
+/// (panels, widths, Reopen Closed Tab) they share through `session`.
 @MainActor
 final class ExplorerTabGroup: ExplorerWindowLike {
     let windowID: Int
@@ -78,9 +77,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     }
 
     /// A sheet, a dialog or an alert owns the window: the tabs don't change under it. One drawn in the window (the
-    /// Rename sheet, the Go To box, an alert, the copy and paste dialogs) covers the tab strip as the original's scrim
-    /// does (`.modal-scrim`, `copyPasteModalOpen`). A name being edited in its row counts: `renameDialogState` holds
-    /// the inline rename too.
+    /// Rename sheet, the Go To box, an alert, the copy and paste dialogs) covers the tab strip too. A name being edited
+    /// in its row counts.
     var isBlocked: Bool {
         NSApp.modalWindow != nil || tabs.contains(where: Self.holdsTheTabs)
     }
@@ -90,7 +88,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
             || tab.content.inlineRename != nil
     }
 
-    /// The tab on screen, while something open on it keeps the tabs from changing (`canChangeTabs`). Something open on
+    /// The tab on screen, while something open on it keeps the tabs from changing. Something open on
     /// a tab at the back holds nothing: that tab has to stay within reach.
     private var holdingTab: MainWindowController? {
         guard !closingAll, !isArranging, !isDestroyed, let tab = lastSelected, tabs.contains(where: { $0 === tab }),
@@ -224,8 +222,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
 
     // MARK: Closing
 
-    /// The window's close button, Close Window, and ⌘W on its last tab: closed as the original's close button closes
-    /// it, so the question before stopping a copy is asked and its place is recorded.
+    /// The window's close button, Close Window, and ⌘W on its last tab: each closes the whole explorer window, so the
+    /// question before stopping a copy is asked and its place is recorded.
     func closeAsCloseButton() {
         host?.controller.closeWindow(of: windowID)
     }
@@ -328,7 +326,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         insert(MainWindowController(snapshot: snapshot, frame: tabFrame), after: tab, select: true)
     }
 
-    /// `openPathInNewTab`: `path` in a new tab after `tab`, with that tab's view and tree. `openedItem`: it opens for an
+    /// `path` in a new tab after `tab`, with that tab's view and tree. `openedItem`: it opens for an
     /// item from another app.
     func openTab(path: String, from tab: MainWindowController, openedItem: OpenedItem? = nil) {
         guard !isBlocked, !path.isEmpty, hasRoomForTab() else { return }
@@ -376,7 +374,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     private func insert(_ tab: MainWindowController, after anchor: MainWindowController, select selectIt: Bool) {
         tab.group = self
         // A new tab starts with the options and sort of the search on screen in this window; a new window has none
-        // yet, and starts with the saved ones (B-SRCH-092).
+        // yet, and starts with the saved ones.
         if let front = frontSearch { tab.search.session.takeOptions(of: front.session) }
         tab.showPanels(session.panels)
         tab.giveKeyboardToStartingPane()
@@ -403,7 +401,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// The tab last on screen, whichever way the tab bar, a command or a closed tab changed it.
     private weak var lastShown: MainWindowController?
 
-    /// A tab is shown (`showSnapshot`): a tab that has its folder reads it again, since it may have changed meanwhile.
+    /// A tab is shown: a tab that has its folder reads it again, since it may have changed meanwhile.
     private func tabCameToFront(_ tab: MainWindowController) {
         guard lastShown !== tab else { return }
         lastShown?.wentToTheBack(for: tab)
@@ -411,8 +409,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         tab.cameBack()
     }
 
-    /// useExplorerTabs.ts: a file operation that ends, in this window or another, may have changed what the tabs at the
-    /// back show. Their folder is read again when they are shown anyway; this makes that read cover the tree.
+    /// A file operation that ends, in this window or another, may have changed what the tabs at the back show. Their
+    /// folder is read again when they are shown anyway; this makes that read cover the tree.
     func noteWriteLock(_ locked: Bool) {
         if writeWasLocked, !locked {
             for tab in tabs where tab !== selected { tab.treeOutOfDate = true }
@@ -453,7 +451,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         }
     }
 
-    /// Disks were unmounted (`closeTabsOnUnmountedDisks`): the tabs showing one close, as Finder's do, and Reopen
+    /// Disks were unmounted: the tabs showing one close, as Finder's do, and Reopen
     /// Closed Tab doesn't offer them; when they are all the window's tabs, the window closes. While the tabs can't
     /// change (a sheet or an alert is open), the tabs in the background go Home instead, and the tab on screen opens
     /// Home. `volumeRoot` says which disk a path is on.
@@ -622,9 +620,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         host?.tabNavigated(tab)
     }
 
-    /// `describeTab` and `disambiguateTabLabels`: the tab bar's labels and tooltips, and what the Window menu calls
-    /// each tab's window: its label, as the original titles its window (`App.tsx`, `document.title`). The window title
-    /// stays the folder's name, which the toolbar shows as the original's toolbar does.
+    /// The tab bar's labels and tooltips, and what the Window menu calls each tab's window: its label. The window title
+    /// stays the folder's name, which the toolbar shows.
     func refreshTitles() {
         let descriptions = tabs.map(\.tabDescription)
         let labels = ExplorerTabs.disambiguate(
@@ -640,7 +637,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     }
 
     /// What the window keeps between launches: its tabs, the one in front and how it shows its folder, and its
-    /// panels (the original's `usePreferencesSync`).
+    /// panels.
     func saveSession() {
         guard !isDestroyed, let host, let active = selected else { return }
         let front = active.openTab

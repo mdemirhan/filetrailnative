@@ -1,5 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/theme.test.ts and hooks/useAppPreferences.test.tsx, and the theme parts of
-// main.test.tsx and styles.theme.test.ts, for the app-wide appearance
 import AppKit
 import FTFoundation
 import Testing
@@ -25,7 +23,6 @@ import Testing
         return (model, system)
     }
 
-    // T-c015cfe8 F-646 B-DLG-232
     @Test func paintsLightOrDarkAsChosenAndFollowsMacOSOnAuto() {
         let (model, system) = make()
         #expect(model.theme.appearance == .light)
@@ -47,7 +44,6 @@ import Testing
         #expect(system.native == [.dark, .light, .auto])
     }
 
-    // T-c015cfe8 F-646
     @Test func ignoresMacOSWhileLightOrDarkIsChosen() {
         let (model, system) = make(theme: .light)
         var told: [Theme] = []
@@ -59,7 +55,6 @@ import Testing
         observation.cancel()
     }
 
-    // T-3a1d6beb F-646 B-DLG-233
     @Test func picksTheStylesheetsPaletteAndAppliesTheAccent() {
         let (model, _) = make()
         model.apply(theme: .dark, accent: "#2CB5A0")
@@ -72,7 +67,7 @@ import Testing
         #expect(model.preference == .dark)
     }
 
-    // T-3ab16b37 F-646 B-DLG-233: one accent everywhere, and no color of the palette follows it
+    // One accent everywhere, and no color of the palette follows it
     @Test func usesOneAccentEverywhere() {
         let red = Theme(appearance: .light, accentHex: "#e8729a")
         let blue = Theme(appearance: .light, accentHex: "#007aff")
@@ -81,7 +76,7 @@ import Testing
         #expect(red.accent.solid.hexString == "#e8729a")
     }
 
-    // B-DLG-235 F-646: the accents to choose from, and each one is painted as itself
+    // The accents to choose from, and each one is painted as itself
     @Test func paintsEachAccentOptionAsItself() {
         #expect(
             AppPreferenceLimits.accentOptions.map(\.label) == [
@@ -93,7 +88,7 @@ import Testing
         }
     }
 
-    // T-bede3752 B-DLG-233 B-DLG-236 F-646: a picked color is accepted only as #rrggbb, trimmed and kept in lower case
+    // A picked color is accepted only as #rrggbb, trimmed and kept in lower case
     @Test func acceptsAPickedAccentOnlyAsAHexColor() {
         let (model, _) = make()
         model.apply(accent: " #D84A4A ")
@@ -107,8 +102,8 @@ import Testing
         #expect(other.accentHex == AppPreferenceLimits.defaultAccent)
     }
 
-    // B-DLG-237 F-646: the tokens derived from the accent are the reference's (a deep shade 18% darker, a 30% border,
-    // alphas that differ for light and dark)
+    // The tokens derived from the accent: a deep shade 18% darker, a 30% border, alphas that differ for light and
+    // dark
     @Test func derivesTheAccentTokensAsTheReferenceDoes() {
         let light = Theme(appearance: .light, accentHex: "#007aff").accent
         let dark = Theme(appearance: .dark, accentHex: "#007aff").accent
@@ -120,7 +115,7 @@ import Testing
         #expect(dark.focusBorder.alpha == 0.4)
     }
 
-    // B-DLG-238 F-646: the default button is the accent with white text, or black text on a light accent
+    // The default button is the accent with white text, or black text on a light accent
     @Test func drawsTheDefaultButtonWithTheAccentAndReadableText() {
         let blue = Theme(appearance: .light, accentHex: "#007aff")
         let button = SystemButton(title: "OK", theme: blue)
@@ -145,7 +140,6 @@ import Testing
         #expect(button.titleColor == nil)
     }
 
-    // T-10d689b4 F-610
     @Test func putsEveryAppearanceSettingBackAsANewInstallHasIt() {
         let (model, _) = make(theme: .dark, accent: "#d84a4a")
         model.apply(.defaults())
@@ -155,7 +149,7 @@ import Testing
         #expect(model.accentHex == "#007aff")
     }
 
-    // F-610 B-DLG-233 the preference channel's change reaches the appearance only for the theme and the accent
+    // The preference channel's change reaches the appearance only for the theme and the accent
     @Test func followsTheThemeAndAccentOfAPreferenceChange() {
         let (model, _) = make()
         var preferences = AppPreferences.defaults()
@@ -170,7 +164,7 @@ import Testing
         #expect(model.accentHex == "#a550a7")
     }
 
-    // F-610 B-DLG-233 B-DLG-245: every window that observes is told once for a change, and not for none
+    // Every window that observes is told once for a change, and not for none
     @Test func tellsEveryObserverOnceAndOnlyWhenTheLookChanged() {
         let (model, _) = make()
         var first: [Theme] = []
@@ -189,7 +183,7 @@ import Testing
         two.cancel()
     }
 
-    // T-68c19be7 B-DLG-234 F-636: windows other than explorer windows get the background, explorer windows none
+    // Windows other than explorer windows get the background, explorer windows none
     @Test func givesPageWindowsAnOpaqueBackgroundAndLeavesExplorerWindowsAlone() {
         let (model, _) = make(theme: .light)
         let page = makeOffscreenWindow()
@@ -206,20 +200,10 @@ import Testing
         #expect(Theme(appearance: .light, accentHex: "#007aff").pageWindowBackground.hexString == "#f4f5f8")
     }
 
-    // T-3f0d78e0 F-646: everything is drawn in the system font
+    // Everything is drawn in the system font
     @Test func drawsEverythingInTheSystemFont() {
         #expect(ThemeFonts.sans(13) == NSFont.systemFont(ofSize: 13))
         #expect(ThemeFonts.sans(13, .semibold) == NSFont.systemFont(ofSize: 13, weight: .semibold))
         #expect(ThemeFonts.mono(12) == NSFont.monospacedSystemFont(ofSize: 12, weight: .regular))
     }
-
-    // N/A T-a7b14a6b the stylesheet rule that colors favorite icons is P5-01's; the accent it draws them with is
-    // `AccentPalette.solid`, which the first test above checks
-
-    // N/A T-c7bb98e0 T-148b5efe T-5140e6c3 T-31b3bab3 T-2020b6b1 T-2b8d85c8 T-2c77ecb5 T-35737f38 T-dc75a2f1 T-22aac744
-    // T-6f403fb5 T-0abc3428 T-e61d7669 assertions about the text of styles.css: there is no stylesheet; the palettes
-    // were generated from it once and checked against it by CSSTokenTests and AccentPaletteTests
-
-    // N/A T-38688505 T-479129a0 mounting the renderer root element (React); the Settings window case belongs to P6-04
-
 }

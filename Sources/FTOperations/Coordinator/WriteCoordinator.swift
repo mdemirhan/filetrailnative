@@ -1,7 +1,6 @@
-// Port of createWriteOperationCoordinator (apps/desktop/src/main/bootstrap/writeOperations.ts): the app's one write slot,
-// the write service's events as the windows hear them, the copy analyses and pastes, and quitting. The windows are in
-// WriteCoordinatorWindows.swift, the progress throttle in WriteCoordinatorProgress.swift, the local operations' entry
-// point in WriteCoordinatorLocal.swift.
+// The app's one write slot, the write service's events as the windows hear them, the copy analyses and pastes, and
+// quitting. The windows are in WriteCoordinatorWindows.swift, the progress throttle in WriteCoordinatorProgress.swift,
+// the local operations' entry point in WriteCoordinatorLocal.swift.
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -12,16 +11,16 @@ import os
 /// retries. It tells every window how the running operation is doing, hands it to another window when its own closes,
 /// and stops it when the app quits.
 ///
-/// It runs on the main actor, as the original's main process runs on its one thread; the write service's events come
-/// to it there. The slot itself can also be taken from any thread, by `runWriteAlone`.
+/// It runs on the main actor; the write service's events come to it there. The slot itself can also be taken from
+/// any thread, by `runWriteAlone`.
 @MainActor
 public final class WriteCoordinator {
-    /// `PROGRESS_UPDATE_INTERVAL_MS`: progress is reported once per item, which for a folder of small files is
+    /// Progress is reported once per item, which for a folder of small files is
     /// thousands of messages a second; plain "running" updates go out at most this often.
     public static let progressUpdateIntervalMs: Double = 100
-    /// `SHUTDOWN_WAIT_LIMIT_MS`: how long quitting waits for a stopped operation to finish cleaning up.
+    /// How long quitting waits for a stopped operation to finish cleaning up.
     public static let shutdownWaitLimitMs: Double = 15_000
-    /// `PREPARING_WRITE_OPERATION_ID`: holds the slot while a write is still being prepared, or written alone.
+    /// Holds the slot while a write is still being prepared, or written alone.
     nonisolated static let preparingOperationId = "preparing-write-operation"
 
     struct Slot {
@@ -30,7 +29,7 @@ public final class WriteCoordinator {
         var closing = false
     }
 
-    /// `activeWriteOperationId` and `closing`, which `runWriteAlone` reads from any thread.
+    /// `active` and `closing`, which `runWriteAlone` reads from any thread.
     nonisolated let slot = OSAllocatedUnfairLock(initialState: Slot())
 
     let writeService: any CoordinatorWriteService
@@ -89,8 +88,8 @@ public final class WriteCoordinator {
         self.options = options
         // The write service tells from the thread its paste runs on; the coordinator hears it on the main actor, in
         // the order it was told. What it tells on the main thread (a paste's "queued", as it starts) is heard at once.
-        // An end is heard once the service has let go of the operation, as the original's is (its finally runs before
-        // the window hears the end): a window reacting to it can start the next write.
+        // An end is heard once the service has let go of the operation: a window reacting to it can start the next
+        // write.
         unsubscribe = writeService.subscribe { [weak self, weak writeService] event in
             if Thread.isMainThread {
                 MainActor.assumeIsolated { self?.writeServiceEvent(event) }
@@ -176,7 +175,7 @@ public final class WriteCoordinator {
         }
     }
 
-    /// `getActiveOperation`: the operation holding the slot. A rename or new folder still being checked has changed
+    /// The operation holding the slot. A rename or new folder still being checked has changed
     /// nothing yet: it isn't one.
     public var activeOperation: ActiveWriteOperation? {
         guard let operationId = slotHolder, operationId != Self.preparingOperationId else { return nil }
@@ -190,8 +189,7 @@ public final class WriteCoordinator {
             operationId: operationId, kind: copyPasteModes[operationId] == .cut ? .move : .copy)
     }
 
-    /// Whether an operation holds the slot (`getActiveOperation() !== null`), from any thread: the recovery retry
-    /// waits while one does.
+    /// Whether an operation holds the slot, from any thread: the recovery retry waits while one does.
     nonisolated public var isBusy: Bool {
         guard let holder = slotHolder else { return false }
         return holder != Self.preparingOperationId
@@ -275,7 +273,7 @@ public final class WriteCoordinator {
         return copiedOntoDiskWithoutTrash ? .notUndoable(reason: .noTrash) : log
     }
 
-    /// `canBeTrashedIn`: not knowing (the mount table couldn't be read) counts as no.
+    /// Not knowing (the mount table couldn't be read) counts as no.
     public func canBeTrashed(in folder: String) -> Bool {
         do {
             return try options.diskHasTrash?(folder) ?? true
@@ -327,7 +325,7 @@ public final class WriteCoordinator {
         }
     }
 
-    /// `toDeliverableProgressEvent`: the window's view of an event, even when part of it can't be sent. A question
+    /// The window's view of an event, even when part of it can't be sent. A question
     /// the window would never see is answered "skip", which changes nothing; the end of the operation always goes out.
     func deliverableProgressEvent(_ event: CopyPasteProgressEvent, action: WriteOperationAction)
         -> WriteOperationEvent
@@ -461,13 +459,13 @@ public final class WriteCoordinator {
         return answered
     }
 
-    /// `copyPaste:cancel` and `writeOperation:cancel`: only from the operation's own window.
+    /// Stops a paste or another write operation: only from the operation's own window.
     @discardableResult
     public func cancel(_ operationId: String, window: any WriteOperationWindow) -> Bool {
         isOperationOwner(operationId, window) ? cancelWriteOperation(operationId) : false
     }
 
-    /// `writeOperation:getActive`: a window that missed the end of another window's operation asks before it refuses
+    /// The operation running now: a window that missed the end of another window's operation asks before it refuses
     /// to start one.
     public var activeOperationId: String? { activeOperation?.operationId }
 

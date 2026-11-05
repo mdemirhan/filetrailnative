@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/applicationMenuSync.ts and applyApplicationMenuItemStates' hosting
 import AppKit
 import FTFoundation
 import FTOperations
@@ -113,7 +112,7 @@ final class ApplicationMenuSync {
         var menu: () -> MenuItemIndex?
         /// Builds the menu again (its labels can't be changed in place), with `undoLabels`.
         var build: () -> Void
-        /// Runs `work` once the task that asked for it is done (`setImmediate`).
+        /// Runs `work` once the task that asked for it is done.
         var afterCurrentTask: (@escaping @MainActor () -> Void) -> Void = { work in
             DispatchQueue.main.async { MainActor.assumeIsolated { work() } }
         }
@@ -165,7 +164,7 @@ final class ApplicationMenuSync {
         sync()
     }
 
-    /// The state an explorer window last reported (`INITIAL` before it has).
+    /// The state an explorer window last reported (`.initial` before it has).
     func state(of target: ExplorerCommandTarget) -> ApplicationMenuState {
         states[target.handle.windowID] ?? .initial
     }

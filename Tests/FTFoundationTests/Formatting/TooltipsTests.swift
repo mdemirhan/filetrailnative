@@ -1,10 +1,8 @@
-// Port of the wording cases of apps/desktop/src/renderer/lib/{tooltips,titleTooltips}.test.ts.
 import Testing
 
 @testable import FTFoundation
 
 struct TooltipsTests {
-    // T-77685469 F-093
     @Test func writesACommandsNameAndThenItsShortcut() {
         #expect(Tooltips.format("Move to Trash", shortcutLabel: "⌘⌫") == "Move to Trash (⌘⌫)")
         #expect(Tooltips.format("Close Search Results", shortcutLabel: "Esc") == "Close Search Results (Esc)")
@@ -12,7 +10,6 @@ struct TooltipsTests {
         #expect(Tooltips.format("Home", shortcutLabel: "") == "Home")
     }
 
-    // T-db1ba4f6 F-093
     @Test func saysWhatAClickOnAnOnOffButtonWillDo() {
         let off = ToolbarTooltipState(
             foldersFirst: false, hiddenFilesShown: false, infoPanelOpen: false, infoRowOpen: false)
@@ -31,7 +28,6 @@ struct TooltipsTests {
                 == "Show Folder Tree")
     }
 
-    // T-5890f92a F-093
     @Test func namesTheTextEditorInEditAsTheMenusDo() {
         #expect(
             Tooltips.toolbarItemLabel(itemID: .editSelection, state: ToolbarTooltipState(textEditorName: "Zed"))
@@ -41,7 +37,6 @@ struct TooltipsTests {
         #expect(Tooltips.toolbarItemLabel(itemID: .help) == "File Trail Help")
     }
 
-    // T-32e945b7 F-093
     @Test func writesShortcutsInTheOrderMacOSDoes() {
         #expect(ShortcutLabels.format("Cmd+Shift+.") == "⇧⌘.")
         #expect(ShortcutLabels.format("Cmd+Option+T") == "⌥⌘T")
@@ -55,8 +50,6 @@ struct TooltipsTests {
         #expect(Tooltips.format("Home", shortcut: nil) == "Home")
     }
 
-    // T-760ee5f0 F-093
-    // B-NAV-042
     @Test func namesToolbarButtonsAsTheMenusNameTheirCommands() {
         var tooltips: [String: String] = [:]
         for item in ToolbarItems.definitions where item.kind == .button {
@@ -78,9 +71,7 @@ struct TooltipsTests {
             ])
     }
 
-    // T-e3148ee5 F-093
-    // The commands Help's shortcut list documents (SHORTCUT_ITEMS in helpContent.ts, less the zoom commands, which
-    // are dropped); a tooltip must not promise a key for any other command.
+    // The commands Help's shortcut list documents; a tooltip must not promise a key for any other command.
     @Test func promisesNoShortcutThatHelpDoesNotList() {
         let documented: Set<String> = [
             "calculateSize", "clearClipboard", "closeTab", "closeWindow", "copy", "copyPath", "cut",
@@ -106,8 +97,6 @@ struct TooltipsTests {
         }
     }
 
-    // T-82e83839 F-093
-    // T-5c7904a9
     @Test func showsTheKeysChosenInSettingsAndNoneForACommandLeftWithoutOne() {
         let shortcuts = ShortcutDisplay(
             shortcuts: ShortcutCommands.resolve([
@@ -124,7 +113,6 @@ struct TooltipsTests {
         #expect(tooltip(.copySelection) == "Copy (⌘C)")
     }
 
-    // T-fba42efc
     @Test func placesTheTooltipUnderAControlFlipsAboveNearTheBottomAndStaysOnScreen() {
         let viewport = TitleTooltips.Size(width: 1000, height: 800)
         let bubble = TitleTooltips.Size(width: 80, height: 20)
@@ -145,7 +133,6 @@ struct TooltipsTests {
     }
 
     @Test func tabLabels() {
-        // F-068
         #expect(
             TabText.describe(
                 currentPath: "/", searchVisible: false, searchQuery: "", searchRootPath: "", searchRunning: false)

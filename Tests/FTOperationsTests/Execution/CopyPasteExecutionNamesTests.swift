@@ -1,5 +1,3 @@
-// Port of "names the destination can't tell apart" and "a folder renamed whole"
-// (packages/core/src/fs/copyPasteExecution.test.ts)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -8,7 +6,6 @@ import Testing
 @testable import FTOperations
 
 struct CopyPasteExecutionNamesTests {
-    // T-3f7a78a7 F-330
     @Test func findsAnExistingItemWhateverTheLetterCaseAsAPFSDoes() throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/README.txt", .file(size: 2)), ("/target/readme.txt", .file(size: 1)),
@@ -23,7 +20,6 @@ struct CopyPasteExecutionNamesTests {
     // The review stops such a paste; this is the guard behind it. A folder from a disk that tells "A.txt" from
     // "a.txt" lands on one that doesn't: the second item must never replace the first, which this same paste
     // just wrote.
-    // T-c44a664c F-330
     @Test func neverLetsALaterItemReplaceOneThisPasteJustWroteUnderTheSameName() async throws {
         let fileSystem = MockWriteServiceFileSystem()
         fileSystem.caseSensitive = true
@@ -61,7 +57,6 @@ struct CopyPasteExecutionNamesTests {
 
     // Some disks take other names for one item too ("Strasse.txt" for "Straße.txt"): the item there is known by
     // its id as the one this paste just wrote, and isn't replaced.
-    // T-b4944502 F-330
     @Test func neverLetsALaterItemReplaceOneThisPasteWroteUnderANameTheDiskTakesAsItsOwn() async throws {
         let fileSystem = MockWriteServiceFileSystem()
         fileSystem.addFile("/one/Straße.txt", .file(size: 5))
@@ -119,7 +114,6 @@ struct FolderRenamedWholeTests {
         return (events.last?.result, recorder.conflicts)
     }
 
-    // T-d1d35c0c F-282
     @Test func isLeftUntouchedWhenTheRenameFindsAnotherDisk() async throws {
         let fileSystem = projectFolder()
         fileSystem.renameImpl = { from, _ in throw codedError("EXDEV", "EXDEV: \(from)") }
@@ -134,7 +128,6 @@ struct FolderRenamedWholeTests {
         #expect(try fileSystem.readdir("/target") == [])
     }
 
-    // T-9f403bf1 F-282
     @Test func isLeftUntouchedWithoutAQuestionWhenItsNameWasTakenMeanwhile() async throws {
         let fileSystem = projectFolder()
 

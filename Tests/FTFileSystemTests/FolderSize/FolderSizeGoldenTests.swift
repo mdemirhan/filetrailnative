@@ -1,4 +1,4 @@
-// Checks the walker against the golden tools/parity/golden/folder-size-trees.ts recorded from the reference's native walker
+// Checks the walker against the folder-size-trees golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -79,9 +79,8 @@ private func measureTree(_ root: String) async throws -> TreeOutput {
 
 extension RealWalks {
     @MainActor @Suite struct FolderSizeGoldenTests {
-        // Machine-local: disk sizes (allocated blocks) depend on the volume, so this checks the port against what the
-        // reference's walker said on the machine that recorded the golden.
-        // F-179 F-180 F-181 F-182
+        // Machine-local: disk sizes (allocated blocks) depend on the volume, so the golden holds only on the machine
+        // that recorded it.
         @Test(.enabled(if: hasFixtures, "needs the shared fixtures"))
         func theWalkerMatchesTheReferencesOnTheFixtureAndGeneratedTrees() async throws {
             let cases: [GoldenCase<TreeInput, TreeOutput>] = try Golden.load(suite: "folder-size-trees")

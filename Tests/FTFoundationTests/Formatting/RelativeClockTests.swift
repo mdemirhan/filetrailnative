@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/relativeClock.test.ts
 import Foundation
 import Testing
 
@@ -34,13 +33,11 @@ struct RelativeClockTests {
         return (timers, clock, visibility)
     }
 
-    // T-117d436c
     @Test func readsTheMinuteThatIsNow() {
         let rig = makeRig()
         #expect(rig.clock.relativeNow == local(1, 14, 44, 0))
     }
 
-    // T-bcb122bb
     @Test func runsNoMinuteTimerForDatesThatDoNotReadInMinutes() {
         let rig = makeRig()
         let counter = Counter()
@@ -53,8 +50,6 @@ struct RelativeClockTests {
         #expect(rig.timers.count == 0)
     }
 
-    // T-57e92028
-    // T-d7679d79
     @Test func ticksOnTheMinuteWhileADateOnScreenReadsInMinutes() {
         let rig = makeRig()
         let counter = Counter()
@@ -76,7 +71,6 @@ struct RelativeClockTests {
         #expect(rig.timers.count == 0)
     }
 
-    // T-ebe6fe52
     @Test func stopsTickingWhileTheWindowCanNotBeSeenAndCatchesUpWhenItCan() {
         let rig = makeRig()
         let counter = Counter()
@@ -99,8 +93,6 @@ struct RelativeClockTests {
         unsubscribe()
     }
 
-    // T-1a415366
-    // T-0eafbeb8
     @Test func ticksAtMidnightWhenTodayBecomesYesterday() {
         let rig = makeRig()
         let counter = Counter()

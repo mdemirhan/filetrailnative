@@ -1,11 +1,9 @@
-// Port of openSettingsWindow, openHelpWindow, openAboutWindow, openAcknowledgementsWindow and showPageWindow in
-// apps/desktop/src/main/main.ts
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The windows of the app that are pages of the original's renderer and not explorer windows: Settings, Help, About and
-/// Acknowledgements. Each is one at a time: asking again shows and focuses the one open.
+/// The windows of the app that are not explorer windows: Settings, Help, About and Acknowledgements. Each is one at a
+/// time: asking again shows and focuses the one open.
 @MainActor
 public final class PageWindows {
     private let model: AppearanceModel

@@ -1,5 +1,4 @@
-// Ports by behavior row what App.search.test.tsx and useExplorerSearchController.ts say of a search's answers over one
-// session: results that come late or twice, searches that fail, and what each new search does to the selection
+// Results that come late or twice, searches that fail, and what each new search does to the selection
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -48,7 +47,7 @@ private final class FailingSearchEngine: SearchEngine {
 
     private func names(_ session: SearchSession) -> [String] { session.shownResults.map(\.name) }
 
-    // B-SRCH-021: narrowing changes only the committed text; what was selected in the results goes, and the walk, its
+    // Narrowing changes only the committed text; what was selected in the results goes, and the walk, its
     // base text and its results stay.
     @Test func refiningEmptiesTheSelectionAndLeavesTheWalkAlone() {
         engine.finds = { _ in (["source.txt", "sonar.txt"], true, false) }
@@ -70,7 +69,7 @@ private final class FailingSearchEngine: SearchEngine {
         #expect(search.cachedSearchSelection == .empty)
     }
 
-    // B-SRCH-150: a new search, an option, a scope and a run again each empty the results' selection, which doesn't
+    // A new search, an option, a scope and a run again each empty the results' selection, which doesn't
     // come back with them.
     @Test func everyNewSearchEmptiesTheSelection() {
         engine.finds = { _ in (["source.txt"], false, false) }
@@ -93,7 +92,7 @@ private final class FailingSearchEngine: SearchEngine {
         }
     }
 
-    // B-SRCH-034: a result kept from before that the new walk finds again is listed once.
+    // A result kept from before that the new walk finds again is listed once.
     @Test func aKeptResultFoundAgainIsListedOnce() {
         engine.finds = { request in
             request.query == "so"
@@ -108,7 +107,7 @@ private final class FailingSearchEngine: SearchEngine {
         #expect(names(search).sorted() == ["soup.md", "source.txt"])
     }
 
-    // B-SRCH-130: a search that can't start ends in an error with its message.
+    // A search that can't start ends in an error with its message.
     @Test func aSearchThatCantStartEndsInAnError() {
         let failing = FailingSearchEngine()
         failing.startFails = true
@@ -121,7 +120,7 @@ private final class FailingSearchEngine: SearchEngine {
         #expect(failing.updates == 0)
     }
 
-    // B-SRCH-130: so does one whose answer fails, and it isn't asked again.
+    // So does one whose answer fails, and it isn't asked again.
     @Test func aSearchWhoseAnswerFailsEndsInAnError() {
         let failing = FailingSearchEngine()
         let search = session(failing)
@@ -140,7 +139,7 @@ private final class FailingSearchEngine: SearchEngine {
         #expect(failing.updates == asked + 1)
     }
 
-    // B-SRCH-131 B-SRCH-134: starting a search cancels the one still walking, and what that one finds
+    // Starting a search cancels the one still walking, and what that one finds
     // afterwards reaches nothing: not asked about, not shown.
     @Test func aRunningSearchIsLetGoWhenAnotherStarts() {
         engine.finds = { _ in ([], true, false) }

@@ -1,8 +1,7 @@
-// Port of apps/desktop/src/renderer/lib/fileIcons.tsx (cache, requests, preloads) and getFileIconHandler (apps/desktop/src/main/bootstrap/systemHandlers.ts)
 import AppKit
 import QuickLookThumbnailing
 
-/// Draws the icon macOS has for a path (`nativeGetFileIcon` of the original, minus the PNG round trip).
+/// Draws the icon macOS has for a path.
 public protocol IconSource: Sendable {
     func icon(atPath path: String) -> NSImage?
     /// The icon of a folder as Finder draws it.

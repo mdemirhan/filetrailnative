@@ -1,4 +1,3 @@
-// Ports the folder-gone and listing-comparison cases of apps/desktop/src/renderer/lib/explorerNavigation.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -15,8 +14,6 @@ struct DirectoryListingDiffTests {
         Item(path: path, name: String(path.split(separator: "/").last ?? ""), isHidden: hidden)
     }
 
-    // T-4dd670bb
-    // T-40e2d626
     @Test func tellsAFolderThatIsGoneFromOneThatCantBeRead() {
         let gone = DirectoryListingDiff.isFolderGone(message:)
         #expect(gone("ENOENT: no such file or directory, stat '/Users/demo/Old'"))
@@ -27,7 +24,6 @@ struct DirectoryListingDiffTests {
         #expect(!gone("EACCES: permission denied, scandir '/Users/demo/Locked'"))
     }
 
-    // T-ab3e5d2f
     @Test func looksForWhyAFolderCouldntBeReadInTheReasonNotInItsPath() {
         for path in [
             "/Users/demo/ENOENT", "/Users/demo/ENOTDIR logs", "/Users/demo/no such file or directory",
@@ -39,8 +35,6 @@ struct DirectoryListingDiffTests {
         }
     }
 
-    // T-444bcc56
-    // B-NAV-133
     @Test func tellsWhetherAFolderReadAgainListsTheSameItemsTheSameWay() {
         let file = item("/a/one.txt")
         let listing = [file, item("/a/B")]
@@ -54,8 +48,6 @@ struct DirectoryListingDiffTests {
         #expect(!DirectoryListingDiff.sameEntries([file], [sized]))
     }
 
-    // T-28f2d6e2
-    // B-NAV-133 B-VIEW-191 T-06b7c994 T-998b0525
     @Test func keepsTheItemsOfAFolderReadAgainThatAreStillAsTheyWere() {
         let one = item("/a/one.txt")
         let two = item("/a/two.txt")
@@ -85,7 +77,6 @@ struct DirectoryListingDiffTests {
         init(size: Int) { self.size = size }
     }
 
-    // T-4b092cae
     @Test func tellsWhetherTwoSetsOfItemDetailsAreTheVerySame() {
         let details = Details(size: 5)
         #expect(DirectoryListingDiff.sameDetailsByPath(["/a/one.txt": details], ["/a/one.txt": details]))

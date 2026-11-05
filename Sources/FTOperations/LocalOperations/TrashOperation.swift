@@ -1,5 +1,3 @@
-// Port of the "writeOperation:trash" handler, executeTrashOperation and rememberItemsWithoutTrash
-// (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -28,9 +26,8 @@ private struct TrashedItem: Sendable {
 }
 
 extension WriteCoordinator {
-    /// `writeOperation:trash`: moves the items to the Trash, one by one, going on past one that can't go. The
-    /// Trash folders, what is already in the Trash, and the system's and the home folder's own folders are refused
-    /// before anything starts.
+    /// Moves the items to the Trash, one by one, going on past one that can't go. The Trash folders, what is already
+    /// in the Trash, and the system's and the home folder's own folders are refused before anything starts.
     @discardableResult
     public func trash(paths: [String], window: any WriteOperationWindow) async throws -> WriteOperationHandle {
         try WriteGuards.assertNotProtectedPath(paths, homePath: homePath)
@@ -66,7 +63,6 @@ extension WriteCoordinator {
         }
     }
 
-    /// `executeTrashOperation`.
     static func executeTrash(
         _ requested: [String], _ operation: LocalWriteOperation, _ fileSystem: any LocalWriteFileSystem,
         homePath: String, withoutTrash: ItemsWithoutTrash?

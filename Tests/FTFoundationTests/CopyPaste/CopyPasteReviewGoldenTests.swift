@@ -1,6 +1,5 @@
-// The review model against the reference's answers (Tests/Golden/copy-paste-review.json, made by
-// tools/parity/golden/copy-paste-review.ts): buildReviewRows, summarizeReview, formatReviewSummary,
-// allConflictsChoicesFor, currentAllConflictsChoice and effectiveChoice over the analysis goldens' reports
+// The review model against the copy-paste-review golden: rows, summarize, formatSummary, allConflictsChoices,
+// currentAllConflictsChoice and effectiveChoice over the analysis goldens' reports
 import FTTestSupport
 import Foundation
 import Testing
@@ -52,7 +51,6 @@ import Testing
         nodes.flatMap { ($0.conflictClass == nil ? [] : [$0]) + conflicts($0.children) }
     }
 
-    // B-CLIP-092
     @Test func matchesTheReference() throws {
         let cases: [GoldenCase<Input, [Output]>] = try Golden.load(suite: "copy-paste-review")
         #expect(!cases.isEmpty)

@@ -1,4 +1,4 @@
-// Checks the port against goldens recorded from the reference: tools/parity/golden/context-menu.ts
+// Checks the context menu against the context-menu golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -16,7 +16,7 @@ struct ContextMenuGoldenTests {
         return false
     }
 
-    /// The item list as the reference writes it: separators by key, actions with `destructive` and `hasSubmenu` only
+    /// The item list as the golden writes it: separators by key, actions with `destructive` and `hasSubmenu` only
     /// when they are on.
     static func node(_ items: [ContextMenuItem]) -> JSONNode {
         .array(
@@ -56,9 +56,6 @@ struct ContextMenuGoldenTests {
             })
     }
 
-    // F-808 F-810 F-811 F-812 F-813 F-814 F-809
-    // B-TREE-036 B-VIEW-206 T-170559f5 T-2258c755 T-342c9b04 T-3a0c2a65 T-642926e8 T-768f7db4 T-7b4fe196
-    // T-8c986b11 T-ab30df4e T-e28360aa
     @Test func everyMenuListsTheItemsOfTheOriginalInItsOrder() throws {
         let cases: [GoldenCase<JSONNode, JSONNode>] = try Golden.load(suite: "context-menu")
         #expect(cases.count > 100)

@@ -1,4 +1,4 @@
-// Checks `box-shadow` and see-through text as apps/desktop/src/renderer/styles.css draws them, windowless
+// Checks `box-shadow` and see-through text as the app draws them, windowless
 import AppKit
 import FTFoundation
 import Testing
@@ -79,7 +79,7 @@ import Testing
         try expectDown(box, in: window)
     }
 
-    // The bezel the pop-ups keep (`.push-button`'s): the edge lies outside, and its soft line falls under it (45). F-917
+    // The push button bezel the pop-ups keep: the edge lies outside, and its soft line falls under it.
     @Test(arguments: [true, false])
     func aPushButtonsBezelFallsBelowIt(hostFlipped: Bool) throws {
         let (window, host) = window(hostFlipped: hostFlipped)

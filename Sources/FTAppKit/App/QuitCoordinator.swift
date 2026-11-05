@@ -1,13 +1,12 @@
-// Port of quit() and askToStopOperation() of apps/desktop/src/main/explorerWindowController.ts
 import AppKit
 
 /// Quitting stops a running copy, move, or delete after the item it is on. While a window is open the person is asked
 /// first, and may keep working instead. With every window closed the operation was already told to stop; quitting waits
-/// for it either way. What the write coordinator (P3-05) and the windows (P4-02) do is reached through `Hooks`.
+/// for it either way. What the write coordinator and the windows do is reached through `Hooks`.
 @MainActor
 public final class QuitCoordinator {
     public struct Hooks {
-        /// The kind of the running write operation, if one runs (P3-05's write coordinator).
+        /// The kind of the running write operation, if one runs (from the write coordinator).
         public var activeOperation: () -> BusyOperationKind? = { nil }
         /// Shows the question and answers the index of the button chosen. `parent` is the window it hangs from.
         public var showStopQuestion: (StopQuestion, NSWindow?) async -> Int = { _, _ in

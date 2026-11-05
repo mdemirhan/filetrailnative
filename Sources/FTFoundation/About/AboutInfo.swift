@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/aboutInfo.ts (no Electron row: the app has no runtime to name)
 import Foundation
 
 /// What the About window shows and Copy Details copies (`app:getAboutInfo`).

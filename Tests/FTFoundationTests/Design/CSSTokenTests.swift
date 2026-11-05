@@ -3,7 +3,7 @@ import Testing
 
 @testable import FTFoundation
 
-/// Every custom property of the reference stylesheet, in both themes, has a Swift counterpart
+/// Every custom property of the stylesheet in the css-tokens golden, in both themes, has a Swift counterpart
 /// with an equal value. The names are mapped in this file only:
 ///  - theme colours, shadows and the pressed brightness are `ThemePalette` properties named by
 ///    camel-casing the token (`--bg-base` is `bgBase`);

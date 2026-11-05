@@ -1,6 +1,5 @@
 // What `new RegExp(source, "" | "i").exec(text)` finds, as JavaScript's default mode (ECMA-262 Annex B) reads the
-// pattern: the matcher of the search highlight (buildSearchHighlightPattern of
-// apps/desktop/src/renderer/lib/searchResults.ts)
+// pattern: the matcher of the search highlight
 import Foundation
 import Testing
 

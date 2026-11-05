@@ -1,8 +1,6 @@
-// Port of activateContentPaths, openPaths, editPaths and openEntry of apps/desktop/src/renderer/hooks/useExplorerActions.ts
-// (:3229-3343, 4340-4358) and createOpenItemLimitMessage of lib/explorerAppUtils.ts
 import Foundation
 
-/// What opening the items of the file list comes to (B-SEL-106 to B-SEL-111, B-NAV-064 to B-NAV-073).
+/// What opening the items of the file list comes to.
 public enum OpenItems {
     public enum Action: String, Sendable {
         case open = "Open"
@@ -31,17 +29,16 @@ public enum OpenItems {
         case steps([Step])
     }
 
-    /// `createOpenItemLimitMessage`.
     public static func limitMessage(action: Action, selected: Int, limit: Int) -> String {
         let verb = action == .open ? "opens" : "edits"
         return
             "File Trail \(verb) up to \(limit) item\(limit == 1 ? "" : "s") at a time, and \(selected) are selected. You can change this in Settings."
     }
 
-    /// The notice's title (`showOpenItemLimitNotice`).
+    /// The notice's title.
     public static func limitTitle(action: Action) -> String { "Too Many Items to \(action.rawValue)" }
 
-    /// `activateContentPaths`: double-click, Return (set to Open) and ⌘↓ on the selected items, in list order.
+    /// Double-click, Return (set to Open) and ⌘↓ on the selected items, in list order.
     public static func activation(
         _ items: [CommandEntry], fileActivation: FileActivationAction, limit: Int
     ) -> Plan {

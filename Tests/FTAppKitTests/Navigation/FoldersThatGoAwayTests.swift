@@ -1,5 +1,5 @@
-// What the window does with folders that can't be read or have gone: useExplorerNavigationController.ts (navigateTo,
-// navigateToNearestExistingFolder, reloadFolderInPlace), useExplorerTabs.ts and the startup of App.tsx
+// What the window does with folders that can't be read or have gone: opening, going to the nearest folder that
+// exists, reading again in place, the tabs and the startup
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -32,7 +32,7 @@ extension ExplorerWindowlessTests {
             try FileManager.default.setAttributes([.posixPermissions: mode], ofItemAtPath: path)
         }
 
-        /// The listing read a moment ago is not asked for again (the cache keeps answers for 3 s, as the original's does).
+        /// The listing read a moment ago is not asked for again (the cache keeps answers for 3 s).
         private func forgetListings(_ harness: ExplorerHarness) {
             harness.services.directoryService.cache.clear()
         }
@@ -44,7 +44,7 @@ extension ExplorerWindowlessTests {
             return await waitUntil { tab.shownFolderPath == path && !tab.isNavigating }
         }
 
-        // B-NAV-006: a double-click on a folder that can't be read: the folder on screen stays, its history too, with why.
+        // A double-click on a folder that can't be read: the folder on screen stays, its history too, with why.
         @Test func anUnreadableFolderFromTheListLeavesTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -63,8 +63,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-006: Enclosing Folder to a parent that can't be read.
-        // B-NAV-055
+        // Enclosing Folder to a parent that can't be read.
         @Test func anUnreadableEnclosingFolderLeavesTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(path(harness, "Alpha/Inner"))
@@ -80,7 +79,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-022: Back to a folder that is gone tells it on the card, with no sheet to dismiss; the history has moved.
+        // Back to a folder that is gone tells it on the card, with no sheet to dismiss; the history has moved.
         @Test func backToAGoneFolderShowsTheCard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -98,8 +97,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-007: a favorite whose folder is gone opens with its error, and its row is selected.
-        // B-NAV-080 B-TREE-048 B-TREE-102
+        // A favorite whose folder is gone opens with its error, and its row is selected.
         @Test func aGoneFavoriteOpensWithItsError() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -115,8 +113,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-007: a location too, its tree going back to its top.
-        // B-NAV-081 B-TREE-102
+        // A location too, its tree going back to its top.
         @Test func aGoneLocationOpensWithItsError() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -131,8 +128,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A row of the tree stays selected when its folder doesn't open, as the original's does: it isn't given way to.
-        // B-TREE-102
+        // A row of the tree stays selected when its folder doesn't open: it isn't given way to.
         @Test func aTreeRowThatDoesNotOpenLeavesTheFolderOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -144,8 +140,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-001 `response.path`: the folder is its real path, in the path bar, the tree and the history.
-        // B-NAV-055 B-SEL-115 B-TREE-099 T-e07c2ef1
+        // `response.path`: the folder is its real path, in the path bar, the tree and the history.
         @Test func theFolderOnScreenIsItsRealPath() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -175,8 +170,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-9bca212e: the folder is read again when the tab comes back, the selection staying and the history as it was.
-        // B-NAV-013 B-NAV-192 B-NAV-194 B-TREE-181 B-VIEW-166 T-aa6d3211
+        // The folder is read again when the tab comes back, the selection staying and the history as it was.
         @Test func aTabThatComesBackReadsItsFolderAgain() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(path(harness, "Alpha"))
@@ -196,8 +190,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-d5f7b879: the folder is gone meanwhile: the nearest one above it opens, in place in the history.
-        // B-NAV-120 B-NAV-195 B-SEL-176 B-TREE-182 B-VIEW-170 B-VIEW-194
+        // The folder is gone meanwhile: the nearest one above it opens, in place in the history.
         @Test func aTabWhoseFolderWentOpensTheNearestFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(path(harness, "Alpha/Inner"))
@@ -213,8 +206,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-e1ce4669
-        // B-NAV-120 B-NAV-195 B-SEL-176 B-SEL-177 B-TREE-031 B-VIEW-170 B-VIEW-194 T-40e2d626
         @Test func aTabStaysOnAFolderItCannotReadWhenItComesBack() async throws {
             let harness = try ExplorerHarness.windowless()
             let alpha = path(harness, "Alpha")
@@ -234,8 +225,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-INFO-008: Show Info's item doesn't outlast the tab going to the back.
-        // B-NAV-206
+        // Show Info's item doesn't outlast the tab going to the back.
         @Test func showInfosItemGoesWithTheTab() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -251,8 +241,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // P5-17: a new tab on a folder gone by the time it is read opens the nearest folder above it.
-        // B-NAV-138
+        // A new tab on a folder gone by the time it is read opens the nearest folder above it.
         @Test func aNewTabOnAGoneFolderOpensTheNearestFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -264,7 +253,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-122 B-TREE-186: a window whose saved folder has gone opens Home, with the tree at Home.
+        // A window whose saved folder has gone opens Home, with the tree at Home.
         @Test func aWindowOnAGoneFolderOpensHome() async throws {
             let harness = try ExplorerHarness.windowless()
             let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -275,7 +264,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-122: one that can't be read too.
+        // One that can't be read too.
         @Test func aWindowOnAnUnreadableFolderOpensHome() async throws {
             let harness = try ExplorerHarness.windowless()
             let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -288,7 +277,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-122: a favorite the window starts on shows its error instead.
+        // A favorite the window starts on shows its error instead.
         @Test func aWindowOnAGoneFavoriteShowsItsError() async throws {
             let harness = try ExplorerHarness.windowless()
             let gone = path(harness, "Gone")
@@ -307,8 +296,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-121: the search for a folder that can be read passes one that can't.
-        // B-NAV-138 B-VIEW-194 T-5a8447d3
+        // The search for a folder that can be read passes one that can't.
         @Test func theNearestFolderIsOneThatCanBeRead() async throws {
             let harness = try ExplorerHarness.windowless()
             let inner = path(harness, "Alpha/Inner")
@@ -323,8 +311,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-NAV-121: a newer navigation takes over from the search for a folder that can be read.
-        // B-NAV-023
+        // A newer navigation takes over from the search for a folder that can be read.
         @Test func aNewerNavigationEndsTheSearchForANearerFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let inner = path(harness, "Alpha/Inner")
@@ -347,8 +334,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `applyEmptyDirectorySnapshot`: letting go of the folder puts the results away, but what is typed stays.
-        // B-NAV-123
+        // Letting go of the folder puts the results away, but what is typed stays.
         @Test func aHeadingKeepsTheTypedTextAndStopsTheSearch() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -383,9 +369,8 @@ extension ExplorerWindowlessTests {
         private static let zed = OpenWithAction.application(
             id: "zed", label: "Zed", appPath: "/Applications/Zed.app", appName: "Zed", always: false)
 
-        // `noteFolderUsed`, B-NAV-071 T-8a7d2ddb: what the menus and the Info panel open from the folder is a use of it
-        // (`openPathInTerminal`, `openPathsWithApplication`, `editPathInTextEditor`, `openPathExternally`), and asking Finder
-        // directly (`showPathsInFinder`) isn't. The use reaching the store is in FolderVisitMatrixTests.
+        // What the menus and the Info panel open from the folder is a use of it, and asking Finder directly isn't. The
+        // use reaching the store is in FolderVisitMatrixTests.
         @Test func theMenusAndTheInfoPanelsActionsUseTheFolder() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(harness.folder.appending("Alpha").path)
@@ -416,8 +401,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerTabs.ts `openPathInNewTab` (mode "open", so "push"): the folder a new tab opens on is an arrival.
-        // B-NAV-011
+        // The folder a new tab opens on is an arrival.
         @Test func aFolderOpenedInANewTabIsAnArrival() async throws {
             let harness = try ExplorerHarness.windowless()
             let store = harness.store
@@ -438,7 +422,6 @@ extension ExplorerWindowlessTests {
         }
 
         // `showing`: a folder not yet decided on is only passed through when another tab comes to the front.
-        // B-DLG-067
         @Test func aFolderLeftForAnotherTabIsPassedThrough() async throws {
             let harness = try ExplorerHarness.windowless()
             let store = harness.store
@@ -473,7 +456,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // `navigateToNearestExistingFolder`: a folder above the one asked for opens by "replace", which is no arrival.
+        // A folder above the one asked for opens by "replace", which is no arrival.
         @Test func theNearestFolderOfANewTabIsNoArrival() async throws {
             let harness = try ExplorerHarness.windowless()
             let store = harness.store
@@ -520,9 +503,7 @@ extension ExplorerWindowlessTests {
             return (front, back, operations, session, alpha)
         }
 
-        // useExplorerTabs.ts:1063-1085 and useExplorerNavigationController.ts:1954-1959: when a write ends, a tab at the
-        // back reads its open branches as it comes back.
-        // B-TREE-181 B-VIEW-166 T-85ebe51d
+        // When a write ends, a tab at the back reads its open branches as it comes back.
         @Test func aTabThatComesBackAfterAWriteReadsItsOpenBranches() async throws {
             let harness = try ExplorerHarness.windowless()
             let (front, back, operations, session, alpha) = try await twoTabs(harness)
@@ -544,7 +525,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The same for a write that ends in another window.
-        // B-VIEW-166 T-85ebe51d
         @Test func aWriteInAnotherWindowCounts() async throws {
             let harness = try ExplorerHarness.windowless()
             let (front, back, operations, session, _) = try await twoTabs(harness)
@@ -562,8 +542,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // With no write, coming back reads only the way down to the folder (`getSelectedTreeReloadOptions`).
-        // B-VIEW-166
+        // With no write, coming back reads only the way down to the folder.
         @Test func aTabThatComesBackWithNoWriteLeavesItsOtherBranches() async throws {
             let harness = try ExplorerHarness.windowless()
             let (front, back, operations, _, alpha) = try await twoTabs(harness)

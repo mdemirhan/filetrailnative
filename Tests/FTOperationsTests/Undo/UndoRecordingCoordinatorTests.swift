@@ -1,5 +1,5 @@
-// Port of apps/desktop/src/main/bootstrap/writeOperations.undoLog.test.ts: what each operation tells the history for
-// Undo, and when: before the next operation can start, so the history keeps them in order.
+// What each operation tells the history for Undo, and when: before the next operation can start, so the history keeps
+// them in order.
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -41,7 +41,6 @@ struct UndoRecordingCoordinatorTests {
         try await Coordinators.end(of: handle.operationId, in: window)
     }
 
-    // T-37f7d3d3 F-303 F-547
     @Test func recordsARenameWithTheItemsIdAndTheFolderItIsIn() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -66,7 +65,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-3488f9ac F-547
     @Test func recordsNothingForARenameThatFailed() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -81,7 +79,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-752a7a36 F-547
     @Test func recordsANewFolderWithHowItLookedWhenMade() async throws {
         try await withUndoFolder { root, trashDir in
             let (coordinator, finished, window) = setUp(root, trashDir)
@@ -107,7 +104,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-749c2c7b F-547
     @Test func cantUndoANewFolderMadeOnADiskWithoutATrash() async throws {
         try await withUndoFolder { root, trashDir in
             let asked = AskedPaths()
@@ -125,7 +121,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-72376c7a F-547
     @Test func cantUndoANewFolderWhenWhetherItsDiskHasATrashCantBeTold() async throws {
         try await withUndoFolder { root, trashDir in
             let (coordinator, finished, window) = setUp(
@@ -138,7 +133,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-3a00d87f F-547
     @Test func recordsTheItemsABatchRenameRenamedUnderTheirFinalNames() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -165,7 +159,7 @@ struct UndoRecordingCoordinatorTests {
                 BatchRenamedItem(
                     from: "\(root)/b.txt", to: "\(root)/a.txt", id: try idOf("\(root)/a.txt"), itemKind: .file),
             ]
-            // In any order (`arrayContaining`).
+            // In any order.
             for item in expected {
                 #expect(renamed.contains(item))
             }
@@ -173,7 +167,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-2e6df8dd F-547
     @Test func recordsEachItemMovedToTheTrashOnItsOwnWithWhereItWent() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -205,7 +198,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-353b8e41 F-547
     @Test func looksAtEachItemItMovesToTheTrashOnceAndAtTheirFolderOnceForUndo() async throws {
         try await withUndoFolder { root, trashDir in
             let paths = ["a.txt", "b.txt", "c.txt"].map { "\(root)/\($0)" }
@@ -241,7 +233,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-34ec4887 F-547
     @Test func recordsNothingWhenNothingCouldGoToTheTrash() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -255,7 +246,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-6ac9fd2c F-547
     @Test func cantUndoDeleteImmediately() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(trashDir)/a.txt", "a")
@@ -267,7 +257,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-50c08344 F-547
     @Test func leavesTheHistoryAsItWasWhenDeleteImmediatelyDeletedNothing() async throws {
         // Nothing was deleted: the item had changed after the no-Trash question, and was refused just before
         // deleting. What can be undone stays undoable.
@@ -300,7 +289,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-bba487be F-547
     @Test func leavesTheHistoryAsItWasWhenTheItemAskedAboutIsGone() async throws {
         // Gone already (moved away while the question was open): nothing is deleted, so what can be undone stays
         // undoable.
@@ -320,7 +308,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-f813d201 F-547
     @Test func leavesTheHistoryAsItWasWhenAFileCouldntBeDeletedAtAll() async throws {
         // A file the delete couldn't remove is still there, as it was: nothing went for good.
         try await withUndoFolder { root, trashDir in
@@ -336,7 +323,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-1532bc11 F-547
     @Test func cantUndoAFolderWhoseDeleteFailedPartWay() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(trashDir)/F")
@@ -349,7 +335,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-16dd0522 F-547
     @Test func cantUndoEmptyTrashEvenOneThatFailedPartWay() async throws {
         try await withUndoFolder { root, trashDir in
             let (coordinator, finished, _) = setUp(root, trashDir)
@@ -361,10 +346,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // N/A T-bef1cf1e The Swift Empty Trash can't end without saying how far it got: TrashState.empty answers every
-    // failure as (ok: false, error:), which T-16dd0522 covers.
-
-    // T-8f44c2c9 F-547
     @Test(arguments: [
         "Not authorized to send Apple events to Finder. (-1743)",
         "execution error: Finder got an error: Not permitted. (-1744)",
@@ -379,7 +360,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-81981e98 F-547
     @Test func recordsAnOperationBeforeTheNextOneCanStart() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -407,7 +387,6 @@ struct UndoRecordingCoordinatorTests {
         }
     }
 
-    // T-8bae6c30 F-547
     @Test func freesTheWriteSlotEvenWhenKeepingTheHistoryFails() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -459,7 +438,6 @@ struct UndoRecordingCoordinatorTests {
         return all
     }
 
-    // T-bef74e14 F-548
     @Test func passesOnThePastesOwnLogWithTheActionThatStartedIt() async throws {
         let finished = try await paste(Self.copied)
         #expect(finished.count == 1)
@@ -468,7 +446,6 @@ struct UndoRecordingCoordinatorTests {
         #expect(finished.first?.items.map(\.destinationPath) == ["/Volumes/Share/a.txt"])
     }
 
-    // T-b64c8060 F-548
     @Test func cantUndoCopiesMadeOnADiskWithoutATrash() async throws {
         let asked = AskedPaths()
         let finished = try await paste(Self.copied) { path in
@@ -479,7 +456,6 @@ struct UndoRecordingCoordinatorTests {
         #expect(asked.paths == ["/Volumes/Share"])
     }
 
-    // T-fdcdd27b F-548
     @Test func asksWhetherADiskHasATrashOncePerFolderTheCopiesAreIn() async throws {
         // Each answer reads the mount table.
         func created(_ path: String, _ ino: UInt64) -> UndoUnit {
@@ -498,18 +474,15 @@ struct UndoRecordingCoordinatorTests {
         #expect(asked.paths == ["/Volumes/Share", "/Volumes/Other"])
     }
 
-    // T-67b48fd7 F-548
     @Test func passesOnAPasteThatCantBeUndone() async throws {
         #expect(try await paste(.notUndoable(reason: .merge)).map(\.log) == [.notUndoable(reason: .merge)])
     }
 
-    // T-335aae5f F-548
     @Test func recordsNothingForAPasteThatDidNothing() async throws {
         #expect(try await paste(.undoable(units: [])).isEmpty)
         #expect(try await paste(nil).isEmpty)
     }
 
-    // T-ecfb061a F-372 F-548
     @Test func leavesTheHistoryAsItWasAfterAPasteThatChangedNothing() async throws {
         // Add Missing where every item is there already: nothing is written, so what came before can still be undone.
         try await withUndoFolder { root, trashDir in

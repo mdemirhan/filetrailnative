@@ -1,8 +1,7 @@
 import Foundation
 import Testing
 
-// Port of the getCachedResponse, forgetFolderListings and withTiming cases of
-// apps/desktop/src/main/bootstrap/responseCache.test.ts
+// The response cache: its answers, forgetFolderListings and withTiming
 @testable import FTFileSystem
 
 /// Holds a load until the test lets it go.
@@ -56,7 +55,6 @@ private func detail(_ path: String) -> EntryMetadata {
 }
 
 struct ResponseCacheTests {
-    // T-64ffebfe F-177
     @Test func capsCachedDirectorySnapshotsAndEvictsTheOldestFirst() async throws {
         let cache = ResponseCache()
         for index in 0..<200 {
@@ -78,7 +76,6 @@ struct ResponseCacheTests {
         #expect(loads.count == 1)
     }
 
-    // T-ee081cd1 F-177
     @Test func doesNotKeepAnAnswerThatWasLoadingWhenTheCachesWereCleared() async throws {
         let cache = ResponseCache()
         let gate = Gate()
@@ -112,7 +109,6 @@ struct ResponseCacheTests {
         #expect(loads.count == 1)
     }
 
-    // T-698fcd39
     @Test func doesNotKeepItemDetailsThatWereLoadingWhenTheCachesWereCleared() async throws {
         let cache = ResponseCache()
         let gate = Gate()
@@ -139,7 +135,6 @@ struct ResponseCacheTests {
 
     // Expired listings were let go of only once there were too many: up to 64, of 23 MB each for a folder of
     // 100,000 items.
-    // T-89b11564
     @Test func letsGoOfExpiredListingsWhenAnotherIsStored() async {
         let clock = Clock()
         let cache = ResponseCache(clock: { clock.now })
@@ -150,7 +145,7 @@ struct ResponseCacheTests {
         _ = await cache.directorySnapshot(ListingKey(path: "/small")) { snapshot("2 items") }
 
         #expect(cache.sizes.directorySnapshots == 1)
-        // The tree answer waits for the next tree answer stored to be swept, as in the original.
+        // The tree answer waits for the next tree answer stored to be swept.
         #expect(cache.sizes.treeChildren == 1)
     }
 
@@ -200,7 +195,6 @@ struct ResponseCacheTests {
 
     // Each item of a batch looked through the 5,000 kept once there were that many: 11 ms a batch of 500
     // while scrolling a large folder.
-    // T-f728e863
     @Test func storesABatchOfItemDetailsWithoutLookingThroughAllThoseKeptForEach() async {
         let cache = ResponseCache()
         var next = 0
@@ -280,7 +274,6 @@ struct ResponseCacheTests {
         return kept
     }
 
-    // T-42fbbeb8 F-178 B-NAV-134
     @Test func letsGoOfTheFoldersListingsAndTheDetailsOfTheItemsThatChanged() async {
         let cache = ResponseCache()
         await fill(cache)
@@ -295,7 +288,6 @@ struct ResponseCacheTests {
     }
 
     // Read again however it is sorted.
-    // T-42fbbeb8
     @Test func readsTheFolderAgainHoweverItIsSorted() async {
         let cache = ResponseCache()
         await fill(cache)
@@ -308,7 +300,6 @@ struct ResponseCacheTests {
         #expect(loads.count == 1)
     }
 
-    // T-0440a8ed F-178
     @Test func letsGoOfAllInTheFolderAndOfTheListingHoldingItWhenAnythingMayHaveChanged() async {
         let cache = ResponseCache()
         await fill(cache)
@@ -319,7 +310,6 @@ struct ResponseCacheTests {
         #expect(await stillCached(cache) == ["listing /p/b", "children /p/b", "details /p/b/z.txt"])
     }
 
-    // T-2162fd54 F-178
     @Test func doesNotKeepAListingOfTheFolderThatWasLoadingWhenItChanged() async {
         let cache = ResponseCache()
         let gate = Gate()
@@ -344,7 +334,6 @@ struct ResponseCacheTests {
         #expect(loads.count == 1)
     }
 
-    // T-111af243
     @Test func logsOnlyASlowLoadWithItsLabelAndPath() async {
         let lines = Box<[String]>([])
         let fast = await withTiming("fast", path: "/a", log: { lines.value.append($0) }, load: { 1 })

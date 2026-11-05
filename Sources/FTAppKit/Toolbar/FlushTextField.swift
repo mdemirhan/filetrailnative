@@ -1,5 +1,4 @@
-// Port of the text boxes of apps/desktop/src/renderer/styles.css (.toolbar-title, .toolbar-menu-label,
-// .history-menu-name): text drawn from its box's edge
+// Text drawn from its box's edge
 import AppKit
 
 /// A label whose text starts at its frame's edge and may reach the other edge, as a CSS text box does: a

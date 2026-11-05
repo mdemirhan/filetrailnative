@@ -1,5 +1,3 @@
-// Port of SettingsList, ColumnList, DragHandle and SettingsListText of
-// apps/desktop/src/renderer/components/SettingsView.tsx, drawn as styles.css:5742-5908 draws them
 import AppKit
 import FTFoundation
 
@@ -96,7 +94,7 @@ final class SettingsListRow: ThemedView {
         var path: String?
         /// Nothing is at `path` any more: the row says so.
         var missing = false
-        /// `.settings-list-trailing-note` ("Always first").
+        /// The note at the row's end ("Always first").
         var trailingNote: String?
         var draggable = true
         var disabled = false
@@ -256,7 +254,7 @@ final class SettingsListRow: ThemedView {
     }
 }
 
-/// A list as macOS draws one in Settings (`SettingsList`, `ColumnList`): rows to select, drag into a new order, or
+/// A list as macOS draws one in Settings: rows to select, drag into a new order, or
 /// remove, and a bar of buttons under it. The list takes the keyboard; the selected row is its focus.
 final class SettingsListView: ThemedView, SettingsListBlock {
     enum Keys {

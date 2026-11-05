@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/components/InfoRow.tsx with the .info-row rules of styles.css:3269-3340
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -20,8 +19,8 @@ struct InfoRowDisplay: Equatable {
     var facts: [Fact]
 }
 
-/// One fact of the line (`.info-row-fact`): its text or the folder size cell, with the dot before it that comes with every
-/// fact but the first (`.info-row-fact + .info-row-fact::before`, margin 0 6, inside the fact's box).
+/// One fact of the line: its text or the folder size cell, with the dot before it that comes with every fact but the
+/// first (6 each side, inside the fact's box).
 final class InfoRowFactView: NSView, TextStyleSource {
     let text = FlushTextField(labelWithString: "")
     let dot = FlushTextField(labelWithString: "·")
@@ -94,13 +93,13 @@ final class InfoRowFactView: NSView, TextStyleSource {
 }
 
 /// The Info Row's place under the list: 30 tall with a line on top while open; closed it keeps its 1 pt line, unseen
-/// (`max-height: 0`, `opacity: 0`). Like the path bar row it starts in the divider's half past the hairline. One line:
+/// (no height, fully transparent). Like the path bar row it starts in the divider's half past the hairline. One line:
 /// the icon, the name, then the facts with dots between them.
 final class InfoRowView: NSView {
-    /// `.info-row.open { max-height: 30px }`.
+    /// The open row's height, 30.
     static var openHeight: Double { InfoMetrics.infoRowHeight }
     static let closedHeight = 1.0
-    /// The slide: max-height 220 ms, opacity 180 ms.
+    /// The slide: the height over 220 ms, the opacity over 180 ms.
     static let slideDuration = 0.22
 
     private let icon = InfoIconView()
@@ -162,7 +161,7 @@ final class InfoRowView: NSView {
         alphaValue = 0
         setAccessibilityIdentifier("infoRow")
         icon.setAccessibilityIdentifier("infoRow.icon")
-        // `.file-icon.native-file-icon`: 18 in the row's 16 box, past its right and bottom edges.
+        // The app's icon: 18 in the row's 16 box, past its right and bottom edges.
         icon.nativeIconSide = 18
         icon.clipsToBounds = false
         name.setAccessibilityIdentifier("infoRow.name")

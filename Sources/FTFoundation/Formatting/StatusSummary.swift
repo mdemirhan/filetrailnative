@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/statusSummary.ts (and formatSearchStatus from lib/searchResults.ts)
 import Foundation
 
 /// The size the status bar shows: the selection's, or the folder on screen's with nothing selected.

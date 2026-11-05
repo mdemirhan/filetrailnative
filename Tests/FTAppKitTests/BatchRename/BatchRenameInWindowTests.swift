@@ -1,6 +1,3 @@
-// Ports by feature the "renaming several items" cases of apps/desktop/src/renderer/App.menusAndTree.test.tsx and
-// App.writeRefusals.test.tsx, and the search results' rename of several of App.fileOperations.test.tsx, on a real tab
-// whose window is never shown, with the app's file operations
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -144,8 +141,6 @@ extension ExplorerWindowlessTests {
             func receive(_ message: WriteOperationMessage) throws {}
         }
 
-        // F-796 B-DLG-073 B-DLG-075 B-DLG-086 B-DLG-087 B-DLG-089
-        // T-2e1391bc
         @Test func renamesThemFromTheMenuShowingEveryNewNameFirst() async throws {
             let opened = try await open(records: false)
             let tab = opened.tab
@@ -184,8 +179,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // F-796 B-DLG-073 B-DLG-089 B-DLG-090
-        // T-7d1b915c
         @Test func opensWithF2ReturnAndTheMenuBarsRenameAndClosesWithEscape() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -222,10 +215,9 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // Behind the sheet the list keeps its focused look, the selected rows in the accent, as the original's does (240):
-        // its focus restore sets the content focused before the sheet comes. The chosen mode reads as its title, and a click on a mode shows no
+        // Behind the sheet the list keeps its focused look, the selected rows in the accent: its focus restore sets the
+        // content focused before the sheet comes. The chosen mode reads as its title, and a click on a mode shows no
         // focus ring; Tab to it does.
-        // F-796 F-873 B-DLG-073 B-DLG-092
         @Test func theListKeepsItsLookAndTheChosenModeReadsAsItsTitle() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -256,9 +248,7 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-DLG-091
-        // T-2bbfb2b6
-        // F-796 (scenarios 246, 247): Select All from the menu selects the field's text, in this tab's window whichever
+        // (scenarios 246, 247): Select All from the menu selects the field's text, in this tab's window whichever
         // window is key, and what is typed next replaces it.
         @Test func selectAllSelectsTheTextOfTheFieldEdited() async throws {
             let opened = try await open()
@@ -276,7 +266,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-SEL-171
         @Test func keepsTheListsShortcutsFromActingWhileItIsOpen() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -294,8 +283,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-DLG-075
-        // T-e2459ba9
         @Test func saysAnotherOperationIsRunningInsteadOfOpening() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -313,8 +300,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-DLG-094
-        // T-5360e1dd
         @Test func triesAgainOnlyTheItemsThatWerentRenamed() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -344,8 +329,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-DLG-074 B-DLG-094
-        // T-cec4474d
         @Test func triesAgainAFolderPutBackUnderAnotherNameAsAFolderThoughItIsntListed() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -375,8 +358,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // F-796 B-DLG-074
-        // T-11f2cd1b
         @Test func numbersTheItemsInTheOrderTheListShowsThemNotTheOrderTheyWereClicked() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -399,8 +380,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // B-DLG-088
-        // T-a8ac5b87
         @Test func saysAnotherOperationIsRunningWhenTheRenameStarts() async throws {
             let opened = try await open(records: false)
             let tab = opened.tab
@@ -431,8 +410,6 @@ extension ExplorerWindowlessTests {
             return timers
         }
 
-        // F-796
-        // T-0b1c4fac
         @Test func offersToRenameResultsFromDifferentFoldersTogetherButNotToDuplicateThem() async throws {
             let opened = try await open(names: ["source.txt", "Alpha/deep.txt"])
             let tab = opened.tab
@@ -452,8 +429,6 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // F-796 B-DLG-074
-        // T-f34fe362
         @Test func renamesResultsFromDifferentFoldersTogetherEachInItsOwnFolder() async throws {
             let opened = try await open(names: ["source.txt", "Alpha/deep.txt"])
             let tab = opened.tab
@@ -500,8 +475,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The settings and presets are kept after the app quits: the state file read again has them.
-        // B-DLG-089 B-DLG-121
-        // T-4184b912
         @Test func keepsTheSettingsAndPresetsAfterTheAppQuits() async throws {
             let opened = try await open()
             let tab = opened.tab

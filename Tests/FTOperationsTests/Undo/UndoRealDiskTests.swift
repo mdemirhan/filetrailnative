@@ -1,5 +1,5 @@
-// Port of apps/desktop/src/main/bootstrap/undo.realfs.test.ts: Undo on test disk images, for what the startup disk
-// can't show: the Trash of another disk (its own .Trashes folder), and disks that tell names apart by case or don't
+// Undo on test disk images, for what the startup disk can't show: the Trash of another disk (its own .Trashes folder),
+// and disks that tell names apart by case or don't
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -10,7 +10,7 @@ import Testing
 @MainActor
 @Suite(.serialized, .tags(.diskImage), .diskImages, .localOperationHang)
 struct UndoRealDiskTests {
-    /// `setUpOn`: the coordinator as the app runs it on a disk image: the real Trash, the home folder elsewhere.
+    /// The coordinator as the app runs it on a disk image: the real Trash, the home folder elsewhere.
     private func onDisk(_ kind: DiskImage.Kind, _ body: @MainActor (UndoTest, String) async throws -> Void)
         async throws
     {
@@ -30,7 +30,6 @@ struct UndoRealDiskTests {
         UndoDisk.names(folder).filter { !$0.hasPrefix(".") }
     }
 
-    // T-472f5dcc F-561
     @Test func putsAnItemBackFromItsDisksOwnTrash() async throws {
         try await onDisk(.apfs) { t, disk in
             // Some Macs' Trash refuses a disk image attached by a test ("doesn't exist"; NativeTrashTests sees it too):
@@ -53,7 +52,6 @@ struct UndoRealDiskTests {
         }
     }
 
-    // T-bf74e8a4 F-561
     @Test func renamesBackANameThatDiffersOnlyInCaseOnADiskThatIgnoresCase() async throws {
         try await onDisk(.apfs) { t, disk in
             try UndoDisk.write("\(disk)/notes.txt", "n")
@@ -65,7 +63,6 @@ struct UndoRealDiskTests {
         }
     }
 
-    // T-5874f7d2 F-561
     @Test func keepsBothOnlyWhenTheVeryNameIsTakenOnADiskThatMindsCase() async throws {
         try await onDisk(.apfsCaseSensitive) { t, disk in
             try UndoDisk.write("\(disk)/a.txt", "a")

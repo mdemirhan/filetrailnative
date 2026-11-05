@@ -1,5 +1,3 @@
-// Port of how Chromium measures the text of apps/desktop/src/renderer/styles.css where it sets no line height
-// (`line-height: normal`) and no width (a box as wide as its text, to the fraction)
 import AppKit
 
 extension ThemedText {

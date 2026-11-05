@@ -1,5 +1,3 @@
-// Port of "native copyFile and utimes" (packages/core/src/fs/copyPasteExecution.test.ts), but for the case that
-// Replaces (P3-04's)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -23,7 +21,6 @@ struct CopyPasteExecutionMetadataTests {
         ])
     }
 
-    // T-0d08aafa F-278
     @Test func leavesTheModeCopyFileCopied() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5, mode: 0o755)), ("/target", .directory()),
@@ -40,7 +37,6 @@ struct CopyPasteExecutionMetadataTests {
     }
 
     // A large file shows its progress as it is copied, counted once when it is done.
-    // T-dc2a3197 F-453
     @Test func reportsTheBytesOfTheFileBeingCopiedAsTheyAreWritten() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 100)), ("/source/b.bin", .file(size: 1000)),
@@ -63,7 +59,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(events.map(\.completedByteCount) == [0, 100, 500, 1100, 1100])
     }
 
-    // T-3226a0ea F-452
     @Test func copyFilePreservesModeAndMtime() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5, mode: 0o755, mtimeMs: 9999)),
@@ -78,7 +73,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/a.txt")?.mtimeMs == 9999)
     }
 
-    // T-ebe86603 F-278 F-452
     @Test func nativeCopyFilePathReappliesModeAndMtimeEvenWhenTheCopyDropsMetadata() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5, mode: 0o755, mtimeMs: 9999)),
@@ -97,7 +91,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/a.txt")?.mtimeMs == 9999)
     }
 
-    // T-47e2728a F-453
     @Test func copyFileErrorPropagatesAndFailsTheOperation() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -111,7 +104,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(events.last?.result?.error == "You don't have permission to access this item.")
     }
 
-    // T-0d97ceb3 F-271 F-452
     @Test func utimesCalledForDirectoriesAfterMkdirAndChmod() async throws {
         let fileSystem = folderWithAFile()
         fileSystem.enableUtimes()
@@ -124,7 +116,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(calls.all.contains(["/target/dir", "5555.0"]))
     }
 
-    // T-408edc5c F-452
     @Test func utimesNotCalledWhenAbsent() async throws {
         let fileSystem = folderWithAFile()
         let operation = try createResolvedOperation(fileSystem, sources: ["/source/dir"], into: "/target")
@@ -134,7 +125,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/dir")?.kind == .directory)
     }
 
-    // T-b12350e8 F-452
     @Test func utimesENOTSUPSilentlyIgnored() async throws {
         let fileSystem = folderWithAFile()
         fileSystem.enableUtimes()
@@ -146,7 +136,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/dir")?.kind == .directory)
     }
 
-    // T-0cd81aa5 F-452
     @Test func utimesEOPNOTSUPPSilentlyIgnored() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/link", .symlink("actual.txt", mtimeMs: 7777)),
@@ -161,7 +150,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/link")?.kind == .symlink)
     }
 
-    // T-a81e8d81 F-271 F-452
     @Test func doesntFailAFolderWhoseDateCantBeSet() async throws {
         let fileSystem = folderWithAFile()
         fileSystem.enableUtimes()
@@ -177,7 +165,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.exists("/target/dir/a.txt"))
     }
 
-    // T-13e91ab9 F-461
     @Test func copyFileAndCutInlineSourceDeletionStillWorks() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -190,7 +177,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
-    // T-8258e572 F-283
     @Test func copyFileAndRenameRenameTakesPriorityForSameDevCut() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 5)), ("/target", .directory()),
@@ -206,7 +192,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/a.txt")?.ino == originalIno)
     }
 
-    // T-855f8824 F-274 F-450
     @Test func copyFileWithKeepBothUsesTheAlternateDestinationPath() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 8)), ("/target", .directory()),
@@ -233,7 +218,6 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/a copy.txt")?.size == 8)
     }
 
-    // T-0a7fbe02 F-452
     @Test func utimesUsesSourceMtimeMsForBothAtimeAndMtimeParameters() async throws {
         let fileSystem = folderWithAFile(mtimeMs: 1_234_567_890)
         fileSystem.enableUtimes()

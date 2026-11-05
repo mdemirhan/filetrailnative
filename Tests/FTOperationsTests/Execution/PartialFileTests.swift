@@ -1,5 +1,3 @@
-// Port of packages/core/src/fs/copyPastePartialFile.test.ts, but for what recovery does at the next start
-// (recoverPartialFiles, P3-04's)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -85,7 +83,6 @@ struct PartialFileTests {
         #expect(fileSystem.readNode(Self.source)?.size == journaledFileBytes)
     }
 
-    // T-f00416eb F-257 F-275 F-511
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func leavesNothingBehindWhenStoppedPartWay(mode: CopyPasteMode) async throws {
         let fileSystem = largeFileOnAnotherDisk()
@@ -102,7 +99,6 @@ struct PartialFileTests {
         expectNothingLeft(fileSystem, run)
     }
 
-    // T-9e7a471a F-275 F-471 F-511
     @Test(arguments: [CopyPasteMode.copy, .cut], ["ENOSPC", "EIO"])
     func leavesNothingBehindAndSaysWhy(mode: CopyPasteMode, code: String) async throws {
         let fileSystem = largeFileOnAnotherDisk()
@@ -118,7 +114,6 @@ struct PartialFileTests {
         expectNothingLeft(fileSystem, run)
     }
 
-    // T-3980d27b F-258 F-275 F-512
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func asksAboutAnItemThatTookTheNameAsTheCopyWasDoneAndClearsItsOwnAway(mode: CopyPasteMode) async throws {
         let fileSystem = largeFileOnAnotherDisk()
@@ -135,7 +130,6 @@ struct PartialFileTests {
         expectNothingLeft(fileSystem, run)
     }
 
-    // T-eb0df2a7 F-274 F-275 F-512
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func failsTheItemWhenItCantTakeItsNameAndClearsItsOwnAway(mode: CopyPasteMode) async throws {
         let fileSystem = largeFileOnAnotherDisk()
@@ -154,8 +148,7 @@ struct PartialFileTests {
     }
 
     // A large file's hidden part that a failed copy can't clear away stays written down, for the next start to
-    // remove (that removal, recoverPartialFiles, is P3-04's).
-    // T-93ae7a3b F-275
+    // remove (see recoverPartialFiles).
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func staysWrittenDownWhenAFailedCopyCantClearItAway(mode: CopyPasteMode) async throws {
         let fileSystem = largeFileOnAnotherDisk()
@@ -217,7 +210,6 @@ struct FailedFileInsideAFolderTests {
         return (fileSystem, result, written.all)
     }
 
-    // T-c0c25051 F-274 F-514
     @Test func isWrittenStraightIntoTheHiddenFolderWhichIsPutInPlaceWithoutIt() async throws {
         let (fileSystem, result, written) = try await copyFolderWithFailingFile(partRemovable: true)
 
@@ -231,7 +223,6 @@ struct FailedFileInsideAFolderTests {
         #expect(fileSystem.temporaryLeftovers() == [])
     }
 
-    // T-34d34071 F-274 F-514
     @Test func keepsTheWholeFolderFromBeingPutInPlaceWhenItsPartCantBeRemoved() async throws {
         let (fileSystem, result, _) = try await copyFolderWithFailingFile(partRemovable: false)
 

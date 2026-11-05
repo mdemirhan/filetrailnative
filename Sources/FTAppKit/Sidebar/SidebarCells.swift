@@ -1,17 +1,16 @@
-// Port of TreeItemRow and renderSectionHeader (apps/desktop/src/renderer/components/TreePane.tsx) with the sidebar rules of styles.css
 import AppKit
 import CoreText
 import FTFoundation
 
-/// A view named for the geometry dump that shows another view's text style: the original's `.tree-row` is compared by
-/// its box and by the style of the `.tree-label-text` inside it.
+/// A view named for the geometry dump that shows another view's text style: a tree row is compared by its box and by
+/// the style of the label inside it.
 final class SidebarTagView: SidebarPlainView, TextStyleSource {
     weak var source: NSTextField?
     var styleTextField: NSTextField? { source }
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// The box of a row (`.tree-row`): its fill, its ring, and the parts inside.
+/// The box of a row: its fill, its ring, and the parts inside.
 final class SidebarRowBox: SidebarPlainView, TextStyleSource {
     weak var label: NSTextField?
     var styleTextField: NSTextField? { label }
@@ -75,7 +74,7 @@ final class SidebarLabelField: NSTextField {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// Line heights as Chromium lays text out for `line-height: normal`: the font's ascent, descent and gap, each rounded.
+/// Line heights of a font's normal line: its ascent, descent and gap, each rounded.
 enum SidebarText {
     static func lineHeight(_ font: NSFont) -> Double {
         Double(font.ascender - font.descender + font.leading)
@@ -101,7 +100,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
     let label = SidebarLabelField()
     private let badge = SidebarBadgeView()
     private let eject = SidebarEjectView()
-    /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
+    /// The copy or cut glyph after the name of an item on the clipboard.
     private let markGlyph = ClipboardMarkGlyph(identifier: "sidebar.row.clipboardMark")
     private let loading = SidebarLabelField()
     private let error = SidebarLabelField()
@@ -275,7 +274,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         label.font = ChromeColors.font(size: size, weight: labelWeight)
         label.textColor = textColor
         label.stringValue = item.label
-        // On the clipboard: the glyph after the name, and a cut item's name dimmed (`.clipboard-cut .tree-label-text`).
+        // On the clipboard: the glyph after the name, and a cut item's name dimmed.
         markGlyph.mark = state.clipboardMark
         markGlyph.color = selectedFocused ? onSelection : ChromeColors.color(accent.solidButton)
         label.alphaValue = state.clipboardMark == .cut ? CGFloat(ClipboardLayout.Mark.cutLabelAlpha) : 1
@@ -327,7 +326,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         box.needsDisplay = true
     }
 
-    /// The row's item was just copied or cut: its box flashes (`.tree-row.clipboard-flash`).
+    /// The row's item was just copied or cut: its box flashes.
     func flashClipboardMark() {
         guard let state, state.clipboardMark != nil else { return }
         let theme = SidebarColors.theme(for: self)
@@ -336,7 +335,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
             box, color: ChromeColors.color(color), radius: CGFloat(SidebarLayout(density: state.density).rowRadius))
     }
 
-    /// The height of the notes under a row: "Loading folder…" and an error, each in the padding of `.tree-loading`.
+    /// The height of the notes under a row: "Loading folder…" and an error, each in the padding of a note.
     static func noteHeight(_ state: SidebarRowState, width: Double) -> Double {
         let layout = SidebarLayout(density: state.density)
         let font = ChromeColors.font(size: layout.noteFontSize)
@@ -402,7 +401,7 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
         let font = label.font ?? ChromeColors.font(size: layout.labelFontSize)
         let lineHeight = SidebarText.lineHeight(font)
         let natural = SidebarText.width(label.stringValue, font: font)
-        // `.sidebar-main-native .tree-label { gap: 6px }`: the tree's gap, not the list's.
+        // The gap between the name and the glyph is the tree's, not the list's.
         let markRoom = markGlyph.isHidden ? 0 : layout.labelGap + ClipboardLayout.Mark.iconSize
         let textWidth = max(0, min(natural, textLimit - textX - markRoom))
         label.frame = NSRect(x: textX, y: (rowHeight - lineHeight) / 2, width: textWidth, height: lineHeight)
@@ -452,8 +451,8 @@ extension SidebarRowState {
     var isCurrentRow: Bool { selection != .none }
 }
 
-/// A section header of the separate layout (`.sidebar-section-header`): the title, and a chevron that shows on hover and
-/// stays while the section is closed.
+/// A section header of the separate layout: the title, and a chevron that shows on hover and stays while the section
+/// is closed.
 final class SidebarHeaderCell: NSTableCellView, SidebarAccessibleCell {
     var accessibilityButtons: [NSView] { [button] }
 

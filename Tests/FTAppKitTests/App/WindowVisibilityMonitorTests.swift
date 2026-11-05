@@ -6,7 +6,6 @@ import Testing
 
 @MainActor
 @Suite struct WindowVisibilityMonitorTests {
-    // B-INFO-083 B-INFO-197
     @Test func saysOnlyWhenTheAnswerChanges() {
         let center = NotificationCenter()
         var visible = true

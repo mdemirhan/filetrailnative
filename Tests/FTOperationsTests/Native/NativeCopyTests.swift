@@ -1,4 +1,3 @@
-// Port of the nativeCopyFile and nativeCopyMetadata cases of packages/native-fs/src/native-fs.test.ts
 import FTTestSupport
 import Foundation
 import Testing
@@ -16,7 +15,6 @@ struct NativeCopyFileErrorTests {
         }
     }
 
-    // T-239cae6f F-348 F-404
     @Test func neverWritesOverAnExistingDestination() throws {
         try withFiles { root in
             let error = #expect(throws: NativeError.self) {
@@ -27,7 +25,6 @@ struct NativeCopyFileErrorTests {
         }
     }
 
-    // T-6a49d862 F-409
     @Test func namesTheErrnoAndKeepsLongPathsWholeInTheMessage() throws {
         try withFiles { root in
             let longDestination =
@@ -45,7 +42,6 @@ struct NativeCopyFileErrorTests {
         }
     }
 
-    // T-90a9d326 F-409
     @Test func reportsErrnosThatUsedToBeUnknownByName() throws {
         try withFiles { root in
             // A file used as a folder in the destination path.
@@ -58,7 +54,6 @@ struct NativeCopyFileErrorTests {
 }
 
 struct NativeCopyMetadataTests {
-    // T-97075e26 F-405 F-412
     @Test func putsAFoldersTagsModeAndDateOnAnExistingFolderWithoutCopyingItsItems() throws {
         try withTemporaryDirectory(prefix: "native-fs-metadata") { root in
             let source = root.appending("source").path
@@ -109,7 +104,6 @@ struct NativeCopyMetadataTests {
         }
     }
 
-    // T-eee4b3f2
     @Test func namesTheErrnoWhenTheSourceIsMissing() throws {
         try withTemporaryDirectory(prefix: "native-fs-metadata") { root in
             try FileManager.default.createDirectory(
@@ -123,7 +117,6 @@ struct NativeCopyMetadataTests {
 
     // applyDirectoryMetadata: on a move the folder keeps the date it had before its items went out; when copyfile
     // fails, the mode and date alone are carried over and a move keeps its original.
-    // F-405
     @Test func fallsBackToTheModeAndDateWhenTheMetadataCantBeCopied() throws {
         var calls: [String] = []
         let refused = NativeError.errno(ENOTSUP, syscall: "copyfile", path: "/s", dest: "/d")
@@ -171,7 +164,6 @@ struct NativeCopyStopFlagTests {
         }
     }
 
-    // T-5e050894 F-410
     @Test func copiesNormallyWhileTheFlagIsClear() throws {
         try withSource { root in
             try NativeFS.copyFile(root.appending("a.txt").path, root.appending("b.txt").path, control: CopyControl())
@@ -179,7 +171,6 @@ struct NativeCopyStopFlagTests {
         }
     }
 
-    // T-5a6dbafe F-361 F-410
     @Test func doesntStartACopyWhoseFlagIsAlreadySet() throws {
         try withSource { root in
             let control = CopyControl()
@@ -192,12 +183,9 @@ struct NativeCopyStopFlagTests {
         }
     }
 
-    // N/A T-0c9bb001 the stop flag is a typed CopyControl: there is no other kind of flag to refuse.
-
     // Across volumes the copy can't be a clone, so a large file takes long enough to stop. The stop lands as the
     // destination appears, while copyfile is still copying extended attributes: a stop seen there once left an
     // empty file behind.
-    // T-19343d44 F-361 F-410
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func stopsPartWayThroughALargeFileAndLeavesNoPartialFile() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
@@ -217,7 +205,6 @@ struct NativeCopyStopFlagTests {
     }
 
     // A copy that isn't a clone counts the bytes copied so far, so a large file can show its progress.
-    // T-4197f701 F-410
     @Test(.tags(.diskImage), .diskImages)
     func countsTheBytesCopiedAfterTheFlag() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
@@ -233,9 +220,8 @@ struct NativeCopyStopFlagTests {
 
     // copyfile asks the status callback what to do when a write fails; answering "continue" there retried the
     // write forever, so a full disk hung the copy. The disk is full before the copy starts, so its first write
-    // fails; the source is still larger than the whole disk (34 MB onto 32 MB; the original copied 80 MB), so it
-    // can't fit whatever APFS gives back after the fill.
-    // T-26424164 F-404
+    // fails; the source is still larger than the whole disk (34 MB onto 32 MB), so it can't fit whatever APFS
+    // gives back after the fill.
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func failsWithENOSPCOnAFullDiskInsteadOfRetryingTheWriteForever() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
@@ -258,7 +244,6 @@ struct NativeCopyStopFlagTests {
     // copyfile goes on as if a resource fork that couldn't be written had been copied, unless the callback quits:
     // the copy then succeeded without it, and a move removed the original. A full disk makes the write fail; the
     // file's own data is empty, so nothing else does.
-    // T-0c2e0a1d F-364 F-411
     @Test(.tags(.diskImage), .diskImages)
     func failsWithTheWritesErrnoWhenTheResourceForkCantBeWritten() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
@@ -268,8 +253,7 @@ struct NativeCopyStopFlagTests {
                 try Files.write(source, "")
                 // Over 1 MB, which copyfile copies through the fork's own file, in chunks; and larger than the whole
                 // disk, so it can't fit whatever APFS keeps back on a full disk or gives back after the fill. A fork
-                // of the free space plus 2 MB, measured after the fill, once fitted in a full CI run (the original's
-                // 2 MB fork fitted in the 6 MB a full 256 MB disk keeps back).
+                // of the free space plus 2 MB, measured after the fill, once fitted in a full CI run.
                 let forkSize = Files.totalBytes(volume.path) + 2 * 1024 * 1024
                 try Files.write(source + "/..namedfork/rsrc", [UInt8](repeating: 7, count: forkSize))
 
@@ -289,7 +273,6 @@ struct NativeCopyStopFlagTests {
     // beside the copy, in the disk's clusters: once they are full the copy can still be made (an empty file takes
     // none) but its fork can't. Older macOS says a full FAT disk is EIO rather than ENOSPC: the copy fails with
     // whichever the disk says.
-    // T-1c84056e F-364 F-411
     @Test(.tags(.diskImage), .diskImages)
     func failsWithTheWritesErrnoWhenASmallResourceForkCantBeWritten() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in
@@ -313,7 +296,6 @@ struct NativeCopyStopFlagTests {
         }
     }
 
-    // T-c9970c51 F-404
     @Test(.tags(.diskImage), .diskImages)
     func keepsASparseFileSparseSoItFitsOnADiskSmallerThanItsLength() async throws {
         try await withTemporaryDirectory(prefix: "native-fs-stop") { root in

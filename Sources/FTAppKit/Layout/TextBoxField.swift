@@ -1,5 +1,4 @@
-// Port of the text boxes of apps/desktop/src/renderer/styles.css: text drawn from its box's edges, whole when the box
-// is as wide as the text
+// Text drawn from its box's edges, whole when the box is as wide as the text
 import AppKit
 
 /// Where a line of text goes for its baseline to land where the browser puts it. The browser lays text out in device
@@ -39,9 +38,9 @@ enum TextBaseline {
 }
 
 /// A label laid out as a CSS text box: its text starts at its frame's edge, and a frame as wide as the text (the
-/// original's measured width) draws the whole string. A plain label keeps 2 pt between its frame and its text on each
-/// side, and a centered one cuts its text short even when that padding is moved outside the frame, so this cell draws
-/// the text itself.
+/// measured width) draws the whole string. A plain label keeps 2 pt between its frame and its text on each side, and a
+/// centered one cuts its text short even when that padding is moved outside the frame, so this cell draws the text
+/// itself.
 class TextBoxField: NSTextField {
     override class var cellClass: AnyClass? {
         get { TextBoxCell.self }

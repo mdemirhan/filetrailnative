@@ -1,5 +1,4 @@
-// Port of deliverProgress and forgetProgress (apps/desktop/src/main/bootstrap/writeOperations.ts): plain "running"
-// updates at most every 100 ms, the newest always arriving; questions and ends at once
+// Plain "running" updates at most every 100 ms, the newest always arriving; questions and ends at once
 import FTFoundation
 import Foundation
 

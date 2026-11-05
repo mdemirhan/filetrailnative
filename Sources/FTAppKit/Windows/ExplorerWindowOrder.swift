@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/explorerWindows.ts
 import FTFoundation
 import Foundation
 
@@ -28,7 +27,7 @@ public struct ExplorerLaunchContext: Equatable, Sendable {
 public final class ExplorerWindowEntry<W: AnyObject> {
     public let id: String
     public let window: W
-    /// The window's own number while the app runs (the original's web contents id).
+    /// The window's own number while the app runs.
     public let windowID: Int
     public var launch: ExplorerLaunchContext
 
@@ -83,14 +82,14 @@ public final class ExplorerWindowOrder<W: AnyObject> {
         all.first { $0.window === window }
     }
 
-    // Ids are compared as JavaScript compares strings: unit by unit.
+    // Ids are compared by UTF-16 unit.
     private static func same(_ left: String, _ right: String) -> Bool {
         left.utf16.elementsEqual(right.utf16)
     }
 }
 
-/// A window's place and size, with the origin at the top left of the main screen, y growing down (Electron's
-/// coordinates, which `app-state.json` keeps).
+/// A window's place and size, with the origin at the top left of the main screen, y growing down, as `app-state.json`
+/// keeps them.
 public struct WindowBounds: Equatable, Sendable {
     public var x: Double
     public var y: Double

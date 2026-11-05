@@ -1,8 +1,7 @@
-// Port of the topic buttons and icons of apps/desktop/src/renderer/components/HelpView.tsx (.help-topic, .help-topic-icon)
 import AppKit
 import FTFoundation
 
-/// The icon of a topic, drawn from the same 24 by 24 artwork as the original: strokes of 1.7, round caps and joins.
+/// The icon of a topic, drawn from 24 by 24 artwork: strokes of 1.7, round caps and joins.
 enum HelpTopicIcon {
     static func path(for id: HelpTopicID) -> NSBezierPath {
         let path = NSBezierPath()

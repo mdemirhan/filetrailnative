@@ -1,5 +1,3 @@
-// Port of the words and the choice handling of apps/desktop/src/renderer/components/CopyPasteReviewDialog.tsx
-// (title, message, primaryLabel, the footer note, the single-conflict alert and setChoice)
 import Foundation
 
 /// What the review sheet says for its choices.
@@ -115,7 +113,7 @@ public struct ReviewSheetText: Equatable, Sendable {
 }
 
 extension CopyPasteReview {
-    /// `setChoice`: a row's choice. One that matches "For all conflicts" isn't a separate choice for the item; one made
+    /// A row's choice. One that matches "For all conflicts" isn't a separate choice for the item; one made
     /// for an item Replace can't take is always kept, as "For all" may only match it because the safe choice stands in
     /// for Replace there.
     public static func overrides(

@@ -3,9 +3,8 @@ import Testing
 
 @testable import FTFoundation
 
-/// For each density, every metric is typed out here apart from the code under test: File Trail's are the original's CSS
-/// pixel values (no zoom), from its layout modules and `ui.md`, and Finder's are the defaults of Finder's View Options
-/// and AppKit's source list sizes.
+/// For each density, every metric is typed out here apart from the code under test: File Trail's are its own pixel
+/// values (no zoom), and Finder's are the defaults of Finder's View Options and AppKit's source list sizes.
 @Suite struct MetricsTests {
     typealias Table = [String: Double]
 
@@ -97,9 +96,6 @@ import Testing
         return problems
     }
 
-    // N/A B-DLG-240 B-DLG-241 B-DLG-242 B-DLG-243: zoom is not ported
-    // N/A F-588 F-651 F-931: zoom is not ported (nor is the zoom part of any other row: the About window is not
-    // scaled and no zoom change resizes anything). Every other metric is checked here, Finder's sizes included.
     @Test(arguments: Density.allCases)
     func everyMetricIsTheOriginalValue(density: Density) {
         let metrics = Metrics(density: density)
@@ -140,7 +136,7 @@ import Testing
 
     @Test(arguments: Density.allCases)
     func iconGridColumnsMatchTheOriginalFloor(density: Density) {
-        // computeIconGridColumns(width, layout) = max(1, floor((width - 2 * paddingInline) / cellMinWidth)).
+        // Columns = max(1, floor((width - 2 * paddingInline) / cellMinWidth)).
         let base = Self.iconGrid(density)
         let layout = Metrics(density: density).iconGrid
         for width in stride(from: 0.5, through: 1500.5, by: 7.0) {

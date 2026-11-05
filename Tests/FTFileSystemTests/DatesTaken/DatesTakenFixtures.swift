@@ -1,4 +1,4 @@
-// Fixtures of packages/native-fs/test-fixtures, embedded because the test target has no resources.
+// Fixtures embedded because the test target has no resources.
 import Foundation
 
 enum DatesTakenFixtures {

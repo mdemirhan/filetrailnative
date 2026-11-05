@@ -1,6 +1,5 @@
-// Port of what IconGridView (apps/desktop/src/renderer/components/IconGridView.tsx) and FlowListView
-// (ContentPane.tsx:1082-1448) do alike: the items on screen, the selection drawn from the shared model, the keys, the
-// presses, drag-to-select (hooks/useDragSelection.ts), the rename field and the items brought into view
+// The items on screen, the selection drawn from the shared model, the keys, the presses, drag-to-select, the rename
+// field and the items brought into view
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -12,7 +11,7 @@ protocol GridItemView: AnyObject {
     var path: String? { get }
     /// Whether a point (in the item's view) is on a part that takes clicks: the tile or the name of an icon, a list item.
     func takesClick(at point: NSPoint) -> Bool
-    /// The size of the part that depends on the name, as drag-to-select measures it (`measuredPartSelector`).
+    /// The size of the part that depends on the name, as drag-to-select measures it.
     var measuredSize: DragSelectionSize? { get }
 }
 
@@ -117,7 +116,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
             forName: NSView.boundsDidChangeNotification, object: scroll.contentView, queue: .main
         ) { [weak self] _ in
             MainActor.assumeIsolated {
-                // The scrollers show while a pane scrolls, by the keyboard too (lib/scrollbarVisibility.ts).
+                // The scrollers show while a pane scrolls, by the keyboard too.
                 self?.scroll.flashScrollers()
                 self?.scrolled()
             }
@@ -213,7 +212,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         forEachVisibleItem { item, entry in self.refreshLook(of: item, entry: entry) }
     }
 
-    /// The clipboard's marks changed (P5-08): the items are drawn again.
+    /// The clipboard's marks changed: the items are drawn again.
     func clipboardMarksChanged() {
         refresh(paths: nil)
     }
@@ -329,7 +328,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         (host?.selection.paths ?? []).compactMap { indexByPath[$0].map { entries[$0] } }
     }
 
-    /// The capture's `select` step: these items, in the list's order.
+    /// A scenario's `select` step: these items, in the list's order.
     func selectFromOutside(_ indices: [Int]) {
         let paths = indices.filter { entries.indices.contains($0) }.map { entries[$0].path }
         host?.selectionChanged(ContentSelection.of(paths))
@@ -337,9 +336,9 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
 
     // MARK: Scrolling
 
-    // The details of a folder's items on screen are read only in the List, which shows them
-    // (useExplorerNavigationController's `viewMode === "details"`); search results' are read in every view, so sizes
-    // reach the status line and the Info panel (App.tsx onVisiblePathsChange -> loadSearchResultMetadata). Finder tags
+    // The details of a folder's items on screen are read only in the List, which shows them; search results' are read
+    // in every view, so sizes
+    // reach the status line and the Info panel. Finder tags
     // are read in every view, which all draw them.
     private func scrolled() {
         // Scrolling moves the item away from the reason a name was refused, so it is dropped until the next try.

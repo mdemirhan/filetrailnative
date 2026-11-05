@@ -1,5 +1,3 @@
-// Port of removeMovedSources, the moved-source checks and removals, and the counts and result of a paste
-// (packages/core/src/fs/copyPasteExecution.ts)
 import FTFoundation
 import Foundation
 
@@ -301,7 +299,7 @@ func createOperationResult(
     }
     // The items picked, not what is inside the folders among them ("Photos", not "Photos and 3 more" for one
     // folder holding three files).
-    // Byte-exact keys, as the original's Set compares strings code unit by code unit.
+    // Byte-exact keys, comparing strings code unit by code unit.
     let pickedPaths = Set(report.nodes.map { NameKeys.Exact($0.sourcePath) })
     let topLevelItemCount = items.filter { pickedPaths.contains(NameKeys.Exact($0.sourcePath)) }.count
     return CopyPasteOperationResult(

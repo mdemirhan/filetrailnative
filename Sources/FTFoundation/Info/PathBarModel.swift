@@ -1,10 +1,8 @@
-// Port of the path bar logic of apps/desktop/src/renderer/components/ContentPane.tsx (:861-1080), of
-// components/PathbarFolderMenu.tsx and of hooks/usePathSuggestions.ts
 import Foundation
 
-/// The metrics of the path bar row, the Info Row and the Info panel, from styles.css (the lines are named per group).
+/// The metrics of the path bar row, the Info Row and the Info panel (the lines are named per group).
 public enum InfoMetrics {
-    // `.content-pathbar-row`, `.pathbar-*` (styles.css:2032-2265, 4387-4422, 6233-6247)
+    // The path bar row
     public static let pathRowPaddingInline = 10.0
     public static let pathRowGap = 8.0
     public static let statusMarginLeft = 12.0
@@ -31,7 +29,7 @@ public enum InfoMetrics {
     public static let suggestionsMaxHeight = 360.0
     public static let suggestionsGap = 4.0
 
-    // `.info-row` (styles.css:3269-3340)
+    // The Info Row
     public static let infoRowHeight = 30.0
     public static let infoRowPaddingInline = 12.0
     public static let infoRowGap = 8.0
@@ -39,7 +37,7 @@ public enum InfoMetrics {
     public static let infoRowFactMargin = 6.0
     public static let calculatingDelay = 0.3
 
-    // `.get-info-*` (styles.css:3127-3270, 4555-4850)
+    // The Info panel
     public static let panelInset = 16.0
     public static let panelHeaderHeight = 32.0
     public static let closeButton = 18.0
@@ -83,7 +81,6 @@ public enum PathBarItem: Equatable, Sendable {
 }
 
 public enum PathBarModel {
-    /// `getPathSegmentLabel`.
     public static func label(_ path: String) -> String {
         path == "/"
             ? "Macintosh HD"
@@ -97,7 +94,7 @@ public enum PathBarModel {
         return String(path.prefix(max(1, index)))
     }
 
-    /// `buildPathSegments`: one per folder from the top of the disk, a path on another volume starting at that volume.
+    /// One per folder from the top of the disk, a path on another volume starting at that volume.
     /// The Trash is one place on every disk: its path starts at a segment called Trash, which goes to the Trash.
     public static func segments(_ path: String, homePath: String = "") -> [PathbarSegment] {
         if path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -166,7 +163,7 @@ public enum PathBarModel {
         return items
     }
 
-    /// `chooseVisiblePathbarItems`: with more than four segments the middle ones collapse behind "…" when the bar is too
+    /// With more than four segments the middle ones collapse behind "…" when the bar is too
     /// narrow, keeping the tail.
     public static func visibleItems(
         _ segments: [PathbarSegment], availableWidth: Double, expanded: Bool, measure: Measure
@@ -189,7 +186,7 @@ public enum PathBarModel {
         return collapsedItems(segments, includeRoot: false, tailCount: 1)
     }
 
-    /// `resolveVisiblePathbarItems`: a long name is cut at the usual width; the room left in the row goes back to those
+    /// A long name is cut at the usual width; the room left in the row goes back to those
     /// names, from the current folder backwards.
     public static func resolve(
         _ segments: [PathbarSegment], availableWidth: Double, expanded: Bool, measure: Measure
@@ -216,7 +213,8 @@ public enum PathBarModel {
         "Show \(count) More \(count == 1 ? "Folder" : "Folders")"
     }
 
-    /// The path bar's and the status text's widths in the row (`flex: 1 1 0; min-width: 45%` and `flex: 0 1 auto`).
+    /// The path bar's and the status text's widths in the row: the path bar takes what the status text leaves, but
+    /// at least 45%, and the status text shrinks to fit.
     public static func rowLayout(contentWidth: Double, statusWidth: Double?) -> (path: Double, status: Double) {
         guard let statusWidth, statusWidth > 0 else { return (contentWidth, 0) }
         let spacing = InfoMetrics.pathRowGap + InfoMetrics.statusMarginLeft
@@ -250,7 +248,7 @@ public enum PathbarFolderMenuModel {
         }
     }
 
-    /// `limitFolders`: at most 300, centered on the ticked folder.
+    /// At most 300, centered on the ticked folder.
     public static func limit(_ folders: [PathbarFolder], activePath: String) -> Limited {
         let max = InfoMetrics.folderMenuLimit
         if folders.count <= max { return Limited(shown: folders, hiddenBefore: 0, hiddenAfter: 0) }
@@ -271,7 +269,7 @@ public enum PathbarFolderMenuModel {
     }
 }
 
-/// The path editor's draft and suggestions (`usePathSuggestions`).
+/// The path editor's draft and suggestions.
 public struct PathSuggestionState: Equatable, Sendable {
     public var draft: String
     public var preview: String?
@@ -354,7 +352,6 @@ public struct PathSuggestionRow: Equatable, Sendable {
 }
 
 public enum PathText2 {
-    /// `expandHomeShortcut`.
     public static func expandHome(_ path: String, homePath: String) -> String {
         if homePath.isEmpty { return path }
         if path == "~" { return homePath }

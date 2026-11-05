@@ -1,5 +1,5 @@
-// Port of what the review's tests use of MockWriteServiceFileSystem (packages/core/src/fs/testUtils.ts): the items in
-// memory (MockIdentityFileSystem), with the hooks the tests replace calls with, and the volume's case answer.
+// The items in memory (MockIdentityFileSystem), with the hooks the tests replace calls with, and the volume's case
+// answer.
 import FTFoundation
 import Foundation
 import os
@@ -30,8 +30,7 @@ final class MockAnalysisFileSystem: AnalysisFileSystem, @unchecked Sendable {
     /// How many times `lstat` was called.
     var lstatCount: Int { calls.withLock { $0 } }
 
-    /// Items made in order; a path given twice keeps its first place and its last seed, as a JavaScript object
-    /// spread does.
+    /// Items made in order; a path given twice keeps its first place and its last seed.
     init(_ seed: [(String, Seed)] = []) {
         var merged: [(String, Seed)] = []
         for (path, node) in seed {
@@ -93,12 +92,12 @@ final class MockAnalysisFileSystem: AnalysisFileSystem, @unchecked Sendable {
     }
 }
 
-/// An error with a code, as Node's fs throws them.
+/// An error with a code, as the disk calls throw them.
 func codedError(_ code: String, _ message: String? = nil) -> NativeError {
     NativeError(message: message ?? code, code: code)
 }
 
-/// Polls `condition` until it holds or `timeout` passes, as `vi.waitFor` does.
+/// Polls `condition` until it holds or `timeout` passes.
 func waitFor(timeout: Duration = .seconds(10), _ condition: () throws -> Bool) async -> Bool {
     let clock = ContinuousClock()
     let deadline = clock.now.advanced(by: timeout)

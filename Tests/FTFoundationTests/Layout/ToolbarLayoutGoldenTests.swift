@@ -1,4 +1,4 @@
-// Checks the port against goldens recorded from the reference: tools/parity/golden/toolbar-layout.ts
+// Checks the toolbar's layout against the toolbar-layout golden
 import FTTestSupport
 import Foundation
 import Testing
@@ -49,8 +49,7 @@ struct ToolbarLayoutGoldenTests {
             stylesheet: nil, topToolbarLayout: nil, explorerLayout: nil, treeLayout: nil)
     }
 
-    // T-fc2f1ec9 T-13ea5c0d F-708 B-VIEW-111: the sizes the original's stylesheet lays the toolbar and the tree out
-    // from, as its own tests read them, are the ones the port draws with.
+    // The sizes the golden lays the toolbar and the tree out from are the ones the app draws with.
     @Test func theStylesheetSizesAreTheTokens() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "toolbar-layout")
         let sheet = try #require(cases.first { $0.name == "stylesheet" }?.output)

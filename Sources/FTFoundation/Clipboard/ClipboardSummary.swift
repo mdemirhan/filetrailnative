@@ -1,5 +1,3 @@
-// Port of the listing parts of apps/desktop/src/renderer/lib/copyPasteClipboard.ts (listClipboardItems,
-// describeClipboard, groupClipboardItemsByFolder) and of components/ClipboardItemsIcon.tsx
 import Foundation
 
 /// An item as the file list would describe it, for its icon (`DirectoryEntry`).
@@ -25,7 +23,7 @@ public struct ClipboardItemEntry: Equatable, Sendable {
         self.isExecutable = isExecutable
     }
 
-    /// The plain folder and the plain document the file list draws (`ClipboardItemsIcon`).
+    /// The plain folder and the plain document the file list draws.
     public static let genericFolder = ClipboardItemEntry(
         path: "/folder", name: "folder", fileExtension: "", kind: .directory, isHidden: false, isSymlink: false)
     public static let genericFile = ClipboardItemEntry(
@@ -53,7 +51,7 @@ public enum ClipboardIcon: Equatable, Sendable {
     case item(ClipboardItemEntry)
     case items(Contents)
 
-    /// The two icons of several items, back then front (`ClipboardItemsIcon`): folders, files, or a folder behind a
+    /// The two icons of several items, back then front: folders, files, or a folder behind a
     /// file.
     public static func pair(_ contents: Contents) -> (back: ClipboardItemEntry, front: ClipboardItemEntry) {
         (
@@ -102,7 +100,6 @@ public struct ClipboardItemGroup: Equatable, Sendable {
 }
 
 extension ClipboardRules {
-    /// `listClipboardItems`.
     public static func items(_ clipboard: CopyPasteClipboard) -> [ClipboardItem] {
         guard case .ready(_, let paths, let entries, _) = clipboard else { return [] }
         return paths.map { path in
@@ -120,7 +117,7 @@ extension ClipboardRules {
         }
     }
 
-    /// `describeClipboard`: nil while the clipboard is empty.
+    /// Nil while the clipboard is empty.
     public static func describe(_ clipboard: CopyPasteClipboard) -> ClipboardSummary? {
         let items = items(clipboard)
         guard case .ready(let mode, _, _, _) = clipboard, let first = items.first else { return nil }
@@ -142,7 +139,7 @@ extension ClipboardRules {
             breakdown: count > 1 && kindsKnown ? parts.joined(separator: " and ") : nil, icon: icon, items: items)
     }
 
-    /// `groupClipboardItemsByFolder`: in the order the folders first appear.
+    /// In the order the folders first appear.
     public static func groupByFolder(_ items: [ClipboardItem]) -> [ClipboardItemGroup] {
         var groups: [ClipboardItemGroup] = []
         var positions: [ExactKey: Int] = [:]
@@ -166,14 +163,13 @@ extension ClipboardRules {
         "\(count) \(singular)\(count == 1 ? "" : "s")"
     }
 
-    /// `getNameExtension`.
     private static func nameExtension(_ name: String) -> String {
         let units = Array(name.utf16)
         guard let dot = JSString.lastIndex(of: 0x2E, in: units), dot > 0 else { return "" }
         return JSString.lowercased(JSString.string(units[(dot + 1)...]))
     }
 
-    /// `getParentPath`: the folder of a path without its trailing slashes; "/" at the top.
+    /// The folder of a path without its trailing slashes; "/" at the top.
     public static func parentPath(_ path: String) -> String {
         var units = Array(path.utf16)
         while units.last == 0x2F { units.removeLast() }

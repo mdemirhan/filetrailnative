@@ -1,5 +1,5 @@
-// Checks what the Swift driver does for the capture to be honest: hover, on a real tracking area, as the pointer Playwright
-// moves in the original's captures; no TypeScript source
+// Checks the automation's hover: moving the pointer tells the views on a real tracking area that it enters and
+// leaves
 import AppKit
 import Testing
 
@@ -23,7 +23,7 @@ import Testing
         override func mouseExited(with event: NSEvent) { crossings.append("exited") }
     }
 
-    // 265, a09: the clicked control shows its hover in the capture, and the one left doesn't.
+    // The clicked control shows its hover, and the one the pointer left doesn't.
     @Test func movingThePointerTellsTheViewsItEntersAndLeaves() throws {
         _ = NSApplication.shared
         let window = NSWindow(

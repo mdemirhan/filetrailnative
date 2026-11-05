@@ -1,5 +1,3 @@
-// Port of packages/contracts/src/paths.test.ts and trash.test.ts, checked against goldens recorded
-// from the reference (tools/parity/golden/paths-nested.ts and trash-paths.ts).
 import FTTestSupport
 import Testing
 

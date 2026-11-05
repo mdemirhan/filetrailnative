@@ -1,6 +1,4 @@
-// Ports the focus cases of components/{CopyPasteReviewDialog,CopyPasteRuntimeConflictDialog,CopyPasteResultDialog}
-// .test.tsx and App.fileOperations.test.tsx ("copy/paste dialogs") on an explorer window that is never shown: Tab kept inside
-// the sheet or the alert, and the keyboard given back when it closes
+// Tab kept inside the sheet or the alert, and the keyboard given back when it closes
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -32,8 +30,6 @@ extension ExplorerWindowlessTests {
 
         // Tab goes round the sheet's controls (the "For all" choice, each row's popup, Cancel, the start button) and
         // stays inside it; Escape closes it and the keyboard goes back where it was.
-        // T-74d708a8 T-c37d1a82 F-866 F-867 F-868 B-CLIP-105
-        // B-SEL-171
         @Test func tabStaysInsideTheReviewSheetAndFocusComesBack() async throws {
             let (harness, tab, operations) = try await open()
             let folder = harness.folder.url
@@ -65,7 +61,6 @@ extension ExplorerWindowlessTests {
 
         // Tab goes round the conflict alert's controls, "Do the same for similar changes" and Stop included, and
         // stays inside it: from Keep Both it wraps to the checkbox, and ⇧Tab comes back.
-        // T-f3bfcf55 F-869 B-CLIP-123
         @Test func tabStaysInsideTheRuntimeConflictAlert() async throws {
             let (harness, tab, operations) = try await open()
             let session = try #require(tab.writeActions?.session)
@@ -106,7 +101,6 @@ extension ExplorerWindowlessTests {
 
         // Tab goes between Retry and Done, and stays in the result sheet; Escape dismisses it and the keyboard goes
         // back where it was.
-        // T-bea8e90e T-6129333b F-871 B-CLIP-137 B-CLIP-139
         @Test func tabStaysInsideTheResultSheetAndFocusComesBack() async throws {
             let (harness, tab, operations) = try await open()
             let window = try #require(tab.window)

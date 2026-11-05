@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteRecovery.ts
 import Dispatch
 import FTFoundation
 import Foundation

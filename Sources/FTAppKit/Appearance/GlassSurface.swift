@@ -1,4 +1,4 @@
-// No TypeScript source: the system's Liquid Glass for what floats briefly over a window
+// The system's Liquid Glass for what floats briefly over a window
 import AppKit
 import FTFoundation
 
@@ -15,7 +15,7 @@ enum GlassSurface {
     /// The corners of the progress card.
     static let cardRadius: CGFloat = 20
 
-    /// The corners of a sheet: the system's where sheets have them, the original's before that.
+    /// The corners of a sheet: the system's where sheets have them, the dialog radius before that.
     static var sheetRadius: CGFloat {
         isAvailable ? 20 : CGFloat(DesignTokens.radii.dialog)
     }

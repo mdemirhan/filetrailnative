@@ -1,8 +1,8 @@
-// Golden files recorded from the Electron app, now frozen expected results: Tests/Golden/<suite>.json.
+// Golden files, frozen expected results: Tests/Golden/<suite>.json.
 import Foundation
 import Testing
 
-/// One recorded call of the reference: what went in and what came out.
+/// One case: what goes in, and the expected result.
 public struct GoldenCase<Input, Output> {
     public let name: String
     public let input: Input

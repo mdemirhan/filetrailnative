@@ -1,5 +1,5 @@
 // Stand-ins for the explorer window controller's tests: windows whose events are fired by hand, a clock moved by hand
-// and a store whose writes wait for flush(), as in apps/desktop/src/main/explorerWindowController.test.ts
+// and a store whose writes wait for flush()
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -88,7 +88,7 @@ func add(_ store: AppStateStore, _ window: StoredExplorerWindow) {
     store.addExplorerWindow(id: window.id, bounds: window.bounds, session: window.session)
 }
 
-/// A stand-in for an explorer window: closing it goes as Electron's does, "close" at once (which can be held) and
+/// A stand-in for an explorer window: closing it goes "close" at once (which can be held) and
 /// "closed" a moment later.
 @MainActor
 final class FakeWindow: ExplorerWindowLike {
@@ -120,7 +120,7 @@ final class FakeWindow: ExplorerWindowLike {
     var isMinimized: Bool { minimized }
     var isMaximized: Bool { maximized }
     var isFullScreen: Bool { fullScreen }
-    // As Electron's: the bounds it goes back to, which are its bounds when it is neither zoomed nor full screen.
+    // The bounds it goes back to, which are its bounds when it is neither zoomed nor full screen.
     var normalBounds: WindowBounds { maximized || fullScreen ? normal : bounds }
     var sheetParent: NSWindow? { nil }
 

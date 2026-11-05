@@ -1,5 +1,4 @@
-// Port of the BrowserWindow host of apps/desktop/src/main/main.ts (createExplorerWindow, the window IPC) on native
-// window tabs: what the app shell needs of the explorer windows
+// What the app shell needs of the explorer windows
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -46,7 +45,7 @@ enum ScreenGeometry {
     }
 }
 
-/// A notice a window shows (a toast in the original).
+/// A notice a window shows.
 enum WindowNotice: Equatable {
     /// "A window can have up to 100 tabs".
     case tabLimit
@@ -58,13 +57,13 @@ enum WindowNotice: Equatable {
     }
 }
 
-/// The explorer windows of the app, on native window tabs: each explorer window of the original is a tab group, each
-/// tab a window. It plugs `ExplorerWindowController` into AppKit and is the app shell's `ExplorerWindowHost`.
+/// The explorer windows of the app, on native window tabs: each explorer window is a tab group, each tab a
+/// window. It plugs `ExplorerWindowController` into AppKit and is the app shell's `ExplorerWindowHost`.
 @MainActor
 final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     let store: AppStateStore
     private(set) var controller: ExplorerWindowController<ExplorerTabGroup>!
-    /// What Copy or Cut put on the clipboard, which every window pastes (P5-08 fills it).
+    /// What Copy or Cut put on the clipboard, which every window pastes.
     let clipboard = SharedClipboard()
     private let tabRequests = WindowTabsRequests()
     private var groups: [ExplorerTabGroup] = []
@@ -77,15 +76,14 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     var onWindowsChanged: () -> Void = {}
     /// What a tab says the menu should show.
     var onMenuState: (_ windowID: Int, ApplicationMenuState) -> Void = { _, _ in }
-    /// Mounts a disk image, opened in the app or from another one (P2's disk image opener).
+    /// Mounts a disk image, opened in the app or from another one.
     var mountDiskImage: (String) async -> DiskImageOpenResponse = { _ in DiskImageOpenResponse(status: .failed) }
-    /// Shows a notice in a window (P5-09's notifications); by default the app beeps.
+    /// Shows a notice in a window: by default a notification, or a beep when none can show.
     var showNotice: (WindowNotice, NSWindow?) -> Void = { notice, window in
         if !NotificationOverlay.push(.info, title: notice.title, in: window) { NSSound.beep() }
     }
     var log: (String) -> Void = { _ in }
-    /// An explorer window closed, and a tab got the keyboard: the file operations follow (P3-05's
-    /// `AppWriteOperations`).
+    /// An explorer window closed, and a tab got the keyboard: the file operations follow (`AppWriteOperations`).
     var onExplorerWindowClosed: (ExplorerTabGroup) -> Void = { _ in }
     var onTabFocused: (MainWindowController) -> Void = { _ in }
     /// Off in tests that check a window without putting it on screen: its tabs are made and read, never shown.
@@ -93,7 +91,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     /// Where a tab with nowhere else to go opens.
     var home = FileManager.default.homeDirectoryForCurrentUser.path
-    /// Which disk a path is on (`getVolumeRootPath`): `/Volumes/<name>`, or `/`.
+    /// Which disk a path is on: `/Volumes/<name>`, or `/`.
     var volumeRoot: (String) -> String = { ExplorerTabs.volumeRootPath($0) }
     private var observers: [any NSObjectProtocol] = []
     private var volumesToken: SidebarVolumes.Token?
@@ -111,7 +109,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         host.windowsChanged = { [unowned self] in onWindowsChanged() }
         host.log = { [unowned self] in log($0) }
         controller = ExplorerWindowController(host: host, quit: quit)
-        // Copy or Cut in one window is told to the others (`filetrail:clipboardChanged`, B-VIEW-184): their marks
+        // Copy or Cut in one window is told to the others (`filetrail:clipboardChanged`): their marks
         // and buttons follow; a window opened later finds it there.
         clipboard.sendToOtherWindows = { [unowned self] senderID, _ in
             for tab in allTabs where tab.windowID != senderID { tab.clipboardChanged() }
@@ -143,7 +141,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         if changed { folderWatches?.restartWatches(of: TrashFolders(homePath: home).home) }
     }
 
-    /// Disks just unmounted, by the folders they were mounted at: every window lets go of them (B-VIEW-173), and the
+    /// Disks just unmounted, by the folders they were mounted at: every window lets go of them, and the
     /// clipboard of what was on them (a cut of any is cancelled).
     func disksUnmounted(_ mountPaths: Set<String>) {
         guard !mountPaths.isEmpty else { return }
@@ -154,8 +152,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         if followed != clipboard.contents { clipboard.set(followed, from: nil) }
     }
 
-    /// A file operation's progress, from whichever window ran it, as the original's `onWriteOperationProgress` reaches
-    /// every window: once one that renamed or moved folders has ended, every window's tabs follow them (B-VIEW-172).
+    /// A file operation's progress, from whichever window ran it, reaches every window: once one that renamed or moved
+    /// folders has ended, every window's tabs follow them.
     /// The write coordinator sends every progress event here (`AppWriteOperations`).
     func writeOperationProgress(_ event: WriteOperationProgress) {
         itemsMoved(ExplorerTabs.followedMoves(event))
@@ -243,7 +241,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     }
 
     /// `successorOf`: the tab in front of the window a running operation goes to when its own window closes; nil for a
-    /// window closed with Stop and Close, or with no other window open. P3-05's write coordinator asks it.
+    /// window closed with Stop and Close, or with no other window open. The write coordinator asks it.
     func successor(ofExplorerWindow windowID: Int) -> MainWindowController? {
         controller.successor(of: windowID)?.selected
     }
@@ -349,7 +347,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
                     group.openNewWindow(from: tab, path: volumePath)
                 }
             } else if response.status == .failed {
-                // `showModalNotice`: the window's alert.
+                // The window's alert.
                 let notice = DiskImageNames.describeFailure(path: path, reason: response.reason)
                 tab.showNotice(title: notice.title, message: notice.message)
             }
@@ -365,7 +363,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     func groupClosed(_ group: ExplorerTabGroup) {
         groups.removeAll { $0 === group }
-        // An operation it ran goes on in the window in front, or stops (P3-05).
+        // An operation it ran goes on in the window in front, or stops.
         onExplorerWindowClosed(group)
     }
 

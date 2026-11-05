@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/components/CopyPasteResultDialog.tsx (the words, summarizeResultItems,
-// displayPath, findAncestor) and collectRetrySourcePaths (apps/desktop/src/renderer/lib/explorerAppUtils.ts:146)
 import Foundation
 
 /// An item of a finished operation, as the result sheet reads it.
@@ -37,7 +35,7 @@ public struct ResultItem: Equatable, Sendable {
     }
 }
 
-/// A section of the result sheet (`ResultSection`): its title, and its rows (the first 200, then "and N more").
+/// A section of the result sheet: its title, and its rows (the first 200, then "and N more").
 public struct ResultSectionText: Equatable, Sendable {
     public enum Tone: String, Sendable {
         case danger, muted
@@ -57,7 +55,7 @@ public struct ResultSectionText: Equatable, Sendable {
 
 /// What the result sheet says.
 public struct CopyPasteResultText: Equatable, Sendable {
-    /// `SECTION_ROW_LIMIT`: a result with tens of thousands of problems lists the first ones and says how many more.
+    /// A result with tens of thousands of problems lists the first ones and says how many more.
     public static let sectionRowLimit = 200
 
     public var title: String
@@ -199,7 +197,6 @@ public struct CopyPasteResultText: Equatable, Sendable {
         }
     }
 
-    /// `PAST_TENSE`.
     private static func pastTense(_ action: WriteOperationAction) -> String {
         switch action {
         case .undo: "Undid"
@@ -213,7 +210,6 @@ public struct CopyPasteResultText: Equatable, Sendable {
         }
     }
 
-    /// `FAILED_TITLE`.
     private static func failedTitle(_ action: WriteOperationAction) -> String {
         switch action {
         case .undo: "Couldn\u{2019}t Undo"
@@ -227,7 +223,7 @@ public struct CopyPasteResultText: Equatable, Sendable {
         }
     }
 
-    /// `collectRetrySourcePaths`: failures and items that never started, top-level only; an item inside a folder is
+    /// Failures and items that never started, top-level only; an item inside a folder is
     /// retried by retrying that folder, never pasted on its own at the destination root.
     public static func retrySourcePaths(_ items: [ResultItem]) -> [String] {
         var seen = Set<[UInt16]>()
@@ -240,7 +236,7 @@ public struct CopyPasteResultText: Equatable, Sendable {
     }
 }
 
-/// `summarizeResultItems`: what became of the items, by top-level item, each item by its position. Top-level items
+/// What became of the items, by top-level item, each item by its position. Top-level items
 /// come from a set lookup of each item's ancestors, so results with tens of thousands of items stay fast. With
 /// `eachOnItsOwn` (a rename of several, an Undo) every item is one of those asked for.
 private struct Outcome {
@@ -338,7 +334,7 @@ private struct Outcome {
         return JSString.string(Array(path.utf16).dropFirst(base.count + 1))
     }
 
-    /// `findAncestor`: the nearest folder above `path` that is in `candidates`.
+    /// The nearest folder above `path` that is in `candidates`.
     private static func ancestor(of path: String, in candidates: Set<[UInt16]>) -> [UInt16]? {
         var current = path
         var parent = CopyPasteReview.dirname(current)

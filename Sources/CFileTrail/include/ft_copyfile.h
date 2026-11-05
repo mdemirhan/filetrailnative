@@ -1,5 +1,4 @@
-// Interface to copyfile.c, the copyfile(3) calls of the write engine (a port of
-// packages/native-fs/src/native_copyfile.c).
+// Interface to copyfile.c, the copyfile(3) calls of the write engine.
 #ifndef FT_COPYFILE_H
 #define FT_COPYFILE_H
 
@@ -21,13 +20,13 @@ int ft_copy_control_is_stopped(const ft_copy_control *control);
 int64_t ft_copy_control_copied(const ft_copy_control *control);
 void ft_copy_control_set_copied(ft_copy_control *control, int64_t copied);
 
-/// `nativeCopyFile`: copyfile(3) with COPYFILE_ALL | CLONE | NOFOLLOW_SRC | EXCL | DATA_SPARSE. Without a
+/// copyfile(3) with COPYFILE_ALL | CLONE | NOFOLLOW_SRC | EXCL | DATA_SPARSE. Without a
 /// control the copy has no status callback and can't be stopped part way. Returns 0, or the errno:
 /// ECANCELED when stopped (or stopped before it began), the write's own errno when the resource fork
 /// couldn't be written.
 int ft_copyfile(const char *source, const char *destination, ft_copy_control *control);
 
-/// `nativeCopyMetadata`: copyfile(3) with COPYFILE_METADATA | NOFOLLOW_SRC, a folder's own metadata onto a
+/// copyfile(3) with COPYFILE_METADATA | NOFOLLOW_SRC, a folder's own metadata onto a
 /// folder that already exists. Returns 0 or the errno.
 int ft_copy_metadata(const char *source, const char *destination);
 

@@ -1,7 +1,6 @@
-// Port of packages/core/src/fs/copyPasteVolumes.realfs.test.ts, but for the cases that Replace (P3-04's): pastes
-// between two disks, so a move there copies and then removes the originals, as it does to a USB drive. A disk image
-// is the other disk where the case rule or the file system matters; a folder that seems to be on a disk of its own
-// is enough for the moves
+// Pastes between two disks, so a move there copies and then removes the originals, as it does to a USB drive. A disk
+// image is the other disk where the case rule or the file system matters; a folder that seems to be on a disk of its
+// own is enough for the moves
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -30,7 +29,6 @@ struct CopyPasteVolumesTests {
         }
     }
 
-    // T-9e45f62e F-467
     @Test func movesAFileCopiedThereThenTheOriginalRemoved() async throws {
         try await withOtherDisk { source, destination, fileSystem in
             try Disk.write(source + "/a.txt", "a")
@@ -44,7 +42,6 @@ struct CopyPasteVolumesTests {
         }
     }
 
-    // T-9a785996 F-467
     @Test func movesAFolderWithEverythingInIt() async throws {
         try await withOtherDisk { source, destination, fileSystem in
             try Disk.write(source + "/Docs/a.txt", "a")
@@ -59,7 +56,6 @@ struct CopyPasteVolumesTests {
         }
     }
 
-    // T-86ed4168 F-286 F-467
     @Test func saysSoWhenItemsWereAddedToAFolderWhileItWasBeingMoved() async throws {
         try await withOtherDisk { source, destination, fileSystem in
             try Disk.write(source + "/Docs/a.txt", "a")
@@ -81,7 +77,6 @@ struct CopyPasteVolumesTests {
         }
     }
 
-    // T-9e513fd2 F-286 F-467
     @Test func removesTheMovedFolderWhenFinderOnlyWroteItsDSStoreIntoIt() async throws {
         try await withOtherDisk { source, destination, fileSystem in
             try Disk.write(source + "/Docs/a.txt", "a")
@@ -97,7 +92,6 @@ struct CopyPasteVolumesTests {
 
     // On the startup disk "A.txt" and "a.txt" are one name: one would replace the other, and after a move its
     // original would be gone. The review stops the paste instead.
-    // T-86f085a0 F-470
     @Test(.tags(.diskImage), .diskImages)
     func stopsBeforePastingAFolderHoldingTwoItemsWhoseNamesDifferOnlyInCase() async throws {
         try await withTemporaryDirectory { root in
@@ -118,7 +112,6 @@ struct CopyPasteVolumesTests {
         }
     }
 
-    // T-76cb8bae F-470
     @Test(.tags(.diskImage), .diskImages)
     func pastesACaseSensitiveFolderWhoseNamesStayApart() async throws {
         try await withTemporaryDirectory { root in
@@ -136,10 +129,9 @@ struct CopyPasteVolumesTests {
         }
     }
 
-    // The copy used to retry the failed write forever, so the paste never ended. The disk (32 MB, as the
-    // original's) is filled first, so the copy's first write fails; the source is still larger than the whole
-    // disk, so it can't fit whatever APFS gives back after the fill.
-    // T-0e57438e F-471
+    // The copy used to retry the failed write forever, so the paste never ended. The disk (32 MB) is filled
+    // first, so the copy's first write fails; the source is still larger than the whole disk, so it can't fit
+    // whatever APFS gives back after the fill.
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func failsAMoveWithTheReasonKeepsTheOriginalAndLeavesNoPartialFile() async throws {
         try await withTemporaryDirectory { root in
@@ -165,10 +157,9 @@ struct CopyPasteVolumesTests {
     }
 }
 
-// FAT32 and exFAT give empty files ids near 2^64, which all round to one JS number: every empty file looked like
+// FAT32 and exFAT give empty files ids near 2^64, which all round to one double: every empty file looked like
 // the same item, so pastes were refused as "already there".
 struct EmptyFilesOnFATTests {
-    // T-960f8f4b F-472
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func asksAboutAnEmptyFileOfTheSameNameInsteadOfRefusing(kind: DiskImage.Kind) async throws {
         try await DiskImage.withSharedVolume(kind) { stick in
@@ -182,7 +173,6 @@ struct EmptyFilesOnFATTests {
         }
     }
 
-    // T-14350ea9 F-472
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])
     func movesAnEmptyFileIntoAFolderHoldingOtherEmptyFiles(kind: DiskImage.Kind) async throws {
         try await DiskImage.withSharedVolume(kind) { stick in
@@ -197,7 +187,6 @@ struct EmptyFilesOnFATTests {
     }
 
     // FAT, exFAT and SMB keep an item's extended attributes in a "._name" file beside it.
-    // T-239428cb F-473
     @Test(.tags(.diskImage), .diskImages)
     func copiesAnItemWithItsAttributesAndNotItsAppleDoubleFileAsAnItem() async throws {
         try await withTemporaryDirectory { root in

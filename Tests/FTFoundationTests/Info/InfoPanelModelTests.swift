@@ -1,4 +1,3 @@
-// Covers F-697, F-748, F-749, F-820..F-826 and B-INFO-024..058, B-INFO-066..078, B-INFO-167..171 (what the Info views decide to show)
 import Foundation
 import Testing
 
@@ -25,8 +24,6 @@ struct InfoPanelModelTests {
             folderSize: folderSize, opensWith: opens, dates: dates)
     }
 
-    // T-209d6f52 T-4e902491 B-INFO-029 B-INFO-030 B-INFO-031 B-INFO-034
-    // B-INFO-028
     @Test func aFilesRowsAreInTheDocumentedOrder() {
         let content = Self.content(Self.file(), opens: .available)
         #expect(
@@ -39,8 +36,6 @@ struct InfoPanelModelTests {
         #expect(content.rows[6].value == .whereLink(label: "demo", path: "/Users/demo"))
     }
 
-    // T-08ec3aa8 T-85c8fc6c B-INFO-024 B-INFO-025 B-INFO-196
-    // B-INFO-028 T-55a72312
     @Test func pendingValuesKeepTheirRowsWithADash() {
         var item = Self.file(size: nil)
         item.createdAt = nil
@@ -56,8 +51,6 @@ struct InfoPanelModelTests {
         #expect(final.rows[4].value == .text("Unavailable") && final.rows[4].muted)
     }
 
-    // T-b9e1ffc4 F-697 B-INFO-047 B-INFO-048
-    // B-INFO-028
     @Test func aVolumeRootShowsCapacityAvailableAndUsed() {
         var item = Self.file()
         item.kind = .directory
@@ -76,8 +69,6 @@ struct InfoPanelModelTests {
         #expect(over.rows.first { $0.label == "Used" }?.value == .text("0 B"))
     }
 
-    // T-066643da T-ef42cbb6 T-cbc15e68 B-INFO-036 B-INFO-037 B-INFO-044 B-INFO-045 B-INFO-035
-    // B-INFO-028 T-fff4ef4a
     @Test func aFolderGetsTheFolderSizeCellAndAPackageToo() {
         var folder = Self.file()
         folder.kind = .directory
@@ -96,7 +87,6 @@ struct InfoPanelModelTests {
         #expect(Self.content(link).rows.first { $0.label == "Size" }?.value == .text("2.0 KB"))
     }
 
-    // B-INFO-041
     @Test func theFolderSizeLines() {
         let lines = InfoPanelModel.folderSizeLines(
             sizeBytes: 1_200_000_000, diskBytes: 1_300_000_000, fileCount: 48_611, folderCount: 2_765,
@@ -109,8 +99,6 @@ struct InfoPanelModelTests {
             InfoPanelModel.folderSizeLines(sizeBytes: 0, diskBytes: 0, fileCount: 0, folderCount: 0).items == "Empty")
     }
 
-    // T-0033a16b F-826 B-INFO-051 B-INFO-054
-    // B-INFO-053
     @Test func severalItemsAreSummedUp() {
         let selection = InfoSelection(count: 5, folderCount: 3, fileCount: 2, totalBytes: 4000, parentPath: nil)
         #expect(InfoPanelModel.selectionName(selection) == "5 items")
@@ -129,7 +117,7 @@ struct InfoPanelModelTests {
         #expect(several[2] == InfoRow(label: "Where", value: .text("Several folders"), muted: true))
     }
 
-    // F-824 B-INFO-041: a folder or app has Contains where a file has Opens with, a dash until it has been measured.
+    // A folder or app has Contains where a file has Opens with, a dash until it has been measured.
     @Test func aFolderSaysWhatItContains() {
         var folder = Self.file()
         folder.kind = .directory
@@ -147,7 +135,7 @@ struct InfoPanelModelTests {
         #expect(Self.content(folder, folderSize: ready).rows[1].label == "Contains")
     }
 
-    // F-697 F-824 B-INFO-041: disks, files and symlinks to folders have no Contains row.
+    // Disks, files and symlinks to folders have no Contains row.
     @Test func onlyFoldersAndAppsHaveAContainsRow() {
         var item = Self.file()
         #expect(!Self.content(item, opens: .available).rows.map(\.label).contains("Contains"))
@@ -158,7 +146,7 @@ struct InfoPanelModelTests {
         #expect(!disk.contains("Contains") && disk.contains("Capacity"))
     }
 
-    // F-826 B-INFO-041: several items have Contains above Size only with folders among them.
+    // Several items have Contains above Size only with folders among them.
     @Test func severalItemsContainWhatTheirFoldersDo() {
         let mixed = InfoSelection(count: 3, folderCount: 1, fileCount: 2, totalBytes: nil, parentPath: nil)
         let waiting = InfoPanelModel.selectionRows(mixed, hasFolderSize: true, folderSize: .idle)
@@ -175,8 +163,6 @@ struct InfoPanelModelTests {
             ])
     }
 
-    // T-0287f845 F-825 B-INFO-055 B-INFO-056
-    // B-INFO-057
     @Test func quickActionsDependOnTheItem() {
         func labels(
             _ item: InfoItem, favorite: Bool = false, canFavorite: Bool = true,
@@ -208,8 +194,6 @@ struct InfoPanelModelTests {
         #expect(!labels(package).contains("Use as Tree Root"))
     }
 
-    // T-4e4c9d29 T-908f1796 T-3b2397f6 F-748 B-INFO-069 B-INFO-071 B-INFO-073 B-INFO-075
-    // B-INFO-070 T-5ccedec1
     @Test func theInfoRowLeavesOutWhatIsNotKnown() {
         let entry = InfoEntry(path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file)
         let now = ISODateForTests.date("2026-03-02T11:00:00Z")
@@ -242,7 +226,6 @@ struct InfoPanelModelTests {
         #expect(foreign.kind == "MD File")
     }
 
-    // T-df387abe T-b8e9d9c4 B-INFO-167 B-INFO-168
     @Test func onlyAFolderInsideHomeIsMeasuredAutomatically() {
         func path(open: Bool = true, selected: [String], kind: EntryKind = .directory, home: String = "/Users/demo")
             -> String?
@@ -270,8 +253,6 @@ struct InfoPanelModelTests {
     private let autoHome = "/Users/demo"
     private let autoFolder = (path: "/Users/demo/Projects", kind: EntryKind.directory)
 
-    // T-33598034 B-INFO-167 B-INFO-203
-    // B-INFO-204
     @Test func measuresTheOneFolderSelectedWithOnlyTheInfoRowOpen() {
         func path(
             panel: Bool = false, row: Bool = true, selected: [String]? = nil, showInfo: String? = nil,
@@ -291,7 +272,6 @@ struct InfoPanelModelTests {
         #expect(path(row: false) == nil)
     }
 
-    // T-939795fa B-INFO-167
     @Test func measuresAnAppOutsideTheHomeFolder() {
         let app = (path: "/Applications/Keynote.app", kind: EntryKind.bundle)
         #expect(
@@ -299,7 +279,6 @@ struct InfoPanelModelTests {
                 == app.path)
     }
 
-    // T-a322b806 B-INFO-202
     @Test func measuresTheFolderShowInfoPutInThePanelOnceThePanelShowsIt() {
         func path(
             open: Bool = true, selected: [String]? = nil, entry: (path: String, kind: EntryKind)?? = nil,

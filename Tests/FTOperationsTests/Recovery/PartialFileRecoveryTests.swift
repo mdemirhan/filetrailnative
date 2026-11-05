@@ -1,5 +1,3 @@
-// Port of what recovery does at the next start in packages/core/src/fs/copyPastePartialFile.test.ts (the copying half
-// of its cases is in Execution/PartialFileTests.swift)
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -41,7 +39,6 @@ struct PartialFileRecoveryTests {
 
     // The part a failed copy couldn't clear away is removed at the next start (its copying half is in
     // Execution/PartialFileTests.swift).
-    // T-93ae7a3b F-275 F-513 F-354
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func staysWrittenDownWhenAFailedCopyCantClearItAwayAndGoesAtTheNextStart(mode: CopyPasteMode) async throws {
         let fileSystem = largeFileOnAnotherDisk()
@@ -77,7 +74,6 @@ struct PartialFileRecoveryTests {
 
     // The copy never comes back, as when the app is killed part way: the journal entry it wrote and the part are
     // all that is left.
-    // T-df25867e F-513 F-354
     @Test func hasItsPartRemovedAtTheNextStart() async throws {
         let fileSystem = largeFileOnAnotherDisk()
         let written = DispatchSemaphore(value: 0)

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/hooks/useEjectVolume.ts and the answers of components/EjectVolumeAlert.tsx
 import AppKit
 import FTFileSystem
 

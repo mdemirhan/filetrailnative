@@ -1,13 +1,11 @@
-// Port of apps/desktop/src/renderer/lib/flowListLayout.ts (the reveal) and the item rules of styles.css:2598-2700
-// (`.flow-list`, `.flow-item`)
 import Foundation
 
-/// The rules of `.flow-item` that `FlowListLayout` does not hold.
+/// The parts of a list item's look that `FlowListLayout` does not hold.
 public struct FlowItemStyle: Equatable, Sendable {
-    /// `padding: 0 10px` inside a `2px` transparent border (`box-sizing: border-box`).
+    /// 10 of padding at the sides, inside a clear 2 pt border that counts in the item's width.
     public var paddingInline: Double
     public var borderWidth: Double
-    /// `--radius-control`.
+    /// The control radius.
     public var radius: Double
 
     public static func make() -> FlowItemStyle {
@@ -26,7 +24,7 @@ extension FlowListLayout {
         FlowRowsLayout(rowHeight: rowHeight, rowGap: rowGap, paddingTop: paddingTop, paddingBottom: paddingBottom)
     }
 
-    /// `computeRowsPerColumn` for this layout.
+    /// How many rows a column holds in this layout.
     public func rowsPerColumn(containerHeight: Double) -> Int {
         Virtualization.rowsPerColumn(containerHeight: containerHeight, layout: rowsLayout)
     }
@@ -35,8 +33,7 @@ extension FlowListLayout {
         max(1, (itemCount + max(1, rowsPerColumn) - 1) / max(1, rowsPerColumn))
     }
 
-    /// The width of the scrolling content: every column and the gaps between them (`.flow-grid-rows`' min-width),
-    /// inside the list's padding.
+    /// The width of the scrolling content: every column and the gaps between them, inside the list's padding.
     public func contentWidth(itemCount: Int, rowsPerColumn: Int) -> Double {
         let columns = Double(columnCount(itemCount: itemCount, rowsPerColumn: rowsPerColumn))
         return paddingInline * 2 + columns * itemWidth + max(0, columns - 1) * columnGap
@@ -56,12 +53,12 @@ extension FlowListLayout {
             height: rowHeight)
     }
 
-    /// An item is as wide as its icon and name, at most its column (`.flow-item:not(.renaming)`).
+    /// An item is as wide as its icon and name, at most its column, while it isn't being renamed.
     public func itemWidth(nameWidth: Double, style: FlowItemStyle) -> Double {
         min(itemWidth, nameWidth + style.chromeWidth(layout: self))
     }
 
-    /// `getFlowListRevealScrollLeft`: the horizontal offset that shows the item's column whole. The list is
+    /// The horizontal offset that shows the item's column whole. The list is
     /// column-major, so the column depends on the rows per column, not only on the width.
     public func revealScrollLeft(
         currentScrollLeft: Double, viewportWidth: Double, itemIndex: Int, rowsPerColumn: Int,
@@ -94,7 +91,7 @@ extension FlowListLayout {
     }
 
     /// What a page is made of: the columns that fit in the viewport (its width less the padding, plus the gap after
-    /// the last column), each a column and its gap (`getPageStepLineCount` for the Compact List).
+    /// the last column), each a column and its gap.
     public func pageViewport(viewportWidth: Double) -> Double {
         viewportWidth - paddingInline * 2 + columnGap
     }

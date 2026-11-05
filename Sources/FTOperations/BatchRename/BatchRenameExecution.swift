@@ -1,10 +1,8 @@
-// Port of apps/desktop/src/main/bootstrap/batchRenameExecution.ts (and of the request useBatchRename makes of a plan,
-// apps/desktop/src/renderer/hooks/useBatchRename.ts)
 import FTFoundation
 import Foundation
 
-/// What a rename of several items asks for (`writeOperation:batchRename`): each item's new name, in its own folder,
-/// and what to do with a name found taken while renaming.
+/// What a rename of several items asks for: each item's new name, in its own folder, and what to do with a name
+/// found taken while renaming.
 public struct BatchRenameRequest: Equatable, Sendable {
     public struct Item: Equatable, Sendable {
         public var sourcePath: String
@@ -32,7 +30,7 @@ public struct BatchRenameRequest: Equatable, Sendable {
     }
 }
 
-/// What renaming several items needs of the file system (`BatchRenameFs`). The calls a disk may not have are nil.
+/// What renaming several items needs of the file system. The calls a disk may not have are nil.
 public protocol BatchRenameFileSystem: Sendable {
     func lstat(_ path: String) throws -> WriteServiceStats
     /// rename(2) that fails with EEXIST rather than replace anything.
@@ -504,7 +502,7 @@ public enum BatchRenameExecution {
         ".filetrail-rename-\(randomHex(bytes: 6))"
     }
 
-    /// `randomBytes(count).toString("hex")`.
+    /// `count` random bytes as lowercase hex, two characters per byte.
     static func randomHex(bytes count: Int) -> String {
         var generator = SystemRandomNumberGenerator()
         return (0..<count).map { _ in
@@ -538,7 +536,7 @@ public enum BatchRenameExecution {
 
     // MARK: Recovery
 
-    /// `TEMPORARY_NAME_PATTERN`: the hidden names a rename of several gives items (`/^\.filetrail-rename-[0-9a-f]{12}$/u`).
+    /// The hidden names a rename of several gives items (`/^\.filetrail-rename-[0-9a-f]{12}$/u`).
     static func isTemporaryName(_ name: String) -> Bool {
         let prefix = ".filetrail-rename-"
         guard startsWith(name, prefix) else { return false }
@@ -546,7 +544,7 @@ public enum BatchRenameExecution {
         return hex.count == 12 && hex.allSatisfy { ("0"..."9").contains($0) || ("a"..."f").contains($0) }
     }
 
-    /// `recoverBatchRename`: puts back the items a crash left under hidden names in a rename of several: under the
+    /// Puts back the items a crash left under hidden names in a rename of several: under the
     /// old name when it is free, else the new one asked for, else the old one with a number. Never replaces
     /// anything, and moves only what has this app's hidden naming.
     public static func recover(_ entry: BatchRenameJournalEntry, _ fileSystem: some BatchRenameFileSystem)
@@ -568,7 +566,7 @@ public enum BatchRenameExecution {
                 }
                 continue
             }
-            // `placesToPutBack`: its old name, its new one, then its old one numbered.
+            // Its old name, its new one, then its old one numbered.
             var path: String?
             var candidates = [written.originalPath, written.newPath].makeIterator()
             var number = 1
@@ -626,9 +624,9 @@ extension UndoBatchRename {
 }
 
 extension BatchRenameRequest {
-    /// What to ask for once the plan can be carried out (the `request` of `useBatchRename`): each item the plan
-    /// renames, with its planned name, and the number separator the settings give (Format's, or a space). Nil when
-    /// the plan can't be carried out: its settings are broken, an item must be fixed first, or nothing is renamed.
+    /// What to ask for once the plan can be carried out: each item the plan renames, with its planned name, and the
+    /// number separator the settings give (Format's, or a space). Nil when the plan can't be carried out: its
+    /// settings are broken, an item must be fixed first, or nothing is renamed.
     public init?(plan: BatchRenamePlan, items: [BatchRenameItem], settings: BatchRenameSettings) {
         guard plan.settingsError == nil, plan.blockingCount == 0, plan.renameCount > 0 else { return nil }
         var renamed: [Item] = []

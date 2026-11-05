@@ -1,6 +1,5 @@
-// Port of the moving and stopping cases of packages/core/src/fs/copyPasteLocked.realfs.test.ts (its Replace and
-// recovery cases are P3-04's): locked items (Finder's "Locked", the uchg flag) and stopping a copy part way through a
-// file, on the real disk with the native copy
+// Locked items (Finder's "Locked", the uchg flag) and stopping a copy part way through a file, on the real disk with
+// the native copy
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -15,7 +14,6 @@ private func made(_ folder: String) -> [String] {
 }
 
 struct LockedPasteTests {
-    // T-f2cc6a9a F-259 F-474
     @Test func saysALockedFileIsLockedWhenItCantBeMoved() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = (root.path + "/src", root.path + "/dst")
@@ -50,7 +48,6 @@ struct LockedPasteTests {
 
     // Across disks a move copies, then removes the original. A locked original can't be removed, so nothing is
     // copied: it would end up in both places.
-    // T-936b31e5 F-263 F-474
     @Test func doesntCopyALockedFolderToAnotherDiskItCantThenRemove() async throws {
         try await withOtherDisk { src, disk, fileSystem in
             try Disk.write(src + "/Vault/a.txt", "a")
@@ -69,7 +66,6 @@ struct LockedPasteTests {
 
     // Every file used to be copied, then each reported "copied, but the original couldn't be removed": everything
     // in both places after copying all of it.
-    // T-1317a353 F-263 F-335 F-474
     @Test func copiesNothingOutOfAReadOnlyFolderAndSaysWhy() async throws {
         try await withOtherDisk { src, disk, fileSystem in
             let docs = src + "/Docs"
@@ -90,7 +86,6 @@ struct LockedPasteTests {
         }
     }
 
-    // T-335016cf F-263 F-335 F-474
     @Test func doesntMoveAFileOutOfAFolderThatCantBeChanged() async throws {
         try await withOtherDisk { src, disk, fileSystem in
             let docs = src + "/Docs"
@@ -108,10 +103,9 @@ struct LockedPasteTests {
         }
     }
 
-    // Across disks a copy can't be a clone, so a large file takes long enough to stop. 32 MB is enough (the original
-    // copied 150 MB): 8 MB was still stopped in each of 80 runs, four at a time. On a busy machine the copy may
-    // finish before the stop is seen; that run proves nothing, so it is tried again.
-    // T-97d6fd58 F-257 F-274
+    // Across disks a copy can't be a clone, so a large file takes long enough to stop. 32 MB is enough: 8 MB was
+    // still stopped in each of 80 runs, four at a time. On a busy machine the copy may finish before the stop is
+    // seen; that run proves nothing, so it is tried again.
     @Test(.tags(.diskImage), .diskImages, .enabled(if: LargeFileTests.enabled))
     func stopsALargeCopyAtOnceAndLeavesNothingHalfWritten() async throws {
         try await withTemporaryDirectory { root in

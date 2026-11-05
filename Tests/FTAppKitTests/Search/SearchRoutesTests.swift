@@ -1,6 +1,5 @@
-// Ports by behavior row (App.search.test.tsx, App.folderOrder.test.tsx, App.folderWatch.test.tsx) the routes into a search
-// in a real tab: the keys through the window, the field's commands, ⌘R, ⌘F, opening results, and what becomes of the list's
-// filter, over the stand-in fd runtime
+// The keys through the window, the field's commands, ⌘R, ⌘F, opening results, and what becomes of the list's filter,
+// over the stand-in fd runtime
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -117,7 +116,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Esc in the results
 
-        // B-NAV-213 B-SEL-092: Esc through the window with the list focused and no filter hides the results, empties the
+        // Esc through the window with the list focused and no filter hides the results, empties the
         // field and leaves the list the keyboard; the results stay cached for ⇧⌘F.
         @Test func escapeThroughTheWindowHidesTheResults() async throws {
             let opened = try await open()
@@ -134,7 +133,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-SRCH-117 B-NAV-213: typing in the results goes into their filter, which the bar's field mirrors; Backspace takes
+        // Typing in the results goes into their filter, which the bar's field mirrors; Backspace takes
         // a character back; Esc clears the whole filter and keeps the results, the next hides them.
         @Test func typingInTheResultsFiltersThemAndEscapeClearsFirst() async throws {
             let opened = try await open()
@@ -161,7 +160,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-SRCH-190: Esc in an open rename field is the field's: the results stay.
+        // Esc in an open rename field is the field's: the results stay.
         @Test func escapeInARenameFieldLeavesTheResults() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -177,7 +176,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: ⌘R
 
-        // T-1d9870a1 B-NAV-125 B-SRCH-140: ⌘R on results runs the same search again from the same place, the old results
+        // ⌘R on results runs the same search again from the same place, the old results
         // going at its start; the folder isn't read and its cached listing stays.
         @Test func refreshOnResultsRunsTheSearchAgainAndLeavesTheFolderAlone() async throws {
             let opened = try await open()
@@ -215,8 +214,7 @@ extension ExplorerWindowlessTests {
             return reads
         }
 
-        // B-NAV-215: a hidden-files change reads the folder again under the results, which stay on screen.
-        // B-VIEW-193 T-1017295b T-c05f1d45
+        // A hidden-files change reads the folder again under the results, which stay on screen.
         @Test func aHiddenFilesChangeKeepsTheResultsOnceTheFolderIsRead() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -231,7 +229,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: ⌘F
 
-        // T-21dd6904 B-SEL-083 B-VIEW-232: ⌘F with text typed into the list: the filter goes, the field holds the text and
+        // ⌘F with text typed into the list: the filter goes, the field holds the text and
         // the keyboard, and a live search of the folder on screen starts for it.
         @Test func findFilesCarriesTheFilterIntoTheSearch() async throws {
             let opened = try await open()
@@ -247,12 +245,12 @@ extension ExplorerWindowlessTests {
             #expect(engine.starts.first?.rootPath == tab.shownFolderPath)
             #expect(tab.search.session.startedLive)
             #expect(tab.searchField?.isActive == true)
-            // B-SRCH-052: the caret follows the text, so the next key adds to it.
+            // The caret follows the text, so the next key adds to it.
             #expect(tab.searchField?.currentEditor()?.selectedRange == NSRange(location: 2, length: 0))
             await opened.harness.close()
         }
 
-        // B-SRCH-048: ⌘F on a finished search brings it back with the field's text selected.
+        // ⌘F on a finished search brings it back with the field's text selected.
         @Test func findFilesBringsTheCachedResultsBackWithTheTextSelected() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -278,7 +276,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: The field
 
-        // B-SRCH-044: the field taking the keyboard brings the results back, and no pane has the focus.
+        // The field taking the keyboard brings the results back, and no pane has the focus.
         @Test func focusingTheFieldBringsTheResultsBack() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -295,7 +293,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-SRCH-012: Return on results already on screen selects the first at once, if nothing is selected.
+        // Return on results already on screen selects the first at once, if nothing is selected.
         @Test func returnSelectsTheFirstResultOnlyIfNothingIs() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -314,7 +312,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-SRCH-050 B-VIEW-129: ↓ in the field hands off to the results, selecting the first if nothing is.
+        // ↓ in the field hands off to the results, selecting the first if nothing is.
         @Test func downInTheFieldGoesIntoTheResults() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -331,7 +329,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-SRCH-050: with no results it does nothing else: the keyboard stays and nothing is selected.
+        // With no results it does nothing else: the keyboard stays and nothing is selected.
         @Test func downInTheFieldWithoutResultsStaysThere() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -345,7 +343,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: The filter on results
 
-        // B-SRCH-038 B-SRCH-123: a filter typed into the results goes with the list it was typed in: when the query is
+        // A filter typed into the results goes with the list it was typed in: when the query is
         // refined, and when the results are put away.
         @Test func theResultsFilterGoesWithTheirQuery() async throws {
             let opened = try await open()
@@ -378,7 +376,7 @@ extension ExplorerWindowlessTests {
             await opened.harness.close()
         }
 
-        // B-SEL-079: the filter of a folder's list isn't dropped by a refresh, a new order or a selection.
+        // The filter of a folder's list isn't dropped by a refresh, a new order or a selection.
         @Test func theFiltersStaysThroughARefreshASortAndASelection() async throws {
             let opened = try await open()
             let (tab, list) = (opened.tab, opened.list)
@@ -401,7 +399,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Opening results
 
-        // B-NAV-074 B-SEL-093 B-SRCH-147: with Double-click set to Edit a result still opens, by the activation the list's
+        // With Double-click set to Edit a result still opens, by the activation the list's
         // own double-click uses; in the folder's list the same press edits.
         @Test func aResultNeverEdits() async throws {
             let opened = try await open()
@@ -433,7 +431,7 @@ extension ExplorerWindowlessTests {
             opened.harness.layout(opened.tab)
         }
 
-        // B-SEL-093 B-SRCH-147: one folder result navigates into it, which ends search mode.
+        // One folder result navigates into it, which ends search mode.
         @Test func aFolderResultEndsTheSearch() async throws {
             let opened = try await open()
             let tab = opened.tab
@@ -448,7 +446,7 @@ extension ExplorerWindowlessTests {
 
         // MARK: Other tabs
 
-        // B-SRCH-138: closing a tab cancels its running search.
+        // Closing a tab cancels its running search.
         @Test func closingATabCancelsItsSearch() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -470,7 +468,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-a03d3600: a folder being read again when the user goes elsewhere: the tab stays where the user went.
+        // A folder being read again when the user goes elsewhere: the tab stays where the user went.
         @Test func aQuietReadOfTheFolderLeftDoesNotComeBack() async throws {
             let harness = try ExplorerHarness.windowless()
             let watches = FolderWatches(
@@ -504,7 +502,7 @@ extension ExplorerWindowlessTests {
     /// What replaces a global: the tab on screen last, and the app's file operations.
     @MainActor
     @Suite struct SearchAcrossTheWindowTests {
-        // B-SRCH-092: a new tab starts with the options and order of the search on screen, and nothing searched.
+        // A new tab starts with the options and order of the search on screen, and nothing searched.
         @Test func aNewTabTakesTheOptionsOfTheTabOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -531,7 +529,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-092: a new window reads the saved options; those of another window's search stay there.
+        // A new window reads the saved options; those of another window's search stay there.
         @Test func aNewWindowStartsWithTheSavedOptions() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -568,7 +566,7 @@ extension ExplorerWindowlessTests {
             return (tab, operations, engine)
         }
 
-        // B-SRCH-141: a write from results that changed something runs the search again, one that changed
+        // A write from results that changed something runs the search again, one that changed
         // nothing doesn't.
         @Test func aWriteFromTheResultsFindsThemAgain() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -586,7 +584,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { ended == 1 })
             #expect(await waitUntil { engine.starts.count == 2 })
             #expect(engine.starts.last?.query == "no")
-            // F-682 B-SEL-095: the copy goes next to the result, not in the folder on screen.
+            // The copy goes next to the result, not in the folder on screen.
             let made = try FileManager.default.contentsOfDirectory(atPath: harness.folder.path + "/Alpha")
             #expect(made.contains { $0.hasPrefix("notes") && $0 != "notes.md" })
             #expect(!FileManager.default.fileExists(atPath: harness.folder.path + "/notes copy.md"))
@@ -606,7 +604,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-SRCH-141: a move dragged out of the results finds them again and shows them, though Esc put them away
+        // A move dragged out of the results finds them again and shows them, though Esc put them away
         // before it ended; a drag from the folder, with results put away, searches nothing.
         @Test func aMoveDraggedOutOfTheResultsFindsThemAgainThoughTheyWerePutAway() async throws {
             let harness = try ExplorerHarness.windowless()

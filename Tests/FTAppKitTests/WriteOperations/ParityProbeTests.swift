@@ -1,7 +1,5 @@
-// Review round 1 of P3-05: a cut pasted is a Move To (useExplorerActions.ts startPasteFromClipboard), the startup and
-// recovery notices' words (main.ts), the write commands' pane rules (useExplorerShortcuts.ts, shortcutPolicy.ts), the
-// tree branches a write reads again (useExplorerNavigationController.ts refreshDirectory), and the folder watch held
-// while a write is locked (App.tsx useFolderWatch `held`)
+// A cut pasted is a Move To, the startup and recovery notices' words, the write commands' pane rules, the tree
+// branches a write reads again, and the folder watch held while a write is locked
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -92,8 +90,7 @@ private final class Shown {
                 capturedAt: "2026-10-08T10:00:00.000Z"), from: nil)
     }
 
-    // B-CLIP-107: a cut pasted while a write runs is refused as a move ("Couldn't Move"), as
-    // startPasteFromClipboard's `request.mode === "cut" ? "move_to" : "paste"` asks.
+    // A cut pasted while a write runs is refused as a move ("Couldn't Move"): a cut is pasted as a move.
     @Test func aCutPastedWhileBusyIsRefusedAsAMove() async {
         cut()
         session.applyCard(WriteOperationCardState(action: .copyTo, stage: .running, targetPath: "/x"))
@@ -103,7 +100,7 @@ private final class Shown {
         #expect(shown.titles == ["Couldn\u{2019}t Move"])
     }
 
-    // B-CLIP-110: its card is a move's, and what couldn't be checked is said of moving.
+    // Its card is a move's, and what couldn't be checked is said of moving.
     @Test func aCutPastedIsAMoveOnItsCard() async {
         cut()
         var actions: [WriteOperationAction] = []
@@ -130,7 +127,7 @@ private final class Shown {
         #expect(shown.titles == ["Couldn\u{2019}t Paste"])
     }
 
-    // Work a crash cut short is told once the window is up, as a warning with main.ts's words.
+    // Work a crash cut short is told once the window is up, as a warning.
     @Test func startupNoticesSayWorkWasCutShort() {
         let shown = Shown()
         AppWriteOperations.showStartupNotices(["One.", "Two."], dialogs: shown.dialogs, window: nil)
@@ -154,9 +151,7 @@ private final class Shown {
         #expect(shown.titles.isEmpty)
     }
 
-    // Cut and Copy from the tree take one of its folders, never a favorite, which only points to one
-    // (TREE_FOLDER_ONLY_COMMANDS, getFileSystemItemPath).
-    // B-TREE-150 B-TREE-151 T-68c0297a T-c1650cf7 T-de1cd805 T-f50b4602
+    // Cut and Copy from the tree take one of its folders, never a favorite, which only points to one.
     @Test func cutAndCopyOfAFavoriteDoNothing() {
         let favorite = ShortcutContext(focusedPane: .tree, selectedTreeTargetKind: .favorite)
         let folder = ShortcutContext(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
@@ -181,7 +176,6 @@ private final class Shown {
     // The list's commands (Move To, Duplicate, Rename, Trash, New Folder) act only with the list focused: never on a
     // selection left in the list while the tree has the keyboard, or with no pane focused. Paste goes into the folder
     // on screen even with no pane focused; Undo, Redo and Empty Trash act from anywhere.
-    // B-SEL-173 B-TREE-152 B-TREE-154 T-11201414 T-3f697d1f T-7778e453 T-81bf2f83 T-ef3db613 T-ffb0bc5e
     @Test func listCommandsNeedTheListFocused() {
         let tree = ShortcutContext(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
         let none = ShortcutContext(focusedPane: nil)
@@ -203,9 +197,8 @@ private final class Shown {
         }
     }
 
-    // After a write, only the branches it touched are read again (extraTreeReloadPaths), each folder once, not every
+    // After a write, only the branches it touched are read again, each folder once, not every
     // open branch of the tree.
-    // B-TREE-093 T-0c451ae2
     @Test func aWriteReadsOnlyTheBranchesItTouched() async {
         let model = SidebarModel()
         var children: [String: [TreePaths.Child]] = [:]
@@ -236,7 +229,7 @@ private final class Shown {
         #expect(reads == ["/Users/demo/Documents", "/Users/demo/f0", "/Users/demo/Documents/a"])
     }
 
-    // T-b39e8166: a move remaps the folder on screen: its old branch is read again all the way down its open folders.
+    // A move remaps the folder on screen: its old branch is read again all the way down its open folders.
     @Test func aWriteReadsTheOpenFoldersBelowABranchItTouched() async {
         let model = SidebarModel()
         func child(_ path: String) -> TreePaths.Child {
@@ -265,10 +258,9 @@ private final class Shown {
 }
 
 extension ExplorerWindowlessTests {
-    /// B-CLIP-147, B-VIEW-187: changes to the folder on screen wait while a write runs in this window or another,
+    /// Changes to the folder on screen wait while a write runs in this window or another,
     /// and are read once it is over.
     @MainActor @Suite struct WriteHoldsFolderChangesTests {
-        // B-CLIP-147
         @Test func changesWaitWhileAWriteIsLocked() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -285,7 +277,7 @@ extension ExplorerWindowlessTests {
             #expect(tab.pendingChange?.changedPaths == ["/x/a"])
             session.applyCard(nil)
             #expect(tab.pendingChange == nil)
-            // B-VIEW-187: so they do while another window's runs.
+            // So they do while another window's runs.
             session.otherWindowProgress(WriteOperationEvent(operationId: "other", action: .copyTo, status: .running))
             #expect(tab.isWriteLocked)
             harness.windows.folderChanged(

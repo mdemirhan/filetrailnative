@@ -1,9 +1,7 @@
-// Port of apps/desktop/src/renderer/components/{ActionNoticeDialog,CopyPasteDialog,TextPromptDialog}.tsx and of which
-// alert AppDialogs.tsx (203-430) shows for what, with which words and which default
 import AppKit
 import FTFoundation
 
-/// The alerts drawn in a window (`ActionNoticeDialog`, `CopyPasteDialog`, `TextPromptDialog`): each is shown over the
+/// The alerts drawn in a window: each is shown over the
 /// window it is for, answered with a button, Return or Escape.
 @MainActor
 enum InWindowAlerts {
@@ -51,8 +49,7 @@ enum InWindowAlerts {
         }
     }
 
-    /// `ActionNoticeDialog` (and `CopyPasteDialog` with one OK): a notice, its detail list under the message. Return
-    /// and Escape dismiss it too.
+    /// A notice, its detail list under the message. Return and Escape dismiss it too.
     static func notice(
         title: String, message: String, detailLines: [String] = [], in window: NSWindow,
         onClose: @escaping () -> Void = {}
@@ -66,7 +63,7 @@ enum InWindowAlerts {
         }
     }
 
-    /// `CopyPasteDialog` as a confirmation: true when the action was chosen.
+    /// A confirmation: true when the action was chosen.
     static func confirm(_ question: WriteQuestion, in window: NSWindow) async -> Bool {
         let buttons = AlertButtons.confirmation(
             question.confirmLabel, destructive: question.destructive, cancelIsDefault: question.cancelIsDefault)
@@ -76,7 +73,7 @@ enum InWindowAlerts {
             in: window) == .confirm
     }
 
-    /// `TextPromptDialog`: each name submitted goes to `submit`, whose reply closes the prompt or keeps it open with
+    /// Each name submitted goes to `submit`, whose reply closes the prompt or keeps it open with
     /// the reason under the name. Returns once it is closed, by its reply or by Cancel.
     static func askName(
         _ prompt: NamePrompt, in window: NSWindow, _ submit: @escaping @MainActor (String) async -> NamePromptReply
@@ -130,8 +127,7 @@ enum InWindowAlerts {
 }
 
 extension WriteDialogs {
-    /// The original's in-window alerts, on `window` (or the window in front); with no window at all, the plain
-    /// alerts.
+    /// The in-window alerts, on `window` (or the window in front); with no window at all, the plain alerts.
     static func drawNotice(_ title: String, _ message: String, _ window: NSWindow?, style: NSAlert.Style) {
         guard let host = InWindowAlerts.host(window) else {
             plainNotice(style, title, message, window)

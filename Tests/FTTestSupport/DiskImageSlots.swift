@@ -7,7 +7,7 @@ import Foundation
 /// different suites or processes run side by side.
 ///
 /// A slot is an exclusive `flock` on `<kind>.lock` (the first, the one earlier versions took for the whole kind),
-/// `<kind>-2.lock`, … under the port's cache, taken by polling, so no thread is blocked.
+/// `<kind>-2.lock`, … under the dev cache (`lockDirectory`), taken by polling, so no thread is blocked.
 public enum DiskImageSlots {
     /// How many images of a kind may be attached at once (`FILETRAIL_DISK_IMAGE_SLOTS`, 2 by default).
     public static var perKind: Int {

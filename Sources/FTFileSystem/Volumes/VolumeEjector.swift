@@ -1,4 +1,3 @@
-// Port of packages/native-fs/src/native_eject.c (nativeEjectVolume)
 import Darwin
 import DiskArbitration
 import Dispatch

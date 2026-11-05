@@ -1,4 +1,3 @@
-// Port of the JavaScript RegExp behavior (flags "gu" or "giu") that apps/desktop/src/shared/batchRename.ts relies on
 import Foundation
 
 /// A syntax or semantic error in a pattern, worded like the engine's own ("Nothing to repeat").

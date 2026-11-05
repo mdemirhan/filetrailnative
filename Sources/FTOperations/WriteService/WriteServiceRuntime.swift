@@ -1,5 +1,3 @@
-// Port of resolveRuntimeConflict, cancelOperation, getAllowedRuntimeResolutions, runtimeConflictScope and the
-// paste's requestResolution and autoResolve (packages/core/src/fs/writeService.ts)
 import FTFoundation
 import Foundation
 

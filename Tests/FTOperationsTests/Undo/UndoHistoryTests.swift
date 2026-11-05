@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/undoHistory.test.ts
 import FTFoundation
 import Testing
 
@@ -52,7 +51,6 @@ struct UndoHistoryTests {
         try history.finish(direction, entryId: id ?? history.top(direction)?.id ?? -1, done: done, leftover: leftover)
     }
 
-    // T-bf47e254 F-559
     @Test func hasNothingToUndoOrRedoAtFirst() {
         let history = UndoHistory()
         #expect(history.top(.undo) == nil)
@@ -60,7 +58,6 @@ struct UndoHistoryTests {
         #expect(history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: false))
     }
 
-    // T-85dcc0d3 F-559
     @Test func undoesTheNewestOperationFirst() {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -69,7 +66,6 @@ struct UndoHistoryTests {
         #expect(history.menu().undo == "New Folder")
     }
 
-    // T-4f8080d3 F-376 F-559
     @Test func movesWhatAnUndoDidToRedoAndBack() throws {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -82,7 +78,6 @@ struct UndoHistoryTests {
         #expect(history.menu() == UndoMenuLabels(undo: "Rename", redo: nil, cantUndo: false))
     }
 
-    // T-6b8571f8 F-376 F-559
     @Test func keepsWhatAStopLeftOnTopAndDropsWhatCouldntBeDone() throws {
         let history = UndoHistory()
         history.record(undoable(.trash, [trashed("/a")], [trashed("/b")], [trashed("/c")]))
@@ -91,7 +86,6 @@ struct UndoHistoryTests {
         #expect(history.top(.redo)?.units == units([moved("/x/c", "/c")]))
     }
 
-    // T-2fc49dca F-559
     @Test func forgetsAnOperationNoneOfWhichCouldBeUndone() throws {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -99,7 +93,6 @@ struct UndoHistoryTests {
         #expect(history.menu() == UndoMenuLabels(undo: nil, redo: nil, cantUndo: false))
     }
 
-    // T-cb5e6182 F-376 F-559
     @Test func refusesTheEndOfAnUndoOfAnEntryThatIsNoLongerOnTop() throws {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -114,7 +107,6 @@ struct UndoHistoryTests {
         #expect(history.top(.redo) == nil)
     }
 
-    // T-0433a01c F-374 F-559
     @Test func leavesNothingToRedoAfterANewOperation() throws {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -123,7 +115,6 @@ struct UndoHistoryTests {
         #expect(history.top(.redo) == nil)
     }
 
-    // T-48637f84 F-373 F-559
     @Test func leavesTheHistoryAsItWasAfterAnOperationThatChangedNothing() throws {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -134,7 +125,6 @@ struct UndoHistoryTests {
         #expect(history.generation == generation)
     }
 
-    // T-6b739125 F-374 F-395 F-559
     @Test func leavesNothingToUndoAfterAnOperationThatCantBeUndoneUntilTheNextOne() {
         let history = UndoHistory()
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -144,7 +134,6 @@ struct UndoHistoryTests {
         #expect(history.menu() == UndoMenuLabels(undo: "New Folder", redo: nil, cantUndo: false))
     }
 
-    // T-8aeaced7 F-376 F-559
     @Test func countsChangesAndTellsAboutThem() throws {
         let history = UndoHistory()
         var calls = 0
@@ -159,7 +148,6 @@ struct UndoHistoryTests {
         #expect(calls == 2)
     }
 
-    // T-5341ab7d F-559
     @Test func keepsEachTryOfABatchRenameItsOwnEntryToRedoTheLastOneFirst() throws {
         let history = UndoHistory()
         history.record(undoable(.batchRename, [Self.renamed("/a", "/b"), Self.renamed("/b", "/a")]))
@@ -172,7 +160,6 @@ struct UndoHistoryTests {
         #expect(history.menu().redo == "Rename")
     }
 
-    // T-4ab45822 F-559
     @Test func keepsOtherPartsApartEachToRedoOnItsOwn() throws {
         let history = UndoHistory()
         history.record(undoable(.trash, [trashed("/a")], [trashed("/b")]))
@@ -182,17 +169,14 @@ struct UndoHistoryTests {
         #expect(history.top(.redo)?.units == units([moved("/T/a", "/a")]))
     }
 
-    // T-e20ea8b9 F-248 F-375
     @Test func isAMillionItemSteps() {
         #expect(UndoHistory.maxItemStepsDefault == 1_000_000)
     }
 
-    // T-8bc5192c F-375
     @Test func countsEachStepAndEachItemOfABatch() {
         #expect(UndoHistory.itemStepCount(units([moved("/a", "/b"), created("/c")], [Self.renamedMany(3)])) == 5)
     }
 
-    // T-e14206d9 F-375 F-559
     @Test func letsGoOfTheOldestOperationsOnceThereAreTooManyItemsNeverTheNewest() throws {
         let history = UndoHistory(maxItemSteps: 5)
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -213,7 +197,6 @@ struct UndoHistoryTests {
         #expect(left == ["Rename of 2 Items", "Rename"])
     }
 
-    // T-3bd24a62 F-375 F-559
     @Test func keepsAnOperationLargerThanTheLimitOnItsOwn() throws {
         let history = UndoHistory(maxItemSteps: 2)
         history.record(undoable(.rename, [moved("/a", "/b")]))
@@ -223,7 +206,6 @@ struct UndoHistoryTests {
         #expect(history.top(.undo) == nil)
     }
 
-    // T-90ef517b F-375 F-559
     @Test func keepsWhatAnUndoDidAndLeftThoughTogetherTheyAreOverTheLimit() throws {
         let history = UndoHistory(maxItemSteps: 3)
         history.record(undoable(.rename, [moved("/x", "/y")]))
@@ -235,7 +217,6 @@ struct UndoHistoryTests {
         #expect(history.top(.undo) == nil)
     }
 
-    // T-fbb82ef3 F-377 F-559
     @Test func staysAMoveWhenWhatIsLeftOfAMovingReplaceIsItsTripToTheTrash() throws {
         let history = UndoHistory()
         history.record(undoable(.paste, [trashed("/F/a.txt"), moved("/a.txt", "/F/a.txt")]))
@@ -274,7 +255,6 @@ struct UndoHistoryTests {
         (undoable(.paste, [trashed("/F/a.txt"), created("/F/a.txt")]), "Copy of “a.txt”"),
     ]
 
-    // T-d6b03f3d F-377
     @Test func namesEachOperation() {
         for (entry, label) in Self.labelCases {
             guard case .write(let action) = entry.action, case .undoable(let units) = entry.log else {
@@ -285,7 +265,6 @@ struct UndoHistoryTests {
         }
     }
 
-    // T-10c5e24e F-377
     @Test func namesAUnitWithNothingToGoByPlainly() {
         #expect(UndoHistory.labelOf(.trash, units([.batchRenamed(items: [])])) == "Move to Trash of 1 Item")
     }

@@ -1,6 +1,4 @@
-// Port by feature of App.dragIn.test.tsx and App.dragOut.test.tsx (useExplorerDragAndDrop's clearDragSession,
-// settleSprings, springWhenHeld and the drop's destination check; App.tsx's startFileDrag and external drop focus):
-// what each drag asks again, where it springs and what it leaves behind, on a window that is never shown
+// What each drag asks again, where it springs and what it leaves behind, on a window that is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -23,7 +21,7 @@ extension ExplorerWindowlessTests {
                 leadPath: paths[0], leadKind: .file)
         }
 
-        // B-CLIP-162: the disks are asked again for each drag; an earlier drag's answer decides nothing.
+        // The disks are asked again for each drag; an earlier drag's answer decides nothing.
         @Test func eachDragAsksTheDisksAgain() async throws {
             let window = try await WritingWindow.open()
             let drags = window.tab.dragDrop
@@ -44,9 +42,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-4c40ea4b T-20b0bfbe B-CLIP-162: a drop whose disks can't be read, with no key held, is refused, nothing moved;
+        // A drop whose disks can't be read, with no key held, is refused, nothing moved;
         // the path is asked about again in the next drag, which then moves.
-        // T-62d562b1
         @Test func aDiskThatCouldntBeReadIsAskedAgain() async throws {
             let window = try await WritingWindow.open()
             let drags = window.tab.dragDrop
@@ -69,8 +66,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-166: while the tab shows search results nothing springs open, not even under a drag from another app.
-        // B-CLIP-168 B-NAV-214 B-SRCH-146
+        // While the tab shows search results nothing springs open, not even under a drag from another app.
         @Test func nothingSpringsInSearchResults() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -86,7 +82,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-VIEW-075: a drag from another app over search results has no background to go into: no ring and no drop on
+        // A drag from another app over search results has no background to go into: no ring and no drop on
         // the empty space or on a file's row, while a folder of the results still takes it.
         @Test func searchResultsTakeNoBackgroundDrops() async throws {
             let window = try await WritingWindow.open()
@@ -108,9 +104,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-169: the tab comes back history and all: the Forward steps the springs cut are there again, and the
+        // The tab comes back history and all: the Forward steps the springs cut are there again, and the
         // sprung folders are not.
-        // B-NAV-198 T-de734148
         @Test func aSprungDragBringsTheHistoryBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -130,8 +125,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-169: the sidebar's row comes back too: a favorite stays selected, not the tree's row of its folder.
-        // B-NAV-198 T-bb5a1863
+        // The sidebar's row comes back too: a favorite stays selected, not the tree's row of its folder.
         @Test func aSprungDragBringsTheSidebarRowBack() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -149,10 +143,9 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // useExplorerDragAndDrop.ts:363, :929: drags from other apps are seen by the whole window, so one resting where no
-        // target hears it (the path bar, the toolbar, the Info panel) keeps the tab in the sprung folder until it goes.
-        // Gone from there, its drag-overs stopped, the tab comes back.
-        // B-CLIP-174 T-df38568f
+        // Drags from other apps are seen by the whole window, so one resting where no target hears it (the path bar,
+        // the toolbar, the Info panel) keeps the tab in the sprung folder until it goes. Gone from there, its
+        // drag-overs stopped, the tab comes back.
         @Test func anExternalDragHeldOverTheRestOfTheWindowKeepsTheSprungTabThere() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -176,8 +169,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // useExplorerDragAndDrop.ts:1315: where the tab was is noted first, to come back to even if the drag ends before
-        // the folder is on screen: the read still pending is overtaken, whether or not it has begun.
+        // Where the tab was is noted first, to come back to even if the drag ends before the folder is on screen: the
+        // read still pending is overtaken, whether or not it has begun.
         @Test(arguments: [false, true])
         func aDragThatEndsBeforeTheSprungFolderArrivesLeavesTheTabWhereItWas(readBegan: Bool) async throws {
             let window = try await WritingWindow.open()
@@ -193,8 +186,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // useExplorerDragAndDrop.ts:1341: a sprung folder that can't be read leaves the tab where it was, with nothing
-        // to bring back.
+        // A sprung folder that can't be read leaves the tab where it was, with nothing to bring back.
         @Test func aFolderOnScreenTakesTheDragOnlyOnceItsSpringArrived() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -205,7 +197,7 @@ extension ExplorerWindowlessTests {
                 windowNumber: 0, tab: tab)
             TabDragDrop.ownDrag = own
             defer { TabDragDrop.ownDrag = nil }
-            // T-5de0804d: one that couldn't be read leaves the folder there, which an Option-drop would duplicate into.
+            // One that couldn't be read leaves the folder there, which an Option-drop would duplicate into.
             tab.dragDrop.springOpen(path(window, "gone"), sequence: 9)
             #expect(tab.dragDrop.contentTarget(own.session, entry: nil) == nil)
             #expect(await waitUntil { tab.dragDrop.springsOpening == 0 && !tab.isNavigating })
@@ -236,8 +228,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-169: one dropped in the folder it sprang into keeps the tab there.
-        // T-58f2b940
+        // One dropped in the folder it sprang into keeps the tab there.
         @Test func aDropInTheSprungFolderKeepsTheTabThere() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -255,9 +246,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-TREE-159: a drop on a favorite that is a link to a folder is refused, as the destination check of every
+        // A drop on a favorite that is a link to a folder is refused, as the destination check of every
         // drop refuses one (an accepted risk: the favorite showed the drop as taken). Nothing is moved.
-        // T-0f30452a T-26eb6e20 T-89efd829
         @Test func aDropOnAFavoriteThatIsALinkToAFolderIsRefused() async throws {
             let window = try await WritingWindow.open()
             let drags = window.tab.dragDrop
@@ -276,7 +266,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // B-CLIP-178: an error about a drop from another app, found before it starts, brings the window forward.
+        // An error about a drop from another app, found before it starts, brings the window forward.
         @Test func aDropRefusedBeforeItStartsBringsTheWindowForward() async throws {
             let window = try await WritingWindow.open()
             let drags = window.tab.dragDrop
@@ -294,14 +284,14 @@ extension ExplorerWindowlessTests {
                     session: external([locked.path]), target: target, offersMove: true, modifiers: [.option],
                     sequence: 3))
             #expect(await waitUntil { broughtForward == 1 })
-            // The failed copy's result sheet (P6-02) tells it.
+            // The failed copy's result sheet tells it.
             let sheet = CopyPasteResultPresenter.shared.sheet
             #expect(sheet?.window === window.tab.window)
             #expect(sheet?.text.title == "Copied 0 of 1 item into \u{201C}Beta\u{201D}")
             await window.close()
         }
 
-        // B-CLIP-178: a drop from another app that started is still in flight: the question it runs into and the
+        // A drop from another app that started is still in flight: the question it runs into and the
         // result sheet it ends with bring the window forward; another operation's don't, nor a quiet end.
         @Test func aQueuedDropsQuestionAndResultBringTheWindowForward() async throws {
             let window = try await WritingWindow.open()
@@ -335,7 +325,7 @@ extension ExplorerWindowlessTests {
             }
             ui.handle(ended("drop-op", .failed))
             #expect(broughtForward == 2)
-            // The failed copy's result sheet (P6-02) says why.
+            // The failed copy's result sheet says why.
             #expect(CopyPasteResultPresenter.shared.sheet?.text.message == "The disk is full.")
             #expect(!TabDragDrop.externalDropOperations.contains("drop-op"))
             TabDragDrop.externalDropOperations = ["quiet-op"]
@@ -344,7 +334,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // F-688 B-CLIP-149: a drag image draws the Quick Look picture the item shows, and the file icon otherwise.
+        // A drag image draws the Quick Look picture the item shows, and the file icon otherwise.
         @Test func dragImagesUseTheThumbnailsShown() {
             let picture = NSImage(size: NSSize(width: 8, height: 8))
             let rect = CGRect(x: 0, y: 0, width: 32, height: 32)
@@ -361,7 +351,7 @@ extension ExplorerWindowlessTests {
             #expect(thumbnails[2] === picture)
         }
 
-        // B-CLIP-148: folders, links to folders and apps or packages go on the drag's pasteboard as folders.
+        // Folders, links to folders and apps or packages go on the drag's pasteboard as folders.
         @Test func linksToFoldersAndPackagesAreDraggedAsFolders() {
             let kinds: [FTFoundation.EntryKind] = [.directory, .symlinkDirectory, .bundle, .file, .symlinkFile, .other]
             let items = kinds.enumerated().map { DragItem(path: "/x\($0.offset)", kind: $0.element) }

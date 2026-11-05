@@ -1,4 +1,3 @@
-// Port of the reading half of MockWriteServiceFileSystem (packages/core/src/fs/testUtils.ts)
 import FTFoundation
 import Foundation
 import os
@@ -46,7 +45,7 @@ final class MockIdentityFileSystem: IdentityFileSystem, @unchecked Sendable {
         }
     }
 
-    // In the order they were made, as a JavaScript Map keeps them.
+    // In the order they were made.
     private var keys: [String] = []
     private var nodes: [NameKeys.Exact: Node] = [:]
     private var nextIno: UInt64 = 10

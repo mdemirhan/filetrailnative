@@ -1,5 +1,3 @@
-// Port of the read-only and unreadable folder cases of packages/core/src/fs/copyPasteFolderSafety.realfs.test.ts (its
-// Replace, Replace journal and recovery cases are P3-04's)
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -27,7 +25,6 @@ struct FolderSafetyTests {
         (Disk.lstat(path)?.mode ?? 0) & 0o777
     }
 
-    // T-3c416b0d F-335 F-454
     @Test func copiesAReadOnlyFolderWithEverythingInItAndKeepsItReadOnly() async throws {
         try await withTemporaryDirectory { root in
             let source = root.path + "/src/module"
@@ -48,7 +45,6 @@ struct FolderSafetyTests {
         }
     }
 
-    // T-d9e41bda F-335
     @Test func removesAStagedCopyEvenWhenFoldersInsideItAreReadOnly() throws {
         try withTemporaryDirectory { root in
             let staged = root.path + "/.module.filetrail-0000"
@@ -62,7 +58,6 @@ struct FolderSafetyTests {
         }
     }
 
-    // T-0d72c378 F-261 F-458 F-509
     @Test(.enabled(if: getuid() != 0, "folders that can't be read are readable anyway as root"))
     func pastesEverythingElseAndReportsOnlyTheUnreadableFolder() async throws {
         try await withTemporaryDirectory { root in
@@ -87,7 +82,6 @@ struct FolderSafetyTests {
         }
     }
 
-    // T-c602b1b3 F-261 F-509
     @Test(.enabled(if: getuid() != 0, "folders that can't be read are readable anyway as root"))
     func anUnreadableFolderPastedOnItsOwnFailsWithoutStoppingTheOthers() async throws {
         try await withTemporaryDirectory { root in

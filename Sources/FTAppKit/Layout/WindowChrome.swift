@@ -1,4 +1,3 @@
-// Port of the explorer window's frame in apps/desktop/src/main/main.ts (titleBarStyle "hiddenInset")
 import AppKit
 import FTFoundation
 

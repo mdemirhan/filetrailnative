@@ -1,10 +1,8 @@
-// Port of the per-window state of apps/desktop/src/renderer/hooks/useExplorerTabs.ts (closedTabsRef) and the window
-// session keys of apps/desktop/src/shared/appPreferences.ts that belong to a window rather than to a tab
 import FTFoundation
 import Foundation
 
-/// What the tabs of one window share (the original's per-window state): which panels are shown, how wide the panes
-/// and the columns are, and the tabs Reopen Closed Tab can bring back. Changing it in one tab changes it in all.
+/// What the tabs of one window share: which panels are shown, how wide the panes and the columns are, and the tabs
+/// Reopen Closed Tab can bring back. Changing it in one tab changes it in all.
 @MainActor
 public final class TabGroupSession {
     /// The panels and widths of a window, as its session keeps them.

@@ -1,4 +1,3 @@
-// Port of the nativeGetFlags / nativeSetFlags cases of packages/native-fs/src/native-fs.test.ts, with the ACL calls
 import Darwin
 import FTTestSupport
 import Foundation
@@ -20,7 +19,6 @@ struct NativeFlagsTests {
         }
     }
 
-    // T-cfcc8978 F-415 F-334
     @Test func locksAndUnlocksAnItemTheWayFindersLockedCheckboxDoes() throws {
         try withFile { root, path in
             #expect(try NativeFS.getFlags(path) == 0)
@@ -32,7 +30,6 @@ struct NativeFlagsTests {
         }
     }
 
-    // T-d0bb8bbb F-415
     @Test func readsASymlinksOwnFlagsNotItsTargets() throws {
         try withFile { root, path in
             try FileManager.default.createSymbolicLink(atPath: root.appending("link").path, withDestinationPath: path)
@@ -41,7 +38,6 @@ struct NativeFlagsTests {
         }
     }
 
-    // T-9d501eab F-415
     @Test func namesTheErrnoForAMissingItem() throws {
         try withFile { root, _ in
             let missing = root.appending("missing").path
@@ -55,7 +51,6 @@ struct NativeFlagsTests {
 
 struct NativeAclTests {
     // The entry a copy of ~/Documents carries, which keeps the Trash from taking it.
-    // F-416
     @Test func readsTakesOffAndPutsBackAnItemsAccessControlList() throws {
         try withTemporaryDirectory(prefix: "native-fs-acl") { root in
             let path = root.appending("a.txt").path
@@ -79,7 +74,6 @@ struct NativeAclTests {
         }
     }
 
-    // F-416
     @Test func tellsAMissingItemFromOneWithoutAnAcl() throws {
         try withTemporaryDirectory(prefix: "native-fs-acl") { root in
             let missing = root.appending("missing").path

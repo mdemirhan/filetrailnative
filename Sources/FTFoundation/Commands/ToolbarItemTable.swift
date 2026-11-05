@@ -1,4 +1,4 @@
-// Generated once from apps/desktop/src/shared/toolbarItems.ts in the Electron app; now edited by hand.
+// Generated once; now edited by hand.
 
 /// The icon a toolbar item draws (`ToolbarIconName`).
 public enum ToolbarIconName: String, CaseIterable, Sendable, Hashable {
@@ -96,7 +96,7 @@ public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
 }
 
 extension ToolbarItems {
-    /// TOOLBAR_ITEM_DEFINITIONS, in the original's order.
+    /// Every toolbar item, in the table's order.
     public static let definitions: [ToolbarItemDefinition] = [
         ToolbarItemDefinition(id: .back, label: "Back", icon: .back, kind: .button, shortcutCommand: .goBack),
         ToolbarItemDefinition(

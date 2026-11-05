@@ -9,7 +9,6 @@ import Testing
 struct NativeFileSystemTests {
     private let native = NativeFileSystem()
 
-    // F-165
     @Test func readsEveryEntryWithWhatLstatSays() throws {
         try withTemporaryDirectory { directory in
             let path = directory.path
@@ -52,7 +51,6 @@ struct NativeFileSystemTests {
         }
     }
 
-    // F-176
     @Test func readsAFolderTooBigForOneBuffer() throws {
         try withTemporaryDirectory { directory in
             // The listing reads into a buffer of 256 KB. Each entry takes about 85 bytes and its name: with names of
@@ -135,7 +133,7 @@ struct NativeFileSystemTests {
         }
     }
 
-    // `toErrorMessage`: the message is Node's, code first, naming the call and the path.
+    // The message gives the code first, naming the call and the path.
     @Test func aFailureSaysWhatNodeSays() async throws {
         try await withTemporaryDirectory { directory in
             let closed = directory.path + "/closed"
@@ -170,7 +168,6 @@ struct NativeFileSystemTests {
         }
     }
 
-    // F-165
     @Test func collapsesAnAliasedFolderToItsRealPath() async throws {
         try await withTemporaryDirectory { directory in
             try FileManager.default.createDirectory(
@@ -190,7 +187,6 @@ struct NativeFileSystemTests {
         #expect(snapshot.entries.contains { $0.path == "/Users" })
     }
 
-    // F-167 F-168
     @Test func treatsABundleAsAnItemInAListingButNotInTheTree() async throws {
         try await withTemporaryDirectory { directory in
             for name in ["Sample.app", "Plain", "Kit.framework", "Slides.key"] {
@@ -204,14 +200,13 @@ struct NativeFileSystemTests {
                 kinds == [
                     "Sample.app": .bundle, "Plain": .directory, "Kit.framework": .bundle, "Slides.key": .directory,
                 ])
-            // A bundle sorts with the files, as the original does.
+            // A bundle sorts with the files.
             #expect(snapshot.entries.map(\.name) == ["Plain", "Slides.key", "Kit.framework", "Sample.app"])
             let tree = try await service.treeChildren(path: directory.path)
             #expect(tree.children.map(\.name) == ["Plain", "Slides.key"])
         }
     }
 
-    // F-166
     @Test func keepsHiddenMeaningALeadingDot() async throws {
         try await withTemporaryDirectory { directory in
             for name in [".config", "visible.txt", "..double"] {
@@ -222,23 +217,11 @@ struct NativeFileSystemTests {
             #expect(shown.entries.map(\.name) == ["visible.txt"])
             let all = try await service.snapshot(path: directory.path, includeHidden: true)
             #expect(all.entries.filter(\.isHidden).map(\.name).sorted() == ["..double", ".config"])
-            // The extension of "..double" is "double", as Node's path.extname says.
+            // The extension of "..double" is "double".
             #expect(all.entries.first { $0.name == "..double" }?.fileExtension == "double")
         }
     }
 
-    // N/A T-2bab67c5 The worker's message loop is replaced by the DirectoryService actor, whose methods are the routes.
-    // N/A T-b4e20286 Search channels are routed by the search work package, not by the listing.
-    // N/A T-aa5b6a27 There is no worker to close ahead of its queue; searches stop themselves.
-    // N/A T-daab225e There are no error envelopes: a failing read throws to its caller.
-    // N/A T-91138b37 Item details run at utility priority on their own task (see metadataRunsApartFromListings).
-    // N/A T-fac8fb13 There is no worker client: callers await the actor.
-    // N/A T-819ddfa3 There are no error envelopes: a failing read throws to its caller.
-    // N/A T-d480e22d There is no worker that can exit: the actor lives in the app's process.
-    // N/A T-24de1b66 There is no worker to end.
-    // N/A T-0552d741 There is no worker that can fail to answer.
-    // N/A T-9d23a3df There is no worker that can have ended.
-    // F-164
     @Test func metadataRunsApartFromListings() async throws {
         try await withTemporaryDirectory { directory in
             try "x".write(toFile: directory.path + "/a.txt", atomically: true, encoding: .utf8)

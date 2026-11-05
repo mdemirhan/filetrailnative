@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/shortcutPolicy.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -22,8 +21,6 @@ struct ShortcutPolicyTests {
         ShortcutPolicy.canHandleRaw(shortcut, context)
     }
 
-    // T-a4cb0582 F-083
-    // B-SEL-174 T-11201414
     @Test func pastesIntoTheFolderOnScreenEvenWhenNoPaneHasFocus() {
         #expect(Self.handle(.pasteSelection, Self.ctx(focusedPane: nil)))
         #expect(!Self.handle(.pasteSelection, Self.ctx(focusedPane: nil, mainView: .help)))
@@ -31,13 +28,10 @@ struct ShortcutPolicyTests {
         #expect(!Self.handle(.copySelection, Self.ctx(focusedPane: nil)))
     }
 
-    // T-66231064 F-083
     @Test func allowsExplorerScopedCommandsInTheExplorerView() {
         #expect(Self.handle(.copyPath, Self.ctx()))
     }
 
-    // T-494df166 F-083
-    // B-NAV-216 B-SRCH-188
     @Test func blocksExplorerScopedCommandsInHelpAndSettingsViews() {
         #expect(!Self.handle(.copyPath, Self.ctx(mainView: .help)))
         #expect(!Self.handle(.copyPath, Self.ctx(mainView: .settings)))
@@ -45,13 +39,11 @@ struct ShortcutPolicyTests {
         #expect(!Self.handle(.openLocationSheet, Self.ctx(mainView: .settings)))
     }
 
-    // T-210cc8bf F-083
     // The zoom commands are dropped, so only Settings is checked.
     @Test func keepsSettingsAvailableOnNonExplorerViews() {
         #expect(Self.handle(.openSettings, Self.ctx(mainView: .help)))
     }
 
-    // T-e8df5f44 F-083
     @Test func keepsGenericEditCommandsAvailableRegardlessOfTheActiveView() {
         #expect(Self.handle(.editCopy, Self.ctx(focusedPane: .tree, mainView: .help)))
         #expect(
@@ -62,28 +54,22 @@ struct ShortcutPolicyTests {
                     mainView: .settings)))
     }
 
-    // T-c6b12327 F-083
-    // B-SEL-171 B-SRCH-188 B-VIEW-228
     @Test func blocksContentCapturingCommandsWhileTransientOverlaysAreOpen() {
         #expect(!Self.handle(.openSelection, Self.ctx(copyPasteModalOpen: true)))
         #expect(!Self.handle(.copySelection, Self.ctx(actionNoticeOpen: true)))
         #expect(!Self.handle(.openSettings, Self.ctx(actionNoticeOpen: true)))
     }
 
-    // T-16e0aa3f F-083
     @Test func keepsExplorerKeyboardShortcutsScopedToTheExplorerSurface() {
         #expect(ShortcutPolicy.canHandleExplorerKeyboardShortcuts(Self.ctx()))
         #expect(!ShortcutPolicy.canHandleExplorerKeyboardShortcuts(Self.ctx(mainView: .help)))
         #expect(!ShortcutPolicy.canHandleExplorerKeyboardShortcuts(Self.ctx(locationSheetOpen: true)))
     }
 
-    // T-3b956017 F-083
-    // B-SEL-172 T-ef3db613
     @Test func blocksContentOnlyRendererCommandsWhenTheTreeIsFocused() {
         #expect(!Self.handle(.newFolder, Self.ctx(focusedPane: .tree)))
     }
 
-    // T-1c6942ba F-083
     @Test func blocksContentOnlyRendererCommandsWhenNoExplorerPaneIsFocused() {
         #expect(!Self.handle(.newFolder, Self.ctx(focusedPane: nil)))
         #expect(!Self.handle(.copySelection, Self.ctx(focusedPane: nil)))
@@ -91,21 +77,16 @@ struct ShortcutPolicyTests {
         #expect(!Self.handle(.copyPath, Self.ctx(focusedPane: nil)))
     }
 
-    // T-0549b302 F-083
-    // B-TREE-153 T-16bc48f4 T-fe455e38
     @Test func keepsGlobalRendererCommandsAvailableWhenTheTreeIsFocused() {
         #expect(Self.handle(.focusFileSearch, Self.ctx(focusedPane: .tree)))
         #expect(Self.handle(.refreshOrApplySearchSort, Self.ctx(focusedPane: .tree)))
     }
 
-    // T-17185cd3 F-083
     @Test func blocksContentOnlyRawShortcutsWhenTheTreeIsFocused() {
         #expect(!Self.raw(.copySelection, Self.ctx(focusedPane: .tree)))
         #expect(!Self.raw(.newFolder, Self.ctx(focusedPane: .tree)))
     }
 
-    // T-51dd068f F-083
-    // T-16bc48f4
     @Test func keepsAllowedRawShortcutsAvailableWhenTheTreeIsFocused() {
         #expect(Self.raw(.treeArrowNavigation, Self.ctx(focusedPane: .tree)))
         #expect(Self.raw(.focusFileSearch, Self.ctx(focusedPane: .tree)))
@@ -123,8 +104,6 @@ struct ShortcutPolicyTests {
         }
     }
 
-    // T-95ae41b4 F-083
-    // B-SEL-173
     @Test func allowsOnlyTheSafeContentTargetCommandsForFilesystemTreeFolders() {
         let treeFolder = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
         #expect(
@@ -138,7 +117,6 @@ struct ShortcutPolicyTests {
             ])
     }
 
-    // T-9a3fddde F-083
     @Test func allowsOnlyTheSafeContentTargetCommandsForFavorites() {
         let favorite = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .favorite)
         #expect(
@@ -149,7 +127,6 @@ struct ShortcutPolicyTests {
         #expect(contentOnlyRawShortcuts(favorite) == [.pasteSelection, .copyPath, .openInTerminal])
     }
 
-    // T-2c614522 F-083
     @Test func blocksContentTargetActionsEntirelyForTheFavoritesRoot() {
         let favoritesRoot = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .favoritesRoot)
         #expect(!Self.handle(.openSelection, favoritesRoot))
@@ -158,8 +135,6 @@ struct ShortcutPolicyTests {
         #expect(!Self.raw(.copyPath, favoritesRoot))
     }
 
-    // T-709ce3da F-083
-    // B-TREE-150 B-TREE-154 T-ffb0bc5e
     @Test func pastesIntoTheTreesFolderFromTheTreeButNeverFromTheFavoritesRoot() {
         for kind in [SelectedTreeTargetKind.filesystemFolder, .favorite] {
             let treeContext = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: kind)
@@ -177,8 +152,6 @@ struct ShortcutPolicyTests {
                 Self.ctx(focusedPane: .tree, mainView: .help, selectedTreeTargetKind: .filesystemFolder)))
     }
 
-    // T-dcaeba9c F-083
-    // B-CLIP-002 B-TREE-105 B-TREE-150
     @Test func copiesAndCutsAFolderOfTheTreeButNeverAFavorite() {
         let treeFolder = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
         let pairs: [(RendererCommand, RawExplorerShortcutID)] = [
@@ -195,8 +168,6 @@ struct ShortcutPolicyTests {
         }
     }
 
-    // T-61d42520 F-083
-    // T-3f697d1f
     @Test func keepsTheDangerousRendererCommandDenylistFullyBlockedForTreeFoldersAndFavorites() {
         let dangerous: [RendererCommand] = [
             .editSelection, .moveSelection, .renameSelection, .duplicateSelection, .newFolder, .trashSelection,
@@ -207,7 +178,6 @@ struct ShortcutPolicyTests {
         }
     }
 
-    // T-b95c0791 F-083
     @Test func keepsTheDangerousRawShortcutDenylistFullyBlockedForTreeFoldersAndFavorites() {
         let dangerous: [RawExplorerShortcutID] = [
             .moveSelection, .renameSelection, .duplicateSelection, .newFolder, .trashSelection,
@@ -222,8 +192,6 @@ struct ShortcutPolicyTests {
         ShortcutPolicy.contextMenuShortcutLabel(actionID: action, context: context)
     }
 
-    // T-61d0b4a9 F-083
-    // B-TREE-144 T-91b32f12
     @Test func showsContextMenuShortcutBadgesOnlyForEnabledTreeFolderActions() {
         let treeFolder = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
         #expect(Self.badge("open", treeFolder) == "⌘O")
@@ -237,8 +205,6 @@ struct ShortcutPolicyTests {
         #expect(Self.badge("trash", treeFolder) == nil)
     }
 
-    // T-ec632f27 F-083
-    // B-TREE-144 T-91b32f12 T-a612b1ae
     @Test func showsTheSameSafeContextMenuShortcutBadgesForFavoritesAndNoneForFavoritesRoot() {
         let favorite = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .favorite)
         let favoritesRoot = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .favoritesRoot)
@@ -252,7 +218,6 @@ struct ShortcutPolicyTests {
         #expect(Self.badge("copyPath", favoritesRoot) == nil)
     }
 
-    // T-827a2584 F-083
     @Test func rootsTheTreeFromEitherPaneAndBadgesRootTreeHereInTheTreeMenus() {
         for pane in [FocusedPane?.some(.tree), .some(.content), nil] {
             let context = Self.ctx(focusedPane: pane, selectedTreeTargetKind: .filesystemFolder)
@@ -267,20 +232,17 @@ struct ShortcutPolicyTests {
                 == "⇧⌘R")
     }
 
-    // T-c4a3910c
-    // The compiler checks that the bucket table covers every command (the original's test compares key lists).
+    // The compiler checks that the bucket table covers every command.
     @Test func keepsRendererCommandTreeFocusBucketsExhaustive() {
         for command in RendererCommand.allCases {
             _ = ShortcutPolicy.treeFocusBucket(of: command)
         }
-        // The original's 71, and Duplicate Tab.
         #expect(RendererCommand.allCases.count == 72)
-        // The two commands the original keeps in two buckets' worth of notes.
+        // Two commands that sit with the global explorer ones.
         #expect(ShortcutPolicy.treeFocusBucket(of: .ejectVolume) == .globalExplorer)
         #expect(ShortcutPolicy.treeFocusBucket(of: .calculateSize) == .globalExplorer)
     }
 
-    // T-fb9e7595
     @Test func keepsRawShortcutTreeFocusBucketsExhaustive() {
         for shortcut in RawExplorerShortcutID.allCases {
             _ = ShortcutPolicy.treeFocusBucket(of: shortcut)

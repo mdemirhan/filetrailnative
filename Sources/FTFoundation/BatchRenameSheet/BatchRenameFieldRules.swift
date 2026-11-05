@@ -1,5 +1,3 @@
-// Port of NumberField, TextField's maxLength and FormatOptions' insertToken of
-// apps/desktop/src/renderer/components/BatchRenameSheet.tsx
 import Foundation
 
 /// A number field of the sheet (Start numbers at, Step): what is typed is kept as typed (it may be empty for a moment);

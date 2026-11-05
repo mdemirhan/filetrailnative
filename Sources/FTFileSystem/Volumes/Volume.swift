@@ -1,4 +1,3 @@
-// Port of the Volume type in packages/contracts/src/ipc.ts and the sort in apps/desktop/src/main/volumes.ts
 import Foundation
 
 /// A disk mounted besides the startup disk: a drive, a disk image or a network share.

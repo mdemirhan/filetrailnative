@@ -1,5 +1,3 @@
-// Port of the first cases of packages/core/src/fs/copyPasteExecution.test.ts ("copyPasteExecution"), on the mock
-// disk
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -13,7 +11,6 @@ let addMissing = CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip
 struct CopyPasteExecutionTests {
     // Add Missing leaves the files already there: progress runs to what is copied, not to the size of everything
     // picked.
-    // T-9a1d4621 F-447
     @Test func countsOnlyWhatAnAddMissingMergeCopiesTowardTheBytesToGo() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/F/a.txt", .file(size: 10)), ("/source/F/b.txt", .file(size: 20)),
@@ -30,7 +27,6 @@ struct CopyPasteExecutionTests {
         #expect(summary?.totalBytes == 20)
     }
 
-    // T-3d53c383 F-447
     @Test func copiesANewFileAndEmitsACompletedResult() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -44,7 +40,6 @@ struct CopyPasteExecutionTests {
         #expect(events.last?.result?.summary.completedItemCount == 1)
     }
 
-    // T-e0613e7b F-448
     @Test func copiesDirectoriesWithHiddenFilesAndHiddenFolders() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/.env", .file(size: 7)),
@@ -63,7 +58,6 @@ struct CopyPasteExecutionTests {
         #expect(fileSystem.exists("/target/Folder/visible.txt"))
     }
 
-    // T-1f1fa985 F-450
     @Test func keepsBothConflictingFilesWhenRequested() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/report.txt", .file(size: 7)), ("/target", .directory()),
@@ -78,7 +72,6 @@ struct CopyPasteExecutionTests {
         #expect(fileSystem.exists("/target/report copy 2.txt"))
     }
 
-    // T-dc4def7e F-450
     @Test func keepsBothConflictingDirectoriesByCreatingADuplicateDestinationAndCopyingChildrenIntoIt() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/a.txt", .file(size: 7)),
@@ -94,7 +87,6 @@ struct CopyPasteExecutionTests {
         #expect(fileSystem.readNode("/target/Folder copy 2/a.txt")?.size == 7)
     }
 
-    // T-ff86e124 F-273 F-451
     @Test func copiesSymlinksAsSymlinks() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/alias", .symlink("actual.txt")), ("/target", .directory()),
@@ -107,14 +99,13 @@ struct CopyPasteExecutionTests {
         #expect(fileSystem.readNode("/target/alias")?.target == "actual.txt")
     }
 
-    // T-e321bc6b F-257
     @Test func supportsCancellationDuringStreamCopy() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/slow.txt", .file(size: 5)), ("/target", .directory()),
         ])
-        // The original stops 5 ms in, while its copy takes 20. Here Stop comes while the copy runs whatever the
-        // machine is doing: from a thread of its own once the copy has begun, which the copy waits for. A timer on a
-        // shared queue could come after the copy had given up waiting, in a full run that keeps those queues busy.
+        // Stop comes while the copy runs whatever the machine is doing: from a thread of its own once the copy has
+        // begun, which the copy waits for. A timer on a shared queue could come after the copy had given up waiting,
+        // in a full run that keeps those queues busy.
         let copying = DispatchSemaphore(value: 0)
         fileSystem.copyFileImpl = { _, destination, stop, _ in
             let stopped = DispatchSemaphore(value: 0)
@@ -137,7 +128,6 @@ struct CopyPasteExecutionTests {
         #expect(!fileSystem.exists("/target/slow.txt"))
     }
 
-    // T-df49b768 F-279 F-461
     @Test func removesSourceFilesAfterSuccessfulCutAndPreservesChangedSourcesDuringCleanup() async throws {
         let moved = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -167,7 +157,6 @@ struct CopyPasteExecutionTests {
         #expect(changedSource.exists("/target/file.txt"))
     }
 
-    // T-447a6911 F-280 F-455
     @Test func reportsSkippedItemsAsAPartialResultWhenTheResolvedTopLevelActionIsSkip() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -182,7 +171,6 @@ struct CopyPasteExecutionTests {
         #expect(events.last?.result?.items.map(\.skipReason) == [.plannedConflictPolicy])
     }
 
-    // T-4981f124 F-257
     @Test func cancelsImmediatelyWhenTheSignalIsAlreadyAborted() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -196,7 +184,6 @@ struct CopyPasteExecutionTests {
         #expect(events.last?.status == .cancelled)
     }
 
-    // T-0290cd75 F-280 F-453 F-455
     @Test func reportsPartialAndFailedResultsWhenLaterOrFirstItemsFail() async throws {
         let partial = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/one.txt", .file(size: 1)), ("/source/two.txt", .file(size: 2)),
@@ -228,7 +215,6 @@ struct CopyPasteExecutionTests {
         #expect(failedEvents.last?.result?.error == "Permission denied")
     }
 
-    // T-340e0d10 F-324
     @Test func failsWhenARuntimeConflictIsNotResolvedAndCanSkipAChangedSourceAfterPrompting() async throws {
         let unresolved = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
@@ -260,7 +246,6 @@ struct CopyPasteExecutionTests {
         #expect(changedEvents.last?.result?.items.map(\.skipReason) == [.runtimeConflictResolution])
     }
 
-    // T-2d44909c F-260 F-466
     @Test func handlesDestinationChangesForOverwriteConflictsWithoutRePromptingAndPreservesNonEmptyCutFolders()
         async throws
     {

@@ -1,5 +1,4 @@
-// Port of apps/desktop/e2e/quit.spec.ts "quitting while a folder is measured ends the process at once", windowless:
-// what quitting stops, so that nothing keeps the process alive once the windows have closed
+// What quitting stops, so that nothing keeps the process alive once the windows have closed
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -30,7 +29,6 @@ private final class IdleWriteService: CoordinatorWriteService, @unchecked Sendab
 @MainActor
 @Suite struct QuitBackgroundWorkTests {
     // The whole startup disk: seconds to minutes to measure. Quitting stops the walk, and returns at once.
-    // F-306 T-9b246326 T-cde7943b
     @Test func quittingWhileAFolderIsMeasuredEndsAtOnce() async throws {
         let jobs = FolderSizeJobs(native: NativeFolderSize())
         let coordinator = WriteCoordinator(writeService: IdleWriteService())

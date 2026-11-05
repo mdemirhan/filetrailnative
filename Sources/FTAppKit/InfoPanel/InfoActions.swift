@@ -1,10 +1,10 @@
-// Port of what apps/desktop/src/renderer/hooks/useExplorerActions.ts does for the Info panel: copyGetInfoPath/Name, the
-// open, terminal, Finder and editor actions, runContextSubmenuAction, changeDefaultApp and Always Open With
+// The Info panel's actions: Copy Path and Copy Name, open, the terminal, Finder and editor actions, the context
+// submenus, changing the default app, and Always Open With
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The system actions behind the Info panel's buttons, with the notices the original shows when one fails.
+/// The system actions behind the Info panel's buttons, with the notices shown when one fails.
 @MainActor
 final class InfoActions {
     unowned let host: MainWindowController
@@ -31,7 +31,7 @@ final class InfoActions {
 
     init(host: MainWindowController) {
         self.host = host
-        // The window's alerts (`showModalNotice`, `confirmAlwaysOpenWith`).
+        // The window's alerts: a notice, and the question before Always Open With.
         notice = { [weak host] title, message in
             host?.showNotice(title: title, message: message)
         }
@@ -55,7 +55,7 @@ final class InfoActions {
 
     // MARK: Open
 
-    /// `openPathExternally`: a failure is only logged.
+    /// A failure is only logged.
     func openExternally(_ path: String) {
         if host.noteUseAndOpenDiskImage(path) { return }
         let opener = opener
@@ -89,7 +89,7 @@ final class InfoActions {
         }
     }
 
-    /// `editPathInTextEditor`: the panel can show an item that is not in the file list, so nothing is looked up.
+    /// The panel can show an item that is not in the file list, so nothing is looked up.
     func edit(_ path: String) {
         let editor = host.preferences.defaultTextEditor
         Task { @MainActor [weak self] in
@@ -99,7 +99,6 @@ final class InfoActions {
 
     // MARK: Open With
 
-    /// `openPathsWithApplication`.
     private func openPaths(_ paths: [String], app: (path: String, name: String)) async {
         host.onFolderUsed?()
         let result = await SystemActions.openPaths(paths, withApplication: app.path, opener: opener)
@@ -124,7 +123,7 @@ final class InfoActions {
         }
     }
 
-    /// `runContextSubmenuAction`: opens the items in the app chosen; Always Open With asks first.
+    /// Opens the items in the app chosen; Always Open With asks first.
     func runOpenWith(_ action: OpenWithAction, paths: [String], kind: OpenWithKind?) {
         Task { @MainActor [weak self] in
             guard let self, !paths.isEmpty, let app = await self.chosenApp(action) else { return }

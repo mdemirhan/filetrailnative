@@ -1,4 +1,3 @@
-// Port of withTiming (apps/desktop/src/main/bootstrap/responseCache.ts)
 import Foundation
 
 /// Runs `load` and reports it through `log` when it took long: slow-path logging is enough for production

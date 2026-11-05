@@ -1,28 +1,26 @@
-// Port of apps/desktop/src/renderer/lib/iconGridLayout.ts (the reveal) and the item rules of styles.css:7899-8111
-// (where an item, its tile and its name sit)
 import Foundation
 
-/// The rules of `.icon-item` and its parts that `IconGridLayout` does not hold.
+/// The parts of an icon item's look that `IconGridLayout` does not hold.
 public struct IconItemStyle: Equatable, Sendable {
-    /// `.icon-item` is `padding: 5px 1px 0`: its sides.
+    /// The item's padding at its sides.
     public var paddingInline: Double
-    /// `.icon-item` is 2 px shorter than its row.
+    /// An item is 2 px shorter than its row.
     public var heightInset: Double
-    /// `.icon-item-image`'s corners (`--radius-control`).
+    /// The tile's corners (the control radius).
     public var tileRadius: Double
     /// The tile of a selected item: the text colour at this share.
     public var selectedTileAlpha: Double
-    /// The name field while an item is renamed (`.icon-item.renaming .inline-rename-input`).
+    /// The name field while an item is renamed.
     public var renameHeight: Double
     public var renameFontSize: Double
-    /// `.file-thumbnail-img.framed`: corners, a hairline of the text colour around it, and a soft shadow under it.
+    /// A framed thumbnail: corners, a hairline of the text colour around it, and a soft shadow under it.
     public var thumbnailRadius: Double
     public var thumbnailHairlineWidth: Double
     public var thumbnailHairlineAlpha: Double
     public var thumbnailShadowOffsetY: Double
     public var thumbnailShadowBlur: Double
     public var thumbnailShadowAlpha: Double
-    /// `.clipboard-mark-badge`: a 1 px edge of the accent at 70%, a glyph 11 px square.
+    /// The clipboard mark's badge: a 1 px edge of the accent at 70%, a glyph 11 px square.
     public var badgeBorderWidth: Double
     public var badgeBorderAlpha: Double
     public var badgeGlyphSize: Double
@@ -57,7 +55,7 @@ public struct GridRect: Equatable, Sendable, Codable {
 }
 
 extension IconGridLayout {
-    /// `getIconGridRevealScrollTop`: the scroll offset that brings the row holding `itemIndex` whole into view, moving
+    /// The scroll offset that brings the row holding `itemIndex` whole into view, moving
     /// as little as possible. The first and last rows also bring in the padding next to them.
     public func revealScrollTop(
         currentScrollTop: Double, viewportHeight: Double, itemIndex: Int, itemCount: Int, columns: Int
@@ -73,7 +71,7 @@ extension IconGridLayout {
     }
 
     /// The width the columns share: the pane less its padding on both sides (on the right the scrollbar's gutter is in
-    /// it), as `.icon-grid-items` is.
+    /// it).
     public func gridWidth(containerWidth: Double) -> Double {
         max(0, containerWidth - paddingInline * 2)
     }
@@ -96,7 +94,7 @@ extension IconGridLayout {
             height: rowHeight - style.heightInset)
     }
 
-    /// The tile inside an item (`.icon-item-image`), from the item's top-left corner.
+    /// The tile inside an item, from the item's top-left corner.
     public func tileFrame(style: IconItemStyle) -> GridRect {
         GridRect(x: (cellMinWidth - iconBoxSize) / 2, y: itemPaddingTop, width: iconBoxSize, height: iconBoxSize)
     }

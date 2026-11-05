@@ -1,5 +1,3 @@
-// Ports the hidden files and Folders First cases of apps/desktop/src/renderer/App.tabs.test.tsx on real tabs of a window
-// that is never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -32,7 +30,6 @@ extension ExplorerWindowlessTests {
             return (harness, try await harness.open())
         }
 
-        // T-677d402c
         @Test func eachTabKeepsItsOwnHiddenFilesAndFoldersFirst() async throws {
             let (harness, first) = try await openWithAHiddenFile()
             let group = try #require(first.group)
@@ -64,7 +61,6 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-013d46d5
         @Test func aNewTabStartsWithTheHiddenFilesAndFoldersFirstOfItsSource() async throws {
             let (harness, first) = try await openWithAHiddenFile()
             first.perform(.toggleHiddenFiles)

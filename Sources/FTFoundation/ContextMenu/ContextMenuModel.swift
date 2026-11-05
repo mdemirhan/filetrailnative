@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/contextMenu.ts
 import Foundation
 
 /// Which menu: "background" is the empty space of the file list, whose menu acts on the folder on screen.
@@ -79,7 +78,6 @@ public enum ContextMenuItems {
 
     private static func line(_ key: String) -> ContextMenuItem { .separator(key: key) }
 
-    /// `getContextMenuItems`.
     public static func items(surface: ContextMenuSurface, options: ContextMenuOptions = .init()) -> [ContextMenuItem] {
         let favoriteToggleLabel = options.favoriteToggleLabel ?? "Add to Favorites"
         let textEditorName = options.textEditorName ?? "Text Editor"
@@ -173,7 +171,7 @@ public enum ContextMenuItems {
     }
 
     /// The items a menu shows: the hidden ones left out, and the separators that would stand first, last or twice in
-    /// a row dropped (`ItemContextMenu`'s `items`).
+    /// a row dropped.
     public static func visibleItems(
         surface: ContextMenuSurface, options: ContextMenuOptions = .init(), hidden: Set<ContextMenuActionID> = []
     ) -> [ContextMenuItem] {

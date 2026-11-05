@@ -1,5 +1,3 @@
-// Covers the Icon view in an explorer window that is never shown, by feature row (IconGridView.test.tsx and the Icons
-// cases of ContentPane.test.tsx)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -11,7 +9,7 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct IconsTests {
-        // T-6e87c0bd T-f96a5af5 F-757 F-758 F-759 B-VIEW-017 B-VIEW-018 B-VIEW-019 B-VIEW-020 B-VIEW-029: every item shows
+        // Every item shows
         // its name under its icon, 104 by 114 in the middle of columns that share the pane's width, and the arrow keys
         // step by the columns the grid holds.
         @Test func showsEveryItemWithItsNameUnderItsIconInColumns() async throws {
@@ -33,7 +31,7 @@ extension ExplorerWindowlessTests {
                 #expect(frame.minY == 10)
                 #expect(item.root.accessibilityLabel() == entry.name)
                 #expect(item.label.stringValue == entry.name)
-                // T-6e87c0bd B-VIEW-020: its tooltip, so a name shortened in the middle can be read whole.
+                // Its tooltip, so a name shortened in the middle can be read whole.
                 #expect(item.view.toolTip == entry.name)
                 #expect(item.tile.frame == NSRect(x: 16, y: 5, width: 72, height: 72))
                 #expect(item.iconBox.frame == NSRect(x: 4, y: 4, width: 64, height: 64))
@@ -64,9 +62,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-0c8c4dbd F-761 B-VIEW-008: a selected item's tile is the text colour at 10% and its name is on the accent with
+        // A selected item's tile is the text colour at 10% and its name is on the accent with
         // white text while the view has the keyboard; in a view without the keyboard the name's pill is grey.
-        // B-SEL-020
         @Test func marksTheSelectionAndTellsAnUnfocusedOneApart() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
@@ -94,7 +91,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-604b6bb1 F-760 B-VIEW-025 B-VIEW-069 B-VIEW-071 B-VIEW-073: a press on the tile or the name selects, the space
+        // A press on the tile or the name selects, the space
         // around them is empty space that clears the selection, and a double-click opens.
         @Test func forwardsSelectionGesturesOpeningAndClicksOnTheEmptySpace() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -116,9 +113,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-abb88964 F-758 B-VIEW-010 B-VIEW-019: only the rows near the viewport have items; the content is as tall as
+        // Only the rows near the viewport have items; the content is as tall as
         // every row and the padding.
-        // B-VIEW-001
         @Test func mountsOnlyTheRowsNearTheViewport() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons, files: 600)
@@ -133,10 +129,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-028 B-VIEW-030 B-VIEW-087 B-VIEW-089: arrows move an item or a row, the lead is brought into view with the
+        // Arrows move an item or a row, the lead is brought into view with the
         // least scroll, and a page moves by the rows that fit.
-        // B-NAV-144 B-NAV-147 B-NAV-148 B-NAV-155 B-NAV-165 B-SEL-046 B-SEL-050 B-SEL-062 T-2df6b189
-        // T-39bda507
         @Test func arrowsAndPagesMoveByRowsAndKeepTheLeadInView() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons, files: 300)
@@ -165,7 +159,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-5b2c54f7 T-8b04180b F-759 B-VIEW-090: a name is edited in place under its icon, in a field as wide as the
+        // A name is edited in place under its icon, in a field as wide as the
         // label, centred, 20 tall; the item is drawn selected without the keyboard meanwhile.
         @Test func editsANameInPlaceUnderItsIcon() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -187,7 +181,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-d2171882 F-778 B-VIEW-027: the empty folder's message is drawn in place of the items.
+        // The empty folder's message is drawn in place of the items.
         @Test func drawsTheEmptyMessageInPlaceOfItems() async throws {
             let harness = try ExplorerHarness.windowless()
             let empty = harness.folder.appending("Empty")
@@ -199,7 +193,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // B-VIEW-021 B-VIEW-022: a name too long for two lines keeps its first line and is shortened in the middle,
+        // A name too long for two lines keeps its first line and is shortened in the middle,
         // keeping the end of the stem and the extension.
         @Test func longNamesAreShortenedInTheMiddle() {
             let name = "Panorama of the Miradouro da Senhora do Monte at sunset.jpeg"
@@ -211,8 +205,7 @@ extension ExplorerWindowlessTests {
             #expect(IconLabelText.fit(name: "note.txt", extension: "txt", density: .standard) == "note.txt")
         }
 
-        // B-VIEW-024: an item on the clipboard gets an 18 pt badge on the corner of its tile, 4 pt out.
-        // B-VIEW-076 T-dc1fd0e6
+        // An item on the clipboard gets an 18 pt badge on the corner of its tile, 4 pt out.
         @Test func anItemOnTheClipboardGetsABadge() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
@@ -228,9 +221,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // T-b690c3e9 T-e76bca54 B-VIEW-026: when the Info panel opens the items go to their new columns at once and each
+        // When the Info panel opens the items go to their new columns at once and each
         // glides from where it was; a resize for another reason moves them without the glide.
-        // B-INFO-186 B-VIEW-104
         @Test func itemsGlideToTheirNewPlacesWhenTheInfoPanelOpens() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons, files: 40)
@@ -261,9 +253,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-758 B-VIEW-028: a change of the layout (a narrower pane, a lower one, the density) keeps the lead in view,
-        // unless the grid was scrolled since (useRevealIndex's keepInView).
-        // B-NAV-051 B-SEL-065
+        // A change of the layout (a narrower pane, a lower one, the density) keeps the lead in view,
+        // unless the grid was scrolled since.
         @Test func keepsTheLeadInViewWhenTheLayoutChangesUnlessScrolledSince() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons, files: 400)
@@ -298,8 +289,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-757: the Icons view doesn't read the details of the items on screen; only the List shows them.
-        // B-VIEW-012
+        // The Icons view doesn't read the details of the items on screen; only the List shows them.
         @Test func doesNotReadTheDetailsOfTheItemsOnScreen() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openGrid(.viewAsIcons, files: 20)

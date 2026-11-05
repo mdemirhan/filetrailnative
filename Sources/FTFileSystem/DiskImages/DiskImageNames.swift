@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/shared/diskImages.ts
 import Foundation
 
 /// The disk images macOS mounts when one is opened: the extensions DiskImageMounter opens. File Trail mounts

@@ -1,4 +1,3 @@
-// Port of the item ids, locations and rows of apps/desktop/src/renderer/lib/favorites.ts and TreeNodeState of components/TreePane.tsx
 import Foundation
 
 /// A row of the sidebar, by what it is: a heading, a favorite, a place under Locations or a folder of the tree. The
@@ -60,7 +59,7 @@ public enum TreeItemID: Hashable, Sendable {
         return nil
     }
 
-    /// A favorite or a location: a sidebar row that goes to its folder (`getShortcutItemPath`).
+    /// A favorite or a location: a sidebar row that goes to its folder.
     public var shortcutPath: String? {
         favoritePath ?? locationPath
     }
@@ -105,7 +104,7 @@ public struct SidebarLocation: Equatable, Sendable {
     }
 }
 
-/// What the sidebar needs of a mounted disk (`buildSidebarLocations`' parameter).
+/// What the sidebar needs of a mounted disk.
 public struct SidebarVolume: Equatable, Sendable {
     public var path: String
     public var name: String
@@ -155,7 +154,7 @@ public struct TreeNodeState: Equatable, Sendable {
         self.childPaths = childPaths
     }
 
-    /// `createTreeNode`: a folder not read yet; "Macintosh HD" for `/`.
+    /// A folder not read yet; "Macintosh HD" for `/`.
     public init(path: String, expanded: Bool) {
         self.init(
             path: path, name: path == "/" ? "Macintosh HD" : (JSString.components(path, separator: 0x2F).last ?? path),
@@ -163,8 +162,8 @@ public struct TreeNodeState: Equatable, Sendable {
     }
 }
 
-/// The folders of a tab's tree by path, keyed by the exact code units of the path as a `Map` is (the NFC and NFD
-/// spellings of a name are two folders).
+/// The folders of a tab's tree by path, keyed by the exact code units of the path (the NFC and NFD spellings of a
+/// name are two folders).
 public struct TreeNodes: Equatable, Sendable {
     private var storage: [ExactKey: TreeNodeState] = [:]
 

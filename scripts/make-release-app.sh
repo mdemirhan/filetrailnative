@@ -1,6 +1,4 @@
 #!/bin/bash
-# Port of apps/desktop/scripts/make-macos-app.sh, without what is about Electron.
-# Makes the app people download, under build/release/; see usage below.
 set -Eeuo pipefail
 
 if [[ "$(uname -s)" != "Darwin" ]]; then

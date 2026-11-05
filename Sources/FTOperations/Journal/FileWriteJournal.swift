@@ -1,4 +1,3 @@
-// Port of openWriteJournal, readEntries, isEntry and writeWhole (apps/desktop/src/main/bootstrap/writeJournal.ts)
 import Darwin
 import Foundation
 import os
@@ -8,7 +7,7 @@ import os
 /// is in the file before the write goes on.
 public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     private struct State {
-        /// By id, in the order first added, as a JavaScript Map keeps them.
+        /// By id, in the order first added.
         var order: [String] = []
         var entries: [String: WriteJournalEntry] = [:]
     }
@@ -34,9 +33,9 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
         self.state = OSAllocatedUnfairLock(initialState: state)
     }
 
-    /// `openWriteJournal(filePath)`: the journal kept in `filePath`, with what it already holds. A file that can't
-    /// be read as one is put aside (`<file>.unreadable-<ms>`), so the next write doesn't erase what it may still
-    /// say, and the journal starts empty.
+    /// The journal kept in `filePath`, with what it already holds. A file that can't be read as one is put aside
+    /// (`<file>.unreadable-<ms>`), so the next write doesn't erase what it may still say, and the journal starts
+    /// empty.
     public static func open(_ filePath: String) -> FileWriteJournal {
         open(filePath, writeFile: writeWhole)
     }

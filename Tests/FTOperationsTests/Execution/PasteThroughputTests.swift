@@ -19,7 +19,6 @@ struct PasteThroughputTests {
     // copyfile call of the same flags and no callback. Each of the first two keeps within 5 % of the bare call. Other
     // builds load the machine meanwhile: the three take turns, 15 runs each (one copy takes a fifth of a second, so
     // a few runs are noisy), and their fastest runs are compared, as load only ever adds time. Being faster is fine.
-    // F-404 F-410 F-453
     // A budget, not a behavior: a busy Mac can miss it, so it runs with the other budgets (tools/bench/listing.sh).
     @Test(
         .tags(.diskImage), .diskImages,
@@ -103,7 +102,7 @@ struct PasteThroughputTests {
     }
 
     // The tree of exec-copy's "copy a folder with nested items, hidden ones, an empty folder and links": the time
-    // its paste takes, 25 runs, reported beside the reference's (measured the same way under Bun).
+    // its paste takes, 25 runs, printed as a median.
     @Test func reportsTheTimeASmallFoldersPasteTakes() async throws {
         var times: [Double] = []
         for _ in 0..<25 {

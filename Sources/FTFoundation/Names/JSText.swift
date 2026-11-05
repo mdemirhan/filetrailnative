@@ -1,9 +1,8 @@
-// Port of the JavaScript string behavior packages/contracts/src/itemName.ts and copyPasteNames.ts rely on
 import Foundation
 
-/// JavaScript's string rules where Swift's differ: `trim`, `trimEnd`, `toLowerCase`, UTF-16 length.
+/// String rules where Swift's differ: trimming, lowercasing, UTF-16 length.
 enum JSText {
-    /// `WhiteSpace` and `LineTerminator` of ECMAScript, which `String.prototype.trim` removes.
+    /// `WhiteSpace` and `LineTerminator` of ECMAScript, which trimming removes.
     static func isTrimmed(_ scalar: Unicode.Scalar) -> Bool {
         switch scalar.value {
         case 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x20, 0xA0, 0x2028, 0x2029, 0xFEFF:

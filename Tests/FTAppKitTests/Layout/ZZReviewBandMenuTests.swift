@@ -1,5 +1,3 @@
-// Ports the toolbar band's menus and right-click of apps/desktop/src/renderer/components/ExplorerWorkspace.tsx
-// (handleToolbarContextMenu, the window-toolbar header) on a window whose band is the system toolbar's
 import AppKit
 import FTFoundation
 import Foundation
@@ -22,7 +20,6 @@ extension ExplorerWindowlessTests {
         }
 
         // A menu opened in the band stands over the title bar for a scenario and takes its presses.
-        // covered-by-feature F-700
         @Test func aMenuOpenedInTheBandTakesPressesThere() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

@@ -1,5 +1,3 @@
-// Port of FolderSizeCell (components/GetInfoPanel.tsx) and InfoRowFolderSize (components/InfoRow.tsx), with the
-// .folder-size-* rules of styles.css:3340-3430 and 6263-6275
 import AppKit
 import FTFoundation
 
@@ -110,7 +108,7 @@ final class FolderSizeCellView: NSView {
     private let stop = ClearButton()
     private let delay = DelayedFlag()
 
-    /// `.folder-size-value`/`.folder-size-calculating`: a 6 pt gap.
+    /// The gap between the size and the button after it: 6 pt.
     static let gap = 6.0
     static let refreshSize = 11.0
 

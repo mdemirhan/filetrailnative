@@ -1,17 +1,14 @@
-// Port of the tree-root cases of apps/desktop/src/renderer/lib/explorerAppUtils.test.ts and the tree helpers of lib/explorerNavigation.ts
 import Testing
 
 @testable import FTFoundation
 
 struct TreePathsTests {
-    // T-c6941446 F-733
     @Test func rootsTheTreeAtHomeForPathsInsideHome() {
         #expect(
             TreePaths.resolveRootPath(for: "/Users/demo/projects/filetrail", homePath: "/Users/demo") == "/Users/demo")
         #expect(TreePaths.resolveRootPath(for: "/Users/demo", homePath: "/Users/demo") == "/Users/demo")
     }
 
-    // T-7d4e382e
     @Test func rootsTheTreeAtSlashForPathsAboveHome() {
         #expect(TreePaths.resolveRootPath(for: "/Users", homePath: "/Users/demo") == "/")
         #expect(TreePaths.resolveRootPath(for: "/Applications", homePath: "/Users/demo") == "/")
@@ -19,7 +16,6 @@ struct TreePathsTests {
         #expect(TreePaths.resolveRootPath(for: "/Users/demo", homePath: "") == "/")
     }
 
-    // T-52453124
     @Test func rootsTheTreeAtTheDiskForAFolderOnAnotherDisk() {
         #expect(
             TreePaths.resolveRootPath(for: "/Volumes/Backup/Photos", homePath: "/Users/demo") == "/Volumes/Backup")
@@ -28,8 +24,6 @@ struct TreePathsTests {
         #expect(TreePaths.resolveRootPath(for: "/Volumes", homePath: "/Users/demo") == "/")
     }
 
-    // T-3cb0cb67
-    // B-NAV-097 B-TREE-074
     @Test func keepsOtherDisksOutOfATreeRootedAtMacintoshHD() {
         #expect(TreePaths.isWithinTreeRoot("/Applications/Utilities", "/"))
         #expect(TreePaths.isWithinTreeRoot("/Volumes", "/"))
@@ -54,7 +48,6 @@ struct TreePathsTests {
         #expect(seed.map(\.childPath) == ["/a", "/a/b", nil])
     }
 
-    // T-431cfb70 T-56d4103f B-TREE-084
     @Test func keepsTheOneHiddenChildOnTheWayToTheFolderOnScreen() {
         #expect(
             TreePaths.forcedVisibleHiddenChild(of: "/Users/demo", activePath: "/Users/demo/.config/app")
@@ -70,7 +63,6 @@ struct TreePathsTests {
         #expect(!TreePaths.hasHiddenSegment("/etc/.x", withinRoot: "/Users/demo"))
     }
 
-    // T-223415d5 T-4becddde T-38c52395 B-TREE-085
     @Test func addsAnOpenPackageToItsParentsChildrenInNameOrder() {
         #expect(
             TreePaths.forcedVisiblePackageChild(of: "/Applications", activePath: "/Applications/Safari.app/Contents")

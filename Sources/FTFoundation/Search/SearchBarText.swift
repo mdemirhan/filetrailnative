@@ -1,18 +1,16 @@
-// Port of the words and rules of apps/desktop/src/renderer/components/SearchBar.tsx (SearchResultsState, the bar's
-// labels), buildSearchScopeOptions (App.tsx:2954-2975) and the timings of hooks/useExplorerSearchController.ts
 import Foundation
 
 /// How long things wait while searching.
 public enum SearchTiming {
-    /// Typing searches on its own once the trimmed text is this long (`LIVE_SEARCH_MIN_LENGTH`).
+    /// Typing searches on its own once the trimmed text is this long.
     public static let liveSearchMinLength = 2
-    /// …and the keyboard has been still for this long (`LIVE_SEARCH_DELAY_MS`).
+    /// …and the keyboard has been still for this long.
     public static let liveSearchDelay: TimeInterval = 0.4
-    /// The search on screen is asked for news this often (`SEARCH_POLL_INTERVAL_MS`).
+    /// The search on screen is asked for news this often.
     public static let pollInterval: TimeInterval = 0.12
-    /// A background tab's search, this often (`BACKGROUND_SEARCH_POLL_INTERVAL_MS`).
+    /// A background tab's search, this often.
     public static let backgroundPollInterval: TimeInterval = 1
-    /// Stop and its spinner come only for a search that runs on this long (`SEARCH_STOP_DELAY_MS`).
+    /// Stop and its spinner come only for a search that runs on this long.
     public static let stopDelay: TimeInterval = 0.4
 
     /// `text.trim()`: what a query is searched as.
@@ -56,7 +54,7 @@ public enum SearchBarText {
     public static let optionsTitle = "Search Options"
     public static let optionsName = "Search options"
 
-    /// `buildSearchScopeOptions`: the folder on screen, Home, the disk it is on when that is another disk, and
+    /// The folder on screen, Home, the disk it is on when that is another disk, and
     /// Macintosh HD, without repeats (the first of two with the same path wins).
     public static func scopeOptions(currentPath: String, homePath: String) -> [SearchScopeOption] {
         let volume = TreePaths.volumeRootPath(currentPath)

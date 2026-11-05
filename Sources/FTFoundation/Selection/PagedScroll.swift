@@ -1,10 +1,9 @@
-// Port of apps/desktop/src/renderer/lib/pagedScroll.ts
 import Foundation
 
 /// Scrolling by the amount a page of lines moved.
 public enum PagedScroll {
     /// Where a scroll by `delta` lands, stopping at either end, or nil when nothing would scroll: the view can't scroll
-    /// that way, or it moves by a point or less (`scrollElementByAmount`).
+    /// that way, or it moves by a point or less.
     public static func nextOffset(viewportSize: Double, scrollSize: Double, currentOffset: Double, delta: Double)
         -> Double?
     {

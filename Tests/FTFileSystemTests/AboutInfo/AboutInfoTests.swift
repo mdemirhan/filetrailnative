@@ -1,5 +1,4 @@
-// Port of apps/desktop/src/main/aboutInfo.test.ts: the build's version and commit now come from the app's Info.plist, and
-// the licenses from Resources/Acknowledgements
+// The build's version and commit now come from the app's Info.plist, and the licenses from Resources/Acknowledgements
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -8,7 +7,6 @@ import Testing
 @testable import FTFileSystem
 
 @Suite struct AboutInfoTests {
-    // T-68d00b02 F-921
     @Test func findsTheAcknowledgementsFolderInTheAppOrBesideTheSource() throws {
         try withTemporaryDirectory { root in
             let app = root.appending("Resources/Acknowledgements")
@@ -25,7 +23,6 @@ import Testing
         }
     }
 
-    // T-a753ba59 F-924
     @Test func readsTheCommitTheBuildRecordedAndDoesWithoutOne() {
         #expect(BuildInfo.commit(from: nil) == nil)
         #expect(BuildInfo.commit(from: [:]) == nil)
@@ -34,7 +31,6 @@ import Testing
         #expect(BuildInfo.commit(from: ["FTCommit": "df11088"]) == "df11088")
     }
 
-    // T-571dc8b6 F-924
     @Test func readsTheVersionTheBuildRecordedAndDoesWithoutOne() {
         #expect(BuildInfo.version(from: nil) == nil)
         #expect(BuildInfo.version(from: ["FTCommit": "df11088"]) == nil)
@@ -44,7 +40,6 @@ import Testing
             ]) == "0.1.0+dev.4")
     }
 
-    // T-deff515e F-640
     @Test func namesAMacOSVersionTheWayMacOSDoes() {
         #expect(
             AboutInfoReader.versionString(OperatingSystemVersion(majorVersion: 27, minorVersion: 0, patchVersion: 0))
@@ -65,7 +60,6 @@ import Testing
         #expect(bare.fdVersion == FdBinary.manifest.version)
     }
 
-    // T-f3735749 F-640 F-921
     @Test func listsTheBundledSoftwareWithEachLicenseAsShipped() throws {
         try withTemporaryDirectory { root in
             let folder = root.appending("Acknowledgements")
@@ -88,7 +82,7 @@ import Testing
         }
     }
 
-    // F-921 the list the repository ships is what the generator writes: fd and its two licenses
+    // The list the repository ships is what the generator writes: fd and its two licenses
     @Test func theCheckedInListHasFdWithBothLicenses() throws {
         let list = try Acknowledgements.read(
             Acknowledgements.Locations(resources: nil, sourceTree: Acknowledgements.Locations.standard.sourceTree))
@@ -97,5 +91,4 @@ import Testing
         #expect(list.first?.text.contains("MIT License") == true)
         #expect(list.first?.text.contains("Apache License") == true)
     }
-    // N/A T-725c5857 T-267cd409 T-6a3ab821 T-cf26e7f5 T-c77dd85a Chromium's notices are not in the native bundle
 }

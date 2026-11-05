@@ -1,5 +1,5 @@
-// Checkpoint resume-2026-10-19 (143, 148, 156, 159, 59): a label laid out at the original's text width draws its whole
-// text, left, centered or right-aligned, on one line or wrapped
+// A label laid out at its text's width draws its whole text, left, centered or right-aligned, on one line or
+// wrapped
 import AppKit
 import Testing
 
@@ -66,7 +66,7 @@ struct TextBoxFieldTests {
     }
 
     @Test func aPlainLabelCutsTheSameText() {
-        // What the checkpoint saw: AppKit's own label draws "TripCard.j…" in the text's width.
+        // AppKit's own label draws "TripCard.j…" in the text's width.
         let font = ChromeColors.font(size: 15, weight: 600)
         let plain = NSTextField(labelWithString: "TripCard.jsx")
         plain.font = font
@@ -94,7 +94,7 @@ struct TextBoxFieldTests {
         #expect(box < 40 + 2)
     }
 
-    // P5-11: the other labels laid out at their text's width are text boxes too: FlushTextField (the Info Row, folder
+    // The other labels laid out at their text's width are text boxes too: FlushTextField (the Info Row, folder
     // sizes, menus, the toolbar's title) and ListLabel's ThemedTextCell, with its leading inset.
     @Test func flushAndListLabelsDrawTheirWholeText() throws {
         #expect(FlushTextField(labelWithString: "x").cell is TextBoxCell)

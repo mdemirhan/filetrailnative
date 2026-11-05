@@ -1,5 +1,4 @@
-// Port of the Replace cases of packages/core/src/fs/copyPasteUndoLog.realfs.test.ts (its other cases are in
-// Execution/UndoRecordingTests.swift): what a Replace records for Undo
+// What a Replace records for Undo
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -38,7 +37,6 @@ private func withFolders(_ body: (_ src: String, _ dst: String, _ trash: String)
 }
 
 struct CopyUndoReplaceTests {
-    // T-271c5c8b F-342
     @Test func recordsTheOldItemsPlaceInTheTrashThenTheNewItemForAReplace() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/a.txt", "new")
@@ -69,7 +67,6 @@ struct CopyUndoReplaceTests {
     }
 
     // The Trash's size, and the sizes of what holds it, stayed as they were.
-    // T-b2b14d9c F-342
     @Test func saysWhereInTheTrashTheItemsAReplaceMovedOutOfTheWayWent() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/a.txt", "new")
@@ -84,7 +81,6 @@ struct CopyUndoReplaceTests {
         }
     }
 
-    // T-a1ed3e3b
     @Test func cantBeUndoneWhenAllAMergeDidWasReplaceAnItemInTheFolder() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/Folder/a.txt", "new")
@@ -99,7 +95,6 @@ struct CopyUndoReplaceTests {
         }
     }
 
-    // T-41d67e83 F-343
     @Test func cantBeUndoneOnceAReplaceDeletesTheOldItemForGood() async throws {
         try await withFolders { src, dst, _ in
             try Disk.write(src + "/a.txt", "new")
@@ -119,7 +114,6 @@ struct CopyUndoReplaceTests {
 }
 
 struct MoveUndoReplaceTests {
-    // T-36ef50f8 F-342
     @Test func recordsTheOldItemsPlaceInTheTrashThenTheMoveForAReplace() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/a.txt", "new")
@@ -149,7 +143,6 @@ struct MoveUndoReplaceTests {
         }
     }
 
-    // T-ca0ca81f
     @Test func cantBeUndoneWhenAllAMergeOnItsOwnDiskDidWasReplaceAnItem() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/Folder/a.txt", "new")
@@ -166,7 +159,6 @@ struct MoveUndoReplaceTests {
 
     // The source seems to be on a disk of its own (another device number, EXDEV out of it), so the move copies and
     // then removes, as one to a real other disk does.
-    // T-17121de6
     @Test func leavesUndoAsItWasWhenAReplaceCouldntCopyTheNewItem() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/a.txt", "new")
@@ -189,7 +181,6 @@ struct MoveUndoReplaceTests {
 
     // The source seems to be on a disk of its own, as above. The Trash the replaced item goes to is on the disk it
     // is on, as a real disk's own Trash is.
-    // T-4492a990
     @Test func cantBeUndoneOnceAReplacePutTheNewItemInPlace() async throws {
         try await withFolders { src, dst, trash in
             try Disk.write(src + "/a.txt", "new")

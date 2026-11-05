@@ -1,5 +1,4 @@
-// Port of what apps/desktop/src/renderer/App.tsx hands the content pane's path bar (:2395-2432): navigation, new tabs,
-// folder children and path suggestions
+// Navigation, new tabs, folder children and path suggestions
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -47,7 +46,7 @@ extension MainWindowController {
     }
 
     /// The path bar shows the folder on screen; in search mode where the one selected result is, as Finder's does, or
-    /// else the folder the search runs from (`pathbarPath`, B-SRCH-111).
+    /// else the folder the search runs from.
     func updatePathBar() {
         let bar = content.contentShell.pathBarRow
         guard let searchRootPath else {

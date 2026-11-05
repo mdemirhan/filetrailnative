@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/components/ListFilterPill.tsx and the .list-filter-pill rules of styles.css:1895-1934
 import AppKit
 import FTFoundation
 

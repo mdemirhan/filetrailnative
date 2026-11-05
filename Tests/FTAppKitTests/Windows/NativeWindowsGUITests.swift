@@ -1,4 +1,3 @@
-// Ports the flows of apps/desktop/e2e/windows.spec.ts on real windows and native tabs, in process
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -55,8 +54,6 @@ struct NativeWindowsGUITests {
         await settle()
     }
 
-    // T-a9d9c6ee F-620 F-673 F-630 F-628 F-629 B-VIEW-178 B-VIEW-179 B-VIEW-162
-    // B-TREE-184 T-aaa40113 T-f3444ecb
     @Test func opensTabsMovesOneToAWindowOfItsOwnAndMergesTheWindowsBack() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -94,8 +91,8 @@ struct NativeWindowsGUITests {
         await closeAll(app)
     }
 
-    // App.tsx `blocked: copyPasteModalOpen` and TabStrip.tsx `preventDefault`: while a name is edited a press on a tab
-    // does nothing and the field stays. The system's tab bar has no type to ask, so this checks its class names too.
+    // While a name is edited a press on a tab does nothing and the field stays. The system's tab bar has no type to
+    // ask, so this checks its class names too.
     @Test func theTabBarTakesNoPressWhileANameIsEdited() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -150,7 +147,6 @@ struct NativeWindowsGUITests {
         await closeAll(app)
     }
 
-    // T-959a0c89 F-615 F-616 F-621 F-607 F-622 F-611 B-VIEW-176
     @Test func bringsBackEachWindowsPlaceTabsAndWhichWasInFrontAtTheNextLaunch() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -217,7 +213,6 @@ struct NativeWindowsGUITests {
         NSApp.windowsMenu?.items.first { $0.target as? NSWindow === window }?.title
     }
 
-    // F-652 T-40d16427
     @Test func namesEachWindowInTheWindowMenuAfterItsTabsLabelAndTheToolbarAfterItsFolder() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -244,7 +239,7 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { windowsMenuTitle(of: second.window) == secondLabel })
         #expect(windowsMenuTitle(of: first.window) == firstLabel)
         #expect(second.window?.tab.title == secondLabel)
-        // The toolbar keeps the folder's own name, as the original's toolbar does.
+        // The toolbar keeps the folder's own name.
         #expect(second.window?.title == "Sub")
 
         // Bringing the other tab to the front leaves the names as they are.
@@ -255,7 +250,7 @@ struct NativeWindowsGUITests {
         await closeAll(app)
     }
 
-    // MARK: e2e windows.spec.ts
+    // MARK: Opening and closing windows
 
     /// The menu bar of the app on `app`'s windows, wired as the app delegate wires it.
     private func menuBar(_ app: App) -> MainMenu {
@@ -270,8 +265,6 @@ struct NativeWindowsGUITests {
         return menu
     }
 
-    // T-f5fc5b34 F-620 F-615 F-622 B-VIEW-177
-    // B-TREE-083 B-TREE-184 T-8a72ceff T-944eeb1e
     @Test func opensWindowsOnTheFolderOnScreenAndBringsBackThoseOpenAtQuit() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -322,7 +315,6 @@ struct NativeWindowsGUITests {
         await closeAll(relaunched)
     }
 
-    // T-90c6b35c F-622 F-623 F-619
     @Test func staysOpenWithNoWindowAndOpensOneWhereTheLastOneClosed() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -357,7 +349,7 @@ struct NativeWindowsGUITests {
         #expect(await waitUntil { frontTab(app)?.folder.path == folder.appending("Sub").path })
         await closeOnlyWindow()
 
-        // A place in the Go menu opens a window there. Applications rather than the original's Desktop, whose
+        // A place in the Go menu opens a window there. Applications rather than Desktop, whose
         // contents macOS asks the user before showing.
         menu.router.choose(itemID: RendererCommand.goApplications.rawValue)
         #expect(await waitUntil { groupCount(app) == 1 && frontTab(app)?.folder.path == "/Applications" })
@@ -375,17 +367,6 @@ struct NativeWindowsGUITests {
 
     // MARK: The tab bar
 
-    // The rules of the original's own tab strip that the system tab bar takes over:
-    // N/A B-VIEW-145 the system tab bar owns clicks, keys and focus on tabs; middle-click is not available
-    // N/A B-VIEW-147 the system tab bar keeps the tab in front in view
-    // N/A B-VIEW-148 the system tab bar owns tab drags
-    // N/A B-VIEW-150 no tab menu of the app's on the system tab bar; Duplicate Tab is in the File menu
-    // N/A B-VIEW-151 no tab menu of the app's on the system tab bar
-    // N/A B-VIEW-152 the system tab bar takes no file drags
-    // N/A B-VIEW-153 the system tab bar takes no file drops and has no spring-loaded tabs
-
-    // F-673 B-VIEW-142 B-VIEW-146 B-VIEW-156 B-VIEW-157
-    // B-TREE-058 T-490b3d0b
     @Test func showsTheTabBarWithMoreThanOneTabAndOpensTabsAfterTheOneOnScreen() async throws {
         let folder = try folders()
         defer { folder.remove() }
@@ -426,9 +407,7 @@ struct NativeWindowsGUITests {
         await closeAll(app)
     }
 
-    // F-616 B-VIEW-175 B-NAV-187 B-NAV-188
-    // T-9bca212e: chosen in the system's tab bar, a tab reads its folder again.
-    // B-NAV-194
+    // Chosen in the system's tab bar, a tab reads its folder again.
     @Test func aTabChosenInTheTabBarReadsItsFolderAgain() async throws {
         let folder = try folders()
         defer { folder.remove() }

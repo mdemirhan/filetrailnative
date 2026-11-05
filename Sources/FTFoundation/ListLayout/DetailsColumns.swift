@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/detailsLayout.ts
 import Foundation
 
 /// The List view's columns as it draws them: which are shown (Name first), and how wide each is.
@@ -15,7 +14,7 @@ public struct DetailsColumnSet: Equatable, Sendable {
 }
 
 public enum DetailsColumns {
-    /// `getVisibleDetailColumns`: Name is always first; the chosen optional columns follow in the order set in
+    /// Name is always first; the chosen optional columns follow in the order set in
     /// Settings.
     public static func visible(visibility: DetailColumnVisibility, order: [OptionalDetailColumnKey]) -> [DetailColumn] {
         [.name] + order.filter { visibility[$0] }.compactMap { DetailColumn(rawValue: $0.rawValue) }
@@ -43,7 +42,7 @@ public enum DetailsColumns {
         ]
     }
 
-    /// `getDetailsTableWidth`: the columns, the gaps between them and the row padding. Rows are also at least as
+    /// The columns, the gaps between them and the row padding. Rows are also at least as
     /// wide as the pane.
     public static func tableWidth(widths: [DetailColumn: Double], columns: [DetailColumn], layout: DetailsLayout)
         -> Double
@@ -52,7 +51,7 @@ public enum DetailsColumns {
         return content + Double(max(0, columns.count - 1)) * layout.columnGap + layout.rowPadding
     }
 
-    /// `fitDetailColumns`: fits the columns into the pane instead of letting the table scroll sideways. When the
+    /// Fits the columns into the pane instead of letting the table scroll sideways. When the
     /// pane is too narrow, Name first gives up width (down to `nameFloorWidth`), then columns drop away one at a
     /// time from the right. The saved widths and the saved column choices are not changed: everything comes back
     /// when the pane is wider again. An `availableWidth` of 0 means the pane has not been measured yet, so nothing
@@ -81,7 +80,7 @@ public enum DetailsColumns {
         return DetailsColumnSet(columns: kept, widths: fitted)
     }
 
-    /// `getColumnFitWidth`: the width that shows a column's title and its widest value whole (a double-click on its
+    /// The width that shows a column's title and its widest value whole (a double-click on its
     /// divider, as in Finder), kept within the column's limits by `clamp`. Permissions fits its codes alone: its
     /// title is three times as wide as "755", and ends in an ellipsis instead. `valueExtraWidth` is what a cell
     /// holds besides its text: the icon and its gap, in the Name column.
@@ -100,7 +99,7 @@ public enum DetailsColumns {
         return min(max(width.rounded(), limits.min), limits.max)
     }
 
-    /// The titles of the columns (`LIST_COLUMN_LABELS`).
+    /// The titles of the columns.
     public static func title(_ column: DetailColumn) -> String {
         SearchColumnKey(rawValue: column.rawValue)?.label ?? column.rawValue
     }

@@ -42,7 +42,7 @@ final class FakeFileSystem: ExplorerFileSystem, @unchecked Sendable {
     func realpath(_ path: String) throws -> String { try realpathHandler(path) }
 }
 
-/// `fakeStats` of the original's tests.
+/// A fake file's stats: a directory, a file, a symlink or other, with fixed dates.
 func fakeStats(
     directory: Bool, file: Bool, size: Int64, symbolicLink: Bool = false, mtimeMs: Int64? = 1_704_153_600_000,
     birthtimeMs: Int64? = 1_704_067_200_000
@@ -52,7 +52,7 @@ func fakeStats(
         birthtimeMs: birthtimeMs, mtimeMs: mtimeMs, mode: directory ? 0o755 : 0o644)
 }
 
-/// `fakeDirent` of the original's tests.
+/// A fake directory entry.
 func fakeDirent(_ name: String, directory: Bool = false, file: Bool = false, symbolicLink: Bool = false)
     -> DirectoryRecord
 {

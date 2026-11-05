@@ -1,9 +1,7 @@
-// Port of apps/desktop/src/renderer/components/CopyPasteProgressCard.tsx, lib/progressCardDelay.ts and the card's rules
-// in styles.css:1631-1726
 import AppKit
 import FTFoundation
 
-/// What the progress card shows and when. P5-08 connects the write coordinator to it: it sets `state` while an
+/// What the progress card shows and when. The write coordinator drives it: it sets `state` while an
 /// operation runs and clears it when it ends, and takes the Stop button through `onStop`. As in Finder, an operation
 /// over in a moment (a rename, one item to the Trash) shows no card; it comes once the operation has run for 500 ms.
 @MainActor
@@ -18,7 +16,7 @@ final class ProgressCardModel {
     /// The folder on screen, which names the card's item when the operation has none.
     var currentPath: () -> String = { "" }
     var onStop: () -> Void = {}
-    /// The delay before the card shows, in milliseconds (`PROGRESS_CARD_DELAY_MS`).
+    /// The delay before the card shows, in milliseconds.
     var delayMs = ShowDelays.progressCardMs
     var schedule: (_ delay: TimeInterval, _ work: @escaping @MainActor () -> Void) -> ToastCenter.Cancel = {
         delay, work in
@@ -51,7 +49,7 @@ final class ProgressCardModel {
         if isVisible {
             onChange()
         } else if pending == nil {
-            // `useDelayedFlag`: the card shows once the operation has run this long.
+            // The card shows once the operation has run this long.
             pending = schedule(delayMs / 1000) { [weak self] in
                 guard let self else { return }
                 self.pending = nil

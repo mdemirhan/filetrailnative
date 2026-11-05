@@ -1,4 +1,3 @@
-// Port of toSearchResultItem (packages/core/src/search/fdSearch.ts) and apps/desktop/src/renderer/lib/searchResults.ts
 import FTFoundation
 import Foundation
 
@@ -34,7 +33,7 @@ public enum SearchResults {
         let units = Array(name.utf16)
         let dot = UInt16(UInt8(ascii: "."))
         guard let last = units.lastIndex(of: dot) else { return "" }
-        // Node's rule: a name that is all dots, or whose only dot starts it, has no extension.
+        // A name that is all dots, or whose only dot starts it, has no extension.
         let onlyDots = !units.contains { $0 != dot }
         let startsAtOnlyDot = last == 0
         if onlyDots && units.count <= 2 || startsAtOnlyDot { return "" }
@@ -57,7 +56,7 @@ public enum SearchResults {
         return (up + toParts[common...].map(String.init)).joined(separator: "/")
     }
 
-    /// `toDirectoryEntryFromSearchResult` (explorerAppUtils.ts): a result as the views of the folder show an entry.
+    /// A result as the views of the folder show an entry.
     public static func entry(_ item: SearchResultItem) -> DirectoryEntry {
         DirectoryEntry(
             path: item.path, name: item.name, fileExtension: item.fileExtension, kind: item.kind,
@@ -158,7 +157,7 @@ public enum SearchResults {
 
     /// What a name search matched, to mark it in the names. fd uses smart case (case-sensitive only when the query has
     /// an uppercase letter); glob patterns match the whole name, so they are not marked, and neither are patterns that
-    /// JavaScript cannot parse. The JavaScript-compatible matcher marks what the original marks.
+    /// the JavaScript-compatible matcher (`JSLegacyRegExp`) cannot parse.
     public static func highlightPattern(
         query: String, patternMode: SearchPatternModePreference, matchScope: SearchMatchScopePreference
     ) -> JSLegacyRegExp? {

@@ -1,7 +1,6 @@
-// Port of the parts of Node's path module (posix) that copyPasteNames.ts uses
 import Foundation
 
-/// `path.basename`, `dirname`, `extname` and `join` as Node's posix module answers them.
+/// `basename`, `dirname`, `extname` and `join` for POSIX paths.
 public enum NodePath {
     public static func basename(_ path: String) -> String {
         var scalars = Array(path.unicodeScalars)

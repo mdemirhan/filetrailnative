@@ -1,8 +1,7 @@
-// Port of apps/desktop/src/renderer/lib/accent.ts and theme.ts (plus the accent mixes in styles.css)
 import Foundation
 
-/// Every colour derived from the user's accent, computed exactly as the reference does. The
-/// accent can be any hex colour, so nothing here uses `NSColor.controlAccentColor`.
+/// Every colour derived from the user's accent. The accent can be any hex colour, so nothing here uses
+/// `NSColor.controlAccentColor`.
 public struct AccentPalette: Equatable, Sendable {
     /// The default accent (Blue), used when a saved value is not a `#rrggbb` colour.
     public static let defaultHex = "#007aff"
@@ -112,7 +111,7 @@ public struct AccentPalette: Equatable, Sendable {
     private static let selectionDarkeningPercent = 14
     private static let maxSelectionDarkeningPercent = 34
 
-    /// `darkenHex`: each channel scaled by `1 - factor`, rounded.
+    /// Each channel scaled by `1 - factor`, rounded.
     static func darken(_ color: RGBA, by factor: Double) -> RGBA {
         let scale = max(0, min(1, 1 - factor))
         let (r, g, b) = color.bytes

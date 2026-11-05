@@ -1,5 +1,3 @@
-// Covers Esc outside the content pane (useExplorerShortcuts.ts:1605) on a tab whose window is never shown, over the
-// stand-in fd runtime
 import AppKit
 import FTFoundation
 import Foundation
@@ -10,7 +8,6 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct SearchEscapeTests {
-        // B-SRCH-076
         @Test func escapeInTheTreeLeavesTheResultsAndInTheListHidesThem() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

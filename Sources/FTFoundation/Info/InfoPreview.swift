@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/infoPreview.ts
 import Foundation
 
 /// A listed item, as far as the info views need it (`DirectoryEntry`).
@@ -23,7 +22,7 @@ public struct InfoEntry: Equatable, Sendable {
     }
 }
 
-/// What the list already knows of an item (`DirectoryEntryMetadata`).
+/// What the list already knows of an item.
 public struct InfoMetadata: Equatable, Sendable {
     public var kindLabel: String
     public var createdAt: String?
@@ -108,7 +107,6 @@ public enum InfoPreview {
             pending: true)
     }
 
-    /// `folderEntryForPath`.
     public static func folderEntry(_ path: String) -> InfoEntry {
         let name = path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? "Macintosh HD"
         return InfoEntry(path: path, name: name, kind: .directory)

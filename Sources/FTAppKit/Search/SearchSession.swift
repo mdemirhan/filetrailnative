@@ -1,6 +1,5 @@
-// Port of apps/desktop/src/renderer/hooks/useExplorerSearchController.ts and hooks/useSearchSession.ts: one tab's search
-// session (query, scope, options, sort, results, both selections, job and cursor), and the background polling of
-// hooks/useExplorerTabs.ts (pollBackgroundSearches)
+// One tab's search session (query, scope, options, sort, results, both selections, job and cursor), and the polling
+// of background searches
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -19,7 +18,7 @@ protocol SearchSessionHost: AnyObject {
     var searchFolderEntryPaths: [String] { get }
     /// The session changed: the tab shows it again.
     func searchSessionChanged(_ change: SearchSession.Change)
-    /// `applyContentSelection`: the selection of the list now on screen (the results, or the folder).
+    /// The selection of the list now on screen (the results, or the folder).
     func applySearchSelection(_ selection: ContentSelection)
     /// `focusContentPane`.
     func focusContentPaneForSearch()
@@ -58,7 +57,7 @@ final class SearchSession {
     /// The text the running or finished walk was started with.
     private(set) var baseQuery = ""
     private(set) var rootPath = ""
-    /// The folder the search was started from (`searchOriginPathRef`).
+    /// The folder the search was started from.
     private(set) var originPath = ""
     private(set) var patternMode: SearchPatternModePreference
     private(set) var matchScope: SearchMatchScopePreference
@@ -95,7 +94,7 @@ final class SearchSession {
     private(set) var cachedSearchSelection = ContentSelection.empty
     /// Answers from searches that are no longer the one on screen are dropped by this counter.
     private(set) var sessionCounter = 0
-    /// The place in the tab's history the results were left from by opening a folder (`searchReturnPlaceRef`): Back and
+    /// The place in the tab's history the results were left from by opening a folder: Back and
     /// Forward bring them back there.
     private(set) var returnPlace: NavigationHistory.Place?
     private var liveTimer: TimerToken?
@@ -107,7 +106,7 @@ final class SearchSession {
     private(set) var isBackground = false
     /// The first answer after the tab came back: a search that finished meanwhile has no known duration.
     private var awaitingFirstUpdateAfterReturn = false
-    /// Return asked for the first result to be selected once the search has finished (`selectFirstWhenDone`).
+    /// Return asked for the first result to be selected once the search has finished.
     var selectFirstResultWhenDone = false
 
     init(
@@ -128,7 +127,7 @@ final class SearchSession {
         searchedHidden = includeHidden
     }
 
-    /// A new tab's session: nothing searched, with the options and sort of `other` (`createEmptySearchSession`).
+    /// A new tab's session: nothing searched, with the options and sort of `other`.
     func takeOptions(of other: SearchSession) {
         patternMode = other.patternMode
         matchScope = other.matchScope
@@ -147,8 +146,7 @@ final class SearchSession {
     var isSearchMode: Bool { resultsVisible && hasCachedSearch }
     var isRunning: Bool { status == .running }
 
-    /// `refinedSearchResults` then `sortedSearchResults`: what the walk found, narrowed to the committed text when
-    /// it has grown since the walk began, in the chosen order.
+    /// What the walk found, narrowed to the committed text when it has grown since the walk began, in the chosen order.
     var shownResults: [SearchResultItem] {
         if let cache = shownCache, cache.version == resultsVersion { return cache.items }
         // Narrowing keeps the order, so the sorted results are narrowed: the same list as sorting the narrowed ones.
@@ -216,7 +214,7 @@ final class SearchSession {
     /// `errorIsQuiet`: a pattern being typed that does not parse yet.
     var errorIsQuiet: Bool { startedLive && patternMode != .text }
 
-    /// What a search matched in names, to mark it (`buildSearchHighlightPattern`).
+    /// What a search matched in names, to mark it.
     var highlightPattern: JSLegacyRegExp? {
         if let cache = highlightCache, cache.key == highlightKey { return cache.pattern }
         let pattern = SearchResults.highlightPattern(
@@ -265,7 +263,7 @@ final class SearchSession {
         if focusPane { host.focusContentPaneForSearch() }
     }
 
-    /// `hideSearchResults`: Esc, Done, opening a folder. The results stay cached; the field empties and the folder
+    /// Esc, Done, opening a folder. The results stay cached; the field empties and the folder
     /// list's selection comes back. `returnPlace`: opening another folder left them there, and Back and Forward can
     /// bring them back; otherwise they were closed.
     func hideResults(returnPlace: NavigationHistory.Place? = nil) {
@@ -288,7 +286,7 @@ final class SearchSession {
         host.applySearchSelection(restore.sanitized(entryPaths: host.searchFolderEntryPaths))
     }
 
-    /// `applyEmptyDirectorySnapshot`: the tab let go of its folder. The results go, and a search still walking the disk
+    /// The tab let go of its folder. The results go, and a search still walking the disk
     /// stops as it does whenever they are put away; what is typed in the field stays.
     func putResultsAway() {
         guard resultsVisible else { return }
@@ -303,7 +301,7 @@ final class SearchSession {
         emit(change)
     }
 
-    /// `stopSearch`: Stop. The results found so far stay.
+    /// Stop. The results found so far stay.
     func stop() {
         cancelLiveSearch()
         cancelActiveSearch()
@@ -340,7 +338,7 @@ final class SearchSession {
 
     // MARK: Typing
 
-    /// `updateSearchDraftQuery`: text that only narrows what the search covers is applied at once; anything else is
+    /// Text that only narrows what the search covers is applied at once; anything else is
     /// searched once the keyboard rests; text too short shows the folder again.
     func updateDraft(_ text: String) {
         draftQuery = text
@@ -357,7 +355,7 @@ final class SearchSession {
         scheduleLiveSearch(trimmed)
     }
 
-    /// `submitSearch`: Return. Whether the results for the query were already on screen and final.
+    /// Return. Whether the results for the query were already on screen and final.
     @discardableResult
     func submit(_ text: String) -> Bool {
         cancelLiveSearch()
@@ -378,7 +376,7 @@ final class SearchSession {
         return false
     }
 
-    /// `abandonSearchDraft`: Esc before anything was searched.
+    /// Esc before anything was searched.
     func abandonDraft() {
         cancelLiveSearch()
         draftQuery = ""
@@ -409,7 +407,7 @@ final class SearchSession {
         }
     }
 
-    /// `resolveSearchRootPath`: the scope of the search on screen while its folder is still open (so a widened scope
+    /// The scope of the search on screen while its folder is still open (so a widened scope
     /// survives further typing), otherwise the open folder.
     func resolveRootPath() -> String {
         let current = host?.searchCurrentPath ?? ""
@@ -417,7 +415,6 @@ final class SearchSession {
         return continues ? rootPath : current
     }
 
-    /// `canRefineSearch`.
     private func canRefine(_ query: String) -> Bool {
         patternMode == .text && resultsVisible && (status == .running || status == .complete) && !truncated
             && resolveRootPath() == rootPath && SearchRefinement.isNarrower(base: baseQuery, next: query)
@@ -460,7 +457,7 @@ final class SearchSession {
         optionChanged()
     }
 
-    /// A Settings edit updates the live values of the keys it changed (`onRemotePatch`), without running anything
+    /// A Settings edit updates the live values of the keys it changed, without running anything
     /// again; the others keep what was chosen in the options menu.
     func applyDefaults(_ preferences: AppPreferences, keys: Set<String>) {
         if keys.contains("searchPatternMode") { patternMode = preferences.searchPatternMode }
@@ -478,19 +475,19 @@ final class SearchSession {
         startSearch(committedQuery, rootPath: rootPath.isEmpty ? (host?.searchCurrentPath ?? "") : rootPath)
     }
 
-    /// `rerunSearch`: ⌘R in search mode, and after a write that changed what is on disk.
+    /// ⌘R in search mode, and after a write that changed what is on disk.
     func rerun() {
         guard hasCachedSearch else { return }
         startSearch(committedQuery, rootPath: rootPath.isEmpty ? (host?.searchCurrentPath ?? "") : rootPath)
     }
 
-    /// `changeSearchRoot`: another scope in the results bar.
+    /// Another scope in the results bar.
     func changeRoot(_ path: String) {
         guard hasCachedSearch, !path.isEmpty else { return }
         startSearch(committedQuery, rootPath: path)
     }
 
-    /// `sortSearchResultsByColumn`: the active column flips direction; another starts ascending.
+    /// The active column flips direction; another starts ascending.
     func sortByColumn(_ value: SearchResultsSortByPreference) {
         if sortBy == value {
             sortDirection = sortDirection == .asc ? .desc : .asc
@@ -600,7 +597,7 @@ final class SearchSession {
         if let active { engine.cancel(jobID: active) }
     }
 
-    /// `pollSearch`: asks about the search from the cursor, applies the answer, and asks again after the interval
+    /// Asks about the search from the cursor, applies the answer, and asks again after the interval
     /// until the search is done.
     private func poll(jobID: String, counter: Int) {
         guard counter == sessionCounter, self.jobID == jobID else { return }
@@ -662,12 +659,12 @@ final class SearchSession {
 
     // MARK: The tab in the background
 
-    /// The tab was left (`detachSearchSession`): typing waiting for its rest is held, and the search, still running,
+    /// The tab was left: typing waiting for its rest is held, and the search, still running,
     /// is asked about once a second.
     func enterBackground() {
         guard !isBackground else { return }
         isBackground = true
-        // Selecting the first result once Return's search ends is forgotten with the tab (B-SRCH-014).
+        // Selecting the first result once Return's search ends is forgotten with the tab.
         selectFirstResultWhenDone = false
         let pending = pendingLiveQuery
         cancelLiveSearch()
@@ -677,7 +674,7 @@ final class SearchSession {
         if let jobID { schedulePoll(jobID: jobID, after: SearchTiming.backgroundPollInterval) }
     }
 
-    /// The tab is shown again (`attachSearchSession`): what was being typed is searched as if just typed, and the
+    /// The tab is shown again: what was being typed is searched as if just typed, and the
     /// search picks up from its cursor. A search whose walk stopped short in the background with narrower text, or
     /// found with the other hidden-files setting, runs again.
     func returnToForeground() {

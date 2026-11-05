@@ -1,4 +1,3 @@
-// Port of the menu visibility rules of apps/desktop/src/renderer/hooks/useExplorerActions.ts (lines 140-160, 520-730)
 import Foundation
 
 /// What a context menu is for, and what the window knows around it.
@@ -9,7 +8,7 @@ public struct ContextMenuSubject: Equatable, Sendable {
     public var paths: [String]
     /// The row's folder for the sidebar surfaces; the first right-clicked path for the file list.
     public var targetPath: String?
-    /// The listing rows at `paths` (rows missing from the listing are left out, as `contextMenuTargetEntries`).
+    /// The listing rows at `paths` (rows missing from the listing are left out).
     public var entries: [CommandEntry]
     /// The name of the disk a favorite or location is, when it can be ejected; nil for any other folder.
     public var ejectableDiskName: String?
@@ -38,7 +37,7 @@ public struct ContextMenuWorld: Equatable, Sendable {
     public var trashIsEmpty: Bool?
     /// A file operation is running (`isWriteOperationLocked`).
     public var writeLocked: Bool
-    /// What is on the clipboard can be pasted at the destination (`canPasteAtResolvedDestination`).
+    /// What is on the clipboard can be pasted at the destination.
     public var canPaste: Bool
     /// Where Paste would go for an item's menu (`pasteDestinationPath`), nil when nowhere.
     public var hasPasteDestination: Bool
@@ -82,7 +81,7 @@ public enum ContextMenuRules {
         world.favoritePaths.contains { JSString.equals($0, path) }
     }
 
-    /// `contextMenuFavoriteToggleLabel`: nil hides the item.
+    /// Nil hides the item.
     public static func favoriteToggleLabel(_ subject: ContextMenuSubject, _ world: ContextMenuWorld) -> String? {
         if world.isSearchMode { return nil }
         if subject.scope != .selection || subject.paths.count != 1 { return nil }
@@ -101,7 +100,7 @@ public enum ContextMenuRules {
         return isFavorite(target, world) ? remove : add
     }
 
-    /// `contextMenuOptions`, for the labels that depend on the items.
+    /// For the labels that depend on the items.
     public static func options(
         _ subject: ContextMenuSubject, _ world: ContextMenuWorld, textEditorName: String?, ejectLabel: String? = nil
     ) -> ContextMenuOptions {
@@ -118,7 +117,7 @@ public enum ContextMenuRules {
         count.formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
     }
 
-    /// `resolveDuplicateFolder`: the one folder the paths are in, nil when they are in several.
+    /// The one folder the paths are in, nil when they are in several.
     public static func duplicateFolder(of paths: [String]) -> String? {
         var folders = Set<[UInt8]>()
         var first: String?
@@ -129,7 +128,7 @@ public enum ContextMenuRules {
         return folders.count == 1 ? first : nil
     }
 
-    /// `contextMenuHiddenActionIds`: a right-click menu lists only what can be done to its items, there and then, as
+    /// A right-click menu lists only what can be done to its items, there and then, as
     /// Apple asks of context menus and Finder does; anything else is left out rather than dimmed.
     public static func hiddenActions(_ subject: ContextMenuSubject, _ world: ContextMenuWorld) -> Set<
         ContextMenuActionID
@@ -222,9 +221,9 @@ public enum ContextMenuRules {
         return hidden
     }
 
-    /// `resolvePasteDestinationPath` for an open menu: where Paste would go, nil when nowhere. A folder's own menu
-    /// pastes into it, the background's into the folder on screen, an item's only when it is the one folder picked and
-    /// not itself on the clipboard. Nothing is pasted into the Trash.
+    /// For an open menu: where Paste would go, nil when nowhere. A folder's own menu pastes into it, the background's
+    /// into the folder on screen, an item's only when it is the one folder picked and not itself on the clipboard.
+    /// Nothing is pasted into the Trash.
     public static func pasteDestination(
         _ subject: ContextMenuSubject, _ world: ContextMenuWorld, clipboardSourcePaths: [String]
     ) -> String? {
@@ -247,7 +246,7 @@ public enum ContextMenuRules {
         return destination
     }
 
-    /// `contextMenuDisabledActionIds`: only Paste is ever dimmed, with nothing to paste or while a file operation
+    /// Only Paste is ever dimmed, with nothing to paste or while a file operation
     /// runs.
     public static func disabledActions(_ world: ContextMenuWorld) -> Set<ContextMenuActionID> {
         !world.canPaste || world.writeLocked ? [.paste] : []

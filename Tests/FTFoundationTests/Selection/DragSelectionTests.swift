@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/dragSelection.test.ts
 import Testing
 
 @testable import FTFoundation
@@ -10,14 +9,12 @@ struct DragSelectionTests {
         hits.map { $0.path.replacingOccurrences(of: "/demo/", with: "") }
     }
 
-    // T-cde8b505 F-784
     @Test func makesABoxWhicheverWayThePointerMovesFromWhereItStarted() {
         #expect(
             DragSelection.box(from: (50, 80), to: (10, 20))
                 == DragSelectionBox(left: 10, top: 20, right: 50, bottom: 80))
     }
 
-    // T-ced97aea F-784 B-SEL-149
     @Test func addsWithShiftFlipsWithCmdAndOtherwiseReplaces() {
         #expect(DragSelection.mode(meta: false, shift: false) == .replace)
         #expect(DragSelection.mode(meta: false, shift: true) == .add)
@@ -25,16 +22,12 @@ struct DragSelectionTests {
         #expect(DragSelection.mode(meta: true, shift: true) == .toggle)
     }
 
-    // T-329989e4 F-784 B-SEL-149
-    // B-SEL-153 B-VIEW-079
     @Test func combinesWhatTheBoxTouchesWithTheSelectionTheDragStartedWith() {
         #expect(DragSelection.combine(startPaths: ["a", "b"], hitPaths: ["b", "c"], mode: .replace) == ["b", "c"])
         #expect(DragSelection.combine(startPaths: ["a", "b"], hitPaths: ["b", "c"], mode: .add) == ["a", "b", "c"])
         #expect(DragSelection.combine(startPaths: ["a", "b"], hitPaths: ["b", "c"], mode: .toggle) == ["a", "c"])
     }
 
-    // T-f691a93e F-784 B-SEL-154
-    // B-VIEW-082
     @Test func selectsTheListViewsRowsTheBoxTouchesHoweverLittle() {
         func hit(_ top: Double, _ bottom: Double) -> [String] {
             names(
@@ -50,8 +43,6 @@ struct DragSelectionTests {
         #expect(hit(290, 400) == [])
     }
 
-    // T-fc34240d T-132cae07 F-784 B-SEL-155
-    // B-VIEW-039 B-VIEW-082
     @Test func selectsTheFlowListsItemsColumnByColumn() {
         let layout = DesignTokens.flowList(density: .standard)
         let step = layout.itemWidth + layout.columnGap
@@ -75,8 +66,6 @@ struct DragSelectionTests {
         #expect(hit(2 * step + 20, 2 * step + 30, 0, 200) == ["item-8", "item-9"])
     }
 
-    // T-395f1dac T-a8349a96 F-784 B-SEL-156 B-SEL-157
-    // B-VIEW-082
     @Test func selectsTheIconViewsItemsOnTheirIconsAndNamesOnly() {
         let layout = DesignTokens.iconGrid(density: .standard)
         let gridWidth = 4.0 * 150
@@ -108,7 +97,6 @@ struct DragSelectionTests {
         #expect(hit(0, gridWidth, 2 * layout.rowHeight + 5, 400) == ["item-8", "item-9"])
     }
 
-    // T-a943e644 F-784 B-SEL-158
     @Test func scrollsFasterTheFurtherPastTheEdgeThePointerIs() {
         #expect(DragSelection.autoScrollStep(overshoot: 0) == 0)
         #expect(DragSelection.autoScrollStep(overshoot: 3) == 5)
@@ -116,8 +104,7 @@ struct DragSelectionTests {
         #expect(DragSelection.autoScrollStep(overshoot: 500) == 40)
     }
 
-    // B-SEL-151: the lead at button up is the touched item nearest the pointer, else the last one selected.
-    // B-VIEW-080
+    // The lead at button up is the touched item nearest the pointer, else the last one selected.
     @Test func theLeadIsTheTouchedItemNearestThePointer() {
         let hits = DragSelection.detailsItems(
             box: DragSelectionBox(left: 0, top: 30, right: 100, bottom: 120), entryPaths: entries, rowHeight: 28)

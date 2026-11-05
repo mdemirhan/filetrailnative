@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/topToolbarLayout.ts
 import Foundation
 
 /// An item of the top toolbar with a key that stays the same wherever it is moved: its id, with a count for
@@ -42,7 +41,7 @@ public enum TopToolbarLayout {
     /// Items that draw an edge of their own (the title has none) are not buttons on a capsule.
     static let notOnACapsule: Set<ToolbarItemID> = [.title, .search, .view, .topSeparator]
 
-    /// `resolveToolbarCapsules`: which items are buttons on a capsule, and whether each starts or ends its capsule.
+    /// Which items are buttons on a capsule, and whether each starts or ends its capsule.
     /// `isShown` leaves out an item that is in the row but has nothing on screen (the clipboard button with nothing
     /// copied); the buttons on either side of it join.
     public static func capsules(
@@ -64,7 +63,6 @@ public enum TopToolbarLayout {
         return edges
     }
 
-    /// `resolveTopToolbarSlots`.
     public static func slots(_ items: [ToolbarItemID]) -> [TopToolbarSlot] {
         var seen: [ToolbarItemID: Int] = [:]
         return items.map { id in
@@ -85,7 +83,7 @@ public enum TopToolbarLayout {
         return result
     }
 
-    /// `selectTopToolbarSlots`: the row to draw when there is room for `optionalCount` of the items that can be
+    /// The row to draw when there is room for `optionalCount` of the items that can be
     /// taken off the toolbar. Those are kept in order from the start; the required items always stay.
     public static func select(_ slots: [TopToolbarSlot], optionalCount: Int) -> [TopToolbarSlot] {
         var remaining = optionalCount
@@ -124,7 +122,7 @@ public enum TopToolbarLayout {
         layout.itemGap + layout.overflowButtonWidth + 2 * capsuleOverhang(layout)
     }
 
-    /// `resolveVisibleOptionalCount`: how many of the removable items fit beside the required ones. The title and
+    /// How many of the removable items fit beside the required ones. The title and
     /// the search field count at their narrowest. `widths` holds the measured width of every item but those two, by
     /// key. Before anything is laid out (no width, or an item not measured) the whole toolbar stays.
     public static func visibleOptionalCount(
@@ -149,7 +147,7 @@ public enum TopToolbarLayout {
         return 0
     }
 
-    /// `resolveToolbarDropIndex`: where an item dragged along the toolbar lands, its index among the other items:
+    /// Where an item dragged along the toolbar lands, its index among the other items:
     /// how many of them have their middle left of the pointer.
     public static func dropIndex(centers: [Double], pointerX: Double) -> Int {
         centers.filter { $0 < pointerX }.count

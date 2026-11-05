@@ -1,6 +1,3 @@
-// Port of the paste flow of apps/desktop/src/renderer/hooks/useExplorerActions.ts outside the sheets
-// (startPasteFromClipboard, collectLeftOutSourcePaths, the analysis issues, surfaceCopyLikePreStartFailureNotice) and
-// of the "Preparing to Paste…" dialog of components/AppDialogs.tsx (:290-308)
 import AppKit
 import FTFoundation
 import FTOperations
@@ -21,7 +18,7 @@ protocol PasteReviewPresenting: AnyObject {
 }
 
 extension PasteReviewPresenting {
-    /// The review, opened on the safe policy (`SAFE_COPY_PASTE_POLICY`).
+    /// The review, opened on the safe policy.
     func review(
         _ report: CopyPasteAnalysisReport, action: WriteOperationAction, clearsCutClipboard: String?,
         actions: WindowWriteActions
@@ -38,8 +35,8 @@ enum PasteReview {
     static var presenter: any PasteReviewPresenting = CopyPasteReviewPresenter.shared
 }
 
-/// "Preparing to Paste…" (`CopyPasteDialog` of type `analysis`): shown while a slow check of the destination runs, with
-/// Cancel, which stops the analysis. Escape and ⌘. do what Cancel does. When it comes and goes is `PreparingDialog`'s.
+/// "Preparing to Paste…": shown while a slow check of the destination runs, with Cancel, which stops the analysis.
+/// Escape and ⌘. do what Cancel does. When it comes and goes is `PreparingDialog`'s.
 @MainActor
 enum PreparingSheet {
     /// Off in tests that run no windows.
@@ -163,7 +160,7 @@ final class PreparingDialog {
 }
 
 extension WindowWriteActions {
-    /// The analysis found issues (`collectLeftOutSourcePaths` and what follows it).
+    /// The analysis found issues: the sources it leaves out, and what follows.
     func leaveOut(
         _ report: CopyPasteAnalysisReport, mode: FTOperations.CopyPasteMode, sources: [String], destination: String,
         action: WriteOperationAction, clearsCutClipboard: String?, initiator: CopyLikeInitiator?,
@@ -204,7 +201,7 @@ extension WindowWriteActions {
         return .blocked(message: message)
     }
 
-    /// `startPasteFromClipboard`: what the clipboard holds into `destination`. Items moved or deleted since they were
+    /// What the clipboard holds into `destination`. Items moved or deleted since they were
     /// copied are taken off the clipboard and the rest are pasted; which ones were left out is told afterwards. A
     /// clash goes to the review.
     @discardableResult

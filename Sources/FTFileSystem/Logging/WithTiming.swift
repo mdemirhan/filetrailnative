@@ -1,18 +1,17 @@
-// Port of withTiming of apps/desktop/src/main/bootstrap/responseCache.ts
 import Foundation
 
 public enum Timing {
     /// A call this slow is logged even without `FILETRAIL_DEBUG_TIMINGS`.
     public static let slowThresholdMilliseconds = 120.0
 
-    /// `debugTimingsEnabled`: `FILETRAIL_DEBUG_TIMINGS` is `1`.
+    /// `FILETRAIL_DEBUG_TIMINGS` is `1`.
     public static func timingsEnabled(
         environment: [String: String] = ProcessInfo.processInfo.environment
     ) -> Bool {
         environment["FILETRAIL_DEBUG_TIMINGS"] == "1"
     }
 
-    /// `[filetrail] <label> <path> <ms>ms`, the milliseconds rounded as `Math.round` does.
+    /// `[filetrail] <label> <path> <ms>ms`, the milliseconds rounded half up.
     public static func line(label: String, path: String, elapsedMilliseconds: Double) -> String {
         "[filetrail] \(label) \(path) \(Int((elapsedMilliseconds + 0.5).rounded(.down)))ms"
     }

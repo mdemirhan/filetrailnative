@@ -1,5 +1,3 @@
-// Port of FlowListItem (apps/desktop/src/renderer/components/ContentPane.tsx:1406-1448), FileNameLabel (:2422-2445) and
-// the `.flow-item` rules of styles.css:2598-2700 and 4483-4500, with its clipboard mark and drop state (P5-08)
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -13,7 +11,7 @@ final class CompactNameLabel: ListLabel {
     var extensionColor: NSColor? {
         didSet { needsDisplay = true }
     }
-    /// What a search matched, in the whole name (P5-07).
+    /// What a search matched, in the whole name.
     var marks: [HighlightRange] = [] {
         didSet { needsDisplay = true }
     }
@@ -56,8 +54,8 @@ final class CompactNameLabel: ListLabel {
     }
 }
 
-/// The root of a Compact List item (`.flow-item`): as wide as its icon and name, with the selection behind them. The
-/// pointer goes through to the collection.
+/// The root of a Compact List item: as wide as its icon and name, with the selection behind them. The pointer goes
+/// through to the collection.
 final class CompactItemRootView: PassThroughView {
     var highlight: NSColor? {
         didSet { needsDisplay = true }
@@ -85,10 +83,10 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
     let iconView = NSImageView()
     let label = CompactNameLabel()
     let selectedMarker = GridMarkerView(id: "compactList.item.selected")
-    /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
+    /// The copy or cut glyph after the name of an item on the clipboard.
     let markGlyph = ClipboardMarkGlyph(identifier: "compactList.item.clipboardMark")
     let tagDots = TagDotsView()
-    /// Marks the item a drag would drop into, for the capture.
+    /// Marks the item a drag would drop into, for automation.
     let dropMarker = GridMarkerView(id: "compactList.item.dropTarget")
 
     private(set) var path: String?
@@ -159,7 +157,7 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         label.marksUnderlined = selected && pane.paneFocused && pane.windowActive
         label.isHidden = renaming
         selectedMarker.isHidden = !selected
-        // An item on the clipboard: its glyph after the name, and a cut one dimmed (P5-08).
+        // An item on the clipboard: its glyph after the name, and a cut one dimmed.
         let mark = host.clipboardMarks?.mark(for: entry.path)
         let wasMarked = !markGlyph.isHidden
         markGlyph.mark = mark
@@ -176,13 +174,12 @@ final class CompactListItem: NSCollectionViewItem, GridItemView, GridItemDraggin
         if wasMarked != (mark != nil) || tagsChanged { layoutParts() }
     }
 
-    /// `.flow-item.active:not(.inactive)`: a selected item in the focused list of the window in front; its glyph and
-    /// flash take the text's color.
+    /// A selected item in the focused list of the window in front: its glyph and flash take the text's color.
     private func marksOnSelection(_ pane: ItemGridPane, _ selected: Bool) -> Bool {
         selected && pane.paneFocused && pane.windowActive
     }
 
-    /// The item was just copied or cut (`.clipboard-flash`).
+    /// The item was just copied or cut: its mark flashes.
     func flashClipboardMark(in pane: ItemGridPane) {
         guard let path, let host = pane.host, host.clipboardMarks?.mark(for: path) != nil else { return }
         let selected = pane.isSelected(path)

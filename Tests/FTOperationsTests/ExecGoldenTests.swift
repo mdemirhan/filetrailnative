@@ -1,4 +1,4 @@
-// The write-engine differential (tools/parity/exec, FTTestSupport.ExecHarness). The analysis suites
+// The write-engine scenario checks. The analysis suites
 // run through the Swift review (Exec/SwiftAnalysisEngine.swift), the execution suites through the
 // Swift paste engine (Exec/SwiftExecEngine.swift), but for the stop and crash suites, which
 // aren't injected (decided 2026-10-14). ReferenceReplayEngine replays every execution recording, which proves the decode,
@@ -17,9 +17,7 @@ struct ExecGoldenTests {
     /// The suites the Swift engine runs: not stops or crashes, which aren't injected.
     static let engineSuites = ExecHarness.executionSuites.filter { $0 != "exec-stop" && $0 != "exec-crash" }
 
-    /// The Swift paste engine against the reference's, case by case; the disk-image cases where the images exist.
-    // F-242 F-257 F-258 F-259 F-260 F-261 F-263 F-269 F-270 F-271 F-272 F-273 F-276 F-277 F-278 F-279 F-280
-    // F-282 F-283 F-284 F-285 F-286
+    /// The Swift paste engine against its recordings, case by case; the disk-image cases where the images exist.
     @Test(arguments: engineSuites)
     func executionMatchesItsRecording(suite: String) async throws {
         let cases = try ExecHarness.cases(suite: suite)
@@ -39,9 +37,8 @@ struct ExecGoldenTests {
         #expect(report == nil, Comment(rawValue: report ?? ""))
     }
 
-    /// The Swift review (SwiftAnalysisEngine) against the reference's, case by case; the disk-image cases where
-    /// the images exist.
-    // F-241 F-309 F-310 F-311 F-312 F-314 F-315 F-316 F-317 F-318 F-319 F-320 F-321 F-322 F-323 F-926
+    /// The Swift review (SwiftAnalysisEngine) against its recordings, case by case; the disk-image cases where the
+    /// images exist.
     @Test(arguments: ExecHarness.analysisSuites)
     func analysisMatchesItsRecording(suite: String) async throws {
         let cases = try ExecHarness.cases(suite: suite)
@@ -75,10 +72,9 @@ struct ExecGoldenTests {
         #expect(Set(answers) == ["overwrite", "merge", "keep_both", "skip"])
     }
 
-    /// The Undo differential (exec-undo): at least 30 cases of copies and moves undone and redone through the
+    /// The Undo suite (exec-undo): at least 30 cases of copies and moves undone and redone through the
     /// coordinator, with changes made outside the app before each, both answers to both questions, the Can't Undo of
     /// merges and of copies without a Trash, and Undos that left items as they were.
-    // F-246 F-249 F-372 F-386 F-389 F-550 F-551 F-552
     @Test func undoSuiteCoversWhatTheBriefAsks() throws {
         let cases = try ExecHarness.cases(suite: "exec-undo")
         #expect(cases.count >= 30)
@@ -102,7 +98,7 @@ struct ExecGoldenTests {
     }
 
     /// "Apply to remaining" answers: a later conflict of the same kind is answered without a
-    /// question (writeService.ts autoResolve), one the standing answer doesn't suit is asked again,
+    /// question, one the standing answer doesn't suit is asked again,
     /// and one of another kind is asked.
     @Test func recordingsPinStandingAnswers() throws {
         let cases = try ExecHarness.cases(suite: "exec-runtime")
@@ -140,7 +136,7 @@ struct ExecGoldenTests {
         #expect(execution.contains { ($0.input.stopAt?.afterEvent ?? 0) == 1 })
     }
 
-    /// The Trash is the app's (createTrashItem): on a disk without one, a Replace asks before
+    /// The Trash is the app's: on a disk without one, a Replace asks before
     /// deleting for good.
     @Test func recordingsCoverADiskWithoutATrash() throws {
         let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
@@ -244,11 +240,9 @@ struct ExecGoldenTests {
             ])
     }
 
-    /// The Swift batch rename (Exec/SwiftBatchRenameRun.swift) against the reference's (exec-batch-rename), case by
+    /// The Swift batch rename (Exec/SwiftBatchRenameRun.swift) against its recordings (exec-batch-rename), case by
     /// case: each item as it starts, each rename on the disk, each journal write, the results, the undo record, the
     /// Rename sheet's checks, and after a crash what recovery made of it; the disk-image cases where the images exist.
-    // F-119 F-245 F-356 F-396 F-397 F-398 F-399 F-400 F-401 F-402 F-403 F-562 F-563 F-564 F-565 F-566 F-567 F-569
-    // F-570
     @Test func batchRenameMatchesItsRecording() async throws {
         let cases = try ExecBatchRenameHarness.cases()
         #expect(cases.count >= 60)

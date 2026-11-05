@@ -1,5 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/iconGridLayout.test.ts, and checks the grid math against the golden recorded from
-// the reference (tools/parity/golden/icon-grid-layout.ts)
 import FTTestSupport
 import Foundation
 import Testing
@@ -10,7 +8,7 @@ struct IconGridLayoutTests {
     static let layout = DesignTokens.iconGrid(density: .standard)
     static let finder = DesignTokens.iconGrid(density: .finder)
 
-    /// The stylesheet's numbers, as the golden recorded them from the reference's `styles.css`.
+    /// The stylesheet's numbers, as the icon-grid-layout golden recorded them.
     static func css() throws -> [String: Double] {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "icon-grid-layout")
         guard let found = cases.first(where: { $0.input.op == "css" }), case .constants(let values) = found.output
@@ -18,13 +16,11 @@ struct IconGridLayoutTests {
         return values
     }
 
-    // T-7bc9401f F-757 B-VIEW-017
     @Test func putsTheIconAsFarDownInItsItemAsTheStylesheetDoes() throws {
         let css = try Self.css()
         #expect(css["itemPaddingTop"] == Self.layout.itemPaddingTop)
     }
 
-    // T-ff73f27d F-757 F-760 B-VIEW-025
     @Test func takesClicksOnTheTileAndTheNameWhereTheStylesheetDrawsThem() throws {
         let css = try Self.css()
         #expect(css["iconBox"] == Self.layout.iconBoxSize)
@@ -41,7 +37,6 @@ struct IconGridLayoutTests {
         #expect(finder == Self.layout)
     }
 
-    // T-71a44152 F-758 B-VIEW-018
     @Test func fitsAsManyColumnsAsThePaneHolds() {
         #expect(Self.layout.columns(containerWidth: 1000) == 9)
         #expect(Self.finder.columns(containerWidth: 1000) == 9)
@@ -49,57 +44,49 @@ struct IconGridLayoutTests {
         #expect(Self.layout.columns(containerWidth: 32 + 104 * 3 - 1) == 2)
     }
 
-    // T-1798645c F-758 B-VIEW-018
     @Test func keepsOneColumnForAPaneThatIsTooNarrowOrNotMeasuredYet() {
         #expect(Self.layout.columns(containerWidth: 0) == 1)
         #expect(Self.layout.columns(containerWidth: 60) == 1)
     }
 
-    // MARK: getIconGridRevealScrollTop
+    // MARK: Scrolling an item into view
 
     static func reveal(_ scrollTop: Double, _ index: Int, viewport: Double = 400) -> Double {
         layout.revealScrollTop(
             currentScrollTop: scrollTop, viewportHeight: viewport, itemIndex: index, itemCount: 100, columns: 5)
     }
 
-    // T-a1d93055 B-VIEW-028
     @Test func keepsTheScrollPositionWhenTheRowIsFullyVisible() {
         #expect(Self.reveal(100, 7) == 100)
     }
 
-    // T-2c12de45 B-VIEW-028
     @Test func scrollsUpToARowAboveTheViewport() {
         // Item 7 is in the second row, which starts below the top padding and one row.
         #expect(Self.reveal(500, 7) == Self.layout.paddingTop + Self.layout.rowHeight)
     }
 
-    // T-ac5c7f93 B-VIEW-028
     @Test func scrollsToTheVeryTopForTheFirstRow() {
         #expect(Self.reveal(500, 3) == 0)
     }
 
-    // T-7baaab02 B-VIEW-028
-    // B-NAV-165
     @Test func scrollsDownJustFarEnoughForARowBelowTheViewport() {
         // Item 30 is in the seventh row.
         let rowBottom = Self.layout.paddingTop + 7 * Self.layout.rowHeight
         #expect(Self.reveal(0, 30) == rowBottom - 400)
     }
 
-    // T-4ce6d4ac B-VIEW-028
     @Test func bringsTheBottomPaddingInWithTheLastRow() {
         let rowBottom = Self.layout.paddingTop + 20 * Self.layout.rowHeight + Self.layout.paddingBottom
         #expect(Self.reveal(0, 99) == rowBottom - 400)
     }
 
-    // T-a9405ac4 B-VIEW-028
     @Test func showsTheTopOfARowThatIsTallerThanTheViewport() {
         #expect(Self.reveal(0, 12, viewport: 80) == Self.layout.paddingTop + 2 * Self.layout.rowHeight)
     }
 
-    // MARK: Where items sit (styles.css:7899-8111)
+    // MARK: Where items sit
 
-    // F-757 F-758 F-759 B-VIEW-019 B-VIEW-025: items are centred in columns that share the grid's width; the tile is
+    // Items are centred in columns that share the grid's width; the tile is
     // `itemPaddingTop` down, the name `iconBoxSize + labelGap` below that.
     @Test func itemsSitInTheMiddleOfTheirColumns() {
         let style = IconItemStyle.make(density: .standard)
@@ -205,7 +192,6 @@ struct IconGridLayoutTests {
         }
     }
 
-    // T-71a44152 T-1798645c T-a1d93055 T-2c12de45 T-ac5c7f93 T-7baaab02 T-4ce6d4ac T-a9405ac4 F-757 F-758
     @Test func theGridMathMatchesTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "icon-grid-layout")
         #expect(cases.count >= 300)

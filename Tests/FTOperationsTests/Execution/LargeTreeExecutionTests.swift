@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/copyPasteLargeTree.test.ts
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -168,9 +167,8 @@ struct LargeTreeExecutionTests {
     private static let fileCount = LargeFolder.fileCount
     private static func fileName(_ index: Int) -> String { LargeFolder.fileName(index) }
 
-    // The folder is reviewed through the write service, as LargeTreeAnalysisTests' review is (the original called
-    // the review on its own), and pasted on the disk it was reviewed on.
-    // T-aa0802fe F-447
+    // The folder is reviewed through the write service, as LargeTreeAnalysisTests' review is, and pasted on the
+    // disk it was reviewed on.
     @Test func analyzesAndCopiesEveryItem() async throws {
         let reviewed = try await LargeFolder.reviewed.value
         let fileSystem = reviewed.fileSystem

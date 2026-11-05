@@ -1,10 +1,8 @@
-// Port of createPageBrowserWindow and showPageWindow in apps/desktop/src/main/main.ts (the window around a page of the
-// renderer: Help, About, Acknowledgements, Settings)
 import AppKit
 import FTFoundation
 
-/// A window whose title bar is transparent and whose content runs under it, with the traffic lights where the original
-/// puts them. Escape closes it when `closesOnEscape` (the windows that are only read).
+/// A window whose title bar is transparent and whose content runs under it, with the traffic lights at
+/// `spec.trafficLights`. Escape closes it when `closesOnEscape` (the windows that are only read).
 public final class PageWindow: NSWindow {
     public var closesOnEscape = false
     private let firstClickGate = FirstClickGate()
@@ -22,7 +20,7 @@ public final class PageWindow: NSWindow {
 /// What a page window is: its title and sizes.
 public struct PageWindowSpec: Equatable, Sendable {
     public var title: String
-    /// The content size (`useContentSize`), or the window's size for a window with no frame of its own to count.
+    /// The content size, or the window's size for a window with no frame of its own to count.
     public var size: NSSize
     public var minSize: NSSize?
     public var resizable: Bool
@@ -101,7 +99,7 @@ public class PageWindowController: NSWindowController, NSWindowDelegate {
 
     // MARK: Traffic lights
 
-    /// The traffic lights at `spec.trafficLights` from the top left (`trafficLightPosition`), as `hiddenInset` puts them.
+    /// The traffic lights at `spec.trafficLights` from the top left.
     func positionTrafficLights() {
         guard let window else { return }
         let types: [NSWindow.ButtonType] = [.closeButton, .miniaturizeButton, .zoomButton]
@@ -128,8 +126,8 @@ public class PageWindowController: NSWindowController, NSWindowDelegate {
 }
 
 extension ThemeFonts {
-    /// The height of a line of this font with `line-height: normal`, as Chromium measures the system font: the ascent
-    /// (0.952 em) and the descent (0.24 em), each rounded.
+    /// The height of a line of this font with `line-height: normal`: the system font's ascent (0.952 em) and descent
+    /// (0.24 em), each rounded.
     public static func normalLineHeight(_ font: NSFont) -> CGFloat {
         (font.pointSize * 0.952).rounded() + (font.pointSize * 0.24).rounded()
     }

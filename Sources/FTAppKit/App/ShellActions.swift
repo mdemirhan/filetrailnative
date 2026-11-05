@@ -1,4 +1,3 @@
-// Port of the app.on("activate") and open-file handling of apps/desktop/src/main/main.ts and ExplorerWindowController.activate
 import AppKit
 import FTFileSystem
 import FTFoundation

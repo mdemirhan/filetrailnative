@@ -1,4 +1,3 @@
-// Port of the createFolderWatches wiring in apps/desktop/src/main/bootstrap.ts
 import Foundation
 
 extension FolderWatches.Dependencies {

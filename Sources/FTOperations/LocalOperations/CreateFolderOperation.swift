@@ -1,13 +1,11 @@
-// Port of the "writeOperation:createFolder" handler, prepareCreateFolderOperation, executeCreateFolderOperation and
-// nextFreeFolderPath (apps/desktop/src/main/bootstrap/writeOperations.ts)
 import FTFileSystem
 import FTFoundation
 import Foundation
 
 extension WriteCoordinator {
-    /// `writeOperation:createFolder`: makes one folder in `parentDirectoryPath`. With `nextFreeName`, the name is
-    /// only a suggestion ("untitled folder"): when it is taken (by something the window hasn't listed yet), the next
-    /// free one ("untitled folder 2") is used. A name the person typed is never changed: it is refused.
+    /// Makes one folder in `parentDirectoryPath`. With `nextFreeName`, the name is only a suggestion ("untitled
+    /// folder"): when it is taken (by something the window hasn't listed yet), the next free one ("untitled folder 2")
+    /// is used. A name the person typed is never changed: it is refused.
     @discardableResult
     public func createFolder(
         parentDirectoryPath: String, folderName: String, nextFreeName: Bool = false, window: any WriteOperationWindow
@@ -29,7 +27,7 @@ extension WriteCoordinator {
         }
     }
 
-    /// `prepareCreateFolderOperation`: the folder's path.
+    /// The folder's path.
     func prepareCreateFolder(parentDirectoryPath rawParent: String, folderName rawName: String, nextFreeName: Bool)
         async throws -> String
     {
@@ -93,7 +91,6 @@ extension WriteCoordinator {
         return (base, number + 1)
     }
 
-    /// `executeCreateFolderOperation`.
     static func executeCreateFolder(
         _ destinationPath: String, _ operation: LocalWriteOperation, _ fileSystem: any LocalWriteFileSystem,
         undoable: @MainActor () -> Bool

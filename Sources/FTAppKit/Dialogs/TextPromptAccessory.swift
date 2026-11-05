@@ -1,5 +1,3 @@
-// Port of the field and the error line of apps/desktop/src/renderer/components/TextPromptDialog.tsx and the
-// .text-prompt-* rules of apps/desktop/src/renderer/styles.css (1740-1768)
 import AppKit
 import FTFoundation
 

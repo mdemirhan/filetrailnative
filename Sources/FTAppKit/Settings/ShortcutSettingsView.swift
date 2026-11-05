@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/components/ShortcutSettings.tsx, drawn as styles.css:6049-6215 draws it
 import AppKit
 import FTFoundation
 
@@ -243,7 +242,7 @@ final class ShortcutRowView: ThemedView {
 
     var label: String { ShortcutSettingsText.withoutEllipsis(command.label) }
 
-    /// Only a customized row has the button (ShortcutSettings.tsx:326), and hidden it is no stop for Tab.
+    /// Only a customized row has the button, and hidden it is no stop for Tab.
     private func showRestoreButton(_ shows: Bool) {
         restoreButton.isHidden = !shows
         restoreButton.refusesFirstResponder = !shows

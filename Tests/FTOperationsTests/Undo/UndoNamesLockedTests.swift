@@ -1,6 +1,5 @@
-// Port of apps/desktop/src/main/bootstrap/undoExecution.names.test.ts and undoExecution.locked.test.ts: names spelled
-// otherwise, packages numbered before their extension, and copies the Trash would refuse (locked, a rule against
-// deleting, read-only).
+// Names spelled otherwise, packages numbered before their extension, and copies the Trash would refuse (locked, a rule
+// against deleting, read-only).
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -21,7 +20,6 @@ struct UndoNamesLockedTests {
 
     // MARK: Names
 
-    // T-c1d0279a F-557
     @Test(arguments: [
         (CopyPasteMode.copy, "X.TXT", "x.txt"), (.copy, nfd, nfc), (.cut, "X.TXT", "x.txt"), (.cut, nfd, nfc),
     ])
@@ -48,7 +46,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-365c8be9 F-557
     @Test func renamesAnItemWithoutAUsableIdBackAskingNothing() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/notes.txt", "")
@@ -71,7 +68,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-a88a3a81 F-557
     @Test func takesAHardLinkToTheItemUnderItsOldNameForAnotherItem() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -87,7 +83,6 @@ struct UndoNamesLockedTests {
 
     // MARK: Undoing a rename of a folder with an item in it that was skipped
 
-    // T-73097054 F-392 F-557
     @Test func takesTheItemBackWithItsFolderUnderItsOwnName() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/P")
@@ -112,7 +107,6 @@ struct UndoNamesLockedTests {
 
     // MARK: Undoing a rename of several that changed the case of a name
 
-    // T-d923dd5b F-384 F-557
     @Test func doesntTakeTheBatchsOwnItemForOneInTheWay() async throws {
         // "B" became "c" and "a" became "b": on a disk that ignores case, "B" finds the batch's own item (now "b"),
         // which makes way for it. Nothing is asked.
@@ -130,7 +124,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-be16f64c F-390 F-557
     @Test func numbersAPackageBeforeItsExtensionAndAPlainFolderAfterItsName() async throws {
         try await withUndoFolder { root, trashDir in
             let names = ["Tool.app", "Backup.sparsebundle", "Photos.v2"]
@@ -147,7 +140,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-f4baea67 F-390 F-557
     @Test func goesByItsExtensionWhenMacOSCantSay() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/Talk.key")
@@ -160,7 +152,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-ef48525f F-390 F-392 F-557
     @Test func numbersAPackageBeforeItsExtensionWhenARenameOfSeveralIsUndone() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/Report.pages")
@@ -191,7 +182,6 @@ struct UndoNamesLockedTests {
         try await t.paste(.copy, ["\(root)/a.txt"], into: root, action: .duplicate)
     }
 
-    // T-0e1214dc F-556
     @Test func movesTheCopyToTheTrashStillLockedAndRedoPutsItBackLocked() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -211,7 +201,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-bd5b494c F-556
     @Test func movesACopyRedoPutBackLockedToTheTrashAgainOnTheNextUndo() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -227,7 +216,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-99ee81a4 F-556
     @Test func doesntUnlockAnItemPutBackFromTheTrashThatWasLockedSince() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -243,7 +231,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-ccfd0f8e F-556
     @Test(arguments: [UndoDirection.undo, .redo])
     func saysSoWhenACopyCantBeLockedAgain(direction: UndoDirection) async throws {
         try await withUndoFolder { root, trashDir in
@@ -274,7 +261,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-dc718490 F-556
     @Test func keepsACopyInTheTrashToPutBackAgainWhenItCantBeUnlocked() async throws {
         try await withUndoFolder { root, trashDir in
             let refuseUnlock = UndoFlag()
@@ -311,7 +297,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-420b717f F-556
     @Test func saysSoWhenAnItemTheTrashRefusedCantBeLockedAgain() async throws {
         try await withUndoFolder { root, trashDir in
             let flags = FlagStore()
@@ -336,7 +321,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-3be2b3ad F-556
     @Test func putsTheLockBackWhenTheTrashRefusesTheCopyForAnotherReason() async throws {
         try await withUndoFolder { root, trashDir in
             let flags = FlagStore()
@@ -373,7 +357,6 @@ struct UndoNamesLockedTests {
         try Self.shell("/bin/ls", ["-led", path]).split(separator: "\n").dropFirst().joined(separator: "\n")
     }
 
-    // T-4ae1fb00 F-556
     @Test func movesACopyWithARuleAgainstDeletingItToTheTrashRuleAndAll() async throws {
         try await withUndoFolder { root, trashDir in
             defer { _ = try? Self.shell("/bin/chmod", ["-R", "-N", root]) }
@@ -396,7 +379,6 @@ struct UndoNamesLockedTests {
         }
     }
 
-    // T-5a3cf5eb F-556
     @Test func movesACopyOfAReadOnlyFolderToTheTrashStillReadOnly() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/cache")

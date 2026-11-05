@@ -87,7 +87,7 @@ enum StateTestKit {
         (try? JSONNode.parse(Data(text.utf8))) ?? .null
     }
 
-    /// A tab as the original's tests build one, as a patch value.
+    /// A tab as a patch value.
     static func tab(_ path: String) -> JSONNode {
         json(
             """

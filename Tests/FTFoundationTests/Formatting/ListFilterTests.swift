@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/{listFilter,typeahead,searchRefinement}.test.ts, with the
-// list-filter golden recorded from the reference (tools/parity/golden/list-filter.ts).
 import FTTestSupport
 import Testing
 
@@ -34,8 +32,6 @@ struct ListFilterTests {
         ListFilter.filterByName(entries, query: query).map(\.name)
     }
 
-    // T-74e6332c F-092
-    // B-NAV-169
     @Test func keepsTheNamesThatContainTheText() {
         #expect(names("DO") == ["Documents", "my doc.txt"])
         #expect(names("d") == ["Android", "Documents", "my doc.txt", "report (1).pdf"])
@@ -46,13 +42,10 @@ struct ListFilterTests {
         #expect(names("zzz") == [])
     }
 
-    // T-60a391b3
     @Test func returnsTheSameListWhenThereIsNoFilter() {
         #expect(ListFilter.filterByName(entries, query: "") == entries)
     }
 
-    // T-0d4539c1
-    // B-NAV-169 B-VIEW-239
     @Test func selectsTheFirstNameStartingWithTheText() {
         // "Android" contains "d" and comes first, but "Documents" starts with it.
         #expect(ListFilter.selection(in: ListFilter.filterByName(entries, query: "d"), query: "d")?.name == "Documents")
@@ -63,8 +56,6 @@ struct ListFilterTests {
         #expect(ListFilter.selection(in: entries, query: "") == nil)
     }
 
-    // T-95a42904
-    // B-SRCH-116
     @Test func filtersSearchResultsByNameOrByTheFolderTheyAreIn() {
         let results = [
             Entry(id: 0, name: "App.tsx", relativeParentPath: "src/components"),
@@ -80,8 +71,6 @@ struct ListFilterTests {
         #expect(ListFilter.filterSearchResults(results, query: "") == results)
     }
 
-    // T-f76d7a77 F-092
-    // B-NAV-174
     @Test func countsTheItemsMentioningTheTotalOnlyWhileSomeAreHidden() {
         #expect(ListFilter.formatItemCount(shown: 240, total: 240) == "240 items")
         #expect(ListFilter.formatItemCount(shown: 1, total: 1) == "1 item")
@@ -89,7 +78,6 @@ struct ListFilterTests {
         #expect(ListFilter.formatItemCount(shown: 0, total: 1) == "0 of 1 item")
     }
 
-    // B-SRCH-116
     @Test func listFilterMatchesTheReference() throws {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "list-filter")
         #expect(cases.count >= 200)
@@ -105,8 +93,6 @@ struct ListFilterTests {
 
     // MARK: Typeahead
 
-    // T-eb1d7cfe
-    // B-NAV-093
     @Test func detectsPrintableCharacterKeys() {
         #expect(Typeahead.isCharacterKey("a"))
         #expect(!Typeahead.isCharacterKey(" "))
@@ -117,7 +103,6 @@ struct ListFilterTests {
         #expect(!Typeahead.isCharacterKey("🎉"))
     }
 
-    // T-df5c84b6
     @Test func matchesTheFirstVisibleTreeNodeByPrefix() {
         let nodes: [String: TypeaheadTreeNode] = [
             "/Users/demo": TypeaheadTreeNode(
@@ -157,8 +142,6 @@ struct ListFilterTests {
     private let readmeLower = Item(path: "/Users/demo/docs/readme.txt")
     private let notes = Item(path: "/Users/demo/docs/notes.txt")
 
-    // T-e566169a
-    // B-SRCH-027
     @Test func matchesPlainTextAsFdDoes() {
         func matches(_ item: Item, _ query: String) -> Bool {
             SearchRefinement.matchesTextQuery(item, query: query, scope: .name)
@@ -173,8 +156,6 @@ struct ListFilterTests {
         #expect(!matches(Item(path: "/x/abc"), "a.c"))
     }
 
-    // T-dc2d82a3
-    // B-SRCH-028
     @Test func looksAtTheWholePathWhenTheSearchMatchesTheFullPath() {
         #expect(!SearchRefinement.matchesTextQuery(notes, query: "docs", scope: .name))
         #expect(SearchRefinement.matchesTextQuery(notes, query: "docs", scope: .path))
@@ -182,8 +163,6 @@ struct ListFilterTests {
         #expect(!SearchRefinement.matchesTextQuery(readmeUpper, query: "Docs", scope: .path))
     }
 
-    // T-9dadd92e
-    // B-SRCH-025 B-SRCH-026 B-SRCH-029
     @Test func knowsWhenLongerTextCanOnlyFindASubset() {
         #expect(SearchRefinement.isNarrower(base: "re", next: "readme"))
         #expect(SearchRefinement.isNarrower(base: "re", next: "more"))
@@ -198,8 +177,6 @@ struct ListFilterTests {
         #expect(!SearchRefinement.isNarrower(base: "", next: "anything"))
     }
 
-    // T-2d1cc088
-    // B-SRCH-033 B-SRCH-036
     @Test func keepsTheResultsOnScreenThatTheNewTextAlsoFinds() {
         let results = [readmeUpper, readmeLower, notes]
         func keep(_ items: [Item], _ previous: String, _ query: String) -> [Item] {
@@ -231,7 +208,7 @@ struct ListFilterTests {
         }
     }
 
-    // A keystroke in a folder of tens of thousands of items stays in the original's ballpark (about 5 ms there).
+    // A keystroke in a folder of tens of thousands of items is filtered within a few hundred milliseconds.
     @Test func filtersFiftyThousandNamesWithinAFewHundredMillisecondsEvenUnoptimized() {
         let items = (0..<50_000).map { Entry(id: $0, name: "IMG_\($0) holiday photo copy.jpg", relativeParentPath: "") }
         // CPU time of this thread, not wall time, so a busy machine does not fail it.

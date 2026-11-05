@@ -1,9 +1,8 @@
-// Port of `JSON.stringify(state, null, 2)` as appStateStore.ts writes app-state.json (key order of its object literals)
 import FTFoundation
 import Foundation
 
-/// The text of `app-state.json`: two-space indent, `"key": value`, a newline at the end, keys in the order the original
-/// writes them where that order is known (everything else is sorted).
+/// The text of `app-state.json`: two-space indent, `"key": value`, a newline at the end, keys in a fixed order
+/// where one is set (everything else is sorted).
 enum AppStateJSON {
     static func serialize(_ state: AppState) throws -> String {
         stringify(try JSONNode.of(state), context: "", indent: "") + "\n"
@@ -18,7 +17,6 @@ enum AppStateJSON {
     private static let windowKeys = ["id", "bounds", "session"]
     private static let columnKeys = ["modified", "size", "kind", "created", "permissions"]
 
-    /// `sanitizePreferences`' object literal.
     private static let preferenceKeys = [
         "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst", "density",
         "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns", "searchColumnOrder",
@@ -78,7 +76,7 @@ enum AppStateJSON {
         }
     }
 
-    /// A number as JavaScript writes it: whole numbers without a fraction, `-0` as `0`.
+    /// A number in the file: whole numbers without a fraction, `-0` as `0`.
     private static func number(_ value: Double) -> String {
         guard value.isFinite else { return "null" }
         if value == value.rounded(), abs(value) < 1e21 {

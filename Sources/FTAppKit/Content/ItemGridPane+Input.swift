@@ -1,6 +1,5 @@
-// Port of the pointer and keys of the Icons and Compact List views: entryItemEvents.ts, the onMouseDown and onContextMenu
-// of IconGridView.tsx (:324-347) and FlowListView (ContentPane.tsx:1270-1293), hooks/useDragSelection.ts, and the rename
-// field of InlineRenameField.tsx as those views place it
+// The Icons and Compact List views' presses, right-clicks and marquee selection, and the rename field as those
+// views place it
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -8,7 +7,7 @@ import FTFoundation
 extension ItemGridPane {
     // MARK: Who has the keyboard
 
-    /// Every primary press on an item or on empty space gives the keyboard to the view (B-SEL-006, B-SEL-013). A rename
+    /// Every primary press on an item or on empty space gives the keyboard to the view. A rename
     /// going on ends: leaving its field commits it.
     func giveKeyboard() {
         guard let window = collection.window else { return }
@@ -20,8 +19,7 @@ extension ItemGridPane {
     func handleMouseDown(_ event: NSEvent) {
         guard host != nil else { return }
         let point = collection.convert(event.locationInWindow, from: nil)
-        // An item being renamed takes presses everywhere on it, for its field: they do nothing else
-        // (IconGridView.tsx:324-340, styles.css:2676-2688).
+        // An item being renamed takes presses everywhere on it, for its field: they do nothing else.
         if renamingItemContains(point) { return }
         giveKeyboard()
         // ⌃-click is a right click.
@@ -37,8 +35,7 @@ extension ItemGridPane {
     }
 
     /// Pointer down on an item selects it when it is not selected or ⌘ or ⇧ is held, and the click that follows narrows
-    /// a selection of several to it, so pressing a selected item can still start a drag of the whole selection
-    /// (B-VIEW-069, B-VIEW-070).
+    /// a selection of several to it, so pressing a selected item can still start a drag of the whole selection.
     private func pressItem(at index: Int, event: NSEvent) {
         guard let host else { return }
         let entry = entries[index]
@@ -74,12 +71,12 @@ extension ItemGridPane {
         }
     }
 
-    /// The click that completes a press on an item (`click` and `doubleClick` of `entryItemEvents.ts`).
+    /// The click that completes a press on an item.
     private func clicked(entry: DirectoryEntry, clickCount: Int, modifiers held: ContentSelection.Modifiers) {
         guard let host else { return }
-        // Only the second click: `dblclick` fires once, and a third click is just a click.
+        // Only the second click: a double-click acts once, and a third click is just a click.
         if clickCount == 2 {
-            // ⌘-double-click on a folder opens it in a new tab (B-VIEW-071).
+            // ⌘-double-click on a folder opens it in a new tab.
             host.activate([entry], newTab: held.meta)
             return
         }
@@ -93,7 +90,7 @@ extension ItemGridPane {
     }
 
     /// The menu for a right-click: on an item, which keeps the selection when it is selected and otherwise selects it
-    /// alone first; or on the empty space, which clears the selection (B-VIEW-072). The view gets the keyboard either
+    /// alone first; or on the empty space, which clears the selection. The view gets the keyboard either
     /// way.
     func menu(forEventAt point: NSPoint) -> NSMenu? {
         guard let host, !renamingItemContains(point) else { return nil }
@@ -117,7 +114,7 @@ extension ItemGridPane {
 
     // MARK: Empty space and the marquee
 
-    /// A press on empty space clears the selection (unless ⇧ or ⌘ is held) and starts a marquee (B-VIEW-073).
+    /// A press on empty space clears the selection (unless ⇧ or ⌘ is held) and starts a marquee.
     private func pressEmptySpace(event: NSEvent, at point: NSPoint) {
         guard let host else { return }
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
@@ -134,8 +131,8 @@ extension ItemGridPane {
         }
     }
 
-    /// Drag-to-select (`useDragSelection`): the box follows the pointer, the selection follows the box, and the view
-    /// scrolls while the pointer is past one of its edges (B-VIEW-077 to B-VIEW-082).
+    /// Drag-to-select: the box follows the pointer, the selection follows the box, and the view
+    /// scrolls while the pointer is past one of its edges.
     private func runMarquee(from event: NSEvent, at start: NSPoint, meta: Bool, shift: Bool) {
         guard let host, let window = collection.window else { return }
         let mode = DragSelection.mode(meta: meta, shift: shift)
@@ -197,7 +194,7 @@ extension ItemGridPane {
                 in: window, matching: [.leftMouseUp, .leftMouseDragged, .scrollWheel],
                 until: Date(timeIntervalSinceNow: 1.0 / 60.0))
             if let next {
-                // The wheel moves the list under a pointer that stays: the box follows (B-VIEW-081).
+                // The wheel moves the list under a pointer that stays: the box follows.
                 if next.type == .scrollWheel {
                     if scroll.wheelScrollsSideways {
                         scroll.scrollWheel(with: next)
@@ -244,7 +241,7 @@ extension ItemGridPane {
 
     /// Shows the field of the rename the pane is told of, or takes it away when the rename is over or its item left the
     /// list. It lives in the collection, not in an item, so scrolling the item away neither loses what was typed nor
-    /// the keyboard (B-VIEW-090, B-VIEW-091).
+    /// the keyboard.
     func syncRename() {
         guard let host else { return }
         guard let state = host.inlineRename, let index = indexByPath[state.path] else {
@@ -276,7 +273,7 @@ extension ItemGridPane {
             positionRenameField()
         }
         if let field = renameField, field.error != state.error || state.refusalCount != lastRefusalCount {
-            // A refused name brings the item back into view (B-VIEW-092).
+            // A refused name brings the item back into view.
             keepInView(.ask)
             lastRefusalCount = state.refusalCount
             field.showRefusal(state.error, count: state.refusalCount)

@@ -1,6 +1,5 @@
-// Port of apps/desktop/src/main/bootstrap/undoExecution.test.ts: Undo and Redo on a real disk, through the write
-// coordinator as the app runs them: each operation's round trip, chains, and what happens when things changed in
-// between.
+// Undo and Redo on a real disk, through the write coordinator as the app runs them: each operation's round trip,
+// chains, and what happens when things changed in between.
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -16,7 +15,6 @@ struct UndoExecutionTests {
 
     // MARK: Round trips
 
-    // T-ea9b354f F-550
     @Test func renamesBackAndAgainOnRedo() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -34,7 +32,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-3c41e3ea F-550
     @Test func renamesBackANameThatDiffersOnlyInCase() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/notes.txt", "a")
@@ -47,7 +44,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-981c0a07 F-550
     @Test func movesANewFolderToTheTrashAndPutsItBackOnRedo() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -64,7 +60,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-aa24d610 F-550
     @Test func putsItemsBackFromTheTrashAndMovesThemThereAgainOnRedo() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -92,7 +87,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-88dc2daa F-392 F-550
     @Test func renamesABatchBackSwapsAndAFolderWithItemsInItIncluded() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -115,7 +109,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-e1df851a F-550
     @Test func movesCopiesToTheTrashAndPutsThemBackOnRedo() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -136,7 +129,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-f6ece398 F-550
     @Test func movesMovedItemsBack() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -154,7 +146,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-2ffebec7 F-550
     @Test(arguments: [CopyPasteMode.copy, .cut])
     func takesBackAReplaceTheNewItemAwayTheOldOneBackInItsPlace(mode: CopyPasteMode) async throws {
         try await withUndoFolder { root, trashDir in
@@ -182,7 +173,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-558c08ab F-550
     @Test func doesntAskAboutANewFolderAnItemWasMovedIntoAndBackOutOf() async throws {
         // A folder's date changes with every item in or out, so it must not count as a change.
         try await withUndoFolder { root, trashDir in
@@ -198,7 +188,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-d5da06b6 F-550
     @Test func doesntAskAboutANewFolderFinderWroteItsViewSettingsInto() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -213,7 +202,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-8a92a9bd F-550
     @Test func undoesAChainOfOperationsOneByOneBackToTheStart() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -234,7 +222,6 @@ struct UndoExecutionTests {
 
     // MARK: Changes made outside the app
 
-    // T-2ba9b3c0 F-551
     @Test func skipsAnItemThatIsGoneSaysSoAndForgetsTheOperation() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -250,7 +237,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-6314cb7d F-551
     @Test func asksWhenAnOldNameIsTakenThenPutsTheItemBackWithANumber() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -272,7 +258,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-1273e179 F-551
     @Test func putsAnItemBackWithANumberInAFolderWhoseNameIsTaken() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/F")
@@ -285,7 +270,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-3c68e7d4 F-551
     @Test func asksBeforeMovingACopyThatChangedToTheTrashSayingItIsADuplicate() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -306,7 +290,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-260d2dc9 F-551
     @Test func movesACopiedFolderSomethingWasAddedToTheTrashOnceAgreed() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src/Folder")
@@ -324,7 +307,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-a3b8a2ae F-551
     @Test func neverMovesAnotherItemThatTookACopysNameToTheTrash() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -342,7 +324,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-3ed5ef1f F-551
     @Test func stillRenamesBackAFileAnAppSavedUnderANewId() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -357,7 +338,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-f809c560 F-551
     @Test func doesntMoveAnItemBackIntoAFolderThatIsGoneOrWasReplaced() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -380,7 +360,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-41c11e28 F-551
     @Test func skipsAnItemEmptiedFromTheTrash() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -407,7 +386,6 @@ struct UndoExecutionTests {
         return pasteTrash
     }
 
-    // T-3092bca3 F-551
     @Test func putsAReplacedItemBackEvenWhenTheNewOneIsGoneAlready() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -419,7 +397,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-ec616fcd F-551
     @Test func leavesAReplacedItemInTheTrashWhileTheNewOneCantBeMovedAway() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -443,7 +420,6 @@ struct UndoExecutionTests {
 
     // MARK: Running an Undo
 
-    // T-738ac153 F-246 F-552
     @Test func hasNothingToUndoOrRedoAtFirst() async throws {
         try await withUndoFolder { root, trashDir in
             let t = UndoTest(root: root, trashDir: trashDir)
@@ -458,8 +434,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-81d56946 F-386 F-552
-    // T-c2f18eb0
     @Test func isRefusedWhileAnotherOperationHoldsTheWriteSlot() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -479,7 +453,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-8c6c71d1 F-386 F-395 F-552
     @Test func saysItCantUndoAfterAnOperationThatCantBeUndone() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(trashDir)/a.txt", "a")
@@ -493,7 +466,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-4fd4220c F-388 F-552
     @Test func refusesToStartFromAQuestionAskedBeforeTheHistoryChanged() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -512,7 +484,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-c4a50a12 F-389 F-552
     @Test func stopsBetweenItemsWhenToldToAndGoesOnFromThereNextTime() async throws {
         try await withUndoFolder { root, trashDir in
             for name in ["a.txt", "b.txt", "c.txt"] {
@@ -546,7 +517,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-f81310a1 F-552
     @Test func reportsAnItemItCouldntMoveBackAndLeavesItWhereItIs() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -568,7 +538,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-9cd8ffff F-249 F-552
     @Test func neverDeletesACopyWhoseDiskTurnsOutToHaveNoTrash() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -589,7 +558,6 @@ struct UndoExecutionTests {
 
     // MARK: The rarer paths
 
-    // T-5a36a5ce F-390 F-553
     @Test func numbersTheNameWhenAnotherItemTakesItJustAsTheItemGoesBack() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -612,7 +580,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-f5bec5b1 F-553
     @Test func leavesTheItemWhereItIsWhenEveryNameItTriesIsTakenJustThen() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -635,7 +602,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-f4e8a0a5 F-553
     @Test func reportsACopyTheTrashRefusedAndLeavesIt() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.mkdir("\(root)/src")
@@ -653,7 +619,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-23726158 F-384 F-392 F-553
     @Test func renamesBackEveryItemOfABatchNumberingOneWhoseOldNameIsTaken() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -671,7 +636,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-9197521e F-553
     @Test func doesNothingToABatchNoneOfWhoseItemsAreWhereTheyWere() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/a.txt", "a")
@@ -685,7 +649,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-191836d7 F-389 F-553
     @Test func stopsABatchPartWayWhenToldToAndGoesOnFromThereNextTime() async throws {
         try await withUndoFolder { root, trashDir in
             for name in ["a", "b", "c"] {
@@ -722,7 +685,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-1ff54593 F-553
     @Test(arguments: [
         (CopyPasteMode.copy, "“a.txt” was left in the Trash"),
         (CopyPasteMode.cut, "“a.txt” was left as it is, because the step before it couldn't be redone."),
@@ -743,7 +705,6 @@ struct UndoExecutionTests {
         }
     }
 
-    // T-218c67d5 F-389 F-553
     @Test func doesntMoveALaterStepsItemToTheTrashOnceAnEarlierOneCouldntBeUndone() async throws {
         try await withUndoFolder { root, trashDir in
             try UndoDisk.write("\(root)/made.txt", "made")

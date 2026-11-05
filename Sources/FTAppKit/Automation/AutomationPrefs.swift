@@ -1,9 +1,8 @@
-// Port of the preference keys of apps/desktop/src/shared/appPreferences.ts, as scenario `prefs` steps set them.
 #if DEBUG
     import AppKit
     import FTFoundation
 
-    /// What a scenario's `prefs` step does here. Each preference has a handler; the work package that
+    /// What a scenario's `prefs` step does here. Each preference has a handler; the code that
     /// builds a preference registers one (`AutomationPrefs.register`). A key with no handler yet is
     /// reported as unsupported, key by key, and the run goes on.
     @MainActor
@@ -12,7 +11,7 @@
             case applied
             /// This app can't apply the value yet; the text says what.
             case unsupported(String)
-            /// The value is not one the original takes.
+            /// The key or value is not one the preferences have.
             case failed(String)
         }
 
@@ -26,7 +25,7 @@
 
         typealias Handler = @MainActor (Scenario.PrefValue, Context) -> Result
 
-        /// Every preference key of the original (`DEFAULT_APP_PREFERENCES`, appPreferences.ts:390-448).
+        /// Every preference key.
         static let originalKeys: Set<String> = [
             "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst", "density",
             "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns",
@@ -41,9 +40,8 @@
             "favoritesInitialized", "batchRenameSettings", "batchRenamePresets",
         ]
 
-        /// The window session keys (appPreferences.ts:357-380). The rest the whole app
-        /// shares: a key of those with no handler of its own goes out as Settings sends it, as the original's driver
-        /// sends it.
+        /// The window session keys. The rest the whole app
+        /// shares: a key of those with no handler of its own goes out as Settings sends it.
         static let sessionKeys: Set<String> = [
             "openTabs", "activeTabIndex", "treeRootPath", "lastVisitedPath", "lastVisitedFavoritePath", "viewMode",
             "searchViewMode", "sortBy", "sortDirection", "searchResultsSortBy", "searchResultsSortDirection",
@@ -62,7 +60,7 @@
         static func hasHandler(_ key: String) -> Bool { handlers[key] != nil }
 
         /// Applies a `prefs` step: ok when every key took, partial listing the keys this app can't set
-        /// yet, failed for a key or value the original doesn't have.
+        /// yet, failed for a key or value the preferences don't have.
         static func apply(_ prefs: [String: Scenario.PrefValue], context: Context) -> AutomationRunner.Outcome {
             var unsupported: [String] = []
             var failed: [String] = []
@@ -113,7 +111,7 @@
             }
         }
 
-        /// What the spike can show so far.
+        /// The handlers the runner starts with.
         private static let defaultHandlers: [String: Handler] = [
             "theme": { value, _ in
                 switch value.string {
@@ -163,11 +161,11 @@
                 }
             },
             "accent": { value, _ in
-                // The spike draws with the system accent color.
+                // Only the system accent color applies here.
                 value.string?.lowercased() == "#007aff" ? .applied : .unsupported("accent \(describe(value))")
             },
             "favoritesPlacement": { value, _ in
-                // The spike's sidebar is the separate layout: Favorites and Locations lists.
+                // Only the separate layout applies here: Favorites and Locations lists.
                 value.string == "separate" ? .applied : .unsupported("favoritesPlacement \(describe(value))")
             },
         ]

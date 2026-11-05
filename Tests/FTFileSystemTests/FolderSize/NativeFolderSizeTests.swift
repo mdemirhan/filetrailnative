@@ -1,4 +1,3 @@
-// Ports the folder-size cases of packages/native-fs/src/native-fs.test.ts
 import FTTestSupport
 import Foundation
 import Testing
@@ -70,7 +69,7 @@ func makeFolder(_ path: String) throws {
     }
 }
 
-/// Files and folders as the original's first suite makes them:
+/// Files and folders of the first suite's tree:
 ///   root/ a.txt (10), b.txt (20), sub/ c.txt (5), deep/ d.txt (100), empty/, link -> a.txt
 private func makeTree(_ root: String) throws {
     try makeFolder("\(root)/sub/deep")
@@ -88,7 +87,6 @@ private func totals(_ walk: MeasuredWalk, _ path: String) -> FolderTotals? {
 
 extension RealWalks {
     @MainActor @Suite struct NativeFolderSizeTests {
-        // T-575899a8 F-179 F-180
         @Test func returnsTotalLogicalSizeDiskTotalFileAndFolderCountsAndSubDirStats() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
@@ -127,7 +125,6 @@ extension RealWalks {
             }
         }
 
-        // T-071c877b F-182
         @Test func countsAPackagesContentsOneByOneLikeAnyFolder() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
@@ -142,7 +139,6 @@ extension RealWalks {
             }
         }
 
-        // T-6a4b78d8 F-179
         @Test func canBeCancelled() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 try makeTree(directory.path)
@@ -156,7 +152,6 @@ extension RealWalks {
             }
         }
 
-        // T-c3c5ada5 F-181
         @Test func handlesNonExistentPaths() async {
             let error = await #expect(throws: FolderSizeError.self) {
                 try await measure(NativeFolderSize(), "/nonexistent/path/xyz")
@@ -165,7 +160,6 @@ extension RealWalks {
             #expect(error?.message == "ENOENT: No such file or directory, folder size '/nonexistent/path/xyz'")
         }
 
-        // T-98df046d F-180
         @Test func countsALinkToAFolderInsideAsAFileAndDoesntFollowIt() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
@@ -180,7 +174,6 @@ extension RealWalks {
         }
 
         // As Finder's Get Info does: each link to a file is counted, as a copy would copy it.
-        // T-7dae0f9c F-182
         @Test func countsAFileWithSeveralHardLinksOnceForEachLink() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
@@ -193,7 +186,6 @@ extension RealWalks {
             }
         }
 
-        // T-919b12ca F-181
         @Test func countsAFolderItCantOpenAsOneWithNothingInItAndFinishesTheFolderHoldingIt() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
@@ -213,7 +205,6 @@ extension RealWalks {
             }
         }
 
-        // T-a014829b F-180
         @Test func namesTheFoldersInsideAFolderGivenWithASlashAtItsEndWithOneSlash() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
@@ -226,7 +217,6 @@ extension RealWalks {
 
         // /usr/share/snmp is a firmlink to /System/Volumes/Data/usr/share/snmp: it is measured where it is browsed, and
         // /System/Volumes/Data, where the data volume is mounted, is left out, so measuring / counts each folder once.
-        // T-4288a6fa F-180
         @Test(.enabled(if: FileManager.default.fileExists(atPath: "/usr/share/snmp/mibs")))
         func goesThroughAFirmlinkMeasuringItWhereItIsBrowsed() async throws {
             let walk = try await measure(NativeFolderSize(), "/usr/share")
@@ -234,7 +224,6 @@ extension RealWalks {
             #expect(walk.dirs.keys.contains("/usr/share/snmp/mibs"))
         }
 
-        // T-6ad0f174 F-180
         @Test(.enabled(if: FileManager.default.fileExists(atPath: "/System/Volumes/Data/Users")))
         func leavesOutAFolderAnotherVolumeIsMountedOnThoughItHasTheSameDevice() async throws {
             let walk = try await measure(NativeFolderSize(), "/System/Volumes")
@@ -242,7 +231,6 @@ extension RealWalks {
             #expect(!walk.dirs.keys.contains { $0.hasPrefix("/System/Volumes/Data") })
         }
 
-        // T-fa8b61b5 F-179
         @Test func measuresInTheBackgroundAsItDoesInFront() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 try makeTree(directory.path)
@@ -261,7 +249,6 @@ extension RealWalks {
 
         // Each folder is opened from the one holding it, so no path is too long to open; the paths are only put together
         // for the result.
-        // T-a1520eb6 F-180
         @Test func measuresFoldersWhosePathsAreLongerThanPATHMAX() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-test") { directory in
                 let root = directory.path
@@ -300,7 +287,6 @@ extension RealWalks {
             }
         }
 
-        // T-ce73ae75 F-180
         @Test func handlesEmptyDirectories() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-empty") { directory in
                 let walk = try await measure(NativeFolderSize(), directory.path)
@@ -390,7 +376,6 @@ extension RealWalks {
             }
         }
 
-        // T-d3754d8e F-179
         @Test func reportsEveryFolderOnceAfterTheFoldersInsideItAndLeavesTheRestForTheResult() async throws {
             try await withTree { root, expected in
                 let walk = try await measure(NativeFolderSize(), root)
@@ -420,10 +405,8 @@ extension RealWalks {
             }
         }
 
-        // The original polls the active walk for its finished folders; here they are streamed as the walk finishes
-        // them, and a walk that has ended has nothing more to say.
-        // N/A T-e078d98d no polling entry point: there is no walk to take from outside one
-        // T-263a6e9b F-179
+        // The finished folders are streamed as the walk finishes them, and a walk that has ended has nothing more to
+        // say.
         @Test func hasNothingMoreToDeliverOnceAWalkHasEndedOrBeenCancelled() async throws {
             try await withTree { root, _ in
                 let native = NativeFolderSize()
@@ -440,7 +423,6 @@ extension RealWalks {
             }
         }
 
-        // T-565fcaf8 F-179 F-183
         @Test func keepsOnlyWholeFoldersWhenCancelledPartWay() async throws {
             try await withTree { root, expected in
                 let native = NativeFolderSize()
@@ -460,7 +442,6 @@ extension RealWalks {
             }
         }
 
-        // T-5d8a5e9f F-180
         @Test func namesAFolderWithANewlineQuoteBackslashOrLettersBeyondASCIIInItsNameExactly() async throws {
             try await withTree { root, _ in
                 let names = ["line\nbreak \"quoted\" \\ tab\t", "Résumé 日本語 🎉", "two\\\\slashes"]
@@ -475,7 +456,6 @@ extension RealWalks {
             }
         }
 
-        // T-fc6bbad1 F-179
         @Test func handsFinishedFoldersToTheCallbackAndTheRestWithTheResult() async throws {
             try await withTree { root, expected in
                 let walk = try await measure(NativeFolderSize(), root)
@@ -484,7 +464,6 @@ extension RealWalks {
             }
         }
 
-        // T-29115a15 F-179 F-183
         @Test func handsWhatACancelledWalkFinishedToTheCallbackBeforeRejecting() async throws {
             try await withTree { root, expected in
                 let native = NativeFolderSize()
@@ -514,7 +493,6 @@ extension RealWalks {
         }
 
         // What the folders that hold an item lose when it is removed must be what measuring them counted for it.
-        // T-178462e6 F-238 F-185
         @Test func countsEachItemAsMeasuringItsFolderDoes() async throws {
             try await withItems { root in
                 let walk = try await measure(NativeFolderSize(), root)
@@ -534,7 +512,6 @@ extension RealWalks {
             }
         }
 
-        // T-3a72b2f0 F-185
         @Test func failsForAnItemThatIsGone() async throws {
             try await withItems { root in
                 let error = await #expect(throws: FolderSizeError.self) {
@@ -556,7 +533,6 @@ extension RealWalks {
             return directory
         }
 
-        // T-9066937b F-179 F-184
         @Test func serializesConcurrentCallsAndReturnsCorrectPerCallResults() async throws {
             let rootA = try makeFiles("native-fs-sf-a", count: 3, size: 10)
             let rootB = try makeFiles("native-fs-sf-b", count: 5, size: 20)
@@ -576,7 +552,6 @@ extension RealWalks {
             #expect(resultB.total == 100)
         }
 
-        // T-bccc0229 F-179 F-184
         @Test func cancelThenImmediateRestartCancelsOnlyTheActiveCall() async throws {
             let root = try makeFiles("native-fs-sf-c", count: 4, size: 25)
             defer { root.remove() }
@@ -593,7 +568,6 @@ extension RealWalks {
             #expect(result.total == 100)
         }
 
-        // T-07ad13e5 F-179 F-184
         @Test func queuesManyConcurrentCallsWithoutCorruptingResults() async throws {
             let root = try makeFiles("native-fs-sf-q", count: 2, size: 7)
             defer { root.remove() }

@@ -1,7 +1,6 @@
-// Port of the paste cases of packages/core/src/fs/copyPastePackages.realfs.test.ts, but for the one that Replaces
-// (P3-04's): packages (apps, Keynote documents, photo libraries) are folders macOS shows as one item. Two of them
-// clash like two files: one replaces the other or both are kept, never merged, since an app or document made of two
-// versions is broken.
+// Packages (apps, Keynote documents, photo libraries) are folders macOS shows as one item. Two of them clash like two
+// files: one replaces the other or both are kept, never merged, since an app or document made of two versions is
+// broken.
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -26,7 +25,6 @@ struct PackagePasteTests {
         return (src, dst)
     }
 
-    // T-726a5109 F-450
     @Test func isLeftWholeByAddMissing() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = try folders(root)
@@ -40,7 +38,6 @@ struct PackagePasteTests {
         }
     }
 
-    // T-63458da3 F-450
     @Test func isKeptBesideTheExistingOneByKeepAllUnderACopyName() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = try folders(root)
@@ -56,7 +53,6 @@ struct PackagePasteTests {
         }
     }
 
-    // T-124863ab F-450
     @Test func isntMergedWhenAMergeAnswerIsGivenForItByItsOwnChoice() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = try folders(root)
@@ -73,7 +69,6 @@ struct PackagePasteTests {
         }
     }
 
-    // T-bc27ba96 F-325
     @Test func appearingAtTheDestinationDuringThePasteIsAskedAboutWithoutMerge() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = try folders(root)
@@ -88,7 +83,6 @@ struct PackagePasteTests {
         }
     }
 
-    // T-dc846056 F-448
     @Test func stillMergesTwoPlainFolders() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = try folders(root)
@@ -107,7 +101,6 @@ struct PackagePasteTests {
 // Like Finder, a copy of a package keeps its extension at the end, whichever packages macOS knows: "Backup
 // copy.sparsebundle", never "Backup.sparsebundle copy".
 struct PackageCopyNameTests {
-    // T-2838f1c8 F-450
     @Test func hasCopyBeforeTheExtensionWhenDuplicated() async throws {
         try await withTemporaryDirectory { root in
             let src = root.path + "/src"
@@ -126,7 +119,6 @@ struct PackageCopyNameTests {
         }
     }
 
-    // T-96aa43f3 F-450
     @Test func hasCopyBeforeTheExtensionWhenKeepBothKeepsItBesideTheOldOne() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = (root.path + "/src", root.path + "/dst")

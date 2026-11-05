@@ -1,6 +1,3 @@
-// Port of the controls of apps/desktop/src/renderer/components/BatchRenameSheet.tsx (TextField, NumberField, Popup,
-// Checkbox, the segmented radio group, the token buttons, the chevrons and glyphs) as styles.css draws them (6696-7170,
-// 1405-1450, 7303-7330, 7395-7420)
 import AppKit
 import FTFoundation
 
@@ -29,7 +26,7 @@ func batchRenameTextWidth(_ text: String, _ size: Double, weight: NSFont.Weight 
     ceil((text as NSString).size(withAttributes: [.font: ThemeFonts.sans(size, weight)]).width)
 }
 
-/// The focus ring the stylesheet draws around a control (`--focus-ring`: 3 px of the accent at 50%).
+/// The focus ring around a control: 3 px of the accent at 50%.
 @MainActor
 func drawBatchRenameFocusRing(_ rect: NSRect, radius: CGFloat, theme: Theme) {
     let width = CGFloat(DesignTokens.focusRingWidth)
@@ -55,8 +52,8 @@ final class BatchRenameEditField: NSTextField {
     }
 }
 
-/// `.batch-rename-field`: a field on the field's fill and edge, 24 tall with 8 each side, marked red while what it
-/// holds is wrong. Spelling and correction are off; it keeps at most 255 characters.
+/// A field on the field's fill and edge, 24 tall with 8 each side, marked red while what it holds is wrong. Spelling
+/// and correction are off; it keeps at most 255 characters.
 @MainActor
 final class BatchRenameTextField: NSView, ThemeApplying, NSTextFieldDelegate {
     let field = BatchRenameEditField()
@@ -234,8 +231,8 @@ final class BatchRenameTextField: NSView, ThemeApplying, NSTextFieldDelegate {
 
 // MARK: Pop-up
 
-/// `.batch-rename-popup`: a pop-up (or, for the presets, a pull-down) with the push button's bezel, its title 8 in
-/// and the chevrons Settings draws 8 from the right.
+/// A pop-up (or, for the presets, a pull-down) with the push button's bezel, its title 8 in and the chevrons Settings
+/// draws 8 from the right.
 @MainActor
 final class BatchRenamePopUp: NSPopUpButton, ThemeApplying {
     /// Told the index of the item chosen (a pull-down's title item not counted).
@@ -355,7 +352,7 @@ final class BatchRenamePopUp: NSPopUpButton, ThemeApplying {
 
 // MARK: Checkbox
 
-/// `.batch-rename-check`: the 14 pt box of Settings and its label, 6 apart. Space or a click toggles it.
+/// A checkbox: the 14 pt box of Settings and its label, 6 apart. Space or a click toggles it.
 @MainActor
 final class BatchRenameCheckbox: NSView, ThemeApplying, TextStyleSource {
     let label: ThemedText
@@ -516,8 +513,7 @@ final class BatchRenameSegment: NSView, TextStyleSource {
     }
 }
 
-/// The mark on the chosen segment (`.segmented-item.is-selected`): it reads as the segment's title, as the original's
-/// selected item does.
+/// The mark on the chosen segment: it reads as the segment's title.
 @MainActor
 final class BatchRenameSelectedMark: NSView, TextStyleSource {
     weak var label: NSTextField?
@@ -598,7 +594,7 @@ final class BatchRenameModeControl: SystemSegmentedControl {
 
 // MARK: Token button
 
-/// `.batch-rename-token`: a date token on the marks' tint, 20 tall, 7 each side, its name in the tooltip.
+/// A date token on the marks' tint, 20 tall, 7 each side, its name in the tooltip.
 @MainActor
 final class BatchRenameTokenButton: TextControl {
     let token: BatchRenameDateToken

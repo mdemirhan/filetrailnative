@@ -1,5 +1,3 @@
-// Port of the Replace cases of packages/core/src/fs/copyPasteRuntimeSafety.realfs.test.ts (its other cases are in
-// Execution/RuntimeSafetyTests.swift and Execution/RuntimeSafetyWholeFolderTests.swift), on the real disk
 import Darwin
 import FTFoundation
 import FTTestSupport
@@ -36,7 +34,6 @@ struct RuntimeSafetyReplaceTests {
     // MARK: The swap at the end of a Replace
 
     // The old item is in the Trash by then; the new one must never be thrown away too.
-    // T-e7b6aa80 F-344 F-492
     @Test func keepsTheNewItemUnderAVisibleNameWhenItCantTakeTheOldOnesName() async throws {
         try await withPlaces { _, src, dst, trash in
             try Disk.write(src + "/f.txt", "new")
@@ -69,7 +66,6 @@ struct RuntimeSafetyReplaceTests {
 
     // MARK: Going on after the item being pasted changed
 
-    // T-4043a115 F-494
     @Test func replacesWithTheWholePackageNeverWithAnEmptyFolder() async throws {
         try await withPlaces { _, src, dst, trash in
             try Disk.write(src + "/Doc.key", "flat")
@@ -94,7 +90,6 @@ struct RuntimeSafetyReplaceTests {
 
     // An app saves a new version of "a.txt" (a new file put in its place) while the copy replacing it is being
     // written.
-    // T-30bf2d98 F-342 F-501
     @Test func keepsAnItemSavedInItsPlaceWhileTheNewOneWasBeingCopied() async throws {
         try await withPlaces { root, src, dst, trash in
             try Disk.write(src + "/a.txt", "pasted")
@@ -124,7 +119,6 @@ struct RuntimeSafetyReplaceTests {
 
     // With no Trash to get it back from, an item added to the folder since the review would be lost unseen: the
     // folder is kept.
-    // T-15257524 F-343 F-501
     @Test func doesntDeleteForGoodAFolderThatGotANewItemWhileTheNewOneWasCopied() async throws {
         try await withPlaces { _, src, dst, _ in
             try Disk.write(src + "/F/x.txt", "pasted")
@@ -152,7 +146,6 @@ struct RuntimeSafetyReplaceTests {
 
     // Looking for a locked item inside a large folder takes a while: one swapped in for it meanwhile isn't
     // deleted.
-    // T-0d702d5e F-501
     @Test func doesntDeleteAFolderSwappedInWhileItWasLookedThroughForLockedItems() async throws {
         try await withPlaces { root, src, dst, _ in
             try Disk.write(src + "/F/x.txt", "pasted")
@@ -181,7 +174,6 @@ struct RuntimeSafetyReplaceTests {
 
     // On a disk with no Trash the person is asked first; another item put there while the question was open is
     // never deleted on that answer.
-    // T-66f20243 F-343 F-501
     @Test func doesntDeleteForGoodAnItemPutInPlaceWhileTheNoTrashQuestionWasOpen() async throws {
         try await withPlaces { root, src, dst, _ in
             try Disk.write(src + "/a.txt", "pasted")
@@ -205,7 +197,6 @@ struct RuntimeSafetyReplaceTests {
 
     // MARK: Smaller cases a Replace and a copy get right
 
-    // T-81c8fbf8 F-341 F-504
     @Test func keepsTheOldFolderWhenAnItemInTheNewOneChangedAndWasSkipped() async throws {
         try await withPlaces { _, src, dst, trash in
             try Disk.write(src + "/F/a.txt", "new a")
@@ -227,7 +218,6 @@ struct RuntimeSafetyReplaceTests {
         }
     }
 
-    // T-c0ecbaec F-504 F-345
     @Test func removesTheHiddenCopyWhenTheReplaceCantBeWrittenDown() async throws {
         try await withPlaces { _, src, dst, trash in
             try Disk.write(src + "/a.txt", "new")
@@ -249,7 +239,6 @@ struct RuntimeSafetyReplaceTests {
         }
     }
 
-    // T-cfe02485 F-343 F-504
     @Test func deletesNothingOfAFolderThatHoldsALockedItemOnADiskWithoutATrash() async throws {
         try await withPlaces { _, src, dst, _ in
             try Disk.write(src + "/F", "a file now")

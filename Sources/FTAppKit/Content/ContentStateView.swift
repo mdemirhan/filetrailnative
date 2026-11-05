@@ -1,5 +1,3 @@
-// Port of ContentState, EmptyState and the filter state (apps/desktop/src/renderer/components/ContentPane.tsx:546-561,
-// 2355-2466) and the `.content-state` rules of styles.css:2972-3050
 import AppKit
 import FTFoundation
 
@@ -15,7 +13,7 @@ enum ContentStateKind: Equatable {
     case empty(text: String)
     /// A filter nothing matches.
     case noMatches(query: String)
-    /// Search results with no rows (`SearchResultsState`, P5-07).
+    /// Search results with no rows (`SearchResultsState`).
     case search(SearchResultsState)
 }
 
@@ -46,7 +44,7 @@ final class ContentStateView: NSView {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    /// The pointer goes through to the list below, which takes the keyboard (ContentPane.tsx:472-486); only the
+    /// The pointer goes through to the list below, which takes the keyboard; only the
     /// buttons are the state's own. The card and its text fill most of the pane.
     override func hitTest(_ point: NSPoint) -> NSView? {
         let hit = super.hitTest(point)
@@ -70,8 +68,7 @@ final class ContentStateView: NSView {
             font: ThemeFonts.sans(type.body, .bold), color: { $0.palette.textPrimary })
         let plain = TextStyle(font: ThemeFonts.sans(type.body), color: { $0.palette.textSecondary })
         let quiet = TextStyle(font: ThemeFonts.sans(type.callout), color: { $0.palette.textSecondary })
-        // `.empty-state-title` asks for title3 in the secondary color, but `.content-state strong` is the more specific
-        // rule: the body size in the primary color, at the title's weight of 500.
+        // The empty state's title: the body size in the primary color, at a weight of 500.
         let emptyTitle = TextStyle(
             font: ThemeFonts.sans(type.body, .medium), color: { $0.palette.textPrimary })
         func text(_ string: String, _ style: TextStyle, id: String, wrapping: Bool = false) -> ThemedText {
@@ -126,7 +123,7 @@ final class ContentStateView: NSView {
         case .noMatches(let query):
             card.isHidden = false
             card.borderColor = nil
-            // `.empty-state-title` over `.empty-state-message`.
+            // The title over the message.
             title = text(ContentStateText.noMatches(query: query), emptyTitle, id: "emptyState.title")
             line = text(ContentStateText.noMatchesMessage, quiet, id: "content.state.empty")
             if onSearchSubfolders != nil {
@@ -160,9 +157,8 @@ final class ContentStateView: NSView {
         }
     }
 
-    /// The filter's state (`.content-state.content-empty` in place of the view): the title and the line centered in
-    /// the whole pane, and Search Subfolders under them at the start of the row (`.empty-state-action`:
-    /// `justify-self: start; margin-top: 4px`).
+    /// The filter's state in place of the view: the title and the line centered in the whole pane, and Search
+    /// Subfolders 4 under them at the start of the row.
     private func layoutNoMatches(width: CGFloat) {
         card.frame = bounds
         let inner = max(0, width - 2 * CGFloat(stateLayout.emptyPaddingHorizontal))
@@ -186,8 +182,8 @@ final class ContentStateView: NSView {
         }
     }
 
-    /// Room a card keeps above the rows, its bottom margin too: it comes before them (`.content-error`, in the same
-    /// scroller as the rows). A state that isn't a card keeps none.
+    /// Room a card keeps above the rows, its bottom margin too: it comes before them, in the same scroller as the rows.
+    /// A state that isn't a card keeps none.
     func roomAboveRows(width: CGFloat) -> CGFloat {
         switch kind {
         case .loading, .error, .fullDiskAccess, .search(.searching), .search(.failed):

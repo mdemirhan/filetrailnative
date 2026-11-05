@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/bootstrap/folderSizeCache.ts
 import Foundation
 
 /// The folder sizes known. All are kept: a measurement's sizes are what the folders inside it show, and

@@ -1,5 +1,4 @@
-// Checks the toolbar's text against the rules of apps/desktop/src/renderer/styles.css (.toolbar-menu,
-// .history-menu-item, .toolbar-title)
+// Checks how the toolbar draws its text: its menus, the history menu's items and the title
 import AppKit
 import FTFoundation
 import Testing
@@ -50,7 +49,7 @@ enum InkScan {
         return ink
     }
 
-    /// The ink of `text` drawn from x = 0 as the original's text box draws it.
+    /// The ink of `text` drawn from x = 0 by a TextBox.
     static func ink(of text: String, font: NSFont) -> Ink? {
         let width = (text as NSString).size(withAttributes: [.font: font]).width
         let view = TextBox(frame: NSRect(x: 0, y: 0, width: width + 20, height: 30))

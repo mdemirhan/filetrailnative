@@ -1,4 +1,3 @@
-// Port of packages/contracts/src/itemName.ts
 import Foundation
 
 /// Rules for the name of a file or folder typed by a person.

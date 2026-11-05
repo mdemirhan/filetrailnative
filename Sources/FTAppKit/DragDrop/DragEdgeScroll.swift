@@ -1,8 +1,7 @@
-// Port of what Chromium's drag autoscroll gives the scrolling lists of apps/desktop/src/renderer/components/IconGridView.tsx, ContentPane.tsx and TreePane.tsx
 import AppKit
 
-/// A drag held near an edge of a scrolling view scrolls it, faster the closer to the edge. As Chromium's, it starts after
-/// a moment in the belt along the edges, so a drag that only passes over an edge scrolls nothing.
+/// A drag held near an edge of a scrolling view scrolls it, faster the closer to the edge. It starts after a moment in
+/// the belt along the edges, so a drag that only passes over an edge scrolls nothing.
 @MainActor
 struct DragEdgeScroll {
     static let beltWidth: CGFloat = 20

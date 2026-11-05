@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/volumes.ts
 import Foundation
 
 /// Which disk a path is on, told from the path alone so a drag can show its cursor at once. macOS mounts

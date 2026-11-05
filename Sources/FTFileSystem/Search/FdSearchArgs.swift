@@ -1,4 +1,3 @@
-// Port of buildFdSearchArgs (packages/core/src/search/fdSearch.ts)
 import Foundation
 
 public enum FdSearchArgs {

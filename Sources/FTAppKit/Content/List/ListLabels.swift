@@ -1,4 +1,4 @@
-// The text of the List view's cells: laid out by hand, with no inset, drawn in the stylesheet's fonts
+// The text of the List view's cells: laid out by hand, with no inset, drawn in the theme's fonts
 import AppKit
 import FTFoundation
 
@@ -45,13 +45,13 @@ class ListLabel: NSTextField {
 }
 
 /// The name of a file: the stem, which ends in an ellipsis when the column is too narrow, and the extension after it,
-/// which always shows (`FileNameLabel`). The field holds the whole name, and draws it itself.
+/// which always shows. The field holds the whole name, and draws it itself.
 final class NameLabel: ListLabel {
-    /// The stored extension, to split the name where the original does.
+    /// The stored extension, where the name is split.
     var fileExtension = "" {
         didSet { needsDisplay = true }
     }
-    /// What a search matched, in the whole name (P5-07); underlined instead of boxed on a selected row.
+    /// What a search matched, in the whole name; underlined instead of boxed on a selected row.
     var marks: [HighlightRange] = [] {
         didSet { needsDisplay = true }
     }
@@ -92,9 +92,8 @@ final class NameLabel: ListLabel {
     }
 }
 
-/// What a search result's folder shows in its column (`.details-folder`, `direction: rtl` with `text-overflow: ellipsis`):
-/// whole and from the left when it fits; otherwise it loses its start, whole characters at a time, and what is left ends
-/// flush with the right edge after an ellipsis.
+/// What a search result's folder shows in its column: whole and from the left when it fits; otherwise it loses its
+/// start, whole characters at a time, and what is left ends flush with the right edge after an ellipsis.
 @MainActor
 enum FolderColumnText {
     struct Fit: Equatable {

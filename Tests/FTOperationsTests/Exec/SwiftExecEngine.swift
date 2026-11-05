@@ -1,8 +1,7 @@
-// The Swift paste engine, as the differential drives it: what tools/parity/exec/engine.ts records of the reference.
-// The review and the paste go through the write service, with the native file system, the app's Trash wrapper
-// (TrashItem) around a folder Trash as testNativePaste.ts makes one (ExecPlaces.trashFor), and the app's journal
-// file at places.journal. Questions are answered as the window does, the paste is stopped as the Stop button does,
-// and each thing that happens is recorded in order. Crashes aren't injected (decided 2026-10-14).
+// The Swift paste engine, as the scenario checks drive it. The review and the paste go through the write service,
+// with the native file system, the app's Trash wrapper (TrashItem) around a folder Trash (ExecPlaces.trashFor), and
+// the app's journal file at places.journal. Questions are answered as the window does, the paste is stopped as the
+// Stop button does, and each thing that happens is recorded in order. Crashes aren't injected (decided 2026-10-14).
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -164,7 +163,7 @@ struct SwiftExecEngine: ExecEngine {
 
     // MARK: The Trash
 
-    /// The Trash as bootstrap.ts gives the write service: TrashItem (which tells a locked item, and a disk that may
+    /// The Trash given to the write service: TrashItem (which tells a locked item, and a disk that may
     /// have no Trash, from other failures) around a folder per disk items are moved into as "<n>-<name>", numbered
     /// across them; on a disk without a Trash it fails as the Trash does there, with ENOTSUP. None at all when the
     /// scenario says so.
@@ -301,9 +300,8 @@ private final class RecordingJournal: WriteJournal {
     }
 }
 
-/// The disk as the recordings' file system saw it: the app's native file system, but with Bun's
-/// `fs.promises.realpath`, which opens the item, so it fails (EACCES) on an item its owner can't read (see
-/// RecordedFileSystem).
+/// The disk as the recordings expect it: the app's native file system, but with a realpath that opens the
+/// item, so it fails (EACCES) on an item its owner can't read (see RecordedFileSystem).
 struct RecordedWriteFileSystem: UndoFileSystem {
     private let disk: NativeWriteFileSystem
     private let reader = RecordedFileSystem()
@@ -339,13 +337,13 @@ struct RecordedWriteFileSystem: UndoFileSystem {
     var setAcl: ((String, String?) throws -> Void)? { disk.setAcl }
     var trash: ((String) throws -> String?)? { disk.trash }
     var canModifyFolder: ((String) throws -> Void)? { disk.canModifyFolder }
-    // What Undo asks besides, as the app's own (createOriginalWriteOperationFs).
+    // What Undo asks besides, as the app's own.
     func rename(_ from: String, _ to: String) throws { try disk.rename(from, to) }
     var itemSize: ((String) throws -> ItemSize)? { disk.itemSize }
     var getAcl: ((String) throws -> String?)? { disk.getAcl }
 }
 
-/// The engine's values as JSON, every key present as the reference writes it.
+/// The engine's values as JSON, every key present.
 enum EngineJSON {
     private static func optional(_ text: String?) -> JSONValue { text.map { .string($0) } ?? .null }
     private static func optional(_ number: Int64?) -> JSONValue { number.map { .int(Int($0)) } ?? .null }

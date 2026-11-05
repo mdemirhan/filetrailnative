@@ -1,5 +1,3 @@
-// Port of the pages of apps/desktop/src/renderer/components/HelpView.tsx (TopicPage, ShortcutsPage, SearchResultsPage) and
-// the .help-page rules of styles.css
 import AppKit
 import FTFoundation
 
@@ -9,7 +7,7 @@ enum HelpPageKind: Equatable {
     case results(String)
 }
 
-/// Styles of the page, from the stylesheet. `.help-page` has `line-height: 1.5`.
+/// Styles of the page, whose lines are 1.5 times the font size apart.
 @MainActor
 private enum PageStyle {
     static let lineHeight = 1.5
@@ -33,7 +31,7 @@ private enum PageStyle {
     }()
     static let code = ThemeFonts.mono(DesignTokens.typeScale.callout)
 
-    /// `renderInline`: plain text, and `code` in the code style. `{command}` is already the key it names.
+    /// Plain text, and `code` in the code style. `{command}` is already the key it names.
     @MainActor
     static func inline(_ text: String, style: TextStyle, display: ShortcutDisplay, theme: Theme) -> NSAttributedString {
         let result = NSMutableAttributedString()
@@ -44,7 +42,7 @@ private enum PageStyle {
         return result
     }
 
-    /// `.help-code`: the mono font on the input fill.
+    /// Code: the mono font on the input fill.
     @MainActor
     static func code(_ text: String, style: TextStyle, theme: Theme) -> NSAttributedString {
         var attributes = style.attributes(theme)
@@ -56,7 +54,7 @@ private enum PageStyle {
     }
 }
 
-/// A row of a topic: the label at the left and what it does (`.help-row`).
+/// A row of a topic: the label at the left and what it does.
 @MainActor
 final class HelpRowView: ThemedView {
     private let label: ThemedText
@@ -118,7 +116,7 @@ final class HelpRowView: ThemedView {
     }
 }
 
-/// A shortcut and the keys that do it (`.help-shortcut-row`).
+/// A shortcut and the keys that do it.
 @MainActor
 final class HelpShortcutRowView: ThemedView {
     private let detail: ThemedText
@@ -172,7 +170,7 @@ final class HelpShortcutRowView: ThemedView {
     }
 }
 
-/// The remark under a section's rows, in an accent-soft box (`.help-note`).
+/// The remark under a section's rows, in an accent-soft box.
 @MainActor
 final class HelpNoteView: ThemedView {
     private let text: ThemedText

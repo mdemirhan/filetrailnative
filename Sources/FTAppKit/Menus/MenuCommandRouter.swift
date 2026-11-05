@@ -1,4 +1,3 @@
-// Port of sendCommand and the host callbacks of createApplicationMenuTemplate (apps/desktop/src/main/appMenu.ts)
 import AppKit
 import FTFoundation
 
@@ -90,7 +89,6 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         }
     }
 
-    /// `NATIVE_EDIT_COMMANDS`.
     static func nativeEditSelector(_ command: RendererCommand) -> Selector? {
         switch command {
         case .undo: Selector(("undo:"))
@@ -103,7 +101,6 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         }
     }
 
-    /// `sendCommand`.
     func send(_ command: RendererCommand, focusedWindow focused: NSWindow?) {
         if command == .openHelp || command == .openKeyboardShortcuts, let onOpenHelp {
             onOpenHelp(command == .openKeyboardShortcuts ? .shortcuts : nil)
@@ -137,8 +134,8 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
             performNativeEdit(selector, window)
             return
         }
-        // A held shortcut key repeats the menu item; the ones that start a write run once per press (B-SEL-114). Only
-        // here: a text field keeps repeating its own Paste, above, as it does in the original.
+        // A held shortcut key repeats the menu item; the ones that start a write run once per press. Only
+        // here: a text field keeps repeating its own Paste, above.
         if let event = currentEvent(), event.type == .keyDown,
             !WriteStartingShortcuts.runs(command.rawValue, isRepeat: event.isARepeat)
         {

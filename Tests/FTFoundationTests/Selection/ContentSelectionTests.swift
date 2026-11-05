@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/contentSelection.test.ts, with the content-selection golden recorded from the
-// reference (tools/parity/golden/content-selection.ts)
 import FTTestSupport
 import Testing
 
@@ -8,8 +6,6 @@ import Testing
 struct ContentSelectionTests {
     private let entries = ["/demo/alpha", "/demo/beta", "/demo/gamma", "/demo/delta"]
 
-    // T-7b475603 F-779 B-SEL-024
-    // B-NAV-048
     @Test func sanitizesStalePathsAndRepairsAnchorAndLead() {
         let selection = ContentSelection(
             paths: ["/demo/alpha", "/demo/missing", "/demo/gamma"], anchorPath: "/demo/missing",
@@ -20,7 +16,6 @@ struct ContentSelectionTests {
                     paths: ["/demo/alpha", "/demo/gamma"], anchorPath: "/demo/gamma", leadPath: "/demo/gamma"))
     }
 
-    // T-c7532927 F-779 B-SEL-025 B-NAV-150 B-NAV-152
     @Test func keepsThePlaceOfASelectionWhoseItemsAllLeftTheList() {
         let remaining = entries.filter { $0 != "/demo/gamma" }
         let gone = ContentSelection.single("/demo/gamma").sanitized(entryPaths: remaining, previousPaths: entries)
@@ -39,7 +34,6 @@ struct ContentSelectionTests {
         #expect(ContentSelection.single("/demo/gamma").sanitized(entryPaths: remaining) == .empty)
     }
 
-    // T-e9ce742e B-SEL-009 B-SEL-010
     @Test func computesRangePathsInEntryOrder() {
         #expect(
             ContentSelection.rangePaths(entryPaths: entries, anchor: "/demo/delta", target: "/demo/beta")
@@ -51,7 +45,6 @@ struct ContentSelectionTests {
             ])
     }
 
-    // T-cea8961a B-SEL-011
     @Test func mergesSelectedPathsUsingVisibleEntryOrder() {
         #expect(
             ContentSelection.merged(
@@ -59,7 +52,6 @@ struct ContentSelectionTests {
                 == ["/demo/alpha", "/demo/gamma", "/demo/delta"])
     }
 
-    // T-99bafc41 F-780 B-SEL-007 B-SEL-008
     @Test func togglesItemsInAndOutOfAMultiSelection() {
         #expect(
             ContentSelection.empty.toggled(entryPaths: entries, path: "/demo/beta")
@@ -80,7 +72,6 @@ struct ContentSelectionTests {
                     paths: ["/demo/beta", "/demo/delta"], anchorPath: "/demo/beta", leadPath: "/demo/beta"))
     }
 
-    // T-a286801d F-780 B-SEL-009 B-SEL-011
     @Test func extendsSelectionsWithShiftAndCmdShiftSemantics() {
         let base = ContentSelection.single("/demo/beta")
         #expect(
@@ -109,7 +100,6 @@ struct ContentSelectionTests {
                 == .single("/demo/gamma"))
     }
 
-    // T-2ed18f31 B-SEL-021 B-SEL-022
     @Test func selectsAllEntriesAndReturnsEmptyWhenNoneExist() {
         #expect(
             ContentSelection.all(entryPaths: entries)
@@ -117,7 +107,6 @@ struct ContentSelectionTests {
         #expect(ContentSelection.all(entryPaths: []) == .empty)
     }
 
-    // T-2cd89f09 F-781 B-SEL-003 B-SEL-004 B-SEL-005
     @Test func narrowsAMultiSelectionOnlyOnAPlainMouseClickOfASelectedItem() {
         func narrows(
             detail: Int = 1, meta: Bool = false, shift: Bool = false, control: Bool = false, count: Int = 3,
@@ -148,7 +137,7 @@ struct ContentSelectionTests {
                 != nil)
     }
 
-    // T-d6cea52c B-SEL-021: selecting tens of thousands of items at once does not stall.
+    // Selecting tens of thousands of items at once does not stall.
     @Test func selectsTensOfThousandsOfItemsWithoutStalling() {
         let paths = (0..<60_000).map { "/demo/folder/item-\($0).txt" }
         // CPU time of this thread, not wall time, so a busy machine does not fail it.
@@ -164,7 +153,7 @@ struct ContentSelectionTests {
         #expect(seconds < 2)
     }
 
-    // F-779 B-SEL-150 B-SEL-151: the marquee's selection is put in list order, the lead its anchor.
+    // The marquee's selection is put in list order, the lead its anchor.
     @Test func theMarqueeSelectionIsInListOrder() {
         #expect(
             ContentSelection.marquee(entryPaths: entries, picked: ["/demo/gamma", "/demo/alpha"], lead: "/demo/gamma")

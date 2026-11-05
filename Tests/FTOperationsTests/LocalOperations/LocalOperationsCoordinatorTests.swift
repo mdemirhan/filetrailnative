@@ -1,7 +1,4 @@
-// Port of the local-operation rows of the createWriteOperationCoordinator and "quitting during an operation" describes
-// of apps/desktop/src/main/bootstrap/writeOperations.test.ts, and of the "deleting immediately what a disk without a
-// Trash couldn't take" describe of writeOperations.windows.test.ts: rename, New Folder, Trash and Delete Immediately
-// through the coordinator's write slot
+// Rename, New Folder, Trash and Delete Immediately through the coordinator's write slot
 import FTFileSystem
 import FTFoundation
 import FTTestSupport
@@ -12,7 +9,6 @@ import Testing
 
 @MainActor
 @Suite(.localOperationHang) struct LocalOperationsCoordinatorTests {
-    // F-243 F-302 T-ba2f0985
     @Test func renamesALocalItemAndEmitsProgress() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.lstatImpl = { path in
@@ -39,7 +35,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-243 F-297 F-299 T-e868310c
     @Test func createsAFolderOnlyWhenTheParentExistsAndTheTargetIsUnused() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         let coordinator = WriteCoordinator.local(fileSystem)
@@ -58,7 +53,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-243 F-291 F-294 T-7ce082ce
     @Test func movesItemsToTheTrashGoingOnPastAnItemThatCantBeMoved() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.trashImpl = { path in
@@ -85,7 +79,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-291 F-292 T-6e5d5f21
     @Test func takesWhatWentToTheTrashOffMeasuredFoldersAndForgetsThoseItCantTell() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.itemSizeImpl = { path in
@@ -105,7 +98,7 @@ import Testing
         _ = await window.ended("write-op-1")
 
         // Read just before it went, so the size known for Project is still exact; what b.bin added to Music
-        // couldn't be read, so Music is measured again when asked for (FolderSizeAdjust, ported with P2-03).
+        // couldn't be read, so Music is measured again when asked for (FolderSizeAdjust).
         #expect(forgotten.count == 1)
         #expect(
             forgotten.first?.removed == [
@@ -119,7 +112,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-296 T-f293d4ee
     @Test func deleteImmediatelyReportsPartialCompletionWhileContinuingAfterFailedItems() async throws {
         let fileSystem = TestLocalFileSystem.stub()
         fileSystem.rmImpl = { path, _, _ in
@@ -142,7 +134,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-290 F-295 F-300 T-a63d0d99
     @Test func rejectsProtectedTopLevelTrashMutationsBeforeQueuingLocalWrites() async throws {
         let coordinator = WriteCoordinator.local(.stub())
         let trashPath = NodePath.join(NSHomeDirectory(), ".Trash")
@@ -160,7 +151,6 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // F-291 F-293 F-363 T-88f70b42
     @Test func countsEveryItemAStoppedTrashNeverReached() async throws {
         let held = HeldCall()
         let fileSystem = TestLocalFileSystem.stub()
@@ -206,7 +196,6 @@ import Testing
         return await window.ended(handle.operationId)
     }
 
-    // F-295 T-7f27af07
     @Test func deletingWhatHadNoTrashIsUpToTheWindowThatWasToldWhateverAnotherSendsToTheTrash() async throws {
         let fileSystem = noTrashDisk()
         let coordinator = WriteCoordinator.local(fileSystem, homePath: "/Users/demo")
@@ -235,7 +224,6 @@ import Testing
 
     // The window that moved items to the Trash closes while it runs: the window a Trash is handed to never asks
     // about deleting its items (it wasn't the one asked to trash them), and can't delete them unasked.
-    // F-295 T-3299f715
     @Test func deletingWhatHadNoTrashStaysWithTheWindowThatAskedNotOneATrashIsHandedTo() async throws {
         let held = HeldCall()
         let fileSystem = noTrashDisk()
@@ -267,7 +255,6 @@ import Testing
     }
 
     // A native window has no page to load again: what it was asked about goes when it closes.
-    // F-295 T-9fbaceb4
     @Test func whatHadNoTrashIsLetGoOfWhenItsWindowCloses() async throws {
         let coordinator = WriteCoordinator.local(noTrashDisk(), homePath: "/Users/demo")
         let window = TestWindow()

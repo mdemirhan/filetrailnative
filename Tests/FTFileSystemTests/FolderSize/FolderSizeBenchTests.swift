@@ -1,4 +1,4 @@
-// Times the walker on the deep fixture tree (200,000 files): no slower than the reference's native walker, within 10%.
+// Times the walker on the deep fixture tree (200,000 files): no slower than a given reference median, within 10%.
 import Foundation
 import Testing
 
@@ -13,10 +13,9 @@ private let deepTree: String = {
 
 /// Off by default: it takes a few seconds and only means something in a release build:
 ///   FILETRAIL_BENCH=1 [FILETRAIL_BENCH_REFERENCE_MS=<reference median>] swift test -c release -Xswiftc -enable-testing -Xswiftc -DDEBUG --filter FolderSizeBench
-/// The reference is timed the same way with the addon (`nativeFolderSize` on the same folder, median of the warm runs).
+/// The reference is another walker's median of the warm runs, timed the same way on the same folder.
 extension RealWalks {
     @MainActor @Suite struct FolderSizeBenchTests {
-        // F-179
         @Test(
             .enabled(
                 if: ProcessInfo.processInfo.environment["FILETRAIL_BENCH"] == "1"

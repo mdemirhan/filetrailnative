@@ -1,6 +1,6 @@
-// Port of apps/desktop/src/main/bootstrap/undo.fuzz.test.ts: random runs of renames, batch renames, new folders, Trash,
-// copies, moves and Replaces on a real disk, then Undo all the way back and Redo all the way forward:
-// - With nothing changed in between, Undo gets back every item as it was (path, kind and file id), and Redo gets back
+// Random runs of renames, batch renames, new folders, Trash, copies, moves and Replaces on a real disk, then Undo all
+// the way back and Redo all the way forward: - With nothing changed in between, Undo gets back every item as it was
+// (path, kind and file id), and Redo gets back
 //   the end.
 // - With random changes made outside the app between them, no item is ever lost or replaced, every item left as it
 //   was says why, and nothing stays under a hidden name; and the same for Redo after more changes.
@@ -15,7 +15,7 @@ import Testing
 
 @testable import FTOperations
 
-/// mulberry32 (`random` in batchRenameMemoryDisk.testkit.ts), shared by the test and the disk threads it holds up.
+/// mulberry32, shared by the test and the disk threads it holds up.
 final class FuzzRandom: @unchecked Sendable {
     private let lock = NSLock()
     private var state: UInt32
@@ -450,7 +450,6 @@ struct UndoFuzzTests {
         }
     }
 
-    // T-053e685f F-560
     @Test func getsBackToTheStartAndRedoToTheEndWhenNothingElseChanges() async throws {
         var recorded: Set<UndoFuzzCase.Operation> = []
         var undoneOperations = 0
@@ -479,7 +478,6 @@ struct UndoFuzzTests {
         }
     }
 
-    // T-0b68d61e F-560
     @Test func losesAndReplacesNothingAndSaysWhyItLeftAnythingWhenThingsChangeOutside() async throws {
         try await eachCase { seed, testCase in
             for _ in 0..<testCase.random.integer(1, 6) {
@@ -508,7 +506,6 @@ struct UndoFuzzTests {
         }
     }
 
-    // T-0a92469f F-560
     @Test func getsBackToTheStartAndRedoToTheEndThroughFailedWritesAndStops() async throws {
         var failed = 0
         var stopped = 0
@@ -542,7 +539,6 @@ struct UndoFuzzTests {
         }
     }
 
-    // T-89587020 F-560
     @Test func staysInStepWhenUndoAndRedoTakeTurnsThroughFailedWritesAndStops() async throws {
         var turns = 0
         try await eachCase { seed, testCase in
@@ -574,7 +570,6 @@ struct UndoFuzzTests {
         }
     }
 
-    // T-afe2a12e F-560
     @Test func losesAndReplacesNothingWhenWritesFailAsIfThingsChangedOutside() async throws {
         try await eachCase { seed, testCase in
             for _ in 0..<testCase.random.integer(1, 6) { _ = try await testCase.operate() }

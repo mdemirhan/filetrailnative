@@ -1,8 +1,7 @@
-// Port of apps/desktop/src/renderer/lib/explorerPaneFocus.ts
 import Foundation
 
 public enum ExplorerPaneFocus {
-    /// `resolveExplorerPaneRestoreTarget`: where the keyboard goes back to when no pane has it: the explicit target, else
+    /// Where the keyboard goes back to when no pane has it: the explicit target, else
     /// the pane that had it last, else the file list, else the tree.
     public static func restoreTarget(
         preferred: FocusedPane?, lastFocused: FocusedPane?, hasTreePane: Bool, hasContentPane: Bool

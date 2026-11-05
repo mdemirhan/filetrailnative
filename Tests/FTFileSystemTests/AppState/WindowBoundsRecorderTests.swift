@@ -1,4 +1,3 @@
-// Port of the bounds recording of apps/desktop/src/main/explorerWindowController.ts (no test of its own in the original)
 import FTFoundation
 import Foundation
 import Testing

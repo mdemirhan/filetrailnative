@@ -1,6 +1,3 @@
-// Port by feature of springWhenHeld and of the drag-overs of the rows (useExplorerDragAndDrop.ts:60-68, :1271-1300,
-// entryItemEvents.ts:100) in the List view, and of tellDropRefused and noteExternalDragLetGo (:896-918), on real tabs in
-// windows that are never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -49,7 +46,6 @@ extension ExplorerWindowlessTests {
 
         // The table asks its data source only when the row changes; every drag-over of a resting drag still reaches
         // the tab, as the Icons view's and the tree's do.
-        // T-d16e383b
         @Test func everyDragOverOfTheListIsHeard() async throws {
             let window = try await WritingWindow.open()
             let list = try table(window.tab)
@@ -69,7 +65,6 @@ extension ExplorerWindowlessTests {
 
         // The answer is the tab's each time, so a refusal that lifts on the same row is told to AppKit, and the table
         // doesn't refuse the drop for an answer it gave earlier.
-        // T-62d562b1
         @Test func theAnswerFollowsTheTabOnTheSameRow() async throws {
             let window = try await WritingWindow.open()
             let list = try table(window.tab)
@@ -91,8 +86,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // `springWhenHeld`: a drag resting on a folder row keeps it lit past the 300 ms of silence, and opens it.
-        // T-e9b3fa09
+        // A drag resting on a folder row keeps it lit past the 300 ms of silence, and opens it.
         @Test func aDragHeldOverAFolderRowSpringsItOpen() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -114,7 +108,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-e3b16fef B-CLIP-177: AppKit never asks for a drop whose last answer was none, and tells the view the drag
+        // AppKit never asks for a drop whose last answer was none, and tells the view the drag
         // left: let go there, it is told once for the drag.
         @Test func aDropRefusedWhileAWriteRunsIsToldFromTheLetGo() async throws {
             let window = try await WritingWindow.open()
@@ -175,7 +169,6 @@ extension ExplorerWindowlessTests {
 
         // Where AppKit tells no leaving (the sidebar, a part of the window that hears no drags), the drag-overs stopping
         // with the button up is the let-go; held there, it isn't yet.
-        // T-532dcad7
         @Test func aDropLetGoWhereNoLeavingIsToldIsToldWhenTheDragOversStop() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -231,7 +224,7 @@ extension ExplorerWindowlessTests {
             return (timers, drag, alpha)
         }
 
-        // T-d9fde40a: a drag moved from a folder of the tree to the list: the folder shows nothing and doesn't open, with
+        // A drag moved from a folder of the tree to the list: the folder shows nothing and doesn't open, with
         // the list's drag-overs going on past the time a held folder opens.
         @Test func aFolderOfTheTreeTheDragMovedOnFromShowsNothingAndDoesntOpen() async throws {
             let window = try await WritingWindow.open()
@@ -253,7 +246,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // T-492d90a0: the drag-overs stop, with no word from the tree: the folder shows nothing and doesn't open.
+        // The drag-overs stop, with no word from the tree: the folder shows nothing and doesn't open.
         @Test func aFolderOfTheTreeTheDragLeftShowsNothingAndDoesntOpen() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab
@@ -266,9 +259,8 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // endExternalDrag at the drop (:1168-1171): a drag that was taken is over, so its own write's card, still up when
+        // At the drop, a drag that was taken is over, so its own write's card, still up when
         // the drag-overs have been quiet for a while, tells nothing of it.
-        // T-62d562b1
         @Test func aTakenDropWithItsWriteStillRunningIsNotToldAsRefused() async throws {
             let window = try await WritingWindow.open()
             let tab = window.tab

@@ -1,4 +1,3 @@
-// Port of the original's frozen clock for UI captures (Playwright `page.clock`); no TypeScript source.
 import Foundation
 
 /// The app's notion of "now". Normally the system clock. With `FILETRAIL_NOW=<ISO-8601 local time>`

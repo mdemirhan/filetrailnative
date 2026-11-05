@@ -1,15 +1,12 @@
-// Port of apps/desktop/src/renderer/lib/menuPlacement.ts (the dropdown and viewport parts) and
-// hooks/useKeepInViewport.ts
 import Foundation
 
 /// Where the app's own menus go: under the toolbar item that opens them, then moved back inside the window.
 public enum MenuPlacement {
-    /// `MENU_VIEWPORT_MARGIN`.
     public static let viewportMargin = 8.0
     /// How far below its button a toolbar menu drops.
     public static let dropGap = 6.0
 
-    /// `getViewportShift`: how far a box spanning `start`..`end` must move along one axis to sit inside
+    /// How far a box spanning `start`..`end` must move along one axis to sit inside
     /// `margin`..`viewportSize - margin`. A box larger than that space is pinned to its start.
     public static func viewportShift(start: Double, end: Double, viewportSize: Double, margin: Double = viewportMargin)
         -> Double
@@ -22,9 +19,9 @@ public enum MenuPlacement {
         return 0
     }
 
-    /// `placeDropdownMenu`, resolved to a left edge for a menu `menuWidth` wide: it lines up with the edge of its
+    /// Resolved to a left edge for a menu `menuWidth` wide: it lines up with the edge of its
     /// button that leaves it the most room, the left edge for a button in the left half of the window, the right
-    /// edge for one in the right half; then `useKeepInViewport` holds it inside the window.
+    /// edge for one in the right half; then it is held inside the window.
     public static func dropdown(
         anchorLeft: Double, anchorRight: Double, anchorBottom: Double, menuWidth: Double, menuHeight: Double,
         viewportWidth: Double, viewportHeight: Double, gap: Double = dropGap, margin: Double = viewportMargin
@@ -38,7 +35,7 @@ public enum MenuPlacement {
             viewportHeight: viewportHeight)
     }
 
-    /// `useKeepInViewport`: a box at (`left`, `top`) moved back inside the window.
+    /// A box at (`left`, `top`) moved back inside the window.
     public static func keepInViewport(
         left: Double, top: Double, width: Double, height: Double, viewportWidth: Double, viewportHeight: Double
     ) -> (left: Double, top: Double) {

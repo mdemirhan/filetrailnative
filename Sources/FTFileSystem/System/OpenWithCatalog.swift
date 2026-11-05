@@ -1,4 +1,3 @@
-// Port of packages/native-fs/src/native_openwith.m
 import AppKit
 import CoreServices
 import Foundation
@@ -58,7 +57,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
 
     // MARK: Lookup
 
-    /// `nativeOpenWithApplications`. Launch Services can be slow on a cold start: call off the main thread.
+    /// Launch Services can be slow on a cold start: call off the main thread.
     public func lookup(paths: [String], appPaths: [String]) -> LaunchServicesAnswer {
         let workspace = NSWorkspace.shared
         var kinds: [OpenWithKind] = []
@@ -203,7 +202,7 @@ public final class OpenWithCatalog: @unchecked Sendable {
         public var errorDescription: String? { message }
     }
 
-    /// `nativeSetDefaultApplication`: makes the app the one every file of the type opens in. Refused for folders,
+    /// Makes the app the one every file of the type opens in. Refused for folders,
     /// packages and apps.
     public func setDefaultApplication(appPath: String, contentType: String) async throws {
         guard !contentType.isEmpty, let type = UTType(contentType) else {

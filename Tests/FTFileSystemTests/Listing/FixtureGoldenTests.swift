@@ -34,8 +34,6 @@ enum Fixtures {
 struct FixtureGoldenTests {
     struct ClassifyInput: Codable, Sendable { var directory: String }
 
-    // T-0bd98463 T-a8ad2b97
-    // B-TREE-011
     @Test("classify golden", .enabled(if: Fixtures.available))
     func classifiesAsTheReferenceDoes() async throws {
         let cases: [GoldenCase<ClassifyInput, JSONValue>] = try Golden.load(suite: "classify")
@@ -96,8 +94,6 @@ struct FixtureGoldenTests {
         var limit: Int
     }
 
-    // T-d408f522 T-2ca64a85 T-ac631da9 T-b2c5d677 T-ec627d21 T-176ff9e8 T-1f4a779f T-7b7245cf
-    // B-DLG-046
     @Test("path-suggestions golden", .enabled(if: Fixtures.available))
     func suggestsAsTheReferenceDoes() async throws {
         let cases: [GoldenCase<SuggestionInput, JSONValue>] = try Golden.load(suite: "path-suggestions")

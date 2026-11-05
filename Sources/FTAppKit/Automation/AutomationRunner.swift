@@ -1,4 +1,3 @@
-// Port of the step runner of tools/capture/electron/driver.ts, for this app; no TypeScript source.
 #if DEBUG
     import AppKit
     import FTFoundation
@@ -430,7 +429,7 @@
                 return Outcome(.ok)
             }
             // Nothing is being edited: the characters are key presses on whatever has the keyboard (the file list takes
-            // them as a filter), as the page gets them from the original's driver.
+            // them as a filter).
             for character in text {
                 guard let key = KeyEvents.key(named: String(character)) else {
                     return Outcome(.unsupported, "no key for “\(character)”")

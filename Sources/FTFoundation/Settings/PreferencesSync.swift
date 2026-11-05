@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/hooks/usePreferencesSync.ts
 import Foundation
 
 /// A preference change as a window sends it: the keys that changed, with their new values.
@@ -6,7 +5,7 @@ public typealias PreferencesPatch = [String: JSONNode]
 
 /// Keeps a window's preferences in step with the app's. Only the keys that changed since the last sync are written, so
 /// two windows (explorer and Settings) never overwrite each other's edits with stale values; edits made elsewhere
-/// arrive through `remote(_:)`. Bursts of changes become one write, 300 ms after the last (B-DLG-169 to 173).
+/// arrive through `remote(_:)`. Bursts of changes become one write, 300 ms after the last.
 @MainActor
 public final class PreferencesSync {
     /// PREFERENCES_PERSIST_DEBOUNCE_MS.
@@ -29,7 +28,7 @@ public final class PreferencesSync {
         self.schedule = schedule
     }
 
-    /// `diffPreferencesPatch`: the keys of `next` whose value differs from the synced one.
+    /// The keys of `next` whose value differs from the synced one.
     public static func diff(_ synced: PreferencesPatch, _ next: PreferencesPatch) -> PreferencesPatch {
         next.filter { synced[$0.key] != $0.value }
     }
@@ -42,8 +41,7 @@ public final class PreferencesSync {
         synced = preferences
     }
 
-    /// The window's values now (each render of the original): a change starts the wait again, so a burst is one write
-    /// with the latest values.
+    /// The window's values now: a change starts the wait again, so a burst is one write with the latest values.
     public func changed(_ next: PreferencesPatch) {
         payload = next
         if let queued, Self.diff(queued, next).isEmpty { return }

@@ -1,5 +1,4 @@
-// Port of the Trash cases of apps/desktop/src/renderer/hooks/useFolderSizeCache.test.tsx: what a write that touches the
-// Trash forgets and asks about again, over a stand-in for the folder size jobs
+// What a write that touches the Trash forgets and asks about again, over a stand-in for the folder size jobs
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -27,7 +26,7 @@ struct WindowFolderSizesTrashTests {
 
     private var asked: Set<String> { Set(jobs.probes.flatMap { $0 }) }
 
-    // T-78dcb4c4 B-INFO-149: a move to the Trash asks again about the Trash and what holds it, and the folder it left;
+    // A move to the Trash asks again about the Trash and what holds it, and the folder it left;
     // what it moved is forgotten and an unrelated folder not asked about. A home folder with trailing slashes is the
     // same place.
     @Test(arguments: ["/Users/demo", "/Users/demo//"])
@@ -46,7 +45,7 @@ struct WindowFolderSizesTrashTests {
         #expect(sizes.readySize("/Users/demo/Music") == 7)
     }
 
-    // B-INFO-149: other operations don't treat the Trash as changed on their own.
+    // Other operations don't treat the Trash as changed on their own.
     @Test func anotherWriteLeavesTheTrashAlone() async {
         let sizes = sizes()
         await cached(sizes, ["/Users/demo/.Trash": 10, "/opt/tools": 30, "/opt/tools/old": 5])
@@ -55,7 +54,7 @@ struct WindowFolderSizesTrashTests {
         #expect(asked == ["/opt/tools"])
     }
 
-    // T-5c5478a3: a Replace moved what it replaced to the Trash: named among what changed, the Trash is asked about.
+    // A Replace moved what it replaced to the Trash: named among what changed, the Trash is asked about.
     @Test func aReplaceAsksAgainAboutTheTrashItMovedItemsTo() async {
         let sizes = sizes()
         await cached(sizes, ["/Users/demo/.Trash": 10, "/Users/demo/Music": 7])
@@ -65,7 +64,7 @@ struct WindowFolderSizesTrashTests {
         #expect(!asked.contains("/Users/demo/Music"))
     }
 
-    // T-52a59b70: a drag to the Trash from another window: the jobs forgot the holders and the Trash too, so they read
+    // A drag to the Trash from another window: the jobs forgot the holders and the Trash too, so they read
     // as unknown; the rest keeps its size.
     @Test func aDragToTheTrashForgetsWhatTheJobsForgot() async {
         let sizes = sizes()
@@ -80,7 +79,7 @@ struct WindowFolderSizesTrashTests {
         #expect(sizes.readySize("/Users/demo/Music") == 7)
     }
 
-    // T-0124f0b4 B-INFO-151: the Trash emptied: it and what holds it are asked again, what was in it forgotten unasked.
+    // The Trash emptied: it and what holds it are asked again, what was in it forgotten unasked.
     @Test func theTrashEmptiedAsksAboutItAndForgetsWhatWasInIt() async {
         let sizes = sizes()
         await cached(

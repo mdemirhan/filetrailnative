@@ -1,4 +1,3 @@
-// Port of the width math of apps/desktop/src/renderer/hooks/useExplorerPaneLayout.ts
 import Foundation
 
 /// The widths of the folder tree and the Info panel. A pane keeps the width it was given (by dragging, from the
@@ -33,7 +32,7 @@ public struct PaneWidths: Equatable, Sendable {
         self.layout = layout
     }
 
-    /// `getAvailableSideWidth`: what the side panes share once the content's minimum and the resizers are kept.
+    /// What the side panes share once the content's minimum and the resizers are kept.
     public static func availableSideWidth(viewportWidth: Double, inspectorVisible: Bool, layout: ExplorerLayout)
         -> Double
     {
@@ -43,12 +42,12 @@ public struct PaneWidths: Equatable, Sendable {
             viewportWidth - layout.minContentWidth - resizers)
     }
 
-    /// `clampPaneWidth`: rounded as `Math.round`, after clamping.
+    /// `clampPaneWidth`: rounded half up, after clamping.
     static func clamp(_ value: Double, _ lower: Double, _ upper: Double) -> Double {
         (max(lower, min(upper, value)) + 0.5).rounded(.down)
     }
 
-    /// `restoreWidths`: widths given from outside (the saved ones) are chosen widths too.
+    /// Widths given from outside (the saved ones) are chosen widths too.
     public mutating func restore(treeWidth: Double, inspectorWidth: Double) {
         preferredTreeWidth = treeWidth
         preferredInspectorWidth = inspectorWidth
@@ -83,7 +82,7 @@ public struct PaneWidths: Equatable, Sendable {
         }
     }
 
-    /// `syncToViewport`: a window resize, or the Info panel shown or hidden, can make the widths too wide; each
+    /// A window resize, or the Info panel shown or hidden, can make the widths too wide; each
     /// pane gets as much of its chosen width as fits.
     public mutating func sync(viewportWidth: Double, inspectorVisible: Bool) {
         let available = Self.availableSideWidth(
@@ -100,7 +99,7 @@ public struct PaneWidths: Equatable, Sendable {
         if inspectorVisible { inspectorWidth = nextInspector }
     }
 
-    /// `nudgeWidth`: a pane widened or narrowed from the keyboard by `delta`, within its limits; that is its chosen
+    /// A pane widened or narrowed from the keyboard by `delta`, within its limits; that is its chosen
     /// width from then on.
     public mutating func nudge(_ pane: Pane, by delta: Double) {
         switch pane {

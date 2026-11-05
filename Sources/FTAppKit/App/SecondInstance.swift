@@ -1,4 +1,3 @@
-// Port of the second-instance handling of apps/desktop/src/main/main.ts
 import AppKit
 import Foundation
 

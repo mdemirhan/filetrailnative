@@ -1,5 +1,3 @@
-// Port of the Quick Look and notification parts of apps/desktop/src/renderer/hooks/useExplorerShortcuts.ts and
-// systemHandlers.ts, wired into the tab
 import AppKit
 import FTFoundation
 @preconcurrency import Quartz
@@ -35,8 +33,8 @@ extension MainWindowController {
     // MARK: Quick Look
 
     /// Space, while it is Quick Look's key, previews the selected item while the file list has the keyboard (`quickLook`
-    /// in the key table), unless a filter is being typed: then Space is part of its text for a moment ("my doc",
-    /// `listFilterTakesSpace`), and the list takes it. Any other key chosen for it goes through the list's keys.
+    /// in the key table), unless a filter is being typed: then Space is part of its text for a moment ("my doc"), and
+    /// the list takes it. Any other key chosen for it goes through the list's keys.
     private func handleQuickLookKey(_ event: NSEvent) -> Bool {
         guard event.type == .keyDown, event.keyCode == 49,
             event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty,

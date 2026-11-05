@@ -1,5 +1,5 @@
-// Checkpoint resume-2026-10-19 (143, 148): the labels sized to the original's text width draw their whole text, and the
-// list's rows keep the gutter before the Info panel, on an explorer window that is never shown
+// The labels sized to their text's width draw their whole text, and the list's rows keep the gutter before the
+// Info panel, on an explorer window that is never shown
 import AppKit
 import FTFoundation
 import Foundation
@@ -25,7 +25,7 @@ extension ExplorerWindowlessTests {
             }
         }
 
-        // F-697 F-748: the status text, the Info panel's name, subtitle and Open button, and the tree's labels are
+        // The status text, the Info panel's name, subtitle and Open button, and the tree's labels are
         // laid out at the text's width and draw it all.
         @Test func labelsAtTheirTextsWidthAreNotCut() async throws {
             let harness = try ExplorerHarness.windowless()
@@ -53,7 +53,7 @@ extension ExplorerWindowlessTests {
                     #expect(!field.stringValue.isEmpty, "\(id)")
                     #expect(
                         !cell.truncates(in: field.frame.size), "\(id): \(field.stringValue) in \(field.frame.width)")
-                    // The frame is still the original's: the text's own width.
+                    // The frame is still the text's own width.
                     #expect(abs(field.frame.width - textExtent(field.stringValue, font)) < 1, "\(id)")
                 }
             }
@@ -67,8 +67,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-697: `.get-info-name` wraps a long name onto up to 2 lines (-webkit-line-clamp: 2, word-break: break-word)
-        // before its ellipsis; the frame is two lines tall and the name drawn whole.
+        // The Info panel wraps a long name onto up to 2 lines, breaking inside a word if it must, before its ellipsis;
+        // the frame is two lines tall and the name drawn whole.
         @Test func aLongInfoPanelNameWrapsOntoTwoLines() async throws {
             let harness = try ExplorerHarness.windowless()
             let long = "Quarterly planning notes for the design team review.pdf"
@@ -90,7 +90,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // F-765: with the Info panel open the rows stop where the header does, 10 pt before the pane's edge, and follow
+        // With the Info panel open the rows stop where the header does, 10 pt before the pane's edge, and follow
         // the pane back when it closes.
         @Test func rowsKeepTheGutterBeforeTheInfoPanel() async throws {
             let harness = try ExplorerHarness.windowless()

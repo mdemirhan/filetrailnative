@@ -1,4 +1,3 @@
-// Port of packages/core/src/fs/explorerService.ts
 import FTFoundation
 import Foundation
 
@@ -62,7 +61,7 @@ public final class KindLabeler: @unchecked Sendable {
     }
 }
 
-/// The listing functions of explorerService.ts, over a file system.
+/// The listing functions, over a file system.
 enum ExplorerListing {
     // MARK: Paths
 
@@ -277,7 +276,7 @@ enum ExplorerListing {
             path: directoryPath, parentPath: directoryPath == parent ? nil : parent, entries: sorted)
     }
 
-    /// `compareEntries`: the order of the entries.
+    /// The order of the entries.
     private static func sortedPositions(
         entries: [DirectoryEntry], keys: NameKeys, modified: [Int64?], sizes: [Int64?], labels: [String],
         sortBy: DirectorySortKey, sortDirection: SortDirection, foldersFirst: Bool
@@ -521,10 +520,10 @@ enum ExplorerListing {
     }
 }
 
-/// `Date.prototype.toISOString`.
+/// A time as ISO 8601 text in UTC, with milliseconds (`2024-01-02T03:04:05.678Z`).
 enum IsoDate {
     static func string(milliseconds: Int64) -> String? {
-        // The years a JavaScript date can hold (-271821 to 275760) are far more than a disk keeps.
+        // Years from -271821 to 275760 are written, far more than a disk keeps.
         guard abs(milliseconds) <= 8_640_000_000_000_000 else { return nil }
         let days = Int64((Double(milliseconds) / 86_400_000).rounded(.down))
         let millisecondsOfDay = Int(milliseconds - days * 86_400_000)

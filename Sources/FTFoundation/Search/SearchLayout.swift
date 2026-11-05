@@ -1,38 +1,35 @@
-// Port of the search rules of apps/desktop/src/renderer/styles.css: the results bar (.search-results-header,
-// .search-scope-bar, .search-scope-segmented, .search-results-filter, .search-results-banner, :3021-3040, 4502-4527,
-// 6556-6583), the push button's small size (:1293-1299, .push-button .spinner :3383-3388), the segmented control
-// (:1395-1440), the rounded search field (:1353-1395), the toolbar capsule (:903-972, 6371-6393) and the match mark
-// (.search-result-match, :6605-6627)
+// The results bar, the push button's small size, the segmented control, the rounded search field, the toolbar capsule
+// and the match mark
 import Foundation
 
-/// The metrics of search's own pieces, as the stylesheet sets them.
+/// The metrics of search's own pieces.
 public struct SearchLayout: Equatable, Sendable {
     // MARK: Results bar
 
-    /// `.search-scope-bar`: padding 6 12, at least 36 tall, 6 between its parts.
+    /// The scope bar: padding 6 12, at least 36 tall, 6 between its parts.
     public var scopeBarPaddingVertical: Double
     public var scopeBarPaddingHorizontal: Double
     public var scopeBarMinHeight: Double
     public var scopeBarGap: Double
-    /// `.search-scope-label { margin-right: 2px }`.
+    /// The gap after the scope label.
     public var scopeLabelMarginTrailing: Double
-    /// `.search-results-header { border-bottom: 1px }`.
+    /// The line under the results header.
     public var headerBorderWidth: Double
 
-    /// `.segmented`: a 2 pt track around segments 2 apart; `.segmented-item`: padding 0 12, the control height;
-    /// `.search-scope-button { max-width: 220px }`.
+    /// The segmented control: a 2 pt track around segments 2 apart; a segment: padding 0 12, the control height,
+    /// at most 220 wide.
     public var segmentedTrackPadding: Double
     public var segmentedGap: Double
     public var segmentPaddingHorizontal: Double
     public var segmentHeight: Double
     public var segmentMaxWidth: Double
-    /// `--segmented-selected-shadow: 0 0.5px 1.5px rgba(0, 0, 0, 0.2)`.
+    /// The selected segment's shadow: 0.5 down, blurred 1.5, black at 20%.
     public var segmentShadowOffsetY: Double
     public var segmentShadowBlur: Double
     public var segmentShadowAlpha: Double
 
-    /// `.search-results-filter`: 200 wide, at least 90 (`flex: 0 1 200px`); `.search-field`: the control height,
-    /// padding 0 4 0 8, 6 between the icon, the text and the clear button; a 13 pt icon stroked 2.
+    /// The results filter: 200 wide, at least 90; its field: the control height, padding 0 4 0 8, 6 between the
+    /// icon, the text and the clear button; a 13 pt icon stroked 2.
     public var filterWidth: Double
     public var filterMinWidth: Double
     public var fieldHeight: Double
@@ -43,7 +40,7 @@ public struct SearchLayout: Equatable, Sendable {
     public var fieldIconStrokeWidth: Double
     public var clearButtonSize: Double
 
-    /// `.push-button.is-small`: the small control height, padding 0 10, no minimum width, the callout size; a 6 pt
+    /// A small push button: the small control height, padding 0 10, no minimum width, the callout size; a 6 pt
     /// gap before the label; its spinner 10 across, stroked 1.5.
     public var smallButtonHeight: Double
     public var smallButtonPaddingHorizontal: Double
@@ -51,7 +48,7 @@ public struct SearchLayout: Equatable, Sendable {
     public var spinnerSize: Double
     public var spinnerLineWidth: Double
 
-    /// `.search-results-banner`: margin 0 6 12, padding 10 12, a 1 pt edge, the menu radius, the callout size; the
+    /// The results banner: margin 0 6 12, padding 10 12, a 1 pt edge, the menu radius, the callout size; the
     /// accent at 22% over the border for its edge and at 6% for its fill.
     public var bannerMarginHorizontal: Double
     public var bannerMarginBottom: Double
@@ -63,23 +60,22 @@ public struct SearchLayout: Equatable, Sendable {
 
     // MARK: Toolbar capsule
 
-    /// `.window-toolbar .toolbar-search-shell.active .toolbar-search`: a 1 pt edge of the accent at 70%, and the focus
-    /// ring.
+    /// The toolbar's search capsule while active: a 1 pt edge of the accent at 70%, and the focus ring.
     public var capsuleActiveBorderWidth: Double
     public var capsuleActiveBorderAlpha: Double
-    /// `.toolbar-search-options-button`: 20 tall, padding 0 3 (margins −3), radius xs; the chevron 8 across,
+    /// The search options button: 20 tall, padding 0 3 (margins −3), radius xs; the chevron 8 across,
     /// stroked 1.4, 1 after the magnifier.
     public var optionsButtonHeight: Double
     public var optionsButtonPadding: Double
     public var optionsChevronSize: Double
     public var optionsChevronStrokeWidth: Double
     public var optionsChevronGap: Double
-    /// The options menu hangs 12 in from the window's edges at most (`placeDropdownMenu`'s margin).
+    /// The options menu hangs 12 in from the window's edges at most.
     public var optionsMenuMargin: Double
 
     // MARK: The match in names
 
-    /// `.search-result-match`: rgba(255, 214, 10, 0.45), radius xs, padding 0 1 (none under an icon); on a selected
+    /// The match mark: rgba(255, 214, 10, 0.45), radius xs, padding 0 1 (none under an icon); on a selected
     /// row an underline 1.5 thick, 2 below.
     public var markRed: Double
     public var markGreen: Double
@@ -89,7 +85,7 @@ public struct SearchLayout: Equatable, Sendable {
     public var underlineThickness: Double
     public var underlineOffset: Double
 
-    /// The tab's magnifier (`.tab-strip-search`): 12 across.
+    /// The tab's magnifier: 12 across.
     public var tabMagnifierSize: Double
 
     public static let standard = SearchLayout(

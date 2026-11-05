@@ -1,12 +1,12 @@
-// Holds what the original's `unknown` holds: a value read from JSON whose shape the sanitizers check.
+// A value read from JSON whose shape the sanitizers check.
 import Foundation
 
-/// Any JSON value. The sanitizers of the saved state and of the shortcut overrides take one, as the
-/// original's take `unknown`, and decide field by field what they keep.
+/// Any JSON value. The sanitizers of the saved state and of the shortcut overrides take one, and
+/// decide field by field what they keep.
 public indirect enum JSONNode: Sendable, Equatable, Codable {
     case null
     case bool(Bool)
-    /// JavaScript's only number type; an integer is a number with no fraction.
+    /// JSON's only number type; an integer is a number with no fraction.
     case number(Double)
     case string(String)
     case array([JSONNode])
@@ -56,9 +56,9 @@ public indirect enum JSONNode: Sendable, Equatable, Codable {
         try JSONDecoder().decode(type, from: JSONEncoder().encode(self))
     }
 
-    // MARK: JavaScript's checks
+    // MARK: Type checks
 
-    /// `isPlainObject`: an object that is not an array, and not null.
+    /// An object that is not an array, and not null.
     public var object: [String: JSONNode]? {
         if case .object(let members) = self { members } else { nil }
     }
@@ -101,7 +101,7 @@ public indirect enum JSONNode: Sendable, Equatable, Codable {
     }
 }
 
-/// `Math.round`: halves go up.
+/// Halves go up.
 func jsRound(_ value: Double) -> Double {
     guard value.isFinite else { return value }
     // Exact for every value in the ranges the preferences use; larger ones are whole numbers already.
@@ -109,7 +109,7 @@ func jsRound(_ value: Double) -> Double {
     return (value + 0.5).rounded(.down)
 }
 
-/// `Math.round(Math.max(min, Math.min(max, value)))`.
+/// `value` held between `lower` and `upper`, then rounded as JavaScript's `Math.round` does.
 func clampRounded(_ value: Double, _ lower: Double, _ upper: Double) -> Int {
     Int(jsRound(max(lower, min(upper, value))))
 }

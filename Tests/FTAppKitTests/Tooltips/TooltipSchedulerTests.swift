@@ -1,4 +1,3 @@
-// Ports apps/desktop/src/renderer/lib/titleTooltips.test.ts (the DOM timing rows, as the AppKit tooltip's delays)
 import Foundation
 import Testing
 
@@ -64,7 +63,6 @@ struct TooltipSchedulerTests {
     /// The tooltip on screen now, or nil.
     var tooltip: String? { scheduler.isShowing ? box.text : nil }
 
-    // T-9e960311 F-829 B-VIEW-120
     @Test func showsAControlsTitleAfterThePointerRestsOnIt() {
         scheduler.hover(trash)
         #expect(tooltip == nil)
@@ -72,7 +70,7 @@ struct TooltipSchedulerTests {
         #expect(tooltip == "Trash")
     }
 
-    // T-cc926cf5: an icon inside a button is part of it (the icon view lets the pointer through to the button), so
+    // An icon inside a button is part of it (the icon view lets the pointer through to the button), so
     // hovering the icon is hovering the button: told of it again, the wait goes on and it shows once.
     @Test func theSameControlHoveredAgainShowsOnce() {
         scheduler.hover(trash)
@@ -82,7 +80,7 @@ struct TooltipSchedulerTests {
         #expect(box.shown == ["Trash"])
     }
 
-    // T-1849bac0: the system's own tooltip is never set on the app's buttons, so it can't show beside this one;
+    // The system's own tooltip is never set on the app's buttons, so it can't show beside this one;
     // leaving the control drops the waiting tooltip.
     @Test func leavingTheControlDropsTheWaitingTooltip() {
         scheduler.hover(trash)
@@ -91,7 +89,6 @@ struct TooltipSchedulerTests {
         #expect(tooltip == nil)
     }
 
-    // T-91fc6643 F-829
     @Test func showsTheNextControlsTooltipAtOnceWhenMovingStraightAcross() {
         scheduler.hover(trash)
         timers.advance(milliseconds: 600)
@@ -101,7 +98,6 @@ struct TooltipSchedulerTests {
         #expect(box.shown == ["Trash", "", "Help"])
     }
 
-    // T-4e5d4df9
     @Test func waitsAgainOnceThePointerHasBeenAwayForAWhile() {
         scheduler.hover(trash)
         timers.advance(milliseconds: 600)
@@ -114,7 +110,6 @@ struct TooltipSchedulerTests {
         #expect(tooltip == "Help")
     }
 
-    // T-34663665
     @Test func hidesOnClickAndStaysQuietUntilThePointerLeavesTheControl() {
         scheduler.hover(trash)
         timers.advance(milliseconds: 600)
@@ -130,7 +125,6 @@ struct TooltipSchedulerTests {
         #expect(tooltip == "Trash")
     }
 
-    // T-6005952a
     @Test func staysQuietOverAButtonWhoseMenuIsOpen() {
         help.tooltipIsQuiet = true
         scheduler.hover(help)
@@ -144,7 +138,7 @@ struct TooltipSchedulerTests {
         #expect(tooltip == "Help")
     }
 
-    // T-16801ecd: a key, a scroll and the pointer leaving the window all come here as `dismiss`.
+    // A key, a scroll and the pointer leaving the window all come here as `dismiss`.
     @Test func hidesWhenAKeyIsPressedTheViewScrollsOrThePointerLeavesTheWindow() {
         for _ in 0..<3 {
             scheduler.hover(nil)
@@ -157,7 +151,6 @@ struct TooltipSchedulerTests {
         }
     }
 
-    // T-5c9514b8
     @Test func followsATitleThatChangesWhileTheTooltipIsShowing() {
         scheduler.hover(trash)
         timers.advance(milliseconds: 600)
@@ -166,7 +159,6 @@ struct TooltipSchedulerTests {
         #expect(tooltip == "Empty Trash")
     }
 
-    // T-f8d9bae2
     @Test func showsNothingForEmptyTitlesAndStopsWhenUninstalled() {
         help.tooltipText = "  "
         scheduler.hover(help)

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/entriesAtPaths.ts
 import Foundation
 
 /// A folder's listing can hold tens of thousands of items, and ⌘A selects all of them, so finding the selected items must
@@ -20,7 +19,7 @@ public struct PathIndex<Element> {
         positions = made
     }
 
-    /// `findEntryAtPath`: the item at `path`, or nil.
+    /// The item at `path`, or nil.
     public func find(_ path: String?) -> Element? {
         guard let path, let position = positions[path] else { return nil }
         return elements[position]
@@ -31,7 +30,7 @@ public struct PathIndex<Element> {
         path.flatMap { positions[$0] }
     }
 
-    /// `resolveEntriesAtPaths`: the items at `paths`, in the order of `paths`, leaving out paths not there.
+    /// The items at `paths`, in the order of `paths`, leaving out paths not there.
     public func resolve(_ paths: [String]) -> [Element] {
         paths.compactMap { path in positions[path].map { elements[$0] } }
     }

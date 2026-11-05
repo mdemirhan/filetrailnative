@@ -1,6 +1,4 @@
-// Port of the content pane of apps/desktop/src/renderer/components/ContentPane.tsx (the shell and its states), with what
-// App.tsx and useExplorerNavigationController.ts keep for it: the entries and their details, the order, the folder sizes
-// and size bars, and the selection
+// The entries and their details, the order, the folder sizes and size bars, and the selection
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -37,7 +35,7 @@ final class ContentContainerView: NSView {
         }
     }
     let stateView = ContentStateView()
-    /// The ring of a pane that takes a drop into the folder on screen (P5-08).
+    /// The ring of a pane that takes a drop into the folder on screen.
     let dropRing = PaneDropRingView()
     /// What has been typed to narrow the list, floating over its foot.
     let filterPill = ListFilterPillView()
@@ -68,7 +66,7 @@ final class ContentContainerView: NSView {
         layoutFilterPill()
     }
 
-    /// `.list-filter-pill`: centered, 14 above the foot of the list.
+    /// The filter pill: centered, 14 above the foot of the list.
     func layoutFilterPill() {
         guard !filterPill.isHidden else { return }
         let size = filterPill.fittingSize(in: bounds.width)
@@ -100,10 +98,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onSortSetFromOutside: ((SortByPreference, Bool) -> Void)?
     var onSelectionChanged: ((ContentSelection) -> Void)?
     var onColumnWidthsChanged: (([DetailColumn: Double]) -> Void)?
-    /// The menu for a right-click on items or on the background (P5-09).
+    /// The menu for a right-click on items or on the background.
     var contextMenuProvider: (([DirectoryEntry]?) -> NSMenu?)?
     var dragHooks = ContentDragHooks()
-    /// The items on the clipboard the rows mark, and the drop target a drag is over (P5-08).
+    /// The items on the clipboard the rows mark, and the drop target a drag is over.
     var clipboardMarks: ClipboardMarks?
     var dropTarget: (path: String, state: DropTargetState)?
     var onSearchSubfolders: (() -> Void)?
@@ -114,16 +112,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     var onReturn: (() -> Void)?
     var onSwitchPane: (() -> Void)?
     var onCommand: ((ShortcutCommandID) -> Bool)?
-    /// A name was typed into the rename field: the window carries the rename out (and answers with `finishRename` or
+    /// A name was typed into the rename field: the window carries the rename out (and answers with `endRename` or
     /// `refuseRename`).
     var onRenameSubmit: ((_ path: String, _ name: String) -> Void)?
-    /// A rename began or ended (the folder watch holds outside changes while one is under way, B-SEL-139).
+    /// A rename began or ended (the folder watch holds outside changes while one is under way).
     var onRenameStateChanged: (() -> Void)?
-    /// The rename's item left the list while a refusal was showing: the refusal is said some other way (B-SEL-140).
+    /// The rename's item left the list while a refusal was showing: the refusal is said some other way.
     var onRenameLost: ((_ path: String, _ refusal: String?) -> Void)?
-    /// The selection, its details or a folder size changed: the Info views describe it again (P5-06).
+    /// The selection, its details or a folder size changed: the Info views describe it again.
     var onDetailsChanged: (() -> Void)?
-    /// A List header asked for the search results to be ordered by a column (P5-07).
+    /// A List header asked for the search results to be ordered by a column.
     var onSearchSort: ((SearchResultsSortByPreference) -> Void)?
     var onSearchSortSet: ((SearchResultsSortByPreference, SortDirectionPreference) -> Void)?
     /// The text narrowing the list changed (typed into the results, or cleared): the results bar's field mirrors it.
@@ -182,7 +180,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// order puts a folder without one at the end, so where a selected one stood is counted in this order instead.
     /// Used once, by the selection letting go of what left, and dropped when the selection changes.
     private var orderBeforeRemoval: [String]?
-    /// While search results show (P5-07): what is shown in place of the folder, and the folder as it was, which comes
+    /// While search results show: what is shown in place of the folder, and the folder as it was, which comes
     /// back when the results are put away.
     private(set) var searchDisplay: ContentSearchDisplay?
     private(set) var search: ContentSearchContext?
@@ -225,8 +223,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     // MARK: View
 
-    /// The rows of the content pane (`.content-pane`): the search header (P5-07), the list, the Info Row and the path
-    /// bar row (P5-06).
+    /// The rows of the content pane: the search header, the list, the Info Row and the path bar row.
     var contentShell: ContentPaneView { shell }
 
     /// The Info Row slides open or closed (220 ms) unless the window is only being restored.
@@ -242,7 +239,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             self?.dragHooks.acceptDrop?(urls, nil, allowed) ?? false
         }
         container.stateView.onOpenPrivacySettings = { [weak self] in self?.loaders.openPrivacySettings() }
-        // The pill's ✕ brings the list back as Esc does; the list keeps the keyboard (`onClearFilter`).
+        // The pill's ✕ brings the list back as Esc does; the list keeps the keyboard.
         container.filterPill.onClear = { [weak self] in self?.clearFilter() }
         container.stateView.onSearchSubfolders = onSearchSubfolders
         shell.onMovedToWindow = { [weak self] window in self?.observeWindow(window) }
@@ -290,7 +287,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard newMode != mode || pane == nil else { return }
         mode = newMode
         installPane()
-        // The new view starts at the top and then brings the selection's lead into view (B-VIEW-004).
+        // The new view starts at the top and then brings the selection's lead into view.
         pane?.reload(scrollToTop: true)
         pane?.syncSelection()
         if let focus = pane?.focusView, view.window?.firstResponder == nil || hadKeyboard {
@@ -321,7 +318,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     /// A folder is being read. Its predecessor stays on screen until it arrives; with nothing on screen the loading
     /// card shows after 400 ms.
     func beginLoading(quiet: Bool) {
-        // The message goes as the read starts, not when it ends (B-NAV-113).
+        // The message goes as the read starts, not when it ends.
         let messageWent = !quiet && readError != nil
         defer { if messageWent { refreshState() } }
         if !quiet { readError = nil }
@@ -354,7 +351,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var stateBeforeLoading = ContentLoadState.idle
 
     /// A Go To that couldn't be read: the folder on screen stays, with "Couldn’t open this folder" and `message` over
-    /// it (B-NAV-110).
+    /// it.
     func showReadError(_ message: String) {
         cancelLoading()
         readError = message
@@ -403,14 +400,14 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             metadataQueue = []
             hiddenItemCount = 0
         } else if let changedPaths {
-            // The items that changed have their details read again (B-NAV-134).
+            // The items that changed have their details read again.
             staleMetadata.formUnion(changedPaths.filter { metadata[$0] != nil })
         } else {
             staleMetadata = Set(metadata.keys)
         }
         folderPath = path
         loadState = .loaded
-        // The same listing read again as it was keeps what is on screen as it is (B-NAV-133).
+        // The same listing read again as it was keeps what is on screen as it is.
         let kept =
             sameFolder
             ? DirectoryListingDiff.keepUnchanged(shown: listed, next: newEntries, path: \.path) : nil
@@ -430,7 +427,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         // Nil keeps the selection that still exists (a quiet read); a list of paths is the new selection.
         if let memory {
             // Back and Forward restore the exact selection, checked against the listing read now: what is gone drops,
-            // and no gap is kept (B-NAV-048, B-NAV-049).
+            // and no gap is kept.
             var restored = memory.selection.sanitized(entryPaths: entryPaths)
             restored.gapIndex = nil
             setSelection(restored, notify: true)
@@ -457,7 +454,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if listed.isEmpty, !includeHidden, !folderPath.isEmpty { loadHiddenCount() }
     }
 
-    /// A folder that could not be read: its error shows, and nothing is selected (B-VIEW-064).
+    /// A folder that could not be read: its error shows, and nothing is selected.
     func showError(folder path: String, message: String) {
         if searchDisplay != nil, var kept = keptFolder, path == folderPath {
             kept.listed = []
@@ -484,7 +481,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         updateStatus()
     }
 
-    /// With no folder at all (B-NAV-117).
+    /// With no folder at all.
     func showNoFolder() {
         folderPath = ""
         readError = nil
@@ -556,7 +553,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// A key typed into the list: the text narrows it and selects the first name that starts with it, otherwise the
-    /// first match (`applyListFilter`); Backspace takes a character back; Esc brings the list back.
+    /// first match; Backspace takes a character back; Esc brings the list back.
     func applyFilterKey(_ key: ListFilterKey) {
         let now = ProcessInfo.processInfo.systemUptime
         switch key {
@@ -645,8 +642,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
                 ).map { .search($0) } ?? .none
         }
         container.stateView.onSearchSubfolders = onSearchSubfolders
-        // A filter nothing matches is said in place of the whole view, the List's column header too (ContentPane.tsx
-        // renders it instead of the view).
+        // A filter nothing matches is said in place of the whole view, the List's column header too.
         if case .noMatches = kind { nothingMatches = true } else { nothingMatches = false }
         pane?.showNothingMatches(nothingMatches)
         container.topInset = nothingMatches ? 0 : pane?.contentTopInset ?? 0
@@ -682,7 +678,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     /// Whenever the visible entries change (a folder, a sort, a filter), every selected path that is no longer in the
     /// list is dropped, and a selection whose items all left keeps their place for the arrow keys. A renamed, pasted or
-    /// new item outside the filter is selected on purpose, and is kept (B-SEL-024 to B-SEL-028).
+    /// new item outside the filter is selected on purpose, and is kept.
     private func resanitizeSelection(previousPaths: [String]) {
         guard !selection.isEmpty || selection.gapIndex != nil else { return }
         if let lead = selection.leadPath, position(of: lead) == nil, rowsByPath[lead] != nil { return }
@@ -690,7 +686,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// Items a write took away leave the selection before the read that follows it comes in, keeping their place for the
-    /// arrow keys (B-NAV-140, B-SEL-026). Selected items the filter hides stay.
+    /// arrow keys. Selected items the filter hides stay.
     func dropFromSelection(_ paths: [String]) {
         let left = Set(paths)
         guard selection.paths.contains(where: left.contains) else { return }
@@ -701,7 +697,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// Called just before the sizes of what a write or a drag took away are forgotten: the order on screen is kept for
-    /// where the selected items that left stood (B-NAV-140, B-SEL-026).
+    /// where the selected items that left stood.
     func keepOrderBeforeRemoval() {
         orderBeforeRemoval = selection.isEmpty ? nil : entryPaths
     }
@@ -715,7 +711,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// Selects the paths that are listed; the view keeps their lead in view (`RevealKeeper`). An item the filter hides is shown: the filter is
-    /// cleared (B-SEL-080).
+    /// cleared.
     func select(paths: [String]) {
         let existing = paths.filter { rowsByPath[$0] != nil }
         let selecting = ContentSelection.of(existing)
@@ -758,8 +754,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     // MARK: Rename
 
-    /// Starts renaming the item in its row. The item is shown first: one the filter hides clears the filter
-    /// (B-SEL-124). Whether the item is listed.
+    /// Starts renaming the item in its row. The item is shown first: one the filter hides clears the filter.
+    /// Whether the item is listed.
     @discardableResult
     func beginRename(path: String) -> Bool {
         guard rowsByPath[path] != nil else { return false }
@@ -806,7 +802,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// A rename field whose item has left the list (another folder opened, the item removed) closes; a refusal it was
-    /// showing is said in a dialog so it is not lost (B-SEL-140).
+    /// showing is said in a dialog so it is not lost.
     private func closeRenameIfItemLeft() {
         guard let rename = inlineRename, rowsByPath[rename.path] == nil else { return }
         let refusal = rename.error
@@ -816,7 +812,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     // MARK: Search results
 
-    /// Shows search results in place of the folder (P5-07), or shows them again as they changed. The folder is kept
+    /// Shows search results in place of the folder, or shows them again as they changed. The folder is kept
     /// as it was, to come back when they are put away. A new query or root starts the list at the top and drops the
     /// filter and the details read so far; the selection is the search session's to apply.
     func showSearch(_ display: ContentSearchDisplay) {
@@ -890,7 +886,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// The results bar's filter field: every change selects one result, the first whose name starts with the text,
-    /// else the first match (`setListFilter`).
+    /// else the first match.
     func setSearchFilter(_ text: String) {
         guard text != filter else { return }
         listFilter.set(text, at: ProcessInfo.processInfo.systemUptime)
@@ -903,7 +899,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         updateStatus()
     }
 
-    /// Applies a selection to the list on screen (`applyContentSelection`), bringing its lead into view.
+    /// Applies a selection to the list on screen, bringing its lead into view.
     func applySelection(_ next: ContentSelection) {
         setSelection(next, notify: true)
         pane?.syncSelection()
@@ -916,7 +912,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         guard let window = view.window else { return windowActive }
         #if DEBUG
             // A capture run may not be the app in front, so no window is key: the window then counts as in front,
-            // as the original's does in its capture; another window being key still makes this one inactive.
+            // and another window being key still makes this one inactive.
             if Self.isAutomated, NSApp.keyWindow == nil { return true }
         #endif
         return window.isKeyWindow
@@ -928,8 +924,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     func folderSizeEntry(_ path: String) -> FolderSizeEntry { folderSizes.entry(path) }
 
-    /// Bars show only while the folder is sorted by size (B-INFO-175); the largest size among all of its entries, not
-    /// only those on screen (B-INFO-176).
+    /// Bars show only while the folder is sorted by size; the largest size among all of its entries, not
+    /// only those on screen.
     var sizeBarScale: Int64? {
         guard sortBy == .size, searchDisplay == nil else { return nil }
         if let cache = barScaleCache, cache.listedCount == listed.count, cache.version == folderSizes.version {
@@ -1001,8 +997,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         metadataQueue = []
         guard !batch.isEmpty else { return }
         // Search results are spread over many folders, and the Trash over the disks: one batch per folder
-        // (`directory:getMetadataBatch`), each shown as it comes, so a slow folder keeps only its own rows waiting
-        // (`loadSearchResultMetadata`).
+        // (`directory:getMetadataBatch`), each shown as it comes, so a slow folder keeps only its own rows waiting.
         var byFolder: [String: [String]] = [:]
         var order: [String] = []
         for path in batch {
@@ -1077,7 +1072,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private func folderSizesChanged() {
         barScaleCache = nil
         if sortBy == .size, !listed.isEmpty {
-            // The list is ordered again as each folder size arrives (B-INFO-181).
+            // The list is ordered again as each folder size arrives.
             let before = entries.map(\.path)
             reorder()
             if entries.map(\.path) != before {
@@ -1093,7 +1088,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     // MARK: Status
 
-    /// "240 items", "3 of 240 items" while filtered, "2 of 240 selected", then " · size" (B-INFO status summary).
+    /// "240 items", "3 of 240 items" while filtered, "2 of 240 selected", then " · size".
     func updateStatus() {
         let size: StatusSize?
         if selection.isEmpty, searchDisplay != nil {

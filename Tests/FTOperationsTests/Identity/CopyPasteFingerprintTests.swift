@@ -1,10 +1,8 @@
-// Port of packages/core/src/fs/copyPasteFingerprint.test.ts
 import Testing
 
 @testable import FTOperations
 
 struct CopyPasteFingerprintTests {
-    // T-f08c060a F-313 F-516
     @Test func capturesFileFingerprintsWithMetadata() {
         let fileSystem = MockIdentityFileSystem([
             ("/workspace/file.txt", .file(size: 42, mode: 0o755, mtimeMs: 1234, ino: 7, dev: 2))
@@ -17,7 +15,6 @@ struct CopyPasteFingerprintTests {
                     symlinkTarget: nil))
     }
 
-    // T-043cb0e9 F-516
     @Test func capturesSymlinkFingerprintsAndReadsTheLinkTarget() throws {
         let fileSystem = MockIdentityFileSystem([
             ("/workspace/alias", .symlink("actual.txt", mode: 0o777, mtimeMs: 5000))
@@ -30,7 +27,6 @@ struct CopyPasteFingerprintTests {
         #expect(detectKind(try fileSystem.lstat("/workspace/alias")) == .symlink)
     }
 
-    // T-dd020670 F-516
     @Test func treatsUnreadableSymlinkTargetsAsNull() {
         let fileSystem = MockIdentityFileSystem([("/workspace/alias", .symlink("actual.txt"))])
         fileSystem.readlinkImpl = { _ in throw OperationError("readlink failed") }
@@ -38,7 +34,6 @@ struct CopyPasteFingerprintTests {
         #expect(captureFingerprint(fileSystem, "/workspace/alias").symlinkTarget == nil)
     }
 
-    // T-123ab7f6 F-516
     @Test func returnsAMissingFingerprintForAbsentPaths() {
         let fileSystem = MockIdentityFileSystem()
 
@@ -50,7 +45,6 @@ struct CopyPasteFingerprintTests {
         #expect(!pathExists(fileSystem, "/missing"))
     }
 
-    // T-fcfc78b8 F-516
     @Test func treatsNullInodeAndDeviceValuesAsFallbackCompatible() {
         #expect(
             fingerprintsEqual(
@@ -58,7 +52,6 @@ struct CopyPasteFingerprintTests {
                 NodeFingerprint(exists: true, kind: .file, size: 1, mtimeMs: 10, mode: 0o644, ino: 99, dev: 1)))
     }
 
-    // T-43855b67 F-516
     @Test func detectsMeaningfulMetadataChanges() {
         let base = NodeFingerprint(exists: true, kind: .file, size: 5, mtimeMs: 100, mode: 0o644, ino: 1, dev: 1)
         func with(_ change: (inout NodeFingerprint) -> Void) -> NodeFingerprint {
@@ -81,13 +74,12 @@ struct CopyPasteFingerprintTests {
                 }))
         #expect(!fingerprintsEqual(base, with { $0.ino = 2 }))
         #expect(!fingerprintsEqual(base, with { $0.dev = 2 }))
-        // Targets compare scalar for scalar, as JavaScript's === does.
+        // Targets compare scalar for scalar.
         #expect(
             !fingerprintsEqual(
                 with { $0.symlinkTarget = "caf\u{e9}" }, with { $0.symlinkTarget = "cafe\u{301}" }))
     }
 
-    // T-0b0b9ed2 F-516
     @Test func reportsExistingPathsThroughPathExists() {
         let fileSystem = MockIdentityFileSystem([("/workspace", .directory())])
 
@@ -96,15 +88,13 @@ struct CopyPasteFingerprintTests {
 }
 
 struct FileIdOfTests {
-    // T-d530fad4 F-517 F-925
     @Test func keepsAFileIdANumberCanHoldExactly() {
         #expect(fileIdOf(447403) == 447403)
         #expect(fileIdOf(9_007_199_254_740_991) == 9_007_199_254_740_991)
     }
 
     // FAT and exFAT empty files, and the system volume's folders, have ids near 2^64 that round to the same
-    // number in the original.
-    // T-1fd49c0d F-517 F-925 F-337
+    // number as a Double.
     @Test func treatsAnIdTooLargeToCompareAsUnknown() {
         #expect(fileIdOf(18_446_744_073_709_551_602) == nil)
         #expect(fileIdOf(1_152_921_500_311_879_682) == nil)
@@ -131,7 +121,6 @@ struct PastedItemsTests {
         ])
     }
 
-    // T-89ffe361 F-518
     @Test func findsAnItemPastedInsideAFolderReachedByAnotherSpelling() {
         let fileSystem = firmlinkedHome()
         let pasted = ["/System/Volumes/Data/Users/me/d/keep.txt"]
@@ -144,7 +133,6 @@ struct PastedItemsTests {
         #expect(!holdsAnyOf(fileSystem, "/Users/me/d", PastedItems(realPaths: pasted)))
     }
 
-    // T-be3214a9 F-518
     @Test func findsAnItemThatIsItselfPastedByAnotherSpelling() {
         let fileSystem = firmlinkedHome()
         let items = PastedItems(realPaths: ["/System/Volumes/Data/Users/me/a.txt"])
@@ -154,7 +142,6 @@ struct PastedItemsTests {
     }
 
     // FAT and exFAT give no identities (for empty files), and don't tell case apart.
-    // T-187abc16 F-518 F-337
     @Test func comparesPathsIgnoringCaseOnADiskThatGivesNoIdentities() {
         let noId: UInt64 = 18_446_744_073_709_551_602
         let fileSystem = MockIdentityFileSystem([
@@ -171,7 +158,6 @@ struct PastedItemsTests {
         #expect(!isAnyOf(fileSystem, "/v/A.txt", PastedItems(realPaths: ["/v/a.txt"])))
     }
 
-    // T-a13cb2b2 F-518
     @Test func findsAHardLinkToAnItemPasted() {
         let fileSystem = MockIdentityFileSystem([
             ("/x/a.txt", .file(ino: 50, dev: 1)),
@@ -185,7 +171,6 @@ struct PastedItemsTests {
     }
 
     // On a disk that tells case apart, "a.txt" and "A.txt" are two items.
-    // T-9914fe45 F-518
     @Test func tellsNamesApartByCaseOnACaseSensitiveDisk() {
         let fileSystem = MockIdentityFileSystem()
         fileSystem.caseSensitive = true
@@ -204,7 +189,6 @@ struct PastedItemsTests {
 
     // Asked once for each item in the way: each answer looks at that one item, not at every item pasted again
     // (2,000 items took 4 million looks).
-    // T-ba7069a7 F-518
     @Test func readsEachItemOnceHoweverManyItemsAreAskedAbout() {
         let count = 300
         let fileSystem = MockIdentityFileSystem([("/src", .directory())])

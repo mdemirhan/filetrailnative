@@ -1,5 +1,3 @@
-// Port of the search:start, search:getUpdate and search:cancel calls the renderer makes (useExplorerSearchController.ts,
-// useExplorerTabs.ts), and the runtime the worker keeps for them (packages/core/src/worker/explorerWorker.ts)
 import FTFileSystem
 import FTFoundation
 import Foundation

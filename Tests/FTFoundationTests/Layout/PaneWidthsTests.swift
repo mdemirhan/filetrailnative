@@ -1,10 +1,9 @@
-// Ports apps/desktop/src/renderer/hooks/useExplorerPaneLayout.test.tsx and lib/layoutTokens.test.ts
 import Testing
 
 @testable import FTFoundation
 
 struct PaneWidthsTests {
-    // T-055acb96: a menu past the bottom and right edges goes back inside, 8 from each.
+    // A menu past the bottom and right edges goes back inside, 8 from each.
     @Test func keepInViewportMovesAMenuBackInside() {
         let moved = MenuPlacement.keepInViewport(
             left: 900, top: 450, width: 240, height: 300, viewportWidth: 1000, viewportHeight: 600)
@@ -17,7 +16,6 @@ struct PaneWidthsTests {
         PaneWidths(treeWidth: tree, inspectorWidth: inspector, layout: layout)
     }
 
-    // T-83343b0d F-701 F-702
     @Test func definesStableExplorerPaneConstraints() {
         #expect(layout.treeMinWidth == 220)
         #expect(layout.treeMaxWidth == 520)
@@ -31,8 +29,6 @@ struct PaneWidthsTests {
         #expect(layout.defaultInspectorWidth == 320)
     }
 
-    // T-21dbb5e8 F-703 B-INFO-187
-    // B-INFO-026
     @Test func resizesTreeAndInspectorPanesWithinBounds() {
         var widths = panes()
         let tree = widths.dragStart(.tree, x: 100)
@@ -48,7 +44,6 @@ struct PaneWidthsTests {
         #expect(widths.inspectorWidth == 260)
     }
 
-    // T-44cf0a5a F-703 B-INFO-188
     @Test func shrinksSidePanesToPreserveCenterContentWhenTheViewportNarrows() {
         var widths = panes(tree: 520, inspector: 480)
         widths.sync(viewportWidth: 1080, inspectorVisible: true)
@@ -56,7 +51,6 @@ struct PaneWidthsTests {
         #expect(widths.inspectorWidth == 260)
     }
 
-    // T-3d2da726 B-INFO-188 B-INFO-190
     @Test func clampsTheTreePaneAgainstTheViewportWhenTheInspectorIsHidden() {
         var widths = panes(tree: 520)
         widths.sync(viewportWidth: 760, inspectorVisible: false)
@@ -65,7 +59,6 @@ struct PaneWidthsTests {
         #expect(widths.inspectorWidth == 320)
     }
 
-    // T-f539501b B-INFO-188
     @Test func givesAPaneBackItsWidthWhenTheWindowIsWidenedAgain() {
         var widths = panes(tree: 300)
         widths.sync(viewportWidth: 640, inspectorVisible: false)
@@ -75,7 +68,6 @@ struct PaneWidthsTests {
         #expect(widths.treeWidth == 300)
     }
 
-    // T-ee035de5 F-704 B-INFO-189
     @Test func widensAPaneFromTheKeyboardAndKeepsThatWidth() {
         var widths = panes(tree: 300)
         widths.nudge(.tree, by: 16)
@@ -94,7 +86,6 @@ struct PaneWidthsTests {
         #expect(widths.inspectorWidth == 444 && widths.preferredInspectorWidth == 444)
     }
 
-    // T-11f54d0b
     @Test func dropsAMenuFromTheEdgeOfItsButtonThatLeavesTheMostRoom() {
         let left = MenuPlacement.dropdown(
             anchorLeft: 100, anchorRight: 132, anchorBottom: 41, menuWidth: 220, menuHeight: 100, viewportWidth: 1000,

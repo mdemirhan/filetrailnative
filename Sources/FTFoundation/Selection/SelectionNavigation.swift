@@ -1,4 +1,3 @@
-// Port of getNextSelectionIndex, getPageStepLineCount and getPagedLineMove of apps/desktop/src/renderer/lib/explorerNavigation.ts
 import Foundation
 
 /// The keys that move the selection by items.
@@ -79,7 +78,7 @@ public enum SelectionNavigation {
         case half, full
     }
 
-    /// `getPageStepLineCount`: a full page is one less than fit on screen, so the last one stays in view; half a page is
+    /// A full page is one less than fit on screen, so the last one stays in view; half a page is
     /// half of those that fit.
     public static func pageStepLineCount(viewportSize: Double, lineExtent: Double, size: PageSize) -> Int {
         let fits = (max(0, viewportSize) / max(1, lineExtent)).rounded(.down)
@@ -91,7 +90,7 @@ public enum SelectionNavigation {
         case backward, forward
     }
 
-    /// `getPagedLineMove`: where a step of `lines` lines from `currentIndex` lands, stopping at the first and last
+    /// Where a step of `lines` lines from `currentIndex` lands, stopping at the first and last
     /// items, and how many lines the selection moved, for the view to scroll as far. A line holds `itemsPerLine`
     /// items: a row of icons, or a Compact List column.
     public static func pagedLineMove(

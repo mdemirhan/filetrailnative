@@ -1,5 +1,3 @@
-// Port of apps/desktop/src/shared/applicationMenuState.ts, renderer/lib/applicationMenuState.ts and the pure rules of
-// apps/desktop/src/main/appMenu.ts (resolveApplicationMenuItemStates, undoMenuLabels)
 import Foundation
 
 /// What the application menu shows of the explorer window: which commands can run now (the rest are dimmed) and which
@@ -38,7 +36,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// INITIAL_APPLICATION_MENU_STATE: before the window has reported, everything is available and nothing checked.
     public static let initial = ApplicationMenuState()
 
-    /// `toApplicationMenuState`: the state as it arrives where command names are plain strings; unknown names are
+    /// The state as it arrives where command names are plain strings; unknown names are
     /// dropped.
     public init(
         disabledCommandNames: [String], viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool,
@@ -52,7 +50,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
             favoriteIsSet: favoriteIsSet, textEditing: textEditing)
     }
 
-    /// `buildApplicationMenuState`: what the application menu is told about the window: every command that can not
+    /// What the application menu is told about the window: every command that can not
     /// run now, and what its checkmarks show.
     public static func build(
         viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
@@ -113,7 +111,7 @@ public enum ApplicationMenu {
         .goApplications, .goTrash, .openLocationSheet,
     ]
 
-    /// `undoMenuLabels`: what Undo and Redo say. While a text field (or another window) has the keyboard they are its
+    /// What Undo and Redo say. While a text field (or another window) has the keyboard they are its
     /// own and say just "Undo" and "Redo"; otherwise they name the file operation, or say there is one that can't be
     /// undone.
     public static func undoLabels(undo: String?, redo: String?, cantUndo: Bool, textEditing: Bool)
@@ -134,7 +132,7 @@ public enum ApplicationMenu {
         return (undoLabel, redoLabel)
     }
 
-    /// The window the menu acts on (`resolveApplicationMenuItemStates`' second argument).
+    /// The window the menu acts on (`itemStates`' second argument).
     public struct WindowFacts: Equatable, Sendable {
         /// Whether the explorer window is the one the menu acts on (false while Settings is).
         public var explorerFocused: Bool
@@ -165,7 +163,7 @@ public enum ApplicationMenu {
         }
     }
 
-    /// `resolveApplicationMenuItemStates`: what each menu item should show for the state the explorer window last
+    /// What each menu item should show for the state the explorer window last
     /// reported.
     public static func itemStates(_ state: ApplicationMenuState, window: WindowFacts) -> [ApplicationMenuItemState] {
         let disabled = Set(state.disabledCommands)
@@ -233,7 +231,7 @@ public enum ApplicationMenu {
 
     // MARK: Applying the states
 
-    /// What `applyApplicationMenuItemStates` needs of a menu item.
+    /// What `apply` needs of a menu item.
     public protocol ItemControl: AnyObject {
         var isEnabled: Bool { get set }
         var isVisible: Bool { get set }
@@ -242,7 +240,7 @@ public enum ApplicationMenu {
         var isRadio: Bool { get }
     }
 
-    /// `applyApplicationMenuItemStates`: sets what changed on the items the menu has, and skips the others.
+    /// Sets what changed on the items the menu has, and skips the others.
     public static func apply<Item: ItemControl>(_ states: [ApplicationMenuItemState], item: (String) -> Item?) {
         for state in states {
             guard let control = item(state.id) else { continue }

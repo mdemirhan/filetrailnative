@@ -1,11 +1,9 @@
-// Port of DetailsRow and DetailsCell (apps/desktop/src/renderer/components/ContentPane.tsx:1893-2260) and the row rules of
-// styles.css:2894-2960 and 4440-4500
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The row of the table: it draws nothing itself. The bar inside the cell is the row the original draws (inset from the
-/// pane's edges, with rounded corners), and it takes the selection.
+/// The row of the table: it draws nothing itself. The bar inside the cell is the row as drawn (inset from the pane's
+/// edges, with rounded corners), and it takes the selection.
 final class DetailsRowView: NSTableRowView {
     /// The whole row takes the pointer: AppKit's own separator view inside it would otherwise.
     override func hitTest(_ point: NSPoint) -> NSView? {
@@ -21,7 +19,7 @@ final class DetailsRowView: NSTableRowView {
 
     override func layout() {
         super.layout()
-        // The cell fills its row, which is as wide as the pane (`.details-row { width: 100% }`).
+        // The cell fills its row, which is as wide as the pane.
         if let cell = cellView, cell.frame != bounds { cell.frame = bounds }
     }
 
@@ -69,11 +67,11 @@ final class DetailsCellView: NSTableCellView {
     }
 }
 
-/// The Name cell (`.details-name`): the icon, then the name.
+/// The Name cell: the icon, then the name.
 final class NameCellView: NSView, TextStyleSource {
     let iconView = NSImageView()
     let label = NameLabel()
-    /// The copy or cut glyph after the name of an item on the clipboard (P5-08).
+    /// The copy or cut glyph after the name of an item on the clipboard.
     let markGlyph = ClipboardMarkGlyph(identifier: "list.row.clipboardMark")
     let tagDots = TagDotsView()
 
@@ -124,8 +122,8 @@ final class NameCellView: NSView, TextStyleSource {
     }
 }
 
-/// A transparent view over a row that marks it for the capture: an odd (striped) row, a selected one. It reports the
-/// row's name as its text, as the original's selection bar does.
+/// A transparent view over a row that marks it for automation: an odd (striped) row, a selected one. It reports the
+/// row's name as its text.
 final class RowMarkerView: NSView, TextStyleSource {
     weak var source: NSTextField?
     var styleTextField: NSTextField? { source }
@@ -142,7 +140,7 @@ final class RowMarkerView: NSView, TextStyleSource {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// A size bar (`.details-size-bar`), drawn behind the size.
+/// A size bar, drawn behind the size.
 final class SizeBarView: NSView {
     var color: NSColor = .clear {
         didSet { needsDisplay = true }
@@ -158,7 +156,7 @@ final class SizeBarView: NSView {
     }
 }
 
-/// The Size cell (`.details-size`): the text at the right edge, and the bar behind it while sorted by size.
+/// The Size cell: the text at the right edge, and the bar behind it while sorted by size.
 final class SizeCellView: NSView {
     let label = ListLabel()
     let bar = SizeBarView()
@@ -167,7 +165,7 @@ final class SizeCellView: NSView {
         super.init(frame: .zero)
         addSubview(bar)
         addSubview(label)
-        // The bar's overhang and its right-hand rounding are cut at the cell's edge (styles.css:2883-2888).
+        // The bar's overhang and its right-hand rounding are cut at the cell's edge.
         clipsToBounds = true
         setAccessibilityIdentifier("list.row.sizeCell")
     }
@@ -178,8 +176,8 @@ final class SizeCellView: NSView {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
 
-/// The row as the original draws it: a bar inset from the pane's edges, rounded, striped or selected, with a cell for
-/// each column. Cells are laid out by hand.
+/// The row as drawn: a bar inset from the pane's edges, rounded, striped or selected, with a cell for each column.
+/// Cells are laid out by hand.
 final class DetailsBarView: NSView {
     let nameCell = NameCellView()
     let sizeCell = SizeCellView()
@@ -198,9 +196,9 @@ final class DetailsBarView: NSView {
     private var sizeBarFraction: Double?
     private let oddMarker = RowMarkerView(id: "list.row.odd")
     private let selectedMarker = RowMarkerView(id: "list.row.selected")
-    /// Marks a cut row for the capture (`.details-row.clipboard-cut`).
+    /// Marks a cut row for automation.
     private let cutMarker = RowMarkerView(id: "list.row.cut")
-    /// Marks the row a drag would drop into (`.details-row[data-drop-target-state="valid"]`).
+    /// Marks the row a drag would drop into.
     private let dropMarker = RowMarkerView(id: "list.row.dropTarget")
     private var dropState: DropTargetState?
 
@@ -266,7 +264,7 @@ final class DetailsBarView: NSView {
         nameLabel.marksUnderlined = selected && host.paneHasKeyboard && host.windowIsActive
         // The rename field stands in for the name it edits.
         nameLabel.isHidden = host.inlineRename?.path == entry.path
-        // An item on the clipboard: its glyph after the name, and a cut one dimmed (P5-08).
+        // An item on the clipboard: its glyph after the name, and a cut one dimmed.
         let mark = host.clipboardMarks?.mark(for: entry.path)
         nameCell.markGlyph.mark = mark
         nameCell.markGlyph.color = ClipboardMarkGlyph.color(theme: host.theme, onSelection: marksOnSelection)
@@ -293,7 +291,7 @@ final class DetailsBarView: NSView {
                 sizeCell.bar.color = NSColor(colors.sizeBar.withAlpha(colors.sizeBarAlpha))
                 sizeCell.bar.radius = CGFloat(DesignTokens.radii.xs)
             case .folder:
-                // `.details-folder`: right to left, so a long folder loses its start ("…src › renderer").
+                // Right to left, so a long folder loses its start ("…src › lib").
                 let label = label(for: column)
                 label.font = font
                 label.stringValue = host.search?.folderLabel(entry.path) ?? ""
@@ -380,7 +378,7 @@ final class DetailsBarView: NSView {
         selected && (host?.paneHasKeyboard ?? false) && (host?.windowIsActive ?? false)
     }
 
-    /// The row's item was just copied or cut (`.clipboard-flash`).
+    /// The row's item was just copied or cut: its mark flashes.
     func flashClipboardMark() {
         guard let entry, let host, host.clipboardMarks?.mark(for: entry.path) != nil else { return }
         ClipboardFlash.flash(

@@ -1,5 +1,4 @@
-// Ports by feature the Move To cases of apps/desktop/src/renderer/App.commands.test.tsx and the Move To case of
-// components/GoToFolderDialog.test.tsx: the Move To box of a windowless tab with the app's file operations
+// The Move To box of a windowless tab with the app's file operations
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -44,8 +43,6 @@ extension ExplorerWindowlessTests {
 
         // ⇧⌘M opens Move To on the folder shown; Return does nothing until a folder is chosen; Choose… fills the field
         // from the picker; Move moves and the box closes.
-        // T-fe15de0b T-0804a6c2 T-563d8a99 F-861 F-862 B-DLG-053 B-DLG-056 B-DLG-057 B-DLG-058 B-DLG-060 B-DLG-061
-        // B-CLIP-080
         @Test func movesIntoTheFolderChosen() async throws {
             let window = try await open()
             var pickedFrom: [String?] = []
@@ -77,8 +74,6 @@ extension ExplorerWindowlessTests {
         }
 
         // A destination that isn't a folder keeps the box open with the reason.
-        // T-54e58629 T-986f36ad B-DLG-062
-        // B-CLIP-080
         @Test func refusesADestinationThatIsNotAFolder() async throws {
             let window = try await open()
             let box = try openMove(window, ["note.txt"])
@@ -95,8 +90,6 @@ extension ExplorerWindowlessTests {
 
         // What the analysis refuses (moving into the folder the item is in, a folder into itself, an item gone
         // meanwhile) is said under the field and the box stays.
-        // T-0d011bb3 T-588aa96e T-afa0bfb3
-        // B-CLIP-080 B-DLG-063
         @Test func keepsTheBoxOpenWhenTheAnalysisRefuses() async throws {
             let window = try await open()
             var box = try openMove(window, ["note.txt"])
@@ -119,8 +112,6 @@ extension ExplorerWindowlessTests {
 
         // With another operation running the start is refused under the field; the list's commands wait while the box
         // is up.
-        // T-2e9766f9 T-400c17ec B-DLG-055 B-DLG-064
-        // B-SEL-172
         @Test func saysAnotherOperationRunsAndTheListWaits() async throws {
             let window = try await open()
             let box = try openMove(window, ["note.txt"])

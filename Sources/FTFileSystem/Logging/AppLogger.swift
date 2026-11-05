@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/main/appLog.ts
 import FTFoundation
 import Foundation
 import os
@@ -7,7 +6,7 @@ public enum LogLevel: String, Sendable, CaseIterable {
     case debug, info, warn, error
 }
 
-/// Where a line is also echoed: the original's console, here `os.Logger`.
+/// Where a line is also echoed: `os.Logger`.
 public protocol LogSink: Sendable {
     func emit(_ level: LogLevel, _ text: String)
 }
@@ -80,7 +79,7 @@ public final class AppLogger: @unchecked Sendable {
 
     public func log(_ level: LogLevel, _ args: [LogArg]) { emit(level, args) }
 
-    /// `writeStructuredAppLogEntry`: `[namespace] message`, then the error, then the context when it has anything.
+    /// `[namespace] message`, then the error, then the context when it has anything.
     public func write(
         level: LogLevel, namespace: String, message: String, error: (any Error)? = nil,
         context: [String: JSONNode] = [:]

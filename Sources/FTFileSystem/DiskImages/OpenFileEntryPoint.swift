@@ -1,4 +1,3 @@
-// Port of the open-file handling in apps/desktop/src/main/main.ts (app.on("open-file")) and of openRequestSchema in packages/contracts/src/ipc.ts
 import Foundation
 
 /// An item opened with File Trail from another app (Finder's Open With, a drop on the Dock icon,

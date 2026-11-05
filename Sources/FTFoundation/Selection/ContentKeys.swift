@@ -1,4 +1,3 @@
-// Port of the keys of the file list in apps/desktop/src/renderer/hooks/useExplorerShortcuts.ts (rawShortcutBindings :360-1000, onKeyDown :1476-1570)
 import Foundation
 
 /// What a key pressed with the file list focused does (the raw shortcut bindings that belong to the list).
@@ -30,7 +29,7 @@ public enum ContentKeys {
         }
     }
 
-    /// `findShiftedPageMove`: a page move with ⇧, when ⇧ and the key are not a command's keys of their own.
+    /// A page move with ⇧, when ⇧ and the key are not a command's keys of their own.
     private static func shiftedPageMove(_ pressed: String?, _ resolved: ResolvedShortcuts)
         -> (forward: Bool, size: SelectionNavigation.PageSize)?
     {
@@ -46,7 +45,7 @@ public enum ContentKeys {
     /// The action for a key pressed with the file list focused, or nil when the list leaves the key alone.
     ///
     /// - Parameters:
-    ///   - event: the key, as the original's window sees it (`key` is a DOM key name).
+    ///   - event: the key (`key` is the character it types, or a name such as "ArrowDown").
     ///   - hasEntries: the list on screen has items (arrows do nothing, and are not taken, without).
     ///   - hasSelection: an item is selected (Return does nothing, and is not taken, without).
     public static func action(

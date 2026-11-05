@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/hooks/useBatchRename.ts
 import FTFoundation
 import FTOperations
 import Foundation

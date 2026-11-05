@@ -1,6 +1,3 @@
-// Ports by feature what the wave-3-end checkpoint compared of the Go To box (GoToFolderDialog.tsx, the
-// .go-to-folder-* and .clear-button rules of styles.css) and of the scrim (.modal-scrim), on a real tab whose window
-// is never shown
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -55,8 +52,8 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // The drops of `--elevation-dialog` go down from the panel: below it the scrim is darker than above it, at the same
-        // distance (17: they went up under the sheets). F-848
+        // The drops of `elevationDialog` go down from the panel: below it the scrim is darker than above it, at the
+        // same distance (they once went up under the sheets).
         @Test func thePanelsShadowFallsBelowIt() async throws {
             let (harness, tab) = try await open()
             let box = try openBox(tab)
@@ -110,7 +107,6 @@ extension ExplorerWindowlessTests {
         }
 
         // The toolbar's items dim as the dialog comes up and light again as it goes, with no other change to tell them.
-        // F-848 B-DLG-064
         @Test func theToolbarDimsUnderADialogAtOnce() async throws {
             let (harness, tab) = try await open()
             let switcher = try #require(tab.explorerToolbar.viewSwitch)
@@ -124,7 +120,7 @@ extension ExplorerWindowlessTests {
 
         // `openLocationSheet` and `openMoveDialog` leave no pane focused: the list's selection is grey under the box (232).
         // Under an alert too: its button takes the focus, the pane's blur sets no pane focused (234), and Cancel gives
-        // the keyboard and the accent back. F-861 B-DLG-056
+        // the keyboard and the accent back.
         @Test func theListLosesItsFocusedLookUnderTheBoxAndUnderAnAlert() async throws {
             let (harness, tab) = try await open()
             let window = try #require(tab.window)
@@ -147,7 +143,7 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // B-NAV-223: a dialog opened from a text field gives the keyboard back to it, with the same text selected; when
+        // A dialog opened from a text field gives the keyboard back to it, with the same text selected; when
         // the field has gone, to a pane; and only once no dialog is up.
         @Test func aDialogOpenedFromATextFieldGivesTheKeyboardBack() async throws {
             let (harness, tab) = try await open()
@@ -192,8 +188,7 @@ extension ExplorerWindowlessTests {
         }
 
         // A row's name is shown whole while it fits in 55% of the row, the location taking the rest; the name, the
-        // location, the field's text and the label start where the original's do (a cell draws its text 2 in).
-        // F-848 F-849 B-DLG-027
+        // location, the field's text and the label start where the layout puts them (a cell draws its text 2 in).
         @Test func rowsShowTheNameWholeAndTextStartsWhereTheOriginalsDoes() async throws {
             let (harness, tab) = try await open()
             for name in ["Alpha", "Beta", "Gamma"] {
@@ -222,9 +217,8 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // The empty list's words are in the secondary color, drawn flattened onto the panel as the original's
-        // translucent color shows; the field itself says the color meant.
-        // F-852 B-DLG-012
+        // The empty list's words are in the secondary color, a translucent one drawn flattened onto the panel; the
+        // field itself says the color meant.
         @Test func theEmptyStateIsInTheSecondaryColor() async throws {
             let (harness, tab) = try await open()
             let box = try openBox(tab)
@@ -240,7 +234,6 @@ extension ExplorerWindowlessTests {
 
         // The scrim covers the toolbar band too: a veil laid into the title bar under the window's buttons, over the
         // content column, which takes the band's presses; it goes with the dialog. The sidebar gets a little more.
-        // F-843 B-DLG-001
         @Test func theScrimCoversTheToolbarBandUnderTheWindowsButtons() async throws {
             let (harness, tab) = try await open()
             let window = try #require(tab.window)
@@ -270,10 +263,9 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // The band stays the window's drag region under a dialog (`.window-toolbar` drags; the scrim sets no
-        // `no-drag`): a press on its empty room drags the window and never reaches the scrim, so the Go To box stays.
+        // The band stays the window's drag region under a dialog: a press on its empty room drags the window and never
+        // reaches the scrim, so the Go To box stays.
         // Only a press on one of the band's no-drag items (a toolbar button) is a press on the scrim, which closes it.
-        // F-843 B-DLG-001
         @Test func aPressOnTheEmptyBandDragsTheWindowAndAButtonInItIsTheScrims() async throws {
             let (harness, tab) = try await open()
             harness.layout(tab)
@@ -297,7 +289,6 @@ extension ExplorerWindowlessTests {
 
         // A control of the system's in the band belongs to no item's view: the » button and a folded search's magnifier,
         // stood in for here by a button of the same kind. It is covered as the items are; the title still drags.
-        // F-843 B-DLG-001
         @Test func theSystemsOwnControlsInTheBandAreTheScrims() async throws {
             let (harness, tab) = try await open()
             harness.layout(tab)

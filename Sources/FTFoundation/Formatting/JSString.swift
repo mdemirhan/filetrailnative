@@ -1,12 +1,11 @@
-// Port of the string semantics the original's formatting and ranking code gets from JavaScript.
 import Foundation
 
-/// JavaScript compares, searches and measures strings in UTF-16 code units, with no Unicode
-/// equivalence; Swift's `String` does it by characters and takes NFC and NFD as equal. The original's
-/// results (name ranges, which names contain a text) depend on the JavaScript way, so the ported code
-/// goes through these helpers.
+/// Strings compared, searched and measured in UTF-16 code units, with no Unicode equivalence; Swift's
+/// `String` does it by characters and takes NFC and NFD as equal. Name ranges and which names contain a
+/// text depend on the code units, so the code goes through these helpers.
 enum JSString {
-    /// Whether JavaScript's `trim`, `\s` and `split(/\s+/)` count the code unit as white space.
+    /// Whether the code unit is white space (ECMAScript's `WhiteSpace` and `LineTerminator`), as trimming and
+    /// splitting on white space count it.
     static func isWhitespace(_ unit: UInt16) -> Bool {
         switch unit {
         case 0x09...0x0D, 0x20, 0xA0, 0x1680, 0x2000...0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF:
@@ -193,8 +192,7 @@ enum JSString {
     }
 }
 
-/// A string used as a key the way JavaScript's `Map` and `Set` use one: by its exact code units, so
-/// the NFC and NFD spellings of a name are two keys.
+/// A string used as a key by its exact code units, so the NFC and NFD spellings of a name are two keys.
 struct ExactKey: Hashable, Sendable {
     let bytes: [UInt8]
 

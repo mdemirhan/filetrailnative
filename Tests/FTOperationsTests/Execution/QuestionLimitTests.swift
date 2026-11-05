@@ -1,5 +1,4 @@
-// What the original's engine does that its own tests leave unproven: the limit on questions about one item, and a
-// merge into a folder at the top of the disk (packages/core/src/fs/copyPasteExecution.ts)
+// The limit on questions about one item, and a merge into a folder at the top of the disk
 import FTFoundation
 import FTTestSupport
 import Foundation
@@ -10,7 +9,6 @@ import os
 
 struct QuestionLimitTests {
     // A file saved again each time it is asked about is asked about five times, then left.
-    // F-329
     @Test func leavesAnItemThatKeepsChangingAfterFiveQuestions() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/a.txt", .file(size: 1)), ("/target", .directory()),
@@ -38,7 +36,6 @@ struct QuestionLimitTests {
     }
 
     // A folder pasted into the disk's top folder is merged with the one of its name there.
-    // F-459
     @Test func mergesIntoAFolderAtTheTopOfTheDisk() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source/F/new.txt", .file(size: 3)), ("/F/old.txt", .file(size: 4)),

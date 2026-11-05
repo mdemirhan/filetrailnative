@@ -1,8 +1,8 @@
-// A batch-rename scenario through the Swift engine, as tools/parity/exec/batch-rename.ts records the reference's: the
-// Rename sheet's checks first when asked, then the rename on the disk itself (BatchRenameExecution.run with the app's
-// journal file), recording each item as it starts, each rename that went ahead, each journal write, a stop, the
-// results and the undo record; a crash stops everything reaching the disk and the journal at that point, as a killed
-// process does, and the app's startup recovery (recoverWrites) then runs on the same folders.
+// A batch-rename scenario through the Swift engine: the Rename sheet's checks first when asked, then the rename on
+// the disk itself (BatchRenameExecution.run with the app's journal file), recording each item as it starts, each
+// rename that went ahead, each journal write, a stop, the results and the undo record; a crash stops everything
+// reaching the disk and the journal at that point, as a killed process does, and the app's startup recovery
+// (recoverWrites) then runs on the same folders.
 import FTFileSystem
 import FTFoundation
 import FTTestSupport

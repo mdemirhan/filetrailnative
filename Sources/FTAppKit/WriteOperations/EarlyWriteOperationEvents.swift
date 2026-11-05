@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/earlyWriteOperationEvents.ts
 import FTOperations
 import Foundation
 

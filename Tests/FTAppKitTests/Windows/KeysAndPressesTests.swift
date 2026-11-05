@@ -1,5 +1,4 @@
-// Keys, commands and presses that reach the window as a person's do: shortcuts.ts:725-790, useExplorerShortcuts.ts:789,
-// :1325-1332, useExplorerActions.ts:3263-3274, main.ts:698-701, ContentPane.tsx:472-486, entryItemEvents.ts:59-60,109
+// Keys, commands and presses that reach the window as a person's do
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -46,7 +45,7 @@ extension ExplorerWindowlessTests {
             #expect(try spelled(18) == "1")
         }
 
-        // useExplorerShortcuts.ts:659,667: the alternate keys of Show Next Tab and Show Previous Tab step through tabs.
+        // The alternate keys of Show Next Tab and Show Previous Tab step through tabs.
         @Test func theAlternateTabKeysStepThroughTheTabs() async throws {
             let harness = try ExplorerHarness.windowless()
             let first = try await harness.open()
@@ -63,8 +62,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // useExplorerActions.ts:3263-3274: File ▸ Open in New Tab and Open in New Window open the alias's folder.
-        // B-NAV-073 T-5fd895a0 T-8a72ceff T-90885193
+        // File ▸ Open in New Tab and Open in New Window open the alias's folder.
         @Test func openingASelectedFolderAliasInANewTabOrWindowOpensItsTarget() async throws {
             let harness = try ExplorerHarness.windowless()
             try FileManager.default.createSymbolicLink(
@@ -88,9 +86,8 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // main.ts:698-701: with every window off screen, New Window opens on the front window's folder; the Go menu's
-        // places open where the last window closed.
-        // T-bd532a00
+        // With every window off screen, New Window opens on the front window's folder; the Go menu's places open where
+        // the last window closed.
         @Test func newWindowWithNoWindowOnScreenOpensFromTheFrontWindow() {
             let host = FakeWindowHost()
             let menu = MainMenu(windows: host.windows)
@@ -103,8 +100,7 @@ extension ExplorerWindowlessTests {
             #expect(host.calls == ["newWindowFromFront", "default goDocuments"])
         }
 
-        // useExplorerShortcuts.ts:789: ⇧ and a paging key move the tree as the key does without ⇧.
-        // B-NAV-086 B-NAV-100 B-SEL-061
+        // ⇧ and a paging key move the tree as the key does without ⇧.
         @Test func aPagingKeyWithShiftMovesTheTree() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -126,8 +122,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // ContentPane.tsx:472-486: a press anywhere in an empty folder gives the content pane the keyboard.
-        // B-SEL-161
+        // A press anywhere in an empty folder gives the content pane the keyboard.
         @Test func aPressInAnEmptyFolderGivesTheListTheKeyboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let empty = harness.folder.appending("Empty")
@@ -169,7 +164,6 @@ extension ExplorerWindowlessTests {
         }
 
         // A button of a state is its own.
-        // B-SEL-161
         @Test func aStatesButtonStillTakesThePress() throws {
             let state = ContentStateView(frame: NSRect(x: 0, y: 0, width: 600, height: 400))
             state.show(.noMatches(query: "x"), theme: AppearanceModel.shared.theme)
@@ -182,9 +176,8 @@ extension ExplorerWindowlessTests {
             #expect(state.hitTest(NSPoint(x: 5, y: 5)) == nil)
         }
 
-        // ContentPane.tsx:472-486: on a column header, or beside its cells, the press gives the list the keyboard and
-        // not on the column resizer (`.details-column-resizer`).
-        // B-SEL-161
+        // On a column header, or beside its cells, the press gives the list the keyboard, and not on the column
+        // resizer.
         @Test func aPressOnTheColumnHeaderGivesTheListTheKeyboard() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
@@ -211,7 +204,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // entryItemEvents.ts:59-60,109: only the second click of a run opens; a third is a click.
+        // Only the second click of a run opens; a third is a click.
         @Test func aThirdClickOpensNothing() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()

@@ -1,4 +1,3 @@
-// Port of apps/desktop/src/renderer/lib/copyPasteReview.ts
 import Foundation
 
 /// What is at a path (`CopyPasteNodeKind`).
@@ -104,7 +103,7 @@ public enum ReviewMode: String, Codable, Equatable, Sendable {
     case copy, cut
 }
 
-/// The analysis report, as the review reads it (`CopyPasteReport`).
+/// The analysis report, as the review reads it.
 public struct ReviewReport: Codable, Equatable, Sendable {
     public struct Summary: Codable, Equatable, Sendable {
         public var totalNodeCount: Int
@@ -133,7 +132,7 @@ public struct ReviewReport: Codable, Equatable, Sendable {
     }
 }
 
-/// The review's choices per item, by node id (`CopyPasteOverrides`).
+/// The review's choices per item, by node id.
 public typealias ReviewOverrides = [String: CopyPasteChoice]
 
 /// How a row is drawn (`ReviewTone`).
@@ -197,7 +196,6 @@ public enum AllConflictsChoice: String, Codable, CaseIterable, Equatable, Sendab
     case keepAll = "keep_all"
     case overwrite
 
-    /// `ALL_CONFLICTS_LABELS`.
     public var label: String {
         switch self {
         case .skip: "Skip"
@@ -221,13 +219,12 @@ public enum CopyLikeAction: String, Codable, Equatable, Sendable {
 }
 
 public enum CopyPasteReview {
-    /// `SAFE_COPY_PASTE_POLICY`: pressing the primary button without changing anything never loses data.
+    /// Pressing the primary button without changing anything never loses data.
     public static let safePolicy = CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
-    /// `RETRY_COPY_PASTE_POLICY`: files that already arrived aren't copied again as "copy" duplicates, and half-copied
+    /// Files that already arrived aren't copied again as "copy" duplicates, and half-copied
     /// folders are completed.
     public static let retryPolicy = CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)
 
-    /// `CHOICE_LABELS`.
     public static func label(_ choice: CopyPasteChoice) -> String {
         switch choice {
         case .keepBoth: "Keep Both"
@@ -237,13 +234,11 @@ public enum CopyPasteReview {
         }
     }
 
-    /// `getActionVerb`.
     public static func actionVerb(_ action: CopyLikeAction, mode: ReviewMode) -> String {
         if mode == .cut || action == .moveTo { return "Move" }
         return action == .duplicate ? "Duplicate" : action == .copyTo ? "Copy" : "Paste"
     }
 
-    /// `choicesForNode`.
     public static func choices(for node: ReviewNode) -> [CopyPasteChoice] {
         node.conflictClass == .directoryConflict
             ? [.merge, .keepBoth, .overwrite, .skip] : [.keepBoth, .overwrite, .skip]
@@ -271,14 +266,14 @@ public enum CopyPasteReview {
         }
     }
 
-    /// `allConflictsChoicesFor`: Add Missing only differs from Skip when a folder already exists, and a move leaves it
+    /// Add Missing only differs from Skip when a folder already exists, and a move leaves it
     /// out: it would split the folder between both places.
     public static func allConflictsChoices(_ report: ReviewReport) -> [AllConflictsChoice] {
         report.mode == .cut || report.summary.directoryConflictCount == 0
             ? [.skip, .keepAll, .overwrite] : [.skip, .addMissing, .keepAll, .overwrite]
     }
 
-    /// `describeAllConflictsChoice`: what the selected button does, shown under the buttons.
+    /// What the selected button does, shown under the buttons.
     public static func describe(_ choice: AllConflictsChoice?, _ report: ReviewReport) -> String {
         let folders = report.summary.directoryConflictCount > 0
         switch choice {
@@ -317,7 +312,7 @@ public enum CopyPasteReview {
         return true
     }
 
-    /// `buildReviewRows`: the conflicts (and, on request, the new top-level items), with what is inside merged folders
+    /// The conflicts (and, on request, the new top-level items), with what is inside merged folders
     /// under them.
     public static func rows(
         _ report: ReviewReport, policy: CopyPastePolicy, overrides: ReviewOverrides, showNewItems: Bool, now: Double,
@@ -338,7 +333,6 @@ public enum CopyPasteReview {
         return rows
     }
 
-    /// `summarizeReview`.
     public static func summarize(_ report: ReviewReport, policy: CopyPastePolicy, overrides: ReviewOverrides)
         -> ReviewSummary
     {
@@ -363,7 +357,7 @@ public enum CopyPasteReview {
         return summary
     }
 
-    /// `formatReviewSummary`: what the start button will do, as a sentence: "3 items will be added, 1 skipped"; a move
+    /// What the start button will do, as a sentence: "3 items will be added, 1 skipped"; a move
     /// says "moved" for what it adds.
     public static func formatSummary(_ summary: ReviewSummary, verb: String = "Paste") -> String {
         var parts: [(count: Int, done: String, noun: String?)] = []
@@ -520,7 +514,7 @@ public enum CopyPasteReview {
         return "Yours is \(yours) \u{B7} the existing \u{201C}\(name)\u{201D} is a file"
     }
 
-    /// `SAME_TIME_TOLERANCE_MS`: differences of up to a second are the same moment for people (and file systems).
+    /// Differences of up to a second are the same moment for people (and file systems).
     private static let sameTimeTolerance = 1000.0
 
     private static func compareFiles(_ node: ReviewNode, _ now: Double, _ dates: ReviewDateText) -> String {

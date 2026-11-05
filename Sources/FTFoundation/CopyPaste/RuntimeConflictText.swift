@@ -1,8 +1,6 @@
-// Port of the words and answers of apps/desktop/src/renderer/components/CopyPasteRuntimeConflictDialog.tsx
-// (describeConflict, the answers, FingerprintCard) and getCopyLikeVerb (components/AppDialogs.tsx:670)
 import Foundation
 
-/// The verb of a copy-like operation (`getCopyLikeVerb`).
+/// The verb of a copy-like operation.
 public enum CopyLikeVerb: String, Equatable, Sendable {
     case paste = "Paste"
     case copy = "Copy"
@@ -18,7 +16,7 @@ public enum CopyLikeVerb: String, Equatable, Sendable {
         }
     }
 
-    /// `VERBING`: "pasting".
+    /// "pasting".
     public var verbing: String {
         switch self {
         case .paste: "pasting"
@@ -28,7 +26,7 @@ public enum CopyLikeVerb: String, Equatable, Sendable {
         }
     }
 
-    /// `BEING`: what the card of the item on its way is called.
+    /// What the card of the item on its way is called.
     public var being: String {
         switch self {
         case .paste: "Being pasted"
@@ -68,7 +66,7 @@ public struct RuntimeConflictAnswer: Equatable, Sendable {
     public var destructive: Bool
 }
 
-/// A card of the comparison (`FingerprintCard`).
+/// A card of the comparison.
 public struct RuntimeConflictCard: Equatable, Sendable {
     public var label: String
     public var name: String
@@ -137,7 +135,7 @@ public struct RuntimeConflictText: Equatable, Sendable {
         ]
     }
 
-    /// `describeConflict`: the title and message by reason.
+    /// The title and message by reason.
     private static func describe(_ conflict: RuntimeConflictInput, name: String, folder: String, verbing: String)
         -> (title: String, message: String)
     {

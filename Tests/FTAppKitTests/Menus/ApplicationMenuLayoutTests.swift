@@ -1,4 +1,3 @@
-// Ports the layout cases of apps/desktop/src/main/appMenu.test.ts (createApplicationMenuTemplate)
 import AppKit
 import FTFoundation
 import Testing
@@ -13,9 +12,7 @@ import Testing
         return (ApplicationMenuBuilder.build(target: router, options: options), router)
     }
 
-    // T-b65028eb F-572 F-573 F-574 F-575 F-576 F-577 F-579 F-581 F-582 F-583 F-584 F-585 F-586 F-587 F-590 F-591 F-592 F-593
-    // F-594 (Zoom In, Zoom Out and Actual Size are left out; macOS adds its own Enter Full Screen)
-    // B-VIEW-002
+    // (Zoom In, Zoom Out and Actual Size are left out; macOS adds its own Enter Full Screen)
     @Test func laysTheMenusOutTheWayAMacAppDoes() {
         let (built, _) = build()
         let main = built.menu
@@ -62,14 +59,12 @@ import Testing
         #expect(built.servicesMenu === item(submenu(main, "File Trail"), "Services").submenu)
     }
 
-    // T-15f24e5b F-574
     @Test func namesTheChosenTextEditorInFile() {
         let file = { (name: String?) in titles(submenu(self.build(.init(textEditorName: name)).0.menu, "File")) }
         #expect(file("Zed").contains("Edit in Zed"))
         #expect(file(nil).contains("Edit in Text Editor"))
     }
 
-    // T-4478f617 F-572
     @Test func namesTheAppItselfRatherThanItsPackage() {
         let (built, _) = build()
         let appMenu = submenu(built.menu, "File Trail")
@@ -86,9 +81,7 @@ import Testing
         #expect(accelerator(item(appMenu, "Empty Trash…")) == "Command+Shift+Backspace")
     }
 
-    // T-ea45c4fc F-596 (the keys; the commands sent are checked in MenuCommandRouterTests)
-    // covered-by-feature F-588 (zoom items: N/A)
-    // B-NAV-055 T-e07c2ef1
+    // (the keys; the commands sent are checked in MenuCommandRouterTests)
     @Test func showsEachItemOnItsShortcut() {
         let (built, _) = build()
         let expected: [(String, String, String?, RendererCommand)] = [
@@ -161,7 +154,6 @@ import Testing
         }
     }
 
-    // T-765afa44 F-584
     @Test func sortsFromTheSortBySubmenu() {
         let (built, _) = build()
         guard let sortMenu = item(submenu(built.menu, "View"), "Sort By").submenu else {
@@ -182,7 +174,6 @@ import Testing
         #expect(!built.radioItemIDs.contains("toggleFoldersFirst"))
     }
 
-    // T-1708e261 F-597
     @Test func givesEveryItemThatSendsACommandAnIDOfItsOwn() {
         let (built, _) = build()
         let items = flatten(built.menu)
@@ -194,7 +185,6 @@ import Testing
         }
     }
 
-    // T-4eb643d8 F-598
     @Test func hasAStateForEveryItemOfTheMenuThatSendsACommand() {
         let (built, _) = build()
         let states = ApplicationMenu.itemStates(.initial, window: .init(explorerFocused: true))
@@ -205,10 +195,6 @@ import Testing
         }
     }
 
-    // N/A T-22d10b77 Toggle Developer Tools has no native equivalent (F-914)
-
-    // T-a3d1eed6 F-596
-    // T-5c7904a9 T-e3c189ac
     @Test func showsTheKeysChosenInSettingsAndLeavesAKeyWithoutCommandOrControlToTheWindow() {
         let bindings = ShortcutCommands.resolve([
             "newTab": ["Cmd+Option+N"], "duplicateSelection": [], "quickLookSelection": ["Space", "Cmd+Y"],
@@ -227,7 +213,6 @@ import Testing
         #expect(accelerator(item(submenu(built.menu, "Edit"), "Copy")) == "Command+C")
     }
 
-    // F-579 F-580
     @Test func hasTheFilesAndATextFieldsUndoAndRedoOfWhichOneShowsAtATime() {
         let (built, _) = build(.init(undoLabels: (undo: "Undo Move of “a.txt”", redo: "Redo")))
         let edit = submenu(built.menu, "Edit")
@@ -243,8 +228,6 @@ import Testing
         #expect(built.itemsByID["toggleFolderTree:show"]?.isHidden == true)
     }
 
-    // F-586 F-589
-    // B-TREE-018
     @Test func keepsTheFolderTreeKeyOnItsToggles() {
         let (built, _) = build()
         let view = submenu(built.menu, "View")
@@ -252,7 +235,6 @@ import Testing
         #expect(accelerator(item(view, "Show Folder Tree")) == "Control+Command+S")
     }
 
-    // F-596
     @Test func keysOnlyComeFromTheShortcutTable() {
         #expect(MenuKeyEquivalent.parse("Cmd+Shift+G") == MenuKeyEquivalent(key: "g", modifiers: [.command, .shift]))
         #expect(MenuKeyEquivalent.parse("Ctrl+Tab") == MenuKeyEquivalent(key: "\t", modifiers: [.control]))

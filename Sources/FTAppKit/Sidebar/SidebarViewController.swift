@@ -1,9 +1,8 @@
-// Port of the pane layout of apps/desktop/src/renderer/components/TreePane.tsx (TreePane) around SidebarModel
 import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The context menu of a sidebar row is the item context menus' to fill (P5-09, B-TREE-141..149); it is asked for with
+/// The context menu of a sidebar row is the item context menus' to fill; it is asked for with
 /// the row clicked.
 struct SidebarContextMenuRequest {
     var item: TreePresentationItem
@@ -11,9 +10,9 @@ struct SidebarContextMenuRequest {
     var kind: SidebarMenuTarget.Kind
 }
 
-/// The "Folders" label box in the original's flex column: `.sidebar-header` and `.sidebar-tree` both shrink and neither
-/// has a minimum, so what doesn't fit comes off each in proportion to its content height. A tree that only just
-/// overflows leaves the box nearly whole, and a very long one leaves it almost nothing.
+/// The "Folders" label box in the sidebar's column: the header and the tree both shrink and neither has a minimum, so
+/// what doesn't fit comes off each in proportion to its content height. A tree that only just overflows leaves the box
+/// nearly whole, and a very long one leaves it almost nothing.
 enum FoldersLabelBox {
     /// The height of the box's content: `room` is what that content and the tree share.
     static func contentHeight(line: Double, treeHeight: Double, room: Double) -> Double {
@@ -48,7 +47,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     var eject: (String) -> Void = { _ in }
     /// Disks being ejected, whose Eject buttons wait.
     var ejectingPaths: () -> Set<String> = { [] }
-    /// Files dragged over a row (P5-08 fills the hook).
+    /// Files dragged over a row.
     var fileDrops: SidebarFileDrops?
 
     // MARK: Views
@@ -85,13 +84,13 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     var draggedFavorite: String?
     var dropTarget: (path: String, position: Favorites.DropPosition)?
-    /// Rows a drag from another app is over, as P5-08 sets them.
+    /// Rows a drag from another app is over.
     var dropStates: [String: SidebarDropState] = [:] {
         didSet {
             if dropStates != oldValue { refresh() }
         }
     }
-    /// The items on the clipboard the rows mark (P5-08).
+    /// The items on the clipboard the rows mark.
     var clipboardMarks: ClipboardMarks?
 
     // MARK: Loading
@@ -159,7 +158,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     /// Hooks onto the window: its activity (selections turn gray in the background) and its focus.
     func installWindow() {
         guard let window = view.window, activity == nil else { return }
-        // A capture run is driven without the app in front: its windows count as active, as the original's do.
+        // An automation run is driven without the app in front: its windows count as active.
         var capture = false
         #if DEBUG
             capture = CommandLine.arguments.contains("--automation")
@@ -243,7 +242,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             dropLine: dropTarget.flatMap { item.kind == .favorite && $0.path == item.path ? $0.position : nil },
             showsLoading: key.map { loadingShown.contains($0) } ?? false, density: density,
             hasDisclosure: hasDisclosure,
-            // A favorite or location only points at a folder: only the folder's own row is marked (TreePane.tsx).
+            // A favorite or location only points at a folder: only the folder's own row is marked.
             clipboardMark: item.kind == .filesystem ? clipboardMarks?.mark(for: item.path) : nil)
     }
 
@@ -340,7 +339,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     // MARK: Loading lines
 
-    /// "Loading folder…" shows when a read has lasted 400 ms (`useDelayedFlag`).
+    /// "Loading folder…" shows when a read has lasted 400 ms.
     private func trackLoading() {
         var loadingNow = Set<SidebarModel.ExactKeyBox>()
         for node in model.nodes.all where node.loading {
@@ -372,7 +371,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         }
     }
 
-    /// `scrollIntoView({ block: "nearest" })` for the selected row when the selection changes or the rows do.
+    /// Scrolls the selected row into view, as little as it takes, when the selection changes or the rows do.
     private func revealSelectionIfNeeded(leavingSelection: Bool = false) {
         let signature = [
             model.placement.rawValue, model.favoritesExpanded ? "f" : "-", model.locationsExpanded ? "l" : "-",
@@ -474,7 +473,7 @@ extension SidebarViewController {
     func layoutPartsForRoot() { layoutParts() }
 }
 
-/// What P5-08 fills to take files dragged onto the sidebar's rows (B-TREE-157..162): the one small seam.
+/// What takes files dragged onto the sidebar's rows: the one small seam.
 struct SidebarFileDrops {
     /// A row (nil: the background) is offered a drag. The answer is what the drop would do.
     var over: (_ row: SidebarRowState?, _ info: any NSDraggingInfo) -> NSDragOperation
@@ -484,7 +483,7 @@ struct SidebarFileDrops {
     var dropURLs: (_ row: SidebarRowState, _ urls: [URL], _ allowed: NSDragOperation) -> Bool
 }
 
-/// The "Jump to" pill (`.pane-typeahead`): the prefix typed in the sidebar.
+/// The "Jump to" pill: the prefix typed in the sidebar.
 final class SidebarTypeaheadPill: NSView {
     private let label = TextBoxField(labelWithString: "Jump to")
     private let value = TextBoxField(labelWithString: "")

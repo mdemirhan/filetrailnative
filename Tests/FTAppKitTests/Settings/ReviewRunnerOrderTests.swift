@@ -7,7 +7,7 @@ import Testing
 
 @MainActor
 @Suite struct ReviewRunnerOrderTests {
-    // F-906 B-DLG-221: ⌘D in a key step while the recorder records, with the app's menu claiming ⌘D (Duplicate, dimmed):
+    // ⌘D in a key step while the recorder records, with the app's menu claiming ⌘D (Duplicate, dimmed):
     // the step offers it to the window first, as NSApplication does, so the recorder shows the conflict.
     @Test func automationKeyStepGivesTheRecorderCommandD() throws {
         let (settings, _) = SettingsTestKit.make(tab: .shortcuts)
@@ -26,8 +26,7 @@ import Testing
 
 @MainActor
 @Suite struct ReviewExpectTextTests {
-    // F-896 B-DLG-181: an expect step reads a pop-up's text as the original's driver does, from its aria-label
-    // ("Sizes"), not the value it shows ("Match Finder") (263-settings-density-custom step 9).
+    // An expect step reads a pop-up's text from its label ("Sizes"), not the value it shows ("Match Finder").
     @Test func expectReadsAPopupByItsLabelAsTheOriginalDoes() throws {
         let preferences = AppPreferences.defaults(theme: .light).with { $0.density = .finder }
         let (controller, _) = SettingsTestKit.make(tab: .browsing, preferences: preferences)

@@ -1,13 +1,10 @@
-// Port of what App.tsx and AppDialogs.tsx keep of the copy and paste dialogs (copyPasteModalOpen, the dialogs'
-// part in explorerFocusSuppressed) and of the shapes copyPasteReview.ts, CopyPasteRuntimeConflictDialog.tsx and
-// CopyPasteResultDialog.tsx read from the contract
 import AppKit
 import FTFoundation
 import FTOperations
 
 /// The copy and paste dialogs drawn in the explorer windows: the review sheet, the single-conflict alert, the runtime
 /// conflict alert and the result sheet. While one is up in a tab's window the explorer waits: its folder's changes are
-/// held (B-CLIP-114) and its commands, keys and drags wait as under any dialog (B-CLIP-123).
+/// held and its commands, keys and drags wait as under any dialog.
 @MainActor
 enum CopyPasteDialogs {
     private final class Shown {
