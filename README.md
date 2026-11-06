@@ -10,7 +10,7 @@ A Mac file browser with fast search, a real folder tree and true cut and paste. 
 
 - **Search that works, and is fast.** Results appear as you type, from the folder you are in, by name or full path, in plain text, glob or regex. There is no index to wait for, and nothing left out for not being indexed.
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
-- **Cut and paste files.** ⌘X and ⌘V move files, as they move text. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
+- **Cut and paste files.** ⌘X and ⌘V move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
 - **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that match.
 - **Your keys.** Every command has a keyboard shortcut, and you can change any of them, two keys per command.
 - **See what's taking the space.** Sort by size and every folder gets a bar, so the big ones stand out at a glance.
