@@ -23,17 +23,18 @@ extension WriteCoordinator {
         -> WriteOperationHandle
     {
         try WriteGuards.assertNotProtectedPath(paths, homePath: homePath)
-        try await prepareWithReservedSlot {
+        return try await prepareWithReservedSlot {
             try await self.assertNotSystemLocation(paths, verb: "deleted")
             try await self.assertDeletableImmediately(paths, window: window)
-        }
-        let fileSystem = try localFileSystem()
-        return try queueLocalWriteOperation(action: .deleteImmediately, window: window) {
-            [weak self, weak window] local in
-            // What this window was asked about, kept for the whole operation: the window closing lets go of its
-            // records.
-            let asked = window.flatMap { self?.recordOfItemsWithoutTrash($0) }
-            await Self.executeDeleteImmediately(paths, local, fileSystem, asked: asked)
+        } then: { _, reservation in
+            let fileSystem = try localFileSystem()
+            return try queueLocalWriteOperation(action: .deleteImmediately, window: window, reservation: reservation) {
+                [weak self, weak window] local in
+                // What this window was asked about, kept for the whole operation: the window closing lets go of its
+                // records.
+                let asked = window.flatMap { self?.recordOfItemsWithoutTrash($0) }
+                await Self.executeDeleteImmediately(paths, local, fileSystem, asked: asked)
+            }
         }
     }
 

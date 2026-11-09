@@ -245,7 +245,7 @@ import Testing
     @Test func doesntRunWhileARenameIsStillBeingChecked() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let gate = TestGate()
-        let checking = Task { try await coordinator.prepareWithReservedSlot { await gate.wait() } }
+        let checking = Task { try await coordinator.prepareWithReservedSlot({ await gate.wait() }, then: { _, _ in }) }
         _ = try await Coordinators.waitFor { gate.waiting ? true : nil }
         var ran = false
 
@@ -256,6 +256,44 @@ import Testing
 
         gate.open()
         try await checking.value
+        await coordinator.shutDown(maxWaitMs: 0)
+    }
+
+    // Between an operation's check and its start the slot stays held: a write alone can't start in between and
+    // leave the person's operation refused as busy. What the start queues takes the slot over.
+    @Test func doesntRunBetweenAnOperationsCheckAndItsStart() async throws {
+        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let window = TestWindow()
+        let gate = TestGate()
+        var ranBefore: Bool?
+        let handle = try await coordinator.prepareWithReservedSlot {
+        } then: { _, reservation in
+            ranBefore = coordinator.runWriteAlone {} != nil
+            return try coordinator.queueLocalWriteOperation(action: .rename, window: window, reservation: reservation) {
+                _ in await gate.wait()
+            }
+        }
+        #expect(ranBefore == false)
+        #expect(coordinator.activeOperation?.operationId == handle.operationId)
+        #expect(coordinator.runWriteAlone {} == nil)
+        gate.open()
+        await coordinator.whenIdle()
+        #expect(coordinator.runWriteAlone {} != nil)
+        await coordinator.shutDown(maxWaitMs: 0)
+    }
+
+    // A check whose start throws, or queues nothing, frees the slot.
+    @Test func aStartThatThrowsFreesTheSlot() async throws {
+        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        await #expect(throws: WriteCoordinatorError.busy) {
+            try await coordinator.prepareWithReservedSlot {
+            } then: { _, _ in
+                throw WriteCoordinatorError.busy
+            }
+        }
+        #expect(coordinator.runWriteAlone {} != nil)
+        try await coordinator.prepareWithReservedSlot({}, then: { _, _ in })
+        #expect(coordinator.runWriteAlone {} != nil)
         await coordinator.shutDown(maxWaitMs: 0)
     }
 

@@ -132,24 +132,26 @@ extension WriteCoordinator {
         let asked = try entryAsked().look.questions
         let fileSystem = try undoFileSystem()
         let withinMs = options.undoCheckWithinMs
-        let now = try await prepareWithReservedSlot { () async throws -> UndoQuestions? in
+        return try await prepareWithReservedSlot { () async throws -> UndoQuestions? in
             let units = try entryAsked().entry.units
             return await Self.answerWithin(withinMs) { UndoPlan.findQuestions(fileSystem, units) }
-        }
-        let started = try entryAsked()
-        guard let now else {
-            throw WriteCoordinatorError(Self.undoNotAnswered(started.look.direction))
-        }
-        if let unasked = Self.describeUnaskedQuestion(asked, now, started.look.direction) {
-            throw WriteCoordinatorError(unasked)
-        }
-        let direction = started.look.direction
-        let entry = started.entry
-        let changedAgreed = Set(asked.changed.map(\.path))
-        return try queueLocalWriteOperation(action: direction == .undo ? .undo : .redo, window: window) {
-            [weak self] operation in
-            await self?.executeUndo(
-                started.history, direction, entry, changedAgreed: changedAgreed, operation, fileSystem)
+        } then: { now, reservation in
+            let started = try entryAsked()
+            guard let now else {
+                throw WriteCoordinatorError(Self.undoNotAnswered(started.look.direction))
+            }
+            if let unasked = Self.describeUnaskedQuestion(asked, now, started.look.direction) {
+                throw WriteCoordinatorError(unasked)
+            }
+            let direction = started.look.direction
+            let entry = started.entry
+            let changedAgreed = Set(asked.changed.map(\.path))
+            return try queueLocalWriteOperation(
+                action: direction == .undo ? .undo : .redo, window: window, reservation: reservation
+            ) { [weak self] operation in
+                await self?.executeUndo(
+                    started.history, direction, entry, changedAgreed: changedAgreed, operation, fileSystem)
+            }
         }
     }
 

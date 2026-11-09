@@ -30,12 +30,13 @@ extension WriteCoordinator {
         if let refusal = ItemNames.error(for: destinationName) {
             throw WriteCoordinatorError(refusal)
         }
-        let operation = try await prepareWithReservedSlot {
+        return try await prepareWithReservedSlot {
             try await self.prepareRename(sourcePath: sourcePath, destinationName: destinationName)
-        }
-        let fileSystem = try localFileSystem()
-        return try queueLocalWriteOperation(action: .rename, window: window) { local in
-            await Self.executeRename(operation, local, fileSystem)
+        } then: { operation, reservation in
+            let fileSystem = try localFileSystem()
+            return try queueLocalWriteOperation(action: .rename, window: window, reservation: reservation) { local in
+                await Self.executeRename(operation, local, fileSystem)
+            }
         }
     }
 

@@ -195,17 +195,33 @@ public final class WriteCoordinator {
         return holder != Self.preparingOperationId
     }
 
+    /// The write slot, held for one of the person's operations while it is checked. `queueLocalWriteOperation`
+    /// handed it takes the slot over, so nothing else (a write alone) starts between the check and the operation.
+    public struct SlotReservation: Sendable {
+        fileprivate init() {}
+    }
+
     /// `prepareWithReservedSlot`: claims the write slot before async preparation so a second request arriving
-    /// meanwhile is refused instead of running alongside this one.
-    public func prepareWithReservedSlot<T>(_ prepare: () async throws -> T) async throws -> T {
+    /// meanwhile is refused instead of running alongside this one. `start` runs with the slot still held, and the
+    /// operation it queues with the reservation takes it over; otherwise the slot is freed once `start` returns or
+    /// throws.
+    public func prepareWithReservedSlot<T, R>(
+        _ prepare: () async throws -> T, then start: (T, SlotReservation) throws -> R
+    ) async throws -> R {
         try claimSlot(Self.preparingOperationId)
-        do {
-            let value = try await prepare()
-            freeWriteSlot(Self.preparingOperationId)
-            return value
-        } catch {
-            freeWriteSlot(Self.preparingOperationId)
-            throw error
+        // Nothing once an operation took it over.
+        defer { freeWriteSlot(Self.preparingOperationId) }
+        let value = try await prepare()
+        return try start(value, SlotReservation())
+    }
+
+    /// The slot passes from the reservation to `operationId` without being free in between. Refused once the app
+    /// started quitting.
+    func takeOverSlot(_ operationId: String) throws {
+        try slot.withLock { slot in
+            if slot.closing { throw WriteCoordinatorError.quitting }
+            guard slot.active == Self.preparingOperationId else { throw WriteCoordinatorError.busy }
+            slot.active = operationId
         }
     }
 

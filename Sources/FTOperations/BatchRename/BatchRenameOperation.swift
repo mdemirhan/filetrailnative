@@ -21,10 +21,14 @@ extension WriteCoordinator {
     public func batchRename(_ payload: BatchRenameRequest, window: any WriteOperationWindow) async throws
         -> WriteOperationHandle
     {
-        let request = try await prepareWithReservedSlot { try await self.prepareBatchRename(payload) }
-        let fileSystem = LocalBatchRenameFileSystem(try localFileSystem())
-        return try queueLocalWriteOperation(action: .batchRename, window: window) { [weak self] operation in
-            await self?.executeBatchRename(request, operation, fileSystem)
+        return try await prepareWithReservedSlot {
+            try await self.prepareBatchRename(payload)
+        } then: { request, reservation in
+            let fileSystem = LocalBatchRenameFileSystem(try localFileSystem())
+            return try queueLocalWriteOperation(action: .batchRename, window: window, reservation: reservation) {
+                [weak self] operation in
+                await self?.executeBatchRename(request, operation, fileSystem)
+            }
         }
     }
 

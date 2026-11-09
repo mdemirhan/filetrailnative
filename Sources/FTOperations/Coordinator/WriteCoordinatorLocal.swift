@@ -33,17 +33,22 @@ public struct LocalWriteOperation {
 }
 
 extension WriteCoordinator {
-    /// `queueLocalWriteOperation`: takes the slot for a local operation of `window` and starts `execute`. Refused
-    /// while another operation runs, or once the app is quitting. A throw from `execute` ends the operation as
-    /// failed ("The operation stopped unexpectedly: …"); the slot is freed whatever happens.
+    /// `queueLocalWriteOperation`: takes the slot for a local operation of `window` and starts `execute`: from
+    /// `reservation` when it was checked with the slot held (`prepareWithReservedSlot`). Refused while another
+    /// operation runs, or once the app is quitting. A throw from `execute` ends the operation as failed ("The
+    /// operation stopped unexpectedly: …"); the slot is freed whatever happens.
     @discardableResult
     public func queueLocalWriteOperation(
-        action: WriteOperationAction, window: any WriteOperationWindow,
+        action: WriteOperationAction, window: any WriteOperationWindow, reservation: SlotReservation? = nil,
         execute: @escaping @MainActor (LocalWriteOperation) async throws -> Void
     ) throws -> WriteOperationHandle {
         let operationId = "write-op-\(localSequence + 1)"
         // The app may have started quitting while a rename was being checked.
-        try claimSlot(operationId)
+        if reservation != nil {
+            try takeOverSlot(operationId)
+        } else {
+            try claimSlot(operationId)
+        }
         localSequence += 1
         options.caches.writeStarting()
         let signal = StopSignal()

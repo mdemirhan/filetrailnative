@@ -153,7 +153,7 @@ import Testing
         let window = TestWindow()
         try await Coordinators.analyze(coordinator, window)
         let gate = TestGate()
-        let preparing = Task { try await coordinator.prepareWithReservedSlot { await gate.wait() } }
+        let preparing = Task { try await coordinator.prepareWithReservedSlot({ await gate.wait() }, then: { _, _ in }) }
         _ = try await Coordinators.waitFor { gate.waiting ? true : nil }
 
         #expect(throws: WriteCoordinatorError.busy) {

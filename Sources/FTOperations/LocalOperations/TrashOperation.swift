@@ -32,15 +32,17 @@ extension WriteCoordinator {
     public func trash(paths: [String], window: any WriteOperationWindow) async throws -> WriteOperationHandle {
         try WriteGuards.assertNotProtectedPath(paths, homePath: homePath)
         try WriteGuards.assertNotAlreadyInTrash(paths, homePath: homePath)
-        try await prepareWithReservedSlot {
-            try await self.assertNotSystemLocation(paths, verb: "moved to the Trash")
-        }
-        let fileSystem = try localFileSystem()
         let homePath = homePath
-        return try queueLocalWriteOperation(action: .trash, window: window) { [weak self, weak window] local in
-            // Only what this Trash finds without a Trash may be deleted next.
-            let withoutTrash = window.flatMap { self?.rememberItemsWithoutTrash($0) }
-            await Self.executeTrash(paths, local, fileSystem, homePath: homePath, withoutTrash: withoutTrash)
+        return try await prepareWithReservedSlot {
+            try await self.assertNotSystemLocation(paths, verb: "moved to the Trash")
+        } then: { _, reservation in
+            let fileSystem = try localFileSystem()
+            return try queueLocalWriteOperation(action: .trash, window: window, reservation: reservation) {
+                [weak self, weak window] local in
+                // Only what this Trash finds without a Trash may be deleted next.
+                let withoutTrash = window.flatMap { self?.rememberItemsWithoutTrash($0) }
+                await Self.executeTrash(paths, local, fileSystem, homePath: homePath, withoutTrash: withoutTrash)
+            }
         }
     }
 

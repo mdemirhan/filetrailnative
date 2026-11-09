@@ -13,17 +13,18 @@ extension WriteCoordinator {
         if let refusal = ItemNames.error(for: folderName) {
             throw WriteCoordinatorError(refusal)
         }
-        let destinationPath = try await prepareWithReservedSlot {
+        return try await prepareWithReservedSlot {
             try await self.prepareCreateFolder(
                 parentDirectoryPath: parentDirectoryPath, folderName: folderName, nextFreeName: nextFreeName)
-        }
-        let fileSystem = try localFileSystem()
-        // As for a copy: undoing it would mean deleting it, on a disk without a Trash.
-        let undoable: @MainActor () -> Bool = { [weak self] in
-            self?.canBeTrashed(in: NodePath.dirname(destinationPath)) ?? false
-        }
-        return try queueLocalWriteOperation(action: .newFolder, window: window) { local in
-            await Self.executeCreateFolder(destinationPath, local, fileSystem, undoable: undoable)
+        } then: { destinationPath, reservation in
+            let fileSystem = try localFileSystem()
+            // As for a copy: undoing it would mean deleting it, on a disk without a Trash.
+            let undoable: @MainActor () -> Bool = { [weak self] in
+                self?.canBeTrashed(in: NodePath.dirname(destinationPath)) ?? false
+            }
+            return try queueLocalWriteOperation(action: .newFolder, window: window, reservation: reservation) { local in
+                await Self.executeCreateFolder(destinationPath, local, fileSystem, undoable: undoable)
+            }
         }
     }
 
