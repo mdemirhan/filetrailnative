@@ -159,6 +159,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var staleMetadata = Set<String>()
     private var metadataQueue: [String] = []
     private var metadataFlushQueued = false
+    /// Items that changed while their details were being read: what that read gives may be from before.
+    private var metadataChangedDuringRead = Set<String>()
+    /// Goes up each time the details start over (another folder, search results): an answer to a read from before
+    /// is dropped, and leaves the reads since then as they are.
+    private var detailsGeneration = 0
     private var tagColors: [String: [FinderTagColor]] = [:]
     private var staleTags = Set<String>()
     private var tagsInflight = Set<String>()
@@ -398,12 +403,16 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             staleMetadata = []
             metadataInflight = []
             metadataQueue = []
+            metadataChangedDuringRead = []
+            detailsGeneration += 1
             hiddenItemCount = 0
         } else if let changedPaths {
-            // The items that changed have their details read again.
+            // The items that changed have their details read again, and those being read are read once more after.
             staleMetadata.formUnion(changedPaths.filter { metadata[$0] != nil })
+            metadataChangedDuringRead.formUnion(changedPaths.filter { metadataInflight.contains($0) })
         } else {
             staleMetadata = Set(metadata.keys)
+            metadataChangedDuringRead = metadataInflight
         }
         folderPath = path
         loadState = .loaded
@@ -489,6 +498,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         staleMetadata = []
         metadataInflight = []
         metadataQueue = []
+        metadataChangedDuringRead = []
+        detailsGeneration += 1
         listed = []
         entries = []
         entryPaths = []
@@ -835,6 +846,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             staleMetadata = []
             metadataInflight = []
             metadataQueue = []
+            metadataChangedDuringRead = []
+            detailsGeneration += 1
         }
         searchDisplay = display
         search = ContentSearchContext(
@@ -875,6 +888,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         staleMetadata = kept?.staleMetadata ?? []
         metadataInflight = []
         metadataQueue = []
+        metadataChangedDuringRead = []
+        detailsGeneration += 1
         rowsCache = nil
         reorder()
         selection = selection.sanitized(entryPaths: entryPaths)
@@ -1010,17 +1025,23 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     private func readMetadata(in folder: String, _ paths: [String]) {
         let listKey = searchDisplay?.viewKey ?? folderPath
+        let generation = detailsGeneration
         Task { @MainActor [weak self] in
             guard let self else { return }
             let items = await self.loaders.metadata(folder, paths)
+            guard generation == self.detailsGeneration else { return }
             for path in paths { self.metadataInflight.remove(path) }
+            let readAgain = self.metadataChangedDuringRead.intersection(paths)
+            self.metadataChangedDuringRead.subtract(paths)
             guard listKey == (self.searchDisplay?.viewKey ?? self.folderPath) else { return }
             for item in items {
                 self.metadata[item.path] = item
                 self.staleMetadata.remove(item.path)
             }
+            self.staleMetadata.formUnion(readAgain.filter { self.metadata[$0] != nil })
             self.pane?.refresh(paths: Set(items.map(\.path)))
             self.updateStatus()
+            if !readAgain.isEmpty { self.requestMetadata(for: Array(readAgain)) }
         }
     }
 
