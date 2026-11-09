@@ -42,6 +42,8 @@ final class WorkspaceView: NSView {
     private var dragStart: PaneWidths.DragStart?
     /// The Info panel sliding: in over the room it takes, or out over the content.
     private(set) var slide: Slide?
+    /// Counts the slides: only the latest one's end lets the panel settle.
+    private var slideCount = 0
     /// Told when a pane's chosen width changes (a drag ends, a key step), for the window's session.
     var onWidthsChosen: (PaneWidths) -> Void = { _ in }
 
@@ -317,6 +319,8 @@ final class WorkspaceView: NSView {
 
     private func startSlide(_ kind: Slide) {
         slide = kind
+        slideCount += 1
+        let count = slideCount
         // The item opens or closes at once, so the content has its new width from the start. A closing item takes its
         // view with it: for the slide the panel lies in the content column, over the content's right edge.
         rehomeInspectorCell(in: kind == .slidingOut ? contentColumn : inspectorColumn)
@@ -336,7 +340,8 @@ final class WorkspaceView: NSView {
             inspectorCell.layoutSubtreeIfNeeded()
         } completionHandler: { [weak self] in
             MainActor.assumeIsolated {
-                guard let self, self.slide == kind else { return }
+                // An earlier slide going the same way ends while this one still runs: it goes on.
+                guard let self, self.slideCount == count, self.slide == kind else { return }
                 self.slide = nil
                 self.rehomeInspectorCell(in: self.inspectorColumn)
                 self.needsLayout = true

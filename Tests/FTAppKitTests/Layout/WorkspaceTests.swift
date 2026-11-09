@@ -167,6 +167,26 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // Toggled again while it slides, the panel's last slide runs its whole course: the end of an earlier one going
+        // the same way doesn't cut it short.
+        @Test func aSlideStartedWhileAnotherRunsIsNotCutShortByItsEnd() async throws {
+            let harness = try ExplorerHarness.windowless()
+            _ = harness.store.updatePreferences(["propertiesOpen": .bool(true)])
+            let tab = try await harness.open()
+            let workspace = tab.workspace
+            tab.perform(.toggleInfoPanel)
+            #expect(workspace.slide == .slidingOut)
+            try await Task.sleep(for: .milliseconds(100))
+            tab.perform(.toggleInfoPanel)
+            tab.perform(.toggleInfoPanel)
+            let lastStarted = ContinuousClock.now
+            #expect(workspace.slide == .slidingOut)
+            #expect(await waitUntil { workspace.slide == nil })
+            let ran = ContinuousClock.now - lastStarted
+            #expect(ran >= .milliseconds(Int(WorkspaceView.slideDuration * 1000) - 20), "\(ran)")
+            await harness.close()
+        }
+
         // The status bar runs from the sidebar's edge to the window's right under the content and the Info panel: opening
         // the panel neither moves nor narrows it, and the panes stop on its top.
         @Test func theStatusBarStaysWholeUnderTheInfoPanel() async throws {
