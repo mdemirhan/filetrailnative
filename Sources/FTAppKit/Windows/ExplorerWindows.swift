@@ -386,8 +386,9 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         if let group = tab.group, let watches = folderWatches {
             let front = group.selected
             for other in group.tabs {
-                let watched = other === front && other.loaded
-                watches.watch(windowID: other.windowID, path: watched ? other.folder.path : nil)
+                // A tab that let go of its folder shows nothing that could change.
+                let path = other === front && other.loaded ? other.shownFolderPath : ""
+                watches.watch(windowID: other.windowID, path: path.isEmpty ? nil : path)
             }
         }
         reportMenuState(tab)

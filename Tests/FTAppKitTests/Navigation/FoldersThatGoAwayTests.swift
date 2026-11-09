@@ -296,6 +296,28 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A tab sent to a folder before it was first read takes that as its first read: whatever waits for it
+        // goes on, rather than waiting for a read that would never come.
+        @Test func aTabSentSomewhereBeforeItsFirstReadTakesThatAsIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let startup = StartupTab(
+                path: harness.folder.path, rootPath: harness.folder.path, favoritePath: nil, viewMode: .details,
+                searchViewMode: .details, sortBy: .name, sortDirection: .asc, includeHidden: false, foldersFirst: true,
+                favoritesExpanded: true, locationsExpanded: true)
+            let tab = MainWindowController(tab: startup, loadNow: false)
+            tab.servicesOverride = harness.services
+            var ready = false
+            tab.onReady = { ready = true }
+            var read: Bool?
+            tab.whenFirstReadFinished { read = $0 }
+            await tab.navigate(to: URL(fileURLWithPath: path(harness, "Alpha")))
+            #expect(ready)
+            #expect(read == true)
+            #expect(tab.loaded)
+            tab.window?.close()
+            await harness.close()
+        }
+
         // The search for a folder that can be read passes one that can't.
         @Test func theNearestFolderIsOneThatCanBeRead() async throws {
             let harness = try ExplorerHarness.windowless()

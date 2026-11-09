@@ -135,7 +135,18 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private(set) var listed: [DirectoryEntry] = []
     private(set) var entries: [DirectoryEntry] = []
     private(set) var selection = ContentSelection.empty
-    private(set) var loadState = ContentLoadState.idle
+    /// What the pane shows in place of items: `loading` while a read is under way, otherwise what the last one
+    /// settled on.
+    var loadState: ContentLoadState { loading == nil ? settled : .loading }
+    /// What the last read settled on, kept while the next one is under way: a read that opens nothing goes back to it.
+    private var settled = ContentLoadState.idle
+    /// A read under way that isn't quiet. With nothing on screen the loading card shows after a moment.
+    private var loading: Loading?
+
+    private struct Loading {
+        var cardShown = false
+        var timer: DispatchWorkItem?
+    }
     /// A Go To that couldn't read its folder (`directoryError` over the folder still shown): the error card shows over
     /// the items until the next folder is read.
     private(set) var readError: String?
@@ -162,8 +173,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var metadataFlushQueued = false
     /// The Finder tags of the rows on screen. They start over with another folder.
     private var tags = PathReadCache<[FinderTagColor]>()
-    private var showsLoading = false
-    private var loadingTimer: DispatchWorkItem?
     private var windowActive = true
     /// The listed entries by path, made when a selection or a lookup needs it (not for every folder opened).
     private var rowsCache: [String: DirectoryEntry]?
@@ -215,7 +224,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     isolated deinit {
         for observer in windowObservers { NotificationCenter.default.removeObserver(observer) }
-        loadingTimer?.cancel()
+        loading?.timer?.cancel()
     }
 
     // MARK: View
@@ -320,37 +329,42 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         defer { if messageWent { refreshState() } }
         if !quiet { readError = nil }
         guard !quiet, searchDisplay == nil else { return }
-        if loadState != .loading { stateBeforeLoading = loadState }
-        loadState = .loading
-        loadingTimer?.cancel()
-        showsLoading = false
+        loading?.timer?.cancel()
+        loading = Loading()
         guard listed.isEmpty else { return }
         let work = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
-                guard let self, self.loadState == .loading else { return }
-                self.showsLoading = true
+                guard let self, self.loading != nil else { return }
+                self.loading?.cardShown = true
                 self.refreshState()
             }
         }
-        loadingTimer = work
+        loading?.timer = work
         DispatchQueue.main.asyncAfter(
             deadline: .now() + ContentStateText.loadingDelayMilliseconds / 1000, execute: work)
     }
 
     /// A navigation that opens nothing (the folder is gone): the listing in front stays as it was.
     func cancelLoading() {
-        loadingTimer?.cancel()
-        showsLoading = false
-        loadState = stateBeforeLoading
+        endLoading()
         refreshState()
     }
 
-    private var stateBeforeLoading = ContentLoadState.idle
+    private func endLoading() {
+        loading?.timer?.cancel()
+        loading = nil
+    }
+
+    /// The read ended with `state`.
+    private func settle(_ state: ContentLoadState) {
+        endLoading()
+        settled = state
+    }
 
     /// A Go To that couldn't be read: the folder on screen stays, with "Couldn’t open this folder" and `message` over
-    /// it.
+    /// it, whether or not a read was begun for it.
     func showReadError(_ message: String) {
-        cancelLoading()
+        endLoading()
         readError = message
         refreshState()
     }
@@ -384,8 +398,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             keptFolder = kept
             return
         }
-        loadingTimer?.cancel()
-        showsLoading = false
+        endLoading()
         let sameFolder = path == folderPath
         if !sameFolder {
             listFilter.clear()
@@ -396,7 +409,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             details.markChanged(changedPaths)
         }
         folderPath = path
-        loadState = .loaded
+        settle(.loaded)
         // The same listing read again as it was keeps what is on screen as it is.
         let kept =
             sameFolder
@@ -452,8 +465,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             keptFolder = kept
             return
         }
-        loadingTimer?.cancel()
-        showsLoading = false
+        endLoading()
         readError = nil
         if path != folderPath { listFilter.clear() }
         folderPath = path
@@ -463,7 +475,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         positionsCache = nil
         rowsCache = nil
         startDetailsOver()
-        loadState = .failed(message: message)
+        settle(.failed(message: message))
         setSelection(.empty, notify: true)
         closeRenameIfItemLeft()
         pane?.reload(scrollToTop: true)
@@ -480,7 +492,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         entries = []
         entryPaths = []
         positionsCache = nil
-        loadState = .idle
+        settle(.idle)
         setSelection(.empty, notify: true)
         closeRenameIfItemLeft()
         pane?.reload(scrollToTop: true)
@@ -602,7 +614,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         case .idle:
             kind = .empty(text: ContentStateText.noFolder)
         case .loading:
-            kind = entries.isEmpty && showsLoading ? .loading : .none
+            kind = entries.isEmpty && loading?.cardShown == true ? .loading : .none
         case .failed(let message):
             kind =
                 FolderReadFailure.isTrashRefused(path: folderPath, message: message, homePath: loaders.homePath)
@@ -806,10 +818,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let entering = searchDisplay == nil
         let newList = entering || searchDisplay?.viewKey != display.viewKey
         if entering {
-            loadingTimer?.cancel()
-            showsLoading = false
+            endLoading()
             keptFolder = KeptFolder(
-                listed: listed, loadState: loadState == .loading ? stateBeforeLoading : loadState,
+                listed: listed, loadState: settled,
                 hiddenItemCount: hiddenItemCount, details: details,
                 scroll: pane?.scrollPosition ?? (0, 0))
         }
@@ -824,7 +835,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         search = ContentSearchContext(
             display: display, requestSort: { [weak self] key in self?.onSearchSort?(key) },
             setSort: { [weak self] key, direction in self?.onSearchSortSet?(key, direction) })
-        loadState = .loaded
+        settle(.loaded)
         let previousPaths = entryPaths
         listed = display.results.map(SearchResults.entry)
         rowsCache = nil
@@ -853,7 +864,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             onFilterChanged?(filter)
         }
         listed = kept?.listed ?? []
-        loadState = kept?.loadState ?? .idle
+        settle(kept?.loadState ?? .idle)
         hiddenItemCount = kept?.hiddenItemCount ?? 0
         startDetailsOver(keeping: kept?.details)
         rowsCache = nil

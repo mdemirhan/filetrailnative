@@ -31,6 +31,23 @@ extension ExplorerWindowlessTests {
             return path
         }
 
+        // A tab that let go of its folder (its disk ejected, say) no longer has it watched: nothing it shows can change.
+        @Test func aTabThatLetGoOfItsFolderNoLongerWatchesIt() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let watches = FolderWatches(
+                FolderWatches.Dependencies(
+                    watchFolder: { _, _, _ in {} }, readModifiedTime: { _ in nil }, onFolderChanged: { _, _ in },
+                    forgetCachedListings: { _, _ in }))
+            harness.windows.folderWatches = watches
+            let tab = try await harness.open()
+            harness.windows.tabNavigated(tab)
+            #expect(watches.watchedPaths[tab.windowID] != nil)
+            tab.sidebarController.model.clearSelection()
+            #expect(tab.shownFolderPath.isEmpty)
+            #expect(watches.watchedPaths[tab.windowID] == nil)
+            await harness.close()
+        }
+
         // Changes held are gathered, then read once.
         @Test func gathersChangesWhileHeldAndReadsThemOnceWhenLetGo() async throws {
             let (harness, tab, probe) = try await opened()

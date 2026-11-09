@@ -325,11 +325,23 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     var pendingChange: FolderChangeGate.Pending? { folderChanges.pending }
     /// A change from outside is being taken in: Show Info's item stays.
     private(set) var isTakingInOutsideChange = false
-    /// A tab brought back, or merged in, waits unread until it is first shown.
-    private(set) var loaded = false
-    /// Whether the first read of the tab's folder showed it (nil: not finished), and who waits for it.
-    private var firstRead: Bool?
+    /// Where the first read of the tab's folder stands. A tab brought back, or merged in, waits unread until it is
+    /// first shown, or first sent somewhere.
+    private enum FirstRead {
+        case notStarted
+        case reading
+        /// Whether it showed the folder.
+        case finished(read: Bool)
+    }
+
+    private var firstRead = FirstRead.notStarted
+    /// Who waits for the first read to finish.
     private var afterFirstRead: [(Bool) -> Void] = []
+    /// Whether the tab's folder has been, or is being, read.
+    var loaded: Bool {
+        if case .notStarted = firstRead { return false }
+        return true
+    }
     /// The tab was sent to another folder while in the background (its folder moved, or its disk went): the folder
     /// is read when the tab is next shown.
     private(set) var stale = false
@@ -626,7 +638,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             }
             return
         }
-        loaded = true
+        firstRead = .reading
         Task {
             let read: Bool
             if folderLetGo {
@@ -638,14 +650,20 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             } else {
                 read = await readFirstFolder()
             }
-            if let ready = onReady {
-                onReady = nil
-                ready()
-            }
-            firstRead = read
-            for action in afterFirstRead { action(read) }
-            afterFirstRead = []
+            finishFirstRead(read)
         }
+    }
+
+    /// The first read ended: what waited for it goes on.
+    private func finishFirstRead(_ read: Bool) {
+        guard case .reading = firstRead else { return }
+        if let ready = onReady {
+            onReady = nil
+            ready()
+        }
+        firstRead = .finished(read: read)
+        for action in afterFirstRead { action(read) }
+        afterFirstRead = []
     }
 
     /// The sidebar's row of the tab's favorite stays selected as its folder opens, the tree filled in on its own: a
@@ -708,8 +726,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// Runs `action` once the first read of the tab's folder has finished, with whether it showed the folder.
     func whenFirstReadFinished(_ action: @escaping (Bool) -> Void) {
-        if let firstRead {
-            action(firstRead)
+        if case .finished(let read) = firstRead {
+            action(read)
         } else {
             afterFirstRead.append(action)
         }
@@ -913,7 +931,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// folder this tab was still being decided on was only passed through; each tab here has a tracker of its own.
     func wentToTheBack(for other: MainWindowController) {
         visitTracker.showing(other.shownFolderPath)
-        if waitingReadAgain == true { treeOutOfDate = true }
+        if waitingReadAgain == .folderAndTree { treeOutOfDate = true }
         waitingReadAgain = nil
     }
 
@@ -939,16 +957,23 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// The folder is read again once the tab has been drawn, so the switch doesn't wait for it, and not at all if another
-    /// tab has come to the front by then. The value says whether the read covers the tree.
-    private var waitingReadAgain: Bool?
+    /// tab has come to the front by then.
+    private var waitingReadAgain: ReadAgain?
+
+    private enum ReadAgain {
+        case folder
+        /// The folder with its open tree branches.
+        case folderAndTree
+    }
 
     private func readAgainAfterDrawing(refreshingTree: Bool) {
-        waitingReadAgain = refreshingTree || waitingReadAgain == true
+        waitingReadAgain = refreshingTree || waitingReadAgain == .folderAndTree ? .folderAndTree : .folder
         // The main queue takes what is added while it runs on its next turn of the run loop, after this turn's drawing.
         DispatchQueue.main.async { [weak self] in
             DispatchQueue.main.async {
                 MainActor.assumeIsolated {
-                    guard let self, let refreshingTree = self.waitingReadAgain else { return }
+                    guard let self, let waiting = self.waitingReadAgain else { return }
+                    let refreshingTree = waiting == .folderAndTree
                     self.waitingReadAgain = nil
                     guard self.hasShownFolder, !self.isNavigating, !self.folderLetGo else {
                         if refreshingTree { self.treeOutOfDate = true }
@@ -1026,9 +1051,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             content.clearFilter()
         }
         // A folder with a message over it (a Go To that failed) has it still.
-        // `beginLoading` first: `showReadError` goes back to the state from before it.
         if folderWasRead, let message = carried.directoryError {
-            content.beginLoading(quiet: false)
             content.showReadError(message)
         }
     }
@@ -1060,7 +1083,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         goToFailure: ((String) -> Void)? = nil, readFailure: ReadFailure? = nil, quiet: Bool = false,
         keepingSelection: Bool = false, restoringView: Bool = false, arrives: Bool = false
     ) async -> NavigationOutcome {
-        self.loaded = true
+        // A tab sent somewhere before it was first read takes this as its first read.
+        if !loaded {
+            firstRead = .reading
+            let outcome = await attemptNavigation(
+                to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure,
+                readFailure: readFailure, quiet: quiet, keepingSelection: keepingSelection,
+                restoringView: restoringView, arrives: arrives)
+            finishFirstRead(outcome.didOpen)
+            return outcome
+        }
         navigationToken += 1
         let token = navigationToken
         isNavigating = true

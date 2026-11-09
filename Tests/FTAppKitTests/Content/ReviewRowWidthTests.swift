@@ -118,6 +118,26 @@ struct ReviewStaleDetailsTests {
         for _ in 0..<200 where !done() { try? await Task.sleep(for: .milliseconds(5)) }
     }
 
+    // A read error over the folder on screen leaves it as it is, whether or not a read was begun first, and a read
+    // that opens nothing goes back to it.
+    @MainActor @Test func aReadErrorOrACancelledReadLeavesTheFolderAsItWas() async {
+        let (controller, entries) = await loadedController()
+        controller.showReadError("EACCES: permission denied")
+        #expect(controller.loadState == .loaded)
+        #expect(controller.readError != nil)
+        controller.beginLoading(quiet: false)
+        #expect(controller.loadState == .loading)
+        #expect(controller.readError == nil)
+        controller.cancelLoading()
+        #expect(controller.loadState == .loaded)
+        controller.showNoFolder()
+        controller.beginLoading(quiet: false)
+        controller.showReadError("gone")
+        #expect(controller.loadState == .idle)
+        controller.show(folder: "/f", entries: entries, selecting: nil, keepingScroll: false)
+        #expect(controller.loadState == .loaded && controller.readError == nil)
+    }
+
     // An item that changes while its details are being read is read again: the answer may be from before.
     @MainActor @Test func anItemThatChangesWhileItsDetailsAreReadIsReadAgain() async {
         let reads = HeldReads()
