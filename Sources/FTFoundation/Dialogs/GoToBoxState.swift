@@ -198,7 +198,9 @@ public struct GoToBoxState: Equatable, Sendable {
     }
 
     /// Return: in path mode a selected completion goes into the field first; otherwise what can be submitted is.
+    /// Nothing while a submit is under way.
     public mutating func pressReturn() -> GoToEffect {
+        guard !submitting else { return .none }
         if isPathMode, let row = selectedRow, row.path != JSString.trimmed(text) {
             return acceptCompletion(row, descend: false)
         }
@@ -211,9 +213,10 @@ public struct GoToBoxState: Equatable, Sendable {
         return .forget(row.path)
     }
 
-    /// A click on a row: a completion goes into the field, a place is gone to at once.
+    /// A click on a row: a completion goes into the field, a place is gone to at once. Nothing while a submit is under
+    /// way, so a double click goes to a place once.
     public mutating func click(_ index: Int) -> GoToEffect {
-        guard rows.indices.contains(index) else { return .none }
+        guard !submitting, rows.indices.contains(index) else { return .none }
         let row = rows[index]
         guard isPathMode else { return .submit(row.path) }
         let effect = acceptCompletion(row, descend: false)

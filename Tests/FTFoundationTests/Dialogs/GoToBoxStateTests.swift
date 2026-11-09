@@ -120,6 +120,24 @@ struct GoToBoxStateTests {
         #expect(!state.canSubmit)
     }
 
+    // While a folder is being gone to or moved into, a click or Return asks for nothing more: a double click on a
+    // place in Move To starts one move, not two.
+    @Test func doesNothingMoreWhileSubmitting() {
+        var state = GoToBoxState(places: Self.places)
+        #expect(state.click(0) == .submit("/Users/demo/src/filetrail"))
+        state.submitting = true
+        #expect(state.click(0) == .none)
+        #expect(state.pressReturn() == .none)
+        _ = state.setText("/Users/")
+        state.setCompletions([GoToCompletion(path: "/Users/demo", name: "demo")])
+        state.moveSelection(1)
+        #expect(state.click(0) == .none)
+        #expect(state.pressReturn() == .none)
+        #expect(state.text == "/Users/")
+        state.submitting = false
+        #expect(state.click(0) == .requestCompletions("/Users/demo"))
+    }
+
     // A click on a completion puts it into the field without a slash, and selects nothing.
     @Test func aClickOnACompletionFillsTheField() {
         var state = GoToBoxState(places: [])
