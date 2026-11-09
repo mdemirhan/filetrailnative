@@ -603,5 +603,18 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // A menu that closes lets go of its own hold only: a sheet that came up meanwhile (a background copy's
+        // result) keeps the list as it is.
+        @Test func aMenuClosingLeavesASheetsHoldInPlace() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let menu = try #require(tab.contextMenus.contentMenu(for: nil))
+            menu.delegate?.menuWillOpen?(menu)
+            tab.holdFolderChanges(.dialog, true)
+            menu.delegate?.menuDidClose?(menu)
+            #expect(tab.folderChangesHeld)
+            await harness.close()
+        }
+
     }
 }

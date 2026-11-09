@@ -158,9 +158,8 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         // which the write's end asks for right after this: it goes through under the sheet, so
         // what the operation made shows, selected, behind it.
         Task { @MainActor [weak tab, weak scrim] in
-            guard let tab, let scrim, !scrim.isDismissed, tab.folderChangesHeld else { return }
-            tab.folderChangesHeld = false
-            tab.folderChangesHeld = true
+            guard let tab, let scrim, !scrim.isDismissed, tab.folderChangesHeld(by: .dialog) else { return }
+            tab.flushPendingChange(despite: .dialog)
         }
         sheet.onDone = { [weak scrim] in scrim?.dismiss() }
         sheet.onRetry = { [weak self, weak scrim, weak tab] in

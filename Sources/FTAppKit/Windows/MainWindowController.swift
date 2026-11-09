@@ -777,11 +777,32 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         reload(changedPaths: [])
     }
 
+    /// What holds changes made outside the app, besides a name being typed and a file operation running. Each holder
+    /// lets go of its own hold only: a menu that closes leaves a sheet that came up meanwhile holding them.
+    enum FolderChangeHold: Hashable {
+        /// A dialog or sheet over the tab (`CopyPasteDialogs` counts its own).
+        case dialog
+        /// A context menu open.
+        case menu
+        /// One of the tab's own items being dragged.
+        case drag
+    }
+
+    private var folderChangeHolds: Set<FolderChangeHold> = []
+
     /// Changes made outside the app wait while something the list changing under would upset is going on: a name being
     /// typed, a menu or a sheet open, a file operation running, a drag.
-    var folderChangesHeld = false {
-        didSet {
-            if !folderChangesHeld { flushPendingChange() }
+    var folderChangesHeld: Bool { !folderChangeHolds.isEmpty }
+
+    func folderChangesHeld(by hold: FolderChangeHold) -> Bool { folderChangeHolds.contains(hold) }
+
+    /// Puts `hold` on, or takes it off; what waited is read once nothing holds it any more.
+    func holdFolderChanges(_ hold: FolderChangeHold, _ held: Bool) {
+        if held {
+            folderChangeHolds.insert(hold)
+        } else {
+            folderChangeHolds.remove(hold)
+            flushPendingChange()
         }
     }
 
@@ -818,9 +839,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    func flushPendingChange() {
+    /// Reads what waited, unless something holds it; `despite` is a hold that doesn't count this time.
+    func flushPendingChange(despite: FolderChangeHold? = nil) {
         // A file operation running here or in another window holds them too (WriteOperations/).
-        guard let pending = pendingChange, !changeRetryWaiting, !folderChangesHeld, !renameHoldsChanges, !isWriteLocked,
+        let holds = despite.map { folderChangeHolds.subtracting([$0]) } ?? folderChangeHolds
+        guard let pending = pendingChange, !changeRetryWaiting, holds.isEmpty, !renameHoldsChanges, !isWriteLocked,
             !quietReadInFlight
         else { return }
         // Changes to a folder no longer on screen don't matter, and another folder being opened leaves

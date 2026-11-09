@@ -47,13 +47,13 @@ enum CopyPasteDialogs {
     static func track(_ scrim: DialogScrim, on tab: MainWindowController) {
         shown.removeAll { $0.scrim == nil || $0.scrim?.isDismissed == true }
         shown.append(Shown(scrim: scrim, tab: tab))
-        tab.folderChangesHeld = true
+        tab.holdFolderChanges(.dialog, true)
         let previous = scrim.onDismiss
         scrim.onDismiss = { [weak tab, weak scrim] in
             previous()
             shown.removeAll { $0.scrim == nil || $0.scrim === scrim || $0.scrim?.isDismissed == true }
             guard let tab, !shown.contains(where: { $0.tab === tab }) else { return }
-            tab.folderChangesHeld = false
+            tab.holdFolderChanges(.dialog, false)
         }
     }
 }

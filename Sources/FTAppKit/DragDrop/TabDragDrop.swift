@@ -120,7 +120,7 @@ final class TabDragDrop {
             IconThumbnails.store.loadedPicture(forPath: $0)?.image
         }
         Self.ownDrag = OwnDrag(session: session, windowNumber: window.windowNumber, tab: tab)
-        tab.folderChangesHeld = true
+        tab.holdFolderChanges(.drag, true)
         let started = FileDrag.start(
             from: source, event: event, paths: paths, directories: directories, images: images,
             thumbnails: thumbnails
@@ -129,7 +129,7 @@ final class TabDragDrop {
         }
         if !started {
             Self.ownDrag = nil
-            tab.folderChangesHeld = false
+            tab.holdFolderChanges(.drag, false)
         }
         return started
     }
@@ -168,7 +168,7 @@ final class TabDragDrop {
     /// let go of where the tab was already.
     func ownDragEnded(paths: [String], operation: FileDragEnd, over: FileDragEndedOver) {
         Self.ownDrag = nil
-        tab?.folderChangesHeld = false
+        tab?.holdFolderChanges(.drag, false)
         clearTargets()
         restoreSprings()
         disks = nil

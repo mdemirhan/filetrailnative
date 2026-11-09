@@ -238,7 +238,7 @@ extension ExplorerWindowlessTests {
             let root = listed(harness, "")
             let tab = try await harness.open(root)
             let beta = listed(harness, "Beta")
-            tab.folderChangesHeld = true
+            tab.holdFolderChanges(.dialog, true)
             tab.reload(changedPaths: [root + "/note.txt"])
             #expect(tab.pendingChange != nil)
             tab.go(to: URL(fileURLWithPath: beta))
@@ -246,7 +246,7 @@ extension ExplorerWindowlessTests {
 
             let files = HeldFolder("")
             reading(files, tab, harness)
-            tab.folderChangesHeld = false
+            tab.holdFolderChanges(.dialog, false)
             #expect(tab.pendingChange == nil)
             try await Task.sleep(for: .milliseconds(50))
             #expect(files.reads(of: beta) == 0)
@@ -258,13 +258,13 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let root = listed(harness, "")
             let tab = try await harness.open(root)
-            tab.folderChangesHeld = true
+            tab.holdFolderChanges(.dialog, true)
             harness.windows.folderChanged(
                 windowID: tab.windowID, FolderChange(path: listed(harness, "Beta"), changedPaths: nil))
             #expect(tab.pendingChange == nil)
             harness.windows.folderChanged(windowID: tab.windowID, FolderChange(path: root, changedPaths: nil))
             #expect(tab.pendingChange != nil)
-            tab.folderChangesHeld = false
+            tab.holdFolderChanges(.dialog, false)
             await harness.close()
         }
     }

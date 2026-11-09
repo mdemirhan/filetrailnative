@@ -35,14 +35,14 @@ extension ExplorerWindowlessTests {
         @Test func gathersChangesWhileHeldAndReadsThemOnceWhenLetGo() async throws {
             let (harness, tab, probe) = try await opened()
             let folder = tab.folder.path
-            tab.folderChangesHeld = true
+            tab.holdFolderChanges(.dialog, true)
             changed(harness, tab, ["\(folder)/a"])
             changed(harness, tab, ["\(folder)/b"])
             #expect(tab.pendingChange?.changedPaths == ["\(folder)/a", "\(folder)/b"])
             await settle()
             #expect(probe.reads(of: folder) == 0)
 
-            tab.folderChangesHeld = false
+            tab.holdFolderChanges(.dialog, false)
             #expect(await waitUntil { probe.reads(of: folder) == 1 })
             #expect(tab.pendingChange == nil)
             try await Task.sleep(for: .milliseconds(50))

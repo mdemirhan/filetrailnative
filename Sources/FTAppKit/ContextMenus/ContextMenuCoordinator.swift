@@ -133,11 +133,11 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     func contextMenuDidOpen() {
         // Changes made outside the app wait while a menu is open.
-        tab.folderChangesHeld = true
+        tab.holdFolderChanges(.menu, true)
     }
 
     func contextMenuDidClose() {
-        tab.folderChangesHeld = false
+        tab.holdFolderChanges(.menu, false)
         // The right-clicked row's ring goes with the menu.
         tab.sidebarController.model.menuTarget = nil
         current = nil
