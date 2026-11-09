@@ -17,20 +17,18 @@ final class InfoController {
     /// "Show Info" on an item: the panel describes this path whatever the selection.
     private(set) var targetOverride: String?
     private var seenSelection = ContentSelection.empty
-    // Properties.
-    private var properties: InfoItem?
-    private var cache: [(path: String, item: InfoItem)] = []
+    // Properties: what is asked for and shown (`InfoPropertiesLoad`), and the wait before asking.
+    private var propertiesLoad = InfoPropertiesLoad(recentLimit: InfoMetrics.propertiesCacheLimit)
     private var fetchTimer: DispatchWorkItem?
-    private var fetchTarget: String?
-    private var loading = false
+    private var properties: InfoItem? { propertiesLoad.shown }
+    private var loading: Bool { propertiesLoad.isLoading }
     // The volume.
     private var volume: (path: String, value: InfoVolume)?
     private var volumeRequested: String?
-    // Open With.
-    private var lookup: (path: String, value: OpenWithLookup?, ready: Bool)?
+    // Open With: what macOS is asked and answered (`OpenWithLookupLoad`), and the waits before asking and for it.
+    private var lookup = OpenWithLookupLoad<OpenWithLookup>()
     private var lookupTimer: DispatchWorkItem?
     private var lookupPatience: DispatchWorkItem?
-    private var lookupGeneration = 0
     // The copy buttons.
     private var copied: InfoPanelModel.QuickAction.ID?
     private var copiedTimer: DispatchWorkItem?
@@ -180,14 +178,11 @@ final class InfoController {
     private func scheduleFetch(_ path: String, immediately: Bool) {
         fetchTimer?.cancel()
         fetchTimer = nil
-        guard panelOpen || rowOpen, !folderPath.isEmpty else { return }
-        if let cached = cache.first(where: { $0.path == path }) {
-            properties = cached.item
-            loading = false
-        } else {
-            loading = true
+        guard panelOpen || rowOpen, !folderPath.isEmpty else {
+            propertiesLoad.stop()
+            return
         }
-        fetchTarget = path
+        propertiesLoad.ask(path)
         let work = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated { self?.fetch(path) }
         }
@@ -209,15 +204,8 @@ final class InfoController {
                 modifiedAt: item.modifiedAt, sizeBytes: item.sizeBytes,
                 sizeStatus: FTFoundation.SizeStatus(rawValue: item.sizeStatus.rawValue) ?? .deferred,
                 permissionMode: item.permissionMode)
-            self.cache.removeAll { $0.path == path }
-            self.cache.append((path, mapped))
-            if self.cache.count > InfoMetrics.propertiesCacheLimit {
-                self.cache.removeFirst(self.cache.count - InfoMetrics.propertiesCacheLimit)
-            }
-            // A response for a request that is no longer the latest is cached, not shown.
-            guard self.fetchTarget == path else { return }
-            self.loading = false
-            self.properties = mapped
+            // A response for a request that is no longer the latest is kept, not shown.
+            guard self.propertiesLoad.answered(path, mapped) else { return }
             self.update()
         }
     }
@@ -242,17 +230,13 @@ final class InfoController {
     // MARK: Open With
 
     private func requestLookup(_ path: String) {
-        guard lookup?.path != path else { return }
-        lookup = (path, nil, false)
+        guard let generation = lookup.request(path) else { return }
         lookupTimer?.cancel()
         lookupPatience?.cancel()
-        lookupGeneration += 1
-        let generation = lookupGeneration
         let pinned = host.preferences.openWithApplications
         let patience = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
-                guard let self, self.lookup?.path == path, self.lookupGeneration == generation else { return }
-                self.lookup?.ready = true
+                guard let self, self.lookup.patienceRanOut(generation) else { return }
                 self.update()
             }
         }
@@ -266,8 +250,7 @@ final class InfoController {
                 Task { @MainActor [weak self] in
                     let answer = await SystemActions.openWithApplications(
                         paths: [path], pinnedAppPaths: pinned.map(\.appPath))
-                    guard let self, self.lookup?.path == path, self.lookupGeneration == generation else { return }
-                    self.lookup = (path, answer, true)
+                    guard let self, self.lookup.answered(generation, answer) else { return }
                     self.update()
                 }
             }
@@ -279,12 +262,10 @@ final class InfoController {
     /// Always Open With changed what a kind opens in: every answer is forgotten and asked again.
     func forgetLookups() {
         OpenWithCatalog.shared.forget()
-        let path = lookup?.path
-        lookup = nil
-        if let path { requestLookup(path) }
+        if let path = lookup.forget() { requestLookup(path) }
     }
 
-    var openWithLookup: OpenWithLookup? { lookup?.value }
+    var openWithLookup: OpenWithLookup? { lookup.path.flatMap(lookup.answer(for:)) }
 
     // MARK: Showing
 
@@ -309,12 +290,13 @@ final class InfoController {
         updateAutoSize(preferences)
         if !panelOpen { volumeRequested = nil }
         if panelOpen || rowOpen {
-            if fetchTarget != targetPath || (properties == nil && !loading) {
-                if let path = targetPath { scheduleFetch(path, immediately: false) }
+            if let path = targetPath, propertiesLoad.needsAsking(path) {
+                scheduleFetch(path, immediately: false)
             }
         } else {
             fetchTimer?.cancel()
-            fetchTarget = nil
+            fetchTimer = nil
+            propertiesLoad.stop()
         }
         if panelOpen { panel.show(panelDisplay(preferences, shortcuts, selection)) }
         row.show(rowDisplay(selection))
@@ -380,17 +362,15 @@ final class InfoController {
         if isVolume { requestVolume(item.path) } else { volumeRequested = nil }
         requestLookup(item.path)
         let isFile = item.kind == .file || item.kind == .symlinkFile
-        let lookupForItem = lookup?.path == item.path ? lookup : nil
-        let canAlways = OpenWithMenu.canAlwaysOpenWith(lookupForItem?.value)
-        let opens: InfoPanelModel.OpensWithState =
-            isFile && !(lookupForItem?.ready ?? false) ? .pending : (isFile && canAlways ? .available : .hidden)
+        let opens = lookup.opensWith(for: item.path, isFile: isFile, canAlways: OpenWithMenu.canAlwaysOpenWith)
         let folderPath = item.kind.isFolderSizeEligible ? item.path : nil
         let folderSize = folderPath.map { host.folderSizes.entry($0) }
         let content = InfoPanelModel.itemContent(
             item: item, pending: resolved.pending, volume: volume?.path == item.path ? volume?.value : nil,
             isVolumeRoot: isVolume, hasFolderSize: folderSize != nil, folderSize: folderSize, opensWith: opens,
             dates: .original)
-        let app = isFile ? lookupForItem?.value?.defaultApp.map { InfoOpenApp(path: $0.path, name: $0.name) } : nil
+        let app =
+            isFile ? lookup.answer(for: item.path)?.defaultApp.map { InfoOpenApp(path: $0.path, name: $0.name) } : nil
         let trash = FavoriteLabel.trashPath(homePath: homePath)
         let canFavorite = item.path != trash
         let actionList = InfoPanelModel.quickActions(
@@ -583,7 +563,7 @@ final class InfoController {
     private func presentOpenWith(from anchor: NSView, changeDefault: Bool) {
         guard let item = resolved?.item, let window = anchor.window else { return }
         let pinned = host.preferences.openWithApplications
-        let lookupValue = lookup?.path == item.path ? lookup?.value : nil
+        let lookupValue = lookup.answer(for: item.path)
         let isFile = item.kind == .file || item.kind == .symlinkFile
         let always = isFile && OpenWithMenu.canAlwaysOpenWith(lookupValue)
         let kind = always ? lookupValue?.kinds.first : nil
