@@ -5,7 +5,8 @@ import Testing
 
 struct WriteEndMatrixTests {
     private func summary(
-        _ action: String, _ status: String, completed: Int = 0, failed: Int = 0, skipped: Int = 0, cancelled: Int = 0,
+        _ action: WriteOperationAction, _ status: WriteEndStatus, completed: Int = 0, failed: Int = 0, skipped: Int = 0,
+        cancelled: Int = 0,
         items: [WriteEndSummary.Item] = []
     ) -> WriteEndSummary {
         WriteEndSummary(
@@ -15,38 +16,40 @@ struct WriteEndMatrixTests {
 
     // An Undo or Redo gets the sheet when an item has a note, when it failed or went part way, or
     // when it was stopped after doing something; nothing to read otherwise.
-    @Test(arguments: ["undo", "redo"]) func anUndoGetsTheSheetOnlyWithSomethingToRead(_ action: String) {
-        let noted = WriteEndSummary.Item(sourcePath: "/a", destinationPath: "/b", status: "completed", note: true)
-        #expect(WriteEndNotices.needsResultSheet(summary(action, "completed", completed: 1, items: [noted])))
-        #expect(WriteEndNotices.needsResultSheet(summary(action, "failed")))
-        #expect(WriteEndNotices.needsResultSheet(summary(action, "partial", completed: 1, failed: 1)))
-        #expect(WriteEndNotices.needsResultSheet(summary(action, "cancelled", completed: 1, cancelled: 1)))
-        #expect(!WriteEndNotices.needsResultSheet(summary(action, "completed", completed: 1)))
-        #expect(!WriteEndNotices.needsResultSheet(summary(action, "cancelled", cancelled: 1)))
+    @Test(arguments: [WriteOperationAction.undo, .redo]) func anUndoGetsTheSheetOnlyWithSomethingToRead(
+        _ action: WriteOperationAction
+    ) {
+        let noted = WriteEndSummary.Item(sourcePath: "/a", destinationPath: "/b", status: .completed, note: true)
+        #expect(WriteEndNotices.needsResultSheet(summary(action, .completed, completed: 1, items: [noted])))
+        #expect(WriteEndNotices.needsResultSheet(summary(action, .failed)))
+        #expect(WriteEndNotices.needsResultSheet(summary(action, .partial, completed: 1, failed: 1)))
+        #expect(WriteEndNotices.needsResultSheet(summary(action, .cancelled, completed: 1, cancelled: 1)))
+        #expect(!WriteEndNotices.needsResultSheet(summary(action, .completed, completed: 1)))
+        #expect(!WriteEndNotices.needsResultSheet(summary(action, .cancelled, cancelled: 1)))
     }
 
     // An item skipped at run time was not what the review planned: the sheet tells of it.
     @Test func aPartialResultOfARuntimeSkipKeepsTheSheet() {
-        func skipped(_ reason: String) -> WriteEndSummary {
+        func skipped(_ reason: WriteSkipReason) -> WriteEndSummary {
             summary(
-                "paste", "partial", completed: 1, skipped: 1,
+                .paste, .partial, completed: 1, skipped: 1,
                 items: [
                     WriteEndSummary.Item(
-                        sourcePath: "/a", destinationPath: "/d/a", status: "skipped", skipReason: reason)
+                        sourcePath: "/a", destinationPath: "/d/a", status: .skipped, skipReason: reason)
                 ])
         }
-        let atRunTime = skipped("runtime_conflict_resolution")
+        let atRunTime = skipped(.runtimeConflictResolution)
         #expect(!WriteEndNotices.isExpectedPlannedSkip(atRunTime))
         #expect(WriteEndNotices.needsResultSheet(atRunTime))
-        let planned = skipped("planned_conflict_policy")
+        let planned = skipped(.plannedConflictPolicy)
         #expect(WriteEndNotices.isExpectedPlannedSkip(planned))
         #expect(!WriteEndNotices.needsResultSheet(planned))
     }
 
     // A rename of several that skipped an item says so, even though the rest went.
     @Test func aRenameOfSeveralThatSkippedAnItemGetsTheSheet() {
-        #expect(WriteEndNotices.needsResultSheet(summary("batch_rename", "completed", completed: 2, skipped: 1)))
-        #expect(!WriteEndNotices.needsResultSheet(summary("batch_rename", "completed", completed: 2)))
+        #expect(WriteEndNotices.needsResultSheet(summary(.batchRename, .completed, completed: 2, skipped: 1)))
+        #expect(!WriteEndNotices.needsResultSheet(summary(.batchRename, .completed, completed: 2)))
     }
 
     // A Trash stopped part way is never told as done, and needs the sheet.
@@ -59,17 +62,19 @@ struct WriteEndMatrixTests {
             error: nil, totalItemCount: 3, completedItemCount: 3, failedItemCount: 0, skippedItemCount: 0,
             cancelledItemCount: 0, itemErrors: [])
         #expect(WriteResultNoticeText.message(done) == "Done.")
-        #expect(WriteEndNotices.needsResultSheet(summary("trash", "cancelled", completed: 1, cancelled: 2)))
+        #expect(WriteEndNotices.needsResultSheet(summary(.trash, .cancelled, completed: 1, cancelled: 2)))
     }
 
-    private func undo(_ items: [(String, String?)], action: String = "undo") -> ClipboardWrite {
+    private func undo(_ items: [(String, String?)], action: WriteOperationAction = .undo) -> ClipboardWrite {
         ClipboardWrite(
             action: action,
             items: items.map { WriteEffectItem(sourcePath: $0.0, destinationPath: $0.1, status: "completed") })
     }
 
     // What an Undo sent to the Trash leaves the clipboard, what it moved is followed.
-    @Test(arguments: ["undo", "redo"]) func anUndoIsFollowedByTheClipboard(_ action: String) {
+    @Test(arguments: [WriteOperationAction.undo, .redo]) func anUndoIsFollowedByTheClipboard(
+        _ action: WriteOperationAction
+    ) {
         let copied = ClipboardRules.set(.copy, ["/d/gone.txt", "/d/moved.txt", "/d/other.txt"], capturedAt: "t")
         let followed = ClipboardRules.followThroughWrite(
             copied, undo([("/d/gone.txt", nil), ("/d/moved.txt", "/e/moved.txt")], action: action))

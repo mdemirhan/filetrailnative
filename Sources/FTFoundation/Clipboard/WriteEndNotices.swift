@@ -1,18 +1,33 @@
 import Foundation
 
+/// How a finished operation ended.
+public enum WriteEndStatus: String, Sendable, Equatable {
+    case completed, failed, cancelled, partial
+}
+
+/// How each item of a finished operation ended.
+public enum WriteItemEndStatus: String, Sendable, Equatable {
+    case completed, failed, skipped, cancelled
+}
+
+/// Why an item was skipped: the plan the review settled on, or an answer given while the operation ran.
+public enum WriteSkipReason: String, Sendable, Equatable {
+    case plannedConflictPolicy = "planned_conflict_policy"
+    case runtimeConflictResolution = "runtime_conflict_resolution"
+}
+
 /// A finished operation and its result, as what is said about it looks at it.
 public struct WriteEndSummary: Equatable, Sendable {
     public struct Item: Equatable, Sendable {
         public var sourcePath: String?
         public var destinationPath: String?
-        /// "completed", "failed", "skipped", "cancelled".
-        public var status: String
-        public var skipReason: String?
+        public var status: WriteItemEndStatus
+        public var skipReason: WriteSkipReason?
         public var note: Bool
 
         public init(
-            sourcePath: String?, destinationPath: String?, status: String, skipReason: String? = nil,
-            note: Bool = false
+            sourcePath: String?, destinationPath: String?, status: WriteItemEndStatus,
+            skipReason: WriteSkipReason? = nil, note: Bool = false
         ) {
             self.sourcePath = sourcePath
             self.destinationPath = destinationPath
@@ -22,9 +37,8 @@ public struct WriteEndSummary: Equatable, Sendable {
         }
     }
 
-    public var action: String
-    /// "completed", "failed", "cancelled", "partial".
-    public var status: String
+    public var action: WriteOperationAction
+    public var status: WriteEndStatus
     public var targetPath: String?
     public var topLevelItemCount: Int
     public var completedItemCount: Int
@@ -38,7 +52,8 @@ public struct WriteEndSummary: Equatable, Sendable {
     public var currentDestinationPath: String?
 
     public init(
-        action: String, status: String, targetPath: String?, topLevelItemCount: Int, completedItemCount: Int,
+        action: WriteOperationAction, status: WriteEndStatus, targetPath: String?, topLevelItemCount: Int,
+        completedItemCount: Int,
         failedItemCount: Int, skippedItemCount: Int, cancelledItemCount: Int, items: [Item], totalItemCount: Int = 0,
         currentSourcePath: String? = nil, currentDestinationPath: String? = nil
     ) {
@@ -56,7 +71,7 @@ public struct WriteEndSummary: Equatable, Sendable {
         self.currentDestinationPath = currentDestinationPath
     }
 
-    var isUndoOrRedo: Bool { action == "undo" || action == "redo" }
+    var isUndoOrRedo: Bool { action == .undo || action == .redo }
 }
 
 /// What a toast says.
@@ -73,24 +88,24 @@ public struct WriteEndToast: Equatable, Sendable {
 /// What is said when an operation ends: a result sheet when there is something to read, else a toast or nothing.
 public enum WriteEndNotices {
     public static func needsResultSheet(_ write: WriteEndSummary) -> Bool {
-        if write.action == "rename" || write.action == "new_folder" { return write.status == "failed" }
+        if write.action == .rename || write.action == .newFolder { return write.status == .failed }
         if write.isUndoOrRedo {
-            return write.items.contains(where: \.note) || write.status == "failed" || write.status == "partial"
-                || (write.status == "cancelled" && write.completedItemCount > 0)
+            return write.items.contains(where: \.note) || write.status == .failed || write.status == .partial
+                || (write.status == .cancelled && write.completedItemCount > 0)
         }
-        if write.status == "failed" { return true }
-        if write.action == "batch_rename", write.skippedItemCount > 0 { return true }
-        if write.status == "partial" { return !isExpectedPlannedSkip(write) }
-        guard write.status == "cancelled" else { return false }
+        if write.status == .failed { return true }
+        if write.action == .batchRename, write.skippedItemCount > 0 { return true }
+        if write.status == .partial { return !isExpectedPlannedSkip(write) }
+        guard write.status == .cancelled else { return false }
         return write.completedItemCount > 0 || write.failedItemCount > 0 || write.skippedItemCount > 0
     }
 
     /// A partial result made only of items the plan skipped.
     public static func isExpectedPlannedSkip(_ write: WriteEndSummary) -> Bool {
-        guard write.status == "partial", write.skippedItemCount > 0, write.failedItemCount == 0,
+        guard write.status == .partial, write.skippedItemCount > 0, write.failedItemCount == 0,
             write.cancelledItemCount == 0
         else { return false }
-        return write.items.filter { $0.status == "skipped" }.allSatisfy { $0.skipReason == "planned_conflict_policy" }
+        return write.items.filter { $0.status == .skipped }.allSatisfy { $0.skipReason == .plannedConflictPolicy }
     }
 
     /// The toast for an operation that needs no sheet; nil for none. `quietOnScreen`:
@@ -100,7 +115,7 @@ public enum WriteEndNotices {
         _ write: WriteEndSummary, quietOnScreen: Bool = false, isSearchMode: Bool = false, currentPath: String = "",
         undoLabel: String? = nil
     ) -> WriteEndToast? {
-        if quietOnScreen, write.status == "completed", !isSearchMode, let target = write.targetPath,
+        if quietOnScreen, write.status == .completed, !isSearchMode, let target = write.targetPath,
             JSString.equals(target, currentPath)
         {
             return nil
@@ -112,37 +127,37 @@ public enum WriteEndNotices {
                     path.flatMap(TreePaths.parent(of:)).map { JSString.equals($0, currentPath) } ?? false
                 }
             }
-            guard write.status == "completed", !changedHere else { return nil }
+            guard write.status == .completed, !changedHere else { return nil }
             return WriteEndToast(
-                kind: .success, title: write.action == "undo" ? "Undone" : "Redone",
+                kind: .success, title: write.action == .undo ? "Undone" : "Redone",
                 message: undoLabel?.isEmpty == false ? undoLabel : nil)
         }
-        if ["new_folder", "rename", "batch_rename", "duplicate"].contains(write.action) { return nil }
+        if [.newFolder, .rename, .batchRename, .duplicate].contains(write.action) { return nil }
         let summary = itemSummary(write)
         let target = write.targetPath.map(PathText.leafName)
         let completedTitle: String =
             switch write.action {
-            case "move_to": target.map { "Moved to \($0)" } ?? "Moved"
-            case "copy_to": target.map { "Copied to \($0)" } ?? "Copied"
-            case "trash": "Moved to Trash"
-            case "delete_immediately": "Deleted"
+            case .moveTo: target.map { "Moved to \($0)" } ?? "Moved"
+            case .copyTo: target.map { "Copied to \($0)" } ?? "Copied"
+            case .trash: "Moved to Trash"
+            case .deleteImmediately: "Deleted"
             default: target.map { "Pasted into \($0)" } ?? "Pasted"
             }
-        if write.status == "completed" {
+        if write.status == .completed {
             return WriteEndToast(kind: .success, title: completedTitle, message: summary)
         }
-        if write.status == "cancelled" {
+        if write.status == .cancelled {
             let title: String =
                 switch write.action {
-                case "move_to": "Move cancelled"
-                case "copy_to": "Copy cancelled"
-                case "trash": "Move to Trash cancelled"
-                case "delete_immediately": "Delete cancelled"
+                case .moveTo: "Move cancelled"
+                case .copyTo: "Copy cancelled"
+                case .trash: "Move to Trash cancelled"
+                case .deleteImmediately: "Delete cancelled"
                 default: "Paste cancelled"
                 }
             return WriteEndToast(kind: .info, title: title, message: summary)
         }
-        if write.status == "partial", isExpectedPlannedSkip(write) {
+        if write.status == .partial, isExpectedPlannedSkip(write) {
             return WriteEndToast(
                 kind: .info, title: plannedSkipTitle(write.action, completed: write.completedItemCount),
                 message: plannedSkipMessage(write))
@@ -154,16 +169,16 @@ public enum WriteEndNotices {
         func has(_ path: String?) -> Bool { !(path ?? "").isEmpty }
         let item = write.items.first { item in
             switch write.action {
-            case "new_folder": has(item.destinationPath)
-            case "trash": has(item.sourcePath)
+            case .newFolder: has(item.destinationPath)
+            case .trash: has(item.sourcePath)
             default: has(item.sourcePath) || has(item.destinationPath)
             }
         }
-        if write.action == "new_folder" { return item?.destinationPath ?? write.currentDestinationPath }
-        if write.action == "rename" {
+        if write.action == .newFolder { return item?.destinationPath ?? write.currentDestinationPath }
+        if write.action == .rename {
             return item?.destinationPath ?? item?.sourcePath ?? write.currentDestinationPath ?? write.currentSourcePath
         }
-        if write.action == "trash" { return item?.sourcePath ?? write.currentSourcePath }
+        if write.action == .trash { return item?.sourcePath ?? write.currentSourcePath }
         return item?.sourcePath ?? item?.destinationPath ?? write.currentSourcePath ?? write.currentDestinationPath
     }
 
@@ -175,12 +190,12 @@ public enum WriteEndNotices {
         return count <= 1 ? name : "\(name) and \(count - 1) more"
     }
 
-    static func plannedSkipTitle(_ action: String, completed: Int) -> String {
+    static func plannedSkipTitle(_ action: WriteOperationAction, completed: Int) -> String {
         let some = completed > 0
         switch action {
-        case "move_to": return some ? "Move finished with skipped items" : "Nothing moved"
-        case "duplicate": return some ? "Duplicate finished with skipped items" : "Nothing duplicated"
-        case "copy_to": return some ? "Copy finished with skipped items" : "Nothing copied"
+        case .moveTo: return some ? "Move finished with skipped items" : "Nothing moved"
+        case .duplicate: return some ? "Duplicate finished with skipped items" : "Nothing duplicated"
+        case .copyTo: return some ? "Copy finished with skipped items" : "Nothing copied"
         default: return some ? "Paste finished with skipped items" : "Nothing pasted"
         }
     }
@@ -188,7 +203,7 @@ public enum WriteEndNotices {
     static func plannedSkipMessage(_ write: WriteEndSummary) -> String? {
         var sentences: [String] = []
         if write.completedItemCount > 0 {
-            let verb = write.action == "move_to" ? "Moved" : "Copied"
+            let verb = write.action == .moveTo ? "Moved" : "Copied"
             sentences.append("\(verb) \(countLabel(write.completedItemCount, "item")).")
         }
         if write.skippedItemCount > 0 {

@@ -52,24 +52,25 @@ public enum CopyPasteClipboard: Equatable, Sendable {
 /// A finished write, as the clipboard follows it (`WriteOperationResult`): its action, how a paste's items were put
 /// on the clipboard, its items and what a Replace removed.
 public struct ClipboardWrite: Sendable {
-    /// "paste", "move_to", "rename", "batch_rename", "trash", "delete_immediately", "undo", "redo" and the like.
-    public var action: String
+    public var action: WriteOperationAction
     public var mode: ClipboardMode?
     public var items: [WriteEffectItem]
     public var replacedPaths: [String]
 
-    public init(action: String, mode: ClipboardMode? = nil, items: [WriteEffectItem], replacedPaths: [String] = []) {
+    public init(
+        action: WriteOperationAction, mode: ClipboardMode? = nil, items: [WriteEffectItem], replacedPaths: [String] = []
+    ) {
         self.action = action
         self.mode = mode
         self.items = items
         self.replacedPaths = replacedPaths
     }
 
-    var isUndoOrRedo: Bool { action == "undo" || action == "redo" }
+    var isUndoOrRedo: Bool { action == .undo || action == .redo }
 
     /// `isRenameOrMove`.
     var isRenameOrMove: Bool {
-        action == "rename" || action == "batch_rename" || action == "move_to" || isUndoOrRedo
+        action == .rename || action == .batchRename || action == .moveTo || isUndoOrRedo
     }
 
     /// `movedItems`: a write that gave items new paths: a rename or move, or a paste that moved what was cut.
@@ -78,7 +79,7 @@ public struct ClipboardWrite: Sendable {
     /// `collectFollowedMoves`.
     var followedMoves: [(from: String, to: String)] {
         items.compactMap { item in
-            guard WriteEffects.isFollowedMove(item, action: action), let from = item.sourcePath,
+            guard WriteEffects.isFollowedMove(item, action: action.rawValue), let from = item.sourcePath,
                 let to = item.destinationPath
             else { return nil }
             return (from, to)
@@ -88,7 +89,7 @@ public struct ClipboardWrite: Sendable {
     /// `removedByWrite`: everything a Trash or delete was asked to remove, what an Undo moved to the Trash, and what
     /// a Replace removed (another item has its path now).
     public var removedPaths: [String] {
-        if action == "trash" || action == "delete_immediately" {
+        if action == .trash || action == .deleteImmediately {
             return items.compactMap { item in
                 guard item.status == "completed", let path = item.sourcePath, !path.isEmpty else { return nil }
                 return path
@@ -192,7 +193,7 @@ public enum ClipboardRules {
         var holders = Set<ExactKey>()
         for item in write.items {
             guard let source = item.sourcePath, !source.isEmpty, item.status != "completed",
-                !WriteEffects.isFollowedMove(item, action: write.action)
+                !WriteEffects.isFollowedMove(item, action: write.action.rawValue)
             else { continue }
             items.insert(ExactKey(source))
             var path = source

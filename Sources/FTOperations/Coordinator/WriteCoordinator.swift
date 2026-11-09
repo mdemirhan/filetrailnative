@@ -20,11 +20,22 @@ public final class WriteCoordinator {
     public static let progressUpdateIntervalMs: Double = 100
     /// How long quitting waits for a stopped operation to finish cleaning up.
     public static let shutdownWaitLimitMs: Double = 15_000
-    /// Holds the slot while a write is still being prepared, or written alone.
-    nonisolated static let preparingOperationId = "preparing-write-operation"
+    /// Who holds the write slot.
+    public enum SlotHolder: Equatable, Sendable {
+        /// Held before any operation runs: one of the person's operations being checked, a copy-paste being started,
+        /// or a write alone (`runWriteAlone`).
+        case reserved
+        /// An operation running.
+        case operation(String)
+
+        public var operationId: String? {
+            if case .operation(let id) = self { return id }
+            return nil
+        }
+    }
 
     struct Slot {
-        var active: String?
+        var holder: SlotHolder?
         /// Set once the app starts quitting; no new operation may begin after that.
         var closing = false
     }
@@ -113,8 +124,8 @@ public final class WriteCoordinator {
 
     // MARK: The write slot
 
-    /// The slot's holder, the "preparing" stand-in included.
-    nonisolated var slotHolder: String? { slot.withLock { $0.active } }
+    /// Who holds the slot, if anyone.
+    nonisolated var slotHolder: SlotHolder? { slot.withLock { $0.holder } }
 
     var closing: Bool { slot.withLock { $0.closing } }
 
@@ -122,33 +133,33 @@ public final class WriteCoordinator {
     func ensureNoWriteOperationInFlight() throws {
         try slot.withLock { slot in
             if slot.closing { throw WriteCoordinatorError.quitting }
-            if slot.active != nil { throw WriteCoordinatorError.busy }
+            if slot.holder != nil { throw WriteCoordinatorError.busy }
         }
     }
 
-    /// Takes the slot for `operationId`, refused as `ensureNoWriteOperationInFlight` refuses.
-    func claimSlot(_ operationId: String) throws {
+    /// Takes the slot for `holder`, refused as `ensureNoWriteOperationInFlight` refuses.
+    func claimSlot(_ holder: SlotHolder) throws {
         try slot.withLock { slot in
             if slot.closing { throw WriteCoordinatorError.quitting }
-            if slot.active != nil { throw WriteCoordinatorError.busy }
-            slot.active = operationId
+            if slot.holder != nil { throw WriteCoordinatorError.busy }
+            slot.holder = holder
         }
     }
 
     /// `freeWriteSlot`.
-    func freeWriteSlot(_ operationId: String) {
+    func freeWriteSlot(_ holder: SlotHolder) {
         let freed = slot.withLock { slot -> Bool in
-            guard slot.active == operationId else { return false }
-            slot.active = nil
+            guard slot.holder == holder else { return false }
+            slot.holder = nil
             return true
         }
         if freed { resumeIdleWaiters() }
     }
 
-    nonisolated private func freeSlotFromAnyThread(_ operationId: String) {
+    nonisolated private func freeSlotFromAnyThread(_ holder: SlotHolder) {
         let freed = slot.withLock { slot -> Bool in
-            guard slot.active == operationId else { return false }
-            slot.active = nil
+            guard slot.holder == holder else { return false }
+            slot.holder = nil
             return true
         }
         guard freed else { return }
@@ -178,7 +189,7 @@ public final class WriteCoordinator {
     /// The operation holding the slot. A rename or new folder still being checked has changed
     /// nothing yet: it isn't one.
     public var activeOperation: ActiveWriteOperation? {
-        guard let operationId = slotHolder, operationId != Self.preparingOperationId else { return nil }
+        guard let operationId = slotHolder?.operationId else { return nil }
         if operationId == emptyTrashOperationId {
             return ActiveWriteOperation(operationId: operationId, kind: .emptyTrash)
         }
@@ -191,8 +202,7 @@ public final class WriteCoordinator {
 
     /// Whether an operation holds the slot, from any thread: the recovery retry waits while one does.
     nonisolated public var isBusy: Bool {
-        guard let holder = slotHolder else { return false }
-        return holder != Self.preparingOperationId
+        slotHolder?.operationId != nil
     }
 
     /// The write slot, held for one of the person's operations while it is checked. `queueLocalWriteOperation`
@@ -208,9 +218,9 @@ public final class WriteCoordinator {
     public func prepareWithReservedSlot<T, R>(
         _ prepare: () async throws -> T, then start: (T, SlotReservation) throws -> R
     ) async throws -> R {
-        try claimSlot(Self.preparingOperationId)
+        try claimSlot(.reserved)
         // Nothing once an operation took it over.
-        defer { freeWriteSlot(Self.preparingOperationId) }
+        defer { freeWriteSlot(.reserved) }
         let value = try await prepare()
         return try start(value, SlotReservation())
     }
@@ -220,8 +230,8 @@ public final class WriteCoordinator {
     func takeOverSlot(_ operationId: String) throws {
         try slot.withLock { slot in
             if slot.closing { throw WriteCoordinatorError.quitting }
-            guard slot.active == Self.preparingOperationId else { throw WriteCoordinatorError.busy }
-            slot.active = operationId
+            guard slot.holder == .reserved else { throw WriteCoordinatorError.busy }
+            slot.holder = .operation(operationId)
         }
     }
 
@@ -231,12 +241,12 @@ public final class WriteCoordinator {
     /// may be any.
     nonisolated public func runWriteAlone<T>(_ write: () throws -> T) rethrows -> T? {
         let claimed = slot.withLock { slot -> Bool in
-            if slot.closing || slot.active != nil { return false }
-            slot.active = Self.preparingOperationId
+            if slot.closing || slot.holder != nil { return false }
+            slot.holder = .reserved
             return true
         }
         guard claimed else { return nil }
-        defer { freeSlotFromAnyThread(Self.preparingOperationId) }
+        defer { freeSlotFromAnyThread(.reserved) }
         return try write()
     }
 
@@ -325,7 +335,7 @@ public final class WriteCoordinator {
                         items: event.result?.items.map(WriteOperationItem.init) ?? []))
             }
             // Nothing above may keep the slot held, or the end from the window.
-            freeWriteSlot(operationId)
+            freeWriteSlot(.operation(operationId))
         }
         guard let sender = senders[operationId] else {
             eventsBeforeStart?[operationId] = event
@@ -412,7 +422,7 @@ public final class WriteCoordinator {
         // usable fails at once). Its end is caught here, so the write slot isn't claimed for an operation that is
         // already over. The slot is held meanwhile, so a write alone can't start in between.
         options.caches.writeStarting()
-        try claimSlot(Self.preparingOperationId)
+        try claimSlot(.reserved)
         eventsBeforeStart = [:]
         let handle: CopyPasteOperationHandle
         let early: CopyPasteProgressEvent?
@@ -425,7 +435,7 @@ public final class WriteCoordinator {
             eventsBeforeStart = nil
         } catch {
             eventsBeforeStart = nil
-            freeWriteSlot(Self.preparingOperationId)
+            freeWriteSlot(.reserved)
             // Nothing started, so no end will come to stop noting the folder sizes stored.
             options.caches.writeEnded()
             throw error
@@ -433,7 +443,7 @@ public final class WriteCoordinator {
         // The paste has it now; the window going away stops the paste instead.
         forgetAnalysis(start.analysisId)
         if let early, early.status.isTerminal {
-            freeWriteSlot(Self.preparingOperationId)
+            freeWriteSlot(.reserved)
             // The window learns the operation id from this reply, so its end is sent just after it.
             let progress = deliverableProgressEvent(early, action: start.action)
             DispatchQueue.main.async { [weak self] in
@@ -442,7 +452,7 @@ public final class WriteCoordinator {
             return handle
         }
         slot.withLock { slot in
-            if slot.active == Self.preparingOperationId { slot.active = handle.operationId }
+            if slot.holder == .reserved { slot.holder = .operation(handle.operationId) }
         }
         copyPasteRequests[handle.operationId] = start
         attachSender(handle.operationId, window)
@@ -510,7 +520,7 @@ public final class WriteCoordinator {
     public func emptyTrash(_ empty: () async -> (ok: Bool, error: String?)) async -> (ok: Bool, error: String?) {
         let operationId = "write-op-\(localSequence + 1)"
         do {
-            try claimSlot(operationId)
+            try claimSlot(.operation(operationId))
         } catch {
             return (
                 false,
@@ -533,7 +543,7 @@ public final class WriteCoordinator {
         forgetCachedResponses([NodePath.join(NodePath.resolve(homePath), ".Trash")])
         options.caches.writeEnded()
         emptyTrashOperationId = nil
-        freeWriteSlot(operationId)
+        freeWriteSlot(.operation(operationId))
         options.onTrashEmptied?()
         return outcome
     }
@@ -555,9 +565,9 @@ public final class WriteCoordinator {
         // The operation is being stopped anyway; a window closing now has nothing to add. Its final event is still
         // sent to the window if it is open.
         watchedOperations.removeAll()
-        let operationId = slotHolder
+        let operationId = slotHolder?.operationId
         let emptyingTrash = operationId != nil && operationId == emptyTrashOperationId
-        if let operationId, operationId != Self.preparingOperationId, !emptyingTrash {
+        if let operationId, !emptyingTrash {
             _ = cancelWriteOperation(operationId)
         }
         // A stopped copy ends within moments; only a disk that stops answering (a network share gone away) could hold

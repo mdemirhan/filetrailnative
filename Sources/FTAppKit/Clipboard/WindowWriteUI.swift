@@ -82,7 +82,7 @@ final class WindowWriteUI {
         // The clipboard follows what the write did before anything is said about it.
         if let result = event.result, let clipboard = session?.clipboard {
             let write = ClipboardWrite(
-                action: result.action.rawValue, mode: result.mode.flatMap { ClipboardMode(rawValue: $0.rawValue) },
+                action: result.action, mode: result.mode.flatMap { ClipboardMode(rawValue: $0.rawValue) },
                 items: result.items.map(\.effect), replacedPaths: result.replacedPaths ?? [])
             let followed = ClipboardRules.followThroughWrite(clipboard.contents, write)
             if followed != clipboard.contents {
@@ -93,15 +93,25 @@ final class WindowWriteUI {
         guard let result = event.result else { return }
         let undoLabel = session?.runningUndoLabel
         session?.runningUndoLabel = nil
+        let status: WriteEndStatus
+        switch event.status {
+        case .completed: status = .completed
+        case .failed: status = .failed
+        case .cancelled: status = .cancelled
+        case .partial: status = .partial
+        // An end is never one of these.
+        case .queued, .running, .awaitingResolution: return
+        }
         let summary = WriteEndSummary(
-            action: event.action.rawValue, status: event.status.rawValue, targetPath: result.targetPath,
+            action: event.action, status: status, targetPath: result.targetPath,
             topLevelItemCount: result.summary.topLevelItemCount, completedItemCount: result.summary.completedItemCount,
             failedItemCount: result.summary.failedItemCount, skippedItemCount: result.summary.skippedItemCount,
             cancelledItemCount: result.summary.cancelledItemCount,
             items: result.items.map {
                 WriteEndSummary.Item(
-                    sourcePath: $0.sourcePath, destinationPath: $0.destinationPath, status: $0.status.rawValue,
-                    skipReason: $0.skipReason?.rawValue, note: $0.note)
+                    sourcePath: $0.sourcePath, destinationPath: $0.destinationPath,
+                    status: WriteItemEndStatus($0.status),
+                    skipReason: $0.skipReason.map(WriteSkipReason.init), note: $0.note)
             }, totalItemCount: event.totalItemCount, currentSourcePath: event.currentSourcePath,
             currentDestinationPath: event.currentDestinationPath)
         if WriteEndNotices.needsResultSheet(summary) {
@@ -117,6 +127,26 @@ final class WindowWriteUI {
         {
             _ = NotificationOverlay.push(
                 toast.kind == .success ? .success : .info, title: toast.title, message: toast.message, in: tab.window)
+        }
+    }
+}
+
+extension WriteItemEndStatus {
+    init(_ status: CopyPasteItemResult.Status) {
+        switch status {
+        case .completed: self = .completed
+        case .skipped: self = .skipped
+        case .failed: self = .failed
+        case .cancelled: self = .cancelled
+        }
+    }
+}
+
+extension WriteSkipReason {
+    init(_ reason: CopyPasteItemResult.SkipReason) {
+        switch reason {
+        case .plannedConflictPolicy: self = .plannedConflictPolicy
+        case .runtimeConflictResolution: self = .runtimeConflictResolution
         }
     }
 }

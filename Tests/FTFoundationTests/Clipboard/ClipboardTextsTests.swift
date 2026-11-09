@@ -190,45 +190,46 @@ struct ClipboardTextsTests {
     // and all of it went (the rest is the result sheet's).
     @Test func tellsAnUndoOrRedoOnlyWhenItIsOutOfSight() {
         func write(
-            _ action: String, _ status: String = "completed",
+            _ action: WriteOperationAction, _ status: WriteEndStatus = .completed,
             source: String? = "/Users/demo/Other/a.txt", destination: String? = "/Volumes/X/a.txt"
         ) -> WriteEndSummary {
             WriteEndSummary(
                 action: action, status: status, targetPath: nil, topLevelItemCount: 1, completedItemCount: 1,
                 failedItemCount: 0, skippedItemCount: 0, cancelledItemCount: 0,
-                items: [WriteEndSummary.Item(sourcePath: source, destinationPath: destination, status: "completed")])
+                items: [WriteEndSummary.Item(sourcePath: source, destinationPath: destination, status: .completed)])
         }
         let label = "Move of \u{201C}source.txt\u{201D}"
         #expect(
-            WriteEndNotices.toast(write("undo"), currentPath: "/Users/demo", undoLabel: label)
+            WriteEndNotices.toast(write(.undo), currentPath: "/Users/demo", undoLabel: label)
                 == WriteEndToast(kind: .success, title: "Undone", message: label))
         #expect(
-            WriteEndNotices.toast(write("redo"), currentPath: "/Users/demo", undoLabel: label)
+            WriteEndNotices.toast(write(.redo), currentPath: "/Users/demo", undoLabel: label)
                 == WriteEndToast(kind: .success, title: "Redone", message: label))
         // Without a label, the title alone.
         #expect(
-            WriteEndNotices.toast(write("undo"), currentPath: "/Users/demo")
+            WriteEndNotices.toast(write(.undo), currentPath: "/Users/demo")
                 == WriteEndToast(kind: .success, title: "Undone", message: nil))
         #expect(
-            WriteEndNotices.toast(write("undo"), currentPath: "/Users/demo", undoLabel: "")
+            WriteEndNotices.toast(write(.undo), currentPath: "/Users/demo", undoLabel: "")
                 == WriteEndToast(kind: .success, title: "Undone", message: nil))
         // In sight: where an item came from, or where it went.
-        #expect(WriteEndNotices.toast(write("undo"), currentPath: "/Users/demo/Other", undoLabel: label) == nil)
-        #expect(WriteEndNotices.toast(write("redo"), currentPath: "/Volumes/X", undoLabel: label) == nil)
+        #expect(WriteEndNotices.toast(write(.undo), currentPath: "/Users/demo/Other", undoLabel: label) == nil)
+        #expect(WriteEndNotices.toast(write(.redo), currentPath: "/Volumes/X", undoLabel: label) == nil)
         // A path nil on either side, or the top of the disk, is no change in the folder on screen.
         #expect(
-            WriteEndNotices.toast(write("undo", source: nil, destination: nil), currentPath: "/Users/demo")?.title
+            WriteEndNotices.toast(write(.undo, source: nil, destination: nil), currentPath: "/Users/demo")?.title
                 == "Undone")
-        #expect(WriteEndNotices.toast(write("undo", source: "/", destination: nil), currentPath: "")?.title == "Undone")
+        #expect(WriteEndNotices.toast(write(.undo, source: "/", destination: nil), currentPath: "")?.title == "Undone")
         // Anything but all of it done says nothing here.
-        #expect(WriteEndNotices.toast(write("undo", "cancelled"), currentPath: "/Users/demo") == nil)
-        #expect(WriteEndNotices.toast(write("undo", "partial"), currentPath: "/Users/demo") == nil)
-        #expect(WriteEndNotices.toast(write("undo", "failed"), currentPath: "/Users/demo") == nil)
+        #expect(WriteEndNotices.toast(write(.undo, .cancelled), currentPath: "/Users/demo") == nil)
+        #expect(WriteEndNotices.toast(write(.undo, .partial), currentPath: "/Users/demo") == nil)
+        #expect(WriteEndNotices.toast(write(.undo, .failed), currentPath: "/Users/demo") == nil)
     }
 
     @Test func tellsAFinishedOperationInAToastOrASheet() {
         func write(
-            _ action: String, _ status: String, completed: Int = 1, skipped: Int = 0, failed: Int = 0, top: Int = 1
+            _ action: WriteOperationAction, _ status: WriteEndStatus, completed: Int = 1, skipped: Int = 0,
+            failed: Int = 0, top: Int = 1
         )
             -> WriteEndSummary
         {
@@ -238,31 +239,31 @@ struct ClipboardTextsTests {
                 cancelledItemCount: 0,
                 items: [
                     WriteEndSummary.Item(
-                        sourcePath: "/a/notes.md", destinationPath: "/Users/demo/Target/notes.md", status: "completed")
+                        sourcePath: "/a/notes.md", destinationPath: "/Users/demo/Target/notes.md", status: .completed)
                 ]
                     + (skipped > 0
                         ? [
                             WriteEndSummary.Item(
-                                sourcePath: "/a/b", destinationPath: nil, status: "skipped",
-                                skipReason: "planned_conflict_policy")
+                                sourcePath: "/a/b", destinationPath: nil, status: .skipped,
+                                skipReason: .plannedConflictPolicy)
                         ] : []))
         }
-        let pasted = write("paste", "completed", top: 3)
+        let pasted = write(.paste, .completed, top: 3)
         #expect(!WriteEndNotices.needsResultSheet(pasted))
         #expect(
             WriteEndNotices.toast(pasted)
                 == WriteEndToast(
                     kind: .success, title: "Pasted into Target", message: "\u{201C}notes.md\u{201D} and 2 more"))
-        #expect(WriteEndNotices.toast(write("move_to", "completed"))?.title == "Moved to Target")
-        #expect(WriteEndNotices.toast(write("copy_to", "completed"))?.title == "Copied to Target")
-        #expect(WriteEndNotices.toast(write("trash", "completed"))?.title == "Moved to Trash")
-        #expect(WriteEndNotices.toast(write("delete_immediately", "completed"))?.title == "Deleted")
-        #expect(WriteEndNotices.toast(write("duplicate", "completed")) == nil)
-        #expect(WriteEndNotices.toast(write("move_to", "cancelled", completed: 0))?.title == "Move cancelled")
-        #expect(WriteEndNotices.needsResultSheet(write("paste", "failed")))
-        #expect(WriteEndNotices.needsResultSheet(write("paste", "cancelled", completed: 1)))
-        #expect(!WriteEndNotices.needsResultSheet(write("paste", "cancelled", completed: 0)))
-        let skippedOnly = write("paste", "partial", completed: 1, skipped: 1)
+        #expect(WriteEndNotices.toast(write(.moveTo, .completed))?.title == "Moved to Target")
+        #expect(WriteEndNotices.toast(write(.copyTo, .completed))?.title == "Copied to Target")
+        #expect(WriteEndNotices.toast(write(.trash, .completed))?.title == "Moved to Trash")
+        #expect(WriteEndNotices.toast(write(.deleteImmediately, .completed))?.title == "Deleted")
+        #expect(WriteEndNotices.toast(write(.duplicate, .completed)) == nil)
+        #expect(WriteEndNotices.toast(write(.moveTo, .cancelled, completed: 0))?.title == "Move cancelled")
+        #expect(WriteEndNotices.needsResultSheet(write(.paste, .failed)))
+        #expect(WriteEndNotices.needsResultSheet(write(.paste, .cancelled, completed: 1)))
+        #expect(!WriteEndNotices.needsResultSheet(write(.paste, .cancelled, completed: 0)))
+        let skippedOnly = write(.paste, .partial, completed: 1, skipped: 1)
         #expect(!WriteEndNotices.needsResultSheet(skippedOnly))
         #expect(
             WriteEndNotices.toast(skippedOnly)
@@ -272,9 +273,9 @@ struct ClipboardTextsTests {
         // Dropped from another app into the folder on screen: in sight there.
         #expect(
             WriteEndNotices.toast(
-                write("move_to", "completed"), quietOnScreen: true, currentPath: "/Users/demo/Target") == nil)
+                write(.moveTo, .completed), quietOnScreen: true, currentPath: "/Users/demo/Target") == nil)
         #expect(
-            WriteEndNotices.toast(write("move_to", "completed"), quietOnScreen: true, currentPath: "/elsewhere")?.title
+            WriteEndNotices.toast(write(.moveTo, .completed), quietOnScreen: true, currentPath: "/elsewhere")?.title
                 == "Moved to Target")
     }
 }

@@ -8,7 +8,7 @@ struct CopyPasteClipboardTests {
     static let now = "2026-03-09T00:00:00.000Z"
 
     private func write(
-        _ action: String, mode: ClipboardMode? = nil, replaced: [String] = [],
+        _ action: WriteOperationAction, mode: ClipboardMode? = nil, replaced: [String] = [],
         _ items: [(String?, String?, String)]
     ) -> ClipboardWrite {
         ClipboardWrite(
@@ -170,39 +170,39 @@ struct CopyPasteClipboardTests {
             ClipboardRules.followThroughWrite(clipboard, write).sourcePaths
         }
         #expect(
-            follow(write("rename", [("/Users/demo/report.pdf", "/Users/demo/final.pdf", "completed")]))
+            follow(write(.rename, [("/Users/demo/report.pdf", "/Users/demo/final.pdf", "completed")]))
                 == ["/Users/demo/final.pdf", "/Users/demo/Folder/inner.txt", "/Users/demo/other.txt"])
         #expect(
             follow(
                 write(
-                    "move_to",
+                    .moveTo,
                     [
                         ("/Users/demo/other.txt", "/Volumes/Backup/other.txt", "completed"),
                         ("/Users/demo/report.pdf", "/Volumes/Backup/report.pdf", "failed"),
                     ]))
                 == ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt", "/Volumes/Backup/other.txt"])
         #expect(
-            follow(write("trash", [("/Users/demo/Folder", nil, "completed")]))
+            follow(write(.trash, [("/Users/demo/Folder", nil, "completed")]))
                 == ["/Users/demo/report.pdf", "/Users/demo/other.txt"])
         #expect(
-            follow(write("delete_immediately", [("/Users/demo/other.txt", nil, "completed")]))
+            follow(write(.deleteImmediately, [("/Users/demo/other.txt", nil, "completed")]))
                 == ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt"])
         // Copies leave the originals where they were.
-        let paste = write("paste", [("/Users/demo/report.pdf", "/tmp/report.pdf", "completed")])
+        let paste = write(.paste, [("/Users/demo/report.pdf", "/tmp/report.pdf", "completed")])
         #expect(ClipboardRules.followThroughWrite(clipboard, paste) == clipboard)
-        let copyPaste = write("paste", mode: .copy, [("/Users/demo/report.pdf", "/tmp/report.pdf", "completed")])
+        let copyPaste = write(.paste, mode: .copy, [("/Users/demo/report.pdf", "/tmp/report.pdf", "completed")])
         #expect(ClipboardRules.followThroughWrite(clipboard, copyPaste) == clipboard)
     }
 
     @Test func dropsCopiedItemsAReplaceRemovedAndFollowsOneMovedOntoTheirPlace() {
         let moved = write(
-            "move_to", replaced: ["/Users/demo/Folder/inner.txt"],
+            .moveTo, replaced: ["/Users/demo/Folder/inner.txt"],
             [("/Users/demo/other.txt", "/Users/demo/Folder/inner.txt", "completed")])
         #expect(
             ClipboardRules.followThroughWrite(clipboard, moved).sourcePaths
                 == ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt"])
         let pasted = write(
-            "paste", mode: .copy, replaced: ["/Users/demo/report.pdf"],
+            .paste, mode: .copy, replaced: ["/Users/demo/report.pdf"],
             [("/tmp/report.pdf", "/Users/demo/report.pdf", "completed")])
         #expect(
             ClipboardRules.followThroughWrite(clipboard, pasted).sourcePaths
@@ -211,7 +211,7 @@ struct CopyPasteClipboardTests {
 
     @Test func keepsAnItemAlreadyInAFolderMergedInto() {
         let copied = ClipboardRules.set(.copy, ["/src/F/x", "/dst/F/y"], capturedAt: Self.now)
-        let result = write("move_to", [("/src/F", "/dst/F", "completed")])
+        let result = write(.moveTo, [("/src/F", "/dst/F", "completed")])
         #expect(ClipboardRules.followThroughWrite(copied, result).sourcePaths == ["/dst/F/x", "/dst/F/y"])
     }
 
@@ -224,7 +224,7 @@ struct CopyPasteClipboardTests {
             ("/src/F/b", "/dst/F/b", "completed"),
             ("/src/F/sub/c", "/dst/F/sub/c", "failed"), ("/src/G", "/dst/G", "completed"),
         ]
-        let result = write("paste", mode: .cut, items)
+        let result = write(.paste, mode: .cut, items)
         #expect(
             ClipboardRules.followThroughWrite(copied, result).sourcePaths == [
                 "/src/F/a", "/dst/F/b", "/src/F/sub", "/src/F/sub/c/d", "/dst/F/other/e", "/dst/G",
@@ -233,11 +233,11 @@ struct CopyPasteClipboardTests {
         let folder = ClipboardRules.set(.copy, ["/src/F"], capturedAt: Self.now)
         #expect(ClipboardRules.followThroughWrite(folder, result) == folder)
         // ...and is followed once everything in it went.
-        let completedOnly = write("paste", mode: .cut, items.filter { $0.2 == "completed" })
+        let completedOnly = write(.paste, mode: .cut, items.filter { $0.2 == "completed" })
         #expect(ClipboardRules.followThroughWrite(folder, completedOnly).sourcePaths == ["/dst/F"])
         // An item that failed outside the folder that moved doesn't keep what moved.
         let failedFolder = write(
-            "paste", mode: .cut, items.filter { $0.0 != "/src/F" } + [("/src/F", "/dst/F", "failed")])
+            .paste, mode: .cut, items.filter { $0.0 != "/src/F" } + [("/src/F", "/dst/F", "failed")])
         #expect(
             ClipboardRules.followThroughWrite(
                 ClipboardRules.set(.copy, ["/src/F/b"], capturedAt: Self.now), failedFolder
@@ -248,13 +248,13 @@ struct CopyPasteClipboardTests {
     @Test func cancelsACutWhenAReplaceRemovesAnItemInIt() {
         let cut = ClipboardRules.set(.cut, ["/Users/demo/report.pdf"], capturedAt: Self.now)
         let pasted = write(
-            "paste", mode: .copy, replaced: ["/Users/demo/report.pdf"],
+            .paste, mode: .copy, replaced: ["/Users/demo/report.pdf"],
             [("/tmp/report.pdf", "/Users/demo/report.pdf", "completed")])
         #expect(ClipboardRules.followThroughWrite(cut, pasted) == .empty)
     }
 
     @Test func followsItemsAPasteAfterCutMoved() {
-        let pasted = write("paste", mode: .cut, [("/Users/demo/Folder", "/Volumes/Backup/Folder", "completed")])
+        let pasted = write(.paste, mode: .cut, [("/Users/demo/Folder", "/Volumes/Backup/Folder", "completed")])
         #expect(
             ClipboardRules.followThroughWrite(clipboard, pasted).sourcePaths
                 == ["/Users/demo/report.pdf", "/Volumes/Backup/Folder/inner.txt", "/Users/demo/other.txt"])
@@ -265,23 +265,23 @@ struct CopyPasteClipboardTests {
             .cut, ["/Users/demo/report.pdf", "/Users/demo/Folder/inner.txt", "/Users/demo/other.txt"],
             capturedAt: Self.now)
         for result in [
-            write("rename", [("/Users/demo/report.pdf", "/Users/demo/final.pdf", "completed")]),
-            write("move_to", [("/Users/demo/Folder", "/Volumes/Backup/Folder", "completed")]),
-            write("batch_rename", [("/Users/demo/other.txt", "/Users/demo/other 2.txt", "failed")]),
-            write("trash", [("/Users/demo/other.txt", nil, "completed")]),
-            write("delete_immediately", [("/Users/demo/report.pdf", nil, "completed")]),
+            write(.rename, [("/Users/demo/report.pdf", "/Users/demo/final.pdf", "completed")]),
+            write(.moveTo, [("/Users/demo/Folder", "/Volumes/Backup/Folder", "completed")]),
+            write(.batchRename, [("/Users/demo/other.txt", "/Users/demo/other 2.txt", "failed")]),
+            write(.trash, [("/Users/demo/other.txt", nil, "completed")]),
+            write(.deleteImmediately, [("/Users/demo/report.pdf", nil, "completed")]),
         ] {
             #expect(ClipboardRules.followThroughWrite(cut, result) == .empty)
         }
         for result in [
             write(
-                "move_to",
+                .moveTo,
                 [
                     ("/Users/demo/report.pdf", "/Volumes/Backup/report.pdf", "failed"),
                     ("/Users/demo/Fold", "/Volumes/Backup/Fold", "completed"),
                 ]),
-            write("trash", [("/Users/demo/other.txt", nil, "failed")]),
-            write("paste", [("/Users/demo/report.pdf", "/tmp/report.pdf", "completed")]),
+            write(.trash, [("/Users/demo/other.txt", nil, "failed")]),
+            write(.paste, [("/Users/demo/report.pdf", "/tmp/report.pdf", "completed")]),
         ] {
             #expect(ClipboardRules.followThroughWrite(cut, result) == cut)
         }
@@ -291,7 +291,7 @@ struct CopyPasteClipboardTests {
         let paths = (0..<20_000).map { "/Users/demo/a/item-\($0)" }
         let copied = ClipboardRules.set(.copy, paths, capturedAt: Self.now)
         let result = ClipboardWrite(
-            action: "move_to",
+            action: .moveTo,
             items: paths.enumerated().map { index, path in
                 WriteEffectItem(
                     sourcePath: path, destinationPath: path.replacingOccurrences(of: "/a/", with: "/b/"),

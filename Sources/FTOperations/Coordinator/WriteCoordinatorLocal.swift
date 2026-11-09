@@ -47,7 +47,7 @@ extension WriteCoordinator {
         if reservation != nil {
             try takeOverSlot(operationId)
         } else {
-            try claimSlot(operationId)
+            try claimSlot(.operation(operationId))
         }
         localSequence += 1
         options.caches.writeStarting()
@@ -91,7 +91,7 @@ extension WriteCoordinator {
         detachSender(operationId)
         localStops[operationId] = nil
         localActions[operationId] = nil
-        freeWriteSlot(operationId)
+        freeWriteSlot(.operation(operationId))
     }
 
     func emitLocalWriteOperationEvent(
