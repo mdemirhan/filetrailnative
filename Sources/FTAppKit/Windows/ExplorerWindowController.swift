@@ -133,15 +133,11 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     // Windows closed with Stop and Close: their operation is stopped, not handed to a window opened while the
     // question was on screen.
     private var stoppedOnClose: Set<Int> = []
-    // The window the close question is on, while it is asked.
+    // The window the close question is on, from the moment closing asks until it has its answer.
     public private(set) var stopQuestionParent: W?
-    // Set from the moment closing asks until it has its answer.
-    private var closeQuestionPending = false
     // True while Merge All Windows waits for the windows' tabs: one runs at a time, or the two would close each
     // other's windows.
     private var merging = false
-    // True until the windows the app opens with have been shown.
-    private var startupShowPending = false
     // Files opened with File Trail from another app, waiting for the window to open them, by window.
     private var openRequests: [Int: [OpenRequest]] = [:]
 
@@ -181,11 +177,9 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
             records.append(record)
         }
         let startup = StartupShow()
-        startupShowPending = true
-        let showAll = { [weak self, startup] in
+        let showAll = { [startup] in
             guard !startup.shown else { return }
             startup.shown = true
-            self?.startupShowPending = false
             // Shown back to front, so they stack as they were.
             for (index, entry) in startup.opened.enumerated().reversed() {
                 guard let window = entry.window.value, !window.isDestroyed else { continue }
@@ -537,7 +531,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     private func holdClose(_ window: W) -> Bool {
         if shuttingDown || closingWithoutAsking.contains(ObjectIdentifier(window)) { return false }
         // The question is answered first; it comes forward.
-        if quit.isAskingToStop || closeQuestionPending {
+        if quit.isAskingToStop || stopQuestionParent != nil {
             if !bringStopQuestionForward() { quit.hooks.bringStopQuestionForward() }
             return true
         }
@@ -546,12 +540,10 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
             return false
         }
         let windowID = window.windowID
-        closeQuestionPending = true
         stopQuestionParent = window
         Task { @MainActor [weak self, weak window] in
             guard let self else { return }
             let stop = await quit.askToStopOperation(.close, parent: window?.sheetParent)
-            closeQuestionPending = false
             stopQuestionParent = nil
             guard stop, let window, !window.isDestroyed else { return }
             // Stopped, even when another window was opened while the question was up: the operation isn't handed

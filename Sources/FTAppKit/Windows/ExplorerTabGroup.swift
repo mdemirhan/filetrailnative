@@ -354,9 +354,7 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// folder with the same tree, history and view. Its search is not copied.
     func duplicateTab(_ tab: MainWindowController) {
         guard tabs.contains(where: { $0 === tab }), !isBlocked, hasRoomForTab() else { return }
-        var snapshot = tab.snapshot
-        snapshot.search = nil
-        insert(MainWindowController(snapshot: snapshot, frame: tabFrame), after: tab, select: true)
+        insert(MainWindowController(snapshot: tab.snapshot, frame: tabFrame), after: tab, select: true)
     }
 
     /// Merge All Windows: the other windows' tabs join this window's, after them, waiting unread until they are

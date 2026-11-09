@@ -691,7 +691,7 @@ final class SearchSession {
         let hidden = host?.searchIncludeHidden ?? searchedHidden
         // Text being typed is searched after its rest instead, with the setting as it is now.
         if hasCachedSearch, resultsVisible, pendingLiveQuery == nil,
-            interrupted || stoppedShort || searchedHidden != hidden
+            stoppedShort || searchedHidden != hidden
         {
             rerun()
         }

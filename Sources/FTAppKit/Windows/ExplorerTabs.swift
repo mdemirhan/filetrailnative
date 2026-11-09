@@ -12,29 +12,6 @@ public enum TabSearchStatus: String, Sendable, Equatable {
     }
 }
 
-/// A tab's search, as it was when the tab was left. The search itself keeps running; `jobID` and `cursor` are where
-/// to pick its results up again.
-public struct TabSearchSession: Equatable, Sendable {
-    public var draftQuery = ""
-    public var committedQuery = ""
-    public var rootPath = ""
-    public var resultsVisible = false
-    public var results: [SearchResultItem] = []
-    public var status: TabSearchStatus = .idle
-    public var error: String?
-    public var truncated = false
-    public var elapsedMilliseconds: Double?
-    public var jobID: String?
-    public var cursor = 0
-    /// An answer from the search was on its way when the tab was left, and was thrown away. If it was the last one,
-    /// the search has let go of the results it carried.
-    public var pollInFlight = false
-    public var keptResultPaths: Set<String> = []
-    public var interrupted = false
-
-    public init() {}
-}
-
 /// What a search says when a background tab asks how it is doing (`search:getUpdate`).
 public struct TabSearchUpdate: Equatable, Sendable {
     public var jobID: String
@@ -107,7 +84,6 @@ public struct TabSnapshot: Equatable, Sendable {
     public var locationsExpanded: Bool
     /// Nil for a tab that has not been shown yet: its folder and tree are read when it is first opened.
     public var view: TabViewState?
-    public var search: TabSearchSession?
 
     public init(
         currentPath: String, historyPaths: [String], historyIndex: Int, viewMode: ExplorerViewMode = .icons,
@@ -115,7 +91,7 @@ public struct TabSnapshot: Equatable, Sendable {
         sortDirection: SortDirectionPreference = .asc, treeRootPath: String, selectedTreeItemID: String? = nil,
         leftPaneSubview: LeftPaneSubview = .tree, focusedPane: FocusedPane = .content, includeHidden: Bool = false,
         foldersFirst: Bool = true, favoritesExpanded: Bool = true, locationsExpanded: Bool = true,
-        view: TabViewState? = nil, search: TabSearchSession? = nil
+        view: TabViewState? = nil
     ) {
         self.currentPath = currentPath
         self.historyPaths = historyPaths
@@ -133,7 +109,6 @@ public struct TabSnapshot: Equatable, Sendable {
         self.favoritesExpanded = favoritesExpanded
         self.locationsExpanded = locationsExpanded
         self.view = view
-        self.search = search
     }
 }
 
@@ -237,14 +212,6 @@ public enum ExplorerTabs {
             searchRootPath: searchRootPath, searchRunning: searchRunning)
     }
 
-    public static func describe(_ snapshot: TabSnapshot) -> TabDescription {
-        let search = snapshot.search
-        return describe(
-            currentPath: snapshot.currentPath, searchVisible: search?.resultsVisible ?? false,
-            searchQuery: search?.committedQuery ?? "", searchRootPath: search?.rootPath ?? "",
-            searchRunning: search?.status == .running)
-    }
-
     /// Tabs on folders with the same name are told apart by the folder each one is in. Tabs
     /// on the same folder, and search tabs, keep their labels.
     public static func disambiguate(_ items: [TabLabel]) -> [TabLabel] {
@@ -311,7 +278,6 @@ public enum ExplorerTabs {
         new.view?.listFilterQuery = ""
         new.view?.contentScroll = .zero
         new.view?.folderViewMemories = [:]
-        new.search = nil
         return new
     }
 
@@ -322,39 +288,7 @@ public enum ExplorerTabs {
         kept.historyPaths = snapshot.currentPath.isEmpty ? [] : [snapshot.currentPath]
         kept.historyIndex = snapshot.currentPath.isEmpty ? -1 : 0
         kept.view = nil
-        kept.search = nil
         return kept
-    }
-
-    /// `applyBackgroundSearchUpdate`: a background tab's search once the worker has been asked how it is doing: what
-    /// was found since is added, and a search that has finished is let go.
-    public static func applyBackgroundSearchUpdate(_ session: TabSearchSession, _ update: TabSearchUpdate)
-        -> TabSearchSession
-    {
-        var next = session
-        // The answer thrown away when the tab was left turned out to be the last one: its results are gone, so the
-        // search is marked to run again when the tab is shown.
-        if session.pollInFlight, update.done, update.items.isEmpty {
-            next.jobID = nil
-            next.status = .cancelled
-            next.interrupted = true
-            next.pollInFlight = false
-            return next
-        }
-        let newItems =
-            session.keptResultPaths.isEmpty
-            ? update.items : update.items.filter { !session.keptResultPaths.contains($0.path) }
-        next.pollInFlight = false
-        next.results += newItems
-        next.cursor = update.nextCursor
-        next.status = TabSearchStatus(update.status)
-        next.error = update.error
-        next.truncated = update.truncated
-        if update.done {
-            next.jobID = nil
-            next.elapsedMilliseconds = nil
-        }
-        return next
     }
 
     /// `leaveUnmountedDisks`: a background tab on a disk that was unmounted goes Home, as the tab on screen does.

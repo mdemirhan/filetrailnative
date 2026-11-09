@@ -94,14 +94,13 @@ import Testing
         view.folderViewMemories = ["/Users/demo": FolderViewMemory(selection: .empty, scrollTop: 1, scrollLeft: 0)]
         let snapshot = TabSnapshot(
             currentPath: "/Users/demo/work", historyPaths: ["/Users/demo", "/Users/demo/work"], historyIndex: 1,
-            treeRootPath: "/Users/demo", focusedPane: .tree, view: view, search: TabSearchSession())
+            treeRootPath: "/Users/demo", focusedPane: .tree, view: view)
 
         let new = ExplorerTabs.newTab(from: snapshot)
 
         #expect(new.historyPaths == ["/Users/demo/work"])
         #expect(new.historyIndex == 0)
         #expect(new.focusedPane == .tree)
-        #expect(new.search == nil)
         var kept = TabViewState()
         kept.treeNodes = view.treeNodes
         kept.treeScrollTop = 30
@@ -111,67 +110,6 @@ import Testing
         released.currentPath = ""
         #expect(ExplorerTabs.newTab(from: released).historyPaths.isEmpty)
         #expect(ExplorerTabs.newTab(from: released).historyIndex == -1)
-    }
-
-    // MARK: A search running in a background tab
-
-    private func result(_ name: String) -> SearchResultItem {
-        SearchResultItem(
-            path: "/Users/demo/\(name)", name: name, fileExtension: "txt", kind: .file, isHidden: false,
-            parentPath: "/Users/demo", relativeParentPath: ".")
-    }
-
-    private var session: TabSearchSession {
-        var session = TabSearchSession()
-        session.results = [result("a.txt")]
-        session.cursor = 1
-        session.status = .running
-        session.jobID = "job-1"
-        return session
-    }
-
-    private func update(_ items: [SearchResultItem], done: Bool) -> TabSearchUpdate {
-        TabSearchUpdate(
-            jobID: "job-1", status: done ? .complete : .running, items: items, nextCursor: 1 + items.count, done: done,
-            truncated: false, error: nil)
-    }
-
-    @Test func addsWhatWasFoundSinceAndKeepsAskingWhileTheSearchRuns() {
-        let next = ExplorerTabs.applyBackgroundSearchUpdate(session, update([result("b.txt")], done: false))
-        #expect(next.results.map(\.name) == ["a.txt", "b.txt"])
-        #expect(next.cursor == 2)
-        #expect(next.status == .running)
-        #expect(next.jobID == "job-1")
-    }
-
-    @Test func letsGoOfASearchThatHasFinished() {
-        let next = ExplorerTabs.applyBackgroundSearchUpdate(session, update([result("b.txt")], done: true))
-        #expect(next.status == .complete)
-        #expect(next.jobID == nil)
-        #expect(next.elapsedMilliseconds == nil)
-        #expect(next.results.count == 2)
-    }
-
-    @Test func leavesOutResultsThatWereKeptFromTheSearchBefore() {
-        var kept = session
-        kept.keptResultPaths = ["/Users/demo/a.txt"]
-        let next = ExplorerTabs.applyBackgroundSearchUpdate(
-            kept, update([result("a.txt"), result("b.txt")], done: false))
-        #expect(next.results.map(\.name) == ["a.txt", "b.txt"])
-    }
-
-    @Test func marksTheSearchToRunAgainWhenItsLastAnswerWasThrownAway() {
-        var inFlight = session
-        inFlight.pollInFlight = true
-        let next = ExplorerTabs.applyBackgroundSearchUpdate(inFlight, update([], done: true))
-        #expect(next.jobID == nil)
-        #expect(next.status == .cancelled)
-        #expect(next.interrupted)
-        // An answer that still carries results shows that nothing was lost.
-        let running = ExplorerTabs.applyBackgroundSearchUpdate(inFlight, update([], done: false))
-        #expect(running.jobID == "job-1")
-        #expect(!running.pollInFlight)
-        #expect(!running.interrupted)
     }
 
     @Test func tellsTabsOnFoldersOfTheSameNameApartByTheFolderEachIsIn() {

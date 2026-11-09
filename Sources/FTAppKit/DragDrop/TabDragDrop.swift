@@ -73,9 +73,9 @@ final class TabDragDrop {
     private var external: (sequence: Int, session: DragSession?)?
     private var spring = SpringHold()
     /// Where the tab was before the drag's first spring in it, and whether a folder opened.
-    /// Where a drag that sprang left the tab. `opened`: a folder was asked for; `arrived`: one is on screen, so the
+    /// Where a drag that sprang left the tab, from the first folder it asked for. `arrived`: one is on screen, so the
     /// background takes the drag's drop.
-    private var springStart: (sequence: Int, place: MainWindowController.TabPlace, opened: Bool, arrived: Bool)?
+    private var springStart: (sequence: Int, place: MainWindowController.TabPlace, arrived: Bool)?
     /// Spring reads not back yet (`opening`): a drag can end with one on its way.
     private(set) var springsOpening = 0
     private var externalGone: TimerToken?
@@ -365,9 +365,8 @@ final class TabDragDrop {
     func springOpen(_ path: String, sequence: Int) {
         guard let tab else { return }
         if springStart?.sequence != sequence {
-            springStart = (sequence, tab.tabPlace, false, false)
+            springStart = (sequence, tab.tabPlace, false)
         }
-        springStart?.opened = true
         springsOpening += 1
         Task { [weak self] in
             // A drag that ended before this began has already sent the tab back.
@@ -385,7 +384,6 @@ final class TabDragDrop {
         guard let start = springStart, let tab else { return }
         springStart = nil
         guard
-            start.opened,
             springsOpening > 0 || !samePath(tab.folder.path, start.place.path)
                 || tab.navigationHistory != start.place.history
         else { return }
