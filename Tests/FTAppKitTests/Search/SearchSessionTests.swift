@@ -219,6 +219,40 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts[1].query == "sou")
     }
 
+    // Other text typed while the walk stops short waits for its rest as usual: the walk isn't run again for the
+    // narrower text in between, which would let the typed text go unsearched.
+    @Test func textTypedWhileTheWalkStopsShortIsStillSearched() {
+        engine.finds = { request in (["source.txt"], request.query == "so", false) }
+        let search = session()
+        search.updateDraft("so")
+        timers.advance(0.4)
+        search.updateDraft("sou")
+        search.updateDraft("xy")
+        engine.progress("search-1", add: ["soup.md"], finish: true, truncated: true)
+        timers.advance(0.12)
+        #expect(engine.starts.map(\.query) == ["so"])
+        timers.advance(0.3)
+        #expect(engine.starts.map(\.query) == ["so", "xy"])
+        #expect(search.committedQuery == "xy")
+    }
+
+    // The same when the walk stopped short in the background: the text being typed is searched on return.
+    @Test func textTypedBeforeTheTabWasLeftIsSearchedWhenTheWalkStoppedShortMeanwhile() {
+        engine.finds = { request in (["source.txt"], request.query == "so", false) }
+        let search = session()
+        search.updateDraft("so")
+        timers.advance(0.4)
+        search.updateDraft("sou")
+        search.updateDraft("xy")
+        search.enterBackground()
+        engine.progress("search-1", add: ["soup.md"], finish: true, truncated: true)
+        timers.advance(1)
+        search.returnToForeground()
+        timers.advance(0.41)
+        #expect(engine.starts.map(\.query) == ["so", "xy"])
+        #expect(search.committedQuery == "xy")
+    }
+
     @Test func forgetsTextTypedBeforeItIsSearchedWithEscapeOrTheClearButton() {
         finding(["so": ["source.txt"]])
         let search = session()

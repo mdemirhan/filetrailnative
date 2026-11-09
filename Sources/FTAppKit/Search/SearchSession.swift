@@ -632,13 +632,12 @@ final class SearchSession {
         }
         cursor = update.nextCursor
         // The search stopped at its limit while the text in the field is narrower than what it looked for: it may
-        // have missed matches, so that text is looked for itself.
-        if update.truncated, committedQuery != baseQuery {
-            if !isBackground {
-                emit(change)
-                startSearch(committedQuery, rootPath: resolveRootPath(), live: true, keepMatching: true)
-                return
-            }
+        // have missed matches, so that text is looked for itself. Other text typed since waits for its rest and is
+        // searched then.
+        if update.truncated, committedQuery != baseQuery, !isBackground, pendingLiveQuery == nil {
+            emit(change)
+            startSearch(committedQuery, rootPath: resolveRootPath(), live: true, keepMatching: true)
+            return
         }
         status = TabSearchStatus(update.status)
         error = update.error
@@ -690,7 +689,10 @@ final class SearchSession {
         if let jobID { poll(jobID: jobID, counter: sessionCounter) }
         let stoppedShort = jobID == nil && truncated && committedQuery != baseQuery
         let hidden = host?.searchIncludeHidden ?? searchedHidden
-        if hasCachedSearch, resultsVisible, interrupted || stoppedShort || searchedHidden != hidden {
+        // Text being typed is searched after its rest instead, with the setting as it is now.
+        if hasCachedSearch, resultsVisible, pendingLiveQuery == nil,
+            interrupted || stoppedShort || searchedHidden != hidden
+        {
             rerun()
         }
     }
