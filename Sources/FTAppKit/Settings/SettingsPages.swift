@@ -472,7 +472,7 @@ final class SettingsPageView: NSView {
         opening.card.add(row("Terminal", nil, terminal))
 
         let openWith = section(
-            "Always in Open With",
+            "First in Open With",
             note: "Listed first in Open With, after the app an item opens in, for the items each app can open.")
         openWith.card.add(openWithList(), fullWidth: true)
     }
@@ -544,7 +544,7 @@ final class SettingsPageView: NSView {
     }
 
     private func openWithList() -> SettingsListView {
-        let list = SettingsListView(label: "Always in Open With", keys: .items, theme: theme)
+        let list = SettingsListView(label: "First in Open With", keys: .items, theme: theme)
         let add = SettingsListBarButton(
             .icon(SettingsMetrics.addPath), label: "Add app to Open With", tooltip: "Add app to Open With", theme: theme
         )

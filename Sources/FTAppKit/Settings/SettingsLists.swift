@@ -258,7 +258,7 @@ final class SettingsListRow: ThemedView {
 /// remove, and a bar of buttons under it. The list takes the keyboard; the selected row is its focus.
 final class SettingsListView: ThemedView, SettingsListBlock {
     enum Keys {
-        /// Favorites, Always in Open With: Return changes, ⌫ and Delete remove.
+        /// Favorites, First in Open With: Return changes, ⌫ and Delete remove.
         case items
         /// Columns: Space checks the row.
         case columns

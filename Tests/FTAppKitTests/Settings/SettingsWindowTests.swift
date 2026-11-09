@@ -539,7 +539,7 @@ import Testing
         controller.windowDidBecomeKey(Notification(name: NSWindow.didBecomeKeyNotification))
         await Kit.settle()
         Kit.layout(controller)
-        let list = try Kit.list("Always in Open With", in: controller)
+        let list = try Kit.list("First in Open With", in: controller)
         #expect(Kit.names(list) == ["Zed", "Gone"])
         #expect(list.rows.map(\.spec.missing) == [false, true])
         #expect(list.rows[1].pathText.stringValue == "Not found · /Applications/Gone.app")
@@ -630,11 +630,11 @@ import Testing
         #expect(limit.field.alignment == .right)
         // The field's cell keeps 2 from each side of its frame, which reaches 2 past the text box.
         #expect(limit.field.frame.minX == 6 && limit.field.frame.maxX == 27)
-        // An empty Always in Open With is its bar at the top of a row that keeps the 40 every row has; the note
+        // An empty First in Open With is its bar at the top of a row that keeps the 40 every row has; the note
         // comes 6 under that.
         let groups = views("settings.group", in: controller.settingsView).compactMap { $0 as? SettingsSectionView }
-        let openWith = try #require(groups.first { $0.titleText?.stringValue == "Always in Open With" })
-        let list = try Kit.list("Always in Open With", in: controller)
+        let openWith = try #require(groups.first { $0.titleText?.stringValue == "First in Open With" })
+        let list = try Kit.list("First in Open With", in: controller)
         #expect(list.rows.isEmpty)
         #expect(list.frame == NSRect(x: 0, y: 0, width: openWith.card.frame.width, height: 28))
         #expect(openWith.card.frame.height == 40)
