@@ -315,16 +315,14 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.
     var renameItem: ((_ path: String, _ name: String) async -> RenameOutcome)?
-    /// While a name is being typed, changes made outside the app wait.
-    private var renameHoldsChanges = false
     private var navigationToken = 0
     private(set) var isNavigating = false
     /// The folder the navigation under way is opening.
     private var navigationTarget: URL?
-    private(set) var pendingChange: PendingChange?
-    /// A change waits for an opening of its folder to end: it is looked at again when this runs out.
-    private var changeRetryWaiting = false
-    private var quietReadInFlight = false
+    /// When changes made outside the app are read: see `FolderChangeGate`.
+    private var folderChanges = FolderChangeGate(maxChangedPaths: FolderWatches.maxChangedPaths)
+    /// The changes waiting to be read.
+    var pendingChange: FolderChangeGate.Pending? { folderChanges.pending }
     /// A change from outside is being taken in: Show Info's item stays.
     private(set) var isTakingInOutsideChange = false
     /// A tab brought back, or merged in, waits unread until it is first shown.
@@ -764,8 +762,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     /// touched (nil: anything in it may have).
     func reload(changedPaths: [String]? = nil) {
         guard loaded, !folderLetGo else { return }
-        pendingChange = PendingChange.merging(pendingChange, path: folder.path, changedPaths)
-        flushPendingChange()
+        updateFolderChanges { $0.changed(folder.path, changedPaths, $1) }
     }
 
     /// The folder read again because the app asks, not because of a change from outside: Show Info's
@@ -777,53 +774,28 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         reload(changedPaths: [])
     }
 
-    /// What holds changes made outside the app, besides a name being typed and a file operation running. Each holder
-    /// lets go of its own hold only: a menu that closes leaves a sheet that came up meanwhile holding them.
-    enum FolderChangeHold: Hashable {
-        /// A dialog or sheet over the tab (`CopyPasteDialogs` counts its own).
-        case dialog
-        /// A context menu open.
-        case menu
-        /// One of the tab's own items being dragged.
-        case drag
-    }
-
-    private var folderChangeHolds: Set<FolderChangeHold> = []
+    typealias FolderChangeHold = FolderChangeGate.Hold
 
     /// Changes made outside the app wait while something the list changing under would upset is going on: a name being
     /// typed, a menu or a sheet open, a file operation running, a drag.
-    var folderChangesHeld: Bool { !folderChangeHolds.isEmpty }
+    var folderChangesHeld: Bool { folderChanges.isHeld }
 
-    func folderChangesHeld(by hold: FolderChangeHold) -> Bool { folderChangeHolds.contains(hold) }
+    func folderChangesHeld(by hold: FolderChangeHold) -> Bool { folderChanges.holds.contains(hold) }
 
-    /// Puts `hold` on, or takes it off; what waited is read once nothing holds it any more.
+    /// Puts `hold` on, or takes it off; what waited is read once nothing holds it any more. Each holder lets go of its
+    /// own hold only: a menu that closes leaves a sheet that came up meanwhile holding them.
     func holdFolderChanges(_ hold: FolderChangeHold, _ held: Bool) {
-        if held {
-            folderChangeHolds.insert(hold)
-        } else {
-            folderChangeHolds.remove(hold)
-            flushPendingChange()
-        }
+        updateFolderChanges { $0.hold(hold, held, $1) }
     }
 
-    /// The changes waiting to be read, merged: the set of changed items is the union, or nil (a full read) if any change
-    /// did not say which items changed, or there are more than 1,000.
-    struct PendingChange {
-        /// The folder that changed.
-        var path: String
-        var changedPaths: Set<String>?
+    /// A name was typed, or a file operation here or in another window ended: what waited may be read now.
+    func recheckFolderChanges() {
+        updateFolderChanges { $0.recheck($1) }
+    }
 
-        /// What was waiting of another folder gives way.
-        @MainActor static func merging(_ pending: PendingChange?, path: String, _ paths: [String]?) -> PendingChange {
-            guard let pending, pending.path == path else {
-                return PendingChange(path: path, changedPaths: paths.map(Set.init))
-            }
-            guard let existing = pending.changedPaths, let paths else {
-                return PendingChange(path: path, changedPaths: nil)
-            }
-            let union = existing.union(paths)
-            return PendingChange(path: path, changedPaths: union.count > FolderWatches.maxChangedPaths ? nil : union)
-        }
+    /// Reads what waited now even though `hold` is on (the result sheet, so what the operation made shows behind it).
+    func readFolderChanges(despite hold: FolderChangeHold) {
+        updateFolderChanges { $0.readDespite(hold, $1) }
     }
 
     /// While a dialog is open or a name is being typed a press on the tab bar does nothing and the keyboard stays: the
@@ -839,38 +811,33 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// Reads what waited, unless something holds it; `despite` is a hold that doesn't count this time.
-    func flushPendingChange(despite: FolderChangeHold? = nil) {
+    /// The tab as the gate asks about it: the folder on screen and what is going on in it.
+    private var folderChangeSituation: FolderChangeGate.Situation {
+        let opening: FolderChangeGate.Situation.Opening =
+            !isNavigating
+            ? .nothing : navigationTarget?.comparablePath == folder.comparablePath ? .thisFolder : .anotherFolder
         // A file operation running here or in another window holds them too (WriteOperations/).
-        let holds = despite.map { folderChangeHolds.subtracting([$0]) } ?? folderChangeHolds
-        guard let pending = pendingChange, !changeRetryWaiting, holds.isEmpty, !renameHoldsChanges, !isWriteLocked,
-            !quietReadInFlight
-        else { return }
-        // Changes to a folder no longer on screen don't matter, and another folder being opened leaves
-        // this one behind: reading it again would go back to it, or read the new one for them.
-        guard pending.path == folder.path, !isNavigating || navigationTarget?.comparablePath == folder.comparablePath
-        else {
-            pendingChange = nil
-            return
-        }
-        // The folder on screen is being read already, by a read that may have started before the change: it is tried again
-        // shortly.
-        if isNavigating {
-            changeRetryWaiting = true
+        return FolderChangeGate.Situation(
+            folderPath: folder.path, opening: opening, renaming: content.inlineRename != nil,
+            writeLocked: isWriteLocked)
+    }
+
+    /// Tells the gate what happened, and does what it says.
+    private func updateFolderChanges(
+        _ event: (inout FolderChangeGate, FolderChangeGate.Situation) -> FolderChangeGate.Effect
+    ) {
+        switch event(&folderChanges, folderChangeSituation) {
+        case .none:
+            break
+        case .scheduleRetry:
             DispatchQueue.main.asyncAfter(deadline: .now() + Self.retryDelay) { [weak self] in
-                MainActor.assumeIsolated {
-                    self?.changeRetryWaiting = false
-                    self?.flushPendingChange()
-                }
+                MainActor.assumeIsolated { self?.updateFolderChanges { $0.retryElapsed($1) } }
             }
-            return
-        }
-        pendingChange = nil
-        quietReadInFlight = true
-        Task {
-            await quietRead(pending.changedPaths.map { Array($0) })
-            quietReadInFlight = false
-            flushPendingChange()
+        case .read(let changedPaths):
+            Task {
+                await quietRead(changedPaths.map { Array($0) })
+                updateFolderChanges { $0.readEnded($1) }
+            }
         }
     }
 
@@ -1682,8 +1649,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         content.onRenameSubmit = { [weak self] path, name in self?.submitRename(path: path, typed: name) }
         content.onRenameStateChanged = { [weak self] in
             guard let self else { return }
-            self.renameHoldsChanges = self.content.inlineRename != nil
-            if !self.renameHoldsChanges { self.flushPendingChange() }
+            // While a name is being typed, changes made outside the app wait.
+            if self.content.inlineRename == nil { self.recheckFolderChanges() }
             self.notify(.focusedPane)
         }
         // A refusal the field was showing when its item left the list.
@@ -1876,7 +1843,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     private func showNoFolder() {
         folderLetGo = true
-        pendingChange = nil
+        folderChanges.letGo()
         content.showNoFolder()
         updateTitle()
         updatePathBar()

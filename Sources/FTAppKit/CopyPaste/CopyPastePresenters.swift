@@ -159,7 +159,7 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         // what the operation made shows, selected, behind it.
         Task { @MainActor [weak tab, weak scrim] in
             guard let tab, let scrim, !scrim.isDismissed, tab.folderChangesHeld(by: .dialog) else { return }
-            tab.flushPendingChange(despite: .dialog)
+            tab.readFolderChanges(despite: .dialog)
         }
         sheet.onDone = { [weak scrim] in scrim?.dismiss() }
         sheet.onRetry = { [weak self, weak scrim, weak tab] in

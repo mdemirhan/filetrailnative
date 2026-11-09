@@ -164,33 +164,3 @@ extension ExplorerWindowlessTests {
         }
     }
 }
-
-/// How the changes waiting to be read are merged.
-@MainActor
-struct PendingChangeTests {
-    private typealias Pending = MainWindowController.PendingChange
-
-    // One change that doesn't say what changed makes the read a full one, whatever came before or after.
-    @Test func aChangeToAnythingAmongThoseHeldBackReadsEverything() {
-        let some = Pending.merging(nil, path: "/x", ["/x/a"])
-        #expect(some.changedPaths == ["/x/a"])
-        let all = Pending.merging(some, path: "/x", nil)
-        #expect(all.changedPaths == nil)
-        #expect(Pending.merging(all, path: "/x", ["/x/b"]).changedPaths == nil)
-    }
-
-    // Past the most it lists, the read is a full one.
-    @Test func tooManyChangedItemsReadEverything() {
-        let many = Pending.merging(nil, path: "/x", (0..<600).map { "/x/a\($0)" })
-        #expect(many.changedPaths?.count == 600)
-        #expect(Pending.merging(many, path: "/x", (0..<600).map { "/x/b\($0)" }).changedPaths == nil)
-    }
-
-    // What was held back of the folder left doesn't add to a change of the folder come to.
-    @Test func aChangeOfTheNewFolderTakesThePlaceOfOneHeldBackOfTheOld() {
-        let old = Pending.merging(nil, path: "/old", ["/old/a"])
-        let new = Pending.merging(old, path: "/new", ["/new/b"])
-        #expect(new.path == "/new")
-        #expect(new.changedPaths == ["/new/b"])
-    }
-}

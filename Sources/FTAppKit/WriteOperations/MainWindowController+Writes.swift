@@ -24,7 +24,7 @@ extension MainWindowController {
     /// A write started or ended here or in another window: the changes to the folder that waited meanwhile are read.
     func writeLockChanged() {
         if !isWriteLocked {
-            flushPendingChange()
+            recheckFolderChanges()
             refreshTrashState()
         }
         commandsChanged()
