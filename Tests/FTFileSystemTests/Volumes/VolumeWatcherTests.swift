@@ -48,6 +48,16 @@ func testVolume(
 }
 
 @MainActor @Suite struct VolumeWatcherTests {
+    // A timer that fired is let go of, as one cancelled is: a change to /Volumes left one behind for good.
+    @Test func aTimerThatFiredIsLetGoOf() async {
+        var fired = false
+        let handle = VolumeWatcher.dispatchSchedule(1) { fired = true }
+        #expect(VolumeWatcher.isScheduled(handle))
+        for _ in 0..<200 where !fired { try? await Task.sleep(for: .milliseconds(5)) }
+        #expect(fired)
+        #expect(!VolumeWatcher.isScheduled(handle))
+    }
+
     @Test func listsDisksByNameNumbersInOrderAndLetterCaseAside() {
         let sorted = Volume.sorted([
             testVolume("disk 10"), testVolume("Backup"), testVolume("disk 9"), testVolume("archive"),

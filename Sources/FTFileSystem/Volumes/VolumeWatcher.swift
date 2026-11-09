@@ -91,12 +91,23 @@ public final class VolumeWatcher {
         private var items: [Int: DispatchWorkItem] = [:]
         private var last = 0
 
-        func add(_ item: DispatchWorkItem) -> Int {
+        func reserve() -> Int {
             lock.lock()
             defer { lock.unlock() }
             last += 1
-            items[last] = item
             return last
+        }
+
+        func set(_ item: DispatchWorkItem, for handle: Int) {
+            lock.lock()
+            defer { lock.unlock() }
+            items[handle] = item
+        }
+
+        func contains(_ handle: Int) -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return items[handle] != nil
         }
 
         func remove(_ handle: Int) -> DispatchWorkItem? {
@@ -111,11 +122,19 @@ public final class VolumeWatcher {
     public nonisolated static func dispatchSchedule(
         _ milliseconds: Int, _ callback: @escaping @MainActor () -> Void
     ) -> Int {
-        let item = DispatchWorkItem { MainActor.assumeIsolated { callback() } }
-        let handle = timers.add(item)
+        let handle = timers.reserve()
+        // One that fires is let go of, as one cancelled is.
+        let item = DispatchWorkItem {
+            _ = timers.remove(handle)
+            MainActor.assumeIsolated { callback() }
+        }
+        timers.set(item, for: handle)
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(milliseconds), execute: item)
         return handle
     }
+
+    /// Whether the timer `handle` has yet to fire or be cancelled.
+    nonisolated static func isScheduled(_ handle: Int) -> Bool { timers.contains(handle) }
 
     public nonisolated static func dispatchCancel(_ handle: Int) {
         timers.remove(handle)?.cancel()
