@@ -29,6 +29,31 @@ private final class RecordingSource: IconSource, @unchecked Sendable {
     }
 }
 
+/// Holds its first answer until let go, and draws a new image each time it is asked.
+private final class HeldSource: IconSource, @unchecked Sendable {
+    private let lock = NSLock()
+    private let gate = DispatchSemaphore(value: 0)
+    private var drawn: [NSImage] = []
+
+    var images: [NSImage] {
+        lock.lock()
+        defer { lock.unlock() }
+        return drawn
+    }
+
+    func letFirstAnswer() { gate.signal() }
+
+    func icon(atPath path: String) -> NSImage? {
+        let image = NSImage(size: NSSize(width: 2, height: 2))
+        lock.lock()
+        drawn.append(image)
+        let first = drawn.count == 1
+        lock.unlock()
+        if first { gate.wait() }
+        return image
+    }
+}
+
 @MainActor
 private func fetch(_ store: FileIconStore, _ request: IconRequest, deferLoad: Bool = false) async -> NSImage? {
     await withCheckedContinuation { continuation in
@@ -102,6 +127,31 @@ private func entry(
             let images = await [first, second]
             #expect(images[0] === images[1])
             #expect(source.paths.count == 1)
+        }
+    }
+
+    // An icon forgotten while it is being drawn (a custom icon set) is drawn again for the next request: the drawing
+    // from before neither answers it nor comes back into the cache.
+    @Test func anIconForgottenWhileItIsDrawnIsDrawnAgain() async throws {
+        try await withTemporaryDirectory { directory in
+            let source = HeldSource()
+            let store = FileIconStore(source: source, samples: IconSamples(root: directory.appending("samples")))
+            let request = IconRequest(entry: entry("/a/custom-icon"))
+            store.load(request) { _ in }
+            await waitUntil { source.images.count == 1 }
+            store.forget(request)
+            async let next = fetch(store, request)
+            await waitUntil { source.images.count == 2 }
+            source.letFirstAnswer()
+            let image = await next
+            #expect(source.images.count == 2)
+            #expect(image === source.images.last)
+            try? await Task.sleep(for: .milliseconds(50))
+            guard case .image(let cached) = store.lookup(request) else {
+                Issue.record("not cached")
+                return
+            }
+            #expect(cached === source.images.last)
         }
     }
 

@@ -75,7 +75,9 @@ public final class FileIconStore {
     private let samples: IconSamples
     private let sleep: @Sendable (Duration) async throws -> Void
     private var cache = LRUCache<String, NSImage?>(capacity: FileIconStore.maxEntries)
-    private var pending: [String: Task<NSImage?, Never>] = [:]
+    /// The drawings under way, each with its number: only the latest for an icon fills the cache.
+    private var pending: [String: (id: Int, task: Task<NSImage?, Never>)] = [:]
+    private var fetchCount = 0
 
     public init(
         source: any IconSource = WorkspaceIconSource(), samples: IconSamples = IconSamples(),
@@ -123,9 +125,10 @@ public final class FileIconStore {
         return LoadHandle { task.cancel() }
     }
 
-    /// The icon may have changed: the next request draws it again.
+    /// The icon may have changed: the next request draws it again, rather than waiting for a drawing from before.
     public func forget(_ request: IconRequest) {
         cache.remove(request.cacheKey)
+        pending[request.cacheKey] = nil
     }
 
     /// Asks for the plain folder icons and the document icon, so the first folder already draws them.
@@ -140,22 +143,26 @@ public final class FileIconStore {
 
     private func fetch(_ request: IconRequest) -> Task<NSImage?, Never> {
         if let running = pending[request.cacheKey] {
-            return running
+            return running.task
         }
         let source = self.source
         let samples = self.samples
+        fetchCount += 1
+        let id = fetchCount
         let task = Task { [weak self] () -> NSImage? in
             let image = await Task.detached(priority: .userInitiated) {
                 await Self.draw(request, source: source, samples: samples)
             }.value
-            self?.finish(request.cacheKey, image)
+            self?.finish(request.cacheKey, image, id: id)
             return image
         }
-        pending[request.cacheKey] = task
+        pending[request.cacheKey] = (id, task)
         return task
     }
 
-    private func finish(_ cacheKey: String, _ image: NSImage?) {
+    /// A drawing forgotten since it began answers its own requests but leaves the cache to the next one.
+    private func finish(_ cacheKey: String, _ image: NSImage?, id: Int) {
+        guard pending[cacheKey]?.id == id else { return }
         pending[cacheKey] = nil
         cache.write(image, for: cacheKey)
     }
