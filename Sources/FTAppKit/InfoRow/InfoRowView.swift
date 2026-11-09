@@ -114,7 +114,7 @@ final class InfoRowView: NSView {
     /// Told when the row's height changes while it slides, so the pane lays out again.
     var onHeightChange: (() -> Void)?
     private let cell = FolderSizeCellView(style: .row, identifier: "infoRow.folderSize")
-    private var slideTimer: Timer?
+    private(set) var slideTimer: Timer?
     private var slideFrom = 0.0
     private var slideStart = Date()
     private var shownHeight = InfoRowView.closedHeight
@@ -136,7 +136,9 @@ final class InfoRowView: NSView {
         slideFrom = shownHeight
         slideStart = Date()
         let alphaFrom = alphaValue
-        slideTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60, repeats: true) { [weak self] _ in
+        slideTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60, repeats: true) { [weak self] timer in
+            // The row went away while it slid: nothing else would stop the timer.
+            guard self != nil else { return timer.invalidate() }
             MainActor.assumeIsolated {
                 guard let self else { return }
                 let elapsed = Date().timeIntervalSince(self.slideStart)

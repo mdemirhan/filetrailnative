@@ -165,7 +165,7 @@ final class SidebarChevronView: SidebarPlainView {
     private(set) var rotation: CGFloat = 0 {
         didSet { needsDisplay = true }
     }
-    private var turnTimer: Timer?
+    private(set) var turnTimer: Timer?
     var isTurning: Bool { turnTimer != nil }
     /// How long the chevron takes to turn, easing in and out.
     private static let turnDuration = 0.12
@@ -177,7 +177,9 @@ final class SidebarChevronView: SidebarPlainView {
         let began = ProcessInfo.processInfo.systemUptime
         turnTimer?.invalidate()
         rotation = start
-        let timer = Timer(timeInterval: 1.0 / 60, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: 1.0 / 60, repeats: true) { [weak self] timer in
+            // The chevron went away while it turned: nothing else would stop the timer.
+            guard self != nil else { return timer.invalidate() }
             MainActor.assumeIsolated {
                 guard let self else { return }
                 let progress = min(1, (ProcessInfo.processInfo.systemUptime - began) / Self.turnDuration)

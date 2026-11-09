@@ -377,6 +377,27 @@ struct InfoRowViewTests {
         #expect(view.height == 30)
     }
 
+    // A row that goes away while it slides (its window closed) stops its timer, which would otherwise fire 60 times a
+    // second until the app quits.
+    @Test func aRowGoneWhileItSlidesStopsItsTimer() async throws {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 600, height: 100), styleMask: [.borderless], backing: .buffered,
+            defer: true)
+        window.isReleasedWhenClosed = false
+        var view: InfoRowView? = InfoRowView()
+        window.contentView?.addSubview(try #require(view))
+        view?.setOpen(true, animated: true)
+        // Reduce Motion opens it at once, with no timer.
+        guard let timer = view?.slideTimer else { return }
+        weak let gone = view
+        autoreleasepool {
+            view?.removeFromSuperview()
+            view = nil
+        }
+        #expect(await waitUntil { gone == nil })
+        #expect(await waitUntil { !timer.isValid })
+    }
+
     // Closed it keeps its line, out of sight and reach.
     @Test func aClosedRowIsOutOfReach() {
         let view = InfoRowView()

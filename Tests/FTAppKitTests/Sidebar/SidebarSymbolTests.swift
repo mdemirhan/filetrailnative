@@ -77,6 +77,19 @@ import Testing
         #expect(chevron.rotation == 0)
     }
 
+    // A chevron that goes away while it turns (its row removed) stops its timer, which would otherwise fire 60 times a
+    // second until the app quits.
+    @Test func aChevronGoneWhileItTurnsStopsItsTimer() async throws {
+        var chevron: SidebarChevronView? = SidebarChevronView()
+        chevron?.expanded = true
+        chevron?.turnToWhereItIs()
+        let timer = try #require(chevron?.turnTimer)
+        weak let gone = chevron
+        chevron = nil
+        #expect(gone == nil)
+        #expect(await waitUntil { !timer.isValid })
+    }
+
     @Test func locationsHaveTheirOwnDiskAndNetworkSymbols() throws {
         #expect(try symbol(location(.drive, "/")).name == "internaldrive")
         #expect(try symbol(location(.drive, "/Volumes/Disk")).name == "externaldrive")
