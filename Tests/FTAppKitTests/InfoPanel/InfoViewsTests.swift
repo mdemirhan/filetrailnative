@@ -529,6 +529,35 @@ struct PathBarViewTests {
         }
     }
 
+    // A path bar laid out again while a slow list loads (the window resized) replaces the separator the menu opened
+    // from: the menu closes when the folders come, instead of staying on "Loading…".
+    @Test func aMenuWhoseSeparatorWentClosesInsteadOfStayingOnLoading() async throws {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 600, height: 500), styleMask: [.titled], backing: .buffered,
+            defer: true)
+        window.isReleasedWhenClosed = false
+        var separator: PathSeparatorView? = PathSeparatorView(isButton: true)
+        separator?.frame = NSRect(x: 100, y: 100, width: 16, height: 16)
+        window.contentView?.addSubview(try #require(separator))
+        let controller = PathFolderMenuController()
+        let presenter = AppMenuPresenter()
+        var answer: CheckedContinuation<Void, Never>?
+        try await AppMenuPresenter.withOwn(presenter) {
+            controller.toggle(from: try #require(separator), parent: "/src", active: "") { _ in
+                await withCheckedContinuation { answer = $0 }
+                return [PathbarFolder(path: "/src/lib", name: "lib")]
+            }
+            #expect(await waitUntil { presenter.menu?.rows.first?.title == "Loading…" })
+            autoreleasepool {
+                separator?.removeFromSuperview()
+                separator = nil
+            }
+            answer?.resume()
+            #expect(await waitUntil { presenter.menu == nil })
+            #expect(!controller.isOpen)
+        }
+    }
+
     // The folders at that level, the one on the path ticked.
     @Test func theFolderOnThePathIsTicked() async throws {
         let folders = ["components", "lib", "pages"].map { PathbarFolder(path: "/src/\($0)", name: $0) }

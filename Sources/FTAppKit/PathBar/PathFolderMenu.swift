@@ -58,7 +58,10 @@ final class PathFolderMenuController {
         DispatchQueue.main.asyncAfter(deadline: .now() + InfoMetrics.folderMenuLoadingDelay, execute: timer)
         Task { @MainActor [weak self] in
             let result = await Result { try await request(parent) }
-            guard let self, self.requestID == id, self.button != nil else { return }
+            guard let self, self.requestID == id else { return }
+            // The path bar was laid out again meanwhile (the window resized) and its separator went: the menu has
+            // nothing to stand over and closes, rather than staying on "Loading…".
+            guard self.button?.window != nil else { return self.close() }
             switch result {
             case .success(let list):
                 self.folders = list
