@@ -240,7 +240,7 @@ keep the store as it is.
 *Test:* two controllers, a kept draft in the first, begin a rename in the second, expect the second's field to hold
 its own item's name.
 
-### [ ] 1.6. Searching from "/" finds everything twice
+### [x] 1.6. Searching from "/" finds everything twice
 
 [verified; reproduced by the auditor with the bundled fd]
 `Sources/FTFileSystem/Search/FdSearchArgs.swift:23-25` excludes only `/Volumes` when the root is "/". The data volume

@@ -52,6 +52,17 @@ private func request(
         #expect(!args("/Users/demo").contains("--exclude"))
     }
 
+    // The data volume is also mounted at /System/Volumes/Data: a search of Macintosh HD finds what is under /Users
+    // once, where it is browsed. One started inside /System/Volumes searches it as usual.
+    @Test func searchesMacintoshHDWithoutTheDataVolumeASecondTime() {
+        func args(_ root: String) -> [String] {
+            FdSearchArgs.build(request(root: root, query: "report", mode: .text, gitFolders: false))
+        }
+        #expect(args("/").joined(separator: " ").contains("--exclude /Volumes --exclude /System/Volumes"))
+        #expect(!args("/System/Volumes/Data").contains("--exclude"))
+        #expect(!args("/System").contains("--exclude"))
+    }
+
     @Test func matchesTheQueryLiterallyInPlainTextModeAndAsAPatternOtherwise() {
         func args(_ mode: SearchPatternModePreference) -> [String] {
             FdSearchArgs.build(request(query: "report (1).pdf", mode: mode))
