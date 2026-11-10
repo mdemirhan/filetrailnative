@@ -146,10 +146,12 @@ struct SwiftExecEngine: ExecEngine {
             FileWriteJournal.open(places.journal), NativeWriteFileSystem(),
             logger: RecoveryLogger(
                 info: { message, details in
-                    // The recordings give a Replace's recovery a path, null when nothing was put in place; the log
-                    // takes text alone, so it leaves out a path it doesn't have.
+                    // The recordings give a Replace's recovery a path, null when nothing was put in place (its copy
+                    // removed, or nothing left of it); the log takes text alone, so it leaves out a path it doesn't
+                    // have. Any other outcome without a path stays without one, and differs.
+                    let nothingPutInPlace = ["removed_copy", "nothing_left"].contains(details["outcome"] ?? "")
                     let fields = details.mapValues { JSONValue.string($0) }.merging(
-                        details["stagingPath"] != nil && details["path"] == nil ? ["path": .null] : [:]
+                        nothingPutInPlace && details["path"] == nil ? ["path": .null] : [:]
                     ) { kept, _ in kept }
                     logged.withLock {
                         $0.append(
@@ -466,6 +468,7 @@ struct RecordedWriteFileSystem: UndoFileSystem {
     var chmod: ((String, UInt32) throws -> Void)? { guarded(disk.chmod) }
     var utimes: ((String, Double, Double) throws -> Void)? { guarded(disk.utimes) }
     var copyMetadata: ((String, String) throws -> Void)? { guarded(disk.copyMetadata) }
+    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { guarded(disk.copyMetadataToRunInPlace) }
     var setAcl: ((String, String?) throws -> Void)? { guarded(disk.setAcl) }
     var trash: ((String) throws -> String?)? { guarded(disk.trash) }
     var canModifyFolder: ((String) throws -> Void)? { guarded(disk.canModifyFolder) }

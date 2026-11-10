@@ -2004,3 +2004,7 @@ anything that differed from the plan, and anything found on the way that is not 
   CopyPaste dialogs and sheet look, the batch rename sheet fixture, InfoViews, Info, ReviewRowWidth, HiddenItemLook,
   TextFitLayout, List, Alert, LocalWriteActions, NativeWindowsGUI, ContextMenuRoutes, ClipboardWindow). Each needs
   reading: some are followed by a check of their own.
+- 2026-11-10. 2.9, after its review: the crash tests compare folders whole, file for file, and the harness's disk
+  passes `copyMetadataToRunInPlace` through. Known limit, not changed: the crash falls only between journal
+  writes, never inside a copy, so a partly written file at the staging path is reached only by the hand-built
+  recovery tests (`CopyPasteRecovery.swift` near 255).

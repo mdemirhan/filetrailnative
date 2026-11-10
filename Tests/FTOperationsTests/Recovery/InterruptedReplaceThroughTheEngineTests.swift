@@ -30,8 +30,7 @@ struct InterruptedReplaceThroughTheEngineTests {
         }
 
         var name: String { isFolder ? "f" : "a.txt" }
-        /// The file compared, inside the item.
-        var file: String { isFolder ? "f/a.txt" : "a.txt" }
+        var isMove: Bool { mode == "cut" }
     }
 
     private struct Run {
@@ -55,8 +54,25 @@ struct InterruptedReplaceThroughTheEngineTests {
         return Run(crashed: crashed, before: outcome.before, recovery: outcome.recovery)
     }
 
-    private func digest(_ entries: [TreeSnapshot.Entry], _ path: String) -> String? {
-        entries.first { $0.path == path }?.sha256
+    /// The item at `path` as a whole: each file and folder in it by its path inside, with a file's contents. Nil when
+    /// nothing is there.
+    private func item(_ entries: [TreeSnapshot.Entry], at path: String) -> [String: String]? {
+        var found: [String: String] = [:]
+        for entry in entries {
+            if entry.path == path {
+                found[""] = entry.sha256 ?? entry.kind
+            } else if entry.path.hasPrefix(path + "/") {
+                found[String(entry.path.dropFirst(path.count + 1))] = entry.sha256 ?? entry.kind
+            }
+        }
+        return found.isEmpty ? nil : found
+    }
+
+    /// The items whole in the Trash, which names them "<n>-<name>".
+    private func trashed(_ entries: [TreeSnapshot.Entry], named name: String) -> [[String: String]] {
+        Set(entries.map { String($0.path.split(separator: "/")[0]) })
+            .filter { $0.hasSuffix("-" + name) }
+            .compactMap { item(entries, at: $0) }
     }
 
     @Test(arguments: Shape.allCases)
@@ -69,18 +85,27 @@ struct InterruptedReplaceThroughTheEngineTests {
             guard run.crashed else { break }
             stages += 1
             let recovery = try #require(run.recovery, "write \(write)")
-            let newer = try #require(digest(run.before, "source/\(shape.file)"))
-            let older = try #require(digest(run.before, "destination/\(shape.file)"))
+            let newer = try #require(item(run.before, at: "source/\(shape.name)"))
+            let older = try #require(item(run.before, at: "destination/\(shape.name)"))
             let after = recovery.after
-            let destination = digest(after, "destination/\(shape.file)")
-            let kept = Set(after.compactMap(\.sha256) + recovery.trash.compactMap(\.sha256))
+            let destination = item(after, at: "destination/\(shape.name)")
+            let source = item(after, at: "source/\(shape.name)")
+            let inTrash = trashed(recovery.trash, named: shape.name)
 
             #expect(recovery.journal == .array([]), "\(shape) after write \(write): the journal is empty")
-            #expect(kept.contains(newer), "\(shape) after write \(write): the pasted item is still somewhere")
-            #expect(kept.contains(older), "\(shape) after write \(write): the replaced item is kept or in the Trash")
+            // Whole, file for file: the one pasted and the one it replaces.
             #expect(
                 destination == newer || destination == older,
-                "\(shape) after write \(write): the destination holds one of the two")
+                "\(shape) after write \(write): the destination holds one of the two, whole")
+            #expect(
+                destination == newer || source == newer,
+                "\(shape) after write \(write): the pasted item is whole where it went or where it was")
+            if !shape.isMove {
+                #expect(source == newer, "\(shape) after write \(write): a copy leaves its source as it was")
+            }
+            #expect(
+                destination == older || inTrash.contains(older),
+                "\(shape) after write \(write): the replaced item is kept, or whole in the Trash")
             #expect(
                 !(after + recovery.trash).contains { $0.path.contains(".filetrail-") },
                 "\(shape) after write \(write): no copy under a hidden name is left")
