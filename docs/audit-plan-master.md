@@ -638,7 +638,7 @@ constraints on the shared search field each time the item is made). Follow the `
 `onChange`, which re-sorts. Up to 10 times a second, with rows jumping. Reproduce in a test before choosing the fix;
 the likely one is that a read for sorting must not evict entries of the folder on screen.
 
-### [ ] 3C.2. A tab that lets go of its folder mid-rename stays "renaming"
+### [x] 3C.2. A tab that lets go of its folder mid-rename stays "renaming"
 
 `showNoFolder()`
 (`ContentPaneController.swift:487`) does not reset `rowsCache`, `listFilter`, `hiddenItemCount` or `tags`; `show`,

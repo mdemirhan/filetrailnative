@@ -490,8 +490,13 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     func showNoFolder() {
         folderPath = ""
         readError = nil
+        // Nothing of the folder stays, as for another folder: its tags, filter and hidden count, and its rows.
+        tags.startOver()
+        listFilter.clear()
+        hiddenItemCount = 0
         startDetailsOver()
         listed = []
+        rowsCache = nil
         entries = []
         entryPaths = []
         positionsCache = nil

@@ -40,3 +40,27 @@ struct RenameDraftsAcrossTabsTests {
         #expect(field.stringValue == "c.txt")
     }
 }
+
+@MainActor
+struct LettingGoOfTheFolderTests {
+    // A tab that lets go of its folder (it was deleted, its disk ejected) while a name is typed ends the rename, and
+    // keeps nothing of the folder: its rows, filter and hidden count.
+    @Test func endsARenameAndForgetsTheFolder() throws {
+        _ = NSApplication.shared
+        let content = ContentPaneController(
+            mode: .details, folderSizes: FolderSizeService.shared.sizes(for: 9_004), loaders: .placeholder)
+        content.view.frame = NSRect(x: 0, y: 0, width: 900, height: 600)
+        content.show(
+            folder: "/f", entries: ["a.txt", "b.txt"].map { ContentModelTests.entry($0) }, selecting: nil,
+            keepingScroll: false)
+        content.view.layoutSubtreeIfNeeded()
+        content.setSearchFilter("a")
+        #expect(content.beginRename(path: "/f/a.txt"))
+
+        content.showNoFolder()
+
+        #expect(content.inlineRename == nil)
+        #expect(content.filter.isEmpty)
+        #expect(content.entries.isEmpty)
+    }
+}
