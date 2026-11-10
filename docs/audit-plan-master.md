@@ -2096,3 +2096,15 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. 3G.1 did not hold; nothing changed. A cut is pasted as a Move To from every place that starts one
   (Paste from the menu, the keys and the right-click menu, a drag that moves, Try Again), so the result sheet says
   "couldn't be moved" and the planned-skip toast "Moved 3 items".
+- 2026-11-10. Review of the 3C, 3D, 3F and 3G commits. Changed after it: Show in Finder looks for a link itself, not
+  what it points to, so a broken link (which the list shows) is revealed; and a review of a drop from another app
+  dismissed while its start is under way (Escape after Start) no longer forgets the drop, which the start then takes
+  (no test: nothing can hold a start part way). Found, not fixed:
+  - 3F.2: now that the 10 s limit really ends the wait, a change macOS makes after it (if it ever asks the person
+    first) is told as "macOS didn't answer." and the lists cached meanwhile stay until the window is next focused.
+    Worth trying by hand: Always Open With on a kind, and see whether macOS asks.
+  - 3C.5: the jobs keep a finished answer, but `WindowFolderSizes.cancel` still sets the window's entry to idle, so a
+    Stop pressed between a job's end and the next poll shows no size until the folder is asked about again.
+  - 3D.5: a drop whose review is then cancelled leaves `pendingTreeSelectionPath` set, as Duplicate's does.
+  - 3C.3: with Quick Look open while another window becomes key, the panel ends its control and shows no item.
+  - 3F.1: a state file that can't be encoded calls `onPersistError` at every later save.

@@ -62,9 +62,12 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         let sheet = CopyPasteReviewSheet(model: model)
         let scrim = CopyPasteDialogs.present(sheet, placement: .sheet, on: tab, in: window)
         self.sheet = sheet
-        // A drop from another app whose review goes without starting it is forgotten with it.
+        // A drop from another app whose review goes without starting it is forgotten with it. A start under way
+        // takes it itself, and one that fails once the review has gone lets go of it.
         let analysisId = model.report.analysisId
-        scrim.alsoOnDismiss { _ = TabDragDrop.externalDropAnalyses.remove(analysisId) }
+        scrim.alsoOnDismiss { [weak sheet] in
+            if sheet?.starting != true { TabDragDrop.externalDropAnalyses.remove(analysisId) }
+        }
         sheet.onClose = { [weak scrim] in scrim?.dismiss() }
         sheet.onStart = { [weak sheet, weak scrim] in
             // One start only: the button is busy while starting, and works again if the start failed or threw.
@@ -75,6 +78,7 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
                 if started {
                     scrim?.dismiss()
                 } else {
+                    if scrim?.isDismissed ?? true { TabDragDrop.externalDropAnalyses.remove(analysisId) }
                     sheet.starting = false
                     sheet.window?.makeFirstResponder(sheet.primaryButton)
                 }
@@ -90,6 +94,7 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
     ) {
         var scrim: DialogScrim?
         var starting = false
+        let analysisId = model.report.analysisId
         var card: AlertCard? { scrim?.panel as? AlertCard }
         func close() { scrim?.dismiss() }
         func choose(_ choice: CopyPasteChoice) {
@@ -101,6 +106,8 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
                 if started {
                     close()
                 } else {
+                    // The review went while it was starting: a drop from another app is forgotten now.
+                    if scrim == nil { TabDragDrop.externalDropAnalyses.remove(analysisId) }
                     starting = false
                     for button in card?.allButtons ?? [] { button.isEnabled = true }
                     if let primary = card?.defaultButton { card?.window?.makeFirstResponder(primary) }
@@ -122,9 +129,9 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         scrim = shown
         // The buttons hold the scrim through `close`, and the scrim holds the buttons: let go once it is away.
         shown.alsoOnDismiss { scrim = nil }
-        // A drop from another app whose review goes without starting it is forgotten with it.
-        let analysisId = model.report.analysisId
-        shown.alsoOnDismiss { _ = TabDragDrop.externalDropAnalyses.remove(analysisId) }
+        // A drop from another app whose review goes without starting it is forgotten with it; a start under way takes
+        // it itself.
+        shown.alsoOnDismiss { if !starting { TabDragDrop.externalDropAnalyses.remove(analysisId) } }
         alert = shown.panel as? AlertCard
     }
 }
