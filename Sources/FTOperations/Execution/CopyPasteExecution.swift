@@ -33,12 +33,12 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
 
     emitProgress(context, .running, nil, nil)
 
-    func recordNotStarted(_ nodes: ArraySlice<ResolvedCopyPasteNode>) {
+    func recordNotStarted(_ nodes: ArraySlice<ResolvedCopyPasteNode>, _ message: String = notStartedMessage) {
         for node in nodes {
             itemResults.append(
                 node.action == .skip
                     ? itemResult(node, .skipped, nil, .plannedConflictPolicy)
-                    : itemResult(node, .cancelled, notStartedMessage))
+                    : itemResult(node, .cancelled, message))
         }
     }
 
@@ -46,6 +46,10 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
         if run.signal.isStopped {
             cancelled = true
             recordNotStarted(run.resolvedNodes[nodeIndex...])
+            break
+        }
+        if shared.diskFull != nil {
+            recordNotStarted(run.resolvedNodes[nodeIndex...], diskFullNotStartedMessage)
             break
         }
         shared.undo.unit = []
@@ -59,6 +63,17 @@ func executeCopyPasteFromAnalysisHere(_ run: CopyPasteRun) {
             // Surface children (files, and folders that failed) in the result.
             appendItems(&itemResults, outcome.childItems)
         } catch {
+            if let full = shared.diskFull, !run.signal.isStopped {
+                // The disk is full: the item failed for that, though what it did inside went as for a Stop.
+                if encounteredError == nil {
+                    encounteredError = full
+                }
+                itemResults.append(failedItemResult(asExecuted(context, node), error, describeCopyPasteError(full)))
+                if let stopped = rootError(error) as? CancelledWithItemsError {
+                    appendItems(&itemResults, stopped.childItems)
+                }
+                continue
+            }
             if isAbortError(error) || run.signal.isStopped {
                 cancelled = true
                 itemResults.append(itemResult(asExecuted(context, node), .cancelled, cancelledMessage))
@@ -308,6 +323,9 @@ func executeResolvedNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCo
             return outcome
         } catch {
             guard let taken = rootError(error) as? DestinationTakenError else {
+                if context.shared.diskFull == nil && errorCode(error) == "ENOSPC" {
+                    context.shared.diskFull = error
+                }
                 // "You don't have permission" is the wrong reason when an item is locked.
                 let explained: any Error =
                     findLockedRefusal(

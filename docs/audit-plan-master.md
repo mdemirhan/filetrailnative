@@ -516,7 +516,7 @@ stops the signal; if it runs after the last `isStopped` check but before `regist
 registered afterwards and nothing resolves it. *Fix:* re-check the signal right after registering and resolve the
 question as stopped; or do the check and the registration under one lock.
 
-### [ ] 3A.3. A full disk does not stop a paste
+### [x] 3A.3. A full disk does not stop a paste
 
 No path treats `ENOSPC` as final: every remaining item is attempted
 and fails one by one, and a partly copied ordinary folder is put in place (`ExecutionNodes.swift:137-151` discards
@@ -2080,3 +2080,5 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. The owner: 3A.3 yes, the four `WholeFolderTests` use EIO for their failing file; 3A.8 yes, hand-edit
   the counts of the three recordings named above; 3A.9 yes, hand-edit the exec-crash case named above; 3A.4 leave as
   is (closed: a refused attribute other than the resource fork is skipped on purpose, and the file's original goes).
+- 2026-11-10. 3A.3: not covered, noted: EDQUOT, the EIO an older macOS gives for a full FAT disk, and an ENOSPC
+  wrapped in `StagingCleanupError` (its code is nil) don't end the run.

@@ -3,6 +3,7 @@ import Foundation
 import os
 
 let notStartedMessage = "Not started because the operation was stopped."
+let diskFullNotStartedMessage = "Not started because the destination disk is full."
 let cancelledMessage = "Operation cancelled."
 /// How many times one item may run into something new at its destination before the paste gives up on it (each
 /// time asks, or applies a standing answer).
@@ -151,6 +152,9 @@ final class ExecutionShared {
     /// by path: a move removes the originals it copied (a folder saved anew holds other items), not the ones the
     /// review saw.
     var acceptedNodes: [NameKeys.Exact: ResolvedCopyPasteNode] = [:]
+    /// The first error that said the destination disk is full (ENOSPC): the paste ends there, what was being built
+    /// under a hidden name goes as it does for a Stop, and the items after it aren't started.
+    var diskFull: (any Error)?
 
     init(reservedPaths: Set<NameKeys.Exact>, undo: UndoRecorder) {
         self.reservedPaths = reservedPaths

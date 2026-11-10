@@ -61,8 +61,9 @@ func performNode(_ context: ExecutionContext, _ resolvedNode: ResolvedCopyPasteN
 /// A folder copied, or moved to another disk, is built whole under a hidden name next to where it goes (written
 /// down, for a crash), then given its name: stopped, or a move that couldn't copy everything, leaves nothing half
 /// done in either place, and a move removes the originals only once the folder is in place. A copy of an ordinary
-/// folder that couldn't copy everything is put in place with what it has, its failures named; a package (a
-/// Keynote document, an app) is put in place whole or not at all.
+/// folder that couldn't copy everything is put in place with what it has, its failures named, unless the disk filled
+/// up (that ends the paste, as a Stop does); a package (a Keynote document, an app) is put in place whole or not at
+/// all.
 private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: ResolvedCopyPasteNode) throws
     -> ExecuteNodeResult
 {
@@ -431,6 +432,11 @@ func executeDirectoryNode(_ context: ExecutionContext, _ currentNode: ResolvedCo
         }
         if !childResult.childItems.isEmpty {
             bubbledChildItems.append(.list(childResult.childItems))
+        }
+        // The disk is full: nothing more of the folder is tried, and it ends as a Stop does (a folder built under a
+        // hidden name goes whole).
+        if context.shared.diskFull != nil {
+            throw CancelledWithItemsError(childItems: bubbledChildItems)
         }
     }
     // The folder's metadata goes on once its items are in: writing them changes its dates, and a read-only or

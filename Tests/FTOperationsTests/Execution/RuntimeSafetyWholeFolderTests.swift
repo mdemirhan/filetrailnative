@@ -39,13 +39,13 @@ private func failingCopy(_ fileSystem: TestFileSystem, code: String, when: @esca
 
 /// A folder copied or moved whole.
 struct WholeFolderTests {
-    /// Four files in a package, the third of which can't be written (the disk is full); as to another disk.
+    /// Four files in a package, the third of which can't be written (a disk error); as to another disk.
     private func packageWithAFailingFile(_ f: SafetyFolders) throws -> TestFileSystem {
         for name in ["Index.zip", "Data/a.png", "Data/b.png", "Metadata.plist"] {
             try Disk.write(f.src + "/Talk.key/" + name, name)
         }
         let fileSystem = f.withoutRenameAtAll()
-        failingCopy(fileSystem, code: "ENOSPC") { _, count in count == 3 }
+        failingCopy(fileSystem, code: "EIO") { _, count in count == 3 }
         return fileSystem
     }
 
@@ -117,7 +117,7 @@ struct WholeFolderTests {
             #expect(failed.count == 2)
             #expect(failed.first?.sourcePath == f.src + "/Talk")
             #expect(failed.first?.childFailureCount == 1)
-            #expect(failed.last?.error == "There isn't enough free space on the destination disk.")
+            #expect(failed.last?.error == "A disk error occurred.")
             #expect(Disk.list(f.dst) == ["Talk"])
             #expect(Disk.list(f.dst + "/Talk").count + Disk.list(f.dst + "/Talk/Data").count == 4)
         }
@@ -132,7 +132,7 @@ struct WholeFolderTests {
             try runTool("/bin/chmod", ["+a", "group:everyone deny delete", f.src + "/F/A"])
             defer { try? runTool("/bin/chmod", ["-R", "-N", f.root]) }
             let fileSystem = f.withoutRenameAtAll()
-            failingCopy(fileSystem, code: "ENOSPC") { from, _ in NodePath.basename(from) == "z.txt" }
+            failingCopy(fileSystem, code: "EIO") { from, _ in NodePath.basename(from) == "z.txt" }
 
             let run = try await runPaste(mode: .cut, sources: [f.src + "/F"], into: f.dst, fileSystem: fileSystem)
 
