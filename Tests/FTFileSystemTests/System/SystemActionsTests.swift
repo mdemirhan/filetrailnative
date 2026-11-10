@@ -175,8 +175,8 @@ private final class FakeSystem: @unchecked Sendable {
     }
 
     // A broken link is there to be shown: only the link itself is looked for.
-    @Test func aBrokenLinkCanBeRevealed() async throws {
-        try await withTemporaryDirectory(prefix: "filetrail-reveal-link") { root in
+    @Test func aBrokenLinkCanBeRevealed() throws {
+        try withTemporaryDirectory(prefix: "filetrail-reveal-link") { root in
             let link = root.path + "/link"
             try FileManager.default.createSymbolicLink(atPath: link, withDestinationPath: root.path + "/gone")
             #expect(SystemOpener.revealFailure([link]) == nil)

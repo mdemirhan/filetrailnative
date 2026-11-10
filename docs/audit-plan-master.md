@@ -2110,4 +2110,6 @@ anything that differed from the plan, and anything found on the way that is not 
   - 3F.1: a state file that can't be encoded calls `onPersistError` at every later save.
 - 2026-11-10. Flaky, noted: `NativeCopyTests.failsWithTheWritesErrnoWhenTheResourceForkCantBeWritten` once copied a
   fork of the free space plus 2 MB onto a full disk image without an error in a whole-suite run; it passed alone three
-  times and in the rerun. What APFS gives back after the fill seems to vary with load.
+  times and in the rerun. What APFS gives back after the fill seems to vary with load. It failed the same way in a
+  later full run (2 of about 25 whole-suite runs that day), passed 5 of 5 alone, and its code is unchanged on this
+  branch.

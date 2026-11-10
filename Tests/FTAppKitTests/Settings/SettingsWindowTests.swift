@@ -162,7 +162,8 @@ import Testing
         controller.openColorPicker = { _, picked in ColorPanelRelay.shared.picked = picked }
         func openCustom() throws {
             let swatches = views("settings.accent", in: controller.settingsView).compactMap { $0 as? AccentSwatch }
-            Kit.click(try #require(swatches.last))
+            let custom: AccentSwatch = try #require(swatches.last)
+            Kit.click(custom)
             #expect(ColorPanelRelay.shared.picked != nil)
         }
         try openCustom()
