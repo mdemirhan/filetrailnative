@@ -10,7 +10,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct MoveToBoxTests {
+    @Suite(.restoresWindowSeams) struct MoveToBoxTests {
         private func open() async throws -> WritingWindow {
             let window = try await WritingWindow.open()
             window.tab.updatePreferences(["favorites": .array([])])
@@ -20,11 +20,6 @@ extension ExplorerWindowlessTests {
         }
 
         private func close(_ window: WritingWindow) async {
-            MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store }
-            MainWindowController.pickDirectory = { path, window in
-                let choice = await SystemPickers.pickDirectory(defaultPath: path, window: window)
-                return choice.canceled ? nil : choice.path
-            }
             await window.close()
         }
 

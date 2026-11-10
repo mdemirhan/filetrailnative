@@ -43,7 +43,7 @@ enum DialogKeys {
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct GoToBoxTests {
+    @Suite(.restoresWindowSeams) struct GoToBoxTests {
         /// A windowless tab whose opened folders are the harness's, and whose completions wait for timers moved by
         /// hand.
         private func open() async throws -> (ExplorerHarness, MainWindowController, ManualTimers) {
@@ -59,8 +59,6 @@ extension ExplorerWindowlessTests {
         }
 
         private func close(_ harness: ExplorerHarness) async {
-            MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store }
-            MainWindowController.dialogTimers = TaskTimerScheduler()
             await harness.close()
         }
 

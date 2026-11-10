@@ -8,7 +8,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct DialogLookTests {
+    @Suite(.restoresWindowSeams) struct DialogLookTests {
         private func open() async throws -> (ExplorerHarness, MainWindowController) {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
@@ -20,8 +20,6 @@ extension ExplorerWindowlessTests {
         }
 
         private func close(_ harness: ExplorerHarness) async {
-            MainWindowController.visitStore = { (NSApp.delegate as? AppDelegate)?.store }
-            MainWindowController.dialogTimers = TaskTimerScheduler()
             await harness.close()
         }
 

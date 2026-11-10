@@ -89,6 +89,8 @@ struct PartialFileRecoveryTests {
         let paste = Task { [operation = try operation(fileSystem, .copy)] in
             await execute(fileSystem, operation, operationId: "op-1", policy: Self.skip, writeJournal: journal)
         }
+        // Let go also when the test stops early, or the copy waits for good. A second signal is harmless.
+        defer { released.signal() }
         await withCheckedContinuation { continuation in
             DispatchQueue.global().async {
                 written.wait()

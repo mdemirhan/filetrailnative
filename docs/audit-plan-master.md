@@ -457,7 +457,7 @@ names makes it fail. If the behavior cannot be reached, delete the test and say 
 sites), `Tests/FTFileSystemTests/System/FileDragTests.swift:98, 173, 233`. Afterwards, tell the user the old leftovers
 in `$TMPDIR` can be deleted; do not delete them yourself.
 
-### [ ] 2.13. Static seams are restored even when a test throws
+### [x] 2.13. Static seams are restored even when a test throws
 
 `Dialogs/DialogLookTests.swift:17`,
 `Dialogs/GoToBoxTests.swift:55`, `Dialogs/MoveToBoxTests.swift:18`, `BatchRename/BatchRenameInWindowTests.swift:54`,
@@ -2010,3 +2010,6 @@ anything that differed from the plan, and anything found on the way that is not 
   recovery tests (`CopyPasteRecovery.swift` near 255).
 - 2026-11-10. 2.12: 919 folders left by earlier runs are in `$TMPDIR` (`filetrail-test-trash-*`,
   `filetrail-selection-writes-*`, `filetrail-drag*`); not deleted. A full run after the change added none.
+- 2026-11-10. 2.13: the window's static seams are restored by a test trait (`.restoresWindowSeams`) and not by a
+  `defer`, as the tests put them back in an `async` close that a `defer` can't await. `runBatchRename` was never
+  put back at all. `AutomationPrefs` (debug only) gained `unregister`, so the handler a test adds goes again.

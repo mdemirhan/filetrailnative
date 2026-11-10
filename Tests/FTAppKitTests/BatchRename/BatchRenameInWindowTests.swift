@@ -10,7 +10,7 @@ import Testing
 
 extension ExplorerWindowlessTests {
     @MainActor
-    @Suite struct BatchRenameInWindowTests {
+    @Suite(.restoresWindowSeams) struct BatchRenameInWindowTests {
         final class Notices {
             var titles: [String] = []
             var messages: [String] = []

@@ -59,6 +59,11 @@
 
         static func hasHandler(_ key: String) -> Bool { handlers[key] != nil }
 
+        /// Takes back a handler registered for a while (a test's).
+        static func unregister(_ key: String) {
+            handlers[key] = defaultHandlers[key]
+        }
+
         /// Applies a `prefs` step: ok when every key took, partial listing the keys this app can't set
         /// yet, failed for a key or value the preferences don't have.
         static func apply(_ prefs: [String: Scenario.PrefValue], context: Context) -> AutomationRunner.Outcome {
