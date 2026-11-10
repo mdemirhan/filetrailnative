@@ -8,6 +8,8 @@ import FTFoundation
 @MainActor
 final class InfoActions {
     unowned let host: MainWindowController
+    /// Whether `host` is still there: a picker or a question can be answered after the tab has gone.
+    private weak var liveHost: MainWindowController?
     /// Always Open With changed what a kind opens in: the Open With answers are asked again.
     var onLookupsForgotten: () -> Void = {}
     /// Shows a notice; a window in a test replaces it.
@@ -31,6 +33,7 @@ final class InfoActions {
 
     init(host: MainWindowController) {
         self.host = host
+        liveHost = host
         // The window's alerts: a notice, and the question before Always Open With.
         notice = { [weak host] title, message in
             host?.showNotice(title: title, message: message)
@@ -100,7 +103,7 @@ final class InfoActions {
     // MARK: Open With
 
     private func openPaths(_ paths: [String], app: (path: String, name: String)) async {
-        host.onFolderUsed?()
+        liveHost?.onFolderUsed?()
         let result = await SystemActions.openPaths(paths, withApplication: app.path, opener: opener)
         if !result.ok {
             notice(
@@ -113,7 +116,7 @@ final class InfoActions {
     private func chosenApp(_ action: OpenWithAction) async -> (path: String, name: String)? {
         switch action {
         case .application(_, _, let appPath, let appName, _): return (appPath, appName)
-        case .other: return await pickApplication(host.window)
+        case .other: return await pickApplication(liveHost?.window)
         }
     }
 

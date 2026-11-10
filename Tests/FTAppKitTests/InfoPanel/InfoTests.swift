@@ -38,6 +38,33 @@ extension ExplorerWindowlessTests {
             info?.update()
         }
 
+        // Always Open With can be answered after the tab has gone: the app becomes the kind's and the item opens,
+        // without reaching for the tab.
+        @Test func anOpenWithAnsweredAfterTheTabHasGoneStillOpens() async throws {
+            @MainActor final class Question { var answer: CheckedContinuation<Bool, Never>? }
+            let harness = try ExplorerHarness.windowless()
+            let spy = OpenSpy()
+            let question = Question()
+            weak var gone: MainWindowController?
+            do {
+                let tab = try await harness.open()
+                let actions = try #require(tab.infoController?.actions)
+                actions.opener = spy.opener
+                actions.setDefaultApplication = { _, _ in .success }
+                actions.confirmAlways = { _, _ in await withCheckedContinuation { question.answer = $0 } }
+                let kind = OpenWithKind(contentType: "public.plain-text", name: "Plain Text Document", isFolder: false)
+                let zed = OpenWithAction.application(
+                    id: "zed", label: "Zed", appPath: "/Applications/Zed.app", appName: "Zed", always: true)
+                actions.runOpenWith(zed, paths: ["/x/a.txt"], kind: kind)
+                gone = tab
+            }
+            #expect(await waitUntil { question.answer != nil })
+            await harness.close()
+            #expect(await waitUntil(timeout: .seconds(10)) { gone == nil })
+            question.answer?.resume(returning: true)
+            #expect(await waitUntil { !spy.all.isEmpty })
+        }
+
         @Test func alwaysOpenWithFromThePanelUsesItsSeams() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()

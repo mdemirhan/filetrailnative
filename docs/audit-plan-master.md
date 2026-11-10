@@ -729,7 +729,7 @@ index across the folder picker; track the favorite by path as the Open With list
 
 `Settings/SettingsAppearance.swift:330-339`.
 
-### [ ] 3E.7. `InfoActions.host` is `unowned` and used after awaits
+### [x] 3E.7. `InfoActions.host` is `unowned` and used after awaits
 
 `InfoPanel/InfoActions.swift:10, 103, 147-158`;
 `InfoController` guards the same hazard with `liveHost`.
