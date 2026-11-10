@@ -330,7 +330,7 @@ must be done before anything in `Sources/FTOperations` is changed in Phases 3, 5
 Found by both audits. The simplest shape for the check: replace the two builds with one `swift build --build-tests`
 under `WARN_FAILS=1`, and do not go on to the test step when the build fails.
 
-### [ ] 2.2. `ci.sh --affected` never passes with nothing run
+### [x] 2.2. `ci.sh --affected` never passes with nothing run
 
 - Where: `changed_files` (`scripts/ci.sh`, lines 102–109) diffs against `main` and `origin/main`. On `main` with
   everything pushed it finds nothing and prints `PASS test (nothing affected)` and `PASS format (no changed files)`.

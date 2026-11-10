@@ -146,12 +146,20 @@ affected_bundles() {
 # Empty runs every bundle.
 bundles=""
 if [ "$affected" = 1 ]; then
-    if git rev-parse --verify -q 'main^{commit}' >/dev/null; then
-        bundles="$(changed_files | affected_bundles)"
-    else
+    changed="$(changed_files)"
+    if ! git rev-parse --verify -q 'main^{commit}' >/dev/null; then
         bundles=all
+        echo "affected: $bundles" >>"$out"
+    elif [ -z "$changed" ]; then
+        # Nothing to go by (on main, everything pushed): a run that checked nothing would pass, so all of it runs,
+        # the format lint included.
+        bundles=all
+        affected=0
+        echo "affected: all (no file changed on this branch)" >>"$out"
+    else
+        bundles="$(echo "$changed" | affected_bundles)"
+        echo "affected: $bundles" >>"$out"
     fi
-    echo "affected: $bundles" >>"$out"
     [ "$bundles" = all ] && bundles=""
 fi
 
@@ -220,7 +228,7 @@ run_bundle() {
 
 # A full run, or `bundles` if some are named: the test bundles side by side, each in its own process, and the windowless
 # suites over several. Each process writes its log and results under build/logs/bundles/; the logs are put together into
-# test.log. Known failures are skipped in every process.
+# test.log.
 full_tests() {
     local dir="$logs/bundles" names=() pids=() i name status=0 group
     [ "$CI_LIVE" = 1 ] && echo "Building the tests…" >&9
@@ -304,7 +312,7 @@ else
     export -f full_tests run_bundle windowless_groups record_windowless_times test_lines follow_tests stop_following
     step test "$test_failures" bash -c full_tests
 fi
-# Test counts, from either Swift Testing or XCTest output.
+# Test counts, from Swift Testing's summaries.
 clean_log="$(sed $'s/\x1b\\[[0-9;]*m//g' "$logs/test.log")"
 # A test process that stopped silently exits 0 with no summary: that is a failure, not a pass. A full run has one summary
 # per process (the bundle logs), a scoped one a summary from Swift Testing, whichever bundles the filter matched.
