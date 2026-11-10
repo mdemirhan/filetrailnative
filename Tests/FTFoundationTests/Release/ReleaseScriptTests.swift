@@ -239,8 +239,9 @@ import Testing
         }
     }
 
-    // The release's check includes the tests that write large files. A stand-in for
-    // scripts/ci.sh records what it was given and fails, so the release stops there: nothing is tagged or pushed.
+    // The release's check is the full one (a clean build, the release app) and includes the tests that write large
+    // files. A stand-in for scripts/ci.sh records what it was given and fails, so the release stops there: nothing is
+    // tagged or pushed.
     @Test func theReleaseCheckIncludesTheLargeFileTests() throws {
         try withCheckout { checkout throws in
             let seen = checkout.root.appendingPathComponent("ci-saw")
@@ -260,7 +261,7 @@ import Testing
 
             let outcome = try checkout.release("0.3.0", "--yes")
             #expect(!outcome.succeeded)
-            #expect(try String(contentsOf: seen, encoding: .utf8) == "large=1 args=\n")
+            #expect(try String(contentsOf: seen, encoding: .utf8) == "large=1 args=--full\n")
             try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
         }
     }

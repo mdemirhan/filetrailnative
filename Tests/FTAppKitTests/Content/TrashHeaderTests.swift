@@ -1,6 +1,7 @@
 // The bar above the Trash on a real tab whose window is never shown, with a folder of the test's own as the Trash
 import AppKit
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -89,11 +90,11 @@ extension ExplorerWindowlessTests {
                 return (true, nil)
             }
             var asked: [WriteQuestion] = []
-            var answer = false
+            let answer = MainActorFlag()
             var dialogs = window.recorder.dialogs
             dialogs.confirm = { question, _ in
                 asked.append(question)
-                return answer
+                return answer.isSet
             }
             window.operations.dialogs = dialogs
             button.performClick(nil)
@@ -102,7 +103,7 @@ extension ExplorerWindowlessTests {
             await settle()
             #expect(emptied == 0)
 
-            answer = true
+            answer.isSet = true
             button.performClick(nil)
             #expect(await waitUntil { emptied == 1 })
             await window.close()

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]
 #
-# From a clean main that is already on GitHub, it checks the commit (scripts/ci.sh with the large-file tests), tags it vX.Y.Z (the version
+# From a clean main that is already on GitHub, it checks the commit (scripts/ci.sh --full with the large-file tests), tags it vX.Y.Z (the version
 # comes from the tag, see scripts/version.sh), builds the signed and notarized app, pushes the tag, and makes a draft GitHub
 # release with the disk image and the ZIP. The notes start as a list of the commits since the last release: rewrite them,
 # then publish the release on GitHub. Nothing is published by this script.
@@ -153,7 +153,8 @@ if [[ "${YES}" == 0 ]]; then
     fi
 fi
 
-run "Build, every test including the large-file ones, and format lint" env FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh
+run "Clean build with zero warnings, every test including the large-file ones, format lint, and the release app" \
+    env FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --full
 
 # The checks take minutes: what is tagged must still be what was checked.
 assert_unchanged_since "${CHECKED_COMMIT}" "the checks"

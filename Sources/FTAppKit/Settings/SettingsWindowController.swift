@@ -62,7 +62,9 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
             store.onChange = { [weak self] in self?.storeChanged() }
             loadedStore = store
             settingsView.makePage = { [weak self] tab in
-                guard let self else { return SettingsPageView(tab: tab, host: EmptyPageHost(), theme: model.theme) }
+                guard let self else {
+                    return SettingsPageView(tab: tab, host: EmptyPageHost.shared, theme: model.theme)
+                }
                 return SettingsPageView(tab: tab, host: self, theme: self.model.theme)
             }
             settingsView.showPage()
@@ -189,9 +191,11 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
     }
 }
 
-/// A host for a page built after its window went away; it saves nothing.
+/// A host for a page built after its window went away; it saves nothing. One for the whole app: a page holds its host
+/// weakly, so one made for it would be gone as soon as the page was built.
 @MainActor
 private final class EmptyPageHost: SettingsPageHost {
+    static let shared = EmptyPageHost()
     static let placeholder = SettingsStore(
         preferences: .defaults(), homePath: "", write: { _ in true }, schedule: { _, _ in {} })
     var store: SettingsStore { Self.placeholder }

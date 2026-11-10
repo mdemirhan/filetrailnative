@@ -51,7 +51,7 @@ private func runServicePaste(
         guard event.status == .awaitingResolution, let conflict = event.runtimeConflict else { return }
         log.ask(conflict)
         let given = answer?(conflict)
-        let respond = {
+        let respond: @Sendable () -> Void = {
             guard let given else {
                 service.cancelOperation(event.operationId)
                 return

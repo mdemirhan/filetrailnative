@@ -7,7 +7,7 @@ import Testing
 
 struct ReviewTopLevelCountPerfTests {
     @Test func resultForManySameLengthPickedItemsIsLinear() async throws {
-        try await withTemporaryDirectory(prefix: "toplevel") { root in
+        try withTemporaryDirectory(prefix: "toplevel") { root in
             try Disk.write(root.path + "/src/IMG_00000.JPG", "x")
             try Disk.makeDirectories(root.path + "/dst")
             let fileSystem = NativeWriteFileSystem()

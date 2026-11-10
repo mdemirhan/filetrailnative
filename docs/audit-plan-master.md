@@ -305,7 +305,7 @@ first lead's icon stays.
 These come before the large phases so that the checks you rely on while doing them are sound. 2.9 in particular
 must be done before anything in `Sources/FTOperations` is changed in Phases 3, 5 and 6.
 
-### [ ] 2.1. "Zero warnings" covers the tests and the release build
+### [x] 2.1. "Zero warnings" covers the tests and the release build
 
 - Facts: `scripts/ci.sh` fails on a warning only for the `swift build` step (line 153, `WARN_FAILS=1`). The test
   build (`swift build --build-tests`, line 215) and the release build are not checked. The last passing run's
@@ -1981,3 +1981,8 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. The owner: leave 1.4 for now. It stays unticked, with the proposed fix above.
 - 2026-11-10. Phase 2 started. Q1: yes, `scripts/release.sh` runs the GUI tests. Q2: as recommended; a recording
   that still cannot run through the engine is deleted with the tests that only describe it.
+- 2026-11-10. 2.1: an incremental build does not report warnings again for files it doesn't compile, so
+  `ci.sh --full` (which `release.sh` now runs) starts with `swift package clean`. `EmptyPageHost` was not deleted:
+  Settings is released when its window closes, so a page built after that can't be ruled out. It became one
+  shared instance, which the page's weak reference can keep, in place of a temporary. Whole `--full` run: clean
+  build 41 s, tests 52 s, release app 87 s.

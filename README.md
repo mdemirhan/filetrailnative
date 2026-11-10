@@ -144,7 +144,7 @@ open "build/File Trail.app"
 While working on the code:
 
 ```bash
-scripts/ci.sh                      # build with zero warnings, the tests, format lint
+scripts/ci.sh                      # the app and the tests built with zero warnings, the tests, format lint
 scripts/ci.sh --scope <filter>     # the same, with only the tests a swift test filter names
 ```
 

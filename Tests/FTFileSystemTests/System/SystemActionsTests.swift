@@ -144,6 +144,7 @@ private final class FakeSystem: @unchecked Sendable {
             shownPanel = panel
             return nil
         }
+        #expect(shownPanel != nil)
         #expect(choice == SystemPickers.DirectoryChoice(canceled: true, path: nil))
     }
 

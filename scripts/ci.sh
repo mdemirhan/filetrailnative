@@ -1,6 +1,7 @@
 #!/bin/bash
 # Quiet CI: one line per step, failures extracted from the log. Full logs are in build/logs/<step>.log.
 # Usage: scripts/ci.sh [--scope <test filter> | --affected] [--full]
+# --full is the check before a release: it builds from clean, and builds the release app as well.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
@@ -150,7 +151,14 @@ if [ "$affected" = 1 ]; then
     [ "$bundles" = all ] && bundles=""
 fi
 
-WARN_FAILS=1 step build 'error:|warning:' swift build
+# The app and the tests in one build, which fails on a warning. A build reports the warnings only of the files it
+# compiles, so one that reuses earlier work can pass with a warning in a file it didn't compile again: --full (the
+# release's check) starts from clean.
+if [ "$full" = 1 ]; then
+    swift package clean
+fi
+WARN_FAILS=1 step build 'error:|warning:' swift build --build-tests
+build_failed="$failed"
 
 # The windowless explorer suites (FTAppKitTests' ExplorerWindowlessTests) spread over this many processes in a full
 # run, two for every three performance cores: each runs one test at a time, and is about a core while it does.
@@ -275,7 +283,10 @@ full_tests() {
 # sandbox_extension_consume lines.
 test_failures='^error:|: error: |^✘|Fatal error:|: the test process failed$'
 
-if [ -n "$scope" ]; then
+if [ "$build_failed" = 1 ]; then
+    : >"$logs/test.log"
+    echo "SKIP test (the build failed)" >>"$out"
+elif [ -n "$scope" ]; then
     rm -f "$logs/test.log"
     follow_tests "$logs/test.log"
     step test "$test_failures" swift test --filter "$scope"
@@ -299,6 +310,7 @@ if [ -z "$scope" ] && [ -d "$logs/bundles" ]; then
     expected_summaries="$(find "$logs/bundles" -name '*.log' | wc -l | tr -d ' ')"
 fi
 [ "$bundles" = none ] && expected_summaries=0
+[ "$build_failed" = 1 ] && expected_summaries=0
 if [ "$summaries" -lt "$expected_summaries" ] && grep -q '^PASS test ' "$out"; then
     failed=1
     sed -i '' 's/^PASS test /FAIL test /' "$out"
@@ -336,8 +348,13 @@ else
 fi
 
 if [ "$full" = 1 ]; then
+    # The release build's output is in build-app.sh's own log: a warning there fails the step.
     app_check() {
-        scripts/build-app.sh release && test -d "build/File Trail.app/Contents/MacOS"
+        scripts/build-app.sh release && test -d "build/File Trail.app/Contents/MacOS" || return 1
+        if grep -q 'warning:' build/logs/build-app.log; then
+            sed $'s/\x1b\\[[0-9;]*m//g' build/logs/build-app.log | grep 'warning:'
+            return 1
+        fi
     }
     step app 'error:|warning:|No such file' app_check
 fi

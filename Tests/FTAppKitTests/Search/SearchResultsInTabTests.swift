@@ -3,6 +3,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -76,10 +77,10 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewAsDetails)
             harness.layout(tab)
             let real = tab.content.loaders.metadata
-            var letGo = false
+            let letGo = MainActorFlag()
             tab.content.loaders.metadata = { folder, paths in
                 if NodePath.basename(folder) == "Alpha" {
-                    while !letGo { try? await Task.sleep(for: .milliseconds(10)) }
+                    while !letGo.isSet { try? await Task.sleep(for: .milliseconds(10)) }
                 }
                 return await real(folder, paths)
             }
@@ -92,7 +93,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.content.metadata(for: note) != nil })
             #expect(tab.content.metadata(for: inner) == nil)
             #expect(tab.content.isReadingDetails)
-            letGo = true
+            letGo.isSet = true
             #expect(await waitUntil { tab.content.metadata(for: inner) != nil })
             await harness.close()
         }
