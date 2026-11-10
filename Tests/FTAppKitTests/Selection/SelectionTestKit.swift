@@ -161,7 +161,7 @@ extension ExplorerHarness {
         #expect(await waitUntil { !tab.content.entries.isEmpty })
         layout(tab)
         let list = ListProbe(tab: tab)
-        _ = await waitUntil { list.table != nil }
+        #expect(await waitUntil { list.table != nil }, "the List has its table")
         return (tab, list)
     }
 }

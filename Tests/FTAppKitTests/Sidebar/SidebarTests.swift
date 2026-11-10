@@ -77,7 +77,9 @@ extension SidebarTesting {
         await settle()
         // Under a loaded machine the rows arrive a moment later.
         let controller = sidebar(tab)
-        _ = await waitUntil { controller.model.placement.rawValue == placement && self.hasFavorites(controller) }
+        #expect(
+            await waitUntil { controller.model.placement.rawValue == placement && self.hasFavorites(controller) },
+            "the favorites are shown \(placement)")
     }
 }
 

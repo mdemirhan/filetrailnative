@@ -54,7 +54,7 @@ extension ExplorerWindowlessTests {
                     paths.map { .object(["path": .string($0), "icon": .string(FavoriteIconID.folder.rawValue)]) }),
             ])
             let controller = sidebar(tab)
-            _ = await waitUntil { controller.model.favorites.map(\.path) == paths }
+            #expect(await waitUntil { controller.model.favorites.map(\.path) == paths }, "the favorites are read")
             harness.layout(tab)
             return tab
         }

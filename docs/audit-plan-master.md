@@ -445,7 +445,7 @@ names makes it fail. If the behavior cannot be reached, delete the test and say 
   closures the test set.
 - The six tests in `ExecGoldenTests.swift` that assert only on the JSON files are handled in 2.9.
 
-### [ ] 2.11. Waits that drop their result fail instead
+### [x] 2.11. Waits that drop their result fail instead
 
 `Tests/FTAppKitTests/Windows/ExplorerHarness.swift:87`,
 `Selection/SelectionTestKit.swift:164`, `Sidebar/SidebarTests.swift:80`, `Sidebar/SidebarFavoriteDragTests.swift:57`.
@@ -2000,3 +2000,7 @@ anything that differed from the plan, and anything found on the way that is not 
   harness writes it as null. The window "staged recorded, old item still at its final name" is "folder Replace by
   copy, crashed after journal write 2". `InterruptedReplaceThroughTheEngineTests` adds a file and a folder moved on
   one disk. Checked that a crash one write later, or a recovery that does nothing, fails them.
+- 2026-11-10. 2.11: found, not changed: 24 more `_ = await waitUntil` in 14 files of FTAppKitTests (the
+  CopyPaste dialogs and sheet look, the batch rename sheet fixture, InfoViews, Info, ReviewRowWidth, HiddenItemLook,
+  TextFitLayout, List, Alert, LocalWriteActions, NativeWindowsGUI, ContextMenuRoutes, ClipboardWindow). Each needs
+  reading: some are followed by a check of their own.
