@@ -514,7 +514,8 @@ public final class FolderSizeJobs {
     }
 
     public func cancel(jobId: String) {
-        guard var current = jobs[jobId] else { return }
+        // One that has ended keeps its answer.
+        guard var current = jobs[jobId], !current.status.isFinished else { return }
         current.status = .cancelled
         setJob(jobId, current)
         if jobId == activeJobId {

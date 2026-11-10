@@ -655,7 +655,7 @@ clears `url` but not `sourceFrame`, whose closure holds the pane.
 `row.minX + 8` and the standard density's icon size; the row uses `rowInset + rowPaddingInline` and the current
 density (`Content/List/DetailsRowViews.swift:403-409`).
 
-### [ ] 3C.5. `cancel(jobId:)` marks a finished size job cancelled
+### [x] 3C.5. `cancel(jobId:)` marks a finished size job cancelled
 
 `Sources/FTFileSystem/FolderSize/FolderSizeJobs.swift:516-519`.
 

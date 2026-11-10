@@ -179,6 +179,24 @@ private func settle() async {
         #expect(status.error == nil)
     }
 
+    // A measurement that has ended keeps its answer when it is stopped afterwards (a window closing late), and the walk
+    // under way for another isn't stopped for it.
+    @Test func stoppingAMeasurementThatHasEndedKeepsItsAnswer() async {
+        let native = MockNative()
+        let jobs = make(native)
+        let done = start(jobs, "/test/done")
+        native.resolveActive()
+        await settle()
+        let running = start(jobs, "/test/running")
+        #expect(jobs.getStatus(jobId: running.jobId).status == .running)
+
+        jobs.cancel(jobId: done.jobId)
+
+        #expect(jobs.getStatus(jobId: done.jobId).status == .ready)
+        #expect(jobs.getStatus(jobId: done.jobId).sizeBytes == 1000)
+        #expect(jobs.getStatus(jobId: running.jobId).status == .running)
+    }
+
     @Test func startWithCacheHitReturnsReadyImmediatelyWithAllFields() async {
         let native = MockNative()
         let jobs = make(native)
