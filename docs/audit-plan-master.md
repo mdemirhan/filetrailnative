@@ -182,7 +182,7 @@ the new test on a real temporary directory: two items, the first fails with a pe
 named `Aborted Takes`; expect the first failed, the second copied, and the result not cancelled. The `exec-*`
 golden suites must still pass.
 
-### [ ] 1.2. Folder size fails on a folder with many subfolders
+### [x] 1.2. Folder size fails on a folder with many subfolders
 
 [verified; reproduced by the auditor outside the repo]
 `Sources/CFileTrail/foldersize.c:399-402` opens every subfolder with `openat` while reading its parent and keeps the
@@ -1942,3 +1942,14 @@ Not to be done under this plan. Recorded so the reasons are not lost and the fin
 
 Record here, with the date: items that did not hold, items skipped and why, the answer to each open question,
 anything that differed from the plan, and anything found on the way that is not in this plan.
+
+- 2026-11-10. Phase 1 taken in the first session; it depends on no open question. Baseline `scripts/ci.sh` at
+  `c58b3fe` passed (3,877 tests). The plan was untracked in the main checkout; it is committed on the branch.
+- 2026-11-10. 1.2 differs from the plan in two ways. (a) A queued folder is opened by its path, but a path of
+  `PATH_MAX` or more is opened a part at a time with `openat`: opening by the whole path alone would have broken
+  `measuresFoldersWhosePathsAreLongerThanPATHMAX`, which shows folders deeper than 1,024 bytes are meant to be
+  measured. (b) `ATTR_CMN_DEVID` was not added: the `fstat` stays, moved into the worker that opens the folder,
+  because that open can land on another volume (an automount trigger, a folder replaced since it was listed),
+  which a device read at listing time cannot see. A folder found unwalkable after it was queued is marked
+  skipped and never put on the finished list, as before. The test needs nested folders: 1,000 empty or
+  file-only subfolders passed before the fix, as four workers empty the queue as fast as one listing fills it.

@@ -29,6 +29,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <pthread.h>
 #include <pthread/qos.h>
 #include <stdatomic.h>
@@ -109,6 +110,9 @@ typedef struct walk_dir {
   atomic_int pending;
   /* Set when part of it couldn't be read: its totals leave something out. */
   atomic_int incomplete;
+  /* Set when it turned out not to be walked after it was queued (no access, gone, on
+     another disk): it counts only as a folder in its parent and is never finished. */
+  atomic_int skipped;
   /* Its own files and folders, plus the totals of each finished sub-folder. */
   _Atomic int64_t size_bytes;
   _Atomic int64_t disk_bytes;
@@ -130,6 +134,7 @@ static walk_dir_t *walk_dir_new(char *path, walk_dir_t *parent) {
   dir->parent = parent;
   atomic_init(&dir->pending, 1);
   atomic_init(&dir->incomplete, 0);
+  atomic_init(&dir->skipped, 0);
   atomic_init(&dir->size_bytes, 0);
   atomic_init(&dir->disk_bytes, 0);
   atomic_init(&dir->file_count, 0);
@@ -150,7 +155,7 @@ static void walk_dirs_free(walk_dir_t *head) {
 /* ── Concurrent work queue ───────────────────────────────────────── */
 
 typedef struct dir_node {
-  int fd;
+  int fd;          /* the root's, open; -1 for a sub-folder, opened by its path when taken */
   walk_dir_t *dir; /* not owned: freed with its thread's allocations */
   struct dir_node *next;
 } dir_node_t;
@@ -261,7 +266,7 @@ static void wq_destroy(work_queue_t *wq) {
   dir_node_t *n = wq->head;
   while (n) {
     dir_node_t *next = n->next;
-    close(n->fd);
+    if (n->fd >= 0) close(n->fd);
     free(n);
     n = next;
   }
@@ -308,8 +313,9 @@ typedef struct {
   int64_t direct_folder_count;
 } process_dir_result_t;
 
-/* Lists `dir` and queues its sub-folders on the same disk, those another volume is mounted
-   on left out; adds what is directly in it to its totals. */
+/* Lists `dir` and queues its sub-folders, those another volume is mounted on left out (one
+   found on another disk when opened is skipped then); adds what is directly in it to its
+   totals. */
 static process_dir_result_t process_dir(int dirfd, walk_dir_t *dir, thread_arg_t *ta,
                                         char *buf) {
   work_queue_t *wq = ta->wq;
@@ -393,43 +399,33 @@ static process_dir_result_t process_dir(int dirfd, walk_dir_t *dir, thread_arg_t
         /* Counted even when it isn't walked (another volume, no access). */
         direct_folder_count++;
         /* A volume mounted on it is left out, even one of the startup disk's group, which
-           has the same device: /System/Volumes/Data is reached through the firmlinks. */
+           has the same device: /System/Volumes/Data is reached through the firmlinks.
+           The others are queued by path and opened when their turn comes, so a folder
+           with thousands of sub-folders doesn't hold a descriptor for each. */
         int mounted_on = (mount_status & DIR_MNTSTATUS_MNTPOINT) != 0;
-        int subfd =
-            mounted_on ? -1 : openat(dirfd, name, O_RDONLY | O_DIRECTORY | O_NOFOLLOW);
-        if (subfd < 0 && !mounted_on && !is_skippable_open_error(errno)) {
-          mark_incomplete(wq, dir, errno);
-        }
-        if (subfd >= 0) {
-          struct stat sub_stat;
-          if (fstat(subfd, &sub_stat) == 0 && sub_stat.st_dev == wq->root_dev) {
-            /* Build child path: dir_path + "/" + name, with no second "/" after "/". */
-            size_t dir_len = strlen(dir_path);
-            size_t sep_len = dir_len > 0 && dir_path[dir_len - 1] == '/' ? 0 : 1;
-            size_t name_len = strlen(name);
-            char *child_path = malloc(dir_len + sep_len + name_len + 1);
-            walk_dir_t *child = NULL;
-            if (child_path) {
-              memcpy(child_path, dir_path, dir_len);
-              if (sep_len) child_path[dir_len] = '/';
-              memcpy(child_path + dir_len + sep_len, name, name_len + 1);
-              child = walk_dir_new(child_path, dir);
-            }
-            if (!child) {
-              close(subfd);
-              wq_fail(wq);
-            } else {
-              child->next_allocated = ta->allocated;
-              ta->allocated = child;
-              /* Counted before it is queued, so it can't finish before it is waited for. */
-              atomic_fetch_add(&dir->pending, 1);
-              if (!wq_push(wq, subfd, child)) {
-                close(subfd);
-                wq_fail(wq);
-              }
-            }
+        if (!mounted_on) {
+          /* Build child path: dir_path + "/" + name, with no second "/" after "/". */
+          size_t dir_len = strlen(dir_path);
+          size_t sep_len = dir_len > 0 && dir_path[dir_len - 1] == '/' ? 0 : 1;
+          size_t name_len = strlen(name);
+          char *child_path = malloc(dir_len + sep_len + name_len + 1);
+          walk_dir_t *child = NULL;
+          if (child_path) {
+            memcpy(child_path, dir_path, dir_len);
+            if (sep_len) child_path[dir_len] = '/';
+            memcpy(child_path + dir_len + sep_len, name, name_len + 1);
+            child = walk_dir_new(child_path, dir);
+          }
+          if (!child) {
+            wq_fail(wq);
           } else {
-            close(subfd);
+            child->next_allocated = ta->allocated;
+            ta->allocated = child;
+            /* Counted before it is queued, so it can't finish before it is waited for. */
+            atomic_fetch_add(&dir->pending, 1);
+            if (!wq_push(wq, -1, child)) {
+              wq_fail(wq);
+            }
           }
         }
       }
@@ -464,6 +460,10 @@ static void finish_part(thread_arg_t *ta, walk_dir_t *dir) {
     if (!parent || wq_stopped(ta->wq)) {
       return;
     }
+    if (atomic_load(&dir->skipped)) {
+      dir = parent;
+      continue;
+    }
     if (atomic_load(&dir->incomplete)) {
       atomic_store(&parent->incomplete, 1);
       dir = parent;
@@ -487,6 +487,70 @@ static void finish_part(thread_arg_t *ta, walk_dir_t *dir) {
   }
 }
 
+/* ── Opening a queued folder ─────────────────────────────────────── */
+
+#define SUBDIR_OPEN_FLAGS (O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
+
+/* Opens the folder at `path`. A path too long for one call is opened a part at a time,
+   each part relative to the folder before it, so no folder is too deep to measure. */
+static int open_dir_path(const char *path) {
+  if (strlen(path) < PATH_MAX) return open(path, SUBDIR_OPEN_FLAGS);
+  int at = AT_FDCWD;
+  const char *rest = path;
+  while (strlen(rest) >= PATH_MAX) {
+    /* The longest start of what is left that fits, cut at a "/". */
+    const char *cut = rest + PATH_MAX - 1;
+    while (cut > rest && *cut != '/') cut--;
+    if (cut == rest) {
+      if (at != AT_FDCWD) close(at);
+      errno = ENAMETOOLONG;
+      return -1;
+    }
+    char part[PATH_MAX];
+    size_t part_len = (size_t)(cut - rest);
+    memcpy(part, rest, part_len);
+    part[part_len] = '\0';
+    int fd = openat(at, part, SUBDIR_OPEN_FLAGS);
+    int saved = errno;
+    if (at != AT_FDCWD) close(at);
+    if (fd < 0) {
+      errno = saved;
+      return -1;
+    }
+    at = fd;
+    rest = cut + 1;
+  }
+  int fd = openat(at, rest, SUBDIR_OPEN_FLAGS);
+  int saved = errno;
+  if (at != AT_FDCWD) close(at);
+  errno = saved;
+  return fd;
+}
+
+/* Opens a queued sub-folder, or -1 when it isn't walked. One the walk has no access to,
+   gone or replaced since it was listed, or on another disk (an open can cross onto one,
+   as an automount does) is skipped; one that couldn't be opened for another reason
+   leaves it incomplete. */
+static int open_queued_dir(work_queue_t *wq, walk_dir_t *dir) {
+  int fd = open_dir_path(dir->path);
+  if (fd < 0) {
+    int errnum = errno;
+    if (is_skippable_open_error(errnum)) {
+      atomic_store(&dir->skipped, 1);
+    } else {
+      mark_incomplete(wq, dir, errnum);
+    }
+    return -1;
+  }
+  struct stat sub_stat;
+  if (fstat(fd, &sub_stat) != 0 || sub_stat.st_dev != wq->root_dev) {
+    close(fd);
+    atomic_store(&dir->skipped, 1);
+    return -1;
+  }
+  return fd;
+}
+
 /* ── Worker thread ───────────────────────────────────────────────── */
 
 static void *worker_fn(void *arg) {
@@ -503,11 +567,14 @@ static void *worker_fn(void *arg) {
   int fd;
   walk_dir_t *dir;
   while (wq_pop(ta->wq, &fd, &dir)) {
-    process_dir_result_t r = process_dir(fd, dir, ta, buf);
-    ta->total_bytes += r.direct_bytes;
-    ta->total_disk_bytes += r.direct_disk_bytes;
-    ta->total_file_count += r.direct_file_count;
-    ta->total_folder_count += r.direct_folder_count;
+    if (fd < 0) fd = open_queued_dir(ta->wq, dir);
+    if (fd >= 0) {
+      process_dir_result_t r = process_dir(fd, dir, ta, buf);
+      ta->total_bytes += r.direct_bytes;
+      ta->total_disk_bytes += r.direct_disk_bytes;
+      ta->total_file_count += r.direct_file_count;
+      ta->total_folder_count += r.direct_folder_count;
+    }
     finish_part(ta, dir);
     wq_done(ta->wq);
   }

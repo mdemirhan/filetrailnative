@@ -308,6 +308,38 @@ extension RealWalks {
                 #expect(walk.result.dev == Int64(info.st_dev))
             }
         }
+
+        // An app from the Dock may open 256 files at once. A folder waiting its turn holds no descriptor, so a folder
+        // with more subfolders than that is measured whole. The limit is lowered for the whole test process, so it
+        // leaves room above what is open now for the tests running beside this one.
+        @Test func measuresAFolderWithMoreSubfoldersThanTheAppMayOpenFilesAtOnce() async throws {
+            try await withTemporaryDirectory(prefix: "native-fs-many") { directory in
+                let root = directory.path
+                // 600 folders of 3 holding 3 each: every folder the walk lists hands it more to queue, so the queue
+                // grows faster than four threads empty it.
+                let count = 600
+                for index in 0..<count {
+                    for middle in 0..<3 {
+                        for inner in 0..<3 {
+                            try makeFolder("\(root)/f\(index)/m\(middle)/i\(inner)")
+                        }
+                    }
+                }
+                let openNow = (try? FileManager.default.contentsOfDirectory(atPath: "/dev/fd").count) ?? 0
+                var saved = rlimit()
+                #expect(getrlimit(RLIMIT_NOFILE, &saved) == 0)
+                var lowered = saved
+                lowered.rlim_cur = rlim_t(max(256, openNow + 128))
+                try #require(lowered.rlim_cur < rlim_t(count))
+                #expect(setrlimit(RLIMIT_NOFILE, &lowered) == 0)
+                defer { _ = setrlimit(RLIMIT_NOFILE, &saved) }
+
+                let walk = try await measure(NativeFolderSize(), root)
+
+                #expect(walk.result.folderCount == count * 13)
+                #expect(walk.dirs.count == count * 13)
+            }
+        }
     }
 }
 
