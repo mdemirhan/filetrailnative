@@ -685,7 +685,7 @@ Escape; everything else uses `KeyCode.isCancel`.
 
 `DragDrop/TabDragDrop.swift:613`; `duplicateFromMenu` clears it (`MainWindowController+Writes.swift:207-210`).
 
-### [ ] 3D.6. Statics that only grow
+### [x] 3D.6. Statics that only grow
 
 `TabDragDrop.swift:623` (`externalDropAnalyses`, a cancelled review leaves its
 id), `Dialogs/GoToFolderBox.swift:31` (`lastPointers` keyed by window identity), and the static batch-rename

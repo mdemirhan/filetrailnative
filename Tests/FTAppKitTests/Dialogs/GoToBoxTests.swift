@@ -401,5 +401,26 @@ extension ExplorerWindowlessTests {
             #expect(tab.canPerform(.goEnclosingFolder))
             await close(harness)
         }
+
+        // Where the pointer was over a box's list is kept for its window only while the window is there.
+        @Test func thePointerOfAWindowThatWentIsNotKept() throws {
+            let before = GoToFolderBox.rememberedPointerCount
+            weak var gone: NSWindow?
+            autoreleasepool {
+                let window = NSWindow(
+                    contentRect: NSRect(x: 0, y: 0, width: 400, height: 300), styleMask: [.titled],
+                    backing: .buffered, defer: true)
+                window.isReleasedWhenClosed = false
+                let box = GoToFolderBox(
+                    places: [], options: .goTo, timers: ManualTimers(), requestCompletions: { _ in [] })
+                box.opened(in: window)
+                box.pointerMoved(over: 0, at: CGPoint(x: 10, y: 10))
+                #expect(GoToFolderBox.rememberedPointerCount == before + 1)
+                box.closed()
+                gone = window
+            }
+            try #require(gone == nil)
+            #expect(GoToFolderBox.rememberedPointerCount == before)
+        }
     }
 }

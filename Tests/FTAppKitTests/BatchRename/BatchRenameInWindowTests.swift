@@ -498,5 +498,20 @@ extension ExplorerWindowlessTests {
             #expect(BatchRename.sanitizePresets(preferences.batchRenamePresets).map(\.name) == ["Old"])
             await close(opened)
         }
+
+        // What a rename of several asked for, kept for Try Again, goes with its window.
+        @Test func theFoldersKeptForTryAgainGoWithTheWindow() async throws {
+            let opened = try await open()
+            let tab = opened.tab
+            let group = try #require(tab.group)
+            select(opened, ["a.txt", "b.txt"])
+            tab.renameSelected()
+            addOld(try await sheet(tab))
+            #expect(await waitUntil { opened.requests.all.count == 1 })
+            #expect(MainWindowController.batchRenameFolderWindowIDs.contains(group.windowID))
+            opened.operations.explorerWindowClosed(group)
+            #expect(!MainWindowController.batchRenameFolderWindowIDs.contains(group.windowID))
+            await close(opened)
+        }
     }
 }

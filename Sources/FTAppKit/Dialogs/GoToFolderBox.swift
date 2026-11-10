@@ -27,8 +27,13 @@ struct GoToBoxOptions {
 @MainActor
 final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelegate {
     static let placeholder = "Folder name, or a path starting with / or ~"
-    /// Where the pointer last was over a box's list, by window: kept across opens.
-    private static var lastPointers: [ObjectIdentifier: CGPoint] = [:]
+    /// Where the pointer last was over a box's list, by window: kept across opens, and let go of with the window.
+    private static let lastPointers = NSMapTable<NSWindow, NSValue>.weakToStrongObjects()
+
+    #if DEBUG
+        /// How many windows a pointer is remembered for (tests).
+        static var rememberedPointerCount: Int { lastPointers.keyEnumerator().allObjects.count }
+    #endif
 
     let options: GoToBoxOptions
     private(set) var state: GoToBoxState
@@ -48,7 +53,7 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
     private(set) var rowViews: [GoToRowView] = []
     private var theme = AppearanceModel.shared.theme
     private var browsing = false
-    private var pointerKey: ObjectIdentifier?
+    private weak var pointerWindow: NSWindow?
 
     /// Told the folder to go to (or move into).
     var onSubmit: (String) -> Void = { _ in }
@@ -150,8 +155,8 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
     /// The box is up over `window`: it starts empty, the field focused with the caret at its end, and the empty field's
     /// request waits for the pause.
     func opened(in window: NSWindow) {
-        pointerKey = ObjectIdentifier(window)
-        state.lastPointer = Self.lastPointers[ObjectIdentifier(window)]
+        pointerWindow = window
+        state.lastPointer = Self.lastPointers.object(forKey: window)?.pointValue
         requests.setOpen(true)
         focusField()
     }
@@ -295,7 +300,7 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
 
     func pointerMoved(over index: Int, at point: CGPoint) {
         state.pointerMoved(over: index, at: point)
-        if let pointerKey { Self.lastPointers[pointerKey] = point }
+        if let pointerWindow { Self.lastPointers.setObject(NSValue(point: point), forKey: pointerWindow) }
         render()
     }
 

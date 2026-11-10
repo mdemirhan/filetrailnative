@@ -19,6 +19,16 @@ extension MainWindowController {
     /// opens again on the items that weren't renamed, each numbered as it was.
     private static var batchRenameFolders: [Int: [String: Bool]] = [:]
 
+    /// An explorer window closed: what its last rename of several asked for goes with it.
+    static func forgetBatchRenameFolders(windowID: Int) {
+        batchRenameFolders[windowID] = nil
+    }
+
+    #if DEBUG
+        /// The explorer windows the folders of a rename of several are kept for (tests).
+        static var batchRenameFolderWindowIDs: Set<Int> { Set(batchRenameFolders.keys) }
+    #endif
+
     /// The Rename sheet for several items, while it is up.
     var batchRenameSheet: BatchRenameSheetView? {
         dialogs.lazy.compactMap { $0.panel as? BatchRenameSheetView }.first

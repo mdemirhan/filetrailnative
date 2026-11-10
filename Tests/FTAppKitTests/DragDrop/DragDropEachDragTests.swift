@@ -377,5 +377,27 @@ extension ExplorerWindowlessTests {
             #expect(actions.session.pendingTreeSelectionPath == nil)
             await window.close()
         }
+
+        // A drop from another app whose review is cancelled is forgotten with the review.
+        @Test func aDropFromAnotherAppWhoseReviewIsCancelledIsForgotten() async throws {
+            let window = try await WritingWindow.open()
+            let saved = TabDragDrop.bringForward
+            TabDragDrop.bringForward = { _ in }
+            defer { TabDragDrop.bringForward = saved }
+            let before = TabDragDrop.externalDropAnalyses
+            try "old".write(
+                to: window.folder.appendingPathComponent("Beta/note.txt"), atomically: true, encoding: .utf8)
+            let target = TabDragDrop.Target(surface: .content, path: path(window, "Beta"), supportsMove: true)
+            #expect(
+                window.tab.dragDrop.drop(
+                    session: external([path(window, "note.txt")]), target: target, offersMove: true,
+                    modifiers: [.option], sequence: 12))
+            #expect(await waitUntil { CopyPasteDialogs.isOpen(in: window.tab.window) })
+            #expect(TabDragDrop.externalDropAnalyses.count == before.count + 1)
+            DialogKeys.press(53, "\u{1b}", in: window.tab.window)
+            #expect(!CopyPasteDialogs.isOpen(in: window.tab.window))
+            #expect(TabDragDrop.externalDropAnalyses == before)
+            await window.close()
+        }
     }
 }

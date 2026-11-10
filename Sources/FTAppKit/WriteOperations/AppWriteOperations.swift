@@ -131,6 +131,7 @@ final class AppWriteOperations {
 
     /// An explorer window closed: what it ran goes on in the window in front, or stops.
     func explorerWindowClosed(_ group: ExplorerTabGroup) {
+        MainWindowController.forgetBatchRenameFolders(windowID: group.windowID)
         guard let session = sessions.removeValue(forKey: group.windowID) else { return }
         coordinator.windowClosed(session)
     }

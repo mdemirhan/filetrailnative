@@ -62,6 +62,9 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         let sheet = CopyPasteReviewSheet(model: model)
         let scrim = CopyPasteDialogs.present(sheet, placement: .sheet, on: tab, in: window)
         self.sheet = sheet
+        // A drop from another app whose review goes without starting it is forgotten with it.
+        let analysisId = model.report.analysisId
+        scrim.alsoOnDismiss { _ = TabDragDrop.externalDropAnalyses.remove(analysisId) }
         sheet.onClose = { [weak scrim] in scrim?.dismiss() }
         sheet.onStart = { [weak sheet, weak scrim] in
             // One start only: the button is busy while starting, and works again if the start failed or threw.
@@ -119,6 +122,9 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         scrim = shown
         // The buttons hold the scrim through `close`, and the scrim holds the buttons: let go once it is away.
         shown.alsoOnDismiss { scrim = nil }
+        // A drop from another app whose review goes without starting it is forgotten with it.
+        let analysisId = model.report.analysisId
+        shown.alsoOnDismiss { _ = TabDragDrop.externalDropAnalyses.remove(analysisId) }
         alert = shown.panel as? AlertCard
     }
 }
