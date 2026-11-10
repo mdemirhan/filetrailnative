@@ -12,7 +12,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Folder tree",
                             description:
-                                "Click a favorite or a folder to open it. The arrow beside a folder shows its subfolders without leaving the folder you are in, and a double-click opens the folder and shows them. Settings → Browsing → Expand folders with a single click does that on every click."
+                                "Click a favorite or a folder to open it. The arrow beside a folder shows its subfolders without leaving the folder you are in, and a double-click opens the folder and shows them, or hides them if they are showing. Settings → Browsing → Expand folders with a single click does that on every click."
                         ),
                         HelpRow(
                             label: "File list",

@@ -734,7 +734,7 @@ index across the folder picker; track the favorite by path as the Open With list
 `InfoPanel/InfoActions.swift:10, 103, 147-158`;
 `InfoController` guards the same hazard with `liveHost`.
 
-### [ ] 3E.8. Help says a double-click on a tree folder opens it; on an open folder it closes it
+### [x] 3E.8. Help says a double-click on a tree folder opens it; on an open folder it closes it
 
 `Sources/FTFoundation/Help/HelpTopics.swift:15` vs `Sidebar/SidebarViewController+Input.swift:54-70`. Fix the text.
 

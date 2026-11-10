@@ -5,6 +5,14 @@ import Testing
 @testable import FTFoundation
 
 struct HelpContentTests {
+    // A double-click on a folder in the tree opens it and shows its subfolders, or hides them if they are showing.
+    @Test func theFolderTreeRowSaysADoubleClickHidesSubfoldersAlreadyShowing() throws {
+        let topic = try #require(HelpContent.topics.first { $0.id == .navigation })
+        let row = try #require(topic.sections.flatMap(\.rows).first { $0.label == "Folder tree" })
+        let said = "a double-click opens the folder and shows them, or hides them if they are showing."
+        #expect(row.description.contains(said))
+    }
+
     @Test func givesEveryTopicATitleAnIntroductionAndUniquelyNamedSectionsAndRows() {
         #expect(HelpContent.topics.map(\.id) == [.navigation, .files, .search, .views, .shortcuts])
         for topic in HelpContent.topics {
