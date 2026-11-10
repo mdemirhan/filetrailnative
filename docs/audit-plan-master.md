@@ -666,7 +666,7 @@ density (`Content/List/DetailsRowViews.swift:403-409`).
 `Clipboard/PasteFlow.swift:221` is the only `SharedClipboard.set(…, from:)` call without `tab.clipboardChanged()`;
 `set` notifies only other tabs (`Windows/ExplorerWindows.swift:114`).
 
-### [ ] 3D.2. A tab opened during another window's operation offers write actions
+### [x] 3D.2. A tab opened during another window's operation offers write actions
 
 `ContextMenus/ContextMenuCoordinator.swift:125`: `isWriteOperationLocked` is a pushed copy; use the live
 `tab.isWriteLocked` as `Clipboard/TabClipboard.swift:288` does.

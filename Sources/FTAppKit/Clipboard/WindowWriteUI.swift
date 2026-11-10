@@ -50,9 +50,6 @@ final class WindowWriteUI {
 
     func handle(_ event: WindowWriteEvent) {
         guard let group else { return }
-        // The right-click menus leave out the writes, and dim Paste, while one runs.
-        let locked = session?.isWriteLocked ?? false
-        for tab in group.tabs { tab.contextMenus.isWriteOperationLocked = locked }
         switch event {
         case .card(let card):
             // The progress shows in every tab of the window.

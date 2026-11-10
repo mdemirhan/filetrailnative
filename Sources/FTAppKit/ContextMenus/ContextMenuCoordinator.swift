@@ -121,8 +121,9 @@ final class ContextMenuCoordinator: ContextMenuResponder {
 
     // MARK: What the window knows
 
-    /// A file operation is running, in any tab; `WindowWriteUI` sets this.
-    var isWriteOperationLocked = false
+    /// A file operation is running, in this window or another: asked of the window each time, so a tab opened while
+    /// one runs knows it too.
+    var isWriteOperationLocked: Bool { tab.isWriteLocked }
     /// Something is on the clipboard.
     var clipboardHasItems: Bool {
         if case .ready = tab.services.clipboard.contents { return true }

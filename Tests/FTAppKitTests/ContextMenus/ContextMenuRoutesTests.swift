@@ -84,11 +84,32 @@ extension ExplorerWindowlessTests {
                 WriteOperationCardState(
                     action: .paste, stage: .starting, targetPath: nil, totalItemCount: 1, totalBytes: nil,
                     currentSourcePath: nil))
-            window.tab.contextMenus.isWriteOperationLocked = true
             try choose("Move to Trash", in: menu)
             #expect(window.recorder.shown.map(\.message) == [WriteDialogs.busyMessage])
             #expect(FileManager.default.fileExists(atPath: path(window, "note.txt")))
             actions.session.applyCard(nil)
+            await window.close()
+        }
+
+        // A tab opened while another window's operation runs leaves the writes out of its menus, as the tabs open
+        // before it do.
+        @Test func aTabOpenedDuringAnotherWindowsOperationLeavesTheWritesOut() async throws {
+            let window = try await open()
+            let actions = try #require(window.tab.writeActions)
+            actions.session.otherWindowProgress(
+                WriteOperationEvent(operationId: "other-op", action: .copyTo, status: .running, totalItemCount: 1))
+            #expect(window.tab.isWriteLocked)
+            let group = try #require(window.tab.group)
+            window.tab.perform(.newTab)
+            #expect(await waitUntil { group.tabs.count == 2 })
+            let new = try #require(group.tabs.first { $0 !== window.tab })
+            let note = path(window, "note.txt")
+            let subject = ContextMenuSubject(
+                surface: .content, scope: .selection, paths: [note], targetPath: note,
+                entries: [CommandEntry(path: note, kind: .file)])
+            let menu = try #require(new.contextMenus.menu(for: subject))
+            #expect(!menu.items.contains { $0.title == "Move to Trash" })
+            actions.session.releaseEndedForeign()
             await window.close()
         }
 
