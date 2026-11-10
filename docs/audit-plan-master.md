@@ -693,7 +693,7 @@ dictionary (`BatchRename/MainWindowController+BatchRename.swift:20`).
 
 **3E. Sidebar, Settings, Info, Help** (paths are under `Sources/FTAppKit` unless they say otherwise)
 
-### [ ] 3E.1. Clicking a component's name in Acknowledgements does nothing
+### [x] 3E.1. Clicking a component's name in Acknowledgements does nothing
 
 `Acknowledgements/AcknowledgementsWindowController.swift:273-274`: the labels sit above the summary and take the hit.
 

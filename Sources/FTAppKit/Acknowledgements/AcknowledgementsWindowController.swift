@@ -270,8 +270,9 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
         summary.setAccessibilityIdentifier("acknowledgements.row")
         summary.setAccessibilityLabel(component.name)
         summary.setAccessibilityRole(.disclosureTriangle)
-        addSubview(summary)
+        // The summary takes the clicks on the whole line, the name and license included; it draws nothing over them.
         for view in [nameText, licenseText] { addSubview(view) }
+        addSubview(summary)
         applyTheme(theme)
     }
 

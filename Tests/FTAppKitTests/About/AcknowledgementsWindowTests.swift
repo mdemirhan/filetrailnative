@@ -112,4 +112,19 @@ import Testing
         // The second entry starts after the first and its hairline.
         #expect(view.entries[1].frame.minY - view.entries[0].frame.minY == 32)
     }
+
+    // A click on a component's name or its license lands on the summary line, which opens and closes the entry.
+    @Test func aClickOnTheNameOrLicenseOpensAndClosesTheEntry() throws {
+        let controller = make({ self.components })
+        let window = try #require(controller.window)
+        let entry = controller.listView.entries[0]
+        for (id, open) in [("acknowledgements.name", true), ("acknowledgements.license", false)] {
+            let label = try #require(views(id, in: entry).first)
+            let point = label.convert(NSPoint(x: label.bounds.midX, y: label.bounds.midY), to: entry.superview)
+            let hit = try #require(entry.hitTest(point))
+            try #require(hit.accessibilityIdentifier() == "acknowledgements.row")
+            hit.mouseDown(with: try #require(MouseEvents.event(.leftMouseDown, at: .zero, in: window)))
+            #expect(entry.isOpen == open)
+        }
+    }
 }
