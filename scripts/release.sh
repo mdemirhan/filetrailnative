@@ -165,6 +165,9 @@ fi
 run "Clean build with zero warnings, every test including the large-file ones, format lint, and the release app" \
     env FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh --full
 
+# The tests that put windows, menus and a disk on screen: the only tests of real windows, so a release runs them.
+run "The tests that drive real windows" env FILETRAIL_GUI_TESTS=1 swift test --filter GUITests
+
 # The checks take minutes: what is tagged must still be what was checked.
 assert_unchanged_since "${CHECKED_COMMIT}" "the checks"
 

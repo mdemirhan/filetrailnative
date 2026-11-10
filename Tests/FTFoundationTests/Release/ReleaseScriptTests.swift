@@ -294,6 +294,36 @@ import Testing
         }
     }
 
+    // After the checks, the release runs the tests that drive real windows; when they fail it stops there, with
+    // nothing tagged or pushed. Stand-ins for scripts/ci.sh (passing) and swift (failing) record what they were given.
+    @Test func theReleaseRunsTheTestsOfRealWindowsAfterTheChecks() throws {
+        try withCheckout { checkout throws in
+            let seen = checkout.root.appendingPathComponent("swift-saw")
+            let ci = checkout.path + "/scripts/ci.sh"
+            try "#!/bin/bash\nexit 0\n".write(toFile: ci, atomically: true, encoding: .utf8)
+            try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: ci)
+            let swift = checkout.bin + "/swift"
+            let body = """
+                #!/bin/bash
+                echo "gui=${FILETRAIL_GUI_TESTS:-} args=$*" >"\(seen.path)"
+                exit 1
+                """
+            try body.write(toFile: swift, atomically: true, encoding: .utf8)
+            try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: swift)
+            try checkout.git("add", ".")
+            try checkout.commit("stand-ins for the checks")
+            try checkout.git("push", "-q", "origin", "main")
+            let tags = try checkout.git("tag", "--list")
+            let remote = try checkout.git("ls-remote", "origin")
+
+            let outcome = try checkout.release("0.3.0", "--yes")
+            #expect(!outcome.succeeded)
+            #expect(outcome.output.contains("The tests that drive real windows failed."))
+            #expect(try String(contentsOf: seen, encoding: .utf8) == "gui=1 args=test --filter GUITests\n")
+            try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
+        }
+    }
+
     @Test func aReleaseAfterAPublishedOneCountsFromIt() throws {
         try withCheckout { checkout throws in
             try checkout.git("tag", "-a", "v0.1.3", "-m", "File Trail 0.1.3")

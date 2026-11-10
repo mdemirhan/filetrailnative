@@ -363,7 +363,7 @@ Found by both audits. Also have `scripts/ci.sh` print one line when the fixtures
 tests is visible (`FixtureGoldenTests.swift:37, 97` skip silently as well). Two tests gate on `fixtures/names` but
 also read `lighthouse` and `bench`: gate each on what it reads.
 
-### [ ] 2.7. The GUI tests run before a release, and the documented command runs all of them
+### [x] 2.7. The GUI tests run before a release, and the documented command runs all of them
 
 - Facts: neither `ci.sh` nor `release.sh` sets `FILETRAIL_GUI_TESTS`, so about 44 tests in 11 suites never run.
   The command in `CLAUDE.md`, `swift test --filter GUITests`, misses `RealDiskImageTests`,
@@ -1986,3 +1986,6 @@ anything that differed from the plan, and anything found on the way that is not 
   Settings is released when its window closes, so a page built after that can't be ruled out. It became one
   shared instance, which the page's weak reference can keep, in place of a temporary. Whole `--full` run: clean
   build 41 s, tests 52 s, release app 87 s.
+- 2026-11-10. 2.7: every GUI-gated test passed before anything changed: 25 tests (1 in FTFileSystemTests, 24 in
+  11 FTAppKitTests suites), not about 44. `FirstClickGUITests` and `ListScrollExtentGUITests` were already inside
+  `ExplorerWindowGUITests`; only `RealDiskImageTests` and `DiskImageMounterHandOffTests` were missed by the filter.

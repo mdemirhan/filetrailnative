@@ -7,7 +7,7 @@ import Testing
 
 @testable import FTAppKit
 
-/// Puts windows on screen: only with FILETRAIL_GUI_TESTS=1, under the GUI lock.
+/// Puts windows on screen: only with FILETRAIL_GUI_TESTS=1.
 @MainActor
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct NativeWindowsGUITests {

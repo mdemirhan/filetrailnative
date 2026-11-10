@@ -197,7 +197,7 @@ extension ExplorerWindowlessTests {
 /// One real image, mounted once: `hdiutil` puts a disk on the Mac, so only with FILETRAIL_GUI_TESTS=1.
 @MainActor
 @Suite(.holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
-struct RealDiskImageTests {
+struct RealDiskImageGUITests {
     @Test func aRealImageMountsAndItsDiskOpensInATab() async throws {
         let harness = try ExplorerHarness.windowless()
         let name = "FT Port Test \(UUID().uuidString.prefix(6))"

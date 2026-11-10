@@ -4,7 +4,7 @@ import Testing
 
 @testable import FTFileSystem
 
-@Suite struct DiskImageMounterHandOffTests {
+@Suite struct DiskImageMounterHandOffGUITests {
     private static let mounterBundleID = "com.apple.DiskImageMounter"
 
     // Launches DiskImageMounter, which puts a window on screen: only with FILETRAIL_GUI_TESTS=1, and the
@@ -25,6 +25,11 @@ import Testing
         let image = directory.appendingPathComponent("blank.dmg")
         try Data().write(to: image)
         try await HdiutilProcess.openWithDiskImageMounter(image.path)
-        try await Task.sleep(for: .milliseconds(500))
+        var running = false
+        for _ in 0..<100 where !running {
+            running = !NSRunningApplication.runningApplications(withBundleIdentifier: Self.mounterBundleID).isEmpty
+            if !running { try await Task.sleep(for: .milliseconds(50)) }
+        }
+        #expect(running, "DiskImageMounter was given the image")
     }
 }

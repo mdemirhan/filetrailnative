@@ -175,7 +175,7 @@ import Testing
     }
 }
 
-/// The system's menu itself: it puts a menu on screen, so only with FILETRAIL_GUI_TESTS=1, under the GUI lock.
+/// The system's menu itself: it puts a menu on screen, so only with FILETRAIL_GUI_TESTS=1.
 @MainActor
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct SystemMenuTrackingGUITests {

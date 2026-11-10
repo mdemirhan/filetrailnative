@@ -143,7 +143,7 @@ func waitUntil(
 }
 
 /// The explorer window's end-to-end suites: one at a time, as they share the app's menu and the screen. They put
-/// windows on screen: only with FILETRAIL_GUI_TESTS=1, under the GUI lock.
+/// windows on screen: only with FILETRAIL_GUI_TESTS=1.
 @MainActor
 @Suite(.serialized, .holdsMainLoop, .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_GUI_TESTS"] == "1"))
 struct ExplorerWindowGUITests {}
