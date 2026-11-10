@@ -661,7 +661,7 @@ density (`Content/List/DetailsRowViews.swift:403-409`).
 
 **3D. Clipboard, drag, dialogs** (paths are under `Sources/FTAppKit`)
 
-### [ ] 3D.1. The pasting tab is not told when a paste drops missing items from the clipboard
+### [x] 3D.1. The pasting tab is not told when a paste drops missing items from the clipboard
 
 `Clipboard/PasteFlow.swift:221` is the only `SharedClipboard.set(…, from:)` call without `tab.clipboardChanged()`;
 `set` notifies only other tabs (`Windows/ExplorerWindows.swift:114`).

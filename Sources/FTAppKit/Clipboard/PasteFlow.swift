@@ -221,7 +221,10 @@ extension WindowWriteActions {
             onSourcesMissing: { paths in
                 missing += paths
                 let now = clipboard.contents
-                clipboard.set(ClipboardRules.dropPaths(now, paths), follows: now.capturedAt, from: windowID)
+                // The other windows hear of it from the clipboard; this tab's marks and button follow here.
+                if clipboard.set(ClipboardRules.dropPaths(now, paths), follows: now.capturedAt, from: windowID) {
+                    self.tab?.clipboardChanged()
+                }
             }, reportsRefusals: false, checksBusy: false)
         if case .review(let report) = outcome {
             PasteReview.presenter.review(

@@ -254,6 +254,24 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
+        // Items gone since they were copied leave the pasting tab's marks, button and list at once, as they leave the
+        // other windows'.
+        @Test func aPasteThatDropsGoneItemsTellsItsOwnTab() async throws {
+            let window = try await WritingWindow.open()
+            let tab = window.tab
+            let gone = path(window, "note.txt")
+            tab.services.clipboard.set(ClipboardRules.set(.copy, [gone], capturedAt: "t"), from: nil)
+            tab.clipboardChanged()
+            #expect(tab.content.clipboardMarks?.mark(for: gone) == .copy)
+            try FileManager.default.removeItem(atPath: gone)
+            let actions = try #require(tab.writeActions)
+            let outcome = await actions.pasteFromClipboard(into: window.folder.appendingPathComponent("Gamma").path)
+            #expect(outcome == .cancelled)
+            #expect(!tab.services.clipboard.contents.hasItems)
+            #expect(tab.content.clipboardMarks?.mark(for: gone) == nil)
+            await window.close()
+        }
+
         // While a write runs, Paste says so and starts nothing.
         @Test func pasteIsRefusedWhileAWriteRuns() async throws {
             let window = try await WritingWindow.open()
