@@ -380,7 +380,7 @@ Found by both audits. [Q1] decides the `release.sh` step. `RealDiskImageTests` i
 (`Tests/FTFileSystemTests/DiskImages/DiskImageMounterHandOffTests.swift:12`) asserts nothing: give it an assertion
 or delete it. Remove the "under the GUI lock" comments: no such lock exists.
 
-### [ ] 2.8. The disk-image self-tests run once, not in all four bundles
+### [x] 2.8. The disk-image self-tests run once, not in all four bundles
 
 - Where: `DiskImageSelfTests` in `Tests/FTTestSupport/LargeFileTests.swift` (lines 14–92). `FTTestSupport` is linked
   into every test bundle, so the suite runs four times: 44 `hdiutil` cycles per run, and contention for the two
@@ -1989,3 +1989,5 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. 2.7: every GUI-gated test passed before anything changed: 25 tests (1 in FTFileSystemTests, 24 in
   11 FTAppKitTests suites), not about 44. `FirstClickGUITests` and `ListScrollExtentGUITests` were already inside
   `ExplorerWindowGUITests`; only `RealDiskImageTests` and `DiskImageMounterHandOffTests` were missed by the filter.
+- 2026-11-10. 2.8: `LargeFileTests.swift` keeps its name: what is left in it is the `LargeFileTests` switch alone.
+  The suite's runs went from four bundles to one (12 fewer test runs, 3,889 to 3,877).
