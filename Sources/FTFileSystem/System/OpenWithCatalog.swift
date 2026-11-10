@@ -2,6 +2,7 @@ import AppKit
 import CoreServices
 import Foundation
 import UniformTypeIdentifiers
+import os
 
 /// The apps Launch Services knows can open a file, and the app each file opens in.
 ///
@@ -24,6 +25,12 @@ public final class OpenWithCatalog: @unchecked Sendable {
     private var appCache: [String: ApplicationInfo?] = [:]
     private nonisolated(unsafe) var windowFocusObserver: (any NSObjectProtocol)?
     private nonisolated(unsafe) var observedCenter = NotificationCenter.default
+    /// Sets what a type opens in: the system's, replaced in tests by one that doesn't answer.
+    nonisolated(unsafe) var setDefaultInSystem: @Sendable (URL, UTType) async throws -> Void = {
+        try await NSWorkspace.shared.setDefaultApplication(at: $0, toOpen: $1)
+    }
+    /// How long the system is waited for; shorter in tests.
+    nonisolated(unsafe) var setDefaultTimeLimit = OpenWithCatalog.setDefaultTimeout
 
     /// The one the app reads, which forgets what it holds whenever a window comes forward.
     public static let shared: OpenWithCatalog = {
@@ -218,21 +225,34 @@ public final class OpenWithCatalog: @unchecked Sendable {
             forget()
         }
         let appURL = URL(fileURLWithPath: appPath)
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            group.addTask {
+        let setter = setDefaultInSystem
+        let limit = setDefaultTimeLimit
+        // Whichever ends first answers: the system's call doesn't stop when asked to, so it isn't waited for past the
+        // time limit (a task group would wait for it).
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
+            let answered = OSAllocatedUnfairLock(initialState: false)
+            @Sendable func answer(_ result: Result<Void, any Error>) {
+                let first = answered.withLock { done in
+                    defer { done = true }
+                    return !done
+                }
+                if first { continuation.resume(with: result) }
+            }
+            let timer = Task {
+                try? await Task.sleep(for: limit)
+                answer(.failure(SetDefaultFailure(message: "macOS didn't answer.")))
+            }
+            Task {
                 do {
-                    try await NSWorkspace.shared.setDefaultApplication(at: appURL, toOpen: type)
+                    try await setter(appURL, type)
+                    answer(.success(()))
                 } catch {
                     let message = (error as NSError).localizedDescription
-                    throw SetDefaultFailure(message: message.isEmpty ? "macOS refused the change." : message)
+                    answer(
+                        .failure(SetDefaultFailure(message: message.isEmpty ? "macOS refused the change." : message)))
                 }
+                timer.cancel()
             }
-            group.addTask {
-                try await Task.sleep(for: Self.setDefaultTimeout)
-                throw SetDefaultFailure(message: "macOS didn't answer.")
-            }
-            defer { group.cancelAll() }
-            try await group.next()
         }
     }
 }

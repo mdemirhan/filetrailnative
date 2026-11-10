@@ -745,7 +745,7 @@ index across the folder picker; track the favorite by path as the Open With list
 `AppState/AppStateStore.swift:335-364`: `save()` clears
 `unsavedFiles` even when `writeAtomically` failed, so `flush()` at quit writes nothing.
 
-### [ ] 3F.2. The 10 s timeout on setting a default app cannot fire early
+### [x] 3F.2. The 10 s timeout on setting a default app cannot fire early
 
 `System/OpenWithCatalog.swift:221-236`: a
 throwing task group waits for all children, and the system call ignores cancellation.
@@ -2090,3 +2090,6 @@ anything that differed from the plan, and anything found on the way that is not 
   never takes back the counts its children added when it discards its copy (as 3A.8 did for a Replace), so a folder
   copy ended by a full disk or a Stop still counts what it wrote; and a new folder inside a merge that a full disk
   ends has no item of its own in the result, as with a Stop.
+- 2026-11-10. Flaky, noted: in one run made slow by load (tests 123 s), `ClipboardWindowTests.copyFillsTheClipboardAndTheButtonSaysSo`
+  failed at `ExplorerHarness.swift:82` (`waitUntil { read && tab.workspace.isReady }`) after 0.5 s, though that
+  wait allows 30 s; it passed on the rerun. Worth a look: the half second doesn't fit the wait's limit.

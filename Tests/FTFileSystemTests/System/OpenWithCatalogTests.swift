@@ -2,6 +2,7 @@ import AppKit
 import FTTestSupport
 import Foundation
 import Testing
+import os
 
 @testable import FTFileSystem
 
@@ -130,5 +131,25 @@ import Testing
             try await OpenWithCatalog().setDefaultApplication(appPath: missingApp, contentType: "")
         }
         #expect(error?.message == "That kind of file isn't known to macOS.")
+    }
+}
+
+struct SettingTheDefaultAppTests {
+    // macOS that doesn't answer is given up on at the time limit: the call doesn't wait for it, as it doesn't stop when
+    // asked to.
+    @Test func givesUpOnMacOSAtTheTimeLimitWithoutWaitingForIt() async {
+        let catalog = OpenWithCatalog()
+        let answered = OSAllocatedUnfairLock(initialState: false)
+        catalog.setDefaultInSystem = { _, _ in
+            usleep(2_000_000)
+            answered.withLock { $0 = true }
+        }
+        catalog.setDefaultTimeLimit = .milliseconds(100)
+
+        await #expect(throws: OpenWithCatalog.SetDefaultFailure(message: "macOS didn't answer.")) {
+            try await catalog.setDefaultApplication(
+                appPath: "/Applications/TextEdit.app", contentType: "public.plain-text")
+        }
+        #expect(!answered.withLock { $0 })
     }
 }
