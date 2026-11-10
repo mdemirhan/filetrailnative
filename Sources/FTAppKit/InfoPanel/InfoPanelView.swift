@@ -505,6 +505,9 @@ final class InfoPanelContentView: NSView {
     private var rowViews: [RowViews] = []
     private var actionButtons: [(InfoPanelModel.QuickAction.ID, InfoIconButton)] = []
     private var dividers: [Double] = []
+    /// The load of the Open button's app icon: the next item's takes it back, so an older answer can't land after a
+    /// newer one.
+    private var openIconHandle: LoadHandle?
 
     private struct RowViews {
         var row: InfoRow
@@ -636,11 +639,13 @@ final class InfoPanelContentView: NSView {
     }
 
     private func loadOpenIcon(_ app: InfoOpenApp?) {
+        openIconHandle?.cancel()
+        openIconHandle = nil
         guard let app, let iconStore else {
             open.appIcon = nil
             return
         }
-        iconStore.load(.app(path: app.path)) { [weak self] image in
+        openIconHandle = iconStore.load(.app(path: app.path)) { [weak self] image in
             self?.open.appIcon = image.map(NativeIconPixels.image)
         }
     }

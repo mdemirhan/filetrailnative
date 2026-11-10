@@ -697,7 +697,7 @@ dictionary (`BatchRename/MainWindowController+BatchRename.swift:20`).
 
 `Acknowledgements/AcknowledgementsWindowController.swift:273-274`: the labels sit above the summary and take the hit.
 
-### [ ] 3E.2. An older icon can overwrite a newer one in the Info panel
+### [x] 3E.2. An older icon can overwrite a newer one in the Info panel
 
 - Where: `loadOpenIcon` in `Sources/FTAppKit/InfoPanel/InfoPanelView.swift` (lines 638–646).
 - What is wrong: the load handle is dropped, so a slow load for the previous selection can finish after the load

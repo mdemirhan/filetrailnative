@@ -330,6 +330,33 @@ struct InfoPanelViewTests {
         #expect(labels.contains("Capacity") && labels.contains("Available") && labels.contains("Used"))
         #expect(!labels.contains("Size"))
     }
+
+    // The Open button keeps the icon of the shown item's app, however late the previous item's app icon arrives.
+    @Test func aLateIconForThePreviousItemsAppDoesNotReplaceTheCurrentOne() async throws {
+        let old = "/Applications/Old.app"
+        let current = "/Applications/Current.app"
+        let source = HeldAppIcons(
+            [
+                old: NSColor(srgbRed: 1, green: 0, blue: 0, alpha: 1),
+                current: NSColor(srgbRed: 0, green: 0, blue: 1, alpha: 1),
+            ],
+            held: [old])
+        let store = FileIconStore(source: source)
+        let view = InfoPanelView()
+        view.iconStore = store
+        view.show(display(app: InfoOpenApp(path: old, name: "Old")))
+        view.show(display(app: InfoOpenApp(path: current, name: "Current")))
+        let button = try #require(findViews("infoPanel.openGroup", in: view).first as? SplitOpenButton)
+        #expect(await waitUntil { isBlue(button.appIcon) })
+        source.letGo(old)
+        #expect(
+            await waitUntil {
+                if case .missing = store.lookup(IconRequest.app(path: old)) { return false }
+                return true
+            })
+        await settle()
+        #expect(isBlue(button.appIcon))
+    }
 }
 
 @MainActor
@@ -651,4 +678,38 @@ struct PathBarViewTests {
         let menu = try await open(active: "") { _ in throw Failure() }
         #expect(menu.rows.map(\.title) == ["Can’t Read This Folder"])
     }
+}
+
+/// Draws each app's icon in a colour of its own; the icons of `held` paths wait until let go.
+private final class HeldAppIcons: IconSource, @unchecked Sendable {
+    private let colors: [String: NSColor]
+    private let gates: [String: DispatchSemaphore]
+
+    init(_ colors: [String: NSColor], held: [String]) {
+        self.colors = colors
+        gates = Dictionary(uniqueKeysWithValues: held.map { ($0, DispatchSemaphore(value: 0)) })
+    }
+
+    func letGo(_ path: String) { gates[path]?.signal() }
+
+    func icon(atPath path: String) -> NSImage? {
+        guard let color = colors[path] else { return nil }
+        gates[path]?.wait()
+        return NSImage(size: NSSize(width: 16, height: 16), flipped: false) { rect in
+            color.setFill()
+            rect.fill()
+            return true
+        }
+    }
+}
+
+/// Whether an icon as the panel draws it is the blue one.
+@MainActor
+private func isBlue(_ image: NSImage?) -> Bool {
+    guard let image, let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return false }
+    let rep = NSBitmapImageRep(cgImage: cg)
+    guard let color = rep.colorAt(x: rep.pixelsWide / 2, y: rep.pixelsHigh / 2)?.usingColorSpace(.deviceRGB) else {
+        return false
+    }
+    return color.blueComponent > 0.5 && color.redComponent < 0.5
 }
