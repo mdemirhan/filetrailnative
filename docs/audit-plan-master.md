@@ -342,7 +342,7 @@ under `WARN_FAILS=1`, and do not go on to the test step when the build fails.
 
 `ci.sh:13-14`.
 
-### [ ] 2.4. `--affected` misses the bundle a file was moved out of
+### [x] 2.4. `--affected` misses the bundle a file was moved out of
 
 `ci.sh:104-106`: add `--no-renames` to the diff.
 

@@ -103,12 +103,13 @@ step() {
     fi
 }
 
-# The files changed on this branch, committed or not, and in commits not yet on GitHub.
+# The files changed on this branch, committed or not, and in commits not yet on GitHub. A file moved counts at both its
+# places: the bundle it left must run too.
 changed_files() {
     {
-        git diff --name-only main...HEAD
-        git diff --name-only origin/main...HEAD
-        git diff --name-only HEAD
+        git diff --name-only --no-renames main...HEAD
+        git diff --name-only --no-renames origin/main...HEAD
+        git diff --name-only --no-renames HEAD
         git ls-files --others --exclude-standard
     } 2>/dev/null | sort -u
 }
