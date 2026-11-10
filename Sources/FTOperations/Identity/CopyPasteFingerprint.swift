@@ -55,6 +55,27 @@ public func captureFingerprint(_ fileSystem: some IdentityFileSystem, _ path: St
         symlinkTarget: kind == .symlink ? try? fileSystem.readlink(path) : nil)
 }
 
+/// `captureFingerprint`, but missing only when nothing is there for certain (ENOENT, ENOTDIR). Any other failure
+/// to read the item (a disk error, no permission, a network disk not answering) is thrown: it doesn't say the
+/// item is gone.
+func captureFingerprintStrictly(_ fileSystem: some IdentityFileSystem, _ path: String) throws -> NodeFingerprint {
+    let stats: WriteServiceStats
+    do {
+        stats = try fileSystem.lstat(path)
+    } catch {
+        let code = errorCode(error)
+        if code == "ENOENT" || code == "ENOTDIR" {
+            return .missing
+        }
+        throw error
+    }
+    let kind = detectKind(stats)
+    return NodeFingerprint(
+        exists: true, kind: kind, size: kind == .file ? stats.size : nil, mtimeMs: stats.mtimeMs,
+        mode: stats.mode, ino: fileIdOf(stats.ino), dev: stats.dev,
+        symlinkTarget: kind == .symlink ? try? fileSystem.readlink(path) : nil)
+}
+
 /// A folder that may be given by a symlink to it (a link to Desktop, say): pasting into the link pastes into
 /// the folder, so it is that folder's fingerprint, followed through the link. Anything else is fingerprinted as
 /// it is.
@@ -230,8 +251,9 @@ public func holdsAnyOf(_ fileSystem: some IdentityFileSystem, _ destinationPath:
         } else {
             holders[foldedPathKey(realDestination)] ?? []
         }
-    // One already moved out (earlier in the same move) is no longer at risk.
-    return held.contains { captureFingerprint(fileSystem, $0).exists }
+    // One already moved out (earlier in the same move) is no longer at risk; one that can't be read just now may
+    // still be there, and still is.
+    return held.contains { mayStillBeThere(fileSystem, $0) }
 }
 
 /// Whether the item at `path` is one of the pasted items, as the review tells "another item being pasted":
@@ -248,11 +270,17 @@ public func isAnyOf(_ fileSystem: some IdentityFileSystem, _ path: String, _ pas
         return spellings.contains { items[pathKey($0)] != nil }
     }
     for spelling in spellings {
-        if let item = items[foldedPathKey(spelling)], captureFingerprint(fileSystem, item).exists {
+        if let item = items[foldedPathKey(spelling)], mayStillBeThere(fileSystem, item) {
             return true
         }
     }
     return false
+}
+
+/// Whether a pasted item may still be where it was: one that can't be read just now (a disk error, a network disk
+/// not answering) may be, so it counts as there.
+private func mayStillBeThere(_ fileSystem: some IdentityFileSystem, _ path: String) -> Bool {
+    (try? captureFingerprintStrictly(fileSystem, path))?.exists ?? true
 }
 
 // Keys for the items of a paste and the folders holding them: an identity ("dev:ino"), a path, or a path

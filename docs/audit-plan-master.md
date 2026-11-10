@@ -488,7 +488,7 @@ Confirm each first (see "How much to trust each item"). Grouped by area; within 
 
 **3A. Write engine** (paths are under `Sources/FTOperations` unless they say otherwise). Do 2.9 first.
 
-### [ ] 3A.1. "Could not read it" is not "it is gone"
+### [x] 3A.1. "Could not read it" is not "it is gone"
 
 - `captureFingerprint` (`Sources/FTOperations/Identity/CopyPasteFingerprint.swift` 49–56) returns `.missing` for
   any `lstat` error. Four sibling helpers refuse that (`isPathTaken`, `isGone`, `lstatUnlessMissing`,
@@ -2061,3 +2061,7 @@ anything that differed from the plan, and anything found on the way that is not 
   fork failing the copy. Files and folders do disagree (a folder whose metadata didn't copy is kept, a file isn't).
   Question for the owner: which rule should win; if "keep the source", compare the source's and the copy's
   attribute names after a move, leaving out those the kernel manages.
+- 2026-11-10. 3A.1: an app moved by copy whose original can't be read afterwards is recorded as the copy made (as
+  with one still there), so Undo puts the copy in the Trash rather than trying to move it back. Found, not fixed:
+  `tryRemoveEmptySourceDirectory` (`ExecutionMoves.swift`) reads an unreadable moved folder as gone in the same way,
+  so it is left without a word.

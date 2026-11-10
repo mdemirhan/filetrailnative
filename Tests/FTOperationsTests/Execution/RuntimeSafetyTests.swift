@@ -465,4 +465,30 @@ struct WhatIsPickedTests {
             #expect(!Disk.list(f.root).contains("dst"))
         }
     }
+
+    // A folder pasted into that can't be read (a disk error, a network disk not answering) may still be there:
+    // it is never said to be gone.
+    @Test func saysTheFolderPastedIntoCouldntBeReadRatherThanGone() async throws {
+        try await withSafetyFolders { f in
+            try Disk.write(f.src + "/a.txt", "a")
+            let fileSystem = TestFileSystem()
+            let base = fileSystem.base
+            fileSystem.lstatImpl = { path in
+                if NodePath.basename(path) == "dst" && !Disk.exists(f.dst) {
+                    throw NativeError(message: "EIO: \(path)", code: "EIO", path: path)
+                }
+                return try base.lstat(path)
+            }
+
+            let run = try await runPaste(
+                mode: .copy, sources: [f.src + "/a.txt"], into: f.dst, fileSystem: fileSystem,
+                beforeExecute: { try FileManager.default.removeItem(atPath: f.dst) })
+
+            #expect(run.result?.status == .failed)
+            #expect(
+                run.result?.items.map(\.error) == [
+                    "The folder \u{201C}dst\u{201D} couldn't be read. A disk error occurred."
+                ])
+        }
+    }
 }

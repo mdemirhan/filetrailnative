@@ -105,6 +105,28 @@ struct CopyPasteMoveCleanupTests {
         #expect(result.items.map(\.error) == [Self.copyNotWhole])
     }
 
+    // An original that can't be read once its copy is in place may still be there: it is never taken for one
+    // deleted by someone else, nor reported moved.
+    @Test func keepsAndReportsAnOriginalThatCantBeCheckedOnceCopied() async throws {
+        let fileSystem = folderOnAnotherDisk()
+        let report = try analyze(fileSystem, ["/source/dir/a.txt"])
+        fileSystem.lstatImpl = { path in
+            if path == "/source/dir/a.txt" && fileSystem.exists("/target/a.txt") {
+                throw MockWriteServiceFileSystem.error("EIO", path)
+            }
+            return try fileSystem.lstatDirectly(path)
+        }
+
+        let result = try await move(fileSystem, report)
+
+        #expect(fileSystem.exists("/source/dir/a.txt"))
+        #expect(result.items.map(\.status) == [.failed])
+        #expect(
+            result.items.map(\.error) == [
+                "It was copied, but the original couldn't be checked, so it was kept. A disk error occurred."
+            ])
+    }
+
     @Test func removesAnOriginalThatChangedAfterTheReviewOnceThePersonGoesOnWithIt() async throws {
         let fileSystem = folderOnAnotherDisk()
         let report = try analyze(fileSystem, ["/source/dir"])

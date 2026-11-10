@@ -89,7 +89,13 @@ func copyStillWhole(_ fileSystem: some IdentityFileSystem, _ path: String, _ sou
 func tryDeleteMovedSource(
     _ sourcePath: String, _ originalFingerprint: NodeFingerprint, _ fileSystem: some WriteServiceFileSystem
 ) -> String? {
-    let currentFingerprint = captureFingerprint(fileSystem, sourcePath)
+    let currentFingerprint: NodeFingerprint
+    do {
+        currentFingerprint = try captureFingerprintStrictly(fileSystem, sourcePath)
+    } catch {
+        // Not readable just now (a disk error, a network disk not answering): it may well still be there.
+        return "It was copied, but the original couldn't be checked, so it was kept. \(describeCopyPasteError(error))"
+    }
     if !currentFingerprint.exists {
         // Deleted by someone else meanwhile: nothing to do.
         return nil

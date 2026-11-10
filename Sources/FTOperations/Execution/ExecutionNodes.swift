@@ -263,10 +263,10 @@ func movesAppByCopy(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode) 
 }
 
 /// Undo's step for an app movesAppByCopy moved: a move back from its new id, or, with its original still there
-/// (it couldn't be removed), the copy that was made.
+/// (it couldn't be removed) or maybe there (it can't be read), the copy that was made.
 func recordAppMovedByCopy(_ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ path: String) {
     let fileSystem = context.fileSystem
-    if captureFingerprint(fileSystem, node.node.sourcePath).exists {
+    if (try? captureFingerprintStrictly(fileSystem, node.node.sourcePath))?.exists ?? true {
         recordCreated(context, node, path)
     } else {
         recordMoved(context, node, path, captureFingerprint(fileSystem, path))
@@ -562,7 +562,15 @@ func tryRenameForCut(_ context: ExecutionContext, _ currentNode: ResolvedCopyPas
 func explainMissingFolder(_ fileSystem: some IdentityFileSystem, _ targetPath: String, _ error: any Error) -> any Error
 {
     guard errorCode(error) == "ENOENT" else { return error }
-    let folder = captureFingerprint(fileSystem, dirnameOf(targetPath))
+    let folder: NodeFingerprint
+    do {
+        folder = try captureFingerprintStrictly(fileSystem, dirnameOf(targetPath))
+    } catch let readError {
+        // Not readable just now: it may well still be there.
+        return OperationError(
+            "The folder \u{201C}\(basenameOf(dirnameOf(targetPath)))\u{201D} couldn't be read. \(describeCopyPasteError(readError))"
+        )
+    }
     return folder.exists
         ? error
         : OperationError(

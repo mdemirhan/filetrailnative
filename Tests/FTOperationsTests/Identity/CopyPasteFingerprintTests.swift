@@ -209,6 +209,40 @@ struct PastedItemsTests {
 
         #expect(fileSystem.lstatCount - before < 5 * count)
     }
+
+    // A pasted item that can't be read just now (a disk error, a network disk not answering) may still be there:
+    // it is still at risk, never taken for one moved out already.
+    @Test func takesAnItemInsideThatCantBeReadForOneStillThere() {
+        let disk = MockWriteServiceFileSystem([("/d/sub/x.txt", .file(ino: 60, dev: 1))])
+        let fileSystem = TestFileSystem(disk)
+        let items = PastedItems(realPaths: ["/d/sub/x.txt"])
+        #expect(holdsAnyOf(fileSystem, "/d/sub", items))
+
+        fileSystem.lstatImpl = { path in
+            if path == "/d/sub/x.txt" {
+                throw MockWriteServiceFileSystem.error("EIO", path)
+            }
+            return try disk.lstat(path)
+        }
+
+        #expect(holdsAnyOf(fileSystem, "/d/sub", items))
+    }
+
+    @Test func takesAnItemThatCantBeReadForOneStillBeingPasted() {
+        let disk = MockWriteServiceFileSystem([("/d/a.txt", .file(ino: 61, dev: 1))])
+        let fileSystem = TestFileSystem(disk)
+        let items = PastedItems(realPaths: ["/d/a.txt"])
+        #expect(isAnyOf(fileSystem, "/d/a.txt", items))
+
+        fileSystem.lstatImpl = { path in
+            if path == "/d/a.txt" {
+                throw MockWriteServiceFileSystem.error("EIO", path)
+            }
+            return try disk.lstat(path)
+        }
+
+        #expect(isAnyOf(fileSystem, "/d/a.txt", items))
+    }
 }
 
 struct SourceRelationTests {

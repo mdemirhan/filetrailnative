@@ -152,4 +152,37 @@ struct QuarantinedAppPasteTests {
             #expect(runsInPlace(applications + "/Foo.app"))
         }
     }
+
+    // An original that can't be read once the app is in place may still be there (here its emptied folder is): it
+    // is recorded as a copy made, never as moved.
+    @Test func aLoneAppWhoseOriginalCantBeReadAfterTheMoveIsRecordedAsMadeNotMoved() async throws {
+        try await withFolders { _, downloads, applications, _ in
+            try makeApp(downloads + "/Foo.app")
+            let fileSystem = TestFileSystem()
+            let base = fileSystem.base
+            fileSystem.lstatImpl = { path in
+                if path.hasSuffix("/Downloads/Foo.app") && Disk.exists(applications + "/Foo.app") {
+                    throw NativeError(message: "EIO: \(path)", code: "EIO", path: path)
+                }
+                return try base.lstat(path)
+            }
+
+            let run = try await runPaste(
+                mode: .cut, sources: [downloads + "/Foo.app"], into: applications, fileSystem: fileSystem)
+
+            #expect(runsInPlace(applications + "/Foo.app"))
+            #expect(Disk.exists(downloads + "/Foo.app"))
+            guard case .undoable(let units)? = run.result?.undoLog else {
+                Issue.record("Not undoable: \(String(describing: run.result?.undoLog))")
+                return
+            }
+            let steps = units.flatMap(\.steps)
+            #expect(steps.count == 1)
+            if case .created(let path, _, _)? = steps.first {
+                #expect(path.hasSuffix("/Applications/Foo.app"))
+            } else {
+                Issue.record("Not recorded as made: \(steps)")
+            }
+        }
+    }
 }
