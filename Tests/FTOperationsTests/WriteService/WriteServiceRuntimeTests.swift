@@ -308,6 +308,47 @@ struct WriteServiceRuntimeCoordinationTests {
         #expect(throws: (any Error).self) { try service.getCopyPasteAnalysisUpdate("missing-analysis") }
     }
 
+    // Stop pressed just as the paste finds something in the way: after it last looked whether it was stopped, and
+    // before it asked its question. Nothing is left to drop that question, so the paste must see the Stop itself,
+    // or it waits on the question for good with the write slot held.
+    @Test func endsAPasteStoppedJustBeforeItAsksAQuestion() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
+        ])
+        let service = WriteService(
+            .init(fileSystem: fileSystem, createOperationId: { "copy-op-1" }, createAnalysisId: { "analysis-1" }))
+        let pasting = OSAllocatedUnfairLock(initialState: false)
+        let log = ServiceLog()
+        _ = service.subscribe { event in
+            log.record(event)
+            if event.status == .running {
+                pasting.withLock { $0 = true }
+            }
+        }
+        _ = try service.startCopyPasteAnalysis(
+            CopyPasteAnalysisRequest(
+                mode: .copy, sourcePaths: ["/source/file.txt"], destinationDirectoryPath: "/target"))
+        #expect(await waitFor { try service.getCopyPasteAnalysisUpdate("analysis-1").status == .complete })
+        fileSystem.addFile("/target/file.txt", .file(size: 99))
+        // The paste's look at what is now in the way, on the paste's own thread: Stop is pressed right then.
+        fileSystem.lstatImpl = { path in
+            if path == "/target/file.txt" && pasting.withLock({ $0 }) {
+                service.cancelOperation("copy-op-1")
+            }
+            return try fileSystem.lstatDirectly(path)
+        }
+
+        _ = try service.startCopyPaste(CopyPasteExecutionRequest(analysisId: "analysis-1", policy: .defaultCopyPaste))
+        // A paste left waiting on its question is let go however the test ends: a second Stop finds the question.
+        defer { service.cancelOperation("copy-op-1") }
+
+        let ended: Set<CopyPasteOperationStatus> = [.completed, .partial, .failed, .cancelled]
+        #expect(await waitFor(timeout: .seconds(5)) { log.events.contains { ended.contains($0.status) } })
+        #expect(log.events.last?.status == .cancelled)
+        #expect(!log.events.contains { $0.status == .awaitingResolution })
+        #expect(await waitFor(timeout: .seconds(5)) { service.state.withLock { $0.activeOperationId } == nil })
+    }
+
     @Test func cancelsOperationsThatArePausedOnARuntimeConflict() async throws {
         let fileSystem = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),

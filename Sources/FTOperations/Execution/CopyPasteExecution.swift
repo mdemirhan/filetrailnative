@@ -349,6 +349,9 @@ func answerRuntimeConflict(
     question.conflictId = "\(conflict.conflictId)-\(number)"
     // Asked for before the question goes out, so an answer given right away isn't lost.
     let answer = context.requestResolution(question)
+    // A Stop that came after the paste last looked, but before the question was asked for, found no question to
+    // drop: the paste stops here instead, and the question never goes out.
+    try context.signal.throwIfStopped()
     emitProgress(context, .awaitingResolution, node, question)
     let resolution = answer.wait()
     try context.signal.throwIfStopped()

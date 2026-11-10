@@ -509,7 +509,7 @@ Confirm each first (see "How much to trust each item"). Grouped by area; within 
 
 This changes what the person is told in those four cases, so build the app and tell the owner what changed.
 
-### [ ] 3A.2. A Stop just before a conflict question leaves the paste blocked with the write slot held
+### [x] 3A.2. A Stop just before a conflict question leaves the paste blocked with the write slot held
 
 `CopyPasteExecution.swift:338`, `WriteServiceRuntime.swift:44`. `cancelOperation` removes the pending question and
 stops the signal; if it runs after the last `isStopped` check but before `registerQuestion`, the question is

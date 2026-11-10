@@ -42,12 +42,12 @@ extension WriteService {
     /// no such paste running.
     @discardableResult
     public func cancelOperation(_ operationId: String) -> Bool {
-        let (pending, signal) = state.withLock { state in
-            let pending = state.pendingResolutions.removeValue(forKey: operationId)
-            return (pending, state.signals[operationId])
-        }
-        // Stopped before the question is dropped, so the paste waking up to it finds itself stopped.
+        let signal = state.withLock { $0.signals[operationId] }
+        // Stopped before the open question is looked for: a question asked for after this finds the paste stopped
+        // (see answerRuntimeConflict), and one asked for before is dropped here, so the paste waking up to it finds
+        // itself stopped.
         signal?.stop()
+        let pending = state.withLock { $0.pendingResolutions.removeValue(forKey: operationId) }
         pending?.answer.resolve(nil)
         return signal != nil
     }
