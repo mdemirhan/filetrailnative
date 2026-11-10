@@ -140,12 +140,14 @@ struct AlertCardTests {
             await InWindowAlerts.askName(.rename("/folder/Alpha"), in: window) { _ in .close }
             done = true
         }
-        _ = try #require(await card(window))
+        weak var accessory: TextPromptAccessory?
+        accessory = try #require(await card(window)).content.accessory as? TextPromptAccessory
         scrim = DialogScrim.front(in: window)
-        #expect(scrim != nil)
+        #expect(scrim != nil && accessory != nil)
         DialogKeys.press(53, "\u{1b}", in: window)
         #expect(await waitUntil { done })
         #expect(await waitUntil(timeout: .seconds(2)) { scrim == nil })
+        #expect(await waitUntil(timeout: .seconds(2)) { accessory == nil })
     }
 
     // Move to Trash opens with its button focused; Return (or the button) confirms it, and the alert goes at once.

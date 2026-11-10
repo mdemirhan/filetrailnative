@@ -121,8 +121,13 @@ enum InWindowAlerts {
                 continuation.resume()
             }
             scrim = presented
-            // The buttons hold the scrim through `close`, and the scrim holds the buttons: let go once it is away.
-            presented.alsoOnDismiss { scrim = nil }
+            // The buttons hold the scrim through `close`, and the scrim holds the buttons; the field holds itself
+            // through what it is told to do, which reads it: let go of both once it is away.
+            presented.alsoOnDismiss {
+                scrim = nil
+                accessory.onSubmit = { _ in }
+                accessory.onCanSubmit = { _ in }
+            }
             let submitButton = (presented.panel as? AlertCard)?.defaultButton
             submitButton?.isEnabled = !accessory.trimmed.isEmpty
             accessory.onCanSubmit = { submitButton?.isEnabled = $0 }
