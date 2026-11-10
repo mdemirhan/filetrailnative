@@ -3,6 +3,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -133,9 +134,8 @@ extension ExplorerHarness {
     /// The app's file operations over the harness's windows, as the app always has them: F2 and the rename field go
     /// through them. They act while the value is kept; their journal is in a folder of their own, not in the list.
     func writeOperations() throws -> AppWriteOperations {
-        let userData = FileManager.default.temporaryDirectory.appendingPathComponent(
-            "filetrail-selection-writes-\(UUID().uuidString)")
-        try FileManager.default.createDirectory(at: userData, withIntermediateDirectories: true)
+        // In this process's folder of window tests, which goes when the process ends.
+        let userData = try TemporaryDirectory.shallow(prefix: "selection-writes").url
         return AppWriteOperations(
             userData: userData, directoryService: services.directoryService, windows: windows, trash: .standIn,
             emptyTrash: { (true, nil) },

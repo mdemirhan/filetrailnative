@@ -450,7 +450,7 @@ names makes it fail. If the behavior cannot be reached, delete the test and say 
 `Tests/FTAppKitTests/Windows/ExplorerHarness.swift:87`,
 `Selection/SelectionTestKit.swift:164`, `Sidebar/SidebarTests.swift:80`, `Sidebar/SidebarFavoriteDragTests.swift:57`.
 
-### [ ] 2.12. Tests stop leaving folders in the temp folder
+### [x] 2.12. Tests stop leaving folders in the temp folder
 
 `Tests/FTAppKitTests/WriteOperations/StandInTrash.swift:29`
 (`filetrail-test-trash-<pid>`), `Selection/SelectionTestKit.swift:136` (`filetrail-selection-writes-*`, 15 call
@@ -2008,3 +2008,5 @@ anything that differed from the plan, and anything found on the way that is not 
   passes `copyMetadataToRunInPlace` through. Known limit, not changed: the crash falls only between journal
   writes, never inside a copy, so a partly written file at the staging path is reached only by the hand-built
   recovery tests (`CopyPasteRecovery.swift` near 255).
+- 2026-11-10. 2.12: 919 folders left by earlier runs are in `$TMPDIR` (`filetrail-test-trash-*`,
+  `filetrail-selection-writes-*`, `filetrail-drag*`); not deleted. A full run after the change added none.

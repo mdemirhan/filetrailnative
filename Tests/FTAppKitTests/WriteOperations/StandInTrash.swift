@@ -1,5 +1,6 @@
 // A Trash of the tests' own, so that no test run can leave anything in the user's
 import FTOperations
+import FTTestSupport
 import Foundation
 
 extension TrashItem {
@@ -25,7 +26,12 @@ extension TrashItem {
     }
 }
 
+/// In this process's own folder of window tests, which goes when the process ends (or the next run, if it was
+/// killed), not in the system's temporary folder, where one was left behind by every test process.
 enum StandInTrash {
-    static let folder = FileManager.default.temporaryDirectory.resolvingSymlinksInPath()
-        .appendingPathComponent("filetrail-test-trash-\(getpid())/.Trash")
+    static let folder =
+        ((try? ShallowTestFolders.root())
+        ?? FileManager.default.temporaryDirectory.resolvingSymlinksInPath()
+        .appendingPathComponent("filetrail-test-trash-\(getpid())"))
+        .appendingPathComponent("trash/.Trash")
 }

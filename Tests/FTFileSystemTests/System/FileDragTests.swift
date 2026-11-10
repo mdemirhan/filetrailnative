@@ -96,6 +96,7 @@ struct FileDragTests {
         content.addSubview(view)
         window.contentView = content
         let folder = try TemporaryDirectory(prefix: "filetrail-drag-many")
+        defer { folder.remove() }
         let paths = (0..<2000).map { folder.appending("\($0)").path }
         #expect(
             FileDrag.start(
@@ -171,6 +172,7 @@ struct FileDragTests {
 
     @Test func leavesTheCachesAloneWhenEverythingIsStillThere() throws {
         let folder = try TemporaryDirectory(prefix: "filetrail-dragged-away")
+        defer { folder.remove() }
         let file = folder.appending("a.txt")
         try "a".write(to: file, atomically: true, encoding: .utf8)
         let answer = FileDrag.findDraggedAway([file.path])
@@ -231,6 +233,7 @@ struct FileDragTests {
 
     @Test func readsTheFilesAnotherAppsDragCarriesFileReferencesAsPaths() throws {
         let folder = try TemporaryDirectory(prefix: "filetrail-drag-pasteboard")
+        defer { folder.remove() }
         let file = folder.appending("a b.txt")
         let inner = folder.appending("Folder")
         try "a".write(to: file, atomically: true, encoding: .utf8)
