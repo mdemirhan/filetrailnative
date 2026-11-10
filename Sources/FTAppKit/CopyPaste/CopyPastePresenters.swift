@@ -117,6 +117,8 @@ final class CopyPasteReviewPresenter: PasteReviewPresenting {
         let shown = InWindowAlerts.present(content, in: window)
         CopyPasteDialogs.track(shown, on: tab)
         scrim = shown
+        // The buttons hold the scrim through `close`, and the scrim holds the buttons: let go once it is away.
+        shown.alsoOnDismiss { scrim = nil }
         alert = shown.panel as? AlertCard
     }
 }

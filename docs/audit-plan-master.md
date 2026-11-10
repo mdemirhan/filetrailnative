@@ -270,7 +270,7 @@ the current options to equal them. Typing then starts a new search. Do not make 
 search; the comment says that is intended.
 *Test:* in `Tests/FTAppKitTests/Search`, the example above.
 
-### [ ] 1.8. Every in-window alert stays in memory
+### [x] 1.8. Every in-window alert stays in memory
 
 [verified]
 In `InWindowAlerts.ask` (`Sources/FTAppKit/Dialogs/InWindowAlerts.swift:32`) the button closures capture the local
@@ -1969,3 +1969,9 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. 1.7 also covers the results a new search keeps from the last one while typing (`keepMatching` in
   `startSearch`): with only `canRefine` changed, typing after Settings turned subfolders off started a new search
   but kept the old subfolder matches on screen. The same remembered options decide both.
+- 2026-11-10. 1.8: the box is cleared from the scrim's `onDismiss` (a new `alsoOnDismiss`), not only after
+  `dismiss()` in `answer`: the review alert in `CopyPastePresenters` has no window-close closure, and `onDismiss`
+  runs on every way the dialog goes. Tested for `ask` (answered, and its window closed) and `askName`; the review
+  alert's change is covered only by its existing tests. Noted for 1.7 by its review, not changed: Return on the
+  same text with the same scope after a Settings edit still answers "already on screen" without searching again,
+  which fits "a Settings edit runs nothing again".

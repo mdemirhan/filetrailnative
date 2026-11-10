@@ -37,6 +37,15 @@ final class DialogScrim: NSView {
     var onScrimPress: (() -> Void)?
     /// Told once the dialog is taken away.
     var onDismiss: () -> Void = {}
+
+    /// Runs `action` as well once the dialog is taken away, after what was set to run before it.
+    func alsoOnDismiss(_ action: @escaping () -> Void) {
+        let previous = onDismiss
+        onDismiss = {
+            previous()
+            action()
+        }
+    }
     /// Told when the window closes with the dialog still up; the dialog goes without a word.
     var onWindowClose: (() -> Void)?
     private var interceptor: Int?

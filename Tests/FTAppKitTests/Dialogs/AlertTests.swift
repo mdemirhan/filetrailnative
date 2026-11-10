@@ -112,6 +112,42 @@ struct AlertCardTests {
         return frontAlert(window)
     }
 
+    // An alert that was answered, or whose window closed under it, is let go with its card and buttons.
+    @Test func anAlertIsLetGoOnceAnsweredOrItsWindowCloses() async throws {
+        for closesWindow in [false, true] {
+            let window = window()
+            weak var scrim: DialogScrim?
+            let answer = ask(LocalWriteRules.trashQuestion(["/folder/Alpha"]), in: window)
+            _ = try #require(await card(window))
+            scrim = DialogScrim.front(in: window)
+            #expect(scrim != nil)
+            if closesWindow {
+                window.close()
+            } else {
+                DialogKeys.press(53, "\u{1b}", in: window)
+            }
+            #expect(await waitUntil { answer.value == false })
+            #expect(await waitUntil(timeout: .seconds(2)) { scrim == nil }, "closes the window: \(closesWindow)")
+        }
+    }
+
+    // The same for the name prompt.
+    @Test func aNamePromptIsLetGoOnceClosed() async throws {
+        let window = window()
+        weak var scrim: DialogScrim?
+        var done = false
+        Task { @MainActor in
+            await InWindowAlerts.askName(.rename("/folder/Alpha"), in: window) { _ in .close }
+            done = true
+        }
+        _ = try #require(await card(window))
+        scrim = DialogScrim.front(in: window)
+        #expect(scrim != nil)
+        DialogKeys.press(53, "\u{1b}", in: window)
+        #expect(await waitUntil { done })
+        #expect(await waitUntil(timeout: .seconds(2)) { scrim == nil })
+    }
+
     // Move to Trash opens with its button focused; Return (or the button) confirms it, and the alert goes at once.
     @Test func moveToTrashIsConfirmedWithReturnAndClosesAtOnce() async throws {
         let window = window()
