@@ -1,7 +1,9 @@
 // The Swift paste engine, as the scenario checks drive it. The review and the paste go through the write service,
 // with the native file system, the app's Trash wrapper (TrashItem) around a folder Trash (ExecPlaces.trashFor), and
 // the app's journal file at places.journal. Questions are answered as the window does, the paste is stopped as the
-// Stop button does, and each thing that happens is recorded in order. Crashes aren't injected (decided 2026-10-14).
+// Stop button does, and each thing that happens is recorded in order. A crash right after the n-th write of the
+// journal stops everything reaching the disk, the journal and the record at that point, as a killed process does,
+// and the app's startup recovery (recoverWrites) then runs on what was left.
 import Darwin
 import FTFileSystem
 import FTFoundation
@@ -22,13 +24,12 @@ struct SwiftExecEngine: ExecEngine {
         _ scenario: ExecScenario, answers: [String], stopAt: ExecScenario.StopPoint?, crashAt: ExecScenario.CrashPoint?,
         in places: ExecPlaces
     ) async throws -> ExecOutcome {
-        if crashAt != nil {
-            throw Unsupported(description: "\(scenario.name): crashes aren't injected")
-        }
         let before = try places.snapshotTree()
         let log = Log()
-        let fileSystem = RecordedWriteFileSystem(trash: try Self.trash(scenario, places))
-        let journal = RecordingJournal(file: FileWriteJournal.open(places.journal), path: places.journal, log: log)
+        let fileSystem = RecordedWriteFileSystem(trash: try Self.trash(scenario, places), killed: { log.crashed })
+        let journal = RecordingJournal(
+            file: FileWriteJournal.open(places.journal), path: places.journal, log: log,
+            crashAfterWrite: crashAt?.journalWrite)
         let service = WriteService(
             .init(
                 fileSystem: fileSystem, writeJournal: journal, createOperationId: { "op-test" },
@@ -65,6 +66,14 @@ struct SwiftExecEngine: ExecEngine {
             answers: answers, applyToRemaining: scenario.applyToRemaining ?? [], stopAfterEvent: stopAt?.afterEvent)
         let finished = AsyncStream<Void>.makeStream()
         let unsubscribe = service.subscribe { event in
+            // A killed process hears nothing more, and nothing more is done for it; the paste is only waited out. Its
+            // disk calls fail from the crash on, so a question may follow: the paste is stopped, which can't reach
+            // the disk either.
+            if log.crashed {
+                if event.status == .awaitingResolution { service.cancelOperation(event.operationId) }
+                if Self.terminal.contains(event.status) { finished.continuation.finish() }
+                return
+            }
             log.append(EngineJSON.event(event))
             if let result = event.result {
                 log.append(.object(["kind": .string("result"), "result": EngineJSON.result(result)]))
@@ -116,12 +125,51 @@ struct SwiftExecEngine: ExecEngine {
         for await _ in finished.stream {}
         // Anything the service does after its last event (it lets the operation go) is done by now.
         try await Task.sleep(for: .milliseconds(10))
+        if log.crashed {
+            // The tree, the Trash and the journal as the crash left them, then what recovery made of them.
+            var left = try outcome(before, log, places)
+            left.recovery = try Self.recover(places)
+            return left
+        }
         if let undo, let script = scenario.undo {
             try await undo.waitForRecord(of: log.records)
             let steps = try await undo.run(script, places)
             return try outcome(before, log, places, undo: .object(["steps": .array(steps)]))
         }
         return try outcome(before, log, places)
+    }
+
+    /// The app's startup recovery, on the journal and the disk a crash left, with what it logged.
+    private static func recover(_ places: ExecPlaces) throws -> ExecOutcome.Recovery {
+        let logged = OSAllocatedUnfairLock(initialState: [JSONValue]())
+        let report = recoverWrites(
+            FileWriteJournal.open(places.journal), NativeWriteFileSystem(),
+            logger: RecoveryLogger(
+                info: { message, details in
+                    // The recordings give a Replace's recovery a path, null when nothing was put in place; the log
+                    // takes text alone, so it leaves out a path it doesn't have.
+                    let fields = details.mapValues { JSONValue.string($0) }.merging(
+                        details["stagingPath"] != nil && details["path"] == nil ? ["path": .null] : [:]
+                    ) { kept, _ in kept }
+                    logged.withLock {
+                        $0.append(
+                            .object([
+                                "level": .string("info"), "message": .string(message), "details": .object(fields),
+                            ]))
+                    }
+                },
+                error: { message, error in
+                    logged.withLock {
+                        $0.append(
+                            .object([
+                                "level": .string("error"), "message": .string(message), "details": .string(error),
+                            ]))
+                    }
+                }),
+            answerWithinMs: recoveryAnswerWithinMs)
+        return ExecOutcome.Recovery(
+            notices: report.notices, finished: report.finished, log: logged.withLock { $0 },
+            after: try places.snapshotTree(), trash: try places.snapshotTrash(), journal: try places.readJournal())
     }
 
     private func applyChanges(_ scenario: ExecScenario, afterEvent: Int?, _ places: ExecPlaces, _ log: Log) throws {
@@ -220,15 +268,30 @@ struct SwiftExecEngine: ExecEngine {
     }
 }
 
-/// What happened, in order, from every thread that records.
+/// What happened, in order, from every thread that records, until a crash: a killed process records nothing more.
 private final class Log: Sendable {
-    private let state = OSAllocatedUnfairLock(initialState: [JSONValue]())
-
-    func append(_ record: JSONValue) {
-        state.withLock { $0.append(record) }
+    private struct State {
+        var records: [JSONValue] = []
+        var crashed = false
     }
 
-    var records: [JSONValue] { state.withLock { $0 } }
+    private let state = OSAllocatedUnfairLock(initialState: State())
+
+    func append(_ record: JSONValue) {
+        state.withLock { if !$0.crashed { $0.records.append(record) } }
+    }
+
+    /// The process is killed here: the crash is the last record.
+    func crash(_ point: [String: JSONValue]) {
+        state.withLock {
+            guard !$0.crashed else { return }
+            $0.records.append(.object(["kind": .string("crash")].merging(point) { first, _ in first }))
+            $0.crashed = true
+        }
+    }
+
+    var crashed: Bool { state.withLock { $0.crashed } }
+    var records: [JSONValue] { state.withLock { $0.records } }
 }
 
 /// The answers to give and when to stop, consumed as the paste goes.
@@ -269,20 +332,26 @@ private final class RecordingJournal: WriteJournal {
     let file: FileWriteJournal
     let path: String
     let log: Log
+    /// The write after which the process is killed.
+    let crashAfterWrite: Int?
     private let writes = OSAllocatedUnfairLock(initialState: 0)
 
-    init(file: FileWriteJournal, path: String, log: Log) {
+    init(file: FileWriteJournal, path: String, log: Log, crashAfterWrite: Int? = nil) {
         self.file = file
         self.path = path
         self.log = log
+        self.crashAfterWrite = crashAfterWrite
     }
 
+    // A killed process writes nothing more.
     func add(_ entry: WriteJournalEntry) throws {
+        if log.crashed { return }
         try file.add(entry)
         wrote()
     }
 
     func remove(_ id: String) throws {
+        if log.crashed { return }
         let writes = file.entries().contains { $0.id == id }
         try file.remove(id)
         if writes {
@@ -297,50 +366,116 @@ private final class RecordingJournal: WriteJournal {
         }
         let entries = (try? JSONValue.parse(Data(contentsOf: URL(fileURLWithPath: path)))) ?? .null
         log.append(.object(["kind": .string("journal"), "write": .int(write), "entries": entries]))
+        if write == crashAfterWrite {
+            log.crash(["afterJournalWrite": .int(write)])
+        }
     }
 }
 
 /// The disk as the recordings expect it: the app's native file system, but with a realpath that opens the
-/// item, so it fails (EACCES) on an item its owner can't read (see RecordedFileSystem).
+/// item, so it fails (EACCES) on an item its owner can't read (see RecordedFileSystem). Once `killed` says the
+/// process was killed, every call fails without reaching the disk.
 struct RecordedWriteFileSystem: UndoFileSystem {
+    struct Killed: CodedError {
+        var code: String? { "ECANCELED" }
+        var message: String { "The engine was killed." }
+    }
+
     private let disk: NativeWriteFileSystem
     private let reader = RecordedFileSystem()
+    private let killed: @Sendable () -> Bool
 
-    init(trash: (@Sendable (String) throws -> String?)?) {
+    init(trash: (@Sendable (String) throws -> String?)?, killed: @escaping @Sendable () -> Bool = { false }) {
         disk = NativeWriteFileSystem(trash: trash)
+        self.killed = killed
     }
 
-    func lstat(_ path: String) throws -> WriteServiceStats { try disk.lstat(path) }
-    func stat(_ path: String) throws -> WriteServiceStats { try disk.stat(path) }
-    func realpath(_ path: String) throws -> String { try reader.realpath(path) }
-    func readdir(_ path: String) throws -> [String] { try disk.readdir(path) }
-    func readlink(_ path: String) throws -> String { try disk.readlink(path) }
-    func isCaseSensitive(_ path: String) throws -> Bool? { try disk.isCaseSensitive(path) }
-    func isPackage(_ path: String) throws -> Bool? { try disk.isPackage(path) }
+    private func alive() throws {
+        if killed() { throw Killed() }
+    }
+
+    /// `call` as given, failing once the process was killed.
+    private func guarded<each A, R>(_ call: ((repeat each A) throws -> R)?) -> ((repeat each A) throws -> R)? {
+        guard let call else { return nil }
+        let killed = killed
+        return { (argument: repeat each A) in
+            if killed() { throw Killed() }
+            return try call(repeat each argument)
+        }
+    }
+
+    func lstat(_ path: String) throws -> WriteServiceStats {
+        try alive()
+        return try disk.lstat(path)
+    }
+    func stat(_ path: String) throws -> WriteServiceStats {
+        try alive()
+        return try disk.stat(path)
+    }
+    func realpath(_ path: String) throws -> String {
+        try alive()
+        return try reader.realpath(path)
+    }
+    func readdir(_ path: String) throws -> [String] {
+        try alive()
+        return try disk.readdir(path)
+    }
+    func readlink(_ path: String) throws -> String {
+        try alive()
+        return try disk.readlink(path)
+    }
+    func isCaseSensitive(_ path: String) throws -> Bool? {
+        try alive()
+        return try disk.isCaseSensitive(path)
+    }
+    func isPackage(_ path: String) throws -> Bool? {
+        try alive()
+        return try disk.isPackage(path)
+    }
     func isAppleDouble(_ path: String) -> Bool { disk.isAppleDouble(path) }
-    func renameExclusive(_ from: String, _ to: String) throws { try disk.renameExclusive(from, to) }
-    func mkdir(_ path: String) throws { try disk.mkdir(path) }
+    func renameExclusive(_ from: String, _ to: String) throws {
+        try alive()
+        try disk.renameExclusive(from, to)
+    }
+    func mkdir(_ path: String) throws {
+        try alive()
+        try disk.mkdir(path)
+    }
     func rm(_ path: String, recursive: Bool, force: Bool) throws {
+        try alive()
         try disk.rm(path, recursive: recursive, force: force)
     }
-    func rmdir(_ path: String) throws { try disk.rmdir(path) }
+    func rmdir(_ path: String) throws {
+        try alive()
+        try disk.rmdir(path)
+    }
     func copyFile(
         _ source: String, _ destination: String, stop: StopSignal?, onProgress: (@Sendable (Int64) -> Void)?
     ) throws {
+        try alive()
         try disk.copyFile(source, destination, stop: stop, onProgress: onProgress)
     }
-    func getFlags(_ path: String) throws -> UInt32 { try disk.getFlags(path) }
-    func setFlags(_ path: String, _ flags: UInt32) throws { try disk.setFlags(path, flags) }
-    var chmod: ((String, UInt32) throws -> Void)? { disk.chmod }
-    var utimes: ((String, Double, Double) throws -> Void)? { disk.utimes }
-    var copyMetadata: ((String, String) throws -> Void)? { disk.copyMetadata }
-    var setAcl: ((String, String?) throws -> Void)? { disk.setAcl }
-    var trash: ((String) throws -> String?)? { disk.trash }
-    var canModifyFolder: ((String) throws -> Void)? { disk.canModifyFolder }
+    func getFlags(_ path: String) throws -> UInt32 {
+        try alive()
+        return try disk.getFlags(path)
+    }
+    func setFlags(_ path: String, _ flags: UInt32) throws {
+        try alive()
+        try disk.setFlags(path, flags)
+    }
+    var chmod: ((String, UInt32) throws -> Void)? { guarded(disk.chmod) }
+    var utimes: ((String, Double, Double) throws -> Void)? { guarded(disk.utimes) }
+    var copyMetadata: ((String, String) throws -> Void)? { guarded(disk.copyMetadata) }
+    var setAcl: ((String, String?) throws -> Void)? { guarded(disk.setAcl) }
+    var trash: ((String) throws -> String?)? { guarded(disk.trash) }
+    var canModifyFolder: ((String) throws -> Void)? { guarded(disk.canModifyFolder) }
     // What Undo asks besides, as the app's own.
-    func rename(_ from: String, _ to: String) throws { try disk.rename(from, to) }
-    var itemSize: ((String) throws -> ItemSize)? { disk.itemSize }
-    var getAcl: ((String) throws -> String?)? { disk.getAcl }
+    func rename(_ from: String, _ to: String) throws {
+        try alive()
+        try disk.rename(from, to)
+    }
+    var itemSize: ((String) throws -> ItemSize)? { guarded(disk.itemSize) }
+    var getAcl: ((String) throws -> String?)? { guarded(disk.getAcl) }
 }
 
 /// The engine's values as JSON, every key present.

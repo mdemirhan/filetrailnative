@@ -1,9 +1,8 @@
-// The write-engine scenario checks. The analysis suites
-// run through the Swift review (Exec/SwiftAnalysisEngine.swift), the execution suites through the
-// Swift paste engine (Exec/SwiftExecEngine.swift), but for the stop and crash suites, which
-// aren't injected (decided 2026-10-14). RecordedReplayEngine replays every execution recording, which proves the decode,
-// normalize and compare path, and each scenario's tree is built here and checked against the
-// recorded "before".
+// The write-engine scenario checks. The analysis suites run through the Swift review (Exec/SwiftAnalysisEngine.swift),
+// every execution suite through the Swift paste engine (Exec/SwiftExecEngine.swift): stopped as the Stop button does,
+// and crashed right after a write of the journal, then recovered as the app does at start. RecordedReplayEngine
+// replays every execution recording, which proves the decode, normalize and compare path, and each scenario's tree is
+// built here and checked against the recorded "before".
 import FTTestSupport
 import Foundation
 import Testing
@@ -14,8 +13,8 @@ struct ExecGoldenTests {
         cases.filter { ($0.input.volumes ?? [:]).values.allSatisfy(ExecDiskImages.isAvailable) }
     }
 
-    /// The suites the Swift engine runs: not stops or crashes, which aren't injected.
-    static let engineSuites = ExecHarness.executionSuites.filter { $0 != "exec-stop" && $0 != "exec-crash" }
+    /// The suites the Swift engine runs: every execution suite, stops and crashes included.
+    static let engineSuites = ExecHarness.executionSuites
 
     /// The Swift paste engine against its recordings, case by case; the disk-image cases where the images exist.
     @Test(arguments: engineSuites)
@@ -58,6 +57,7 @@ struct ExecGoldenTests {
         }
     }
 
+    // Guards the shape of the recordings, not the engine.
     @Test func suitesCoverWhatTheBriefAsks() throws {
         let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
         let analysis = try ExecHarness.analysisSuites.flatMap { try ExecHarness.cases(suite: $0) }
@@ -74,7 +74,8 @@ struct ExecGoldenTests {
 
     /// The Undo suite (exec-undo): at least 30 cases of copies and moves undone and redone through the
     /// coordinator, with changes made outside the app before each, both answers to both questions, the Can't Undo of
-    /// merges and of copies without a Trash, and Undos that left items as they were.
+    /// merges and of copies without a Trash, and Undos that left items as they were. Guards the shape of the
+    /// recordings, not the engine.
     @Test func undoSuiteCoversWhatTheBriefAsks() throws {
         let cases = try ExecHarness.cases(suite: "exec-undo")
         #expect(cases.count >= 30)
@@ -99,7 +100,7 @@ struct ExecGoldenTests {
 
     /// "Apply to remaining" answers: a later conflict of the same kind is answered without a
     /// question, one the standing answer doesn't suit is asked again,
-    /// and one of another kind is asked.
+    /// and one of another kind is asked. Guards the shape of the recordings, not the engine.
     @Test func recordingsPinStandingAnswers() throws {
         let cases = try ExecHarness.cases(suite: "exec-runtime")
         func events(_ name: String) throws -> [JSONValue] {
@@ -120,7 +121,8 @@ struct ExecGoldenTests {
     }
 
     /// The paste runs through the write service, whose own events are recorded: "queued" first,
-    /// and the "failed" event and result it makes when the paste throws.
+    /// and the "failed" event and result it makes when the paste throws. Guards the shape of the recordings, not the
+    /// engine.
     @Test func recordingsHoldTheWriteServiceEvents() throws {
         let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
         for testCase in execution {
@@ -137,7 +139,7 @@ struct ExecGoldenTests {
     }
 
     /// The Trash is the app's: on a disk without one, a Replace asks before
-    /// deleting for good.
+    /// deleting for good. Guards the shape of the recordings, not the engine.
     @Test func recordingsCoverADiskWithoutATrash() throws {
         let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
         let trashless = execution.filter { !($0.input.volumesWithoutTrash ?? []).isEmpty }
@@ -253,7 +255,8 @@ struct ExecGoldenTests {
     }
 
     /// exec-batch-rename holds what the brief asks: swaps, cycles, case-only changes on disks that ignore case and on
-    /// one that minds it, stops, crashes with recovery, and the Rename sheet's checks.
+    /// one that minds it, stops, crashes with recovery, and the Rename sheet's checks. Guards the shape of the
+    /// recordings, not the engine.
     @Test func batchRenameSuiteCoversWhatTheBriefAsks() throws {
         let cases = try ExecBatchRenameHarness.cases()
         let names = cases.map(\.name)

@@ -66,6 +66,10 @@ public struct ExecScenario: Codable, Equatable, Sendable {
     /// Kill the engine right after its n-th write of the journal file, then run recovery.
     public struct CrashPoint: Codable, Equatable, Sendable {
         public var journalWrite: Int
+
+        public init(journalWrite: Int) {
+            self.journalWrite = journalWrite
+        }
     }
 
     /// Changes made on disk while the paste runs: after the review (no `afterEvent`), or right

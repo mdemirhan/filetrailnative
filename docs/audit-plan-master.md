@@ -391,7 +391,7 @@ or delete it. Remove the "under the GUI lock" comments: no such lock exists.
 Found by both audits. By the saved logs the suite costs about 27 s in each of the FTAppKitTests and
 FTOperationsTests bundles.
 
-### [ ] 2.9. Paste stop and crash recovery are tested through the engine
+### [x] 2.9. Paste stop and crash recovery are tested through the engine
 
 [verified] [Q2]
 
@@ -1991,3 +1991,12 @@ anything that differed from the plan, and anything found on the way that is not 
   `ExplorerWindowGUITests`; only `RealDiskImageTests` and `DiskImageMounterHandOffTests` were missed by the filter.
 - 2026-11-10. 2.8: `LargeFileTests.swift` keeps its name: what is left in it is the `LargeFileTests` switch alone.
   The suite's runs went from four bundles to one (12 fewer test runs, 3,889 to 3,877).
+- 2026-11-10. 2.9: all 7 `exec-stop` and all 14 `exec-crash` recordings run through the engine and match, so no
+  recording was deleted (Q2) and the six shape tests stay, each saying it guards the shape. The crash is injected
+  at the journal write the recordings name, as `SwiftBatchRenameRun` already did for batch rename: after it the
+  disk, the journal and the record refuse everything, a question asked after it stops the paste (which can't reach
+  the disk), and `recoverWrites` runs on what was left. One difference of form only: the recordings give a
+  Replace's recovery log `"path": null`, and the app's logger, which takes text alone, leaves the key out; the
+  harness writes it as null. The window "staged recorded, old item still at its final name" is "folder Replace by
+  copy, crashed after journal write 2". `InterruptedReplaceThroughTheEngineTests` adds a file and a folder moved on
+  one disk. Checked that a crash one write later, or a recovery that does nothing, fails them.
