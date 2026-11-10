@@ -1979,3 +1979,5 @@ anything that differed from the plan, and anything found on the way that is not 
   fixed (neighbouring, outside the item): `rebuildInPlace` doesn't set `name.toolTip` either, so another
   selection of the same shape keeps the previous `nameTooltip`.
 - 2026-11-10. The owner: leave 1.4 for now. It stays unticked, with the proposed fix above.
+- 2026-11-10. Phase 2 started. Q1: yes, `scripts/release.sh` runs the GUI tests. Q2: as recommended; a recording
+  that still cannot run through the engine is deleted with the tests that only describe it.
