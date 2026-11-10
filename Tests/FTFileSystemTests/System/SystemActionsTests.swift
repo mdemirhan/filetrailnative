@@ -174,6 +174,16 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(result.error == "\u{201C}\(name)\u{201D} is no longer there.")
     }
 
+    // A broken link is there to be shown: only the link itself is looked for.
+    @Test func aBrokenLinkCanBeRevealed() async throws {
+        try await withTemporaryDirectory(prefix: "filetrail-reveal-link") { root in
+            let link = root.path + "/link"
+            try FileManager.default.createSymbolicLink(atPath: link, withDestinationPath: root.path + "/gone")
+            #expect(SystemOpener.revealFailure([link]) == nil)
+            #expect(SystemOpener.revealFailure([root.path + "/gone"]) == "\u{201C}gone\u{201D} is no longer there.")
+        }
+    }
+
     @Test func reportsWhyOpenFailed() async {
         let system = FakeSystem()
         system.failure = "Unable to find application named 'Gone'"

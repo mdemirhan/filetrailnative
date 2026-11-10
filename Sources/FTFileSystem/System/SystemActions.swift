@@ -31,9 +31,11 @@ public struct SystemOpener: Sendable {
     }
 
     /// An item that is gone is not shown, and the reveal fails naming it, as `open -R` does:
-    /// `NSWorkspace.activateFileViewerSelecting` says nothing of it. Nil when all are there.
+    /// `NSWorkspace.activateFileViewerSelecting` says nothing of it. Nil when all are there. A link is there when the
+    /// link is, whatever it points to: a broken one is listed, and Finder shows it.
     static func revealFailure(_ paths: [String]) -> String? {
-        guard let gone = paths.first(where: { !FileManager.default.fileExists(atPath: $0) }) else { return nil }
+        let isThere = { (path: String) in (try? FileManager.default.attributesOfItem(atPath: path)) != nil }
+        guard let gone = paths.first(where: { !isThere($0) }) else { return nil }
         return "\u{201C}\((gone as NSString).lastPathComponent)\u{201D} is no longer there."
     }
 
