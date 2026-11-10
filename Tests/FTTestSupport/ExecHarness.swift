@@ -165,13 +165,19 @@ public enum ExecHarness {
     }
 
     /// Runs one execution case through `engine` in fresh folders. Nil when the normalized outcome
-    /// matches the recording; else its first differences, one per line.
-    public static func check(_ testCase: Case, with engine: some ExecEngine, limit: Int = 10) async throws -> [String]?
-    {
+    /// matches the recording; else its first differences, one per line. `buildsTree` false is for an engine that
+    /// never looks at the disk (a replay): no tree is built and no disk image mounted.
+    public static func check(
+        _ testCase: Case, with engine: some ExecEngine, limit: Int = 10, buildsTree: Bool = true
+    ) async throws -> [String]? {
         let scenario = testCase.input
-        let places = try ExecPlaces.make(for: scenario)
+        var bare = scenario
+        bare.volumes = nil
+        let places = try ExecPlaces.make(for: buildsTree ? scenario : bare)
         defer { places.remove() }
-        try scenario.build(in: places)
+        if buildsTree {
+            try scenario.build(in: places)
+        }
         let outcome = try await engine.run(
             scenario, answers: scenario.answers ?? [], stopAt: scenario.stopAt, crashAt: scenario.crashAt, in: places)
         return compare(expected: testCase.output, raw: try outcome.json(), places: places, limit: limit)
@@ -199,13 +205,15 @@ public enum ExecHarness {
     /// Every case of `suite` through `engine`: nil when all match, else a count and, for the first
     /// `limit` cases that differ, their name and first differences.
     public static func mismatchReport(
-        suite: String, engine: some ExecEngine, limit: Int = 5, in filePath: String = #filePath
+        suite: String, engine: some ExecEngine, limit: Int = 5, buildsTree: Bool = true, in filePath: String = #filePath
     ) async throws -> String? {
         let all = try cases(suite: suite, in: filePath)
         var reports: [String] = []
         var count = 0
         for testCase in all {
-            guard let lines = try await check(testCase, with: engine, limit: 3) else { continue }
+            guard let lines = try await check(testCase, with: engine, limit: 3, buildsTree: buildsTree) else {
+                continue
+            }
             count += 1
             if reports.count < limit {
                 reports.append(([testCase.name] + lines.map { "  " + $0 }).joined(separator: "\n"))
@@ -213,15 +221,5 @@ public enum ExecHarness {
         }
         return count == 0
             ? nil : (["\(count) of \(all.count) \(suite) cases differ:"] + reports).joined(separator: "\n")
-    }
-
-    /// Builds the case's tree here and names how its snapshot differs from the recorded `before`.
-    public static func builtTreeDifferences(_ testCase: Case, limit: Int = 5) throws -> [String] {
-        let places = try ExecPlaces.make(for: testCase.input)
-        defer { places.remove() }
-        try testCase.input.build(in: places)
-        let before = ExecNormalize.outcome(
-            .object(["before": try JSONValue.of(try places.snapshotTree())]), places: places.tokens)["before"]
-        return ExecDiff.differences(expected: testCase.output["before"] ?? .null, actual: before ?? .null, limit: limit)
     }
 }

@@ -2,7 +2,7 @@
 // every execution suite through the Swift paste engine (Exec/SwiftExecEngine.swift): stopped as the Stop button does,
 // and crashed right after a write of the journal, then recovered as the app does at start. RecordedReplayEngine
 // replays every execution recording, which proves the decode, normalize and compare path, and each scenario's tree is
-// built here and checked against the recorded "before".
+// built once for each engine check, which compares it with the recorded "before" with the rest.
 import FTTestSupport
 import Foundation
 import Testing
@@ -32,7 +32,9 @@ struct ExecGoldenTests {
     func replayedExecutionMatchesItsRecording(suite: String) async throws {
         let cases = try ExecHarness.cases(suite: suite)
         #expect(!cases.isEmpty)
-        let report = try await ExecHarness.mismatchReport(suite: suite, engine: RecordedReplayEngine(cases: cases))
+        // A replay never looks at the disk: no tree is built for it, and no disk image mounted.
+        let report = try await ExecHarness.mismatchReport(
+            suite: suite, engine: RecordedReplayEngine(cases: cases), buildsTree: false)
         #expect(report == nil, Comment(rawValue: report ?? ""))
     }
 
@@ -46,14 +48,6 @@ struct ExecGoldenTests {
         for testCase in runnable(cases) {
             let lines = try await ExecHarness.checkAnalysis(testCase, with: engine)
             #expect(lines == nil, Comment(rawValue: "\(testCase.name): \(lines?.joined(separator: "; ") ?? "")"))
-        }
-    }
-
-    @Test(arguments: ExecHarness.executionSuites + ExecHarness.analysisSuites)
-    func scenarioTreesBuildHereAsRecorded(suite: String) throws {
-        for testCase in runnable(try ExecHarness.cases(suite: suite)) {
-            let lines = try ExecHarness.builtTreeDifferences(testCase)
-            #expect(lines.isEmpty, Comment(rawValue: "\(testCase.name): \(lines.joined(separator: "; "))"))
         }
     }
 

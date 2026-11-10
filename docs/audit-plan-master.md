@@ -475,7 +475,7 @@ decides the expected status; `CopyPasteExecutionTests.swift:106` shows the semap
 `WriteService/WriteServiceAnalysisTests.swift:60-70, 125`. Then see whether the bundle reordering at
 `scripts/ci.sh:250-260` is still needed.
 
-### [ ] 2.15. Exec goldens build each scenario's tree once
+### [x] 2.15. Exec goldens build each scenario's tree once
 
 `Tests/FTOperationsTests/ExecGoldenTests.swift:21-59` builds
 it three times with its disk image mounted; these are the slowest tests in the bundle.
@@ -2013,3 +2013,7 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. 2.13: the window's static seams are restored by a test trait (`.restoresWindowSeams`) and not by a
   `defer`, as the tests put them back in an `async` close that a `defer` can't await. `runBatchRename` was never
   put back at all. `AutomationPrefs` (debug only) gained `unregister`, so the handler a test adds goes again.
+- 2026-11-10. 2.15: `scenarioTreesBuildHereAsRecorded` was deleted rather than merged: since 2.9 every execution
+  and analysis suite runs through an engine whose check compares the recorded `before` with the rest. The replay
+  builds no tree and mounts no image. Replay 7.8 s to 1.1 s; the 8 s tree check gone; the bundle's wall time is
+  bound by the engine checks (about 10 s), which run in parallel.
