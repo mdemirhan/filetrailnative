@@ -149,8 +149,10 @@ bundles=""
 if [ "$affected" = 1 ]; then
     changed="$(changed_files)"
     if ! git rev-parse --verify -q 'main^{commit}' >/dev/null; then
+        # No main to compare with: what changed can't be told, so all of it runs, the format lint included.
         bundles=all
-        echo "affected: $bundles" >>"$out"
+        affected=0
+        echo "affected: all (no main to compare with)" >>"$out"
     elif [ -z "$changed" ]; then
         # Nothing to go by (on main, everything pushed): a run that checked nothing would pass, so all of it runs,
         # the format lint included.
@@ -167,8 +169,10 @@ fi
 # The app and the tests in one build, which fails on a warning. A build reports the warnings only of the files it
 # compiles, so one that reuses earlier work can pass with a warning in a file it didn't compile again: --full (the
 # release's check) starts from clean.
-if [ "$full" = 1 ]; then
-    swift package clean
+if [ "$full" = 1 ] && ! swift package clean; then
+    echo "FAIL clean (swift package clean failed: the build can't be from clean)" >>"$out"
+    cat "$out"
+    exit 1
 fi
 WARN_FAILS=1 step build 'error:|warning:' swift build --build-tests
 build_failed="$failed"
