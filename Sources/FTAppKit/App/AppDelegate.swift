@@ -141,10 +141,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// the one running. The second launch ignores its arguments and only brings a window forward, restoring or opening
     /// one if it has to (`SecondInstance`).
     private func handOverToRunningInstance(_ arguments: [String]) -> Bool {
-        let driven = arguments.contains {
-            ["--automation", "--bench", "--bench-launch", "--bench-scroll"].contains($0)
-        }
-        guard !driven, ProcessInfo.processInfo.environment["FILETRAIL_ALLOW_MULTIPLE"] != "1",
+        guard !Self.isDrivenRun(arguments), ProcessInfo.processInfo.environment["FILETRAIL_ALLOW_MULTIPLE"] != "1",
             let bundleID = Bundle.main.bundleIdentifier,
             let running = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
                 .first(where: { $0 != NSRunningApplication.current })
@@ -162,11 +159,18 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         FileManager.default.temporaryDirectory.appendingPathComponent("filetrail-driven-\(UUID().uuidString)")
     }
 
+    /// A run driven by a script (automation, benchmarks, a snapshot): it starts from nothing, not from the windows of
+    /// the last, and runs beside a File Trail already open instead of handing over to it.
+    static let drivenRunFlags: Set<String> = [
+        "--automation", "--bench", "--bench-launch", "--bench-scroll", "--snapshot",
+    ]
+
+    static func isDrivenRun(_ arguments: [String]) -> Bool {
+        arguments.contains { drivenRunFlags.contains($0) }
+    }
+
     private func startLogger(_ arguments: [String]) {
-        // A run driven by a script (automation, benchmarks) starts from nothing, not from the windows of the last.
-        let driven = arguments.contains {
-            ["--automation", "--bench", "--bench-launch", "--bench-scroll", "--snapshot"].contains($0)
-        }
+        let driven = Self.isDrivenRun(arguments)
         let scratch = Self.drivenUserDataDirectory()
         let userData =
             Self.value(after: "--user-data-dir", in: arguments).map { URL(fileURLWithPath: $0) }

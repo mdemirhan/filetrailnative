@@ -611,7 +611,7 @@ centre it on the main screen at its saved size (clamped). Confirm first whether 
 `ExplorerWindows.swift:330` compares `tab.shownFolderPath` (still the spelling given) with `realpath(folder)`. Try
 `open -a "File Trail" /tmp/x.txt` with no window open.
 
-### [ ] 3B.5. One list of the flags that mark a driven run
+### [x] 3B.5. One list of the flags that mark a driven run
 
 Two lists of "driven run" flags differ: `App/AppDelegate.swift:144` and `:167`. As a result `--snapshot` beside a
 running File Trail hands over to it and quits. Make them one list. 5.10 later deletes `--snapshot` itself; the
