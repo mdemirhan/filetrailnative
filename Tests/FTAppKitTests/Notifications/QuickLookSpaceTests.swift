@@ -32,6 +32,29 @@ extension ExplorerWindowlessTests {
         }
 
         // Space previews the selected item, and Space again closes the panel
+        // Closed, the panel lets go of what told it where its item was: that holds the tab's list.
+        @Test func lettingGoOfThePanelLetsGoOfTheTabItCameFrom() {
+            final class Pane {}
+            let quickLook = QuickLookController.shared
+            let system = quickLook.panel
+            quickLook.panel = FakeQuickLookPanel()
+            defer { quickLook.panel = system }
+            weak var held: Pane?
+            do {
+                let pane = Pane()
+                held = pane
+                quickLook.show("/f/a.txt", from: nil) { _ in
+                    _ = pane
+                    return nil
+                }
+            }
+            #expect(held != nil)
+
+            quickLook.ended()
+
+            #expect(held == nil)
+        }
+
         @Test func spacePreviewsTheSelectedItemWithQuickLookAndSpaceAgainClosesIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)

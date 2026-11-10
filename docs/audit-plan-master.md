@@ -644,7 +644,7 @@ the likely one is that a read for sorting must not evict entries of the folder o
 (`ContentPaneController.swift:487`) does not reset `rowsCache`, `listFilter`, `hiddenItemCount` or `tags`; `show`,
 `showError`, `showSearch` and `endSearch` do.
 
-### [ ] 3C.3. Quick Look keeps the last tab's content pane alive
+### [x] 3C.3. Quick Look keeps the last tab's content pane alive
 
 `QuickLook/QuickLookController.swift:93`: `ended()`
 clears `url` but not `sourceFrame`, whose closure holds the pane.

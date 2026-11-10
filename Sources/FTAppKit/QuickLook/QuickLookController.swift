@@ -92,6 +92,8 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
 
     func ended() {
         url = nil
+        // It holds the tab's list: let go with the item.
+        sourceFrame = nil
         onClose?()
     }
 
