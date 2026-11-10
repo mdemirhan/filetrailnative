@@ -349,7 +349,7 @@ if [ -n "$scope" ] || [ "$affected" = 1 ]; then
     # A scoped or affected run lints only the Swift files changed on this branch; a full run lints everything.
     changed=()
     while IFS= read -r f; do [ -f "$f" ] && changed+=("$f"); done < <(
-        changed_files | grep -E '^(Sources|Tests)/.*\.swift$'
+        changed_files | grep -E '^((Sources|Tests|tools)/.*\.swift|Package\.swift)$'
     )
     if [ "${#changed[@]}" -gt 0 ]; then
         step format 'error:|warning:' xcrun swift-format lint --strict "${changed[@]}"
@@ -357,7 +357,7 @@ if [ -n "$scope" ] || [ "$affected" = 1 ]; then
         echo "PASS format (no changed files)" >>"$out"
     fi
 else
-    step format 'error:|warning:' xcrun swift-format lint --strict -r Sources Tests
+    step format 'error:|warning:' xcrun swift-format lint --strict -r Sources Tests tools Package.swift
 fi
 
 if [ "$full" = 1 ]; then

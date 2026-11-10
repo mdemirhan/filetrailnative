@@ -27,6 +27,8 @@ let package = Package(
         .testTarget(
             name: "FTOperationsTests", dependencies: ["FTOperations", "FTFoundation", "FTTestSupport"],
             path: "Tests/FTOperationsTests"),
-        .testTarget(name: "FTAppKitTests", dependencies: ["FTAppKit", "FTFoundation", "FTTestSupport"], path: "Tests/FTAppKitTests"),
+        .testTarget(
+            name: "FTAppKitTests", dependencies: ["FTAppKit", "FTFoundation", "FTTestSupport"],
+            path: "Tests/FTAppKitTests"),
     ]
 )

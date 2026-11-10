@@ -346,7 +346,7 @@ under `WARN_FAILS=1`, and do not go on to the test step when the build fails.
 
 `ci.sh:104-106`: add `--no-renames` to the diff.
 
-### [ ] 2.5. Format lint covers `Package.swift` and `tools/capture/readme/photos.swift`
+### [x] 2.5. Format lint covers `Package.swift` and `tools/capture/readme/photos.swift`
 
 `ci.sh:335`.
 

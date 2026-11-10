@@ -14,7 +14,8 @@ let palettes: [[(Double, Double, Double)]] = [
 func color(_ c: (Double, Double, Double)) -> NSColor { NSColor(srgbRed: c.0, green: c.1, blue: c.2, alpha: 1) }
 
 func landscape(seed: Int) -> Data? {
-    let width = 1200, height = 800
+    let width = 1200
+    let height = 800
     guard
         let rep = NSBitmapImageRep(
             bitmapDataPlanes: nil, pixelsWide: width, pixelsHigh: height, bitsPerSample: 8, samplesPerPixel: 4,
@@ -25,7 +26,8 @@ func landscape(seed: Int) -> Data? {
     let palette = palettes[seed % palettes.count]
     NSGradient(starting: color(palette[1]), ending: color(palette[0]))?
         .draw(in: NSRect(x: 0, y: 0, width: width, height: height), angle: 90)
-    let sunX = 250 + Double(seed * 137 % 700), sunY = 470 + Double(seed * 53 % 180)
+    let sunX = 250 + Double(seed * 137 % 700)
+    let sunY = 470 + Double(seed * 53 % 180)
     NSColor.white.withAlphaComponent(0.85).setFill()
     NSBezierPath(ovalIn: NSRect(x: sunX - 26, y: sunY - 26, width: 52, height: 52)).fill()
     for layer in 0..<3 {
