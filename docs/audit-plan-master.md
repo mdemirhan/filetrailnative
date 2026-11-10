@@ -1978,3 +1978,4 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. 1.10: `InfoIconView.shown` became `private(set)` as a read-only seam for the test. Found, not
   fixed (neighbouring, outside the item): `rebuildInPlace` doesn't set `name.toolTip` either, so another
   selection of the same shape keeps the previous `nameTooltip`.
+- 2026-11-10. The owner: leave 1.4 for now. It stays unticked, with the proposed fix above.
