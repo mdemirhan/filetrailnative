@@ -268,15 +268,19 @@ private func folderIsThere(_ fileSystem: some IdentityFileSystem, _ path: String
 /// after.
 private func moveUnlocked(_ fileSystem: some WriteServiceFileSystem, _ from: String, _ to: String) throws {
     let flags = try unlockForMove(fileSystem, from)
+    // A read-only folder is opened for the move, as the paste opens it (a disk may refuse to rename it otherwise).
+    let mode: UInt32?
+    do {
+        mode = try openForMove(fileSystem, from)
+    } catch {
+        restoreAfterMove(fileSystem, from, nil, flags)
+        throw error
+    }
     do {
         try moveExclusive(fileSystem, from, to)
     } catch {
-        if let flags {
-            try? fileSystem.setFlags(from, flags)
-        }
+        restoreAfterMove(fileSystem, from, mode, flags)
         throw error
     }
-    if let flags {
-        try? fileSystem.setFlags(to, flags)
-    }
+    restoreAfterMove(fileSystem, to, mode, flags)
 }

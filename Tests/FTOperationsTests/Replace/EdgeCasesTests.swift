@@ -298,6 +298,31 @@ struct EdgeCasesTests {
         #expect(fileSystem.readNode("/target/a.txt")?.flags == locked)
     }
 
+    // A Replace by a move whose old item can't go to the Trash puts the moved folder back; when its old name was taken
+    // meanwhile it can't, and it waits under its hidden name read-only again, as the next start carries over what it
+    // finds.
+    @Test func aMovedReadOnlyFolderThatCantBePutBackWaitsReadOnly() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/Vault", .directory(mode: 0o555)), ("/source/Vault/a.txt", .file(size: 1)),
+            ("/target/Vault/old.txt", .file(size: 1)),
+        ])
+        fileSystem.enableTrash()
+        fileSystem.trashImpl = { _ in
+            // Something takes the moved folder's old name, then the Trash fails.
+            fileSystem.addFile("/source/Vault", .directory())
+            throw MockWriteServiceFileSystem.error("EIO", "/target/Vault")
+        }
+        let journal = ReplaceEntriesJournal()
+
+        let (result, _) = try await edgePaste(
+            fileSystem, mode: .cut, sources: ["/source/Vault"], policy: NativePaste.replaceAll, writeJournal: journal)
+
+        let entry = try #require(journal.live.first)
+        #expect(entry.moved)
+        #expect(fileSystem.readNode(entry.stagingPath)?.mode == 0o555)
+        #expect(itemFor(result, "/source/Vault")?.error?.contains("under the hidden name") == true)
+    }
+
     // A read-only folder moved on its disk is opened for the swap. Left to the next start, it used to stay open, and
     // was put in place no longer read-only.
     @Test func leavesAMovedReadOnlyFolderToTheNextStartReadOnly() async throws {
@@ -322,7 +347,16 @@ struct EdgeCasesTests {
         #expect(entry.moved)
         #expect(fileSystem.readNode(entry.stagingPath)?.mode == 0o555)
 
-        fileSystem.renameImpl = nil
+        // As macOS 14 does, the disk refuses to rename a folder that can't be written to: recovery opens it for the
+        // move, as the paste does.
+        fileSystem.renameImpl = { from, to in
+            if let mode = fileSystem.readNode(from)?.mode, fileSystem.readNode(from)?.kind == .directory,
+                mode & 0o200 == 0
+            {
+                throw MockWriteServiceFileSystem.error("EACCES", from)
+            }
+            try fileSystem.renameDirectly(from, to)
+        }
         let outcomes = recoverInterruptedReplaces(journal.live, fileSystem)
 
         #expect(outcomes.map(\.outcome) == [.finished(path: "/target/Vault")])

@@ -2072,3 +2072,8 @@ anything that differed from the plan, and anything found on the way that is not 
   to another disk, crashed after journal write 3 of 3": in `output.after` and `output.recovery.after` the three
   `source/f`, `source/f/a.txt`, `source/f/b.txt` entries go. Found, not fixed: a Replace by a move to another disk
   has the same silent duplicate (no `movingCopy`, entry removed before `removeMovedSources`).
+- 2026-11-10. 3A.5 and 3A.6, after their review: recovery's `moveUnlocked` opens a read-only folder for the move
+  (as the paste does), or the folder 3A.5 now leaves read-only could stay hidden where the rename of a read-only
+  folder is refused (macOS 14, by the code's own comment; macOS 27 allows it within one folder). The 3A.6 path gives
+  the waiting item its lock and mode back too, and says when the old item went to the Trash. Left: its message
+  promises the next start even with no journal, which the app always has.

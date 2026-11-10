@@ -241,9 +241,14 @@ func executeReplace(
             try undoStaging()
         } catch let undoError where movedByRename && isPathTaken(fileSystem, temporaryPath) {
             // The moved item couldn't go back where it was: it waits under its hidden name, written down, until the
-            // next start puts it somewhere it can be seen.
+            // next start puts it somewhere it can be seen. It gets back its lock and mode first, which the next start
+            // carries over.
+            restoreAfterMove(fileSystem, temporaryPath, stagedMode, stagedFlags)
+            let oldTrashed =
+                oldItemRemoved
+                ? " The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash." : ""
             throw OperationError(
-                "\u{201C}\(basenameOf(currentNode.node.sourcePath))\u{201D} wasn't replaced, and couldn't be put back where it was, so it is under the hidden name \u{201C}\(basenameOf(temporaryPath))\u{201D} in \u{201C}\(dirnameOf(temporaryPath))\u{201D} until File Trail starts again. \(describeCopyPasteError(undoError))",
+                "\u{201C}\(basenameOf(currentNode.node.sourcePath))\u{201D} wasn't replaced, and couldn't be put back where it was, so it is under the hidden name \u{201C}\(basenameOf(temporaryPath))\u{201D} in \u{201C}\(dirnameOf(temporaryPath))\u{201D} until File Trail starts again.\(oldTrashed) \(describeCopyPasteError(undoError))",
                 cause: undoError)
         } catch {
             // A copy this paste made that can't be cleared away now is written down, and cleared at the next start.
