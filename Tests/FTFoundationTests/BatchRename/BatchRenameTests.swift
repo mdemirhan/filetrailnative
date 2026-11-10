@@ -476,6 +476,16 @@ struct SavedSettingsTests {
         #expect(BatchRename.sanitizeSettings(.object(["startAt": .number(2e12)])).startAt == 999_999_999)
     }
 
+    // A preset's name and its texts are cut at their limits between characters: an emoji across the limit goes whole.
+    @Test func cutsAPresetsNameAndTextsBetweenCharacters() {
+        let name = String(repeating: "n", count: 79) + "\u{1F600}"
+        let text = String(repeating: "t", count: 254) + "\u{1F600}"
+        let presets = BatchRename.sanitizePresets(
+            .array([.object(["name": .string(name), "settings": .object(["customName": .string(text)])])]))
+        #expect(presets.first?.name == String(repeating: "n", count: 79))
+        #expect(presets.first?.settings.customName == String(repeating: "t", count: 254))
+    }
+
     @Test func dropsPresetsWithoutANameOrWithOneAlreadyUsedAndKeepsAtMostTheLimit() {
         let presets = BatchRename.sanitizePresets(
             .array([

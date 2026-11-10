@@ -777,7 +777,7 @@ toast "Copied 3 items". The review sheet says "Move". Pass the mode through.
 
 `CopyPaste/CopyPasteReview.swift:494-504`.
 
-### [ ] 3G.4. Backspace in the list filter can leave a broken character
+### [x] 3G.4. Backspace in the list filter can leave a broken character
 
 - Where: `eraseCharacter` in `Sources/FTFoundation/Selection/ListFilterTyping.swift` (lines 25–30).
 - What is wrong: it removes one UTF-16 unit and rebuilds the string. If the query ends in a character outside the

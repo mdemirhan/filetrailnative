@@ -1,12 +1,10 @@
 import Foundation
 
 extension BatchRename {
-    /// `text`: a string cut to 255 UTF-16 units (a cut inside a surrogate pair leaves a replacement
-    /// character).
+    /// `text`: a string cut to 255 UTF-16 units, as the sheet's fields cut it: never half a character.
     private static func text(_ value: JSONNode?, _ fallback: String) -> String {
         guard let string = value?.string else { return fallback }
-        let units = string.utf16
-        return units.count > maxTextSettingLength ? JSString.string(Array(units.prefix(maxTextSettingLength))) : string
+        return BatchRenameTextRules.limited(string, to: maxTextSettingLength)
     }
 
     private static func wholeNumber(_ value: JSONNode?, _ fallback: Int, least: Int) -> Int {
@@ -69,8 +67,7 @@ extension BatchRename {
         for entry in entries {
             guard let record = entry.object else { continue }
             let trimmed = JSString.trimmed(record["name"]?.string ?? "")
-            let units = Array(trimmed.utf16.prefix(80))
-            let name = JSString.string(units)
+            let name = BatchRenameTextRules.limited(trimmed, to: 80)
             if name.isEmpty || !seen.insert(NameKeys.Exact(JSString.lowercased(name))).inserted {
                 continue
             }

@@ -21,12 +21,10 @@ public struct ListFilterTyping: Equatable, Sendable {
         query += text
     }
 
-    /// Backspace takes the last character (a UTF-16 unit, as `slice(0, -1)` does) back.
+    /// Backspace takes the last character back, the whole of it: an emoji is never left half there.
     public mutating func eraseCharacter(at now: TimeInterval) {
         lastInputAt = now
-        var units = Array(query.utf16)
-        if !units.isEmpty { units.removeLast() }
-        query = JSString.string(units)
+        if !query.isEmpty { query.removeLast() }
     }
 
     /// The filter field of the search results sets the whole text at once.

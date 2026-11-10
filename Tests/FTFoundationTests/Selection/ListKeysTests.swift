@@ -16,6 +16,14 @@ struct ListFilterTypingTests {
         #expect(filter.isActive)
     }
 
+    // An emoji set from the search field's filter goes whole: half of it would match nothing.
+    @Test func backspaceTakesAnEmojiBackWhole() {
+        var filter = ListFilterTyping()
+        filter.set("a\u{1F600}", at: 0)
+        filter.eraseCharacter(at: 1)
+        #expect(filter.query == "a")
+    }
+
     @Test func backspaceTakesACharacterBackAndEscClears() {
         var filter = ListFilterTyping()
         filter.type("tr", at: 0)
