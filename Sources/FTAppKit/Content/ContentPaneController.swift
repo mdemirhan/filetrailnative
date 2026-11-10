@@ -161,7 +161,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var nothingMatches = false
     var filter: String { listFilter.query }
     private(set) var inlineRename: InlineRenameState?
-    private var renameSessions = 0
+    /// Counted for the whole app, not per tab: the drafts of renames are kept by this number, and a rename left open in
+    /// one tab must not lend what was typed to another tab's.
+    private static var renameSessions = 0
     private(set) var entryPaths: [String] = []
     private var positionsCache: [String: Int]?
     /// The details of the rows asked for. They start over with another folder or other search results.
@@ -764,8 +766,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             pane?.reload(scrollToTop: false)
             refreshState()
         }
-        renameSessions += 1
-        inlineRename = InlineRenameState(path: path, error: nil, refusalCount: 0, sessionID: renameSessions)
+        Self.renameSessions += 1
+        inlineRename = InlineRenameState(path: path, error: nil, refusalCount: 0, sessionID: Self.renameSessions)
         pane?.syncRename()
         onRenameStateChanged?()
         return true

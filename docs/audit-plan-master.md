@@ -228,7 +228,7 @@ than delaying the move.
 *Test:* both scenarios above, in `Tests/FTAppKitTests/Navigation`, using the held-read file system in
 `FolderReadProbe.swift`.
 
-### [ ] 1.5. A rename can start with text typed in another tab
+### [x] 1.5. A rename can start with text typed in another tab
 
 [verified structure; scenario not run]
 `RenameDrafts` (`Sources/FTAppKit/Selection/InlineRename.swift:20`) is one app-wide store keyed by an `Int`. The key
