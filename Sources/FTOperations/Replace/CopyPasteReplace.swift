@@ -228,7 +228,9 @@ func executeReplace(
         recordReplacement(context, currentNode, finalPath, movedByRename, source)
     } catch {
         if oldItemRemoved && journal != nil && errorCode(error) != "EEXIST" {
-            // Neither name could be used: the journal keeps the new item, and the next start puts it in place.
+            // Neither name could be used: the journal keeps the new item, and the next start puts it in place. It gets
+            // back its lock and mode first, which the next start then carries over.
+            restoreAfterMove(fileSystem, temporaryPath, stagedMode, stagedFlags)
             throw OperationError(
                 "The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash, but the new one couldn't be put in its place. It will be put there the next time File Trail starts. \(describeCopyPasteError(error))"
             )

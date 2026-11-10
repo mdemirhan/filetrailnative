@@ -530,7 +530,7 @@ free-space check before starting.
 (`applyDirectoryMetadata` → `metadataNotCopied`). *Fix:* report skipped metadata for files the same way and keep the
 source. Confirm with a real disk-image test (a FAT or ExFAT image refuses most xattrs) before changing anything.
 
-### [ ] 3A.5. A Replace that cannot finish leaves the staged item without its lock and read-only mode
+### [x] 3A.5. A Replace that cannot finish leaves the staged item without its lock and read-only mode
 
 `Replace/CopyPasteReplace.swift:190-191` strip them; `:230` leaves without restoring; recovery's `moveUnlocked`
 (`Recovery/CopyPasteRecovery.swift:269`) re-reads flags from the already-unlocked item.
@@ -600,7 +600,7 @@ during a quit already waiting), keep today's behavior; the comment above the met
 Found by both audits. [Q5] decides what happens to the surplus tabs; the fix above is the recommendation. If
 AppKit lets the drop be refused before it lands, prefer that and keep the move to a new window as the fallback.
 
-### [ ] 3B.3. A restored window can come back off-screen
+### [x] 3B.3. A restored window can come back off-screen
 
 `Windows/ExplorerWindows.swift:24` (`ScreenGeometry.frame(for:)`)
 applies stored x/y unchecked. *Fix:* if the frame does not intersect any screen's `visibleFrame` by a useful margin,
@@ -2045,3 +2045,19 @@ anything that differed from the plan, and anything found on the way that is not 
   building a replacement folder: the old folder stays". Their progress events and `result.summary.completedByteCount`
   record the undone copy as done (4 bytes "copied" for a Replace that changed nothing). Fixing needs those cases'
   counts edited by hand.
+- 2026-11-10. 3B.3 did not hold; nothing changed. A titled window given a frame far off every screen
+  ((20000, 20000), screen nil) was moved onto the main screen by AppKit when shown (`orderFront`, to (1266, 784)),
+  checked with a standalone AppKit script on macOS 27.
+- 2026-11-10. 3A.3 skipped, waits for the owner: the claim holds (nothing treats ENOSPC as final), but the fix
+  changes four tests in `RuntimeSafetyWholeFolderTests.swift` (`WholeFolderTests`) that use a full disk only as "a
+  file that can't be written": `copiesNothingOfAFolderWhoseIncompletePackageCantBeClearedAway`,
+  `movesNothingOfAFolderSomeOfWhoseItemsCouldntBeCopied`, `copiesNothingOfAPackageSomeOfWhoseItemsCouldntBeCopied`,
+  `putsAnOrdinaryFolderInPlaceWithWhatCouldBeCopied` (the last also pins the "put in place with what fitted"
+  behaviour the fix reverses). Proposed: those tests use EIO for their failing file, and the item's own tests use
+  ENOSPC.
+- 2026-11-10. 3A.4 skipped, waits for the owner: the plan's premise is wrong (FAT and exFAT keep extended
+  attributes in "._" files; `EmptyFilesOnFATTests` copies one there), and the `copy_status` comment in `copyfile.c`
+  says a refused attribute is skipped on purpose (com.apple.provenance, which most files have), only the resource
+  fork failing the copy. Files and folders do disagree (a folder whose metadata didn't copy is kept, a file isn't).
+  Question for the owner: which rule should win; if "keep the source", compare the source's and the copy's
+  attribute names after a move, leaving out those the kernel manages.

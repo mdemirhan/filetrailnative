@@ -266,6 +266,70 @@ struct EdgeCasesTests {
         #expect(journal.live.map(\.staged) == [true])
     }
 
+    // The new item's lock comes off for the swap. Left to the next start, it used to stay off, and the item was put
+    // in place unlocked.
+    @Test func leavesTheNewItemToTheNextStartLockedAsItsOriginalIs() async throws {
+        let fileSystem = replaceSetup()
+        let locked = UInt32(UF_IMMUTABLE)
+        // copyfile(3) carries the lock to the copy.
+        fileSystem.copyFileImpl = { source, destination, stop, _ in
+            try fileSystem.copyDirectly(source, destination, stop: stop)
+            try fileSystem.setFlags(destination, locked)
+        }
+        fileSystem.renameImpl = { from, to in
+            if !to.contains(".filetrail-") {
+                throw MockWriteServiceFileSystem.error("EIO", to)
+            }
+            try fileSystem.renameDirectly(from, to)
+        }
+        let journal = ReplaceEntriesJournal()
+
+        let (result, _) = try await edgePaste(
+            fileSystem, sources: ["/source/a.txt"], policy: NativePaste.replaceAll, writeJournal: journal)
+
+        #expect(itemFor(result, "/source/a.txt")?.status == .failed)
+        let entry = try #require(journal.live.first)
+        #expect(fileSystem.readNode(entry.stagingPath)?.flags == locked)
+
+        fileSystem.renameImpl = nil
+        let outcomes = recoverInterruptedReplaces(journal.live, fileSystem)
+
+        #expect(outcomes.map(\.outcome) == [.finished(path: "/target/a.txt")])
+        #expect(fileSystem.readNode("/target/a.txt")?.flags == locked)
+    }
+
+    // A read-only folder moved on its disk is opened for the swap. Left to the next start, it used to stay open, and
+    // was put in place no longer read-only.
+    @Test func leavesAMovedReadOnlyFolderToTheNextStartReadOnly() async throws {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/Vault", .directory(mode: 0o555)), ("/source/Vault/a.txt", .file(size: 1)),
+            ("/target/Vault/old.txt", .file(size: 1)),
+        ])
+        fileSystem.enableTrash()
+        fileSystem.renameImpl = { from, to in
+            if !to.contains(".filetrail-") {
+                throw MockWriteServiceFileSystem.error("EIO", to)
+            }
+            try fileSystem.renameDirectly(from, to)
+        }
+        let journal = ReplaceEntriesJournal()
+
+        let (result, _) = try await edgePaste(
+            fileSystem, mode: .cut, sources: ["/source/Vault"], policy: NativePaste.replaceAll, writeJournal: journal)
+
+        #expect(itemFor(result, "/source/Vault")?.status == .failed)
+        let entry = try #require(journal.live.first)
+        #expect(entry.moved)
+        #expect(fileSystem.readNode(entry.stagingPath)?.mode == 0o555)
+
+        fileSystem.renameImpl = nil
+        let outcomes = recoverInterruptedReplaces(journal.live, fileSystem)
+
+        #expect(outcomes.map(\.outcome) == [.finished(path: "/target/Vault")])
+        #expect(fileSystem.readNode("/target/Vault")?.mode == 0o555)
+        #expect(fileSystem.exists("/target/Vault/a.txt"))
+    }
+
     @Test func refusesToReplaceWithAnItemLockedInAWayItsOwnerCantUndo() async throws {
         let fileSystem = replaceSetup()
         fileSystem.getFlagsImpl = { path in path.contains(".filetrail-") ? 0x20000 : 0 }
