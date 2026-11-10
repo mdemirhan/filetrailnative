@@ -12,14 +12,14 @@ final class SidebarFolderIcons {
         self.store = store
     }
 
-    /// The icon for a folder row, if it is known; asks for it otherwise and calls `arrived` when it comes.
-    func icon(path: String, alias: Bool, arrived: @escaping @MainActor () -> Void) -> NSImage? {
+    /// The icon for a folder row, if it is known; asks for it otherwise and calls `arrived` with it when it comes.
+    func icon(path: String, alias: Bool, arrived: @escaping @MainActor (NSImage?) -> Void) -> NSImage? {
         let request = IconRequest(entry: IconEntry(path: path, kind: alias ? .symlinkDirectory : .directory))
         switch store.lookup(request) {
         case .image(let image): return image
         case .none: return nil
         case .missing:
-            store.load(request) { _ in arrived() }
+            store.load(request, completion: arrived)
             return nil
         }
     }

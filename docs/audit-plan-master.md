@@ -709,7 +709,7 @@ dictionary (`BatchRename/MainWindowController+BatchRename.swift:20`).
 Found by both audits. `OpensWithPopupView.reload` (lines 415–425 of the same file) also shows the right pattern:
 it checks which app the answer is for.
 
-### [ ] 3E.3. A tree row's folder icon that arrives late is never drawn
+### [x] 3E.3. A tree row's folder icon that arrives late is never drawn
 
 `Sidebar/SidebarCells.swift:248-254`; the
 arrival callback ends in an empty method (`SidebarViewController+Input.swift:107`). Root cause:
@@ -2108,3 +2108,6 @@ anything that differed from the plan, and anything found on the way that is not 
   - 3D.5: a drop whose review is then cancelled leaves `pendingTreeSelectionPath` set, as Duplicate's does.
   - 3C.3: with Quick Look open while another window becomes key, the panel ends its control and shows no item.
   - 3F.1: a state file that can't be encoded calls `onPersistError` at every later save.
+- 2026-11-10. Flaky, noted: `NativeCopyTests.failsWithTheWritesErrnoWhenTheResourceForkCantBeWritten` once copied a
+  fork of the free space plus 2 MB onto a full disk image without an error in a whole-suite run; it passed alone three
+  times and in the rerun. What APFS gives back after the fill seems to vary with load.

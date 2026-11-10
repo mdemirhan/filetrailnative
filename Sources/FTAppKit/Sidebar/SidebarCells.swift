@@ -246,9 +246,11 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
                 pointSize: layout.symbolPointSize, color: selectedFocused ? onSelection : .secondaryLabelColor)
         case .filesystem:
             let image = item.path.flatMap { path in
-                SidebarFolderIcons.shared.icon(path: path, alias: item.isSymlink) { [weak self] in
-                    self?.icon.needsDisplay = true
-                    self?.onIconArrived?()
+                SidebarFolderIcons.shared.icon(path: path, alias: item.isSymlink) { [weak self] image in
+                    // The cell may show another row by now.
+                    guard let self, self.state?.item.id == item.id else { return }
+                    self.icon.content = .folder(image)
+                    self.onIconArrived?()
                 }
             }
             icon.content = .folder(image)

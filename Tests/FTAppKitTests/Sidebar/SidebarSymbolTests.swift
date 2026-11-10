@@ -1,6 +1,7 @@
 // Checks the sidebar's system symbols and colors, which follow Finder, on rows that are never shown
 import AppKit
 import FTFoundation
+import FTTestSupport
 import Testing
 
 @testable import FTAppKit
@@ -187,6 +188,36 @@ import Testing
             box.icon = icon
             let ink = try #require(InkScan.ink(box), "no ink for \(icon)")
             #expect(ink.minX >= 5.5 && ink.maxX <= 24.5 && ink.minY >= 5.5 && ink.maxY <= 24.5, "\(icon): \(ink)")
+        }
+    }
+
+    private func shownFolder(_ cell: SidebarItemCell) throws -> NSImage? {
+        guard case .folder(let image) = try iconView(cell).content else {
+            Issue.record("no folder icon")
+            return nil
+        }
+        return image
+    }
+
+    // A folder row whose icon isn't known yet shows the stand-in, then the folder's own icon once it arrives.
+    @Test func aFolderRowDrawsItsIconOnceItArrives() async throws {
+        try await withTemporaryDirectory(prefix: "sidebar-icon") { folder in
+            // An alias row's icon goes with its own path, so nothing has asked for it before.
+            let item = TreePresentationItem(
+                id: .filesystem(folder.path), kind: .filesystem, label: "Row", depth: 0, path: folder.path,
+                parentID: nil, expanded: false, canExpand: false, isSymlink: true)
+            let state = SidebarRowState(
+                item: item, subview: .tree, selection: .none, menuTarget: false, drop: nil, ejecting: false,
+                dragging: false, dropLine: nil, showsLoading: false, density: .standard, hasDisclosure: false)
+            let cell = SidebarItemCell(frame: NSRect(x: 0, y: 0, width: 240, height: 26))
+            var arrived = 0
+            cell.onIconArrived = { arrived += 1 }
+            cell.configure(state, width: 240)
+            let before = try shownFolder(cell)
+            #expect(before == nil)
+            #expect(await waitUntil { arrived == 1 })
+            let after = try shownFolder(cell)
+            #expect(after != nil)
         }
     }
 }
