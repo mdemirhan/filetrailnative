@@ -200,9 +200,9 @@ public enum ContextMenuRules {
                 return hidden
             }
             hidden.formUnion(trashHiddenActions)
-            // The Trash itself is the home folder's: it isn't deleted, only emptied, and it stays where it is, under
-            // its name (the main process refuses too).
-            if JSString.equals(target, trashPath(world)) {
+            // A Trash folder itself, the home folder's or another disk's: it isn't deleted, only emptied, and it stays
+            // where it is, under its name (the write guard refuses too).
+            if Paths.isTrashFolder(target, homePath: world.homePath) {
                 hidden.formUnion([.deleteImmediately, .cut, .move, .rename])
             }
             return hidden

@@ -189,6 +189,19 @@ struct ContextMenuRulesTests {
         }
     }
 
+    // Another disk's Trash folders, its ".Trashes" and each user's Trash in it, are kept as the home Trash is; what is
+    // in them can still be deleted for good.
+    @Test func aTreeFolderThatIsAnotherDisksTrashIsKeptAsTheHomeTrashIs() {
+        for trash in ["/Volumes/Disk/.Trashes", "/Volumes/Disk/.Trashes/501"] {
+            let theTrash = hidden(subject(.treeFolder, [(trash, .directory)]), world())
+            for action in [ContextMenuActionID.deleteImmediately, .cut, .move, .rename] {
+                #expect(theTrash.contains(action))
+            }
+        }
+        let inIt = hidden(subject(.treeFolder, [("/Volumes/Disk/.Trashes/501/old", .directory)]), world())
+        #expect(!inIt.contains(.deleteImmediately) && !inIt.contains(.rename))
+    }
+
     @Test func aFavoriteOrLocationOffersEmptyTrashOnlyForTheTrash() {
         let place = subject(.favorite, [("/a/Folder", .directory)])
         let result = hidden(place, world())

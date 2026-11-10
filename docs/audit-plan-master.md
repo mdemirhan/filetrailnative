@@ -792,7 +792,7 @@ toast "Copied 3 items". The review sheet says "Move". Pass the mode through.
 
 Found by both audits.
 
-### [ ] 3G.5. The tree's context menu protects only the home Trash
+### [x] 3G.5. The tree's context menu protects only the home Trash
 
 `ContextMenu/ContextMenuRules.swift:203-207`;
 `Paths.isTrashFolder` also covers other disks' Trash folders, and the write guard refuses them anyway.
