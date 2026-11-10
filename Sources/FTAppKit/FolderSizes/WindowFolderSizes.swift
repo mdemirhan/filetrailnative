@@ -68,7 +68,8 @@ final class WindowFolderSizes {
     static let pollInterval = 0.2
     /// A folder not known is asked about again only after this cooldown, so redraws do not re-send the question.
     static let probeMissCooldown = 5.0
-    /// Every folder drawn gets asked about, so the cache is capped; evicted paths are simply asked about again.
+    /// Every folder drawn gets asked about, so the cache is capped; evicted paths are simply asked about again. What
+    /// was stored or read since the last repaint is kept over the cap.
     static let maxEntries = 5_000
     static let maxProbesPerRequest = 5_000
     /// The window repaints for new sizes at most this often.
@@ -81,6 +82,8 @@ final class WindowFolderSizes {
     private struct Slot {
         var entry: FolderSizeEntry
         var sequence: Int
+        /// The repaint (`version`) at which it was last stored or read.
+        var readAt: Int
     }
 
     private let backend: any FolderSizeBackend
@@ -91,6 +94,9 @@ final class WindowFolderSizes {
 
     private var cache: [String: Slot] = [:]
     private var sequence = 0
+    /// The repaint at which the cache was last trimmed: once a repaint is enough, since what is stored or read
+    /// meanwhile stays until the next.
+    private var trimmedAt = -1
     /// Changes whenever a cached entry does, for views that derive from the cache (sorting by size).
     private(set) var version = 0
     /// Told once per repaint, after the entries changed.
@@ -163,7 +169,7 @@ final class WindowFolderSizes {
     /// Stores an entry without repainting; the caller repaints once for all it stored.
     private func setEntry(_ path: String, _ entry: FolderSizeEntry) {
         sequence += 1
-        cache[path] = Slot(entry: entry, sequence: sequence)
+        cache[path] = Slot(entry: entry, sequence: sequence, readAt: version)
         trimCache()
         if case .calculating = entry { return }
         let waiters = finishWaiters.removeValue(forKey: path) ?? []
@@ -176,13 +182,17 @@ final class WindowFolderSizes {
     }
 
     /// Over the limit, the oldest go but the calculations under way, a tenth at a time: one at a time, each entry
-    /// stored would walk past the places of all those let go before it.
+    /// stored would walk past the places of all those let go before it. What was stored or read since the last
+    /// repaint stays, over the limit if need be: a size sort reads every folder listed, and letting some of them go
+    /// would have them asked about and stored again, letting others go, at every repaint.
     private func trimCache() {
-        guard cache.count > Self.maxEntries else { return }
+        guard cache.count > Self.maxEntries, trimmedAt != version else { return }
+        trimmedAt = version
         var over = cache.count - Int((Double(Self.maxEntries) * 0.9).rounded(.up))
         let oldest = cache.sorted { $0.value.sequence < $1.value.sequence }
         for (path, slot) in oldest where over > 0 {
             if case .calculating = slot.entry { continue }
+            if slot.readAt == version { continue }
             cache[path] = nil
             over -= 1
         }
@@ -204,7 +214,10 @@ final class WindowFolderSizes {
     /// A folder's size, or idle when it isn't known: then the jobs are asked (all the folders a redraw asks about,
     /// in one request), unless they were asked lately.
     func entry(_ path: String) -> FolderSizeEntry {
-        if let slot = cache[path] { return slot.entry }
+        if let slot = cache[path] {
+            if slot.readAt != version { cache[path]?.readAt = version }
+            return slot.entry
+        }
         if let missed = probeMissedAt[path], now() - missed.time < Self.probeMissCooldown {
             return .idle
         }

@@ -117,6 +117,33 @@ struct WindowFolderSizesTests {
         #expect(repaints == 1)
     }
 
+    // A size sort reads the size of every folder listed at each repaint. With more of them than the cache holds,
+    // what is stored for the sort doesn't push out what the same sort reads: the folder settles with all of its
+    // sizes known, instead of asking about some of them again at every repaint.
+    @Test func aSizeSortOfMoreFoldersThanTheCacheHoldsSettles() async {
+        let paths = (0..<WindowFolderSizes.maxEntries + 1_000).map { "/big/\($0)" }
+        jobs.known = Dictionary(uniqueKeysWithValues: paths.map { ($0, 1) })
+        var repaints = 0
+        sizes.onChange = { [weak sizes] in
+            repaints += 1
+            for path in paths { _ = sizes?.readySize(path) }
+        }
+        for path in paths { _ = sizes.readySize(path) }
+        for _ in 0..<5 {
+            await settle()
+            timers.advance(WindowFolderSizes.repaintInterval)
+        }
+        let asked = jobs.probes.count
+        let repainted = repaints
+        for _ in 0..<5 {
+            await settle()
+            timers.advance(WindowFolderSizes.repaintInterval)
+        }
+        #expect(jobs.probes.count == asked)
+        #expect(repaints == repainted)
+        #expect(paths.allSatisfy { sizes.cachedEntry($0) != nil })
+    }
+
     // Calculate goes calculating at once; a size the jobs
     // hold goes straight to ready; the flags go through.
     @Test func aKnownSizeGoesStraightToReady() {

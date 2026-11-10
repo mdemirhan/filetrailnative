@@ -226,25 +226,35 @@ struct FolderSizeRunsTests {
 
     // MARK: The cap
 
-    // Over 5,000 the oldest tenth goes at once, never a calculation under way; what
-    // went reads as unknown and is asked about again.
+    // Over 5,000 the oldest tenth goes at once, never a calculation under way nor what was stored or read since the
+    // last repaint; what went reads as unknown and is asked about again.
     @Test func theOldestTenthGoesWhenFullButNotACalculation() async {
         sizes.calculate("/calculating")
         let paths = (0..<WindowFolderSizes.maxEntries).map { "/d/\($0)" }
         jobs.known = Dictionary(uniqueKeysWithValues: paths.map { ($0, 1) })
+        jobs.known["/more"] = 1
         for path in paths { _ = sizes.entry(path) }
         await settle()
+        // Stored since the last repaint: all kept, over the limit.
+        #expect(sizes.cachedEntry("/d/0") != nil)
+        timers.advance(WindowFolderSizes.repaintInterval)
+        // Read since the last repaint.
+        #expect(sizes.readySize("/d/0") == 1)
+        _ = sizes.entry("/more")
+        await settle()
         #expect(sizes.cachedEntry("/calculating") == .calculating(jobID: OneAtATimeJobs.job("/calculating")))
-        #expect(sizes.cachedEntry("/d/0") == nil)
-        #expect(sizes.cachedEntry("/d/500") == nil)
-        #expect(sizes.readySize("/d/501") == 1)
+        #expect(sizes.readySize("/d/0") == 1)
+        #expect(sizes.cachedEntry("/d/1") == nil)
+        #expect(sizes.cachedEntry("/d/502") == nil)
+        #expect(sizes.readySize("/d/503") == 1)
         #expect(sizes.readySize("/d/\(WindowFolderSizes.maxEntries - 1)") == 1)
+        #expect(sizes.readySize("/more") == 1)
 
         jobs.probes = []
-        #expect(sizes.entry("/d/0") == .idle)
+        #expect(sizes.entry("/d/1") == .idle)
         await settle()
-        #expect(jobs.probes == [["/d/0"]])
-        #expect(sizes.readySize("/d/0") == 1)
+        #expect(jobs.probes == [["/d/1"]])
+        #expect(sizes.readySize("/d/1") == 1)
     }
 
     // The list of folders the jobs did not know is capped the same way: the oldest are asked about at once.

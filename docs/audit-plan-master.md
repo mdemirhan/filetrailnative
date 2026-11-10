@@ -630,7 +630,7 @@ constraints on the shared search field each time the item is made). Follow the `
 
 **3C. Content, selection, folder sizes** (paths are under `Sources/FTAppKit` unless they say otherwise)
 
-### [ ] 3C.1. A size-sorted folder with more than 5,000 measured subfolders never settles
+### [x] 3C.1. A size-sorted folder with more than 5,000 measured subfolders never settles
 
 `FolderSizes/WindowFolderSizes.swift:72` (`reorder`), `:180` (`trimCache`), `:206` (`entry`), and
 `Content/ContentPaneController.swift:1055`. Sorting reads every listed folder's size; entries evicted by the
