@@ -419,7 +419,7 @@ FTOperationsTests bundles.
   that it guards the shape of the recordings, and rename them in Phase 10. Keep
   `replayedExecutionMatchesItsRecording` for the suites that do run through the engine.
 
-### [ ] 2.10. Tests that cannot fail are made to check something, or removed
+### [x] 2.10. Tests that cannot fail are made to check something, or removed
 
 Fix each so that breaking the behavior it
 names makes it fail. If the behavior cannot be reached, delete the test and say so.
@@ -2017,3 +2017,11 @@ anything that differed from the plan, and anything found on the way that is not 
   and analysis suite runs through an engine whose check compares the recorded `before` with the rest. The replay
   builds no tree and mounts no image. Replay 7.8 s to 1.1 s; the 8 s tree check gone; the bundle's wall time is
   bound by the engine checks (about 10 s), which run in parallel.
+- 2026-11-10. 2.10: the analysis of each site was done by three read-only agents in parallel, one per bundle; each
+  fix was applied and checked here, and each was seen to fail with the behaviour broken. Did not hold, so left:
+  `WriteServicePasteTests.swift:208` (it can fail), `CompactListTests.swift:114` (it can fail),
+  `FolderWatchStreamTests` and `FdSearchProcessTests` waits (their callers check the answer). The two rename tests
+  that returned early on a disk minding case or accent spelling run on a shared APFS image. `InfoRowView` gained a
+  `reducesMotion` seam, so its timer test doesn't depend on the Mac's setting. On APFS a copy is a clone, which
+  carries mode and dates by itself: the copy-metadata tests fail only with both the clone and `COPYFILE_ALL`
+  taken away.

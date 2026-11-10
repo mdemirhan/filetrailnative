@@ -51,41 +51,43 @@ import Testing
         }
     }
 
-    @Test func changesOnlyTheCaseOfANameOnADiskThatIgnoresCase() async throws {
-        try await withTemporaryDirectory(prefix: "filetrail-rename-case") { root in
-            try write(root.appending("notes.txt").path, "notes")
-            // This disk minds case; "notes.txt" and "Notes.txt" are different names there, and the test below
-            // covers that.
-            guard FileManager.default.fileExists(atPath: root.appending("NOTES.TXT").path) else { return }
+    @Test(.tags(.diskImage), .diskImages)
+    func changesOnlyTheCaseOfANameOnADiskThatIgnoresCase() async throws {
+        try await DiskImage.withSharedVolume(.apfs) { volume in
+            try write(volume.path + "/notes.txt", "notes")
+            // This disk ignores case: "NOTES.TXT" is the same name.
+            try #require(FileManager.default.fileExists(atPath: volume.path + "/NOTES.TXT"))
             let coordinator = WriteCoordinator.local(.real())
             let window = TestWindow()
 
             try await coordinator.rename(
-                sourcePath: root.appending("notes.txt").path, destinationName: "Notes.txt", window: window)
+                sourcePath: volume.path + "/notes.txt", destinationName: "Notes.txt", window: window)
             let end = await window.ended("write-op-1")
 
             #expect(end.status == .completed)
-            #expect(try FileManager.default.contentsOfDirectory(atPath: root.path) == ["Notes.txt"])
-            #expect(try read(root.appending("Notes.txt").path) == "notes")
+            #expect(try FileManager.default.contentsOfDirectory(atPath: volume.path) == ["Notes.txt"])
+            #expect(try read(volume.path + "/Notes.txt") == "notes")
             await coordinator.shutDown(maxWaitMs: 0)
         }
     }
 
-    @Test func changesOnlyHowAnAccentedLetterIsEncodedOnADiskThatIgnoresThat() async throws {
-        try await withTemporaryDirectory(prefix: "filetrail-rename-nfc") { root in
+    @Test(.tags(.diskImage), .diskImages)
+    func changesOnlyHowAnAccentedLetterIsEncodedOnADiskThatIgnoresThat() async throws {
+        try await DiskImage.withSharedVolume(.apfs) { volume in
             let decomposed = "cafe\u{301}.txt"
             let composed = "caf\u{E9}.txt"
-            try write(root.path + "/" + decomposed, "menu")
-            guard Darwin.access(root.path + "/" + composed, F_OK) == 0 else { return }
+            try write(volume.path + "/" + decomposed, "menu")
+            // This disk ignores how the letter is encoded: both spellings are one name.
+            try #require(Darwin.access(volume.path + "/" + composed, F_OK) == 0)
             let coordinator = WriteCoordinator.local(.real())
             let window = TestWindow()
 
             try await coordinator.rename(
-                sourcePath: root.path + "/" + decomposed, destinationName: composed, window: window)
+                sourcePath: volume.path + "/" + decomposed, destinationName: composed, window: window)
             let end = await window.ended("write-op-1")
 
             #expect(end.status == .completed)
-            let listed = try PosixFileSystem().readdir(root.path)
+            let listed = try PosixFileSystem().readdir(volume.path)
             #expect(listed.count == 1)
             #expect(listed.first.map { Array($0.unicodeScalars) } == Array(composed.unicodeScalars))
             await coordinator.shutDown(maxWaitMs: 0)
@@ -248,6 +250,7 @@ import Testing
         if logs.messages.count < 2 { await withCheckedContinuation { bothLogged = $0 } }
 
         #expect(fileSystem.calls.renameExclusive.count == 1)
+        #expect(await window.ended("write-op-1").status == .completed)
         #expect(!window.statuses.contains(.failed))
         // The write slot is free again all the same.
         #expect(

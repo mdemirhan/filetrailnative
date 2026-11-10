@@ -126,8 +126,10 @@ struct CopyPasteExecutionEdgeTests {
     }
 
     @Test func removesEmptiedCutSourceFoldersWhenChildDeletionsOnlyChangeParentMtime() async throws {
+        // On another disk (dev 2): the move copies, then removes each original.
         let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/file.txt", .file(size: 5)),
+            ("/source", .directory(dev: 2)), ("/source/Folder", .directory()),
+            ("/source/Folder/file.txt", .file(size: 5)),
             ("/target", .directory()),
         ])
         fileSystem.rmImpl = { path, recursive, force in

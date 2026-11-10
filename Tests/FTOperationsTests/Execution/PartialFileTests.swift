@@ -169,6 +169,8 @@ struct PartialFileTests {
         #expect(run.live.count == 1)
         if case .partialFile(let entry)? = run.live.first {
             #expect(fileSystem.exists(entry.partialPath))
+        } else {
+            Issue.record("no partial_file entry: \(run.live)")
         }
         #expect(!fileSystem.temporaryLeftovers().isEmpty)
     }

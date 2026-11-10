@@ -15,50 +15,19 @@ import Testing
 
     // MARK: quitting during an operation
 
-    // A local operation that goes item by item, stopping after the one it is on, as a delete does.
-    private func itemByItem(
-        _ coordinator: WriteCoordinator, _ window: TestWindow, paths: [String], firstItem: TestGate,
-        done: @escaping @MainActor (String) -> Void
-    ) throws {
-        try coordinator.queueLocalWriteOperation(action: .deleteImmediately, window: window) { operation in
-            var items: [WriteOperationItem] = []
-            var completed = 0
-            var cancelled = false
-            for (index, path) in paths.enumerated() {
-                if operation.signal.isStopped {
-                    cancelled = true
-                    items += LocalWriteResults.notStartedItems(Array(paths[index...]))
-                    break
-                }
-                if index == 0 { await firstItem.wait() }
-                done(path)
-                completed += 1
-                items.append(WriteOperationItem(sourcePath: path, destinationPath: nil, status: .completed))
-            }
-            let status = LocalWriteResults.terminalStatus(
-                cancelled: cancelled, completedItemCount: completed, failedItemCount: 0)
-            let now = Date()
-            operation.emit(
-                operation.progress(
-                    status, completedItemCount: completed, totalItemCount: paths.count,
-                    result: LocalWriteResults.result(
-                        operationId: operation.operationId, action: .deleteImmediately, targetPath: nil,
-                        startedAt: now, finishedAt: now, totalItemCount: paths.count, completedItemCount: completed,
-                        items: items, status: status,
-                        error: cancelled ? LocalWriteResults.stoppedMessage(completed, "deleted") : nil)))
+    @Test(.localOperationHang) func stopsARunningDeleteAndWaitsForItToFinishBeforeShutdownReturns() async throws {
+        // Delete Immediately itself, held on its first item.
+        let firstItem = HeldCall()
+        let fileSystem = TestLocalFileSystem.stub()
+        fileSystem.lstatImpl = { _ in Stats.file() }
+        fileSystem.rmImpl = { path, _, _ in
+            if path.hasSuffix("/a.txt") { firstItem.hold() }
         }
-    }
-
-    @Test func stopsARunningDeleteAndWaitsForItToFinishBeforeShutdownReturns() async throws {
-        let coordinator = WriteCoordinator(writeService: StubWriteService())
+        let coordinator = WriteCoordinator.local(fileSystem, homePath: "/Users/demo")
         let window = TestWindow()
-        let firstItem = TestGate()
-        var deleted: [String] = []
-        try itemByItem(
-            coordinator, window, paths: ["/Users/demo/.Trash/a.txt", "/Users/demo/.Trash/b.txt"],
-            firstItem: firstItem
-        ) { deleted.append($0) }
-        _ = try await Coordinators.waitFor { firstItem.waiting ? true : nil }
+        try await coordinator.deleteImmediately(
+            paths: ["/Users/demo/.Trash/a.txt", "/Users/demo/.Trash/b.txt"], window: window)
+        await firstItem.begun()
         #expect(coordinator.activeOperation == ActiveWriteOperation(operationId: "write-op-1", kind: .delete))
 
         var shutDown = false
@@ -74,11 +43,11 @@ import Testing
             try Coordinators.heldLocalOperation(coordinator, window, gate: TestGate(), action: .trash)
         }
 
-        firstItem.open()
+        firstItem.release()
         await shutdown.value
 
         // It stopped after the current item, and its end was sent before shutdown finished.
-        #expect(deleted == ["/Users/demo/.Trash/a.txt"])
+        #expect(fileSystem.calls.rm.map(\.0) == ["/Users/demo/.Trash/a.txt"])
         let terminal = try #require(window.end(of: "write-op-1"))
         #expect(terminal.status == .partial)
         // Every item it never reached is counted, not only the next one.

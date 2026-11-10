@@ -82,10 +82,23 @@ struct WriteServiceAnalysisTests {
     }
 
     @Test func cancelsInFlightAnalysisJobs() async throws {
-        let service = WriteService(.init(fileSystem: Self.slowFolder(), createAnalysisId: { "analysis-1" }))
+        let fileSystem = Self.slowFolder()
+        // Held reading the folder until it is cancelled, so the cancel finds it running.
+        let reading = Gate()
+        let cancelled = Gate()
+        fileSystem.readdirImpl = { path in
+            reading.open()
+            cancelled.wait()
+            return path == "/source/folder" ? ["file.txt"] : ["folder"]
+        }
+        let service = WriteService(.init(fileSystem: fileSystem, createAnalysisId: { "analysis-1" }))
 
         _ = try service.startCopyPasteAnalysis(request(["/source/folder"], into: "/target"))
+        reading.wait()
         #expect(service.cancelCopyPasteAnalysis("analysis-1"))
+        // The review itself is told to stop, not only marked as cancelled.
+        #expect(service.state.withLock { $0.analysisJobs["analysis-1"]?.signal.isStopped } == true)
+        cancelled.open()
 
         #expect(
             await waitFor {

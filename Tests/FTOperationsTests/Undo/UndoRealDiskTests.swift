@@ -32,18 +32,14 @@ struct UndoRealDiskTests {
 
     @Test func putsAnItemBackFromItsDisksOwnTrash() async throws {
         try await onDisk(.apfs) { t, disk in
-            // Some Macs' Trash refuses a disk image attached by a test ("doesn't exist"; NativeTrashTests sees it too):
-            // nothing can be shown there.
-            try UndoDisk.write("\(disk)/probe.txt", "probe")
-            if (try? NativeFS.trashItem("\(disk)/probe.txt")) == nil {
-                withKnownIssue("The Trash can't reach a test disk image on this Mac") {
-                    Issue.record("The Trash refused \(disk)/probe.txt")
-                }
-                return
-            }
+            TrashProbe.touch()
             try UndoDisk.write("\(disk)/a.txt", "a")
             let trashed = try await t.trash("\(disk)/a.txt")
-            #expect(trashed.status == .completed, Comment(rawValue: trashed.result?.error ?? ""))
+            // Fails whenever the Trash can't move the item; then says whether the Mac gave the disk a volume
+            // reference at all (see TrashProbe.volumeReference).
+            try #require(
+                trashed.status == .completed,
+                Comment(rawValue: "\(trashed.result?.error ?? ""): \(TrashProbe.volumeReferenceReport(of: disk))"))
             #expect(!UndoDisk.names(disk).contains("a.txt"))
             #expect(try await t.undo().status == .completed)
             #expect(try UndoDisk.read("\(disk)/a.txt") == "a")

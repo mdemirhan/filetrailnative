@@ -8,9 +8,6 @@ import Foundation
 @testable import FTOperations
 
 struct SwiftAnalysisEngine: ExecAnalysisEngine {
-    /// The "For all conflicts" buttons, in a fixed order.
-    private static let allConflicts = ["skip", "add_missing", "keep_all", "overwrite"]
-
     func analyze(_ scenario: ExecScenario, in places: ExecPlaces) async throws -> JSONValue {
         let fileSystem = RecordedFileSystem()
         let before = try JSONValue.of(try places.snapshotTree())
@@ -28,18 +25,20 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
             overrideChoices[override.nodeId] = override.action
         }
 
+        // The review sheet's own answers, from the report as the sheet reads it.
+        let review = try JSONDecoder().decode(ReviewReport.self, from: JSONEncoder().encode(report))
         var choices: [String: JSONValue] = [:]
-        for node in Self.conflictNodes(report.nodes) {
-            guard let conflictClass = node.conflictClass else { continue }
+        for node in Self.conflictNodes(review.nodes) {
             var effective: [String: JSONValue] = [:]
-            for button in Self.allConflicts {
-                let choice = CopyPasteChoices.choiceForConflict(
-                    conflictClass: conflictClass, replaceBlockedReason: node.replaceBlockedReason,
-                    policy: Self.policyForAllConflicts(button), override: overrideChoices[node.id])
-                effective[button] = .string(choice.rawValue)
+            for button in AllConflictsChoice.allCases {
+                guard
+                    let choice = CopyPasteReview.effectiveChoice(
+                        node, CopyPasteReview.policy(for: button), overrideChoices)
+                else { continue }
+                effective[button.rawValue] = .string(choice.rawValue)
             }
             choices[node.id] = .object([
-                "offered": .array(Self.choicesFor(conflictClass).map { .string($0) }),
+                "offered": .array(CopyPasteReview.choices(for: node).map { .string($0.rawValue) }),
                 "effective": .object(effective),
             ])
         }
@@ -61,7 +60,7 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
         return .object([
             "before": before,
             "report": Self.json(report),
-            "allConflictsChoices": .array(Self.allConflictsChoices(report).map { .string($0) }),
+            "allConflictsChoices": .array(CopyPasteReview.allConflictsChoices(review).map { .string($0.rawValue) }),
             "choices": .object(choices),
             "resolved": resolved,
         ])
@@ -69,26 +68,7 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
 
     // MARK: The review sheet
 
-    private static func choicesFor(_ conflictClass: ConflictClass) -> [String] {
-        conflictClass == .directoryConflict
-            ? ["merge", "keep_both", "overwrite", "skip"] : ["keep_both", "overwrite", "skip"]
-    }
-
-    private static func policyForAllConflicts(_ button: String) -> CopyPastePolicy {
-        switch button {
-        case "add_missing": CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip)
-        case "keep_all": CopyPastePolicy(file: .keepBoth, directory: .merge, mismatch: .keepBoth)
-        case "overwrite": CopyPastePolicy(file: .overwrite, directory: .overwrite, mismatch: .overwrite)
-        default: CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
-        }
-    }
-
-    private static func allConflictsChoices(_ report: CopyPasteAnalysisReport) -> [String] {
-        report.mode == .cut || report.summary.directoryConflictCount == 0
-            ? ["skip", "keep_all", "overwrite"] : ["skip", "add_missing", "keep_all", "overwrite"]
-    }
-
-    private static func conflictNodes(_ nodes: [CopyPasteAnalysisNode]) -> [CopyPasteAnalysisNode] {
+    private static func conflictNodes(_ nodes: [ReviewNode]) -> [ReviewNode] {
         nodes.flatMap { node in (node.conflictClass == nil ? [] : [node]) + conflictNodes(node.children) }
     }
 

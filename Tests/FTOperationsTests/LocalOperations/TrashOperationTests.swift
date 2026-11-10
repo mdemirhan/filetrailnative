@@ -81,13 +81,21 @@ import Testing
             "/Users/demo/../../Library", "Documents/report.txt",
         ]
 
+        // Refused as a place that is never deleted or trashed, not for another reason (outside the Trash, say).
         for path in refused {
-            await #expect(throws: (any Error).self, "\(path)") {
+            let deleting = await #expect(throws: WriteCoordinatorError.self, "\(path)") {
                 try await coordinator.deleteImmediately(
                     paths: ["/Users/demo/.Trash/fine.txt", path], window: TestWindow())
             }
-            await #expect(throws: (any Error).self, "\(path)") {
+            let trashing = await #expect(throws: WriteCoordinatorError.self, "\(path)") {
                 try await coordinator.trash(paths: [path], window: TestWindow())
+            }
+            if path.hasPrefix("/") {
+                #expect(deleting?.message.hasSuffix(" can't be deleted.") == true, "\(path)")
+                #expect(trashing?.message.hasSuffix(" can't be moved to the Trash.") == true, "\(path)")
+            } else {
+                #expect(deleting?.message == "Expected an absolute path.")
+                #expect(trashing?.message == "Expected an absolute path.")
             }
         }
         await #expect(throws: WriteCoordinatorError("“Backup” can't be deleted.")) {

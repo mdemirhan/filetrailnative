@@ -90,8 +90,9 @@ struct CopyPasteExecutionRenameTests {
     }
 
     @Test func treatsExternallyRemovedSourceDirectoriesAsAlreadyCleanedUpInCutMode() async throws {
+        // On another disk (dev 2): the move copies, then removes each original.
         let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 5)),
+            ("/source", .directory(dev: 2)), ("/source/dir", .directory()), ("/source/dir/a.txt", .file(size: 5)),
             ("/target", .directory()),
         ])
         fileSystem.rmImpl = { path, _, _ in
@@ -363,6 +364,10 @@ struct CopyPasteExecutionRenameTests {
         #expect(fileSystem.exists("/source/a.txt"))
         if reason == .destinationChanged {
             #expect(recorder.conflicts.map(\.reason) == [reason])
+            #expect(fileSystem.readNode("/target/a.txt")?.size == 99)
+        } else {
+            #expect(recorder.conflicts.isEmpty)
+            #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
         }
     }
 

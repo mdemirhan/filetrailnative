@@ -196,12 +196,17 @@ struct CopyPasteExecutionRealFSTests {
             try Disk.write(source + "/target.txt", "target content")
             try Disk.makeDirectories(destination)
             try Disk.symlink(source + "/target.txt", source + "/link")
+            // 2018-01-01T00:00:00.000Z, on the link itself (what it points to keeps today's date).
+            let target = 1_514_764_800_000.0
+            var times = [timespec(tv_sec: 1_514_764_800, tv_nsec: 0), timespec(tv_sec: 1_514_764_800, tv_nsec: 0)]
+            try #require(utimensat(AT_FDCWD, source + "/link", &times, AT_SYMLINK_NOFOLLOW) == 0)
             let fileSystem = NativeWriteFileSystem()
             let operation = try realOperation(fileSystem, mode: .copy, sources: [source + "/link"], into: destination)
 
             await execute(fileSystem, operation, operationId: "realfs-utimes-symlink-1")
 
             #expect(Disk.lstat(destination + "/link")?.type == .symlink)
+            #expect(abs((mtimeMs(destination + "/link") ?? 0) - target) < 1000)
         }
     }
 

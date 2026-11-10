@@ -386,7 +386,7 @@ struct ConflictSafetyTests {
             ).run(withTrash(trashDir))
 
             #expect(run.conflicts.first?.reason == .destinationCreated)
-            #expect(run.result?.status != .failed)
+            #expect(run.result?.status == .completed)
             #expect(Disk.read(target + "/D copy/c.txt") == "someone else's c")
             #expect(Disk.read(target + "/D copy/c copy.txt") == "new c")
         }

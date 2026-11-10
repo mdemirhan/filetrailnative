@@ -59,18 +59,26 @@ struct CopyPasteExecutionMetadataTests {
         #expect(events.map(\.completedByteCount) == [0, 100, 500, 1100, 1100])
     }
 
+    // On the disk itself, with nothing to set the mode or the date again afterwards: the copy carries them.
     @Test func copyFilePreservesModeAndMtime() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/a.txt", .file(size: 5, mode: 0o755, mtimeMs: 9999)),
-            ("/target", .directory()),
-        ])
-        fileSystem.enableUtimes()
-        let operation = try createResolvedOperation(fileSystem, sources: ["/source/a.txt"], into: "/target")
+        try await withTemporaryDirectory { root in
+            let (source, destination) = (root.path + "/src", root.path + "/dst")
+            try Disk.write(source + "/a.txt", "hello")
+            Disk.chmod(source + "/a.txt", 0o755)
+            // 2021-02-03T04:05:06.000Z
+            let date = 1_612_325_106_000.0
+            try setDate(source + "/a.txt", date)
+            try Disk.makeDirectories(destination)
+            let fileSystem = TestFileSystem()
+            fileSystem.chmod = nil
+            fileSystem.utimes = nil
+            let operation = try createResolvedOperation(fileSystem, sources: [source + "/a.txt"], into: destination)
 
-        await execute(fileSystem, operation, operationId: "native-preserve-1")
+            await execute(fileSystem, operation, operationId: "native-preserve-1")
 
-        #expect(fileSystem.readNode("/target/a.txt")?.mode == 0o755)
-        #expect(fileSystem.readNode("/target/a.txt")?.mtimeMs == 9999)
+            #expect((Disk.lstat(destination + "/a.txt")?.mode ?? 0) & 0o777 == 0o755)
+            #expect(abs((mtimeMs(destination + "/a.txt") ?? 0) - date) < 1000)
+        }
     }
 
     @Test func nativeCopyFilePathReappliesModeAndMtimeEvenWhenTheCopyDropsMetadata() async throws {
@@ -136,18 +144,14 @@ struct CopyPasteExecutionMetadataTests {
         #expect(fileSystem.readNode("/target/dir")?.kind == .directory)
     }
 
-    @Test func utimesEOPNOTSUPPSilentlyIgnored() async throws {
-        let fileSystem = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/link", .symlink("actual.txt", mtimeMs: 7777)),
-            ("/target", .directory()),
-        ])
-        fileSystem.enableUtimes()
-        fileSystem.utimesImpl = { _, _, _ in throw codedError("EOPNOTSUPP") }
-        let operation = try createResolvedOperation(fileSystem, sources: ["/source/link"], into: "/target")
-
-        await execute(fileSystem, operation, operationId: "utimes-eopnotsupp-1")
-
-        #expect(fileSystem.readNode("/target/link")?.kind == .symlink)
+    // A paste lets any date that can't be set go; the disk's "not supported" is told apart where the date is set.
+    @Test func utimesEOPNOTSUPPSilentlyIgnored() throws {
+        var tried: [String] = []
+        try FolderMetadata.preserveTimestamps("/target/dir", 7777) { path, _, _ in
+            tried.append(path)
+            throw codedError("EOPNOTSUPP")
+        }
+        #expect(tried == ["/target/dir"])
     }
 
     @Test func doesntFailAFolderWhoseDateCantBeSet() async throws {
