@@ -231,6 +231,32 @@ struct UndoNamesLockedTests {
         }
     }
 
+    // The Trash took the copy but didn't say where: its lock, taken off to move it, can't be put back there, and the
+    // note says so.
+    @Test func saysSoWhenTheTrashDoesntSayWhereALockedCopyWent() async throws {
+        try await withUndoFolder { root, trashDir in
+            let t = UndoTest(root: root, trashDir: trashDir) { fileSystem in
+                fileSystem.trashImpl = { path in
+                    guard Darwin.rename(path, trashDir + "/" + NodePath.basename(path)) == 0 else {
+                        throw codedError("EIO", "EIO: the Trash refused it")
+                    }
+                    return nil
+                }
+            }
+            try await duplicateLocked(t, root)
+
+            let ended = try await t.undo()
+
+            #expect(ended.status == .completed)
+            #expect(items(ended).first?.note == true)
+            #expect(
+                items(ended).first?.error
+                    == "“a copy.txt” was moved, but its lock or permissions couldn't be put back. Set them in Finder's Get Info."
+            )
+            await t.shutDown()
+        }
+    }
+
     @Test(arguments: [UndoDirection.undo, .redo])
     func saysSoWhenACopyCantBeLockedAgain(direction: UndoDirection) async throws {
         try await withUndoFolder { root, trashDir in

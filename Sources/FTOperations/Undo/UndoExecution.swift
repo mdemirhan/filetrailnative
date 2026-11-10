@@ -579,7 +579,8 @@ public enum UndoExecution {
                 context)
             return restored ? outcome : outcome.with(items: notLockedAgain(outcome.items))
         }
-        let restored = trashPath.map { restoreRestrictions(fileSystem, $0, lifted) } ?? true
+        // Where the Trash didn't say where it put the item, nothing taken off it can be put back.
+        let restored = trashPath.map { restoreRestrictions(fileSystem, $0, lifted) } ?? !lifted.any
         return .done(
             // In the Trash, but the Trash didn't say where: done, and nothing to do it again from.
             produced: trashPath.map {

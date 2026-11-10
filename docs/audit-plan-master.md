@@ -542,7 +542,7 @@ source. Confirm with a real disk-image test (a FAT or ExFAT image refuses most x
 `.name.filetrail-xxxxxxxx` until the next launch and the error shown does not say so. *Fix:* surface it in the item's
 error, naming where the item is.
 
-### [ ] 3A.7. Undo reports restrictions restored when it never tried
+### [x] 3A.7. Undo reports restrictions restored when it never tried
 
 `Undo/UndoExecution.swift:582`:
 `restored = trashPath.map { restoreRestrictions(...) } ?? true`. With no trash path the answer should be false, so the
@@ -2036,3 +2036,5 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. Phase 2 done. Phase 3 answers: Q3 not now (a full disk only stops the run); Q4 yes, flush the
   journal for the moved-item entry only; Q5 as recommended (surplus tabs go to new windows with the tab-limit notice,
   or the drop is refused where AppKit allows).
+- 2026-11-10. 3A.7: the answer with no Trash path is now "restored" only when nothing was taken off the item
+  (`!lifted.any`), not `false` outright: an unlocked item has nothing to put back.
