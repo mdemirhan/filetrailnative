@@ -2038,3 +2038,10 @@ anything that differed from the plan, and anything found on the way that is not 
   or the drop is refused where AppKit allows).
 - 2026-11-10. 3A.7: the answer with no Trash path is now "restored" only when nothing was taken off the item
   (`!lifted.any`), not `false` outright: an unlocked item has nothing to put back.
+- 2026-11-10. 3A.8 skipped, waits for the owner: the claim holds (a Replace asked again counts its first copy too,
+  so a test saw completed > total), and the fix (take the counts back in `undoStaging`) works, but it changes
+  frozen recordings the item doesn't name: in `exec-copy` "Replace on a disk without a Trash, skipped: nothing
+  changes" and "Replace on a FAT32 disk without a Trash, skipped: nothing changes", and in `exec-stop` "stopped while
+  building a replacement folder: the old folder stays". Their progress events and `result.summary.completedByteCount`
+  record the undone copy as done (4 bytes "copied" for a Replace that changed nothing). Fixing needs those cases'
+  counts edited by hand.
