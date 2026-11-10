@@ -1,5 +1,6 @@
 import FTFoundation
 import FTOperations
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -271,5 +272,29 @@ private func item(
             let action = actions[random(actions.count)]
             expectSameForOtherWindows(result(action, items, targetPath: random(2) == 0 ? randomPath() : nil))
         }
+    }
+
+    // A Trash or a move of 20,000 items from one folder ends without holding up the window: what is read again and
+    // what left the folder take time in proportion to the paths, not to their square.
+    @Test func whatAWriteOfManyItemsLeavesBehindIsWorkedOutQuickly() {
+        let count = 20_000
+        let trashed = result(
+            .trash, (0..<count).map { item("/Users/demo/Big/file-\($0)", "/Users/demo/.Trash/file-\($0)") })
+        let moved = result(
+            .paste, (0..<count).map { item("/Users/demo/Big/file-\($0)", "/Users/demo/Other/file-\($0)") },
+            targetPath: "/Users/demo/Other", mode: .cut)
+
+        let (outcome, seconds) = CPUTime.measureThread {
+            (
+                AfterWrite.treeReloadPaths(trashed), AfterWrite.pathsLeftByWrite(trashed),
+                AfterWrite.treeReloadPaths(moved), AfterWrite.pathsLeftByWrite(moved)
+            )
+        }
+
+        #expect(outcome.0.count == count + 2)
+        #expect(outcome.1.count == count)
+        #expect(outcome.2.count == count + 2)
+        #expect(outcome.3.count == count)
+        #expect(seconds < 2, "took \(seconds) s of CPU time")
     }
 }

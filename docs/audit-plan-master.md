@@ -197,7 +197,7 @@ is. Do not just raise the limit.
 *Test:* in `Tests/FTFileSystemTests/FolderSize`, lower `RLIMIT_NOFILE` to 256 inside the test (restore after), walk a
 temp folder with 600 empty subfolders, expect a complete result.
 
-### [ ] 1.3. The window freezes when a large Trash or Delete ends
+### [x] 1.3. The window freezes when a large Trash or Delete ends
 
 [verified]
 `collapseNestedPaths` in `Sources/FTAppKit/WriteOperations/AfterWrite.swift:162` is quadratic: a linear
@@ -1953,3 +1953,8 @@ anything that differed from the plan, and anything found on the way that is not 
   which a device read at listing time cannot see. A folder found unwalkable after it was queued is marked
   skipped and never put on the finished list, as before. The test needs nested folders: 1,000 empty or
   file-only subfolders passed before the fix, as four workers empty the queue as fast as one listing fills it.
+- 2026-11-10. 1.3 also covers the two de-duplicating loops in `treeReloadPaths`, which were quadratic in the
+  destinations on the same call. Before the fix the new 20,000-path test did not finish in 10 minutes; after it,
+  0.63 s of CPU time in a debug build. Found, not fixed (same shape, next to it): in `ExplorerWriteSession`,
+  `leftPaths` filters each left path against `result.replacedPaths` with `contains`, quadratic for a Replace of
+  many items.

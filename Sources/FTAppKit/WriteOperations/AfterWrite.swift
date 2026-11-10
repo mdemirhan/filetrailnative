@@ -67,13 +67,14 @@ enum AfterWrite {
     /// what it moved into another folder (not what it renamed in place).
     static func pathsLeftByWrite(_ result: WriteOperationResult) -> [String] {
         var left = removedByWrite(result)
+        var inLeft = Set(left.map(NameKeys.Exact.init))
         if movedItems(result) {
             let outcome = WriteOperationOutcome(
                 action: result.action.rawValue, mode: result.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
                 items: result.items.map(\.effect))
             for move in ExplorerTabs.collectFollowedMoves(outcome)
             where ExplorerTabs.parentDirectoryPath(move.from) != ExplorerTabs.parentDirectoryPath(move.to)
-                && !left.contains(move.from)
+                && inLeft.insert(NameKeys.Exact(move.from)).inserted
             {
                 left.append(move.from)
             }
@@ -104,17 +105,8 @@ enum AfterWrite {
         let completed = result.items.filter { $0.status == .completed }
         let sourceRoots = collapseNestedPaths(completed.compactMap { nonEmpty($0.sourcePath) })
         let destinationRoots = collapseNestedPaths(completed.compactMap { nonEmpty($0.destinationPath) })
-        var parents: [String] = []
-        for path in sourceRoots + destinationRoots {
-            if let parent = ExplorerTabs.parentDirectoryPath(path), !parents.contains(parent) {
-                parents.append(parent)
-            }
-        }
-        var paths: [String] = []
-        for path in parents + destinationRoots where !paths.contains(path) {
-            paths.append(path)
-        }
-        return paths.sorted(by: shorterFirst)
+        let parents = uniqued((sourceRoots + destinationRoots).compactMap(ExplorerTabs.parentDirectoryPath))
+        return uniqued(parents + destinationRoots).sorted(by: shorterFirst)
     }
 
     /// `replacePathPrefix`.
@@ -159,14 +151,38 @@ enum AfterWrite {
         .max { $0.source.utf16.count < $1.source.utf16.count }
     }
 
+    /// The paths with no other of them above them, shorter first. A path is looked up by each folder above it, so
+    /// the cost grows with the paths times their depth, not with the square of their number.
     private static func collapseNestedPaths(_ paths: [String]) -> [String] {
-        var unique: [String] = []
-        for path in paths where !unique.contains(path) { unique.append(path) }
         var roots: [String] = []
-        for path in unique.sorted(by: shorterFirst) where !roots.contains(where: { isAtOrInside(path, $0) }) {
+        var rootKeys = Set<NameKeys.Exact>()
+        for path in uniqued(paths).sorted(by: shorterFirst) where !hasAncestor(path, in: rootKeys) {
             roots.append(path)
+            rootKeys.insert(NameKeys.Exact(path))
         }
         return roots
+    }
+
+    /// Whether a folder above `path` is in `keys`: each start of it that ends before a "/", the leading one aside,
+    /// as `isAtOrInside` takes a folder to hold what starts with it and a "/".
+    private static func hasAncestor(_ path: String, in keys: Set<NameKeys.Exact>) -> Bool {
+        let bytes = Array(path.utf8)
+        var index = bytes.count - 1
+        while index > 0 {
+            if bytes[index] == UInt8(ascii: "/"),
+                keys.contains(NameKeys.Exact(String(decoding: bytes[..<index], as: UTF8.self)))
+            {
+                return true
+            }
+            index -= 1
+        }
+        return false
+    }
+
+    /// Each path once, at its first place; paths are the same only when spelled the same, NFC and NFD apart.
+    private static func uniqued(_ paths: [String]) -> [String] {
+        var seen = Set<NameKeys.Exact>()
+        return paths.filter { seen.insert(NameKeys.Exact($0)).inserted }
     }
 
     /// Shorter first; of the same length, in the current locale's order.
