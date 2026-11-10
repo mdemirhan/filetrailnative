@@ -523,7 +523,7 @@ and fails one by one, and a partly copied ordinary folder is put in place (`Exec
 only moves and packages). *Fix:* the first `ENOSPC` ends the run with the rest "Not started". [Q3] covers a
 free-space check before starting.
 
-### [ ] 3A.4. A file moved to another disk can lose extended attributes and still have its original deleted
+### [x] 3A.4. A file moved to another disk can lose extended attributes and still have its original deleted
 
 `Sources/CFileTrail/copyfile.c:94` returns `COPYFILE_SKIP` for a refused xattr; `copyStillWhole`
 (`ExecutionMoves.swift:78`) compares only kind, size and link target. Folders in the same situation keep their source
@@ -2077,3 +2077,6 @@ anything that differed from the plan, and anything found on the way that is not 
   folder is refused (macOS 14, by the code's own comment; macOS 27 allows it within one folder). The 3A.6 path gives
   the waiting item its lock and mode back too, and says when the old item went to the Trash. Left: its message
   promises the next start even with no journal, which the app always has.
+- 2026-11-10. The owner: 3A.3 yes, the four `WholeFolderTests` use EIO for their failing file; 3A.8 yes, hand-edit
+  the counts of the three recordings named above; 3A.9 yes, hand-edit the exec-crash case named above; 3A.4 leave as
+  is (closed: a refused attribute other than the resource fork is skipped on purpose, and the file's original goes).
