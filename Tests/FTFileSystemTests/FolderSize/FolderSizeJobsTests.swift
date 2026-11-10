@@ -1,3 +1,4 @@
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -269,10 +270,9 @@ private func settle() async {
         await settle()
         let changed = (0..<3_000).map { "/Users/demo/Library/c7/d\($0 * 500 + 7)/new.txt" }
 
-        let started = ContinuousClock.now
-        FolderSizeWrites.forget(changedPaths: changed)
+        let (_, seconds) = CPUTime.measureThread { FolderSizeWrites.forget(changedPaths: changed) }
         // Well under 100 ms on a laptop; the bound only catches going back to every pair.
-        #expect(ContinuousClock.now - started < .seconds(3))
+        #expect(seconds < 3, "took \(seconds) s of CPU time")
         #expect(jobs.cachedSize("/Users/demo/Library/c7/d7") == nil)
         #expect(jobs.cachedSize("/Users/demo/Library/c7") == nil)
         #expect(jobs.cachedSize("/Users/demo/Library") == nil)
@@ -547,18 +547,19 @@ private func settle() async {
         let native = MockNative()
         let jobs = make(native)
         _ = start(jobs, "/Users/demo")
-        let started = ContinuousClock.now
+        // The CPU time of the takes themselves, not of what runs between them.
+        var seconds = 0.0
         for take in 0..<4 {
             var dirs: [String: [Int64]] = [:]
             for index in (take * 10_000)..<((take + 1) * 10_000) {
                 dirs["/Users/demo/Library/c\(index % 400)/d\(index)"] = [1, 1, 1, 0]
             }
-            native.finish(dirs)
+            seconds += CPUTime.measureThread { native.finish(dirs) }.seconds
             // Lets the rest of the app run between takes, as it does between the walk's.
             await Task.yield()
         }
         // About a fifth of a second on a laptop; the bound only catches going back to one at a time.
-        #expect(ContinuousClock.now - started < .milliseconds(1_200))
+        #expect(seconds < 1.2, "took \(seconds) s of CPU time")
         #expect(jobs.cachedSize("/Users/demo/Library/c399/d39999") == 1)
         #expect(jobs.cachedSize("/Users/demo/Library/c0/d0") == 1)
     }

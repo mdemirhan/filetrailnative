@@ -1,4 +1,5 @@
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -116,12 +117,13 @@ private struct RandomCache {
     // measured again. 120,000 sizes are more than that limit kept, and the bound is for that many.
     @Test func keepsEverySizeStoredQuickly() {
         let cache = FolderSizeCache()
-        let started = ContinuousClock.now
-        for index in 0..<120_000 {
-            cache.store("/Users/demo/Library/c\(index % 400)/d\(index)", stats(Int64(index)))
+        let (_, seconds) = CPUTime.measureThread {
+            for index in 0..<120_000 {
+                cache.store("/Users/demo/Library/c\(index % 400)/d\(index)", stats(Int64(index)))
+            }
         }
         // Well under a second on a laptop.
-        #expect(ContinuousClock.now - started < .milliseconds(1_500))
+        #expect(seconds < 1.5, "took \(seconds) s of CPU time")
         #expect(cache.size == 120_000)
         #expect(cache.has("/Users/demo/Library/c0/d0"))
     }

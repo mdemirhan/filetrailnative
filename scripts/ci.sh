@@ -272,8 +272,9 @@ full_tests() {
             return 1
         fi
     fi
-    # FTFoundationTests first, beside the windowless processes only (about a core each): its timing tests (a filter of
-    # 50,000 names within 400 ms) miss their bound on a Mac kept busy by every bundle at once.
+    # FTFoundationTests first, beside the windowless processes only (about a core each). Its timing tests measure CPU
+    # time now, but run beside every bundle at once the run was no faster, and a disk image test of FTOperationsTests
+    # failed in one run of two (a resource fork written to a full disk image), so it stays apart.
     if selected FTFoundationTests; then
         start FTFoundationTests FTFoundationTests
         finish $((${#pids[@]} - 1))

@@ -1,3 +1,4 @@
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -26,9 +27,9 @@ import Testing
     @Test func staysFastForVeryLargeResults() {
         var items = [item("/src/big")]
         for index in 0..<30_000 { items.append(item("/src/big/dir-\(index % 100)/file-\(index).txt")) }
-        let started = Date()
-        #expect(CopyPasteResultText.retrySourcePaths(items) == ["/src/big"])
-        // The old pairwise scan took seconds at this size.
-        #expect(Date().timeIntervalSince(started) < 0.5)
+        let (paths, seconds) = CPUTime.measureThread { CopyPasteResultText.retrySourcePaths(items) }
+        #expect(paths == ["/src/big"])
+        // The old pairwise scan took seconds of CPU time at this size.
+        #expect(seconds < 0.5, "took \(seconds) s of CPU time")
     }
 }

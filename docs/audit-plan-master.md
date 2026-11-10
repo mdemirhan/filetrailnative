@@ -464,7 +464,7 @@ in `$TMPDIR` can be deleted; do not delete them yourself.
 `Automation/AutomationStepsTests.swift:200`. Use `defer`. Same for `released.signal()` in
 `Tests/FTOperationsTests/Recovery/PartialFileRecoveryTests.swift:98-107`.
 
-### [ ] 2.14. Wall-clock bounds become CPU-time bounds or gates
+### [x] 2.14. Wall-clock bounds become CPU-time bounds or gates
 
 Use `CPUTime.measureThread` or a held gate:
 `Tests/FTFoundationTests/CopyPaste/RetrySourcePathsTests.swift:29`, `BatchRename/BatchRenameTests.swift:543, 615`,
@@ -2025,3 +2025,8 @@ anything that differed from the plan, and anything found on the way that is not 
   `reducesMotion` seam, so its timer test doesn't depend on the Mac's setting. On APFS a copy is a clone, which
   carries mode and dates by itself: the copy-metadata tests fail only with both the clone and `COPYFILE_ALL`
   taken away.
+- 2026-11-10. 2.14: the bundle order in `ci.sh` stays. With FTFoundationTests run beside every bundle the test step
+  took 44 s and 47 s against 42 s and 43 s, and one of those runs failed
+  `failsWithTheWritesErrnoWhenTheResourceForkCantBeWritten` (copyfile reported success without the fork; it passes
+  alone, 5 of 5). That test's flakiness under load is not explained; noted, not changed. The two quit tests use a
+  time limit on a wait that never ends by itself, in place of a wall-clock bound.

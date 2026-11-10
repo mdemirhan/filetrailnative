@@ -1,3 +1,4 @@
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -536,11 +537,12 @@ struct PlanTests {
     @Test func numbersThousandsOfItemsWantingOneNameWithoutLookingFromTwoForEach() {
         let itemNames = (0..<20_000).map { "IMG_\($0).jpg" }
         // A taken number in the middle is still passed over.
-        let started = ContinuousClock.now
-        let result = plan(
-            BatchRenameSettings(find: "IMG_\\d+", replaceWith: "Lisbon", useRegex: true), itemNames,
-            folderNames: itemNames + ["Lisbon 500.jpg"])
-        #expect(ContinuousClock.now - started < .seconds(10))
+        let (result, seconds) = CPUTime.measureThread {
+            plan(
+                BatchRenameSettings(find: "IMG_\\d+", replaceWith: "Lisbon", useRegex: true), itemNames,
+                folderNames: itemNames + ["Lisbon 500.jpg"])
+        }
+        #expect(seconds < 10, "took \(seconds) s of CPU time")
         let given = result.items.map(outcome)
         #expect(Array(given.prefix(3)) == ["Lisbon.jpg", "Lisbon 2.jpg", "Lisbon 3.jpg"])
         #expect(given[498] == "Lisbon 499.jpg")
@@ -608,11 +610,12 @@ struct PlanTests {
         // "File 1" … "File 10000" numbered from 2: the last can't take the unselected "File 10001", so it keeps its
         // name, which the one before it wanted, and so on back.
         let folderNames = (0..<10_001).map { "File \($0 + 1).txt" }
-        let started = ContinuousClock.now
-        let result = plan(
-            BatchRenameSettings(mode: .format, startAt: 2, onConflict: .skip), Array(folderNames.prefix(10_000)),
-            folderNames: folderNames)
-        #expect(ContinuousClock.now - started < .seconds(10))
+        let (result, seconds) = CPUTime.measureThread {
+            plan(
+                BatchRenameSettings(mode: .format, startAt: 2, onConflict: .skip), Array(folderNames.prefix(10_000)),
+                folderNames: folderNames)
+        }
+        #expect(seconds < 10, "took \(seconds) s of CPU time")
         #expect(result.renameCount == 0)
         #expect(result.skippedCount == 10_000)
         guard case .problem(let proposedName, _, let problem) = result.items[0] else {

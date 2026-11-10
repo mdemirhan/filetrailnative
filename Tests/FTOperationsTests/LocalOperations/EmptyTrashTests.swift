@@ -101,16 +101,15 @@ import Testing
         await coordinator.shutDown(maxWaitMs: 0)
     }
 
-    // Finder goes on emptying it after File Trail quits.
-    @Test func doesntHoldQuittingUpWhileFinderEmptiesTheTrash() async throws {
+    // Finder goes on emptying it after File Trail quits. The emptying here lasts until the test ends it, and the quit
+    // would wait ten minutes for it: a quit that waited at all is caught by the time limit.
+    @Test(.timeLimit(.minutes(1))) func doesntHoldQuittingUpWhileFinderEmptiesTheTrash() async throws {
         let coordinator = WriteCoordinator.local(.stub())
         let held = HeldEmpty()
         let emptying = Task { await coordinator.emptyTrash { await held.empty() } }
         await held.waiting()
 
-        let started = Date()
-        await coordinator.shutDown(maxWaitMs: 60_000)
-        #expect(Date().timeIntervalSince(started) < 0.5)
+        await coordinator.shutDown(maxWaitMs: 600_000)
         held.finish()
         _ = await emptying.value
     }

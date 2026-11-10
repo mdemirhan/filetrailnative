@@ -7,7 +7,8 @@ import Testing
 @testable import FTAppKit
 
 /// The window's static seams a test may replace (the visited folders' store, the dialogs' timers, the folder picker,
-/// the batch rename runner), as they were before each test, put back after it whether it passed or threw.
+/// the batch rename runner), as they were before each test, put back after it whether it passed or threw. The suites
+/// that replace them are inside ExplorerWindowlessTests, which runs one test at a time, so no two of them overlap.
 @MainActor
 enum WindowSeams {
     private struct Saved {

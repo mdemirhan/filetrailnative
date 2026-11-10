@@ -56,14 +56,15 @@ struct WriteServiceAnalysisTests {
         ])
     }
 
-    /// A folder whose reads take 20 ms each.
-    private static func slowFolder() -> MockAnalysisFileSystem {
+    /// A folder whose reads wait until `held` is opened, after saying through `reading` that one has begun.
+    private static func slowFolder(reading: Gate, held: Gate) -> MockAnalysisFileSystem {
         let fileSystem = MockAnalysisFileSystem([
             ("/source", .directory()), ("/source/folder", .directory()), ("/source/folder/file.txt", .file(size: 5)),
             ("/target", .directory()),
         ])
         fileSystem.readdirImpl = { path in
-            Thread.sleep(forTimeInterval: 0.02)
+            reading.open()
+            held.wait()
             return path == "/source/folder" ? ["file.txt"] : ["folder"]
         }
         return fileSystem
@@ -82,15 +83,10 @@ struct WriteServiceAnalysisTests {
     }
 
     @Test func cancelsInFlightAnalysisJobs() async throws {
-        let fileSystem = Self.slowFolder()
         // Held reading the folder until it is cancelled, so the cancel finds it running.
         let reading = Gate()
         let cancelled = Gate()
-        fileSystem.readdirImpl = { path in
-            reading.open()
-            cancelled.wait()
-            return path == "/source/folder" ? ["file.txt"] : ["folder"]
-        }
+        let fileSystem = Self.slowFolder(reading: reading, held: cancelled)
         let service = WriteService(.init(fileSystem: fileSystem, createAnalysisId: { "analysis-1" }))
 
         _ = try service.startCopyPasteAnalysis(request(["/source/folder"], into: "/target"))
@@ -136,9 +132,15 @@ struct WriteServiceAnalysisTests {
     }
 
     @Test func rejectsStartingASecondAnalysisWhileAnotherAnalysisIsStillRunning() throws {
-        let service = WriteService(.init(fileSystem: Self.slowFolder(), createAnalysisId: countingIds()))
+        // The first review is held in its first read until the second has been refused.
+        let reading = Gate()
+        let held = Gate()
+        defer { held.open() }
+        let service = WriteService(
+            .init(fileSystem: Self.slowFolder(reading: reading, held: held), createAnalysisId: countingIds()))
 
         _ = try service.startCopyPasteAnalysis(request(["/source/folder"], into: "/target"))
+        reading.wait()
 
         #expect(
             message { _ = try service.startCopyPasteAnalysis(request(["/source/folder"], into: "/target")) }

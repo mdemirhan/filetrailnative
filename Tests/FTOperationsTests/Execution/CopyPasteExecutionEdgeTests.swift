@@ -41,8 +41,12 @@ struct CopyPasteExecutionEdgeTests {
             ("/source", .directory()), ("/source/one.txt", .file(size: 1)), ("/source/two.txt", .file(size: 2)),
             ("/target", .directory()),
         ])
+        // Stopped once the first file is copied, while the second is: from inside its copy, not by a timer that could
+        // come before the first or after the second.
+        let signal = StopSignal()
         partialCancel.copyFileImpl = { source, destination, stop, _ in
             if source.hasSuffix("two.txt") {
+                signal.stop()
                 waitUntilStopped(stop)
                 try stop?.throwIfStopped()
             }
@@ -50,8 +54,6 @@ struct CopyPasteExecutionEdgeTests {
         }
         let partialOperation = try createResolvedOperation(
             partialCancel, sources: ["/source/one.txt", "/source/two.txt"], into: "/target")
-        let signal = StopSignal()
-        DispatchQueue.global().asyncAfter(deadline: .now() + 0.005) { signal.stop() }
 
         let partialEvents = await execute(partialCancel, partialOperation, operationId: "copy-op-4", signal: signal)
 

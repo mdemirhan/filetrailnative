@@ -58,18 +58,17 @@ import Testing
         #expect(coordinator.activeOperation == nil)
     }
 
-    // A disk that stops answering (a network share gone away) mustn't keep the app from quitting.
-    @Test func stopsWaitingForAnOperationThatDoesntStop() async throws {
+    // A disk that stops answering (a network share gone away) mustn't keep the app from quitting. The operation here
+    // never stops by itself: a quit that waited for it, not for its 50 ms, is caught by the time limit.
+    @Test(.timeLimit(.minutes(1))) func stopsWaitingForAnOperationThatDoesntStop() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
         let never = TestGate()
         try Coordinators.heldLocalOperation(coordinator, window, gate: never, action: .deleteImmediately)
         _ = try await Coordinators.waitFor { never.waiting ? true : nil }
 
-        let started = Date()
         await coordinator.shutDown(maxWaitMs: 50)
 
-        #expect(Date().timeIntervalSince(started) < 1)
         never.open()
     }
 
