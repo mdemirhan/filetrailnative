@@ -641,6 +641,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         let front = active.openTab
         func node<T: Encodable>(_ value: T) -> JSONNode { (try? JSONNode.of(value)) ?? .null }
         var patch = session.panels.patch
+        // A window doesn't take more tabs than it keeps (one the system drops on a full window is sent back out); a
+        // launch folder added to a full restored window is the one way past it, and the cut is there for it.
         patch["openTabs"] = node(Array(tabs.prefix(AppPreferenceLimits.openTabsLimit).map(\.openTab)))
         patch["activeTabIndex"] = .number(
             Double(min(AppPreferenceLimits.openTabsLimit - 1, tabs.firstIndex { $0 === active } ?? 0)))

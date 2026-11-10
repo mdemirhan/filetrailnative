@@ -47,7 +47,7 @@ enum ScreenGeometry {
 
 /// A notice a window shows.
 enum WindowNotice: Equatable {
-    /// "A window can have up to 100 tabs".
+    /// "A window can have up to 25 tabs".
     case tabLimit
 
     var title: String {
@@ -445,6 +445,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         {
             return
         }
+        if sendBackSurplusTabs(sets, live) { return }
         // The largest set keeps a window's identity; a set no window can claim becomes a window of its own.
         var claimed = Set<ObjectIdentifier>()
         for set in sets.sorted(by: { $0.count > $1.count }) {
@@ -463,6 +464,31 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
             controller.absorb(group)
             group.finishAbsorbed()
         }
+    }
+
+    /// A window keeps at most `openTabsLimit` tabs: tabs the system dropped on a full one leave it again, each for a
+    /// window of its own as if dragged out, and the notice says why. The tab group's change brings the next pass, which
+    /// makes the windows one again. False when none left: a tab the system wouldn't take out joins the window, and only
+    /// the first `openTabsLimit` are saved.
+    private func sendBackSurplusTabs(_ sets: [[MainWindowController]], _ live: [ExplorerTabGroup]) -> Bool {
+        let limit = AppPreferenceLimits.openTabsLimit
+        var sentBack = false
+        for set in sets where set.count > limit {
+            // The window that keeps the set is the one most of its tabs are in; the others arrived.
+            let owner = live.max { first, second in
+                set.filter { $0.group === first }.count < set.filter { $0.group === second }.count
+            }
+            let arrived = set.filter { $0.group !== owner }
+            var left = false
+            for tab in arrived.suffix(set.count - limit) {
+                (tab.window as? ExplorerTabWindow)?.leaveTabGroup()
+                if (tab.window?.tabbedWindows?.count ?? 1) <= 1 { left = true }
+            }
+            guard left else { continue }
+            tellTabLimit(in: owner?.selected?.window)
+            sentBack = true
+        }
+        return sentBack
     }
 
     private func adopt(_ tabs: [MainWindowController]) {

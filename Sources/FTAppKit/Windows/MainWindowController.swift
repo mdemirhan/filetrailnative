@@ -132,9 +132,15 @@ final class ExplorerTabWindow: NSWindow {
         super.sendEvent(event)
     }
 
-    // The system's tab commands go through the app's own, so the busy, sheet and 100-tab rules hold.
+    // The system's tab commands go through the app's own, so the busy, sheet and tab-limit rules hold.
     override func moveTabToNewWindow(_ sender: Any?) {
         explorerTab?.perform(.moveTabToNewWindow)
+    }
+
+    /// Out of its tab group into a window of its own, the same tab, as a tab dragged out of the tab bar goes: a tab the
+    /// system dropped on a window that is full leaves it again this way.
+    func leaveTabGroup() {
+        super.moveTabToNewWindow(nil)
     }
 
     override func mergeAllWindows(_ sender: Any?) {

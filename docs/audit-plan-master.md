@@ -576,7 +576,7 @@ A question about an item with a negative device number is auto-skipped today; th
 terminate reply is already owed. If none is, `.questionBroughtForward` must answer `false`. If one is (a second ⌘Q
 during a quit already waiting), keep today's behavior; the comment above the method explains why.
 
-### [ ] 3B.2. A window can end up with more than 25 tabs, and the extra ones are not saved
+### [x] 3B.2. A window can end up with more than 25 tabs, and the extra ones are not saved
 
 - Where: `ExplorerTabGroup.replaceTabs` (`Sources/FTAppKit/Windows/ExplorerTabGroup.swift`, line 571), reached from
   `ExplorerWindows.reconcile()` when the system tab bar moves a tab into a window. `saveSession` (line 644) writes
@@ -2118,3 +2118,12 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-11. The owner: 3D.3 leave as intended (closed). A conflict alert takes one answer; if it can't be sent the
   question stays, disabled, and Escape still dismisses it, as `RuntimeConflictAlert`'s comment and
   `aPausedOperationAsksInAWideAlertAndTakesOneAnswer` say.
+- 2026-11-11. 3B.2 reproduced, by an on-screen test run once and not kept (the owner asked for no hand check and no
+  lasting test): a window filled to 25 took a 26th tab dropped through the tab bar (`addTabbedWindow`), and after quit
+  and relaunch that tab was gone. Fixed as Q5 says: reconcile sends a tab dropped on a full window back out, the same
+  window, as if dragged out of the tab bar (`ExplorerTabWindow.leaveTabGroup`), with the tab-limit notice; the same
+  run then kept all 26 tabs across a relaunch. Differs from the plan: `saveSession` keeps its cut and the active-index
+  clamp, and `mergeAnswer` its over-limit term, instead of an assertion, because the limit doesn't hold everywhere.
+  Found, not fixed: `StartupTabs.resolve` adds the launch folder (a folder opened with the app) as a new tab to a
+  restored window that already has 25, so that window shows 26 and saves the first 25, the launch folder not among
+  them; which tab should give way is the owner's call.
