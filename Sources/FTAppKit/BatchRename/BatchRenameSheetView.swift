@@ -7,7 +7,7 @@ import FTOperations
 @MainActor
 final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     let model: BatchRenameSheetModel
-    /// Cancel, Escape: the sheet closes (the presenter closes the model).
+    /// Cancel, Escape and ⌘.: the sheet closes (the presenter closes the model).
     var onCancel: () -> Void = {}
     /// Rename, with the request the plan settled.
     var onRename: (BatchRenameRequest) -> Void = { _ in }
@@ -369,7 +369,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
 
     func handleKey(_ event: NSEvent) -> Bool {
         let modifiers = event.modifierFlags.intersection([.command, .control, .option, .shift])
-        if event.keyCode == KeyCode.escape, modifiers.isEmpty {
+        if KeyCode.isCancel(event) {
             if savingPreset { stopSavingPreset() } else { onCancel() }
             return true
         }

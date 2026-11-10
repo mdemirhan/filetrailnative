@@ -676,7 +676,7 @@ density (`Content/List/DetailsRowViews.swift:403-409`).
 `CopyPaste/RuntimeConflictAlert.swift:216, 242` disables the buttons and discards `resolveConflict`'s result; the
 review alert re-enables them (`CopyPastePresenters.swift:101`).
 
-### [ ] 3D.4. ⌘-period does not cancel the Rename sheet
+### [x] 3D.4. ⌘-period does not cancel the Rename sheet
 
 `BatchRename/BatchRenameSheetView.swift:372` checks plain
 Escape; everything else uses `KeyCode.isCancel`.

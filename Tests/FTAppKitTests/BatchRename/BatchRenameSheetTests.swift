@@ -482,5 +482,19 @@ extension ExplorerWindowlessTests {
             #expect(fixture.cancelled == 0)
             fixture.close()
         }
+
+        // ⌘. does what Escape does: it leaves saving a preset, then closes the sheet.
+        @Test func commandPeriodDoesWhatEscapeDoes() async throws {
+            let fixture = await Fixture([target("a.jpg")])
+            let sheet = fixture.sheet
+            fixture.pick(sheet.presetsPopUp, "Save as Preset\u{2026}")
+            fixture.key(KeyCode.period, ".", modifiers: .command)
+            #expect(!sheet.savingPreset && sheet.presetNameField.isHidden)
+            #expect(fixture.cancelled == 0)
+            sheet.findField.focus()
+            fixture.key(KeyCode.period, ".", modifiers: .command)
+            #expect(fixture.cancelled == 1)
+            fixture.close()
+        }
     }
 }
