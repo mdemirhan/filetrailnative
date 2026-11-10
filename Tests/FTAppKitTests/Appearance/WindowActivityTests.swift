@@ -11,6 +11,25 @@ import Testing
         var has = true
     }
 
+    /// A notification center that counts the observers taken off it.
+    final class CountingCenter: NotificationCenter, @unchecked Sendable {
+        var removed = 0
+        override func removeObserver(_ observer: Any) {
+            removed += 1
+            super.removeObserver(observer)
+        }
+    }
+
+    // One tracker for each sidebar and toolbar that opens: one let go takes its observers off with it.
+    @Test func takesItsObserversOffWhenItGoes() {
+        let window = makeOffscreenWindow()
+        let center = CountingCenter()
+        var activity: WindowActivity? = WindowActivity(hasFocus: { true }, window: window, center: center)
+        #expect(activity != nil)
+        activity = nil
+        #expect(center.removed == 2)
+    }
+
     @Test func marksTheWindowInactiveWhileItDoesNotHaveTheFocus() {
         let window = makeOffscreenWindow()
         let center = NotificationCenter()

@@ -37,6 +37,10 @@ public final class WindowActivity {
         if changed { onChange(next) }
     }
 
+    isolated deinit {
+        for observer in observers { center.removeObserver(observer) }
+    }
+
     /// Stops tracking: a window nothing tracks counts as active (`window-inactive` is taken off).
     public func stop() {
         for observer in observers { center.removeObserver(observer) }

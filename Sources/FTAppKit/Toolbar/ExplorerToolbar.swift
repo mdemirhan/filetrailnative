@@ -31,6 +31,16 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     private var observation: ExplorerWindowObservation?
     private var identifiersObservation: NSKeyValueObservation?
     private var sheetObservers: [NSObjectProtocol] = []
+    /// The search field's width: made once, as the field is, however many times its item is made.
+    private lazy var searchFieldWidths: [NSLayoutConstraint] = {
+        // A field while there is room at all (`searchWidth`, `searchMinWidth`): the title gives way first.
+        let preferred = searchField.widthAnchor.constraint(equalToConstant: DesignTokens.toolbar.searchWidth)
+        preferred.priority = .defaultHigh
+        return [
+            searchField.widthAnchor.constraint(greaterThanOrEqualToConstant: DesignTokens.toolbar.searchMinWidth),
+            preferred,
+        ]
+    }()
     /// The toolbar is being set from the preference, not changed by the user.
     private var applying = false
     private var commitPending = false
@@ -41,6 +51,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// How a press on the magnifier brings a back window forward. A window that is never shown can't become key, so a
     /// windowless test watches this instead.
     var bringForward: @MainActor (NSWindow) -> Void = { $0.makeKeyAndOrderFront(nil) }
+
+    isolated deinit {
+        for observer in sheetObservers { NotificationCenter.default.removeObserver(observer) }
+    }
 
     init(identifier: String) {
         toolbar = NSToolbar(identifier: identifier)
@@ -402,13 +416,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             let search = NSSearchToolbarItem(itemIdentifier: itemIdentifier)
             if flag {
                 search.searchField = searchField
-                // A field while there is room at all (`searchWidth`, `searchMinWidth`): the title
-                // gives way first.
-                searchField.widthAnchor.constraint(greaterThanOrEqualToConstant: DesignTokens.toolbar.searchMinWidth)
-                    .isActive = true
-                let preferred = searchField.widthAnchor.constraint(equalToConstant: DesignTokens.toolbar.searchWidth)
-                preferred.priority = .defaultHigh
-                preferred.isActive = true
+                NSLayoutConstraint.activate(searchFieldWidths)
                 // The ✕ keeps the keyboard in the field (TabSearch).
                 search.resignsFirstResponderWithCancel = false
             }

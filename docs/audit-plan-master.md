@@ -617,7 +617,7 @@ Two lists of "driven run" flags differ: `App/AppDelegate.swift:144` and `:167`. 
 running File Trail hands over to it and quits. Make them one list. 5.10 later deletes `--snapshot` itself; the
 single list stays.
 
-### [ ] 3B.6. Observers and constraints that pile up per tab
+### [x] 3B.6. Observers and constraints that pile up per tab
 
 `Appearance/WindowActivity.swift:25-30` (the sidebar never
 calls `stop()`), `Toolbar/ExplorerToolbar.swift:71` (`sheetObservers` never removed), `:407-411` (two more width
