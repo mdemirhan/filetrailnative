@@ -350,7 +350,7 @@ under `WARN_FAILS=1`, and do not go on to the test step when the build fails.
 
 `ci.sh:335`.
 
-### [ ] 2.6. A release cannot pass with fixture tests silently skipped
+### [x] 2.6. A release cannot pass with fixture tests silently skipped
 
 - Facts: tests gated on `~/Library/Caches/filetrail-dev/fixtures` skip when it is missing
   (`.enabled(if: hasFixtures)` in `FileKindTests.swift:23`, `FolderSizeGoldenTests.swift:84`,

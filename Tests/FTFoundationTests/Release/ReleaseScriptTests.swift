@@ -15,7 +15,8 @@ import Testing
     }
 
     private static func run(
-        _ tool: String, _ arguments: [String], in folder: String? = nil, path: String? = nil, input: String? = nil
+        _ tool: String, _ arguments: [String], in folder: String? = nil, path: String? = nil, input: String? = nil,
+        devCache: String? = nil
     ) throws -> Outcome {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: tool)
@@ -27,6 +28,7 @@ import Testing
             !$0.key.hasPrefix("GIT_") && $0.key != "FILETRAIL_LARGE_FILE_TESTS"
         }
         if let path { environment["PATH"] = path + ":" + (environment["PATH"] ?? "") }
+        if let devCache { environment["FILETRAIL_DEV_CACHE"] = devCache }
         process.environment = environment
         let output = Pipe()
         process.standardOutput = output
@@ -149,6 +151,8 @@ import Testing
         var bin: String { root.appendingPathComponent("bin").path }
         var ghState: URL { root.appendingPathComponent("gh-state") }
         var ghCalls: URL { root.appendingPathComponent("gh-calls") }
+        /// The checkout's own fixture cache, with every tree marked built, so what is built on this Mac doesn't count.
+        var devCache: URL { root.appendingPathComponent("dev-cache") }
 
         init(root: URL) throws {
             self.root = root
@@ -164,6 +168,11 @@ import Testing
                 atPath: ReleaseScriptTests.script, toPath: root.appendingPathComponent("work/scripts/release.sh").path)
             try FileManager.default.copyItem(
                 atPath: ReleaseScriptTests.library, toPath: scripts.appendingPathComponent("release-lib.sh").path)
+            for tree in ["names", "lighthouse", "bench"] {
+                let folder = devCache.appendingPathComponent("fixtures/\(tree)")
+                try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+                try "1".write(to: folder.appendingPathComponent(".fixture-version"), atomically: true, encoding: .utf8)
+            }
             try FileManager.default.createDirectory(atPath: bin, withIntermediateDirectories: true)
             let gh = """
                 #!/bin/bash
@@ -199,7 +208,8 @@ import Testing
         }
 
         func release(_ arguments: String...) throws -> Outcome {
-            try ReleaseScriptTests.run(path + "/scripts/release.sh", arguments, in: path, path: bin)
+            try ReleaseScriptTests.run(
+                path + "/scripts/release.sh", arguments, in: path, path: bin, devCache: devCache.path)
         }
 
         func setRelease(state: String) throws {
@@ -235,6 +245,24 @@ import Testing
             let bump = try checkout.release("minor", "--dry-run")
             #expect(!bump.succeeded)
             #expect(bump.output.contains("ask for the first one by exact version"))
+            try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
+        }
+    }
+
+    // Without the fixture trees their tests would be skipped: the release names the command that builds them, and
+    // stops before anything is checked or tagged.
+    @Test func aReleaseNeedsTheFixtureTrees() throws {
+        try withCheckout { checkout throws in
+            try FileManager.default.removeItem(at: checkout.devCache.appendingPathComponent("fixtures/bench"))
+            let tags = try checkout.git("tag", "--list")
+            let remote = try checkout.git("ls-remote", "origin")
+
+            let dryRun = try checkout.release("0.3.0", "--dry-run")
+            #expect(dryRun.output.contains("Would stop: The test fixtures aren't built"))
+            #expect(dryRun.output.contains("run bun tools/fixtures/generate.ts first"))
+            let outcome = try checkout.release("0.3.0", "--yes")
+            #expect(!outcome.succeeded)
+            #expect(outcome.output.contains("The test fixtures aren't built"))
             try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
         }
     }

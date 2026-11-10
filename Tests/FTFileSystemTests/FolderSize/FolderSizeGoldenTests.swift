@@ -34,7 +34,10 @@ private let fixtures: URL = {
     return URL(fileURLWithPath: cache).appendingPathComponent("fixtures")
 }()
 
-private let hasFixtures = FileManager.default.fileExists(atPath: fixtures.appendingPathComponent("names").path)
+/// The golden measures the names, lighthouse and bench trees.
+private let hasFixtures = ["names", "lighthouse", "bench"].allSatisfy {
+    FileManager.default.fileExists(atPath: fixtures.appendingPathComponent("\($0)/.fixture-version").path)
+}
 
 /// Builds `entries` in `root`, in order, and locks the locked folders last (deepest first); returns those.
 private func build(_ entries: [TreeEntry], in root: String) throws -> [TreeEntry] {

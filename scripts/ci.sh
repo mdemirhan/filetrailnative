@@ -344,6 +344,14 @@ fi
 passed="$(echo "$clean_log" | grep -E '^✔ Test run with' | grep -oE 'with [0-9]+' | awk '{s += $2} END {print s + 0}')"
 failed_tests="$(echo "$clean_log" | grep -E '^✘ Test run with' | grep -oE 'with [0-9]+' | awk '{s += $2} END {print s + 0}')"
 echo "tests: $passed in passing runs, $failed_tests in failing runs" >>"$out"
+# Without the fixture trees the tests that read them are skipped, which a passing run would not show.
+fixtures="${FILETRAIL_DEV_CACHE:-$HOME/Library/Caches/filetrail-dev}/fixtures"
+for tree in names lighthouse bench; do
+    if [ ! -f "$fixtures/$tree/.fixture-version" ]; then
+        echo "note: the fixture trees aren't built ($fixtures/$tree is missing), so the tests that read them were skipped: run bun tools/fixtures/generate.ts" >>"$out"
+        break
+    fi
+done
 
 if [ -n "$scope" ] || [ "$affected" = 1 ]; then
     # A scoped or affected run lints only the Swift files changed on this branch; a full run lints everything.

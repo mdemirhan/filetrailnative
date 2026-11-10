@@ -81,6 +81,15 @@ elif ! gh auth status >/dev/null 2>&1; then
     add_problem "gh isn't signed in to GitHub: run gh auth login first."
 fi
 
+# The tests that read the fixture trees are skipped without them, which a release mustn't do quietly.
+FIXTURES="${FILETRAIL_DEV_CACHE:-${HOME}/Library/Caches/filetrail-dev}/fixtures"
+for tree in names lighthouse bench; do
+    if [[ ! -f "${FIXTURES}/${tree}/.fixture-version" ]]; then
+        add_problem "The test fixtures aren't built (${FIXTURES}/${tree} is missing): run bun tools/fixtures/generate.ts first."
+        break
+    fi
+done
+
 # What is checked, tagged and built: the commit found clean and on GitHub here.
 CHECKED_COMMIT="$(git rev-parse HEAD)"
 TAGS="$(git tag --list | release_tags)"

@@ -34,7 +34,7 @@ enum Fixtures {
 struct FixtureGoldenTests {
     struct ClassifyInput: Codable, Sendable { var directory: String }
 
-    @Test("classify golden", .enabled(if: Fixtures.available))
+    @Test("classify golden", .enabled(if: Fixtures.available, "needs the fixture trees"))
     func classifiesAsTheGoldenFileSays() async throws {
         let cases: [GoldenCase<ClassifyInput, JSONValue>] = try Golden.load(suite: "classify")
         #expect(cases.count > 30)
@@ -94,7 +94,7 @@ struct FixtureGoldenTests {
         var limit: Int
     }
 
-    @Test("path-suggestions golden", .enabled(if: Fixtures.available))
+    @Test("path-suggestions golden", .enabled(if: Fixtures.available, "needs the fixture trees"))
     func suggestsAsTheGoldenFileSays() async throws {
         let cases: [GoldenCase<SuggestionInput, JSONValue>] = try Golden.load(suite: "path-suggestions")
         #expect(cases.count == 200)

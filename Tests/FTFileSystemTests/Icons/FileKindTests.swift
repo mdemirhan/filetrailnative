@@ -15,7 +15,10 @@ private let fixtures: URL = {
     return URL(fileURLWithPath: cache).appendingPathComponent("fixtures")
 }()
 
-private let hasFixtures = FileManager.default.fileExists(atPath: fixtures.appendingPathComponent("names").path)
+/// The golden reads kinds in the names and lighthouse trees.
+private let hasFixtures = ["names", "lighthouse"].allSatisfy {
+    FileManager.default.fileExists(atPath: fixtures.appendingPathComponent("\($0)/.fixture-version").path)
+}
 
 @Suite struct FileKindTests {
     // Machine-local: Spotlight's kind strings depend on the macOS version, language and installed apps, so the golden
