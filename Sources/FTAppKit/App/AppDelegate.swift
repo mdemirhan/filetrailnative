@@ -359,14 +359,17 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// an operation to stop must not cut that wait short.
     public func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if isSecondInstance || readyToTerminate { return .terminateNow }
+        let wasOwed = terminateReplies.asked()
         Task { @MainActor in
-            switch await quit.quit() {
-            case .keptWorking: NSApp.reply(toApplicationShouldTerminate: false)
-            case .exited, .alreadyShuttingDown, .questionBroughtForward: break
+            let outcome = await quit.quit()
+            if let answer = terminateReplies.answer(outcome, wasOwed: wasOwed) {
+                NSApp.reply(toApplicationShouldTerminate: answer)
             }
         }
         return .terminateLater
     }
+
+    private var terminateReplies = TerminateReplies()
 
     // MARK: Files from Finder
 
@@ -408,5 +411,35 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     @discardableResult
     func openWindow(at url: URL) -> MainWindowController? {
         explorerWindows.openWindow(at: url)
+    }
+}
+
+/// Whether a quit asked of AppKit ("terminate later") still waits for its answer. Each is answered once: a second ⌘Q
+/// that comes while the first waits for an operation to stop leaves the answer to the first, and one that only brings
+/// forward a question asked for another reason (the last window closing) is answered at once, or AppKit would wait for
+/// good.
+struct TerminateReplies {
+    private(set) var owed = false
+
+    /// A quit was asked of AppKit: whether one was waiting for its answer already.
+    mutating func asked() -> Bool {
+        defer { owed = true }
+        return owed
+    }
+
+    /// What to answer AppKit once the quit ended with `outcome`, or nil for nothing (the app exits, or the quit before
+    /// answers). `wasOwed` is what `asked` said.
+    mutating func answer(_ outcome: QuitCoordinator.Outcome, wasOwed: Bool) -> Bool? {
+        switch outcome {
+        case .keptWorking:
+            owed = false
+            return false
+        case .questionBroughtForward:
+            guard !wasOwed else { return nil }
+            owed = false
+            return false
+        case .exited, .alreadyShuttingDown:
+            return nil
+        }
     }
 }

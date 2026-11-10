@@ -569,7 +569,7 @@ A question about an item with a negative device number is auto-skipped today; th
 
 **3B. Windows, tabs, quit** (paths are under `Sources/FTAppKit` unless they say otherwise)
 
-### [ ] 3B.1. ⌘Q is lost while the "stop the copy?" question from closing the last window is open
+### [x] 3B.1. ⌘Q is lost while the "stop the copy?" question from closing the last window is open
 
 `App/AppDelegate.swift:356-365`: `applicationShouldTerminate` returns `.terminateLater`, `quit.quit()` returns
 `.questionBroughtForward` (`App/QuitCoordinator.swift:60`), and that case never replies. *Fix:* track whether a
