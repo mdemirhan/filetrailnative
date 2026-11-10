@@ -32,6 +32,33 @@ extension ExplorerWindowlessTests {
         }
 
         // Space previews the selected item, and Space again closes the panel
+        // The panel zooms out of the item's icon in the List, wherever the density puts it: past the row's inset and
+        // padding, at the icon size the List draws.
+        @Test(arguments: ["standard", "finder"])
+        func zoomsOutOfTheIconTheListDraws(density: String) async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            tab.updatePreferences(["density": .string(density)])
+            tab.perform(.viewAsDetails)
+            tab.refreshColumns()
+            harness.layout(tab)
+            let list = try #require(tab.content.pane as? ListViewController)
+            #expect(list.layoutMetrics == DesignTokens.details(density: density == "finder" ? .finder : .standard))
+            let item = try #require(tab.content.entries.first)
+            let metrics = list.layoutMetrics
+            let table = list.table
+            let row = table.rect(ofRow: 0)
+
+            let frame = try #require(
+                QuickLookItemFrame.screenFrame(of: item.path, entries: tab.content.entries, in: tab.content.view))
+
+            let window = try #require(tab.window)
+            let inTable = table.convert(window.convertFromScreen(frame), from: nil)
+            #expect(abs(inTable.minX - (row.minX + CGFloat(metrics.rowInset + metrics.rowPaddingInline))) < 0.5)
+            #expect(abs(inTable.width - CGFloat(metrics.iconSize)) < 0.5)
+            await harness.close()
+        }
+
         // Closed, the panel lets go of what told it where its item was: that holds the tab's list.
         @Test func lettingGoOfThePanelLetsGoOfTheTabItCameFrom() {
             final class Pane {}

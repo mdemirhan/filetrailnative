@@ -649,7 +649,7 @@ the likely one is that a read for sorting must not evict entries of the folder o
 `QuickLook/QuickLookController.swift:93`: `ended()`
 clears `url` but not `sourceFrame`, whose closure holds the pane.
 
-### [ ] 3C.4. Quick Look zooms from the wrong rectangle in the List
+### [x] 3C.4. Quick Look zooms from the wrong rectangle in the List
 
 `QuickLookController.swift:133` hard-codes
 `row.minX + 8` and the standard density's icon size; the row uses `rowInset + rowPaddingInline` and the current
