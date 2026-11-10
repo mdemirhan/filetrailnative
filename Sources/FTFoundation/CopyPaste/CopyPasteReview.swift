@@ -491,17 +491,18 @@ public enum CopyPasteReview {
             ? "keeps \u{201C}\(first)\u{201D} and \(ReviewCount.format(others)) more" : "keeps \u{201C}\(first)\u{201D}"
     }
 
-    /// Replacing deletes what is only in the existing folder, and says so.
+    /// Replacing puts what is only in the existing folder in the Trash with it, and says so.
     private static func describeDeletedDestinationOnly(_ node: ReviewNode) -> String? {
         guard let only = node.destinationOnly, only.count != 0 else { return nil }
         let verb = only.count == 1 ? "exists" : "exist"
         guard let first = only.samplePaths.first else {
-            return "Deletes \(ReviewCount.pluralize(only.count, "item")) that only \(verb) in the existing folder"
+            return
+                "Moves \(ReviewCount.pluralize(only.count, "item")) that only \(verb) in the existing folder to the Trash"
         }
         let others = only.count - 1
         let items =
             others > 0 ? "\u{201C}\(first)\u{201D} and \(ReviewCount.format(others)) more" : "\u{201C}\(first)\u{201D}"
-        return "Deletes \(items), which only \(verb) in the existing folder"
+        return "Moves \(items), which only \(verb) in the existing folder, to the Trash"
     }
 
     private static func describeMismatch(_ node: ReviewNode) -> String {

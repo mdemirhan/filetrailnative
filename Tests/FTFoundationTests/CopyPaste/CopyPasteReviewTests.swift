@@ -160,8 +160,8 @@ private struct Triple: Equatable {
         #expect(
             listed.map(\.detail) == [
                 "Replaces the existing 10 B file from Jan 1",
-                "Deletes \u{201C}d.jpg\u{201D}, which only exists in the existing folder",
-                "Deletes \u{201C}settings.ini\u{201D}, which only exists in the existing folder",
+                "Moves \u{201C}d.jpg\u{201D}, which only exists in the existing folder, to the Trash",
+                "Moves \u{201C}settings.ini\u{201D}, which only exists in the existing folder, to the Trash",
             ])
     }
 
@@ -186,16 +186,16 @@ private struct Triple: Equatable {
         }
         #expect(
             describe(ReviewDestinationOnly(count: 3, samplePaths: ["d.jpg", "raw"]))
-                == "Deletes \u{201C}d.jpg\u{201D} and 2 more, which only exist in the existing folder")
+                == "Moves \u{201C}d.jpg\u{201D} and 2 more, which only exist in the existing folder, to the Trash")
         #expect(
             describe(ReviewDestinationOnly(count: 1, samplePaths: []))
-                == "Deletes 1 item that only exists in the existing folder")
+                == "Moves 1 item that only exists in the existing folder to the Trash")
         #expect(
             describe(ReviewDestinationOnly(count: 1_500, samplePaths: []))
-                == "Deletes 1,500 items that only exist in the existing folder")
+                == "Moves 1,500 items that only exist in the existing folder to the Trash")
         #expect(
             describe(ReviewDestinationOnly(count: 1_201, samplePaths: ["d.jpg"]))
-                == "Deletes \u{201C}d.jpg\u{201D} and 1,200 more, which only exist in the existing folder")
+                == "Moves \u{201C}d.jpg\u{201D} and 1,200 more, which only exist in the existing folder, to the Trash")
     }
 
     @Test func saysWhatMergingKeepsWithOrWithoutASampleName() {

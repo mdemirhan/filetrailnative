@@ -671,7 +671,7 @@ density (`Content/List/DetailsRowViews.swift:403-409`).
 `ContextMenus/ContextMenuCoordinator.swift:125`: `isWriteOperationLocked` is a pushed copy; use the live
 `tab.isWriteLocked` as `Clipboard/TabClipboard.swift:288` does.
 
-### [ ] 3D.3. A conflict alert whose answer is refused cannot be answered again
+### [x] 3D.3. A conflict alert whose answer is refused cannot be answered again
 
 `CopyPaste/RuntimeConflictAlert.swift:216, 242` disables the buttons and discards `resolveConflict`'s result; the
 review alert re-enables them (`CopyPastePresenters.swift:101`).
@@ -773,7 +773,7 @@ toast "Copied 3 items". The review sheet says "Move". Pass the mode through.
 `Clipboard/ClipboardTexts.swift:44-51` switches on raw strings with no `undo`/`redo` case. Switch on
 `WriteOperationAction` instead.
 
-### [ ] 3G.3. A Replace row says "Deletes" where the footer says "moved to the Trash"
+### [x] 3G.3. A Replace row says "Deletes" where the footer says "moved to the Trash"
 
 `CopyPaste/CopyPasteReview.swift:494-504`.
 
@@ -2113,3 +2113,8 @@ anything that differed from the plan, and anything found on the way that is not 
   times and in the rerun. What APFS gives back after the fill seems to vary with load. It failed the same way in a
   later full run (2 of about 25 whole-suite runs that day), passed 5 of 5 alone, and its code is unchanged on this
   branch.
+- 2026-11-11. The owner: 3G.3 yes, edit `copy-paste-review.json` by hand. A Replace row now says what goes to the
+  Trash, as its footer does ("Moves “b.txt”, which only exists in the existing folder, to the Trash"): 27 strings.
+- 2026-11-11. The owner: 3D.3 leave as intended (closed). A conflict alert takes one answer; if it can't be sent the
+  question stays, disabled, and Escape still dismisses it, as `RuntimeConflictAlert`'s comment and
+  `aPausedOperationAsksInAWideAlertAndTakesOneAnswer` say.

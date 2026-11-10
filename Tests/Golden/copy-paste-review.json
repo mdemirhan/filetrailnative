@@ -2131,7 +2131,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “g/only.txt”, which only exists in the existing folder",
+              "detail": "Moves “g/only.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -2314,7 +2314,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “g/only.txt”, which only exists in the existing folder",
+              "detail": "Moves “g/only.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -2625,7 +2625,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b.txt”, which only exists in the existing folder",
+              "detail": "Moves “b.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -2751,7 +2751,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b.txt”, which only exists in the existing folder",
+              "detail": "Moves “b.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -3058,7 +3058,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b.txt”, which only exists in the existing folder",
+              "detail": "Moves “b.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -3465,7 +3465,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “in.txt”, which only exists in the existing folder",
+              "detail": "Moves “in.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -6760,7 +6760,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b”, which only exists in the existing folder",
+              "detail": "Moves “b”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -7275,7 +7275,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “x.txt”, which only exists in the existing folder",
+              "detail": "Moves “x.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -8343,7 +8343,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b”, which only exists in the existing folder",
+              "detail": "Moves “b”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -15731,7 +15731,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “.hidden” and 8 more, which only exist in the existing folder",
+              "detail": "Moves “.hidden” and 8 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -15860,7 +15860,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “.hidden” and 8 more, which only exist in the existing folder",
+              "detail": "Moves “.hidden” and 8 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -17002,7 +17002,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “a” and 2 more, which only exist in the existing folder",
+              "detail": "Moves “a” and 2 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -21408,7 +21408,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b.txt”, which only exists in the existing folder",
+              "detail": "Moves “b.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -23736,7 +23736,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b.txt”, which only exists in the existing folder",
+              "detail": "Moves “b.txt”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -33097,7 +33097,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “photo.jpg” and 2 more, which only exist in the existing folder",
+              "detail": "Moves “photo.jpg” and 2 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -33258,7 +33258,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “photo.jpg” and 2 more, which only exist in the existing folder",
+              "detail": "Moves “photo.jpg” and 2 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             },
             {
@@ -33930,7 +33930,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “archive.tar.gz”, which only exists in the existing folder",
+              "detail": "Moves “archive.tar.gz”, which only exists in the existing folder, to the Trash",
               "tone": "danger"
             },
             {
@@ -35501,7 +35501,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “Café.txt” and 3 more, which only exist in the existing folder",
+              "detail": "Moves “Café.txt” and 3 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -35669,7 +35669,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “Café.txt” and 3 more, which only exist in the existing folder",
+              "detail": "Moves “Café.txt” and 3 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -36413,7 +36413,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “Café.txt” and 6 more, which only exist in the existing folder",
+              "detail": "Moves “Café.txt” and 6 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -36525,7 +36525,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “Café.txt” and 6 more, which only exist in the existing folder",
+              "detail": "Moves “Café.txt” and 6 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -37345,7 +37345,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b” and 1 more, which only exist in the existing folder",
+              "detail": "Moves “b” and 1 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -37468,7 +37468,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “b” and 1 more, which only exist in the existing folder",
+              "detail": "Moves “b” and 1 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -37939,7 +37939,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “Café.txt” and 3 more, which only exist in the existing folder",
+              "detail": "Moves “Café.txt” and 3 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -38085,7 +38085,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “Café.txt” and 3 more, which only exist in the existing folder",
+              "detail": "Moves “Café.txt” and 3 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -38547,7 +38547,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “Tool.app” and 6 more, which only exist in the existing folder",
+              "detail": "Moves “Tool.app” and 6 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             }
           ],
@@ -40139,7 +40139,7 @@
                 "overwrite",
                 "skip"
               ],
-              "detail": "Deletes “archive.tar.gz” and 6 more, which only exist in the existing folder",
+              "detail": "Moves “archive.tar.gz” and 6 more, which only exist in the existing folder, to the Trash",
               "tone": "danger"
             },
             {
