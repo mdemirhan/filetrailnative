@@ -245,6 +245,32 @@ struct EdgeCasesTests {
         #expect(fileSystem.readNode("/target/a.txt")?.size == 5)
     }
 
+    // The copy made for a Replace that is then asked again was counted as done: it goes away, and is counted once,
+    // as what the answer makes.
+    @Test func countsAReplaceThatIsAskedAgainOnce() async throws {
+        let fileSystem = replaceSetup()
+        let sneaked = Locked(false)
+        fileSystem.renameImpl = { from, to in
+            if to == "/target/a.txt" && !sneaked.value {
+                sneaked.mutate { $0 = true }
+                fileSystem.addFile("/target/a.txt", .file(size: 5))
+                throw codedError("EEXIST")
+            }
+            try fileSystem.renameDirectly(from, to)
+        }
+        let operation = try createResolvedOperation(
+            fileSystem, sources: ["/source/a.txt"], into: "/target", policy: NativePaste.replaceAll)
+
+        let events = await execute(
+            fileSystem, operation, policy: NativePaste.replaceAll, requestResolution: { _ in .immediate(.keepBoth) })
+
+        let last = try #require(events.last)
+        #expect(last.status == .completed)
+        #expect(events.allSatisfy { $0.completedItemCount <= $0.totalItemCount })
+        #expect(events.allSatisfy { $0.totalBytes == nil || $0.completedByteCount <= $0.totalBytes! })
+        #expect(last.completedItemCount == last.totalItemCount)
+    }
+
     @Test func leavesTheNewItemToTheNextStartWhenNoNameCanBeGivenToIt() async throws {
         let fileSystem = replaceSetup()
         fileSystem.renameImpl = { from, to in

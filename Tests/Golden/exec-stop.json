@@ -1101,8 +1101,8 @@
           },
           {
             "analysisId": "analysis",
-            "completedByteCount": 4,
-            "completedItemCount": 2,
+            "completedByteCount": 0,
+            "completedItemCount": 0,
             "currentDestinationPath": null,
             "currentSourcePath": null,
             "kind": "event",
@@ -1134,7 +1134,7 @@
           "status": "cancelled",
           "summary": {
             "cancelledItemCount": 1,
-            "completedByteCount": 4,
+            "completedByteCount": 0,
             "completedItemCount": 0,
             "failedItemCount": 0,
             "skippedItemCount": 0,

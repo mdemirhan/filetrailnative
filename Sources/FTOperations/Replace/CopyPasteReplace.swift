@@ -94,8 +94,14 @@ func executeReplace(
     var stagedMode: UInt32?
     // Whether the record says the hidden copy is complete (see executeStagedDirectory).
     var recordedComplete = false
+    // What the progress counted as done before this item: what its hidden copy adds goes when the copy does, or an
+    // item asked again would be counted twice.
+    let countedItems = context.shared.completedItemCount
+    let countedBytes = context.shared.completedByteCount
     // Puts things back the way they were before this item started.
     func undoStaging() throws {
+        context.shared.completedItemCount = countedItems
+        context.shared.completedByteCount = countedBytes
         if movedByRename {
             try moveExclusive(fileSystem, temporaryPath, currentNode.node.sourcePath)
             restoreAfterMove(fileSystem, currentNode.node.sourcePath, stagedMode, stagedFlags)

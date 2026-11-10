@@ -548,7 +548,7 @@ error, naming where the item is.
 `restored = trashPath.map { restoreRestrictions(...) } ?? true`. With no trash path the answer should be false, so the
 "couldn't be put back" note appears.
 
-### [ ] 3A.8. Progress counts are not taken back when a Replace is undone or asked again
+### [x] 3A.8. Progress counts are not taken back when a Replace is undone or asked again
 
 `CopyPasteReplace.swift:113`;
 completed can exceed total.

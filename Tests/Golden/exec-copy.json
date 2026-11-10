@@ -6954,8 +6954,8 @@
           },
           {
             "analysisId": "analysis",
-            "completedByteCount": 4,
-            "completedItemCount": 2,
+            "completedByteCount": 0,
+            "completedItemCount": 1,
             "currentDestinationPath": "$ROOT/destination/f",
             "currentSourcePath": "$ROOT/source/f",
             "kind": "event",
@@ -6968,8 +6968,8 @@
           },
           {
             "analysisId": "analysis",
-            "completedByteCount": 19,
-            "completedItemCount": 3,
+            "completedByteCount": 15,
+            "completedItemCount": 2,
             "currentDestinationPath": "$ROOT/destination/f/x.txt",
             "currentSourcePath": "$ROOT/source/f/x.txt",
             "kind": "event",
@@ -6996,8 +6996,8 @@
           },
           {
             "analysisId": "analysis",
-            "completedByteCount": 19,
-            "completedItemCount": 3,
+            "completedByteCount": 15,
+            "completedItemCount": 2,
             "currentDestinationPath": "$ROOT/destination/f",
             "currentSourcePath": "$ROOT/source/f",
             "kind": "event",
@@ -7088,8 +7088,8 @@
           },
           {
             "analysisId": "analysis",
-            "completedByteCount": 19,
-            "completedItemCount": 3,
+            "completedByteCount": 0,
+            "completedItemCount": 0,
             "currentDestinationPath": null,
             "currentSourcePath": null,
             "kind": "event",
@@ -7129,7 +7129,7 @@
           "status": "partial",
           "summary": {
             "cancelledItemCount": 0,
-            "completedByteCount": 19,
+            "completedByteCount": 0,
             "completedItemCount": 0,
             "failedItemCount": 0,
             "skippedItemCount": 2,
@@ -9981,8 +9981,8 @@
           },
           {
             "analysisId": "analysis",
-            "completedByteCount": 4,
-            "completedItemCount": 1,
+            "completedByteCount": 0,
+            "completedItemCount": 0,
             "currentDestinationPath": null,
             "currentSourcePath": null,
             "kind": "event",
@@ -10014,7 +10014,7 @@
           "status": "partial",
           "summary": {
             "cancelledItemCount": 0,
-            "completedByteCount": 4,
+            "completedByteCount": 0,
             "completedItemCount": 0,
             "failedItemCount": 0,
             "skippedItemCount": 1,
