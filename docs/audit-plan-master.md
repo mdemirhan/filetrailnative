@@ -754,7 +754,7 @@ throwing task group waits for all children, and the system call ignores cancella
 
 `Listing/ExplorerListing.swift:488-490`.
 
-### [ ] 3F.4. A failed reveal says "Command failed: open -R …" though no command runs
+### [x] 3F.4. A failed reveal says "Command failed: open -R …" though no command runs
 
 `System/SystemActions.swift:35-38`.
 
@@ -762,7 +762,7 @@ A listing that fails with `ESTALE` or `EDQUOT` says "Unknown system error -70" t
 
 **3G. Text and rules** (paths are under `Sources/FTFoundation`)
 
-### [ ] 3G.1. A cut-and-paste is described as a copy when it ends
+### [x] 3G.1. A cut-and-paste is described as a copy when it ends
 
 `CopyPaste/CopyPasteResultText.swift:76-78, 127, 155`
 and `Clipboard/WriteEndNotices.swift:206`: neither receives the mode, so the sheet says "couldn't be copied" and the
@@ -2093,3 +2093,6 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-10. Flaky, noted: in one run made slow by load (tests 123 s), `ClipboardWindowTests.copyFillsTheClipboardAndTheButtonSaysSo`
   failed at `ExplorerHarness.swift:82` (`waitUntil { read && tab.workspace.isReady }`) after 0.5 s, though that
   wait allows 30 s; it passed on the rerun. Worth a look: the half second doesn't fit the wait's limit.
+- 2026-11-10. 3G.1 did not hold; nothing changed. A cut is pasted as a Move To from every place that starts one
+  (Paste from the menu, the keys and the right-click menu, a drag that moves, Try Again), so the result sheet says
+  "couldn't be moved" and the planned-skip toast "Moved 3 items".

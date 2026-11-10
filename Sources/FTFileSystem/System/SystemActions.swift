@@ -30,11 +30,11 @@ public struct SystemOpener: Sendable {
         var errorDescription: String? { message }
     }
 
-    /// What `open -R` does with an item that is gone: nothing is shown, and it fails with a failed command's
-    /// message. `NSWorkspace.activateFileViewerSelecting` says nothing of it. Nil when all are there.
+    /// An item that is gone is not shown, and the reveal fails naming it, as `open -R` does:
+    /// `NSWorkspace.activateFileViewerSelecting` says nothing of it. Nil when all are there.
     static func revealFailure(_ paths: [String]) -> String? {
         guard let gone = paths.first(where: { !FileManager.default.fileExists(atPath: $0) }) else { return nil }
-        return "Command failed: open -R \(paths.joined(separator: " "))\nThe file \(gone) does not exist.\n"
+        return "\u{201C}\((gone as NSString).lastPathComponent)\u{201D} is no longer there."
     }
 
     /// `NSWorkspace`, with the same results as `open`, `open -a` and `open -R`.

@@ -164,14 +164,14 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(system.calls == [.reveal(["/Users/demo/a.txt"])])
     }
 
-    // `open -R` of an item that is gone fails without showing anything, and says so: Show in Finder tells of it. It
-    // stops before Finder is reached.
-    @Test func revealingAnItemThatIsGoneFailsAsOpenDoes() async {
-        let gone = "/nonexistent/filetrail-gone-\(UUID().uuidString)"
+    // Revealing an item that is gone fails without showing anything, and names the item, with no command line: no
+    // command runs. It stops before Finder is reached.
+    @Test func revealingAnItemThatIsGoneFailsNamingIt() async {
+        let name = "filetrail-gone-\(UUID().uuidString)"
         let result = await SystemActions.openPaths(
-            ["/tmp", gone], withApplication: ApplicationPaths.finderAppPath, opener: .workspace)
+            ["/tmp", "/nonexistent/" + name], withApplication: ApplicationPaths.finderAppPath, opener: .workspace)
         #expect(!result.ok)
-        #expect(result.error == "Command failed: open -R /tmp \(gone)\nThe file \(gone) does not exist.\n")
+        #expect(result.error == "\u{201C}\(name)\u{201D} is no longer there.")
     }
 
     @Test func reportsWhyOpenFailed() async {
