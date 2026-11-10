@@ -24,7 +24,8 @@ public struct RGBA: Equatable, Hashable, Sendable {
     public init?(hex: String) {
         var text = hex.trimmingCharacters(in: .whitespaces)
         if text.hasPrefix("#") { text.removeFirst() }
-        guard text.count == 6, let value = Int(text, radix: 16) else { return nil }
+        // Six hex digits and nothing else: `Int(_:radix:)` alone would take a sign ("-12345").
+        guard text.count == 6, text.allSatisfy(\.isHexDigit), let value = Int(text, radix: 16) else { return nil }
         self.init(r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255)
     }
 

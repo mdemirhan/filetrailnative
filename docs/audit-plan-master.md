@@ -802,7 +802,7 @@ Found by both audits.
 `Settings/SettingsValues.swift:31` decodes strictly
 while `PreferencesSanitizer.apply` falls back per key.
 
-### [ ] 3G.7. `RGBA(hex:)` accepts a signed string
+### [x] 3G.7. `RGBA(hex:)` accepts a signed string
 
 `Design/RGBA.swift:27`: "-12345" parses.
 

@@ -83,4 +83,11 @@ import Testing
         let fallback = AccentPalette(hex: "not a colour", appearance: .dark)
         #expect(fallback == AccentPalette(hex: AccentPalette.defaultHex, appearance: .dark))
     }
+
+    // Six hex digits only: a sign makes it no colour.
+    @Test func aSignedHexIsNoColour() {
+        #expect(RGBA(hex: "-12345") == nil)
+        #expect(RGBA(hex: "#+12345") == nil)
+        #expect(RGBA(hex: "#12AB3c") == RGBA(r: 0x12, g: 0xab, b: 0x3c))
+    }
 }
