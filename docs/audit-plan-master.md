@@ -338,7 +338,7 @@ under `WARN_FAILS=1`, and do not go on to the test step when the build fails.
 - Also: the comment at line 292 ("from either Swift Testing or XCTest output") and at line 205 ("Known failures are
   skipped in every process") describe things that do not exist; correct or remove them.
 
-### [ ] 2.3. `scripts/ci.sh --scope` with no value loops forever
+### [x] 2.3. `scripts/ci.sh --scope` with no value loops forever
 
 `ci.sh:13-14`.
 
