@@ -716,7 +716,7 @@ arrival callback ends in an empty method (`SidebarViewController+Input.swift:107
 `SidebarFolderIcons.shared` (`Sidebar/SidebarRowViews.swift:8-13`) makes its own `FileIconStore()` instead of using
 `services.iconStore`, whose generic icons are preloaded.
 
-### [ ] 3E.4. Toggling hidden files while the tab has no folder leaves the tree in the old state
+### [x] 3E.4. Toggling hidden files while the tab has no folder leaves the tree in the old state
 
 `Sidebar/SidebarModel.swift:586, 601-602`.
 

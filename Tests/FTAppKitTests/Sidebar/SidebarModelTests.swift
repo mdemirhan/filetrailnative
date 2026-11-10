@@ -159,6 +159,19 @@ struct SidebarModelTests {
         #expect(rig.model.nodes["/Users/demo/.Trash"] == nil)
     }
 
+    // With no row selected, and so no folder of the tree's, the tree is read again all the same.
+    @Test @MainActor func turningHiddenFilesOnWithNoFolderOnScreenReadsTheTreeAgain() async {
+        let rig = Rig()
+        await rig.model.folderOpened("/Users/demo", .other)
+        rig.model.clearSelection()
+        #expect(rig.model.currentPath.isEmpty)
+        #expect(rig.model.rootPath == "/Users/demo")
+        rig.model.includeHidden = true
+        rig.model.hiddenFilesChanged()
+        await settleModel()
+        #expect(rig.visible().contains("fs:/Users/demo/.config"))
+    }
+
     @Test @MainActor func turningHiddenFilesOnReadsTheTreeAgainWhateverRowIsSelected() async {
         let hiddenFolder = "fs:/Users/demo/.config"
         // A folder's own tree row.

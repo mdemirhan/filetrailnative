@@ -597,13 +597,13 @@ final class SidebarModel {
     }
 
     /// Hidden files were turned on or off: the tree is read again with its open folders as they are, whichever row is
-    /// selected. Only a tree that has no root yet is seeded, from the folder on screen.
+    /// selected, or with none. Only a tree that has no root yet is seeded, from the folder on screen.
     func hiddenFilesChanged() {
-        guard !currentPath.isEmpty else { return }
         guard rootPath.isEmpty else {
             Task { await refreshBranches() }
             return
         }
+        guard !currentPath.isEmpty else { return }
         reinitializeTree(root: currentPath, focus: currentPath)
         let path = currentPath
         viewVersion += 1
