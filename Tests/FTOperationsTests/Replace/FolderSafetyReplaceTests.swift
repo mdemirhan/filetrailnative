@@ -193,4 +193,35 @@ struct FolderSafetyReplaceTests {
             #expect(copying.flushes == [false, false, false])
         }
     }
+
+    // A Replace by a move whose old item can't go to the Trash puts the moved item back. When its old name was taken
+    // meanwhile it can't: it waits under its hidden name, written down for the next start, and the item's error
+    // says where it is.
+    @Test func saysWhereAMovedItemWaitsWhenAFailedReplaceCantPutItBack() async throws {
+        try await withWritableCleanup { root in
+            try Disk.write(root + "/src/a.txt", "new")
+            try Disk.write(root + "/dst/a.txt", "old")
+            let journal = ReplaceHistoryJournal()
+            // Something takes the moved item's old name, then the Trash fails.
+            let fileSystem = NativeWriteFileSystem(trash: { _ in
+                try Disk.write(root + "/src/a.txt", "newcomer")
+                throw codedError("EIO", "EIO: i/o error")
+            })
+
+            let result = try await paste(
+                .cut, [root + "/src/a.txt"], into: root + "/dst", policy: NativePaste.replaceAll,
+                fileSystem: fileSystem, writeJournal: journal)
+
+            let hidden = try #require(Disk.list(root + "/dst").first(where: { $0.hasPrefix(".a.txt.filetrail-") }))
+            #expect(Disk.read(root + "/dst/" + hidden) == "new")
+            #expect(Disk.read(root + "/dst/a.txt") == "old")
+            #expect(Disk.read(root + "/src/a.txt") == "newcomer")
+            #expect(journal.live.map(\.moved) == [true])
+            #expect(result.items.first?.status == .failed)
+            #expect(
+                result.items.first?.error
+                    == "\u{201C}a.txt\u{201D} wasn't replaced, and couldn't be put back where it was, so it is under the hidden name \u{201C}\(hidden)\u{201D} in \u{201C}\(root)/dst\u{201D} until File Trail starts again. An item with this name already exists."
+            )
+        }
+    }
 }

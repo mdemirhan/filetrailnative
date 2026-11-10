@@ -237,7 +237,17 @@ func executeReplace(
                 "The old \u{201C}\(basenameOf(finalPath))\u{201D} was moved to the Trash, but the new one couldn't be put in its place. It will be put there the next time File Trail starts. \(describeCopyPasteError(error))"
             )
         }
-        try? undoStaging()
+        do {
+            try undoStaging()
+        } catch let undoError where movedByRename && isPathTaken(fileSystem, temporaryPath) {
+            // The moved item couldn't go back where it was: it waits under its hidden name, written down, until the
+            // next start puts it somewhere it can be seen.
+            throw OperationError(
+                "\u{201C}\(basenameOf(currentNode.node.sourcePath))\u{201D} wasn't replaced, and couldn't be put back where it was, so it is under the hidden name \u{201C}\(basenameOf(temporaryPath))\u{201D} in \u{201C}\(dirnameOf(temporaryPath))\u{201D} until File Trail starts again. \(describeCopyPasteError(undoError))",
+                cause: undoError)
+        } catch {
+            // A copy this paste made that can't be cleared away now is written down, and cleared at the next start.
+        }
         throw errorCode(error) == "EEXIST" ? DestinationTakenError(original: error) : error
     }
     try? journal?.remove(journalEntry.id)

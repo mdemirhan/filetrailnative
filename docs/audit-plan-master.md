@@ -535,7 +535,7 @@ source. Confirm with a real disk-image test (a FAT or ExFAT image refuses most x
 `Replace/CopyPasteReplace.swift:190-191` strip them; `:230` leaves without restoring; recovery's `moveUnlocked`
 (`Recovery/CopyPasteRecovery.swift:269`) re-reads flags from the already-unlocked item.
 
-### [ ] 3A.6. A failed undo of staging is swallowed
+### [x] 3A.6. A failed undo of staging is swallowed
 
 `undoStaging` is called with `try?` at
 `CopyPasteReplace.swift:139, 155, 170, 175, 236`. If the item's old name was taken meanwhile it stays under the hidden
@@ -2065,3 +2065,10 @@ anything that differed from the plan, and anything found on the way that is not 
   with one still there), so Undo puts the copy in the Trash rather than trying to move it back. Found, not fixed:
   `tryRemoveEmptySourceDirectory` (`ExecutionMoves.swift`) reads an unreadable moved folder as gone in the same way,
   so it is left without a word.
+- 2026-11-10. 3A.6 holds only where the item was moved under the hidden name (the catch after the swap). The four
+  earlier `try? undoStaging()` sites concern a copy the paste made, whose journal entry is kept and cleared at the
+  next start by design; they are left. 3A.9 skipped, waits for the owner: the fix (journal entry removed only after
+  the originals, and recovery reporting a staged moving copy found in place) changes `exec-crash.json`, "folder moved
+  to another disk, crashed after journal write 3 of 3": in `output.after` and `output.recovery.after` the three
+  `source/f`, `source/f/a.txt`, `source/f/b.txt` entries go. Found, not fixed: a Replace by a move to another disk
+  has the same silent duplicate (no `movingCopy`, entry removed before `removeMovedSources`).
