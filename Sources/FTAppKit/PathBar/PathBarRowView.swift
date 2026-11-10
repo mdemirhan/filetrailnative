@@ -18,6 +18,8 @@ final class PathBarRowView: NSView {
     private let folderMenu = PathFolderMenuController()
     private var interceptor: Int?
     private weak var interceptedWindow: NSWindow?
+    /// Whether the window heard the pointer move before the bar expanded, to go back to once it folds.
+    private var windowAcceptedMouseMoves = false
 
     /// The path the bar shows (the folder on screen).
     var path = "" {
@@ -116,6 +118,8 @@ final class PathBarRowView: NSView {
     private func expandedChanged(_ expanded: Bool) {
         guard let window else { return }
         if expanded {
+            // The window hears the pointer move while the bar is expanded, to fold it once the pointer leaves.
+            if interceptor == nil { windowAcceptedMouseMoves = window.acceptsMouseMovedEvents }
             window.acceptsMouseMovedEvents = true
             interceptedWindow = window
             interceptor = WindowEventRouting.add(window) { [weak self] event in
@@ -124,6 +128,7 @@ final class PathBarRowView: NSView {
         } else if let interceptor, let interceptedWindow {
             WindowEventRouting.remove(interceptor, from: interceptedWindow)
             self.interceptor = nil
+            interceptedWindow.acceptsMouseMovedEvents = windowAcceptedMouseMoves
         }
     }
 

@@ -238,6 +238,23 @@ extension ExplorerWindowlessTests {
             _ = WindowEventRouting.intercept(event, in: window)
         }
 
+        // The window hears the pointer move while the bar is expanded, to fold it once the pointer leaves, and goes back
+        // to how it was once it has folded.
+        @Test func theWindowHearsThePointerMoveOnlyWhileTheBarIsExpanded() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await harness.open()
+            harness.layout(tab)
+            let window = try #require(tab.window)
+            let bar = tab.content.contentShell.pathBarRow
+            window.acceptsMouseMovedEvents = false
+
+            bar.pathBar.setExpanded(true)
+            #expect(window.acceptsMouseMovedEvents)
+            bar.pathBar.setExpanded(false)
+            #expect(!window.acceptsMouseMovedEvents)
+            await harness.close()
+        }
+
         // A mouse move inside keeps it open; one outside folds it, and so does a press outside.
         @Test func theExpandedBarFoldsWhenThePointerLeavesOrOnAPressOutside() async throws {
             let (harness, _, bar, window) = try await expanded()

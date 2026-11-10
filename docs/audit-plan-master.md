@@ -624,7 +624,7 @@ calls `stop()`), `Toolbar/ExplorerToolbar.swift:71` (`sheetObservers` never remo
 constraints on the shared search field each time the item is made). Follow the `isolated deinit` pattern used by
 `WindowVisibilityMonitor`.
 
-### [ ] 3B.7. `window.acceptsMouseMovedEvents` is switched on by the path bar and never off
+### [x] 3B.7. `window.acceptsMouseMovedEvents` is switched on by the path bar and never off
 
 `PathBar/PathBarRowView.swift:119`.
 
