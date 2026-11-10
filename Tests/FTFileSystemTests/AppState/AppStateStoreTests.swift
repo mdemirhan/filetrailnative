@@ -50,6 +50,25 @@ struct AppStateStoreTests {
         }
     }
 
+    // A write that failed (a full disk, say) is tried again by the next one, as at quit: the change isn't dropped.
+    @Test func triesAFailedWriteAgainAtTheNextFlush() throws {
+        try Kit.withFolder { folder in
+            let path = folder + "/app-state.json"
+            let files = RecordingFileSystem()
+            files.failWrites = RecordingFileSystem.Failure(message: "disk full")
+            let store = Kit.store(path, fileSystem: files, onPersistError: { _ in })
+            store.updatePreferences(["notificationsEnabled": .bool(false)])
+            store.flush()
+            #expect(files.renamed == 0)
+
+            files.failWrites = nil
+            store.flush()
+
+            #expect(files.renamed == 1)
+            #expect(Kit.readFile(path)["preferences"]?["notificationsEnabled"] == .bool(false))
+        }
+    }
+
     @Test func writesADeliberateChangePromptly() throws {
         try Kit.withFolder { folder in
             let t = Timed(folder)

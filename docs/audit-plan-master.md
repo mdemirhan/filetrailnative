@@ -740,7 +740,7 @@ index across the folder picker; track the favorite by path as the Open With list
 
 **3F. File system layer** (paths are under `Sources/FTFileSystem`)
 
-### [ ] 3F.1. A failed state write is never retried
+### [x] 3F.1. A failed state write is never retried
 
 `AppState/AppStateStore.swift:335-364`: `save()` clears
 `unsavedFiles` even when `writeAtomically` failed, so `flush()` at quit writes nothing.

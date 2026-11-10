@@ -337,29 +337,34 @@ public final class AppStateStore: @unchecked Sendable {
         cancelPromptSave = nil
         cancelDeferredSave?()
         cancelDeferredSave = nil
-        if unsavedFiles.contains(.visits) {
-            writeAtomically(visitsFilePath, VisitedFolders.serialize(visitedFolders))
+        // A file whose write failed stays unsaved: the next write, or the one at quit, tries it again.
+        if unsavedFiles.contains(.visits), writeAtomically(visitsFilePath, VisitedFolders.serialize(visitedFolders)) {
+            unsavedFiles.remove(.visits)
         }
         if unsavedFiles.contains(.state) {
             do {
-                writeAtomically(filePath, try AppStateJSON.serialize(state))
+                if writeAtomically(filePath, try AppStateJSON.serialize(state)) {
+                    unsavedFiles.remove(.state)
+                }
             } catch {
                 onPersistError(error)
             }
         }
-        unsavedFiles.removeAll()
     }
 
     // Write a sibling temp file and rename it over the target so a crash mid-write leaves the previous state intact
     // instead of a truncated file.
-    private func writeAtomically(_ path: String, _ contents: String) {
+    /// Whether it was written.
+    private func writeAtomically(_ path: String, _ contents: String) -> Bool {
         let temporary = path + ".tmp"
         do {
             try fileSystem.createDirectory((path as NSString).deletingLastPathComponent)
             try fileSystem.write(temporary, contents)
             try fileSystem.rename(temporary, path)
+            return true
         } catch {
             onPersistError(error)
+            return false
         }
     }
 
