@@ -408,6 +408,24 @@ struct InfoRowViewTests {
         #expect(view.height == 30 && view.alphaValue == 1)
     }
 
+    // Another selection that reads the same ("2 items") shows its own lead's icon.
+    @Test func anotherSelectionOfTheSameShapeShowsItsOwnIcon() throws {
+        func display(_ icon: IconEntry) -> InfoRowDisplay {
+            InfoRowDisplay(
+                name: "2 items", nameTooltip: nil, icon: icon, facts: [.init(content: .text("4 KB"), tooltip: nil)])
+        }
+        let folder = IconEntry(path: "/f/Folder", name: "Folder", kind: .directory)
+        let file = IconEntry(path: "/f/notes.md", name: "notes.md", extension: "md")
+        let view = row(display(folder))
+        let icon = try #require(findViews("infoRow.icon", in: view).first as? InfoIconView)
+        #expect(icon.shown == IconRequest(entry: folder).cacheKey)
+
+        view.show(display(file))
+
+        #expect(icon.shown == IconRequest(entry: file).cacheKey)
+        #expect(IconRequest(entry: file).cacheKey != IconRequest(entry: folder).cacheKey)
+    }
+
     // Several items show the count and the size cell.
     @Test func severalItemsShowTheCountAndTheFolderSize() throws {
         let view = row(

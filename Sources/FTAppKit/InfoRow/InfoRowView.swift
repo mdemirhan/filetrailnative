@@ -199,7 +199,8 @@ final class InfoRowView: NSView {
         needsLayout = true
     }
 
-    /// The same facts with new values (a size arriving): only the folder size cell and the texts change.
+    /// The same facts with new values (a size arriving, or another selection that reads the same, such as "2 items"):
+    /// only the icon, the folder size cell and the texts change. The icon view keeps an icon it already shows.
     private func rebuildInPlace(_ next: InfoRowDisplay) -> Bool {
         guard factViews.count == next.facts.count else { return false }
         for (view, fact) in zip(factViews, next.facts) {
@@ -213,6 +214,7 @@ final class InfoRowView: NSView {
             }
             view.toolTip = fact.tooltip
         }
+        icon.show(next.icon, store: iconStore, deferLoad: true)
         return true
     }
 

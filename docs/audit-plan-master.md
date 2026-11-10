@@ -290,7 +290,7 @@ under search results does `if changedPaths == nil { kept.details.markChanged(nil
 *Fix:* `kept.details.markChanged(changedPaths)` unconditionally (it already takes nil to mean "all").
 *Test:* `Tests/FTAppKitTests/Content/ReviewRowWidthTests.swift` holds `ReviewStaleDetailsTests`; add the case there.
 
-### [ ] 1.10. The Info Row keeps the previous selection's icon
+### [x] 1.10. The Info Row keeps the previous selection's icon
 
 [verified]
 `InfoRowView.show` (`Sources/FTAppKit/InfoRow/InfoRowView.swift:192`) takes `rebuildInPlace` when the name and fact
@@ -1975,3 +1975,6 @@ anything that differed from the plan, and anything found on the way that is not 
   alert's change is covered only by its existing tests. Noted for 1.7 by its review, not changed: Return on the
   same text with the same scope after a Settings edit still answers "already on screen" without searching again,
   which fits "a Settings edit runs nothing again".
+- 2026-11-10. 1.10: `InfoIconView.shown` became `private(set)` as a read-only seam for the test. Found, not
+  fixed (neighbouring, outside the item): `rebuildInPlace` doesn't set `name.toolTip` either, so another
+  selection of the same shape keeps the previous `nameTooltip`.

@@ -34,7 +34,8 @@ final class InfoIconView: NSView {
     var inset = 0.0
     private var isFolder = false
     private var handle: LoadHandle?
-    private var shown: String?
+    /// The cache key of the icon shown.
+    private(set) var shown: String?
     /// `.file-icon.native-file-icon` asks for more than its box: the icon macOS drew is this big, from the box's top
     /// left, past its other edges. The stand-in stays in the box.
     var nativeIconSide: Double?
