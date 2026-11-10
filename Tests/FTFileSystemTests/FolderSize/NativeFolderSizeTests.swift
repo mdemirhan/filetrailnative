@@ -315,9 +315,9 @@ extension RealWalks {
         @Test func measuresAFolderWithMoreSubfoldersThanTheAppMayOpenFilesAtOnce() async throws {
             try await withTemporaryDirectory(prefix: "native-fs-many") { directory in
                 let root = directory.path
-                // 600 folders of 3 holding 3 each: every folder the walk lists hands it more to queue, so the queue
+                // 1,200 folders of 3 holding 3 each: every folder the walk lists hands it more to queue, so the queue
                 // grows faster than four threads empty it.
-                let count = 600
+                let count = 1_200
                 for index in 0..<count {
                     for middle in 0..<3 {
                         for inner in 0..<3 {
@@ -329,7 +329,7 @@ extension RealWalks {
                 var saved = rlimit()
                 #expect(getrlimit(RLIMIT_NOFILE, &saved) == 0)
                 var lowered = saved
-                lowered.rlim_cur = rlim_t(max(256, openNow + 128))
+                lowered.rlim_cur = rlim_t(max(256, openNow + 512))
                 try #require(lowered.rlim_cur < rlim_t(count))
                 #expect(setrlimit(RLIMIT_NOFILE, &lowered) == 0)
                 defer { _ = setrlimit(RLIMIT_NOFILE, &saved) }
