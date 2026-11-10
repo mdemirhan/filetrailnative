@@ -88,6 +88,9 @@ final class SearchSession {
     private(set) var interrupted = false
     /// The hidden-files setting the results were found with.
     private var searchedHidden: Bool
+    /// The options the results on screen were found with: Settings can change the options without searching again,
+    /// and results found with others are then neither narrowed by more typing nor kept by the next search.
+    private var searchedOptions: SearchOptions?
     /// The folder list's selection, for when the search closes.
     private(set) var browseSelection = ContentSelection.empty
     /// The results' selection, for when they are shown again.
@@ -417,7 +420,23 @@ final class SearchSession {
 
     private func canRefine(_ query: String) -> Bool {
         patternMode == .text && resultsVisible && (status == .running || status == .complete) && !truncated
-            && resolveRootPath() == rootPath && SearchRefinement.isNarrower(base: baseQuery, next: query)
+            && resolveRootPath() == rootPath && searchedOptions == options
+            && SearchRefinement.isNarrower(base: baseQuery, next: query)
+    }
+
+    /// The options a search is started with, besides hidden files.
+    private struct SearchOptions: Equatable {
+        var patternMode: SearchPatternModePreference
+        var matchScope: SearchMatchScopePreference
+        var recursive: Bool
+        var skipGitFolders: Bool
+        var skipGitIgnored: Bool
+    }
+
+    private var options: SearchOptions {
+        SearchOptions(
+            patternMode: patternMode, matchScope: matchScope, recursive: recursive, skipGitFolders: skipGitFolders,
+            skipGitIgnored: skipGitIgnored)
     }
 
     private func refine(_ query: String) {
@@ -534,7 +553,7 @@ final class SearchSession {
         cancelActiveSearch()
         let wasVisible = resultsVisible
         let kept =
-            keepMatching && resultsVisible && patternMode == .text && root == rootPath
+            keepMatching && resultsVisible && patternMode == .text && root == rootPath && searchedOptions == options
             ? SearchRefinement.keepMatching(results, previousQuery: baseQuery, query: trimmed, scope: refinementScope)
             : []
         keptResultPaths = Set(kept.map(\.path))
@@ -556,6 +575,7 @@ final class SearchSession {
         elapsedMilliseconds = nil
         startedAt = clock()
         searchedHidden = host.searchIncludeHidden
+        searchedOptions = options
         cachedSearchSelection = .empty
         emit(wasVisible ? [.results, .status] : [.results, .status, .visibility])
         host.applySearchSelection(.empty)

@@ -257,7 +257,7 @@ it. Update the comment above the block to describe both exclusions. Check by han
 `Resources/fd/darwin-arm64/fd --type d --max-depth 4 --exclude /Volumes --exclude /System/Volumes --absolute-path --color never '^Users$' /`
 prints `/Users/` only.
 
-### [ ] 1.7. Changing a search option in Settings leaves stale results that typing then narrows
+### [x] 1.7. Changing a search option in Settings leaves stale results that typing then narrows
 
 [verified]
 `applyDefaults` (`Sources/FTAppKit/Search/SearchSession.swift:462`) sets `recursive`, `matchScope`, `skipGit*` and
@@ -1966,3 +1966,6 @@ anything that differed from the plan, and anything found on the way that is not 
   move is ahead of it; restore it when a push, a replace or a read in place (`.none`) starts, and when the current
   navigation fails with the old folder on screen; do nothing on `.superseded`, and leave it as moved when another
   Back, Forward or jump starts.
+- 2026-11-10. 1.7 also covers the results a new search keeps from the last one while typing (`keepMatching` in
+  `startSearch`): with only `canRefine` changed, typing after Settings turned subfolders off started a new search
+  but kept the old subfolder matches on screen. The same remembered options decide both.

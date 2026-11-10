@@ -164,6 +164,34 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(Set(names(search)) == ["sonar.txt", "one.txt"])
     }
 
+    // Results found with other options than those set now (Settings changed them, which runs nothing again) are not
+    // narrowed by more typing, and none of them is kept: the longer text is searched with the options set now.
+    @Test(arguments: [false, true])
+    func resultsFoundWithOtherOptionsAreSearchedAgainWhenMoreIsTyped(recursiveBefore: Bool) {
+        engine.finds = { request in
+            (request.recursive ? ["source.txt", "sub/sour.txt"] : ["source.txt"], false, false)
+        }
+        var before = AppPreferences.defaults()
+        before.searchRecursive = recursiveBefore
+        let search = SearchSession(
+            preferences: before, includeHidden: false, engine: engine, timers: timers, clock: { 0 })
+        search.host = host
+        search.updateDraft("so")
+        timers.advance(0.4)
+        #expect(engine.starts.count == 1)
+        var after = before
+        after.searchRecursive = !recursiveBefore
+        search.applyDefaults(after, keys: ["searchRecursive"])
+        #expect(engine.starts.count == 1)
+
+        search.updateDraft("sou")
+        timers.advance(0.4)
+
+        #expect(engine.starts.count == 2)
+        #expect(engine.starts.last?.recursive == !recursiveBefore)
+        #expect(Set(names(search)) == (recursiveBefore ? ["source.txt"] : ["source.txt", "sour.txt"]))
+    }
+
     @Test func neverShowsTheResultsOfOneSearchUnderTheTextOfAnother() {
         engine.finds = { request in request.query == "so" ? (["source.txt"], false, false) : ([], true, false) }
         let search = session()
