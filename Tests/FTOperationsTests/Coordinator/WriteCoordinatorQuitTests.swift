@@ -28,6 +28,8 @@ import Testing
         try await coordinator.deleteImmediately(
             paths: ["/Users/demo/.Trash/a.txt", "/Users/demo/.Trash/b.txt"], window: window)
         await firstItem.begun()
+        // Let go also when the test stops early, or the delete's thread waits for good.
+        defer { firstItem.release() }
         #expect(coordinator.activeOperation == ActiveWriteOperation(operationId: "write-op-1", kind: .delete))
 
         var shutDown = false
@@ -59,7 +61,8 @@ import Testing
     }
 
     // A disk that stops answering (a network share gone away) mustn't keep the app from quitting. The operation here
-    // never stops by itself: a quit that waited for it, not for its 50 ms, is caught by the time limit.
+    // never stops by itself: a quit that waited for it is caught by the time limit, and one that waited its usual 15 s
+    // instead of the 50 ms asked by the clock, which is loose enough for a busy Mac.
     @Test(.timeLimit(.minutes(1))) func stopsWaitingForAnOperationThatDoesntStop() async throws {
         let coordinator = WriteCoordinator(writeService: StubWriteService())
         let window = TestWindow()
@@ -67,7 +70,9 @@ import Testing
         try Coordinators.heldLocalOperation(coordinator, window, gate: never, action: .deleteImmediately)
         _ = try await Coordinators.waitFor { never.waiting ? true : nil }
 
+        let started = ContinuousClock.now
         await coordinator.shutDown(maxWaitMs: 50)
+        #expect(ContinuousClock.now - started < .seconds(10))
 
         never.open()
     }

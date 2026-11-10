@@ -2030,3 +2030,9 @@ anything that differed from the plan, and anything found on the way that is not 
   `failsWithTheWritesErrnoWhenTheResourceForkCantBeWritten` (copyfile reported success without the fork; it passes
   alone, 5 of 5). That test's flakiness under load is not explained; noted, not changed. The two quit tests use a
   time limit on a wait that never ends by itself, in place of a wall-clock bound.
+- 2026-11-10. 2.14, after its review: the two quit tests keep a loose clock bound (10 s) besides the time limit. A
+  gate can't tell the 50 ms or 60 s wait they ask for from the quit's own 15 s, which a time limit of a minute lets
+  through. That is the one clock bound left by this item, well clear of a busy Mac's delays.
+- 2026-11-10. Phase 2 done. Phase 3 answers: Q3 not now (a full disk only stops the run); Q4 yes, flush the
+  journal for the moved-item entry only; Q5 as recommended (surplus tabs go to new windows with the tab-limit notice,
+  or the drop is refused where AppKit allows).
