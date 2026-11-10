@@ -62,13 +62,6 @@ private func fetch(_ store: FileIconStore, _ request: IconRequest, deferLoad: Bo
 }
 
 @MainActor
-private func waitUntil(_ condition: @MainActor () -> Bool) async {
-    for _ in 0..<500 where !condition() {
-        try? await Task.sleep(for: .milliseconds(10))
-    }
-}
-
-@MainActor
 private func makeStore(source: RecordingSource, samples: TemporaryDirectory) -> FileIconStore {
     FileIconStore(source: source, samples: IconSamples(root: samples.appending("samples")))
 }
@@ -138,10 +131,10 @@ private func entry(
             let store = FileIconStore(source: source, samples: IconSamples(root: directory.appending("samples")))
             let request = IconRequest(entry: entry("/a/custom-icon"))
             store.load(request) { _ in }
-            await waitUntil { source.images.count == 1 }
+            await pollUntil { source.images.count == 1 }
             store.forget(request)
             async let next = fetch(store, request)
-            await waitUntil { source.images.count == 2 }
+            await pollUntil { source.images.count == 2 }
             source.letFirstAnswer()
             let image = await next
             #expect(source.images.count == 2)
@@ -188,7 +181,7 @@ private func entry(
 
             store.preloadGenericIcons()
             store.preloadGenericIcons()
-            await waitUntil { store.cachedCount == 3 }
+            await pollUntil { store.cachedCount == 3 }
 
             // Each kind once.
             let folderPath = try samples.path(for: .folder)
@@ -219,7 +212,7 @@ private func entry(
                 source: source, samples: IconSamples(root: blocker.appendingPathComponent("samples")))
 
             store.preloadGenericIcons()
-            await waitUntil { store.cachedCount == 2 }
+            await pollUntil { store.cachedCount == 3 }
             #expect(source.paths.isEmpty)
             guard case .none = store.lookup(IconRequest.generic(.folder)) else {
                 Issue.record("a failure should read as no icon")
@@ -273,7 +266,7 @@ private func entry(
             let request = IconRequest(entry: entry("/a/cancelled.txt", extension: "txt"))
             let handle = store.load(request) { _ in Issue.record("answered after cancel") }
             handle.cancel()
-            await waitUntil {
+            await pollUntil {
                 if case .image = store.lookup(request) { return true }
                 return false
             }

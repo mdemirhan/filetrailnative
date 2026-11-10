@@ -1,4 +1,5 @@
 import AppKit
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -50,20 +51,10 @@ private func picture(opaque: Bool = true) -> ThumbnailPicture {
     ThumbnailPicture(image: NSImage(size: NSSize(width: 4, height: 4)), isOpaque: opaque)
 }
 
-/// Waits until `condition` holds. The loads run as tasks on the main actor, so how long they take depends
-/// on the machine's load: the tests wait for the state they expect, not for a fixed time.
-@MainActor
-private func wait(_ condition: @MainActor () -> Bool) async {
-    let deadline = ContinuousClock.now + .seconds(30)
-    while !condition(), ContinuousClock.now < deadline {
-        await Task.yield()
-    }
-}
-
 /// Waits until every load asked for has finished.
 @MainActor
-private func idle(_ queue: ThumbnailLoadQueue) async {
-    await wait { queue.activeCount == 0 && queue.queuedCount == 0 }
+private func idle(_ queue: ThumbnailLoadQueue, sourceLocation: SourceLocation = #_sourceLocation) async {
+    await pollUntil(sourceLocation: sourceLocation) { queue.activeCount == 0 && queue.queuedCount == 0 }
 }
 
 private final class Listing {}
@@ -88,7 +79,7 @@ private func request(
         let store = ThumbnailStore(provider: provider, queue: queue)
         let receiver = Receiver()
         _ = request(store, "/Users/demo/photo.jpeg", listing: Listing(), into: receiver)
-        await wait { provider.calls.count == 1 }
+        await pollUntil { provider.calls.count == 1 }
 
         #expect(provider.calls == [.init(path: "/Users/demo/photo.jpeg", size: 128, knownVersion: nil)])
         // The icon stays until the preview arrives.
@@ -200,13 +191,13 @@ private func request(
         let receiver = Receiver()
         let names = (0..<6).map { "/Users/demo/photo-\($0).jpeg" }
         let handles = names.map { request(store, $0, listing: listing, into: receiver) }
-        await wait { provider.calls.count == 4 }
+        await pollUntil { provider.calls.count == 4 }
         #expect(provider.calls.count == 4)
 
         // The last item scrolls away before its turn; the fifth takes the next free slot.
         handles[5].cancel()
         provider.release(ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()))
-        await wait { provider.calls.count == 5 }
+        await pollUntil { provider.calls.count == 5 }
         // The first four start together, in no fixed order; the fifth comes after them.
         #expect(Set(provider.calls.map(\.path)) == Set(names.prefix(5)))
         #expect(provider.calls.count == 5)
@@ -221,7 +212,7 @@ private func request(
         let store = ThumbnailStore(provider: provider, queue: queue)
         let receiver = Receiver()
         let handle = request(store, "/Users/demo/photo.jpeg", listing: Listing(), into: receiver)
-        await wait { provider.calls.count == 1 }
+        await pollUntil { provider.calls.count == 1 }
         handle.cancel()
         provider.release(ThumbnailResponse(version: "1:1", unchanged: false, picture: picture()))
         await idle(queue)

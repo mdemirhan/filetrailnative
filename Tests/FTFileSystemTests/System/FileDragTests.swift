@@ -47,12 +47,21 @@ struct FileDragTests {
         #expect(FileDrag.sourceOperationMask(.withinApplication) == [.copy, .move])
         #expect(FileDrag.sourceOperationMask(.outsideApplication) == [.copy, .move, .generic, .link, .delete])
         let source = FileDragSource(windowNumber: 7) { _, _ in }
-        source.isAppWindow = { $0 == 7 }
-        source.mouseLocation = { NSPoint(x: 1, y: 1) }
-        source.windowNumberAt = { _ in 7 }
-        #expect(source.isAppWindow(source.windowNumberAt(source.mouseLocation())))
-        source.windowNumberAt = { _ in 99 }
-        #expect(!source.isAppWindow(source.windowNumberAt(source.mouseLocation())))
+        let session = NSDraggingSession()
+        #expect(source.draggingSession(session, sourceOperationMaskFor: .withinApplication) == [.copy, .move])
+        #expect(
+            source.draggingSession(session, sourceOperationMaskFor: .outsideApplication)
+                == [.copy, .move, .generic, .link, .delete])
+        source.isAppWindow = { [7, 8].contains($0) }
+        source.windowNumberAt = { point in point.x < 0 ? 8 : point.x < 100 ? 7 : 99 }
+        var pointer = NSPoint(x: 50, y: 0)
+        source.mouseLocation = { pointer }
+        // Over the window the drag started from, over another of the app's, and over another app's.
+        #expect(source.ignoreModifierKeys(for: session))
+        pointer = NSPoint(x: -5, y: 0)
+        #expect(source.ignoreModifierKeys(for: session))
+        pointer = NSPoint(x: 500, y: 0)
+        #expect(!source.ignoreModifierKeys(for: session))
     }
 
     @Test func doesntStartAndNeverCallsBackWithoutAWindowOrWithTheButtonUp() async {
