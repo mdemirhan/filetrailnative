@@ -96,10 +96,19 @@ public enum WriteJournalEntry: Equatable, Sendable {
 /// Where writes that leave items under hidden names while they run are written down, so a crash can't strand
 /// one there: the next start finishes or undoes each. `add` replaces an entry with the same id. Each write must
 /// be in the file, whole, before it returns, so it outlasts a crash or force quit (a power cut may still lose
-/// the latest ones).
+/// the latest ones). `addFlushed` is `add` that is on the drive itself before it returns, so it outlasts a power
+/// cut too: for the entry that guards an item's only copy.
 public protocol WriteJournal: Sendable {
     func add(_ entry: WriteJournalEntry) throws
+    func addFlushed(_ entry: WriteJournalEntry) throws
     func remove(_ id: String) throws
+}
+
+extension WriteJournal {
+    /// A journal kept in memory has nothing to flush.
+    public func addFlushed(_ entry: WriteJournalEntry) throws {
+        try add(entry)
+    }
 }
 
 // MARK: JSON

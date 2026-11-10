@@ -13,13 +13,14 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     }
 
     private let filePath: String
-    private let writeFile: (String, String) throws -> Void
+    /// `(path, contents, flush)`.
+    private let writeFile: (String, String, Bool) throws -> Void
     // Held while the file is written, so one write happens at a time and an older list never lands over a newer
     // one. (`writeFile` is only called with it held.)
     private let state: OSAllocatedUnfairLock<State>
 
     private init(
-        filePath: String, entries: [WriteJournalEntry], writeFile: @escaping (String, String) throws -> Void
+        filePath: String, entries: [WriteJournalEntry], writeFile: @escaping (String, String, Bool) throws -> Void
     ) {
         self.filePath = filePath
         self.writeFile = writeFile
@@ -37,11 +38,18 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     /// (`<file>.unreadable-<ms>`), so the next write doesn't erase what it may still say, and the journal starts
     /// empty.
     public static func open(_ filePath: String) -> FileWriteJournal {
-        open(filePath, writeFile: writeWhole)
+        open(filePath, writeFileFlushing: writeWhole)
     }
 
     /// `open` writing the file with `writeFile(path, contents)`: a test's, that fails as a full disk does.
     static func open(_ filePath: String, writeFile: @escaping (String, String) throws -> Void) -> FileWriteJournal {
+        open(filePath, writeFileFlushing: { path, contents, _ in try writeFile(path, contents) })
+    }
+
+    /// `open` writing the file with `writeFile(path, contents, flush)`: a test's, that sees which writes are flushed.
+    static func open(_ filePath: String, writeFileFlushing writeFile: @escaping (String, String, Bool) throws -> Void)
+        -> FileWriteJournal
+    {
         FileWriteJournal(filePath: filePath, entries: readEntries(filePath), writeFile: writeFile)
     }
 
@@ -51,12 +59,20 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     }
 
     public func add(_ entry: WriteJournalEntry) throws {
+        try add(entry, flush: false)
+    }
+
+    public func addFlushed(_ entry: WriteJournalEntry) throws {
+        try add(entry, flush: true)
+    }
+
+    private func add(_ entry: WriteJournalEntry, flush: Bool) throws {
         try state.withLock { state in
             if state.entries[entry.id] == nil {
                 state.order.append(entry.id)
             }
             state.entries[entry.id] = entry
-            try save(state)
+            try save(state, flush: flush)
         }
     }
 
@@ -64,14 +80,14 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
         try state.withLock { state in
             guard state.entries.removeValue(forKey: id) != nil else { return }
             state.order.removeAll { $0 == id }
-            try save(state)
+            try save(state, flush: false)
         }
     }
 
-    private func save(_ state: State) throws {
+    private func save(_ state: State, flush: Bool) throws {
         let snapshot = JournalJSON.array(state.order.compactMap { state.entries[$0]?.jsonObject })
         do {
-            try writeFile(filePath, snapshot)
+            try writeFile(filePath, snapshot, flush)
         } catch {
             throw Self.recoveryInfoError(error)
         }
@@ -101,9 +117,10 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     }
 
     /// Written next to the file, then renamed over it: a crash or force quit mid-write leaves the previous list,
-    /// never half of one. It isn't flushed to the drive, which on macOS costs milliseconds each time and a paste
-    /// writes many times, so a power cut may lose the latest changes.
-    static func writeWhole(_ filePath: String, _ contents: String) throws {
+    /// never half of one. Unless `flush` says so it isn't flushed to the drive, which on macOS costs milliseconds
+    /// each time and a paste writes many times, so a power cut may lose the latest changes. Flushed, the file and
+    /// then its folder are on the drive itself before this returns.
+    static func writeWhole(_ filePath: String, _ contents: String, flush: Bool) throws {
         let temporaryPath = "\(filePath).tmp"
         let descriptor = Darwin.open(temporaryPath, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0o666)
         guard descriptor >= 0 else {
@@ -121,12 +138,35 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
             }
             written += count
         }
+        if flush && !flushToDrive(descriptor) {
+            let errnum = errno
+            close(descriptor)
+            throw NativeError.errno(errnum, syscall: "fsync", path: temporaryPath)
+        }
         if close(descriptor) != 0 {
             throw NativeError.errno(errno, syscall: "close", path: temporaryPath)
         }
         if Darwin.rename(temporaryPath, filePath) != 0 {
             throw NativeError.errno(errno, syscall: "rename", path: temporaryPath, dest: filePath)
         }
+        if flush {
+            // The rename is in the folder: it goes to the drive too.
+            let folder = dirnameOf(filePath)
+            let folderDescriptor = Darwin.open(folder, O_RDONLY | O_CLOEXEC)
+            guard folderDescriptor >= 0 else {
+                throw NativeError.errno(errno, syscall: "open", path: folder)
+            }
+            defer { close(folderDescriptor) }
+            if !flushToDrive(folderDescriptor) {
+                throw NativeError.errno(errno, syscall: "fsync", path: folder)
+            }
+        }
+    }
+
+    /// `F_FULLFSYNC`, which asks the drive to write out its own cache (`fsync` alone leaves it there); `fsync`
+    /// where the disk doesn't take that. Whether it succeeded.
+    private static func flushToDrive(_ descriptor: Int32) -> Bool {
+        fcntl(descriptor, F_FULLFSYNC) == 0 || fsync(descriptor) == 0
     }
 }
 

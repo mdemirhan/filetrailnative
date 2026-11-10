@@ -42,6 +42,26 @@ struct FileWriteJournalTests {
         }
     }
 
+    // Only an entry added flushed is on the drive before the call returns; the other writes don't wait for that.
+    @Test func flushesOnlyAnEntryAddedFlushed() throws {
+        try withTemporaryDirectory { directory in
+            let filePath = directory.path + "/replace-journal.json"
+            let flushes = Locked<[Bool]>([])
+            let journal = FileWriteJournal.open(filePath) { path, contents, flush in
+                flushes.mutate { $0.append(flush) }
+                try FileWriteJournal.writeWhole(path, contents, flush: flush)
+            }
+
+            try journal.add(entry(directory, "a"))
+            try journal.addFlushed(entry(directory, "b"))
+            try journal.remove("a")
+
+            #expect(flushes.value == [false, true, false])
+            #expect(FileWriteJournal.open(filePath).entries() == [entry(directory, "b")])
+            #expect(!Disk.exists(filePath + ".tmp"))
+        }
+    }
+
     @Test func takesOutARemovedEntryOnDiskToo() throws {
         try withTemporaryDirectory { directory in
             let filePath = directory.path + "/replace-journal.json"

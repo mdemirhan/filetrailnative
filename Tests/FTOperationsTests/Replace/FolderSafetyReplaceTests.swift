@@ -41,6 +41,29 @@ final class ReplaceHistoryJournal: WriteJournal, @unchecked Sendable {
     }
 }
 
+/// Each write of a paste's journal, and whether it was flushed to the drive.
+private final class FlushRecordingJournal: WriteJournal {
+    private let writes = Locked<[Bool]>([])
+    private let flushedEntries = Locked<[WriteJournalEntry]>([])
+
+    func add(_ entry: WriteJournalEntry) throws {
+        writes.mutate { $0.append(false) }
+    }
+
+    func addFlushed(_ entry: WriteJournalEntry) throws {
+        writes.mutate { $0.append(true) }
+        flushedEntries.mutate { $0.append(entry) }
+    }
+
+    func remove(_ id: String) throws {
+        writes.mutate { $0.append(false) }
+    }
+
+    /// Whether each write, in order, was flushed.
+    var flushes: [Bool] { writes.value }
+    var flushed: [WriteJournalEntry] { flushedEntries.value }
+}
+
 /// A Trash that keeps nothing: only where things went matters, not what they were.
 let trashThatKeepsNothing: @Sendable (String) throws -> String? = { path in
     try NativeWriteFileSystem().rm(path, recursive: true, force: true)
@@ -137,6 +160,37 @@ struct FolderSafetyReplaceTests {
             #expect(sourceSeen.value == [true])
             #expect(journal.live.isEmpty)
             #expect(Disk.read(root + "/dst/a.txt") == "new")
+        }
+    }
+
+    // A Replace by a move on one disk leaves the moved item's only copy under a hidden name: the record that says so
+    // is flushed to the drive before the item moves, so not even a power cut loses it. A Replace by a copy leaves
+    // its original in place, and none of its writes is flushed.
+    @Test func flushesOnlyTheRecordOfAnItemMovedUnderAHiddenName() async throws {
+        try await withWritableCleanup { root in
+            try Disk.write(root + "/src/a.txt", "new a")
+            try Disk.write(root + "/src/b.txt", "new b")
+            try Disk.write(root + "/dst/a.txt", "old a")
+            try Disk.write(root + "/dst/b.txt", "old b")
+            let moving = FlushRecordingJournal()
+            let copying = FlushRecordingJournal()
+
+            _ = try await paste(
+                .cut, [root + "/src/a.txt"], into: root + "/dst", policy: NativePaste.replaceAll,
+                fileSystem: NativeWriteFileSystem(trash: trashThatKeepsNothing), writeJournal: moving)
+            _ = try await paste(
+                .copy, [root + "/src/b.txt"], into: root + "/dst", policy: NativePaste.replaceAll,
+                fileSystem: NativeWriteFileSystem(trash: trashThatKeepsNothing), writeJournal: copying)
+
+            #expect(Disk.read(root + "/dst/a.txt") == "new a")
+            #expect(moving.flushes == [true, false])
+            guard case .replace(let entry)? = moving.flushed.first else {
+                Issue.record("no flushed Replace entry: \(moving.flushed)")
+                return
+            }
+            #expect(entry.moved && entry.staged)
+            #expect(entry.sourcePath == root + "/src/a.txt")
+            #expect(copying.flushes == [false, false, false])
         }
     }
 }

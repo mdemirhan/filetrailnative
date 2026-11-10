@@ -559,7 +559,7 @@ completed can exceed total.
 the journal entry before `removeMovedSources` runs at `:181`; before the rename, recovery tells the person
 (`WriteRecovery.swift:280`). *Fix:* remove the entry after the sources are gone, or record a second stage.
 
-### [ ] 3A.10. The journal entry that guards a moved item's only copy is not flushed
+### [x] 3A.10. The journal entry that guards a moved item's only copy is not flushed
 
 `Journal/FileWriteJournal.swift:106`
 documents no fsync as a speed trade-off; that reasoning does not cover the `moved: true` entry

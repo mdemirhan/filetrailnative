@@ -57,7 +57,9 @@ func executeReplace(
         var moved = journalEntry
         moved.moved = true
         moved.staged = true
-        try journal?.add(.replace(moved))
+        // The moved item's only copy will be under the hidden name: its record is flushed to the drive first, so not
+        // even a power cut loses track of it.
+        try journal?.addFlushed(.replace(moved))
         do {
             try moveExclusive(fileSystem, currentNode.node.sourcePath, temporaryPath)
             movedByRename = true
