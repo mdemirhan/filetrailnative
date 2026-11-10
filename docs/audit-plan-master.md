@@ -720,7 +720,7 @@ arrival callback ends in an empty method (`SidebarViewController+Input.swift:107
 
 `Sidebar/SidebarModel.swift:586, 601-602`.
 
-### [ ] 3E.5. "Change…" on a favorite can replace a different favorite
+### [x] 3E.5. "Change…" on a favorite can replace a different favorite
 
 `Settings/SettingsPages.swift:360-373` keeps an
 index across the folder picker; track the favorite by path as the Open With list tracks by id (`:564-591`).

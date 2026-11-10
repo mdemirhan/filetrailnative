@@ -363,12 +363,16 @@ final class SettingsPageView: NSView {
         Task { @MainActor [weak self] in
             guard let path = await self?.pickDirectory(current.path) else { return }
             self?.update { preferences in
-                guard preferences.favorites.indices.contains(index) else { return }
+                // Known by its path, which no other favorite has: the list may have changed while the picker was open.
+                guard let position = preferences.favorites.firstIndex(where: { $0.path == current.path }) else {
+                    return
+                }
                 let taken = preferences.favorites.enumerated().contains {
-                    $0.offset != index && $0.element.path == path
+                    $0.offset != position && $0.element.path == path
                 }
                 guard !taken else { return }
-                preferences.favorites[index] = FavoritePreference(path: path, icon: preferences.favorites[index].icon)
+                preferences.favorites[position] = FavoritePreference(
+                    path: path, icon: preferences.favorites[position].icon)
             }
         }
     }

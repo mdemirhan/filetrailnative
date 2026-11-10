@@ -282,6 +282,28 @@ import Testing
         #expect(recorder.saved == ["favoritesPlacement": .string("separate")])
     }
 
+    // "Change…" replaces the favorite it was chosen for, though another window changed the list while the picker was
+    // open.
+    @Test func changeReplacesTheFavoriteItWasChosenForThoughTheListChangedMeanwhile() async throws {
+        let home = "/Users/demo"
+        let favorites = Favorites.defaults(homePath: home)
+        let preferences = AppPreferences.defaults(theme: .light).with { $0.favorites = favorites }
+        let (controller, recorder) = Kit.make(tab: .browsing, preferences: preferences, homePath: home)
+        let list = try Kit.list("Favorites", in: controller)
+        #expect(Kit.names(list) == ["Applications", "Desktop", "Documents", "Downloads"])
+        controller.window?.makeFirstResponder(list)
+        list.keyDown(with: Kit.key(Kit.down.0, code: Kit.down.1, window: controller.window))
+        #expect(list.selectedIndex == 1)
+        recorder.pickedDirectory = "\(home)/Projects"
+        list.keyDown(with: Kit.key(Kit.returnKey.0, code: Kit.returnKey.1, window: controller.window))
+        // While the picker is open, another window removes Applications: Desktop moves to the top.
+        controller.preferencesChanged(
+            PreferencesChange(patch: ["favorites": try JSONNode.of(Array(favorites.dropFirst()))], senderID: 3))
+        await Kit.settle()
+        #expect(recorder.directoryRequests.last == "\(home)/Desktop")
+        #expect(list.rows.map(\.spec.path) == ["\(home)/Projects", "\(home)/Documents", "\(home)/Downloads"])
+    }
+
     @Test func editsTheFavoritesWithTheListItsBarAndTheIconGrid() async throws {
         let home = "/Users/demo"
         let preferences = AppPreferences.defaults(theme: .light).with {
