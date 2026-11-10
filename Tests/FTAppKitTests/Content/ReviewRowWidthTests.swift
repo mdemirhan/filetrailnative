@@ -76,6 +76,23 @@ struct ReviewStaleDetailsTests {
         #expect(controller.staleMetadata.isEmpty)
     }
 
+    // An item that changed while search results covered the folder has its details read again once they close, as
+    // when the change comes with the folder on screen.
+    @MainActor @Test func anItemThatChangedUnderSearchResultsIsReadAgainWhenTheyClose() async {
+        let (controller, entries) = await loadedController()
+        controller.showSearch(
+            ContentSearchDisplay(
+                rootPath: "/f", viewKey: "search:/f:a", results: [], sortBy: .name, sortDirection: .asc,
+                highlight: nil, isRunning: false, error: nil, errorIsQuiet: false))
+        controller.show(
+            folder: "/f", entries: entries, selecting: nil, keepingScroll: true, changedPaths: [entries[0].path])
+
+        controller.endSearch()
+
+        #expect(controller.metadata(for: entries[0].path) != nil)
+        #expect(controller.staleMetadata == [entries[0].path])
+    }
+
     @MainActor @Test func aFullReadKeepsEveryRowsDetails() async {
         let (controller, entries) = await loadedController()
         controller.show(folder: "/f", entries: entries, selecting: nil, keepingScroll: true)

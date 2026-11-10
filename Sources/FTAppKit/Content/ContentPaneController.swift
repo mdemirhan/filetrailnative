@@ -396,7 +396,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         if searchDisplay != nil, var kept = keptFolder, path == folderPath {
             kept.listed = newEntries
             kept.loadState = .loaded
-            if changedPaths == nil { kept.details.markChanged(nil) }
+            // What changed meanwhile is read again once the results close (nil: everything).
+            kept.details.markChanged(changedPaths)
             keptFolder = kept
             return
         }

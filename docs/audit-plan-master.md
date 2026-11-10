@@ -281,7 +281,7 @@ fine. Each leaked scrim keeps its theme observation (`DialogScrim.swift:55`).
 *Fix:* set `scrim = nil` after `dismiss()` in `answer`, and in the dismissal closure; same in the other two.
 *Test:* present, answer, drain the main queue, expect a weak reference to the scrim to be nil.
 
-### [ ] 1.9. Details stay stale after a search closes
+### [x] 1.9. Details stay stale after a search closes
 
 [verified]
 In `ContentPaneController.show` (`Sources/FTAppKit/Content/ContentPaneController.swift:397`), a re-read of the folder
