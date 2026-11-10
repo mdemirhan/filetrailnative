@@ -327,8 +327,10 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
             guard let folder = ExplorerTabs.parentDirectoryPath(path) else { continue }
             if request.kind == .reveal {
                 group.openTab(path: folder, from: tab, openedItem: .selecting(path))
-            } else if tab.shownFolderPath == (try? NativeFileSystem().realpath(folder)) ?? folder {
-                // A window opened on the item's folder for it, which it shows by its real path.
+            } else if tab.shownFolderPath == folder || tab.shownFolderPath == (try? NativeFileSystem().realpath(folder))
+            {
+                // A window opened on the item's folder for it: by the spelling given until its first read, by its real
+                // path after.
                 tab.showOpenedItem(.selecting(path))
             }
         }

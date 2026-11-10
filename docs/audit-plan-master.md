@@ -606,7 +606,7 @@ AppKit lets the drop be refused before it lands, prefer that and keep the move t
 applies stored x/y unchecked. *Fix:* if the frame does not intersect any screen's `visibleFrame` by a useful margin,
 centre it on the main screen at its saved size (clamped). Confirm first whether AppKit already rescues it.
 
-### [ ] 3B.4. An item opened from another app is not selected when its folder's path is not canonical
+### [x] 3B.4. An item opened from another app is not selected when its folder's path is not canonical
 
 `ExplorerWindows.swift:330` compares `tab.shownFolderPath` (still the spelling given) with `realpath(folder)`. Try
 `open -a "File Trail" /tmp/x.txt` with no window open.

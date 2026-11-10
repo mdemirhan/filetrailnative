@@ -119,5 +119,21 @@ extension ExplorerWindowlessTests {
             #expect(tab.focusedPane == .content)
             await harness.close()
         }
+
+        // An item given by a path that isn't the folder's real one (/tmp for /private/tmp, as `open -a` passes it) is
+        // selected all the same.
+        @Test func selectsTheItemWhenItsFolderIsGivenByAnotherSpelling() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let real = harness.folder.path
+            try #require(real.hasPrefix("/private/tmp/"))
+            let spelled = String(real.dropFirst("/private".count))
+
+            harness.windows.openWindowOnFolder(spelled, selecting: spelled + "/note.txt")
+
+            let tab = try #require(harness.windows.front as? MainWindowController)
+            #expect(await waitUntil { tab.content.selection.paths.count == 1 })
+            #expect(tab.content.selection.paths.first.map(NodePath.basename) == "note.txt")
+            await harness.close()
+        }
     }
 }
