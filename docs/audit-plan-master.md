@@ -725,7 +725,7 @@ arrival callback ends in an empty method (`SidebarViewController+Input.swift:107
 `Settings/SettingsPages.swift:360-373` keeps an
 index across the folder picker; track the favorite by path as the Open With list tracks by id (`:564-591`).
 
-### [ ] 3E.6. The colour panel outlives its swatch and then does nothing
+### [x] 3E.6. The colour panel outlives its swatch and then does nothing
 
 `Settings/SettingsAppearance.swift:330-339`.
 

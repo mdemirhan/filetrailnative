@@ -51,6 +51,7 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
         window?.setContentSize(SettingsMetrics.windowSize)
         settingsView.onTabChange = { [weak self] tab in
             self?.popovers.close(returnFocus: false)
+            AccentSelector.closeColorPanel()
             self?.onTabChange(tab)
         }
         settingsView.onScroll = { [weak self] in self?.popovers.update() }
@@ -185,6 +186,7 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
     public override func windowWillClose(_ notification: Notification) {
         flushPending()
         popovers.close(returnFocus: false)
+        AccentSelector.closeColorPanel()
         if let monitor { NSEvent.removeMonitor(monitor) }
         monitor = nil
         super.windowWillClose(notification)

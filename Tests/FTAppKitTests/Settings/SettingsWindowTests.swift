@@ -153,6 +153,27 @@ import Testing
         #expect(options[0].frame.size.width == 60)
     }
 
+    // The colour panel opened from the custom swatch closes when its page goes, by another section or the window
+    // closing: colours picked in it would reach no swatch.
+    @Test func theColorPanelClosesWithItsPageAndItsWindow() throws {
+        defer { ColorPanelRelay.shared.picked = nil }
+        let (controller, _) = Kit.make()
+        // As the panel does, without putting it on screen.
+        controller.openColorPicker = { _, picked in ColorPanelRelay.shared.picked = picked }
+        func openCustom() throws {
+            let swatches = views("settings.accent", in: controller.settingsView).compactMap { $0 as? AccentSwatch }
+            Kit.click(try #require(swatches.last))
+            #expect(ColorPanelRelay.shared.picked != nil)
+        }
+        try openCustom()
+        controller.show(tab: .browsing)
+        #expect(ColorPanelRelay.shared.picked == nil)
+        controller.show(tab: .general)
+        try openCustom()
+        controller.close()
+        #expect(ColorPanelRelay.shared.picked == nil)
+    }
+
     @Test func offersTheAccentsAndACustomColorForAnyOther() throws {
         let preferences = AppPreferences.defaults(theme: .light).with { $0.accent = "#a550a7" }
         let (controller, recorder) = Kit.make(preferences: preferences)

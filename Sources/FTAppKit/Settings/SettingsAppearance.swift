@@ -337,6 +337,14 @@ final class AccentSelector: NSView, SettingsSized {
         panel.isContinuous = true
         panel.orderFront(nil)
     }
+
+    /// Closes the color panel when it was opened for a custom accent: its colors would reach no swatch once the page
+    /// or the window is gone.
+    static func closeColorPanel() {
+        guard ColorPanelRelay.shared.picked != nil else { return }
+        ColorPanelRelay.shared.picked = nil
+        if NSColorPanel.sharedColorPanelExists { NSColorPanel.shared.close() }
+    }
 }
 
 /// Hands the color panel's colors to the custom swatch.
