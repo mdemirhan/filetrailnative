@@ -197,7 +197,7 @@ struct EdgeCasesTests {
         fileSystem.copyFileImpl = { source, destination, _, _ in
             if source.hasSuffix("b.txt") {
                 signal.stop()
-                throw OperationError("The operation was aborted")
+                throw StopError()
             }
             fileSystem.addFile(destination, .file(size: 1))
         }

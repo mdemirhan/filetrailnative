@@ -305,13 +305,11 @@ func failedDestination(_ error: any Error) -> String? {
     (error as? PlacedError)?.destinationPath
 }
 
-/// `isAbortError`: an AbortError, or any error whose message says "aborted".
+/// Whether the error is a Stop: decided by its type alone, as a failure's message can name a path, or an errno
+/// (ECONNABORTED), that holds the word "aborted".
 func isAbortError(_ error: any Error) -> Bool {
     let root = rootError(error)
-    if root is StopError || root is CancelledWithItemsError {
-        return true
-    }
-    return errorMessage(root).lowercased().contains("aborted")
+    return root is StopError || root is CancelledWithItemsError
 }
 
 // MARK: Item lists

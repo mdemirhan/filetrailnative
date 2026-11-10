@@ -160,7 +160,7 @@ step); removing the VoiceOver-only sidebar code (not supported); SF Symbols for 
 
 Order is by harm. Each is independent.
 
-### [ ] 1.1. A failed copy is taken for a Stop
+### [x] 1.1. A failed copy is taken for a Stop
 
 [verified]
 `isAbortError` in `Sources/FTOperations/Execution/ExecutionContext.swift:309` returns true for any error whose message

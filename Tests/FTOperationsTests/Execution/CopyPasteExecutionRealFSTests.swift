@@ -88,6 +88,29 @@ struct CopyPasteExecutionRealFSTests {
         }
     }
 
+    @Test func aFailedCopyWhoseMessageSaysAbortedIsNotTakenForAStop() async throws {
+        try await withTemporaryDirectory { root in
+            // The error names the source's path, which holds "Aborted".
+            let (source, destination) = (root.path + "/Aborted Takes", root.path + "/dst")
+            try Disk.write(source + "/a.txt", "unreadable")
+            try Disk.write(source + "/b.txt", "readable")
+            try Disk.makeDirectories(destination)
+            #expect(chmod(source + "/a.txt", 0) == 0)
+            defer { _ = chmod(source + "/a.txt", 0o644) }
+            let fileSystem = NativeWriteFileSystem()
+            let operation = try realOperation(
+                fileSystem, mode: .copy, sources: [source + "/a.txt", source + "/b.txt"], into: destination)
+
+            let events = await execute(fileSystem, operation, operationId: "realfs-aborted-name-1")
+
+            let result = try #require(events.last?.result)
+            #expect(events.last?.status != .cancelled)
+            #expect(result.items.map(\.status) == [.failed, .completed])
+            #expect(result.items.first?.error == "You don't have permission to access this item.")
+            #expect(Disk.read(destination + "/b.txt") == "readable")
+        }
+    }
+
     @Test func cutPreservesSourceWhenExternallyModifiedDuringCopy() async throws {
         try await withTemporaryDirectory { root in
             let (source, destination) = (root.path + "/src", root.path + "/dst")
