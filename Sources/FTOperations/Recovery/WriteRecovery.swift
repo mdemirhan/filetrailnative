@@ -266,7 +266,7 @@ private func recoverReplaces(
                 )
             }
             continue
-        case .nothingLeft, .finished, .restored, .keptVisible, .removedCopy:
+        case .nothingLeft, .finished, .restored, .keptVisible, .foundInPlace, .removedCopy:
             break
         }
         var details = ["outcome": outcomeName(outcome.outcome), "stagingPath": entry.stagingPath]
@@ -280,6 +280,12 @@ private func recoverReplaces(
         if case .finished(let path) = outcome.outcome, entry.movingCopy {
             report.notices.append(
                 "\u{201C}\(name)\u{201D} was being moved when File Trail stopped. It is in \u{201C}\(basenameOf(dirnameOf(path)))\u{201D} now, and the original is still in \u{201C}\(basenameOf(dirnameOf(entry.sourcePath)))\u{201D} too."
+            )
+        }
+        // Found already in place while its originals were being removed: what is left of them may not be whole.
+        if case .foundInPlace(let path) = outcome.outcome {
+            report.notices.append(
+                "\u{201C}\(name)\u{201D} was being moved when File Trail stopped. It is in \u{201C}\(basenameOf(dirnameOf(path)))\u{201D} now, and what was left of the original is still in \u{201C}\(basenameOf(dirnameOf(entry.sourcePath)))\u{201D}, perhaps not all of it."
             )
         }
         do {
@@ -297,6 +303,7 @@ private func outcomeName(_ outcome: ReplaceRecoveryOutcome) -> String {
     case .finished: "finished"
     case .restored: "restored"
     case .keptVisible: "kept_visible"
+    case .foundInPlace: "found_in_place"
     case .removedCopy: "removed_copy"
     case .unreachable: "unreachable"
     case .deferred: "deferred"

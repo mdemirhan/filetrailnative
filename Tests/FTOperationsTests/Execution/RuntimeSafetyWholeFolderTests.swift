@@ -363,7 +363,7 @@ struct WholeFolderTests {
 
             #expect(
                 report.notices == [
-                    "\u{201C}F\u{201D} was being moved when File Trail stopped. It is in \u{201C}dst\u{201D} now, and the original is still in \u{201C}src\u{201D} too."
+                    "\u{201C}F\u{201D} was being moved when File Trail stopped. It is in \u{201C}dst\u{201D} now, and what was left of the original is still in \u{201C}src\u{201D}, perhaps not all of it."
                 ])
             #expect(file.entries().isEmpty)
         }

@@ -2082,3 +2082,11 @@ anything that differed from the plan, and anything found on the way that is not 
   is (closed: a refused attribute other than the resource fork is skipped on purpose, and the file's original goes).
 - 2026-11-10. 3A.3: not covered, noted: EDQUOT, the EIO an older macOS gives for a full FAT disk, and an ENOSPC
   wrapped in `StagingCleanupError` (its code is nil) don't end the run.
+- 2026-11-10. 3A.9, after its review: the move found in place has an outcome of its own (`foundInPlace`), told as
+  "what was left of the original is still in …, perhaps not all of it"; its source is read only once its disk has
+  answered in time, and an unreadable or unconnected source keeps the record for a retry. Found, not fixed: the
+  `staged: true` record of a folder move to another disk isn't flushed, and `discard()` rewrites it unflushed, so a
+  power cut can leave a record naming a folder at the final path that isn't the paste's; `executeStagedDirectory`
+  never takes back the counts its children added when it discards its copy (as 3A.8 did for a Replace), so a folder
+  copy ended by a full disk or a Stop still counts what it wrote; and a new folder inside a merge that a full disk
+  ends has no item of its own in the result, as with a Stop.

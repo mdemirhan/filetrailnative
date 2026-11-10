@@ -12,6 +12,9 @@ public enum ReplaceRecoveryOutcome: Equatable, Sendable {
     case restored(path: String)
     /// Both places were taken: the item was given a visible name next to the old one.
     case keptVisible(path: String)
+    /// A folder moved to another disk was in place already, its originals not all removed: it is in both places,
+    /// the original perhaps not whole.
+    case foundInPlace(path: String)
     /// An unfinished copy was removed; the original is untouched.
     case removedCopy
     /// The hidden item couldn't be reached (its disk isn't connected, or it can't be read): it may still be
@@ -24,7 +27,7 @@ public enum ReplaceRecoveryOutcome: Equatable, Sendable {
     /// Where the item is now, for the outcomes that put it somewhere.
     public var path: String? {
         switch self {
-        case .finished(let path), .restored(let path), .keptVisible(let path): path
+        case .finished(let path), .restored(let path), .keptVisible(let path), .foundInPlace(let path): path
         default: nil
         }
     }
@@ -177,8 +180,9 @@ func isStagingName(_ name: String) -> Bool {
 /// original's (on another disk, maybe), which may not answer either.
 private func foldersReadFor(_ entry: ReplaceJournalEntry) -> [String] {
     var folders = [dirnameOf(entry.stagingPath), dirnameOf(entry.finalPath)]
-    // Only a moved item may go back where it came from; a copy never looks there.
-    if entry.moved {
+    // Only a moved item may go back where it came from; a copy never looks there. A folder moving to another disk,
+    // once whole in its hidden copy, is looked for at its source too (it may be in both places).
+    if entry.moved || (entry.movingCopy && entry.staged) {
         folders.append(dirnameOf(entry.sourcePath))
     }
     var seen = Set<NameKeys.Exact>()
@@ -223,10 +227,22 @@ private func recoverEntry(_ entry: ReplaceJournalEntry, _ fileSystem: some Write
         if errorCode(error) == "ENOENT" && folderIsThere(fileSystem, entry.stagingPath) {
             // A folder moved to another disk that was already in place, its originals not all removed yet: it is
             // in both places, and the person is told.
-            if entry.movingCopy && entry.staged && captureFingerprint(fileSystem, entry.finalPath).exists
-                && captureFingerprint(fileSystem, entry.sourcePath).exists
-            {
-                return .finished(path: entry.finalPath)
+            if entry.movingCopy && entry.staged && captureFingerprint(fileSystem, entry.finalPath).exists {
+                let source: NodeFingerprint
+                do {
+                    source = try captureFingerprintStrictly(fileSystem, entry.sourcePath)
+                } catch {
+                    // Its source can't be read just now: what is there is said once it can be.
+                    return .unreachable(error: describeCopyPasteError(error))
+                }
+                if source.exists {
+                    return .foundInPlace(path: entry.finalPath)
+                }
+                if !folderIsThere(fileSystem, entry.sourcePath) {
+                    // Its source's disk isn't connected: whether the original is there is said once it is.
+                    return .unreachable(
+                        error: "The disk of \u{201C}\(basenameOf(entry.sourcePath))\u{201D} isn't connected.")
+                }
             }
             return .nothingLeft
         }

@@ -214,6 +214,25 @@ struct EdgeCasesTests {
         #expect(journal.live.isEmpty)
     }
 
+    // A folder moved to another disk found in place while its originals were removed, whose source can't be read at
+    // the next start: whether the original is still there isn't known, so the record is kept and asked again.
+    @Test func keepsTheRecordOfAMoveFoundInPlaceWhoseSourceCantBeRead() {
+        let fileSystem = MockWriteServiceFileSystem([
+            ("/source/F/a.txt", .file(size: 1)), ("/target/F/a.txt", .file(size: 1)),
+        ])
+        fileSystem.lstatImpl = { path in
+            if path == "/source/F" { throw MockWriteServiceFileSystem.error("EIO", path) }
+            return try fileSystem.lstatDirectly(path)
+        }
+        let entry = ReplaceJournalEntry(
+            id: "move-1", stagingPath: "/target/.F.filetrail-1", finalPath: "/target/F", sourcePath: "/source/F",
+            moved: false, staged: true, movingCopy: true)
+
+        let outcomes = recoverInterruptedReplaces([entry], fileSystem)
+
+        #expect(outcomes.map(\.outcome) == [.unreachable(error: "A disk error occurred.")])
+    }
+
     // MARK: A full disk
 
     // Every item after the first that found the disk full used to be tried, and failed, one by one.
