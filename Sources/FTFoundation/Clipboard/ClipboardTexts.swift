@@ -36,18 +36,23 @@ public enum ClipboardTexts {
     }
 
     /// Why a drag doesn't start, or a drop from another app isn't taken, while an
-    /// operation runs. `action` is the running operation's (`WriteOperationAction`).
-    public static func dragRefusedWhileBusy(action: String, currentSourcePath: String?, drop: Bool = false) -> String {
+    /// operation runs. `action` is the running operation's.
+    public static func dragRefusedWhileBusy(
+        action: WriteOperationAction, currentSourcePath: String?, drop: Bool = false
+    ) -> String {
         let subject =
             currentSourcePath.map { "\u{201C}\(PathText.leafName($0))\u{201D} is" } ?? "items are"
         let refused = "Can't \(drop ? "drop" : "drag") while"
         switch action {
-        case "move_to": return "\(refused) \(subject) being moved"
-        case "trash": return "\(refused) \(subject) being moved to the Trash"
-        case "delete_immediately": return "\(refused) \(subject) being deleted"
-        case "rename", "batch_rename": return "\(refused) \(subject) being renamed"
-        case "new_folder": return "\(refused) a folder is being made"
-        default: return "\(refused) \(subject) being copied"
+        case .moveTo: return "\(refused) \(subject) being moved"
+        case .trash: return "\(refused) \(subject) being moved to the Trash"
+        case .deleteImmediately: return "\(refused) \(subject) being deleted"
+        case .rename, .batchRename: return "\(refused) \(subject) being renamed"
+        case .newFolder: return "\(refused) a folder is being made"
+        // An Undo or Redo may move, rename or put back items: it is named, not what it does to them.
+        case .undo: return "\(refused) an Undo is running"
+        case .redo: return "\(refused) a Redo is running"
+        case .paste, .copyTo, .duplicate: return "\(refused) \(subject) being copied"
         }
     }
 

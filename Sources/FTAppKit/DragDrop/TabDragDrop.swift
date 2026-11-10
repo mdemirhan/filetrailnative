@@ -534,11 +534,11 @@ final class TabDragDrop {
         let session = operations.session(for: group)
         if let card = session.card {
             return ClipboardTexts.dragRefusedWhileBusy(
-                action: card.action.rawValue, currentSourcePath: card.currentSourcePath, drop: drop)
+                action: card.action, currentSourcePath: card.currentSourcePath, drop: drop)
         }
         if let foreign = session.foreign {
             return ClipboardTexts.dragRefusedWhileBusy(
-                action: foreign.action.rawValue, currentSourcePath: foreign.currentSourcePath, drop: drop)
+                action: foreign.action, currentSourcePath: foreign.currentSourcePath, drop: drop)
         }
         return nil
     }

@@ -768,7 +768,7 @@ A listing that fails with `ESTALE` or `EDQUOT` says "Unknown system error -70" t
 and `Clipboard/WriteEndNotices.swift:206`: neither receives the mode, so the sheet says "couldn't be copied" and the
 toast "Copied 3 items". The review sheet says "Move". Pass the mode through.
 
-### [ ] 3G.2. A drag refused during an Undo or Redo says the items are "being copied"
+### [x] 3G.2. A drag refused during an Undo or Redo says the items are "being copied"
 
 `Clipboard/ClipboardTexts.swift:44-51` switches on raw strings with no `undo`/`redo` case. Switch on
 `WriteOperationAction` instead.

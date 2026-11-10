@@ -102,31 +102,41 @@ struct ClipboardTextsTests {
 
     @Test func namesWhatIsRunningAndTheItemItIsOn() {
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "paste", currentSourcePath: "/Users/demo/Photos")
+            ClipboardTexts.dragRefusedWhileBusy(action: .paste, currentSourcePath: "/Users/demo/Photos")
                 == "Can't drag while \u{201C}Photos\u{201D} is being copied")
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "move_to", currentSourcePath: nil)
+            ClipboardTexts.dragRefusedWhileBusy(action: .moveTo, currentSourcePath: nil)
                 == "Can't drag while items are being moved")
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "trash", currentSourcePath: "/Users/demo/a.txt")
+            ClipboardTexts.dragRefusedWhileBusy(action: .trash, currentSourcePath: "/Users/demo/a.txt")
                 == "Can't drag while \u{201C}a.txt\u{201D} is being moved to the Trash")
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "delete_immediately", currentSourcePath: nil)
+            ClipboardTexts.dragRefusedWhileBusy(action: .deleteImmediately, currentSourcePath: nil)
                 == "Can't drag while items are being deleted")
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "rename", currentSourcePath: "/Users/demo/a.txt")
+            ClipboardTexts.dragRefusedWhileBusy(action: .rename, currentSourcePath: "/Users/demo/a.txt")
                 == "Can't drag while \u{201C}a.txt\u{201D} is being renamed")
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "new_folder", currentSourcePath: nil)
+            ClipboardTexts.dragRefusedWhileBusy(action: .newFolder, currentSourcePath: nil)
                 == "Can't drag while a folder is being made")
+    }
+
+    // An Undo or Redo is named as such, not taken for a copy.
+    @Test func namesAnUndoOrRedoRunning() {
+        #expect(
+            ClipboardTexts.dragRefusedWhileBusy(action: .undo, currentSourcePath: "/Users/demo/a.txt")
+                == "Can't drag while an Undo is running")
+        #expect(
+            ClipboardTexts.dragRefusedWhileBusy(action: .redo, currentSourcePath: nil, drop: true)
+                == "Can't drop while a Redo is running")
     }
 
     @Test func saysADropCantBeMadeForADragFromAnotherApp() {
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "paste", currentSourcePath: "/Users/demo/Photos", drop: true)
+            ClipboardTexts.dragRefusedWhileBusy(action: .paste, currentSourcePath: "/Users/demo/Photos", drop: true)
                 == "Can't drop while \u{201C}Photos\u{201D} is being copied")
         #expect(
-            ClipboardTexts.dragRefusedWhileBusy(action: "new_folder", currentSourcePath: nil, drop: true)
+            ClipboardTexts.dragRefusedWhileBusy(action: .newFolder, currentSourcePath: nil, drop: true)
                 == "Can't drop while a folder is being made")
     }
 
