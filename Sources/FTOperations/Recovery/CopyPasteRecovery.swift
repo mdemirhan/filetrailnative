@@ -221,6 +221,13 @@ private func recoverEntry(_ entry: ReplaceJournalEntry, _ fileSystem: some Write
         isDirectory = try fileSystem.lstat(entry.stagingPath).isDirectory
     } catch {
         if errorCode(error) == "ENOENT" && folderIsThere(fileSystem, entry.stagingPath) {
+            // A folder moved to another disk that was already in place, its originals not all removed yet: it is
+            // in both places, and the person is told.
+            if entry.movingCopy && entry.staged && captureFingerprint(fileSystem, entry.finalPath).exists
+                && captureFingerprint(fileSystem, entry.sourcePath).exists
+            {
+                return .finished(path: entry.finalPath)
+            }
             return .nothingLeft
         }
         return .unreachable(error: describeCopyPasteError(error))

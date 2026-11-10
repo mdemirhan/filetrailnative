@@ -328,6 +328,46 @@ struct WholeFolderTests {
             #expect(Disk.list(f.src) == [])
         }
     }
+
+    // Killed while the originals of a folder moved to another disk are being removed, once the folder is in place:
+    // it is in both places, and the next start says so.
+    @Test func aMoveToAnotherDiskKilledWhileItsOriginalsGoIsToldAtTheNextStart() async throws {
+        try await withSafetyFolders { f in
+            try Disk.write(f.src + "/F/a.txt", "a")
+            try Disk.write(f.src + "/F/b.txt", "b")
+            let fileSystem = f.withoutRenameAtAll()
+            let base = fileSystem.base
+            let journal = MemoryJournal()
+            // What the journal held as the first original was about to go: all that a process killed then leaves.
+            let left = Locked<[WriteJournalEntry]?>(nil)
+            fileSystem.rmImpl = { path, recursive, force in
+                guard path.hasPrefix(f.src + "/") else {
+                    return try base.rm(path, recursive: recursive, force: force)
+                }
+                if left.value == nil {
+                    left.mutate { $0 = journal.entries }
+                }
+                throw codedError("ECANCELED", "ECANCELED: the process was killed")
+            }
+
+            _ = try await runPaste(
+                mode: .cut, sources: [f.src + "/F"], into: f.dst, fileSystem: fileSystem, writeJournal: journal)
+
+            #expect(Disk.read(f.dst + "/F/a.txt") == "a")
+            #expect(Disk.read(f.src + "/F/a.txt") == "a")
+            let file = FileWriteJournal.open(f.root + "/replace-journal.json")
+            for entry in try #require(left.value) {
+                try file.add(entry)
+            }
+            let report = recoverWrites(file, NativeWriteFileSystem(), logger: RecordingLogger().logger)
+
+            #expect(
+                report.notices == [
+                    "\u{201C}F\u{201D} was being moved when File Trail stopped. It is in \u{201C}dst\u{201D} now, and the original is still in \u{201C}src\u{201D} too."
+                ])
+            #expect(file.entries().isEmpty)
+        }
+    }
 }
 
 /// A large file being copied: a crash part way would leave the part copied under a hidden name: it is written down

@@ -113,4 +113,42 @@ struct InterruptedReplaceThroughTheEngineTests {
         }
         #expect(stages >= 2, "\(shape): killed at \(stages) stages")
     }
+
+    /// A folder moved to another disk is put in place whole before its originals are removed: wherever the move is
+    /// killed, after recovery it is where it went, or where it was, and when it is in both the person is told.
+    @Test(.tags(.diskImage), .diskImages)
+    func aFolderMovedToAnotherDiskIsNeverInBothPlacesUntold() async throws {
+        var write = 1
+        var stages = 0
+        while write <= 10 {
+            let scenario = ExecScenario(
+                name: "folder moved to another disk, crashed after journal write \(write)",
+                tree: [
+                    .init(path: "source/f/a.txt", kind: "file", content: "a\n"),
+                    .init(path: "source/f/b.txt", kind: "file", content: "b\n"),
+                    .init(path: "destination", kind: "dir"),
+                ],
+                paste: .init(mode: "cut", sources: ["source/f"], destination: "destination"),
+                policy: .init(file: "skip", directory: "skip", mismatch: "skip"),
+                crashAt: .init(journalWrite: write), volumes: ["destination": "apfs"])
+            let places = try ExecPlaces.make(for: scenario)
+            defer { places.remove() }
+            try scenario.build(in: places)
+            let outcome = try await SwiftExecEngine().run(
+                scenario, answers: [], stopAt: nil, crashAt: scenario.crashAt, in: places)
+            guard outcome.events.contains(where: { $0["kind"]?.stringValue == "crash" }) else { break }
+            stages += 1
+            let recovery = try #require(outcome.recovery, "write \(write)")
+            let paths = Set(recovery.after.map(\.path))
+            let moved = paths.contains("destination/f/a.txt") && paths.contains("destination/f/b.txt")
+            let original = paths.contains("source/f")
+            #expect(moved || original, "after write \(write): the folder is where it went or where it was")
+            if moved && original {
+                #expect(!recovery.notices.isEmpty, "after write \(write): in both places, and the person is told")
+            }
+            #expect(recovery.journal == .array([]), "after write \(write): the journal is empty")
+            write += 1
+        }
+        #expect(stages >= 3, "killed at \(stages) stages")
+    }
 }

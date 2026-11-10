@@ -15,8 +15,8 @@ public struct ReplaceJournalEntry: Equatable, Sendable {
     public var sourcePath: String
     public var moved: Bool
     public var staged: Bool
-    /// A move to another disk (a folder copied, then its original removed): put in place by recovery, its
-    /// original is still there too, and the person is told.
+    /// A move to another disk (a folder copied, then its original removed), kept until the originals are gone:
+    /// put in place by recovery, or found in place, with its original still there too, the person is told.
     public var movingCopy: Bool
 
     public init(

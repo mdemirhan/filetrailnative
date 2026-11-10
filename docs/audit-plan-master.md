@@ -553,7 +553,7 @@ error, naming where the item is.
 `CopyPasteReplace.swift:113`;
 completed can exceed total.
 
-### [ ] 3A.9. A crash late in a cross-disk folder move leaves a silent duplicate
+### [x] 3A.9. A crash late in a cross-disk folder move leaves a silent duplicate
 
 `ExecutionNodes.swift:172` removes
 the journal entry before `removeMovedSources` runs at `:181`; before the rename, recovery tells the person

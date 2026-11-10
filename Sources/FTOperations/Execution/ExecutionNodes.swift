@@ -169,7 +169,6 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
     }
     // Its own metadata now that it has its name (see metadataLaterFor).
     try? applyDirectoryMetadata(context.with { $0.stagingFor = outerMode }, currentNode)
-    try? journal?.remove(journalEntry.id)
     noteChanged(context)
     if context.mode == .copy {
         recordCreated(context, currentNode, finalPath)
@@ -182,6 +181,9 @@ private func executeStagedDirectory(_ context: ExecutionContext, _ currentNode: 
         error = cleanup.error
         items = cleanup.childItems
     }
+    // Its record goes only once a move's originals are gone: a crash before that leaves the folder in both places,
+    // and the next start says so.
+    try? journal?.remove(journalEntry.id)
     if appMovedByCopy {
         recordAppMovedByCopy(context, currentNode, finalPath)
     }
