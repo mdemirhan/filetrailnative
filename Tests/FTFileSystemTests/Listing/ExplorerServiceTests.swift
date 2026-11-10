@@ -286,6 +286,23 @@ struct ExplorerServiceTests {
         #expect(response.suggestions.map(\.path) == ["/Users/demo/Documents", "/Users/demo/Downloads"])
     }
 
+    // A link to a folder typed in full, its target named otherwise and elsewhere: suggested from the folder holding
+    // the link, as typed, not from the one holding its target.
+    @Test func suggestsALinkToAFolderTypedInFullFromTheFolderHoldingIt() async throws {
+        try await withTemporaryDirectory(prefix: "filetrail-suggest-link") { root in
+            let files = FileManager.default
+            try files.createDirectory(atPath: root.path + "/x", withIntermediateDirectories: true)
+            try files.createDirectory(atPath: root.path + "/elsewhere/Real", withIntermediateDirectories: true)
+            try files.createSymbolicLink(
+                atPath: root.path + "/x/link", withDestinationPath: root.path + "/elsewhere/Real")
+
+            let response = try await DirectoryService().pathSuggestions(inputPath: root.path + "/x/link")
+
+            #expect(response.basePath == (try NativeFileSystem().realpath(root.path + "/x")))
+            #expect(response.suggestions.map(\.name) == ["link"])
+        }
+    }
+
     @Test func returnsAllImmediateChildDirectoriesForAnExistingTrailingSlashPath() async throws {
         let fake = suggestionFileSystem(["/Users/demo": ["Applications", "Desktop", "Pictures"]])
         let response = try await service(fake).pathSuggestions(inputPath: "/Users/demo/")

@@ -484,6 +484,12 @@ enum ExplorerListing {
         var index = parts.count
         while index >= 0 {
             let candidate = index == 0 ? "/" : "/" + parts[..<index].joined(separator: "/")
+            // A folder typed in full (no "/" after it) is matched among the items of the folder holding it, as it is
+            // typed: through a link, the folder holding the link, not the one holding where it leads.
+            if index == parts.count, index > 0 {
+                index -= 1
+                continue
+            }
             if let resolved = tryResolveDirectoryPath(candidate, fileSystem) {
                 if index == parts.count {
                     return (NodePath.dirname(resolve(resolved)), parts.last ?? "")

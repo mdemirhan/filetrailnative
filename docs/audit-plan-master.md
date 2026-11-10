@@ -750,7 +750,7 @@ index across the folder picker; track the favorite by path as the Open With list
 `System/OpenWithCatalog.swift:221-236`: a
 throwing task group waits for all children, and the system call ignores cancellation.
 
-### [ ] 3F.3. Path suggestions are empty for a typed symlink to a folder with another name
+### [x] 3F.3. Path suggestions are empty for a typed symlink to a folder with another name
 
 `Listing/ExplorerListing.swift:488-490`.
 
