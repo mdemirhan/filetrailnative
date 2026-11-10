@@ -115,6 +115,8 @@ final class InfoRowView: NSView {
     var onHeightChange: (() -> Void)?
     private let cell = FolderSizeCellView(style: .row, identifier: "infoRow.folderSize")
     private(set) var slideTimer: Timer?
+    /// Whether the system asks for less motion: the row then opens and closes at once, with no timer.
+    var reducesMotion: () -> Bool = { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
     private var slideFrom = 0.0
     private var slideStart = Date()
     private var shownHeight = InfoRowView.closedHeight
@@ -126,7 +128,7 @@ final class InfoRowView: NSView {
         isOpen = open
         let target = open ? Self.openHeight : Self.closedHeight
         slideTimer?.invalidate()
-        if !animated || window == nil || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+        if !animated || window == nil || reducesMotion() {
             shownHeight = target
             alphaValue = open ? 1 : 0
             needsDisplay = true

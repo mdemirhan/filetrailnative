@@ -166,11 +166,17 @@ extension ExplorerWindowlessTests {
         // A button of a state is its own.
         @Test func aStatesButtonStillTakesThePress() throws {
             let state = ContentStateView(frame: NSRect(x: 0, y: 0, width: 600, height: 400))
+            // A hit test takes its point in the view's superview; the state is flipped, its superview here is not.
+            let host = NSView(frame: state.frame)
+            host.addSubview(state)
+            // Search Subfolders shows when there is somewhere to search.
+            state.onSearchSubfolders = {}
             state.show(.noMatches(query: "x"), theme: AppearanceModel.shared.theme)
             state.layoutSubtreeIfNeeded()
             let buttons = descendants(of: state, SystemButton.self)
+            #expect(buttons.count == 1)
             for button in buttons {
-                let inside = button.convert(NSPoint(x: button.bounds.midX, y: button.bounds.midY), to: state)
+                let inside = button.convert(NSPoint(x: button.bounds.midX, y: button.bounds.midY), to: host)
                 #expect(state.hitTest(inside) === button)
             }
             #expect(state.hitTest(NSPoint(x: 5, y: 5)) == nil)

@@ -450,7 +450,7 @@ struct SidebarModelTests {
         rig.model.type("d")
         #expect(rig.model.selected == .favorite("/Users/demo/Desktop"))
         rig.model.type("o")
-        #expect(rig.model.selected == .favorite("/Users/demo/Documents") || rig.model.typeaheadQuery == "do")
+        #expect(rig.model.selected == .favorite("/Users/demo/Documents"))
         #expect(rig.model.typeaheadQuery == "do")
         // The prefix is forgotten 1000 ms after the last key.
         rig.advance(999)

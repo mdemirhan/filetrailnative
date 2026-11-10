@@ -386,9 +386,10 @@ struct InfoRowViewTests {
         window.isReleasedWhenClosed = false
         var view: InfoRowView? = InfoRowView()
         window.contentView?.addSubview(try #require(view))
+        // It slides whatever the system's Reduce Motion setting, which would open it at once, with no timer.
+        view?.reducesMotion = { false }
         view?.setOpen(true, animated: true)
-        // Reduce Motion opens it at once, with no timer.
-        guard let timer = view?.slideTimer else { return }
+        let timer = try #require(view?.slideTimer)
         weak let gone = view
         autoreleasepool {
             view?.removeFromSuperview()

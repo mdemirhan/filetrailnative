@@ -113,7 +113,8 @@ import Testing
         #expect(notes(view) == ["N on its own types into the file list. Add ⌘ or ⌃."])
         #expect(place.isRecording)
         let note = try #require(view.row(.newFolder)?.noteText)
-        #expect(note.textColor != nil)
+        // A key that can't be used is said in the danger colour.
+        #expect(note.textColor == NSColor(AppearanceModel.shared.theme.palette.dangerText))
         // ⌘Q goes to the recorder too, and is Quit's for good.
         press(Kit.letter("q", .command, window: controller.window), in: controller)
         #expect(notes(view) == ["⌘Q is Quit File Trail, which can not be changed."])

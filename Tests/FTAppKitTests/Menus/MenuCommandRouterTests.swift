@@ -251,10 +251,15 @@ import Testing
 
     @Test func doesNothingWithNoExplorerWindowToSendTo() {
         let (built, router, _) = make()
+        var heard = 0
+        router.onCommandWithoutExplorerWindow = { _ in heard += 1 }
+        router.onNewWindowFromOtherWindow = { heard += 1 }
         router.explorerFor = { _ in nil }
         router.focusedWindow = { nil }
 
         choose(menuItem(built, "Go", "Back"), router)
+
+        #expect(heard == 0)
     }
 
     @Test func withNoExplorerWindowOpensOneForNewWindowAndTheGoMenusPlaces() {

@@ -193,7 +193,7 @@ final class FakeSearchHost: SearchSessionHost {
     }
 
     @Test func neverShowsTheResultsOfOneSearchUnderTheTextOfAnother() {
-        engine.finds = { request in request.query == "so" ? (["source.txt"], false, false) : ([], true, false) }
+        engine.finds = { request in request.query == "so" ? (["source.txt"], true, false) : ([], true, false) }
         let search = session()
         search.updateDraft("so")
         timers.advance(0.4)
@@ -204,8 +204,8 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(search.isRunning)
         #expect(names(search).isEmpty)
         #expect(search.committedQuery == "xy")
-        // The old job was let go.
-        #expect(engine.cancels.isEmpty || engine.cancels.allSatisfy { $0 != engine.lastJobID })
+        // The old search, still walking, was let go, and the new one was not.
+        #expect(engine.cancels == ["search-1"])
         // Hiding a running search stops it, to run again when shown.
         search.hideResults()
         #expect(engine.cancels.contains(engine.lastJobID))
