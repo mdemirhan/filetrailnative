@@ -1958,3 +1958,11 @@ anything that differed from the plan, and anything found on the way that is not 
   0.63 s of CPU time in a debug build. Found, not fixed (same shape, next to it): in `ExplorerWriteSession`,
   `leftPaths` filters each left path against `result.replacedPaths` with `contains`, quadratic for a Replace of
   many items.
+- 2026-11-10. 1.4 skipped, left for the owner. The finding holds, but the fix as written makes a new fault. `goBack`
+  and `goForward` take their target from the history index already moved by a Back still in flight, so two quick
+  Backs on [A, B, C] go to B and then A. Restoring the index to `leftPlace.index` when a navigation returns
+  `.superseded` would put it back on C after the second Back has moved it to A, whichever read comes back first,
+  leaving A on screen with the index on C. A fix that holds: remember the index of the folder on screen while a
+  move is ahead of it; restore it when a push, a replace or a read in place (`.none`) starts, and when the current
+  navigation fails with the old folder on screen; do nothing on `.superseded`, and leave it as moved when another
+  Back, Forward or jump starts.
