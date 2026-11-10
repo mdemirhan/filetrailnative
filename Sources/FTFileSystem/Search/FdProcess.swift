@@ -91,7 +91,7 @@ public final class FdProcess: SearchProcess, @unchecked Sendable {
         posix_spawn_file_actions_addopen(&actions, 0, "/dev/null", O_RDONLY, 0)
         posix_spawn_file_actions_adddup2(&actions, outPipe[1], 1)
         posix_spawn_file_actions_adddup2(&actions, errPipe[1], 2)
-        posix_spawn_file_actions_addchdir_np(&actions, cwd)
+        posix_spawn_file_actions_addchdir(&actions, cwd)
 
         var attributes: posix_spawnattr_t?
         posix_spawnattr_init(&attributes)

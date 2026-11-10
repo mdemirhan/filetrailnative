@@ -128,7 +128,7 @@ File Trail is a signed and notarized app. Get the latest from the [releases page
 2. Move `File Trail.app` into your Applications folder.
 3. Open it.
 
-File Trail runs on Apple Silicon Macs with macOS 14 Sonoma or later.
+File Trail runs on Apple Silicon Macs with macOS 26 Tahoe or later.
 
 ## Build from source
 

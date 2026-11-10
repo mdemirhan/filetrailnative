@@ -487,7 +487,6 @@ struct SidebarFileDrops {
 final class SidebarTypeaheadPill: NSView {
     private let label = TextBoxField(labelWithString: "Jump to")
     private let value = TextBoxField(labelWithString: "")
-    private var fill = NSColor.clear
     private var border = NSColor.clear
 
     override var isFlipped: Bool { true }
@@ -519,9 +518,7 @@ final class SidebarTypeaheadPill: NSView {
         value.font = NSFont.monospacedDigitSystemFont(ofSize: size, weight: .regular)
         value.textColor = ChromeColors.color(theme.accent.pillText)
         value.stringValue = query
-        fill = ChromeColors.color(theme.palette.bgElevated, percent: 92)
         border = ChromeColors.color(theme.accent.border)
-        layer?.backgroundColor = fill.cgColor
         layer?.borderColor = border.cgColor
         layer?.borderWidth = 1
         needsLayout = true
@@ -537,7 +534,6 @@ final class SidebarTypeaheadPill: NSView {
 
     override func layout() {
         super.layout()
-        layer?.cornerRadius = bounds.height / 2
         GlassSurface.installFloating(in: self, radius: bounds.height / 2)
         let line = SidebarText.lineHeight(label.font ?? .systemFont(ofSize: 12))
         let labelWidth = SidebarText.width(label.stringValue, font: label.font ?? .systemFont(ofSize: 12))

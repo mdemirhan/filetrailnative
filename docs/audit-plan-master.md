@@ -812,7 +812,7 @@ while `PreferencesSanitizer.apply` falls back per key.
 
 Decision 2.
 
-### [ ] 4.1. Raise the deployment target and remove the fallbacks
+### [x] 4.1. Raise the deployment target and remove the fallbacks
 
 - `Package.swift` line 6: `platforms: [.macOS("26.0")]` (the string form works with tools version 6.0).
 - `Resources/Info.plist`: `LSMinimumSystemVersion` to `26.0`. `README.md` line 131 and any other statement of
@@ -2127,3 +2127,11 @@ anything that differed from the plan, and anything found on the way that is not 
   Found, not fixed: `StartupTabs.resolve` adds the launch folder (a folder opened with the app) as a new tab to a
   restored window that already has 25, so that window shows 26 and saves the first 25, the launch folder not among
   them; which tab should give way is the owner's call.
+- 2026-11-11. 4.1: the minimum is macOS 26 (Package.swift, Info.plist, README). The glass path is the only one; the
+  toolbar keeps its macOS 15 branches only. Differs from the plan: the notifications', progress card's and type-select
+  pill's edge and shadow stay, as glass keeps them over a white pane (`installFloating`); only their opaque fill and
+  corner radius, which glass replaced, are gone. Kept: `toolbarWillAddItem`/`toolbarDidRemoveItem` (not sure the
+  `itemIdentifiers` observation sees every change); the SDK restamp in `build-app.sh`, as SwiftPM still stamps the SDK
+  as 26.0 while the app is built with 27.0. Raising the target made `posix_spawn_file_actions_addchdir_np` deprecated;
+  fd is now started with `posix_spawn_file_actions_addchdir`. Found, not fixed: the notification's icon cuts its sign
+  out in `contextMenuBg`, the opaque card's colour, which glass no longer has.

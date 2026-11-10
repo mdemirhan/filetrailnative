@@ -75,7 +75,6 @@ extension ExplorerWindowlessTests {
 
         // What floats briefly lies on glass, as the system's alert does; a sheet to fill in stays opaque, as the system's
         // sheet does, with its corners.
-        @available(macOS 26, *)
         @Test func anAlertIsOnGlassAndTheGoToBoxIsOpaque() async throws {
             let (harness, tab) = try await open()
             let window = try #require(tab.window)

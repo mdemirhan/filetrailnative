@@ -35,12 +35,13 @@ struct AlertContent {
 
     var isStacked: Bool { stacked ?? AlertButtons.isStacked(count: buttons.count) }
     /// A plain question lies on glass. One with more to read or fill in stays on the opaque panel.
-    @MainActor var isOnGlass: Bool { GlassSurface.isAvailable && !wide && accessory == nil }
+    @MainActor var isOnGlass: Bool { !wide && accessory == nil }
 }
 
 /// A macOS alert: a bold title and a short message on a compact panel over the window, the buttons across the bottom,
-/// no icon. A plain one lies on glass from macOS 26; otherwise the panel is opaque with the text centred. A click
-/// outside does nothing; it is answered with a button, Return or Escape.
+/// no icon. A plain one lies on glass; a wide one, or one that holds a list or a field, is opaque, and the text of one
+/// that holds them and isn't wide is centred. A click outside does nothing; it is answered with a button, Return or
+/// Escape.
 @MainActor
 final class AlertCard: NSView, DialogPanel, ThemeApplying {
     let content: AlertContent

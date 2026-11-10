@@ -575,13 +575,7 @@ private struct StuckFileSystem: ReadOnlyWriteFileSystem {
             // now, up to where it waits for the disk. Waiting for the disk call
             // instead let the first give up (after 20 ms) before the second came when the main actor or the disk
             // thread was kept waiting by other suites, and the second then looked again rather than doing nothing.
-            let first: Task<UndoPrepared, any Error>
-            if #available(macOS 26, *) {
-                first = Task.immediate { @MainActor in try await coordinator.prepareUndo(.undo) }
-            } else {
-                first = Task { @MainActor in try await coordinator.prepareUndo(.undo) }
-                await Task.yield()
-            }
+            let first = Task.immediate { @MainActor in try await coordinator.prepareUndo(.undo) }
             let meanwhile = try await t.coordinator.prepareUndo(.undo)
             #expect(meanwhile.ticket == nil)
             #expect(meanwhile.refusal == .nothing)

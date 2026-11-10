@@ -77,7 +77,7 @@ extension ExplorerWindowlessTests {
             #expect(toolbar.toolbar.items.first?.itemIdentifier == .sidebarTrackingSeparator)
             #expect(toolbar.toolbar.items.contains { $0.itemIdentifier == .space })
             #expect(toolbar.searchItem != nil)
-            if #available(macOS 15, *) { #expect(toolbar.item(.clipboard)?.isHidden == true) }
+            #expect(toolbar.item(.clipboard)?.isHidden == true)
             #expect(toolbar.item(.back)?.view === toolbar.button(.back))
 
             // A saved order is drawn as saved, wherever the required items are; a missing required item is added.
@@ -93,7 +93,7 @@ extension ExplorerWindowlessTests {
             toolbar.reload()
             harness.layout(tab)
             #expect(toolbar.rowKeys.contains("clipboard"))
-            if #available(macOS 15, *) { #expect(toolbar.item(.clipboard)?.isHidden == false) }
+            #expect(toolbar.item(.clipboard)?.isHidden == false)
             let clipboard = try #require(toolbar.clipboardButton)
             #expect(clipboard.count.stringValue == "2")
             tab.services.clipboard.set(.empty, from: nil)

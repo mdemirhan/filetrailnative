@@ -63,11 +63,9 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         toolbar.displayMode = .iconOnly
         toolbar.allowsUserCustomization = true
         toolbar.autosavesConfiguration = false
-        if #available(macOS 15, *) {
-            toolbar.allowsDisplayModeCustomization = false
-            identifiersObservation = toolbar.observe(\.itemIdentifiers) { [weak self] _, _ in
-                MainActor.assumeIsolated { self?.toolbarChanged() }
-            }
+        toolbar.allowsDisplayModeCustomization = false
+        identifiersObservation = toolbar.observe(\.itemIdentifiers) { [weak self] _, _ in
+            MainActor.assumeIsolated { self?.toolbarChanged() }
         }
     }
 
@@ -193,14 +191,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         applying = true
         defer { applying = false }
         closeSortMenu()
-        if #available(macOS 15, *) {
-            toolbar.itemIdentifiers = wanted
-        } else {
-            for index in toolbar.items.indices.reversed() { toolbar.removeItem(at: index) }
-            for (index, identifier) in wanted.enumerated() {
-                toolbar.insertItem(withItemIdentifier: identifier, at: index)
-            }
-        }
+        toolbar.itemIdentifiers = wanted
     }
 
     // MARK: State
@@ -281,11 +272,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 }
                 // Only while something is copied. The sheet still offers it, so it can be moved.
                 if clipboardCount == 0 { button.letKeyboardGo() }
-                if #available(macOS 15, *) {
-                    item.isHidden = clipboardCount == 0
-                } else {
-                    button.isHidden = clipboardCount == 0
-                }
+                item.isHidden = clipboardCount == 0
             default:
                 if let command = ToolbarItems.definition(id).commandType {
                     button.isEnabled = context.canPerform(command)

@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "FileTrail",
-    platforms: [.macOS(.v14)],
+    platforms: [.macOS("26.0")],
     targets: [
         .target(name: "CFileTrail", path: "Sources/CFileTrail"),
         .target(name: "FTFoundation", path: "Sources/FTFoundation"),

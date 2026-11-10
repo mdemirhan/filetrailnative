@@ -61,7 +61,7 @@ extension ExplorerWindowlessTests {
             #expect(window.toolbar?.allowsUserCustomization == true)
             #expect(window.toolbar?.autosavesConfiguration == false)
             #expect(window.toolbar?.displayMode == .iconOnly)
-            if #available(macOS 15, *) { #expect(window.toolbar?.allowsDisplayModeCustomization == false) }
+            #expect(window.toolbar?.allowsDisplayModeCustomization == false)
             #expect(workspace.sidebarItem.behavior == .sidebar)
             // The band: 52 points, the content's panes under it.
             #expect(WindowChrome.panesTop(window) == 52)

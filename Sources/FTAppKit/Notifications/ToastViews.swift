@@ -1,16 +1,14 @@
 import AppKit
 import FTFoundation
 
-/// The surface of menus, notifications and the progress card: the opaque menu color, a half-point edge, the menu radius
-/// and its shadow (`--context-menu-bg`, `-border`, `-shadow`, `--radius-menu`).
+/// The edge and shadow of the notifications and the progress card, which lie on glass: a half-point edge and the
+/// menu's shadow (`--context-menu-border`, `-shadow`). Glass alone has no edge over a white pane.
 @MainActor
 enum MenuSurface {
     static func apply(to layer: CALayer?, theme: Theme, borderWidth: Double) {
         let palette = theme.palette
-        layer?.backgroundColor = NSColor(palette.contextMenuBg).cgColor
         layer?.borderColor = NSColor(palette.contextMenuBorder).cgColor
         layer?.borderWidth = CGFloat(borderWidth)
-        layer?.cornerRadius = CGFloat(DesignTokens.radii.menu)
         layer?.masksToBounds = false
         // The first shadow layer carries the look (offset 8, blur 32); CSS blur is twice the radius of a CALayer's.
         if let main = palette.contextMenuShadow.first {
