@@ -357,5 +357,25 @@ extension ExplorerWindowlessTests {
             let items = kinds.enumerated().map { DragItem(path: "/x\($0.offset)", kind: $0.element) }
             #expect(TabDragDrop.dragDirectories(items) == [true, true, true, false, false, false])
         }
+
+        // A drop on a folder of the tree that doesn't start leaves the tree nothing to select when the next write ends.
+        @Test func aDropOnATreeFolderThatDoesntStartLeavesNothingToSelect() async throws {
+            let window = try await WritingWindow.open()
+            let saved = TabDragDrop.bringForward
+            var broughtForward = 0
+            TabDragDrop.bringForward = { _ in broughtForward += 1 }
+            defer { TabDragDrop.bringForward = saved }
+            let target = TabDragDrop.Target(
+                surface: .tree, path: path(window, "Beta"), supportsMove: true, selectsInTree: true)
+            #expect(
+                window.tab.dragDrop.drop(
+                    session: external([path(window, "gone.txt")]), target: target, offersMove: true,
+                    modifiers: [.option], sequence: 11))
+            #expect(await waitUntil { broughtForward == 1 })
+            #expect(!window.recorder.shown.isEmpty)
+            let actions = try #require(window.tab.writeActions)
+            #expect(actions.session.pendingTreeSelectionPath == nil)
+            await window.close()
+        }
     }
 }

@@ -615,6 +615,13 @@ final class TabDragDrop {
                 mode: operation == .copy ? .copy : .cut, sources: session.facts.sourcePaths,
                 destination: target.path, action: action, initiator: .dragDrop, checksBusy: false,
                 moveFromSearchResults: action == .moveTo && session.sourceSurface == .search)
+            // A drop that didn't start leaves the tree nothing to select when the next write ends.
+            switch outcome {
+            case .blocked, .error, .cancelled:
+                if target.selectsInTree { actions.session.pendingTreeSelectionPath = nil }
+            case .queued, .review:
+                break
+            }
         }
         switch outcome {
         case .queued(let operationId):

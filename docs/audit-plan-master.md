@@ -681,7 +681,7 @@ review alert re-enables them (`CopyPastePresenters.swift:101`).
 `BatchRename/BatchRenameSheetView.swift:372` checks plain
 Escape; everything else uses `KeyCode.isCancel`.
 
-### [ ] 3D.5. `pendingTreeSelectionPath` is not cleared after a cancelled or failed drop
+### [x] 3D.5. `pendingTreeSelectionPath` is not cleared after a cancelled or failed drop
 
 `DragDrop/TabDragDrop.swift:613`; `duplicateFromMenu` clears it (`MainWindowController+Writes.swift:207-210`).
 
