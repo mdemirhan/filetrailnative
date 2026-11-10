@@ -797,7 +797,7 @@ Found by both audits.
 `ContextMenu/ContextMenuRules.swift:203-207`;
 `Paths.isTrashFolder` also covers other disks' Trash folders, and the write guard refuses them anyway.
 
-### [ ] 3G.6. A settings patch with one bad value is dropped whole
+### [x] 3G.6. A settings patch with one bad value is dropped whole
 
 `Settings/SettingsValues.swift:31` decodes strictly
 while `PreferencesSanitizer.apply` falls back per key.

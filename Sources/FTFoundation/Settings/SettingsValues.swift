@@ -27,11 +27,11 @@ public enum SettingsValues {
         return all.filter { payloadKeys.contains($0.key) }
     }
 
-    /// `preferences` with the values of `patch`; keys it doesn't know are left out.
+    /// `preferences` with the values of `patch`, checked key by key as the app's store checks them: a value that
+    /// isn't valid for its key takes the key's default, and the rest of the patch still applies.
     public static func applying(_ patch: PreferencesPatch, to preferences: AppPreferences) -> AppPreferences {
-        guard !patch.isEmpty, var all = (try? JSONNode.of(preferences).object) else { return preferences }
-        all.merge(patch) { _, new in new }
-        return (try? JSONNode.object(all).decode(AppPreferences.self)) ?? preferences
+        guard !patch.isEmpty else { return preferences }
+        return PreferencesSanitizer.apply(patch, to: preferences, defaults: AppPreferences.defaults())
     }
 
     /// `describeKeys`: the keys a sentence names, or nothing when none of them is set, as "⌘O and ⌘↓ always open.".
