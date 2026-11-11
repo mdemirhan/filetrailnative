@@ -1699,7 +1699,7 @@ hand-drawn parts) go with the control; tests of behaviour stay.
 - [ ] 10.5 `Tests`: comments
 - [ ] 10.6 `Tests`: names of tests and fixtures (step 6)
 - [ ] 10.7 Identifiers in Sources (step 7), after [Q16]
-- [ ] 10.8 `tools`, `scripts`, `docs`
+- [x] 10.8 `tools`, `scripts`, `docs`
 
 Do this last so removed code is not rewritten first. The rule is in `CLAUDE.md`. The audit found several hundred
 comment lines across all targets, tests, tools and docs that name Electron IPC channels, JavaScript constants and
@@ -2523,3 +2523,7 @@ anything that differed from the plan, and anything found on the way that is not 
   comments starting with a live identifier; POSIX call names. Found, not fixed: `Date.epochMilliseconds` is public
   in both FTFoundation (rounds) and FTFileSystem (rounds down); identifiers with the old vocabulary besides Q16's five
   (`sortedJS`, `jsTrimmed`, `isJSWhitespace`, `jsLowercased`, `jsRound`, `nodeText`, `libuvWords`, `menuAccelerator`).
+- 2026-11-11. 10.8: tools and docs reworded (the fixture clock comment was also wrong: only recent items count back
+  from the fixed now, and the README screenshots freeze the app's clock at 14:46); scripts and README needed nothing.
+  Found, not changed: every element in `tools/capture/elements.json` sits under a key named `swift`, a leftover of a
+  sibling key for the earlier app; it is data the automation reads.
