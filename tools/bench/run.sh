@@ -20,7 +20,7 @@ for arg in "$@"; do
     esac
 done
 
-fixtures="$HOME/Library/Caches/filetrail-dev/fixtures/bench"
+fixtures="${FILETRAIL_DEV_CACHE:-$HOME/Library/Caches/filetrail-dev}/fixtures/bench"
 if [ ! -d "$fixtures/files-3000" ]; then
     echo "missing fixtures in $fixtures (see tools/fixtures/README.md)" >&2
     exit 2

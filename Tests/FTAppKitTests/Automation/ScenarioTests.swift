@@ -60,10 +60,11 @@
 
         @Test func resolvesPathsAgainstTheFixtures() throws {
             let scenario = try parse(#"{"name": "x", "root": "lighthouse/Lighthouse", "steps": []}"#)
-            let environment = ["FILETRAIL_FIXTURES": "/fixtures"]
+            let environment = ["FILETRAIL_DEV_CACHE": "/cache"]
             #expect(
-                scenario.resolve("app/src", environment: environment).path == "/fixtures/lighthouse/Lighthouse/app/src")
-            #expect(scenario.resolve(".", environment: environment).path == "/fixtures/lighthouse/Lighthouse")
+                scenario.resolve("app/src", environment: environment).path
+                    == "/cache/fixtures/lighthouse/Lighthouse/app/src")
+            #expect(scenario.resolve(".", environment: environment).path == "/cache/fixtures/lighthouse/Lighthouse")
             #expect(scenario.resolve("/tmp/x", environment: environment).path == "/tmp/x")
             let home = FileManager.default.homeDirectoryForCurrentUser.path
             #expect(scenario.resolve("~/Empty", environment: environment).path == home + "/Empty")

@@ -6,7 +6,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 
-fixtures="$HOME/Library/Caches/filetrail-dev/fixtures/bench"
+fixtures="${FILETRAIL_DEV_CACHE:-$HOME/Library/Caches/filetrail-dev}/fixtures/bench"
 if [ ! -d "$fixtures/files-3000" ] || [ ! -d "$fixtures/files-100000" ]; then
     echo "missing fixtures in $fixtures (see tools/fixtures/README.md)" >&2
     exit 2

@@ -6,7 +6,7 @@
     struct Scenario: Equatable, Sendable {
         var name: String
         /// The folder relative paths in `open` steps start from: absolute, `~/…`, or relative to the fixtures
-        /// folder (`FILETRAIL_FIXTURES`, by default `~/Library/Caches/filetrail-dev/fixtures`).
+        /// folder (`$FILETRAIL_DEV_CACHE/fixtures`, by default `~/Library/Caches/filetrail-dev/fixtures`).
         var root: String?
         var steps: [Step]
 
@@ -278,7 +278,8 @@
                 if text.hasPrefix("~/") { return home + text.dropFirst() }
                 return text
             }
-            let fixtures = expand(environment["FILETRAIL_FIXTURES"] ?? "~/Library/Caches/filetrail-dev/fixtures")
+            let cache = expand(environment["FILETRAIL_DEV_CACHE"] ?? "~/Library/Caches/filetrail-dev")
+            let fixtures = (cache as NSString).appendingPathComponent("fixtures")
             var base = expand(root ?? "")
             if !base.hasPrefix("/") { base = (fixtures as NSString).appendingPathComponent(base) }
             let target = expand(path)
