@@ -318,10 +318,17 @@ struct CommandAvailabilityTests {
         #expect(favorite(Self.select(Self.note)) == nil)
         #expect(favorite(Self.select(Self.folder, Self.note)) == nil)
         #expect(favorite(Self.treeFocused("/Users")) == "/Users")
-        // Search results are not a folder, and Trash is a favorite that stays.
+        // Search results are not a folder, and Trash is never added: it is always under Locations.
         #expect(favorite(Self.select { $0.isSearchMode = true }) == nil)
         #expect(
             favorite(Self.treeFocused("/Users/demo/.Trash") { $0.trashPath = "/Users/demo/.Trash" }) == nil)
+        // A Trash favorite can be taken out from the File menu, as from its own menu.
+        let trashFavorite = Self.treeFocused("/Users/demo/.Trash") {
+            $0.trashPath = "/Users/demo/.Trash"
+            $0.trashIsFavorite = true
+        }
+        #expect(favorite(trashFavorite) == "/Users/demo/.Trash")
+        #expect(Self.run(.toggleFavorite, trashFavorite))
         #expect(Self.run(.toggleFavorite, Self.select(Self.folder)))
         #expect(!Self.run(.toggleFavorite, Self.select(Self.note)))
     }

@@ -2325,7 +2325,8 @@ extension MainWindowController: ExplorerWindowContext {
             writeOperationLocked: isWriteLocked, canGoBack: canGoBack,
             canGoForward: canGoForward, hasCachedSearch: searchStore?.session.hasCachedSearch ?? false,
             tabCount: group?.tabs.count ?? 1, trashPath: FavoriteLabel.trashPath(homePath: home), homePath: home,
-            trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath)
+            trashIsEmpty: trashIsEmpty, ejectTargetPath: ejectTargetPath,
+            trashIsFavorite: sidebar.isFavorite(FavoriteLabel.trashPath(homePath: home)))
     }
 
     /// The folders File > Calculate Size measures now.
@@ -2333,11 +2334,11 @@ extension MainWindowController: ExplorerWindowContext {
 
     /// What the commands' target rules read.
     private var commandTargets: CommandAvailability.TargetContext {
-        CommandAvailability.TargetContext(
+        let trashPath = FavoriteLabel.trashPath(homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+        return CommandAvailability.TargetContext(
             currentPath: shownFolderPath, selectedPathsInViewOrder: selectedPaths, activeContentEntries: commandEntries,
             selectedTreeTargetPath: sidebar.selectedTreeTargetPath, isSearchMode: searchRootPath != nil,
-            trashPath: FavoriteLabel.trashPath(homePath: FileManager.default.homeDirectoryForCurrentUser.path),
-            focusedPane: commandPane)
+            trashPath: trashPath, trashIsFavorite: sidebar.isFavorite(trashPath), focusedPane: commandPane)
     }
 
     var selectedPaths: [String] { content.selection.paths }

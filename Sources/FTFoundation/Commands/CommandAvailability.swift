@@ -49,8 +49,10 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
     public var canGoForward: Bool?
     public var hasCachedSearch: Bool?
     public var tabCount: Int?
-    /// Trash is a favorite that stays: it is never offered for removal.
+    /// Trash is never added to Favorites; it is offered for removal only when it is one.
     public var trashPath: String?
+    /// The Trash is among the favorites, so File ▸ Remove from Favorites can take it out.
+    public var trashIsFavorite: Bool
     /// Where the home folder is, to tell what is in the Trash.
     public var homePath: String?
     /// The Trash has nothing to empty (nil: it can't be told).
@@ -65,7 +67,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         pasteDestinationPath: String? = nil, isSearchMode: Bool = false, openItemLimit: Int = 5,
         writeOperationLocked: Bool = false, canGoBack: Bool? = nil, canGoForward: Bool? = nil,
         hasCachedSearch: Bool? = nil, tabCount: Int? = nil, trashPath: String? = nil, homePath: String? = nil,
-        trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil
+        trashIsEmpty: Bool? = nil, ejectTargetPath: String? = nil, trashIsFavorite: Bool = false
     ) {
         self.shortcutContext = shortcutContext
         self.currentPath = currentPath
@@ -86,6 +88,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
         self.homePath = homePath
         self.trashIsEmpty = trashIsEmpty
         self.ejectTargetPath = ejectTargetPath
+        self.trashIsFavorite = trashIsFavorite
     }
 }
 
@@ -156,13 +159,14 @@ public enum CommandAvailability {
         public var selectedTreeTargetPath: String?
         public var isSearchMode: Bool
         public var trashPath: String?
+        public var trashIsFavorite: Bool
         public var focusedPane: FocusedPane?
 
         public init(
             currentPath: String = "", selectedPathsInViewOrder: [String] = [],
             activeContentEntries: [CommandEntry] = [], selectedTreeTargetPath: String? = nil,
             isSearchMode: Bool = false,
-            trashPath: String? = nil, focusedPane: FocusedPane? = nil
+            trashPath: String? = nil, trashIsFavorite: Bool = false, focusedPane: FocusedPane? = nil
         ) {
             self.currentPath = currentPath
             self.selectedPathsInViewOrder = selectedPathsInViewOrder
@@ -170,6 +174,7 @@ public enum CommandAvailability {
             self.selectedTreeTargetPath = selectedTreeTargetPath
             self.isSearchMode = isSearchMode
             self.trashPath = trashPath
+            self.trashIsFavorite = trashIsFavorite
             self.focusedPane = focusedPane
         }
 
@@ -178,7 +183,8 @@ public enum CommandAvailability {
                 currentPath: context.currentPath, selectedPathsInViewOrder: context.selectedPathsInViewOrder,
                 activeContentEntries: context.activeContentEntries,
                 selectedTreeTargetPath: context.selectedTreeTargetPath, isSearchMode: context.isSearchMode,
-                trashPath: context.trashPath, focusedPane: context.shortcutContext.focusedPane)
+                trashPath: context.trashPath, trashIsFavorite: context.trashIsFavorite,
+                focusedPane: context.shortcutContext.focusedPane)
         }
     }
 
@@ -200,7 +206,8 @@ public enum CommandAvailability {
     }
 
     /// The folder File > Add to Favorites acts on: the tree's folder when the tree has the
-    /// keyboard, otherwise the one folder selected in the list, or the folder on screen when nothing is selected.
+    /// keyboard, otherwise the one folder selected in the list, or the folder on screen when nothing is selected. The
+    /// Trash is never added, as it is always under Locations; a Trash favorite can be taken out.
     public static func favoriteTargetPath(_ context: TargetContext) -> String? {
         if context.isSearchMode {
             return nil
@@ -213,8 +220,8 @@ public enum CommandAvailability {
         } else {
             target = singleSelectedFolderPath(context)
         }
-        // `targetPath !== context.trashPath`: a missing trash path is undefined, never equal to a path.
-        guard let target, context.trashPath.map({ !JSString.equals($0, target) }) ?? true else { return nil }
+        guard let target else { return nil }
+        if let trash = context.trashPath, JSString.equals(trash, target), !context.trashIsFavorite { return nil }
         return target
     }
 
