@@ -153,30 +153,15 @@ enum SettingsMetrics {
     static let listRowHeight: CGFloat = 40
     static let columnRowHeight: CGFloat = 30
     static let listRowPadding: CGFloat = 12
-    /// The drag handle: 12 by 8, stroke 1.4.
-    static let dragHandleSize = NSSize(width: 12, height: 8)
-    static let dragHandleStroke: CGFloat = 1.4
-    static let dragHandlePath = "M1 1h10M1 4h10M1 7h10"
-    /// The drop line, 2 px of accent.
-    static let dropLineWidth: CGFloat = 2
+    /// The drag handle's symbol is 11 points.
+    static let dragHandleSize: CGFloat = 11
     /// A list row's icon, 20 by 20.
     static let listIconSize: CGFloat = 20
-    /// The bar under a list: 28 tall, 6 of padding each side.
+    /// The bar under a list: 28 tall, 6 of padding each side, 8 between its controls; a segment is 24 wide.
     static let listBarHeight: CGFloat = 28
     static let listBarPadding: CGFloat = 6
-    /// A button of the list bar: 24 by 20, its icon 14 with a 1.5 stroke.
-    static let listBarButtonSize = NSSize(width: 24, height: 20)
-    static let listBarIconSize: CGFloat = 14
-    static let listBarIconStroke: CGFloat = 1.5
-    /// A text button of the list bar: 8 of padding each side.
-    static let listBarTextPadding: CGFloat = 8
-    /// The list bar's divider: 1 by 14, 4 each side.
-    static let listBarDividerHeight: CGFloat = 14
-    static let listBarDividerMargin: CGFloat = 4
-    static let addPath = "M8 3.5v9M3.5 8h9"
-    static let removePath = "M3.5 8h9"
-    static let moveUpPath = "M4 10l4-4 4 4"
-    static let moveDownPath = "M4 6l4 4 4-4"
+    static let listBarGap: CGFloat = 8
+    static let listBarSegmentWidth: CGFloat = 24
 
     // MARK: Favorite icons
 
@@ -232,11 +217,6 @@ enum SettingsMetrics {
 
     /// The 0.5 px edges of swatches, thumbnails and the push button's bezel.
     static let hairline: CGFloat = 0.5
-    /// A row starts to drag 3 points from where it was pressed, and is dimmed to 0.4 while dragged.
-    static let dragThreshold: CGFloat = 3
-    static let draggingOpacity: CGFloat = 0.4
-    /// The list bar's icons are drawn in a 16 by 16 box.
-    static let listBarIconBox: CGFloat = 16
     /// The custom swatch's conic gradient is drawn in this many wedges.
     static let conicSteps = 120
     /// The focus ring: the accent at 50%.

@@ -209,13 +209,10 @@ final class SettingsPageView: NSView {
                 leading: fixedCheckbox,
                 height: SettingsMetrics.columnRowHeight),
             theme: theme)
-        let up = SettingsListBarButton(
-            .icon(SettingsMetrics.moveUpPath), label: "Move Up", tooltip: "Move Up", theme: theme)
-        let down = SettingsListBarButton(
-            .icon(SettingsMetrics.moveDownPath), label: "Move Down", tooltip: "Move Down", theme: theme)
-        let restore = SettingsListBarButton(
-            .text("Restore Defaults"), label: "Restore the default column order", theme: theme)
-        list.setBar([.button(up), .button(down), .spacer, .button(restore)])
+        let up = SettingsListBarButton(.moveUp, label: "Move Up", tooltip: "Move Up")
+        let down = SettingsListBarButton(.moveDown, label: "Move Down", tooltip: "Move Down")
+        let restore = SettingsListBarButton(.text("Restore Defaults"), label: "Restore the default column order")
+        list.setBar([.segments([up, down]), .spacer, .button(restore)])
         let move: (Int, Int) -> Void = { [weak self] from, to in
             self?.update { $0[keyPath: order] = SettingsValues.move($0[keyPath: order], from: from, to: to) }
         }
@@ -234,8 +231,8 @@ final class SettingsPageView: NSView {
             down.isEnabled = index.map { $0 < keys.count - 1 } ?? false
             restore.isEnabled = keys != defaultOrder
             let selected = index.flatMap { keys.indices.contains($0) ? labels(keys[$0]) : nil }
-            up.setAccessibilityLabel(selected.map { "Move \($0) Up" } ?? "Move Up")
-            down.setAccessibilityLabel(selected.map { "Move \($0) Down" } ?? "Move Down")
+            up.label = selected.map { "Move \($0) Up" } ?? "Move Up"
+            down.label = selected.map { "Move \($0) Down" } ?? "Move Down"
         }
         list.onSelectionChange = syncBar
         up.onPress = { [weak list] in
@@ -263,14 +260,11 @@ final class SettingsPageView: NSView {
 
     private func favoritesList() -> SettingsListView {
         let list = SettingsListView(label: "Favorites", keys: .items, theme: theme)
-        let add = SettingsListBarButton(
-            .icon(SettingsMetrics.addPath), label: "Add Favorite", tooltip: "Add Favorite", theme: theme)
-        let remove = SettingsListBarButton(
-            .icon(SettingsMetrics.removePath), label: "Remove", tooltip: "Remove", theme: theme)
-        let change = SettingsListBarButton(.text("Change…"), label: "Change", theme: theme)
-        let restore = SettingsListBarButton(
-            .text("Restore Defaults"), label: "Restore the default favorites", theme: theme)
-        list.setBar([.button(add), .button(remove), .divider, .button(change), .spacer, .button(restore)])
+        let add = SettingsListBarButton(.add, label: "Add Favorite", tooltip: "Add Favorite")
+        let remove = SettingsListBarButton(.remove, label: "Remove", tooltip: "Remove")
+        let change = SettingsListBarButton(.text("Change…"), label: "Change")
+        let restore = SettingsListBarButton(.text("Restore Defaults"), label: "Restore the default favorites")
+        list.setBar([.segments([add, remove]), .button(change), .spacer, .button(restore)])
         let home = store?.homePath ?? ""
         let name: (FavoritePreference) -> String = {
             FavoriteLabel.label(for: $0.path, homePath: home, startupDiskName: StartupDisk.shared.name)
@@ -281,8 +275,8 @@ final class SettingsPageView: NSView {
             let selected = list.selectedIndex.flatMap { favorites.indices.contains($0) ? favorites[$0] : nil }
             remove.isEnabled = selected != nil
             change.isEnabled = selected != nil
-            remove.setAccessibilityLabel(selected.map { "Remove \(name($0))" } ?? "Remove")
-            change.setAccessibilityLabel(selected.map { "Change \(name($0))" } ?? "Change")
+            remove.label = selected.map { "Remove \(name($0))" } ?? "Remove"
+            change.label = selected.map { "Change \(name($0))" } ?? "Change"
         }
         list.onMove = { [weak self] from, to in
             self?.update { $0.favorites = SettingsValues.move($0.favorites, from: from, to: to) }
@@ -506,21 +500,18 @@ final class SettingsPageView: NSView {
 
     private func openWithList() -> SettingsListView {
         let list = SettingsListView(label: "First in Open With", keys: .items, theme: theme)
-        let add = SettingsListBarButton(
-            .icon(SettingsMetrics.addPath), label: "Add app to Open With", tooltip: "Add app to Open With", theme: theme
-        )
-        let remove = SettingsListBarButton(
-            .icon(SettingsMetrics.removePath), label: "Remove", tooltip: "Remove", theme: theme)
-        let change = SettingsListBarButton(.text("Change…"), label: "Change", theme: theme)
-        list.setBar([.button(add), .button(remove), .divider, .button(change), .spacer])
+        let add = SettingsListBarButton(.add, label: "Add app to Open With", tooltip: "Add app to Open With")
+        let remove = SettingsListBarButton(.remove, label: "Remove", tooltip: "Remove")
+        let change = SettingsListBarButton(.text("Change…"), label: "Change")
+        list.setBar([.segments([add, remove]), .button(change), .spacer])
         list.onSelectionChange = { [weak list, weak self] in
             guard let list, let self else { return }
             let apps = self.preferences.openWithApplications
             let selected = list.selectedIndex.flatMap { apps.indices.contains($0) ? apps[$0] : nil }
             remove.isEnabled = selected != nil
             change.isEnabled = selected != nil
-            remove.setAccessibilityLabel(selected.map { "Remove \($0.appName)" } ?? "Remove")
-            change.setAccessibilityLabel(selected.map { "Change \($0.appName)" } ?? "Change")
+            remove.label = selected.map { "Remove \($0.appName)" } ?? "Remove"
+            change.label = selected.map { "Change \($0.appName)" } ?? "Change"
         }
         // Each app is known by its id, so moving, removing and changing stay right as the list changes.
         let id: (Int) -> String? = { [weak self] index in

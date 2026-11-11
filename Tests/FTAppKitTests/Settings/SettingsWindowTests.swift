@@ -295,7 +295,7 @@ import Testing
         let (controller, recorder) = Kit.make(tab: .browsing, preferences: preferences, homePath: home)
         let list = try Kit.list("Favorites", in: controller)
         #expect(Kit.names(list) == ["Applications", "Desktop", "Documents", "Downloads"])
-        controller.window?.makeFirstResponder(list)
+        controller.window?.makeFirstResponder(list.table)
         list.keyDown(with: Kit.key(Kit.down.0, code: Kit.down.1, window: controller.window))
         #expect(list.selectedIndex == 1)
         recorder.pickedDirectory = "\(home)/Projects"
@@ -343,7 +343,7 @@ import Testing
 
         // The list takes the keyboard on its first row; ↓ selects the next, ⌥↓ moves the row and keeps it selected,
         // Return changes it, ⌫ removes it.
-        controller.window?.makeFirstResponder(list)
+        controller.window?.makeFirstResponder(list.table)
         #expect(list.selectedIndex == 0)
         list.keyDown(with: Kit.key(Kit.down.0, code: Kit.down.1, window: controller.window))
         #expect(list.selectedIndex == 1)
@@ -363,21 +363,21 @@ import Testing
         // + adds a folder once; a cancelled picker adds nothing.
         recorder.pickedDirectory = "/Users/demo/Music"
         let count = list.rows.count
-        Kit.click(Kit.button("Add Favorite", in: controller.settingsView))
+        Kit.click(Kit.barButton("Add Favorite", in: controller.settingsView))
         await Kit.settle()
         #expect(list.rows.count == count + 1)
-        Kit.click(Kit.button("Add Favorite", in: controller.settingsView))
+        Kit.click(Kit.barButton("Add Favorite", in: controller.settingsView))
         await Kit.settle()
         #expect(list.rows.count == count + 1)
         recorder.pickedDirectory = nil
-        Kit.click(Kit.button("Add Favorite", in: controller.settingsView))
+        Kit.click(Kit.barButton("Add Favorite", in: controller.settingsView))
         await Kit.settle()
         #expect(list.rows.count == count + 1)
         #expect(recorder.directoryRequests.last == home)
         // The new favorite's icon is inferred from its path.
         #expect(recorder.saved["favorites"]?.array?.last?["icon"] == .string("music"))
         // Restore Defaults puts back the home folder's favorites.
-        Kit.click(Kit.button("Restore the default favorites", in: controller.settingsView))
+        Kit.click(Kit.barButton("Restore the default favorites", in: controller.settingsView))
         #expect(Kit.names(list) == start)
     }
 
@@ -390,23 +390,23 @@ import Testing
         let list = try Kit.list("Favorites", in: controller)
         #expect(Kit.names(list) == ["Trash"])
         list.select(0)
-        let remove = try #require(Kit.button("Remove Trash", in: controller.settingsView) as? SettingsControlView)
+        let remove = try #require(Kit.barButton("Remove Trash", in: controller.settingsView))
         #expect(remove.isEnabled)
         Kit.click(remove)
         #expect(recorder.saved["favorites"] == .array([]))
         #expect(
-            Kit.button("Remove", in: controller.settingsView).map { ($0 as? SettingsControlView)?.isEnabled } == false)
+            Kit.barButton("Remove", in: controller.settingsView)?.isEnabled == false)
     }
 
     // A picker that fails says so; a cancelled one changes nothing
     @Test func saysWhenAPickerCouldNotBeShown() async throws {
         let (controller, recorder) = Kit.make(tab: .browsing)
         recorder.pickerFails = true
-        Kit.click(Kit.button("Add Favorite", in: controller.settingsView))
+        Kit.click(Kit.barButton("Add Favorite", in: controller.settingsView))
         await Kit.settle()
         #expect(controller.settingsView.noticeText?.stringValue == "Couldn’t choose a folder.")
         controller.settingsView.select(tab: .files)
-        Kit.click(Kit.button("Add app to Open With", in: controller.settingsView))
+        Kit.click(Kit.barButton("Add app to Open With", in: controller.settingsView))
         await Kit.settle()
         #expect(controller.settingsView.noticeText?.stringValue == "Couldn’t choose an app.")
     }
@@ -424,18 +424,18 @@ import Testing
         #expect(checks[3].accessibilityLabel() == "Show Date Created")
         // Checked with its checkbox, or with Space.
         Kit.click(checks[3])
-        controller.window?.makeFirstResponder(list)
+        controller.window?.makeFirstResponder(list.table)
         list.select(4)
         list.keyDown(with: Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window))
         #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
         #expect(recorder.saved["detailColumns"]?["permissions"] == .bool(true))
         // Moved with the arrow buttons, the keyboard, or a drag.
-        let restore = try #require(Kit.button("Restore the default column order", in: list) as? SettingsControlView)
+        let restore = try #require(Kit.barButton("Restore the default column order", in: list))
         #expect(!restore.isEnabled)
-        let down = try #require(Kit.button("Move Permissions Down", in: list) as? SettingsControlView)
+        let down = try #require(Kit.barButton("Move Permissions Down", in: list))
         #expect(!down.isEnabled)
         list.select(0)
-        Kit.click(Kit.button("Move Date Modified Down", in: list))
+        Kit.click(Kit.barButton("Move Date Modified Down", in: list))
         #expect(Kit.names(list).prefix(2) == ["Size", "Date Modified"])
         list.keyDown(with: Kit.key(Kit.up.0, code: Kit.up.1, modifiers: .command, window: controller.window))
         #expect(Kit.names(list).prefix(2) == ["Date Modified", "Size"])
@@ -579,16 +579,16 @@ import Testing
         list.move(1, to: 0)
         #expect(recorder.saved["openWithApplications"]?.array?.map { $0["id"] } == [.string("b"), .string("a")])
         recorder.pickedApplication = ApplicationSelection(appPath: "/Applications/Nova.app", appName: "Nova")
-        Kit.click(Kit.button("Change Gone", in: controller.settingsView))
+        Kit.click(Kit.barButton("Change Gone", in: controller.settingsView))
         await Kit.settle()
         #expect(Kit.names(list) == ["Nova", "Zed"])
-        Kit.click(Kit.button("Add app to Open With", in: controller.settingsView))
+        Kit.click(Kit.barButton("Add app to Open With", in: controller.settingsView))
         await Kit.settle()
         #expect(Kit.names(list) == ["Nova", "Zed", "Nova"])
         let ids = recorder.saved["openWithApplications"]?.array?.compactMap { $0["id"]?.string } ?? []
         #expect(ids.count == 3 && Set(ids).count == 3 && ids[2].hasPrefix("open-with-"))
         list.select(0)
-        Kit.click(Kit.button("Remove Nova", in: controller.settingsView))
+        Kit.click(Kit.barButton("Remove Nova", in: controller.settingsView))
         #expect(Kit.names(list) == ["Zed", "Nova"])
     }
 
@@ -668,8 +668,9 @@ import Testing
         #expect(list.rows.isEmpty)
         #expect(list.frame == NSRect(x: 0, y: 0, width: openWith.card.frame.width, height: 28))
         #expect(openWith.card.frame.height == 40)
-        // The bar's buttons are centred under its top line.
-        #expect(list.barButtons.allSatisfy { $0.frame.minY == 4.5 && $0.frame.height == 20 })
+        // The bar's controls, + and − as one segmented control, are centred under its top line.
+        #expect(list.bar.subviews.count == 2 && list.bar.subviews.first is NSSegmentedControl)
+        #expect(list.bar.subviews.allSatisfy { abs($0.frame.midY - 14.5) <= 0.5 })
         // The app menu's items, the chosen one first, with the app's icon.
         let editor = try Kit.control("Text editor", SettingsAppPopup.self, in: controller)
         #expect(editor.itemTitles == ["TextEdit", "", "Choose…"])

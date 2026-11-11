@@ -121,6 +121,21 @@ enum SettingsTestKit {
         return walk(root)
     }
 
+    /// The button of a list's bar that says `label`, in any list under `root`.
+    static func barButton(_ label: String, in root: NSView) -> SettingsListBarButton? {
+        func walk(_ view: NSView) -> SettingsListBarButton? {
+            if let list = view as? SettingsListView, let found = list.barButtons.first(where: { $0.label == label }) {
+                return found
+            }
+            for child in view.subviews { if let found = walk(child) { return found } }
+            return nil
+        }
+        return walk(root)
+    }
+
+    /// Clicks a button of a list's bar.
+    static func click(_ button: SettingsListBarButton?) { button?.press() }
+
     /// Clicks a Settings control or push button.
     static func click(_ view: NSView?) {
         if let control = view as? SettingsControlView { control.press() }
