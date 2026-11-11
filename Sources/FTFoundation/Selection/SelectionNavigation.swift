@@ -107,18 +107,4 @@ public enum SelectionNavigation {
     private static func clamp(_ index: Int, _ itemCount: Int) -> Int {
         max(0, min(itemCount - 1, index))
     }
-
-    /// `flattenVisibleTreePaths`: the expanded tree in the order it shows, a pre-order walk that keyboard navigation and
-    /// paged movement depend on.
-    public static func flattenVisibleTreePaths(rootPath: String, nodes: [String: TypeaheadTreeNode]) -> [String] {
-        var ordered: [String] = []
-        func visit(_ path: String) {
-            guard let node = nodes[path] else { return }
-            ordered.append(path)
-            guard node.expanded else { return }
-            for child in node.childPaths { visit(child) }
-        }
-        visit(rootPath)
-        return ordered
-    }
 }

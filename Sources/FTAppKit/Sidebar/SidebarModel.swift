@@ -702,7 +702,7 @@ final class SidebarModel {
         return true
     }
 
-    func handle(_ key: TreeView.Key) -> Bool {
+    func handle(_ key: SidebarKeyboard.Key) -> Bool {
         perform(SidebarKeyboard.decide(key, keyContext))
     }
 

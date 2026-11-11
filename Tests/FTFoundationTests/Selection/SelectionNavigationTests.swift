@@ -126,29 +126,6 @@ struct SelectionNavigationTests {
         #expect(gap(.left, .list, 5) == 1)
     }
 
-    @Test func flattensVisibleTreePathsInExpandedOrder() {
-        let nodes: [String: TypeaheadTreeNode] = [
-            "/Users/demo": .init(
-                path: "/Users/demo", name: "demo", expanded: true,
-                childPaths: ["/Users/demo/Documents", "/Users/demo/Downloads"]),
-            "/Users/demo/Documents": .init(
-                path: "/Users/demo/Documents", name: "Documents", expanded: true,
-                childPaths: ["/Users/demo/Documents/Notes"]),
-            "/Users/demo/Documents/Notes": .init(
-                path: "/Users/demo/Documents/Notes", name: "Notes", expanded: false, childPaths: []),
-            "/Users/demo/Downloads": .init(
-                path: "/Users/demo/Downloads", name: "Downloads", expanded: false,
-                childPaths: ["/Users/demo/Downloads/Archive"]),
-            "/Users/demo/Downloads/Archive": .init(
-                path: "/Users/demo/Downloads/Archive", name: "Archive", expanded: false, childPaths: []),
-        ]
-        #expect(
-            SelectionNavigation.flattenVisibleTreePaths(rootPath: "/Users/demo", nodes: nodes) == [
-                "/Users/demo", "/Users/demo/Documents", "/Users/demo/Documents/Notes", "/Users/demo/Downloads",
-            ])
-        #expect(SelectionNavigation.flattenVisibleTreePaths(rootPath: "/nowhere", nodes: nodes) == [])
-    }
-
     @Test func computesParentDirectories() {
         #expect(TreePaths.parent(of: "/Users/demo/Documents") == "/Users/demo")
         #expect(TreePaths.parent(of: "/Users") == "/")

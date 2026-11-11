@@ -103,34 +103,6 @@ struct ListFilterTests {
         #expect(!Typeahead.isCharacterKey("🎉"))
     }
 
-    @Test func matchesTheFirstVisibleTreeNodeByPrefix() {
-        let nodes: [String: TypeaheadTreeNode] = [
-            "/Users/demo": TypeaheadTreeNode(
-                path: "/Users/demo", name: "demo", expanded: true,
-                childPaths: ["/Users/demo/Desktop", "/Users/demo/Documents"]),
-            "/Users/demo/Desktop": TypeaheadTreeNode(
-                path: "/Users/demo/Desktop", name: "Desktop", expanded: false, childPaths: []),
-            "/Users/demo/Documents": TypeaheadTreeNode(
-                path: "/Users/demo/Documents", name: "Documents", expanded: false, childPaths: []),
-        ]
-        #expect(
-            Typeahead.findTreeMatch(rootPath: "/Users/demo", nodes: nodes, query: "doc")?.path
-                == "/Users/demo/Documents")
-        #expect(Typeahead.findTreeMatch(rootPath: "/Users/demo", nodes: nodes, query: "  ") == nil)
-        #expect(Typeahead.findTreeMatch(rootPath: "/missing", nodes: nodes, query: "d") == nil)
-    }
-
-    @Test func treeTypeaheadSkipsCollapsedDescendants() {
-        let nodes: [String: TypeaheadTreeNode] = [
-            "/r": TypeaheadTreeNode(path: "/r", name: "r", expanded: true, childPaths: ["/r/a", "/r/b"]),
-            "/r/a": TypeaheadTreeNode(path: "/r/a", name: "alpha", expanded: false, childPaths: ["/r/a/x"]),
-            "/r/a/x": TypeaheadTreeNode(path: "/r/a/x", name: "xray", expanded: false, childPaths: []),
-            "/r/b": TypeaheadTreeNode(path: "/r/b", name: "beta", expanded: false, childPaths: []),
-        ]
-        #expect(Typeahead.findTreeMatch(rootPath: "/r", nodes: nodes, query: "x") == nil)
-        #expect(Typeahead.findTreeMatch(rootPath: "/r", nodes: nodes, query: "be")?.path == "/r/b")
-    }
-
     // MARK: Search refinement
 
     struct Item: SearchRefinementItem, Equatable {

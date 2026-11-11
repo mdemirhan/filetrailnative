@@ -307,7 +307,7 @@ private final class ObserverBox: @unchecked Sendable {
 
 /// A key press as the sidebar reads it.
 enum TreeKey {
-    case arrow(TreeView.Key)
+    case arrow(SidebarKeyboard.Key)
     case tab, returnKey, space, escape, other
 
     static func from(_ event: NSEvent) -> TreeKey {

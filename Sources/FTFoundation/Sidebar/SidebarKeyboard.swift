@@ -50,9 +50,14 @@ public enum SidebarKeyAction: Equatable, Sendable {
 }
 
 public enum SidebarKeyboard {
+    /// The keys that move in the tree and the favorites.
+    public enum Key: Sendable {
+        case up, down, left, right, home, end
+    }
+
     public static let typeaheadResetMilliseconds = 1000
 
-    public static func decide(_ key: TreeView.Key, _ context: SidebarKeyContext) -> SidebarKeyAction {
+    public static func decide(_ key: SidebarKeyboard.Key, _ context: SidebarKeyContext) -> SidebarKeyAction {
         if context.favoritesListActive {
             return decideInFavorites(key, context)
         }
@@ -104,7 +109,8 @@ public enum SidebarKeyboard {
         }
     }
 
-    private static func decideInFavorites(_ key: TreeView.Key, _ context: SidebarKeyContext) -> SidebarKeyAction {
+    private static func decideInFavorites(_ key: SidebarKeyboard.Key, _ context: SidebarKeyContext) -> SidebarKeyAction
+    {
         let ids = context.favoriteList.map(\.id)
         if ids.isEmpty { return .none }
         let currentIndex = context.selected.flatMap { selected in ids.firstIndex(of: selected) }

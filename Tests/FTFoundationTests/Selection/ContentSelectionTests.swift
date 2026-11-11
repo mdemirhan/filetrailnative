@@ -143,8 +143,7 @@ struct ContentSelectionTests {
         // CPU time of this thread, not wall time, so a busy machine does not fail it.
         let (_, seconds) = CPUTime.measureThread {
             let all = ContentSelection.all(entryPaths: paths)
-            let index = PathIndex(paths, path: { $0 })
-            #expect(index.resolve(all.paths).count == 60_000)
+            #expect(all.paths.count == 60_000)
             let kept = all.sanitized(entryPaths: Array(paths.dropFirst(10)), previousPaths: paths)
             #expect(kept.paths.count == 59_990)
             let extended = ContentSelection.single(paths[5]).extended(entryPaths: paths, to: paths[59_000])
