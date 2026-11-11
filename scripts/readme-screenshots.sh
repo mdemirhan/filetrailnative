@@ -22,7 +22,7 @@ if [ -n "$others" ] && [ -z "${FILETRAIL_SHOTS_ANY_DISK:-}" ]; then
     echo "$others" >&2
     exit 1
 fi
-[ -d "$fixture" ] || bun tools/fixtures/generate.ts
+[ -d "$fixture" ] || bun tools/fixtures/generate.ts lighthouse
 if [ -e "$project" ]; then
     echo "$project already exists: move it away first." >&2
     exit 1
