@@ -271,16 +271,15 @@ struct FileDragTests {
             DragPasteboard.read(pasteboard) == DragPasteboardContents(changeCount: pasteboard.changeCount, paths: []))
     }
 
-    @Test func tellsWhichDragIsGoingOnByItsChangeCountAlone() {
+    @Test func tellsWhichDragIsGoingOnByItsChangeCount() {
         let pasteboard = NSPasteboard(name: NSPasteboard.Name("filetrail-test-\(UUID().uuidString)"))
         defer { pasteboard.releaseGlobally() }
         pasteboard.clearContents()
         pasteboard.setString("some text", forType: .string)
         let count = pasteboard.changeCount
-        #expect(DragPasteboard.changeCount(pasteboard) == count)
         #expect(DragPasteboard.read(pasteboard).changeCount == count)
         pasteboard.clearContents()
-        #expect(DragPasteboard.changeCount(pasteboard) != count)
+        #expect(DragPasteboard.read(pasteboard).changeCount != count)
     }
 
     // MARK: Bringing the window forward

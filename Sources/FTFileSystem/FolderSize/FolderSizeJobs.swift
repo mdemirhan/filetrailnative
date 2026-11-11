@@ -555,10 +555,6 @@ public final class FolderSizeJobs {
         }
     }
 
-    public func clearCache() {
-        cache.clear()
-    }
-
     public func cachedSize(_ path: String) -> Int64? {
         cache.get(path)?.sizeBytes
     }

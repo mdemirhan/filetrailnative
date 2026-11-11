@@ -58,12 +58,6 @@ public final class FolderSizeCache {
         return true
     }
 
-    public func clear() {
-        sizes.removeAll()
-        children.removeAll()
-        recorded?.removeAll()
-    }
-
     /// The sizes a change at `changedPaths` may have made wrong: of the folders holding one, and of what is
     /// at or inside one (as `WriteEffects.isAffectedByChange`). Each folder holding a change is looked at
     /// once, and only the sizes inside a change are walked.

@@ -41,11 +41,6 @@ public enum DragPasteboard {
         return DragPasteboardContents(changeCount: changeCount, paths: paths)
     }
 
-    /// Which drag is going on, without reading what it carries.
-    public static func changeCount(_ pasteboard: NSPasteboard = NSPasteboard(name: .drag)) -> Int {
-        pasteboard.changeCount
-    }
-
     /// How a path is on disk, for `draggedIn`: whether it is a link, a folder, and for a link what it points to.
     public struct Stat: Sendable {
         public var isDirectory: Bool

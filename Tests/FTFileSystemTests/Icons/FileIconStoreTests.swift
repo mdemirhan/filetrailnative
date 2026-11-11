@@ -190,11 +190,11 @@ private func entry(
             #expect(Set(source.paths) == [folderPath, emptyFolderPath, documentPath])
             #expect(source.paths.count == 3)
             // Drawn from the first look, with nothing more asked for.
-            guard case .image = store.lookup(entry("/a/folder", kind: .directory)) else {
+            guard case .image = store.lookup(IconRequest(entry: entry("/a/folder", kind: .directory))) else {
                 Issue.record("no folder icon")
                 return
             }
-            guard case .image = store.lookup(entry("/a/Makefile", executable: false)) else {
+            guard case .image = store.lookup(IconRequest(entry: entry("/a/Makefile", executable: false))) else {
                 Issue.record("no document icon")
                 return
             }

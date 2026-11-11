@@ -95,10 +95,6 @@ public final class FileIconStore {
         return slot.map(IconLookup.image) ?? .none
     }
 
-    public func lookup(_ entry: IconEntry) -> IconLookup {
-        lookup(IconRequest(entry: entry))
-    }
-
     /// Calls `completion` with the icon (nil when macOS has none): at once when it is cached, otherwise when
     /// it arrives, unless the handle is cancelled first. `deferLoad` waits a moment before asking for an icon
     /// that is not known yet. Requests for the same icon that overlap share one fetch.

@@ -943,19 +943,6 @@ private func settle() async {
         #expect(status.error == "ENOENT: not found")
     }
 
-    @Test func clearCacheEmptiesTheFolderSizeCache() async {
-        let native = MockNative()
-        let jobs = make(native)
-
-        _ = start(jobs, "/test")
-        native.resolveActive()
-        await settle()
-
-        #expect(jobs.cachedSize("/test") == 1000)
-        jobs.clearCache()
-        #expect(jobs.cachedSize("/test") == nil)
-    }
-
     @Test func keepsOnlyTheMostRecentFinishedJobsSoRepeatedCalculationsDoNotGrowWithoutBound() async {
         let native = MockNative()
         let jobs = make(native)
