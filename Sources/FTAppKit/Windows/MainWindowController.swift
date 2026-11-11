@@ -150,7 +150,7 @@ final class ExplorerTabWindow: NSWindow {
 
 /// One tab of an explorer window: sidebar, toolbar, current folder and its history, and how it shows its folder. Each
 /// tab is a window of its own, in the native tab group of its explorer window.
-final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuItemValidation {
+final class MainWindowController: NSWindowController, NSWindowDelegate {
     enum HistoryMove {
         /// A new step: the entries after the current one are cut off.
         case push
@@ -315,8 +315,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     var openHelp: ((HelpTopicID?) -> Void)?
     /// Previews an item: the system's Quick Look panel, unless a test puts its own, so nothing comes on screen.
     var showQuickLook: ((String) -> Void)?
-    /// ⌘F with text typed into the list, and Search Subfolders: the text to search the folder for.
-    var onSearchRequested: ((String) -> Void)?
     /// Carries out a rename and answers with its outcome, in place of the write coordinator (tests). Without it the
     /// coordinator renames (`WindowWriteActions.commitRename`), or, in a window without the app's file operations, the
     /// file system itself.
@@ -465,15 +463,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         #endif
         updateTitle()
         if loadNow { ensureLoaded() }
-    }
-
-    /// A tab on `folder`, as the app's latest values show folders.
-    convenience init(folder: URL) {
-        let home = FileManager.default.homeDirectoryForCurrentUser.path
-        let defaults = AppPreferences.defaults()
-        self.init(
-            tab: StartupTabs.resolve(defaults, homePath: home, startupFolderPath: folder.path, restoreTabs: false)
-                .tabs[0])
     }
 
     /// A tab as `snapshot` kept it: its folder, tree, view and history (Reopen Closed Tab, Duplicate Tab).
@@ -762,7 +751,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             includeHidden: includeHidden)
         if moved, loaded { stale = true }
         updateTitle()
-        updateNavigationItems()
+        notify(.history)
         group?.tabChanged(self)
     }
 
@@ -1157,7 +1146,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
                 // A quiet read shows nothing: the search for a folder that can be read goes on from it.
                 if !quiet { content.showReadError(message) }
                 sidebar.openFailed()
-                updateNavigationItems()
+                notify(.history)
                 return .failed
             }
         }
@@ -1236,7 +1225,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         } else {
             sidebar.folderOpened(shown, open)
         }
-        updateNavigationItems()
+        notify(.history)
         updatePathBar()
         notify(.folder)
         window?.contentView?.layoutSubtreeIfNeeded()
@@ -1286,7 +1275,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         guard outcome.didOpen else { return }
         navigationHistory = place.history
         sidebar.model.restoreSelected(place.sidebarRow)
-        updateNavigationItems()
+        notify(.history)
         group?.tabChanged(self)
     }
 
@@ -1358,7 +1347,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         case .nothing:
             break
         case .tooMany(let action, let selected, let limit):
-            notice(
+            showNotice(
                 title: OpenItems.limitTitle(action: action),
                 message: OpenItems.limitMessage(action: action, selected: selected, limit: limit))
         case .edit(let paths):
@@ -1368,7 +1357,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             Task { [weak self] in
                 let result = await SystemActions.openPaths(paths, withApplication: editor.appPath, opener: opener)
                 guard !result.ok else { return }
-                self?.notice(
+                self?.showNotice(
                     title: ActionNoticeText.openFailureTitle(editor.appName),
                     message: ActionNoticeText.openFailureMessage(
                         count: paths.count, appName: editor.appName,
@@ -1426,13 +1415,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         if let actions = writeActions {
             actions.dialogs.show(title, message, window)
         } else {
-            notice(title: title, message: message)
+            showNotice(title: title, message: message)
         }
-    }
-
-    /// A notice the person dismisses: the open limit.
-    private func notice(title: String, message: String) {
-        showNotice(title: title, message: message)
     }
 
     // MARK: Keys and rename
@@ -1565,30 +1549,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         }
     }
 
-    /// ⌘F: the search field takes the keyboard. Text typed into the list's filter goes into it, and is searched at
-    /// once.
+    /// ⌘F, and Search Subfolders on the empty filter: the search field takes the keyboard.
     func focusFileSearch() {
-        let text = content.filter
         search.focusField()
-        if !text.isEmpty { onSearchRequested?(text) }
-    }
-
-    /// "Search Subfolders" on the empty filter: the same, and the search runs.
-    private func searchSubfolders() {
-        focusFileSearch()
-    }
-
-    private func updateNavigationItems() {
-        notify(.history)
     }
 
     /// The folder Open in New Tab and Open in New Window open: the one folder selected, or with the sidebar focused its
     /// selected folder.
     private var selectedFolder: URL? {
         if focusedPane == .tree { return sidebar.selectedTreeTargetPath.map { URL(fileURLWithPath: $0) } }
-        let items = content.selectedEntries
-        guard items.count == 1, items[0].isDirectoryLike else { return nil }
-        return items[0].url
+        return selectedContentFolder
     }
 
     // MARK: The content pane
@@ -1646,7 +1616,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
             guard let refusal else { return }
             self?.renameNotice(title: WriteStartAction.operation(.rename).failureTitle, message: refusal)
         }
-        content.onSearchSubfolders = { [weak self] in self?.searchSubfolders() }
+        content.onSearchSubfolders = { [weak self] in self?.focusFileSearch() }
         content.onColumnWidthsChanged = { [weak self] widths in self?.saveColumnWidths(widths) }
         content.setView(
             sortBy: sortBy, direction: sortDirection, foldersFirst: foldersFirst, includeHidden: includeHidden)
@@ -1756,11 +1726,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
     }
 
     /// What the command rules look at of the selection in the file list.
-    private var commandEntries: [CommandEntry] {
-        content.selectedEntries.map {
-            CommandEntry(path: $0.path, kind: FTFoundation.EntryKind(rawValue: $0.kind.rawValue) ?? .other)
-        }
-    }
+    private var commandEntries: [CommandEntry] { commandEntries(content.selectedEntries) }
 
     /// The folder File ▸ Add to Favorites acts on.
     var favoriteTargetPath: String? {
@@ -1941,11 +1907,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         go(to: URL(fileURLWithPath: parent))
     }
 
-    @objc func goToPlace(_ sender: NSMenuItem) {
-        guard let url = sender.representedObject as? URL else { return }
-        go(to: url)
-    }
-
     /// File ▸ Open, ⌘O and the toolbar's Open (`openPaths`): opens the items, whatever "Double-click a file to" says.
     @objc func openSelection(_ sender: Any?) {
         perform(OpenItems.openPlan(commandEntries, limit: preferences.openItemLimit))
@@ -2018,22 +1979,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         Task { await navigate(to: folder, history: .replace, open: open, keepingSearch: true) }
     }
 
-    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-        switch menuItem.action {
-        case #selector(goBack(_:)): return navigationHistory.canGoBack
-        case #selector(goForward(_:)): return navigationHistory.canGoForward
-        case #selector(goToEnclosingFolder(_:)): return !folderLetGo && folder.comparablePath != "/"
-        case #selector(openSelection(_:)): return !content.selectedEntries.isEmpty
-        case #selector(showAsIcons(_:)):
-            menuItem.state = shownViewMode == .icons ? .on : .off
-            return true
-        case #selector(showAsList(_:)):
-            menuItem.state = shownViewMode == .details ? .on : .off
-            return true
-        default: return true
-        }
-    }
-
     // MARK: Customize Toolbar
 
     /// The system's sheet (View ▸ Customize Toolbar…, View Options, the toolbar's right-click).
@@ -2067,10 +2012,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
         searchStore?.session.returnToForeground()
         group?.frontSearch = searchStore
         group?.tabBecameKey(self)
-    }
-
-    func windowDidResignKey(_ notification: Notification) {
-        // The window going to the back ends a drag; a window of an app in the background has no focus to lose.
     }
 
     func windowDidMove(_ notification: Notification) {

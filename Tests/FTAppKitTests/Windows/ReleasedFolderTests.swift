@@ -111,9 +111,6 @@ extension ExplorerWindowlessTests {
             tab.goToEnclosingFolder(nil)
             await settle()
             #expect(tab.shownFolderPath.isEmpty)
-            let item = NSMenuItem(
-                title: "", action: #selector(MainWindowController.goToEnclosingFolder(_:)), keyEquivalent: "")
-            #expect(tab.validateMenuItem(item) == false)
             #expect(tab.canPerform(.goEnclosingFolder) == false)
             await harness.close()
         }
