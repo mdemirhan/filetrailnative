@@ -141,11 +141,11 @@
             #expect(apply(["zoom": .number(1)]).status == .failed)
             #expect(apply(["theme": .string("sepia")]).status == .failed)
 
-            #expect(!AutomationPrefs.hasHandler("openItemLimit"))
-            AutomationPrefs.register("openItemLimit") { value, _ in
+            #expect(!AutomationPrefs.hasHandler(.openItemLimit))
+            AutomationPrefs.register(.openItemLimit) { value, _ in
                 (value.number ?? 0) >= 1 ? .applied : .failed("openItemLimit")
             }
-            defer { AutomationPrefs.unregister("openItemLimit") }
+            defer { AutomationPrefs.unregister(.openItemLimit) }
             #expect(apply(["openItemLimit": .number(7)]).status == .ok)
             #expect(apply(["openItemLimit": .number(0)]).status == .failed)
         }

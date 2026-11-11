@@ -27,44 +27,49 @@
         static func registerOnce() {
             guard !registered else { return }
             registered = true
-            func flag(_ key: String) {
+            func flag(_ key: PreferenceKey) {
                 AutomationPrefs.register(key) { value, context in
-                    guard case .bool(let on) = value else { return .failed("\(key) is not true or false") }
-                    guard let controller = context.controller else { return .unsupported(key) }
-                    controller.updatePreferences([key: .bool(on)])
+                    guard case .bool = value else { return .failed("\(key.rawValue) is not true or false") }
+                    guard let controller = context.controller else { return .unsupported(key.rawValue) }
+                    AutomationPrefs.set(key, value, on: controller)
                     return .applied
                 }
             }
-            flag("singleClickExpandTreeItems")
-            flag("favoritesInitialized")
-            AutomationPrefs.register("favoritesPlacement") { value, context in
-                guard let name = value.string, FavoritesPlacement(rawValue: name) != nil else {
+            flag(.singleClickExpandTreeItems)
+            flag(.favoritesInitialized)
+            AutomationPrefs.register(.favoritesPlacement) { value, context in
+                guard let placement = value.string.flatMap(FavoritesPlacement.init(rawValue:)) else {
                     return .failed("favoritesPlacement \(value.string ?? "?")")
                 }
                 guard let controller = context.controller else { return .unsupported("favoritesPlacement") }
-                controller.updatePreferences(["favoritesPlacement": .string(name)])
+                controller.updatePreferences { $0.favoritesPlacement = placement }
                 return .applied
             }
-            AutomationPrefs.register("favorites") { value, context in
+            AutomationPrefs.register(.favorites) { value, context in
                 guard case .array(let entries) = value else { return .failed("favorites is not a list") }
                 guard let controller = context.controller else { return .unsupported("favorites") }
-                let nodes = entries.compactMap { entry -> JSONNode? in
-                    guard case .object(let fields) = entry, let path = fields["path"]?.string else { return nil }
-                    return .object(["path": .string(path), "icon": .string(fields["icon"]?.string ?? "folder")])
+                let listed = Scenario.PrefValue.array(
+                    entries.compactMap { entry in
+                        guard case .object(let fields) = entry, let path = fields["path"]?.string else { return nil }
+                        return .object(["path": .string(path), "icon": .string(fields["icon"]?.string ?? "folder")])
+                    })
+                let read = AutomationPrefs.read(.favorites, listed)
+                controller.updatePreferences {
+                    $0.take(.favorites, from: read)
+                    $0.favoritesInitialized = true
                 }
-                controller.updatePreferences(["favorites": .array(nodes), "favoritesInitialized": .bool(true)])
                 return .applied
             }
-            func section(_ key: String, favorites: Bool) {
+            func section(_ key: PreferenceKey, favorites: Bool) {
                 AutomationPrefs.register(key) { value, context in
-                    guard case .bool(let on) = value else { return .failed("\(key) is not true or false") }
-                    guard let controller = context.controller else { return .unsupported(key) }
+                    guard case .bool(let on) = value else { return .failed("\(key.rawValue) is not true or false") }
+                    guard let controller = context.controller else { return .unsupported(key.rawValue) }
                     controller.sidebarController.setSection(favorites: favorites, open: on)
                     return .applied
                 }
             }
-            section("favoritesExpanded", favorites: true)
-            section("locationsExpanded", favorites: false)
+            section(.favoritesExpanded, favorites: true)
+            section(.locationsExpanded, favorites: false)
         }
     }
 

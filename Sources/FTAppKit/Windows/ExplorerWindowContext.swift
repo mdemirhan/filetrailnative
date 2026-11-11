@@ -128,8 +128,9 @@ protocol ExplorerWindowContext: AnyObject {
     func updatePanels(_ change: (inout TabGroupSession.Panels) -> Void)
     /// The preferences as this window sees them.
     var preferences: AppPreferences { get }
-    /// Changes preferences through the app's channel; the keys the whole app shares reach every window.
-    func updatePreferences(_ patch: [String: JSONNode])
+    /// Changes preferences through the app's channel (`$0.theme = .dark`); the keys the whole app shares reach every
+    /// window.
+    func updatePreferences(_ change: (inout EditedPreferences) -> Void)
 
     var services: ExplorerServices { get }
 

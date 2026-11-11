@@ -303,10 +303,11 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     /// The results' order is kept with the window's preferences.
     private func saveSort() {
-        tab.updatePreferences([
-            "searchResultsSortBy": .string(session.sortBy.rawValue),
-            "searchResultsSortDirection": .string(session.sortDirection.rawValue),
-        ])
+        let (sortBy, direction) = (session.sortBy, session.sortDirection)
+        tab.updatePreferences {
+            $0.searchResultsSortBy = sortBy
+            $0.searchResultsSortDirection = direction
+        }
     }
 
     // MARK: The options menu

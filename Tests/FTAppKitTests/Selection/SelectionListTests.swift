@@ -406,7 +406,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.folder.lastPathComponent == "Alpha" })
             await tab.navigate(to: harness.folder.url)
             // Set to open, Return opens.
-            tab.updatePreferences(["returnKeyAction": .string("open")])
+            tab.updatePreferences { $0.returnKeyAction = .open }
             await list.click(name: "Beta")
             list.key("Enter")
             #expect(await waitUntil { tab.folder.lastPathComponent == "Beta" })
@@ -422,7 +422,10 @@ extension ExplorerWindowlessTests {
         @Test func tooManyItemsShowANotice() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
-            tab.updatePreferences(["openItemLimit": .number(1), "returnKeyAction": .string("open")])
+            tab.updatePreferences {
+                $0.openItemLimit = 1
+                $0.returnKeyAction = .open
+            }
             list.window.makeFirstResponder(list.table)
             // Edit › Select All, as the menu sends it (the test process need not be the active app).
             tab.perform(.editSelectAll)

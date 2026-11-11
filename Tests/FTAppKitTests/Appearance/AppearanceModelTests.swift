@@ -153,11 +153,11 @@ import Testing
         var preferences = AppPreferences.defaults()
         preferences.theme = .dark
         preferences.accent = "#a550a7"
-        model.preferencesChanged(preferences, PreferencesChange(patch: ["viewMode": .string("icons")], senderID: 1))
+        model.preferencesChanged(preferences, PreferencesChange(keys: [.viewMode], senderID: 1))
         #expect(model.preference == .auto)
         model.preferencesChanged(
             preferences,
-            PreferencesChange(patch: ["theme": .string("dark"), "accent": .string("#a550a7")], senderID: nil))
+            PreferencesChange(keys: [.theme, .accent], senderID: nil))
         #expect(model.theme.appearance == .dark)
         #expect(model.accentHex == "#a550a7")
     }

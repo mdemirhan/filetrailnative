@@ -156,7 +156,7 @@ extension ExplorerToolbar {
         let items = AppPreferenceLimits.themeOptions.map { option in
             AppMenuItem(
                 title: option.label, checked: theme == option.value,
-                action: { [weak self] in self?.context?.updatePreferences(["theme": .string(option.value.rawValue)]) })
+                action: { [weak self] in self?.context?.updatePreferences { $0.theme = option.value } })
         }
         present(AppMenu(items: items, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item"), from: anchor)
     }
@@ -239,7 +239,7 @@ extension ExplorerToolbar {
                 ToolbarItems.definition(id).label,
                 AppPreferenceLimits.themeOptions.map { option in
                     overflowItem(option.label, checked: theme == option.value) { [weak self] in
-                        self?.context?.updatePreferences(["theme": .string(option.value.rawValue)])
+                        self?.context?.updatePreferences { $0.theme = option.value }
                     }
                 })
         default:

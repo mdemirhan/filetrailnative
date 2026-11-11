@@ -38,7 +38,7 @@ extension ExplorerWindowlessTests {
         func zoomsOutOfTheIconTheListDraws(density: String) async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            tab.updatePreferences(["density": .string(density)])
+            tab.updatePreferences { $0.density = Density(rawValue: density) ?? .standard }
             tab.perform(.viewAsDetails)
             tab.refreshColumns()
             harness.layout(tab)

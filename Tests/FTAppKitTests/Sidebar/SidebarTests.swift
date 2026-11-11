@@ -71,8 +71,8 @@ extension SidebarTesting {
     }
 
     func setPlacement(_ tab: MainWindowController, _ placement: String, _ harness: ExplorerHarness) async {
-        tab.updatePreferences(["favoritesPlacement": .string(placement)])
-        tab.preferencesChanged(PreferencesChange(patch: [:], senderID: nil))
+        tab.updatePreferences { $0.favoritesPlacement = FavoritesPlacement(rawValue: placement) ?? .integrated }
+        tab.preferencesChanged(PreferencesChange(keys: [], senderID: nil))
         harness.layout(tab)
         await settle()
         // Under a loaded machine the rows arrive a moment later.

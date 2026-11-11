@@ -408,7 +408,7 @@ extension ExplorerWindowlessTests {
             tab.opener = spy.opener
             var files: [String] = []
             tab.openFile = { files.append($0.lastPathComponent) }
-            tab.updatePreferences(["fileActivationAction": .string("edit")])
+            tab.updatePreferences { $0.fileActivationAction = .edit }
             #expect(tab.preferences.fileActivationAction == .edit)
             opened.engine.finds = { _ in (["note.txt"], false, false) }
 

@@ -202,7 +202,7 @@ extension ExplorerWindowlessTests {
             let session = tab.search.session
             session.setPatternMode(.regex)
             #expect(tab.preferences.searchPatternMode == .text)
-            harness.channel.update(["searchRecursive": .bool(false)], from: nil)
+            harness.channel.update(from: nil) { $0.searchRecursive = false }
             #expect(!session.recursive)
             #expect(session.patternMode == .regex)
             await harness.close()

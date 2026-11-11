@@ -181,7 +181,7 @@ final class FakeSearchHost: SearchSessionHost {
         #expect(engine.starts.count == 1)
         var after = before
         after.searchRecursive = !recursiveBefore
-        search.applyDefaults(after, keys: ["searchRecursive"])
+        search.applyDefaults(after, keys: [.searchRecursive])
         #expect(engine.starts.count == 1)
 
         search.updateDraft("sou")

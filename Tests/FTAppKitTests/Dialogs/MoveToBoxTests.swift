@@ -13,7 +13,7 @@ extension ExplorerWindowlessTests {
     @Suite(.restoresWindowSeams) struct MoveToBoxTests {
         private func open() async throws -> WritingWindow {
             let window = try await WritingWindow.open()
-            window.tab.updatePreferences(["favorites": .array([])])
+            window.tab.updatePreferences { $0.favorites = [] }
             let store = window.harness.store
             MainWindowController.visitStore = { store }
             return window

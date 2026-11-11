@@ -413,8 +413,8 @@ extension ExplorerWindowlessTests {
             tab.contextMenus.notices = notices
             let spy = OpenSpy()
             tab.contextMenus.opener = spy.opener
-            tab.updatePreferences(["openItemLimit": .number(1)])
-            tab.preferencesChanged(PreferencesChange(patch: ["openItemLimit": .number(1)], senderID: nil))
+            tab.updatePreferences { $0.openItemLimit = 1 }
+            tab.preferencesChanged(PreferencesChange(keys: [.openItemLimit], senderID: nil))
             let two = ContextMenuSubject(
                 surface: .content, paths: ["/a/one.txt", "/a/two.txt"], targetPath: "/a/one.txt",
                 entries: [CommandEntry(path: "/a/one.txt", kind: .file), CommandEntry(path: "/a/two.txt", kind: .file)])
@@ -432,8 +432,8 @@ extension ExplorerWindowlessTests {
 
         /// Sets "Double-click a file to" to Edit: Open from the menu must not listen to it.
         func editOnDoubleClick(_ tab: MainWindowController) {
-            tab.updatePreferences(["fileActivationAction": .string("edit")])
-            tab.preferencesChanged(PreferencesChange(patch: ["fileActivationAction": .string("edit")], senderID: nil))
+            tab.updatePreferences { $0.fileActivationAction = .edit }
+            tab.preferencesChanged(PreferencesChange(keys: [.fileActivationAction], senderID: nil))
         }
 
         func openSubject(_ paths: [String], entries: [DirectoryEntry]) -> ContextMenuSubject {

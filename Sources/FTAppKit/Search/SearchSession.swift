@@ -450,12 +450,12 @@ final class SearchSession {
 
     /// A Settings edit updates the live values of the keys it changed, without running anything
     /// again; the others keep what was chosen in the options menu.
-    func applyDefaults(_ preferences: AppPreferences, keys: Set<String>) {
-        if keys.contains("searchPatternMode") { patternMode = preferences.searchPatternMode }
-        if keys.contains("searchMatchScope") { matchScope = preferences.searchMatchScope }
-        if keys.contains("searchRecursive") { recursive = preferences.searchRecursive }
-        if keys.contains("searchSkipGitFolders") { skipGitFolders = preferences.searchSkipGitFolders }
-        if keys.contains("searchSkipGitIgnored") { skipGitIgnored = preferences.searchSkipGitIgnored }
+    func applyDefaults(_ preferences: AppPreferences, keys: Set<PreferenceKey>) {
+        if keys.contains(.searchPatternMode) { patternMode = preferences.searchPatternMode }
+        if keys.contains(.searchMatchScope) { matchScope = preferences.searchMatchScope }
+        if keys.contains(.searchRecursive) { recursive = preferences.searchRecursive }
+        if keys.contains(.searchSkipGitFolders) { skipGitFolders = preferences.searchSkipGitFolders }
+        if keys.contains(.searchSkipGitIgnored) { skipGitIgnored = preferences.searchSkipGitIgnored }
         emit(.options)
     }
 

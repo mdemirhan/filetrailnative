@@ -200,10 +200,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         preferenceChannel = channel
         // Settings reads and writes the app's preferences, not a window's (`app:getPreferences`, `app:updatePreferences`).
         pages.loadPreferences = { [weak channel] in channel?.preferences(for: nil) ?? store.preferences() }
-        pages.writePreferences = { [weak channel] patch in
-            channel?.update(AppPreferences.patch(from: patch), from: nil)
-            return channel != nil
-        }
+        pages.updatePreferences = { [weak channel] change in channel?.update(from: nil) { $0.apply(change) } }
         let folderWatches = FolderWatches(
             .app(cache: directoryService.cache) { [weak windows] windowID, change in
                 windows?.folderChanged(windowID: windowID, change)
@@ -291,7 +288,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         appearance.preferencesChanged(preferences, change)
         explorerWindows.preferencesChanged(preferences, change)
         pageWindows.preferencesChanged(preferences, change)
-        if change.patch["shortcutOverrides"] != nil || change.patch["defaultTextEditor"] != nil {
+        if change.keys.contains(.shortcutOverrides) || change.keys.contains(.defaultTextEditor) {
             mainMenu?.build()
         }
     }

@@ -25,15 +25,15 @@ public final class TabGroupSession {
             searchColumnWidths = session.searchColumnWidths
         }
 
-        /// The session keys these are.
-        public var patch: [String: JSONNode] {
-            func node<T: Encodable>(_ value: T) -> JSONNode { (try? JSONNode.of(value)) ?? .null }
-            return [
-                "folderTreeOpen": .bool(folderTreeOpen), "propertiesOpen": .bool(propertiesOpen),
-                "detailRowOpen": .bool(detailRowOpen), "treeWidth": .number(Double(treeWidth)),
-                "inspectorWidth": .number(Double(inspectorWidth)), "detailColumnWidths": node(detailColumnWidths),
-                "searchColumnWidths": node(searchColumnWidths),
-            ]
+        /// Sets the session keys these are.
+        public func write(to preferences: inout EditedPreferences) {
+            preferences.folderTreeOpen = folderTreeOpen
+            preferences.propertiesOpen = propertiesOpen
+            preferences.detailRowOpen = detailRowOpen
+            preferences.treeWidth = treeWidth
+            preferences.inspectorWidth = inspectorWidth
+            preferences.detailColumnWidths = detailColumnWidths
+            preferences.searchColumnWidths = searchColumnWidths
         }
     }
 

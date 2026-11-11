@@ -71,11 +71,11 @@ extension MainWindowController {
                 return .init(settings: preferences.batchRenameSettings, presets: preferences.batchRenamePresets)
             },
             save: { [weak self] saving in
-                switch saving {
-                case .settings(let settings):
-                    self?.updatePreferences(["batchRenameSettings": BatchRenamePresetList.node(of: settings)])
-                case .presets(let presets):
-                    self?.updatePreferences(["batchRenamePresets": BatchRenamePresetList.node(of: presets)])
+                self?.updatePreferences {
+                    switch saving {
+                    case .settings(let settings): $0.batchRenameSettings = settings
+                    case .presets(let presets): $0.batchRenamePresets = presets
+                    }
                 }
             },
             log: { NSLog("filetrail.batchRename: %@", $0) })

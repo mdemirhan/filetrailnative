@@ -47,12 +47,12 @@ extension ExplorerWindowlessTests {
 
         private func open(_ harness: ExplorerHarness) async throws -> MainWindowController {
             let tab = try await harness.open()
-            tab.updatePreferences([
-                "favoritesPlacement": .string("separate"), "favoritesInitialized": .bool(true),
-                "favoritesExpanded": .bool(true),
-                "favorites": .array(
-                    paths.map { .object(["path": .string($0), "icon": .string(FavoriteIconID.folder.rawValue)]) }),
-            ])
+            tab.updatePreferences {
+                $0.favoritesPlacement = .separate
+                $0.favoritesInitialized = true
+                $0.favoritesExpanded = true
+                $0.favorites = paths.map { FavoritePreference(path: $0, icon: .folder) }
+            }
             let controller = sidebar(tab)
             #expect(await waitUntil { controller.model.favorites.map(\.path) == paths }, "the favorites are read")
             harness.layout(tab)

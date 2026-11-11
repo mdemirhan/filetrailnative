@@ -119,7 +119,7 @@ extension ExplorerWindowlessTests {
         @Test func theToolbarsEnclosingFolderOpensTheTopOfTheDisk() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            tab.updatePreferences(["topToolbarItems": .array([.string(ToolbarItemID.up.rawValue)])])
+            tab.updatePreferences { $0.topToolbarItems = [.up] }
             harness.layout(tab)
             tab.sidebarController.model.clearSelection()
             tab.explorerToolbar.refreshStates()

@@ -50,7 +50,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             // No favorites but the ones a test sets.
-            tab.updatePreferences(["favorites": .array([])])
+            tab.updatePreferences { $0.favorites = [] }
             let store = harness.store
             MainWindowController.visitStore = { store }
             let timers = ManualTimers()
@@ -203,9 +203,8 @@ extension ExplorerWindowlessTests {
         @Test func forgetsTheSelectedFolderWithCommandDeleteButNotAFavoriteNeverOpened() async throws {
             let (harness, tab, _) = try await open()
             harness.store.recordFolderVisit(path(harness, "Alpha"), kind: .stay)
-            tab.updatePreferences([
-                "favorites": .array([.object(["path": .string(path(harness, "Gamma")), "icon": .string("folder")])])
-            ])
+            let gamma = path(harness, "Gamma")
+            tab.updatePreferences { $0.favorites = [FavoritePreference(path: gamma, icon: .folder)] }
             let box = try openBox(tab)
             #expect(names(box) == ["Alpha", "Gamma"])
             #expect(box.hintLabel.stringValue == "⌘⌫ Removes from List")

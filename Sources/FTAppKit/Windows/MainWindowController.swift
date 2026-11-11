@@ -1613,28 +1613,28 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The widths the List keeps are the window's own (`detailColumnWidths` is a window session key).
     private func saveColumnWidths(_ widths: [DetailColumn: Double]) {
         let searching = searchStore?.showsResults == true
-        func width(_ column: DetailColumn) -> JSONNode {
-            .number(DetailsColumns.clamp(widths[column] ?? 0, column: column, search: searching))
+        // As the column's width is drawn, then kept as a whole number the way the saved state keeps it.
+        func width(_ column: DetailColumn) -> Double {
+            DetailsColumns.clamp(widths[column] ?? 0, column: column, search: searching)
         }
         if searching {
             // Search results keep widths of their own (`searchColumnWidths`), Folder among them.
-            updatePreferences([
-                "searchColumnWidths": .object([
-                    "name": width(.name), "folder": width(.folder), "modified": width(.modified),
-                    "size": width(.size), "kind": width(.kind), "created": width(.created),
-                    "permissions": width(.permissions),
-                ])
-            ])
+            updatePreferences {
+                for key in SearchColumnKey.allCases {
+                    let column = DetailColumn(rawValue: key.rawValue) ?? .name
+                    $0.searchColumnWidths[key] = AppPreferenceLimits.clampSearchColumnWidth(key, width(column))
+                }
+            }
             // What the window saves with every navigation, so it keeps them.
             updatePanels { $0.searchColumnWidths = preferences.searchColumnWidths }
             return
         }
-        updatePreferences([
-            "detailColumnWidths": .object([
-                "name": width(.name), "modified": width(.modified), "size": width(.size), "kind": width(.kind),
-                "created": width(.created), "permissions": width(.permissions),
-            ])
-        ])
+        updatePreferences {
+            for key in DetailColumnKey.allCases {
+                let column = DetailColumn(rawValue: key.rawValue) ?? .name
+                $0.detailColumnWidths[key] = AppPreferenceLimits.clampDetailColumnWidth(key, width(column))
+            }
+        }
         updatePanels { $0.detailColumnWidths = preferences.detailColumnWidths }
     }
 
@@ -1739,7 +1739,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Opens the Sidebar's closures: what it needs of the window.
     private func configureSidebar() {
         sidebar.preferences = { [weak self] in self?.preferences ?? AppPreferences.defaults() }
-        sidebar.updatePreferences = { [weak self] patch in self?.updatePreferences(patch) }
+        sidebar.updatePreferences = { [weak self] change in self?.updatePreferences(change) }
         sidebar.directoryService = { [weak self] in
             self?.services.directoryService ?? ExplorerServices.current.directoryService
         }
@@ -2042,18 +2042,18 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     func preferencesChanged(_ change: PreferencesChange) {
         // A Settings edit of the search options updates the live values without running anything again.
-        let searchDefaults = [
-            "searchPatternMode", "searchMatchScope", "searchRecursive", "searchSkipGitFolders", "searchSkipGitIgnored",
+        let searchDefaults: Set<PreferenceKey> = [
+            .searchPatternMode, .searchMatchScope, .searchRecursive, .searchSkipGitFolders, .searchSkipGitIgnored,
         ]
         // Only the keys edited, and only in the tab on screen: a tab behind keeps the options of its own search.
         if let search = searchStore, group == nil || group?.selected === self {
-            let edited = searchDefaults.filter { change.patch[$0] != nil }
-            if !edited.isEmpty { search.session.applyDefaults(preferences, keys: Set(edited)) }
+            let edited = searchDefaults.intersection(change.keys)
+            if !edited.isEmpty { search.session.applyDefaults(preferences, keys: edited) }
         }
         sidebar.applyPreferences()
         refreshColumns()
         notificationsSettingChanged()
-        if change.patch["markClipboardItems"] != nil || change.patch.isEmpty { clipboardMarksChanged() }
+        if change.keys.contains(.markClipboardItems) || change.keys.isEmpty { clipboardMarksChanged() }
         notify(.preferences)
     }
 }
@@ -2373,9 +2373,9 @@ extension MainWindowController: ExplorerWindowContext {
         services.preferences?.preferences(for: windowID) ?? AppPreferences.defaults()
     }
 
-    func updatePreferences(_ patch: [String: JSONNode]) {
+    func updatePreferences(_ change: (inout EditedPreferences) -> Void) {
         guard let channel = services.preferences else { return }
-        channel.update(patch, from: windowID)
+        channel.update(from: windowID, change)
     }
 
     var services: ExplorerServices { servicesOverride ?? ExplorerServices.current }

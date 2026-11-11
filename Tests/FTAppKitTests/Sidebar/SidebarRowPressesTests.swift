@@ -162,8 +162,8 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { tab.shownFolderPath == alpha })
             #expect(controller.model.nodes[alpha]?.expanded == false)
 
-            tab.updatePreferences(["singleClickExpandTreeItems": .bool(true)])
-            tab.preferencesChanged(PreferencesChange(patch: [:], senderID: nil))
+            tab.updatePreferences { $0.singleClickExpandTreeItems = true }
+            tab.preferencesChanged(PreferencesChange(keys: [], senderID: nil))
             #expect(controller.model.singleClickExpand)
             try press(try row(beta, in: controller))
             #expect(controller.model.nodes[beta]?.expanded == false)
@@ -378,8 +378,8 @@ extension ExplorerWindowlessTests {
             try chevron(heading(.favoritesRoot)).onClick?()
             await settle()
 
-            tab.updatePreferences(["favorites": .array([])])
-            tab.preferencesChanged(PreferencesChange(patch: [:], senderID: nil))
+            tab.updatePreferences { $0.favorites = [] }
+            tab.preferencesChanged(PreferencesChange(keys: [], senderID: nil))
             await settle()
             opened.harness.layout(tab)
             let empty = try heading(.favoritesRoot)

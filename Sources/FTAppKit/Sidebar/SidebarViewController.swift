@@ -31,7 +31,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
 
     /// The window's preferences (favorites, layout, density, single-click expand).
     var preferences: () -> AppPreferences = { AppPreferences.defaults() }
-    var updatePreferences: ([String: JSONNode]) -> Void = { _ in }
+    var updatePreferences: ((inout EditedPreferences) -> Void) -> Void = { _ in }
     var directoryService: () -> DirectoryService = { ExplorerServices.current.directoryService }
     /// The folder is opened in a new tab (⌘-click).
     var openInNewTab: (String) -> Void = { _ in }
@@ -126,7 +126,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         model.onHandToggle = { [weak self] in self?.noteHandToggle() }
         model.onFavoritesChanged = { [weak self] favorites in
             guard let self else { return }
-            self.updatePreferences(["favorites": .array(favorites.map(Self.json))])
+            self.updatePreferences { $0.favorites = favorites }
         }
         model.hasHiddenFlag = { [weak self] path in
             await self?.directoryService().hasHiddenFlag(path: path) ?? false
@@ -187,10 +187,11 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             // First launch: the favorites become the defaults, and the section opens.
             let defaults = Favorites.defaults(homePath: model.homePath)
             model.favorites = defaults
-            updatePreferences([
-                "favorites": .array(defaults.map(Self.json)), "favoritesInitialized": .bool(true),
-                "favoritesExpanded": .bool(true),
-            ])
+            updatePreferences {
+                $0.favorites = defaults
+                $0.favoritesInitialized = true
+                $0.favoritesExpanded = true
+            }
             model.setSections(favorites: true, locations: model.locationsExpanded)
         } else {
             model.favorites = prefs.favorites
@@ -202,13 +203,11 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     }
 
     private func persistSections() {
-        updatePreferences([
-            "favoritesExpanded": .bool(model.favoritesExpanded), "locationsExpanded": .bool(model.locationsExpanded),
-        ])
-    }
-
-    static func json(_ favorite: FavoritePreference) -> JSONNode {
-        .object(["path": .string(favorite.path), "icon": .string(favorite.icon.rawValue)])
+        let (favorites, locations) = (model.favoritesExpanded, model.locationsExpanded)
+        updatePreferences {
+            $0.favoritesExpanded = favorites
+            $0.locationsExpanded = locations
+        }
     }
 
     // MARK: Drawing the lists

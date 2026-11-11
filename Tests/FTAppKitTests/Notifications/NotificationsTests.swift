@@ -59,8 +59,8 @@ extension ExplorerWindowlessTests {
             let tab = try await opened(harness)
             let overlay = try overlay(tab)
             overlay.toasts.push(.info, title: "Showing")
-            tab.updatePreferences(["notificationsEnabled": .bool(false)])
-            tab.preferencesChanged(PreferencesChange(patch: ["notificationsEnabled": .bool(false)], senderID: nil))
+            tab.updatePreferences { $0.notificationsEnabled = false }
+            tab.preferencesChanged(PreferencesChange(keys: [.notificationsEnabled], senderID: nil))
             #expect(await waitUntil { overlay.toasts.entries.isEmpty })
             #expect(overlay.toasts.push(.info, title: "Not shown") == nil)
             #expect(cards(overlay).isEmpty)

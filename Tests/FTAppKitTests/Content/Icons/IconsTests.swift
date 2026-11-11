@@ -48,7 +48,7 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsIcons)
             let regular = try #require(probe.icons).columns
-            tab.updatePreferences(["density": .string("finder")])
+            tab.updatePreferences { $0.density = .finder }
             tab.refreshColumns()
             probe.layout()
             let icons = try #require(probe.icons)
@@ -275,7 +275,7 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             probe.layout()
             #expect(icons.isWhollyInView(index: lead))
-            tab.updatePreferences(["density": .string("finder")])
+            tab.updatePreferences { $0.density = .finder }
             tab.refreshColumns()
             probe.layout()
             #expect(icons.isWhollyInView(index: lead))

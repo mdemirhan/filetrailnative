@@ -31,7 +31,10 @@ import Testing
                 model.preferencesChanged(preferences, change)
             })
 
-        let preferences = channel.update(["theme": .string("dark"), "accent": .string("#a550a7")], from: nil)
+        let preferences = channel.update(from: nil) {
+            $0.theme = .dark
+            $0.accent = "#a550a7"
+        }
 
         #expect(preferences.theme == .dark)
         #expect(store.preferences().accent == "#a550a7")
@@ -40,6 +43,27 @@ import Testing
         #expect(model.accentHex == "#a550a7")
         #expect(observed.count == 1)
         observation.cancel()
+    }
+
+    // Every window is told the keys a change set that the whole app shares, a key set to the value it had among them;
+    // a window's own keys are not told, and a change of those alone is still told, with no keys
+    @Test func tellsTheSharedKeysSetEvenWithTheValueTheyHad() throws {
+        let store = try makeStore()
+        var heard: [PreferencesChange] = []
+        let channel = WindowPreferenceChannel(
+            store: store, explorerWindowID: { _ in nil }, onPreferencesChanged: { heard.append($1) })
+        let theme = store.preferences().theme
+        channel.update(from: 3) {
+            $0.theme = theme
+            $0.treeWidth = 300
+            $0.markClipboardItems = false
+        }
+        channel.update(from: nil) { $0.viewMode = .list }
+        #expect(
+            heard == [
+                PreferencesChange(keys: [.theme, .markClipboardItems], senderID: 3),
+                PreferencesChange(keys: [], senderID: nil),
+            ])
     }
 
     // A window that only follows (About, Help, Acknowledgements) is redrawn with the new theme

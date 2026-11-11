@@ -17,7 +17,7 @@ extension ToolbarTesting {
     }
 
     func setItems(_ tab: MainWindowController, _ items: [ToolbarItemID], _ harness: ExplorerHarness) {
-        tab.updatePreferences(["topToolbarItems": .array(items.map { .string($0.rawValue) })])
+        tab.updatePreferences { $0.topToolbarItems = items }
         harness.layout(tab)
     }
 
@@ -446,10 +446,9 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { toolbar.searchItem?.searchField === toolbar.searchField })
 
             // Reset to Defaults, an import or the other tab's change come in through the preference.
-            tab.updatePreferences(["topToolbarItems": .array([.string("back"), .string("title")])])
+            tab.updatePreferences { $0.topToolbarItems = [.back, .title] }
             #expect(toolbar.rowKeys == ["back", "title", "search", "viewOptions"])
-            tab.updatePreferences(["topToolbarItems": .array(ToolbarItems.defaultTopItems.map { .string($0.rawValue) })]
-            )
+            tab.updatePreferences { $0.topToolbarItems = ToolbarItems.defaultTopItems }
             #expect(harness.store.preferences().topToolbarItems == ToolbarItems.defaultTopItems)
             #expect(toolbar.toolbar.items.count == ToolbarItems.defaultTopItems.count + 1)
             #expect(toolbar.toolbarDefaultItemIdentifiers(native).count == ToolbarItems.defaultTopItems.count + 1)

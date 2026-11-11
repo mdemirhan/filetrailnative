@@ -113,7 +113,7 @@ extension ExplorerWindowlessTests {
             window.firstResponder?.keyDown(with: try systemKeyEvent(121, [.maskShift]))
             #expect(tab.sidebarController.selectedTreeItemID != moved)
             // A command's own keys stay its own.
-            tab.updatePreferences(["shortcutOverrides": .object(["toggleInfoRow": .array([.string("Shift+PageUp")])])])
+            tab.updatePreferences { $0.shortcutOverrides = ["toggleInfoRow": ["Shift+PageUp"]] }
             let before = tab.sidebarController.selectedTreeItemID
             let row = tab.preferences.detailRowOpen
             window.firstResponder?.keyDown(with: try systemKeyEvent(116, [.maskShift]))

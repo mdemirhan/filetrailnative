@@ -12,7 +12,7 @@ extension ExplorerWindowlessTests {
         private func open() async throws -> (ExplorerHarness, MainWindowController) {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            tab.updatePreferences(["favorites": .array([])])
+            tab.updatePreferences { $0.favorites = [] }
             let store = harness.store
             MainWindowController.visitStore = { store }
             MainWindowController.dialogTimers = ManualTimers()

@@ -21,8 +21,8 @@ public final class PageWindows {
     public lazy var openSettingsOnShortcuts: () -> Void = { [weak self] in self?.openSettings(tab: .shortcuts) }
     /// Reads the preferences Settings shows (`app:getPreferences`); throws when they can't be read.
     public var loadPreferences: (() throws -> AppPreferences)?
-    /// Saves what Settings changed (`app:updatePreferences`); false when the write was refused.
-    public var writePreferences: (PreferencesPatch) -> Bool = { _ in true }
+    /// Changes the app's preferences as Settings edits them, and tells every window.
+    public var updatePreferences: (_ change: (inout AppPreferences) -> Void) -> Void = { _ in }
     /// The pickers and checks Settings uses (tests replace them).
     var settingsServices = SettingsServices()
     public var homePath = FileManager.default.homeDirectoryForCurrentUser.path
@@ -59,7 +59,7 @@ public final class PageWindows {
         let opening = tab ?? lastSettingsTab ?? .general
         let controller = SettingsWindowController(
             tab: opening, load: read, homePath: homePath,
-            write: { [weak self] patch in self?.writePreferences(patch) ?? false }, services: settingsServices,
+            update: { [weak self] change in self?.updatePreferences(change) }, services: settingsServices,
             model: model)
         controller.onTabChange = { [weak self] in self?.lastSettingsTab = $0 }
         controller.onClose = { [weak self, weak controller] in
@@ -136,7 +136,7 @@ public final class PageWindows {
     /// A preference changed: Settings shows a change made in another window, and Help the keys the commands have now.
     public func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
         settings?.preferencesChanged(change)
-        guard change.patch["shortcutOverrides"] != nil || change.patch["returnKeyAction"] != nil else { return }
+        guard change.keys.contains(.shortcutOverrides) || change.keys.contains(.returnKeyAction) else { return }
         help?.helpView.shortcuts = shortcutDisplay(preferences)
     }
 }

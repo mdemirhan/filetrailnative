@@ -372,7 +372,7 @@ extension ExplorerWindowlessTests {
         @Test func aPlainKeyChosenInSettingsRunsFromTheTree() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, _) = try await harness.openList()
-            tab.updatePreferences(["shortcutOverrides": .object(["toggleInfoRow": .array([.string("F6")])])])
+            tab.updatePreferences { $0.shortcutOverrides = ["toggleInfoRow": ["F6"]] }
             #expect(tab.preferences.shortcutOverrides["toggleInfoRow"] == ["F6"])
             tab.perform(.focusTreePane)
             let row = tab.panels.detailRowOpen
@@ -398,7 +398,7 @@ extension ExplorerWindowlessTests {
             }
             try press("Space")
             #expect(shown.count == 1)
-            tab.updatePreferences(["shortcutOverrides": .object(["quickLookSelection": .array([.string("F2")])])])
+            tab.updatePreferences { $0.shortcutOverrides = ["quickLookSelection": ["F2"]] }
             try press("Space")
             #expect(shown.count == 1)
             try press("F2")
@@ -412,7 +412,7 @@ extension ExplorerWindowlessTests {
         @Test func commandDownOverTheLimitTellsOfIt() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, list) = try await harness.openList()
-            tab.updatePreferences(["openItemLimit": .number(1)])
+            tab.updatePreferences { $0.openItemLimit = 1 }
             try select(["Alpha", "Beta"], tab)
             list.table?.keyDown(with: try key("ArrowDown", [.command], in: tab))
             #expect(await waitUntil { tab.frontAlert != nil })
@@ -427,7 +427,7 @@ extension ExplorerWindowlessTests {
             let spy = spy(tab)
             var opened: [String] = []
             tab.openFile = { opened.append($0.path) }
-            tab.updatePreferences(["fileActivationAction": .string("edit")])
+            tab.updatePreferences { $0.fileActivationAction = .edit }
             #expect(tab.preferences.fileActivationAction == .edit)
             try select(["note.txt"], tab)
             let note = try path("note.txt", tab)
@@ -641,7 +641,7 @@ extension ExplorerWindowlessTests {
             try select(["Alpha", "Beta"], tab)
             menu.report()
             #expect(menu.isEnabled("openSelection"))
-            tab.updatePreferences(["openItemLimit": .number(1)])
+            tab.updatePreferences { $0.openItemLimit = 1 }
             #expect(tab.preferences.openItemLimit == 1)
             menu.report()
             #expect(!menu.isEnabled("openSelection"))
@@ -664,7 +664,7 @@ extension ExplorerWindowlessTests {
             let (tab, _) = try await harness.openList()
             let menu = RealMenu(harness, tab)
             let spy = spy(tab)
-            tab.updatePreferences(["openItemLimit": .number(1)])
+            tab.updatePreferences { $0.openItemLimit = 1 }
             try select(["Alpha", "Beta"], tab)
             menu.report()
             try press("e", [.command, .shift], in: tab, menu: menu)

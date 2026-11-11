@@ -11,15 +11,7 @@ extension ExplorerWindowlessTests {
             let pages = PageWindows(model: AppearanceModel(), preferences: { harness.store.preferences() })
             pages.presentsWindows = false
             pages.loadPreferences = { harness.channel.preferences(for: nil) }
-            pages.writePreferences = { patch in
-                harness.channel.update(AppPreferences.patch(from: patch), from: nil)
-                return true
-            }
-            // Each change is written at once.
-            pages.settingsServices.schedule = { _, work in
-                work()
-                return {}
-            }
+            pages.updatePreferences = { change in harness.channel.update(from: nil) { $0.apply(change) } }
             pages.settingsServices.missingApps = { _ in [] }
             return pages
         }
@@ -82,9 +74,9 @@ extension ExplorerWindowlessTests {
 
             // A change made in the explorer window is shown in Settings.
             settings.show(tab: .general)
-            harness.channel.update(["markClipboardItems": .bool(true)], from: tab.windowID)
+            harness.channel.update(from: tab.windowID) { $0.markClipboardItems = true }
             pages.preferencesChanged(
-                harness.store.preferences(), PreferencesChange(patch: ["markClipboardItems": .bool(true)], senderID: 1))
+                harness.store.preferences(), PreferencesChange(keys: [.markClipboardItems], senderID: 1))
             let shown = try SettingsTestKit.control("Mark copied and cut items", SettingsSwitch.self, in: settings)
             #expect(shown.isOn)
             settings.close()

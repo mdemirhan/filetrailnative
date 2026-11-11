@@ -48,7 +48,6 @@ import Testing
 
     @Test func opensOnTheTabAskedForOrTheOneItWasLeftOn() throws {
         let (pages, _) = PageWindowsTests.make()
-        pages.settingsServices.schedule = { _, _ in {} }
         pages.openSettings(tab: .files)
         let first = try #require(pages.settingsWindow)
         #expect(first.activeTab == .files)
@@ -146,7 +145,6 @@ import Testing
                 "Mark copied and cut items", "Calculate folder sizes automatically",
             ])
         Kit.click(options[2])
-        Kit.flush(controller)
         #expect(recorder.saved["theme"] == .string("dark"))
         #expect(options.map(\.isSelected) == [false, false, true])
         // The thumbnail is 56 by 36 in a ring of 2.
@@ -190,20 +188,17 @@ import Testing
         // 15 across, 7 apart.
         #expect(swatches[1].frame.minX - swatches[0].frame.minX == 22)
         Kit.click(swatches[6])
-        Kit.flush(controller)
         #expect(recorder.saved["accent"] == .string("#62ba46"))
 
         // A color that is no preset: the custom swatch is pressed and shows it.
         recorder.pickedColor = "#123ABC"
         Kit.click(swatches.last)
-        Kit.flush(controller)
         #expect(recorder.saved["accent"] == .string("#123abc"))
         #expect(swatches.last?.isSelected == true)
         #expect(swatches.last?.customFill == RGBA(hex: "#123abc"))
         // A value that is not #rrggbb is ignored.
         recorder.pickedColor = "red"
         Kit.click(swatches.last)
-        Kit.flush(controller)
         #expect(recorder.saved["accent"] == .string("#123abc"))
     }
 
@@ -218,7 +213,6 @@ import Testing
             Kit.button("Restore the default appearance", in: controller.settingsView) as? SystemButton)
         #expect(restore.title == "Restore Defaults")
         Kit.click(restore)
-        Kit.flush(controller)
         #expect(recorder.patches == [["theme": .string("auto"), "accent": .string("#007aff")]])
     }
 
@@ -233,13 +227,10 @@ import Testing
         #expect(switches.allSatisfy { $0.isOn })
         #expect(switches.allSatisfy { $0.frame.size == SettingsMetrics.switchSize })
         for control in switches { Kit.click(control) }
-        Kit.flush(controller)
         #expect(
-            recorder.patches == [
-                [
-                    "restoreSessionOnStartup": .bool(false), "notificationsEnabled": .bool(false),
-                    "markClipboardItems": .bool(false), "autoCalculateFolderSizes": .bool(false),
-                ]
+            recorder.saved == [
+                "restoreSessionOnStartup": .bool(false), "notificationsEnabled": .bool(false),
+                "markClipboardItems": .bool(false), "autoCalculateFolderSizes": .bool(false),
             ])
         // No duration to set for notifications.
         let notifications = try Kit.row("Show notifications", in: controller)
@@ -250,28 +241,22 @@ import Testing
 
     @Test func savesEditsAndShowsTheOnesMadeElsewhere() throws {
         let (controller, recorder) = Kit.make()
-        Kit.flush(controller)
         // Loading is not written back.
         #expect(recorder.patches.isEmpty)
         let switches = views("settings.switch", in: controller.settingsView).compactMap { $0 as? SettingsSwitch }
-        // A refused write is sent again with the next change.
-        recorder.refuseWrites = true
+        // Each edit changes the app's preferences, with only what it changed.
         Kit.click(switches[1])
-        Kit.flush(controller)
-        recorder.refuseWrites = false
         Kit.click(switches[2])
-        Kit.flush(controller)
-        #expect(recorder.patches.last == ["notificationsEnabled": .bool(false), "markClipboardItems": .bool(false)])
-        // Another window's change is shown and not written back; its window keys are ignored.
-        controller.preferencesChanged(
-            PreferencesChange(
-                patch: ["autoCalculateFolderSizes": .bool(false), "viewMode": .string("list")], senderID: 3))
-        Kit.flush(controller)
+        #expect(recorder.patches == [["notificationsEnabled": .bool(false)], ["markClipboardItems": .bool(false)]])
+        // Another window's change is shown and not written back.
+        recorder.current.autoCalculateFolderSizes = false
+        controller.preferencesChanged(PreferencesChange(keys: [.autoCalculateFolderSizes], senderID: 3))
         #expect(!switches[3].isOn)
         #expect(recorder.patches.count == 2)
         // The window's own change, told back to it, changes nothing.
-        controller.preferencesChanged(PreferencesChange(patch: ["markClipboardItems": .bool(false)], senderID: nil))
+        controller.preferencesChanged(PreferencesChange(keys: [.markClipboardItems], senderID: nil))
         #expect(!switches[2].isOn)
+        #expect(recorder.patches.count == 2)
     }
 
     // MARK: Browsing
@@ -282,12 +267,10 @@ import Testing
         #expect(density.title == "Default")
         #expect(density.options.map(\.title) == ["Default", "Match Finder"])
         density.choose("finder")
-        Kit.flush(controller)
         #expect(recorder.saved == ["density": .string("finder")])
         #expect(density.title == "Match Finder")
         let single = try Kit.control("Expand folders with a single click", SettingsSwitch.self, in: controller)
         Kit.click(single)
-        Kit.flush(controller)
         #expect(recorder.saved["singleClickExpandTreeItems"] == .bool(true))
         // A pop-up is as wide as its longest choice, and at least 120.
         #expect(density.frame.width >= 120)
@@ -300,7 +283,6 @@ import Testing
         #expect(placement.options.map(\.title) == ["In the folder tree", "In their own section"])
         #expect(placement.title == "In the folder tree")
         placement.choose("separate")
-        Kit.flush(controller)
         #expect(recorder.saved == ["favoritesPlacement": .string("separate")])
     }
 
@@ -319,8 +301,8 @@ import Testing
         recorder.pickedDirectory = "\(home)/Projects"
         list.keyDown(with: Kit.key(Kit.returnKey.0, code: Kit.returnKey.1, window: controller.window))
         // While the picker is open, another window removes Applications: Desktop moves to the top.
-        controller.preferencesChanged(
-            PreferencesChange(patch: ["favorites": try JSONNode.of(Array(favorites.dropFirst()))], senderID: 3))
+        recorder.current.favorites = Array(favorites.dropFirst())
+        controller.preferencesChanged(PreferencesChange(keys: [.favorites], senderID: 3))
         await Kit.settle()
         #expect(recorder.directoryRequests.last == "\(home)/Desktop")
         #expect(list.rows.map(\.spec.path) == ["\(home)/Projects", "\(home)/Documents", "\(home)/Downloads"])
@@ -354,7 +336,6 @@ import Testing
         #expect(star.accessibilityLabel() == "Favorite icon for \(start[1]): Star")
         Kit.click(star)
         #expect(!controller.popovers.isOpen)
-        Kit.flush(controller)
         let saved = try #require(recorder.saved["favorites"]?.array)
         #expect(saved[1]["icon"] == .string("star"))
         // The click on the icon selected no row.
@@ -394,7 +375,6 @@ import Testing
         #expect(list.rows.count == count + 1)
         #expect(recorder.directoryRequests.last == home)
         // The new favorite's icon is inferred from its path.
-        Kit.flush(controller)
         #expect(recorder.saved["favorites"]?.array?.last?["icon"] == .string("music"))
         // Restore Defaults puts back the home folder's favorites.
         Kit.click(Kit.button("Restore the default favorites", in: controller.settingsView))
@@ -413,7 +393,6 @@ import Testing
         let remove = try #require(Kit.button("Remove Trash", in: controller.settingsView) as? SettingsControlView)
         #expect(remove.isEnabled)
         Kit.click(remove)
-        Kit.flush(controller)
         #expect(recorder.saved["favorites"] == .array([]))
         #expect(
             Kit.button("Remove", in: controller.settingsView).map { ($0 as? SettingsControlView)?.isEnabled } == false)
@@ -448,7 +427,6 @@ import Testing
         controller.window?.makeFirstResponder(list)
         list.select(4)
         list.keyDown(with: Kit.key(Kit.space.0, code: Kit.space.1, window: controller.window))
-        Kit.flush(controller)
         #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
         #expect(recorder.saved["detailColumns"]?["permissions"] == .bool(true))
         // Moved with the arrow buttons, the keyboard, or a drag.
@@ -466,7 +444,6 @@ import Testing
         // Restore Defaults puts back the order and leaves the checked columns alone.
         #expect(restore.isEnabled)
         Kit.click(restore)
-        Kit.flush(controller)
         #expect(Kit.names(list) == ["Date Modified", "Size", "Kind", "Date Created", "Permissions"])
         #expect(recorder.saved["detailColumns"]?["created"] == .bool(true))
     }
@@ -489,7 +466,6 @@ import Testing
         scope.choose("path")
         let ignored = try Kit.control("Skip files ignored by Git", SettingsSwitch.self, in: controller)
         Kit.click(ignored)
-        Kit.flush(controller)
         #expect(recorder.saved == ["searchMatchScope": .string("path"), "searchSkipGitIgnored": .bool(true)])
         let list = try Kit.list("Columns in search results", in: controller)
         #expect(Kit.names(list) == ["Folder", "Date Modified", "Size", "Kind", "Date Created", "Permissions"])
@@ -528,7 +504,6 @@ import Testing
         #expect(limit.field.stringValue == "5")
         limit.field.stringValue = " 12 "
         limit.commit()
-        Kit.flush(controller)
         #expect(
             recorder.saved == [
                 "fileActivationAction": .string("edit"), "returnKeyAction": .string("open"),
@@ -551,7 +526,6 @@ import Testing
         menu.onChoose(2)
         await Kit.settle()
         #expect(terminal.application.appName == "iTerm")
-        Kit.flush(controller)
         #expect(recorder.saved["terminalApp"]?["appName"] == .string("iTerm"))
         Kit.click(terminal)
         menu = try #require(controller.popovers.menus.menu)
@@ -559,7 +533,6 @@ import Testing
         // Choosing the default clears the custom app.
         menu.onChoose(1)
         #expect(!controller.popovers.menus.isOpen)
-        Kit.flush(controller)
         #expect(recorder.saved["terminalApp"] == .null)
         #expect(terminal.application.appName == "Terminal")
         // A cancelled picker changes nothing.
@@ -589,7 +562,6 @@ import Testing
         #expect(list.rows[1].pathText.stringValue == "Not found · /Applications/Gone.app")
         list.select(1)
         list.move(1, to: 0)
-        Kit.flush(controller)
         #expect(recorder.saved["openWithApplications"]?.array?.map { $0["id"] } == [.string("b"), .string("a")])
         recorder.pickedApplication = ApplicationSelection(appPath: "/Applications/Nova.app", appName: "Nova")
         Kit.click(Kit.button("Change Gone", in: controller.settingsView))
@@ -598,7 +570,6 @@ import Testing
         Kit.click(Kit.button("Add app to Open With", in: controller.settingsView))
         await Kit.settle()
         #expect(Kit.names(list) == ["Nova", "Zed", "Nova"])
-        Kit.flush(controller)
         let ids = recorder.saved["openWithApplications"]?.array?.compactMap { $0["id"]?.string } ?? []
         #expect(ids.count == 3 && Set(ids).count == 3 && ids[2].hasPrefix("open-with-"))
         list.select(0)
@@ -745,7 +716,6 @@ import Testing
         let grid = try #require(controller.popovers.view as? FavoriteIconGrid)
         let star = try #require(grid.cells.first { $0.icon == .star })
         Kit.click(star)
-        Kit.flush(controller)
         let now = try #require(list.rows[1].spec.leading as? FavoriteIconButton)
         #expect(now !== icons[1] && now.icon == .star)
         #expect(controller.window?.firstResponder === now)

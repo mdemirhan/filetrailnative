@@ -466,7 +466,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
             frame: first.window?.frame ?? .zero, host: self)
         group.session.update { $0 = source.session.panels }
         groups.append(group)
-        controller.adopt(group, id: id, from: source.windowID, overrides: [:])
+        controller.adopt(group, id: id, from: source.windowID)
         group.start(adopting: tabs)
     }
 }

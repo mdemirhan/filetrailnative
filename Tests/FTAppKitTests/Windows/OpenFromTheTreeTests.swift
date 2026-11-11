@@ -40,7 +40,7 @@ extension ExplorerWindowlessTests {
         @Test func theToolbarsOpenOpensTheSelectedFolderToo() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, alpha) = try await openedOnARow(harness)
-            tab.updatePreferences(["topToolbarItems": .array([.string(ToolbarItemID.openSelection.rawValue)])])
+            tab.updatePreferences { $0.topToolbarItems = [.openSelection] }
             harness.layout(tab)
             let open = try #require(tab.explorerToolbar.button(.openSelection))
             open.onClick?()

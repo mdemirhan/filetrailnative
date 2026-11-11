@@ -299,16 +299,16 @@
                 #expect(sidebar.tree.isFullyVisible(index))
                 let before = sidebar.tree.scrollTop
                 #expect(before > 0)
-                tab.updatePreferences(["density": .string("finder")])
+                tab.updatePreferences { $0.density = .finder }
                 harness.layout(tab)
                 await settle()
                 #expect(sidebar.tree.scrollTop == before)
                 // Back, and from the end of the rows, where the shorter rows don't reach the offset.
-                tab.updatePreferences(["density": .string("standard")])
+                tab.updatePreferences { $0.density = .standard }
                 harness.layout(tab)
                 sidebar.tree.scrollTop = sidebar.tree.contentHeight - sidebar.tree.visibleHeight
                 let end = sidebar.tree.scrollTop
-                tab.updatePreferences(["density": .string("finder")])
+                tab.updatePreferences { $0.density = .finder }
                 harness.layout(tab)
                 await settle()
                 #expect(sidebar.tree.scrollTop < end)

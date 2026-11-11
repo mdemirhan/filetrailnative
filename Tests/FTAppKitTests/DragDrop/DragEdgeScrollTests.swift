@@ -111,12 +111,12 @@ extension ExplorerWindowlessTests {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
             let paths = (0..<100).map { "/tmp/favorite-\($0)" }
-            tab.updatePreferences([
-                "favoritesPlacement": .string("separate"), "favoritesInitialized": .bool(true),
-                "favoritesExpanded": .bool(true),
-                "favorites": .array(
-                    paths.map { .object(["path": .string($0), "icon": .string(FavoriteIconID.folder.rawValue)]) }),
-            ])
+            tab.updatePreferences {
+                $0.favoritesPlacement = .separate
+                $0.favoritesInitialized = true
+                $0.favoritesExpanded = true
+                $0.favorites = paths.map { FavoritePreference(path: $0, icon: .folder) }
+            }
             let controller = tab.sidebarController
             #expect(await waitUntil { controller.model.favorites.count == 100 })
             harness.layout(tab)

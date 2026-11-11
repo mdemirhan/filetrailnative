@@ -232,7 +232,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         session.lastVisitedPath = activeTab.path
         session.lastVisitedFavoritePath = activeTab.favoritePath
         session.treeRootPath = activeTab.treeRootPath
-        let record = createRecord(newWindowBounds(source?.window), session: Self.node(session))
+        let record = createRecord(newWindowBounds(source?.window)) { $0 = session }
         store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         open(record, launch: ExplorerLaunchContext(restoreTabs: true), place: .front)
         return true
@@ -276,10 +276,11 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     public func openWindowOnFolder(_ path: String, selecting selectPath: String? = nil) {
         guard !shuttingDown else { return }
         let lastClosed = host.store.lastClosedWindow()
-        var session = lastClosed.map { Self.node($0.session) } ?? [:]
-        session["openTabs"] = .array([])
-        session["activeTabIndex"] = .number(0)
-        let record = createRecord(lastClosed?.bounds ?? .default, session: session)
+        let record = createRecord(lastClosed?.bounds ?? .default) {
+            if let lastClosed { $0 = lastClosed.session }
+            $0.openTabs = []
+            $0.activeTabIndex = 0
+        }
         host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         let window = open(record, launch: ExplorerLaunchContext(startupFolderPath: path), place: .front)
         if let selectPath, let entry = windows.byWindowID(window.windowID) {
@@ -342,12 +343,11 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     /// A window the system made of a tab dragged out of another: it becomes an explorer window of its own, with the
     /// panels and the size of the one it came from.
-    public func adopt(_ window: W, id: String, from sourceID: Int?, overrides session: [String: JSONNode]) {
-        let source = windows.byWindowID(sourceID)
-        var overrides = source.map { Self.node(host.store.windowPreferences($0.id).windowSession) } ?? [:]
-        overrides.merge(session) { _, new in new }
+    public func adopt(_ window: W, id: String, from sourceID: Int?) {
+        let source = windows.byWindowID(sourceID).map { host.store.windowPreferences($0.id).windowSession }
         let record = StoredExplorerWindow(
-            id: id, bounds: Self.stored(window), session: host.store.createWindowSession(overrides: overrides))
+            id: id, bounds: Self.stored(window),
+            session: host.store.createWindowSession { if let source { $0 = source } })
         host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
         attach(window, record: record, place: .front)
     }
@@ -365,16 +365,14 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     // tab that was in front. Before any window has closed, the app's latest values at the default size.
     private func recordFromLastClosed() -> StoredExplorerWindow {
         let lastClosed = host.store.lastClosedWindow()
-        return createRecord(lastClosed?.bounds ?? .default, session: lastClosed.map { Self.node($0.session) } ?? [:])
+        return createRecord(lastClosed?.bounds ?? .default) { if let lastClosed { $0 = lastClosed.session } }
     }
 
-    private func createRecord(_ bounds: StoredWindowState, session: [String: JSONNode]) -> StoredExplorerWindow {
-        StoredExplorerWindow(
-            id: host.newWindowID(), bounds: bounds, session: host.store.createWindowSession(overrides: session))
-    }
-
-    static func node(_ session: WindowSession) -> [String: JSONNode] {
-        (try? JSONNode.of(session))?.object ?? [:]
+    // The session starts as the app's latest values; what `change` makes of it is checked as when the file is read.
+    private func createRecord(_ bounds: StoredWindowState, _ change: (inout WindowSession) -> Void)
+        -> StoredExplorerWindow
+    {
+        StoredExplorerWindow(id: host.newWindowID(), bounds: bounds, session: host.store.createWindowSession(change))
     }
 
     private static func stored(_ window: W) -> StoredWindowState {

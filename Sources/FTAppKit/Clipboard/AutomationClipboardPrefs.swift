@@ -9,10 +9,10 @@
         static func registerOnce() {
             guard !registered else { return }
             registered = true
-            AutomationPrefs.register("markClipboardItems") { value, context in
+            AutomationPrefs.register(.markClipboardItems) { value, context in
                 guard let controller = context.controller else { return .unsupported("markClipboardItems") }
                 guard case .bool(let enabled) = value else { return .failed("markClipboardItems \(value)") }
-                controller.updatePreferences(["markClipboardItems": .bool(enabled)])
+                controller.updatePreferences { $0.markClipboardItems = enabled }
                 controller.clipboardMarksChanged()
                 return .applied
             }

@@ -15,10 +15,15 @@ public struct WindowTabsAnswer: Equatable, Sendable {
     }
 }
 
-/// A preference change, with only the keys the whole app shares, and the window it came from.
+/// A preference change: the keys set that the whole app shares, and the window it came from.
 public struct PreferencesChange: Equatable, Sendable {
-    public var patch: [String: JSONNode]
+    public var keys: Set<PreferenceKey>
     public var senderID: Int?
+
+    public init(keys: Set<PreferenceKey>, senderID: Int?) {
+        self.keys = keys
+        self.senderID = senderID
+    }
 }
 
 /// Preferences as a window sees them: an explorer window sees the app's with its own session on top, and what it
@@ -45,14 +50,37 @@ public final class WindowPreferenceChannel {
         explorerWindowID(senderID).map(store.windowPreferences) ?? store.preferences()
     }
 
+    /// A change made in the window `senderID` (`$0.theme = .dark`); every window is told of it, with the keys it set
+    /// that the whole app shares.
+    @discardableResult
+    public func update(from senderID: Int?, _ change: (inout EditedPreferences) -> Void) -> AppPreferences {
+        var written: [PreferenceKey] = []
+        let preferences =
+            if let windowID = explorerWindowID(senderID) {
+                store.updateWindow(windowID) {
+                    change(&$0)
+                    written = $0.written
+                }
+            } else {
+                store.update {
+                    change(&$0)
+                    written = $0.written
+                }
+            }
+        // What belongs to one window (its tabs, panels, column widths) stays with it.
+        let shared = Set(written.filter { !$0.isWindowSessionKey })
+        onPreferencesChanged(store.preferences(), PreferencesChange(keys: shared, senderID: senderID))
+        return preferences
+    }
+
     @discardableResult
     public func update(_ patch: [String: JSONNode], from senderID: Int?) -> AppPreferences {
         let windowID = explorerWindowID(senderID)
         let preferences =
             windowID.map { store.updateWindowPreferences($0, patch) } ?? store.updatePreferences(patch)
         // What belongs to one window (its tabs, panels, column widths) stays with it.
-        let shared = patch.filter { !WindowSessionKeys.isSessionKey($0.key) }
-        onPreferencesChanged(store.preferences(), PreferencesChange(patch: shared, senderID: senderID))
+        let shared = Set(patch.keys.compactMap(PreferenceKey.init(rawValue:)).filter { !$0.isWindowSessionKey })
+        onPreferencesChanged(store.preferences(), PreferencesChange(keys: shared, senderID: senderID))
         return preferences
     }
 }

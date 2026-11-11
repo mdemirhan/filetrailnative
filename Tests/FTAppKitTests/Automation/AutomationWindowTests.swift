@@ -35,11 +35,11 @@
                 func apply(_ prefs: [String: Scenario.PrefValue]) -> AutomationRunner.Outcome {
                     AutomationPrefs.apply(prefs, context: .init(controller: tab, window: window, prefs: prefs))
                 }
-                #expect(!AutomationPrefs.hasHandler("returnKeyAction"))
+                #expect(!AutomationPrefs.hasHandler(.returnKeyAction))
                 #expect(apply(["returnKeyAction": .string("open")]).status == .ok)
                 #expect(tab.preferences.returnKeyAction == .open)
                 // A window session key has no handler: it is only seeded before launch.
-                #expect(!AutomationPrefs.hasHandler("lastVisitedPath"))
+                #expect(!AutomationPrefs.hasHandler(.lastVisitedPath))
                 let session = apply(["lastVisitedPath": .string("/")])
                 #expect(session.status == .partial)
                 #expect(session.message == "unsupported: lastVisitedPath")

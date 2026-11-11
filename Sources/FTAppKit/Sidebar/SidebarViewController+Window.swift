@@ -142,11 +142,11 @@ extension SidebarViewController {
         if Favorites.contains(model.favorites, path: path) {
             guard let next = Favorites.removing(path, from: model.favorites) else { return }
             model.favorites = next
-            updatePreferences(["favorites": .array(next.map(Self.json))])
+            updatePreferences { $0.favorites = next }
         } else {
             guard let next = Favorites.adding(path, to: model.favorites, homePath: homePath) else { return }
             model.favorites = next
-            updatePreferences(["favorites": .array(next.map(Self.json))])
+            updatePreferences { $0.favorites = next }
         }
         refresh()
     }
@@ -181,10 +181,11 @@ extension SidebarViewController {
             model.setSections(
                 favorites: favorites ? open : model.favoritesExpanded,
                 locations: favorites ? model.locationsExpanded : open)
-            updatePreferences([
-                "favoritesExpanded": .bool(model.favoritesExpanded),
-                "locationsExpanded": .bool(model.locationsExpanded),
-            ])
+            let (favorites, locations) = (model.favoritesExpanded, model.locationsExpanded)
+            updatePreferences {
+                $0.favoritesExpanded = favorites
+                $0.locationsExpanded = locations
+            }
             stateChanged()
         }
     #endif

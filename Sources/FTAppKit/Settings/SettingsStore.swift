@@ -24,55 +24,50 @@ struct SettingsServices {
                 !lookup.pinnedApps.indices.contains($0.offset) || lookup.pinnedApps[$0.offset] == nil
             }.map(\.element))
     }
-    /// Runs a closure after a delay in milliseconds; the returned closure cancels it.
-    var schedule: PreferencesSync.Schedule = { milliseconds, work in
-        let item = DispatchWorkItem { MainActor.assumeIsolated { work() } }
-        DispatchQueue.main.asyncAfter(deadline: .now() + milliseconds / 1000, execute: item)
-        return { item.cancel() }
-    }
-
     init() {}
 }
 
-/// The preferences as the Settings window shows them, and the edits it makes. Each edit is saved through
-/// `PreferencesSync` (only the keys that changed, 300 ms after the last), and told to the views.
+/// The app's preferences as Settings reads and changes them: `read` gives them as they are now (nil when they can't be
+/// read), `update` changes them, and every window is told.
+@MainActor
+struct SettingsPreferences {
+    var read: () -> AppPreferences?
+    var update: (_ change: (inout AppPreferences) -> Void) -> Void
+}
+
+/// The preferences as the Settings window shows them, and the edits it makes. Each edit changes the app's preferences
+/// at once, which the other windows are told of and the state store writes; the views follow.
 @MainActor
 final class SettingsStore {
+    /// The app's preferences as last read or changed here.
     private(set) var preferences: AppPreferences
     let homePath: String
-    let sync: PreferencesSync
+    private let shared: SettingsPreferences
     /// Pinned apps that aren't where they were: flagged in the list.
     private(set) var missingOpenWithAppPaths: Set<String> = []
     /// The views follow.
     var onChange: () -> Void = {}
 
-    init(
-        preferences: AppPreferences, homePath: String, write: @escaping PreferencesSync.Write,
-        schedule: @escaping PreferencesSync.Schedule
-    ) {
+    init(preferences: AppPreferences, homePath: String, shared: SettingsPreferences) {
         self.preferences = preferences
         self.homePath = homePath
-        sync = PreferencesSync(write: write, schedule: schedule)
-        // The values loaded on start count as synced.
-        sync.markSynced(SettingsValues.payload(preferences))
+        self.shared = shared
     }
 
-    /// An edit made here.
+    /// An edit made here: the app's preferences change, and the views follow.
     func update(_ change: (inout AppPreferences) -> Void) {
         var next = preferences
         change(&next)
         guard next != preferences else { return }
         preferences = next
-        sync.changed(SettingsValues.payload(next))
+        shared.update(change)
         onChange()
     }
 
-    /// An edit made in another window: applied here, never written back.
-    func remote(_ patch: PreferencesPatch) {
-        let shared = sync.remote(patch.filter { SettingsValues.payloadKeys.contains($0.key) })
-        guard !shared.isEmpty else { return }
-        preferences = SettingsValues.applying(shared, to: preferences)
-        sync.changed(SettingsValues.payload(preferences))
+    /// The app's preferences changed, here or in another window: shown as they are now. Nothing is written.
+    func reload() {
+        guard let current = shared.read(), current != preferences else { return }
+        preferences = current
         onChange()
     }
 

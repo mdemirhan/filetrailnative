@@ -158,7 +158,7 @@ extension ExplorerWindowlessTests {
         @Test func findersSizesHaveShorterRowsAndNarrowerColumns() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 80)
-            tab.updatePreferences(["density": .string("finder")])
+            tab.updatePreferences { $0.density = .finder }
             tab.refreshColumns()
             probe.layout()
             let compact = try #require(probe.compact)

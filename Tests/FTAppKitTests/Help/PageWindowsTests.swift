@@ -76,7 +76,6 @@ import Testing
     // Customize… opens Settings on the shortcuts tab
     @Test func customizeOpensSettingsOnTheShortcutsTab() throws {
         let (pages, _) = Self.make()
-        pages.settingsServices.schedule = { _, _ in {} }
         pages.openHelp(topic: .shortcuts)
         let help = try #require(pages.helpWindow)
         help.helpView.layoutSubtreeIfNeeded()
@@ -110,7 +109,6 @@ import Testing
         pages.openAcknowledgements()
         #expect(pages.acknowledgementsWindow === acknowledgements)
 
-        pages.settingsServices.schedule = { _, _ in {} }
         pages.openSettings()
         #expect(pages.settingsWindow?.wasPresented == true)
         #expect(pages.settingsWindow?.window?.isVisible == false)
@@ -121,7 +119,7 @@ import Testing
         var bindings = ShortcutCommands.defaultBindings
         bindings[.newTab] = []
         changed.shortcutOverrides = ShortcutCommands.overrides(for: bindings)
-        pages.preferencesChanged(changed, PreferencesChange(patch: ["shortcutOverrides": .object([:])], senderID: nil))
+        pages.preferencesChanged(changed, PreferencesChange(keys: [.shortcutOverrides], senderID: nil))
         #expect(first?.helpView.shortcuts.written(.newTab) == nil)
 
         // Help opens on the page it was left on.
@@ -153,7 +151,7 @@ import Testing
         #expect(display.written(.renameSelection) == "F2")
         #expect(pages.shortcutDisplay(.defaults()).written(.renameSelection) == "Return")
         // Not open: nothing to follow, and nothing fails.
-        pages.preferencesChanged(changed, PreferencesChange(patch: ["shortcutOverrides": .object([:])], senderID: nil))
+        pages.preferencesChanged(changed, PreferencesChange(keys: [.shortcutOverrides], senderID: nil))
         #expect(pages.helpWindow == nil)
     }
 

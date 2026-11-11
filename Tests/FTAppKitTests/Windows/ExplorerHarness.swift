@@ -83,7 +83,7 @@ final class ExplorerHarness {
         let tab = try #require(windows.front as? MainWindowController)
         // The window's services are this harness's: other suites' windows keep the app's.
         tab.servicesOverride = services
-        tab.preferencesChanged(PreferencesChange(patch: [:], senderID: nil))
+        tab.preferencesChanged(PreferencesChange(keys: [], senderID: nil))
         if onScreen {
             #expect(await waitUntil { tab.window?.isVisible == true && tab.workspace.isReady })
         } else {

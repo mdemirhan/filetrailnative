@@ -48,7 +48,7 @@ extension ExplorerWindowlessTests {
             let (harness, tab, image, handedToMacOS) = try await openWithImage()
             let volume = harness.folder.appending("Beta").path
             harness.windows.mountDiskImage = { _ in DiskImageOpenResponse(status: .opened, volumePath: volume) }
-            harness.channel.update(["diskImageOpensIn": .string("tab")], from: tab.windowID)
+            harness.channel.update(from: tab.windowID) { $0.diskImageOpensIn = .tab }
             let group = try #require(tab.group)
             tab.open([image])
             #expect(await waitUntil { group.tabs.count == 2 })
@@ -138,7 +138,7 @@ extension ExplorerWindowlessTests {
             let (harness, tab, image, _) = try await openWithImage()
             let volume = harness.folder.appending("Beta").path
             harness.windows.mountDiskImage = { _ in DiskImageOpenResponse(status: .opened, volumePath: volume) }
-            harness.channel.update(["diskImageOpensIn": .string("tab")], from: tab.windowID)
+            harness.channel.update(from: tab.windowID) { $0.diskImageOpensIn = .tab }
             let group = try #require(tab.group)
             try await pressOpenInTheInfoPanel(tab, harness, on: image)
             #expect(await waitUntil { group.tabs.count == 2 })
@@ -207,7 +207,7 @@ struct RealDiskImageGUITests {
         let tab = try await harness.open()
         let opener = DiskImageOpener(onMounted: {})
         harness.windows.mountDiskImage = { await opener.open($0) }
-        harness.channel.update(["diskImageOpensIn": .string("tab")], from: tab.windowID)
+        harness.channel.update(from: tab.windowID) { $0.diskImageOpensIn = .tab }
         tab.refresh()
         #expect(await waitUntil { tab.content.listed.contains { $0.name == "real.dmg" } })
         let entry = try #require(tab.content.listed.first { $0.name == "real.dmg" })

@@ -78,7 +78,7 @@ extension ExplorerWindowlessTests {
                     at: harness.folder.appending("Zed\(index + 100)"), withIntermediateDirectories: false)
             }
             let tab = try await harness.open(listed(harness, ""))
-            tab.updatePreferences(["favoritesPlacement": .string("separate")])
+            tab.updatePreferences { $0.favoritesPlacement = .separate }
             await rooted(tab, harness)
             let controller = sidebar(tab)
             #expect(await waitUntil { controller.tree.rowCount > 80 })

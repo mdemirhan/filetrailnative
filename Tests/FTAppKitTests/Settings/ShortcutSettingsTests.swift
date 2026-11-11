@@ -70,7 +70,6 @@ import Testing
         #expect(press(Kit.letter("j", [.command, .option], window: controller.window), in: controller))
         #expect(!place.isRecording)
         #expect(try slot(.newFolder, 1, in: view).stringValue == "⌥⌘J")
-        Kit.flush(controller)
         #expect(
             recorder.saved["shortcutOverrides"]
                 == .object(["newFolder": .array([.string("Cmd+Shift+N"), .string("Cmd+Option+J")])]))
@@ -101,7 +100,6 @@ import Testing
         #expect(!place.record(Kit.key(Kit.tab.0, code: Kit.tab.1, window: controller.window)))
         _ = controller.window?.makeFirstResponder(nil)
         #expect(!place.isRecording)
-        Kit.flush(controller)
         #expect(recorder.patches.isEmpty)
     }
 
@@ -153,7 +151,6 @@ import Testing
         press(Kit.letter("n", [.command, .shift], window: controller.window), in: controller)
         #expect(try !slot(.newFolder, 1, in: view).isRecording)
         #expect(notes(view).isEmpty)
-        Kit.flush(controller)
         #expect(recorder.saved["shortcutOverrides"] == nil)
         #expect(!view.restoreAllButton.isEnabled)
     }
@@ -170,7 +167,6 @@ import Testing
         // Cancel changes nothing.
         Kit.click(row.cancelButton)
         #expect(notes(view).isEmpty)
-        Kit.flush(controller)
         #expect(recorder.patches.isEmpty)
         // Reassign moves the key here: Duplicate loses it.
         try slot(.newFolder, 1, in: view).perform()
@@ -334,17 +330,14 @@ import Testing
         Kit.click(duplicate.restoreButton)
         #expect(notes(view) == ["Taken back from New Folder."])
         #expect(view.row(.duplicateSelection)?.slots.first?.stringValue == "⌘D")
-        // Back where they started: nothing differs, so nothing is written.
-        Kit.flush(controller)
-        #expect(recorder.patches.isEmpty)
+        // Back where they started: nothing differs.
+        #expect(recorder.current.shortcutOverrides.isEmpty)
         // Restore Defaults clears everything.
         try slot(.newFolder, 1, in: view).perform()
         press(Kit.letter("j", [.command, .option], window: controller.window), in: controller)
-        Kit.flush(controller)
         #expect(recorder.saved["shortcutOverrides"]?["newFolder"] != nil)
         #expect(view.restoreAllButton.accessibilityLabel() == "Restore Default Shortcuts")
         Kit.click(view.restoreAllButton)
-        Kit.flush(controller)
         #expect(recorder.saved["shortcutOverrides"] == .object([:]))
         #expect(!view.restoreAllButton.isEnabled)
     }

@@ -169,7 +169,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         let changed = Self.row(items) != Self.row(savedItems)
         savedItems = items
         if changed {
-            context?.updatePreferences(["topToolbarItems": .array(items.map { .string($0.rawValue) })])
+            context?.updatePreferences { $0.topToolbarItems = items }
         }
         applySavedOrder()
     }

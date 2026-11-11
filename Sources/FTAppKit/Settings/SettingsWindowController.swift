@@ -16,17 +16,15 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
     var openColorPicker: ColorPicker = AccentSelector.openColorPanel
     /// Told the tab on screen, so the app can open Settings on it next time.
     public var onTabChange: (SettingsTab) -> Void = { _ in }
-    /// While this window writes, the change it is told back is its own.
-    private var isWriting = false
     private var monitor: Any?
     private var checkedAppPaths: [String]?
     private var focusObservation: NSKeyValueObservation?
 
-    /// `load` reads the preferences (and throws when it can't); `write` saves a patch, false when it was refused.
+    /// `load` reads the app's preferences (and throws when it can't); `update` changes them.
     init(
-        tab: SettingsTab, load: () throws -> AppPreferences, homePath: String,
-        write: @escaping (PreferencesPatch) -> Bool, services: SettingsServices = SettingsServices(),
-        model: AppearanceModel = .shared
+        tab: SettingsTab, load: @escaping () throws -> AppPreferences, homePath: String,
+        update: @escaping (_ change: (inout AppPreferences) -> Void) -> Void,
+        services: SettingsServices = SettingsServices(), model: AppearanceModel = .shared
     ) {
         settingsView = SettingsView(tab: tab, theme: model.theme)
         self.services = services
@@ -59,7 +57,7 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
             let preferences = try load()
             let store = SettingsStore(
                 preferences: preferences, homePath: homePath,
-                write: { [weak self] patch in self?.write(patch, write) ?? false }, schedule: services.schedule)
+                shared: SettingsPreferences(read: { try? load() }, update: update))
             store.onChange = { [weak self] in self?.storeChanged() }
             loadedStore = store
             settingsView.makePage = { [weak self] tab in
@@ -110,23 +108,13 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
         popovers.handle(event)
     }
 
-    // MARK: Saving
+    // MARK: Preferences
 
-    private func write(_ patch: PreferencesPatch, _ write: (PreferencesPatch) -> Bool) -> Bool {
-        isWriting = true
-        defer { isWriting = false }
-        return write(patch)
-    }
-
-    /// A change of the app's preferences: one made in another window is shown here; this window's own is not.
+    /// A change of the app's preferences, made here or in another window: shown here. Only the keys the whole app
+    /// shares are shown, so a change of one window's own (its tabs, panels, column widths) is not looked at.
     public func preferencesChanged(_ change: PreferencesChange) {
-        guard !isWriting else { return }
-        loadedStore?.remote(change.patch)
-    }
-
-    /// Writes what is waiting now (the window closes).
-    public func flushPending() {
-        loadedStore?.sync.flushPending()
+        guard !change.keys.isEmpty else { return }
+        loadedStore?.reload()
     }
 
     private func storeChanged() {
@@ -184,7 +172,6 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
     }
 
     public override func windowWillClose(_ notification: Notification) {
-        flushPending()
         popovers.close(returnFocus: false)
         AccentSelector.closeColorPanel()
         if let monitor { NSEvent.removeMonitor(monitor) }
@@ -199,7 +186,7 @@ public final class SettingsWindowController: PageWindowController, SettingsPageH
 private final class EmptyPageHost: SettingsPageHost {
     static let shared = EmptyPageHost()
     static let placeholder = SettingsStore(
-        preferences: .defaults(), homePath: "", write: { _ in true }, schedule: { _, _ in {} })
+        preferences: .defaults(), homePath: "", shared: SettingsPreferences(read: { nil }, update: { _ in }))
     var store: SettingsStore { Self.placeholder }
     lazy var popovers = SettingsPopovers()
     var services = SettingsServices()

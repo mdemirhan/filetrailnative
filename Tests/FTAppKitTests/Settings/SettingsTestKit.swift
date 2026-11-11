@@ -5,12 +5,13 @@ import Testing
 
 @testable import FTAppKit
 
-/// What a Settings window under test wrote and asked for.
+/// What a Settings window under test changed and asked for.
 @MainActor
 final class SettingsRecorder {
-    var patches: [PreferencesPatch] = []
-    var refuseWrites = false
-    var pending: [() -> Void] = []
+    /// The app's preferences, as Settings changes them.
+    var current = AppPreferences.defaults()
+    /// Each change Settings made: the keys it set, with their values as the file holds them.
+    var patches: [[String: JSONNode]] = []
     var pickedApplication: ApplicationSelection?
     var pickedDirectory: String?
     var pickerFails = false
@@ -18,8 +19,17 @@ final class SettingsRecorder {
     var missing: Set<String> = []
     var pickedColor: String?
 
-    /// Every write so far, merged.
-    var saved: PreferencesPatch { patches.reduce(into: [:]) { $0.merge($1) { _, new in new } } }
+    /// Every change so far, merged.
+    var saved: [String: JSONNode] { patches.reduce(into: [:]) { $0.merge($1) { _, new in new } } }
+
+    /// Changes the app's preferences as the app does for Settings.
+    func update(_ change: (inout AppPreferences) -> Void) {
+        var edited = EditedPreferences(current)
+        edited.apply(change)
+        current = edited.preferences
+        patches.append(
+            Dictionary(uniqueKeysWithValues: edited.written.map { ($0.rawValue, edited.preferences.node($0)) }))
+    }
 }
 
 /// The error a picker that could not be shown throws.
@@ -34,11 +44,8 @@ enum SettingsTestKit {
     ) -> (SettingsWindowController, SettingsRecorder) {
         _ = NSApplication.shared
         let recorder = SettingsRecorder()
+        recorder.current = preferences
         var services = SettingsServices()
-        services.schedule = { _, work in
-            recorder.pending.append(work)
-            return {}
-        }
         services.pickApplication = { _ in
             if recorder.pickerFails { throw PickerFailed() }
             return recorder.pickedApplication
@@ -53,12 +60,8 @@ enum SettingsTestKit {
             tab: tab,
             load: {
                 guard loads else { throw PickerFailed() }
-                return preferences
-            }, homePath: homePath,
-            write: { patch in
-                recorder.patches.append(patch)
-                return !recorder.refuseWrites
-            }, services: services, model: AppearanceModel())
+                return recorder.current
+            }, homePath: homePath, update: { recorder.update($0) }, services: services, model: AppearanceModel())
         controller.openColorPicker = { _, picked in
             if let color = recorder.pickedColor { picked(color) }
         }
@@ -127,9 +130,6 @@ enum SettingsTestKit {
     }
 
     static func names(_ list: SettingsListView) -> [String] { list.rows.map(\.spec.name) }
-
-    /// Writes what is waiting, as 300 ms after the last change does.
-    static func flush(_ controller: SettingsWindowController) { controller.flushPending() }
 
     /// A key press made into an event for `window`.
     static func key(

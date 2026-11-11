@@ -628,24 +628,26 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     func saveSession() {
         guard !isDestroyed, let host, let active = selected else { return }
         let front = active.openTab
-        func node<T: Encodable>(_ value: T) -> JSONNode { (try? JSONNode.of(value)) ?? .null }
-        var patch = session.panels.patch
         // A window doesn't take more tabs than it keeps (one the system drops on a full window is sent back out); a
         // launch folder added to a full restored window is the one way past it, and the cut is there for it.
-        patch["openTabs"] = node(Array(tabs.prefix(AppPreferenceLimits.openTabsLimit).map(\.openTab)))
-        patch["activeTabIndex"] = .number(
-            Double(min(AppPreferenceLimits.openTabsLimit - 1, tabs.firstIndex { $0 === active } ?? 0)))
-        patch["lastVisitedPath"] = node(front.path)
-        patch["lastVisitedFavoritePath"] = node(front.favoritePath)
-        patch["treeRootPath"] = node(front.treeRootPath)
-        patch["viewMode"] = node(front.viewMode)
-        patch["searchViewMode"] = node(front.searchViewMode)
-        patch["sortBy"] = node(front.sortBy)
-        patch["sortDirection"] = node(front.sortDirection)
-        patch["includeHidden"] = .bool(front.includeHidden)
-        patch["foldersFirst"] = .bool(front.foldersFirst)
-        patch["favoritesExpanded"] = .bool(front.favoritesExpanded)
-        patch["locationsExpanded"] = .bool(front.locationsExpanded)
-        host.store.updateWindowPreferences(recordID, patch)
+        let openTabs = Array(tabs.prefix(AppPreferenceLimits.openTabsLimit).map(\.openTab))
+        let activeTabIndex = min(AppPreferenceLimits.openTabsLimit - 1, tabs.firstIndex { $0 === active } ?? 0)
+        let panels = session.panels
+        host.store.updateWindow(recordID) {
+            panels.write(to: &$0)
+            $0.openTabs = openTabs
+            $0.activeTabIndex = activeTabIndex
+            $0.lastVisitedPath = front.path
+            $0.lastVisitedFavoritePath = front.favoritePath
+            $0.treeRootPath = front.treeRootPath
+            $0.viewMode = front.viewMode
+            $0.searchViewMode = front.searchViewMode
+            $0.sortBy = front.sortBy
+            $0.sortDirection = front.sortDirection
+            $0.includeHidden = front.includeHidden
+            $0.foldersFirst = front.foldersFirst
+            $0.favoritesExpanded = front.favoritesExpanded
+            $0.locationsExpanded = front.locationsExpanded
+        }
     }
 }

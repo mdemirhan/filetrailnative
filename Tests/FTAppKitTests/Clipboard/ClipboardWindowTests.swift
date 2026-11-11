@@ -114,7 +114,7 @@ extension ExplorerWindowlessTests {
             tab.perform(.cutSelection)
             #expect(row()?.nameCell.markGlyph.mark == .cut)
             #expect(row()?.nameLabel.alphaValue == CGFloat(ClipboardLayout.Mark.cutLabelAlpha))
-            tab.updatePreferences(["markClipboardItems": .bool(false)])
+            tab.updatePreferences { $0.markClipboardItems = false }
             tab.clipboardMarksChanged()
             #expect(row()?.nameCell.markGlyph.mark == nil)
             #expect(row()?.nameLabel.alphaValue == 1)

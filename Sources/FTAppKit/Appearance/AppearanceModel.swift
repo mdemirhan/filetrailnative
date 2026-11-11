@@ -104,7 +104,7 @@ public final class AppearanceModel {
 
     /// A preference change from the channel: only the theme and the accent matter here.
     public func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
-        guard change.patch["theme"] != nil || change.patch["accent"] != nil else { return }
+        guard change.keys.contains(.theme) || change.keys.contains(.accent) else { return }
         apply(preferences)
     }
 
