@@ -89,8 +89,6 @@ enum SettingsMetrics {
 
     // MARK: Controls
 
-    /// A pop-up's padding: 8 before its title and 26 after it, for the chevron.
-    static let popupPaddingLeading: CGFloat = 8
     static let popupPaddingTrailing: CGFloat = 26
     static var popupMinWidth: CGFloat { CGFloat(DesignTokens.settingsPopupMinWidth) }
     /// A pop-up's chevron: 11 by 11, 8 from the right, stroke 2.4.
@@ -253,8 +251,6 @@ enum SettingsMetrics {
     /// The 0.5 px edges of swatches, thumbnails, checkboxes and
     /// the push button's bezel.
     static let hairline: CGFloat = 0.5
-    /// A pop-up's menu opens with its checked item over the button's text.
-    static let popupMenuInset: CGFloat = 3
     /// A row starts to drag 3 points from where it was pressed, and is dimmed to 0.4 while dragged.
     static let dragThreshold: CGFloat = 3
     static let draggingOpacity: CGFloat = 0.4

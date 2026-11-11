@@ -79,13 +79,23 @@ import Testing
         try expectDown(box, in: window)
     }
 
-    // The push button bezel the pop-ups keep: the edge lies outside, and its soft line falls under it.
+    /// A push button's bezel on its fill, drawn as the app's drawn buttons draw theirs.
+    final class Bezel: NSView {
+        override var isFlipped: Bool { true }
+        override func draw(_ dirtyRect: NSRect) {
+            let palette = AppearanceModel.shared.theme.palette
+            let radius = CGFloat(DesignTokens.radii.control)
+            NSColor(palette.pushButtonBg).setFill()
+            NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
+            drawPushButtonBezel(palette, around: bounds, radius: radius)
+        }
+    }
+
+    // The push button bezel the drawn buttons keep: the edge lies outside, and its soft line falls under it.
     @Test(arguments: [true, false])
     func aPushButtonsBezelFallsBelowIt(hostFlipped: Bool) throws {
         let (window, host) = window(hostFlipped: hostFlipped)
-        let button = SettingsPopup(
-            label: "Choice", options: [.init(value: "a", title: "Customize…")], value: "a",
-            theme: AppearanceModel.shared.theme)
+        let button = Bezel()
         button.frame = NSRect(x: 40, y: 40, width: 120, height: 24)
         host.addSubview(button)
         let gray = try gray(in: window)

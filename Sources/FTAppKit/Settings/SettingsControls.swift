@@ -275,124 +275,75 @@ final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
 
 // MARK: Pop-up
 
-/// The system's own pop-up menu on a button with the push button's bezel, as wide as its longest
-/// choice and never narrower than 120. A choice can be listed and not choosable.
-final class SettingsPopup: SettingsControlView, SettingsSized, NSMenuDelegate {
+/// The system's pop-up button, as wide as its longest choice and never narrower than 120. A choice can be listed and
+/// not choosable.
+final class SettingsPopup: NSPopUpButton, SettingsSized {
     struct Option: Equatable {
         var value: String
         var title: String
         var enabled = true
     }
 
-    private(set) var options: [Option]
+    private(set) var options: [Option] = []
     private(set) var value: String
     var onChange: (String) -> Void = { _ in }
-    private static var font: NSFont { ThemeFonts.sans(DesignTokens.typeScale.body) }
-    private let label = FlushTextField(labelWithString: "")
 
     init(label accessibilityLabel: String, options: [Option], value: String, theme: Theme) {
-        self.options = options
         self.value = value
-        super.init(theme: theme)
-        label.font = Self.font
-        label.lineBreakMode = .byClipping
-        addSubview(label)
-        setAccessibilityElement(true)
-        setAccessibilityRole(.popUpButton)
+        super.init(frame: .zero, pullsDown: false)
+        autoenablesItems = false
+        font = ThemeFonts.sans(DesignTokens.typeScale.body)
+        target = self
+        action = #selector(chose(_:))
         setAccessibilityLabel(accessibilityLabel)
         setAccessibilityIdentifier("settings.popup")
-        onPress = { [weak self] in self?.showMenu() }
         update(options: options, value: value)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
+    /// Tab comes here whatever the system's keyboard navigation setting says.
     override var acceptsFirstResponder: Bool { isEnabled }
+    override var canBecomeKeyView: Bool { acceptsFirstResponder }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     func update(options: [Option], value: String) {
-        self.options = options
         self.value = value
-        label.stringValue = title
-        label.textColor = NSColor(theme.palette.textPrimary)
-        setAccessibilityValue(title)
-        needsLayout = true
-        needsDisplay = true
+        if options != self.options {
+            self.options = options
+            removeAllItems()
+            for option in options {
+                let item = NSMenuItem(title: option.title, action: nil, keyEquivalent: "")
+                item.representedObject = option.value
+                item.isEnabled = option.enabled
+                menu?.addItem(item)
+            }
+        }
+        selectItem(at: options.firstIndex { $0.value == value } ?? -1)
     }
-
-    /// The title of the chosen option.
-    var title: String { options.first { $0.value == value }?.title ?? value }
 
     var preferredSize: NSSize {
-        let widest = options.map { SettingsGlyph.textWidth($0.title, Self.font) }.max() ?? 0
-        let width = max(
-            SettingsMetrics.popupMinWidth,
-            SettingsMetrics.popupPaddingLeading + widest + SettingsMetrics.popupPaddingTrailing)
-        return NSSize(width: width, height: CGFloat(DesignTokens.controlHeights.regular))
-    }
-
-    override func applyTheme(_ theme: Theme) {
-        super.applyTheme(theme)
-        label.textColor = NSColor(theme.palette.textPrimary)
-    }
-
-    override func layout() {
-        super.layout()
-        let height = label.intrinsicContentSize.height
-        label.frame = NSRect(
-            x: SettingsMetrics.popupPaddingLeading,
-            y: ((bounds.height - height) / 2).rounded(),
-            width: max(
-                0,
-                bounds.width - SettingsMetrics.popupPaddingLeading - SettingsMetrics.popupPaddingTrailing),
-            height: height)
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        SettingsGlyph.bezel(in: bounds, theme: theme, hovering: isHovering && isEnabled, pressed: isPressed)
-        SettingsGlyph.popupChevron(in: bounds, theme: theme)
+        let size = cell?.cellSize ?? intrinsicContentSize
+        return NSSize(width: max(SettingsMetrics.popupMinWidth, ceil(size.width)), height: ceil(size.height))
     }
 
     /// Chooses an option as the menu does; one that can't be chosen changes nothing.
     func choose(_ value: String) {
-        guard let option = options.first(where: { $0.value == value }), option.enabled else { return }
-        guard value != self.value else { return }
-        self.value = value
-        label.stringValue = title
-        setAccessibilityValue(title)
-        onChange(value)
+        guard let index = options.firstIndex(where: { $0.value == value }), options[index].enabled else { return }
+        selectItem(at: index)
+        chose(self)
     }
 
-    /// The menu of the choices, the chosen one checked and over the button, as a Mac pop-up opens.
-    func makeMenu() -> NSMenu {
-        let menu = NSMenu()
-        menu.autoenablesItems = false
-        menu.font = Self.font
-        for option in options {
-            let item = NSMenuItem(title: option.title, action: #selector(menuChose(_:)), keyEquivalent: "")
-            item.target = self
-            item.representedObject = option.value
-            item.isEnabled = option.enabled
-            item.state = option.value == value ? .on : .off
-            menu.addItem(item)
-        }
-        menu.minimumWidth = bounds.width
-        return menu
-    }
-
-    private func showMenu() {
-        let menu = makeMenu()
-        let selected = menu.items.first { $0.state == .on }
-        menu.popUp(
-            positioning: selected, at: NSPoint(x: 0, y: bounds.height - SettingsMetrics.popupMenuInset), in: self)
-    }
-
-    @objc private func menuChose(_ sender: NSMenuItem) {
-        if let value = sender.representedObject as? String { choose(value) }
+    @objc private func chose(_ sender: Any?) {
+        guard let chosen = selectedItem?.representedObject as? String, chosen != value else { return }
+        value = chosen
+        onChange(chosen)
     }
 
     override func keyDown(with event: NSEvent) {
-        if event.charactersIgnoringModifiers == " " || event.keyCode == 125 || event.keyCode == 126 {
-            press()
+        // The up and down arrows open the menu, as Space does.
+        if event.keyCode == 125 || event.keyCode == 126 {
+            performClick(nil)
         } else {
             super.keyDown(with: event)
         }
