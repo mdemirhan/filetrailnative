@@ -192,10 +192,4 @@ extension MainWindowController {
         guard let window else { return }
         InWindowAlerts.notice(title: title, message: message, detailLines: detailLines, in: window)
     }
-
-    /// Finder's question about a name that hides the item, word for word. Cancel is the default.
-    func askDotName() async -> Bool {
-        guard let window else { return false }
-        return await InWindowAlerts.confirm(LocalWriteRules.dotNameQuestion, in: window)
-    }
 }

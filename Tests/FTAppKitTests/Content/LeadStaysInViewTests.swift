@@ -276,6 +276,8 @@ extension ExplorerWindowlessTests {
             let renamed = tab.content.entries[150].path
             let index = try position(of: renamed, tab)
 
+            // The name is taken, as the file operations would say.
+            tab.renameItem = { _, name in .refused("An item named \u{201C}\(name)\u{201D} already exists.") }
             #expect(tab.content.beginRename(path: renamed))
             #expect(try scroller(tab).isInView(index: index) == (view != .viewAsList))
 
@@ -291,6 +293,7 @@ extension ExplorerWindowlessTests {
         func theRenameErrorBoxFollowsItsFieldWhenTheWindowResizes(_ view: RendererCommand) async throws {
             let (harness, tab, _) = try await open(view)
             let taken = tab.content.entries[6].name
+            tab.renameItem = { _, name in .refused("An item named \u{201C}\(name)\u{201D} already exists.") }
             #expect(tab.content.beginRename(path: tab.content.entries[5].path))
             tab.content.renameSubmitted(taken)
             #expect(await waitUntil { tab.content.inlineRename?.error != nil })

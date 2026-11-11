@@ -1524,8 +1524,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
 
     /// What came of a name typed into the rename field.
     enum RenameOutcome: Equatable {
-        /// The item is at this path now.
-        case renamed(String)
         /// Nothing to rename: the name is the one it has.
         case unchanged
         /// The reason the name was refused; the field stays open.
@@ -1546,7 +1544,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
                     // The write coordinator renames it (WriteOperations/).
                     await actions.commitRename(path: path, typed: typed, hiddenFilesShown: self.includeHidden)
                 } else {
-                    await self.interimRename(path: path, typed: typed)
+                    // A tab has the file operations once the app has started them.
+                    .unchanged
                 }
             guard self.content.inlineRename?.path == path else {
                 // The folder was left while the name was checked (a click on another folder ends the field and opens
@@ -1558,61 +1557,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSMenuIt
                 return
             }
             switch outcome {
-            case .renamed(let newPath):
-                self.content.endRename()
-                await self.reloadSelecting([newPath])
             case .unchanged, .started:
                 self.content.endRename()
             case .refused(let message):
                 self.content.refuseRename(message)
             }
         }
-    }
-
-    /// The rename in a window without the app's file operations: the typed name is trimmed and checked, a name that
-    /// begins with a dot asks first, and the file system does the rest.
-    private func interimRename(path: String, typed: String) async -> RenameOutcome {
-        let source = URL(fileURLWithPath: path)
-        let current = source.lastPathComponent
-        let name = InlineRenameRules.trimmedName(typed)
-        if name == current { return .unchanged }
-        if let error = ItemNames.error(for: name) { return .refused(error) }
-        if !current.hasPrefix("."), InlineRenameRules.needsDotConfirmation(name: name, hiddenFilesShown: includeHidden),
-            await !confirmDotName()
-        {
-            return .unchanged
-        }
-        let target = source.deletingLastPathComponent().appendingPathComponent(name)
-        // The file system is asked off the main thread.
-        return await Task.detached(priority: .userInitiated) { Self.renameOnDisk(from: source, to: target) }.value
-    }
-
-    private nonisolated static func renameOnDisk(from source: URL, to target: URL) -> RenameOutcome {
-        let fileManager = FileManager.default
-        // A name that differs only in case is the same item on a disk that ignores case.
-        if fileManager.fileExists(atPath: target.path), target.path.lowercased() != source.path.lowercased() {
-            return .refused("An item named “\(target.lastPathComponent)” already exists.")
-        }
-        do {
-            try fileManager.moveItem(at: source, to: target)
-            return .renamed(target.path)
-        } catch {
-            return .refused((error as NSError).localizedDescription)
-        }
-    }
-
-    /// Finder's question about a name that hides the item, word for word. Cancel is the default.
-    private func confirmDotName() async -> Bool {
-        await askDotName()
-    }
-
-    /// Reads the folder on screen again and selects `paths` (an item just renamed), the list staying where it is.
-    private func reloadSelecting(_ paths: [String]) async {
-        let url = folder
-        let result = await readFolder(url)
-        guard url == folder, !isNavigating, !folderLetGo, case .success(let snapshot) = result.snapshot else { return }
-        content.show(folder: url.path, entries: snapshot.entries, selecting: paths, keepingScroll: true)
-        notify(.folder)
     }
 
     /// ⌘F: the search field takes the keyboard. Text typed into the list's filter goes into it, and is searched at

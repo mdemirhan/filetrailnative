@@ -290,7 +290,7 @@ final class WindowWriteActions {
             guard let self else { return .close }
             switch await self.commitRename(path: path, typed: typed, hiddenFilesShown: hiddenFilesShown) {
             case .refused(let message): return .refuse(message)
-            case .renamed, .unchanged, .started: return .close
+            case .unchanged, .started: return .close
             }
         }
     }
