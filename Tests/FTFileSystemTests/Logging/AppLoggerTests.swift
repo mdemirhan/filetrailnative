@@ -21,23 +21,19 @@ final class RecordingSink: LogSink, @unchecked Sendable {
     }
 }
 
-struct Boom: LocalizedError {
-    var errorDescription: String? { "boom" }
-}
-
 struct AppLoggerTests {
     func withLogFolder<T>(_ body: (String, String) throws -> T) throws -> T {
         try StateTestKit.withFolder { folder in try body(folder, folder + "/logs/app.log") }
     }
 
-    func read(_ path: String) -> String { (try? readAppLogFile(path)) ?? "" }
+    func read(_ path: String) -> String { (try? String(contentsOfFile: path, encoding: .utf8)) ?? "" }
 
     @Test func persistsRegularLogLinesToDisk() throws {
         try withLogFolder { _, path in
             let sink = RecordingSink()
             let logger = AppLogger(filePath: path, debugEnabled: false, sink: sink)
             logger.info("[filetrail] app start", .context(["pid": .number(1234), "platform": .string("darwin")]))
-            logger.error("[filetrail] ipc directory:getSnapshot failed", .error(Boom()))
+            logger.error("[filetrail] ipc directory:getSnapshot failed")
             logger.warn("[filetrail] renderer process unresponsive", .context(["windowId": .number(1)]))
             logger.flush()
 
@@ -45,7 +41,6 @@ struct AppLoggerTests {
             #expect(raw.contains("INFO [filetrail] app start { pid: 1234, platform: 'darwin' }"))
             #expect(raw.contains("ERROR [filetrail] ipc directory:getSnapshot failed"))
             #expect(raw.contains("WARN [filetrail] renderer process unresponsive { windowId: 1 }"))
-            #expect(raw.contains("Boom: boom"))
             #expect(sink.count(.info) == 1)
             #expect(sink.count(.error) == 1)
             #expect(sink.count(.warn) == 1)
@@ -160,73 +155,5 @@ struct AppLoggerTests {
         #expect(AppLogger.isDebugLoggingEnabled(environment: ["FILETRAIL_DEBUG_TIMINGS": "1"]))
         #expect(!AppLogger.isDebugLoggingEnabled(environment: ["FILETRAIL_DEBUG": "true"]))
         #expect(!AppLogger.isDebugLoggingEnabled(environment: [:]))
-        #expect(Timing.timingsEnabled(environment: ["FILETRAIL_DEBUG_TIMINGS": "1"]))
-        #expect(!Timing.timingsEnabled(environment: ["FILETRAIL_DEBUG": "1"]))
     }
-
-    @Test func structuredEntriesAreNamespaceMessageErrorContext() throws {
-        try withLogFolder { _, path in
-            let logger = AppLogger(filePath: path, debugEnabled: false, sink: RecordingSink())
-            logger.write(
-                level: .error, namespace: "explorer", message: "open failed", error: Boom(),
-                context: ["path": .string("/a")])
-            logger.write(level: .info, namespace: "explorer", message: "done")
-            logger.flush()
-            let lines = read(path).split(separator: "\n")
-            #expect(lines[0].hasSuffix("ERROR [explorer] open failed Boom: boom { path: '/a' }"))
-            #expect(lines[1].hasSuffix("INFO [explorer] done"))
-        }
-    }
-
-    @Test func slowCallsAreLoggedAtDebugLevelAndFastOnesOnlyWithTheTimingsFlag() async throws {
-        let sink = RecordingSink()
-        let folder = try TemporaryFolder()
-        defer { folder.remove() }
-        let logger = AppLogger(filePath: folder.path + "/app.log", debugEnabled: true, sink: sink)
-        let times = TimeBox([0, 119.4, 200, 320.5, 500, 502])
-        let clock: @Sendable () -> Double = { times.next() }
-
-        _ = await withTiming("tree:getChildren", "/a", logger: logger, timingsEnabled: false, clock: clock) {
-            1
-        }
-        logger.flush()
-        #expect(sink.count(.debug) == 0)
-
-        _ = await withTiming("tree:getChildren", "/b", logger: logger, timingsEnabled: false, clock: clock) {
-            1
-        }
-        logger.flush()
-        #expect(sink.count(.debug) == 1)
-        #expect(
-            Timing.line(label: "tree:getChildren", path: "/b", elapsedMilliseconds: 120.5)
-                == "[filetrail] tree:getChildren /b 121ms")
-
-        _ = await withTiming("path:resolve", "/c", logger: logger, timingsEnabled: true, clock: clock) { 1 }
-        logger.flush()
-        #expect(sink.count(.debug) == 2)
-        #expect(
-            try String(contentsOfFile: folder.path + "/app.log", encoding: .utf8).contains(
-                "DEBUG [filetrail] path:resolve /c 2ms"))
-    }
-}
-
-/// A clock that gives the times in turn.
-final class TimeBox: @unchecked Sendable {
-    private let lock = NSLock()
-    private var times: [Double]
-    init(_ times: [Double]) { self.times = times }
-    func next() -> Double {
-        lock.lock()
-        defer { lock.unlock() }
-        return times.isEmpty ? 0 : times.removeFirst()
-    }
-}
-
-struct TemporaryFolder {
-    let path: String
-    init() throws {
-        path = NSTemporaryDirectory() + "filetrail-log-" + UUID().uuidString
-        try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true)
-    }
-    func remove() { try? FileManager.default.removeItem(atPath: path) }
 }

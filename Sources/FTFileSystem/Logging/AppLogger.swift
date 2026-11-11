@@ -77,19 +77,6 @@ public final class AppLogger: @unchecked Sendable {
     public func warn(_ args: LogArg...) { emit(.warn, args) }
     public func error(_ args: LogArg...) { emit(.error, args) }
 
-    public func log(_ level: LogLevel, _ args: [LogArg]) { emit(level, args) }
-
-    /// `[namespace] message`, then the error, then the context when it has anything.
-    public func write(
-        level: LogLevel, namespace: String, message: String, error: (any Error)? = nil,
-        context: [String: JSONNode] = [:]
-    ) {
-        var args: [LogArg] = [.text("[\(namespace)] \(message)")]
-        if let error { args.append(.error(error)) }
-        if !context.isEmpty { args.append(.context(context)) }
-        emit(level, args)
-    }
-
     /// Waits for the lines written so far to reach the file.
     public func flush() {
         queue.sync {}
@@ -126,9 +113,4 @@ public final class AppLogger: @unchecked Sendable {
         try handle.seekToEnd()
         try handle.write(contentsOf: data)
     }
-}
-
-/// `readAppLogFile`.
-public func readAppLogFile(_ path: String) throws -> String {
-    try String(contentsOfFile: path, encoding: .utf8)
 }

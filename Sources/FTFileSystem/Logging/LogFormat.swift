@@ -4,7 +4,6 @@ import Foundation
 /// One argument of a log line.
 public enum LogArg: Sendable, ExpressibleByStringLiteral {
     case text(String)
-    case error(any Error)
     /// Any other value, written as `inspect` writes it.
     case value(JSONNode)
 
@@ -45,16 +44,9 @@ public enum LogFormat {
     private static func format(_ arg: LogArg) -> String {
         switch arg {
         case .text(let text): return text
-        case .error(let error): return describe(error)
         case .value(.string(let text)): return text
         case .value(let node): return inspect(node, depth: 0)
         }
-    }
-
-    /// An error as `Name: message`.
-    static func describe(_ error: any Error) -> String {
-        let message = (error as? LocalizedError)?.errorDescription ?? String(describing: error)
-        return "\(String(describing: type(of: error))): \(message)"
     }
 
     // MARK: util.inspect

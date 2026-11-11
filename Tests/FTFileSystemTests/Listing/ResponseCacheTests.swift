@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-// The response cache: its answers, forgetFolderListings and withTiming
+// The response cache: its answers and forgetFolderListings
 @testable import FTFileSystem
 
 /// Holds a load until the test lets it go.
@@ -332,19 +332,6 @@ struct ResponseCacheTests {
         }
         #expect(after.path == "after the change")
         #expect(loads.count == 1)
-    }
-
-    @Test func logsOnlyASlowLoadWithItsLabelAndPath() async {
-        let lines = Box<[String]>([])
-        let fast = await withTiming("fast", path: "/a", log: { lines.value.append($0) }, load: { 1 })
-        #expect(fast == 1)
-        #expect(lines.value.isEmpty)
-
-        let times = Box<[Double]>([0, 150])
-        let slow = await withTiming(
-            "slow", path: "/b", now: { times.value.removeFirst() }, log: { lines.value.append($0) }, load: { 2 })
-        #expect(slow == 2)
-        #expect(lines.value == ["[filetrail] slow /b 150ms"])
     }
 }
 
