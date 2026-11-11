@@ -316,12 +316,11 @@ struct ExplorerServiceTests {
     @Test func returnsAnExactDirectorySuggestionWhenTheFullPathExistsWithoutATrailingSlash() async throws {
         let fake = suggestionFileSystem([
             "/Users/demo": ["Desktop", "Pictures"],
-            "/Users/demo/Pictures": ["Photos Library.photoslibrary", "Screenshots"],
+            "/Users/demo/Pictures": ["Albums", "Screenshots"],
         ])
-        let response = try await service(fake).pathSuggestions(
-            inputPath: "/Users/demo/Pictures/Photos Library.photoslibrary")
+        let response = try await service(fake).pathSuggestions(inputPath: "/Users/demo/Pictures/Screenshots")
         #expect(response.basePath == "/Users/demo/Pictures")
-        #expect(response.suggestions.map(\.path) == ["/Users/demo/Pictures/Photos Library.photoslibrary"])
+        #expect(response.suggestions.map(\.path) == ["/Users/demo/Pictures/Screenshots"])
     }
 
     @Test func filtersAgainstImmediateChildrenOfTheNearestExistingParentWhenTheFinalSegmentIsPartial() async throws {

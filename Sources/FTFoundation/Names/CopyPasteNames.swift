@@ -10,14 +10,7 @@ public enum CopyPasteNames {
 
     private static let multiPartExtensions = [".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst"]
 
-    /// Folders macOS shows as a single item, as far as their extension tells.
-    private static let packageExtensions: Set<String> = [
-        ".action", ".app", ".appex", ".band", ".bundle", ".component", ".docset", ".fcpbundle",
-        ".fcpxbundle", ".framework", ".imovielibrary", ".kext", ".key", ".logicx", ".mdimporter",
-        ".mlmodelc", ".mlpackage", ".mpkg", ".musiclibrary", ".numbers", ".pages", ".photoslibrary",
-        ".pkg", ".playground", ".plugin", ".prefpane", ".qlgenerator", ".rtfd", ".saver", ".scriv",
-        ".sparsebundle", ".textbundle", ".workflow", ".xcarchive", ".xcodeproj", ".xcworkspace", ".xpc",
-    ]
+    private static var packageExtensions: Set<String> { ItemNames.packageExtensions }
 
     public struct Options: Sendable {
         /// Folders don't have an extension to keep at the end (packages aside).

@@ -1363,17 +1363,17 @@
       "output": {
         "byName": [
           {
-            "path": "names/packages/Slides.key",
-            "name": "Slides.key",
-            "extension": "key",
-            "kind": "directory",
+            "path": "names/packages/Sample.app",
+            "name": "Sample.app",
+            "extension": "app",
+            "kind": "bundle",
             "isHidden": false,
             "isSymlink": false
           },
           {
-            "path": "names/packages/Sample.app",
-            "name": "Sample.app",
-            "extension": "app",
+            "path": "names/packages/Slides.key",
+            "name": "Slides.key",
+            "extension": "key",
             "kind": "bundle",
             "isHidden": false,
             "isSymlink": false
@@ -1384,7 +1384,7 @@
             "path": "names/packages/Slides.key",
             "name": "Slides.key",
             "extension": "key",
-            "kind": "directory",
+            "kind": "bundle",
             "isHidden": false,
             "isSymlink": false,
             "sizeBytes": null
@@ -1399,33 +1399,25 @@
             "sizeBytes": null
           }
         ],
-        "tree": [
-          {
-            "path": "names/packages/Slides.key",
-            "name": "Slides.key",
-            "kind": "directory",
-            "isHidden": false,
-            "isSymlink": false
-          }
-        ],
+        "tree": [],
         "properties": [
-          {
-            "path": "names/packages/Slides.key",
-            "name": "Slides.key",
-            "extension": "key",
-            "kind": "directory",
-            "kindLabel": "Folder",
-            "isHidden": false,
-            "isSymlink": false,
-            "sizeBytes": null,
-            "sizeStatus": "deferred"
-          },
           {
             "path": "names/packages/Sample.app",
             "name": "Sample.app",
             "extension": "app",
             "kind": "bundle",
             "kindLabel": "Application",
+            "isHidden": false,
+            "isSymlink": false,
+            "sizeBytes": null,
+            "sizeStatus": "deferred"
+          },
+          {
+            "path": "names/packages/Slides.key",
+            "name": "Slides.key",
+            "extension": "key",
+            "kind": "bundle",
+            "kindLabel": "Bundle",
             "isHidden": false,
             "isSymlink": false,
             "sizeBytes": null,

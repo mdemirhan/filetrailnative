@@ -189,21 +189,23 @@ struct NativeFileSystemTests {
 
     @Test func treatsABundleAsAnItemInAListingButNotInTheTree() async throws {
         try await withTemporaryDirectory { directory in
-            for name in ["Sample.app", "Plain", "Kit.framework", "Slides.key"] {
+            for name in ["Sample.app", "Plain", "Kit.framework", "Slides.key", "Notes.d"] {
                 try FileManager.default.createDirectory(
                     atPath: directory.path + "/" + name, withIntermediateDirectories: false)
             }
             let service = DirectoryService()
             let snapshot = try await service.snapshot(path: directory.path)
             let kinds = Dictionary(uniqueKeysWithValues: snapshot.entries.map { ($0.name, $0.kind) })
+            // A Keynote document is a package as much as an app is; a folder whose extension is no package's is a folder.
             #expect(
                 kinds == [
-                    "Sample.app": .bundle, "Plain": .directory, "Kit.framework": .bundle, "Slides.key": .directory,
+                    "Sample.app": .bundle, "Plain": .directory, "Kit.framework": .bundle, "Slides.key": .bundle,
+                    "Notes.d": .directory,
                 ])
             // A bundle sorts with the files.
-            #expect(snapshot.entries.map(\.name) == ["Plain", "Slides.key", "Kit.framework", "Sample.app"])
+            #expect(snapshot.entries.map(\.name) == ["Notes.d", "Plain", "Kit.framework", "Sample.app", "Slides.key"])
             let tree = try await service.treeChildren(path: directory.path)
-            #expect(tree.children.map(\.name) == ["Plain", "Slides.key"])
+            #expect(tree.children.map(\.name) == ["Notes.d", "Plain"])
         }
     }
 

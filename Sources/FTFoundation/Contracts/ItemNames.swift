@@ -27,10 +27,14 @@ public enum ItemNames {
         return nil
     }
 
-    /// macOS treats folders with these extensions as opaque "packages": they behave like files.
-    private static let packageExtensions: Set<String> = [
-        ".app", ".framework", ".bundle", ".plugin", ".kext", ".xpc", ".xcodeproj", ".playground",
-        ".prefpane", ".appex",
+    /// Folders macOS shows as a single item, as far as their extension tells: listings show them as one item, and
+    /// naming keeps their extension at the end.
+    public static let packageExtensions: Set<String> = [
+        ".action", ".app", ".appex", ".band", ".bundle", ".component", ".docset", ".fcpbundle",
+        ".fcpxbundle", ".framework", ".imovielibrary", ".kext", ".key", ".logicx", ".mdimporter",
+        ".mlmodelc", ".mlpackage", ".mpkg", ".musiclibrary", ".numbers", ".pages", ".photoslibrary",
+        ".pkg", ".playground", ".plugin", ".prefpane", ".qlgenerator", ".rtfd", ".saver", ".scriv",
+        ".sparsebundle", ".textbundle", ".workflow", ".xcarchive", ".xcodeproj", ".xcworkspace", ".xpc",
     ]
 
     public static func isMacOSPackageName(_ name: String) -> Bool {

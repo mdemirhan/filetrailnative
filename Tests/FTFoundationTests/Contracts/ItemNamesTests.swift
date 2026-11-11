@@ -46,6 +46,17 @@ struct ItemNamesTests {
         #expect(!ItemNames.isMacOSPackageName("Applications"))
         #expect(!ItemNames.isMacOSPackageName(".app"))
         #expect(!ItemNames.isMacOSPackageName("notes.txt"))
+        // The same packages as naming knows: these show as one item, not a folder to open into.
+        let names = [
+            "Notes.rtfd", "App.xcworkspace", "Photos Library.photoslibrary", "Install.pkg", "Disk.sparsebundle",
+        ]
+        for name in names {
+            #expect(ItemNames.isMacOSPackageName(name), "\(name)")
+            #expect(CopyPasteNames.isPackageName(name), "\(name)")
+        }
+        for ext in ItemNames.packageExtensions {
+            #expect(CopyPasteNames.isPackageName("x" + ext) == ItemNames.isMacOSPackageName("x" + ext))
+        }
     }
 
     struct Output: Codable, Equatable, Sendable {
