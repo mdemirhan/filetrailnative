@@ -1,5 +1,5 @@
 #!/bin/bash
-# Benchmark run for phase gates (PLAN.md section 4): builds the release app, runs each scenario against
+# Benchmark run: builds the release app, runs each scenario against
 # the bench fixtures, writes build/bench/latest.json and compares it with budgets.json and baseline.json.
 # Usage: tools/bench/run.sh [--quick] [--report-only] [--update-baseline]
 set -uo pipefail

@@ -79,5 +79,5 @@
       "note": "Icons view scroll; added with the Icons view package"
     }
   },
-  "policy": "report-only targets (user, 2026-10-14): the bar is the original Electron app's ballpark; see PLAN.md section 4."
+  "policy": "report-only targets (user, 2026-10-14)"
 }
