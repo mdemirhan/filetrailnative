@@ -27,18 +27,6 @@ private struct SizeOrderRow<Item> {
 }
 
 public enum SizeOrder {
-    /// `localeCompare(b, undefined, { numeric: true, sensitivity: "base" })`: numbers in order, case and accents aside.
-    public static func compareNames(_ left: String, _ right: String) -> Int {
-        switch left.compare(
-            right, options: [.numeric, .caseInsensitive, .diacriticInsensitive], range: nil,
-            locale: Locale(identifier: "en_US"))
-        {
-        case .orderedAscending: -1
-        case .orderedDescending: 1
-        case .orderedSame: 0
-        }
-    }
-
     /// The listing is sorted before folder sizes are known (they come from a separate folder size calculation), so
     /// sorting by size is finished here: files use the size the listing reported, folders and bundles the size
     /// calculated for them, and items without a known size stay at the end in both directions. Ties are ordered by
@@ -65,7 +53,7 @@ public enum SizeOrder {
             } else if let ls = l.size, let rs = r.size, ls != rs {
                 return (ls < rs ? -1 : 1) * direction < 0
             }
-            let byName = compareNames(l.key.name, r.key.name) * direction
+            let byName = naturalCompare(l.key.name, r.key.name).rawValue * direction
             if byName != 0 { return byName < 0 }
             return left.offset < right.offset
         }.map { $0.element.item }

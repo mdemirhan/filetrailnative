@@ -140,11 +140,4 @@ public enum TreePaths {
         next.insert(package, at: index)
         return next
     }
-
-    /// `localeCompare(…, { numeric: true, sensitivity: "base" })`.
-    static func naturalCompare(_ first: String, _ second: String) -> ComparisonResult {
-        first.compare(
-            second, options: [.numeric, .caseInsensitive, .diacriticInsensitive], range: nil,
-            locale: Locale(identifier: "en_US"))
-    }
 }

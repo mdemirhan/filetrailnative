@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// A disk mounted besides the startup disk: a drive, a disk image or a network share.
@@ -27,14 +28,6 @@ public struct Volume: Sendable, Equatable {
         self.canEject = canEject
         self.disk = disk
     }
-}
-
-/// `a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })`: numbers in order, case and
-/// accents aside.
-func naturalCompare(_ first: String, _ second: String) -> ComparisonResult {
-    first.compare(
-        second, options: [.numeric, .caseInsensitive, .diacriticInsensitive], range: nil,
-        locale: Locale(identifier: "en_US"))
 }
 
 /// A stable sort by natural order of a key, as `Array.prototype.sort` is.
