@@ -12,14 +12,14 @@ public final class PageWindows {
     private var help: HelpWindowController?
     private var about: AboutWindowController?
     private var acknowledgements: AcknowledgementsWindowController?
-    /// The page Help was left on, for the next time it opens.
+    /// The topic Help was left on, for the next time it opens.
     public private(set) var lastHelpTopic: HelpTopicID?
 
     /// The tab Settings was left on, for this session only (`lastSettingsTab`).
     public private(set) var lastSettingsTab: SettingsTab?
     /// Opens Settings on the Shortcuts tab, for Help's "Customize…".
     public lazy var openSettingsOnShortcuts: () -> Void = { [weak self] in self?.openSettings(tab: .shortcuts) }
-    /// Reads the preferences Settings shows (`app:getPreferences`); throws when they can't be read.
+    /// Reads the preferences Settings shows; throws when they can't be read.
     public var loadPreferences: (() throws -> AppPreferences)?
     /// Changes the app's preferences as Settings edits them, and tells every window.
     public var updatePreferences: (_ change: (inout AppPreferences) -> Void) -> Void = { _ in }
@@ -81,8 +81,8 @@ public final class PageWindows {
             returnKeyAction: preferences.returnKeyAction)
     }
 
-    /// Help opens on the page asked for, or the one it was left on; one already open shows and focuses it, on the page
-    /// asked for if any.
+    /// Help opens on the topic asked for, or the one it was left on; one already open shows and focuses it, on the
+    /// topic asked for if any.
     public func openHelp(topic: HelpTopicID? = nil) {
         if let help {
             if let topic { help.show(topic: topic) }

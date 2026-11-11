@@ -54,9 +54,9 @@ final class SidebarModel {
     private(set) var volumes: [SidebarVolume] = []
     /// What the startup disk is called.
     var startupDiskName: () -> String = { VolumePaths.defaultStartupDiskName }
-    /// Reads a folder's subfolders (`tree:getChildren`).
     /// Whether a folder has the flag that hides it, which its path doesn't tell.
     var hasHiddenFlag: (_ path: String) async -> Bool = { _ in false }
+    /// Reads a folder's subfolders, the hidden ones too when asked.
     var readChildren: (_ path: String, _ includeHidden: Bool) async throws -> [TreePaths.Child] = { _, _ in
         []
     }
@@ -309,7 +309,7 @@ final class SidebarModel {
     private func listed(
         _ response: [TreePaths.Child], includeHidden: Bool, forcedHidden: String?, forcedPackage: String?
     ) -> [TreePaths.Child] {
-        // Macintosh HD's Volumes folder, where the other disks are mounted, is left out as Finder leaves it out:
+        // The startup disk's Volumes folder, where the other disks are mounted, is left out as Finder leaves it out:
         // those disks are under Locations.
         let children = response.filter { includeHidden || !TreePaths.same($0.path, "/Volumes") }
         let visible =

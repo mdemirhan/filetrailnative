@@ -471,7 +471,7 @@ final class WindowWriteActions {
         return .queued(operationId: "")
     }
 
-    /// `system:emptyTrash`, which `AppWriteOperations` gives. Without it nothing is erased.
+    /// What empties the Trash, which `AppWriteOperations` gives. Without it nothing is erased.
     var emptyTrashRunner: @MainActor () async -> (ok: Bool, error: String?) = {
         (false, "Nothing here can empty the Trash.")
     }
@@ -614,7 +614,7 @@ final class WindowWriteActions {
 
     // MARK: Batch rename
 
-    /// `startBatchRename`: renames the items the Rename sheet settled. Like every write, it waits for no other: one
+    /// Renames the items the Rename sheet settled. Like every write, it waits for no other: one
     /// that is running is said, and the sheet stays closed. Which items were folders is kept, for the sheet to open
     /// again on those that weren't renamed.
     func batchRename(_ request: BatchRenameRequest) async -> CopyLikeOutcome {
@@ -673,7 +673,7 @@ final class WindowWriteActions {
 }
 
 extension ISO8601DateFormatter {
-    /// `new Date().toISOString()`.
+    /// A date as the clipboard records when items were put on it: UTC, with milliseconds ("2026-11-11T14:46:00.000Z").
     fileprivate static var withFractionalSeconds: ISO8601DateFormatter {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]

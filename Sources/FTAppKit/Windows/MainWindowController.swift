@@ -310,7 +310,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var openBatchRename: (([DirectoryEntry]) -> Void)?
     /// Opens Settings (⌘,, the toolbar's Settings button): the app's Settings window, unless a test puts its own.
     var openSettings: (() -> Void)?
-    /// Opens the Help window on a page (`?`, the toolbar's Help): the app's, unless a test puts its own.
+    /// Opens the Help window on a topic (`?`, the toolbar's Help): the app's, unless a test puts its own.
     var openHelp: ((HelpTopicID?) -> Void)?
     /// Previews an item: the system's Quick Look panel, unless a test puts its own, so nothing comes on screen.
     var showQuickLook: ((String) -> Void)?
@@ -409,7 +409,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         workspace.mainCell.content = content.view
         workspace.inspectorCell.content = infoPanel
         workspace.statusCell.content = content.contentShell.pathBarRow
-        // The tree's resizer is in no pane, so Tab is the browser's: on to the toolbar, or back into the tree.
+        // The tree's resizer is in no pane, so it walks Tab itself: on to the toolbar, or back into the tree.
         workspace.treeResizer.onTab = { [weak self] backward in
             guard let self else { return }
             if backward {
@@ -608,7 +608,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             startupDiskName: services.startupDisk.name)
     }
 
-    /// Reads the tab's folder the first time it is shown, or again when it was sent elsewhere in the background.
     /// A folder has been on screen in this tab.
     private var hasShownFolder = false
     /// The view the tab was started with (`carry`), until its first folder has been shown that way.
@@ -618,6 +617,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// The tab was opened on a folder: its first folder can count as a visit for the Go To box.
     var opensAsArrival = false
 
+    /// Reads the tab's folder the first time it is shown, or again when it was sent elsewhere in the background.
     func ensureLoaded() {
         if loaded {
             if stale {
@@ -1306,7 +1306,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             OpenItems.activation(commandEntries(entries), fileActivation: activation, limit: prefs.openItemLimit))
     }
 
-    /// `openFolderInNewTab`: a folder alias on screen opens the folder it points to, as it does when opened in place.
+    /// A selected folder opens in a new tab or window; a symbolic link to a folder opens the folder it points to, as it
+    /// does when opened in place.
     private func openSelectedFolder(_ folder: URL, place: SelectedFolderPlace) {
         let open: (String) -> Void = { [weak self] path in
             guard let self else { return }
@@ -1337,7 +1338,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         }
     }
 
-    /// `path:resolve`: where a link points.
+    /// Where a link points.
     /// Looked up off the main thread: a link into a slow volume must not freeze the window.
     private static func resolved(_ path: String) async -> String? {
         await Task.detached(priority: .userInitiated) { try? NativeFileSystem().realpath(path) }.value
@@ -1457,8 +1458,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return true
     }
 
-    /// ⌘↓ (`openSelectedContentWithCommand`, `openTreeNodeWithCommand`): what is selected in the focused pane is
-    /// activated, whatever the limit: over it, the limit's notice says so.
+    /// ⌘↓: what is selected in the focused pane, the list or the tree, is activated, whatever the limit: over it, the
+    /// limit's notice says so.
     private func openSelectedItem() -> Bool {
         guard ShortcutPolicy.canHandleExplorerKeyboardShortcuts(shortcutContext) else { return false }
         switch focusedPane {
@@ -1698,9 +1699,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         return items[0].url
     }
 
-    /// The keyboard goes back to the pane that last had it, from a toolbar button about to stop taking it. The browser
-    /// leaves it on the page there, where the pane's keys still work (`focusedPane` stays); AppKit would hand it to the
-    /// next view, the search field.
+    /// The keyboard goes back to the pane that last had it, from a toolbar button about to stop taking it, so the
+    /// pane's keys still work (`focusedPane` stays); left to itself, AppKit would hand it to the next view, the search
+    /// field.
     func keyboardBackToPane() {
         if lastFocusedPane == .tree, panels.folderTreeOpen { sidebar.focusTree() } else { content.focusList() }
     }
@@ -2051,7 +2052,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         reportMenuStateSoon()
     }
 
-    /// A preference change from any window (`onPreferencesChanged`): the keys the whole app shares.
     /// What Copy or Cut put on the app's clipboard changed (every window hears it from the shared clipboard): the
     /// marks, the toolbar's button and its list follow.
     func clipboardChanged() {
@@ -2059,6 +2059,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         notify(.clipboard)
     }
 
+    /// A preference changed in any window or in Settings: the keys the whole app shares.
     func preferencesChanged(_ change: PreferencesChange) {
         // A Settings edit of the search options updates the live values without running anything again.
         let searchDefaults: Set<PreferenceKey> = [
@@ -2161,7 +2162,7 @@ extension MainWindowController: ExplorerWindowHandle {
                 revealSearchResult(path)
             }
         case .customizeToolbar: beginCustomizingToolbar()
-        // The places of the Go menu: Macintosh HD and the Trash act exactly as a click on their Locations
+        // The places of the Go menu: the startup disk and the Trash act exactly as a click on their Locations
         // rows, the folders as Go to Folder opens them.
         case .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD, .goApplications, .goTrash:
             let home = fileManager.homeDirectoryForCurrentUser.path
@@ -2207,7 +2208,7 @@ extension MainWindowController: ExplorerWindowHandle {
         case .focusContentPane: content.focusList()
         case .renameSelection: renameSelected()
         case .editSelection:
-            // `editPaths`: anything but files among the items and it does nothing, over the limit too.
+            // Anything but files among the items and Edit does nothing, over the limit too.
             guard commandEntries.count == selectedPaths.count, commandEntries.allSatisfy(\.kind.isEditableFile)
             else { return }
             let prefs = preferences

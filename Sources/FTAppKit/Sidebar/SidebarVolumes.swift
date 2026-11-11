@@ -12,7 +12,7 @@ final class SidebarVolumes {
         didSet { notify() }
     }
 
-    /// The watcher of the app (`ExplorerServices.volumeWatcher` is this one when the app made it from here).
+    /// The app's one watcher of mounted disks.
     private(set) lazy var watcher: VolumeWatcher = VolumeWatcher(
         .init(onVolumesChanged: { [weak self] _ in self?.notify() }))
 

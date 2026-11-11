@@ -340,7 +340,8 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         for path in paths { await openExternally(path) }
     }
 
-    /// `openEntry`.
+    /// Opens one item: a folder, or a symbolic link to one, opens in the tab; anything else is handed to the system, a
+    /// link as the item it points to.
     private func openEntry(_ entry: DirectoryEntry) async {
         switch OpenItems.step(for: Self.commandEntry(entry)) {
         case .navigate, .resolveThenNavigate:

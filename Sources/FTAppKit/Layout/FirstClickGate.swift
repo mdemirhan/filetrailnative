@@ -1,4 +1,4 @@
-// On macOS the click that brings a window forward doesn't reach the page
+// On macOS the click that brings a window forward doesn't reach the window's content
 import AppKit
 
 /// The click that brings a window forward only brings it forward. It doesn't reach the window's content or the toolbar's

@@ -20,7 +20,7 @@ final class AppWriteOperations {
     private weak var windows: ExplorerWindows?
     private var sessions: [Int: ExplorerWriteSession] = [:]
     var dialogs = WriteDialogs()
-    /// `system:emptyTrash`, for every tab's actions.
+    /// Empties the Trash, for every tab's actions; false with the reason when it couldn't.
     var emptyTrash: @MainActor () async -> (ok: Bool, error: String?)
     /// What recovery at start says the person must know (items left under a hidden name, or waiting for their disk).
     private(set) var startupNotices: [String] = []
@@ -142,7 +142,8 @@ final class AppWriteOperations {
         sessions[group.windowID]?.cameToFront()
     }
 
-    /// `successorOf`: the window in front, unless the window closed with Stop and Close.
+    /// The window a running operation goes to when its own closes: the window in front, unless the window closed with
+    /// Stop and Close.
     private func successor(of window: any WriteOperationWindow) -> (any WriteOperationWindow)? {
         guard let session = window as? ExplorerWriteSession,
             let tab = windows?.successor(ofExplorerWindow: session.explorerWindowID), let group = tab.group
@@ -178,7 +179,7 @@ final class AppWriteOperations {
         }
     }
 
-    /// `filetrail:trashEmptied`: the Trash emptied, from this window or another: in every window its size and what
+    /// The Trash emptied, from this window or another: in every window its size and what
     /// holds it are asked about again, and what was in it is forgotten.
     private func trashEmptied(homePath: String) {
         let trashPath = NodePath.join(homePath, ".Trash")
@@ -219,7 +220,7 @@ final class AppWriteOperations {
 
     // MARK: Quitting
 
-    /// `activeOperation`, as the quit question names it.
+    /// The kind of the running operation, as the question before quitting names it.
     var busyKind: BusyOperationKind? {
         coordinator.activeOperation.flatMap { BusyOperationKind(rawValue: $0.kind.rawValue) }
     }

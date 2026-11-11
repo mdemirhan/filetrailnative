@@ -4,7 +4,7 @@ import AppKit
 /// window or another app has the focus) is inactive, and what draws a selection asks `isActive`.
 @MainActor
 public final class WindowActivity {
-    /// Whether the window has the focus now (`document.hasFocus()`).
+    /// Whether the window has the focus now.
     private let hasFocus: @MainActor () -> Bool
     private let center: NotificationCenter
     private var observers: [any NSObjectProtocol] = []

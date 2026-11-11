@@ -6,7 +6,7 @@ import Foundation
 // has the keyboard, and where a running operation goes when the window that started it closes.
 
 /// What a window opens with: the launch folder for the window in front at startup, whether it opens the tabs it was
-/// given, and a menu command to run once it has opened (`app:getLaunchContext`).
+/// given, and a menu command to run once it has opened.
 public struct ExplorerLaunchContext: Equatable, Sendable {
     /// The folder File Trail was launched with, given to the window in front at startup.
     public var startupFolderPath: String?
@@ -99,7 +99,7 @@ public struct WindowBounds: Equatable, Sendable {
 }
 
 public enum ExplorerWindowPlacement {
-    /// NEW_WINDOW_OFFSET: how far a new window sits down and to the right of the one it comes from, as Finder's.
+    /// How far a new window sits down and to the right of the one it comes from, as Finder's.
     public static let newWindowOffset: Double = 22
 
     /// `placeNewWindow`: a step down and to the right of `from`, the same size. A window that would reach past the

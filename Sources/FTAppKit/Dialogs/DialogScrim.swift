@@ -332,7 +332,7 @@ final class DialogScrim: NSView {
     }
 
     /// A press on the panel's plain views (its padding, labels, the field's frame, the footer) comes up the responder
-    /// chain to here; only one on the scrim itself counts (`event.target === event.currentTarget`).
+    /// chain to here; only one on the scrim itself, outside the panel, counts.
     override func mouseDown(with event: NSEvent) {
         guard !panel.frame.contains(convert(event.locationInWindow, from: nil)) else { return }
         onScrimPress?()

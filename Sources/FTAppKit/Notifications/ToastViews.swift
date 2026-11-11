@@ -2,7 +2,7 @@ import AppKit
 import FTFoundation
 
 /// The edge and shadow of the notifications and the progress card, which lie on glass: a half-point edge and the
-/// menu's shadow (`--context-menu-border`, `-shadow`). Glass alone has no edge over a white pane.
+/// menu's shadow (the theme's `contextMenuBorder` and `contextMenuShadow`). Glass alone has no edge over a white pane.
 @MainActor
 enum MenuSurface {
     static func apply(to layer: CALayer?, theme: Theme, borderWidth: Double) {
@@ -10,7 +10,7 @@ enum MenuSurface {
         layer?.borderColor = NSColor(palette.contextMenuBorder).cgColor
         layer?.borderWidth = CGFloat(borderWidth)
         layer?.masksToBounds = false
-        // The first shadow layer carries the look (offset 8, blur 32); CSS blur is twice the radius of a CALayer's.
+        // The first shadow layer carries the look (offset 8, blur 32); the theme's blur is twice a CALayer's radius.
         if let main = palette.contextMenuShadow.first {
             layer?.shadowColor = NSColor(main.color.withAlpha(1)).cgColor
             layer?.shadowOpacity = Float(main.color.alpha)
@@ -75,7 +75,7 @@ final class ToastCardView: NSView, ThemeApplying {
     private var theme: Theme
     private var metrics: ToastLayout { DesignTokens.toast }
 
-    /// Text of a notification: the page's body type in its text color.
+    /// Text of a notification: the body type in its text color.
     private static func style(_ theme: Theme) -> TextStyle {
         TextStyle(font: ThemeFonts.sans(DesignTokens.typeScale.body), color: { $0.palette.textPrimary })
     }

@@ -5,7 +5,7 @@ import FTFoundation
 /// The status bar under the content and the Info panel: 28 tall with a line on top, the path bar on its left and the status
 /// text on its right.
 final class PathBarRowView: NSView {
-    /// `.content-pathbar-row { height: 28px }`.
+    /// The row's height: a large control's, 28.
     static var height: Double { WindowMetrics.standard.controlHeights.large }
     /// How far the Info Row reaches into the divider.
     static var reach: Double { WindowMetrics.standard.explorer.resizerWidth / 2 }

@@ -297,8 +297,8 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         if id != .search { item.menuFormRepresentation = overflowEntry(id, canPerform) }
     }
 
-    /// `ExplorerTabs.folderDisplayName`: the startup disk's name for `/`; while searching, "Searching “…”" with the
-    /// folder the search runs from (`toolbarTitle`).
+    /// The folder's name as the toolbar shows it (the startup disk's name for `/`); while searching, "Searching “…”"
+    /// with the folder the search runs from.
     static func title(of context: ExplorerWindowContext) -> String {
         let disk = context.services.startupDisk.name
         if let root = context.searchRootPath {
@@ -368,7 +368,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         return true
     }
 
-    /// `focusFileSearch`: the field takes the keyboard, the system's item opening up first if it is folded.
+    /// The search field takes the keyboard, the system's item opening up first if it is folded.
     func beginSearch() {
         searchItem?.beginSearchInteraction()
         if !searchField.isActive { searchField.window?.makeFirstResponder(searchField) }

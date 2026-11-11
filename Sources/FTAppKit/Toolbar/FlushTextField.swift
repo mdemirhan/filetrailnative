@@ -1,8 +1,8 @@
 // Text drawn from its box's edge
 import AppKit
 
-/// A label whose text starts at its frame's edge and may reach the other edge, as a CSS text box does: a
-/// `TextBoxField`, so a frame as wide as the measured text draws all of it.
+/// A label whose text starts at its frame's edge and may reach the other edge: a `TextBoxField`, so a frame as wide as
+/// the measured text draws all of it.
 final class FlushTextField: TextBoxField {
     override class var cellClass: AnyClass? {
         get { FlushTextFieldCell.self }

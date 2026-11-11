@@ -9,7 +9,8 @@ final class SearchHeaderView: NSView {
     var onFilterChange: (String) -> Void = { _ in }
     /// Return, ↓, or Esc in an empty filter field: the keyboard goes back to the results.
     var onFocusResults: () -> Void = {}
-    /// Tab or Shift-Tab from a button of the bar (`paneTabSwitch`).
+    /// Tab or Shift-Tab from a button of the bar: the keyboard goes to the other pane, as Tab among the items sends it
+    /// (`switchPane()`).
     var onSwitchPane: () -> Void = {}
     var onStop: () -> Void = {}
     var onDone: () -> Void = {}
@@ -89,9 +90,9 @@ final class SearchHeaderView: NSView {
     /// A press on the header itself gives the pane the keyboard.
     override func mouseDown(with event: NSEvent) { onFocusResults() }
 
-    /// Tab or Shift-Tab from one of the bar's stops. Only the filter is the browser's to Tab out of: on to its ✕, Stop
-    /// or Done, whichever comes next, or back to the last scope. Every other stop is in the content pane, where
-    /// `paneTabSwitch` takes Tab and Shift-Tab alike, so the row is never walked past it.
+    /// Tab or Shift-Tab from one of the bar's stops. Only Tab out of the filter walks along the bar: on to its ✕, Stop
+    /// or Done, whichever comes next, or back to the last scope. Every other stop belongs to the content pane, where
+    /// Tab and Shift-Tab alike go to the other pane (`switchPane()`), so the row is never walked past it.
     fileprivate func moveKeyboard(from view: NSView, backward: Bool) {
         guard view === filter.input else {
             onSwitchPane()
@@ -235,12 +236,12 @@ final class SearchScopeBarView: NSView {
 
 // MARK: The scope
 
-/// `.segmented.search-scope-segmented` as the system's control: its segments are the places to search in. They
+/// The search's scope as the system's segmented control: its segments are the places to search in. They
 /// are plain buttons of the pane, not a radio group: a click gives the keyboard to the results, so the
 /// arrows and typeahead go on working there, and no arrow changes the scope. Tab stops at each in turn, where Return or
 /// Space presses it.
 final class SearchSegmentTrack: SystemSegmentedControl {
-    /// Tab or Shift-Tab, which leaves the track wherever it is (`paneTabSwitch`).
+    /// Tab or Shift-Tab, which leaves the track wherever it is.
     var onTab: (_ backward: Bool) -> Void = { _ in }
     var onMouseDown: () -> Void = {}
     /// The segment Tab is at.
@@ -566,7 +567,8 @@ final class SearchBannerView: NSView, TextStyleSource {
         edge.stroke()
     }
 
-    /// `color-mix(in srgb, color share, other)`, with premultiplied alpha.
+    /// `share` of `color` mixed with the rest of `other` in sRGB, each channel weighted by its color's alpha
+    /// (premultiplied).
     static func mix(_ color: RGBA, _ share: Double, _ other: RGBA) -> RGBA {
         let alpha = color.alpha * share + other.alpha * (1 - share)
         guard alpha > 0 else { return RGBA(red: 0, green: 0, blue: 0, alpha: 0) }
@@ -696,7 +698,7 @@ final class SearchFilterField: NSView, NSTextFieldDelegate {
             NSColor(theme.accent.solid.withAlpha(0.5)).setStroke()
             ring.stroke()
         }
-        // The filter lines (`M4 6h16M7 12h10M10 18h4` on 24), stroked 2.
+        // The filter icon: three lines on a 24 by 24 grid, 16, 10 and 4 long, centered, 6, 12 and 18 down, stroked 2.
         let size = CGFloat(layout.fieldIconSize)
         let rect = NSRect(x: layout.fieldPaddingLeading, y: (bounds.height - size) / 2, width: size, height: size)
         let scale = size / 24

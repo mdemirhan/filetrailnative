@@ -25,7 +25,7 @@ extension ExplorerWindowHandle {
     }
 }
 
-/// The open explorer windows, front to back (`ExplorerWindowList`).
+/// The open explorer windows, front to back.
 @MainActor
 public protocol ExplorerWindowListing: AnyObject {
     var front: (any ExplorerWindowHandle)? { get }

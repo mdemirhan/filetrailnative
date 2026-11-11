@@ -134,7 +134,7 @@ final class ClipboardMenuView: NSView {
             x: inset + layout.headerPaddingHorizontal, y: y, width: titleWidth, height: title.lineHeight)
         y += line + layout.headerPaddingVertical
         if !breakdown.isHidden {
-            // The box is the whole row's, its padding inside (`padding: 0 10px 4px`).
+            // The box is the whole row's, its padding inside: 10 at each side and 4 below.
             breakdown.leadingInset = layout.headerPaddingHorizontal
             breakdown.frame = NSRect(
                 x: inset, y: y, width: width, height: breakdown.lineHeight + layout.breakdownPaddingBottom)
@@ -316,13 +316,13 @@ final class ClipboardMenuText: NSTextField {
         didSet { (cell as? ThemedTextCell)?.leadingInset = leadingInset }
     }
 
-    /// The whole points above the baseline, as the page lays the line out (12 at 13 pt, 10 at 11 pt).
+    /// The whole points above the baseline: the font's ascent rounded down (12 at 13 pt, 10 at 11 pt).
     var ascent: Double {
         guard let font else { return 0 }
         return Double(font.ascender.rounded(.down))
     }
 
-    /// `line-height: normal` as the page has it: 15 at 13 pt, 13 at 11 pt.
+    /// The font's natural line (ascent, descent and leading), rounded: 15 at 13 pt, 13 at 11 pt.
     var lineHeight: Double {
         guard let font else { return 0 }
         return Double((font.ascender - font.descender + font.leading).rounded())

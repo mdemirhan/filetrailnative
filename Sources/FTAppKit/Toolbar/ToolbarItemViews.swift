@@ -194,8 +194,8 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     }()
 
     var styleTextField: NSTextField? { count }
-    /// `button:focus-visible`: a click leaves the page's focus on the button, and the first key after it (the list's
-    /// arrows) shows the ring while the list is open.
+    /// The focus ring the keyboard brings: a click leaves the keyboard on the button, and the first key after it (the
+    /// list's arrows) shows the ring while the list is open.
     var showsKeyboardRing = false {
         didSet { needsDisplay = true }
     }
@@ -358,7 +358,7 @@ final class ToolbarSearchField: NSSearchField {
 /// the keyboard's focus ring, and the press comes from the toolbar (`ExplorerToolbar.pressSearchOptions`).
 final class ToolbarSearchOptionsButton: NSView {
     var onPress: (_ fromKeyboard: Bool) -> Void = { _ in }
-    /// Set while the keyboard is given to the button: a press never takes it (`onMouseDown: preventDefault`).
+    /// Set while the keyboard is given to the button: a press never takes it.
     private var takingKeyboard = false
 
     override init(frame: NSRect) {
@@ -394,7 +394,7 @@ final class ToolbarSearchOptionsButton: NSView {
 
     override var focusRingMaskBounds: NSRect { bounds }
 
-    // The press itself opens the menu; its mouse-down moves no focus (`onMouseDown: preventDefault`).
+    // The press itself opens the menu; it moves no focus.
     override func mouseDown(with event: NSEvent) { onPress(false) }
 
     override func keyDown(with event: NSEvent) {
@@ -404,7 +404,7 @@ final class ToolbarSearchOptionsButton: NSView {
         }
         switch event.keyCode {
         case 36, 76, 49:
-            // Return, Enter or Space: a keyboard click (`event.detail === 0`).
+            // Return, Enter or Space: a click from the keyboard.
             onPress(true)
         case 48:
             // Tab goes on to the field after the button; Shift-Tab to what comes before the field.

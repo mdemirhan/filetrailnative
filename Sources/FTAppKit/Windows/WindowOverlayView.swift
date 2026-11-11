@@ -1,4 +1,4 @@
-// The app's menus and tooltips (z-index over .window-toolbar) and the window-toolbar header taking its right-click
+// The layer over the window's toolbar band where the app's menus and tooltips are drawn and take their presses
 import AppKit
 
 /// The explorer window's top layer, over the title bar and the system toolbar the window's frame draws above its

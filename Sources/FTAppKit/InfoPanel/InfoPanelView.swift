@@ -2,7 +2,7 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// `color-mix(in srgb, a p%, b)`.
+/// `percent` of `first` mixed with the rest of `second`, channel by channel in sRGB (alpha not premultiplied).
 func mixColor(_ first: RGBA, _ percent: Double, with second: RGBA) -> RGBA {
     let share = percent / 100
     return RGBA(
@@ -892,7 +892,7 @@ final class InfoPanelContentView: NSView {
                     field.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)
                 }
             case let popup as OpensWithPopupView:
-                // margin -4 0: the pop-up is 4 pt taller above and below than its text.
+                // The pop-up is 4 taller than its line of text: 2 above and 2 below.
                 popup.frame = NSRect(x: valueX, y: top - 2, width: valueWidth, height: bodyLine + 4)
             default:
                 views.value.frame = NSRect(x: valueX, y: top, width: valueWidth, height: bodyLine)

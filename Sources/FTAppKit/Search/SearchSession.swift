@@ -20,7 +20,7 @@ protocol SearchSessionHost: AnyObject {
     func searchSessionChanged(_ change: SearchSession.Change)
     /// The selection of the list now on screen (the results, or the folder).
     func applySearchSelection(_ selection: ContentSelection)
-    /// `focusContentPane`.
+    /// The keyboard goes to the results (the content pane's list).
     func focusContentPaneForSearch()
 }
 
@@ -138,7 +138,7 @@ final class SearchSession {
 
     /// `hasCachedSearch`: a committed search exists, shown or not.
     var hasCachedSearch: Bool { !SearchTiming.trimmed(committedQuery).isEmpty }
-    /// `isSearchMode`.
+    /// Whether the tab is searching: a committed search, with its results on screen.
     var isSearchMode: Bool { resultsVisible && hasCachedSearch }
     var isRunning: Bool { status == .running }
 
@@ -218,7 +218,7 @@ final class SearchSession {
 
     // MARK: Showing and hiding
 
-    /// `showCachedSearchResults`: brings a cached search back, with its query in the field. From the field, only in
+    /// Brings a cached search back, with its query in the field. From the field, only in
     /// the folder it was made from.
     func showCachedResults(focusPane: Bool = false, fromField: Bool = false) {
         guard hasCachedSearch, let host else { return }
@@ -508,7 +508,8 @@ final class SearchSession {
 
     // MARK: Running
 
-    /// `startSearch`.
+    /// Searches `rootPath` (the folder on screen by default) for `query`. An empty query clears the search. With
+    /// `keepMatching`, a narrowed text query keeps the results that still match while the new search runs.
     func startSearch(
         _ query: String, rootPath requestedRoot: String? = nil, live: Bool = false, keepMatching: Bool = false
     ) {

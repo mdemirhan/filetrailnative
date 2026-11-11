@@ -456,7 +456,7 @@ final class ReviewRowView: NSView, ThemeApplying {
                 - CGFloat(layout.rowHorizontal))
     }
 
-    /// A line of the row's text (`line-height: normal`, 15 at 13 pt).
+    /// A line of the row's text: the font's natural line, 15 at 13 pt.
     private static let lineHeight = ThemeFonts.normalLineHeight(font)
 
     /// The detail's height: it wraps where it is long, each line at `lineHeight`.

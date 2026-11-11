@@ -62,7 +62,7 @@ final class PathSegmentView: NSView, TextStyleSource {
     func applyColors() {
         let theme = infoTheme
         if isHovered && !isDisabled {
-            // `color-mix(in srgb, var(--ft-accent-solid) 42%, var(--text-primary))`.
+            // 42% of the accent mixed with the primary text color.
             label.textColor = NSColor(mixColor(theme.accent.solid, 42, with: theme.palette.textPrimary))
         } else {
             label.textColor = NSColor(isActive ? theme.palette.textPrimary : theme.palette.textSecondary)
@@ -310,7 +310,7 @@ final class PathBarView: NSView {
         var x = 0.0
         var views = itemViews[...]
         var contentWidth = 0.0
-        // The widths: natural; cut proportionally when the bar is too narrow (the flex items shrink).
+        // The widths: natural, cut in proportion when the bar is too narrow.
         var natural: [Double] = []
         for item in items {
             switch item {

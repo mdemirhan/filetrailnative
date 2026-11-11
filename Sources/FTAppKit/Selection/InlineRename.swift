@@ -155,7 +155,7 @@ final class InlineRenameField: NSTextField, NSTextFieldDelegate {
     private let isFolder: Bool
     private let stem: String
     private var theme: Theme
-    /// Set once a name has been handed over, so the blur that follows does not submit again.
+    /// Set once a name has been handed over, so the field losing the keyboard afterwards does not submit again.
     private var submitted = false
     /// The name the last error is about; it is not sent again until it has been edited.
     private var refusedName: String?
@@ -344,7 +344,7 @@ final class InlineRenameField: NSTextField, NSTextFieldDelegate {
         submitted = false
         refusedName = stringValue
         // A field still being typed in keeps its editor: taking the keyboard again would end that editing first, and
-        // the blur would cancel the rename it is refusing.
+        // losing the keyboard would cancel the rename it is refusing.
         if currentEditor() == nil { window?.makeFirstResponder(self) }
         presentError(message)
     }

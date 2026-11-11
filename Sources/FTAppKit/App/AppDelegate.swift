@@ -2,8 +2,8 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-/// The app shell. Launch order: the logger, the state store, the window host, the native appearance,
-/// the services, the menu and the Dock menu, the startup windows, then the items that came before them.
+/// The app shell: it starts the app's services and windows, and answers the system about the app's lifetime and the
+/// items other apps open with it.
 @MainActor
 public final class AppDelegate: NSObject, NSApplicationDelegate {
     public override init() {
@@ -21,7 +21,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     public let directoryService = DirectoryService()
     public private(set) var folderWatches: FolderWatches?
 
-    /// The theme and accent every window draws with, followed live (233).
+    /// The theme and accent every window draws with; a change reaches every window at once.
     public let appearance = AppearanceModel.shared
     /// Settings, Help, About and Acknowledgements.
     public private(set) var pageWindows: PageWindows!
@@ -61,6 +61,9 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             changed: { clock.windowStateDidChange() })
     }
 
+    /// Launch order: a copy started by hand hands over to the one running; otherwise the logger and the state store,
+    /// the appearance, the services (the window host among them), the menu and the Dock menu, the startup windows,
+    /// then the items that came before them.
     public func applicationDidFinishLaunching(_ notification: Notification) {
         AppClock.start()
         let arguments = Array(CommandLine.arguments.dropFirst())
@@ -200,7 +203,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             },
             onPreferencesChanged: { [weak self] preferences, change in self?.preferencesChanged(preferences, change) })
         preferenceChannel = channel
-        // Settings reads and writes the app's preferences, not a window's (`app:getPreferences`, `app:updatePreferences`).
+        // Settings reads and writes the app's preferences, not a window's: it asks the channel for no window.
         pages.loadPreferences = { [weak channel] in channel?.preferences(for: nil) ?? store.preferences() }
         pages.updatePreferences = { [weak channel] change in channel?.update(from: nil) { $0.apply(change) } }
         let folderWatches = FolderWatches(
@@ -284,7 +287,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         dockMenu = ShellActions.makeDockMenu(target: self, action: #selector(dockNewWindow(_:)))
     }
 
-    /// A preference changed in a window (`app:updatePreferences`): the appearance follows a new theme or accent, every
+    /// A preference changed, in a window or in Settings: the appearance follows a new theme or accent, every
     /// explorer window and Help are told, and the menu is built again with new keys or a new text editor.
     private func preferencesChanged(_ preferences: AppPreferences, _ change: PreferencesChange) {
         appearance.preferencesChanged(preferences, change)

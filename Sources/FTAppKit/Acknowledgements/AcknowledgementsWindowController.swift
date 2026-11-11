@@ -34,7 +34,7 @@ public final class AcknowledgementsWindowController: PageWindowController {
     public required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 }
 
-/// The page: a title strip, and under it the intro and one disclosure entry for each component.
+/// The window's content: a title strip, and under it the intro and one disclosure entry for each component.
 @MainActor
 public final class AcknowledgementsView: ThemedView {
     private let titleStrip: AcknowledgementsTitle
@@ -170,7 +170,7 @@ final class AcknowledgementList: NSView, ThemeApplying {
     }
 }
 
-/// The line of an entry that opens and closes it (`<summary>`).
+/// The line of an entry that opens and closes it when clicked.
 @MainActor
 final class AcknowledgementSummary: NSView {
     var onClick: () -> Void = {}

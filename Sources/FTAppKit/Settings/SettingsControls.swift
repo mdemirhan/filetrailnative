@@ -493,7 +493,7 @@ final class SettingsRowView: ThemedView, SettingsBlock {
     func arrange(width: CGFloat) -> CGFloat {
         let controlSize = control.preferredSize
         let textWidth = max(0, width - controlSize.width - SettingsMetrics.rowGap)
-        // `line-height: normal` on the title; the border is part of the row's height when it has one (box-sizing).
+        // The title's natural line height; the border is part of the row's height when it has one.
         let titleHeight = titleText.normalLineBoxHeight(forWidth: textWidth)
         var textHeight = titleHeight
         if let descriptionText = shownDescription {
@@ -576,7 +576,7 @@ final class SettingsCardView: ThemedView, SettingsBlock {
     }
 }
 
-/// The card's 1 px edge over the rows, so a selected list row doesn't paint over it.
+/// The card's 1 pt edge over the rows, so a selected list row doesn't paint over it.
 final class SettingsCardEdge: ThemedView {
     override init(frame: NSRect = .zero, theme: Theme = AppearanceModel.shared.theme) {
         super.init(frame: frame, theme: theme)
@@ -620,7 +620,7 @@ final class SettingsSectionView: ThemedView, SettingsBlock {
             let textHeight = titleText.height(forWidth: width - 2 * side)
             let header = max(
                 SettingsMetrics.sectionHeaderMinHeight, textHeight + SettingsMetrics.sectionHeaderPaddingBottom)
-            // align-items: center within the box above its bottom padding.
+            // Centered in the box above its bottom padding.
             let top = ((header - SettingsMetrics.sectionHeaderPaddingBottom - textHeight) / 2).rounded()
             titleText.frame = NSRect(x: side, y: top, width: titleText.naturalWidth, height: textHeight)
             y = header

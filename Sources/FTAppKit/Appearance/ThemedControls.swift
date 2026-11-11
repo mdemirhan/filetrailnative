@@ -261,10 +261,10 @@ public class SystemButton: NSButton, ThemeApplying {
 
 // MARK: Segmented control
 
-/// `.segmented` as the system's segmented control: a radio group, so Tab lands on it, the arrow keys move the choice
-/// (wrapping) and Space takes the one shown. A click shows no focus ring (`:focus-visible`). The selected segment is
-/// tinted with the theme's accent. The views that name the segments for captures lie over it, take no clicks and draw
-/// nothing. One that sets `refusesFirstResponder` never has the keyboard: only clicks choose.
+/// A row of choices as the system's segmented control: a radio group, so Tab lands on it, the arrow keys move the
+/// choice (wrapping) and Space takes the one shown. A click shows no focus ring; the keyboard arriving does. The
+/// selected segment is tinted with the theme's accent. The views that name the segments for captures lie over it, take
+/// no clicks and draw nothing. One that sets `refusesFirstResponder` never has the keyboard: only clicks choose.
 class SystemSegmentedControl: NSSegmentedControl, ThemeApplying {
     private(set) var theme = AppearanceModel.shared.theme
     /// Told the segment chosen, by a click or a key.

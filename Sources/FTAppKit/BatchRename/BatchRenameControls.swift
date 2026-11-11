@@ -14,7 +14,7 @@ func batchRenameStyle(
     return style
 }
 
-/// The height of a line of text of this size (`line-height: normal`).
+/// The natural height of a line of text of this size.
 @MainActor
 func batchRenameLine(_ size: Double) -> CGFloat {
     ThemeFonts.normalLineHeight(ThemeFonts.sans(size))
@@ -26,7 +26,7 @@ func batchRenameTextWidth(_ text: String, _ size: Double, weight: NSFont.Weight 
     ceil((text as NSString).size(withAttributes: [.font: ThemeFonts.sans(size, weight)]).width)
 }
 
-/// The focus ring around a control: 3 px of the accent at 50%.
+/// The focus ring around a control: 3 pt of the accent at 50%.
 @MainActor
 func drawBatchRenameFocusRing(_ rect: NSRect, radius: CGFloat, theme: Theme) {
     let width = CGFloat(DesignTokens.focusRingWidth)
@@ -395,8 +395,8 @@ final class BatchRenameSelectedMark: NSView, TextStyleSource {
     override var isFlipped: Bool { true }
 }
 
-/// `.segmented` as the system's control, a radio group ("How to rename"): Tab lands on it, the arrow keys move
-/// between the segments, a click chooses one.
+/// The choice of how to rename, as the system's segmented control and a radio group: Tab lands on it, the arrow keys
+/// move between the segments, a click chooses one.
 @MainActor
 final class BatchRenameModeControl: SystemSegmentedControl {
     let segments: [BatchRenameSegment]

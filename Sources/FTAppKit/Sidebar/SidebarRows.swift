@@ -7,7 +7,7 @@ struct SidebarHeaderState: Equatable {
     var section: Section
     var title: String
     var expanded: Bool
-    /// The first header sits just below the toolbar's bottom edge (`margin-top: 2px`).
+    /// The first header sits just below the toolbar's bottom edge, 2 under it.
     var first: Bool
     var density: SidebarDensity
 }
@@ -17,7 +17,7 @@ enum SidebarDropState: Equatable {
     case valid, invalid
 }
 
-/// Everything a row is drawn from: it is drawn again only when this changes (`memo`).
+/// Everything a row is drawn from: it is drawn again only when this changes.
 struct SidebarRowState: Equatable {
     enum Selection: Equatable {
         case none

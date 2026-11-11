@@ -33,7 +33,7 @@ enum ChromeColors {
         NSColor(srgbRed: rgba.red, green: rgba.green, blue: rgba.blue, alpha: rgba.alpha)
     }
 
-    /// `color-mix(in srgb, <color> <percent>%, transparent)`.
+    /// The color at `percent` of its strength: its alpha scaled by `percent` / 100.
     static func color(_ rgba: RGBA, percent: Double) -> NSColor {
         color(rgba.withAlpha(rgba.alpha * percent / 100))
     }
@@ -59,7 +59,7 @@ enum ChromeColors {
         return label.withAlphaComponent(label.alphaComponent * toolbarTitleStrength)
     }
 
-    /// The system font at a size and a CSS-style weight (400, 500, 600 or 700).
+    /// The system font at a size and a numbered weight: 400 regular, 500 medium, 600 semibold, 700 bold.
     static func font(size: Double, weight: Int = 400) -> NSFont {
         let weights: [Int: NSFont.Weight] = [500: .medium, 600: .semibold, 700: .bold]
         return NSFont.systemFont(ofSize: size, weight: weights[weight] ?? .regular)

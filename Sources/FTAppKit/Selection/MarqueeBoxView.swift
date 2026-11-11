@@ -38,7 +38,7 @@ final class MarqueeBoxView: NSView {
         let ink = theme.palette.textPrimary
         NSColor(ink.withAlpha(SelectionLayout.Marquee.fillAlpha)).setFill()
         bounds.fill()
-        // `border: 1px solid`, inside the box (`box-sizing: border-box`).
+        // A solid border of 1, inside the box.
         let width = CGFloat(SelectionLayout.Marquee.borderWidth)
         NSColor(ink.withAlpha(SelectionLayout.Marquee.borderAlpha)).setFill()
         NSRect(x: 0, y: 0, width: bounds.width, height: width).fill()

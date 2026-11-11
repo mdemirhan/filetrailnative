@@ -170,7 +170,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     // MARK: The field
 
-    /// `onFocus`: the cached search comes back when the field is focused in the folder it was made from.
+    /// The field took the keyboard: in the folder it was made from, the cached search comes back.
     private func fieldFocused() {
         session.showCachedResults(fromField: true)
     }
@@ -268,7 +268,7 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
 
     // MARK: ⌘F, ⇧⌘F
 
-    /// `focusFileSearch`: the field takes the keyboard with its text selected. Text typed into the folder list goes into
+    /// The field takes the keyboard with its text selected. Text typed into the folder list goes into
     /// it, and is searched at once, with the caret after it so typing goes on.
     func focusField() {
         let content = tab.content

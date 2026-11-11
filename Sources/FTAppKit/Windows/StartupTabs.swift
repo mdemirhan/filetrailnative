@@ -26,7 +26,7 @@ public struct StartupTab: Equatable, Sendable {
 }
 
 public enum StartupTabs {
-    /// `isPathWithinRoot`.
+    /// Whether `path` is `rootPath` or inside it, compared byte for byte; everything is inside `/`.
     static func isPathWithinRoot(_ path: String, _ rootPath: String) -> Bool {
         if rootPath == "/" { return true }
         return path.utf16.elementsEqual(rootPath.utf16) || path.utf16.starts(with: (rootPath + "/").utf16)
@@ -34,7 +34,7 @@ public enum StartupTabs {
 
     static func persistedRoot(_ persistedRootPath: String?, homePath: String, startupPath: String) -> String {
         let volumeRoot = ExplorerTabs.volumeRootPath(startupPath)
-        // Macintosh HD holds its own folders only: a folder on another disk is shown from that disk's top.
+        // The startup disk's tree holds its own folders only: a folder on another disk is shown from that disk's top.
         if let persistedRootPath, persistedRootPath == homePath || (persistedRootPath == "/" && volumeRoot == "/") {
             return persistedRootPath
         }

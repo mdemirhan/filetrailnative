@@ -128,7 +128,7 @@ final class TextPromptAccessory: NSView, AlertAccessory, ThemeApplying, NSTextFi
         let palette = theme.palette
         NSColor(palette.fieldBg).setFill()
         NSBezierPath(roundedRect: box, xRadius: radius, yRadius: radius).fill()
-        // --field-edge, and --field-focus (the edge and the focus ring) while it has the keyboard.
+        // The field's edge (the theme's `fieldEdge`), and the focus ring while it has the keyboard.
         for layer in palette.fieldEdge where layer.blur == 0 && layer.spread > 0 {
             let edge = NSBezierPath(
                 roundedRect: box.insetBy(dx: CGFloat(layer.spread) / 2, dy: CGFloat(layer.spread) / 2),

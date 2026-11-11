@@ -34,7 +34,7 @@ public struct AboutActions {
 @MainActor
 public final class AboutWindowController: PageWindowController {
     public static let contentSize = NSSize(width: 460, height: 356)
-    /// COPIED_NOTE_MS.
+    /// How long Copy Details says "Copied" before its title comes back.
     public static let copiedNoteMilliseconds = 1500.0
 
     public let aboutView: AboutView
@@ -55,7 +55,7 @@ public final class AboutWindowController: PageWindowController {
     public required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 }
 
-/// The page: the title strip, the header, the rows, the buttons and the footer.
+/// The window's content: the title strip, the header, the rows, the buttons and the footer.
 @MainActor
 public final class AboutView: ThemedView {
     private let info: AboutInfo?
@@ -75,7 +75,7 @@ public final class AboutView: ThemedView {
     private var cancelCopiedNote: (() -> Void)?
     public private(set) var copied = false
 
-    // padding 0 28px 18px; the title strip is 40 tall; the header has 2 above and 18 below.
+    // 28 in from each side and 18 above the bottom; the title strip is 40 tall; the header has 2 above and 18 below.
     private static let sidePadding: CGFloat = 28
     private static let bottomPadding: CGFloat = 18
     private static let titleStrip: CGFloat = 40
@@ -157,7 +157,7 @@ public final class AboutView: ThemedView {
 
     public override func applyTheme(_ theme: Theme) {
         super.applyTheme(theme)
-        // The edges of the details are the theme's `--border`.
+        // The view draws no edges of its own; the hairlines of the details are drawn in the theme's border color.
         edges = [:]
     }
 

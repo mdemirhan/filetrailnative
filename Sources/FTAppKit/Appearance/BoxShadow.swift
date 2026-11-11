@@ -1,17 +1,17 @@
 import AppKit
 import FTFoundation
 
-/// A box's soft drops, around it and not under it, falling the way CSS says wherever the view is drawn. In the view's
-/// own context a shadow's offset goes up or down by how the view reaches the screen or a capture (`NSShadow` turns it
-/// over in a flipped context, and a layer under a flipped ancestor is turned over again), while an image lands the right
-/// way up in all of them. So the drops are drawn apart.
+/// A box's soft drops, around it and not under it; a drop with a positive y falls below the box wherever the view is
+/// drawn. In the view's own context a shadow's offset goes up or down by how the view reaches the screen or a capture
+/// (`NSShadow` turns it over in a flipped context, and a layer under a flipped ancestor is turned over again), while an
+/// image lands the right way up in all of them. So the drops are drawn apart.
 @MainActor
 enum BoxShadow {
     /// A soft edge loses nothing at this density on any screen.
     private static let pixelsPerPoint: CGFloat = 2
 
-    /// Draws `drops` of the rounded `rect` into the current context, last drop first as CSS paints them. Drops with no
-    /// blur and no offset are the caller's: they are an edge, not a shadow.
+    /// Draws `drops` of the rounded `rect` into the current context, last drop first, so the first lies on top. Drops
+    /// with no blur and no offset are the caller's: they are an edge, not a shadow.
     static func draw(_ drops: [ShadowLayer], around rect: NSRect, radius: CGFloat) {
         let soft = drops.filter { $0.blur > 0 || $0.x != 0 || $0.y != 0 }
         guard !soft.isEmpty, let image = image(of: soft, size: rect.size, radius: radius) else { return }

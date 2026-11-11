@@ -136,7 +136,7 @@ extension SidebarViewController {
         model.rootTree(at: path)
     }
 
-    /// The favorites with `path` added or removed; nil when nothing changes.
+    /// Adds `path` to the favorites, or takes it out when it is one; a change that would do nothing is not saved.
     func toggleFavorite(_ path: String) {
         let homePath = model.homePath
         if Favorites.contains(model.favorites, path: path) {
@@ -170,7 +170,7 @@ extension SidebarViewController {
         return nil
     }
 
-    /// Go ▸ Macintosh HD and Trash: as a click on the Locations row.
+    /// Go ▸ the startup disk and Go ▸ Trash: as a click on the Locations row.
     func openLocation(_ path: String) {
         model.selectItem(.location(path))
     }

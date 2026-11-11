@@ -28,7 +28,7 @@ public struct PreferencesChange: Equatable, Sendable {
 
 /// Preferences as a window sees them: an explorer window sees the app's with its own session on top, and what it
 /// changes of its session stays its own. Other windows (Settings) see and change the app's only. Only the keys the
-/// whole app shares are told to the other windows (`app:getPreferences`, `app:updatePreferences`).
+/// whole app shares are told to the other windows.
 @MainActor
 public final class WindowPreferenceChannel {
     private let store: AppStateStore
@@ -75,12 +75,11 @@ public final class WindowPreferenceChannel {
 
 }
 
-/// What Copy or Cut put on the clipboard, in whichever window: every window pastes it (`app:getClipboard`,
-/// `app:setClipboard`).
+/// What Copy or Cut put on the clipboard, in whichever window: every window pastes it.
 @MainActor
 public final class SharedClipboard {
     public private(set) var contents: CopyPasteClipboard = .empty
-    /// Tells every window but the one that changed it (`filetrail:clipboardChanged`).
+    /// Tells every window but the one that changed it.
     public var sendToOtherWindows: (_ senderID: Int?, CopyPasteClipboard) -> Void
 
     public init(sendToOtherWindows: @escaping (Int?, CopyPasteClipboard) -> Void = { _, _ in }) {

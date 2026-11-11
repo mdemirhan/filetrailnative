@@ -108,7 +108,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
 
     var isClosed: Bool { host?.isClosed ?? true }
 
-    /// `isWriteOperationLocked`: one runs here, or in another window.
+    /// Whether a write holds this window: one runs here, or in another window.
     var isWriteLocked: Bool { card != nil || foreign != nil }
 
     /// Tells `handler` of every event until the token goes.
@@ -250,7 +250,8 @@ final class ExplorerWriteSession: WriteOperationWindow {
 
     // MARK: Progress
 
-    /// `handleProgress`.
+    /// An event of a write. Another window's marks this window busy until it ends, then any move it made on screen is
+    /// followed; this window's own moves its card along, and its end finishes it.
     func handleProgress(_ event: WriteOperationEvent) {
         guard event.operationId == activeOperationId else {
             // Another window's operation: this one starts none while it runs.

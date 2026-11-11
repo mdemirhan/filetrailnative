@@ -158,8 +158,8 @@ enum LocalWriteRules {
         message: "You can\u{2019}t undo this action.", confirmLabel: "Empty Trash", destructive: true,
         cancelIsDefault: true)
 
-    /// `confirmDotName`: Finder's question, word for word. Cancel is the default: Return keeps the name from hiding
-    /// the item.
+    /// The question before a name that begins with a dot: Finder's, word for word. Cancel is the default: Return keeps
+    /// the name from hiding the item.
     static let dotNameQuestion = WriteQuestion(
         title: "Are you sure you want to use a name that begins with a dot (\u{201C}.\u{201D})?",
         message: "These names are reserved for the system. If you continue, the item will be hidden.",

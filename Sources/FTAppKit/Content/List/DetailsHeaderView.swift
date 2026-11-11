@@ -193,7 +193,7 @@ final class DetailsHeaderCell: NSView, TextStyleSource {
     }
 
     /// The cell lays out its pieces in its own box: the title's height is the box's, and the separator's hit area
-    /// reaches beyond it (`top: -6px; right: -6px`).
+    /// reaches 6 beyond it above, below and to the right (`separatorHitOverhang`).
     func layoutPieces(layout: DetailsLayout) {
         let height = bounds.height
         var titleWidth = bounds.width

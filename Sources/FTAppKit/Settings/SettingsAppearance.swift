@@ -194,7 +194,7 @@ final class AccentSwatch: SettingsControlView {
             x: (bounds.width - SettingsMetrics.swatchSize) / 2, y: (bounds.height - SettingsMetrics.swatchSize) / 2,
             width: SettingsMetrics.swatchSize, height: SettingsMetrics.swatchSize)
         if isSelected {
-            // 0 0 0 2px page, 0 0 0 3.5px accent: an accent ring 1.5 wide, 2 out from the swatch.
+            // The background out to 2, then the accent out to 3.5: an accent ring 1.5 wide, 2 out from the swatch.
             let outer = SettingsMetrics.swatchRingOuter
             let inner = SettingsMetrics.swatchRingGap
             let width = outer - inner
@@ -241,7 +241,7 @@ final class AccentSwatch: SettingsControlView {
                 srgbRed: a.red + (b.red - a.red) * mix, green: a.green + (b.green - a.green) * mix,
                 blue: a.blue + (b.blue - a.blue) * mix, alpha: 1
             ).setFill()
-            // CSS angles start at the top and go clockwise; the view is flipped (y down).
+            // The swatch's angles start at the top and go clockwise; the view is flipped (y down).
             let start = (Double(SettingsMetrics.customSwatchStartDegrees) + t * 360 - 90)
             // Each wedge overlaps the next a little, so no seam shows between them.
             let end = start + 360 / Double(steps) + Double(SettingsMetrics.hairline)

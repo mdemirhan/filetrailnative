@@ -219,7 +219,7 @@ final class ContentStateView: NSView {
         return y
     }
 
-    /// One quiet line, centered in the area less 24 (`min-height: calc(100% - 24px)`).
+    /// One quiet line, centered in the pane's height less 24.
     private func layoutQuiet(width: CGFloat) {
         let areaHeight = max(0, bounds.height - CGFloat(stateLayout.emptyHeightReduction))
         card.frame = NSRect(x: 0, y: 0, width: width, height: areaHeight)

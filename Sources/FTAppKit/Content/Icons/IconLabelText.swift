@@ -6,7 +6,7 @@ import FTFoundation
 /// The text of names under icons, laid out as the label lays it out: centred lines of the label's width, at most two.
 @MainActor
 enum IconLabelText {
-    /// The label's font: 13 px (12 px with Finder's sizes), the sans font.
+    /// The label's font: the system font at 13 pt (12 pt with Finder's sizes).
     static func font(_ layout: IconGridLayout) -> NSFont {
         ThemeFonts.sans(layout.labelFontSize)
     }

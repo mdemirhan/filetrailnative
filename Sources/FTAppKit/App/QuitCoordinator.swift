@@ -22,7 +22,7 @@ public final class QuitCoordinator {
         /// Stops a running operation and waits until it has cleaned up after itself; stops the watchers; flushes the
         /// logger.
         public var shutDown: () async -> Void = {}
-        /// The app ends here (`app.exit(0)`).
+        /// The app ends here: AppKit is told it may terminate.
         public var exit: () -> Void = {}
         public var log: (String) -> Void = { _ in }
 
@@ -52,7 +52,8 @@ public final class QuitCoordinator {
 
     public var isAskingToStop: Bool { stopQuestionOpen }
 
-    /// `quit`.
+    /// Quit: asks first when an operation is running, stops it, saves the windows and the state, then ends the app.
+    /// A second Quit while the question is open brings the question forward; one while quitting does nothing.
     @discardableResult
     public func quit() async -> Outcome {
         if shutdownInProgress { return .alreadyShuttingDown }

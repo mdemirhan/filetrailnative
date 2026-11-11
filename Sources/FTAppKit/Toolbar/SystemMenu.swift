@@ -17,7 +17,7 @@ struct AppMenuItem {
     var checked: Bool?
     var enabled = true
     var tooltip: String?
-    /// The app whose icon the row shows before its label (`AppIcon`).
+    /// The app whose icon the row shows before its label.
     var appPath: String?
     var action: () -> Void = {}
     #if DEBUG

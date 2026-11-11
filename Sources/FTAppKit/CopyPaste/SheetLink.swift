@@ -64,7 +64,7 @@ final class SheetLink: TextControl {
     }
 }
 
-/// One line of text cut short with an ellipsis (`text-overflow: ellipsis; white-space: nowrap`).
+/// One line of text, never wrapped, cut short with an ellipsis at the end when it doesn't fit.
 @MainActor
 func singleLineText(_ runs: [(String, NSFont, RGBA)], background: RGBA) -> NSAttributedString {
     let paragraph = NSMutableParagraphStyle()

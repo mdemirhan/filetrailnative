@@ -1695,7 +1695,7 @@ hand-drawn parts) go with the control; tests of behaviour stay.
 - [x] 10.1 `Sources/FTFoundation`
 - [x] 10.2 `Sources/FTFileSystem` and `Sources/CFileTrail`
 - [x] 10.3 `Sources/FTOperations`
-- [ ] 10.4 `Sources/FTAppKit`
+- [x] 10.4 `Sources/FTAppKit`
 - [x] 10.5 `Tests`: comments
 - [x] 10.6 `Tests`: names of tests and fixtures (step 6)
 - [ ] 10.7 Identifiers in Sources (step 7), after [Q16]
@@ -2563,3 +2563,8 @@ anything that differed from the plan, and anything found on the way that is not 
   checks' "zero warnings" holds only for files the build actually recompiles; a build `swift test` already made can
   hide a new warning from `ci.sh --affected`. Found, not fixed: `MenuLayout.chevronSize` and several `ToolbarLayout`
   tokens look unread; `SidebarIcons.symbol`/`drawFavorite` repeat the new `SymbolGlyph`.
+- 2026-11-11. 10.4: 27 commits, one per folder of FTAppKit, comments only; the plan's named items done ("100 tabs" was
+  already right; `paneTabSwitch` named nothing: the keyboard moves through `switchPane()`). Eight files 9.4 is changing
+  were left for after it (their web-term comments are listed in the 10.4 report). Found, not fixed: an empty
+  `extension RGBA {}` in `Appearance/ThemeColors.swift`; `PageWindow`, `PageWindows`, `PageWindowSpec` and
+  `pageWindowBackground` carry the web's "page"; three colour-mix helpers (two premultiplied, one straight).

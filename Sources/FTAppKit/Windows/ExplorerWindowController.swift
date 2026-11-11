@@ -12,7 +12,7 @@ import FTFoundation
 /// What the controller is told of a window.
 @MainActor
 public struct ExplorerWindowEvents {
-    /// The window has drawn its first folder (`ready-to-show`).
+    /// The window has drawn its first folder, and may be shown.
     public var readyToShow: () -> Void = {}
     /// It got the focus.
     public var focus: () -> Void = {}
@@ -86,7 +86,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     /// How long the place and size of a window that moves wait before they are recorded: a drag is one record.
     public static var boundsSaveDelayMilliseconds: Double { 160 }
-    /// STARTUP_SHOW_TIMEOUT_MS: how long startup waits for a window's first folder before showing the windows anyway.
+    /// How long startup waits for a window's first folder before showing the windows anyway.
     public static var startupShowTimeoutMilliseconds: Double { 5_000 }
 
     public var host: Host
@@ -299,7 +299,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return openRequests.removeValue(forKey: entry.windowID) ?? []
     }
 
-    /// `successorOf`: the window a running operation goes to when the one that started it closes: the one in front.
+    /// The window a running operation goes to when the one that started it closes: the one in front.
     /// None for a window closed with Stop and Close: its operation is stopped.
     public func successor(of windowID: Int) -> W? {
         if stoppedOnClose.contains(windowID) { return nil }

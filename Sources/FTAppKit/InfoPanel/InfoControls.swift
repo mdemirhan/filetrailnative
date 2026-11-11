@@ -6,13 +6,13 @@ extension NSView {
     var infoTheme: Theme { Theme.of(self) }
 }
 
-/// The height of a line of text in the font, as the browser's `line-height: normal` rounds it.
+/// The height of a line of text in the font: its ascent, descent and leading, rounded.
 func lineBox(_ font: NSFont?) -> Double {
     let font = font ?? .systemFont(ofSize: 12)
     return Double(font.ascender - font.descender + font.leading).rounded()
 }
 
-/// `font-variant-numeric: tabular-nums`: every digit as wide as the others.
+/// The system font with tabular digits: every digit as wide as the others.
 func tabularFont(_ size: Double, weight: Int = 400) -> NSFont {
     let weights: [Int: NSFont.Weight] = [500: .medium, 600: .semibold, 700: .bold]
     return NSFont.monospacedDigitSystemFont(ofSize: CGFloat(size), weight: weights[weight] ?? .regular)

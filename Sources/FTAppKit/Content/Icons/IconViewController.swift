@@ -121,7 +121,7 @@ final class IconViewController: ItemGridPane {
 
     // MARK: Rename
 
-    /// `.icon-item.renaming .inline-rename-input`: the label's width, 20 tall (19 with Finder's sizes), under the tile.
+    /// The rename field over an icon: the label's width, 20 tall (19 with Finder's sizes), under the tile.
     override func renameFrame(at index: Int) -> NSRect {
         let item = itemFrame(at: index, viewport: viewport)
         let label = layout.labelFrame(textWidth: layout.labelWidth, lines: 1)

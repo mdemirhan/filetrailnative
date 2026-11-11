@@ -78,7 +78,7 @@ enum SettingsMetrics {
     /// A card: 12 of padding each side, the menu's corner radius.
     static let cardPadding: CGFloat = 12
     static var cardRadius: CGFloat { CGFloat(DesignTokens.radii.menu) }
-    /// A row: 16 between its parts, at least 40 tall, 8 above and below, a 1 px line under it.
+    /// A row: 16 between its parts, at least 40 tall, 8 above and below, a 1 pt line under it.
     static let rowGap: CGFloat = 16
     static let rowMinHeight: CGFloat = 40
     static let rowPadding: CGFloat = 8
@@ -105,7 +105,7 @@ enum SettingsMetrics {
     /// The appearance picker: 12 between options, 4 between an option's picture and its label.
     static let appearanceGap: CGFloat = 12
     static let appearanceLabelGap: CGFloat = 4
-    /// The ring around an appearance option: padding 2, radius 8; the selected one's ring is 2 px.
+    /// The ring around an appearance option: padding 2, radius 8; the selected one's ring is 2 pt.
     static let appearanceRingPadding: CGFloat = 2
     static let appearanceRingRadius: CGFloat = 8
     static let appearanceRingWidth: CGFloat = 2
@@ -134,7 +134,7 @@ enum SettingsMetrics {
     /// The accent swatches: 7 apart, 15 across.
     static let swatchGap: CGFloat = 7
     static let swatchSize: CGFloat = 15
-    /// The swatch's edge, and the ring of the chosen one: the page color to 2, the accent to 3.5.
+    /// The swatch's edge, and the ring of the chosen one: the background color out to 2, the accent out to 3.5.
     static let swatchEdge = RGBA(r: 0, g: 0, b: 0, alpha: 0.2)
     static let swatchRingGap: CGFloat = 2
     static let swatchRingOuter: CGFloat = 3.5
@@ -195,7 +195,7 @@ enum SettingsMetrics {
     static let groupNoteMargin: CGFloat = 8
     /// The gap between a row's keys.
     static let slotGap: CGFloat = 6
-    /// A shortcut key: at least 52 by 20, 8 of padding each side, radius 5, a 1 px border.
+    /// A shortcut key: at least 52 by 20, 8 of padding each side, radius 5, a 1 pt border.
     static let slotMinWidth: CGFloat = 52
     static let slotHeight: CGFloat = 20
     static let slotPadding: CGFloat = 8
@@ -215,7 +215,7 @@ enum SettingsMetrics {
 
     // MARK: Hairlines, shadows and motion
 
-    /// The 0.5 px edges of swatches, thumbnails and the push button's bezel.
+    /// The 0.5 pt edges of swatches, thumbnails and the push button's bezel.
     static let hairline: CGFloat = 0.5
     /// The custom swatch's conic gradient is drawn in this many wedges.
     static let conicSteps = 120

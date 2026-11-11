@@ -51,7 +51,7 @@ final class ContentSearchContext {
         self.requestSort = requestSort
     }
 
-    /// "src › renderer", or the root's name for a result right in it.
+    /// "src › views", or the root's name for a result right in it.
     func folderLabel(_ path: String) -> String {
         if let known = folderLabels[path] { return known }
         let made = SearchResults.folderText(path: path, rootPath: rootPath, startupDiskName: startupDiskName)

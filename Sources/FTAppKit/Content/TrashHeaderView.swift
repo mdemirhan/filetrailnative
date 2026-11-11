@@ -7,7 +7,8 @@ final class TrashHeaderView: NSView {
     var onEmpty: () -> Void = {}
     /// A press in the bar: the keyboard goes to the list.
     var onFocusList: () -> Void = {}
-    /// Tab or Shift-Tab from Empty (`paneTabSwitch`).
+    /// Tab or Shift-Tab from Empty: the keyboard goes to the other pane, as Tab among the items sends it
+    /// (`switchPane()`).
     var onSwitchPane: () -> Void = {}
 
     private static var layout: SearchLayout { .standard }

@@ -1,8 +1,8 @@
 #if DEBUG
     import AppKit
 
-    /// Turns a scenario's `key` step (DOM key names, modifiers `cmd`, `shift`, `option`, `ctrl`) into
-    /// AppKit key events.
+    /// Turns a scenario's `key` step (a key's name such as `Enter`, `ArrowDown` or `a`, and the modifiers `cmd`,
+    /// `shift`, `option`, `ctrl`) into AppKit key events.
     enum KeyEvents {
         struct Key: Equatable {
             var keyCode: UInt16

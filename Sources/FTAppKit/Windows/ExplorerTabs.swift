@@ -122,7 +122,7 @@ public struct WriteOperationProgress: Equatable, Sendable {
 }
 
 public enum ExplorerTabs {
-    /// How many closed tabs Reopen Closed Tab can bring back, most recent first (CLOSED_TABS_LIMIT).
+    /// How many closed tabs Reopen Closed Tab can bring back, most recent first.
     public static let closedTabsLimit = 10
 
     // MARK: Paths
@@ -222,7 +222,7 @@ public enum ExplorerTabs {
             })
     }
 
-    /// `openNewTab`: the tab a new one starts as: the same folder and tree, a history of its own, nothing selected or
+    /// The tab a new one starts as: the same folder and tree, a history of its own, nothing selected or
     /// typed, the list at the top, no memories and no search.
     public static func newTab(from snapshot: TabSnapshot) -> TabSnapshot {
         var new = snapshot

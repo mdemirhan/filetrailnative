@@ -182,7 +182,7 @@ final class SidebarChevronView: SidebarPlainView {
             MainActor.assumeIsolated {
                 guard let self else { return }
                 let progress = min(1, (ProcessInfo.processInfo.systemUptime - began) / Self.turnDuration)
-                // Close to CSS's `ease`: quick at first, slowing to the end.
+                // Eased: quick at first, slowing to the end.
                 self.rotation = start + (end - start) * CGFloat(1 - pow(1 - progress, 2.4))
                 if progress >= 1 {
                     self.turnTimer?.invalidate()
@@ -327,7 +327,7 @@ final class SidebarBadgeView: SidebarPlainView {
 
     var title: String { label.stringValue }
 
-    /// 1/6 padding around the text, `letter-spacing: 0.02em`.
+    /// The text's width and 6 of padding at each side; the letters are 0.02 of the font size apart.
     func fittingWidth(layout: SidebarLayout) -> Double {
         let size = label.attributedStringValue.size()
         return ceil(size.width) + 2 * layout.badgePaddingX

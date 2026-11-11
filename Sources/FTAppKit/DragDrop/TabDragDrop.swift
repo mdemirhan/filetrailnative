@@ -1,7 +1,7 @@
 // A tab's drags out (the system file drag, its images and its end, the items other apps took away) and the drags over
 // it (the targets, move or copy by the disks and the keys, the highlights, springing folders, the tree's hover expand,
-// the drop). AppKit's dragging callbacks replace the web page's guesses about when a drag came, left and ended;
-// `draggingSequenceNumber` tells one drag from the next.
+// the drop). AppKit's dragging callbacks say when a drag came, left and ended; `draggingSequenceNumber` tells one drag
+// from the next.
 import AppKit
 import FTFileSystem
 import FTFoundation
@@ -197,8 +197,8 @@ final class TabDragDrop {
         }
     }
 
-    /// `filetrail:draggedAway`: the clipboard lets go of the items (a cut of any is cancelled), every window forgets
-    /// their sizes and reads what they left again, and the search results on screen are found again.
+    /// Items dragged away to another app: the clipboard lets go of the items (a cut of any is cancelled), every window
+    /// forgets their sizes and reads what they left again, and the search results on screen are found again.
     func draggedAway(_ gone: [String], cleared: [String], intoTrash: Bool) {
         guard let tab else { return }
         let clipboard = tab.services.clipboard
@@ -247,7 +247,8 @@ final class TabDragDrop {
         return DragSession(sourceSurface: .external, sourceItems: items, leadPath: lead.path, leadKind: lead.kind)
     }
 
-    /// Whether the source offers a move (`effectAllowed`).
+    /// Whether the source offers a move: a drag from within the app always does, one from another app when its
+    /// operation mask allows a move.
     private func offersMove(_ info: any NSDraggingInfo, _ session: DragSession) -> Bool {
         session.sourceSurface != .external || !info.draggingSourceOperationMask.intersection([.move, .generic]).isEmpty
     }
@@ -354,7 +355,7 @@ final class TabDragDrop {
     }
 
     /// Whether a drag resting on the folder `entry` opens it: one that takes the drop and isn't the folder on screen,
-    /// and never while the tab shows search results, whatever the drag came from (`openFolder` is null then).
+    /// and never while the tab shows search results, whatever the drag came from.
     func canSpring(_ session: DragSession, into entry: DirectoryEntry, target: Target, refusal: DropRefusal?) -> Bool {
         guard let tab, tab.searchRootPath == nil else { return false }
         return refusal == nil && target.supportsMove && !isBlocked && !samePath(entry.path, tab.folder.path)
@@ -498,8 +499,8 @@ final class TabDragDrop {
         tellDropRefusedIfLetGo()
     }
 
-    /// A drag from another app was let go over the window while a write holds it. "The page
-    /// hears nothing else of a drop it refused": neither does a view here. Not for a drag that only passes over.
+    /// A drag from another app was let go over the window while a write holds it: a view hears nothing more of a drop
+    /// it refused, so the refusal is told now. Not for a drag that only passes over.
     private func tellDropRefusedIfLetGo() {
         guard let external, external.session != nil, isBlocked, Self.dragWasLetGoOver(tab?.window) else { return }
         tellDropRefused(sequence: external.sequence)
@@ -597,9 +598,9 @@ final class TabDragDrop {
         return true
     }
 
-    /// `copy_to` or `move_to` through the paste's flow, with the tree's target selected after it. The destination is
-    /// checked first: only a real folder takes a drop, so a favorite that links
-    /// to one refuses it (an accepted risk: the drop showed as taken).
+    /// A copy or move to the target through the paste's flow, with the tree's target selected after it. The destination
+    /// is checked first: only a real folder takes a drop, so a favorite that links to one refuses it (an accepted risk:
+    /// the drop showed as taken).
     private func start(_ session: DragSession, target: Target, operation: DropOperation) async {
         guard let tab, let actions = tab.writeActions else { return }
         let action: WriteOperationAction = operation == .copy ? .copyTo : .moveTo

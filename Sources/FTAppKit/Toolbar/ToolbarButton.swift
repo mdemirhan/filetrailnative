@@ -43,7 +43,7 @@ class ToolbarButton: NSButton {
             syncToolTip()
         }
     }
-    /// `aria-haspopup="menu"` of the buttons that open a menu, which a dimmed history button doesn't say.
+    /// The buttons that open a menu tell accessibility they are menu buttons; a dimmed history button doesn't.
     private let opensMenu: Bool
     private var takingKeyboard = false
     private var pressed = false
@@ -269,9 +269,9 @@ final class KeyboardStopView: NSView {
 }
 
 /// Tab through the toolbar, in the order of its items on screen: the search field's parts are the options button, the
-/// field and the ✕ while it shows, and the view switch walks its segments itself. `paneTabSwitch` only matches the
-/// panes, so the row is walked here. Before the row is the tree's resizer, with the tree open, and after it the results
-/// bar in search mode; otherwise the content has the keyboard.
+/// field and the ✕ while it shows, and the view switch walks its segments itself. Switching panes (`switchPane()`) only
+/// goes between the panes, so the row is walked here. Before the row is the tree's resizer, with the tree open, and
+/// after it the results bar in search mode; otherwise the content has the keyboard.
 @MainActor
 enum ToolbarKeyboard {
     /// What Tab stops at now.

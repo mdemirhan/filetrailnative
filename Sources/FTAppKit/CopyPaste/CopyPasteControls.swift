@@ -183,7 +183,7 @@ final class AllConflictsSegment: TextControl {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     var preferredWidth: CGFloat {
-        // A CSS box as wide as its text: not rounded up, or the track grows a point per segment.
+        // The text's own width, not rounded up, or the track grows a point per segment.
         (title as NSString).size(withAttributes: [.font: Self.font]).width
             + 2 * CGFloat(CopyPasteSheetLayout.segmentPadding)
     }

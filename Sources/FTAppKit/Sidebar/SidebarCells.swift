@@ -46,7 +46,7 @@ final class SidebarRowBox: SidebarPlainView, TextStyleSource {
 final class SidebarLabelField: NSTextField {
     override var isFlipped: Bool { true }
 
-    /// Text that starts at the left edge of its frame, as a web page's does.
+    /// Text that starts at the left edge of its frame, with no inset.
     override class var cellClass: AnyClass? {
         get { TextBoxCell.self }
         set {}
@@ -73,7 +73,7 @@ enum SidebarText {
     }
 
     static func width(_ text: String, font: NSFont, kern: Double = 0) -> Double {
-        // Core Text lays the line out with pair kerning, as the web page does. An explicit kern of 0 turns that off.
+        // Core Text lays the line out with the font's pair kerning. An explicit kern of 0 turns that off.
         let attributes: [NSAttributedString.Key: Any] = kern == 0 ? [.font: font] : [.font: font, .kern: kern]
         let line = CTLineCreateWithAttributedString(NSAttributedString(string: text, attributes: attributes))
         return CTLineGetTypographicBounds(line, nil, nil, nil)

@@ -2,7 +2,7 @@
     import AppKit
     import FTFoundation
 
-    /// Runs a scenario's `command` step. Ids are the `RendererCommand` types.
+    /// Runs a scenario's `command` step. Its id is the raw value of a `RendererCommand`, the commands a window runs.
     @MainActor
     enum AutomationCommands {
         /// Every command id.

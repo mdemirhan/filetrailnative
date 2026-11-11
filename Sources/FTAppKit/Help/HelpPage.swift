@@ -410,7 +410,7 @@ final class HelpPageView: NSView, ThemeApplying {
         return y
     }
 
-    /// `columns: 2 300px; column-gap: 36px`: groups that do not break, in as many columns of at least 300 as fit, filled
+    /// Groups that do not break, in two columns 36 apart when both can be at least 300 wide, else in one; filled
     /// evenly. Answers the height of the columns.
     private func arrangeColumns(top: CGFloat, width: CGFloat, compact: Bool) -> CGFloat {
         let gap: CGFloat = 36

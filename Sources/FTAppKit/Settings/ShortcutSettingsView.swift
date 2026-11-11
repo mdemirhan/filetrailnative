@@ -11,9 +11,9 @@ final class ShortcutSlotView: TextControl {
     private(set) var isRecording = false
     /// The pointer is on the row: an empty place shows.
     var rowHovered = false { didSet { needsDisplay = true } }
-    /// `:focus-visible`: the last thing that reached this key was the keyboard, not a press.
+    /// Whether the focus ring shows: the last thing that reached this key was the keyboard, not a press.
     private(set) var focusIsVisible = false { didSet { needsDisplay = true } }
-    /// `:focus-within`: the keyboard is on this key. The window names its new first responder only after these calls
+    /// The keyboard is on this key. The window names its new first responder only after these calls
     /// return, so this is what the remove badge goes by when the focus moves.
     private(set) var holdsKeyboard = false
     /// Told that the keyboard came or went.
@@ -95,7 +95,7 @@ final class ShortcutSlotView: TextControl {
             NSColor(theme.accent.solid).setStroke()
             shape.stroke()
         } else if isEmpty {
-            // `button.shortcut-slot-key:hover` outweighs `.shortcut-slot-key.empty`'s clear background.
+            // An empty key is clear, but under the pointer it takes the hover fill.
             if isHovering {
                 NSColor(palette.textPrimary.withAlpha(palette.textPrimary.alpha * SettingsMetrics.slotHoverPercent))
                     .setFill()
@@ -152,8 +152,8 @@ final class ShortcutSlotView: TextControl {
         return record(event)
     }
 
-    /// `:focus-visible` follows a key only without ⌘, ⌃ or ⌥: a click and then ⌘D draws no ring (265), a plain N before
-    /// it does (a09).
+    /// The focus ring follows a key only without ⌘, ⌃ or ⌥: a click and then ⌘D draws no ring, a plain N before it
+    /// does.
     private func keyReached(_ event: NSEvent) {
         if event.modifierFlags.intersection([.command, .control, .option]).isEmpty { focusIsVisible = true }
     }
@@ -403,7 +403,7 @@ final class ShortcutRowView: ThemedView {
                 x += button.smallWidth + SettingsMetrics.noteButtonGap
             }
             let textRight = width - (actionsWidth > 0 ? actionsWidth + SettingsMetrics.noteGap : 0)
-            // Centred on the buttons as flex centres it, unrounded (15.4 on 22 is 3.3 down).
+            // Centred on the buttons, unrounded (15.4 on 22 is 3.3 down).
             noteText.frame = NSRect(
                 x: textRight - textWidth, y: height + (rowHeight - textHeight) / 2, width: textWidth,
                 height: textHeight)
@@ -515,7 +515,7 @@ final class ShortcutGroupView: ThemedView, SettingsBlock {
             y += height + SettingsMetrics.groupNoteMargin
         }
         for (index, row) in rows.enumerated() {
-            // `.shortcut-row:first-child` has no line; after the group's note the first row isn't the first child.
+            // A group's first row has no line above it, unless the group's note comes before it.
             row.drawsTopLine = index > 0 || groupNote != nil
             let height = row.arrange(width: inner)
             row.frame = NSRect(x: SettingsMetrics.cardPadding, y: y, width: inner, height: height)

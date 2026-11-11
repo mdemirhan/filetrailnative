@@ -30,7 +30,7 @@ public struct StopQuestion: Equatable, Sendable {
 }
 
 public enum QuitWhileBusy {
-    /// KEEP_WORKING_BUTTON_INDEX and STOP_BUTTON_INDEX.
+    /// Where Keep Working and Quit (or Close) stand among the question's buttons.
     public static let keepWorkingButtonIndex = 0
     public static let stopButtonIndex = 1
 

@@ -1,8 +1,8 @@
 import AppKit
 
 extension ThemedText {
-    /// The height CSS gives the text at this width with `line-height: normal`: each line takes the font's rounded
-    /// ascent and descent (15 at 13 pt, 14 at 12, 13 at 11), where AppKit's line is taller by a fraction.
+    /// The height of the text at this width, each line taking the font's rounded ascent and descent (15 at 13 pt, 14
+    /// at 12, 13 at 11), where AppKit's line is taller by a fraction.
     func normalLineBoxHeight(forWidth width: CGFloat) -> CGFloat {
         let raw = height(forWidth: width)
         guard raw > 0, attributedStringValue.length > 0,
@@ -14,6 +14,6 @@ extension ThemedText {
         return max(1, (raw / natural).rounded()) * ThemeFonts.normalLineHeight(font)
     }
 
-    /// The width of the text on one line, not rounded up, as a CSS box as wide as its text.
+    /// The width of the text on one line, not rounded up.
     var exactWidth: CGFloat { attributedStringValue.size().width }
 }

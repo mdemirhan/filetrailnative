@@ -17,7 +17,7 @@ public final class PageWindow: NSWindow {
     }
 }
 
-/// What a page window is: its title and sizes.
+/// What one of the app's own windows (Settings, Help, About, Acknowledgements) is: its title and sizes.
 public struct PageWindowSpec: Equatable, Sendable {
     public var title: String
     /// The content size, or the window's size for a window with no frame of its own to count.
@@ -68,7 +68,7 @@ public class PageWindowController: NSWindowController, NSWindowDelegate {
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
         window.isReleasedWhenClosed = false
-        // Not full-screenable, as `fullscreenable: false`.
+        // These windows never go full screen.
         window.collectionBehavior.insert(.fullScreenNone)
         if let minSize = spec.minSize { window.contentMinSize = minSize }
         if !spec.minimizable { window.standardWindowButton(.miniaturizeButton)?.isEnabled = false }
@@ -126,8 +126,8 @@ public class PageWindowController: NSWindowController, NSWindowDelegate {
 }
 
 extension ThemeFonts {
-    /// The height of a line of this font with `line-height: normal`: the system font's ascent (0.952 em) and descent
-    /// (0.24 em), each rounded.
+    /// The natural height of a line of this font: the system font's ascent (0.952 em) and descent (0.24 em), each
+    /// rounded.
     public static func normalLineHeight(_ font: NSFont) -> CGFloat {
         (font.pointSize * 0.952).rounded() + (font.pointSize * 0.24).rounded()
     }

@@ -123,8 +123,8 @@ final class GoToRowView: NSView, TextStyleSource, ThemeApplying {
         pathLabel.frame = NSRect(
             x: pathX - inset, y: ((bounds.height - pathHeight) / 2).rounded(), width: pathWidth + 2 * inset,
             height: pathHeight)
-        // `direction: rtl; text-align: left`: a path that fits starts by the name; one cut short ends at the margin,
-        // whatever whole characters are left.
+        // A path that fits starts by the name; one too long is cut at its start and aligned right, so it ends at the
+        // margin whatever whole characters are left.
         pathLabel.alignment = pathLabel.attributedStringValue.size().width > pathWidth ? .right : .left
     }
 

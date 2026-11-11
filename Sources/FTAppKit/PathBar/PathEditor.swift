@@ -94,7 +94,7 @@ final class PathSuggestionRowView: NSView, TextStyleSource {
             ))
     }
 
-    // A row under a pointer that has not moved is not hovered, as in a browser (mouseenter follows a move).
+    // A row under a pointer that has not moved is not hovered: only a move of the pointer marks a row.
     override func mouseMoved(with event: NSEvent) {
         guard !isHovered else { return }
         isHovered = true
@@ -190,7 +190,7 @@ final class PathSuggestionsView: NSView {
         layer?.borderWidth = 1
         layer?.cornerRadius = DesignTokens.radii.menu
         layer?.masksToBounds = false
-        // `--shadow-lg`. This view is flipped: a shadow's positive y is down, as in CSS.
+        // The theme's large shadow (`shadowLg`). This view is flipped: a shadow's positive y is down.
         if let shadow = palette.shadowLg.first {
             layer?.shadowColor = NSColor(shadow.color.withAlpha(1)).cgColor
             layer?.shadowOpacity = Float(shadow.color.alpha)
@@ -474,7 +474,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
         let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
         NSColor(theme.palette.fieldBg).setFill()
         shape.fill()
-        // `--field-edge`, focused or not: an inset hairline.
+        // The field's edge (the theme's `fieldEdge`), focused or not: an inset hairline.
         for layer in theme.palette.fieldEdge where layer.blur == 0 {
             NSColor(layer.color).setStroke()
             let inset = layer.spread / 2
@@ -486,7 +486,7 @@ final class PathEditorView: NSView, NSTextFieldDelegate, TextStyleSource {
         updateFocusRing(theme)
     }
 
-    /// `--focus-ring`: 3 pt outside the field, in a layer since it reaches past the view.
+    /// The focus ring: 3 pt outside the field, in a layer since it reaches past the view.
     private func updateFocusRing(_ theme: Theme) {
         let focused = field.currentEditor() != nil && window?.firstResponder === field.currentEditor()
         CATransaction.begin()

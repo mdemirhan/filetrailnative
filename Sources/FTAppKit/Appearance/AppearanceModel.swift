@@ -52,7 +52,8 @@ public struct SelectionColors: Equatable, Sendable {
 
 extension Theme {
     /// A selection is the accent with white text in the focused pane of the active window. In an unfocused pane, and
-    /// everywhere while the window is in the background, it is `--bg-active-inactive` with the ordinary text.
+    /// everywhere while the window is in the background, it is the theme's grey (`bgActiveInactive`) with the ordinary
+    /// text.
     public func selection(paneFocused: Bool, windowActive: Bool) -> SelectionColors {
         if paneFocused && windowActive {
             return SelectionColors(
@@ -192,7 +193,7 @@ public final class AppearanceModel {
 
     // MARK: The look painted
 
-    /// `resolveEffectiveTheme`.
+    /// The appearance the theme preference gives: Light or Dark as chosen, or for Auto the system's.
     static func effective(_ preference: ThemePreference, systemDark: Bool) -> ThemeAppearance {
         AppPreferenceLimits.resolveEffectiveTheme(preference, systemPrefersDark: systemDark) == .dark ? .dark : .light
     }

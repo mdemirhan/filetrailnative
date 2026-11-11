@@ -14,7 +14,7 @@ protocol QuickLookPanelControlling: AnyObject {
     func dismiss()
 }
 
-/// `QLPreviewPanel`.
+/// The system's Quick Look panel (`QLPreviewPanel`).
 @MainActor
 final class SystemQuickLookPanel: QuickLookPanelControlling {
     var isVisible: Bool { QLPreviewPanel.sharedPreviewPanelExists() && QLPreviewPanel.shared().isVisible }

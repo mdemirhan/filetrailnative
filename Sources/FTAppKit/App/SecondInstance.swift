@@ -2,7 +2,7 @@ import AppKit
 import Foundation
 
 /// A second copy started by hand tells the one running that it was started, and quits. The running one brings its front
-/// window forward, restoring it, or opens one if it has none (`app.on("second-instance")`).
+/// window forward, restoring it, or opens one if it has none.
 @MainActor
 enum SecondInstance {
     private static func name(_ bundleID: String) -> Notification.Name {

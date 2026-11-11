@@ -38,8 +38,8 @@ final class ClipboardMarkGlyph: NSView {
 
     static var size: CGFloat { CGFloat(ClipboardLayout.Mark.iconSize) }
 
-    /// The glyph's color on a row: the text color of a selected row in a focused pane of the window in front
-    /// (`.active:not(.inactive)`), the accent otherwise.
+    /// The glyph's color on a row: the text color of a selected row in a focused pane of the window in front, the
+    /// accent otherwise.
     static func color(theme: Theme, onSelection: Bool) -> NSColor {
         NSColor(onSelection ? theme.accent.onSelection : theme.accent.solidButton)
     }
@@ -76,7 +76,8 @@ enum ClipboardFlash {
     }
 }
 
-/// `color-mix(in srgb, a p%, b)`: premultiplied, as CSS mixes.
+/// `fraction` of `a` mixed with the rest of `b` in sRGB, each channel weighted by its color's alpha (premultiplied),
+/// so a clear color adds no tint.
 func colorMix(_ a: RGBA, _ fraction: Double, _ b: RGBA) -> RGBA {
     let alpha = a.alpha * fraction + b.alpha * (1 - fraction)
     guard alpha > 0 else { return .clear }

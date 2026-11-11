@@ -6,7 +6,7 @@ import Foundation
 /// What a window does after a write: which folder it reads again, what it selects, where the tree selection goes and
 /// which branches it reads again.
 enum AfterWrite {
-    /// `isUndoOrRedo`.
+    /// Whether the write is an Undo or a Redo.
     static func isUndoOrRedo(_ action: WriteOperationAction) -> Bool {
         action == .undo || action == .redo
     }
@@ -96,7 +96,8 @@ enum AfterWrite {
         return uniqued(parents + destinationRoots).sorted(by: shorterFirst)
     }
 
-    /// `replacePathPrefix`.
+    /// `path` with `sourcePrefix` replaced by `destinationPrefix` when it is that folder or inside it (compared byte
+    /// for byte); any other path as it is.
     static func replacePathPrefix(_ path: String, _ sourcePrefix: String, _ destinationPrefix: String) -> String {
         if path.utf16.elementsEqual(sourcePrefix.utf16) { return destinationPrefix }
         guard path.utf16.starts(with: (sourcePrefix + "/").utf16) else { return path }

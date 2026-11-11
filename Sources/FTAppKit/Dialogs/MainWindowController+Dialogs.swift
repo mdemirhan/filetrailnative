@@ -18,7 +18,7 @@ extension MainWindowController {
     static var visitStore: @MainActor () -> AppStateStore? = { (NSApp.delegate as? AppDelegate)?.store }
     /// The timers of the boxes' completion requests; a test moves them by hand.
     static var dialogTimers: any TimerScheduling = TaskTimerScheduler()
-    /// The system's folder picker (`system:pickDirectory`), from a path; nil when it was cancelled.
+    /// The system's folder picker, from a path; nil when it was cancelled.
     static var pickDirectory: @MainActor (_ defaultPath: String?, _ window: NSWindow?) async -> String? = {
         path, window in
         let choice = await SystemPickers.pickDirectory(defaultPath: path, window: window)

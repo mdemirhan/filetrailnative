@@ -285,7 +285,7 @@ final class BatchRenameRowBackground: NSTableRowView {
             NSColor(theme.palette.danger.withAlpha(layout.dangerRowTint)).setFill()
             bounds.fill()
         } else if index % 2 == 1 {
-            // `:nth-child(even)`: the second, fourth… row.
+            // Every other row is striped: the second, the fourth and so on.
             NSColor(theme.palette.neutralInk.withAlpha(layout.stripeInk)).setFill()
             bounds.fill()
         }

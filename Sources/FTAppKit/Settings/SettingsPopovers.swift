@@ -10,7 +10,7 @@ enum SettingsAppIcon {
 
 /// The panels of Settings: the favorite icon grid, in a system popover, one at a time. It takes Escape before the window
 /// does, closes on a press elsewhere and when the window goes to the back, and gives the keyboard back to the control
-/// that opened it (203, 209).
+/// that opened it.
 @MainActor
 final class SettingsPopovers {
     private(set) var view: NSView?
@@ -35,7 +35,7 @@ final class SettingsPopovers {
         owner.needsDisplay = true
     }
 
-    /// The control moved (`resize` and `scroll` listeners).
+    /// The control moved: the window was resized or the page scrolled.
     func update() {
         if let owner { popover?.reposition(for: owner) }
     }
@@ -120,7 +120,7 @@ final class FavoriteIconButton: SettingsControlView {
     }
 
     /// The press goes down at `location`, in the window. It may scroll the page, so the button remembers how far it went
-    /// under the pointer: the release that follows at the same place is still on the button (260).
+    /// under the pointer: the release that follows at the same place is still on the button.
     func beginPress(at location: NSPoint) {
         let before = convert(location, from: nil)
         focusForPress()

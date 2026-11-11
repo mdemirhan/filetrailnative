@@ -998,8 +998,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         let batch = metadataQueue
         metadataQueue = []
         guard !batch.isEmpty else { return }
-        // Search results are spread over many folders, and the Trash over the disks: one batch per folder
-        // (`directory:getMetadataBatch`), each shown as it comes, so a slow folder keeps only its own rows waiting.
+        // Search results are spread over many folders, and the Trash over the disks: one batch per folder, each shown
+        // as it comes, so a slow folder keeps only its own rows waiting.
         var byFolder: [String: [String]] = [:]
         var order: [String] = []
         for path in batch {

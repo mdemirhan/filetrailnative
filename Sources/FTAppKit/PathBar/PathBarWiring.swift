@@ -40,7 +40,7 @@ extension MainWindowController {
         bar.editor.homePath = FileManager.default.homeDirectoryForCurrentUser.path
     }
 
-    /// `selectedEntry` while results show: the selection's lead, or else the first selected.
+    /// The selected search result while results show: the selection's lead, or else the first selected.
     private var selectedSearchResult: DirectoryEntry? {
         guard searchRootPath != nil else { return nil }
         let selected = content.selectedEntries

@@ -379,8 +379,9 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
         superview?.needsLayout = true
     }
 
-    /// The labels' text in their colors. A translucent color (the secondary text's) is drawn flattened onto the
-    /// panel, as AppKit draws a translucent text color darker than CSS does; the field's own color stays the one meant.
+    /// The labels' text in their colors. A translucent color (the secondary text's) is drawn flattened onto the panel,
+    /// since AppKit applies a label's text alpha twice and draws it too dark; the field's own color stays the one
+    /// meant.
     private func styleLabels() {
         let palette = theme.palette
         let labels: [(NSTextField, RGBA)] = [
@@ -456,7 +457,9 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
         var y = CGFloat(layout.paddingTop)
         if let titleLabel {
             y += CGFloat(layout.titleTop)
-            // A label's cell draws its text 2 in, so its frame starts 2 early; the line takes CSS's 15, the frame its own.
+            // A label's cell draws its text 2 in, so its frame starts 2 early; the line takes the font's rounded 15,
+            // the
+            // frame its own.
             let inset = GoToRowView.cellInset
             titleLabel.frame = NSRect(
                 x: CGFloat(layout.titleHorizontal) - inset, y: y,

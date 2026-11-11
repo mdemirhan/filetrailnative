@@ -38,7 +38,7 @@ struct GridSelectionColors: Equatable {
     }
 }
 
-/// Where a view of the folder places its items, from its layout tokens (the views never measure the page for this).
+/// Where a view of the folder places its items, from its layout's numbers alone (no view is measured for this).
 @MainActor
 protocol GridPlacement: AnyObject {
     var placedCount: Int { get }
@@ -106,11 +106,11 @@ final class ItemGridLayout: NSCollectionViewLayout {
 final class ItemGridScrollView: NSScrollView {
     /// The vertical wheel scrolls sideways.
     var wheelScrollsSideways = false
-    /// How far one notch of a wheel without precise deltas moves: 40 px per line.
+    /// How far one notch of a wheel without precise deltas moves: 40 points per line.
     static let wheelLineStep = 40.0
 
     /// The collection view gives its scroll view the scrollers of its layout's direction, which is vertical for a custom
-    /// layout: without this the Compact List would lose the one scroller it has (106), and its thumb with it.
+    /// layout: without this the Compact List would lose the one scroller it has, and its thumb with it.
     override var hasHorizontalScroller: Bool {
         get { super.hasHorizontalScroller }
         set { super.hasHorizontalScroller = newValue || wheelScrollsSideways }

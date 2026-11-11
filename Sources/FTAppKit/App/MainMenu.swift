@@ -30,7 +30,7 @@ public final class MainMenu {
     }
 
     /// The window actions of the menu: About, Settings, Help and the windows the Go menu and New Window open with
-    /// none open. The page windows and the window controller plug in here.
+    /// none open. The Settings, Help and About windows and the window controller plug in here.
     func connect(
         openAbout: (() -> Void)? = nil, openSettings: (() -> Void)? = nil, openHelp: ((HelpTopicID?) -> Void)? = nil,
         openWindowFor: @escaping (RendererCommand) -> Void, openNewWindowFromFront: @escaping () -> Void

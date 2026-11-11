@@ -127,8 +127,8 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
             workArea: { ScreenGeometry.workArea(for: $0) })
         host.windowsChanged = { [unowned self] in onWindowsChanged() }
         controller = ExplorerWindowController(host: host, quit: quit)
-        // Copy or Cut in one window is told to the others (`filetrail:clipboardChanged`): their marks
-        // and buttons follow; a window opened later finds it there.
+        // Copy or Cut in one window is told to the others: their marks and buttons follow; a window opened later finds
+        // it there.
         clipboard.sendToOtherWindows = { [unowned self] senderID, _ in
             for tab in allTabs where tab.windowID != senderID { tab.clipboardChanged() }
         }
@@ -239,7 +239,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         tab(windowID: windowID)
     }
 
-    /// The explorer windows open, front tab groups not yet closed.
+    /// The explorer windows still open: the tab groups not yet closed, oldest first.
     var liveGroups: [ExplorerTabGroup] { groups.filter { !$0.isDestroyed } }
 
     /// Every open tab, window by window.
@@ -260,7 +260,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     // MARK: Running operations
 
-    /// `successorOf`: the tab in front of the window a running operation goes to when its own window closes; nil for a
+    /// The tab in front of the window a running operation goes to when its own window closes; nil for a
     /// window closed with Stop and Close, or with no other window open. The write coordinator asks it.
     func successor(ofExplorerWindow windowID: Int) -> MainWindowController? {
         controller.successor(of: windowID)?.selected

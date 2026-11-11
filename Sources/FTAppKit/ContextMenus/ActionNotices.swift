@@ -1,8 +1,8 @@
 import AppKit
 import FTFileSystem
 
-/// Where the notices and questions about an action are shown: in the window (`InWindowNoticePresenter`), or as a
-/// plain alert with the exact text (`AlertNoticePresenter`).
+/// Where the notices and questions about an action are shown: in the window (`InWindowNoticePresenter`); a test puts
+/// a stand-in of its own that records them.
 @MainActor
 protocol ActionNoticePresenting: AnyObject {
     /// A notice with one button.

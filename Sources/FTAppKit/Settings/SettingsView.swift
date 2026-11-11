@@ -12,7 +12,7 @@ final class SettingsSidebarItem: TextControl {
             needsDisplay = true
         }
     }
-    /// The ring of `:focus-visible`: when the keyboard brought the focus, not after a click.
+    /// The focus ring shows when the keyboard brought the focus, not after a click.
     private(set) var focusIsVisible = false { didSet { needsDisplay = true } }
 
     private static func font(_ current: Bool) -> NSFont {
@@ -368,8 +368,8 @@ final class SettingsView: ThemedView {
 
     // MARK: Keyboard
 
-    /// Brings what just got the keyboard into view, as the browser scrolls to a focused element. A press doesn't move
-    /// the page, as the browser skips it for a mouse focus.
+    /// Brings what just got the keyboard into view. A press doesn't move the page: what was pressed is in view
+    /// already.
     func reveal(_ view: NSView, for event: NSEvent.EventType?) {
         guard event != .leftMouseDown, event != .rightMouseDown, event != .otherMouseDown,
             view.isDescendant(of: document)
@@ -382,8 +382,9 @@ final class SettingsView: ThemedView {
         scroll.reflectScrolledClipView(clip)
     }
 
-    /// Where the page's top goes for `rect` to show (Blink's CenterIfNeeded for a focused element): what shows whole
-    /// stays, what is cut off comes to the near edge, and what is out of sight comes to the middle.
+    /// Where the page's top goes for `rect` to show: what shows whole stays, what is cut off comes to the near edge,
+    /// and
+    /// what is out of sight comes to the middle.
     static func revealedTop(of rect: NSRect, in visible: NSRect, documentHeight: CGFloat) -> CGFloat {
         let top: CGFloat
         if rect.minY >= visible.minY && rect.maxY <= visible.maxY {

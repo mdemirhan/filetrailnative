@@ -2,14 +2,14 @@
 import AppKit
 import FTFoundation
 
-/// `data-drop-target-state` of a row or the pane.
+/// What a drop on a row, an icon or the pane would do, while a drag is over it.
 enum DropTargetState: String, Equatable, Sendable {
     case valid, invalid
     /// A folder about to spring open: drawn as a valid one, its icon wiggling.
     case springing
 }
 
-/// The drop highlight of a row of the lists (`.details-row[data-drop-target-state]`, `.flow-item[…]`).
+/// The drop highlight of a row of the List or an item of the Compact List.
 @MainActor
 enum DropHighlight {
     /// Draws the highlight of a row in `rect`, rounded by `radius`, over what the row already drew.
@@ -45,8 +45,7 @@ enum DropHighlight {
         }
     }
 
-    /// Draws the highlight of an icon of the Icons view in `rect` (`.icon-item[data-drop-target-state]`): the fill
-    /// and an inset edge, with no bar or halo.
+    /// Draws the highlight of an icon of the Icons view in `rect`: the fill and an inset edge, with no bar or halo.
     static func drawIcon(_ state: DropTargetState, in rect: NSRect, radius: CGFloat, theme: Theme) {
         let palette = theme.palette
         let accent = theme.accent
@@ -65,7 +64,7 @@ enum DropHighlight {
         }
         NSColor(fill).setFill()
         NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius).fill()
-        // `box-shadow: inset 0 0 0 Npx`: an edge inside the item.
+        // An edge `width` wide, inside the item.
         let inset = rect.insetBy(dx: width / 2, dy: width / 2)
         let ring = NSBezierPath(
             roundedRect: inset, xRadius: max(0, radius - width / 2), yRadius: max(0, radius - width / 2))
@@ -104,7 +103,7 @@ enum DropHighlight {
 }
 
 /// The ring the pane draws once a drag has sprung into the folder on screen, or a drag from another app is over it
-/// (`.content-viewport[data-drop-target-state="valid"]::after`): a 2 pt accent edge inside it.
+/// and would be taken: a 2 pt accent edge inside it.
 final class PaneDropRingView: NSView {
     var theme: Theme? {
         didSet { needsDisplay = true }

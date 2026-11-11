@@ -1,9 +1,9 @@
-// Colors and fonts of the stylesheet as AppKit draws them
+// Colors and fonts of the theme as AppKit draws them
 import AppKit
 import FTFoundation
 
 extension NSColor {
-    /// The color in sRGB, as the stylesheet writes it.
+    /// The color in sRGB, as the theme gives it.
     public convenience init(_ color: RGBA) {
         self.init(srgbRed: color.red, green: color.green, blue: color.blue, alpha: color.alpha)
     }
@@ -12,7 +12,7 @@ extension NSColor {
 extension RGBA {
 }
 
-/// The fonts of `--font-sans` and `--font-mono`: the system fonts the stacks name.
+/// The app's two fonts: the system font, and the system's monospaced font.
 public enum ThemeFonts {
     public static func sans(_ size: Double, _ weight: NSFont.Weight = .regular) -> NSFont {
         NSFont.systemFont(ofSize: CGFloat(size), weight: weight)

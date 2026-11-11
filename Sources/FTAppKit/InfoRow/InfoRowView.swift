@@ -274,7 +274,8 @@ final class InfoRowView: NSView {
         var factsWidth = factsTotal
         let overflow = nameWidth + gap + factsWidth - available
         if overflow > 0 {
-            // flex-shrink 1 for the name, 10 for the facts, in proportion to their sizes.
+            // The overflow is taken from the name and the facts in proportion to their widths, the facts' counted ten
+            // times over.
             let weight = nameWidth + 10 * factsWidth
             let nameCut = weight > 0 ? min(nameWidth, overflow * nameWidth / weight) : 0
             nameWidth -= nameCut
