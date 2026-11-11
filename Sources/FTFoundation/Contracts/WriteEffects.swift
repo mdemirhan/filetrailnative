@@ -98,6 +98,47 @@ public enum WriteEffects {
             && (item.status == .completed || action == .batchRename)
     }
 
+    // MARK: What a write moved or removed
+
+    /// Whether a write gave items new paths: a rename, a move (Move To, an Undo or Redo), or a paste of what was cut.
+    public static func movedItems(_ action: WriteOperationAction, cut: Bool) -> Bool {
+        switch action {
+        case .rename, .batchRename, .moveTo, .undo, .redo: true
+        case .paste, .copyTo, .duplicate, .trash, .deleteImmediately, .newFolder: cut
+        }
+    }
+
+    /// Where a write took each item that really moved (`isFollowedMove`).
+    public static func followedMoves(_ action: WriteOperationAction, items: [some WrittenItem])
+        -> [(from: String, to: String)]
+    {
+        items.compactMap { item in
+            guard isFollowedMove(item, action: action), let from = item.sourcePath, let to = item.destinationPath
+            else { return nil }
+            return (from, to)
+        }
+    }
+
+    /// What a write removed: everything a Trash or delete was asked to remove and did, what an Undo or Redo moved to
+    /// the Trash (done, and with nowhere else to be), and what a Replace removed (another item has its path now).
+    public static func removedPaths(
+        _ action: WriteOperationAction, items: [some WrittenItem], replacedPaths: [String]
+    ) -> [String] {
+        func source(_ item: some WrittenItem) -> String? {
+            guard let path = item.sourcePath, !path.isEmpty else { return nil }
+            return path
+        }
+        switch action {
+        case .trash, .deleteImmediately:
+            return items.compactMap { $0.status == .completed ? source($0) : nil }
+        case .undo, .redo:
+            return items.compactMap { $0.status == .completed && $0.destinationPath == nil ? source($0) : nil }
+                + replacedPaths
+        case .paste, .copyTo, .moveTo, .duplicate, .rename, .newFolder, .batchRename:
+            return replacedPaths
+        }
+    }
+
     /// The items of a finished operation that windows other than its own need, out of what can be
     /// 100,000. Those windows forget or measure again the folder sizes the operation changed
     /// (`pathsChangedByWrite`, `ChangeMatcher`) and follow a moved folder in their tabs

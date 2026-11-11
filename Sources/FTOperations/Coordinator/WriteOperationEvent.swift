@@ -12,7 +12,7 @@ extension CopyPasteOperationStatus {
 }
 
 /// An item of a finished operation, as a window hears of it.
-public struct WriteOperationItem: Equatable, Sendable {
+public struct WriteOperationItem: WrittenItem, Equatable, Sendable {
     public var sourcePath: String?
     public var destinationPath: String?
     public var status: CopyPasteItemResult.Status

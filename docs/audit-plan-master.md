@@ -1276,7 +1276,7 @@ tests are the check; add a test only where an item says so.
   `servicesOverride`. Remove the fallbacks after confirming no test builds a `MainWindowController` with neither.
 - **Keep** `ExplorerWindows.reconcile()`, `adopt`/`absorb`, the `ExplorerWindowLike` generic with `FakeWindow`.
 
-### [ ] 6.2. Write results stay typed
+### [x] 6.2. Write results stay typed
 
 - `WriteOperationOutcome.action` and `WriteOperationProgress.status` are strings (`"queued"`, `"move_to"`)
   rebuilt from typed values via `.rawValue` (`Sources/FTAppKit/Windows/ExplorerTabs.swift` 139–164, 331–357;
@@ -2291,3 +2291,12 @@ anything that differed from the plan, and anything found on the way that is not 
   the banner and Help; the three Help sentences and the banner build their numbers from the constants (the count
   grouped as `groupedCount` does, pinned to en_US). Also the Merge All Windows sentence's "past 25", which the item
   didn't list. `help-content.json` is unchanged and passes.
+- 2026-11-11. 6.2, done in a worktree of its own and brought over. The test that ran the three "what a write moved
+  or removed" implementations on the same inputs came first (over 10,000 writes, with more than 1,000 moves and 1,000
+  removals; all three agreed); the clipboard's is kept, as `WriteEffects.movedItems`/`followedMoves`/`removedPaths`,
+  and the test went with the copies it compared. Differs from the plan: `CopyPasteItemResult.Status` is now a typealias
+  of FTFoundation's `WriteItemEndStatus` (same cases and raw values, so encoding is unchanged), which lets
+  `WriteOperationItem` be a `WrittenItem` itself; `write-effects.json`'s action "delete" is read as
+  `.deleteImmediately` in the test (only `.batchRename` matters there). Found, not fixed: `FTOperations.CopyPasteMode`
+  and `ClipboardMode` are still two enums with the same cases; `WriteOperationOutcome`/`Progress` might give way to
+  `WriteOperationEvent`.

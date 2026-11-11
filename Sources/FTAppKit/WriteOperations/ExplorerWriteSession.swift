@@ -370,10 +370,6 @@ final class ExplorerWriteSession: WriteOperationWindow {
     /// inside it), in place in its history.
     private func followForeignMoveOnScreen(_ event: WriteOperationEvent) {
         guard let result = event.result, AfterWrite.movedItems(result) else { return }
-        let moves = ExplorerTabs.collectFollowedMoves(
-            WriteOperationOutcome(
-                action: result.action, mode: result.mode,
-                items: result.items.map(\.effect)))
-        host?.followMovesOnScreen(moves)
+        host?.followMovesOnScreen(ExplorerTabs.collectFollowedMoves(result.action, items: result.items))
     }
 }

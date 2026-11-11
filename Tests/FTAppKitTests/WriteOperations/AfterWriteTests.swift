@@ -146,8 +146,7 @@ private func item(
     }
 
     private func moves(_ result: WriteOperationResult) -> [PathMove] {
-        ExplorerTabs.collectFollowedMoves(
-            WriteOperationOutcome(action: result.action, mode: nil, items: result.items.map(\.effect)))
+        ExplorerTabs.collectFollowedMoves(result.action, items: result.items)
     }
 
     // Every path the items name, the folders above them, and a few inside them.

@@ -168,15 +168,19 @@ import Testing
             ])
     }
 
+    private func moves(of result: WriteOperationOutcome) -> [PathMove] {
+        ExplorerTabs.collectFollowedMoves(result.action, items: result.items)
+    }
+
     @Test func followsWhatWasRenamedAndAnItemOfSeveralPutBackUnderAnotherName() {
         #expect(
-            ExplorerTabs.collectFollowedMoves(result(.batchRename)) == [
+            moves(of: result(.batchRename)) == [
                 PathMove(from: "/a", to: "/b"), PathMove(from: "/c", to: "/c 2"),
             ])
     }
 
     @Test func followsOnlyWhatAMoveFinishedAFailedItemStayedWhereItWas() {
-        #expect(ExplorerTabs.collectFollowedMoves(result(.moveTo)) == [PathMove(from: "/a", to: "/b")])
+        #expect(moves(of: result(.moveTo)) == [PathMove(from: "/a", to: "/b")])
     }
 
     // The filter of the write progress the tabs follow: only a finished

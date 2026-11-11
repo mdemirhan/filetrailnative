@@ -315,32 +315,18 @@ public enum ExplorerTabs {
         return deepest.to + path[rest...]
     }
 
-    /// `isRenameOrMove`.
-    public static func isRenameOrMove(_ action: WriteOperationAction) -> Bool {
-        [.rename, .batchRename, .moveTo, .undo, .redo].contains(action)
-    }
-
-    /// `movedItems`: a write that gave items new paths, a rename or move, or a paste that moved what was cut.
-    public static func movedItems(_ result: WriteOperationOutcome) -> Bool {
-        isRenameOrMove(result.action) || result.mode == .cut
-    }
-
-    /// `collectFollowedMoves`: where the operation took each item that really moved (`isFollowedMove`).
-    public static func collectFollowedMoves(_ result: WriteOperationOutcome) -> [PathMove] {
-        result.items.compactMap { item in
-            guard WriteEffects.isFollowedMove(item, action: result.action), let from = item.sourcePath,
-                let to = item.destinationPath
-            else { return nil }
-            return PathMove(from: from, to: to)
-        }
+    /// `collectFollowedMoves`: where the operation took each item that really moved (`WriteEffects.followedMoves`).
+    public static func collectFollowedMoves(_ action: WriteOperationAction, items: [some WrittenItem]) -> [PathMove] {
+        WriteEffects.followedMoves(action, items: items).map { PathMove(from: $0.from, to: $0.to) }
     }
 
     /// The moves a window's tabs follow on hearing `event`: none until the operation has ended, and only from one that
     /// moved items.
     public static func followedMoves(_ event: WriteOperationProgress) -> [PathMove] {
-        guard event.status.isTerminal, let result = event.result, movedItems(result)
+        guard event.status.isTerminal, let result = event.result,
+            WriteEffects.movedItems(result.action, cut: result.mode == .cut)
         else { return [] }
-        return collectFollowedMoves(result)
+        return collectFollowedMoves(result.action, items: result.items)
     }
 
     /// `followMovedItems`: a background tab on a folder that was renamed or moved follows it, as a Finder window does.

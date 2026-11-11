@@ -13,7 +13,7 @@ enum AfterWrite {
 
     /// `movedItems`: a write that gave items new paths, a rename or move, or a paste that moved what was cut.
     static func movedItems(_ result: WriteOperationResult) -> Bool {
-        ExplorerTabs.isRenameOrMove(result.action) || result.mode == .cut
+        WriteEffects.movedItems(result.action, cut: result.mode == .cut)
     }
 
     /// The folder the items a write made are selected in: a rename's,
@@ -32,11 +32,13 @@ enum AfterWrite {
     /// the folder holding one trashed or deleted.
     static func refreshPath(_ result: WriteOperationResult, currentPath: String) -> String {
         if result.action == .trash || result.action == .deleteImmediately {
-            guard let impacted = deepestMatchingSourcePath(result.items, currentPath) else { return currentPath }
+            guard let impacted = deepestMatchingPath(sourcePaths(result.items), currentPath) else {
+                return currentPath
+            }
             return ExplorerTabs.parentDirectoryPath(impacted) ?? currentPath
         }
         // An Undo may have moved the folder on screen to the Trash (a New Folder undone).
-        if isUndoOrRedo(result.action), let removed = deepestMatchingSourcePath(onlyRemoved(result), currentPath) {
+        if isUndoOrRedo(result.action), let removed = deepestMatchingPath(trashedByUndo(result), currentPath) {
             return ExplorerTabs.parentDirectoryPath(removed) ?? currentPath
         }
         // A folder renamed or moved (by Move To, a drag, or Cut and Paste) is followed.
@@ -51,9 +53,9 @@ enum AfterWrite {
     static func treeSelectionPath(_ result: WriteOperationResult, selectedTreePath: String?) -> String? {
         guard let selected = selectedTreePath, !selected.isEmpty else { return nil }
         if result.action == .trash || result.action == .deleteImmediately {
-            return deepestMatchingSourcePath(result.items, selected).flatMap(ExplorerTabs.parentDirectoryPath)
+            return deepestMatchingPath(sourcePaths(result.items), selected).flatMap(ExplorerTabs.parentDirectoryPath)
         }
-        if isUndoOrRedo(result.action), let removed = deepestMatchingSourcePath(onlyRemoved(result), selected) {
+        if isUndoOrRedo(result.action), let removed = deepestMatchingPath(trashedByUndo(result), selected) {
             return ExplorerTabs.parentDirectoryPath(removed)
         }
         if movedItems(result) {
@@ -66,13 +68,11 @@ enum AfterWrite {
     /// `pathsLeftByWrite`: what a write took out of the folder it was in: what it moved to the Trash or deleted, and
     /// what it moved into another folder (not what it renamed in place).
     static func pathsLeftByWrite(_ result: WriteOperationResult) -> [String] {
-        var left = removedByWrite(result)
+        var left = WriteEffects.removedPaths(
+            result.action, items: result.items, replacedPaths: result.replacedPaths ?? [])
         var inLeft = Set(left.map(NameKeys.Exact.init))
         if movedItems(result) {
-            let outcome = WriteOperationOutcome(
-                action: result.action, mode: result.mode,
-                items: result.items.map(\.effect))
-            for move in ExplorerTabs.collectFollowedMoves(outcome)
+            for move in WriteEffects.followedMoves(result.action, items: result.items)
             where ExplorerTabs.parentDirectoryPath(move.from) != ExplorerTabs.parentDirectoryPath(move.to)
                 && inLeft.insert(NameKeys.Exact(move.from)).inserted
             {
@@ -82,22 +82,9 @@ enum AfterWrite {
         return left
     }
 
-    /// `removedByWrite`: everything a Trash or delete was asked to remove, what an Undo moved to the Trash, and what
-    /// a Replace removed (another item has its path now).
-    static func removedByWrite(_ result: WriteOperationResult) -> [String] {
-        let replaced = result.replacedPaths ?? []
-        if result.action == .trash || result.action == .deleteImmediately {
-            return result.items.compactMap { $0.status == .completed ? nonEmpty($0.sourcePath) : nil }
-        }
-        if isUndoOrRedo(result.action) {
-            return onlyRemoved(result).compactMap { nonEmpty($0.sourcePath) } + replaced
-        }
-        return replaced
-    }
-
-    /// `onlyRemoved`: an Undo's items that went to the Trash: done, and with nowhere else to be.
-    private static func onlyRemoved(_ result: WriteOperationResult) -> [WriteOperationItem] {
-        result.items.filter { $0.status == .completed && $0.destinationPath == nil }
+    /// What an Undo or Redo moved to the Trash, a Replace's aside.
+    private static func trashedByUndo(_ result: WriteOperationResult) -> [String] {
+        WriteEffects.removedPaths(result.action, items: result.items, replacedPaths: [])
     }
 
     /// The parents of what a write took and made, and what it made.
@@ -133,10 +120,12 @@ enum AfterWrite {
         path.utf16.elementsEqual(folder.utf16) || path.utf16.starts(with: (folder + "/").utf16)
     }
 
-    private static func deepestMatchingSourcePath(_ items: [WriteOperationItem], _ currentPath: String) -> String? {
+    private static func sourcePaths(_ items: [WriteOperationItem]) -> [String] {
         items.compactMap { nonEmpty($0.sourcePath) }
-            .filter { isAtOrInside(currentPath, $0) }
-            .max { $0.utf16.count < $1.utf16.count }
+    }
+
+    private static func deepestMatchingPath(_ paths: [String], _ currentPath: String) -> String? {
+        paths.filter { isAtOrInside(currentPath, $0) }.max { $0.utf16.count < $1.utf16.count }
     }
 
     private static func deepestMatchingSourceItem(_ items: [WriteOperationItem], _ currentPath: String)

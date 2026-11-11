@@ -65,47 +65,6 @@ public struct ClipboardWrite: Sendable {
         self.items = items
         self.replacedPaths = replacedPaths
     }
-
-    var isUndoOrRedo: Bool { action == .undo || action == .redo }
-
-    /// `isRenameOrMove`.
-    var isRenameOrMove: Bool {
-        action == .rename || action == .batchRename || action == .moveTo || isUndoOrRedo
-    }
-
-    /// `movedItems`: a write that gave items new paths: a rename or move, or a paste that moved what was cut.
-    public var movedItems: Bool { isRenameOrMove || mode == .cut }
-
-    /// `collectFollowedMoves`.
-    var followedMoves: [(from: String, to: String)] {
-        items.compactMap { item in
-            guard WriteEffects.isFollowedMove(item, action: action), let from = item.sourcePath,
-                let to = item.destinationPath
-            else { return nil }
-            return (from, to)
-        }
-    }
-
-    /// `removedByWrite`: everything a Trash or delete was asked to remove, what an Undo moved to the Trash, and what
-    /// a Replace removed (another item has its path now).
-    public var removedPaths: [String] {
-        if action == .trash || action == .deleteImmediately {
-            return items.compactMap { item in
-                guard item.status == .completed, let path = item.sourcePath, !path.isEmpty else { return nil }
-                return path
-            }
-        }
-        if isUndoOrRedo {
-            let removed = items.compactMap { item -> String? in
-                guard item.status == .completed, item.destinationPath == nil, let path = item.sourcePath,
-                    !path.isEmpty
-                else { return nil }
-                return path
-            }
-            return removed + replacedPaths
-        }
-        return replacedPaths
-    }
 }
 
 /// The clipboard's own rules: what Copy and Cut put on it, and how it follows what happens to its items.
@@ -210,9 +169,12 @@ public enum ClipboardRules {
     public static func followThroughWrite(_ clipboard: CopyPasteClipboard, _ write: ClipboardWrite)
         -> CopyPasteClipboard
     {
-        let moves = write.movedItems ? write.followedMoves : []
+        let moves =
+            WriteEffects.movedItems(write.action, cut: write.mode == .cut)
+            ? WriteEffects.followedMoves(write.action, items: write.items) : []
         let left = moves.isEmpty ? LeftInPlace.nothing : leftInPlace(by: write)
-        return follow(clipboard, moves: moves, removed: write.removedPaths, left: left)
+        let removed = WriteEffects.removedPaths(write.action, items: write.items, replacedPaths: write.replacedPaths)
+        return follow(clipboard, moves: moves, removed: removed, left: left)
     }
 
     /// Items another app moved away or put in the Trash are taken off, and a cut
