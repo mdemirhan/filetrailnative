@@ -283,7 +283,7 @@ final class SheetListContent: NSView, ThemeApplying {
 /// The footer's note: the summary, or the warning with its triangle.
 @MainActor
 final class FooterNoteView: NSView {
-    let glyph = SheetGlyphView(.warning)
+    let glyph = WarningSymbolView()
     let label: ThemedText
     private(set) var text = ""
     private(set) var isWarning = false

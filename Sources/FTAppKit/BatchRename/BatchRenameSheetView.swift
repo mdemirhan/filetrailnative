@@ -56,7 +56,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     let namesOnlyNote: ThemedText
     let onConflictPopUp = BatchRenamePopUp(label: "If a name is taken")
     let advice = NSView()
-    let adviceGlyph = BatchRenameGlyphView(.warning, identifier: "batchRename.warning")
+    let adviceGlyph = WarningSymbolView(identifier: "batchRename.warning")
     let adviceText: ThemedText
     // Preview and footer
     let preview = BatchRenamePreviewView()

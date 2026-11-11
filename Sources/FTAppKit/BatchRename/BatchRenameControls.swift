@@ -536,7 +536,7 @@ final class BatchRenameTokenButton: TextControl {
 
 // MARK: Glyphs
 
-/// The sheet's drawn glyphs: a folder, a file, the warning sign and the arrow between the names.
+/// The sheet's drawn glyphs: a folder, a file and the arrow between the names.
 @MainActor
 enum BatchRenameGlyphs {
     /// Strokes SVG path data drawn from a square `viewBox` into `rect`.
@@ -563,7 +563,7 @@ enum BatchRenameGlyphs {
 @MainActor
 final class BatchRenameGlyphView: NSView, ThemeApplying {
     enum Kind {
-        case folder, file, warning, arrow
+        case folder, file, arrow
     }
 
     var kind: Kind { didSet { needsDisplay = true } }
@@ -609,18 +609,6 @@ final class BatchRenameGlyphView: NSView, ThemeApplying {
             let fold = BatchRenameGlyphs.transformed("M10.5 2v3h3", in: bounds, viewBox: viewBox)
             fold.lineWidth = bounds.width / CGFloat(viewBox)
             fold.stroke()
-        case .warning:
-            let layout = BatchRenameSheetLayout.Advice.self
-            let sign = BatchRenameGlyphs.transformed("M8 1.5 15 14H1z", in: bounds, viewBox: layout.glyphViewBox)
-            NSColor(palette.warningGlyphFill).setFill()
-            sign.fill()
-            sign.lineWidth = bounds.width / CGFloat(layout.glyphViewBox)
-            sign.lineJoinStyle = .round
-            NSColor(palette.warningGlyphStroke).setStroke()
-            sign.stroke()
-            BatchRenameGlyphs.stroke(
-                "M8 6v3.6M8 11.4v.1", in: bounds, viewBox: layout.glyphViewBox, width: layout.markStroke,
-                color: palette.warningGlyphMark)
         case .arrow:
             let layout = BatchRenameSheetLayout.Preview.self
             BatchRenameGlyphs.stroke(

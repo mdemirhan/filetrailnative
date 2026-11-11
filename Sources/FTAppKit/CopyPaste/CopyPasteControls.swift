@@ -1,12 +1,12 @@
 import AppKit
 import FTFoundation
 
-/// The 20 pt glyph of a row or the footer's warning triangle, drawn
+/// The 20 pt glyph of a row, a folder or a file, drawn
 /// from SVG paths.
 @MainActor
 final class SheetGlyphView: NSView, ThemeApplying {
     enum Shape {
-        case folder, file, warning
+        case folder, file
     }
 
     var shape: Shape { didSet { needsDisplay = true } }
@@ -65,29 +65,11 @@ final class SheetGlyphView: NSView, ThemeApplying {
             let box = NSSize(width: 16, height: 20)
             draw(path, viewBox: box, fill: palette.bgElevated, stroke: palette.textSecondary)
             draw(fold, viewBox: box, fill: nil, stroke: palette.textSecondary)
-        case .warning:
-            // viewBox 0 0 16 16: M8 1.5 15 14H1z, and the mark M8 6v3.6M8 11.4v.1
-            let path = NSBezierPath()
-            path.move(to: NSPoint(x: 8, y: 1.5))
-            path.line(to: NSPoint(x: 15, y: 14))
-            path.line(to: NSPoint(x: 1, y: 14))
-            path.close()
-            path.lineJoinStyle = .round
-            let mark = NSBezierPath()
-            mark.move(to: NSPoint(x: 8, y: 6))
-            mark.line(to: NSPoint(x: 8, y: 9.6))
-            mark.move(to: NSPoint(x: 8, y: 11.4))
-            mark.line(to: NSPoint(x: 8, y: 11.5))
-            mark.lineCapStyle = .round
-            mark.lineWidth = 1.5
-            let box = NSSize(width: 16, height: 16)
-            draw(path, viewBox: box, fill: palette.warningGlyphFill, stroke: palette.warningGlyphStroke)
-            draw(mark, viewBox: box, fill: nil, stroke: palette.warningGlyphMark, keepsWidth: true)
         }
     }
 
     /// The path scaled from its view box to fit the view, centered, filled then stroked 1.
-    private func draw(_ path: NSBezierPath, viewBox: NSSize, fill: RGBA?, stroke: RGBA, keepsWidth: Bool = false) {
+    private func draw(_ path: NSBezierPath, viewBox: NSSize, fill: RGBA?, stroke: RGBA) {
         let scale = min(bounds.width / viewBox.width, bounds.height / viewBox.height)
         let transform = AffineTransform(
             translationByX: (bounds.width - viewBox.width * scale) / 2,
@@ -95,7 +77,7 @@ final class SheetGlyphView: NSView, ThemeApplying {
         guard let scaled = path.copy() as? NSBezierPath else { return }
         scaled.transform(using: AffineTransform(scale: scale))
         scaled.transform(using: transform)
-        scaled.lineWidth = (keepsWidth ? path.lineWidth : 1) * scale
+        scaled.lineWidth = scale
         if let fill {
             NSColor(fill).setFill()
             scaled.fill()

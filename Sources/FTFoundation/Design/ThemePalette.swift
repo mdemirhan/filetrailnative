@@ -159,14 +159,8 @@ public struct ThemePalette: Equatable, Sendable {
     /// A search option's toggle while it is on.
     public let toolbarToggleIconActive: RGBA
 
-    /// The fill of the warning triangle in the paste review and the Rename sheet.
-    public let warningGlyphFill: RGBA
 
-    /// The warning triangle's exclamation mark.
-    public let warningGlyphMark: RGBA
 
-    /// The warning triangle's edge.
-    public let warningGlyphStroke: RGBA
 
     public static let light = ThemePalette(
         bgActiveInactive: RGBA(r: 220, g: 220, b: 225),
@@ -232,10 +226,7 @@ public struct ThemePalette: Equatable, Sendable {
         textSecondary: RGBA(r: 0, g: 0, b: 0, alpha: 0.5),
         textTertiary: RGBA(r: 0, g: 0, b: 0, alpha: 0.26),
         toolbarBg: RGBA(r: 251, g: 251, b: 253),
-        toolbarToggleIconActive: RGBA(r: 29, g: 29, b: 31),
-        warningGlyphFill: RGBA(r: 255, g: 204, b: 0),
-        warningGlyphMark: RGBA(r: 29, g: 29, b: 31),
-        warningGlyphStroke: RGBA(r: 163, g: 123, b: 0)
+        toolbarToggleIconActive: RGBA(r: 29, g: 29, b: 31)
     )
 
     public static let dark = ThemePalette(
@@ -301,10 +292,7 @@ public struct ThemePalette: Equatable, Sendable {
         textSecondary: RGBA(r: 255, g: 255, b: 255, alpha: 0.55),
         textTertiary: RGBA(r: 255, g: 255, b: 255, alpha: 0.25),
         toolbarBg: RGBA(r: 37, g: 37, b: 40),
-        toolbarToggleIconActive: RGBA(r: 242, g: 242, b: 245),
-        warningGlyphFill: RGBA(r: 255, g: 214, b: 10),
-        warningGlyphMark: RGBA(r: 29, g: 29, b: 31),
-        warningGlyphStroke: RGBA(r: 179, g: 143, b: 0)
+        toolbarToggleIconActive: RGBA(r: 242, g: 242, b: 245)
     )
 
     public static func palette(for appearance: ThemeAppearance) -> ThemePalette {

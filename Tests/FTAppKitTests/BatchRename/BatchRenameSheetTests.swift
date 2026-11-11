@@ -193,7 +193,7 @@ extension ExplorerWindowlessTests {
             fixture.pick(fixture.sheet.applyToPopUp, "Extension")
             #expect(!fixture.sheet.advice.isHidden)
             #expect(fixture.sheet.adviceText.stringValue == "Changing an extension can change the app a file opens in.")
-            #expect(fixture.sheet.adviceGlyph.kind == .warning && !fixture.sheet.adviceGlyph.isHidden)
+            #expect(fixture.sheet.adviceGlyph.image != nil && !fixture.sheet.adviceGlyph.isHidden)
             #expect(fixture.rows == ["a.JPGa.jpg"])
             fixture.close()
         }

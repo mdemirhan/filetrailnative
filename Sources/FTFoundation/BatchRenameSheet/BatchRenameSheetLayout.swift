@@ -75,12 +75,10 @@ public enum BatchRenameSheetLayout {
         public static let columnGap = 16.0
     }
 
-    /// The advice: the warning glyph 16 by 16, 6 before the text.
+    /// The advice: the warning sign 16 by 16, 6 before the text.
     public enum Advice {
         public static let gap = 6.0
         public static let glyphSize = 16.0
-        public static let glyphViewBox = 16.0
-        public static let markStroke = 1.5
     }
 
     /// The pattern field and its tokens: the tokens 6 below the field and 4 apart, each 20 tall with 7 at the sides.
