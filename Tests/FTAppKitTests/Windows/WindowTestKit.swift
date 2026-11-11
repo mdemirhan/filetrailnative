@@ -106,6 +106,9 @@ final class FakeWindow: ExplorerWindowLike {
     var normal = WindowBounds(x: 100, y: 80, width: 900, height: 600)
     var told: [ExplorerWindowMessage] = []
     var focused = 0
+    /// What it says when Merge All Windows asks for its tabs; left out, the tabs it last saved.
+    var answer: WindowTabsAnswer?
+    var savedTabs: () -> [OpenTabPreference] = { [] }
     private let log: (String) -> Void
 
     init(recordID: String, log: @escaping (String) -> Void) {
@@ -156,6 +159,8 @@ final class FakeWindow: ExplorerWindowLike {
     }
 
     func tell(_ message: ExplorerWindowMessage) { told.append(message) }
+
+    var mergeAnswer: WindowTabsAnswer { answer ?? WindowTabsAnswer(tabs: savedTabs(), busy: false) }
 }
 
 /// The controller with stand-in windows, a held store and a quit coordinator.
@@ -177,10 +182,6 @@ final class WindowSetup {
     var windowsChanged = 0
     var exits = 0
     var launches: [String: ExplorerLaunchContext] = [:]
-    /// What each window says when Merge All Windows asks for its tabs; left out, the tabs it last saved.
-    var tabAnswers: [Int: WindowTabsAnswer?] = [:]
-    /// While set, Merge All Windows' requests for tabs wait for it to be let go.
-    private var heldTabs: [CheckedContinuation<Void, Never>]?
     var shutDownHeld = false
     private var windowCount = 0
 
@@ -207,20 +208,12 @@ final class WindowSetup {
             store: store,
             createWindow: { [unowned self] record, launch in
                 let window = FakeWindow(recordID: record.id) { [unowned self] in log.append($0) }
+                window.savedTabs = { store.windowPreferences(record.id).openTabs }
                 windows.append(window)
                 launches[record.id] = launch
                 return window
             },
             workArea: { _ in WindowBounds(x: 0, y: 0, width: 1600, height: 1000) },
-            requestTabs: { [unowned self] windows in
-                if heldTabs != nil {
-                    await withCheckedContinuation { heldTabs?.append($0) }
-                }
-                return windows.map { window in
-                    if let answer = tabAnswers[window.windowID] { return answer }
-                    return WindowTabsAnswer(tabs: store.windowPreferences(window.recordID).openTabs, busy: false)
-                }
-            },
             scheduler: scheduler)
         host.newWindowID = { [unowned self] in
             windowCount += 1
@@ -244,18 +237,8 @@ final class WindowSetup {
         windows.first { $0.recordID == recordID }
     }
 
-    func answerTabs(_ window: FakeWindow, _ answer: WindowTabsAnswer?) {
-        tabAnswers[window.windowID] = .some(answer)
-    }
-
-    /// Holds Merge All Windows' requests for tabs until the returned function is called.
-    func holdTabAnswers() -> () -> Void {
-        heldTabs = []
-        return { [unowned self] in
-            let waiting = heldTabs ?? []
-            heldTabs = nil
-            for continuation in waiting { continuation.resume() }
-        }
+    func answerTabs(_ window: FakeWindow, _ answer: WindowTabsAnswer) {
+        window.answer = answer
     }
 
     func runOperation(_ kind: BusyOperationKind?) {

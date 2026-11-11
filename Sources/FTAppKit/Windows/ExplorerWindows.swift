@@ -65,7 +65,6 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     private(set) var controller: ExplorerWindowController<ExplorerTabGroup>!
     /// What Copy or Cut put on the clipboard, which every window pastes.
     let clipboard = SharedClipboard()
-    private let tabRequests = WindowTabsRequests()
     private var groups: [ExplorerTabGroup] = []
     private var nextGroupNumber = 1_000_000
     private var reconcileScheduled = false
@@ -104,8 +103,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         var host = ExplorerWindowController<ExplorerTabGroup>.Host(
             store: store,
             createWindow: { [unowned self] record, launch in makeGroup(record, launch: launch) },
-            workArea: { ScreenGeometry.workArea(for: $0) },
-            requestTabs: { [unowned self] groups in await requestTabs(groups) })
+            workArea: { ScreenGeometry.workArea(for: $0) })
         host.windowsChanged = { [unowned self] in onWindowsChanged() }
         host.log = { [unowned self] in log($0) }
         controller = ExplorerWindowController(host: host, quit: quit)
@@ -275,22 +273,6 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         group.start(with: controllers, active: active)
         groups.append(group)
         return group
-    }
-
-    private func requestTabs(_ asked: [ExplorerTabGroup]) async -> [WindowTabsAnswer?] {
-        var answers: [WindowTabsAnswer?] = []
-        for group in asked {
-            let answer = await tabRequests.ask(windowID: group.windowID) { [weak self, weak group] requestID in
-                guard let group, !group.isDestroyed else { throw CancellationError() }
-                DispatchQueue.main.async {
-                    MainActor.assumeIsolated {
-                        self?.tabRequests.answer(from: group.windowID, requestID: requestID, group.mergeAnswer)
-                    }
-                }
-            }
-            answers.append(answer)
-        }
-        return answers
     }
 
     /// Items opened from another app wait for the window in front. A folder opens in a new tab, and any other item is

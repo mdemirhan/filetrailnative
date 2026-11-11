@@ -176,37 +176,4 @@ import Testing
         #expect(clipboard.contents == since)
         #expect(told.isEmpty)
     }
-
-    @Test func handsOverTheAnswerOfTheWindowAskedAndNoOthers() async {
-        let requests = WindowTabsRequests(scheduler: HandScheduler())
-        let sent = Sent()
-
-        let answered = Task { await requests.ask(windowID: 4) { sent.ids.append($0) } }
-        await settle()
-        let requestID = sent.ids.first ?? ""
-        #expect(requestID.hasPrefix("merge-"))
-        requests.answer(from: 5, requestID: requestID, WindowTabsAnswer(tabs: [], busy: true))
-        requests.answer(from: 4, requestID: "merge-other", WindowTabsAnswer(tabs: [], busy: true))
-        requests.answer(from: 4, requestID: requestID, WindowTabsAnswer(tabs: [tab("/Users/demo")], busy: false))
-
-        #expect(await answered.value == WindowTabsAnswer(tabs: [tab("/Users/demo")], busy: false))
-    }
-
-    private final class Sent {
-        var ids: [String] = []
-    }
-
-    private struct Gone: Error {}
-
-    @Test func givesUpOnAWindowThatDoesntAnswerInTimeOrCantBeAsked() async {
-        let scheduler = HandScheduler()
-        let requests = WindowTabsRequests(scheduler: scheduler)
-
-        let silent = Task { await requests.ask(windowID: 4) { _ in } }
-        await settle()
-        scheduler.advance(WindowTabsRequests.timeoutMilliseconds)
-        #expect(await silent.value == nil)
-
-        #expect(await requests.ask(windowID: 5) { _ in throw Gone() } == nil)
-    }
 }

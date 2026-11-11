@@ -57,6 +57,8 @@ public protocol ExplorerWindowLike: AnyObject {
     /// The window a question about it hangs from.
     var sheetParent: NSWindow? { get }
     func tell(_ message: ExplorerWindowMessage)
+    /// What it says when Merge All Windows asks for its tabs.
+    var mergeAnswer: WindowTabsAnswer { get }
 }
 
 /// What the controller keeps in the app state store (`ExplorerWindowStore`).
@@ -88,8 +90,6 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         public var newWindowID: () -> String = { "window-\(UUID().uuidString.lowercased())" }
         /// The usable area of the screen a window at `bounds` is on.
         public var workArea: (WindowBounds) -> WindowBounds
-        /// Asks each window for its tabs as they are now; nil for one that doesn't answer.
-        public var requestTabs: @MainActor ([W]) async -> [WindowTabsAnswer?]
         /// Something the menu shows changed: which windows are open, which is in front, whether they are on screen.
         public var windowsChanged: () -> Void = {}
         public var log: (String) -> Void = { _ in }
@@ -98,13 +98,11 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         public init(
             store: any ExplorerWindowStore, createWindow: @escaping (StoredExplorerWindow, ExplorerLaunchContext) -> W,
             workArea: @escaping (WindowBounds) -> WindowBounds,
-            requestTabs: @escaping @MainActor ([W]) async -> [WindowTabsAnswer?],
             scheduler: any FolderWatchScheduler = DispatchFolderWatchScheduler()
         ) {
             self.store = store
             self.createWindow = createWindow
             self.workArea = workArea
-            self.requestTabs = requestTabs
             self.scheduler = scheduler
         }
     }
@@ -135,9 +133,6 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     private var stoppedOnClose: Set<Int> = []
     // The window the close question is on, from the moment closing asks until it has its answer.
     public private(set) var stopQuestionParent: W?
-    // True while Merge All Windows waits for the windows' tabs: one runs at a time, or the two would close each
-    // other's windows.
-    private var merging = false
     // Files opened with File Trail from another app, waiting for the window to open them, by window.
     private var openRequests: [Int: [OpenRequest]] = [:]
 
@@ -267,25 +262,17 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
     }
 
     /// `mergeInto`, Merge All Windows: the tabs of every other window, front to back, which close. The window asking
-    /// adds the tabs after its own `tabCount`. One stays open, its tabs where they are, when it doesn't answer, when
-    /// something is open in it that closing would lose, or when its tabs don't fit in the window asking. One merge
-    /// runs at a time; and when the window asking closes, or the app starts quitting, while the windows are asked,
-    /// nothing is merged.
-    public func mergeInto(_ senderID: Int?, tabCount: Int) async -> [OpenTabPreference] {
-        guard let target = windows.byWindowID(senderID), !shuttingDown, !merging, isStayingOpen(target.window) else {
-            return []
-        }
-        merging = true
-        defer { merging = false }
+    /// adds the tabs after its own `tabCount`. One stays open, its tabs where they are, when something is open in it
+    /// that closing would lose, or when its tabs don't fit in the window asking. Nothing is merged into a window on its
+    /// way out, or while the app quits.
+    public func mergeInto(_ senderID: Int?, tabCount: Int) -> [OpenTabPreference] {
+        guard let target = windows.byWindowID(senderID), !shuttingDown, isStayingOpen(target.window) else { return [] }
         let others = openWindows().filter { $0 !== target }
-        let answers = await host.requestTabs(others.map(\.window))
+        let answers = others.map(\.window.mergeAnswer)
         var room = AppPreferenceLimits.openTabsLimit - tabCount
         var tabs: [OpenTabPreference] = []
-        for (index, entry) in others.enumerated() {
-            if !isStayingOpen(target.window) || shuttingDown { break }
-            guard answers.indices.contains(index), let answer = answers[index], !answer.busy, !answer.tabs.isEmpty,
-                answer.tabs.count <= room, isStayingOpen(entry.window)
-            else { continue }
+        for (entry, answer) in zip(others, answers) {
+            guard !answer.busy, !answer.tabs.isEmpty, answer.tabs.count <= room else { continue }
             room -= answer.tabs.count
             tabs += answer.tabs
             closingWithoutAsking.insert(ObjectIdentifier(entry.window))

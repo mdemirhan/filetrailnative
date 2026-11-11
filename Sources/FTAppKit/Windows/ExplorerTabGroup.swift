@@ -22,7 +22,6 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     private var pendingZoom = false
     /// Tabs on their way to a window of their own: each leaves once the window has opened.
     private var moving: Set<ObjectIdentifier> = []
-    private var mergeUnderWay = false
     /// Where the window goes back to out of full screen or zoomed.
     private var normalFrame: NSRect
     private var lastSelected: MainWindowController?
@@ -512,24 +511,16 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         }
     }
 
-    /// Merge All Windows, once at a time, once the window has shown its first folder.
+    /// Merge All Windows, once the window has shown its first folder.
     func mergeAllWindows(into tab: MainWindowController) {
-        guard !mergeUnderWay, !isBlocked, tab.loaded, let host else { return }
-        mergeUnderWay = true
-        Task {
-            let merged = await host.controller.mergeInto(
-                windowID, tabCount: min(tabs.count, AppPreferenceLimits.openTabsLimit))
-            mergeUnderWay = false
-            addTabs(merged)
-        }
+        guard !isBlocked, tab.loaded, let host else { return }
+        addTabs(host.controller.mergeInto(windowID, tabCount: min(tabs.count, AppPreferenceLimits.openTabsLimit)))
     }
 
-    /// What it says when Merge All Windows asks for its tabs: busy while something is open in it, while its own
-    /// merge runs, or with more tabs than can be handed over.
+    /// What it says when Merge All Windows asks for its tabs: busy while something is open in it, or with more tabs
+    /// than can be handed over.
     var mergeAnswer: WindowTabsAnswer {
-        WindowTabsAnswer(
-            tabs: tabs.map(\.openTab),
-            busy: isBlocked || mergeUnderWay || tabs.count > AppPreferenceLimits.openTabsLimit)
+        WindowTabsAnswer(tabs: tabs.map(\.openTab), busy: isBlocked || tabs.count > AppPreferenceLimits.openTabsLimit)
     }
 
     // MARK: What the tabs tell it

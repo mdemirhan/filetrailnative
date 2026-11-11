@@ -507,7 +507,7 @@ import Testing
         // Gone somewhere else a moment ago, not saved yet.
         setup.answerTabs(setup.windows[2], WindowTabsAnswer(tabs: [tab("/Users/demo/2/Sub")], busy: false))
 
-        let tabs = await setup.controller.mergeInto(first.windowID, tabCount: 1)
+        let tabs = setup.controller.mergeInto(first.windowID, tabCount: 1)
         await settle()
 
         #expect(tabs.map(\.path) == ["/Users/demo/2/Sub", "/Users/demo/1"])
@@ -516,88 +516,38 @@ import Testing
         // Merged windows weren't closed by hand.
         #expect(setup.store.lastClosedWindow() == nil)
         #expect(setup.controller.windows.count == 1)
-        #expect(await setup.controller.mergeInto(12_345, tabCount: 1).isEmpty)
+        #expect(setup.controller.mergeInto(12_345, tabCount: 1).isEmpty)
     }
 
-    @Test func leavesOpenABusyWindowOneThatDoesntAnswerAndOneWhoseTabsDontFit() async throws {
-        let setup = try WindowSetup.withWindows(5)
-        // In front of the first window, front to back: inFront, leftOut, silent, renaming.
+    @Test func leavesOpenABusyWindowAndOneWhoseTabsDontFit() async throws {
+        let setup = try WindowSetup.withWindows(4)
+        // In front of the first window, front to back: inFront, leftOut, renaming.
         let first = setup.windows[0]
         let renaming = setup.windows[1]
-        let silent = setup.windows[2]
-        let leftOut = setup.windows[3]
-        let inFront = setup.windows[4]
+        let leftOut = setup.windows[2]
+        let inFront = setup.windows[3]
         setup.answerTabs(renaming, WindowTabsAnswer(tabs: [tab("/Users/demo/renaming")], busy: true))
-        setup.answerTabs(silent, nil)
         setup.answerTabs(leftOut, WindowTabsAnswer(tabs: [tab("/Users/demo/a"), tab("/Users/demo/b")], busy: false))
         setup.answerTabs(inFront, WindowTabsAnswer(tabs: [tab("/Users/demo/c"), tab("/Users/demo/d")], busy: false))
 
         // Room for three more tabs.
-        let tabs = await setup.controller.mergeInto(first.windowID, tabCount: AppPreferenceLimits.openTabsLimit - 3)
+        let tabs = setup.controller.mergeInto(first.windowID, tabCount: AppPreferenceLimits.openTabsLimit - 3)
         await settle()
 
         #expect(tabs.map(\.path) == ["/Users/demo/c", "/Users/demo/d"])
         #expect(setup.windows.filter(\.destroyed).map(\.windowID) == [inFront.windowID])
-        #expect(setup.controller.windows.count == 4)
+        #expect(setup.controller.windows.count == 3)
     }
 
-    @Test func mergesOnceAtATimeASecondMergeWhileOneWaitsLeavesItsWindowOpen() async throws {
-        let setup = try WindowSetup.withWindows(3)
-        let first = setup.windows[0]
-        let second = setup.windows[1]
-        setup.answerTabs(first, WindowTabsAnswer(tabs: [tab("/Users/demo/0")], busy: false))
-        let release = setup.holdTabAnswers()
-
-        // Chosen in two windows in the same moment.
-        async let intoFirst = setup.controller.mergeInto(first.windowID, tabCount: 1)
-        await settle()
-        let intoSecond = await setup.controller.mergeInto(second.windowID, tabCount: 1)
-        release()
-        let merged = await intoFirst
-        await settle()
-
-        #expect(intoSecond.isEmpty)
-        #expect(merged.map(\.path) == ["/Users/demo/2", "/Users/demo/1"])
-        #expect(!first.destroyed)
-        #expect(second.destroyed)
-        #expect(setup.windows[2].destroyed)
-        // Once it is over, another may run.
-        setup.controller.openWindowFrom(first.windowID, tabs: [tab("/Users/demo/x")], activeTabIndex: 0)
-        #expect(await setup.controller.mergeInto(first.windowID, tabCount: 3).count == 1)
-    }
-
-    @Test func mergesNothingWhenTheWindowAskingClosesWhileTheOthersAreAsked() async throws {
-        let setup = try WindowSetup.withWindows(3)
-        let first = setup.windows[0]
-        let release = setup.holdTabAnswers()
-
-        async let merging = setup.controller.mergeInto(first.windowID, tabCount: 1)
-        await settle()
-        first.close()
-        release()
-        let tabs = await merging
-        await settle()
-
-        #expect(tabs.isEmpty)
-        #expect(first.destroyed)
-        #expect(!setup.windows[1].destroyed)
-        #expect(!setup.windows[2].destroyed)
-    }
-
-    @Test func mergesNothingWhileQuittingOrWhenQuittingStartsWhileTheOthersAreAsked() async throws {
+    @Test func mergesNothingWhileQuitting() async throws {
         let setup = try WindowSetup.withWindows(2)
         setup.shutDownHeld = true
         let first = setup.windows[0]
-        let release = setup.holdTabAnswers()
 
-        async let merging = setup.controller.mergeInto(first.windowID, tabCount: 1)
-        await settle()
         Task { await setup.quit.quit() }
         await settle()
-        release()
 
-        #expect(await merging.isEmpty)
-        #expect(await setup.controller.mergeInto(first.windowID, tabCount: 1).isEmpty)
+        #expect(setup.controller.mergeInto(first.windowID, tabCount: 1).isEmpty)
         await settle()
         #expect(!setup.windows[1].destroyed)
     }
