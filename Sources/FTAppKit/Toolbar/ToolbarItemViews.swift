@@ -185,6 +185,13 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
     let count = FlushTextField(labelWithString: "")
     private static let countFont = NSFont.monospacedDigitSystemFont(
         ofSize: DesignTokens.typeScale.small, weight: .semibold)
+    /// The count with its digits grouped as in US English ("1,234"), made once: every refresh of the toolbar sets it.
+    private static let countFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
 
     var styleTextField: NSTextField? { count }
     /// `button:focus-visible`: a click leaves the page's focus on the button, and the first key after it (the list's
@@ -204,10 +211,7 @@ final class ToolbarClipboardButton: ToolbarButton, TextStyleSource {
 
     func set(count value: Int, cut: Bool) {
         iconName = cut ? .cut : .copy
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.locale = Locale(identifier: "en_US")
-        let text = formatter.string(from: NSNumber(value: value)) ?? String(value)
+        let text = Self.countFormatter.string(from: NSNumber(value: value)) ?? String(value)
         count.stringValue = text
         count.isHidden = value == 0
         imagePosition = value == 0 ? .imageOnly : .imageLeading

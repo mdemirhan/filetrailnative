@@ -113,6 +113,8 @@ protocol ExplorerWindowContext: AnyObject {
     func perform(_ command: RendererCommand)
     /// Whether the command can run now.
     func canPerform(_ command: RendererCommand) -> Bool
+    /// Whether each command can run now, from one look at the window: for asking about many commands at once.
+    func commandAvailability() -> (RendererCommand) -> Bool
 
     // MARK: Selection and focus
 

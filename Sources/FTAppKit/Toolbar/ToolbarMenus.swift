@@ -165,8 +165,8 @@ extension ExplorerToolbar {
 
     /// What the system's » menu says for an item with no room, worded as in the menu bar. The
     /// items that are several choices (the view, the sort, the theme) are a submenu: the system's menu holds one entry
-    /// per item.
-    func overflowEntry(_ id: ToolbarItemID) -> NSMenuItem? {
+    /// per item. `canPerform`: which commands can run, when the caller has read it already.
+    func overflowEntry(_ id: ToolbarItemID, _ canPerform: ((RendererCommand) -> Bool)? = nil) -> NSMenuItem? {
         guard let context else { return nil }
         let view = context.viewState
         let panels = context.panels
@@ -245,7 +245,8 @@ extension ExplorerToolbar {
         default:
             guard let command = ToolbarItems.definition(id).commandType else { return nil }
             return overflowItem(
-                Tooltips.toolbarItemLabel(itemID: id, state: tooltipState), enabled: context.canPerform(command),
+                Tooltips.toolbarItemLabel(itemID: id, state: tooltipState),
+                enabled: (canPerform ?? context.commandAvailability())(command),
                 run: run(command))
         }
     }

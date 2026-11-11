@@ -228,16 +228,20 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     /// Every item's look: on or off, enabled, its tooltip, and what the » menu says for it.
     func refreshStates() {
         guard let context else { return }
-        toolbar.allowsUserCustomization = isCustomizing || context.canPerform(.customizeToolbar)
+        // Which commands can run is read from the window once, for every item.
+        let canPerform = context.commandAvailability()
+        toolbar.allowsUserCustomization = isCustomizing || canPerform(.customizeToolbar)
         for item in toolbar.items {
-            if let id = Self.itemID(item.itemIdentifier), id != .topSeparator { refresh(item, id) }
+            if let id = Self.itemID(item.itemIdentifier), id != .topSeparator { refresh(item, id, canPerform) }
         }
     }
 
     /// The system's customizing sheet is up.
     var isCustomizing: Bool { toolbar.customizationPaletteIsRunning }
 
-    private func refresh(_ item: NSToolbarItem, _ id: ToolbarItemID) {
+    private func refresh(
+        _ item: NSToolbarItem, _ id: ToolbarItemID, _ canPerform: @escaping (RendererCommand) -> Bool
+    ) {
         guard let context else { return }
         let view = context.viewState
         let panels = context.panels
@@ -255,7 +259,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             case .infoPanel: button.isOn = panels.propertiesOpen
             case .infoRow: button.isOn = panels.detailRowOpen
             case .sort:
-                button.isEnabled = context.canPerform(.sortByName)
+                button.isEnabled = canPerform(.sortByName)
                 button.tooltip =
                     "Sort By: \(view.sortBy.title), \(view.sortDirection == .asc ? "Ascending" : "Descending")"
             case .viewOptions: button.tooltip = "View Options"
@@ -275,13 +279,13 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
                 item.isHidden = clipboardCount == 0
             default:
                 if let command = ToolbarItems.definition(id).commandType {
-                    button.isEnabled = context.canPerform(command)
+                    button.isEnabled = canPerform(command)
                 }
             }
         } else if let switcher = views[id] as? ToolbarViewSwitch {
             // Search results show in a view of their own (`searchViewMode`).
             switcher.selected = context.searchRootPath != nil ? view.searchViewMode : view.viewMode
-            switcher.isEnabled = context.canPerform(.viewAsIcons)
+            switcher.isEnabled = canPerform(.viewAsIcons)
             switcher.setTooltips(shortcuts)
         } else if let title = views[id] as? ToolbarTitleView {
             title.field.stringValue = Self.title(of: context)
@@ -290,7 +294,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             searchField.isEnabled = !isCustomizing
             searchField.takeClearButton()
         }
-        if id != .search { item.menuFormRepresentation = overflowEntry(id) }
+        if id != .search { item.menuFormRepresentation = overflowEntry(id, canPerform) }
     }
 
     /// `ExplorerTabs.folderDisplayName`: "Macintosh HD" for `/`; while searching, "Searching “…”" with the folder the
@@ -411,7 +415,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         item.autovalidates = false
         // The removable items go to the » menu first; the required ones last.
         item.visibilityPriority = definition.topRequired ? .high : .standard
-        if flag, context != nil { refresh(item, id) }
+        if flag, let context { refresh(item, id, context.commandAvailability()) }
         return item
     }
 

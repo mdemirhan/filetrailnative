@@ -2291,6 +2291,11 @@ extension MainWindowController: ExplorerWindowContext {
         CommandAvailability.canRun(command, commandContext)
     }
 
+    func commandAvailability() -> (RendererCommand) -> Bool {
+        let context = commandContext
+        return { CommandAvailability.canRun($0, context) }
+    }
+
     /// What decides whether a command or a key can act now.
     var shortcutContext: ShortcutContext {
         ShortcutContext(
