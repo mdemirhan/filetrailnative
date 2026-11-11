@@ -473,7 +473,7 @@ enum ExplorerListing {
         // Example:
         // `/Users/al/Doc` => basePath `/Users/al`, typedName `Doc`
         // `/Users/al/Documents/` => basePath `/Users/al/Documents`, typedName ``
-        let trimmed = jsTrimmed(inputPath)
+        let trimmed = SearchResults.jsTrimmed(inputPath)
         let normalizedPath = resolve(trimmed.isEmpty ? "/" : trimmed)
         let parts = normalizedPath.split(separator: "/", omittingEmptySubsequences: true).map(String.init)
 
@@ -499,22 +499,6 @@ enum ExplorerListing {
             index -= 1
         }
         return nil
-    }
-
-    /// `String.prototype.trim`: white space, line terminators and the byte order mark.
-    private static func jsTrimmed(_ text: String) -> String {
-        func isSpace(_ scalar: Unicode.Scalar) -> Bool {
-            switch scalar.value {
-            case 0x09...0x0D, 0x20, 0xA0, 0x1680, 0x2000...0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0xFEFF:
-                return true
-            default:
-                return false
-            }
-        }
-        var scalars = Substring(text).unicodeScalars
-        while let first = scalars.first, isSpace(first) { scalars.removeFirst() }
-        while let last = scalars.last, isSpace(last) { scalars.removeLast() }
-        return String(scalars)
     }
 }
 
