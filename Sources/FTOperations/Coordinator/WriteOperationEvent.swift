@@ -148,9 +148,8 @@ public struct WriteOperationEvent: Equatable, Sendable {
         self.result = result
     }
 
-    /// The window's view of a write service event, checked as every message to a window is.
-    /// Throws for an event a window can't be sent.
-    public static func of(_ event: CopyPasteProgressEvent, action: WriteOperationAction) throws -> WriteOperationEvent {
+    /// The window's view of a write service event.
+    public static func of(_ event: CopyPasteProgressEvent, action: WriteOperationAction) -> WriteOperationEvent {
         let result = event.result.map { result in
             WriteOperationResult(
                 operationId: result.operationId, action: action, mode: result.mode, status: result.status,
@@ -158,13 +157,12 @@ public struct WriteOperationEvent: Equatable, Sendable {
                 summary: result.summary, items: result.items.map(WriteOperationItem.init),
                 trashedPaths: result.trashedPaths, replacedPaths: result.replacedPaths, error: result.error)
         }
-        return try WriteOperationEvent(
+        return WriteOperationEvent(
             operationId: event.operationId, action: action, status: event.status,
             completedItemCount: event.completedItemCount, totalItemCount: event.totalItemCount,
             completedByteCount: event.completedByteCount, totalBytes: event.totalBytes,
             currentSourcePath: event.currentSourcePath, currentDestinationPath: event.currentDestinationPath,
-            runtimeConflict: event.runtimeConflict, result: result
-        ).checked()
+            runtimeConflict: event.runtimeConflict, result: result)
     }
 
     /// `forOtherWindows`: all of it but the result's items those windows don't need.
@@ -174,14 +172,6 @@ public struct WriteOperationEvent: Equatable, Sendable {
         var event = self
         event.result = result
         return event
-    }
-
-    /// The event, when it passes the checks every message to a window goes through, except
-    /// for its result's items (made here, typed from the same contract). The checks are what the contract's schema
-    /// holds that a Swift type doesn't: counts and sizes that are never negative, names that are never empty.
-    public func checked() throws -> WriteOperationEvent {
-        try WriteOperationEventCheck.event(self)
-        return self
     }
 }
 
@@ -197,67 +187,5 @@ public struct WriteOperationAdoption: Equatable, Sendable {
         self.operationId = operationId
         self.event = event
         self.clearsCutClipboard = clearsCutClipboard
-    }
-}
-
-/// Why an event can't be sent to a window (the contract's schema refused it).
-public struct WriteOperationEventError: Error, Equatable, Sendable, CustomStringConvertible {
-    public var field: String
-
-    public var description: String { "Invalid write operation event: \(field)" }
-}
-
-/// The checks on an event that a Swift type doesn't hold by itself.
-enum WriteOperationEventCheck {
-    static func event(_ event: WriteOperationEvent) throws {
-        try nonEmpty(event.operationId, "operationId")
-        try nonNegative(event.completedItemCount, "completedItemCount")
-        try nonNegative(event.totalItemCount, "totalItemCount")
-        try nonNegative(event.completedByteCount, "completedByteCount")
-        try nonNegative(event.totalBytes, "totalBytes")
-        if let conflict = event.runtimeConflict {
-            try runtimeConflict(conflict)
-        }
-        if let result = event.result {
-            try nonEmpty(result.operationId, "result.operationId")
-            try summary(result.summary)
-        }
-    }
-
-    private static func runtimeConflict(_ conflict: CopyPasteRuntimeConflict) throws {
-        try nonEmpty(conflict.conflictId, "runtimeConflict.conflictId")
-        try nonEmpty(conflict.analysisId, "runtimeConflict.analysisId")
-        try nonEmpty(conflict.sourcePath, "runtimeConflict.sourcePath")
-        try nonEmpty(conflict.destinationPath, "runtimeConflict.destinationPath")
-        for (name, print) in [
-            ("sourceFingerprint", conflict.sourceFingerprint),
-            ("destinationFingerprint", conflict.destinationFingerprint),
-            ("currentSourceFingerprint", conflict.currentSourceFingerprint),
-            ("currentDestinationFingerprint", conflict.currentDestinationFingerprint),
-        ] {
-            // A date before 1970 is negative, and fine (old archives, HFS dates from 1904).
-            try nonNegative(print.size, "runtimeConflict.\(name).size")
-            try nonNegative(print.dev, "runtimeConflict.\(name).dev")
-        }
-    }
-
-    private static func summary(_ summary: CopyPasteOperationSummary) throws {
-        for (name, value) in [
-            ("topLevelItemCount", summary.topLevelItemCount), ("totalItemCount", summary.totalItemCount),
-            ("completedItemCount", summary.completedItemCount), ("failedItemCount", summary.failedItemCount),
-            ("skippedItemCount", summary.skippedItemCount), ("cancelledItemCount", summary.cancelledItemCount),
-        ] {
-            try nonNegative(value, "result.summary.\(name)")
-        }
-        try nonNegative(summary.completedByteCount, "result.summary.completedByteCount")
-        try nonNegative(summary.totalBytes, "result.summary.totalBytes")
-    }
-
-    private static func nonEmpty(_ value: String, _ field: String) throws {
-        if value.isEmpty { throw WriteOperationEventError(field: field) }
-    }
-
-    private static func nonNegative<T: BinaryInteger>(_ value: T?, _ field: String) throws {
-        if let value, value < 0 { throw WriteOperationEventError(field: field) }
     }
 }

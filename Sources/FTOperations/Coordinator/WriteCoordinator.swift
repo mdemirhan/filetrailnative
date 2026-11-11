@@ -334,34 +334,12 @@ public final class WriteCoordinator {
             forgetProgress(operationId)
             return
         }
-        let progress = deliverableProgressEvent(event, action: action)
+        let progress = WriteOperationEvent.of(event, action: action)
         deliverProgress(operationId, status: event.status, asksUser: event.runtimeConflict != nil) { [weak self] in
             self?.sendProgress(sender, progress)
         }
         if event.status.isTerminal {
             detachSender(operationId)
-        }
-    }
-
-    /// The window's view of an event, even when part of it can't be sent. A question
-    /// the window would never see is answered "skip", which changes nothing; the end of the operation always goes out.
-    func deliverableProgressEvent(_ event: CopyPasteProgressEvent, action: WriteOperationAction)
-        -> WriteOperationEvent
-    {
-        do {
-            return try WriteOperationEvent.of(event, action: action)
-        } catch {
-            options.logError("[filetrail] couldn't send an operation update to the window", error)
-            if event.status == .awaitingResolution, let conflict = event.runtimeConflict {
-                _ = writeService.resolveRuntimeConflict(
-                    event.operationId, conflictId: conflict.conflictId, action: .skip, applyToRemaining: false)
-            }
-            var stripped = event
-            stripped.status = event.status == .awaitingResolution ? .running : event.status
-            stripped.runtimeConflict = nil
-            stripped.result = nil
-            return (try? WriteOperationEvent.of(stripped, action: action))
-                ?? WriteOperationEvent(operationId: event.operationId, action: action, status: stripped.status)
         }
     }
 
@@ -437,7 +415,7 @@ public final class WriteCoordinator {
         if let early, early.status.isTerminal {
             freeWriteSlot(.reserved)
             // The window learns the operation id from this reply, so its end is sent just after it.
-            let progress = deliverableProgressEvent(early, action: start.action)
+            let progress = WriteOperationEvent.of(early, action: start.action)
             DispatchQueue.main.async { [weak self] in
                 MainActor.assumeIsolated { self?.sendProgress(window, progress) }
             }
@@ -451,7 +429,7 @@ public final class WriteCoordinator {
         // Its "queued" came before it had a window. The window that started it knows from this reply; the others are
         // told now, so they know one runs, and it is kept for a window that takes it over.
         if let early {
-            let progress = deliverableProgressEvent(early, action: start.action)
+            let progress = WriteOperationEvent.of(early, action: start.action)
             latestProgress[handle.operationId] = progress
             broadcast(progress, owner: window)
         }

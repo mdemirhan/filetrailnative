@@ -333,26 +333,4 @@ import Testing
         #expect(service.calls.resolveRuntimeConflict.isEmpty)
         await coordinator.shutDown(maxWaitMs: 0)
     }
-
-    // A question the window would never see would leave the paste waiting forever.
-    @Test func answersSkipToAQuestionThatCantBeSentAndGoesOn() async throws {
-        let service = StubWriteService()
-        let coordinator = WriteCoordinator(writeService: service, fileSystem: TestLocalFileSystem.stub())
-        let window = TestWindow()
-        try await Coordinators.startPaste(coordinator, window)
-        var conflict = Coordinators.conflict("conflict-bad")
-        conflict.currentDestinationFingerprint.size = -1
-
-        service.emit(Coordinators.event(.awaitingResolution, runtimeConflict: conflict))
-
-        let answer = try #require(service.calls.resolveRuntimeConflict.first)
-        #expect(answer.0 == "copy-op-1" && answer.1 == "conflict-bad" && answer.2 == .skip && !answer.3)
-        #expect(window.progress.last?.status == .running)
-        #expect(window.progress.last?.runtimeConflict == nil)
-
-        // Its end still reaches the window.
-        service.emit(Coordinators.event(.completed))
-        #expect(window.progress.map(\.status).contains(.completed))
-        await coordinator.shutDown(maxWaitMs: 0)
-    }
 }
