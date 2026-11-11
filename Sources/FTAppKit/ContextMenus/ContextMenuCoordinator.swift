@@ -9,7 +9,7 @@ import FTFoundation
 final class ContextMenuCoordinator: ContextMenuResponder {
     unowned let tab: MainWindowController
 
-    var notices: any ActionNoticePresenting = AlertNoticePresenter()
+    var notices: any ActionNoticePresenting = InWindowNoticePresenter()
     var opener: SystemOpener = .workspace
     /// Makes an app what a kind of file opens in; tests give their own, so they leave this Mac's defaults alone.
     var setDefaultApplication: @MainActor (_ appPath: String, _ contentType: String) async -> OperationResult = {

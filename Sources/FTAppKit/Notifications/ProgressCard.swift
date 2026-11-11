@@ -10,7 +10,7 @@ final class ProgressCardModel {
     var state: WriteOperationCardState? {
         didSet {
             guard state != oldValue else { return }
-            stateChanged(wasNil: oldValue == nil)
+            stateChanged()
         }
     }
     /// The folder on screen, which names the card's item when the operation has none.
@@ -36,7 +36,7 @@ final class ProgressCardModel {
         return ProgressCardText(state, currentPath: currentPath())
     }
 
-    private func stateChanged(wasNil: Bool) {
+    private func stateChanged() {
         if state == nil {
             pending?.cancel()
             pending = nil
@@ -58,16 +58,6 @@ final class ProgressCardModel {
                 self.onChange()
             }
         }
-        _ = wasNil
-    }
-
-    /// Shows the card at once (a capture, a test).
-    func showNow() {
-        pending?.cancel()
-        pending = nil
-        guard state != nil else { return }
-        isVisible = true
-        onChange()
     }
 }
 

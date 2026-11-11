@@ -123,9 +123,6 @@ class CopyPasteSheetView: NSView, DialogPanel, ThemeApplying {
     /// The views Tab goes round, in order.
     func focusOrder() -> [NSView] { buttons.filter(\.isEnabled) }
 
-    /// What the footer's note leaves of the footer's left.
-    var footerHasNote: Bool { !note.text.isEmpty }
-
     // MARK: DialogPanel
 
     var initialResponder: NSView? { buttons.last { $0.isDefault } ?? buttons.last }

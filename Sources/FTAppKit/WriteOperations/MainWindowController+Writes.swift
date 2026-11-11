@@ -167,9 +167,6 @@ extension MainWindowController {
             Task { _ = try? await actions.deleteImmediately(paths) }
         case .emptyTrash:
             Task { _ = try? await actions.emptyTrash() }
-        case .cut: actions.putOnClipboard(.cut, paths: paths)
-        case .copy: actions.putOnClipboard(.copy, paths: paths)
-        case .paste: _ = performWriteCommand(.pasteSelection)
         case .move:
             // Says so as soon as chosen, not after a folder was chosen.
             guard !paths.isEmpty, !actions.refuseWhileBusy(.operation(.moveTo)) else { return }

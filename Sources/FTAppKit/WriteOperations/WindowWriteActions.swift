@@ -45,11 +45,6 @@ final class WindowWriteActions {
     private var coordinator: WriteCoordinator { session.coordinator }
     private var window: NSWindow? { tab?.window }
 
-    /// Tells `handler` of the window's progress, questions and results.
-    func observe(_ handler: @escaping (WindowWriteEvent) -> Void) -> ExplorerWindowObservation {
-        session.observe(handler)
-    }
-
     // MARK: Busy
 
     /// True (and the busy notice shown) when a write runs here or in another window. When only another window's stands
@@ -73,19 +68,6 @@ final class WindowWriteActions {
         let capturedAt = ISO8601DateFormatter.withFractionalSeconds.string(from: Date())
         clipboard.set(ClipboardRules.set(mode, paths, capturedAt: capturedAt, entries: entries), from: tab?.windowID)
         tab?.clipboardChanged()
-    }
-
-    /// Paste: what the clipboard holds into `destination` (the folder on screen). A cut is a Move To:
-    /// its notices, card and result say so; it is cleared once the paste moved something.
-    @discardableResult
-    func paste(into destination: String) async -> CopyLikeOutcome {
-        guard case .ready(let mode, let sources, _, let capturedAt) = session.clipboard?.contents else {
-            return .cancelled
-        }
-        let isCut = mode == .cut
-        return await copyLike(
-            mode: isCut ? .cut : .copy, sources: sources, destination: destination, action: isCut ? .moveTo : .paste,
-            clearsCutClipboard: isCut ? capturedAt : nil)
     }
 
     /// Copy To (a drag that copies).

@@ -78,8 +78,6 @@ final class ExplorerWriteSession: WriteOperationWindow {
     private(set) var foreign: ForeignWriteOperation?
     /// Set from the moment a write starts here until its end.
     private(set) var card: WriteOperationCardState?
-    /// The latest progress of this window's operation.
-    private(set) var progressEvent: WriteOperationEvent?
     let early = EarlyWriteOperationEvents()
     // The operations this window took over from one that closed.
     private var adoptedOperationIds: Set<String> = []
@@ -286,7 +284,6 @@ final class ExplorerWriteSession: WriteOperationWindow {
                     completedItemCount: event.completedItemCount, totalItemCount: event.totalItemCount,
                     completedByteCount: event.completedByteCount, totalBytes: event.totalBytes,
                     currentSourcePath: event.currentSourcePath))
-            progressEvent = event
             notify(.progress(event))
             return
         }
@@ -319,7 +316,6 @@ final class ExplorerWriteSession: WriteOperationWindow {
         activeOperationId = nil
         let selectionChanged = selectionChangedSinceWriteStarted()
         applyCard(nil)
-        progressEvent = event
         notify(.ended(event, inTabOnScreen: startedInTabOnScreen))
         guard let host else { return }
         let currentPath = host.currentPath

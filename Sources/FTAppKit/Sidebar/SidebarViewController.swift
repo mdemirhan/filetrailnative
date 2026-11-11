@@ -177,10 +177,6 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         refresh()
     }
 
-    override func viewDidLayout() {
-        super.viewDidLayout()
-    }
-
     // MARK: Preferences
 
     /// Reads the window's preferences: the favorites and layout are the app's, and so is the density.

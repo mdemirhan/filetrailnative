@@ -10,7 +10,6 @@ extension NSColor {
 }
 
 extension RGBA {
-    public var nsColor: NSColor { NSColor(self) }
 }
 
 /// The fonts of `--font-sans` and `--font-mono`: the system fonts the stacks name.

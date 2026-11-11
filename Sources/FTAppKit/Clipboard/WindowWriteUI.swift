@@ -9,9 +9,6 @@ protocol WriteResultPresenting: AnyObject {
     func present(_ event: WriteOperationEvent, in tab: MainWindowController)
 }
 
-/// The name the result's presenter had while it was a plain notice.
-typealias PlainResultNotice = CopyPasteResultPresenter
-
 /// What one explorer window shows of its operations: the progress card in each of its tabs (Stop cancels), the
 /// clipboard following what ended, the question a paused operation asks, and the toast or the result sheet.
 @MainActor

@@ -35,15 +35,6 @@ extension SidebarViewController {
             favoritesExpanded: favoritesExpanded, locationsExpanded: locationsExpanded)
     }
 
-    /// Sets the saved selection when it is a tab's snapshot (a favorite, a location or a folder row).
-    func restoreSelection(_ id: String?) {
-        guard let id, let item = TreeItemID(rawValue: id) else { return }
-        model.restore(
-            rootPath: model.rootPath, selected: item,
-            subview: item.shortcutPath != nil && model.placement == .separate ? .favorites : .tree,
-            favoritesExpanded: model.favoritesExpanded, locationsExpanded: model.locationsExpanded)
-    }
-
     /// A tab starts with the tree of the tab it came from, and its selected row.
     func restoreView(nodes: TreeNodes, selectedItem: String?, subview: SidebarSubview) {
         model.restoreView(nodes: nodes, selected: selectedItem.flatMap(TreeItemID.init(rawValue:)), subview: subview)

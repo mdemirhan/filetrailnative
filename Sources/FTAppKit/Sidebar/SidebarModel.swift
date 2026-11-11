@@ -675,15 +675,6 @@ final class SidebarModel {
         onChange()
     }
 
-    /// A disk went: tabs that showed it are elsewhere. Nothing of the sidebar to do but drop what was under it.
-    func volumeGone(_ volumePath: String) {
-        if TreePaths.isWithinRoot(rootPath, volumePath), !TreePaths.same(volumePath, "/") {
-            rootPath = ""
-            nodes = TreeNodes()
-            onChange()
-        }
-    }
-
     // MARK: Keyboard
 
     /// Carries out what a key decides. True when the key was taken.

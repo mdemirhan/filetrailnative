@@ -61,8 +61,6 @@ final class BatchRenameTextField: NSView, ThemeApplying, NSTextFieldDelegate {
     var onChange: (String) -> Void = { _ in }
     /// Told when the field gives up the keyboard.
     var onBlur: () -> Void = {}
-    /// Told when the field takes the keyboard.
-    var onFocus: () -> Void = {}
     var limit: Int
     var isInvalid = false { didSet { if isInvalid != oldValue { needsDisplay = true } } }
     /// Where the selection was when the field last gave up the keyboard (a field keeps it, as an input does); the end
@@ -87,10 +85,7 @@ final class BatchRenameTextField: NSView, ThemeApplying, NSTextFieldDelegate {
         field.isAutomaticTextCompletionEnabled = false
         field.delegate = self
         field.setAccessibilityLabel(label)
-        field.onFocus = { [weak self] in
-            self?.needsDisplay = true
-            self?.onFocus()
-        }
+        field.onFocus = { [weak self] in self?.needsDisplay = true }
         addSubview(field)
         applyTheme(theme)
     }

@@ -61,7 +61,7 @@ extension ExplorerWindowlessTests {
                     WriteOperationItem(
                         sourcePath: "/tmp/a.txt", destinationPath: "/tmp/b.txt", status: .failed, error: error)
                 ], error: error)
-            PlainResultNotice().present(
+            CopyPasteResultPresenter().present(
                 WriteOperationEvent(
                     operationId: "write-op-1", action: .rename, status: .failed, totalItemCount: 1, result: result),
                 in: tab)

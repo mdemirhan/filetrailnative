@@ -112,11 +112,6 @@ final class InfoPanelView: NSView {
     func setOpenMenuOpen(_ value: Bool) { content.setOpenMenuOpen(value) }
     func setOpensWithMenuOpen(_ value: Bool) { content.setOpensWithMenuOpen(value) }
 
-    /// The folder size cell takes up a new entry without the rest being built again.
-    func updateFolderSize(_ entry: FolderSizeEntry?) {
-        content.updateFolderSize(entry)
-    }
-
     override func layout() {
         super.layout()
         header.frame = NSRect(x: 0, y: 0, width: bounds.width, height: InfoMetrics.panelHeaderHeight)
@@ -555,10 +550,6 @@ final class InfoPanelContentView: NSView {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    func updateFolderSize(_ entry: FolderSizeEntry?) {
-        if let entry { cell.update(entry) }
-    }
 
     func setOpenMenuOpen(_ value: Bool) { open.setMenuOpen(value) }
     func setOpensWithMenuOpen(_ value: Bool) { opensWith.setMenuOpen(value) }

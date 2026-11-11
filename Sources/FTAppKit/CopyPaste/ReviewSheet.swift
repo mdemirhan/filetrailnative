@@ -31,7 +31,6 @@ final class ReviewSheetModel {
         refresh()
     }
 
-    var verb: String { CopyPasteReview.actionVerb(action, mode: review.mode) }
     var hasConflicts: Bool { summary.conflictTopLevelCount > 0 }
     /// The rows drawn: the first 300 until "Show all".
     var visibleRows: ArraySlice<ReviewRow> {

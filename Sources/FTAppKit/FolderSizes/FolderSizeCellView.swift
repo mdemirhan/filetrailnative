@@ -9,7 +9,6 @@ final class TextLinkView: NSView, TextStyleSource {
     var color: (Theme) -> RGBA = { $0.accent.solid } {
         didSet { applyStyle() }
     }
-    var underlinesOnHover = true
     private var isHovered = false { didSet { applyStyle() } }
 
     init(identifier: String) {
@@ -44,7 +43,7 @@ final class TextLinkView: NSView, TextStyleSource {
         let ink = NSColor(color(theme))
         label.font = font
         label.textColor = ink
-        if isHovered && underlinesOnHover {
+        if isHovered {
             label.attributedStringValue = NSAttributedString(
                 string: label.stringValue,
                 attributes: [

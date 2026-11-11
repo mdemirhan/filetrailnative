@@ -325,35 +325,4 @@ enum TreeKey {
         default: .other
         }
     }
-
-    /// The event as the shortcut table reads it.
-    static func shortcutEvent(_ event: NSEvent) -> ShortcutKeyEvent {
-        let flags = event.modifierFlags
-        var key = event.charactersIgnoringModifiers ?? ""
-        var code = ""
-        switch event.keyCode {
-        case 126: (key, code) = ("ArrowUp", "ArrowUp")
-        case 125: (key, code) = ("ArrowDown", "ArrowDown")
-        case 123: (key, code) = ("ArrowLeft", "ArrowLeft")
-        case 124: (key, code) = ("ArrowRight", "ArrowRight")
-        case 115: (key, code) = ("Home", "Home")
-        case 119: (key, code) = ("End", "End")
-        case 116: (key, code) = ("PageUp", "PageUp")
-        case 121: (key, code) = ("PageDown", "PageDown")
-        case 36, 76: (key, code) = ("Enter", "Enter")
-        case 48: (key, code) = ("Tab", "Tab")
-        case 53: (key, code) = ("Escape", "Escape")
-        case 49: (key, code) = (" ", "Space")
-        case 51: (key, code) = ("Backspace", "Backspace")
-        default:
-            if key.utf16.count == 1, let scalar = key.unicodeScalars.first, scalar.isASCII,
-                scalar.properties.isAlphabetic
-            {
-                code = "Key" + key.uppercased()
-            }
-        }
-        return ShortcutKeyEvent(
-            key: key, code: code, metaKey: flags.contains(.command), ctrlKey: flags.contains(.control),
-            altKey: flags.contains(.option), shiftKey: flags.contains(.shift))
-    }
 }

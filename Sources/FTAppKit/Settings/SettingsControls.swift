@@ -44,10 +44,6 @@ enum SettingsStyle {
             $0.palette.settingsLabelSecondary
         }
     }
-    /// A list row's path, and the note at its end.
-    static var secondarySmall: TextStyle {
-        style(DesignTokens.typeScale.small) { $0.palette.settingsLabelSecondary }
-    }
 }
 
 /// Strokes SVG path data drawn in a `box` by `box` square into `rect` (a flipped context).

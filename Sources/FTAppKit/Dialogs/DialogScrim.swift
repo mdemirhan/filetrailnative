@@ -434,12 +434,6 @@ final class DialogTitlebarVeil: NSView {
 
     override var isOpaque: Bool { false }
 
-    /// The system tab bar lies over the content, under the band: a sheet starts that much lower, or the bar hides its top.
-    private var tabBarRoom: CGFloat {
-        guard let window, window.contentView is WorkspaceView else { return 0 }
-        return max(0, WindowChrome.panesTop(window) - WorkspaceView.metrics.toolbar.minHeight)
-    }
-
     override func draw(_ dirtyRect: NSRect) {
         NSColor(AppearanceModel.shared.theme.palette.scrim).setFill()
         bounds.fill(using: .sourceOver)

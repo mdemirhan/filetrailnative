@@ -196,20 +196,6 @@ enum ToolbarGlyph {
             path.stroke()
         }
     }
-
-    /// A tick: an 11 pt mark in a 12-unit box, stroke 1.8.
-    static func drawCheck(in rect: NSRect, color: NSColor, flipped: Bool) {
-        let path = SVGPath.path("M2.5 6.3 5 8.8l4.6-5.6")
-        let scale = rect.width / 12
-        var transform = AffineTransform(translationByX: rect.minX, byY: flipped ? rect.minY : rect.maxY)
-        transform.scale(x: scale, y: flipped ? scale : -scale)
-        path.transform(using: transform)
-        path.lineWidth = 1.8 * scale
-        path.lineCapStyle = .round
-        path.lineJoinStyle = .round
-        color.setStroke()
-        path.stroke()
-    }
 }
 
 /// A stroke icon of its own, as `<ToolbarIcon>` puts one in a button.

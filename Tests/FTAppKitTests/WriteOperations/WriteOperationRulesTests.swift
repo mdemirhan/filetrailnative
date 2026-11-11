@@ -95,8 +95,8 @@ private final class Shown {
         cut()
         session.applyCard(WriteOperationCardState(action: .copyTo, stage: .running, targetPath: "/x"))
         let shown = Shown()
-        _ = await WindowWriteActions(session: session, tab: nil, dialogs: shown.dialogs).paste(
-            into: "/Users/demo/Folder")
+        _ = await WindowWriteActions(session: session, tab: nil, dialogs: shown.dialogs)
+            .pasteFromClipboard(into: "/Users/demo/Folder")
         #expect(shown.titles == ["Couldn\u{2019}t Move"])
     }
 
@@ -108,8 +108,8 @@ private final class Shown {
             if case .card(let card?) = event { actions.append(card.action) }
         }
         let shown = Shown()
-        _ = await WindowWriteActions(session: session, tab: nil, dialogs: shown.dialogs).paste(
-            into: "/Users/demo/Folder")
+        _ = await WindowWriteActions(session: session, tab: nil, dialogs: shown.dialogs)
+            .pasteFromClipboard(into: "/Users/demo/Folder")
         withExtendedLifetime(observation) {}
         #expect(actions == [.moveTo])
         #expect(shown.titles == ["Couldn\u{2019}t Move"])
@@ -122,8 +122,8 @@ private final class Shown {
             .ready(mode: .copy, sourcePaths: ["/Users/demo/a.txt"], sourceEntries: [:], capturedAt: "t"), from: nil)
         session.applyCard(WriteOperationCardState(action: .copyTo, stage: .running, targetPath: "/x"))
         let shown = Shown()
-        _ = await WindowWriteActions(session: session, tab: nil, dialogs: shown.dialogs).paste(
-            into: "/Users/demo/Folder")
+        _ = await WindowWriteActions(session: session, tab: nil, dialogs: shown.dialogs)
+            .pasteFromClipboard(into: "/Users/demo/Folder")
         #expect(shown.titles == ["Couldn\u{2019}t Paste"])
     }
 

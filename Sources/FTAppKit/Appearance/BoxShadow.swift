@@ -60,33 +60,6 @@ enum BoxShadow {
     }
 }
 
-/// The drops of a view whose own drawing can't reach past its layer: the first subview of the box, as big as they reach,
-/// with a hole where the box is. A layer's `shadowOffset` goes either way by the layers above it, so it is not used.
-final class BoxShadowView: NSView {
-    var drops: [ShadowLayer] = [] {
-        didSet {
-            needsDisplay = true
-            superview?.needsLayout = true
-        }
-    }
-    var radius: CGFloat = 0 { didSet { needsDisplay = true } }
-
-    override var isFlipped: Bool { true }
-    override func hitTest(_ point: NSPoint) -> NSView? { nil }
-
-    /// Takes its place around the box it is in.
-    func place() {
-        guard let superview else { return }
-        let room = BoxShadow.room(for: drops)
-        frame = superview.bounds.insetBy(dx: -room, dy: -room)
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        let room = BoxShadow.room(for: drops)
-        BoxShadow.draw(drops, around: bounds.insetBy(dx: room, dy: room), radius: radius)
-    }
-}
-
 /// The push button's bezel: the 0.5 edge and the soft line under it, outside the button as a box shadow is. The app's
 /// other push buttons (a pop-up, a small button) draw theirs with this as well.
 @MainActor

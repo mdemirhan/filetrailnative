@@ -51,38 +51,3 @@ enum ActionNoticeText {
             .error(.text("open in macOS failed: \(result.error ?? "The item didn’t open.")"))
     }
 }
-
-/// The plain alert: a sheet on the window (or a floating alert without one).
-@MainActor
-final class AlertNoticePresenter: ActionNoticePresenting {
-    func show(title: String, message: String, in window: NSWindow?) {
-        let alert = NSAlert()
-        alert.messageText = title
-        alert.informativeText = message
-        alert.addButton(withTitle: "OK")
-        present(alert, in: window)
-    }
-
-    func confirmAlwaysOpenWith(appName: String, kindName: String?, in window: NSWindow?) async -> Bool {
-        let alert = NSAlert()
-        alert.messageText = ActionNoticeText.alwaysOpenWithTitle(appName: appName)
-        alert.informativeText = ActionNoticeText.alwaysOpenWithMessage(kindName: kindName)
-        alert.addButton(withTitle: "Change All")
-        alert.addButton(withTitle: "Cancel")
-        return await withCheckedContinuation { continuation in
-            if let window {
-                alert.beginSheetModal(for: window) { continuation.resume(returning: $0 == .alertFirstButtonReturn) }
-            } else {
-                continuation.resume(returning: alert.runModal() == .alertFirstButtonReturn)
-            }
-        }
-    }
-
-    private func present(_ alert: NSAlert, in window: NSWindow?) {
-        if let window {
-            alert.beginSheetModal(for: window)
-        } else {
-            alert.runModal()
-        }
-    }
-}

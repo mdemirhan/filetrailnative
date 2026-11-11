@@ -281,12 +281,6 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         render()
     }
 
-    /// Choosing an item of the pull-down by its words, as a person does (`pick`).
-    func choosePreset(titled title: String) {
-        guard let index = presetMenu.items.firstIndex(where: { $0.title == title && $0 != .separator }) else { return }
-        choosePreset(index)
-    }
-
     /// `savePreset`: the typed name trimmed (a blank one does nothing) is saved and becomes the current preset; the
     /// keyboard goes back to the pull-down.
     func savePreset() {

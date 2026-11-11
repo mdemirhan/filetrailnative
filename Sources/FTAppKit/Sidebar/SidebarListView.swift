@@ -42,7 +42,6 @@ final class SidebarListItem: NSObject {
 final class SidebarOutlineView: NSOutlineView {
     weak var list: SidebarListView?
     private var pressedRow: Int?
-    private var pressEvent: NSEvent?
     private var dragStart: NSPoint?
     /// Scrolls under a drag held at an edge: the drops here don't go through the outline's own drag handling.
     var edgeScroll = DragEdgeScroll()
@@ -137,7 +136,6 @@ final class SidebarOutlineView: NSOutlineView {
             if !list.isInScrollbar(event) { list.delegate?.sidebarList(list, pressHeader: state) }
         case .item(let state):
             pressedRow = index
-            pressEvent = event
             dragStart = point
             list.delegate?.sidebarList(list, pointerDown: state, event: event)
         }
@@ -353,10 +351,6 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
 
     func index(of item: SidebarListItem) -> Int? {
         items.firstIndex { $0 === item }
-    }
-
-    func index(ofRow id: String) -> Int? {
-        items.firstIndex { $0.row.id == id }
     }
 
     func index(ofItem id: TreeItemID) -> Int? {

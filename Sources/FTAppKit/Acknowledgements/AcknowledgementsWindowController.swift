@@ -70,8 +70,6 @@ public final class AcknowledgementsView: ThemedView {
     /// The entries, top to bottom.
     public var entries: [AcknowledgementEntryView] { list.entries }
 
-    public var introTexts: [String] { list.introTexts }
-
     public override func layout() {
         super.layout()
         titleStrip.frame = NSRect(x: 0, y: 0, width: bounds.width, height: Self.titleHeight)
@@ -122,8 +120,6 @@ final class AcknowledgementList: NSView, ThemeApplying {
         font: ThemeFonts.sans(DesignTokens.typeScale.callout), color: { $0.palette.textSecondary }, lineHeight: 1.5)
 
     override var isFlipped: Bool { true }
-
-    var introTexts: [String] { [intro.stringValue] + (failure.map { [$0.stringValue] } ?? []) }
 
     init(components: [Acknowledgement], failed: Bool, openURL: @escaping @MainActor (URL) -> Void, theme: Theme) {
         intro = ThemedText(
