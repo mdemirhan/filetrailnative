@@ -89,8 +89,7 @@ enum SidebarText {
 }
 
 /// A row of the tree, the Favorites or the Locations.
-final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
-    var accessibilityButtons: [NSView] { [chevron, eject] }
+final class SidebarItemCell: NSTableCellView {
 
     static let identifier = NSUserInterfaceItemIdentifier("SidebarItemCell")
 
@@ -453,8 +452,7 @@ extension SidebarRowState {
 
 /// A section header of the separate layout: the title, and a chevron that shows on hover and stays while the section
 /// is closed.
-final class SidebarHeaderCell: NSTableCellView, SidebarAccessibleCell {
-    var accessibilityButtons: [NSView] { [button] }
+final class SidebarHeaderCell: NSTableCellView {
 
     static let identifier = NSUserInterfaceItemIdentifier("SidebarHeaderCell")
 
@@ -507,7 +505,6 @@ final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
 
     override func isAccessibilityElement() -> Bool { true }
     override func accessibilityRole() -> NSAccessibility.Role? { .button }
-    override func accessibilityParent() -> Any? { sidebarAccessibilityParent(of: self) }
     override func accessibilityPerformPress() -> Bool {
         onClick?()
         return true

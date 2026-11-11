@@ -1177,7 +1177,7 @@ default folder, not the one given; `tools/acknowledgements/gen.sh --check` is ca
 text can ship, and `scripts/release.sh` should call it. `Resources/fd/manifest.json:7` names
 `vendor/fd/darwin-arm64/fd`, a path that does not exist.
 
-### [ ] 5.11. VoiceOver-only code in the sidebar (about 190 lines)
+### [x] 5.11. VoiceOver-only code in the sidebar (about 190 lines)
 
 - Delete `Sources/FTAppKit/Sidebar/SidebarAccessibility.swift`; `SidebarListItem.accessibilityRow`
   (`SidebarListView.swift` 32–39); the five accessibility overrides (79–104); the `rowCountChanged` post (391);
@@ -2210,3 +2210,7 @@ anything that differed from the plan, and anything found on the way that is not 
   that every format the exec recordings use (apfs, apfs-cs, exfat, fat32, hfs) is one the tests make. fd's licences
   stay reachable in the app through `Resources/Acknowledgements/fd.txt` (MIT and Apache both); the checked-in
   binary's SHA-256 is `FdBinary.binarySHA256`, with a test. The FixtureGolden tests use the shared `JSONValue`.
+- 2026-11-11. 5.11, done: the sidebar's own accessibility rows, their outline overrides, the announcements and the
+  cells' VoiceOver parent go; every identifier and `accessibilityPerformPress()` stays, and nothing in the
+  automation reaches rows through the accessibility tree. Kept: the Rename sheet's `accessibilityText`, which the
+  tests read a preview row by.

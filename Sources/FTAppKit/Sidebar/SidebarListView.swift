@@ -30,8 +30,6 @@ protocol SidebarListDelegate: AnyObject {
 
 final class SidebarListItem: NSObject {
     var row: SidebarListRow
-    /// What VoiceOver knows it by (SidebarAccessibility.swift).
-    var accessibilityRow: SidebarAccessibilityRow?
     init(_ row: SidebarListRow) {
         self.row = row
     }
@@ -72,33 +70,6 @@ final class SidebarOutlineView: NSOutlineView {
         guard let hit = super.hitTest(point) else { return nil }
         if hit is SidebarChevronView || hit is SidebarEjectView || hit is SidebarHeaderButton { return hit }
         return self
-    }
-
-    // MARK: Accessibility (SidebarAccessibility.swift)
-
-    override func accessibilityChildren() -> [Any]? { list?.accessibilityRows }
-    override func accessibilityRows() -> [any NSAccessibilityRow]? { list?.accessibilityRows }
-
-    override func accessibilitySelectedRows() -> [any NSAccessibilityRow]? {
-        list?.accessibilityRows.filter { $0.isAccessibilitySelected() }
-    }
-
-    override func accessibilityVisibleRows() -> [any NSAccessibilityRow]? {
-        let shown = rows(in: visibleRect)
-        return (shown.lowerBound..<(shown.lowerBound + shown.length)).compactMap { list?.accessibilityRow(at: $0) }
-    }
-
-    override func accessibilityHitTest(_ point: NSPoint) -> Any? {
-        nonisolated(unsafe) var found: Any?
-        MainActor.assumeIsolated {
-            found = self
-            if let window {
-                let inWindow = window.convertPoint(fromScreen: point)
-                let index = self.row(at: self.convert(inWindow, from: nil))
-                if let element = self.list?.accessibilityRow(at: index) { found = element.element(at: point) }
-            }
-        }
-        return found
     }
 
     // MARK: Keys
@@ -381,11 +352,8 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
                 outline.layoutSubtreeIfNeeded()
                 scrollTop = Double(outline.rect(ofRow: index).minY) - anchor.offset
             }
-            NSAccessibility.post(element: outline, notification: .rowCountChanged)
-            announceChanges(rows, known: known)
             return
         }
-        announceChanges(rows, known: known)
         var changedHeights = IndexSet()
         for (index, row) in rows.enumerated() where row != items[index].row {
             items[index].row = row
@@ -411,19 +379,6 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
             })
         else { return nil }
         return (shownIDs[index], Double(outline.rect(ofRow: index).minY) - scrollTop)
-    }
-
-    /// What VoiceOver follows, as AppKit would post it for a selection and disclosure it knew of.
-    private func announceChanges(_ rows: [SidebarListRow], known: [String: SidebarListItem]) {
-        var selectionChanged = false
-        for row in rows {
-            guard case .item(let next) = row, case .item(let shown)? = known[row.id]?.row else { continue }
-            selectionChanged = selectionChanged || (next.selection == .none) != (shown.selection == .none)
-            if next.item.expanded != shown.item.expanded {
-                NSAccessibility.post(element: outline, notification: next.item.expanded ? .rowExpanded : .rowCollapsed)
-            }
-        }
-        if selectionChanged { NSAccessibility.post(element: outline, notification: .selectedRowsChanged) }
     }
 
     /// The rows that just opened or closed, and when: their chevrons turn as their cells are made, in whichever cell the

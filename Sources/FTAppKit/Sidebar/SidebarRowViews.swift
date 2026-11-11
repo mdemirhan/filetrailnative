@@ -140,7 +140,6 @@ final class SidebarIconView: SidebarPlainView {
 final class SidebarChevronView: SidebarPlainView {
     override func isAccessibilityElement() -> Bool { !isHidden && isVisibleGlyph }
     override func accessibilityRole() -> NSAccessibility.Role? { .button }
-    override func accessibilityParent() -> Any? { sidebarAccessibilityParent(of: self) }
     override func isAccessibilityEnabled() -> Bool { isEnabled }
     override func accessibilityPerformPress() -> Bool {
         guard isEnabled else { return false }
@@ -228,7 +227,6 @@ final class SidebarChevronView: SidebarPlainView {
 final class SidebarEjectView: SidebarPlainView {
     override func isAccessibilityElement() -> Bool { !isHidden }
     override func accessibilityRole() -> NSAccessibility.Role? { .button }
-    override func accessibilityParent() -> Any? { sidebarAccessibilityParent(of: self) }
     override func isAccessibilityEnabled() -> Bool { isEnabled }
     override func accessibilityPerformPress() -> Bool {
         guard isEnabled else { return false }
@@ -357,12 +355,4 @@ final class SidebarBadgeView: SidebarPlainView {
         fill.setFill()
         NSBezierPath(roundedRect: bounds, xRadius: bounds.height / 2, yRadius: bounds.height / 2).fill()
     }
-}
-
-/// A button's row, in the list it is in.
-@MainActor
-func sidebarAccessibilityParent(of button: NSView) -> Any? {
-    var view = button.superview
-    while let candidate = view, !(candidate is SidebarOutlineView) { view = candidate.superview }
-    return (view as? SidebarOutlineView)?.accessibilityRow(containing: button)
 }
