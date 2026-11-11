@@ -85,11 +85,6 @@ final class QuickLookController: NSObject, @preconcurrency QLPreviewPanelDataSou
         ended()
     }
 
-    /// The window no longer shows its item (the folder changed): the panel closes.
-    func windowWillChange(_ window: NSWindow) {
-        if owner === window { close() }
-    }
-
     func ended() {
         url = nil
         // It holds the tab's list: let go with the item.

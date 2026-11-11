@@ -106,9 +106,4 @@ public struct NavigationHistory: Equatable, Sendable {
         index = target
         return paths[target]
     }
-
-    /// Rewrites every entry (a folder renamed or moved by any window takes the history along).
-    public mutating func mapPaths(_ transform: (String) -> String) {
-        paths = paths.map(transform)
-    }
 }

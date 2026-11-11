@@ -2260,3 +2260,5 @@ anything that differed from the plan, and anything found on the way that is not 
   assignments). The new outputs were worked out without the new code: the old code was run on the same inputs with
   each of the two names replaced by a name it already refused, and the names put back where shortcuts are echoed;
   the new code then matched them. `shortcutOrder` stays (the golden test reads it).
+- 2026-11-11. Q8 (delete both): `NavigationHistory.mapPaths` and `QuickLookController.windowWillChange` are gone;
+  neither had a caller, a selector or a script use.
