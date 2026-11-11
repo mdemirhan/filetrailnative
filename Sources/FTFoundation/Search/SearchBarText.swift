@@ -44,7 +44,8 @@ public enum SearchBarText {
     public static let done = "Done"
     public static let doneTitle = "Close Search Results (Esc)"
     public static let doneName = "Close search results"
-    public static let truncatedBanner = "Showing the first 20,000 matches."
+    public static let truncatedBanner =
+        "Showing the first \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) matches."
 
     /// The toolbar's field.
     public static let fieldPlaceholder = "Search"

@@ -1463,7 +1463,7 @@ Only merge code proven identical. Where two helpers differ in any case, do not m
 Once 8.2 has settled the comparator, sort with keys computed once per item; until then one collator per sort is
 enough.
 
-### [ ] 6.13. Text that repeats a number reads it from the code
+### [x] 6.13. Text that repeats a number reads it from the code
 
 - "A window holds up to 25 tabs" (`Sources/FTFoundation/Help/HelpTopics.swift` 49, 101), "Search stops at 20,000
   results" (456), the banner "Showing the first 20,000 matches." (`Search/SearchBarText.swift:47`) are literals;
@@ -2287,3 +2287,7 @@ anything that differed from the plan, and anything found on the way that is not 
   group opens later in `ExplorerHarness` have no `servicesOverride`; `fallbackIcons` is every test's icon store):
   asked of the owner. Found: an empty `extension AppDelegate {}` beside the fallbacks; earlier-app names in three
   comments (for Phase 10).
+- 2026-11-11. 6.13, done: the search limit is `SearchLimits.resultLimit` in FTFoundation, read by the search runtime,
+  the banner and Help; the three Help sentences and the banner build their numbers from the constants (the count
+  grouped as `groupedCount` does, pinned to en_US). Also the Merge All Windows sentence's "past 25", which the item
+  didn't list. `help-content.json` is unchanged and passes.

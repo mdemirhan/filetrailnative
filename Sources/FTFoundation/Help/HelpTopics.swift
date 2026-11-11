@@ -46,7 +46,7 @@ extension HelpContent {
                         HelpRow(
                             label: "New tab",
                             description:
-                                "{newTab} opens a tab on the folder you are in. The row of tabs appears with the second tab. A window holds up to 25 tabs."
+                                "{newTab} opens a tab on the folder you are in. The row of tabs appears with the second tab. A window holds up to \(AppPreferenceLimits.openTabsLimit) tabs."
                         ),
                         HelpRow(
                             label: "Open in New Tab",
@@ -98,7 +98,7 @@ extension HelpContent {
                         HelpRow(
                             label: "Moving tabs",
                             description:
-                                "Window > Move Tab to New Window, or the same item in a tab's right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others; a window whose tabs would take this one past 25 stays open."
+                                "Window > Move Tab to New Window, or the same item in a tab's right-click menu, gives the tab a window of its own; it keeps its folder and view, but not its Back and Forward history. Window > Merge All Windows brings the tabs of every other window into this one and closes the others; a window whose tabs would take this one past \(AppPreferenceLimits.openTabsLimit) stays open."
                         ),
                         HelpRow(
                             label: "Between windows",
@@ -453,7 +453,9 @@ extension HelpContent {
                         ),
                         HelpRow(
                             label: "Limits",
-                            description: "Search stops at 20,000 results. Aliases are not searched for."),
+                            description:
+                                "Search stops at \(ContextMenuRules.groupedCount(SearchLimits.resultLimit)) results. Aliases are not searched for."
+                        ),
                     ]),
             ]),
         HelpTopic(

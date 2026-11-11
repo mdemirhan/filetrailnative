@@ -36,7 +36,6 @@ public typealias SearchSpawn =
 /// Searches run as `fd` processes, one per job, whose NUL-separated output is parsed as it arrives. The UI asks for
 /// the results found since its last look (`getUpdate`), or takes them as a stream (`results`).
 public final class FdSearchRuntime: @unchecked Sendable {
-    public static let resultLimit = 20_000
     private static let maxFinishedJobRecords = 64
 
     /// What fd can't tell: it hides by the name alone, so what has the flag that hides an item, or is in a folder that
@@ -243,7 +242,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
         lock.withLock { jobs[jobId]?.stderr.append(chunk) }
     }
 
-    /// Adds a result; the process to stop when that makes the 20,000th.
+    /// Adds a result; the process to stop when that makes the `SearchLimits.resultLimit`th.
     private func append(_ output: String, to job: inout Job) -> SearchProcess? {
         var item = SearchResults.item(rootPath: job.rootPath, outputPath: output)
         if job.includeHidden {
@@ -252,7 +251,7 @@ public final class FdSearchRuntime: @unchecked Sendable {
             return nil
         }
         job.items.append(item)
-        guard job.items.count >= Self.resultLimit else { return nil }
+        guard job.items.count >= SearchLimits.resultLimit else { return nil }
         job.truncated = true
         job.status = .truncated
         job.done = true

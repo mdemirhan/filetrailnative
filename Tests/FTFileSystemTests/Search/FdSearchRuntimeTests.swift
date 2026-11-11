@@ -111,7 +111,7 @@ private final class LookedAt: @unchecked Sendable {
         let root = "/Users/demo/project"
         let (runtime, process, _) = make(flagged: [root + "/hidden"])
         let job = runtime.startSearch(demo()).jobId
-        let dropped = (0..<FdSearchRuntime.resultLimit).map { root + "/hidden/\($0)\0" }.joined()
+        let dropped = (0..<SearchLimits.resultLimit).map { root + "/hidden/\($0)\0" }.joined()
         process.write(dropped)
         let update = try runtime.getUpdate(jobId: job, cursor: 0)
         #expect(update.items.isEmpty)
@@ -344,7 +344,7 @@ private final class LookedAt: @unchecked Sendable {
         #expect(process.terminateCount == 1)
         process.close(code: nil, signal: SIGTERM)
         let update = try runtime.getUpdate(jobId: started.jobId, cursor: 0)
-        #expect(update.items.count == FdSearchRuntime.resultLimit)
+        #expect(update.items.count == SearchLimits.resultLimit)
         #expect(update.status == .truncated)
         #expect(update.truncated)
         #expect(update.done)

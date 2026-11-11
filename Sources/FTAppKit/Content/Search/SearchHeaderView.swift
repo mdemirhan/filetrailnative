@@ -511,7 +511,7 @@ final class SearchSmallButton: SystemButton {
 
 // MARK: The banner
 
-/// The banner over cut-short results: "Showing the first 20,000 matches."
+/// The banner over cut-short results (`SearchBarText.truncatedBanner`).
 final class SearchBannerView: NSView, TextStyleSource {
     var styleTextField: NSTextField? { text }
     private let text = FlushTextField(labelWithString: SearchBarText.truncatedBanner)
