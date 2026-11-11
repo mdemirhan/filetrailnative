@@ -177,7 +177,7 @@ extension WriteCoordinator {
     ) -> DeletedItem {
         var outcome = DeletedItem()
         do {
-            let before = LocalOperations.readItemSize(fileSystem.itemSize, path)
+            let before = LocalOperations.readItemSize(fileSystem, path)
             // Checked again just before deleting: the question may have been open a while. An item gone already has
             // nothing left to delete.
             let gone: Bool

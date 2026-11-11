@@ -424,7 +424,7 @@ struct ConflictSafetyTests {
                 throw NativeError(message: "ENOSPC: no space left on device", code: "ENOSPC")
             }
             let trash = trashInto(trashDir)
-            fileSystem.trash = { path in
+            fileSystem.trashImpl = { path in
                 trashed.mutate { $0.append(path) }
                 return try trash(path)
             }

@@ -84,7 +84,7 @@ extension WriteCoordinator {
         var trashLocationUnknown = false
         // What's on the home folder's disk goes to the home folder's Trash.
         let homeDev: Int64? = await LocalOperations.onDisk {
-            if case .size(let home) = LocalOperations.readItemSize(fileSystem.itemSize, homePath) { return home.dev }
+            if case .size(let home) = LocalOperations.readItemSize(fileSystem, homePath) { return home.dev }
             return nil
         }
         // One item that can't go to the Trash doesn't keep the others from going; only stopping stops the rest.
@@ -162,7 +162,7 @@ extension WriteCoordinator {
         // The item the Trash is asked to take, for a no-Trash question about it.
         var tried: AskedItem?
         do {
-            let before = LocalOperations.readItemSize(fileSystem.itemSize, path)
+            let before = LocalOperations.readItemSize(fileSystem, path)
             // An item that is already gone (deleted or moved since it was chosen) has nothing left to move: that
             // counts as done, not as a failure.
             let stats = LocalOperations.lstatUnlessMissing(fileSystem, path)
@@ -173,11 +173,7 @@ extension WriteCoordinator {
                 let parentId = folderIds.id({ try fileSystem.stat($0) }, NodePath.dirname(path))
                 let looks = stampWithoutId(StampReader(fileSystem), path, id)
                 tried = AskedItem(id: id, stamp: looks)
-                guard let trash = fileSystem.trash else {
-                    throw OperationError(
-                        "\u{201C}\(NodePath.basename(path))\u{201D} couldn\u{2019}t be moved to the Trash.")
-                }
-                if let trashPath = try trash(path) {
+                if let trashPath = try fileSystem.trash(path) {
                     outcome.unit = UndoUnit(steps: [
                         .trashed(from: path, trashPath: trashPath, id: id, parentId: parentId, stamp: looks)
                     ])

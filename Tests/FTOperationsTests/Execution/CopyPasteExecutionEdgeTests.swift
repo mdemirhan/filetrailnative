@@ -83,7 +83,7 @@ struct CopyPasteExecutionEdgeTests {
         #expect(chmodFailure.exists("/target/file.txt"))
     }
 
-    @Test func removesSourceDirectoriesAfterSuccessfulCutCopiesAndSupportsFilesystemsWithoutChmod() async throws {
+    @Test func removesSourceDirectoriesAfterSuccessfulCutCopies() async throws {
         let cutDirectory = MockWriteServiceFileSystem([
             ("/source", .directory()), ("/source/Folder", .directory()), ("/source/Folder/file.txt", .file(size: 5)),
             ("/target", .directory()),
@@ -95,17 +95,6 @@ struct CopyPasteExecutionEdgeTests {
 
         #expect(!cutDirectory.exists("/source/Folder"))
         #expect(cutDirectory.exists("/target/Folder/file.txt"))
-
-        let base = MockWriteServiceFileSystem([
-            ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
-        ])
-        let noChmod = TestFileSystem(base)
-        noChmod.chmod = nil
-        let noChmodOperation = try createResolvedOperation(base, sources: ["/source/file.txt"], into: "/target")
-
-        await execute(noChmod, noChmodOperation, operationId: "copy-op-2")
-
-        #expect(base.exists("/target/file.txt"))
     }
 
     @Test func movesDirectoriesWithHiddenFilesAndHiddenFoldersDuringCut() async throws {

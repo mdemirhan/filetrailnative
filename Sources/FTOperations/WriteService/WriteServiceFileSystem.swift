@@ -2,8 +2,7 @@ import Darwin
 import FTFoundation
 import Foundation
 
-/// What a paste does to the disk, on top of what its review reads. The calls a disk may not have are nil when
-/// it hasn't them.
+/// What a paste does to the disk, on top of what its review reads.
 public protocol WriteServiceFileSystem: AnalysisFileSystem {
     /// rename(2) that fails with EEXIST instead of replacing an item at `to` (`renamex_np(RENAME_EXCL)`, checking
     /// first on a volume that can't do that).
@@ -28,33 +27,24 @@ public protocol WriteServiceFileSystem: AnalysisFileSystem {
     func setFlags(_ path: String, _ flags: UInt32) throws
 
     /// `chmod(path, mode)`.
-    var chmod: ((String, UInt32) throws -> Void)? { get }
+    func chmod(_ path: String, _ mode: UInt32) throws
     /// `utimes(path, atimeMs, mtimeMs)` (follows symlinks): timestamps of folders and files after they are made.
-    var utimes: ((String, Double, Double) throws -> Void)? { get }
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws
     /// A folder's own metadata (mode, flags, dates, xattrs such as tags, ACLs) onto an existing folder, without
-    /// its contents. Without it, only the mode and dates are carried over.
-    var copyMetadata: ((String, String) throws -> Void)? { get }
+    /// its contents. When it fails, only the mode and dates are carried over.
+    func copyMetadata(_ source: String, _ destination: String) throws
     /// `copyMetadata` for the folder of an app copied on its own, which then runs from where it is put even when
-    /// it is in quarantine. Without it, `copyMetadata` is used.
-    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { get }
+    /// it is in quarantine.
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws
     /// Gives the item the ACL `acl` (acl_to_text(3) text), or none at all for nil (a symlink not followed).
-    var setAcl: ((String, String?) throws -> Void)? { get }
-    /// Moves an item to the Trash and returns the path it has there (nil when the Trash didn't say). Without it
-    /// (or when it fails), the person is asked before anything is deleted for good.
-    var trash: ((String) throws -> String?)? { get }
+    func setAcl(_ path: String, _ acl: String?) throws
+    /// Moves an item to the Trash and returns the path it has there (nil when the Trash didn't say). When it fails
+    /// because the disk has no Trash (`CopyPasteErrors.noTrashErrorCode`), the person is asked before anything is
+    /// deleted for good.
+    func trash(_ path: String) throws -> String?
     /// Whether items can be added to or removed from a folder (access(2) with W_OK; throws when not). A move to
     /// another disk asks before copying anything, so it never copies what it then can't remove.
-    var canModifyFolder: ((String) throws -> Void)? { get }
-}
-
-extension WriteServiceFileSystem {
-    public var chmod: ((String, UInt32) throws -> Void)? { nil }
-    public var utimes: ((String, Double, Double) throws -> Void)? { nil }
-    public var copyMetadata: ((String, String) throws -> Void)? { nil }
-    public var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { nil }
-    public var setAcl: ((String, String?) throws -> Void)? { nil }
-    public var trash: ((String) throws -> String?)? { nil }
-    public var canModifyFolder: ((String) throws -> Void)? { nil }
+    func canModifyFolder(_ path: String) throws
 }
 
 /// `removeEmptyFolder`: rmdir(2) on macOS also removes a folder that holds nothing but "._name" files, deleting
@@ -73,7 +63,7 @@ public func removeEmptyFolder(
 }
 
 /// The disk itself, as the app's own file system calls it: the native copy (copyfile(3)), exclusive rename, lock
-/// flags and ACLs, with the Trash it is given (none by default).
+/// flags and ACLs, with the Trash it is given. Without one (the default), it is a disk without a Trash.
 public struct NativeWriteFileSystem: WriteServiceFileSystem {
     private let disk = PosixFileSystem()
     private let copier: StoppableCopy
@@ -121,21 +111,31 @@ public struct NativeWriteFileSystem: WriteServiceFileSystem {
     public func getFlags(_ path: String) throws -> UInt32 { try NativeFS.getFlags(path) }
     public func setFlags(_ path: String, _ flags: UInt32) throws { try NativeFS.setFlags(path, flags) }
 
-    public var chmod: ((String, UInt32) throws -> Void)? { { try NativeFS.chmod($0, $1) } }
-    public var utimes: ((String, Double, Double) throws -> Void)? {
-        { try NativeFS.utimes($0, atimeMs: $1, mtimeMs: $2) }
+    public func chmod(_ path: String, _ mode: UInt32) throws { try NativeFS.chmod(path, mode) }
+    public func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {
+        try NativeFS.utimes(path, atimeMs: atimeMs, mtimeMs: mtimeMs)
     }
-    public var copyMetadata: ((String, String) throws -> Void)? { { try NativeFS.copyMetadata($0, $1) } }
-    public var copyMetadataToRunInPlace: ((String, String) throws -> Void)? {
-        { try NativeFS.copyMetadataToRunInPlace($0, $1) }
+    public func copyMetadata(_ source: String, _ destination: String) throws {
+        try NativeFS.copyMetadata(source, destination)
     }
-    public var setAcl: ((String, String?) throws -> Void)? { { try NativeFS.setAcl($0, $1) } }
-    public var trash: ((String) throws -> String?)? { trashItem.map { trash in { try trash($0) } } }
-    public var canModifyFolder: ((String) throws -> Void)? {
-        { path in
-            if access(path, W_OK) != 0 {
-                throw NativeError.errno(errno, syscall: "access", path: path)
-            }
+    public func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        try NativeFS.copyMetadataToRunInPlace(source, destination)
+    }
+    public func setAcl(_ path: String, _ acl: String?) throws { try NativeFS.setAcl(path, acl) }
+
+    /// Fails as on a disk without a Trash when it was given none.
+    public func trash(_ path: String) throws -> String? {
+        guard let trashItem else {
+            throw OperationError(
+                "\u{201C}\(NodePath.basename(path))\u{201D} couldn\u{2019}t be moved to the Trash. This disk may not have a Trash.",
+                code: CopyPasteErrors.noTrashErrorCode)
+        }
+        return try trashItem(path)
+    }
+
+    public func canModifyFolder(_ path: String) throws {
+        if access(path, W_OK) != 0 {
+            throw NativeError.errno(errno, syscall: "access", path: path)
         }
     }
 }

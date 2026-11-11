@@ -8,8 +8,7 @@ import os
 
 @testable import FTOperations
 
-/// A file system with any call replaced.
-/// The optional calls are copied from `base`, so a test can also take one away.
+/// A file system with any call replaced; the rest go to `base`.
 final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     let base: any WriteServiceFileSystem
     var lstatImpl: ((String) throws -> WriteServiceStats)?
@@ -20,21 +19,12 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     var copyFileImpl: ((String, String, StopSignal?, (@Sendable (Int64) -> Void)?) throws -> Void)?
     var getFlagsImpl: ((String) throws -> UInt32)?
     var isPackageImpl: ((String) throws -> Bool?)?
-    var chmod: ((String, UInt32) throws -> Void)?
-    var utimes: ((String, Double, Double) throws -> Void)?
-    var copyMetadata: ((String, String) throws -> Void)?
-    var setAcl: ((String, String?) throws -> Void)?
-    var trash: ((String) throws -> String?)?
-    var canModifyFolder: ((String) throws -> Void)?
+    var chmodImpl: ((String, UInt32) throws -> Void)?
+    var utimesImpl: ((String, Double, Double) throws -> Void)?
+    var trashImpl: ((String) throws -> String?)?
 
     init(_ base: any WriteServiceFileSystem = NativeWriteFileSystem()) {
         self.base = base
-        chmod = base.chmod
-        utimes = base.utimes
-        copyMetadata = base.copyMetadata
-        setAcl = base.setAcl
-        trash = base.trash
-        canModifyFolder = base.canModifyFolder
     }
 
     func lstat(_ path: String) throws -> WriteServiceStats { try lstatImpl?(path) ?? base.lstat(path) }
@@ -49,7 +39,24 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     }
     func isAppleDouble(_ path: String) -> Bool { base.isAppleDouble(path) }
     func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
-    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { base.copyMetadataToRunInPlace }
+    func chmod(_ path: String, _ mode: UInt32) throws {
+        if let chmodImpl { return try chmodImpl(path, mode) }
+        try base.chmod(path, mode)
+    }
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {
+        if let utimesImpl { return try utimesImpl(path, atimeMs, mtimeMs) }
+        try base.utimes(path, atimeMs, mtimeMs)
+    }
+    func copyMetadata(_ source: String, _ destination: String) throws { try base.copyMetadata(source, destination) }
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        try base.copyMetadataToRunInPlace(source, destination)
+    }
+    func setAcl(_ path: String, _ acl: String?) throws { try base.setAcl(path, acl) }
+    func trash(_ path: String) throws -> String? {
+        if let trashImpl { return try trashImpl(path) }
+        return try base.trash(path)
+    }
+    func canModifyFolder(_ path: String) throws { try base.canModifyFolder(path) }
     func renameExclusive(_ from: String, _ to: String) throws {
         if let renameExclusiveImpl { return try renameExclusiveImpl(from, to) }
         try base.renameExclusive(from, to)

@@ -58,11 +58,10 @@ enum LocalOperations {
         }
     }
 
-    /// `readItemSize`: nil when the disk can't tell (the file system has no `itemSize`).
-    static func readItemSize(_ itemSize: ((String) throws -> ItemSize)?, _ path: String) -> ItemSizeLook? {
-        guard let itemSize else { return nil }
+    /// `readItemSize`: the item as a folder's measurement counts it, or that it is gone or can't be read.
+    static func readItemSize(_ fileSystem: some LocalWriteFileSystem, _ path: String) -> ItemSizeLook {
         do {
-            return .size(try itemSize(path))
+            return .size(try fileSystem.itemSize(path))
         } catch {
             return errorCode(error) == "ENOENT" ? .missing : .unreadable
         }

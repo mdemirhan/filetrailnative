@@ -385,16 +385,15 @@ public enum UndoExecution {
         var lifted = Lifted(flags: try unlockForMove(fileSystem, path))
         do {
             let stats = try? fileSystem.lstat(path)
-            if let chmod = fileSystem.chmod, let stats, stats.isDirectory {
+            if let stats, stats.isDirectory {
                 let mode = stats.mode & 0o7777
                 if mode & 0o200 == 0 {
-                    try chmod(path, mode | 0o200)
+                    try fileSystem.chmod(path, mode | 0o200)
                     lifted.mode = mode
                 }
             }
-            let acl = fileSystem.getAcl.flatMap { getAcl -> String? in try? getAcl(path) }
-            if let setAcl = fileSystem.setAcl, let acl, acl.contains(":deny:") {
-                try setAcl(path, nil)
+            if let acl = (try? fileSystem.getAcl(path)) ?? nil, acl.contains(":deny:") {
+                try fileSystem.setAcl(path, nil)
                 lifted.acl = acl
             }
         } catch {
@@ -412,21 +411,15 @@ public enum UndoExecution {
     {
         var restored = true
         if let acl = lifted.acl {
-            restored = succeeds(fileSystem.setAcl.map { setAcl in { try setAcl(path, acl) } })
+            restored = (try? fileSystem.setAcl(path, acl)) != nil
         }
         if let mode = lifted.mode {
-            restored = succeeds(fileSystem.chmod.map { chmod in { try chmod(path, mode) } }) && restored
+            restored = (try? fileSystem.chmod(path, mode)) != nil && restored
         }
         if let flags = lifted.flags {
             restored = (try? fileSystem.setFlags(path, flags)) != nil && restored
         }
         return restored
-    }
-
-    /// Whether `write` was there to make, and went through.
-    private static func succeeds(_ write: (() throws -> Void)?) -> Bool {
-        guard let write else { return false }
-        return (try? write()) != nil
     }
 
     /// An item an Undo moved that had its lock or permissions taken off, which couldn't be put back: said, though the
@@ -552,7 +545,7 @@ public enum UndoExecution {
         }
         let parentId = context.folderIdOf(NodePath.dirname(planned.path))
         let looks = stampWithoutId(StampReader(fileSystem), planned.path, id)
-        let before = fileSystem.itemSize.flatMap { itemSize in try? itemSize(planned.path) }
+        let before = try? fileSystem.itemSize(planned.path)
         // What an operation made is its own (its id was checked): a copy of a locked item is locked too, a copy of a
         // read-only folder read-only, and a copy of ~/Documents has a rule against deleting it; the Trash refuses all
         // of them. It goes there without them, without asking, and they are put back on it there. So does a copy put
@@ -567,11 +560,7 @@ public enum UndoExecution {
         }
         let trashPath: String?
         do {
-            guard let trash = fileSystem.trash else {
-                throw OperationError(
-                    "\u{201C}\(NodePath.basename(planned.path))\u{201D} couldn\u{2019}t be moved to the Trash.")
-            }
-            trashPath = try trash(planned.path)
+            trashPath = try fileSystem.trash(planned.path)
         } catch {
             let restored = restoreRestrictions(fileSystem, planned.path, lifted)
             let outcome = writeFailed(

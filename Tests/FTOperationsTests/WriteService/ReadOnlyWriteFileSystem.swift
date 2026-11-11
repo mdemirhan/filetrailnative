@@ -1,5 +1,5 @@
-// The reading file systems of the review's tests, given to a write service: without the writing calls, which a
-// paste then fails on
+// The reading file systems of the review's tests, given to a write service: every writing call fails, so a paste
+// fails on them
 import Darwin
 import Foundation
 
@@ -24,6 +24,13 @@ extension ReadOnlyWriteFileSystem {
     }
     func getFlags(_ path: String) throws -> UInt32 { 0 }
     func setFlags(_ path: String, _ flags: UInt32) throws { throw refused(path) }
+    func chmod(_ path: String, _ mode: UInt32) throws { throw refused(path) }
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws { throw refused(path) }
+    func copyMetadata(_ source: String, _ destination: String) throws { throw refused(destination) }
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws { throw refused(destination) }
+    func setAcl(_ path: String, _ acl: String?) throws { throw refused(path) }
+    func trash(_ path: String) throws -> String? { throw refused(path) }
+    func canModifyFolder(_ path: String) throws { throw refused(path) }
 }
 
 extension MockAnalysisFileSystem: ReadOnlyWriteFileSystem {}

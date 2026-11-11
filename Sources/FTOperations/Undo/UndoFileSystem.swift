@@ -6,17 +6,11 @@ import Foundation
 /// rule against deleting it off an operation's own copy for the Trash, and put it back after.
 public protocol UndoFileSystem: LocalWriteFileSystem {
     /// The ACL as text, nil for none.
-    var getAcl: ((String) throws -> String?)? { get }
-}
-
-extension UndoFileSystem {
-    public var getAcl: ((String) throws -> String?)? { nil }
+    func getAcl(_ path: String) throws -> String?
 }
 
 extension NativeWriteFileSystem: UndoFileSystem {
-    public var getAcl: ((String) throws -> String?)? {
-        { try NativeFS.getAcl($0) }
-    }
+    public func getAcl(_ path: String) throws -> String? { try NativeFS.getAcl(path) }
 }
 
 /// One item of the batch an Undo renames back, as a rename of several items takes it.

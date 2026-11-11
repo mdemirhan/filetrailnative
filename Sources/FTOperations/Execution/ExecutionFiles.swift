@@ -223,9 +223,9 @@ private func makeFoldersWritable(_ fileSystem: some WriteServiceFileSystem, _ pa
     if flags & CopyPasteErrors.userLockFlags != 0 {
         try? fileSystem.setFlags(path, flags & ~CopyPasteErrors.userLockFlags)
     }
-    try? fileSystem.setAcl?(path, nil)
+    try? fileSystem.setAcl(path, nil)
     guard captureFingerprint(fileSystem, path).kind == .directory else { return }
-    try? fileSystem.chmod?(path, 0o700)
+    try? fileSystem.chmod(path, 0o700)
     for entry in (try? fileSystem.readdir(path)) ?? [] {
         makeFoldersWritable(fileSystem, NodePath.join(path, entry))
     }
@@ -249,14 +249,13 @@ public func unlockForMove(_ fileSystem: some WriteServiceFileSystem, _ path: Str
 /// A folder that can't be written to can't always be renamed: macOS 14 refuses it. The hidden copy of a
 /// read-only folder is made writable for the move, and given its mode back by restoreAfterMove.
 func openForMove(_ fileSystem: some WriteServiceFileSystem, _ path: String) throws -> UInt32? {
-    guard let chmod = fileSystem.chmod else { return nil }
     let fingerprint = captureFingerprint(fileSystem, path)
     guard fingerprint.kind == .directory, let fullMode = fingerprint.mode else { return nil }
     let mode = fullMode & 0o7777
     if mode & 0o200 != 0 {
         return nil
     }
-    try chmod(path, mode | 0o200)
+    try fileSystem.chmod(path, mode | 0o200)
     return mode
 }
 
@@ -264,7 +263,7 @@ func openForMove(_ fileSystem: some WriteServiceFileSystem, _ path: String) thro
 /// mode changed).
 func restoreAfterMove(_ fileSystem: some WriteServiceFileSystem, _ path: String, _ mode: UInt32?, _ flags: UInt32?) {
     if let mode {
-        try? fileSystem.chmod?(path, mode)
+        try? fileSystem.chmod(path, mode)
     }
     if let flags {
         try? fileSystem.setFlags(path, flags)

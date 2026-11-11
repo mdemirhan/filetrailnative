@@ -1382,7 +1382,7 @@ One more reason: the check at `WriteOperationEvent.swift:240` refuses a negative
 about an item on such a device would be answered "skip" without being asked. It is uncertain that macOS produces
 one; removing the checks removes the risk.
 
-### [ ] 6.8. One file-system protocol with required members
+### [x] 6.8. One file-system protocol with required members
 
 - The tower `IdentityFileSystem` → `AnalysisFileSystem` → `WriteServiceFileSystem` → `LocalWriteFileSystem` →
   `UndoFileSystem` has one production conformer at every level (`NativeWriteFileSystem`; `PosixFileSystem` for
@@ -2306,3 +2306,14 @@ anything that differed from the plan, and anything found on the way that is not 
   services once (`TestServices` in the FTAppKitTests harness: a `DirectoryService`, a `SharedClipboard`, no
   preference channel, one shared icon store); the test run took 47-52 s after against 67-78 s before, under noisy
   load. The app starts and opens its window as before.
+- 2026-11-11. 6.8, done in a worktree of its own and brought over, but for collapsing the five protocols (optional;
+  every lower-level double would have had to implement the write calls). Both claims held: one production conformer
+  per level, and every optional member present in the app's writing disk. A disk without a Trash is now a `trash`
+  that fails with `CopyPasteErrors.noTrashErrorCode`, as the app's `TrashItem` does on such a disk, so "no Trash, ask,
+  delete for good" stays reachable the app's way; the one difference is that a Replace without a Trash now runs the
+  "item unchanged" check before asking, as a Replace with one always did. Beyond the item:
+  `WriteGuards.assertNotSystemLocation` takes a non-optional disk (the coordinator was its only nil caller). Tests:
+  setup only (about 63 `WriteCoordinator(...)` constructions pass a disk; doubles gained the required members); one
+  line of `UndoFuzzTests` changed from `base.trash?(path) ?? nil` to `base.trash(path)`, the same thing as its base
+  has a Trash; the second half of a test whose subject was a disk without chmod went with that branch. 971
+  FTOperationsTests passed after each step.

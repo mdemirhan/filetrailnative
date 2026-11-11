@@ -156,7 +156,7 @@ extension WriteCoordinator {
         let totalItemCount = UndoHistory.itemStepCount(entry.units)
         let homePath = homePath
         let homeDev: Int64? = await LocalOperations.onDisk {
-            if case .size(let home) = LocalOperations.readItemSize(fileSystem.itemSize, homePath) { return home.dev }
+            if case .size(let home) = LocalOperations.readItemSize(fileSystem, homePath) { return home.dev }
             return nil
         }
         var runDiskHasTrash: (@Sendable (String) -> Bool)?

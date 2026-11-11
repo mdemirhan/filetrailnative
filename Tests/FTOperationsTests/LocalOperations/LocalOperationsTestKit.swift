@@ -139,16 +139,31 @@ final class TestLocalFileSystem: UndoFileSystem, @unchecked Sendable {
     func getFlags(_ path: String) throws -> UInt32 { try getFlagsImpl(path) }
     func setFlags(_ path: String, _ flags: UInt32) throws {}
 
-    var trash: ((String) throws -> String?)? {
-        { [self] path in
-            record { $0.trash.append(path) }
-            return try trashImpl(path)
-        }
+    func chmod(_ path: String, _ mode: UInt32) throws { throw OperationError("chmod isn't used by these operations") }
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {
+        throw OperationError("utimes isn't used by these operations")
+    }
+    func copyMetadata(_ source: String, _ destination: String) throws {
+        throw OperationError("copyMetadata isn't used by these operations")
+    }
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        throw OperationError("copyMetadataToRunInPlace isn't used by these operations")
+    }
+    func setAcl(_ path: String, _ acl: String?) throws { throw OperationError("setAcl isn't used by these operations") }
+    func getAcl(_ path: String) throws -> String? { throw OperationError("getAcl isn't used by these operations") }
+    func canModifyFolder(_ path: String) throws {
+        throw OperationError("canModifyFolder isn't used by these operations")
     }
 
-    var itemSize: ((String) throws -> ItemSize)? {
-        guard let itemSizeImpl else { return nil }
-        return { try itemSizeImpl($0) }
+    func trash(_ path: String) throws -> String? {
+        record { $0.trash.append(path) }
+        return try trashImpl(path)
+    }
+
+    /// Through `itemSizeImpl`; without it no size can be read, so the folders that held the item are measured again.
+    func itemSize(_ path: String) throws -> ItemSize {
+        guard let itemSizeImpl else { throw OperationError("No item size here.") }
+        return try itemSizeImpl(path)
     }
 }
 

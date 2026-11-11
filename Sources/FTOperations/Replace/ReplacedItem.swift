@@ -11,41 +11,39 @@ func removeReplacedItem(
     _ context: ExecutionContext, _ node: ResolvedCopyPasteNode, _ destination: NodeFingerprint
 ) throws -> ReplacedItemRemoval {
     let fileSystem = context.fileSystem
-    if let trash = fileSystem.trash {
-        do {
-            // Staging a large copy takes a while: the item replaced must still be the one that was there, never
-            // one an app saved in its place meanwhile.
-            let current = try assertReplacedItemUnchanged(context, node, destination)
-            let records =
-                context.recordsUndo && context.shared.undo.topLevelNodeIds.contains(NameKeys.Exact(node.node.id))
-            let id = itemIdOf(dev: current.dev, ino: current.ino)
-            let looks = records ? stampWithoutId(StampReader(fileSystem), node.destinationPath, id) : nil
-            let trashPath = try trash(node.destinationPath)
-            noteChanged(context)
-            context.shared.replacedPaths.append(node.destinationPath)
-            if let trashPath {
-                context.shared.trashedPaths.append(trashPath)
-                if records {
-                    let parentId = context.shared.folderIds.id(
-                        { try fileSystem.stat($0) }, dirnameOf(node.destinationPath))
-                    recordUndoStep(
-                        context, node,
-                        .step(
-                            .trashed(
-                                from: node.destinationPath, trashPath: trashPath, id: id, parentId: parentId,
-                                stamp: looks)))
-                }
-            } else {
-                // In the Trash, but the Trash didn't say where: it can't be put back.
-                markCantUndo(context, .trashLocationUnknown)
+    do {
+        // Staging a large copy takes a while: the item replaced must still be the one that was there, never
+        // one an app saved in its place meanwhile.
+        let current = try assertReplacedItemUnchanged(context, node, destination)
+        let records =
+            context.recordsUndo && context.shared.undo.topLevelNodeIds.contains(NameKeys.Exact(node.node.id))
+        let id = itemIdOf(dev: current.dev, ino: current.ino)
+        let looks = records ? stampWithoutId(StampReader(fileSystem), node.destinationPath, id) : nil
+        let trashPath = try fileSystem.trash(node.destinationPath)
+        noteChanged(context)
+        context.shared.replacedPaths.append(node.destinationPath)
+        if let trashPath {
+            context.shared.trashedPaths.append(trashPath)
+            if records {
+                let parentId = context.shared.folderIds.id(
+                    { try fileSystem.stat($0) }, dirnameOf(node.destinationPath))
+                recordUndoStep(
+                    context, node,
+                    .step(
+                        .trashed(
+                            from: node.destinationPath, trashPath: trashPath, id: id, parentId: parentId,
+                            stamp: looks)))
             }
-            return .removed
-        } catch {
-            // Only a disk that may have no Trash (a network or FAT volume) is asked about below; any other reason
-            // stops this item, and nothing is deleted for good.
-            if errorCode(error) != CopyPasteErrors.noTrashErrorCode {
-                throw error
-            }
+        } else {
+            // In the Trash, but the Trash didn't say where: it can't be put back.
+            markCantUndo(context, .trashLocationUnknown)
+        }
+        return .removed
+    } catch {
+        // Only a disk that may have no Trash (a network or FAT volume) is asked about below; any other reason
+        // stops this item, and nothing is deleted for good.
+        if errorCode(error) != CopyPasteErrors.noTrashErrorCode {
+            throw error
         }
     }
     // A folder deleted for good may hold only what it held when it was agreed to: the review's count, or (after a

@@ -11,12 +11,9 @@ public protocol LocalWriteFileSystem: WriteServiceFileSystem {
     /// "exists", because it is the item itself. Every other rename is `renameExclusive`.
     func rename(_ from: String, _ to: String) throws
     /// An item as a folder's measurement counts it, read just before a delete removes it, so the
-    /// measured folders that held it can have it taken off their sizes. Without it, they are measured again.
-    var itemSize: ((String) throws -> ItemSize)? { get }
-}
-
-extension LocalWriteFileSystem {
-    public var itemSize: ((String) throws -> ItemSize)? { nil }
+    /// measured folders that held it can have it taken off their sizes. When it can't be read, they are measured
+    /// again.
+    func itemSize(_ path: String) throws -> ItemSize
 }
 
 extension NativeWriteFileSystem: LocalWriteFileSystem {
@@ -26,9 +23,7 @@ extension NativeWriteFileSystem: LocalWriteFileSystem {
         }
     }
 
-    public var itemSize: ((String) throws -> ItemSize)? {
-        { path in try NativeItemSize.of(path) }
-    }
+    public func itemSize(_ path: String) throws -> ItemSize { try NativeItemSize.of(path) }
 }
 
 /// Called where it is asked (the local operations ask it off the main thread).

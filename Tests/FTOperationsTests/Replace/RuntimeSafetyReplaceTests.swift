@@ -21,7 +21,7 @@ struct RuntimeSafetyReplaceTests {
 
     private func noTrash(_ base: any WriteServiceFileSystem = NativeWriteFileSystem()) -> TestFileSystem {
         let fileSystem = TestFileSystem(base)
-        fileSystem.trash = { _ in throw noTrashHere() }
+        fileSystem.trashImpl = { _ in throw noTrashHere() }
         return fileSystem
     }
 

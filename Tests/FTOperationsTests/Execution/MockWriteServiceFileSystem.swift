@@ -192,16 +192,20 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
 
     func isAppleDouble(_ path: String) -> Bool { false }
 
-    var chmod: ((String, UInt32) throws -> Void)? {
-        { [self] path, mode in
-            if let chmodImpl { return try chmodImpl(path, mode) }
-            try locked {
-                let node = try nodeOrThrow(path)
-                node.mode = mode
-                node.mtimeMs = bumpMtime()
-            }
+    func chmod(_ path: String, _ mode: UInt32) throws {
+        if let chmodImpl { return try chmodImpl(path, mode) }
+        try locked {
+            let node = try nodeOrThrow(path)
+            node.mode = mode
+            node.mtimeMs = bumpMtime()
         }
     }
+
+    /// Items have no ACLs here.
+    func setAcl(_ path: String, _ acl: String?) throws {}
+
+    /// Every folder here can be written to.
+    func canModifyFolder(_ path: String) throws {}
 
     func mkdir(_ path: String) throws {
         try locked { try ensureDirectory(path, recursive: false) }
@@ -244,22 +248,21 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         }
     }
 
-    /// Enables `trash`: trashed items are kept in `trashed`, and each is said to be at "/.Trash/<n>-<name>".
+    /// Enables `trash`: trashed items are kept in `trashed`, and each is said to be at "/.Trash/<n>-<name>". Until
+    /// then this is a disk without a Trash.
     func enableTrash() {
         trashEnabled = true
     }
 
-    var trash: ((String) throws -> String?)? {
-        guard trashEnabled else { return nil }
-        return { [self] path in
-            if let trashImpl { return try trashImpl(path) }
-            return try locked {
-                _ = try nodeOrThrow(path)
-                let key = existingKey(path)
-                deleteTree(key)
-                trashed.append(key)
-                return "/.Trash/\(trashed.count)-\(NodePath.basename(key))"
-            }
+    func trash(_ path: String) throws -> String? {
+        guard trashEnabled else { throw noTrashHere() }
+        if let trashImpl { return try trashImpl(path) }
+        return try locked {
+            _ = try nodeOrThrow(path)
+            let key = existingKey(path)
+            deleteTree(key)
+            trashed.append(key)
+            return "/.Trash/\(trashed.count)-\(NodePath.basename(key))"
         }
     }
 
@@ -289,8 +292,20 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         try locked { try nodeOrThrow(path).flags = flags }
     }
 
-    var copyMetadata: ((String, String) throws -> Void)? { copyMetadataImpl }
-    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { copyMetadataToRunInPlaceImpl }
+    /// Through `copyMetadataImpl` when set. Otherwise only the folder's mode and date go over (the date once `utimes`
+    /// is enabled), as on a disk that keeps nothing else.
+    func copyMetadata(_ source: String, _ destination: String) throws {
+        if let copyMetadataImpl { return try copyMetadataImpl(source, destination) }
+        let stats = try lstatDirectly(source)
+        try FolderMetadata.preserveMode(destination, stats.mode, chmod)
+        try FolderMetadata.preserveTimestamps(destination, stats.mtimeMs, utimes)
+    }
+
+    /// Through `copyMetadataToRunInPlaceImpl` when set, otherwise as `copyMetadata`.
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        if let copyMetadataToRunInPlaceImpl { return try copyMetadataToRunInPlaceImpl(source, destination) }
+        try copyMetadata(source, destination)
+    }
 
     /// rename(2) as the mock does it, for a `renameImpl` that changes only some renames.
     func renameDirectly(_ oldPath: String, _ newPath: String) throws {
@@ -350,17 +365,15 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         }
     }
 
-    /// Enables `utimes`, opting this mock into timestamp preservation.
+    /// Enables `utimes`, opting this mock into timestamp preservation. Until then it sets nothing.
     func enableUtimes() {
         utimesEnabled = true
     }
 
-    var utimes: ((String, Double, Double) throws -> Void)? {
-        guard utimesEnabled else { return nil }
-        return { [self] path, atimeMs, mtimeMs in
-            if let utimesImpl { return try utimesImpl(path, atimeMs, mtimeMs) }
-            try locked { try nodeOrThrow(path).mtimeMs = mtimeMs }
-        }
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {
+        guard utimesEnabled else { return }
+        if let utimesImpl { return try utimesImpl(path, atimeMs, mtimeMs) }
+        try locked { try nodeOrThrow(path).mtimeMs = mtimeMs }
     }
 
     // MARK: Building and reading the tree

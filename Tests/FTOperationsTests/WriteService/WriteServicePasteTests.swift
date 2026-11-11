@@ -50,7 +50,19 @@ private final class PathSetWriteFileSystem: WriteServiceFileSystem, @unchecked S
     func readdir(_ path: String) throws -> [String] { (childrenByDirectory[path] ?? []).sorted() }
     func readlink(_ path: String) throws -> String { throw codedError("EINVAL", "EINVAL: \(path)") }
 
-    var chmod: ((String, UInt32) throws -> Void)? { { [self] in try chmodImpl?($0, $1) } }
+    func chmod(_ path: String, _ mode: UInt32) throws { try chmodImpl?(path, mode) }
+    /// Nothing keeps dates here.
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {}
+    /// Only the mode goes over, as on a disk that keeps nothing else.
+    func copyMetadata(_ source: String, _ destination: String) throws {
+        try FolderMetadata.preserveMode(destination, try stats(source).mode, chmod)
+    }
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        try copyMetadata(source, destination)
+    }
+    func setAcl(_ path: String, _ acl: String?) throws {}
+    func trash(_ path: String) throws -> String? { throw noTrashHere() }
+    func canModifyFolder(_ path: String) throws {}
 
     func mkdir(_ path: String) throws {
         state.withLock {

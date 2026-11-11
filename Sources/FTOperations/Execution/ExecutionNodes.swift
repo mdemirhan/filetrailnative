@@ -217,9 +217,8 @@ func assertRemovableAfterCopy(_ context: ExecutionContext, _ node: ResolvedCopyP
 private func assertCanRemoveFrom(_ fileSystem: some WriteServiceFileSystem, _ folderPath: String, _ itemPath: String)
     throws
 {
-    guard let canModifyFolder = fileSystem.canModifyFolder else { return }
     do {
-        try canModifyFolder(folderPath)
+        try fileSystem.canModifyFolder(folderPath)
     } catch {
         let code = errorCode(error)
         let item = basenameOf(itemPath)
@@ -483,24 +482,25 @@ func applyDirectoryMetadata(_ context: ExecutionContext, _ node: ResolvedCopyPas
     let sourceFingerprint = node.node.sourceFingerprint
     // A move, or a copy built for a move to take the originals' place with.
     let moving = context.mode == .cut || context.stagingFor == .cut
-    let runsInPlace = isAppPastedOnItsOwn(context, sourcePath) ? fileSystem.copyMetadataToRunInPlace : nil
-    if let copyMetadata = runsInPlace ?? fileSystem.copyMetadata {
-        do {
-            // Tags, the custom-icon flag, ACLs and flags along with the mode and dates.
-            try copyMetadata(sourcePath, node.destinationPath)
-            if moving {
-                // Moving the items out (or anything written into it meanwhile, as Finder's view settings) changed
-                // the source folder's dates; put back the ones it had before. Only the date is lost if this fails
-                // (a locked folder refuses it).
-                try? preserveTimestampsIfSupported(fileSystem, node.destinationPath, sourceFingerprint.mtimeMs)
-            }
-            return
-        } catch {
-            // For example a volume that refuses some attribute: carry over what can be. A move keeps the original
-            // folder then, with what its copy couldn't take.
-            if moving {
-                context.shared.metadataNotCopied.insert(NameKeys.Exact(sourcePath))
-            }
+    do {
+        // Tags, the custom-icon flag, ACLs and flags along with the mode and dates.
+        if isAppPastedOnItsOwn(context, sourcePath) {
+            try fileSystem.copyMetadataToRunInPlace(sourcePath, node.destinationPath)
+        } else {
+            try fileSystem.copyMetadata(sourcePath, node.destinationPath)
+        }
+        if moving {
+            // Moving the items out (or anything written into it meanwhile, as Finder's view settings) changed
+            // the source folder's dates; put back the ones it had before. Only the date is lost if this fails
+            // (a locked folder refuses it).
+            try? preserveTimestampsIfSupported(fileSystem, node.destinationPath, sourceFingerprint.mtimeMs)
+        }
+        return
+    } catch {
+        // For example a volume that refuses some attribute: carry over what can be. A move keeps the original
+        // folder then, with what its copy couldn't take.
+        if moving {
+            context.shared.metadataNotCopied.insert(NameKeys.Exact(sourcePath))
         }
     }
     try preserveModeIfSupported(fileSystem, node.destinationPath, sourceFingerprint.mode)
@@ -520,16 +520,14 @@ private func isAppPastedOnItsOwn(_ context: ExecutionContext, _ sourcePath: Stri
 func preserveModeIfSupported(_ fileSystem: some WriteServiceFileSystem, _ destinationPath: String, _ mode: UInt32?)
     throws
 {
-    guard let chmod = fileSystem.chmod, let mode else { return }
-    try FolderMetadata.preserveMode(destinationPath, mode, chmod)
+    try FolderMetadata.preserveMode(destinationPath, mode, fileSystem.chmod)
 }
 
 /// `preserveTimestampsIfSupported`.
 func preserveTimestampsIfSupported(
     _ fileSystem: some WriteServiceFileSystem, _ destinationPath: String, _ mtimeMs: Double?
 ) throws {
-    guard let utimes = fileSystem.utimes, let mtimeMs else { return }
-    try FolderMetadata.preserveTimestamps(destinationPath, mtimeMs, utimes)
+    try FolderMetadata.preserveTimestamps(destinationPath, mtimeMs, fileSystem.utimes)
 }
 
 func incompletePackageMessage(_ node: ResolvedCopyPasteNode, _ mode: CopyPasteMode = .copy) -> String {

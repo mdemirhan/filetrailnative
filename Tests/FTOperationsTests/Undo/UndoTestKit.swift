@@ -86,21 +86,24 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
         if let setFlagsImpl = impl(\.setFlagsImpl) { return try setFlagsImpl(path, flags) }
         try base.setFlags(path, flags)
     }
-    var chmod: ((String, UInt32) throws -> Void)? { base.chmod }
-    var utimes: ((String, Double, Double) throws -> Void)? { base.utimes }
-    var copyMetadata: ((String, String) throws -> Void)? { base.copyMetadata }
-    var setAcl: ((String, String?) throws -> Void)? { base.setAcl }
-    var getAcl: ((String) throws -> String?)? { base.getAcl }
-    var trash: ((String) throws -> String?)? {
-        { [self] path in
-            if let trashImpl = impl(\.trashImpl) { return try trashImpl(path) }
-            return try base.trash?(path) ?? nil
-        }
+    func chmod(_ path: String, _ mode: UInt32) throws { try base.chmod(path, mode) }
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {
+        try base.utimes(path, atimeMs, mtimeMs)
     }
-    var canModifyFolder: ((String) throws -> Void)? { base.canModifyFolder }
-    var itemSize: ((String) throws -> ItemSize)? {
-        if let itemSizeImpl = impl(\.itemSizeImpl) { return itemSizeImpl }
-        return base.itemSize
+    func copyMetadata(_ source: String, _ destination: String) throws { try base.copyMetadata(source, destination) }
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        try base.copyMetadataToRunInPlace(source, destination)
+    }
+    func setAcl(_ path: String, _ acl: String?) throws { try base.setAcl(path, acl) }
+    func getAcl(_ path: String) throws -> String? { try base.getAcl(path) }
+    func trash(_ path: String) throws -> String? {
+        if let trashImpl = impl(\.trashImpl) { return try trashImpl(path) }
+        return try base.trash(path)
+    }
+    func canModifyFolder(_ path: String) throws { try base.canModifyFolder(path) }
+    func itemSize(_ path: String) throws -> ItemSize {
+        if let itemSizeImpl = impl(\.itemSizeImpl) { return try itemSizeImpl(path) }
+        return try base.itemSize(path)
     }
 }
 

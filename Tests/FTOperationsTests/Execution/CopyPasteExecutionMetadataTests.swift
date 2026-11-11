@@ -70,8 +70,8 @@ struct CopyPasteExecutionMetadataTests {
             try setDate(source + "/a.txt", date)
             try Disk.makeDirectories(destination)
             let fileSystem = TestFileSystem()
-            fileSystem.chmod = nil
-            fileSystem.utimes = nil
+            fileSystem.chmodImpl = { _, _ in }
+            fileSystem.utimesImpl = { _, _, _ in }
             let operation = try createResolvedOperation(fileSystem, sources: [source + "/a.txt"], into: destination)
 
             await execute(fileSystem, operation, operationId: "native-preserve-1")

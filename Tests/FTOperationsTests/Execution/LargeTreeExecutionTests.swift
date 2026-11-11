@@ -91,6 +91,14 @@ final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     func rmdir(_ path: String) throws {}
     func getFlags(_ path: String) throws -> UInt32 { 0 }
     func setFlags(_ path: String, _ flags: UInt32) throws {}
+    // Items keep no mode, dates or ACLs here, every folder can be written to, and there is no Trash.
+    func chmod(_ path: String, _ mode: UInt32) throws {}
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {}
+    func copyMetadata(_ source: String, _ destination: String) throws {}
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {}
+    func setAcl(_ path: String, _ acl: String?) throws {}
+    func trash(_ path: String) throws -> String? { throw noTrashHere() }
+    func canModifyFolder(_ path: String) throws {}
 
     func copyFile(
         _ source: String, _ destination: String, stop: StopSignal?, onProgress: (@Sendable (Int64) -> Void)?

@@ -216,7 +216,7 @@ struct SwiftExecEngine: ExecEngine {
     /// The Trash given to the write service: TrashItem (which tells a locked item, and a disk that may
     /// have no Trash, from other failures) around a folder per disk items are moved into as "<n>-<name>", numbered
     /// across them; on a disk without a Trash it fails as the Trash does there, with ENOTSUP. None at all when the
-    /// scenario says so.
+    /// scenario says so, and the file system then fails as on a disk without one.
     private static func trash(_ scenario: ExecScenario, _ places: ExecPlaces) throws
         -> (@Sendable (String) throws -> String?)?
     {
@@ -396,16 +396,6 @@ struct RecordedWriteFileSystem: UndoFileSystem {
         if killed() { throw Killed() }
     }
 
-    /// `call` as given, failing once the process was killed.
-    private func guarded<each A, R>(_ call: ((repeat each A) throws -> R)?) -> ((repeat each A) throws -> R)? {
-        guard let call else { return nil }
-        let killed = killed
-        return { (argument: repeat each A) in
-            if killed() { throw Killed() }
-            return try call(repeat each argument)
-        }
-    }
-
     func lstat(_ path: String) throws -> WriteServiceStats {
         try alive()
         return try disk.lstat(path)
@@ -465,20 +455,47 @@ struct RecordedWriteFileSystem: UndoFileSystem {
         try alive()
         try disk.setFlags(path, flags)
     }
-    var chmod: ((String, UInt32) throws -> Void)? { guarded(disk.chmod) }
-    var utimes: ((String, Double, Double) throws -> Void)? { guarded(disk.utimes) }
-    var copyMetadata: ((String, String) throws -> Void)? { guarded(disk.copyMetadata) }
-    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { guarded(disk.copyMetadataToRunInPlace) }
-    var setAcl: ((String, String?) throws -> Void)? { guarded(disk.setAcl) }
-    var trash: ((String) throws -> String?)? { guarded(disk.trash) }
-    var canModifyFolder: ((String) throws -> Void)? { guarded(disk.canModifyFolder) }
+    func chmod(_ path: String, _ mode: UInt32) throws {
+        try alive()
+        try disk.chmod(path, mode)
+    }
+    func utimes(_ path: String, _ atimeMs: Double, _ mtimeMs: Double) throws {
+        try alive()
+        try disk.utimes(path, atimeMs, mtimeMs)
+    }
+    func copyMetadata(_ source: String, _ destination: String) throws {
+        try alive()
+        try disk.copyMetadata(source, destination)
+    }
+    func copyMetadataToRunInPlace(_ source: String, _ destination: String) throws {
+        try alive()
+        try disk.copyMetadataToRunInPlace(source, destination)
+    }
+    func setAcl(_ path: String, _ acl: String?) throws {
+        try alive()
+        try disk.setAcl(path, acl)
+    }
+    func trash(_ path: String) throws -> String? {
+        try alive()
+        return try disk.trash(path)
+    }
+    func canModifyFolder(_ path: String) throws {
+        try alive()
+        try disk.canModifyFolder(path)
+    }
     // What Undo asks besides, as the app's own.
     func rename(_ from: String, _ to: String) throws {
         try alive()
         try disk.rename(from, to)
     }
-    var itemSize: ((String) throws -> ItemSize)? { guarded(disk.itemSize) }
-    var getAcl: ((String) throws -> String?)? { guarded(disk.getAcl) }
+    func itemSize(_ path: String) throws -> ItemSize {
+        try alive()
+        return try disk.itemSize(path)
+    }
+    func getAcl(_ path: String) throws -> String? {
+        try alive()
+        return try disk.getAcl(path)
+    }
 }
 
 /// The engine's values as JSON, every key present.

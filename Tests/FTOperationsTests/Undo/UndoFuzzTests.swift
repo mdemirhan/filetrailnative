@@ -118,7 +118,7 @@ final class UndoFuzzCase {
                 return nil
             }
         }
-        fileSystem.trashImpl = { path in try failOrStop(path) { try base.trash?(path) ?? nil } }
+        fileSystem.trashImpl = { path in try failOrStop(path) { try base.trash(path) } }
         coordinator = WriteCoordinator(
             writeService: StubWriteService(), fileSystem: fileSystem,
             options: WriteCoordinatorOptions(
