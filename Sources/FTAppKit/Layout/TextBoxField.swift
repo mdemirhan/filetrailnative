@@ -1,7 +1,7 @@
 // Text drawn from its box's edges, whole when the box is as wide as the text
 import AppKit
 
-/// A label laid out as a CSS text box: its text starts at its frame's edge, and a frame as wide as the text (the
+/// A label whose text starts right at its frame's edge, and a frame as wide as the text (the
 /// measured width) draws the whole string. A plain label keeps 2 pt between its frame and its text on each side, and a
 /// centered one cuts its text short even when that padding is moved outside the frame, so this cell draws the text
 /// itself.
@@ -14,7 +14,7 @@ class TextBoxField: NSTextField {
 
 class TextBoxCell: NSTextFieldCell {
     /// How far past its frame a line may reach before it is cut. A width measured one way (Core Text, a typographic
-    /// bound, a CSS box) can come out a fraction of a point short of the width AppKit lays the same text out at.
+    /// bound, a layout constant) can come out a fraction of a point short of the width AppKit lays the same text out at.
     static let slack = 1.0
 
     override func drawingRect(forBounds rect: NSRect) -> NSRect {
@@ -36,7 +36,7 @@ class TextBoxCell: NSTextFieldCell {
         var options: NSString.DrawingOptions = [.usesLineFragmentOrigin]
         if isMultiline { options.insert(.truncatesLastVisibleLine) }
         let frame = textFrame(forBounds: cellFrame)
-        // Text that fits with the slack is whole; text that doesn't is cut at the frame, as the browser cuts it.
+        // Text that fits with the slack is whole; text that doesn't is cut at the frame's edge.
         let box =
             !isMultiline && text.size().width > frame.width + Self.slack
             ? frame : Self.box(frame, alignment: drawnAlignment(text))

@@ -2,7 +2,7 @@
 import AppKit
 import FTFoundation
 
-/// A line of text in a cell. The text starts at the left edge of its frame, as a web page's does, and the pointer
+/// A line of text in a cell. The text starts at the left edge of its frame, and the pointer
 /// goes through it to the row.
 class ListLabel: NSTextField {
     override class var cellClass: AnyClass? {
@@ -30,8 +30,7 @@ class ListLabel: NSTextField {
 
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 
-    /// The height one line of the text takes: the font's own line (ascent, descent and leading), as the browser's
-    /// `line-height: normal` makes it.
+    /// The height one line of the text takes: the font's own line (ascent, descent and leading).
     var lineHeight: CGFloat {
         guard let font else { return 0 }
         return font.ascender - font.descender + font.leading
@@ -140,7 +139,7 @@ final class FolderColumnLabel: ListLabel {
 /// The fonts of the List's rows and header.
 @MainActor
 enum ListFonts {
-    /// A row's text: the name size, with tabular figures (`font-variant-numeric: tabular-nums`).
+    /// A row's text: the name size, with tabular figures, so the digits line up in a column.
     static func row(_ layout: DetailsLayout) -> NSFont {
         NSFont.monospacedDigitSystemFont(ofSize: CGFloat(layout.cellFontSize), weight: .regular)
     }

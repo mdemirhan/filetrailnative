@@ -73,7 +73,7 @@ public class ThemedView: NSView, ThemeApplying {
     }
 }
 
-/// A text cell with no inset, so the text starts at the left edge of its frame as a web page's does. It is a
+/// A text cell with no inset, so the text starts at the left edge of its frame. It is a
 /// `TextBoxCell`: a frame as wide as the measured text draws all of it.
 final class ThemedTextCell: TextBoxCell {
     /// Space before the text, for a control that draws something there.
@@ -163,7 +163,7 @@ public final class ThemedText: NSTextField, ThemeApplying {
         attributedStringValue = text
     }
 
-    /// The height the text takes at this width, as CSS lays it out (a line of 19.5 stays 19.5).
+    /// The height the text takes at this width, not rounded (a line of 19.5 stays 19.5).
     public func height(forWidth width: CGFloat) -> CGFloat {
         let size = attributedStringValue.boundingRect(
             with: NSSize(width: max(1, width), height: CGFloat.greatestFiniteMagnitude),
@@ -177,14 +177,14 @@ public final class ThemedText: NSTextField, ThemeApplying {
     }
 }
 
-/// Styles for the text of the stylesheet: font, color and line height.
+/// A text style of the app's: font, color and line height.
 public struct TextStyle {
     public var font: NSFont
     public var color: @MainActor (Theme) -> RGBA
-    /// CSS `line-height` as a multiple of the font size; nil is the font's own.
+    /// The line's height as a multiple of the font size; nil is the font's own.
     public var lineHeight: Double?
     public var alignment: NSTextAlignment = .left
-    /// CSS `letter-spacing` in points.
+    /// Extra space between letters, in points.
     public var kern: Double = 0
 
     public init(
@@ -215,12 +215,12 @@ public struct TextStyle {
         return attributes
     }
 
-    /// With CSS's half-leading: a line box taller than the glyphs puts the extra above and below the text equally.
+    /// A line taller than the glyphs puts the extra space half above and half below the text.
     @MainActor
     public func string(_ text: String, _ theme: Theme) -> NSAttributedString {
         var attributes = attributes(theme)
         if let lineHeight {
-            // The line a font takes by itself: the extra of a taller line goes half above and half below, as in CSS.
+            // The line a font takes by itself: the extra of a taller line goes half above and half below.
             let natural = NSAttributedString(string: "H", attributes: [.font: font])
                 .boundingRect(with: NSSize(width: 100, height: 100), options: [.usesLineFragmentOrigin]).height
             let extra = CGFloat(Double(font.pointSize) * lineHeight) - natural

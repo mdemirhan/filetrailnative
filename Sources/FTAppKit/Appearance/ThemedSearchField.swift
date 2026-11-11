@@ -40,7 +40,7 @@ public final class ClearButton: NSControl, ThemeApplying {
     public override func drawFocusRingMask() { NSBezierPath(ovalIn: bounds).fill() }
 
     public override func becomeFirstResponder() -> Bool {
-        // `:focus-visible`: the keyboard moved it here, not a press.
+        // The ring shows only when the keyboard moved it here, not after a press.
         showsFocusRing = NSApp.currentEvent?.type != .leftMouseDown
         return super.becomeFirstResponder()
     }
@@ -117,7 +117,7 @@ final class SearchTextField: NSTextField {
     }
 }
 
-/// An unbordered cell draws text in a color with alpha twice when nothing is editing it, so `rgba(0, 0, 0, 0.26)` comes
+/// An unbordered cell draws text in a color with alpha twice when nothing is editing it, so black at 26% comes
 /// out as 0.45 (once a field editor has it, it is drawn once). The placeholder is the only such text here: this draws it
 /// once, where the cell would, inside the 2 pt the cell keeps on each side.
 final class SearchTextCell: NSTextFieldCell {
@@ -211,7 +211,7 @@ public final class ThemedSearchField: NSView, ThemeApplying, NSTextFieldDelegate
         let left = 8 + CGFloat(Self.iconSize) + 6
         let right: CGFloat = clearButton.isHidden ? 4 : 4 + clearWidth + 6
         let lineHeight = ceil(Self.font.ascender - Self.font.descender + Self.font.leading)
-        // `padding: 0` on the input: its text starts at `left`, so the frame reaches out by what the cell keeps.
+        // The text starts exactly at `left`: the frame reaches out on each side by the inset the cell keeps.
         let inset = CGFloat(SearchTextCell.inset)
         input.frame = NSRect(
             x: left - inset, y: ((bounds.height - lineHeight) / 2).rounded(),

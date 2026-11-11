@@ -61,7 +61,7 @@ final class CompactItemRootView: PassThroughView {
         didSet { needsDisplay = true }
     }
     var radius: CGFloat = 0
-    /// What a drop on the item would do, while a drag is over it (`data-drop-target-state`).
+    /// What a drop on the item would do, while a drag is over it.
     var drop: (state: DropTargetState, theme: Theme)? {
         didSet { needsDisplay = true }
     }

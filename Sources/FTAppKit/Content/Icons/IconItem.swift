@@ -61,7 +61,7 @@ final class IconNameLabel: ListLabel {
             .font: font, .foregroundColor: textColor ?? .labelColor, .paragraphStyle: paragraph,
         ]
         let lineHeight = CGFloat(layout.labelLineHeight)
-        // `line-height: 16px`: the glyphs sit in the middle of each line, as the browser places them.
+        // Each line is the layout's label line height, with the glyphs in its middle.
         let glyphHeight = font.ascender - font.descender
         let halfLeading = (lineHeight - glyphHeight) / 2
         let inset = CGFloat(layout.labelPaddingHorizontal)
@@ -143,7 +143,7 @@ final class IconThumbnailView: PassThroughView {
         imageLayer.frame = bounds
         let hairline = ring.borderWidth
         ring.frame = bounds.insetBy(dx: -hairline, dy: -hairline)
-        // `0 1px 2px`: down by the offset, whichever way the layer counts y.
+        // The shadow falls down by its offset, whichever way the layer counts y.
         let down: CGFloat = (layer?.contentsAreFlipped() ?? false) ? 1 : -1
         layer?.shadowOffset = CGSize(width: 0, height: shadowDrop * down)
         layer?.shadowPath =
@@ -412,7 +412,7 @@ final class IconItem: NSCollectionViewItem, GridItemView, GridItemDragging {
         dropMarker.frame = root.bounds
         let badgeSize = layout.clipboardBadgeSize
         let offset = layout.clipboardBadgeOffset
-        // `top: -4px; right: -4px` of the tile.
+        // The badge sits on the tile's top right corner, reaching past it by the offset.
         badge.frame = NSRect(
             x: tileFrame.maxX - offset - badgeSize, y: tileFrame.y + offset, width: badgeSize, height: badgeSize)
     }

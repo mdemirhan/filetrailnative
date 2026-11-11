@@ -1,7 +1,7 @@
 import AppKit
 
 /// A label where a plain one has its text, with the text drawn once. An unbordered cell with no field editor draws text
-/// in a color with alpha twice, so `rgba(0, 0, 0, 0.5)` comes out as 0.75. Any label in such a color wants this, or
+/// in a color with alpha twice, so black at 50% comes out at 75%. Any label in such a color wants this, or
 /// `TextBoxField` when its frame starts at the text.
 final class PlainLabel: TextBoxField {
     override class var cellClass: AnyClass? {

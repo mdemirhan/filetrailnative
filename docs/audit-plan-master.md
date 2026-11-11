@@ -1676,7 +1676,7 @@ hand-drawn parts) go with the control; tests of behaviour stay.
   list it in the commit message. `Toolbar/SVGPath.swift` stays only if something still draws from path data.
 - Same for the 13 glyphs in `InfoPanel/InfoControls.swift` (`InfoGlyph`) and the five in `Help/HelpSidebar.swift`.
 
-### [ ] 9.4. Hand-drawn text stops imitating a browser's baseline
+### [x] 9.4. Hand-drawn text stops imitating a browser's baseline
 
 - `TextBaseline` (`Sources/FTAppKit/Layout/TextBoxField.swift`) moves every hand-drawn line so that its baseline
   lands where a browser would put it, with a `-0.001` adjustment; used by the list labels, `MarkedName`, the icon
@@ -2572,3 +2572,12 @@ anything that differed from the plan, and anything found on the way that is not 
   on this branch every module has changed since `main`, so it ran every bundle each time. It now takes the last
   commit's files, uncommitted changes and new files; with no commit before HEAD or nothing changed, everything runs.
   The format lint follows the same files.
+- 2026-11-11. 9.4 (the owner no longer asks for before and after pictures). `TextBaseline` went: the text moved down
+  0.5 pt almost everywhere, 1 pt in the List header and the empty-folder message; no descender is clipped, and a
+  selected row's name now sits where AppKit's own centred label would. The List header title sits 1 pt below the
+  middle of its sort chevron (was level); if that reads as off, the fix is in `DetailsHeaderCell`'s layout. Claim 1
+  (an unbordered cell with no field editor draws a translucent text colour twice) holds on macOS 27.0.1: `PlainLabel`
+  and `SearchTextCell` stay, with tests as proof that fail if a later macOS changes it. Claim 2 (a translucent colour
+  in an attributed string is drawn opaque) is false: the colour flattening, `TextStyle.background`, `.reportedColor`
+  and `RGBA.flattened(over:)` went; Settings' descriptions are now their true colour over the card (4 levels darker).
+  Checked on macOS 27, not 26. The eight files 10.4 left for after 9.4 have their comments fixed.
