@@ -12,7 +12,7 @@ import Testing
         ("folderTint", \.folderTint), ("actionHoverBg", \.actionHoverBg),
     ]
 
-    /// The accent golden's CSS variable keys the palette still has.
+    /// The accent golden's variable keys (`--ft-accent-…`) the palette still has.
     nonisolated(unsafe) private static let variableFields: [(String, KeyPath<AccentPalette, RGBA>)] = [
         ("--ft-accent-solid", \.solid), ("--ft-accent-solid-button", \.solidButton),
         ("--ft-accent-on-solid", \.onSolid), ("--ft-accent-selection-bg", \.selectionBg),

@@ -517,7 +517,7 @@ struct PathBarViewTests {
         #expect(all.count == 9 && !all.contains("…"))
     }
 
-    // -style: a folder's separators have labels "Folders in <parent>".
+    // The separators are buttons, each labelled "Folders in <parent>" for the folder before it.
     @Test func separatorsAreFolderButtons() {
         let view = bar("/Users/demo", width: 400)
         let labels = findViews("pathBar.separator", in: view).compactMap { $0.accessibilityLabel() }

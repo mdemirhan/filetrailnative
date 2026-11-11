@@ -180,7 +180,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The levels below are the screenshots' stored values, not converted from their display profile: the same files
-        // store the app's #1d1d1f title as 29,29,31 (port-left.png), so those are the values to compare with what a view
+        // store the app's own #1d1d1f title as 29,29,31, so those are the values to compare with what a view
         // sets. Converted to sRGB the #1d1d1f reads 39, and Finder's title 94.
 
         // Stored as 229 over white, Finder's, which is the system's separator; in dark it follows by itself.
@@ -199,7 +199,7 @@ extension ExplorerWindowlessTests {
             #expect(onDark.redComponent == 1 && onDark.alphaComponent < 0.15)
         }
 
-        // Finder's title is stored as 76-77 on its white band in a key window (finder-toolbar-line.png and -no-line.png).
+        // Finder's title is stored as 76-77 on its white band in a key window, with the band's line and without.
         @Test func theTitleIsFindersGray() throws {
             let title = ToolbarTitleView(frame: NSRect(x: 0, y: 0, width: 260, height: ToolbarTitleView.height))
             let window = KeyStateWindow()

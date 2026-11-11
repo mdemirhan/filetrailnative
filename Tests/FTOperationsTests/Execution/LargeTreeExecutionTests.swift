@@ -134,9 +134,8 @@ final class LargeFolderFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     }
 }
 
-/// A folder of 150,000 files, more items than V8 takes as the arguments of one call (from about 124,000), built and
-/// reviewed through the write service once for the two tests that need it: LargeTreeAnalysisTests' review and the
-/// paste here.
+/// A folder of 150,000 files, built and reviewed through the write service once for the two tests that need it:
+/// LargeTreeAnalysisTests' review and the paste here.
 enum LargeFolder {
     static let fileCount = 150_000
 
@@ -174,7 +173,7 @@ enum LargeFolder {
     }
 }
 
-/// Copying a folder with more items than one call takes as arguments.
+/// Copying a folder of 150,000 files.
 struct LargeTreeExecutionTests {
     private static let fileCount = LargeFolder.fileCount
     private static func fileName(_ index: Int) -> String { LargeFolder.fileName(index) }

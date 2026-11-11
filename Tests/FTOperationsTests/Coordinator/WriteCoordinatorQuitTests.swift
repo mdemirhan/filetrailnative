@@ -1,4 +1,6 @@
-// It is in Tests/FTOperationsTests/LocalOperations/LocalOperationsCoordinatorTests.swift.
+// Quitting while an operation runs, starting a paste, writing alone (the retries of crash recovery) and questions
+// during a paste. A Trash stopped at quit, which counts every item it never reached, is tested on the Trash itself in
+// Tests/FTOperationsTests/LocalOperations/LocalOperationsCoordinatorTests.swift.
 import FTFileSystem
 import FTFoundation
 import FTTestSupport

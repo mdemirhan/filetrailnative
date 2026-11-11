@@ -301,7 +301,7 @@ import Testing
         #expect(!empty.isRecording)
     }
 
-    // ⌘D while the recorder records, with the app's menu (a09, 265). AppKit offers a key equivalent to the
+    // ⌘D while the recorder records, with the app's menu. AppKit offers a key equivalent to the
     // key window before the menu bar; the menu would claim ⌘D (Duplicate), even dimmed, so the recorder only has it when
     // the window goes first.
     @Test func theRecorderHasAMenuKeyBeforeTheMenuDoes() throws {

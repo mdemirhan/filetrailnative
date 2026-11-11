@@ -242,7 +242,7 @@ private func item(
 
     // Paths drawn from a few names, so that items fall inside one another in every way.
     @Test func doesAsAllTheItemsWouldForAnyOperation() {
-        // In doubles, as JavaScript multiplies them.
+        // A small seeded generator, worked in doubles.
         var seed = 7.0
         func random(_ count: Int) -> Int {
             seed = (seed * 1_103_515_245 + 12_345).truncatingRemainder(dividingBy: 2_147_483_648)

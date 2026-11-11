@@ -115,9 +115,9 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // `openLocationSheet` and `openMoveDialog` leave no pane focused: the list's selection is grey under the box (232).
-        // Under an alert too: its button takes the focus, the pane's blur sets no pane focused (234), and Cancel gives
-        // the keyboard and the accent back.
+        // `openLocationSheet` and `openMoveDialog` leave no pane focused: the list's selection is grey under the box.
+        // Under an alert too: its button takes the focus, the pane losing the keyboard leaves no pane focused, and Cancel
+        // gives the keyboard and the accent back.
         @Test func theListLosesItsFocusedLookUnderTheBoxAndUnderAnAlert() async throws {
             let (harness, tab) = try await open()
             let window = try #require(tab.window)
@@ -251,7 +251,7 @@ extension ExplorerWindowlessTests {
             #expect(veil.frame.maxX == titlebar.bounds.maxX)
             #expect(veil.frame.height == titlebar.bounds.height)
             #expect(veil.hitTest(NSPoint(x: veil.frame.midX, y: veil.frame.midY)) === veil)
-            // The extra stops where the sidebar does, at the content's edge (233).
+            // The extra stops where the sidebar does, at the content's edge.
             #expect(scrim.sidebarRect?.minX == 0)
             #expect(scrim.sidebarRect?.maxX == bandX)
             scrim.onScrimPress?()

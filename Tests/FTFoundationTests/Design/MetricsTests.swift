@@ -8,7 +8,7 @@ import Testing
 @Suite struct MetricsTests {
     typealias Table = [String: Double]
 
-    // MARK: Base values (CSS px at 100%)
+    // MARK: Base values, in points
 
     static let typeScale: Table = [
         "mini": 10, "small": 11, "callout": 12, "body": 13, "name": 14, "title3": 15, "title2": 17, "title1": 20,
@@ -149,7 +149,7 @@ import Testing
         }
     }
 
-    // The sidebar's lengths are tokens too (.tree-pane, .sidebar-main-native .tree-row, ui.md section 1.4).
+    // The sidebar's lengths are tokens of the density too: its rows, indents, icons, labels and section headers.
     @Test(arguments: SidebarDensity.allCases)
     func sidebarMetricsAreTokensOfTheDensity(density: SidebarDensity) {
         let sidebar = DesignTokens.sidebar(density: density)

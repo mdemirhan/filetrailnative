@@ -605,7 +605,7 @@ private func completed(_ from: String, _ to: String) -> WriteOperationItem {
     @Test func numbersANameTakenAtTheLastMomentWithinTheLengthANameCanHave() {
         let long = String(repeating: "a", count: 251) + ".jpg"
         let disk = MemoryDisk(["/trip/x.jpg"])
-        // Taken after the sheet checked, so the main process numbers it.
+        // Taken after the sheet checked, so the rename itself numbers it.
         disk.add("/trip/\(long)")
         let result = run(disk, request([("x.jpg", long)]))
         #expect(

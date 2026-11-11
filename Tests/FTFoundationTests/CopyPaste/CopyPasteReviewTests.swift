@@ -10,7 +10,7 @@ private let dates = ReviewDateText(locale: Locale(identifier: "en_US"), timeZone
 private func local(_ year: Int, _ month: Int, _ day: Int, _ hour: Int = 0, _ minute: Int = 0) -> Double {
     var calendar = Calendar(identifier: .gregorian)
     calendar.timeZone = zone
-    // `new Date(y, m, d, h, mi)` takes the month from 0.
+    // The tests number months from 0, January being 0.
     let components = DateComponents(year: year, month: month + 1, day: day, hour: hour, minute: minute)
     return (calendar.date(from: components) ?? Date()).epochMilliseconds
 }

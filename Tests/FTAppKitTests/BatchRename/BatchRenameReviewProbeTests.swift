@@ -1,4 +1,5 @@
-// `.modal-scrim.is-sheet` covers the tab strip and `copyPasteModalOpen` refuses newTab and closeTab while it is up
+// While the Rename sheet is up its window's tabs are held: no tab opens or closes, and `copyPasteModalOpen` refuses
+// New Tab and Close Tab
 import AppKit
 import FTFileSystem
 import FTFoundation

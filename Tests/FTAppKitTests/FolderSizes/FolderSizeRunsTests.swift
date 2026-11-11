@@ -145,7 +145,7 @@ struct FolderSizeRunsTests {
         #expect(jobs.started == ["/a", "/x"])
     }
 
-    // A folder that fails was not stopped: the run goes on (`entry.status === "idle"` only ends it).
+    // A folder that fails was not stopped: the run goes on (only a folder back to idle, as a stopped one is, ends it).
     @Test func aFolderThatFailsLeavesTheRunGoing() {
         sizes.calculate(["/a", "/b"])
         jobs.states[OneAtATimeJobs.job("/a")] = FolderSizeJob(

@@ -351,7 +351,8 @@ extension ExplorerWindowlessTests {
             #expect(rights == 1)
         }
 
-        // aria-haspopup and aria-expanded of the buttons that open a menu; a dimmed history button is a plain button.
+        // A button that opens a menu tells accessibility it is a menu button, and whether its menu is open; a dimmed
+        // history button is a plain button.
         @Test func theButtonsThatOpenMenusSaySo() {
             let sort = ToolbarButton(icon: .up, label: "Sort", identifier: "toolbar.sort")
             #expect(sort.accessibilityRole() == .menuButton)

@@ -249,7 +249,7 @@ func split(_ path: String) -> (folder: String, name: String) {
 
 private func bytes(_ text: String) -> [UInt8] { Array(text.utf8) }
 
-/// JavaScript's default sort order: UTF-16 code units.
+/// Whether `left` comes before `right` by UTF-16 code unit.
 func jsLess(_ left: String, _ right: String) -> Bool {
     left.utf16.lexicographicallyPrecedes(right.utf16)
 }

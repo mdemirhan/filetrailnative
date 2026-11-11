@@ -1,4 +1,5 @@
-// Checks NodePath against what Node's posix path module answers
+// Checks NodePath's POSIX path rules: a path's last part, its folder, its extension, and joining and normalizing
+// ("." and ".." parts and doubled slashes taken out, a trailing slash kept by a join and dropped by resolve)
 import Testing
 
 @testable import FTFoundation

@@ -148,7 +148,7 @@ extension ExplorerWindowlessTests {
             #expect(key(51))
             #expect(tab.clipboardUI.isOpen)
             #expect(tab.services.clipboard.contents.sourcePaths.count == 1)
-            // Opened by a click, the button has the focus, and the first key shows its ring until the list closes (173).
+            // Opened by a click, the button has the focus, and the first key shows its ring until the list closes.
             tab.clipboardUI.close()
             tab.clipboardUI.toggle(from: button)
             #expect(tab.clipboardUI.isOpen && !button.showsKeyboardRing)
@@ -324,7 +324,7 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // What is copied in one window is pasted in another (scenario 38),
+        // What is copied in one window is pasted in another,
         // the file listed and selected there.
         @Test func anotherWindowPastesWhatWasCopied() async throws {
             let window = try await WritingWindow.open()

@@ -253,7 +253,7 @@ extension ExplorerWindowlessTests {
 /// The search field by itself.
 @MainActor
 @Suite struct ToolbarSearchFieldTests {
-    // : text of only spaces has no ✕.
+    // Text of only spaces has no ✕.
     @Test func theClearButtonWaitsForTrimmedText() {
         let field = ToolbarSearchField(frame: NSRect(x: 0, y: 0, width: 200, height: 28))
         #expect(!field.clearButtonShows)

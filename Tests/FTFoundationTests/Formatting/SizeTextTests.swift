@@ -34,7 +34,7 @@ struct SizeTextTests {
         #expect(SizeText.size(9_960) == "10 KB")
     }
 
-    // JavaScript's toFixed rounds a tie up where printf rounds it to even.
+    // A size halfway between two shown values rounds up, where printf would round it to even.
     @Test func roundsATieUpAsToFixedDoes() {
         #expect(SizeText.size(1250) == "1.3 KB")
         #expect(SizeText.size(2250) == "2.3 KB")

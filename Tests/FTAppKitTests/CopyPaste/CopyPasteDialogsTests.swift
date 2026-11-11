@@ -193,7 +193,7 @@ extension ExplorerWindowlessTests {
             #expect(alert.asideButton?.title == "Cancel")
             #expect(alert.buttons.map(\.title) == ["Replace", "Keep Both"])
             #expect(alert.buttons[0].isDestructive)
-            // Cancel stands apart (`alert-button-aside`): at the left of the first of three equal cells, as wide as
+            // Cancel stands apart: at the left of the first of three equal cells, as wide as
             // its title; Replace and Keep Both fill theirs.
             let cancel = try #require(alert.asideButton)
             let cell = alert.buttons[0].frame.width

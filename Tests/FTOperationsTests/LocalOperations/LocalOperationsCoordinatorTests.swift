@@ -254,7 +254,7 @@ import Testing
         await coordinator.shutDown()
     }
 
-    // A native window has no page to load again: what it was asked about goes when it closes.
+    // What a window was asked about deleting for good is let go of when that window closes.
     @Test func whatHadNoTrashIsLetGoOfWhenItsWindowCloses() async throws {
         let coordinator = WriteCoordinator.local(noTrashDisk(), homePath: "/Users/demo")
         let window = TestWindow()

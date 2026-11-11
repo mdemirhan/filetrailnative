@@ -23,7 +23,7 @@ struct FileDragTests {
 
     // MARK: Starting
 
-    // (the page's zoom is N/A: points are measured where they are drawn)
+    // A drag ends as what the drop did, over the window it started from, another of the app's, or anywhere else.
     @Test func answersWithWhatTheDropDidAndWhereItEnded() {
         var ended: [(FileDragEnd, FileDragEndedOver)] = []
         let source = FileDragSource(windowNumber: 7) { ended.append(($0, $1)) }

@@ -117,7 +117,7 @@ struct ListFilterTests {
         #expect(!Typeahead.isCharacterKey(" "))
         #expect(!Typeahead.isCharacterKey("ArrowDown"))
         #expect(!Typeahead.isCharacterKey(""))
-        // One UTF-16 unit is one character; a pair is two, as `key.length` counts.
+        // A key whose text is one UTF-16 unit types a character; an emoji, a surrogate pair of two units, does not.
         #expect(Typeahead.isCharacterKey("é"))
         #expect(!Typeahead.isCharacterKey("🎉"))
     }

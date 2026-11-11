@@ -9,7 +9,7 @@ import os
 
 private let home = "/Users/demo"
 
-/// Milliseconds since 1970 of a time on this Mac's clock (`new Date(2026, 8, 30, 10, 12, 40)`).
+/// Milliseconds since 1970 of a time on this Mac's clock, its month counted from 1.
 private func localMs(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) -> Double {
     let date = Calendar.current.date(
         from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute, second: second))

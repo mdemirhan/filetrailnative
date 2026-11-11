@@ -142,7 +142,7 @@ import Testing
         }
     }
 
-    // The browser brings what the keyboard reached into view.
+    // Settings scrolls what the keyboard reached into view.
     @Test func tabScrollsTheControlIntoView() throws {
         let (controller, _) = Kit.make(tab: .shortcuts)
         Kit.layout(controller)
@@ -166,7 +166,7 @@ import Testing
         #expect(clip.bounds.contains(top.convert(top.bounds, to: clip)))
     }
 
-    // Blink's CenterIfNeeded: what shows stays, what is cut off comes to the near edge, what is out of sight is centered.
+    // What shows stays, what is cut off comes to the near edge, and what is out of sight is centered.
     @Test func theControlComesAsFarAsItNeeds() {
         let top: (CGFloat, CGFloat) -> CGFloat = { minY, height in
             SettingsView.revealedTop(

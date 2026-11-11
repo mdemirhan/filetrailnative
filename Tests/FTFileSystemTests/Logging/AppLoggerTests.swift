@@ -123,7 +123,8 @@ struct AppLoggerTests {
         }
     }
 
-    // util.inspect sorted:true sorts the rendered entries; keys outside /^[a-zA-Z_][a-zA-Z_0-9]*$/ are quoted.
+    // A context's entries are sorted as they are written out, and a key that isn't an ASCII identifier (a letter or
+    // "_", then letters, digits or "_") is quoted.
     @Test func contextEntriesSortAsRenderedStringsAndQuoteNonIdentifierKeys() {
         let context = LogArg.context([
             "a": .number(1), "a1": .number(2), "a-b": .number(3), "b": .number(4), "$x": .number(5), "é": .number(6),

@@ -1,4 +1,4 @@
-// Checks that a scenario's key step gives the Shortcuts recorder a menu key before the menu bar (265, a09), windowless
+// Checks that a scenario's key step gives the Shortcuts recorder a menu key before the menu bar, windowless
 import AppKit
 import FTFoundation
 import Testing

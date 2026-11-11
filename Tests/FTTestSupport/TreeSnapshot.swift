@@ -39,7 +39,7 @@ public enum TreeSnapshot {
         return entries.sorted { $0.path.utf16.lexicographicallyPrecedes($1.path.utf16) }
     }
 
-    /// The snapshot as JSON: `JSON.stringify(entries, null, 2)` and a newline.
+    /// The snapshot as JSON, laid out as `JSONText` lays it out, and a newline.
     public static func json(_ entries: [Entry]) -> String {
         JSONText.stringify(.array(entries.map(value))) + "\n"
     }

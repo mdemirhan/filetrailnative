@@ -1,6 +1,6 @@
 // Random runs of renames, batch renames, new folders, Trash, copies, moves and Replaces on a real disk, then Undo all
-// the way back and Redo all the way forward: - With nothing changed in between, Undo gets back every item as it was
-// (path, kind and file id), and Redo gets back
+// the way back and Redo all the way forward:
+// - With nothing changed in between, Undo gets back every item as it was (path, kind and file id), and Redo gets back
 //   the end.
 // - With random changes made outside the app between them, no item is ever lost or replaced, every item left as it
 //   was says why, and nothing stays under a hidden name; and the same for Redo after more changes.

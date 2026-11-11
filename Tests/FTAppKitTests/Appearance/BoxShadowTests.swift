@@ -1,4 +1,4 @@
-// Checks `box-shadow` and see-through text as the app draws them, windowless
+// Checks BoxShadow and see-through text as the app draws them, windowless
 import AppKit
 import FTFoundation
 import Testing

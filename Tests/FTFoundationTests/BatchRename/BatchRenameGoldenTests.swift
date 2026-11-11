@@ -6,7 +6,7 @@ import Testing
 @testable import FTFoundation
 
 struct BatchRenameGoldenTests {
-    // MARK: Wire shapes of the recordings
+    // MARK: The shapes the goldens are written in
 
     struct WireItem: Codable {
         var path: String?

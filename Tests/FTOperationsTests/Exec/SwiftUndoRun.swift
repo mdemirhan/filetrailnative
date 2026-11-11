@@ -108,7 +108,7 @@ final class SwiftUndoRun {
         .object(["undo": optional(menu.undo), "redo": optional(menu.redo), "cantUndo": .bool(menu.cantUndo)])
     }
 
-    /// What `undo:prepare` answered, without its ticket.
+    /// What preparing the Undo or Redo answered (`UndoPrepared`), without its ticket.
     static func json(_ prepared: UndoPrepared) -> JSONValue {
         .object([
             "refusal": optional(prepared.refusal?.rawValue), "label": optional(prepared.label),

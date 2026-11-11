@@ -70,7 +70,7 @@ private struct GoldenRequest: Codable {
         #expect(!args("/Users/demo").contains("--exclude"))
     }
 
-    // The data volume is also mounted at /System/Volumes/Data: a search of Macintosh HD finds what is under /Users
+    // The data volume is also mounted at /System/Volumes/Data: a search of the startup disk finds what is under /Users
     // once, where it is browsed. One started inside /System/Volumes searches it as usual.
     @Test func searchesMacintoshHDWithoutTheDataVolumeASecondTime() {
         func args(_ root: String) -> [String] {

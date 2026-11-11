@@ -100,8 +100,7 @@ import Testing
         }
     }
 
-    // The grey selection is #dcdce1 in the light theme and #2a2d36 in the dark one, as the built stylesheet has it:
-    // its minifier drops the source's later #3a3a3e rule
+    // The grey selection is #dcdce1 in the light theme and #2a2d36 in the dark one
     @Test func theUnfocusedSelectionColors() {
         #expect(Theme(appearance: .light, accentHex: "#007aff").palette.bgActiveInactive.hexString == "#dcdce1")
         #expect(ThemePalette.dark.bgActiveInactive.hexString == "#2a2d36")

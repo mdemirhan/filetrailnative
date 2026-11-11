@@ -47,7 +47,8 @@ struct FlowListLayoutTests {
         #expect(Self.reveal(0, 120, maxScrollLeft: 1400) == 1400)
     }
 
-    // Column-major places inside `padding: 8 10 4`; an item hugs its icon and name.
+    // Items fill a column before the next, inside 8 of padding at the top, 10 at the sides and 4 at the bottom; an
+    // item hugs its icon and name.
     @Test func itemsFillAColumnThenTheNext() {
         let style = FlowItemStyle.make()
         #expect(Self.layout.cellFrame(index: 0, rowsPerColumn: 10) == GridRect(x: 10, y: 8, width: 292, height: 28))

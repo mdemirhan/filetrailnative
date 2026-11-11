@@ -1,4 +1,4 @@
-// Times the walker on the deep fixture tree (200,000 files): no slower than a given reference median, within 10%.
+// Times the walker on the deep fixture tree (200,000 files): its median at most 10% over a median given to it.
 import Foundation
 import Testing
 
@@ -13,7 +13,8 @@ private let deepTree: String = {
 
 /// Off by default: it takes a few seconds and only means something in a release build:
 ///   FILETRAIL_BENCH=1 [FILETRAIL_BENCH_REFERENCE_MS=<reference median>] swift test -c release -Xswiftc -enable-testing -Xswiftc -DDEBUG --filter FolderSizeBench
-/// The reference is another walker's median of the warm runs, timed the same way on the same folder.
+/// The reference is a median of the warm runs measured before, the same way on the same folder; without one the
+/// times are only printed.
 extension RealWalks {
     @MainActor @Suite struct FolderSizeBenchTests {
         @Test(

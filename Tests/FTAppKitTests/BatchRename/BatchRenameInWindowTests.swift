@@ -248,7 +248,7 @@ extension ExplorerWindowlessTests {
             await close(opened)
         }
 
-        // (scenarios 246, 247): Select All from the menu selects the field's text, in this tab's window whichever
+        // Select All from the menu selects the field's text, in this tab's window whichever
         // window is key, and what is typed next replaces it.
         @Test func selectAllSelectsTheTextOfTheFieldEdited() async throws {
             let opened = try await open()

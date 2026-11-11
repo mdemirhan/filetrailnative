@@ -244,9 +244,9 @@ struct ExecGoldenTests {
         }
     }
 
-    /// exec-batch-rename holds what the brief asks: swaps, cycles, case-only changes on disks that ignore case and on
-    /// one that minds it, stops, crashes with recovery, and the Rename sheet's checks. Guards the shape of the
-    /// recordings, not the engine.
+    /// exec-batch-rename holds the cases a batch rename is checked on: swaps, cycles, case-only changes on disks that
+    /// ignore case and on one that minds it, stops, crashes with recovery, and the Rename sheet's checks. Guards the
+    /// shape of the recordings, not the engine.
     @Test func batchRenameSuiteCoversWhatTheBriefAsks() throws {
         let cases = try ExecBatchRenameHarness.cases()
         let names = cases.map(\.name)

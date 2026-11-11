@@ -17,7 +17,8 @@ extension ExplorerWindowlessTests {
         }
 
         // 680 wide and 60 below the window's top; the header, the centered mode control, the
-        // grid's 112 / 1fr / 132 / 1fr columns, the preview's header and rows, and the footer.
+        // grid's columns (Find 112 wide, then its field, Replace with 132 wide, then its field, the two fields sharing what
+        // is left), the preview's header and rows, and the footer.
         @Test func laysTheSheetOutAsTheStylesheetDoes() async throws {
             let fixture = await BatchRenameSheetFixture([
                 BatchRenameSheetFixture.target("IMG_1.jpg"), BatchRenameSheetFixture.target("IMG_2.jpg"),
@@ -28,7 +29,7 @@ extension ExplorerWindowlessTests {
             #expect(sheet.frame.minX == (1200 - width) / 2)
             #expect(sheet.frame.minY == CGFloat(DialogLayout.sheetTop))
             let control = CGFloat(Layout.controlHeight)
-            // Header: `padding: 20px 20px 14px`, the pull-down at least 120 wide on the right.
+            // Header: 20 in from the top and the sides, 14 above what follows; the pull-down at least 120 wide on the right.
             let presets = frame(sheet.presetsPopUp, in: sheet)
             #expect(presets.maxX == width - CGFloat(Layout.Header.paddingHorizontal))
             #expect(presets.minY == CGFloat(Layout.Header.paddingTop))

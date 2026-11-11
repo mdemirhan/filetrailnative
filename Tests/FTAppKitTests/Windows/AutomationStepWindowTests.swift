@@ -1,5 +1,5 @@
-// 38 (paste in another window), 10 (dates of results), a17 (a date in the list), 78 and 80 (the folder let go of) and
-// 101, 106 and 107 (where the tree stands)
+// Scenario steps on explorer windows: a paste in another window, the dates of results, a date in the list, the folder
+// let go of, and where the tree stands
 #if DEBUG
     import AppKit
     import FTFoundation
@@ -72,7 +72,7 @@
                 return runner
             }
 
-            // Scenario 38 with the app in the background, as a capture run
+            // With the app in the background, as a capture run
             // may leave it: no window is key, so ⌘C and ⌘V go through the menu to the window picked last. The copy
             // reaches the other window's clipboard button, and the paste lists, selects and tells of the file there.
             @Test func keyStepsCopyInThePickedWindowAndPasteInTheOther() async throws {
@@ -130,7 +130,7 @@
                 await window.close()
             }
 
-            // Scenario 10. A step does not count as finished while the details of the rows on screen
+            // A step does not count as finished while the details of the rows on screen
             // are being read: the snapshot after it has the dates and sizes of the results (the field being edited).
             @Test func aStepWaitsForTheDetailsOfTheRowsOnScreen() async throws {
                 let harness = try ExplorerHarness.windowless()
@@ -175,7 +175,7 @@
                 await harness.close()
             }
 
-            // a17 step 13. "list row date" of the elements names the list's Date Modified cells: there
+            // "list row date" of the elements names the list's Date Modified cells: there
             // is one to a row, and it reads what a person sees there.
             @Test func aListRowDateIsTheDateCell() async throws {
                 let harness = try ExplorerHarness.windowless()
@@ -197,7 +197,7 @@
                 await harness.close()
             }
 
-            // Scenario 80. A press on a section's heading lets go of the folder: no title, no
+            // A press on a section's heading lets go of the folder: no title, no
             // path, "Select a folder…" and no reading it again, until a folder is opened.
             @Test func aFolderLetGoOfShowsNoFolder() async throws {
                 let harness = try ExplorerHarness.windowless()
@@ -274,8 +274,8 @@
                 await harness.close()
             }
 
-            // A density change reveals nothing (TreePane's reveal doesn't depend on it): the tree stays at its offset,
-            // unless the rows no longer reach that far, where it stands at their end, as a browser's scrollTop does.
+            // A density change reveals nothing (the tree's reveal doesn't depend on it): the tree stays at its offset,
+            // unless the rows no longer reach that far, where it stands at their end.
             @Test func aDensityChangeLeavesTheTreeWhereItStands() async throws {
                 // Finder's sizes at the system's small sidebar size: rows shorter than File Trail's.
                 let system = SystemSidebarSize.shared.size

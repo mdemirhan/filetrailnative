@@ -8,7 +8,7 @@ struct IconGridLayoutTests {
     static let layout = DesignTokens.iconGrid(density: .standard)
     static let finder = DesignTokens.iconGrid(density: .finder)
 
-    /// The stylesheet's numbers, as the icon-grid-layout golden recorded them.
+    /// The icon grid's fixed lengths, as the icon-grid-layout golden holds them.
     static func css() throws -> [String: Double] {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "icon-grid-layout")
         guard let found = cases.first(where: { $0.input.op == "css" }), case .constants(let values) = found.output

@@ -63,8 +63,8 @@ private final class LargeTreeFileSystem: ReadOnlyWriteFileSystem, @unchecked Sen
 }
 
 struct LargeTreeAnalysisTests {
-    // More items than V8 takes as the arguments of one call (from about 124,000): LargeTreeExecutionTests' folder,
-    // reviewed once through the write service for both tests.
+    // A folder of 150,000 files, LargeTreeExecutionTests' own, reviewed once through the write service for both
+    // tests.
     @Test func reviewsAFolderOfMoreThan125000ItemsReadingEachOnlyAFewTimes() async throws {
         let fileCount = LargeFolder.fileCount
         let reviewed = try await LargeFolder.reviewed.value
@@ -160,7 +160,7 @@ struct LargeTreeAnalysisSpeedTests {
         #expect(review < lookups * 12, "review \(review), lookups \(lookups)")
     }
 
-    // A child's path is its folder's and its name put together only where `path.join` would give just that.
+    // A child's path is its folder's and its name put together only where `NodePath.join` would give just that.
     @Test func joinsAChildPathAsPathJoinDoes() {
         let folders = [
             "/", "/a", "/a/b", "/a b/c.d", "/.hidden", "/a/..b", "/a/b..", "/...", "/a/...", "/\u{0301}e", "/e\u{0301}",

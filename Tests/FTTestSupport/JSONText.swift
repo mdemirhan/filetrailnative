@@ -1,5 +1,6 @@
-// JSON text exactly as JavaScript's `JSON.stringify(value, null, 2)` writes it, byte for byte
-// (Foundation's JSONEncoder spaces and escapes differently).
+// JSON text in one fixed layout, byte for byte: two spaces per level, one item per line, ": " after a key, [] and
+// {} when empty, and only quotes, backslashes and control characters escaped (Foundation's JSONEncoder spaces and
+// escapes differently).
 
 public enum JSONText: Sendable {
     /// A JSON value; an object keeps its keys in the order given.
@@ -49,7 +50,8 @@ public enum JSONText: Sendable {
         }
     }
 
-    /// JSON.stringify's escaping: quote, backslash and control characters only; the rest is written as is.
+    /// A string quoted: a quote, a backslash and the control characters are escaped (by their short form where they
+    /// have one, else as \u and four hex digits); the rest is written as is.
     public static func quote(_ text: String) -> String {
         var out = "\""
         for scalar in text.unicodeScalars {

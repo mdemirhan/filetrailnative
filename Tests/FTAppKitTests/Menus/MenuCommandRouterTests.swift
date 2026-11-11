@@ -18,7 +18,7 @@ import Testing
     @MainActor
     private final class NativeLog { var calls: [String] = [] }
 
-    // Scenarios 246, 247: ⌘A takes the whole text of the field of the window it is meant for, whether or not the system
+    // ⌘A takes the whole text of the field of the window it is meant for, whether or not the system
     // calls that window key at this moment (the app coming to the front, a run started from a terminal).
     @Test func anEditCommandReachesTheFieldOfItsWindowUnkeyed() throws {
         _ = NSApplication.shared

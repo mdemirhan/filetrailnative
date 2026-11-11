@@ -3,7 +3,8 @@ import FTTestSupport
 import Foundation
 import Testing
 
-// The getattrlistbulk read (CFileTrail/listing.c) against lstat, and the workers' cases that the actor replaces
+// The getattrlistbulk read (CFileTrail/listing.c) checked against lstat, and what the directory service makes of a
+// folder: its entries, its failures, packages and hidden items
 @testable import FTFileSystem
 
 struct NativeFileSystemTests {

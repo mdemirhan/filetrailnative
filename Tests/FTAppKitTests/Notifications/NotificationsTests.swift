@@ -67,7 +67,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // The 101st tab
+        // A tab past the window's limit of 25
         @Test func theTabLimitNoticeIsAnInfoToastInTheWindow() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)

@@ -44,7 +44,7 @@ import Testing
         #expect(make(size: NSSize(width: 640, height: 680)).layoutMode == .compact)
     }
 
-    // Help doesn't describe what the system's tab bar and customizing sheet replaced.
+    // Help doesn't describe the tab and panel gestures the system's tab bar and customizing sheet replaced.
     @Test func saysNothingOfWhatTheApprovedDeviationsRemoved() {
         let text = HelpContent.topics.flatMap(\.sections).flatMap(\.rows).map(\.description).joined(separator: "\n")
         for gone in [

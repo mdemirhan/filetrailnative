@@ -1,5 +1,5 @@
-// The copy throughput budget (tools/bench/budgets.json): a large file pasted to another disk, and the stoppable copy on
-// its own, go as fast as a bare copyfile call, and the time a small folder's paste takes is reported
+// How fast a paste copies: a large file pasted to another disk, and the stoppable copy on its own, go as fast as a
+// bare copyfile call (within 5%), and the time a small folder's paste takes is reported
 import CFileTrail
 import Darwin
 import FTFoundation
@@ -19,7 +19,8 @@ struct PasteThroughputTests {
     // copyfile call of the same flags and no callback. Each of the first two keeps within 5 % of the bare call. Other
     // builds load the machine meanwhile: the three take turns, 15 runs each (one copy takes a fifth of a second, so
     // a few runs are noisy), and their fastest runs are compared, as load only ever adds time. Being faster is fine.
-    // A budget, not a behavior: a busy Mac can miss it, so it runs with the other budgets (tools/bench/listing.sh).
+    // A speed, not a behavior: a busy Mac can miss it, so it runs only with FILETRAIL_BENCH=1, as tools/bench/listing.sh
+    // runs it beside the listing and search timings.
     @Test(
         .tags(.diskImage), .diskImages,
         .enabled(if: ProcessInfo.processInfo.environment["FILETRAIL_BENCH"] == "1"))

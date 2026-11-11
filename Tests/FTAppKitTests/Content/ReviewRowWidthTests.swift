@@ -69,7 +69,7 @@ struct ReviewStaleDetailsTests {
         #expect(controller.staleMetadata == [entries[0].path])
     }
 
-    // A folder read again with nothing said to have changed keeps its details as read (a17: hidden files shown).
+    // A folder read again with nothing said to have changed keeps its details as read (here with hidden files shown).
     @MainActor @Test func aReadThatNamesNothingLeavesEveryRowsDetailsCurrent() async {
         let (controller, entries) = await loadedController()
         controller.show(folder: "/f", entries: entries, selecting: nil, keepingScroll: false, changedPaths: [])

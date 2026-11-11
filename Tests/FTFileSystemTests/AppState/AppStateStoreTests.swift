@@ -36,7 +36,7 @@ struct AppStateStoreTests {
             #expect(saved?["locationsExpanded"] == .bool(false))
             #expect(Kit.store(path).preferences().locationsExpanded == false)
             #expect(!FileManager.default.fileExists(atPath: path + ".tmp"))
-            // The file is JSON.stringify(state, null, 2) and a newline.
+            // The file is the state as JSON indented by two spaces, and a newline.
             #expect(persisted.hasPrefix("{\n  \"preferences\": {\n    \"theme\": \"dark\",\n"))
             #expect(persisted.hasSuffix("}\n"))
 

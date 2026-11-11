@@ -224,7 +224,7 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.pageStepLines(viewportHeight: 30, rowHeight: regular, size: .half) == 1)
         #expect(SidebarKeyboard.pageStepLines(viewportHeight: 0, rowHeight: regular, size: .full) == 1)
 
-        // The page works on the rows the arrow keys reach (headings are skipped).
+        // Page Up and Page Down move over the rows the arrow keys reach (headings are skipped).
         let integrated = context(separate: false, selected: .favorite("/Applications"))
         #expect(SidebarKeyboard.pageTarget(forward: true, lines: 2, integrated) == .location("/Users/demo"))
         #expect(SidebarKeyboard.pageTarget(forward: false, lines: 2, integrated) == nil)

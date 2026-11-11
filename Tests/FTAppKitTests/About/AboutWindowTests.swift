@@ -152,7 +152,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
         #expect(window?.backgroundColor == NSColor(AppearanceModel.shared.theme.pageWindowBackground))
     }
 
-    // The layout, from the stylesheet (ui.md 7.2): the 72 point icon, the rows of 31 under a hairline, the buttons
+    // The layout: the 72 point icon 28 in, the rows of 31 under a hairline, then the buttons and the link 28 in
     @Test func laysTheWindowOutAsTheStylesheetDoes() {
         let view = make(info, Recorder()).aboutView
         let icon = views("about.icon", in: view).first?.frame

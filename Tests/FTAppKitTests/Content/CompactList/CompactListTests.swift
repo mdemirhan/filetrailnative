@@ -10,7 +10,8 @@ extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct CompactListTests {
         // Items fill a column top to bottom, then the next;
-        // each is as wide as its icon and name, its highlight hugging them, in `padding: 8 10 4`.
+        // each is as wide as its icon and name, its highlight hugging them, inside 8 of padding at the top, 10 at the
+        // sides and 4 at the bottom.
         @Test func itemsFillAColumnThenTheNextAndHugTheirNames() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 120)
@@ -135,7 +136,7 @@ extension ExplorerWindowlessTests {
             let items = probe.compactItems
             let alpha = try #require(items["Alpha"])
             let gamma = try #require(items["Gamma"])
-            // An item names itself in its tooltip (`title={entry.name}`).
+            // An item names itself in its tooltip.
             #expect(alpha.view.toolTip == "Alpha")
             probe.press(at: probe.point(in: alpha.root))
             #expect(probe.selectedNames == ["Alpha"])
@@ -176,7 +177,7 @@ extension ExplorerWindowlessTests {
         }
 
         // The collection view takes its scroll view's horizontal scroller away under a custom layout: the Compact List
-        // keeps it, so its thumb shows when End scrolls sideways (106, 107).
+        // keeps it, so its thumb shows when End scrolls sideways.
         @Test func keepsItsHorizontalScrollerWhenItOverflows() async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(.viewAsList, files: 200)

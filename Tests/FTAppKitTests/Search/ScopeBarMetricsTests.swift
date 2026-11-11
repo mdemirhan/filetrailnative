@@ -42,7 +42,7 @@ import Testing
         let title = try #require(
             Views.first(NSView.self, in: state) { $0.accessibilityIdentifier() == "emptyState.title" } as? ThemedText)
         let font = try #require(title.font)
-        // `--font-size-body`.
+        // The body size.
         #expect(font.pointSize == 13)
         let traits = font.fontDescriptor.object(forKey: .traits) as? [NSFontDescriptor.TraitKey: Any]
         #expect(traits?[.weight] as? Double == Double(NSFont.Weight.medium.rawValue))

@@ -577,7 +577,7 @@ import Testing
         #expect(Kit.names(list) == ["Zed", "Nova"])
     }
 
-    // The press on a favorite's icon scrolls the page before the release (260): the release still lands on
+    // The press on a favorite's icon scrolls the page before the release: the release still lands on
     // the button it pressed, and the grid opens under where the button went.
     @Test func aPressThatScrollsThePageStillOpensTheIconGrid() throws {
         let home = "/Users/demo"

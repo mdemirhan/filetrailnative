@@ -430,7 +430,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         locked { deleteTree(existingKey(path)) }
     }
 
-    /// `nodes.delete(path)`: drops that one entry, leaving what was stored under it.
+    /// Drops the entry at `path` alone, leaving what was stored under it.
     @discardableResult
     func deleteNode(_ path: String) -> Bool {
         locked {
@@ -494,7 +494,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
                 children.append(name)
             }
         }
-        // `Array.prototype.sort()`: by UTF-16 code unit.
+        // Sorted by UTF-16 code unit.
         return children.sorted { $0.utf16.lexicographicallyPrecedes($1.utf16) }
     }
 

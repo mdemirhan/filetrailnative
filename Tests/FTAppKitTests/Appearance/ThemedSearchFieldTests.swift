@@ -7,7 +7,7 @@ import Testing
 
 @MainActor
 @Suite struct ThemedSearchFieldTests {
-    /// `padding: 0 4px 0 8px`, the 13 pt icon and 6 of gap, then the input with `padding: 0`.
+    /// 8 in from the field's left edge, the 13 pt icon and 6 of gap, then the text with no padding of its own.
     private static let textStart = 27.0
     private static let theme = Theme(appearance: .light, accentHex: "#007aff")
 
@@ -59,7 +59,7 @@ import Testing
         return result
     }
 
-    /// `rgba(0, 0, 0, 0.26)` over the field's 3% fill on white: 247 × 0.74 = 183. Drawn twice it comes out at 135.
+    /// Black at 26% over the field's 3% fill on white: 247 × 0.74 = 183. Drawn twice it comes out at 135.
     private func expectPlaceholderDrawnOnce(_ scan: Scan) {
         #expect(scan.darkest >= 178)
     }

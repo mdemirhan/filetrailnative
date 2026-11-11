@@ -88,7 +88,8 @@ struct DragOperationsGoldenTests {
         }
     }
 
-    /// Whether a page's drag (`effectAllowed`) offers a move, as the recordings say it: nil (not said) does.
+    /// Whether a drag's allowed effects, as the golden spells them (`effectAllowed`), take in a move: nil (not said)
+    /// does.
     static func offersMove(_ effectAllowed: String?) -> Bool {
         guard let effectAllowed else { return true }
         return ["move", "copyMove", "linkMove", "all", "uninitialized"].contains(effectAllowed)

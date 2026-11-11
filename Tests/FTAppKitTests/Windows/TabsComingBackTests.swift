@@ -8,7 +8,7 @@ import Testing
 extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct TabsComingBackTests: SidebarTesting {
-        // A tab shown again gives the keyboard to its pane, not to the search field it was left in (209).
+        // A tab shown again gives the keyboard to its pane, not to the search field it was left in.
         @Test func aTabComingBackGivesTheKeyboardToItsPaneNotTheSearchField() async throws {
             let harness = try ExplorerHarness.windowless()
             let first = try await harness.open()
@@ -70,7 +70,7 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A favorite more makes the tree shorter: the selected row is brought back into view (a16).
+        // A favorite more makes the tree shorter: the selected row is brought back into view.
         @Test func aFavoriteAddedKeepsTheSelectedTreeRowInView() async throws {
             let harness = try ExplorerHarness.windowless()
             for index in 0..<80 {
