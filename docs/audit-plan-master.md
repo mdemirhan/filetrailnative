@@ -1838,7 +1838,7 @@ needed; the fixtures location is spelled three ways (`FILETRAIL_DEV_CACHE`, `FIL
 
 ## Phase 12. Wrap-up
 
-### [ ] 12.1. Final checks
+### [x] 12.1. Final checks
 
 - `scripts/ci.sh` (everything) passes with zero warnings in sources and tests.
 - `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh` passes.
@@ -1847,7 +1847,7 @@ needed; the fixtures location is spelled three ways (`FILETRAIL_DEV_CACHE`, `FIL
   and an undo of each work on real files in a scratch folder.
 - `scripts/readme-screenshots.sh` runs.
 
-### [ ] 12.2. Keep the decisions, hand over the rest
+### [x] 12.2. Keep the decisions, hand over the rest
 
 - Move "Decisions on record", the answers to the open questions (from the Log) and "Left out on purpose" into
   `docs/decisions.md`, with a line under each left-out item that was settled meanwhile. Then ask the owner
@@ -2592,3 +2592,10 @@ anything that differed from the plan, and anything found on the way that is not 
   the benchmark tests and the app's `--bench` modes went (Q18's answer is reversed); the fixture tree `bench` is
   `large`, with only the folders the folder-size golden measures (its two case paths renamed). `CLAUDE.md` gains a
   "Don't add" section; `docs/decisions.md` records it.
+- 2026-11-12. 12.1: `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh` passes (3,806 tests, no warnings, format clean); the
+  25 GUI tests pass; the debug app built and, driven on a scratch folder and a mounted APFS disk image, copied, cut and
+  pasted across the two disks, trashed (on the image, into its own Trash) and batch renamed, and undid the copy, the
+  trash and the rename. A move to another disk is not undoable by design (`CantUndoReason.otherDiskMove`: copied, then
+  the originals deleted); the Edit menu says "Can’t Undo", disabled. `scripts/readme-screenshots.sh` runs, all nine
+  scenes; the pictures are committed, as Phase 9 changed the look. 12.2: `docs/decisions.md` holds the decisions, the
+  answers, "Left out on purpose" and "Must stay"; the release notes went to the owner.
