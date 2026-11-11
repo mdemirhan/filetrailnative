@@ -1,7 +1,8 @@
 import Foundation
 
 public enum ContentStateText {
-    /// A folder that lists quickly never flashes "Loading…".
+    /// "Loading…" in the list, and "Loading folder…" under a row of the sidebar's tree, show only once a read has
+    /// lasted this long: a folder that lists quickly never flashes them.
     public static let loadingDelayMilliseconds = 400.0
 
     public static let loading = "Loading…"

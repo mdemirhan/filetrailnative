@@ -341,7 +341,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
             let key = SidebarModel.ExactKeyBox(node.path)
             loadingNow.insert(key)
             if loadingTimers[key] == nil, !loadingShown.contains(key) {
-                loadingTimers[key] = model.schedule(SidebarLayout.loadingDelayMilliseconds) { [weak self] in
+                let delay = Int(ContentStateText.loadingDelayMilliseconds)
+                loadingTimers[key] = model.schedule(delay) { [weak self] in
                     guard let self else { return }
                     self.loadingTimers[key] = nil
                     self.loadingShown.insert(key)

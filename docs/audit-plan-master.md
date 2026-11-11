@@ -1398,7 +1398,7 @@ one; removing the checks removes the risk.
 - **Keep** `isCaseSensitive` returning nil and the probe fallback.
 - The test doubles implement the tower; each gains the required members.
 
-### [ ] 6.9. Identical code kept once
+### [x] 6.9. Identical code kept once
 
 Only merge code proven identical. Where two helpers differ in any case, do not merge them in this item.
 
@@ -2390,3 +2390,20 @@ anything that differed from the plan, and anything found on the way that is not 
   and New Tab still read as enabled. It fails the same way before Phase 6 (at e70b5a8) and passes alone and in
   `scripts/ci.sh`, so something an earlier test leaves behind decides the window the menu reads
   (`ApplicationMenuSync.readWindowState` falls back to `windows.front`).
+- 2026-11-11. 6.9, done in a worktree of its own and brought over, in 11 commits; each merge read side by side and,
+  where practical, compared byte for byte over many inputs by a throwaway test. Merged: `movedItemsOf`, `randomHex`,
+  the lookup with a deadline, `sortLabel` (now `SortByPreference.title`), the natural compare (three copies, one in
+  `Volume.swift` not listed; now `naturalCompare` in FTFoundation), `volumeRootPath` (`VolumePaths` moved to
+  FTFoundation; the tree's and the icon key's copies went), the listing's trim into the search's, the en_US grouped
+  count (two copies), pluralize (two copies), the suggestion pause and limit (`InfoMetrics`'s kept), the 400 ms
+  loading pause. A plan claim did not hold: the two run-time `isAsApproved` checks don't run on the same thing (the
+  first checks the fingerprint it took and turns a change into a question; the second, after four other checks,
+  throws and loops), so removing the first would end a changed destination as "changed before it could be replaced"
+  instead of asking; nothing changed there. Not merged, as they differ: `DragRules.volumeRootPath` (UTF-16 units, so
+  a combining mark after a slash reads differently); `DiskImageNames.jsTrimmed` (its set follows the Unicode
+  version) and `ApplicationPaths.trimmed` (Foundation's set); the NumberFormatter counts in `EjectPlanning` and the
+  toolbar (round above 2^53); `ClipboardSummary.pluralize` (no grouping); the locale-following counts;
+  `Date.epochMilliseconds` (rounds vs rounds down; which one a caller gets depends on module shadowing). Found, not
+  fixed: `ExplorerTabs.volumeRootPath`, a fourth exact copy a test calls; `OpenItems.limitMessage` and
+  `ActionNoticeText.openItemLimit` write the same sentence from different inputs; `JSString.trimmed` matches the
+  merged trim across modules.

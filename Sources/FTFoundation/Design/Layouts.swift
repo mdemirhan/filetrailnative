@@ -390,8 +390,6 @@ public struct SidebarLayout: Equatable, Sendable {
 
     // MARK: Behavior timings
 
-    /// "Loading folder…" shows when a read has lasted this long.
-    public static let loadingDelayMilliseconds = 400
     /// A click opens the row this long after.
     public static let clickDelayMilliseconds = 180
     /// After a hand toggle the sidebar does not scroll to the selection for this long.
