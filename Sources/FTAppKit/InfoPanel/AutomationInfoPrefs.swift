@@ -1,7 +1,7 @@
 #if DEBUG
     import FTFoundation
 
-    /// The `prefs` keys of the Info panel and the Info Row.
+    /// The `prefs` key of the Info panel.
     @MainActor
     enum AutomationInfoPrefs {
         private static var registered = false
@@ -18,10 +18,6 @@
                 }
             }
             flag("propertiesOpen") { controller, on in controller.updatePanels { $0.propertiesOpen = on } }
-            flag("detailRowOpen") { controller, on in controller.updatePanels { $0.detailRowOpen = on } }
-            flag("autoCalculateFolderSizes") { controller, on in
-                controller.updatePreferences(["autoCalculateFolderSizes": .bool(on)])
-            }
         }
     }
 #endif

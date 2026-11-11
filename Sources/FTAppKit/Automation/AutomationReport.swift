@@ -35,7 +35,6 @@
         }
 
         var scenario: String
-        var side = "swift"
         var steps: [Entry] = []
         /// Set when the run couldn't start (unreadable scenario) or was cut short.
         var error: String?

@@ -26,7 +26,7 @@
         typealias Handler = @MainActor (Scenario.PrefValue, Context) -> Result
 
         /// Every preference key.
-        static let originalKeys: Set<String> = [
+        static let preferenceKeys: Set<String> = [
             "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst", "density",
             "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns",
             "searchColumnOrder", "searchColumnWidths", "notificationsEnabled", "markClipboardItems",
@@ -71,12 +71,12 @@
             var failed: [String] = []
             for key in prefs.keys.sorted() {
                 guard let value = prefs[key] else { continue }
-                guard originalKeys.contains(key) else {
-                    failed.append("\(key) is not a preference of the original")
+                guard preferenceKeys.contains(key) else {
+                    failed.append("\(key) is not a preference")
                     continue
                 }
                 guard let handler = handlers[key] else {
-                    if let controller = context.controller, originalKeys.contains(key), !sessionKeys.contains(key) {
+                    if let controller = context.controller, preferenceKeys.contains(key), !sessionKeys.contains(key) {
                         controller.updatePreferences([key: node(value)])
                     } else {
                         unsupported.append(key)

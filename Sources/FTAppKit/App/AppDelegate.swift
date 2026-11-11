@@ -73,10 +73,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         startServices()
         followWindowVisibility()
         buildMenus()
-        #if DEBUG
-            registerAutomationPreferences()
-        #endif
-
         let flagValues = Set(
             ["--snapshot", "--automation", "--out", "--elements", "--user-data-dir"].compactMap {
                 Self.value(after: $0, in: arguments)
@@ -306,27 +302,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             mainMenu?.build()
         }
     }
-
-    #if DEBUG
-        /// What a scenario's `prefs` step does with the look: through the appearance, as Settings does. The zoom is read
-        /// and ignored.
-        private func registerAutomationPreferences() {
-            AutomationPrefs.register("theme") { [appearance] value, _ in
-                guard let theme = value.string.flatMap(ThemePreference.init(rawValue:)) else {
-                    return .failed("theme \(value)")
-                }
-                appearance.apply(theme: theme)
-                return .applied
-            }
-            AutomationPrefs.register("accent") { [appearance] value, _ in
-                guard let accent = value.string.flatMap(AppPreferenceLimits.normalizeAccentColor) else {
-                    return .failed("accent \(value)")
-                }
-                appearance.apply(accent: accent)
-                return .applied
-            }
-        }
-    #endif
 
     // MARK: The app's lifetime
 
