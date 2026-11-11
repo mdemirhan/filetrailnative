@@ -358,38 +358,4 @@ private final class LookedAt: @unchecked Sendable {
         #expect(throws: UnknownSearchJob.self) { try runtime.getUpdate(jobId: ids[0], cursor: 0) }
         #expect(try runtime.getUpdate(jobId: ids[69], cursor: 0).status == .cancelled)
     }
-
-    @Test func streamsBatchesUntilTheJobIsDone() async throws {
-        let (runtime, process) = make()
-        let stream = runtime.results(for: demo(), interval: .milliseconds(5))
-        Task {
-            try? await Task.sleep(for: .milliseconds(20))
-            process.write("/Users/demo/project/a1\0/Users/demo/project/a2\0")
-            try? await Task.sleep(for: .milliseconds(30))
-            process.write("/Users/demo/project/a3\0")
-            process.close(code: 0)
-        }
-        var batches: [SearchUpdate] = []
-        for await update in stream { batches.append(update) }
-        #expect(batches.flatMap(\.items).map(\.name) == ["a1", "a2", "a3"])
-        #expect(batches.last?.done == true)
-        #expect(batches.last?.status == .complete)
-    }
-
-    @Test func droppingTheStreamCancelsTheSearch() async throws {
-        let (runtime, process) = make()
-        do {
-            let stream = runtime.results(for: demo(), interval: .milliseconds(5))
-            var iterator = stream.makeAsyncIterator()
-            Task {
-                try? await Task.sleep(for: .milliseconds(10))
-                process.write("/Users/demo/project/a1\0")
-            }
-            _ = await iterator.next()
-        }
-        for _ in 0..<200 where process.terminateCount == 0 {
-            try await Task.sleep(for: .milliseconds(10))
-        }
-        #expect(process.terminateCount == 1)
-    }
 }

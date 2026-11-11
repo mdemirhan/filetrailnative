@@ -104,14 +104,15 @@ struct FixtureGoldenTests {
             let input = Fixtures.root + "/" + testCase.input.path
             let response = try await service.pathSuggestions(
                 inputPath: input, includeHidden: testCase.input.includeHidden, limit: testCase.input.limit)
-            let resolved = await service.resolvePath(input)
+            // Where the path really leads.
+            let resolved = try? NativeFileSystem().realpath(ExplorerListing.resolve(input))
             let actual = JSONValue.object([
                 "basePath": .optional(response.basePath.map(Fixtures.relative)),
                 "suggestions": .array(
                     response.suggestions.map {
                         .object(["path": .string(Fixtures.relative($0.path)), "name": .string($0.name)])
                     }),
-                "resolved": .optional(resolved.resolvedPath.map(Fixtures.relative)),
+                "resolved": .optional(resolved.map(Fixtures.relative)),
             ])
             if Golden.render(actual) != Golden.render(testCase.output) {
                 failures.append(

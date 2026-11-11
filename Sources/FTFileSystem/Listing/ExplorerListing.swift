@@ -516,14 +516,6 @@ enum ExplorerListing {
         while let last = scalars.last, isSpace(last) { scalars.removeLast() }
         return String(scalars)
     }
-
-    // MARK: Resolve
-
-    static func resolvePathTarget(_ path: String, _ fileSystem: any ExplorerFileSystem) -> ResolvedPath {
-        // Failure is represented as `resolvedPath: nil` so callers can fall back gracefully.
-        let input = resolve(path)
-        return ResolvedPath(inputPath: input, resolvedPath: try? fileSystem.realpath(input))
-    }
 }
 
 /// A time as ISO 8601 text in UTC, with milliseconds (`2024-01-02T03:04:05.678Z`).

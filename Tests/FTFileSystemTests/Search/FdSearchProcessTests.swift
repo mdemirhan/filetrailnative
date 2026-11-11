@@ -150,10 +150,10 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
     }
 
     @Test(.enabled(if: hasFd))
-    func aRealSearchLeavesOutWhatHasTheHiddenFlagWhereverTheFolderIs() async throws {
+    func aRealSearchLeavesOutWhatHasTheHiddenFlagWhereverTheFolderIs() throws {
         let runtime = try makeRuntime()
         defer { runtime.close() }
-        try await withTemporaryDirectory { folder in
+        try withTemporaryDirectory { folder in
             // The temporary folder is really under the hidden /private: what is above the search doesn't count.
             try FileManager.default.createDirectory(
                 atPath: folder.path + "/hidden/deep", withIntermediateDirectories: true)
@@ -162,35 +162,26 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
             try Data().write(to: folder.appending("hidden/deep/match-inside.txt"))
             #expect(chflags(folder.path + "/hidden", UInt32(UF_HIDDEN)) == 0)
             #expect(chflags(folder.path + "/match-flagged.txt", UInt32(UF_HIDDEN)) == 0)
-            var names: [String] = []
-            for await update in runtime.results(
-                for: SearchRequest(rootPath: folder.path, query: "match-", patternMode: .text))
-            {
-                names += update.items.map(\.name)
-            }
-            #expect(names == ["match-plain.txt"])
+            let (_, items) = try runToEnd(
+                runtime, SearchRequest(rootPath: folder.path, query: "match-", patternMode: .text))
+            #expect(items.map(\.name) == ["match-plain.txt"])
         }
     }
 
     @Test(.enabled(if: hasFd))
-    func streamsResultsFromARealSearch() async throws {
+    func findsEveryResultOfARealSearch() throws {
         let runtime = try makeRuntime()
         defer { runtime.close() }
-        try await withTemporaryDirectory { folder in
+        try withTemporaryDirectory { folder in
             for index in 0..<50 {
                 try Data().write(to: folder.appending("file-\(index).txt"))
             }
-            var names: [String] = []
-            var last: SearchUpdate?
-            for await update in runtime.results(
-                for: SearchRequest(rootPath: folder.path, query: "file-", patternMode: .text))
-            {
-                names += update.items.map(\.name)
-                last = update
-            }
+            let (last, items) = try runToEnd(
+                runtime, SearchRequest(rootPath: folder.path, query: "file-", patternMode: .text))
+            let names = items.map(\.name)
             #expect(names.count == 50)
             #expect(Set(names).count == 50)
-            #expect(last?.status == .complete)
+            #expect(last.status == .complete)
         }
     }
 

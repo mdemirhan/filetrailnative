@@ -69,7 +69,6 @@ private func mount(
         let root = mounts.first { $0.path == "/" }
         #expect(root != nil)
         #expect(root?.isLocal == true)
-        #expect(VolumeListing.listMounts().contains(MountPoint(path: "/", isLocal: true)))
     }
 
     // A real image, mounted without a Finder window (-nobrowse): the registry finds its physical disk. Not

@@ -190,13 +190,6 @@ public enum SystemActions {
         }
     }
 
-    /// Edit in the text editor: opens `path` with the text editor chosen in Settings.
-    public static func editInTextEditor(
-        path: String, editor: ApplicationSelection, opener: SystemOpener = .workspace
-    ) async -> OperationResult {
-        await openPaths([path], withApplication: editor.appPath, opener: opener)
-    }
-
     static func terminalApplicationName(_ terminalApp: ApplicationSelection?) -> String {
         guard let terminalApp else { return defaultTerminalName }
         let appName = ApplicationPaths.trimmed(terminalApp.appName)

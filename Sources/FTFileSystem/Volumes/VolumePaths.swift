@@ -16,8 +16,4 @@ public enum VolumePaths {
     public static func isVolumeRootPath(_ path: String) -> Bool {
         volumeRootPath(path) == path
     }
-
-    public static func isOnSameVolume(_ first: String, _ second: String) -> Bool {
-        volumeRootPath(first) == volumeRootPath(second)
-    }
 }

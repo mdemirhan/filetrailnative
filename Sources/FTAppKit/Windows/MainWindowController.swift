@@ -1577,11 +1577,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             iconStore: { [weak self] in self?.services.iconStore },
             homePath: FileManager.default.homeDirectoryForCurrentUser.path,
             openPrivacySettings: {
-                guard
-                    let url = URL(
-                        string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")
-                else { return }
-                NSWorkspace.shared.open(url)
+                Task { _ = await SystemActions.openFullDiskAccessSettings() }
             })
         content.onActivate = { [weak self] entries, newTab in self?.open(entries, inNewTab: newTab) }
         content.onSortRequested = { [weak self] field in self?.sort(by: field) }

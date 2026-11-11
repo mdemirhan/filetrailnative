@@ -112,11 +112,6 @@ public struct PathSuggestions: Sendable, Hashable, Codable {
     public var suggestions: [PathSuggestion]
 }
 
-public struct ResolvedPath: Sendable, Hashable, Codable {
-    public var inputPath: String
-    public var resolvedPath: String?
-}
-
 /// A change made to the folder a window watches.
 public struct FolderChange: Sendable, Hashable, Codable {
     public var path: String

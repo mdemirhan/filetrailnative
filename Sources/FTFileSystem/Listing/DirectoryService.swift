@@ -89,8 +89,4 @@ public actor DirectoryService {
         try ExplorerListing.pathSuggestions(
             inputPath: inputPath, includeHidden: includeHidden, limit: limit, trash: trash, fileSystem)
     }
-
-    public func resolvePath(_ path: String) -> ResolvedPath {
-        ExplorerListing.resolvePathTarget(path, fileSystem)
-    }
 }

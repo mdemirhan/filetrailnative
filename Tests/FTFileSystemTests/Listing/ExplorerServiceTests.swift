@@ -371,20 +371,6 @@ struct ExplorerServiceTests {
         #expect(childMatches.suggestions.map(\.path) == ["/Users/demo/dotfiles/scripts", "/Users/demo/dotfiles/shell"])
     }
 
-    @Test func resolvesSymlinkTargetsForActivation() async {
-        let fake = FakeFileSystem()
-        fake.realpathHandler = { _ in "/resolved/path" }
-        let resolved = await service(fake).resolvePath("/input/path")
-        #expect(resolved == ResolvedPath(inputPath: "/input/path", resolvedPath: "/resolved/path"))
-    }
-
-    @Test func fallsBackToTheResolvedInputPathWhenPathActivationCannotResolveAliases() async {
-        let fake = FakeFileSystem()
-        fake.realpathHandler = { _ in throw FakeError() }
-        let resolved = await service(fake).resolvePath("/input/path")
-        #expect(resolved == ResolvedPath(inputPath: "/input/path", resolvedPath: nil))
-    }
-
     @Test func fallsBackToTheOriginalDirectoryPathWhenRealpathNormalizationFails() async throws {
         let fake = FakeFileSystem()
         fake.directory = { _ in [fakeDirent("Desktop", directory: true)] }

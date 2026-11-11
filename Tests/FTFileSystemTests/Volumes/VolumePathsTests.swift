@@ -20,13 +20,6 @@ import Testing
         #expect(VolumePaths.volumeRootPath("/VolumesX/Backup") == "/")
     }
 
-    @Test func comparesTheVolumesOfTwoPaths() {
-        #expect(VolumePaths.isOnSameVolume("/Users/demo/a.txt", "/Applications"))
-        #expect(VolumePaths.isOnSameVolume("/Volumes/Backup/a", "/Volumes/Backup/b/c"))
-        #expect(!VolumePaths.isOnSameVolume("/Users/demo/a.txt", "/Volumes/Backup"))
-        #expect(!VolumePaths.isOnSameVolume("/Volumes/Backup/a", "/Volumes/Other/a"))
-    }
-
     @Test func rootPaths() {
         #expect(VolumePaths.isVolumeRootPath("/"))
         #expect(VolumePaths.isVolumeRootPath("/Volumes/Backup"))

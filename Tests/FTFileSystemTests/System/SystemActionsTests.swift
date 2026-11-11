@@ -201,13 +201,6 @@ private final class FakeSystem: @unchecked Sendable {
         #expect(system.calls.isEmpty)
     }
 
-    @Test func editsInTheTextEditor() async {
-        let system = FakeSystem()
-        _ = await SystemActions.editInTextEditor(
-            path: "/Users/demo/a.txt", editor: AppPreferenceLimits.defaultTextEditor, opener: system.opener)
-        #expect(system.calls == [.openWith("/System/Applications/TextEdit.app", ["/Users/demo/a.txt"])])
-    }
-
     // Terminal
 
     private let terminal = ApplicationSelection(appPath: "/Applications/iTerm.app", appName: "iTerm")

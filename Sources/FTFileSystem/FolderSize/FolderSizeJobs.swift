@@ -206,12 +206,6 @@ public final class FolderSizeJobs {
     /// How many jobs are kept.
     public var jobCount: Int { jobs.count }
 
-    /// Lets go of every job.
-    public func clearJobs() {
-        jobs.removeAll()
-        jobOrder.removeAll()
-    }
-
     private func setFolderSizeJob(_ jobId: String, _ job: FolderSizeJob) {
         // Re-inserting moves the job to the newest position, so a long walk that just finished is not the
         // first finished job evicted before its result is polled.

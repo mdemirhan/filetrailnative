@@ -133,9 +133,6 @@ public final class FdProcess: SearchProcess, @unchecked Sendable {
         }
     }
 
-    /// The process id, for checking that it is gone.
-    public var processIdentifier: Int32 { pid }
-
     public func terminate() {
         lock.withLock {
             // SIGTERM, only until the process has been reaped: after that its id may belong to another process.

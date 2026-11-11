@@ -199,33 +199,6 @@ public final class FdSearchRuntime: @unchecked Sendable {
         }
     }
 
-    /// Starts a search and streams its results in batches (polled as the UI does, every `interval`), ending with the
-    /// batch that has `done`. Dropping the stream before then cancels the search.
-    public func results(
-        for request: SearchRequest, interval: Duration = .milliseconds(120)
-    ) -> AsyncStream<SearchUpdate> {
-        let jobId = startSearch(request).jobId
-        return AsyncStream { continuation in
-            let task = Task {
-                var cursor = 0
-                while !Task.isCancelled {
-                    guard let update = try? self.getUpdate(jobId: jobId, cursor: cursor) else { break }
-                    cursor = update.nextCursor
-                    if !update.items.isEmpty || update.done {
-                        continuation.yield(update)
-                    }
-                    if update.done { break }
-                    try? await Task.sleep(for: interval)
-                }
-                continuation.finish()
-            }
-            continuation.onTermination = { _ in
-                task.cancel()
-                self.cancelSearch(jobId: jobId)
-            }
-        }
-    }
-
     // MARK: - Output
 
     private func rememberFinished(_ jobId: String, _ job: Job) {

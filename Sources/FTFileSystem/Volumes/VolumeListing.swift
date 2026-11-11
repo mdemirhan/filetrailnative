@@ -20,12 +20,6 @@ public struct MountRecord: Sendable, Equatable {
     public var isDontBrowse: Bool { flags & UInt32(MNT_DONTBROWSE) != 0 }
 }
 
-/// A mount and whether it is local: what holds a path, to tell a network share from a local disk.
-public struct MountPoint: Sendable, Equatable {
-    public var path: String
-    public var isLocal: Bool
-}
-
 /// The disks mounted besides the startup disk, as Finder's sidebar lists them. Read from the kernel's mount
 /// table with `getmntinfo(MNT_NOWAIT)`, which never asks a file system (a network share that stopped
 /// answering would block), so it is quick enough for the main thread.
@@ -40,11 +34,6 @@ public enum VolumeListing {
         guard count > 0, let table else { return [] }
         defer { free(table) }
         return (0..<Int(count)).map { MountRecord(table[$0]) }
-    }
-
-    /// Every mount, wherever it is mounted and however it is marked.
-    public static func listMounts() -> [MountPoint] {
-        mounts().map { MountPoint(path: $0.path, isLocal: $0.isLocal) }
     }
 
     /// In the order of the mount table (see `Volume.sorted`).
