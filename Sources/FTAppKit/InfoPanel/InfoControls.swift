@@ -51,10 +51,11 @@ enum InfoGlyph {
         }
     }
 
-    /// Draws the symbol as large as fits in `rect`, centered there.
+    /// Draws the symbol as large as fits in `rect`, centered there. Semibold, as the panel's small boxes need for a
+    /// stroke as strong as its text's.
     @MainActor
     func draw(in rect: NSRect, color: NSColor) {
-        SymbolGlyph.draw(symbolName, in: rect, color: color)
+        SymbolGlyph.draw(symbolName, in: rect, color: color, weight: .semibold)
     }
 }
 
