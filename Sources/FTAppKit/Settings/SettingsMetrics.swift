@@ -78,8 +78,6 @@ enum SettingsMetrics {
     /// A card: 12 of padding each side, the menu's corner radius.
     static let cardPadding: CGFloat = 12
     static var cardRadius: CGFloat { CGFloat(DesignTokens.radii.menu) }
-    /// The card's 1 px inner edge.
-    static let cardEdgeWidth: CGFloat = 1
     /// A row: 16 between its parts, at least 40 tall, 8 above and below, a 1 px line under it.
     static let rowGap: CGFloat = 16
     static let rowMinHeight: CGFloat = 40
@@ -112,9 +110,8 @@ enum SettingsMetrics {
     static let unitGap: CGFloat = 6
     /// The system's mini switch.
     static let switchSize = NSSize(width: 36, height: 16)
-    /// A checkbox: 14 by 14, the extra-small corner radius, 6 from its label.
+    /// A checkbox: 14 by 14, the extra-small corner radius.
     static let checkboxSize: CGFloat = 14
-    static let checkboxGap: CGFloat = 6
     static let checkPath = "M3.5 7.2l2.3 2.3 4.7-5"
     static let checkStroke: CGFloat = 1.8
 
@@ -200,16 +197,11 @@ enum SettingsMetrics {
 
     /// The button that picks a favorite's icon, 26 by 26.
     static let favoriteButtonSize: CGFloat = 26
-    /// The grid: 6 columns of 30, 4 apart, 6 of padding; kept 12 from the window's edges and 4 from its button.
+    /// The grid: 6 columns of 30, 4 apart, 6 of padding.
     static let iconGridColumns = 6
     static let iconGridCell: CGFloat = 30
     static let iconGridGap: CGFloat = 4
     static let iconGridPadding: CGFloat = 6
-    /// The grid's 0.5 border, the context menu's, is drawn outside the padding: the grid is 1 wider and taller
-    /// than the size its placement is worked out with.
-    static var iconGridBorder: CGFloat { CGFloat(DesignTokens.menu.borderWidth) }
-    static let iconGridMargin: CGFloat = 12
-    static let iconGridOffset: CGFloat = 4
     /// The favorite icon in a cell of the grid; in a list row it is
     /// `listIconSize`.
     static let gridIconSize: CGFloat = 18
@@ -261,8 +253,6 @@ enum SettingsMetrics {
     /// The 0.5 px edges of swatches, thumbnails, checkboxes and
     /// the push button's bezel.
     static let hairline: CGFloat = 0.5
-    /// The tick of a menu's checked item.
-    static let menuCheckSize: CGFloat = 11
     /// A pop-up's menu opens with its checked item over the button's text.
     static let popupMenuInset: CGFloat = 3
     /// A row starts to drag 3 points from where it was pressed, and is dimmed to 0.4 while dragged.

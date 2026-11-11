@@ -102,17 +102,16 @@ import Testing
         #expect(other.accentHex == AppPreferenceLimits.defaultAccent)
     }
 
-    // The tokens derived from the accent: a deep shade 18% darker, a 30% border, alphas that differ for light and
-    // dark
+    // The tokens derived from the accent: pill text in a deep shade 18% darker in the light theme, a 30% border,
+    // alphas that differ for light and dark
     @Test func derivesTheAccentTokensFromTheAccentColor() {
         let light = Theme(appearance: .light, accentHex: "#007aff").accent
         let dark = Theme(appearance: .dark, accentHex: "#007aff").accent
-        #expect(light.solidDark.hexString == "#0064d1")
+        #expect(light.pillText.hexString == "#0064d1")
+        #expect(dark.pillText.hexString == "#007aff")
         #expect(light.border.alpha == 0.3)
-        #expect(light.hoverBg.alpha == 0.14)
-        #expect(dark.hoverBg.alpha == 0.12)
-        #expect(light.focusBorder.alpha == 0.5)
-        #expect(dark.focusBorder.alpha == 0.4)
+        #expect(light.folderTint.alpha == 0.16)
+        #expect(dark.folderTint.alpha == 0.14)
     }
 
     // The default button is the accent with white text, or black text on a light accent

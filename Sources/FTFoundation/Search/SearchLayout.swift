@@ -23,10 +23,6 @@ public struct SearchLayout: Equatable, Sendable {
     public var segmentPaddingHorizontal: Double
     public var segmentHeight: Double
     public var segmentMaxWidth: Double
-    /// The selected segment's shadow: 0.5 down, blurred 1.5, black at 20%.
-    public var segmentShadowOffsetY: Double
-    public var segmentShadowBlur: Double
-    public var segmentShadowAlpha: Double
 
     /// The results filter: 200 wide, at least 90; its field: the control height, padding 0 4 0 8, 6 between the
     /// icon, the text and the clear button; a 13 pt icon stroked 2.
@@ -58,21 +54,6 @@ public struct SearchLayout: Equatable, Sendable {
     public var bannerBorderAccentShare: Double
     public var bannerFillAccentAlpha: Double
 
-    // MARK: Toolbar capsule
-
-    /// The toolbar's search capsule while active: a 1 pt edge of the accent at 70%, and the focus ring.
-    public var capsuleActiveBorderWidth: Double
-    public var capsuleActiveBorderAlpha: Double
-    /// The search options button: 20 tall, padding 0 3 (margins −3), radius xs; the chevron 8 across,
-    /// stroked 1.4, 1 after the magnifier.
-    public var optionsButtonHeight: Double
-    public var optionsButtonPadding: Double
-    public var optionsChevronSize: Double
-    public var optionsChevronStrokeWidth: Double
-    public var optionsChevronGap: Double
-    /// The options menu hangs 12 in from the window's edges at most.
-    public var optionsMenuMargin: Double
-
     // MARK: The match in names
 
     /// The match mark: rgba(255, 214, 10, 0.45), radius xs, padding 0 1 (none under an icon); on a selected
@@ -91,14 +72,14 @@ public struct SearchLayout: Equatable, Sendable {
     public static let standard = SearchLayout(
         scopeBarPaddingVertical: 6, scopeBarPaddingHorizontal: 12, scopeBarMinHeight: 36, scopeBarGap: 6,
         scopeLabelMarginTrailing: 2, headerBorderWidth: 1, segmentedTrackPadding: 2, segmentedGap: 2,
-        segmentPaddingHorizontal: 12, segmentHeight: 24, segmentMaxWidth: 220, segmentShadowOffsetY: 0.5,
-        segmentShadowBlur: 1.5, segmentShadowAlpha: 0.2, filterWidth: 200, filterMinWidth: 90, fieldHeight: 24,
+        segmentPaddingHorizontal: 12, segmentHeight: 24, segmentMaxWidth: 220,
+        filterWidth: 200, filterMinWidth: 90, fieldHeight: 24,
         fieldPaddingLeading: 8, fieldPaddingTrailing: 4, fieldGap: 6, fieldIconSize: 13, fieldIconStrokeWidth: 2,
         clearButtonSize: 16, smallButtonHeight: 22, smallButtonPaddingHorizontal: 10, smallButtonGap: 6,
         spinnerSize: 10, spinnerLineWidth: 1.5, bannerMarginHorizontal: 6, bannerMarginBottom: 12,
         bannerPaddingVertical: 10, bannerPaddingHorizontal: 12, bannerBorderWidth: 1, bannerBorderAccentShare: 0.22,
-        bannerFillAccentAlpha: 0.06, capsuleActiveBorderWidth: 1, capsuleActiveBorderAlpha: 0.7,
-        optionsButtonHeight: 20, optionsButtonPadding: 3, optionsChevronSize: 8, optionsChevronStrokeWidth: 1.4,
-        optionsChevronGap: 1, optionsMenuMargin: 12, markRed: 255, markGreen: 214, markBlue: 10, markAlpha: 0.45,
+        bannerFillAccentAlpha: 0.06,
+
+        markRed: 255, markGreen: 214, markBlue: 10, markAlpha: 0.45,
         markPaddingHorizontal: 1, underlineThickness: 1.5, underlineOffset: 2, tabMagnifierSize: 12)
 }

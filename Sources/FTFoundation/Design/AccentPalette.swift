@@ -7,7 +7,6 @@ public struct AccentPalette: Equatable, Sendable {
     public static let defaultHex = "#007aff"
 
     public let solid: RGBA
-    public let solidDark: RGBA
     /// Background of solid buttons: the accent, a touch darker if that keeps white text readable.
     public let solidButton: RGBA
     /// Text on `solidButton`: white or black, at least 4.5:1.
@@ -18,20 +17,11 @@ public struct AccentPalette: Equatable, Sendable {
     public let onSelection: RGBA
     /// `--ft-accent-on-selection-soft`: selection text for secondary cells.
     public let onSelectionSoft: RGBA
-    public let hoverBg: RGBA
-    public let pillBg: RGBA
     public let pillText: RGBA
     public let border: RGBA
-    public let focusBorder: RGBA
     public let softBg: RGBA
-    public let activeBg: RGBA
-    public let heroIconBg: RGBA
     public let folderTint: RGBA
-    public let pathCrumbHover: RGBA
     public let actionHoverBg: RGBA
-    public let searchPillBorder: RGBA
-    public let locationRing: RGBA
-    public let ringSoft: RGBA
     /// Text of the Rename sheet's marks (the accent mixed 65% with white in the dark theme).
     public let batchRenameMarkText: RGBA
     public let batchRenameMarkBg: RGBA
@@ -51,26 +41,16 @@ public struct AccentPalette: Equatable, Sendable {
         let selection = Self.selectionColors(accent)
 
         solid = accent
-        solidDark = dark
         solidButton = button.background
         onSolid = button.foreground
         selectionBg = selection.background
         onSelection = selection.foreground
         onSelectionSoft = selection.foreground.withAlpha(0.85)
-        hoverBg = accent.withAlpha(profile.hoverBgAlpha)
-        pillBg = accent.withAlpha(profile.pillBgAlpha)
         pillText = isLight ? dark : accent
         border = accent.withAlpha(0.3)
-        focusBorder = accent.withAlpha(profile.focusBorderAlpha)
         softBg = accent.withAlpha(0.08)
-        activeBg = accent.withAlpha(profile.activeBgAlpha)
-        heroIconBg = accent.withAlpha(profile.heroIconBgAlpha)
         folderTint = accent.withAlpha(profile.folderTintAlpha)
-        pathCrumbHover = isLight ? dark : accent
         actionHoverBg = accent.withAlpha(profile.actionHoverBgAlpha)
-        searchPillBorder = accent.withAlpha(profile.searchPillBorderAlpha)
-        locationRing = accent.withAlpha(profile.locationRingAlpha)
-        ringSoft = accent.withAlpha(0.15)
         if isLight {
             batchRenameMarkText = dark
             batchRenameMarkBg = accent.withAlpha(0.08)
@@ -83,24 +63,11 @@ public struct AccentPalette: Equatable, Sendable {
     // MARK: Profiles
 
     private struct Profile {
-        var hoverBgAlpha: Double
-        var activeBgAlpha: Double
-        var pillBgAlpha: Double
-        var focusBorderAlpha: Double
-        var heroIconBgAlpha: Double
         var actionHoverBgAlpha: Double
-        var searchPillBorderAlpha: Double
-        var locationRingAlpha: Double
         var folderTintAlpha: Double
 
-        static let light = Profile(
-            hoverBgAlpha: 0.14, activeBgAlpha: 0.08, pillBgAlpha: 0.14, focusBorderAlpha: 0.5,
-            heroIconBgAlpha: 0.1, actionHoverBgAlpha: 0.1, searchPillBorderAlpha: 0.55,
-            locationRingAlpha: 0.16, folderTintAlpha: 0.16)
-        static let dark = Profile(
-            hoverBgAlpha: 0.12, activeBgAlpha: 0.1, pillBgAlpha: 0.12, focusBorderAlpha: 0.4,
-            heroIconBgAlpha: 0.08, actionHoverBgAlpha: 0.1, searchPillBorderAlpha: 0.5,
-            locationRingAlpha: 0.14, folderTintAlpha: 0.14)
+        static let light = Profile(actionHoverBgAlpha: 0.1, folderTintAlpha: 0.16)
+        static let dark = Profile(actionHoverBgAlpha: 0.1, folderTintAlpha: 0.14)
     }
 
     // MARK: Contrast math

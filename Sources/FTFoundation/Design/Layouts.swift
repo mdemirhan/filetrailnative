@@ -32,15 +32,12 @@ public struct ExplorerLayout: Equatable, Sendable {
     public var minContentWidth: Double
     public var defaultTreeWidth: Double
     public var defaultInspectorWidth: Double
-    /// Toolbar padding-left with the sidebar hidden, clearing the traffic lights. The system toolbar
-    /// places its row past the traffic lights itself.
-    public var toolbarInsetWithoutTree: Double
 
     static func make() -> ExplorerLayout {
         ExplorerLayout(
             treeMinWidth: 220, treeMaxWidth: 520, inspectorMinWidth: 260, inspectorMaxWidth: 480,
             resizerWidth: 8, paneResizeStep: 12, paneResizeStepLarge: 24, minContentWidth: 420,
-            defaultTreeWidth: 280, defaultInspectorWidth: 320, toolbarInsetWithoutTree: 76)
+            defaultTreeWidth: 280, defaultInspectorWidth: 320)
     }
 }
 
@@ -221,29 +218,6 @@ public struct ToolbarLayout: Equatable, Sendable {
     }
 }
 
-/// Tab strip metrics (section 1.3).
-public struct TabStripLayout: Equatable, Sendable {
-    public var height: Double
-    public var tabWidth: Double
-    public var tabMinWidth: Double
-    public var tabPaddingLeading: Double
-    public var tabPaddingTrailing: Double
-    public var fontSize: Double
-    public var activeLineHeight: Double
-    public var closeButtonSize: Double
-    public var closeButtonTrailing: Double
-    public var newTabButtonWidth: Double
-    public var leadingOverlap: Double
-    public var dragThreshold: Double
-
-    static func make() -> TabStripLayout {
-        TabStripLayout(
-            height: 29, tabWidth: 180, tabMinWidth: 96, tabPaddingLeading: 12, tabPaddingTrailing: 28,
-            fontSize: 13, activeLineHeight: 2, closeButtonSize: 16, closeButtonTrailing: 7,
-            newTabButtonWidth: 34, leadingOverlap: 4, dragThreshold: 6)
-    }
-}
-
 /// The type scale.
 public struct TypeScale: Equatable, Sendable {
     public var mini: Double
@@ -305,8 +279,6 @@ public struct SidebarInsets: Equatable, Sendable {
 /// small, medium and large sizes are AppKit's source list rows and text; fonts, radii and durations come from
 /// `DesignTokens`.
 public struct SidebarLayout: Equatable, Sendable {
-    public let density: SidebarDensity
-
     /// The sidebar's parts start this far down, under the window's toolbar band and its traffic lights (the band is
     /// the system toolbar's, over the sidebar; the sidebar draws nothing there).
     public let titlebarHeight = 52.0
@@ -344,7 +316,6 @@ public struct SidebarLayout: Equatable, Sendable {
     public let badgeFontSize: Double
     public let badgePaddingX = 6.0
     public let badgePaddingY = 1.0
-    public let badgeGap: Double
     public let ejectBox = 20.0
     public let ejectIcon = 14.0
     public let ejectStroke = 1.8
@@ -379,13 +350,10 @@ public struct SidebarLayout: Equatable, Sendable {
     // MARK: The "Folders" label
 
     public let foldersTitlePadding = SidebarInsets(top: 14, right: 12, bottom: 0, left: 20)
-    /// The height the label box is left with (measured: 14.7 pt with its padding).
-    public let foldersTitleContentHeight = 0.7
     /// The folders tree fades in from clear over this many points at its top.
     public let treeFadeHeight = 6.0
 
     public init(density: SidebarDensity) {
-        self.density = density
         let size: (row: Double, indent: Double, chevron: Double, icon: Double, gap: Double, font: Double)
         switch density {
         case .standard: size = (26, 14, 14, 16, 6, DesignTokens.typeScale.name)
@@ -405,7 +373,6 @@ public struct SidebarLayout: Equatable, Sendable {
         headingFontSize = DesignTokens.typeScale.small
         headingFontSizeSmall = DesignTokens.typeScale.small
         badgeFontSize = DesignTokens.typeScale.mini
-        badgeGap = small ? 4 : 6
         treeListPaddingTop = small ? 4 : 6
         treeListPaddingBottom = small ? 12 : 16
         sectionHeaderHeight = small ? 20 : density == .large ? 28 : 24
@@ -429,8 +396,6 @@ public struct SidebarLayout: Equatable, Sendable {
     public static let clickDelayMilliseconds = 180
     /// After a hand toggle the sidebar does not scroll to the selection for this long.
     public static let handToggleSettleMilliseconds = 1500
-    /// A valid drag over a collapsed folder expands it after this long.
-    public static let dragHoverExpandMilliseconds = 700
     /// The "Jump to" prefix is forgotten this long after the last key.
     public static let typeaheadResetMilliseconds = 1000
 }

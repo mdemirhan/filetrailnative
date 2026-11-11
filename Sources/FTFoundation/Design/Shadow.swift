@@ -5,8 +5,7 @@ public enum ThemeAppearance: String, CaseIterable, Sendable {
     case dark
 }
 
-/// One layer of a CSS `box-shadow`. AppKit draws these itself; the values are kept so the
-/// native look can be checked against the stylesheet.
+/// One layer of a shadow, as `box-shadow` writes it: offset, blur, spread and colour.
 public struct ShadowLayer: Equatable, Sendable {
     public var inset: Bool
     public var x: Double
@@ -22,20 +21,5 @@ public struct ShadowLayer: Equatable, Sendable {
         self.blur = blur
         self.spread = spread
         self.color = color
-    }
-
-    /// The stylesheet's spelling: zero lengths are bare, and a zero spread is left out.
-    public var cssString: String {
-        func length(_ value: Double) -> String { value == 0 ? "0" : formatCSSNumber(value) + "px" }
-        var parts = [length(x), length(y), length(blur)]
-        if spread != 0 { parts.append(length(spread)) }
-        return (inset ? "inset " : "") + parts.joined(separator: " ") + " " + color.cssString
-    }
-}
-
-extension [ShadowLayer] {
-    /// `none` when empty.
-    public var cssString: String {
-        isEmpty ? "none" : map(\.cssString).joined(separator: ", ")
     }
 }

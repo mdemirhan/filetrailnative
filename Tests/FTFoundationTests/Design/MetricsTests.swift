@@ -20,7 +20,7 @@ import Testing
     static let explorer: Table = [
         "treeMinWidth": 220, "treeMaxWidth": 520, "inspectorMinWidth": 260, "inspectorMaxWidth": 480,
         "resizerWidth": 8, "paneResizeStep": 12, "paneResizeStepLarge": 24, "minContentWidth": 420,
-        "defaultTreeWidth": 280, "defaultInspectorWidth": 320, "toolbarInsetWithoutTree": 76,
+        "defaultTreeWidth": 280, "defaultInspectorWidth": 320,
     ]
 
     static func iconGrid(_ density: Density) -> Table {
@@ -63,12 +63,6 @@ import Testing
         "segmentHeight": 24,
     ]
 
-    static let tabStrip: Table = [
-        "height": 29, "tabWidth": 180, "tabMinWidth": 96, "tabPaddingLeading": 12, "tabPaddingTrailing": 28,
-        "fontSize": 13, "activeLineHeight": 2, "closeButtonSize": 16, "closeButtonTrailing": 7, "newTabButtonWidth": 34,
-        "leadingOverlap": 4, "dragThreshold": 6,
-    ]
-
     /// default, min, max
     static let columns: [DetailColumn: [Double]] = [
         .name: [320, 140, 720], .modified: [152, 80, 280], .size: [108, 60, 240], .kind: [148, 60, 320],
@@ -108,11 +102,9 @@ import Testing
         problems += Self.mismatches(metrics.details, base: Self.details(density), label: "details")
         problems += Self.mismatches(metrics.flowList, base: Self.flowList(density), label: "flowList")
         problems += Self.mismatches(metrics.toolbar, base: Self.toolbar, label: "toolbar")
-        problems += Self.mismatches(metrics.tabStrip, base: Self.tabStrip, label: "tabStrip")
         #expect(problems.isEmpty, "\(problems.count) problems: \(problems.prefix(8))")
 
         #expect(metrics.density == density)
-        #expect(metrics.spacing == [2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28])
         #expect(metrics.scrollbarWidth == 8)
         #expect(metrics.paneHeaderHeight == 30)
         #expect(metrics.breadcrumbRowHeight == 33)
@@ -161,7 +153,6 @@ import Testing
     @Test(arguments: SidebarDensity.allCases)
     func sidebarMetricsAreTokensOfTheDensity(density: SidebarDensity) {
         let sidebar = DesignTokens.sidebar(density: density)
-        #expect(sidebar.density == density)
         #expect(
             [
                 sidebar.rowHeight, sidebar.indent, sidebar.chevronBox, sidebar.iconSize, sidebar.symbolPointSize,

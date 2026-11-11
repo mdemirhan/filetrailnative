@@ -7,14 +7,12 @@ public struct Metrics: Equatable, Sendable {
     public let typeScale: TypeScale
     public let radii: Radii
     public let controlHeights: ControlHeights
-    public let spacing: [Double]
     public let explorer: ExplorerLayout
     public let iconGrid: IconGridLayout
     public let details: DetailsLayout
     public let flowList: FlowListLayout
     public let sidebar: SidebarLayout
     public let toolbar: ToolbarLayout
-    public let tabStrip: TabStripLayout
     public let scrollbarWidth: Double
     public let paneHeaderHeight: Double
     public let breadcrumbRowHeight: Double
@@ -27,14 +25,12 @@ public struct Metrics: Equatable, Sendable {
         typeScale = .make()
         radii = .make()
         controlHeights = .make()
-        spacing = DesignTokens.spacing
         explorer = .make()
         iconGrid = .make(density: density)
         details = .make(density: density)
         flowList = .make(density: density)
         sidebar = SidebarLayout(density: density.sidebarDensity(system: .medium))
         toolbar = .make()
-        tabStrip = .make()
         scrollbarWidth = DesignTokens.scrollbarWidth
         paneHeaderHeight = DesignTokens.paneHeaderHeight
         breadcrumbRowHeight = DesignTokens.breadcrumbRowHeight

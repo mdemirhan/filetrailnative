@@ -29,28 +29,6 @@ public struct RGBA: Equatable, Hashable, Sendable {
         self.init(r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255)
     }
 
-    /// `#rrggbb`, `rgb()`/`rgba()` or `transparent`: the spellings of the colour tokens in
-    /// `Tests/Golden/css-tokens.json`.
-    public init?(css: String) {
-        let text = css.trimmingCharacters(in: .whitespaces).lowercased()
-        if text == "transparent" {
-            self.init(r: 0, g: 0, b: 0, alpha: 0)
-        } else if text.hasPrefix("#") {
-            self.init(hex: text)
-        } else if text.hasPrefix("rgb"), let open = text.firstIndex(of: "("), let close = text.lastIndex(of: ")") {
-            let parts = text[text.index(after: open)..<close].split(separator: ",").map {
-                Double($0.trimmingCharacters(in: .whitespaces))
-            }
-            guard parts.count == 3 || parts.count == 4, !parts.contains(where: { $0 == nil }) else { return nil }
-            let values = parts.compactMap { $0 }
-            self.init(
-                red: values[0] / 255, green: values[1] / 255, blue: values[2] / 255,
-                alpha: values.count == 4 ? values[3] : 1)
-        } else {
-            return nil
-        }
-    }
-
     public static let white = RGBA(r: 255, g: 255, b: 255)
     public static let black = RGBA(r: 0, g: 0, b: 0)
     public static let clear = RGBA(r: 0, g: 0, b: 0, alpha: 0)
@@ -76,17 +54,4 @@ public struct RGBA: Equatable, Hashable, Sendable {
         let (r, g, b) = bytes
         return "#" + [r, g, b].map { String(format: "%02x", $0) }.joined()
     }
-
-    /// The CSS spelling: `#rrggbb` when opaque, otherwise `rgba(r, g, b, a)`.
-    public var cssString: String {
-        if alpha == 1 { return hexString }
-        let (r, g, b) = bytes
-        return "rgba(\(r), \(g), \(b), \(formatCSSNumber(alpha)))"
-    }
-}
-
-/// A number for a CSS string: no trailing `.0` on the whole values used here.
-func formatCSSNumber(_ value: Double) -> String {
-    if value == value.rounded(), abs(value) < 1e15 { return String(Int(value)) }
-    return "\(value)"
 }

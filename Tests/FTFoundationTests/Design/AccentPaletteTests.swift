@@ -1,44 +1,42 @@
+import FTTestSupport
 import Foundation
 import Testing
 
 @testable import FTFoundation
 
 @Suite struct AccentPaletteTests {
-    /// The accent golden's token keys, in the Swift palette.
+    /// The accent golden's token keys the palette still has, in the Swift palette.
     nonisolated(unsafe) private static let tokenFields: [(String, KeyPath<AccentPalette, RGBA>)] = [
-        ("solid", \.solid), ("solidDark", \.solidDark), ("solidButton", \.solidButton), ("onSolid", \.onSolid),
-        ("selectionBg", \.selectionBg), ("onSelection", \.onSelection), ("hoverBg", \.hoverBg),
-        ("pillBg", \.pillBg), ("pillText", \.pillText), ("border", \.border), ("focusBorder", \.focusBorder),
-        ("softBg", \.softBg), ("activeBg", \.activeBg), ("heroIconBg", \.heroIconBg),
-        ("folderTint", \.folderTint), ("pathCrumbHover", \.pathCrumbHover),
-        ("actionHoverBg", \.actionHoverBg), ("searchPillBorder", \.searchPillBorder),
-        ("locationRing", \.locationRing), ("ringSoft", \.ringSoft),
+        ("solid", \.solid), ("solidButton", \.solidButton), ("onSolid", \.onSolid), ("selectionBg", \.selectionBg),
+        ("onSelection", \.onSelection), ("pillText", \.pillText), ("border", \.border), ("softBg", \.softBg),
+        ("folderTint", \.folderTint), ("actionHoverBg", \.actionHoverBg),
     ]
 
-    /// The accent golden's CSS variable keys.
+    /// The accent golden's CSS variable keys the palette still has.
     nonisolated(unsafe) private static let variableFields: [(String, KeyPath<AccentPalette, RGBA>)] = [
-        ("--bg-active", \.activeBg), ("--crumb-active-bg", \.activeBg), ("--ft-accent-solid", \.solid),
-        ("--ft-accent-solid-dark", \.solidDark), ("--ft-accent-solid-button", \.solidButton),
+        ("--ft-accent-solid", \.solid), ("--ft-accent-solid-button", \.solidButton),
         ("--ft-accent-on-solid", \.onSolid), ("--ft-accent-selection-bg", \.selectionBg),
         ("--ft-accent-on-selection", \.onSelection), ("--ft-accent-on-selection-soft", \.onSelectionSoft),
-        ("--ft-accent-border", \.border), ("--ft-accent-hover-bg", \.hoverBg),
-        ("--ft-accent-pill-bg", \.pillBg), ("--ft-accent-pill-text", \.pillText),
+        ("--ft-accent-border", \.border), ("--ft-accent-pill-text", \.pillText),
         ("--ft-accent-folder-tint", \.folderTint), ("--ft-accent-soft-bg", \.softBg),
-        ("--ft-accent-hero-icon-bg", \.heroIconBg), ("--ft-accent-path-crumb-hover", \.pathCrumbHover),
         ("--ft-accent-action-hover-bg", \.actionHoverBg),
-        ("--ft-accent-search-pill-border", \.searchPillBorder),
-        ("--ft-accent-location-ring", \.locationRing), ("--ft-accent-ring-soft", \.ringSoft),
     ]
 
+    /// The cases of `Tests/Golden/accent.json`.
+    private static func cases() throws -> [[String: Any]] {
+        let data = try Data(contentsOf: Golden.url(suite: "accent"))
+        let golden = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        return try #require(golden["cases"] as? [[String: Any]])
+    }
+
     @Test func everyGoldenCaseMatchesExactly() throws {
-        let golden = try GoldenFile.json("accent.json")
-        let cases = try #require(golden["cases"] as? [[String: Any]])
+        let cases = try Self.cases()
         #expect(cases.count >= 600)
 
         var mismatches: [String] = []
         func check(_ label: String, _ expected: String?, _ actual: RGBA) {
-            if expected != actual.cssString {
-                mismatches.append("\(label): expected \(expected ?? "nil"), got \(actual.cssString)")
+            if expected != Self.css(actual) {
+                mismatches.append("\(label): expected \(expected ?? "nil"), got \(Self.css(actual))")
             }
         }
         for entry in cases {
@@ -51,12 +49,10 @@ import Testing
             let label = "\(hex)/\(appearance)"
 
             let tokens = try #require(output["tokens"] as? [String: String])
-            #expect(tokens.count == Self.tokenFields.count)
             for (key, path) in Self.tokenFields {
                 check("\(label) \(key)", tokens[key], palette[keyPath: path])
             }
             let variables = try #require(output["cssVariables"] as? [String: String])
-            #expect(variables.count == Self.variableFields.count)
             for (key, path) in Self.variableFields {
                 check("\(label) \(key)", variables[key], palette[keyPath: path])
             }
@@ -67,7 +63,7 @@ import Testing
     }
 
     @Test func goldenCoversPresetsAndRandomColors() throws {
-        let cases = try #require(try GoldenFile.json("accent.json")["cases"] as? [[String: Any]])
+        let cases = try Self.cases()
         let accents = Set(cases.compactMap { ($0["input"] as? [String: String])?["accent"] })
         let presets = [
             "#007aff", "#a550a7", "#f74f9e", "#e0383e", "#f7821b", "#ffc600", "#62ba46", "#8c8c8c", "#d4845a",
@@ -89,5 +85,13 @@ import Testing
         #expect(RGBA(hex: "-12345") == nil)
         #expect(RGBA(hex: "#+12345") == nil)
         #expect(RGBA(hex: "#12AB3c") == RGBA(r: 0x12, g: 0xab, b: 0x3c))
+    }
+
+    /// A colour as the golden spells it: `#rrggbb` when opaque, otherwise `rgba(r, g, b, a)`.
+    private static func css(_ color: RGBA) -> String {
+        guard color.alpha != 1 else { return color.hexString }
+        let (r, g, b) = color.bytes
+        let alpha = color.alpha == color.alpha.rounded() ? String(Int(color.alpha)) : "\(color.alpha)"
+        return "rgba(\(r), \(g), \(b), \(alpha))"
     }
 }

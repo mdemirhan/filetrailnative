@@ -905,7 +905,7 @@ Read decision 4 at the top first, and get the answer to [Q7].
   add/move/remove cases in `ToolbarItemsTests.swift` and in `toolbar-sanitize.json` (hand edit; the sanitize
   cases stay).
 
-### [ ] 5.4. Design tokens that are never drawn with, and the stylesheet comparison
+### [x] 5.4. Design tokens that are never drawn with, and the stylesheet comparison
 
 Decision 1 makes the comparison itself obsolete.
 
@@ -2154,3 +2154,12 @@ anything that differed from the plan, and anything found on the way that is not 
   `ToolbarItemKind` (and `kind:` in the 37 definitions; the tooltip test that picked the buttons by kind names them),
   the toolbar tokens `itemGap`, `edgedItemInset`, `capsulePadding`, `overflowButtonWidth`; `toolbar-sanitize.json`
   lost its `ops` inputs and `edited` outputs, the sanitize cases unchanged.
+- 2026-11-11. 5.4: every token the item names was unread, and went (36 `ThemePalette` colours, 10 `AccentPalette`
+  ones and the `Profile` alphas that fed only them, `TabStripLayout`, the font stacks, the spacing scale,
+  `toolbarScrimAlpha`, `Motion.reduced`/`flashSlow`, `toolbarInsetWithoutTree`, and of the "also reported": the
+  eleven `SearchLayout` fields, `SidebarLayout`'s `density`, `badgeGap`, `foldersTitleContentHeight`,
+  `dragHoverExpandMilliseconds`, `SettingsMetrics`' `cardEdgeWidth`, `checkboxGap`, `iconGridBorder`/`Margin`/
+  `Offset`, `menuCheckSize`); `css-tokens.json`, `CSSTokenTests` and the second loader with them. Kept:
+  `RGBA.hexString`, which tests in two bundles read and the shared test support can't hold (it doesn't see
+  FTFoundation); the accent test spells colours as the golden does by itself. Found, not fixed: `Metrics`' members
+  other than `explorer`, `toolbar` and `controlHeights` may have no reader but `MetricsTests`.
