@@ -1,6 +1,5 @@
 // Helpers for the native tests: fillDisk, waitUntil, and files made byte by byte
 import Darwin
-import FTFileSystem
 import Foundation
 
 @testable import FTOperations

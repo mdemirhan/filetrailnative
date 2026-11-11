@@ -378,11 +378,10 @@ import Testing
                 switch NodePath.basename(path) {
                 case "ok.txt": return inTrash(path)
                 case "full.txt": throw NativeError(message: "The disk is full.", code: .errno(ENOSPC))
-                case "b.txt": throw NativeError(message: "“b.txt” couldn’t be moved to the trash.", cocoaCode: 512)
+                case "b.txt": throw NativeError(message: "“b.txt” couldn’t be moved to the trash.")
                 default:
                     throw NativeError(
-                        message: "“\(NodePath.basename(path))” couldn’t be moved to the trash.", code: .errno(ENOTSUP),
-                        cocoaCode: 3328)
+                        message: "“\(NodePath.basename(path))” couldn’t be moved to the trash.", code: .errno(ENOTSUP))
                 }
             },
             lstat: { path in

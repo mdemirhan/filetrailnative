@@ -20,7 +20,7 @@ struct NativeCopyFileErrorTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.copyFile(root.appending("a.txt").path, root.appending("b.txt").path)
             }
-            #expect(error?.code == .errno(EEXIST) && error?.syscall == "copyfile")
+            #expect(error?.code == .errno(EEXIST))
             #expect(Files.read(root.appending("b.txt").path) == Array("existing".utf8))
         }
     }
@@ -33,7 +33,7 @@ struct NativeCopyFileErrorTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.copyFile(root.appending("a.txt").path, longDestination)
             }
-            #expect(error?.code == .errno(ENOENT) && error?.dest == longDestination)
+            #expect(error?.code == .errno(ENOENT))
             #expect(error?.message.contains(longDestination) == true)
             #expect(
                 error?.message
@@ -223,7 +223,7 @@ struct NativeCopyStopFlagTests {
                     try NativeFS.copyFile(source, destination, control: CopyControl())
                 }
                 #expect(
-                    error?.code == .errno(ENOSPC) && error?.syscall == "copyfile",
+                    error?.code == .errno(ENOSPC),
                     "copied \(Files.size(destination + "/..namedfork/rsrc")) of \(forkSize) bytes of the fork")
             }
         }
@@ -248,7 +248,7 @@ struct NativeCopyStopFlagTests {
                 let error = #expect(throws: NativeError.self) {
                     try NativeFS.copyFile(source, destination, control: CopyControl())
                 }
-                #expect(error?.code == .errno(fullCode) && error?.syscall == "copyfile")
+                #expect(error?.code == .errno(fullCode))
                 // The copy got as far as the fork: it left the file it made, for the caller to remove, without the
                 // whole fork.
                 #expect(Files.exists(destination))

@@ -16,9 +16,8 @@ struct NativeTrashTests {
         let result = try #require(TrashProbe.devNull)
         let error = #expect(throws: NativeError.self) { try result.get() }
         #expect(error?.code == .errno(ENOTSUP))
-        #expect(error?.cocoaCode == 3328)  // NSFeatureUnsupportedError
         #expect(error?.message.contains("null") == true)
-        #expect(error?.syscall == "trash" && error?.path == "/dev/null")
+        #expect(error?.path == "/dev/null")
     }
 
     @Test(.tags(.diskImage), .diskImages)
@@ -75,8 +74,7 @@ struct NativeTrashTests {
             let missing = root.appending("missing.txt").path
             let error = #expect(throws: NativeError.self) { try NativeFS.trashItem(missing) }
             #expect(error?.code == .errno(ENOENT))
-            #expect(error?.cocoaCode == 4)  // NSFileNoSuchFileError
-            #expect(error?.syscall == "trash" && error?.path == missing)
+            #expect(error?.path == missing)
             #expect(error?.message.contains("missing.txt") == true)
         }
     }
@@ -112,18 +110,18 @@ struct NativeTrashTests {
         #expect(NativeFS.trashErrno(of: NSError(domain: "Other", code: 1)) == 0)
     }
 
-    // The Trash's sentence when it gave one, with the errno's name and the Cocoa code; the errno's wording without.
+    // The Trash's sentence when it gave one, with the errno when it can be told; the errno's wording without.
     @Test func shapesTheTrashsFailures() {
         let unknown = NSError(
             domain: NSCocoaErrorDomain, code: NSFileWriteUnknownError,
             userInfo: [NSLocalizedDescriptionKey: "“a” couldn’t be moved to the trash."])
         let error = NativeFS.trashError(unknown, path: "/v/a")
         #expect(error.message == "“a” couldn’t be moved to the trash.")
-        #expect(error.code == nil && error.errnum == nil)
-        #expect(error.cocoaCode == NSFileWriteUnknownError && error.syscall == "trash" && error.path == "/v/a")
+        #expect(error.code == nil)
+        #expect(error.path == "/v/a")
 
         let posix = NativeFS.trashError(NSError(domain: NSPOSIXErrorDomain, code: Int(EACCES)), path: "/v/a")
-        #expect(posix.code == .errno(EACCES) && posix.errnum == EACCES && posix.cocoaCode == nil)
+        #expect(posix.code == .errno(EACCES))
 
         let none = NativeFS.trashError(nil, path: "/v/a")
         #expect(none.message == "EIO: Input/output error, trash '/v/a'")

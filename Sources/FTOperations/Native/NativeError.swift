@@ -9,31 +9,17 @@ public protocol CodedError: Error {
     var message: String { get }
 }
 
-/// What the native calls throw:
-/// `"<NAME>: <strerror>, <syscall> '<path>'[ -> '<dest>']"` with `code`, `errno`, `syscall`, `path` and `dest`.
-/// The Trash's failures carry its own sentence instead, and `cocoaCode` (see `NativeFS.trashItem`).
+/// What the native calls throw: `"<NAME>: <strerror>, <syscall> '<path>'[ -> '<dest>']"` with the errno as `code`,
+/// and the `path`. The Trash's failures carry its own sentence instead (see `NativeFS.trashItem`).
 public struct NativeError: CodedError, Equatable, Sendable, CustomStringConvertible {
     public var message: String
     public var code: ErrorCode?
-    /// The errno, positive.
-    public var errnum: Int32?
-    public var syscall: String?
     public var path: String?
-    public var dest: String?
-    /// The `NSCocoaErrorDomain` code of a Trash failure that was one.
-    public var cocoaCode: Int?
 
-    public init(
-        message: String, code: ErrorCode? = nil, errnum: Int32? = nil, syscall: String? = nil, path: String? = nil,
-        dest: String? = nil, cocoaCode: Int? = nil
-    ) {
+    public init(message: String, code: ErrorCode? = nil, path: String? = nil) {
         self.message = message
         self.code = code
-        self.errnum = errnum
-        self.syscall = syscall
         self.path = path
-        self.dest = dest
-        self.cocoaCode = cocoaCode
     }
 
     /// The error of a failed system call: `errnum`'s name and description, the call, and the paths.
@@ -44,8 +30,7 @@ public struct NativeError: CodedError, Equatable, Sendable, CustomStringConverti
         if let dest {
             message += " -> '\(dest)'"
         }
-        return NativeError(
-            message: message, code: .errno(errnum), errnum: errnum, syscall: syscall, path: path, dest: dest)
+        return NativeError(message: message, code: .errno(errnum), path: path)
     }
 
     public var description: String { message }

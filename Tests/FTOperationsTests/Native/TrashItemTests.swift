@@ -78,7 +78,7 @@ struct TrashItemTests {
         let trashItem = makeTrashItem(devices: [home: startupDev, "/Volumes/Share/a.txt": 50]) { _ in
             throw NativeError(
                 message: "“a.txt” couldn’t be moved to the trash because the volume “Share” doesn’t have one.",
-                code: .errno(ENOTSUP), cocoaCode: 3328)
+                code: .errno(ENOTSUP))
         }
 
         let error = failure { try trashItem("/Volumes/Share/a.txt") }
@@ -90,7 +90,7 @@ struct TrashItemTests {
     // A failure the Trash gives no errno for (NSFileWriteUnknownError, say) says nothing about the disk having no
     // Trash: taken for one, it offered to delete for good with that reason.
     @Test func givesTheTrashsOwnReasonOnAnotherDiskForAFailureItGivesNoCodeFor() {
-        let reason = NativeError(message: "“a.txt” couldn’t be moved to the trash.", cocoaCode: 512)
+        let reason = NativeError(message: "“a.txt” couldn’t be moved to the trash.")
         let trashItem = makeTrashItem(devices: [home: startupDev, "/Volumes/Share/a.txt": 50]) { _ in throw reason }
 
         let error = failure { try trashItem("/Volumes/Share/a.txt") }
@@ -102,7 +102,7 @@ struct TrashItemTests {
     // A network share without a Trash often answers with no errno once something was trashed: the kind of disk
     // tells then.
     @Test func marksAFailureWithNoCodeOnADiskTakenToHaveNoTrash() {
-        let reason = NativeError(message: "“a.txt” couldn’t be moved to the trash.", cocoaCode: 512)
+        let reason = NativeError(message: "“a.txt” couldn’t be moved to the trash.")
         let trashItem = makeTrashItem(
             devices: [home: startupDev, "/Volumes/Share/a.txt": 50],
             diskHasTrash: { !$0.hasPrefix("/Volumes/Share/") }, trash: { _ in throw reason })

@@ -56,8 +56,7 @@ public func removeEmptyFolder(
 ) throws {
     if try !readFolder(path).isEmpty {
         throw NativeError(
-            message: "ENOTEMPTY: directory not empty, rmdir '\(path)'", code: .errno(ENOTEMPTY), errnum: ENOTEMPTY,
-            syscall: "rmdir", path: path)
+            message: "ENOTEMPTY: directory not empty, rmdir '\(path)'", code: .errno(ENOTEMPTY), path: path)
     }
     try removeFolder(path)
 }
@@ -164,7 +163,7 @@ enum NativeRemoval {
         guard recursive else {
             throw NativeError(
                 message: "Path is a directory: rm returned EISDIR (is a directory) \(path)", code: .errno(EISDIR),
-                errnum: EISDIR, syscall: "rm", path: path)
+                path: path)
         }
         try removeTree(path)
     }

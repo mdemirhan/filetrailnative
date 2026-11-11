@@ -15,8 +15,8 @@ struct NativeRenameExclusiveTests {
             let error = #expect(throws: NativeError.self) {
                 try NativeFS.renameExclusive(root.appending("a.txt").path, root.appending("b.txt").path)
             }
-            #expect(error?.code == .errno(EEXIST) && error?.syscall == "rename")
-            #expect(error?.path == root.appending("a.txt").path && error?.dest == root.appending("b.txt").path)
+            #expect(error?.code == .errno(EEXIST))
+            #expect(error?.path == root.appending("a.txt").path)
             #expect(Files.read(root.appending("b.txt").path) == Array("existing".utf8))
 
             try NativeFS.renameExclusive(root.appending("a.txt").path, root.appending("c.txt").path)
@@ -40,7 +40,7 @@ struct NativeRenameExclusiveTests {
         let taken = #expect(throws: NativeError.self) {
             try NativeFS.renameExclusive("/v/a.txt", "/v/b.txt", calls: calls)
         }
-        #expect(taken?.code == .errno(EEXIST) && taken?.syscall == "rename")
+        #expect(taken?.code == .errno(EEXIST))
         #expect(renamed.isEmpty)
 
         try NativeFS.renameExclusive("/v/a.txt", "/v/c.txt", calls: calls)
@@ -82,7 +82,7 @@ struct NativeCaseSensitivityTests {
 
     @Test func rejectsAPathThatDoesntExist() {
         let error = #expect(throws: NativeError.self) { try NativeFS.isCaseSensitive("/nonexistent/path/xyz") }
-        #expect(error?.code == .errno(ENOENT) && error?.syscall == "pathconf")
+        #expect(error?.code == .errno(ENOENT))
     }
 
     @Test(.tags(.diskImage), .diskImages)
@@ -119,7 +119,7 @@ struct NativeAppleDoubleTests {
 
     @Test func namesTheErrnoForAMissingPath() {
         let error = #expect(throws: NativeError.self) { try NativeFS.usesAppleDouble("/nonexistent/path/xyz") }
-        #expect(error?.code == .errno(ENOENT) && error?.syscall == "getattrlist")
+        #expect(error?.code == .errno(ENOENT))
     }
 
     @Test(.tags(.diskImage), .diskImages, arguments: [DiskImage.Kind.fat32, .exfat])

@@ -1,5 +1,4 @@
 import Darwin
-import FTFileSystem
 import Foundation
 
 extension NativeFS {
@@ -7,7 +6,7 @@ extension NativeFS {
     /// Trash renames it when its name is taken there ("notes 2.txt"), so the path is the only way to find it again. nil
     /// when the item went to the Trash but the Trash didn't say where. A failure carries the Trash's own sentence as
     /// its message and, when it can be told, an errno `code` (EACCES, ENOENT, ENOSPC, ENOTSUP for a disk
-    /// without a Trash), plus the Cocoa error's number as `cocoaCode` when it was one; syscall `trash`.
+    /// without a Trash); syscall `trash`.
     public static func trashItem(_ path: String) throws -> String? {
         let url = URL(fileURLWithPath: path)
         var resulting: NSURL?
@@ -24,7 +23,6 @@ extension NativeFS {
     /// The error a failed Trash call gives: the Trash's sentence, or the errno's wording without one.
     static func trashError(_ error: NSError?, path: String) -> NativeError {
         var errnum = error.map(trashErrno(of:)) ?? 0
-        let cocoaCode = error.flatMap { $0.domain == NSCocoaErrorDomain ? $0.code : nil }
         let message = error?.localizedDescription
         guard let message else {
             if errnum == 0 {
@@ -32,9 +30,7 @@ extension NativeFS {
             }
             return NativeError.errno(errnum, syscall: "trash", path: path)
         }
-        return NativeError(
-            message: message, code: errnum != 0 ? .errno(errnum) : nil,
-            errnum: errnum != 0 ? errnum : nil, syscall: "trash", path: path, cocoaCode: cocoaCode)
+        return NativeError(message: message, code: errnum != 0 ? .errno(errnum) : nil, path: path)
     }
 
     /// The file system's "operation not supported" (errFSOperationNotSupported, MacErrors.h).
