@@ -56,29 +56,12 @@ public protocol ExplorerWindowLike: AnyObject {
     var mergeAnswer: WindowTabsAnswer { get }
 }
 
-/// What the controller keeps in the app state store (`ExplorerWindowStore`).
-public protocol ExplorerWindowStore: AnyObject {
-    func preferences() -> AppPreferences
-    func explorerWindows() -> [StoredExplorerWindow]
-    func windowPreferences(_ windowID: String) -> AppPreferences
-    func lastClosedWindow() -> StoredExplorerWindow?
-    func createWindowSession(overrides: [String: JSONNode]) -> WindowSession
-    func addExplorerWindow(id: String, bounds: StoredWindowState, session: WindowSession?)
-    func removeExplorerWindow(_ windowID: String)
-    func setExplorerWindowOrder(_ windowIDs: [String])
-    func rememberClosedWindow(_ windowID: String)
-    func setExplorerWindowBounds(_ windowID: String, _ value: StoredWindowState)
-    func flush()
-}
-
-extension AppStateStore: ExplorerWindowStore {}
-
 @MainActor
 public final class ExplorerWindowController<W: ExplorerWindowLike> {
     /// What the controller needs of the app (`ExplorerWindowHost`).
     @MainActor
     public struct Host {
-        public var store: any ExplorerWindowStore
+        public var store: AppStateStore
         /// Makes a window for the record, not shown yet, opening as `launch` says.
         public var createWindow: (StoredExplorerWindow, ExplorerLaunchContext) -> W
         /// A new id for a window, kept between launches (`window-<uuid>`).
@@ -91,7 +74,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         public var scheduler: any FolderWatchScheduler
 
         public init(
-            store: any ExplorerWindowStore, createWindow: @escaping (StoredExplorerWindow, ExplorerLaunchContext) -> W,
+            store: AppStateStore, createWindow: @escaping (StoredExplorerWindow, ExplorerLaunchContext) -> W,
             workArea: @escaping (WindowBounds) -> WindowBounds,
             scheduler: any FolderWatchScheduler = DispatchFolderWatchScheduler()
         ) {
