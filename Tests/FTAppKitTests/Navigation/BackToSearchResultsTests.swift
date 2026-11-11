@@ -355,7 +355,7 @@ extension ExplorerWindowlessTests {
             content.applySelection(.single(entry.path))
             let held = HeldFolder(held: place.found)
             place.tab.servicesOverride = ExplorerServices(
-                directoryService: DirectoryService(fileSystem: held), iconStore: nil,
+                directoryService: DirectoryService(fileSystem: held), iconStore: TestServices.icons,
                 clipboard: place.harness.windows.clipboard, preferences: place.harness.channel)
             place.tab.open([entry])
             #expect(await waitUntil { held.isHolding })

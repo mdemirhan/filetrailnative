@@ -74,7 +74,7 @@ extension ExplorerHarness {
     @MainActor
     func reading(through probe: FolderReadProbe, in tab: MainWindowController) {
         tab.servicesOverride = ExplorerServices(
-            directoryService: DirectoryService(fileSystem: probe), iconStore: nil,
+            directoryService: DirectoryService(fileSystem: probe), iconStore: TestServices.icons,
             clipboard: windows.clipboard, preferences: channel)
     }
 }

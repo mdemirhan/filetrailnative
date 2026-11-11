@@ -185,12 +185,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         quit.hooks.log = { [weak logger] message in logger?.info(.text("[filetrail] \(message)")) }
     }
 
-    /// Native parts of the window (title bar, scroll bars, pickers) follow the app's theme rather than the macOS
-    /// appearance: Light or Dark pins them, Auto follows the system.
-    public func applyAppearance(_ theme: ThemePreference) {
-        appearance.apply(theme: theme)
-    }
-
     private func startServices() {
         let store = store ?? AppStateStore(filePath: AppStatePaths.appState(in: AppStatePaths.userDataDirectory()).path)
         let windows = ExplorerWindows(store: store, quit: quit)

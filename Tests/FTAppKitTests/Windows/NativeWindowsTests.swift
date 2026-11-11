@@ -20,6 +20,7 @@ extension ExplorerWindowlessTests {
         /// The app's windows on a state file, as a launch opens them, none of them shown.
         private func launch(_ folder: TemporaryDirectory) -> App {
             _ = NSApplication.shared
+            TestServices.install()
             let store = AppStateStore(
                 filePath: folder.appending("app-state.json").path, defaultTheme: .light, timer: HeldStateTimer())
             let quit = QuitCoordinator()

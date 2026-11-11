@@ -20,6 +20,7 @@ struct NativeWindowsGUITests {
     /// The app's windows on a state file, as a launch opens them.
     private func launch(_ statePath: String) -> App {
         _ = NSApplication.shared
+        TestServices.install()
         let store = AppStateStore(filePath: statePath, defaultTheme: .light, timer: HeldStateTimer())
         let quit = QuitCoordinator()
         let windows = ExplorerWindows(store: store, quit: quit)

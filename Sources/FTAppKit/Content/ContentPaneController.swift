@@ -211,8 +211,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     private var status: NSTextField { shell.pathBarRow.status }
 
     var theme: Theme { AppearanceModel.shared.theme }
-    var iconStore: FileIconStore? { loaders.iconStore() ?? Self.fallbackIcons }
-    private static let fallbackIcons = FileIconStore()
+    var iconStore: FileIconStore? { loaders.iconStore() }
 
     init(mode: ExplorerViewMode = .details, folderSizes: WindowFolderSizes, loaders: ContentLoaders) {
         self.mode = mode

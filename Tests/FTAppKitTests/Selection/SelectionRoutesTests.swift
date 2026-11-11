@@ -76,7 +76,7 @@ extension ExplorerWindowlessTests {
             let counter = ReadCounter()
             let service = DirectoryService(fileSystem: CountingFolders(folder: tab.shownFolderPath, counter: counter))
             tab.servicesOverride = ExplorerServices(
-                directoryService: service, iconStore: nil, clipboard: harness.windows.clipboard,
+                directoryService: service, iconStore: TestServices.icons, clipboard: harness.windows.clipboard,
                 preferences: harness.channel)
             let lead = tab.content.entries[250].path
             tab.content.select(paths: [lead])

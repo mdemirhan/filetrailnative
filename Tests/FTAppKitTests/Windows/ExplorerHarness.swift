@@ -9,6 +9,20 @@ import Testing
 
 @testable import FTAppKit
 
+/// The app's services for the tests' windows, installed once as the app installs its own when it starts. A tab with no
+/// services of its own (one its window opened, rather than the test) uses them.
+@MainActor
+enum TestServices {
+    /// The one icon store of the tests' windows.
+    static let icons = FileIconStore()
+
+    static func install() {
+        guard ExplorerServices.installed == nil else { return }
+        ExplorerServices.installed = ExplorerServices(
+            directoryService: DirectoryService(), iconStore: icons, clipboard: SharedClipboard(), preferences: nil)
+    }
+}
+
 /// A window of the app on a temporary folder, with the app's preference channel over its own state file.
 @MainActor
 final class ExplorerHarness {
@@ -26,6 +40,7 @@ final class ExplorerHarness {
 
     init(onScreen: Bool = true) throws {
         _ = NSApplication.shared
+        TestServices.install()
         self.onScreen = onScreen
         folder = try TemporaryDirectory.shallow(prefix: "filetrail-toolbar-gui")
         for name in ["Alpha", "Beta", "Gamma"] {
@@ -49,7 +64,8 @@ final class ExplorerHarness {
                 for tab in windows?.allTabs ?? [] { tab.preferencesChanged(change) }
             })
         services = ExplorerServices(
-            directoryService: DirectoryService(), iconStore: nil, clipboard: windows.clipboard, preferences: channel)
+            directoryService: DirectoryService(), iconStore: TestServices.icons, clipboard: windows.clipboard,
+            preferences: channel)
     }
 
     /// For a test of the tree above the folder: windows opened after this start it at the disk, as the app's do.

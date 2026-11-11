@@ -126,7 +126,7 @@ extension ExplorerWindowlessTests {
             _ fileSystem: any ExplorerFileSystem, _ tab: MainWindowController, _ harness: ExplorerHarness
         ) {
             tab.servicesOverride = ExplorerServices(
-                directoryService: DirectoryService(fileSystem: fileSystem), iconStore: nil,
+                directoryService: DirectoryService(fileSystem: fileSystem), iconStore: TestServices.icons,
                 clipboard: harness.windows.clipboard, preferences: harness.channel)
         }
 

@@ -1258,7 +1258,7 @@ in the FTOperations test kits (`MockWriteServiceFileSystem`, `NativePaste`, `Und
 These change structure, not behaviour. Each ends with the same behaviour and fewer moving parts. The existing
 tests are the check; add a test only where an item says so.
 
-### [ ] 6.1. Windows stop talking to each other as if across a process boundary
+### [x] 6.1. Windows stop talking to each other as if across a process boundary
 
 - Merge All Windows asks each window for its tabs through `WindowTabsRequests`
   (`Sources/FTAppKit/Windows/WindowChannels.swift` 18–73): a string id, a 2-second timeout and a continuation,
@@ -2300,3 +2300,9 @@ anything that differed from the plan, and anything found on the way that is not 
   `.deleteImmediately` in the test (only `.batchRename` matters there). Found, not fixed: `FTOperations.CopyPasteMode`
   and `ClipboardMode` are still two enums with the same cases; `WriteOperationOutcome`/`Progress` might give way to
   `WriteOperationEvent`.
+- 2026-11-11. 6.1's last bullet, after the owner's answer (remove the fallbacks if the tests don't get slower):
+  `ExplorerServices.current` is what the app installs in `startServices`, with a precondition; the fallbacks,
+  `AppDelegate.applyAppearance` and `ContentPaneController.fallbackIcons` are gone. The tests install equivalent
+  services once (`TestServices` in the FTAppKitTests harness: a `DirectoryService`, a `SharedClipboard`, no
+  preference channel, one shared icon store); the test run took 47-52 s after against 67-78 s before, under noisy
+  load. The app starts and opens its window as before.

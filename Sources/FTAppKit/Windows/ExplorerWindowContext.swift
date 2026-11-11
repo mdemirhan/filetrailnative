@@ -51,43 +51,16 @@ struct ExplorerServices {
     /// Preference changes, as every window sees them.
     var preferences: WindowPreferenceChannel?
 
-    /// The services the app delegate runs; what it doesn't have yet is made here once.
+    /// The services the app runs, which it installs before any window opens.
     static var current: ExplorerServices {
-        if let installed { return installed }
-        let app = NSApp.delegate as? AppDelegate
-        return ExplorerServices(
-            directoryService: app?.directoryService ?? fallbackDirectoryService, iconStore: nil,
-            clipboard: app?.explorerWindows?.clipboard ?? fallbackClipboard,
-            preferences: fallbackChannel(app))
+        guard let installed else {
+            preconditionFailure("ExplorerServices.installed is set when the app starts, before any window opens")
+        }
+        return installed
     }
 
     /// Set once by the app (`ExplorerServices.installed = …` in `startServices`).
     static var installed: ExplorerServices?
-
-    private static let fallbackDirectoryService = DirectoryService()
-    private static let fallbackClipboard = SharedClipboard()
-    private static var madeChannel: WindowPreferenceChannel?
-
-    /// A preference channel over the app's store until the app makes its own: a change reaches every explorer
-    /// window, and the theme is applied.
-    private static func fallbackChannel(_ app: AppDelegate?) -> WindowPreferenceChannel? {
-        if let madeChannel { return madeChannel }
-        guard let app, let store = app.store else { return nil }
-        let channel = WindowPreferenceChannel(
-            store: store,
-            explorerWindowID: { senderID in
-                senderID.flatMap { app.explorerWindows?.tab(windowID: $0)?.group?.recordID }
-            },
-            onPreferencesChanged: { preferences, change in
-                if change.patch["theme"] != nil { app.applyAppearance(preferences.theme) }
-                for tab in app.explorerWindows?.allTabs ?? [] { tab.preferencesChanged(change) }
-            })
-        madeChannel = channel
-        return channel
-    }
-}
-
-extension AppDelegate {
 }
 
 /// A reference that doesn't keep its object.
