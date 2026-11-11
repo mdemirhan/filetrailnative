@@ -175,34 +175,13 @@ final class SearchSession {
         {
             if cache.count == results.count { return cache.items }
             let added = SearchResults.sort(Array(results[cache.count...]), by: sortBy, direction: sortDirection)
-            let merged = merge(cache.items, added)
+            let merged = SearchResults.merge(cache.items, added, by: sortBy, direction: sortDirection)
             sortedCache = (resultsGeneration, results.count, sortBy, sortDirection, merged)
             return merged
         }
         let sorted = SearchResults.sort(results, by: sortBy, direction: sortDirection)
         sortedCache = (resultsGeneration, results.count, sortBy, sortDirection, sorted)
         return sorted
-    }
-
-    private func merge(_ earlier: [SearchResultItem], _ later: [SearchResultItem]) -> [SearchResultItem] {
-        let sign = sortDirection == .asc ? 1 : -1
-        var merged: [SearchResultItem] = []
-        merged.reserveCapacity(earlier.count + later.count)
-        var left = 0
-        var right = 0
-        while left < earlier.count, right < later.count {
-            // Ties go to the earlier result.
-            if SearchResults.compare(later[right], earlier[left], by: sortBy) * sign < 0 {
-                merged.append(later[right])
-                right += 1
-            } else {
-                merged.append(earlier[left])
-                left += 1
-            }
-        }
-        merged += earlier[left...]
-        merged += later[right...]
-        return merged
     }
 
     private var refinementScope: SearchMatchScope { matchScope == .path ? .path : .name }

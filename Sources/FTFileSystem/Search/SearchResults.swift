@@ -89,12 +89,30 @@ public enum SearchResults {
         }
     }
 
-    public static func compare(
-        _ left: SearchResultItem, _ right: SearchResultItem, by sortBy: SearchResultsSortByPreference
-    )
-        -> Int
-    {
-        compare(left, right, by: sortBy, collator: Collator())
+    /// `later` merged into `earlier`, each already in the order asked for: the order a sort of them all would give, with
+    /// a tie going to the earlier result.
+    public static func merge(
+        _ earlier: [SearchResultItem], _ later: [SearchResultItem], by sortBy: SearchResultsSortByPreference,
+        direction: SortDirectionPreference
+    ) -> [SearchResultItem] {
+        let sign = direction == .asc ? 1 : -1
+        let collator = Collator()
+        var merged: [SearchResultItem] = []
+        merged.reserveCapacity(earlier.count + later.count)
+        var left = 0
+        var right = 0
+        while left < earlier.count, right < later.count {
+            if compare(later[right], earlier[left], by: sortBy, collator: collator) * sign < 0 {
+                merged.append(later[right])
+                right += 1
+            } else {
+                merged.append(earlier[left])
+                left += 1
+            }
+        }
+        merged += earlier[left...]
+        merged += later[right...]
+        return merged
     }
 
     // Path is the deterministic tie-breaker so sort output stays stable across repeated runs.

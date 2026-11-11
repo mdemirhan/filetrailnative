@@ -1444,7 +1444,7 @@ Only merge code proven identical. Where two helpers differ in any case, do not m
 - Do not change the per-window cache or the write-interaction logic (`outdatedJobIds`, `FolderSizeAdjust`,
   recording during writes).
 
-### [ ] 6.12. Search: the leftovers of a wire protocol
+### [x] 6.12. Search: the leftovers of a wire protocol
 
 - `TabSearchUpdate` is a field-for-field copy of `SearchUpdate`, `TabSearchStatus` is `SearchJobStatus` plus
   `idle` (`Sources/FTAppKit/Windows/ExplorerTabs.swift` 6–43): use one.
@@ -2328,3 +2328,13 @@ anything that differed from the plan, and anything found on the way that is not 
   `sendsTheEndOfALocalOperationWhenForgettingWhatItChangedGoesWrong`,
   `freesTheWriteSlotEvenWhenKeepingTheHistoryFails`, `doesntReportAFinishedRenameAsFailedWhenReportingItGoesWrong`):
   asked of the owner. Found: `WriteCoordinatorOptions.broadcastProgress` is `throws` too and can't throw in the app.
+- 2026-11-11. 6.12, done in a worktree of its own and brought over. Differs from the plan: the search goldens did
+  decode and encode `SearchRequest`, `SearchJobStatus` and `SearchResultItem`, so their tests decode into types of
+  their own with the same keys (both goldens unchanged); `SearchSession.status` is `SearchJobStatus?`, nil for idle;
+  the duplicate `status = .running` went with the counter guard; the merge of new results moved into
+  `SearchResults.merge`, one `Collator` per merge (`sortedIndexes` already had one per sort). The per-result `lstat`
+  runs on the reader's thread between two short holds of the lock, with the limit checked as each result is added; a
+  test asks about the search from another thread during the look and was held up before. This is safe as fd's stdout
+  is read and handled by one thread, chunk after chunk, and its close comes after both readers end. Found, not fixed:
+  `handleClose` copies the job (and its results) once per search (Phase 7); a doc comment names "search:start"
+  (Phase 10).
