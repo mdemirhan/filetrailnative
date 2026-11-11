@@ -1,22 +1,21 @@
 // Sort keys for the names of a whole listing, compared faster than name by name
+import FTFoundation
 import Foundation
 
-/// The names of a listing prepared for sorting. Each name becomes a key whose bytes compare, with `memcmp`,
-/// as `localeCompare(b, undefined, { numeric: true, sensitivity: "base" })` orders the names: ICU's own sort key.
-/// Where the system's ICU can't be used, names are compared as text by Foundation instead, numbers by value,
-/// case and accents ignored: the same order but for the rare characters the two weigh differently, and slower.
+/// The names of a listing prepared for sorting in a `NameOrder`. Each name becomes a key whose bytes compare, with
+/// `memcmp`, as the order puts the names: ICU's own sort key. Where the system's ICU can't be used, the order compares
+/// the names themselves.
 struct NameKeys {
     private(set) var bytes: [UInt8] = []
     private(set) var starts: [Int32] = []
     private(set) var hasKey: [Bool] = []
     private(set) var names: [String] = []
-    private let icu: ICUCollator?
+    private let order: NameOrder
 
     var count: Int { names.count }
 
-    /// `icu`: the system's collator, nil to compare as text (tests).
-    init(capacity: Int = 0, icu: ICUCollator? = ICUCollator.shared) {
-        self.icu = icu
+    init(capacity: Int = 0, order: NameOrder) {
+        self.order = order
         bytes.reserveCapacity(capacity * 24)
         starts.reserveCapacity(capacity + 1)
         hasKey.reserveCapacity(capacity)
@@ -26,12 +25,7 @@ struct NameKeys {
     mutating func append(_ name: String) {
         names.append(name)
         starts.append(Int32(bytes.count))
-        if let icu {
-            icu.appendSortKey(of: name, to: &bytes)
-            hasKey.append(true)
-        } else {
-            hasKey.append(false)
-        }
+        hasKey.append(order.appendSortKey(of: name, to: &bytes))
     }
 
     /// Compares names for sorting; the closure given to `body` takes the positions of two names and answers
@@ -57,7 +51,7 @@ struct NameKeys {
                                 }
                                 return leftLength == rightLength ? 0 : (leftLength < rightLength ? -1 : 1)
                             }
-                            return Collation.compareNumericBase(names[left], names[right])
+                            return order.compare(names[left], names[right])
                         }
                     }
                 }

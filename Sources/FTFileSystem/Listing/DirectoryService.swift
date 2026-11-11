@@ -1,3 +1,4 @@
+import FTFoundation
 import Foundation
 
 /// Reading folders: snapshot listing with sort and folders-first, tree children, item details, path
@@ -11,17 +12,20 @@ public final class DirectoryService: Sendable {
     private let fileSystem: any ExplorerFileSystem
     private let kinds: KindLabeler
     private let trash: TrashFolders
+    /// The order names are listed in.
+    private let order: NameOrder
     /// Shared with the folder watch, which tells it what changed outside the app.
     public let cache: ResponseCache
 
     public init(
         fileSystem: any ExplorerFileSystem = NativeFileSystem(), cache: ResponseCache = ResponseCache(),
-        kinds: KindLabeler = .system, trash: TrashFolders = TrashFolders()
+        kinds: KindLabeler = .system, trash: TrashFolders = TrashFolders(), order: NameOrder = .current
     ) {
         self.fileSystem = fileSystem
         self.cache = cache
         self.kinds = kinds
         self.trash = trash
+        self.order = order
     }
 
     /// The children of a folder that are folders (or links to folders), by name.
@@ -29,8 +33,10 @@ public final class DirectoryService: Sendable {
     public func treeChildren(path: String, includeHidden: Bool = false) async throws -> TreeChildren {
         let fileSystem = fileSystem
         let trash = trash
+        let order = order
         return try await cache.treeChildren(TreeKey(path: path, includeHidden: includeHidden)) {
-            try ExplorerListing.treeChildren(path: path, includeHidden: includeHidden, trash: trash, fileSystem)
+            try ExplorerListing.treeChildren(
+                path: path, includeHidden: includeHidden, trash: trash, fileSystem, order: order)
         }
     }
 
@@ -47,13 +53,15 @@ public final class DirectoryService: Sendable {
             let fileSystem = fileSystem
             let kinds = kinds
             let trash = trash
+            let order = order
             let key = ListingKey(
                 path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
                 foldersFirst: foldersFirst)
             return try await cache.directorySnapshot(key) {
                 try ExplorerListing.snapshot(
                     path: path, includeHidden: includeHidden, sortBy: sortBy, sortDirection: sortDirection,
-                    foldersFirst: foldersFirst, alsoListing: alsoListing, trash: trash, fileSystem, kinds: kinds)
+                    foldersFirst: foldersFirst, alsoListing: alsoListing, trash: trash, fileSystem, kinds: kinds,
+                    order: order)
             }
         }
         do {
@@ -95,6 +103,6 @@ public final class DirectoryService: Sendable {
         -> PathSuggestions
     {
         try ExplorerListing.pathSuggestions(
-            inputPath: inputPath, includeHidden: includeHidden, limit: limit, trash: trash, fileSystem)
+            inputPath: inputPath, includeHidden: includeHidden, limit: limit, trash: trash, fileSystem, order: order)
     }
 }

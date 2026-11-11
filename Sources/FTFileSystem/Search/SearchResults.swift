@@ -72,20 +72,21 @@ public enum SearchResults {
 
     /// Sorting is pure and stable, so Apply Sort can reorder already-fetched results.
     public static func sort(
-        _ items: [SearchResultItem], by sortBy: SearchResultsSortByPreference, direction: SortDirectionPreference
+        _ items: [SearchResultItem], by sortBy: SearchResultsSortByPreference, direction: SortDirectionPreference,
+        order: NameOrder = .current
     ) -> [SearchResultItem] {
-        sortedIndexes(items, by: sortBy, direction: direction).map { items[$0] }
+        sortedIndexes(items, by: sortBy, direction: direction, order: order).map { items[$0] }
     }
 
     /// The positions of `items` in sorted order; equal items keep their places.
     public static func sortedIndexes(
-        _ items: [SearchResultItem], by sortBy: SearchResultsSortByPreference, direction: SortDirectionPreference
+        _ items: [SearchResultItem], by sortBy: SearchResultsSortByPreference, direction: SortDirectionPreference,
+        order: NameOrder = .current
     ) -> [Int] {
         let sign = direction == .asc ? 1 : -1
-        let collator = Collator()
         return items.indices.sorted { left, right in
-            let order = compare(items[left], items[right], by: sortBy, collator: collator) * sign
-            return order != 0 ? order < 0 : left < right
+            let compared = compare(items[left], items[right], by: sortBy, order: order) * sign
+            return compared != 0 ? compared < 0 : left < right
         }
     }
 
@@ -93,16 +94,15 @@ public enum SearchResults {
     /// a tie going to the earlier result.
     public static func merge(
         _ earlier: [SearchResultItem], _ later: [SearchResultItem], by sortBy: SearchResultsSortByPreference,
-        direction: SortDirectionPreference
+        direction: SortDirectionPreference, order: NameOrder = .current
     ) -> [SearchResultItem] {
         let sign = direction == .asc ? 1 : -1
-        let collator = Collator()
         var merged: [SearchResultItem] = []
         merged.reserveCapacity(earlier.count + later.count)
         var left = 0
         var right = 0
         while left < earlier.count, right < later.count {
-            if compare(later[right], earlier[left], by: sortBy, collator: collator) * sign < 0 {
+            if compare(later[right], earlier[left], by: sortBy, order: order) * sign < 0 {
                 merged.append(later[right])
                 right += 1
             } else {
@@ -118,20 +118,19 @@ public enum SearchResults {
     // Path is the deterministic tie-breaker so sort output stays stable across repeated runs.
     private static func compare(
         _ left: SearchResultItem, _ right: SearchResultItem, by sortBy: SearchResultsSortByPreference,
-        collator: Collator
+        order: NameOrder
     ) -> Int {
         switch sortBy {
         case .name:
-            return firstNonZero(
-                collator.base(left.name, right.name), collator.base(left.path, right.path))
+            return firstNonZero(order.compare(left.name, right.name), order.compare(left.path, right.path))
         case .kind:
             // Kind is told from the extension, which every result has at once (the kind's name loads only for the rows
             // on screen): folders first, then files by extension, those without one last, each group by name.
             return firstNonZero(
-                compareKindKeys(kindKey(left), kindKey(right), collator: collator),
-                collator.base(left.name, right.name), collator.base(left.path, right.path))
+                compareKindKeys(kindKey(left), kindKey(right), order: order),
+                order.compare(left.name, right.name), order.compare(left.path, right.path))
         case .path:
-            return collator.base(left.path, right.path)
+            return order.compare(left.path, right.path)
         }
     }
 
@@ -145,30 +144,8 @@ public enum SearchResults {
         return item.fileExtension.isEmpty ? (2, "") : (1, jsLowercased(item.fileExtension))
     }
 
-    private static func compareKindKeys(_ left: (Int, String), _ right: (Int, String), collator: Collator) -> Int {
-        left.0 != right.0 ? left.0 - right.0 : collator.variant(left.1, right.1)
-    }
-
-    /// `String.prototype.localeCompare` with the user's locale: `base` is `{ sensitivity: "base" }` (case and accents
-    /// do not count), `variant` the default.
-    struct Collator {
-        let locale = Locale.current
-
-        func base(_ left: String, _ right: String) -> Int {
-            order(left.compare(right, options: [.caseInsensitive, .diacriticInsensitive], range: nil, locale: locale))
-        }
-
-        func variant(_ left: String, _ right: String) -> Int {
-            order(left.compare(right, options: [], range: nil, locale: locale))
-        }
-
-        private func order(_ result: ComparisonResult) -> Int {
-            switch result {
-            case .orderedAscending: -1
-            case .orderedSame: 0
-            case .orderedDescending: 1
-            }
-        }
+    private static func compareKindKeys(_ left: (Int, String), _ right: (Int, String), order: NameOrder) -> Int {
+        left.0 != right.0 ? left.0 - right.0 : order.compareWords(left.1, right.1)
     }
 
     // MARK: - Highlighting

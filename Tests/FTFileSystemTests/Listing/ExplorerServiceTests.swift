@@ -1,3 +1,4 @@
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -196,6 +197,41 @@ struct ExplorerServiceTests {
         // Sorted by name, no size is given.
         let byName = try await service.snapshot(path: "/workspace")
         #expect(byName.entries.allSatisfy { $0.sizeBytes == nil })
+    }
+
+    @Test func sortsNamesInTheAlphabetOfTheLanguage() async throws {
+        let names = ["öga", "zebra", "åsna", "apa", "file10", "file2"]
+        let fake = workspace(
+            names.map { fakeDirent($0, directory: true) },
+            stat: { _ in fakeStats(directory: true, file: false, size: 0) })
+        func service(_ locale: String) -> DirectoryService {
+            DirectoryService(
+                fileSystem: fake, cache: ResponseCache(), kinds: KindLabeler(describer: nil),
+                order: NameOrder(localeIdentifier: locale))
+        }
+        let swedish = service("sv_SE")
+        let inSwedish = ["apa", "file2", "file10", "zebra", "åsna", "öga"]
+        #expect(try await swedish.snapshot(path: "/workspace").entries.map(\.name) == inSwedish)
+        #expect(try await swedish.treeChildren(path: "/workspace").children.map(\.name) == inSwedish)
+        #expect(try await swedish.pathSuggestions(inputPath: "/workspace/").suggestions.map(\.name) == inSwedish)
+        let english = service("en_US")
+        #expect(
+            try await english.snapshot(path: "/workspace").entries.map(\.name) == [
+                "apa", "åsna", "file2", "file10", "öga", "zebra",
+            ])
+    }
+
+    @Test func sortsKindsInTheAlphabetOfTheLanguage() async throws {
+        let fake = workspace(
+            [fakeDirent("a.zz", file: true), fakeDirent("b.aa", file: true), fakeDirent("c.oo", file: true)],
+            stat: { path in fakeStats(directory: path == "/workspace", file: path != "/workspace", size: 1) })
+        let labels = ["zz": "Zebra file", "aa": "Åsna file", "oo": "Apa file"]
+        let service = DirectoryService(
+            fileSystem: fake, cache: ResponseCache(),
+            kinds: KindLabeler(describer: { path in labels[String(path.split(separator: ".").last ?? "")] }),
+            order: NameOrder(localeIdentifier: "sv_SE"))
+        let snapshot = try await service.snapshot(path: "/workspace", sortBy: .kind)
+        #expect(snapshot.entries.map(\.name) == ["c.oo", "a.zz", "b.aa"])
     }
 
     @Test func combinesFoldersAndFilesWhenFoldersFirstIsOff() async throws {

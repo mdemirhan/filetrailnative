@@ -172,12 +172,13 @@ enum ExplorerListing {
 
     /// Tree loading only returns navigable folders, not every entry in the directory.
     static func treeChildren(
-        path: String, includeHidden: Bool, trash: TrashFolders? = nil, _ fileSystem: any ExplorerFileSystem
+        path: String, includeHidden: Bool, trash: TrashFolders? = nil, _ fileSystem: any ExplorerFileSystem,
+        order: NameOrder
     ) throws -> TreeChildren {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
         let records = try fileSystem.readDirectory(directoryPath)
         var children: [TreeChild] = []
-        var keys = NameKeys()
+        var keys = NameKeys(order: order)
         for record in records {
             let hidden = isHidden(record)
             if !includeHidden && hidden { continue }
@@ -202,7 +203,7 @@ enum ExplorerListing {
     static func snapshot(
         path: String, includeHidden: Bool, sortBy: DirectorySortKey, sortDirection: SortDirection,
         foldersFirst: Bool, alsoListing: [String] = [], trash: TrashFolders? = nil,
-        _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler, order: NameOrder
     ) throws -> DirectorySnapshot {
         let directoryPath = try resolveDirectoryPath(path, fileSystem)
         var folders = [(path: directoryPath, records: try fileSystem.readDirectory(directoryPath))]
@@ -214,7 +215,7 @@ enum ExplorerListing {
         // What each kept entry is, one column per fact, so sorting touches only what it compares.
         var entries: [DirectoryEntry] = []
         entries.reserveCapacity(recordCount)
-        var keys = NameKeys(capacity: recordCount)
+        var keys = NameKeys(capacity: recordCount, order: order)
         var modified: [Int64?] = []
         var sizes: [Int64?] = []
         var labels: [String] = []
@@ -265,13 +266,13 @@ enum ExplorerListing {
             }
         }
 
-        let order = sortedPositions(
+        let positions = sortedPositions(
             entries: entries, keys: keys, modified: modified, sizes: sizes, labels: labels, sortBy: sortBy,
-            sortDirection: sortDirection, foldersFirst: foldersFirst)
+            sortDirection: sortDirection, foldersFirst: foldersFirst, order: order)
         let parent = NodePath.dirname(directoryPath)
         var sorted: [DirectoryEntry] = []
-        sorted.reserveCapacity(order.count)
-        for position in order {
+        sorted.reserveCapacity(positions.count)
+        for position in positions {
             var entry = entries[position]
             if sortBy == .size { entry.sizeBytes = sizes[position] }
             sorted.append(entry)
@@ -283,21 +284,17 @@ enum ExplorerListing {
     /// The order of the entries.
     private static func sortedPositions(
         entries: [DirectoryEntry], keys: NameKeys, modified: [Int64?], sizes: [Int64?], labels: [String],
-        sortBy: DirectorySortKey, sortDirection: SortDirection, foldersFirst: Bool
+        sortBy: DirectorySortKey, sortDirection: SortDirection, foldersFirst: Bool, order: NameOrder
     ) -> [Int] {
         let isFolder = entries.map { $0.kind.isDirectoryKind }
-        // Kinds compare as labels; each distinct label is ranked once.
+        // Kinds compare as labels (words); each distinct label is ranked once.
         var labelRanks: [Int] = []
         if sortBy == .kind {
-            let sortedLabels = stableSorted(Array(Set(labels)).sorted()) {
-                Collation.compareVariant(CollationKey($0), CollationKey($1))
-            }
+            let sortedLabels = stableSorted(Array(Set(labels)).sorted(), by: order.compareWords)
             var rankOf: [String: Int] = [:]
             var rank = 0
             for (index, label) in sortedLabels.enumerated() {
-                if index > 0
-                    && Collation.compareVariant(CollationKey(sortedLabels[index - 1]), CollationKey(label)) != 0
-                {
+                if index > 0 && order.compareWords(sortedLabels[index - 1], label) != 0 {
                     rank += 1
                 }
                 rankOf[label] = rank
@@ -306,8 +303,8 @@ enum ExplorerListing {
         }
         let descending = sortDirection == .descending
         return keys.withComparator { compareNames in
-            var order = Array(0..<entries.count)
-            order.sort { left, right in
+            var positions = Array(0..<entries.count)
+            positions.sort { left, right in
                 // `foldersFirst` is applied before the requested sort mode, matching Finder-style behavior.
                 if foldersFirst && isFolder[left] != isFolder[right] {
                     return isFolder[left]
@@ -335,8 +332,18 @@ enum ExplorerListing {
                 if descending { compared = -compared }
                 return compared != 0 ? compared < 0 : left < right
             }
-            return order
+            return positions
         }
+    }
+
+    /// A sort that keeps the order of items that compare equal.
+    private static func stableSorted<T>(_ items: [T], by compare: (T, T) -> Int) -> [T] {
+        var order = Array(items.indices)
+        order.sort { left, right in
+            let result = compare(items[left], items[right])
+            return result != 0 ? result < 0 : left < right
+        }
+        return order.map { items[$0] }
     }
 
     /// Nulls sort last so missing metadata does not float directories/unknown values to the top: negative
@@ -444,7 +451,7 @@ enum ExplorerListing {
     /// under that base path.
     static func pathSuggestions(
         inputPath: String, includeHidden: Bool, limit: Int, trash: TrashFolders? = nil,
-        _ fileSystem: any ExplorerFileSystem
+        _ fileSystem: any ExplorerFileSystem, order: NameOrder
     ) throws -> PathSuggestions {
         guard let query = suggestionQuery(inputPath, fileSystem) else {
             return PathSuggestions(inputPath: inputPath, basePath: nil, suggestions: [])
@@ -455,7 +462,7 @@ enum ExplorerListing {
         let records = try fileSystem.readDirectory(query.basePath)
         let typed = Array(query.typedName.lowercased().utf16)
         var matches: [PathSuggestion] = []
-        var keys = NameKeys()
+        var keys = NameKeys(order: order)
         for record in records {
             if !includeHidden && isHidden(record) { continue }
             if trash?.isAlwaysHidden(record.name, in: query.basePath) == true { continue }

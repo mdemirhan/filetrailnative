@@ -60,6 +60,36 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
             ])
     }
 
+    @Test func putsNumbersInNamesInOrderOfValueAsAFolderDoes() {
+        let items = [result("/p/file10.txt"), result("/p/File2.txt"), result("/p/file1.txt")]
+        #expect(
+            SearchResults.sort(items, by: .name, direction: .asc).map(\.name) == [
+                "file1.txt", "File2.txt", "file10.txt",
+            ])
+        #expect(
+            SearchResults.sort(items, by: .path, direction: .desc).map(\.name) == [
+                "file10.txt", "File2.txt", "file1.txt",
+            ])
+        let merged = SearchResults.merge(
+            [result("/p/file1.txt"), result("/p/file10.txt")], [result("/p/file2.txt")], by: .name, direction: .asc)
+        #expect(merged.map(\.name) == ["file1.txt", "file2.txt", "file10.txt"])
+    }
+
+    @Test func sortsNamesInTheAlphabetOfTheLanguage() {
+        let items = [result("/p/öga"), result("/p/zebra"), result("/p/åsna"), result("/p/apa")]
+        let swedish = NameOrder(localeIdentifier: "sv_SE")
+        #expect(
+            SearchResults.sort(items, by: .name, direction: .asc, order: swedish).map(\.name) == [
+                "apa", "zebra", "åsna", "öga",
+            ])
+        #expect(
+            SearchResults.sort(items, by: .name, direction: .asc, order: NameOrder(localeIdentifier: "en_US"))
+                .map(\.name) == ["apa", "åsna", "öga", "zebra"])
+        let merged = SearchResults.merge(
+            [result("/p/apa"), result("/p/zebra")], [result("/p/åsna")], by: .name, direction: .asc, order: swedish)
+        #expect(merged.map(\.name) == ["apa", "zebra", "åsna"])
+    }
+
     @Test func keepsTheOrderOfEqualItems() {
         let first = result("/a/x.ts")
         let second = result("/a/X.ts")
@@ -141,8 +171,8 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
     }
 }
 
-// The order, the folder column and the highlight, against the golden. The order is the machine's locale's, so the
-// golden is machine-local.
+// The order, the folder column and the highlight, against the golden. The order is that of US English, which the
+// golden was recorded in.
 private struct SortInput: Codable {
     struct Entry: Codable {
         var id: Int
@@ -209,7 +239,8 @@ private enum SortOutput: Codable, Equatable {
                         path: $0.path, name: $0.name, fileExtension: $0.extension, kind: $0.kind, isHidden: false,
                         parentPath: "", relativeParentPath: "")
                 }
-                let order = SearchResults.sortedIndexes(items, by: sortBy, direction: direction)
+                let order = SearchResults.sortedIndexes(
+                    items, by: sortBy, direction: direction, order: NameOrder(localeIdentifier: "en_US"))
                 return .ids(order.map { entries[$0].id })
             }
             if let folder = input.folder {

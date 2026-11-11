@@ -1,3 +1,4 @@
+import FTFoundation
 import FTTestSupport
 import Foundation
 import Testing
@@ -142,7 +143,7 @@ struct ListingSortGoldenTests {
 
     // Without the system's collator names are compared as text: numbers by value, case and accents ignored.
     @Test func comparesNamesAsTextWithoutTheSystemsCollator() {
-        var keys = NameKeys(icu: nil)
+        var keys = NameKeys(order: NameOrder(localeIdentifier: "en_US", systemCollator: false))
         for name in ["file10.txt", "File2.txt", "élan", "Apple", "file1.txt", "Zebra", "apple"] { keys.append(name) }
         #expect(keys.hasKey.allSatisfy { !$0 })
         #expect(
@@ -158,9 +159,10 @@ struct ListingSortGoldenTests {
         var failures = 0
         for testCase in cases {
             let input = testCase.input
+            // Recorded in ICU's root order.
             let service = DirectoryService(
                 fileSystem: Self.fileSystem(input.items), cache: ResponseCache(),
-                kinds: KindLabeler(describer: nil))
+                kinds: KindLabeler(describer: nil), order: NameOrder(localeIdentifier: ""))
             let sortBy = try #require(DirectorySortKey(rawValue: input.sortBy))
             let direction = try #require(SortDirection(rawValue: input.sortDirection))
             let snapshot = try await service.snapshot(

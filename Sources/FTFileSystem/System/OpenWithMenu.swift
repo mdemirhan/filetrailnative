@@ -94,10 +94,9 @@ public enum OpenWithMenu {
         return Sections(defaultApp: defaultApp, pinned: pinnedApps, others: others)
     }
 
-    /// Names in the current locale's order, ignoring case and accents, with numbers by value. `sorted` is stable.
+    /// Names in the order names are put in everywhere (`naturalCompare`). `sorted` is stable.
     static func compareNames(_ left: String, _ right: String) -> ComparisonResult {
-        left.compare(
-            right, options: [.caseInsensitive, .diacriticInsensitive, .numeric], range: nil, locale: Locale.current)
+        naturalCompare(left, right)
     }
 
     /// The Open With submenu. With `always` (Option held, items of one kind) choosing an app makes it the one the
