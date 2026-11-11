@@ -3,7 +3,7 @@
 # the bench fixtures, writes build/bench/latest.json and compares it with budgets.json and baseline.json.
 # Usage: tools/bench/run.sh [--quick] [--report-only] [--update-baseline]
 set -uo pipefail
-cd "$(dirname "$0")/../.."
+cd "$(dirname "$0")/../.." || exit 2
 
 quick=0
 report_only=0
@@ -35,6 +35,9 @@ scripts/build-app.sh release >build/logs/bench-build.log 2>&1 || {
     exit 1
 }
 app="build/File Trail.app"
+# Each launch keeps its state in a folder of its own under this one, removed at the end.
+state="$(mktemp -d)"
+trap 'rm -rf "$state"' EXIT
 bin="$app/Contents/MacOS/FileTrail"
 
 if [ "$quick" = 1 ]; then
@@ -52,7 +55,7 @@ bench() {
     local name="$1"
     shift
     # A fresh state and its own instance: not the user's folders and tabs, and not handed over to a running copy.
-    FILETRAIL_ALLOW_MULTIPLE=1 "$bin" --user-data-dir "$(mktemp -d)" "$@" >"$raw/$name.txt" 2>>build/logs/bench-app.log &
+    FILETRAIL_ALLOW_MULTIPLE=1 "$bin" --user-data-dir "$state/$name" "$@" >"$raw/$name.txt" 2>>build/logs/bench-app.log &
     local pid=$!
     (
         sleep 120
@@ -78,8 +81,10 @@ bench scroll --bench-scroll "$fixtures/$scroll_folder"
 rm -f build/bench/listing.json
 tools/bench/listing.sh >/dev/null 2>&1
 
-# Idle memory: one window in Home, physical footprint after 3 s.
-"$bin" >/dev/null 2>&1 &
+# Idle memory: one window in Home, physical footprint after 3 s. Like the runs above, a fresh state (not the user's
+# windows and tabs) and its own instance (not handed over to a File Trail already open, which would measure a copy
+# on its way out).
+FILETRAIL_ALLOW_MULTIPLE=1 "$bin" --user-data-dir "$state/idle" >/dev/null 2>>build/logs/bench-app.log &
 pid=$!
 sleep 3
 footprint "$pid" >"$raw/footprint.txt" 2>&1
@@ -87,4 +92,4 @@ kill "$pid" 2>/dev/null
 wait "$pid" 2>/dev/null
 du -sk "$app" | cut -f1 >"$raw/bundle-kb.txt"
 
-python3 "$(dirname "$0")/report.py" "$quick" "$report_only" "$update_baseline"
+python3 tools/bench/report.py "$quick" "$report_only" "$update_baseline"

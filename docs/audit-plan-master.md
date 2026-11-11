@@ -2535,3 +2535,12 @@ anything that differed from the plan, and anything found on the way that is not 
   crashed older run are not detached by the tests. Found, not fixed: `FileThumbnailService.javaScriptNumber`,
   `ContentSelection.isNarrowingClick`'s `detail`; the FolderSize bench prints a line that is not JSON, which
   `tools/bench/report.py` would choke on when the deep fixture tree exists (11.4).
+- 2026-11-11. 11.4, in part: `run.sh` fixed (the idle-memory launch now runs as a second instance on its own data
+  folder, where before it read the user's windows or handed over to a running copy and measured it quitting; it runs
+  from any folder; its state folders are removed). The new baseline was not kept: the screen was locked and the
+  display asleep for the run, so scrolling could not be measured. Measured then: within budget but for
+  `stall_100000_ms`, 67 ms against 50; a first open of 100,000 files took 978 ms against the 600 ms budget, which the
+  script misses because it reports the median of three opens, two of them cached; idle memory 48 MB and bundle
+  11 MB, against 29 and 5.6 in the old baseline (not looked into). Still to do: run `tools/bench/run.sh
+  --update-baseline` with the screen on. Found: `report.py --update-baseline` keeps a stale value for a metric
+  that fails to measure.
