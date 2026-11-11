@@ -511,6 +511,21 @@ import Testing
             ])
     }
 
+    // Typed and left, the limit is committed whatever its number formatter makes of the text.
+    @Test func theItemLimitIsCommittedWhenTheFieldIsLeft() throws {
+        let (controller, recorder) = Kit.make(tab: .files)
+        let window = try #require(controller.window)
+        let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)
+        for (typed, shown) in [("2.5", "5"), ("80", "50"), ("7", "7")] {
+            #expect(window.makeFirstResponder(limit.field))
+            let editor = try #require(window.firstResponder as? NSTextView)
+            editor.string = typed
+            #expect(window.makeFirstResponder(nil))
+            #expect(limit.field.stringValue == shown)
+        }
+        #expect(recorder.patches.compactMap { $0["openItemLimit"] } == [.number(50), .number(7)])
+    }
+
     @Test func choosesTheTerminalAppFromItsPopUpOrGoesBackToTheDefault() async throws {
         let (controller, recorder) = Kit.make(tab: .files)
         let terminal = try Kit.control("Terminal", SettingsAppPopup.self, in: controller)
@@ -639,12 +654,12 @@ import Testing
     // The Files tab, row by row, with its app menu.
     @Test func laysTheFilesTabOutWithItsAppMenuFoundRowByRow() throws {
         let (controller, _) = Kit.make(tab: .files)
-        // The number sits right-aligned before the room kept for a stepper: 48 less 8 of padding on each side and 15.
+        // The number sits right-aligned in a field 48 wide that reads whole numbers.
         let limit = try Kit.control("Ask before opening more than", SettingsNumberField.self, in: controller)
         limit.layoutSubtreeIfNeeded()
         #expect(limit.field.alignment == .right)
-        // The field's cell keeps 2 from each side of its frame, which reaches 2 past the text box.
-        #expect(limit.field.frame.minX == 6 && limit.field.frame.maxX == 27)
+        #expect(limit.field.frame.minX == 0 && limit.field.frame.width == 48)
+        #expect((limit.field.formatter as? NumberFormatter)?.allowsFloats == false)
         // An empty First in Open With is its bar at the top of a row that keeps the 40 every row has; the note
         // comes 6 under that.
         let groups = views("settings.group", in: controller.settingsView).compactMap { $0 as? SettingsSectionView }

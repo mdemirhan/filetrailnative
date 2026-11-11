@@ -96,14 +96,10 @@ enum SettingsMetrics {
     static let chevronInset: CGFloat = 8
     static let chevronStroke: CGFloat = 2.4
     static let chevronPath = "M8 9.5l4-4 4 4M8 14.5l4 4 4-4"
-    /// A field's padding of 8 each side; a number field is 48 wide.
-    static let fieldPadding: CGFloat = 8
+    /// A number field is 48 wide.
     static let numberFieldWidth: CGFloat = 48
-    /// What an editable field's cell keeps between its frame and its text on each side.
+    /// What an editable field's cell keeps between its frame and its text on each side (the Rename sheet's fields).
     static let fieldCellInset: CGFloat = 2
-    /// The room kept at the end of a number field for a stepper, shown or not: the right-aligned number ends this far
-    /// before the padding.
-    static let numberStepperWidth: CGFloat = 15
     /// The gap between a field and its unit.
     static let unitGap: CGFloat = 6
     /// The system's mini switch.

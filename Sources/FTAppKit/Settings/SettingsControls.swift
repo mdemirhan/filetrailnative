@@ -93,23 +93,6 @@ enum SettingsGlyph {
         }
     }
 
-    /// A field's inset look: its fill and edge.
-    static func field(in bounds: NSRect, theme: Theme, focused: Bool) {
-        let radius = CGFloat(DesignTokens.radii.control)
-        let palette = theme.palette
-        NSColor(palette.fieldBg).setFill()
-        NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius).fill()
-        for layer in palette.fieldEdge where layer.spread > 0 {
-            let edge = NSBezierPath(
-                roundedRect: bounds.insetBy(dx: CGFloat(layer.spread) / 2, dy: CGFloat(layer.spread) / 2),
-                xRadius: radius, yRadius: radius)
-            edge.lineWidth = CGFloat(layer.spread)
-            NSColor(layer.color).setStroke()
-            edge.stroke()
-        }
-        if focused { focusRing(around: bounds, radius: radius, theme: theme) }
-    }
-
     /// The focus ring: the accent at 50% around a control.
     static func focusRing(around bounds: NSRect, radius: CGFloat, theme: Theme) {
         let ring = NSBezierPath(
@@ -352,8 +335,8 @@ final class SettingsPopup: NSPopUpButton, SettingsSized {
 
 // MARK: Number field
 
-/// A short inset field for a whole number, followed by its unit ("items"). Committed when it is
-/// left or Return is pressed.
+/// The system's text field for a whole number, 48 wide, with a number formatter, followed by its unit ("items").
+/// Committed when it is left or Return is pressed.
 final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFieldDelegate {
     let field = NSTextField()
     private let unit = FlushTextField(labelWithString: "")
@@ -366,12 +349,14 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
         self.value = value
         self.theme = theme
         super.init(frame: .zero)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        formatter.allowsFloats = false
+        field.formatter = formatter
         field.stringValue = String(value)
         field.font = Self.font
         field.alignment = .right
-        field.isBordered = false
-        field.drawsBackground = false
-        field.focusRingType = .none
+        field.bezelStyle = .roundedBezel
         field.usesSingleLineMode = true
         field.cell?.isScrollable = true
         field.delegate = self
@@ -390,16 +375,13 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
 
     var preferredSize: NSSize {
         NSSize(
-            width: SettingsMetrics.numberFieldWidth + SettingsMetrics.unitGap
-                + (unit.stringValue as NSString).size(withAttributes: [.font: Self.font]).width,
-            height: CGFloat(DesignTokens.controlHeights.regular))
+            width: SettingsMetrics.numberFieldWidth + SettingsMetrics.unitGap + ceil(unit.intrinsicContentSize.width),
+            height: max(field.intrinsicContentSize.height, unit.intrinsicContentSize.height))
     }
 
     func applyTheme(_ theme: Theme) {
         self.theme = theme
-        field.textColor = NSColor(theme.palette.textPrimary)
         unit.textColor = NSColor(theme.palette.settingsLabelSecondary.flattened(over: theme.palette.settingsPageBg))
-        needsDisplay = true
     }
 
     /// The value changed elsewhere: the field shows it.
@@ -414,27 +396,14 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
 
     override func layout() {
         super.layout()
-        let width = SettingsMetrics.numberFieldWidth
-        let lineHeight = ceil(Self.font.ascender - Self.font.descender + Self.font.leading)
-        // Right-aligned before the room kept for a number field's stepper. A field's cell draws its text 2
-        // in from each side of its frame, which is made wider to cancel it.
-        let cellInset = SettingsMetrics.fieldCellInset
+        let height = field.intrinsicContentSize.height
         field.frame = NSRect(
-            x: SettingsMetrics.fieldPadding - cellInset, y: ((bounds.height - lineHeight) / 2).rounded(),
-            width: width - 2 * SettingsMetrics.fieldPadding - SettingsMetrics.numberStepperWidth + 2 * cellInset,
-            height: lineHeight)
+            x: 0, y: ((bounds.height - height) / 2).rounded(), width: SettingsMetrics.numberFieldWidth, height: height)
         let unitHeight = unit.intrinsicContentSize.height
+        let unitX = SettingsMetrics.numberFieldWidth + SettingsMetrics.unitGap
         unit.frame = NSRect(
-            x: width + SettingsMetrics.unitGap,
-            y: ((bounds.height - unitHeight) / 2).rounded(),
-            width: max(0, bounds.width - width - SettingsMetrics.unitGap),
+            x: unitX, y: ((bounds.height - unitHeight) / 2).rounded(), width: max(0, bounds.width - unitX),
             height: unitHeight)
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        SettingsGlyph.field(
-            in: NSRect(x: 0, y: 0, width: SettingsMetrics.numberFieldWidth, height: bounds.height), theme: theme,
-            focused: isEditing)
     }
 
     /// Commits what is typed: the default for what is not a number, else the number brought into 1 to 50.
@@ -447,12 +416,12 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
         }
     }
 
-    func controlTextDidBeginEditing(_ obj: Notification) { needsDisplay = true }
+    func controlTextDidEndEditing(_ obj: Notification) { commit() }
 
-    func controlTextDidEndEditing(_ obj: Notification) {
-        commit()
-        needsDisplay = true
-    }
+    /// What the formatter can't read still leaves the field: the commit puts the default in its place.
+    func control(
+        _ control: NSControl, didFailToFormatString string: String, errorDescription error: String?
+    ) -> Bool { true }
 
     func control(_ control: NSControl, textView: NSTextView, doCommandBy selector: Selector) -> Bool {
         if selector == #selector(NSResponder.insertNewline(_:)) {
