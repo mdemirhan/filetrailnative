@@ -40,7 +40,7 @@ What we found, on macOS 27 (Finder 27.0) with APFS disk images:
 
 ### A workaround we tried and didn't keep
 
-[`finder-trash-workaround.diff`](finder-trash-workaround.diff) has the implementation, with its tests, made against commit `afa0076`. To try it, run `git apply docs/finder-trash-workaround.diff`. It may need adjusting on later commits.
+[`finder-trash-workaround.diff`](finder-trash-workaround.diff) has the implementation, with its tests, made against commit `afa0076`. It doesn't apply to later commits, so try it on that one: check it out (`git switch --detach afa0076`), then run `git show main:docs/finder-trash-workaround.diff | git apply`. The diff isn't in that commit, hence `git show`.
 
 Before Finder has taken a disk on, File Trail makes an empty hidden file there, has Finder trash it with AppleScript, and removes it from the Trash. People's own items still go through `trashItem`, so the symlink problem doesn't reach them. This runs in the background after the move, so no delete waits for Finder, and Empty Trash runs it first, for disks whose Trash holds items.
 
