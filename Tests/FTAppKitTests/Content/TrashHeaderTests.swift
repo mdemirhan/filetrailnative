@@ -80,6 +80,35 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
+        @Test func anOlderReadThatAnswersLateDoesNotReplaceANewerAnswer() async throws {
+            let (window, trash) = try await open()
+            await go(window, to: trash)
+            #expect(await waitUntil { window.tab.trashIsEmpty == false })
+            // The first read is held until the second has answered: it says "empty" too late to count.
+            let held = DispatchSemaphore(value: 0)
+            let answered = DispatchSemaphore(value: 0)
+            window.tab.trashIsEmptyReader = {
+                held.wait()
+                defer { answered.signal() }
+                return true
+            }
+            window.tab.refreshTrashState()
+            window.tab.trashIsEmptyReader = { nil }
+            window.tab.refreshTrashState()
+            #expect(await waitUntil { window.tab.trashIsEmpty == nil })
+            held.signal()
+            await withCheckedContinuation { done in
+                DispatchQueue.global().async {
+                    answered.wait()
+                    done.resume()
+                }
+            }
+            // Its answer reaches the main actor a moment after the read ends.
+            try await Task.sleep(for: .milliseconds(300))
+            #expect(window.tab.trashIsEmpty == nil)
+            await window.close()
+        }
+
         @Test func emptyAsksFinderQuestionAndEmptiesOnYes() async throws {
             let (window, trash) = try await open()
             await go(window, to: trash)

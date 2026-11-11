@@ -1828,11 +1828,16 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         TrashState.isEmpty(home: FileManager.default.homeDirectoryForCurrentUser.path, uid: getuid())
     }
 
+    /// Counts the reads asked for, so an older one that answers late does not replace a newer answer.
+    private var trashReads = 0
+
     func refreshTrashState() {
         let read = trashIsEmptyReader
+        trashReads += 1
+        let asked = trashReads
         Task { [weak self] in
             let empty = await Task.detached(priority: .utility) { read() }.value
-            guard let self, self.trashIsEmpty != empty else { return }
+            guard let self, asked == self.trashReads, self.trashIsEmpty != empty else { return }
             self.trashIsEmpty = empty
             self.commandsChanged()
         }
