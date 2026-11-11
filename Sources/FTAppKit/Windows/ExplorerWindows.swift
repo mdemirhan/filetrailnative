@@ -81,7 +81,6 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
     var showNotice: (WindowNotice, NSWindow?) -> Void = { notice, window in
         if !NotificationOverlay.push(.info, title: notice.title, in: window) { NSSound.beep() }
     }
-    var log: (String) -> Void = { _ in }
     /// An explorer window closed, and a tab got the keyboard: the file operations follow (`AppWriteOperations`).
     var onExplorerWindowClosed: (ExplorerTabGroup) -> Void = { _ in }
     var onTabFocused: (MainWindowController) -> Void = { _ in }
@@ -105,7 +104,6 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
             createWindow: { [unowned self] record, launch in makeGroup(record, launch: launch) },
             workArea: { ScreenGeometry.workArea(for: $0) })
         host.windowsChanged = { [unowned self] in onWindowsChanged() }
-        host.log = { [unowned self] in log($0) }
         controller = ExplorerWindowController(host: host, quit: quit)
         // Copy or Cut in one window is told to the others (`filetrail:clipboardChanged`): their marks
         // and buttons follow; a window opened later finds it there.

@@ -70,7 +70,6 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         public var workArea: (WindowBounds) -> WindowBounds
         /// Something the menu shows changed: which windows are open, which is in front, whether they are on screen.
         public var windowsChanged: () -> Void = {}
-        public var log: (String) -> Void = { _ in }
         public var scheduler: any FolderWatchScheduler
 
         public init(

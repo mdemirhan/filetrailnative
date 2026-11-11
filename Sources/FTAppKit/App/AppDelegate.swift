@@ -219,7 +219,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         ExplorerServices.installed = ExplorerServices(
             directoryService: directoryService, iconStore: FileIconStore(), clipboard: windows.clipboard,
             preferences: preferenceChannel)
-        windows.log = { [weak logger] message in logger?.info(.text("[filetrail] \(message)")) }
         let diskImages = DiskImageOpener(
             onMounted: {}, logError: { [weak logger] message in logger?.error(.text(message)) })
         self.diskImages = diskImages
