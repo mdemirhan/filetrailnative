@@ -16,116 +16,41 @@ public protocol FolderSizeNative: AnyObject {
     func cancelFolderSize()
 }
 
-/// The folder size walker. Calls are served one at a time, in the order they came: the first starts at once
-/// (so an immediate cancel stops it), later ones wait for it to settle. The walk itself is the C walker, on
-/// four threads; the folders it finishes reach `onFinished` as they do, not by polling.
+/// The folder size walker: one walk at a time. The folder size jobs start the next walk only once the last has
+/// settled. The walk itself is the C walker, on four threads; the folders it finishes reach `onFinished` as they do,
+/// not by polling.
 @MainActor
 public final class NativeFolderSize: FolderSizeNative {
-    @MainActor private final class Deferred {
-        private var outcome: Result<FolderSizeResult, any Error>?
-        private var continuation: CheckedContinuation<FolderSizeResult, any Error>?
-
-        func resolve(_ outcome: Result<FolderSizeResult, any Error>) {
-            if let continuation {
-                self.continuation = nil
-                continuation.resume(with: outcome)
-            } else {
-                self.outcome = outcome
-            }
-        }
-
-        func value() async throws -> FolderSizeResult {
-            try await withCheckedThrowingContinuation { continuation in
-                if let outcome {
-                    continuation.resume(with: outcome)
-                } else {
-                    self.continuation = continuation
-                }
-            }
-        }
-    }
-
-    private struct Waiting {
-        var path: String
-        var background: Bool
-        var onFinished: @MainActor (FinishedFolders) -> Void
-        var deferred: Deferred
-    }
-
     private var active: FolderWalk?
-    private var waiting: [Waiting] = []
 
     public init() {}
 
     public func getFolderSize(
         _ path: String, background: Bool, onFinished: @escaping @MainActor (FinishedFolders) -> Void
     ) -> Task<FolderSizeResult, any Error> {
-        if active == nil {
-            return start(path, background: background, onFinished: onFinished)
+        assert(active == nil, "a folder size walk started while another was under way")
+        guard let walk = FolderWalk(path: path, background: background) else {
+            return Task { throw Self.error(ENOMEM, "folder size", path) }
         }
-        let deferred = Deferred()
-        waiting.append(Waiting(path: path, background: background, onFinished: onFinished, deferred: deferred))
-        return Task { try await deferred.value() }
+        active = walk
+        return Task { @MainActor in
+            defer {
+                if active === walk {
+                    active = nil
+                }
+            }
+            return try await walk.run(onFinished: onFinished)
+        }
     }
 
     public func cancelFolderSize() {
         active?.cancel()
     }
 
-    private func start(
-        _ path: String, background: Bool, onFinished: @escaping @MainActor (FinishedFolders) -> Void
-    ) -> Task<FolderSizeResult, any Error> {
-        guard let walk = FolderWalk(path: path, background: background) else {
-            return Task { throw Self.error(ENOMEM, "folder size", path) }
-        }
-        active = walk
-        return Task { @MainActor in
-            let outcome: Result<FolderSizeResult, any Error>
-            do {
-                outcome = .success(try await walk.run(onFinished: onFinished))
-            } catch {
-                outcome = .failure(error)
-            }
-            if active === walk {
-                active = nil
-            }
-            if !waiting.isEmpty {
-                let next = waiting.removeFirst()
-                let task = start(next.path, background: next.background, onFinished: next.onFinished)
-                Task { @MainActor in next.deferred.resolve(await task.result) }
-            }
-            return try outcome.get()
-        }
-    }
-
     nonisolated static func error(_ errnum: Int32, _ syscall: String, _ path: String) -> FolderSizeError {
         let code = String(cString: ft_errno_code(errnum))
         let description = String(cString: strerror(errnum))
         return FolderSizeError(code: code, message: "\(code): \(description), \(syscall) '\(path)'")
-    }
-
-    /// One item as measuring its folder counts it, so what a delete took off the folders
-    /// that held it is what they counted of it.
-    public nonisolated static func itemSize(_ path: String) async throws -> ItemSize {
-        try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                var item = ft_item_size()
-                let errnum = ft_item_size_of(path, &item)
-                if errnum != 0 {
-                    continuation.resume(throwing: error(errnum, "item size", path))
-                    return
-                }
-                let kind: ItemSize.Kind =
-                    switch item.kind {
-                    case FT_ITEM_FILE: .file
-                    case FT_ITEM_FOLDER: .folder
-                    default: .other
-                    }
-                continuation.resume(
-                    returning: ItemSize(
-                        kind: kind, sizeBytes: item.size_bytes, diskBytes: item.disk_bytes, dev: item.dev))
-            }
-        }
     }
 }
 

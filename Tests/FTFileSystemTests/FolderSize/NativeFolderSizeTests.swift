@@ -1,3 +1,4 @@
+import CFileTrail
 import FTTestSupport
 import Foundation
 import Testing
@@ -510,6 +511,20 @@ extension RealWalks {
     }
 }
 
+/// One item as the write operations read it when they take it off the folders that held it.
+private func itemSize(_ path: String) throws -> ItemSize {
+    var item = ft_item_size()
+    let errnum = ft_item_size_of(path, &item)
+    guard errnum == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errnum) ?? .EIO) }
+    let kind: ItemSize.Kind =
+        switch item.kind {
+        case FT_ITEM_FILE: .file
+        case FT_ITEM_FOLDER: .folder
+        default: .other
+        }
+    return ItemSize(kind: kind, sizeBytes: item.size_bytes, diskBytes: item.disk_bytes, dev: item.dev)
+}
+
 extension RealWalks {
     @MainActor @Suite struct NativeItemSizeTests {
         private func withItems(_ body: (String) async throws -> Void) async throws {
@@ -530,7 +545,7 @@ extension RealWalks {
                 let walk = try await measure(NativeFolderSize(), root)
                 var items: [ItemSize] = []
                 for name in ["a.bin", "link", "pipe", "sub"] {
-                    items.append(try await NativeFolderSize.itemSize("\(root)/\(name)"))
+                    items.append(try itemSize("\(root)/\(name)"))
                 }
                 #expect(items.map(\.kind) == [.file, .file, .other, .folder])
                 #expect(Set(items.map(\.dev)) == [walk.result.dev ?? -1])
@@ -546,69 +561,7 @@ extension RealWalks {
 
         @Test func failsForAnItemThatIsGone() async throws {
             try await withItems { root in
-                let error = await #expect(throws: FolderSizeError.self) {
-                    try await NativeFolderSize.itemSize("\(root)/missing")
-                }
-                #expect(error?.code == "ENOENT")
-            }
-        }
-    }
-}
-
-extension RealWalks {
-    @MainActor @Suite struct NativeFolderSizeSingleFlightTests {
-        private func makeFiles(_ prefix: String, count: Int, size: Int) throws -> TemporaryDirectory {
-            let directory = try TemporaryDirectory(prefix: prefix)
-            for index in 0..<count {
-                try write("\(directory.path)/f\(index).txt", size)
-            }
-            return directory
-        }
-
-        @Test func serializesConcurrentCallsAndReturnsCorrectPerCallResults() async throws {
-            let rootA = try makeFiles("native-fs-sf-a", count: 3, size: 10)
-            let rootB = try makeFiles("native-fs-sf-b", count: 5, size: 20)
-            defer {
-                rootA.remove()
-                rootB.remove()
-            }
-            let native = NativeFolderSize()
-            let first = native.getFolderSize(rootA.path, background: false) { _ in }
-            let second = native.getFolderSize(rootB.path, background: false) { _ in }
-            let resultA = try await first.value
-            let resultB = try await second.value
-
-            #expect(resultA.fileCount == 3)
-            #expect(resultA.total == 30)
-            #expect(resultB.fileCount == 5)
-            #expect(resultB.total == 100)
-        }
-
-        @Test func cancelThenImmediateRestartCancelsOnlyTheActiveCall() async throws {
-            let root = try makeFiles("native-fs-sf-c", count: 4, size: 25)
-            defer { root.remove() }
-            let native = NativeFolderSize()
-            let first = native.getFolderSize(root.path, background: false) { _ in }
-            native.cancelFolderSize()
-            let second = native.getFolderSize(root.path, background: false) { _ in }
-
-            let error = await #expect(throws: FolderSizeError.self) { try await first.value }
-            #expect(error?.code == "ECANCELLED")
-
-            let result = try await second.value
-            #expect(result.fileCount == 4)
-            #expect(result.total == 100)
-        }
-
-        @Test func queuesManyConcurrentCallsWithoutCorruptingResults() async throws {
-            let root = try makeFiles("native-fs-sf-q", count: 2, size: 7)
-            defer { root.remove() }
-            let native = NativeFolderSize()
-            let calls = (0..<4).map { _ in native.getFolderSize(root.path, background: false) { _ in } }
-            for call in calls {
-                let result = try await call.value
-                #expect(result.fileCount == 2)
-                #expect(result.total == 14)
+                #expect(throws: POSIXError(.ENOENT)) { try itemSize("\(root)/missing") }
             }
         }
     }
