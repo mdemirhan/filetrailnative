@@ -89,7 +89,7 @@ final class FakeSearchHost: SearchSessionHost {
 
     private func session() -> SearchSession {
         let made = SearchSession(
-            preferences: .defaults(), includeHidden: false, engine: engine, timers: timers, clock: { 0 })
+            preferences: .defaults(), includeHidden: false, engine: engine, timers: timers)
         made.host = host
         return made
     }
@@ -174,7 +174,7 @@ final class FakeSearchHost: SearchSessionHost {
         var before = AppPreferences.defaults()
         before.searchRecursive = recursiveBefore
         let search = SearchSession(
-            preferences: before, includeHidden: false, engine: engine, timers: timers, clock: { 0 })
+            preferences: before, includeHidden: false, engine: engine, timers: timers)
         search.host = host
         search.updateDraft("so")
         timers.advance(0.4)
@@ -389,7 +389,6 @@ final class FakeSearchHost: SearchSessionHost {
         timers.advance(0.1)
         #expect(engine.updates.count == before + 1)
         #expect(search.status == .complete)
-        #expect(search.elapsedMilliseconds == nil)
         // Nothing is left to ask about once it ended.
         timers.advance(2)
         #expect(engine.updates.count == before + 1)

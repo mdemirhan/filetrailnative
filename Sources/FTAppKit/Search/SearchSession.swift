@@ -48,7 +48,6 @@ final class SearchSession {
     /// What the searches run on, and the timers of typing and polling (a test puts its own in).
     var engine: any SearchEngine
     var timers: any TimerScheduling
-    private let clock: () -> TimeInterval
 
     // MARK: Published state
 
@@ -75,8 +74,6 @@ final class SearchSession {
     /// Started by typing: a pattern that does not parse yet is not shown as a failure.
     private(set) var startedLive = false
     private(set) var truncated = false
-    /// How long the search took, for the log (never shown); nil for one that finished in the background.
-    private(set) var elapsedMilliseconds: Double?
 
     // MARK: Bookkeeping
 
@@ -105,22 +102,17 @@ final class SearchSession {
     /// The text the live-search timer waits to search for.
     private(set) var pendingLiveQuery: String?
     private var pollTimer: TimerToken?
-    private var startedAt: TimeInterval?
     /// The tab is in the background: its search is asked about once a second, and typing waits for it to come back.
     private(set) var isBackground = false
-    /// The first answer after the tab came back: a search that finished meanwhile has no known duration.
-    private var awaitingFirstUpdateAfterReturn = false
     /// Return asked for the first result to be selected once the search has finished.
     var selectFirstResultWhenDone = false
 
     init(
         preferences: AppPreferences, includeHidden: Bool, engine: any SearchEngine = SearchRuntime.shared,
-        timers: any TimerScheduling = TaskTimerScheduler(),
-        clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
+        timers: any TimerScheduling = TaskTimerScheduler()
     ) {
         self.engine = engine
         self.timers = timers
-        self.clock = clock
         patternMode = preferences.searchPatternMode
         matchScope = preferences.searchMatchScope
         recursive = preferences.searchRecursive
@@ -573,8 +565,6 @@ final class SearchSession {
         status = .running
         error = nil
         truncated = false
-        elapsedMilliseconds = nil
-        startedAt = clock()
         searchedHidden = host.searchIncludeHidden
         searchedOptions = options
         cachedSearchSelection = .empty
@@ -587,17 +577,10 @@ final class SearchSession {
             includeHidden: host.searchIncludeHidden, skipGitFolders: skipGitFolders, skipGitIgnored: skipGitIgnored)
         do {
             let started = try engine.start(request)
-            guard counter == sessionCounter else {
-                engine.cancel(jobID: started)
-                return
-            }
             jobID = started
             cursor = 0
-            awaitingFirstUpdateAfterReturn = false
-            status = .running
             poll(jobID: started, counter: counter)
         } catch {
-            guard counter == sessionCounter else { return }
             jobID = nil
             clearPolling()
             status = .error
@@ -663,16 +646,9 @@ final class SearchSession {
         status = update.status
         error = update.error
         truncated = update.truncated
-        let finishedAway = (awaitingFirstUpdateAfterReturn || isBackground) && update.done
-        awaitingFirstUpdateAfterReturn = false
         if update.done {
             jobID = nil
             clearPolling()
-            if finishedAway {
-                elapsedMilliseconds = nil
-            } else if let startedAt {
-                elapsedMilliseconds = max(0, ((clock() - startedAt) * 1000).rounded())
-            }
         }
         emit(change)
     }
@@ -702,7 +678,6 @@ final class SearchSession {
         isBackground = false
         sessionCounter += 1
         clearPolling()
-        awaitingFirstUpdateAfterReturn = jobID != nil
         if let pending = pendingLiveQuery {
             pendingLiveQuery = nil
             scheduleLiveSearch(pending)

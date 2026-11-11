@@ -40,7 +40,7 @@ private final class FailingSearchEngine: SearchEngine {
 
     private func session(_ engine: (any SearchEngine)? = nil) -> SearchSession {
         let made = SearchSession(
-            preferences: .defaults(), includeHidden: false, engine: engine ?? self.engine, timers: timers, clock: { 0 })
+            preferences: .defaults(), includeHidden: false, engine: engine ?? self.engine, timers: timers)
         made.host = host
         return made
     }
