@@ -632,7 +632,7 @@ public enum UndoExecution {
         if running.isEmpty {
             return .skipped(items: items, missing: false)
         }
-        let errors = RecordingErrorsFileSystem(fileSystem)
+        let errors = RecordingErrorsFileSystem(LocalBatchRenameFileSystem(fileSystem))
         let batch = context.options.batchRename(toRename, errors, context.options.signal, context.options.journal)
         // Every item has a result, in the order asked for. Names are compared in the folder the item was in: a folder
         // renamed in the same batch takes its items' paths along.
@@ -761,15 +761,15 @@ public enum UndoExecution {
 /// The file system for a batch rename, keeping the error each item's rename failed with, by where
 /// the item was before it: an item moved aside under a hidden name keeps its own. A name found taken is kept only when
 /// nothing else went wrong (the batch numbers it).
-final class RecordingErrorsFileSystem: UndoFileSystem, @unchecked Sendable {
-    private let base: any UndoFileSystem
+final class RecordingErrorsFileSystem: BatchRenameFileSystem, @unchecked Sendable {
+    private let base: any BatchRenameFileSystem
     private struct State {
         var startedAt: [NameKeys.Exact: String] = [:]
         var codes: [NameKeys.Exact: String?] = [:]
     }
     private let state = OSAllocatedUnfairLock(initialState: State())
 
-    init(_ base: any UndoFileSystem) {
+    init(_ base: any BatchRenameFileSystem) {
         self.base = base
     }
 
@@ -800,33 +800,7 @@ final class RecordingErrorsFileSystem: UndoFileSystem, @unchecked Sendable {
     }
 
     func lstat(_ path: String) throws -> WriteServiceStats { try base.lstat(path) }
-    func stat(_ path: String) throws -> WriteServiceStats { try base.stat(path) }
-    func realpath(_ path: String) throws -> String { try base.realpath(path) }
-    func readdir(_ path: String) throws -> [String] { try base.readdir(path) }
-    func readlink(_ path: String) throws -> String { try base.readlink(path) }
-    func isCaseSensitive(_ path: String) throws -> Bool? { try base.isCaseSensitive(path) }
-    func isPackage(_ path: String) throws -> Bool? { try base.isPackage(path) }
-    func isAppleDouble(_ path: String) -> Bool { base.isAppleDouble(path) }
-    func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
-    func mkdir(_ path: String) throws { try base.mkdir(path) }
-    func rm(_ path: String, recursive: Bool, force: Bool) throws {
-        try base.rm(path, recursive: recursive, force: force)
-    }
-    func rmdir(_ path: String) throws { try base.rmdir(path) }
-    func copyFile(
-        _ source: String, _ destination: String, stop: StopSignal?, onProgress: (@Sendable (Int64) -> Void)?
-    ) throws {
-        try base.copyFile(source, destination, stop: stop, onProgress: onProgress)
-    }
-    func getFlags(_ path: String) throws -> UInt32 { try base.getFlags(path) }
-    func setFlags(_ path: String, _ flags: UInt32) throws { try base.setFlags(path, flags) }
-    var chmod: ((String, UInt32) throws -> Void)? { base.chmod }
-    var utimes: ((String, Double, Double) throws -> Void)? { base.utimes }
-    var copyMetadata: ((String, String) throws -> Void)? { base.copyMetadata }
-    var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { base.copyMetadataToRunInPlace }
-    var setAcl: ((String, String?) throws -> Void)? { base.setAcl }
-    var trash: ((String) throws -> String?)? { base.trash }
-    var canModifyFolder: ((String) throws -> Void)? { base.canModifyFolder }
-    var itemSize: ((String) throws -> ItemSize)? { base.itemSize }
-    var getAcl: ((String) throws -> String?)? { base.getAcl }
+    var readFolder: ((String) throws -> [String])? { base.readFolder }
+    var readFlags: ((String) throws -> UInt32)? { base.readFlags }
+    var caseSensitivity: ((String) throws -> Bool?)? { base.caseSensitivity }
 }

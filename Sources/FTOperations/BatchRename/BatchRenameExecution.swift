@@ -617,8 +617,7 @@ extension UndoBatchRename {
                 .init(sourcePath: $0.sourcePath, destinationName: $0.destinationName, isFolder: $0.isFolder)
             },
             onConflict: .number, numberSeparator: " ")
-        let run = BatchRenameExecution.run(
-            request, fileSystem: LocalBatchRenameFileSystem(fileSystem), signal: signal, journal: journal)
+        let run = BatchRenameExecution.run(request, fileSystem: fileSystem, signal: signal, journal: journal)
         return UndoBatchRenameRun(items: run.items, cancelled: run.cancelled)
     }
 }

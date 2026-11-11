@@ -48,7 +48,7 @@ public struct UndoBatchRenameRun: Equatable, Sendable {
 /// system it is given (`UndoBatchRename.runBatchRename`, the default of `WriteCoordinatorOptions.undoBatchRename`).
 public typealias UndoBatchRenamer =
     @Sendable (
-        _ items: [UndoBatchRenameItem], _ fileSystem: any UndoFileSystem, _ signal: StopSignal,
+        _ items: [UndoBatchRenameItem], _ fileSystem: any BatchRenameFileSystem, _ signal: StopSignal,
         _ journal: (any WriteJournal)?
     ) -> UndoBatchRenameRun
 
