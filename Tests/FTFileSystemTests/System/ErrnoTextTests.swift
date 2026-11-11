@@ -104,7 +104,7 @@ import Testing
             disk: "disk4")
         for number in Self.numbers where ![ETIMEDOUT, EPERM, EACCES].contains(number) {
             let notice = EjectPlanning.describeEjectFailure(
-                [volume], path: "/Volumes/USB", failedPath: nil, code: Errno.nameOrUnknown(of: number), reason: nil)
+                [volume], path: "/Volumes/USB", failedPath: nil, errnum: number, reason: nil)
             #expect(notice.message == "An unexpected error occurred (\(Self.names[number] ?? "UNKNOWN")).")
         }
     }

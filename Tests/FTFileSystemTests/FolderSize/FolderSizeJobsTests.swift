@@ -87,7 +87,7 @@ private func result(
         total: total, diskTotal: disk, fileCount: files, folderCount: folderCount, dev: dev, dirs: folders(dirs))
 }
 
-private let cancelledError = FolderSizeError(code: "ECANCELLED", message: "cancelled")
+private let cancelledError = FolderSizeError(errnum: ECANCELED, message: "cancelled")
 
 private func removedFile(_ path: String, intoHomeTrash: Bool? = false) -> RemovedItem {
     RemovedItem(
@@ -144,7 +144,7 @@ private func settle() async {
         #expect(settled.last?.0 == 7 && settled.last?.1 == measured.jobId)
 
         // Window 8's, now running, fails; a stop afterwards changes nothing it is told.
-        native.rejectActive(FolderSizeError(code: nil, message: "EIO"))
+        native.rejectActive(FolderSizeError(errnum: nil, message: "EIO"))
         await settle()
         #expect(settled.last?.0 == 8 && settled.last?.1 == waiting.jobId)
         jobs.cancel(jobId: waiting.jobId)
@@ -365,7 +365,7 @@ private func settle() async {
         let native = MockNative()
         let jobs = make(native, homePath: "/Users/demo")
         _ = start(jobs, "/Users/demo/.Trash")
-        native.rejectActive(FolderSizeError(code: "EPERM", message: "denied"))
+        native.rejectActive(FolderSizeError(errnum: EPERM, message: "denied"))
         await settle()
         _ = start(jobs, "/Users/demo/Downloads")
         native.resolveActive(result(600, 1_200, 6, 0))
@@ -917,7 +917,7 @@ private func settle() async {
         #expect(second.status == .queued)
 
         // Complete first job (cancel resolves with error)
-        native.rejectActive(FolderSizeError(code: "ECANCELLED", message: "ECANCELLED"))
+        native.rejectActive(FolderSizeError(errnum: ECANCELED, message: "ECANCELLED"))
         await settle()
 
         // Second job should now be running
@@ -931,7 +931,7 @@ private func settle() async {
         let jobs = make(native)
 
         let started = start(jobs, "/test")
-        native.rejectActive(FolderSizeError(code: nil, message: "ENOENT: not found"))
+        native.rejectActive(FolderSizeError(errnum: nil, message: "ENOENT: not found"))
         await settle()
 
         let status = jobs.getStatus(jobId: started.jobId)

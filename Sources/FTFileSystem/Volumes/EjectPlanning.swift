@@ -102,7 +102,7 @@ public enum EjectPlanning {
     }
 
     public static func describeEjectFailure(
-        _ volumes: [Volume], path: String, failedPath: String?, code: String?, reason: String?
+        _ volumes: [Volume], path: String, failedPath: String?, errnum: Int32?, reason: String?
     ) -> EjectNotice {
         // A failure after the volumes were unmounted is the disk's own (/dev/diskN): it is named by the
         // volume asked for.
@@ -112,16 +112,16 @@ public enum EjectPlanning {
         if let reason, !reason.isEmpty {
             return EjectNotice(title: title, message: reason)
         }
-        switch code {
-        case "ETIMEDOUT":
+        switch errnum {
+        case ETIMEDOUT:
             return EjectNotice(
                 title: title, message: "The \(kind) didn\u{2019}t answer in time. Try again in a moment.")
-        case "EPERM", "EACCES":
+        case EPERM, EACCES:
             return EjectNotice(title: title, message: "macOS didn\u{2019}t allow File Trail to eject it.")
-        default:
-            if let code, !code.isEmpty {
-                return EjectNotice(title: title, message: "An unexpected error occurred (\(code)).")
-            }
+        case let errnum?:
+            return EjectNotice(
+                title: title, message: "An unexpected error occurred (\(Errno.nameOrUnknown(of: errnum))).")
+        case nil:
             return EjectNotice(title: title, message: "An unexpected error occurred.")
         }
     }

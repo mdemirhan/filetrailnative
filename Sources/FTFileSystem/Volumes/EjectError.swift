@@ -13,7 +13,4 @@ public struct EjectError: Error, Equatable, Sendable {
         self.path = path
         self.reason = reason
     }
-
-    /// The errno name ("EBUSY").
-    public var code: String { Errno.nameOrUnknown(of: errnum) }
 }

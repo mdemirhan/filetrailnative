@@ -157,7 +157,7 @@ extension RealWalks {
             let error = await #expect(throws: FolderSizeError.self) {
                 try await measure(NativeFolderSize(), "/nonexistent/path/xyz")
             }
-            #expect(error?.code == "ENOENT")
+            #expect(error?.errnum == ENOENT)
             #expect(error?.message == "ENOENT: No such file or directory, folder size '/nonexistent/path/xyz'")
         }
 
@@ -449,7 +449,7 @@ extension RealWalks {
                 let cancelled = native.getFolderSize(root, background: false) { _ in delivered += 1 }
                 native.cancelFolderSize()
                 let error = await #expect(throws: FolderSizeError.self) { try await cancelled.value }
-                #expect(error?.code == "ECANCELLED")
+                #expect(error?.errnum == ECANCELED)
                 let afterCancel = delivered
                 try await Task.sleep(for: .milliseconds(50))
                 #expect(delivered == afterCancel)
@@ -469,7 +469,7 @@ extension RealWalks {
                     // The walk ended before the first batch could cancel it.
                     batches.append(FinishedFolders(dev: result.dev, dirs: result.dirs))
                 } catch let error as FolderSizeError {
-                    #expect(error.code == "ECANCELLED")
+                    #expect(error.errnum == ECANCELED)
                 }
                 expectReportedOnce(batches, expected)
             }
@@ -504,7 +504,7 @@ extension RealWalks {
                 let walk = native.getFolderSize(root, background: false) { batches.append($0) }
                 native.cancelFolderSize()
                 let error = await #expect(throws: FolderSizeError.self) { try await walk.value }
-                #expect(error?.code == "ECANCELLED")
+                #expect(error?.errnum == ECANCELED)
                 expectReportedOnce(batches, expected)
             }
         }

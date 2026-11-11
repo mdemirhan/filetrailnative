@@ -96,7 +96,7 @@ struct EjectCoordinatorTests {
     @Test @MainActor func asksAboutADiskInUseAndGoesOnFromTheVolumeInUseWhenForced() async {
         let harness = Harness(
             volumes: [volume("Photos", "disk7"), volume("Video", "disk7")],
-            responses: [EjectResponse(status: .busy, failedPath: "/Volumes/Video", code: "EBUSY")])
+            responses: [EjectResponse(status: .busy, failedPath: "/Volumes/Video", errnum: EBUSY)])
         harness.coordinator.answerWhichVolumes(path: "/Volumes/Photos", .all)
         await settleTasks()
         #expect(harness.presenter.busy.count == 1)
@@ -116,7 +116,7 @@ struct EjectCoordinatorTests {
     @Test @MainActor func tellsOfAnyOtherFailureInANotice() async {
         let harness = Harness(
             volumes: [volume("USB", "disk4")],
-            responses: [EjectResponse(status: .failed, failedPath: "/dev/disk4", code: "EIO")])
+            responses: [EjectResponse(status: .failed, failedPath: "/dev/disk4", errnum: EIO)])
         harness.coordinator.requestEject(path: "/Volumes/USB")
         await settleTasks()
         #expect(harness.presenter.notices.count == 1)
@@ -132,7 +132,7 @@ struct EjectCoordinatorTests {
             eject: { _ in
                 await MainActor.run { count += 1 }
                 await gate.wait()
-                return EjectResponse(status: .failed, failedPath: "/dev/disk4", code: "EIO")
+                return EjectResponse(status: .failed, failedPath: "/dev/disk4", errnum: EIO)
             })
         let first = Task { await coordinator.run(path: "/Volumes/USB", wholeDisk: true, force: false) }
         await settleTasks()

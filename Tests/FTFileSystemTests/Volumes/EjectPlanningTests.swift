@@ -98,24 +98,24 @@ private func volume(_ name: String, isLocal: Bool = true, canEject: Bool = true,
     @Test func namesTheDiskAskedForWhenTheDiskItselfFailedWithDiskArbitrationsReason() {
         let all = [volume("USB")]
         let failed = EjectPlanning.describeEjectFailure(
-            all, path: "/Volumes/USB", failedPath: "/dev/disk7", code: "EIO", reason: "The device is not responding.")
+            all, path: "/Volumes/USB", failedPath: "/dev/disk7", errnum: EIO, reason: "The device is not responding.")
         #expect(failed.title == "The disk \u{201C}USB\u{201D} couldn\u{2019}t be ejected.")
         #expect(failed.message == "The device is not responding.")
         #expect(
             EjectPlanning.describeEjectFailure(
-                all, path: "/Volumes/USB", failedPath: "/Volumes/USB", code: "ETIMEDOUT", reason: nil
+                all, path: "/Volumes/USB", failedPath: "/Volumes/USB", errnum: ETIMEDOUT, reason: nil
             ).message == "The disk didn\u{2019}t answer in time. Try again in a moment.")
     }
 
     @Test func otherFailureWording() {
         let all = [volume("USB")]
-        func message(_ code: String?) -> String {
-            EjectPlanning.describeEjectFailure(all, path: "/Volumes/USB", failedPath: nil, code: code, reason: nil)
+        func message(_ errnum: Int32?) -> String {
+            EjectPlanning.describeEjectFailure(all, path: "/Volumes/USB", failedPath: nil, errnum: errnum, reason: nil)
                 .message
         }
-        #expect(message("EPERM") == "macOS didn\u{2019}t allow File Trail to eject it.")
-        #expect(message("EACCES") == "macOS didn\u{2019}t allow File Trail to eject it.")
-        #expect(message("EIO") == "An unexpected error occurred (EIO).")
+        #expect(message(EPERM) == "macOS didn\u{2019}t allow File Trail to eject it.")
+        #expect(message(EACCES) == "macOS didn\u{2019}t allow File Trail to eject it.")
+        #expect(message(EIO) == "An unexpected error occurred (EIO).")
         #expect(message(nil) == "An unexpected error occurred.")
     }
 }

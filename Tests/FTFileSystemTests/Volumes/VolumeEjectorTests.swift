@@ -120,7 +120,7 @@ private func wholeDevice(of path: String) throws -> String {
                 try await VolumeEjector.eject(path: folder.path, wholeDisk: true)
                 Issue.record("the eject should have been refused")
             } catch let error as EjectError {
-                #expect(error.code == "EBUSY")
+                #expect(error.errnum == EBUSY)
                 #expect(error.path == folder.path)
             }
             #expect(try attached(image)?.mountPoints.contains(folder.path) == true)
@@ -136,7 +136,7 @@ private func wholeDevice(of path: String) throws -> String {
             try await VolumeEjector.eject(path: folder.path)
             Issue.record("nothing is mounted there")
         } catch let error as EjectError {
-            #expect(error.code == "ENOENT")
+            #expect(error.errnum == ENOENT)
             #expect(error.path == folder.path)
         }
         let response = await EjectOutcome.ejectVolume(

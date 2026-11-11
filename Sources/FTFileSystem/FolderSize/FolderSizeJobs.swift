@@ -415,7 +415,7 @@ public final class FolderSizeJobs {
             return
         }
         let walkError = error as? FolderSizeError
-        if PathKey(path) == homeTrashKey && (walkError?.code == "EPERM" || walkError?.code == "EACCES") {
+        if PathKey(path) == homeTrashKey && (walkError?.errnum == EPERM || walkError?.errnum == EACCES) {
             homeTrashCounted = false
         }
         let current = jobs[jobId]

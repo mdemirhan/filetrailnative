@@ -158,18 +158,17 @@ public struct FolderSizeResult: Equatable, Sendable {
     }
 }
 
-/// A walk that failed or was stopped: an error with a `code` and a message.
+/// A walk that failed or was stopped: the errno when there was one (ECANCELED for a stop), and a message.
 public struct FolderSizeError: Error, Equatable, Sendable, CustomStringConvertible {
-    public var code: String?
+    public var errnum: Int32?
     public var message: String
 
-    public init(code: String?, message: String) {
-        self.code = code
+    public init(errnum: Int32?, message: String) {
+        self.errnum = errnum
         self.message = message
     }
 
     public var description: String { message }
 
-    public static let cancelled = FolderSizeError(
-        code: "ECANCELLED", message: "Folder size calculation cancelled")
+    public static let cancelled = FolderSizeError(errnum: ECANCELED, message: "Folder size calculation cancelled")
 }
