@@ -34,8 +34,8 @@ private let fixtures: URL = {
     return URL(fileURLWithPath: cache).appendingPathComponent("fixtures")
 }()
 
-/// The golden measures the names, lighthouse and bench trees.
-private let hasFixtures = ["names", "lighthouse", "bench"].allSatisfy {
+/// The golden measures the names, lighthouse and large trees.
+private let hasFixtures = ["names", "lighthouse", "large"].allSatisfy {
     FileManager.default.fileExists(atPath: fixtures.appendingPathComponent("\($0)/.fixture-version").path)
 }
 

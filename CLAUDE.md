@@ -23,3 +23,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 - A window holds at most 25 tabs.
 
 Open issues are in `docs/known-issues.md` and `docs/battery.md`.
+
+## Don't add
+
+- Benchmarks: no bench scripts, benchmark tests, budgets or `--bench` modes. The owner removed them; a CPU-time test (`CPUTime.measureThread`) guards a speed fix where one is needed.

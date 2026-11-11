@@ -373,10 +373,10 @@
       }
     },
     {
-      "name": "fixture bench/files-300",
+      "name": "fixture large/files-300",
       "input": {
         "kind": "fixture",
-        "path": "bench/files-300"
+        "path": "large/files-300"
       },
       "output": {
         "total": 8910,
@@ -387,10 +387,10 @@
       }
     },
     {
-      "name": "fixture bench/files-3000",
+      "name": "fixture large/files-3000",
       "input": {
         "kind": "fixture",
-        "path": "bench/files-3000"
+        "path": "large/files-3000"
       },
       "output": {
         "total": 298906,

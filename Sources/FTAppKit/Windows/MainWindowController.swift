@@ -3,17 +3,6 @@ import AppKit
 import FTFileSystem
 import FTFoundation
 
-struct NavigationTiming: Sendable {
-    let folder: URL
-    let itemCount: Int
-    /// Reading the folder from disk, off the main thread.
-    let read: Duration
-    /// `read` plus the wait for the main thread to take the result.
-    let load: Duration
-    /// Sorting, reloading the view and drawing it once.
-    let display: Duration
-}
-
 /// The window of one tab. Its close button and Close Window close the whole explorer window; the close button of a
 /// tab in the tab bar closes the tab.
 final class ExplorerTabWindow: NSWindow {
@@ -194,7 +183,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
 
     /// What came of opening a folder.
     enum NavigationOutcome {
-        case opened(NavigationTiming)
+        case opened
         /// It couldn't be read, and didn't open.
         case failed
         /// A newer navigation took over.
@@ -232,8 +221,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     var locationsExpanded: Bool { sidebar.locationsExpanded }
 
     var onClose: (() -> Void)?
-    /// Called once, after the first folder has been drawn (used by the launch benchmark).
-    var onFirstDraw: (() -> Void)?
     /// Called once the tab has shown its first folder, or found it can't.
     var onReady: (() -> Void)?
 
@@ -540,7 +527,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let target = URL(fileURLWithPath: parent)
         let move: HistoryMove = !folderLetGo && target.comparablePath == folder.comparablePath ? .replace : .push
         Task {
-            guard await navigate(to: target, history: move) != nil else { return }
+            guard await navigate(to: target, history: move) else { return }
             // By its name in the folder opened: the listing gives its rows the folder's real path, which may be spelled
             // otherwise than the one the search ran from (/private/var for /var).
             let name = NodePath.basename(path)
@@ -1009,7 +996,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// What a read of a folder gave, and how long it took.
     struct FolderRead {
         var snapshot: Result<DirectorySnapshot, any Error>
-        var duration: Duration
     }
 
     /// Reads a folder through the directory service: in the order the tab keeps, with hidden files and folders first
@@ -1021,13 +1007,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         let direction: SortDirection = sortDirection == .asc ? .ascending : .descending
         let hidden = includeHidden
         let first = foldersFirst
-        let clock = ContinuousClock()
-        let started = clock.now
         let snapshot = await Result {
             try await service.snapshot(
                 path: path, includeHidden: hidden, sortBy: key, sortDirection: direction, foldersFirst: first)
         }
-        return FolderRead(snapshot: snapshot, duration: clock.now - started)
+        return FolderRead(snapshot: snapshot)
     }
 
     /// Reads `url`, then shows it. Returns nil when a later navigation replaced this one or the folder didn't open. `open`
@@ -1039,11 +1023,11 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     func navigate(
         to url: URL, history move: HistoryMove = .push, open: SidebarOpen = .other, keepingSearch: Bool = false,
         goToFailure: ((String) -> Void)? = nil
-    ) async -> NavigationTiming? {
+    ) async -> Bool {
         let outcome = await attemptNavigation(
             to: url, history: move, open: open, keepingSearch: keepingSearch, goToFailure: goToFailure)
-        if case .opened(let timing) = outcome { return timing }
-        return nil
+        if case .opened = outcome { return true }
+        return false
     }
 
     /// What the folder just shown takes from the tab it was started with, besides what `content.show` restored.
@@ -1103,8 +1087,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         isNavigating = true
         navigationTarget = url
         defer { if token == navigationToken { isNavigating = false } }
-        let clock = ContinuousClock()
-        let started = clock.now
         let move = open.pushesHistory ? move : HistoryMove.none
         // The folder being left is remembered first: what was selected and where the list was scrolled.
         // Nothing is remembered when search results are showing.
@@ -1129,7 +1111,6 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         content.beginLoading(quiet: quiet)
         let read = await readFolder(url)
         guard token == navigationToken else { return .superseded }
-        let readAt = clock.now
 
         var entries: [DirectoryEntry] = []
         // The folder is known by the real path its listing gives (`response.path`), not the spelling it was asked by; one
@@ -1244,16 +1225,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         // The results' list has only now been laid out, so their selection can be brought into view.
         if bringsResultsBack, searchStore?.session.isSearchMode == true { content.applySelection(content.selection) }
         window?.displayIfNeeded()
-        if let callback = onFirstDraw {
-            onFirstDraw = nil
-            callback()
-        }
         group?.tabChanged(self)
-
-        let timing = NavigationTiming(
-            folder: shown, itemCount: entries.count, read: read.duration, load: readAt - started,
-            display: clock.now - readAt)
-        return .opened(timing)
+        return .opened
     }
 
     /// Where the tab is, history and sidebar row with it (`TabPlace`).

@@ -1,5 +1,5 @@
 // Deterministic fixture trees under $FILETRAIL_DEV_CACHE/fixtures (default ~/Library/Caches/filetrail-dev).
-// Usage: bun tools/fixtures/generate.ts [lighthouse|bench|names ...]
+// Usage: bun tools/fixtures/generate.ts [lighthouse|large|names ...]
 // Each tree is rebuilt only when its version stamp is missing or differs.
 
 import { execFileSync, spawnSync } from "node:child_process";
@@ -28,7 +28,7 @@ export const FIXTURE_NOW = new Date(2026, 9, 13, 14, 38, 0);
 const MIN = 60_000;
 const DAY = 24 * 60 * MIN;
 const STAMP_NAME = ".fixture-version";
-const VERSIONS = { lighthouse: "1", bench: "1", names: "1" } as const;
+const VERSIONS = { lighthouse: "1", large: "1", names: "1" } as const;
 
 // ---- helpers ----------------------------------------------------------------
 
@@ -338,52 +338,40 @@ function lighthouse(): void {
   finish("lighthouse");
 }
 
-// ---- bench --------------------------------------------------------------------
+// ---- large --------------------------------------------------------------------
 
-const BENCH_STEMS = [
+const LARGE_STEMS = [
   "report", "IMG", "invoice", "notes", "Übersicht", "写真", "résumé", "Фото", "データ", "draft", "backup", "log",
 ];
-const BENCH_EXTS = ["txt", "md", "jpg", "pdf", "csv", "json", "swift", "ts", "zip", "mov"];
+const LARGE_EXTS = ["txt", "md", "jpg", "pdf", "csv", "json", "swift", "ts", "zip", "mov"];
 
-function benchName(i: number, r: () => number): string {
-  const stem = BENCH_STEMS[Math.floor(r() * BENCH_STEMS.length)];
-  const ext = BENCH_EXTS[Math.floor(r() * BENCH_EXTS.length)];
+function largeName(i: number, r: () => number): string {
+  const stem = LARGE_STEMS[Math.floor(r() * LARGE_STEMS.length)];
+  const ext = LARGE_EXTS[Math.floor(r() * LARGE_EXTS.length)];
   const n = Math.floor(r() * 100_000);
   // The index keeps names unique; the random number mixes sort orders (2 vs 10 vs 100).
   return `${stem} ${n} (${i}).${ext}`;
 }
 
-function benchFile(path: string, i: number): void {
-  // One file in five has a few bytes, so sorting by size has something to do without
-  // filling the disk with blocks.
+function largeFile(path: string, i: number): void {
+  // One file in five has a few bytes, so a folder's size adds up from many small files.
   if (i % 5 === 0) writeFileSync(path, Buffer.alloc((i % 997) + 1, 0x61));
   else writeFileSync(path, "");
 }
 
-function bench(): void {
-  const dir = freshTree("bench");
+// Folders of 300 and 3,000 files, which the folder-size golden measures.
+function large(): void {
+  const dir = freshTree("large");
   if (!dir) return;
   const when = minutesAgo(3 * 24 * 60);
-  for (const count of [300, 3000, 30_000, 100_000]) {
+  for (const count of [300, 3000]) {
     const folder = join(dir, `files-${count}`);
     mkdirSync(folder, { recursive: true });
     const r = rng(count);
-    for (let i = 0; i < count; i++) benchFile(join(folder, benchName(i, r)), i);
+    for (let i = 0; i < count; i++) largeFile(join(folder, largeName(i, r)), i);
     setDirTime(folder, when);
   }
-  // Deep tree: 20,000 folders (four children each, so about eight levels), ten files in each.
-  const deep = join(dir, "deep");
-  mkdirSync(deep, { recursive: true });
-  const folders: string[] = [deep];
-  for (let f = 0; f < 20_000; f++) {
-    const path = f === 0 ? deep : join(folders[Math.floor((f - 1) / 4)] as string, `d${f}`);
-    if (f > 0) {
-      mkdirSync(path);
-      folders.push(path);
-    }
-    for (let k = 0; k < 10; k++) benchFile(join(path, `f${k}.dat`), f * 10 + k);
-  }
-  finish("bench");
+  finish("large");
 }
 
 // ---- names --------------------------------------------------------------------
@@ -460,7 +448,7 @@ function names(): void {
 // ---- main ---------------------------------------------------------------------
 
 const wanted = process.argv.slice(2);
-const all = { lighthouse, bench, names };
+const all = { lighthouse, large, names };
 mkdirSync(ROOT, { recursive: true });
 for (const [key, run] of Object.entries(all)) {
   if (wanted.length === 0 || wanted.includes(key)) run();

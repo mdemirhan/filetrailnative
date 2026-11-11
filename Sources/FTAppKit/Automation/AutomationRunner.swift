@@ -278,8 +278,8 @@
                 if url.comparablePath == controller.folder.comparablePath {
                     return Outcome(.ok)
                 }
-                let timing = await controller.navigate(to: url)
-                return timing == nil ? Outcome(.failed, "could not open \(url.path)") : Outcome(.ok)
+                let opened = await controller.navigate(to: url)
+                return opened ? Outcome(.ok) : Outcome(.failed, "could not open \(url.path)")
             case .select(let names):
                 return select(names, in: window)
             case .key(let key, let modifiers):

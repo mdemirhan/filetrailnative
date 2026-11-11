@@ -123,8 +123,7 @@ extension MainWindowController {
     /// Opens `url` for Go To: the folder on screen stays when it can't be read.
     func goToFolder(_ url: URL) async -> GoToOutcome {
         var failure: String?
-        let timing = await navigate(to: url, history: .push, goToFailure: { failure = $0 })
-        if timing != nil { return .opened }
+        if await navigate(to: url, history: .push, goToFailure: { failure = $0 }) { return .opened }
         return failure.map(GoToOutcome.failed) ?? .superseded
     }
 

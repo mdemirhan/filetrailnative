@@ -2588,3 +2588,7 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-12. 11.4 finished: the baseline is recorded with the screen awake. Over budget: `stall_100000_ms` 71.6
   against 50 and `scroll_max_ms` 26 against 16 (report-only budgets; neither looked into). `open_N_ms` is the median
   of three opens, two of them cached, so a first open of a large folder is not what it measures.
+- 2026-11-12. The owner, after 11.4's run: no benchmarks, and clean them up so they don't come back. `tools/bench`,
+  the benchmark tests and the app's `--bench` modes went (Q18's answer is reversed); the fixture tree `bench` is
+  `large`, with only the folders the folder-size golden measures (its two case paths renamed). `CLAUDE.md` gains a
+  "Don't add" section; `docs/decisions.md` records it.

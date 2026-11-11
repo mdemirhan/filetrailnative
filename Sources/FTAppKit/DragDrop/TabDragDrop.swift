@@ -373,7 +373,7 @@ final class TabDragDrop {
             // A drag that ended before this began has already sent the tab back.
             if self?.springStart?.sequence == sequence {
                 let opened = await tab.navigate(to: URL(fileURLWithPath: path, isDirectory: true))
-                if opened != nil, self?.springStart?.sequence == sequence { self?.springStart?.arrived = true }
+                if opened, self?.springStart?.sequence == sequence { self?.springStart?.arrived = true }
             }
             self?.springsOpening -= 1
         }

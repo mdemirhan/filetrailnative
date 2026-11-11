@@ -168,7 +168,7 @@ import Testing
                 atPath: ReleaseScriptTests.script, toPath: root.appendingPathComponent("work/scripts/release.sh").path)
             try FileManager.default.copyItem(
                 atPath: ReleaseScriptTests.library, toPath: scripts.appendingPathComponent("release-lib.sh").path)
-            for tree in ["names", "lighthouse", "bench"] {
+            for tree in ["names", "lighthouse", "large"] {
                 let folder = devCache.appendingPathComponent("fixtures/\(tree)")
                 try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
                 try "1".write(to: folder.appendingPathComponent(".fixture-version"), atomically: true, encoding: .utf8)
@@ -257,7 +257,7 @@ import Testing
     // stops before anything is checked or tagged.
     @Test func aReleaseNeedsTheFixtureTrees() throws {
         try withCheckout { checkout throws in
-            try FileManager.default.removeItem(at: checkout.devCache.appendingPathComponent("fixtures/bench"))
+            try FileManager.default.removeItem(at: checkout.devCache.appendingPathComponent("fixtures/large"))
             let tags = try checkout.git("tag", "--list")
             let remote = try checkout.git("ls-remote", "origin")
 

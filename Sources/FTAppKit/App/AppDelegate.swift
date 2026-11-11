@@ -120,15 +120,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         #endif
 
-        if arguments.contains("--bench-launch") {
-            Benchmark.launch(controller)
-        } else if arguments.contains("--bench-scroll") {
-            Task { await Benchmark.scroll(in: controller) }
-        } else if arguments.contains("--bench") {
-            Task { await Benchmark.run(in: controller, root: start) }
-        }
         if let snapshot = Self.value(after: "--snapshot", in: arguments) {
-            Task { await Benchmark.snapshot(controller, to: URL(fileURLWithPath: snapshot)) }
+            Task { await WindowSnapshot.write(controller, to: URL(fileURLWithPath: snapshot)) }
         }
     }
 
@@ -158,10 +151,10 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         FileManager.default.temporaryDirectory.appendingPathComponent("filetrail-driven-\(UUID().uuidString)")
     }
 
-    /// A run driven by a script (automation, benchmarks, a snapshot): it starts from nothing, not from the windows of
+    /// A run driven by a script (automation, a snapshot): it starts from nothing, not from the windows of
     /// the last, and runs beside a File Trail already open instead of handing over to it.
     static let drivenRunFlags: Set<String> = [
-        "--automation", "--bench", "--bench-launch", "--bench-scroll", "--snapshot",
+        "--automation", "--snapshot",
     ]
 
     static func isDrivenRun(_ arguments: [String]) -> Bool {
