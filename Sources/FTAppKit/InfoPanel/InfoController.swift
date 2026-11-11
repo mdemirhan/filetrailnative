@@ -423,7 +423,7 @@ final class InfoController {
         let facts = InfoPanelModel.rowFacts(
             entry: active, metadata: infoMetadata(content.metadata(for: active.path)),
             item: properties, folderSizeKnown: folderSize != nil, now: RelativeClock.shared.relativeNow,
-            parseDate: { ISODate.parse($0) }, dates: .original)
+            dates: .original)
         var list: [InfoRowDisplay.Fact] = [.init(content: .text(facts.kind), tooltip: facts.kind)]
         if facts.showsFolderSize, let folderSize {
             var tooltip: String?

@@ -255,7 +255,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         // The date formatters take a few milliseconds to make: they are made off the main thread, before a row needs them.
         Task.detached(priority: .utility) {
             _ = DateText.shared
-            _ = ISODate.parse("2026-01-01T00:00:00.000Z")
         }
         view = shell
         installPane()

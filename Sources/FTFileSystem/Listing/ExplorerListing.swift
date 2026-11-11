@@ -382,8 +382,8 @@ enum ExplorerListing {
         var kind: EntryKind
         var kindLabel: String
         var isSymlink: Bool
-        var createdAt: String?
-        var modifiedAt: String?
+        var createdAt: Date?
+        var modifiedAt: Date?
         var sizeBytes: Int64?
         var sizeStatus: SizeStatus
         var permissionMode: Int?
@@ -398,8 +398,8 @@ enum ExplorerListing {
         let size = readEntrySize(kind: kind, stats: stats, symlinkStats: symlinkStats)
         return Details(
             kind: kind, kindLabel: kinds.label(for: kind, path: path), isSymlink: isSymlink,
-            createdAt: metadataStats?.birthtimeMs.flatMap(IsoDate.string(milliseconds:)),
-            modifiedAt: metadataStats?.mtimeMs.flatMap(IsoDate.string(milliseconds:)),
+            createdAt: metadataStats?.birthtimeMs.flatMap(FileTime.date(milliseconds:)),
+            modifiedAt: metadataStats?.mtimeMs.flatMap(FileTime.date(milliseconds:)),
             sizeBytes: size.bytes, sizeStatus: size.status,
             permissionMode: metadataStats.map { Int($0.mode & 0o777) })
     }
@@ -518,39 +518,15 @@ enum ExplorerListing {
     }
 }
 
-/// A time as ISO 8601 text in UTC, with milliseconds (`2024-01-02T03:04:05.678Z`).
-enum IsoDate {
-    static func string(milliseconds: Int64) -> String? {
-        // Years from -271821 to 275760 are written, far more than a disk keeps.
-        guard abs(milliseconds) <= 8_640_000_000_000_000 else { return nil }
-        let days = Int64((Double(milliseconds) / 86_400_000).rounded(.down))
-        let millisecondsOfDay = Int(milliseconds - days * 86_400_000)
-        // Civil date from days since 1970-01-01 (Howard Hinnant's algorithm).
-        let shifted = days + 719_468
-        let era = (shifted >= 0 ? shifted : shifted - 146_096) / 146_097
-        let dayOfEra = shifted - era * 146_097
-        let yearOfEra = (dayOfEra - dayOfEra / 1460 + dayOfEra / 36524 - dayOfEra / 146_096) / 365
-        let dayOfYear = dayOfEra - (365 * yearOfEra + yearOfEra / 4 - yearOfEra / 100)
-        let monthIndex = (5 * dayOfYear + 2) / 153
-        let day = dayOfYear - (153 * monthIndex + 2) / 5 + 1
-        let month = monthIndex < 10 ? monthIndex + 3 : monthIndex - 9
-        let year = yearOfEra + era * 400 + (month <= 2 ? 1 : 0)
-        let hours = millisecondsOfDay / 3_600_000
-        let minutes = millisecondsOfDay / 60_000 % 60
-        let seconds = millisecondsOfDay / 1000 % 60
-        let millis = millisecondsOfDay % 1000
-        let yearText: String
-        if (0...9999).contains(year) {
-            yearText = pad(Int(year), 4)
-        } else {
-            yearText = (year < 0 ? "-" : "+") + pad(Int(abs(year)), 6)
-        }
-        return
-            "\(yearText)-\(pad(Int(month), 2))-\(pad(Int(day), 2))T\(pad(hours, 2)):\(pad(minutes, 2)):\(pad(seconds, 2)).\(pad(millis, 3))Z"
-    }
+/// A file's time, from milliseconds since 1970, as the details show it. A time past the year 9999 (or before
+/// the year -271821) is a broken one: it counts as unknown.
+enum FileTime {
+    private static let earliest: Int64 = -8_640_000_000_000_000
+    /// The first millisecond of the year 10000.
+    private static let pastLatest: Int64 = 253_402_300_800_000
 
-    private static func pad(_ value: Int, _ width: Int) -> String {
-        let text = String(value)
-        return String(repeating: "0", count: max(0, width - text.count)) + text
+    static func date(milliseconds: Int64) -> Date? {
+        guard milliseconds >= earliest, milliseconds < pastLatest else { return nil }
+        return Date(epochMilliseconds: Double(milliseconds))
     }
 }

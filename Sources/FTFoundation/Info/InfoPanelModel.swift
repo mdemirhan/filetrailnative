@@ -193,7 +193,7 @@ public enum InfoPanelModel {
             if folderEligible { rows.append(containsRow(folderSize)) }
             rows.append(InfoRow(label: "Size", value: sizeIsCell ? .folderSize : .text(sizeText), muted: sizeMuted))
         }
-        func date(_ iso: String?) -> String { iso == nil && isPending ? pending : dates.dateTime(iso: iso) }
+        func date(_ value: Date?) -> String { value == nil && isPending ? pending : dates.dateTime(value) }
         rows.append(InfoRow(label: "Created", value: .text(date(item.createdAt)), muted: item.createdAt == nil))
         rows.append(InfoRow(label: "Modified", value: .text(date(item.modifiedAt)), muted: item.modifiedAt == nil))
         if let parts = PermissionText.split(item.permissionMode) {
@@ -293,9 +293,9 @@ public enum InfoPanelModel {
 
     public static func rowFacts(
         entry: InfoEntry, metadata: InfoMetadata?, item: InfoItem?, folderSizeKnown: Bool, now: Date,
-        parseDate: (String) -> Date?, dates: DateText = .shared
+        dates: DateText = .shared
     ) -> RowFacts {
-        let known: (kind: String, size: Int64?, status: SizeStatus, modified: String?)? =
+        let known: (kind: String, size: Int64?, status: SizeStatus, modified: Date?)? =
             metadata.map { ($0.kindLabel, $0.sizeBytes, $0.sizeStatus, $0.modifiedAt) }
             ?? (item?.path == entry.path ? item : nil).map {
                 ($0.kindLabel, $0.sizeBytes, $0.sizeStatus, $0.modifiedAt)
@@ -305,7 +305,7 @@ public enum InfoPanelModel {
         if !eligible, let known, known.status == .ready { size = SizeText.size(known.size, status: known.status) }
         var modified: String?
         var tooltip: String?
-        if let iso = known?.modified, let date = parseDate(iso) {
+        if let date = known?.modified {
             modified = "Modified \(dates.relative(date, now: now))"
             tooltip = dates.exactDateTime(date)
         }

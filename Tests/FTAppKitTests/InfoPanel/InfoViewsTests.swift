@@ -1,6 +1,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -84,7 +85,8 @@ struct InfoPanelViewTests {
     static let file = InfoItem(
         path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file,
         kindLabel: "Markdown document",
-        createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 2000,
+        createdAt: ISODateForTests.date("2026-03-01T09:00:00.000Z"),
+        modifiedAt: ISODateForTests.date("2026-03-02T10:30:00.000Z"), sizeBytes: 2000,
         sizeStatus: .ready,
         permissionMode: 0o644)
 

@@ -410,8 +410,9 @@ struct ExplorerServiceTests {
             item
                 == ItemProperties(
                     path: "/Users/demo/dangling", name: "dangling", fileExtension: "", kind: .other, kindLabel: "Item",
-                    isHidden: false, isSymlink: true, createdAt: "2024-01-01T00:00:00.000Z",
-                    modifiedAt: "2024-01-03T00:00:00.000Z", sizeBytes: nil, sizeStatus: .unavailable,
+                    isHidden: false, isSymlink: true, createdAt: ISODateForTests.date("2024-01-01T00:00:00.000Z"),
+                    modifiedAt: ISODateForTests.date("2024-01-03T00:00:00.000Z"), sizeBytes: nil,
+                    sizeStatus: .unavailable,
                     permissionMode: 0o644))
     }
 
@@ -483,8 +484,10 @@ struct ExplorerServiceTests {
         #expect(
             response.items[0]
                 == EntryMetadata(
-                    path: "/workspace/dangling", kindLabel: "Item", createdAt: "2024-01-01T00:00:00.000Z",
-                    modifiedAt: "2024-01-03T00:00:00.000Z", sizeBytes: nil, sizeStatus: .unavailable,
+                    path: "/workspace/dangling", kindLabel: "Item",
+                    createdAt: ISODateForTests.date("2024-01-01T00:00:00.000Z"),
+                    modifiedAt: ISODateForTests.date("2024-01-03T00:00:00.000Z"), sizeBytes: nil,
+                    sizeStatus: .unavailable,
                     permissionMode: 0o644))
         #expect(response.items[1].path == "/workspace/notes.txt")
         #expect(response.items[1].kindLabel == "TXT File")

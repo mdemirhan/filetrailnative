@@ -1,6 +1,7 @@
 // The order and bars of a folder sorted by size, the states, the selection colors and the cells
 import FTFileSystem
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -141,12 +142,12 @@ struct ContentModelTests {
             "modifiedAt": "2026-10-13T14:37:00.000Z", "sizeBytes": 999, "sizeStatus": "ready",
             "permissionMode": 0o100644,
         ]
-        let metadata = try! JSONDecoder().decode(
+        let metadata = try! ISODateForTests.decoder.decode(
             EntryMetadata.self, from: JSONSerialization.data(withJSONObject: metadataJSON))
         #expect(ListCellText.size(entry: file, metadata: metadata, folderSize: .idle).text == "999 B")
         #expect(ListCellText.permissions(metadata) == ListCellContent(text: "644", tooltip: "rw-r--r--"))
         #expect(ListCellText.permissions(nil).text == "")
-        let now = ISODate.parse("2026-10-13T14:38:00.000Z") ?? Date()
+        let now = ISODateForTests.date("2026-10-13T14:38:00.000Z")
         let date = ListCellText.date(metadata.modifiedAt, now: now)
         #expect(date.text == "Just now" || date.text == "1 min ago")
         #expect(date.tooltip?.isEmpty == false)

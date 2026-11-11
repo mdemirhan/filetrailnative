@@ -1,3 +1,4 @@
+import FTTestSupport
 import Testing
 
 @testable import FTFoundation
@@ -6,11 +7,12 @@ import Testing
 struct InfoPreviewTests {
     static let entry = InfoEntry(path: "/Users/demo/notes.txt", name: "notes.txt", fileExtension: "txt", kind: .file)
     static let metadata = InfoMetadata(
-        kindLabel: "Plain Text Document", createdAt: nil, modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 12,
-        sizeStatus: .ready, permissionMode: 0o644)
+        kindLabel: "Plain Text Document", createdAt: nil, modifiedAt: ISODateForTests.date("2026-03-02T10:30:00.000Z"),
+        sizeBytes: 12, sizeStatus: .ready, permissionMode: 0o644)
     static let properties = InfoItem(
         path: entry.path, name: "notes.txt", fileExtension: "txt", kind: .file, kindLabel: "Plain Text Document",
-        createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 12,
+        createdAt: ISODateForTests.date("2026-03-01T09:00:00.000Z"),
+        modifiedAt: ISODateForTests.date("2026-03-02T10:30:00.000Z"), sizeBytes: 12,
         sizeStatus: .ready,
         permissionMode: 0o644)
 

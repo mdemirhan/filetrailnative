@@ -73,8 +73,8 @@ public struct DirectorySnapshot: Sendable, Hashable, Codable {
 public struct EntryMetadata: Sendable, Hashable, Codable {
     public var path: String
     public var kindLabel: String
-    public var createdAt: String?
-    public var modifiedAt: String?
+    public var createdAt: Date?
+    public var modifiedAt: Date?
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?
@@ -93,8 +93,8 @@ public struct ItemProperties: Sendable, Hashable, Codable {
     public var kindLabel: String
     public var isHidden: Bool
     public var isSymlink: Bool
-    public var createdAt: String?
-    public var modifiedAt: String?
+    public var createdAt: Date?
+    public var modifiedAt: Date?
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?

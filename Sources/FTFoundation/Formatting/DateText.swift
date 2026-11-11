@@ -69,9 +69,9 @@ public final class DateText: @unchecked Sendable {
 
     // MARK: - Dates
 
-    /// A date from the metadata (an ISO 8601 text), or "Not available".
-    public func dateTime(iso value: String?) -> String {
-        guard let value, !value.isEmpty, let date = Self.parse(value) else { return "Not available" }
+    /// A date from the metadata, or "Not available".
+    public func dateTime(_ date: Date?) -> String {
+        guard let date else { return "Not available" }
         return full.string(from: date)
     }
 
@@ -125,18 +125,5 @@ public final class DateText: @unchecked Sendable {
     /// The whole date, to the second, for the tooltip of a relative one.
     public func exactDateTime(_ date: Date) -> String {
         exact.string(from: date)
-    }
-
-    // `new Date(text)` for the ISO 8601 forms the metadata uses: a date alone is UTC, a time without
-    // a zone is local.
-    private static func parse(_ text: String) -> Date? {
-        let internet = ISO8601DateFormatter()
-        internet.formatOptions = [.withInternetDateTime]
-        if let date = internet.date(from: text) { return date }
-        internet.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let date = internet.date(from: text) { return date }
-        internet.formatOptions = [.withFullDate]
-        if let date = internet.date(from: text) { return date }
-        return AppClock.parse(text)
     }
 }

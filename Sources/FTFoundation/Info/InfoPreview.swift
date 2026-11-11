@@ -25,14 +25,14 @@ public struct InfoEntry: Equatable, Sendable {
 /// What the list already knows of an item.
 public struct InfoMetadata: Equatable, Sendable {
     public var kindLabel: String
-    public var createdAt: String?
-    public var modifiedAt: String?
+    public var createdAt: Date?
+    public var modifiedAt: Date?
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?
 
     public init(
-        kindLabel: String, createdAt: String? = nil, modifiedAt: String? = nil, sizeBytes: Int64? = nil,
+        kindLabel: String, createdAt: Date? = nil, modifiedAt: Date? = nil, sizeBytes: Int64? = nil,
         sizeStatus: SizeStatus = .deferred, permissionMode: Int? = nil
     ) {
         self.kindLabel = kindLabel
@@ -53,15 +53,15 @@ public struct InfoItem: Equatable, Sendable {
     public var kindLabel: String
     public var isHidden: Bool
     public var isSymlink: Bool
-    public var createdAt: String?
-    public var modifiedAt: String?
+    public var createdAt: Date?
+    public var modifiedAt: Date?
     public var sizeBytes: Int64?
     public var sizeStatus: SizeStatus
     public var permissionMode: Int?
 
     public init(
         path: String, name: String, fileExtension: String = "", kind: EntryKind, kindLabel: String,
-        isHidden: Bool = false, isSymlink: Bool = false, createdAt: String? = nil, modifiedAt: String? = nil,
+        isHidden: Bool = false, isSymlink: Bool = false, createdAt: Date? = nil, modifiedAt: Date? = nil,
         sizeBytes: Int64? = nil, sizeStatus: SizeStatus = .deferred, permissionMode: Int? = nil
     ) {
         self.path = path

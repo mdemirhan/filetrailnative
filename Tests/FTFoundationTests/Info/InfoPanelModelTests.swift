@@ -1,3 +1,4 @@
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -11,7 +12,8 @@ struct InfoPanelModelTests {
         InfoItem(
             path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file,
             kindLabel: "Markdown document",
-            createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: size,
+            createdAt: ISODateForTests.date("2026-03-01T09:00:00.000Z"),
+            modifiedAt: ISODateForTests.date("2026-03-02T10:30:00.000Z"), sizeBytes: size,
             sizeStatus: size == nil ? .deferred : .ready, permissionMode: 0o644)
     }
 
@@ -198,14 +200,14 @@ struct InfoPanelModelTests {
         let entry = InfoEntry(path: "/Users/demo/notes.md", name: "notes.md", fileExtension: "md", kind: .file)
         let now = ISODateForTests.date("2026-03-02T11:00:00Z")
         let bare = InfoPanelModel.rowFacts(
-            entry: entry, metadata: nil, item: nil, folderSizeKnown: false, now: now, parseDate: ISODateForTests.parse,
+            entry: entry, metadata: nil, item: nil, folderSizeKnown: false, now: now,
             dates: Self.dates)
         #expect(bare.kind == "MD File" && bare.size == nil && bare.modified == nil)
         let listed = InfoMetadata(
-            kindLabel: "Markdown document", modifiedAt: "2026-03-02T10:30:00.000Z", sizeBytes: 2000, sizeStatus: .ready)
+            kindLabel: "Markdown document", modifiedAt: ISODateForTests.date("2026-03-02T10:30:00.000Z"),
+            sizeBytes: 2000, sizeStatus: .ready)
         let facts = InfoPanelModel.rowFacts(
             entry: entry, metadata: listed, item: nil, folderSizeKnown: false, now: now,
-            parseDate: ISODateForTests.parse,
             dates: Self.dates)
         #expect(facts.kind == "Markdown document" && facts.size == "2.0 KB")
         #expect(facts.modified == "Modified 30 min ago")
@@ -214,7 +216,6 @@ struct InfoPanelModelTests {
         let folder = InfoEntry(path: "/Users/demo/Projects", name: "Projects", kind: .directory)
         let folderFacts = InfoPanelModel.rowFacts(
             entry: folder, metadata: listed, item: nil, folderSizeKnown: true, now: now,
-            parseDate: ISODateForTests.parse,
             dates: Self.dates)
         #expect(folderFacts.showsFolderSize && folderFacts.size == nil)
         // Properties of another item are never used.
@@ -222,7 +223,7 @@ struct InfoPanelModelTests {
         let foreign = InfoPanelModel.rowFacts(
             entry: InfoEntry(path: "/Users/demo/other.md", name: "other.md", fileExtension: "md", kind: .file),
             metadata: nil,
-            item: other, folderSizeKnown: false, now: now, parseDate: ISODateForTests.parse, dates: Self.dates)
+            item: other, folderSizeKnown: false, now: now, dates: Self.dates)
         #expect(foreign.kind == "MD File")
     }
 
@@ -300,16 +301,4 @@ struct InfoPanelModelTests {
         #expect(path(showInfo: outside.path, item: outside) == nil)
         #expect(path(open: false, showInfo: shown.path, item: shown) == nil)
     }
-}
-
-enum ISODateForTests {
-    static func parse(_ text: String) -> Date? {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let date = formatter.date(from: text) { return date }
-        formatter.formatOptions = [.withInternetDateTime]
-        return formatter.date(from: text)
-    }
-
-    static func date(_ text: String) -> Date { parse(text) ?? Date(timeIntervalSince1970: 0) }
 }

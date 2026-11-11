@@ -1290,7 +1290,7 @@ tests are the check; add a test only where an item says so.
   `FTOperations.CopyPasteMode`; remove the alias.
 - `write-effects.json` keys are strings: map them in the test, do not edit the golden.
 
-### [ ] 6.3. Listing dates are dates
+### [x] 6.3. Listing dates are dates
 
 - `EntryMetadata.createdAt`/modified are ISO-8601 strings built by a hand-written civil-date routine
   (`Sources/FTFileSystem/Listing/ExplorerListing.swift` 401–402, 524–558 `IsoDate`; `ListingTypes.swift` 76–77,
@@ -2267,3 +2267,11 @@ anything that differed from the plan, and anything found on the way that is not 
   `state(jobId:)` is `getStatus(jobId:)`, which the jobs answer as they are. Differs from the plan: the `Task` hop
   before the probes are asked stays. It is not a hop to another thread but the coalescing of every folder drawn in
   one pass into one question and one repaint; only the 5,000-at-a-time chunking went.
+- 2026-11-11. 6.3, done in a worktree of its own and brought over. The dates are the same instants to the
+  millisecond (checked over 200,000 times and at the edges), so nothing shown changes; a time past the year 9999 still
+  counts as unknown. Differs from the plan: no golden carries listing dates (`classify` has none), so only
+  test-made JSON in two test files is converted, through a decoder in FTTestSupport; the formatter made per call
+  (`DateText`) had one caller and went with it; `ListCellText`'s formatters were already shared. One change for
+  corrupt timestamps only: a time before 15 October 1582 used to be shifted about ten days by the text's round trip
+  and is now the true instant. Found, not fixed: `Date.epochMilliseconds` is defined twice with different rounding
+  (`JSString.swift` rounds, `AppStateStore.swift` rounds down), for 6.9.

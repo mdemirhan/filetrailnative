@@ -45,11 +45,9 @@ struct DateTextTests {
         #expect(region.relative(date, now: now) != language.relative(date, now: now))
     }
 
-    @Test func formatsInvalidDatesDefensively() {
-        #expect(text.dateTime(iso: "bad-date") == "Not available")
-        #expect(text.dateTime(iso: nil) == "Not available")
-        #expect(text.dateTime(iso: "") == "Not available")
-        #expect(text.dateTime(iso: "2026-10-05T17:12:30Z") == "Oct 5, 2026, 10:12 AM")
+    @Test func aMissingDateIsNotAvailable() {
+        #expect(text.dateTime(nil) == "Not available")
+        #expect(text.dateTime(ISODateForTests.date("2026-10-05T17:12:30Z")) == "Oct 5, 2026, 10:12 AM")
     }
 
     // A Thursday afternoon.

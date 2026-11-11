@@ -1,4 +1,5 @@
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -8,7 +9,8 @@ import Testing
     private func item(_ kind: EntryKind) -> InfoItem {
         InfoItem(
             path: "/Users/demo/a", name: "a", fileExtension: "", kind: kind, kindLabel: "Thing", isHidden: false,
-            isSymlink: false, createdAt: "2026-03-01T09:00:00.000Z", modifiedAt: "2026-03-02T10:30:00.000Z",
+            isSymlink: false, createdAt: ISODateForTests.date("2026-03-01T09:00:00.000Z"),
+            modifiedAt: ISODateForTests.date("2026-03-02T10:30:00.000Z"),
             sizeBytes: 2000, sizeStatus: .ready, permissionMode: 0o644)
     }
 

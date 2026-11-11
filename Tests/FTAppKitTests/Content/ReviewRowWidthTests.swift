@@ -3,6 +3,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTTestSupport
 import Foundation
 import Testing
 
@@ -45,7 +46,7 @@ struct ReviewStaleDetailsTests {
                         "permissionMode": 0o100644,
                     ]
                     return (try? JSONSerialization.data(withJSONObject: json)).flatMap {
-                        try? JSONDecoder().decode(EntryMetadata.self, from: $0)
+                        try? ISODateForTests.decoder.decode(EntryMetadata.self, from: $0)
                     }
                 }
             }, hiddenCount: { _ in 0 }, iconStore: { nil }, homePath: "/", openPrivacySettings: {})
@@ -127,7 +128,7 @@ struct ReviewStaleDetailsTests {
             "permissionMode": 0o100644,
         ]
         return (try? JSONSerialization.data(withJSONObject: json)).flatMap {
-            try? JSONDecoder().decode(EntryMetadata.self, from: $0)
+            try? ISODateForTests.decoder.decode(EntryMetadata.self, from: $0)
         }
     }
 
