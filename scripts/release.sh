@@ -75,10 +75,13 @@ if [[ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]]; then
     add_problem "This commit isn't main on GitHub: push main (git push origin main) or pull first, so the release is a commit GitHub has."
 fi
 # Without gh the release would stop only after the tag is on GitHub.
+GH_READY=0
 if ! command -v gh >/dev/null; then
     add_problem "gh isn't installed: the draft release is made with it."
 elif ! gh auth status >/dev/null 2>&1; then
     add_problem "gh isn't signed in to GitHub: run gh auth login first."
+else
+    GH_READY=1
 fi
 
 # The tests that read the fixture trees are skipped without them, which a release mustn't do quietly.
@@ -101,7 +104,8 @@ REMOTE_TAGS="$(git ls-remote --tags --refs origin | sed 's|.*refs/tags/||' | rel
 LATEST_ON_GITHUB="$(latest_release <<<"${REMOTE_TAGS}")"
 LATEST_TAG=""
 LATEST_STATE=""
-if [[ -n "${LATEST_ON_GITHUB}" ]]; then
+# Without gh, whether the last release is out can't be asked: the problem above says why.
+if [[ -n "${LATEST_ON_GITHUB}" && "${GH_READY}" == 1 ]]; then
     LATEST_TAG="v${LATEST_ON_GITHUB}"
     if ANSWER="$(gh release view "${LATEST_TAG}" --json isDraft --jq .isDraft 2>&1)"; then
         if [[ "${ANSWER}" == true ]]; then LATEST_STATE=draft; else LATEST_STATE=published; fi

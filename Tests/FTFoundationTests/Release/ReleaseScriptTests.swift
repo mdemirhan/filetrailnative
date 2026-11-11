@@ -177,6 +177,10 @@ import Testing
             let gh = """
                 #!/bin/bash
                 echo "$*" >>"\(ghCalls.path)"
+                if [ "$(cat "\(ghState.path)" 2>/dev/null)" = signed-out ]; then
+                    echo "To get started with GitHub CLI, please run:  gh auth login" >&2
+                    exit 4
+                fi
                 [ "$1" = auth ] && exit 0
                 case "$(cat "\(ghState.path)" 2>/dev/null)" in
                     draft) echo true ;;
@@ -367,6 +371,26 @@ import Testing
             #expect(
                 try checkout.release("minor", "--dry-run").output.contains(
                     "This commit is already released as v0.2.0, v0.3.0."))
+            try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
+        }
+    }
+
+    // gh signed out can't say whether the last release is out: the release names the problem with the others instead.
+    @Test func saysWhatWouldStopARunWithGhSignedOut() throws {
+        try withCheckout { checkout throws in
+            try checkout.git("tag", "-a", "v0.2.0", "-m", "File Trail 0.2.0")
+            try checkout.git("push", "-q", "origin", "v0.2.0")
+            try checkout.commit("second")
+            try checkout.git("push", "-q", "origin", "main")
+            try checkout.setRelease(state: "signed-out")
+            let tags = try checkout.git("tag", "--list")
+            let remote = try checkout.git("ls-remote", "origin")
+
+            let dryRun = try checkout.release("patch", "--dry-run")
+            #expect(dryRun.output.contains("Would stop: gh isn't signed in to GitHub"))
+            let outcome = try checkout.release("patch", "--yes")
+            #expect(!outcome.succeeded)
+            #expect(outcome.output.contains("gh isn't signed in to GitHub"))
             try checkout.expectNothingDone(tagsBefore: tags, remoteBefore: remote)
         }
     }
