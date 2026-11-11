@@ -1,8 +1,4 @@
 {
-  "suite": "exec-crash",
-  "referenceCommit": "59f60cf",
-  "seed": 0,
-  "generator": "tools/parity/golden/exec-crash.ts",
   "cases": [
     {
       "name": "folder Replace by copy, crashed after journal write 1 of 3",

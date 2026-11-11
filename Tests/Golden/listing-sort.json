@@ -1,8 +1,4 @@
 {
-  "suite": "listing-sort",
-  "referenceCommit": "59f60cf",
-  "seed": 290914305,
-  "generator": "tools/parity/golden/listing-sort.ts",
   "cases": [
     {
       "name": "0: every name, name asc",

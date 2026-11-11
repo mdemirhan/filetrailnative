@@ -1,8 +1,4 @@
 {
-  "suite": "flow-list-layout",
-  "referenceCommit": "59f60cf",
-  "seed": 15796757,
-  "generator": "tools/parity/golden/flow-list-layout.ts",
   "cases": [
     {
       "name": "constants regular",

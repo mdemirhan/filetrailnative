@@ -1,8 +1,4 @@
 {
-  "suite": "exec-copy",
-  "referenceCommit": "59f60cf",
-  "seed": 0,
-  "generator": "tools/parity/golden/exec-copy.ts",
   "cases": [
     {
       "name": "copy one file into an empty folder",

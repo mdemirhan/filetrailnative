@@ -1,8 +1,4 @@
 {
-  "suite": "icon-grid-layout",
-  "referenceCommit": "59f60cf",
-  "seed": 1837677,
-  "generator": "tools/parity/golden/icon-grid-layout.ts",
   "cases": [
     {
       "name": "constants regular",

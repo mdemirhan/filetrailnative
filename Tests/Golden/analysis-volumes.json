@@ -1,8 +1,4 @@
 {
-  "suite": "analysis-volumes",
-  "referenceCommit": "59f60cf",
-  "seed": 0,
-  "generator": "tools/parity/golden/analysis-volumes.ts",
   "cases": [
     {
       "name": "apfs: a file and a folder into an empty folder",

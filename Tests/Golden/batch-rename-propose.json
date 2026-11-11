@@ -1,8 +1,4 @@
 {
-  "suite": "batch-rename-propose",
-  "referenceCommit": "59f60cf",
-  "seed": 1651638273,
-  "generator": "tools/parity/golden/batch-rename-propose.ts",
   "cases": [
     {
       "name": "case lower name #0",

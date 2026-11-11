@@ -1,8 +1,4 @@
 {
-  "suite": "copy-paste-errors",
-  "referenceCommit": "59f60cf",
-  "seed": 3882905601,
-  "generator": "tools/parity/golden/copy-paste-errors.ts",
   "cases": [
     {
       "name": "native errno 0 UNKNOWN",

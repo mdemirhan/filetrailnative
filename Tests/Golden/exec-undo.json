@@ -1,8 +1,4 @@
 {
-  "suite": "exec-undo",
-  "referenceCommit": "59f60cf",
-  "seed": 0,
-  "generator": "tools/parity/golden/exec-undo.ts",
   "cases": [
     {
       "name": "undo a copy of one file, and redo it",

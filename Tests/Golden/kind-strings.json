@@ -1,8 +1,4 @@
 {
-  "suite": "kind-strings",
-  "referenceCommit": "59f60cf",
-  "seed": 1260191748,
-  "generator": "tools/parity/golden/kind-strings.ts",
   "cases": [
     {
       "name": "/",

@@ -1,8 +1,4 @@
 {
-  "suite": "exec-batch-rename",
-  "referenceCommit": "59f60cf",
-  "seed": 0,
-  "generator": "tools/parity/golden/exec-batch-rename.ts",
   "cases": [
     {
       "name": "two files renamed",

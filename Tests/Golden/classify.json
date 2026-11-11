@@ -1,8 +1,4 @@
 {
-  "suite": "classify",
-  "referenceCommit": "59f60cf",
-  "seed": 290914306,
-  "generator": "tools/parity/golden/classify.ts",
   "cases": [
     {
       "name": "names",

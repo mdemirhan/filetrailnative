@@ -1,8 +1,4 @@
 {
-  "suite": "trash-paths",
-  "referenceCommit": "59f60cf",
-  "seed": 2052718594,
-  "generator": "tools/parity/golden/trash-paths.ts",
   "cases": [
     {
       "name": "home trash",

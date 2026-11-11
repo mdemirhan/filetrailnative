@@ -1,8 +1,4 @@
 {
-  "suite": "command-availability",
-  "referenceCommit": "59f60cf",
-  "seed": 3232211227,
-  "generator": "tools/parity/golden/command-availability.ts",
   "cases": [
     {
       "name": "0: nothing selected",

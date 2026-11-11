@@ -1,8 +1,4 @@
 {
-  "suite": "sizes",
-  "referenceCommit": "59f60cf",
-  "seed": 1372454916,
-  "generator": "tools/parity/golden/sizes.ts",
   "cases": [
     {
       "name": "ready 0",

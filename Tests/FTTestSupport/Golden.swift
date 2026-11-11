@@ -19,12 +19,8 @@ extension GoldenCase: Decodable where Input: Decodable, Output: Decodable {}
 extension GoldenCase: Encodable where Input: Encodable, Output: Encodable {}
 extension GoldenCase: Sendable where Input: Sendable, Output: Sendable {}
 
-/// A whole golden file.
+/// A whole golden file: its cases, under "cases".
 public struct GoldenFile<Input, Output> {
-    public let suite: String
-    public let referenceCommit: String
-    public let seed: Int
-    public let generator: String
     public let cases: [GoldenCase<Input, Output>]
 }
 

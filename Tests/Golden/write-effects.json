@@ -1,8 +1,4 @@
 {
-  "suite": "write-effects",
-  "referenceCommit": "59f60cf",
-  "seed": 1041104900,
-  "generator": "tools/parity/golden/write-effects.ts",
   "cases": [
     {
       "name": "target and items #0",

@@ -1,8 +1,4 @@
 {
-  "suite": "copy-paste-review",
-  "referenceCommit": "59f60cf",
-  "seed": 1812692482,
-  "generator": "tools/parity/golden/copy-paste-review.ts",
   "cases": [
     {
       "name": "analysis-cases: a new file into an empty folder",

@@ -1,8 +1,4 @@
 {
-  "suite": "keep-both-names",
-  "referenceCommit": "59f60cf",
-  "seed": 1259012097,
-  "generator": "tools/parity/golden/keep-both-names.ts",
   "cases": [
     {
       "name": "free: \"report.txt\" #0",

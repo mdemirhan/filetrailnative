@@ -1,8 +1,4 @@
 {
-  "suite": "icon-label",
-  "referenceCommit": "59f60cf",
-  "seed": 470482949,
-  "generator": "tools/parity/golden/icon-label.ts",
   "cases": [
     {
       "name": "0:  |  | 0",

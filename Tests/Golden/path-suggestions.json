@@ -1,8 +1,4 @@
 {
-  "suite": "path-suggestions",
-  "referenceCommit": "59f60cf",
-  "seed": 290914307,
-  "generator": "tools/parity/golden/path-suggestions.ts",
   "cases": [
     {
       "name": "0: \"lighthouse/Lighthouse/app/src/pag\" hidden false limit 50",

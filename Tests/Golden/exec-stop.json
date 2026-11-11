@@ -1,8 +1,4 @@
 {
-  "suite": "exec-stop",
-  "referenceCommit": "59f60cf",
-  "seed": 0,
-  "generator": "tools/parity/golden/exec-stop.ts",
   "cases": [
     {
       "name": "stopped as it starts running: nothing is copied",

@@ -1,8 +1,4 @@
 {
-  "suite": "folder-size-trees",
-  "referenceCommit": "59f60cf",
-  "seed": 1330765826,
-  "generator": "tools/parity/golden/folder-size-trees.ts",
   "cases": [
     {
       "name": "fixture names",

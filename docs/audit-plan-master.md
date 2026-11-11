@@ -1236,7 +1236,7 @@ and the pieces of release code kept alive for them.
 
 Also `AutomationReport.Check`.
 
-### [ ] 5.13. Tests for things that no longer exist
+### [x] 5.13. Tests for things that no longer exist
 
 `Tests/FTAppKitTests/App/LaunchContextTests.swift:29-61` (an
 Electron argv shape; then drop the `argvOffset` parameter, always 0 in the app);
@@ -1246,7 +1246,7 @@ Electron argv shape; then drop the `argvOffset` parameter, always 0 in the app);
 in the FTOperations test kits (`MockWriteServiceFileSystem`, `NativePaste`, `UndoTestKit`, `LocalOperationsTestKit`,
 `CoordinatorTestKit`): grep each and remove.
 
-### [ ] 5.14. Golden metadata
+### [x] 5.14. Golden metadata
 
 `Tests/FTTestSupport/Golden.swift:23-29` requires `suite`, `referenceCommit`, `seed`,
 `generator` and reads none; every file names a commit and a generator path that are not in this repo. [Q10]
@@ -2214,3 +2214,8 @@ anything that differed from the plan, and anything found on the way that is not 
   cells' VoiceOver parent go; every identifier and `accessibilityPerformPress()` stays, and nothing in the
   automation reaches rows through the accessibility tree. Kept: the Rename sheet's `accessibilityText`, which the
   tests read a preview row by.
+- 2026-11-11. 5.13 and 5.14 were done in a worktree of their own and brought over. 5.13: the two launch tests of an
+  Electron argv went; the one about the app's own path stays, rewritten to the app's own launch; `argvOffset` is gone
+  from `LaunchContext`; the kits' unused hooks went (each proved by marking it deprecated and building), and
+  `LocalOperationsTestKit`'s closures, set once, are `let`. 5.14 (Q10 yes): `GoldenFile` holds only `cases`; 48 files
+  lost their four metadata lines and nothing else (each checked byte for byte before the edit).

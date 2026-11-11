@@ -1,8 +1,4 @@
 {
-  "suite": "list-filter",
-  "referenceCommit": "59f60cf",
-  "seed": 301400070,
-  "generator": "tools/parity/golden/list-filter.ts",
   "cases": [
     {
       "name": "0: \"\" in 31",

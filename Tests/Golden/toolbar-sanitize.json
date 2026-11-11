@@ -1,8 +1,4 @@
 {
-  "suite": "toolbar-sanitize",
-  "referenceCommit": "59f60cf",
-  "seed": 1891744274,
-  "generator": "tools/parity/golden/toolbar-sanitize.ts",
   "cases": [
     {
       "name": "0: default",

@@ -1,8 +1,4 @@
 {
-  "suite": "analysis-random",
-  "referenceCommit": "59f60cf",
-  "seed": 20261013,
-  "generator": "tools/parity/golden/analysis-random.ts",
   "cases": [
     {
       "name": "random 001: cut 3 into destination",

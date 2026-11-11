@@ -1,8 +1,4 @@
 {
-  "suite": "search-args",
-  "referenceCommit": "59f60cf",
-  "seed": 1587855361,
-  "generator": "tools/parity/golden/search-args.ts",
   "cases": [
     {
       "name": "0: text/name \"report\" at /Users/demo/project",

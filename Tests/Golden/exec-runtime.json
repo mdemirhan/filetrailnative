@@ -1,8 +1,4 @@
 {
-  "suite": "exec-runtime",
-  "referenceCommit": "59f60cf",
-  "seed": 0,
-  "generator": "tools/parity/golden/exec-runtime.ts",
   "cases": [
     {
       "name": "a file appears where a file is pasted, answered overwrite",

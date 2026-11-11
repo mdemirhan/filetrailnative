@@ -1,8 +1,4 @@
 {
-  "suite": "item-name-validation",
-  "referenceCommit": "59f60cf",
-  "seed": 400752643,
-  "generator": "tools/parity/golden/item-name-validation.ts",
   "cases": [
     {
       "name": "0: \"\"",

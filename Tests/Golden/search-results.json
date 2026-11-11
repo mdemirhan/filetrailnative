@@ -1,8 +1,4 @@
 {
-  "suite": "search-results",
-  "referenceCommit": "59f60cf",
-  "seed": 1587855362,
-  "generator": "tools/parity/golden/search-results.ts",
   "cases": [
     {
       "name": "0: scratch/ text/name \"app\"",

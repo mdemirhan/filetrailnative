@@ -1,8 +1,4 @@
 {
-  "suite": "fit-name",
-  "referenceCommit": "59f60cf",
-  "seed": 4051304450,
-  "generator": "tools/parity/golden/fit-name.ts",
   "cases": [
     {
       "name": "0: 6 bytes",

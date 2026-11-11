@@ -1,8 +1,4 @@
 {
-  "suite": "paths-nested",
-  "referenceCommit": "59f60cf",
-  "seed": 2591707137,
-  "generator": "tools/parity/golden/paths-nested.ts",
   "cases": [
     {
       "name": "empty",

@@ -1,8 +1,4 @@
 {
-  "suite": "prefs-sanitize",
-  "referenceCommit": "59f60cf",
-  "seed": 2666899361,
-  "generator": "tools/parity/golden/prefs-sanitize.ts",
   "cases": [
     {
       "name": "0: empty object",

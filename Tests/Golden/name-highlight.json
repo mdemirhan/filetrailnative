@@ -1,8 +1,4 @@
 {
-  "suite": "name-highlight",
-  "referenceCommit": "59f60cf",
-  "seed": 2587758855,
-  "generator": "tools/parity/golden/name-highlight.ts",
   "cases": [
     {
       "name": "0: text name \"Panorama\" in Panorama from the Miradouro do Monte.jpeg as Panorama from the…Monte.jpeg",

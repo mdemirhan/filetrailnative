@@ -1,8 +1,4 @@
 {
-  "suite": "content-selection",
-  "referenceCommit": "59f60cf",
-  "seed": 1579075333,
-  "generator": "tools/parity/golden/content-selection.ts",
   "cases": [
     {
       "name": "1: gestures",

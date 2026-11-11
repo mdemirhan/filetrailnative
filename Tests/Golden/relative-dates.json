@@ -1,8 +1,4 @@
 {
-  "suite": "relative-dates",
-  "referenceCommit": "59f60cf",
-  "seed": 1310326787,
-  "generator": "tools/parity/golden/relative-dates.ts",
   "cases": [
     {
       "name": "2026-10-01T21:45:00.000Z vs 2026-10-01T23:45:00.000Z",
