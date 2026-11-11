@@ -309,7 +309,7 @@ private final class Fixture {
         // Made elsewhere meanwhile: the window hasn't listed it.
         try fixture.make("untitled folder", folder: true)
 
-        let outcome = try await fixture.actions.newFolder(in: fixture.root.path)
+        let outcome = await fixture.actions.newFolder(in: fixture.root.path)
         guard case .queued = outcome else {
             Issue.record("not started: \(outcome)")
             return
@@ -325,7 +325,7 @@ private final class Fixture {
     @Test func doesntWaitToRenameALaterFolderAfterOneWasRefusedWhileBusy() async throws {
         let fixture = try Fixture()
         try fixture.anotherWindowRuns()
-        #expect(try await fixture.actions.newFolder(in: fixture.root.path) == .cancelled)
+        #expect(await fixture.actions.newFolder(in: fixture.root.path) == .cancelled)
 
         #expect(fixture.shown.map(\.title) == ["Couldn’t Make a New Folder"])
         #expect(fixture.session.pendingInlineRenamePath == nil)
@@ -340,12 +340,12 @@ private final class Fixture {
 
         fixture.namesTyped = [".hidden"]
         fixture.answers = [false]
-        #expect(try await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true) == .cancelled)
+        #expect(await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true) == .cancelled)
         #expect(fixture.asked == [LocalWriteRules.dotNameQuestion])
         #expect(!fixture.exists("Inner/.hidden"))
 
         fixture.namesTyped = ["Made"]
-        let outcome = try await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true)
+        let outcome = await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true)
         guard case .queued = outcome else {
             Issue.record("not started: \(outcome)")
             return
@@ -359,7 +359,7 @@ private final class Fixture {
         fixture.answers = [true]
         try FileManager.default.createDirectory(atPath: fixture.path("Inner/.Made"), withIntermediateDirectories: false)
         #expect(
-            try await fixture.actions.newFolder(in: fixture.path("Inner"))
+            await fixture.actions.newFolder(in: fixture.path("Inner"))
                 == .error(message: "An item named “.Made” already exists."))
         #expect(fixture.shown.last?.title == "Couldn’t Make a New Folder")
         #expect(fixture.promptRefusals.isEmpty)
@@ -373,7 +373,7 @@ private final class Fixture {
         try fixture.make("Inner/Made", folder: true)
 
         fixture.namesTyped = ["Made", "a/b", "Other"]
-        let outcome = try await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true)
+        let outcome = await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true)
         guard case .queued = outcome else {
             Issue.record("not started: \(outcome)")
             return
@@ -391,7 +391,7 @@ private final class Fixture {
 
         // Cancelled after a refusal: nothing is made, and nothing else is said.
         fixture.namesTyped = ["Made", nil]
-        #expect(try await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true) == .cancelled)
+        #expect(await fixture.actions.newFolder(in: fixture.path("Inner"), selectInTree: true) == .cancelled)
         #expect(fixture.promptRefusals.count == 3)
         #expect(fixture.shown.isEmpty)
         #expect(!fixture.session.isWriteLocked)
@@ -403,7 +403,7 @@ private final class Fixture {
         fixture.host.currentPath = fixture.path("Gone")
 
         #expect(
-            try await fixture.actions.newFolder(in: fixture.path("Gone"))
+            await fixture.actions.newFolder(in: fixture.path("Gone"))
                 == .error(message: "“Gone” no longer exists."))
         #expect(fixture.shown.map(\.title) == ["The folder couldn’t be made"])
         #expect(fixture.session.pendingInlineRenamePath == nil)
@@ -418,7 +418,7 @@ private final class Fixture {
         try fixture.make("a.txt")
         try fixture.make("b.txt")
 
-        _ = try await fixture.actions.trash([fixture.path("a.txt"), fixture.path("b.txt")])
+        _ = await fixture.actions.trash([fixture.path("a.txt"), fixture.path("b.txt")])
         try await fixture.waitForEnds(1)
 
         #expect(fixture.ends.first?.status == .completed)
@@ -435,7 +435,7 @@ private final class Fixture {
 
         async let first = actions.trash([fixture.path("a.txt")])
         async let second = actions.trash([fixture.path("a.txt")])
-        let outcomes = try await [first, second]
+        let outcomes = await [first, second]
         try await fixture.waitForEnds(1)
 
         #expect(outcomes.filter { if case .queued = $0 { true } else { false } }.count == 1)
@@ -449,7 +449,7 @@ private final class Fixture {
         let fixture = try Fixture()
         try fixture.make(".Trash/old.txt")
 
-        #expect(try await fixture.actions.trash([fixture.path(".Trash/old.txt")]) == .cancelled)
+        #expect(await fixture.actions.trash([fixture.path(".Trash/old.txt")]) == .cancelled)
         #expect(fixture.shown.isEmpty)
         #expect(fixture.exists(".Trash/old.txt"))
         await fixture.close()
@@ -459,7 +459,7 @@ private final class Fixture {
         let fixture = try Fixture()
 
         #expect(
-            try await fixture.actions.trash([fixture.path("Documents")])
+            await fixture.actions.trash([fixture.path("Documents")])
                 == .error(message: "“Documents” can't be moved to the Trash."))
         #expect(fixture.shown.map(\.title) == ["Couldn’t Move to Trash"])
         #expect(fixture.session.card == nil)
@@ -471,7 +471,7 @@ private final class Fixture {
         try fixture.make("a.txt")
         // The slot is taken without this window knowing of it.
         try fixture.anotherWindowRuns(told: false)
-        let outcome = try await fixture.actions.trash([fixture.path("a.txt")])
+        let outcome = await fixture.actions.trash([fixture.path("a.txt")])
 
         #expect(outcome == .blocked(message: WriteDialogs.busyMessage))
         #expect(fixture.shown.map(\.message) == [WriteDialogs.busyMessage])
@@ -487,7 +487,7 @@ private final class Fixture {
         try fixture.make("Share/b.txt")
 
         fixture.answers = [false]
-        _ = try await fixture.actions.trash([fixture.path("Share/a.txt")])
+        _ = await fixture.actions.trash([fixture.path("Share/a.txt")])
         try await fixture.waitForEnds(1)
         _ = await waitUntil { !fixture.asked.isEmpty }
         #expect(fixture.asked == [LocalWriteRules.deleteWithoutTrashQuestion([fixture.path("Share/a.txt")])])
@@ -495,7 +495,7 @@ private final class Fixture {
         #expect(fixture.exists("Share/a.txt"))
 
         fixture.answers = [true]
-        _ = try await fixture.actions.trash([fixture.path("Share/b.txt")])
+        _ = await fixture.actions.trash([fixture.path("Share/b.txt")])
         try await fixture.waitForEnds(2)
         try await fixture.waitForEnds(3)
         #expect(fixture.ends.last?.action == .deleteImmediately)
@@ -508,7 +508,7 @@ private final class Fixture {
         let fixture = try Fixture()
         try fixture.make("Share/a.txt")
 
-        _ = try await fixture.actions.trash([fixture.path("Share/a.txt"), fixture.path("gone.txt")])
+        _ = await fixture.actions.trash([fixture.path("Share/a.txt"), fixture.path("gone.txt")])
         try await fixture.waitForEnds(1)
         // The gone item counts as done; only the no-Trash one failed.
         _ = await waitUntil { !fixture.asked.isEmpty }
@@ -518,7 +518,7 @@ private final class Fixture {
         try failing.make("Share/a.txt")
         try failing.make("locked.txt")
         #expect(lchflags(failing.path("locked.txt"), UInt32(UF_IMMUTABLE)) == 0)
-        _ = try await failing.actions.trash([failing.path("Share/a.txt"), failing.path("locked.txt")])
+        _ = await failing.actions.trash([failing.path("Share/a.txt"), failing.path("locked.txt")])
         try await failing.waitForEnds(1)
         try await Task.sleep(nanoseconds: 50_000_000)
         #expect(failing.asked.isEmpty)
@@ -534,18 +534,18 @@ private final class Fixture {
         try fixture.make("kept.txt")
 
         fixture.answers = [false]
-        #expect(try await fixture.actions.deleteImmediately([fixture.path(".Trash/old.txt")]) == .cancelled)
+        #expect(await fixture.actions.deleteImmediately([fixture.path(".Trash/old.txt")]) == .cancelled)
         #expect(fixture.asked == [LocalWriteRules.deleteImmediatelyQuestion([fixture.path(".Trash/old.txt")])])
         #expect(fixture.exists(".Trash/old.txt"))
 
         fixture.answers = [true]
-        _ = try await fixture.actions.deleteImmediately([fixture.path(".Trash/old.txt")])
+        _ = await fixture.actions.deleteImmediately([fixture.path(".Trash/old.txt")])
         try await fixture.waitForEnds(1)
         #expect(!fixture.exists(".Trash/old.txt"))
 
         fixture.answers = [true]
         #expect(
-            try await fixture.actions.deleteImmediately([fixture.path("kept.txt")])
+            await fixture.actions.deleteImmediately([fixture.path("kept.txt")])
                 == .error(message: "“kept.txt” isn't in the Trash, so it can't be deleted immediately."))
         #expect(fixture.shown.map(\.title) == ["Couldn’t Delete"])
         #expect(fixture.exists("kept.txt"))
@@ -558,12 +558,12 @@ private final class Fixture {
         try fixture.make("Folder", folder: true)
 
         fixture.answers = [false]
-        #expect(try await fixture.actions.trash([fixture.path("Folder")], askFirst: true) == .cancelled)
+        #expect(await fixture.actions.trash([fixture.path("Folder")], askFirst: true) == .cancelled)
         #expect(fixture.asked.map(\.title) == ["Move “Folder” to the Trash?"])
         #expect(fixture.exists("Folder"))
 
         fixture.answers = [true]
-        _ = try await fixture.actions.trash([fixture.path("Folder")], askFirst: true)
+        _ = await fixture.actions.trash([fixture.path("Folder")], askFirst: true)
         try await fixture.waitForEnds(1)
         #expect(fixture.exists(".Trash/Folder"))
         await fixture.close()
@@ -586,12 +586,12 @@ private final class Fixture {
             emptied += 1
             return (true, nil)
         }
-        #expect(try await actions.emptyTrash() == .cancelled)
+        #expect(await actions.emptyTrash() == .cancelled)
         #expect(fixture.asked == [LocalWriteRules.emptyTrashQuestion])
         #expect(emptied == 0)
 
         fixture.answers = [true]
-        _ = try await actions.emptyTrash()
+        _ = await actions.emptyTrash()
         #expect(emptied == 1)
         guard case .ready(_, let kept, _, _) = fixture.clipboard.contents else {
             Issue.record("the clipboard was emptied")
@@ -604,7 +604,7 @@ private final class Fixture {
     @Test func refusesEmptyTrashWithoutAskingWhileAnotherOperationRuns() async throws {
         let fixture = try Fixture()
         try fixture.anotherWindowRuns()
-        let outcome = try await fixture.actions.emptyTrash()
+        let outcome = await fixture.actions.emptyTrash()
 
         #expect(outcome == .cancelled)
         #expect(fixture.asked.isEmpty)
@@ -620,7 +620,7 @@ private final class Fixture {
             (false, "execution error: Not authorized to send Apple events to Finder. (-1743)")
         }
 
-        _ = try await actions.emptyTrash()
+        _ = await actions.emptyTrash()
         #expect(fixture.shown.map(\.title) == ["Couldn’t Empty the Trash"])
         #expect(fixture.shown.first?.message.hasPrefix("File Trail needs permission to control Finder.") == true)
         await fixture.close()

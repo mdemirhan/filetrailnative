@@ -239,13 +239,13 @@ final class WindowWriteActions {
             Task { @MainActor in
                 guard await dialogs.confirm(LocalWriteRules.dotNameQuestion, window) else { return }
                 // A refusal now has no field to go under, so it gets a dialog of its own.
-                if case .error(let message) = try? await rename(path, to: name) {
+                if case .error(let message) = await rename(path, to: name) {
                     dialogs.showRefusal(.operation(.rename), message: message, in: window)
                 }
             }
             return .unchanged
         }
-        switch try? await rename(path, to: name) {
+        switch await rename(path, to: name) {
         case .queued: return .started
         case .error(let message): return .refused(message)
         default: return .unchanged
@@ -254,7 +254,7 @@ final class WindowWriteActions {
 
     /// Renames `path` to `name` (checked and asked about already). A refusal is `.error`, for the
     /// caller to show where the name was typed; while another write runs, the busy notice is shown.
-    func rename(_ path: String, to name: String) async throws -> CopyLikeOutcome {
+    func rename(_ path: String, to name: String) async -> CopyLikeOutcome {
         await startLocal(
             .rename,
             card: WriteOperationCardState(
@@ -282,7 +282,7 @@ final class WindowWriteActions {
     /// As in Finder, in the folder on screen the folder is made at once with a free name, and
     /// its name is then edited in its row (also while the list is filtered: the filter is cleared to show it).
     /// Elsewhere (a selected folder, the tree) the name is asked for first, since the new folder is not in the list.
-    func newFolder(in folder: String, selectInTree: Bool = false) async throws -> CopyLikeOutcome {
+    func newFolder(in folder: String, selectInTree: Bool = false) async -> CopyLikeOutcome {
         let onScreen = session.host?.currentPath
         let listedNames = tab?.content.listed.map(\.name) ?? []
         if folder == onScreen, session.host?.isSearching != true, !selectInTree {
@@ -373,7 +373,7 @@ final class WindowWriteActions {
 
     /// Moves items to the Trash; a folder of the tree asks first. Their disk having no Trash, the items
     /// that couldn't go are offered for deleting immediately, as Finder does.
-    func trash(_ paths: [String], askFirst: Bool = false) async throws -> CopyLikeOutcome {
+    func trash(_ paths: [String], askFirst: Bool = false) async -> CopyLikeOutcome {
         guard !paths.isEmpty else { return .cancelled }
         if askFirst, await !dialogs.confirm(LocalWriteRules.trashQuestion(paths), window) {
             return .cancelled
@@ -383,7 +383,7 @@ final class WindowWriteActions {
 
     /// Asked about first, Cancel the default: it can't be undone. While another
     /// operation runs it can't start, so it isn't asked about either.
-    func deleteImmediately(_ paths: [String]) async throws -> CopyLikeOutcome {
+    func deleteImmediately(_ paths: [String]) async -> CopyLikeOutcome {
         guard !paths.isEmpty else { return .cancelled }
         if refuseWhileBusy(.operation(.deleteImmediately)) { return .cancelled }
         guard await dialogs.confirm(LocalWriteRules.deleteImmediatelyQuestion(paths), window) else {
@@ -444,7 +444,7 @@ final class WindowWriteActions {
     /// Finder's question, then Finder empties every Trash. Items on the
     /// clipboard from one are gone, and the clipboard lets go of them (a cut of any is cancelled); a Trash on screen
     /// is read again. A failure is told in a dialog.
-    func emptyTrash() async throws -> CopyLikeOutcome {
+    func emptyTrash() async -> CopyLikeOutcome {
         if refuseWhileBusy(.emptyTrash) { return .cancelled }
         guard await dialogs.confirm(LocalWriteRules.emptyTrashQuestion, window) else { return .cancelled }
         if refuseWhileBusy(.emptyTrash) { return .cancelled }

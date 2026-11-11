@@ -185,7 +185,7 @@ extension ExplorerWindowlessTests {
             actions.emptyTrashRunner = { (true, nil) }
             let trashed = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash/gone.txt").path
             tab.services.clipboard.set(ClipboardRules.set(.copy, [trashed], capturedAt: "t"), from: nil)
-            _ = try await actions.emptyTrash()
+            _ = await actions.emptyTrash()
             #expect(!tab.services.clipboard.contents.hasItems)
             #expect(await waitUntil { engine.starts.count == searches + 1 })
             tab.search.session.hideResults()

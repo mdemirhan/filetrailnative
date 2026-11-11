@@ -1091,7 +1091,7 @@ Also, from the second audit:
   its proof step still applies.
 - `WriteOperationEventCheck` is removed in 6.7, not here.
 
-### [ ] 5.9. Dead code in the app layer (about 450 lines)
+### [x] 5.9. Dead code in the app layer (about 450 lines)
 
 In `Sources/FTAppKit` unless a path says otherwise.
 
@@ -2195,3 +2195,12 @@ anything that differed from the plan, and anything found on the way that is not 
   (161 cases of `prefs-sanitize.json`; the preferences-only fallback is needed anyway by readme-screenshots.sh);
   the hand-written `Codable` on the Undo types (its test, `UndoLogCodingTests`, would go). Found: `.queued` is
   produced (`startCopyPasteAnalysis` returns its handle queued), so it stays.
+- 2026-11-11. 5.9, done. Kept, as used after all: `showAsIcons`/`showAsList` (the automation calls them), the other
+  `@objc` methods beside `validateMenuItem` (called directly), `KeyCode.period` (a test presses it), the `moving`
+  guard in `moveTabToNewWindow` (it covers a re-entrant move, which nothing proves can't happen), the two `??` in
+  `AppDelegate` (`store` is an optional there; removing them means a force-unwrap). `FlushTextField` is created in
+  23 places: renaming it is not a deletion, left for Phase 6. Differs from the plan: `paste(into:)` had three tests,
+  now through `pasteFromClipboard(into:)`, which the app runs; `explorerWindowsIfStarted` is inlined, not deleted;
+  the Open button is always split (the flag that could unsplit it was always true), so three tests wait for it to
+  show instead; `askDotName` went with the stand-in rename. The two tests that reached that rename give the tab a
+  `renameItem` that refuses, as the file operations do.

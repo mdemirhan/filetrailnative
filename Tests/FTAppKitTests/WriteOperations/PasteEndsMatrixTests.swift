@@ -358,7 +358,7 @@ extension ExplorerWindowlessTests {
             window.select(["note.txt"])
             tab.perform(.copySelection)
             let capturedAt = tab.services.clipboard.contents.capturedAt
-            _ = try await actions.rename(path(window, "note.txt"), to: "renamed.txt")
+            _ = await actions.rename(path(window, "note.txt"), to: "renamed.txt")
             #expect(
                 await waitUntil { tab.services.clipboard.contents.sourcePaths == [path(window, "renamed.txt")] })
             #expect(tab.services.clipboard.contents.mode == .copy)
@@ -367,7 +367,7 @@ extension ExplorerWindowlessTests {
 
             tab.services.clipboard.set(
                 ClipboardRules.set(.cut, [path(window, "renamed.txt")], capturedAt: "t"), from: nil)
-            _ = try await actions.rename(path(window, "renamed.txt"), to: "again.txt")
+            _ = await actions.rename(path(window, "renamed.txt"), to: "again.txt")
             #expect(await waitUntil { !tab.services.clipboard.contents.hasItems })
             await window.close()
         }
@@ -404,7 +404,7 @@ extension ExplorerWindowlessTests {
             let engine = try await searching(window, finding: ["note.txt", "Alpha"])
             var searches = engine.starts.count
 
-            _ = try await actions.trash([path(window, "note.txt")])
+            _ = await actions.trash([path(window, "note.txt")])
             #expect(await waitUntil { engine.starts.count == searches + 1 })
             #expect(await waitUntil { !tab.isWriteLocked })
             #expect(tab.searchRootPath != nil)
@@ -438,7 +438,7 @@ extension ExplorerWindowlessTests {
             #expect(await waitUntil { other.folder.lastPathComponent == "Gamma" })
             #expect(group.selected === other)
             let otherActions = try #require(other.writeActions)
-            _ = try await otherActions.trash([path(window, "Beta")])
+            _ = await otherActions.trash([path(window, "Beta")])
             #expect(await waitUntil { !window.exists("Beta") && !other.isWriteLocked })
             try await Task.sleep(for: .milliseconds(100))
             #expect(engine.starts.count == searches)
@@ -454,7 +454,7 @@ extension ExplorerWindowlessTests {
             let actions = try #require(tab.writeActions)
             tab.content.setFilter("note")
             #expect(await waitUntil { tab.content.entries.map(\.name) == ["note.txt"] })
-            _ = try await actions.rename(path(window, "note.txt"), to: "zzz.txt")
+            _ = await actions.rename(path(window, "note.txt"), to: "zzz.txt")
             let made = path(window, "zzz.txt")
             #expect(await waitUntil { tab.content.selection.leadPath == made })
             #expect(tab.content.listed.contains { $0.name == "zzz.txt" })
@@ -511,7 +511,7 @@ extension ExplorerWindowlessTests {
                 cache.clear()
                 return (ok: true, error: nil)
             }
-            _ = try await actions.emptyTrash()
+            _ = await actions.emptyTrash()
             #expect(await waitUntil { tab.content.entries.isEmpty })
             await window.close()
         }

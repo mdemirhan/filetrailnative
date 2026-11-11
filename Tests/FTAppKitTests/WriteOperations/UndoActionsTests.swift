@@ -120,7 +120,7 @@ private final class UndoFixture {
     /// A rename through the window, to its end.
     func rename(_ name: String, to newName: String) async throws {
         let before = ends.count
-        _ = try await actions.rename(path(name), to: newName)
+        _ = await actions.rename(path(name), to: newName)
         try await waitForEnds(before + 1)
     }
 
@@ -304,7 +304,7 @@ private final class UndoFixture {
         try fixture.write("F/inside.txt")
         let undo = fixture.history.top(.undo)?.units ?? []
         let ended = fixture.ends.count
-        _ = try await fixture.actions.trash([fixture.path("a.txt")])
+        _ = await fixture.actions.trash([fixture.path("a.txt")])
         try await fixture.waitForEnds(ended + 1)
         let trashed = fixture.history.top(.undo)?.units ?? []
         fixture.history.record(

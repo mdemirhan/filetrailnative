@@ -93,13 +93,13 @@ extension MainWindowController {
                     currentPath: shownFolderPath, selectedEntry: nil, selectedPaths: selectedPaths,
                     isSearchMode: searchRootPath != nil, homePath: actions.session.coordinator.homePath)
             else { return true }
-            Task { _ = try? await actions.newFolder(in: target) }
+            Task { _ = await actions.newFolder(in: target) }
         case .trashSelection:
             let paths = selectedPaths
             guard !paths.isEmpty else { return true }
-            Task { _ = try? await actions.trash(paths) }
+            Task { _ = await actions.trash(paths) }
         case .emptyTrash:
-            Task { _ = try? await actions.emptyTrash() }
+            Task { _ = await actions.emptyTrash() }
         case .undo, .redo:
             // The files' Undo; a text field with the keyboard undoes its own typing before this is reached.
             guard Self.undoRuns(for: NSApp?.currentEvent) else { return true }
@@ -160,13 +160,13 @@ extension MainWindowController {
                     scope: subject.scope == .selection ? .selection : .background)
             }
             guard let target else { return }
-            Task { _ = try? await actions.newFolder(in: target, selectInTree: fromTree) }
+            Task { _ = await actions.newFolder(in: target, selectInTree: fromTree) }
         case .trash:
-            Task { _ = try? await actions.trash(paths, askFirst: subject.surface == .treeFolder) }
+            Task { _ = await actions.trash(paths, askFirst: subject.surface == .treeFolder) }
         case .deleteImmediately:
-            Task { _ = try? await actions.deleteImmediately(paths) }
+            Task { _ = await actions.deleteImmediately(paths) }
         case .emptyTrash:
-            Task { _ = try? await actions.emptyTrash() }
+            Task { _ = await actions.emptyTrash() }
         case .move:
             // Says so as soon as chosen, not after a folder was chosen.
             guard !paths.isEmpty, !actions.refuseWhileBusy(.operation(.moveTo)) else { return }
