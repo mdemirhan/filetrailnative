@@ -29,9 +29,7 @@
         "textEditing": false,
         "focusedPane": "content",
         "lastFocusedPane": null,
-        "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null
+        "contextMenuPaths": []
       },
       "output": {
         "disabled": [
@@ -68,10 +66,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -110,8 +105,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "homePath": "/Users/me"
       },
       "output": {
@@ -134,14 +127,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents/a.txt"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/a.txt"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/a.txt"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -170,8 +156,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "homePath": "/Users/me",
         "trashPath": "/Users/me/.Trash"
       },
@@ -200,14 +184,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -243,8 +220,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "homePath": "/Users/me",
         "trashIsEmpty": false
       },
@@ -271,14 +246,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -307,8 +275,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "homePath": "/Users/me"
       },
       "output": {
@@ -391,10 +357,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -423,8 +386,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "homePath": "/Users/me"
       },
       "output": {
@@ -503,10 +464,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -534,9 +492,7 @@
         "textEditing": true,
         "focusedPane": "content",
         "lastFocusedPane": null,
-        "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null
+        "contextMenuPaths": []
       },
       "output": {
         "disabled": [
@@ -615,10 +571,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -649,8 +602,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/Documents",
-        "selectedContentFolderPath": "/Volumes/Backup/.Trashes",
         "canGoBack": false,
         "hasCachedSearch": true,
         "tabCount": 0,
@@ -733,14 +684,7 @@
         ],
         "openTerminal": [
           "relative/c"
-        ],
-        "openPaths": [
-          "relative/c"
-        ],
-        "editPaths": [
-          "relative/c"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -789,8 +733,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/Documents",
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 1,
         "trashPath": "relative"
@@ -853,26 +795,7 @@
           "/",
           "/a//b/é.txt",
           "/Users/me/.Trash/a.txt0"
-        ],
-        "openPaths": [
-          "/",
-          "/Users/me/.Trash/a.txt0",
-          "/",
-          "/Users/me/.Trash/a.txt0",
-          "/",
-          "/a//b/é.txt",
-          "/Users/me/.Trash/a.txt0"
-        ],
-        "editPaths": [
-          "/",
-          "/Users/me/.Trash/a.txt0",
-          "/",
-          "/Users/me/.Trash/a.txt0",
-          "/",
-          "/a//b/é.txt",
-          "/Users/me/.Trash/a.txt0"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -937,8 +860,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -973,10 +894,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -1033,8 +951,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "//",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "trashPath": "/Volumes/Backup/.Trashes/501",
@@ -1076,10 +992,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -1115,8 +1028,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 5,
         "trashPath": "/Volumes/Backup/.Trashes",
@@ -1154,14 +1065,7 @@
         ],
         "openTerminal": [
           "/a//b/é.txt0"
-        ],
-        "openPaths": [
-          "/a//b/é.txt0"
-        ],
-        "editPaths": [
-          "/a//b/é.txt0"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -1201,8 +1105,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": null,
         "tabCount": 5,
         "trashPath": "/Applications",
         "homePath": "/Users/me"
@@ -1227,14 +1129,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -1266,8 +1161,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/é",
         "canGoBack": false,
         "tabCount": 0,
         "homePath": "/Users/me",
@@ -1317,14 +1210,7 @@
         ],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [
-          "/a//b"
-        ],
-        "editPaths": [
-          "/a//b"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -1360,8 +1246,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "homePath": "/Users/me"
       },
@@ -1445,14 +1329,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -1490,8 +1367,6 @@
         "contextMenuPaths": [
           "/Volumes/Backup/.Trashes/501"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "relative",
         "canGoBack": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -1530,14 +1405,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -1566,8 +1434,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/é",
         "canGoForward": false,
         "hasCachedSearch": true,
         "tabCount": 5,
@@ -1654,10 +1520,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -1702,8 +1565,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/Documents",
         "canGoForward": true,
         "tabCount": 0,
         "trashIsEmpty": null,
@@ -1793,10 +1654,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -1833,8 +1691,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -1919,14 +1775,7 @@
         ],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [
-          "/Users/me"
-        ],
-        "editPaths": [
-          "/Users/me"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -1957,8 +1806,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/",
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "tabCount": 2,
         "trashPath": "/é",
@@ -2039,14 +1886,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/.Trash/b.md"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/b.md"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/b.md"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -2075,8 +1915,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "trashIsEmpty": false,
@@ -2115,10 +1953,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -2162,8 +1997,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "trashPath": "",
@@ -2246,16 +2079,7 @@
         "openTerminal": [
           "/Users/me/.Trash/b.md",
           "/Volumes/Backup/a.txt0"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/b.md",
-          "/Volumes/Backup/a.txt0"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/b.md",
-          "/Volumes/Backup/a.txt0"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -2300,8 +2124,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup",
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "trashIsEmpty": false,
         "ejectTargetPath": null
@@ -2382,10 +2204,7 @@
         ],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -2414,8 +2233,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -2498,10 +2315,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -2539,8 +2353,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "tabCount": 0,
         "trashPath": null,
@@ -2585,14 +2397,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [
-          "relative"
-        ],
-        "editPaths": [
-          "relative"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -2636,8 +2441,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "",
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "trashPath": "",
@@ -2721,10 +2524,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -2761,8 +2561,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "tabCount": 2,
         "trashIsEmpty": null
       },
@@ -2852,26 +2650,7 @@
           "relative/link",
           "/é/é.txt",
           "/é/c"
-        ],
-        "openPaths": [
-          "///b.md",
-          "relative/Folder",
-          "/d d",
-          "/Applications/a.txt",
-          "relative/link",
-          "/é/é.txt",
-          "/é/c"
-        ],
-        "editPaths": [
-          "///b.md",
-          "relative/Folder",
-          "/d d",
-          "/Applications/a.txt",
-          "relative/link",
-          "/é/é.txt",
-          "/é/c"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -2938,8 +2717,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/Documents",
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "trashPath": "/Users/me",
         "trashIsEmpty": false,
@@ -2971,14 +2748,7 @@
         "calculateSize": [],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -3037,8 +2807,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 5,
@@ -3126,14 +2894,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -3174,8 +2935,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -3267,16 +3026,7 @@
         "openTerminal": [
           "/",
           "/é/a.txt1"
-        ],
-        "openPaths": [
-          "/",
-          "/é/a.txt1"
-        ],
-        "editPaths": [
-          "/",
-          "/é/a.txt1"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -3323,8 +3073,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "tabCount": 1,
         "trashPath": null,
         "homePath": "/Users/me",
@@ -3407,14 +3155,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -3473,8 +3214,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "tabCount": 1,
@@ -3560,10 +3299,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -3601,8 +3337,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "//",
-        "selectedContentFolderPath": "/é",
         "canGoBack": true,
         "hasCachedSearch": false,
         "homePath": "/Users/me",
@@ -3688,14 +3422,7 @@
         ],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [
-          "/a//b"
-        ],
-        "editPaths": [
-          "/a//b"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -3736,8 +3463,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -3785,10 +3510,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -3828,8 +3550,6 @@
         "contextMenuPaths": [
           ""
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/a/b/",
         "canGoBack": false,
         "canGoForward": false,
         "trashPath": "/a//b",
@@ -3914,14 +3634,7 @@
         "calculateSize": [],
         "openTerminal": [
           ""
-        ],
-        "openPaths": [
-          ""
-        ],
-        "editPaths": [
-          ""
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -3960,8 +3673,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "trashPath": "/Users/me/.Trash",
         "homePath": "/Users/me",
@@ -4045,14 +3756,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/.Trash/old/a.txt"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old/a.txt"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old/a.txt"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -4083,8 +3787,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Applications",
         "canGoForward": true,
         "tabCount": 0,
         "trashPath": "/",
@@ -4166,14 +3868,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501/c"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501/c"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501/c"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -4206,8 +3901,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Applications",
-        "selectedContentFolderPath": "/",
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -4253,10 +3946,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -4298,8 +3988,6 @@
         "contextMenuPaths": [
           "relative"
         ],
-        "contextMenuFolderPath": "/Users/me/.Trash/old",
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "tabCount": 5,
         "trashPath": "",
@@ -4387,14 +4075,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [
-          "relative"
-        ],
-        "editPaths": [
-          "relative"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -4438,8 +4119,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 2,
@@ -4526,14 +4205,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -4597,8 +4269,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "tabCount": 2,
         "homePath": "/Users/me",
         "ejectTargetPath": null
@@ -4677,14 +4347,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é/Folder1"
-        ],
-        "openPaths": [
-          "/é/Folder1"
-        ],
-        "editPaths": [
-          "/é/Folder1"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -4715,8 +4378,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 5,
         "trashPath": "/Users/me/.Trash/old",
@@ -4761,14 +4422,7 @@
         "calculateSize": [],
         "openTerminal": [
           "///Folder"
-        ],
-        "openPaths": [
-          "///Folder"
-        ],
-        "editPaths": [
-          "///Folder"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -4809,8 +4463,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "trashPath": "",
         "trashIsEmpty": null,
@@ -4892,14 +4544,7 @@
         "calculateSize": [],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -4928,8 +4573,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "//",
-        "selectedContentFolderPath": "/Volumes/Backup/.Trashes/501",
         "canGoBack": false,
         "hasCachedSearch": false,
         "trashPath": "/é",
@@ -4964,14 +4607,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -5013,8 +4649,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/",
         "canGoForward": true,
         "hasCachedSearch": false,
         "trashPath": "/Users/me/.Trash",
@@ -5091,10 +4725,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        "openTerminal": []
       }
     },
     {
@@ -5123,8 +4754,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/Documents",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -5207,10 +4836,7 @@
         ],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -5253,8 +4879,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 2,
         "trashPath": "/é",
@@ -5337,14 +4961,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -5389,8 +5006,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 1,
         "homePath": "/Users/me",
@@ -5442,18 +5057,7 @@
           "/Users/me/é.txt1",
           "/Users/me/c0",
           "/Users/me/c0"
-        ],
-        "openPaths": [
-          "/Users/me/é.txt1",
-          "/Users/me/c0",
-          "/Users/me/c0"
-        ],
-        "editPaths": [
-          "/Users/me/é.txt1",
-          "/Users/me/c0",
-          "/Users/me/c0"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -5502,8 +5106,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -5597,26 +5199,7 @@
           "/Applications/b.md0",
           "/Users/me/.Trash/old/a.txt",
           "/Users/me/.Trash/Thing.app1"
-        ],
-        "openPaths": [
-          "/Applications/b.md0",
-          "/Applications/b.md0",
-          "/Applications/b.md0",
-          "/Users/me/.Trash/Thing.app1",
-          "/Applications/b.md0",
-          "/Users/me/.Trash/old/a.txt",
-          "/Users/me/.Trash/Thing.app1"
-        ],
-        "editPaths": [
-          "/Applications/b.md0",
-          "/Applications/b.md0",
-          "/Applications/b.md0",
-          "/Users/me/.Trash/Thing.app1",
-          "/Applications/b.md0",
-          "/Users/me/.Trash/old/a.txt",
-          "/Users/me/.Trash/Thing.app1"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -5661,8 +5244,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": null,
         "tabCount": 0,
         "trashPath": "/Users/me/.Trash",
         "homePath": "/Users/me",
@@ -5711,10 +5292,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -5751,8 +5329,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -5798,10 +5374,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -5840,8 +5413,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "//",
         "canGoForward": true,
         "hasCachedSearch": false,
         "tabCount": 2,
@@ -5868,14 +5439,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é/c0"
-        ],
-        "openPaths": [
-          "/é/c0"
-        ],
-        "editPaths": [
-          "/é/c0"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -5912,8 +5476,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -6004,10 +5566,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -6067,8 +5626,6 @@
         "contextMenuPaths": [
           "/Users/me/.Trash/old"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Applications",
         "canGoBack": false,
         "hasCachedSearch": false,
         "trashPath": null,
@@ -6105,14 +5662,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -6149,8 +5699,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "trashPath": "/é",
@@ -6236,16 +5784,7 @@
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501",
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501",
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501",
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -6307,8 +5846,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/",
         "canGoForward": false,
         "tabCount": 5,
         "trashPath": "/Users/me/Documents",
@@ -6354,10 +5891,7 @@
         ],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -6389,8 +5923,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 5,
@@ -6439,16 +5971,7 @@
         "openTerminal": [
           "/Users/me/.Trash/old/é.txt",
           "/é/Thing.app"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old/é.txt",
-          "/é/Thing.app"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old/é.txt",
-          "/é/Thing.app"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -6486,8 +6009,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -6535,14 +6056,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -6587,8 +6101,6 @@
         "contextMenuPaths": [
           "/Applications"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "trashPath": "/Applications",
@@ -6669,14 +6181,7 @@
         ],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [
-          "/Applications"
-        ],
-        "editPaths": [
-          "/Applications"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -6714,8 +6219,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/Documents",
         "hasCachedSearch": true,
         "trashPath": "",
         "homePath": "",
@@ -6797,10 +6300,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -6857,8 +6357,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup",
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": false,
         "tabCount": 2,
@@ -6893,14 +6391,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [
-          "relative"
-        ],
-        "editPaths": [
-          "relative"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -6953,8 +6444,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "relative",
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 1,
         "trashPath": "/Users/me/Documents",
@@ -7010,14 +6499,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -7054,8 +6536,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 5,
@@ -7098,10 +6578,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -7130,8 +6607,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -7185,10 +6660,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -7217,8 +6689,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "tabCount": 0,
         "homePath": "/Users/me",
@@ -7263,10 +6733,7 @@
         "calculateSize": [],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -7297,8 +6764,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/",
         "canGoForward": true,
         "hasCachedSearch": true,
         "trashPath": null
@@ -7377,14 +6842,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/Folder"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/Folder"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/Folder"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -7416,8 +6874,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 2,
@@ -7498,14 +6954,7 @@
         "calculateSize": [],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -7549,8 +6998,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -7592,16 +7039,7 @@
         "openTerminal": [
           "/Volumes/Backup/.Trashes",
           "/é/é.txt0"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes",
-          "/é/é.txt0"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes",
-          "/é/é.txt0"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -7632,8 +7070,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "homePath": "/Users/me"
@@ -7714,14 +7150,7 @@
         ],
         "openTerminal": [
           "/é/b.md"
-        ],
-        "openPaths": [
-          "/é/b.md"
-        ],
-        "editPaths": [
-          "/é/b.md"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -7757,8 +7186,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/.Trash",
-        "selectedContentFolderPath": null,
         "homePath": "/Users/me"
       },
       "output": {
@@ -7837,10 +7264,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -7880,8 +7304,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "ejectTargetPath": "/a/b/"
       },
@@ -7965,16 +7387,7 @@
         "openTerminal": [
           "/a/b//Folder0",
           "/a/b//Folder0"
-        ],
-        "openPaths": [
-          "/a/b//Folder0",
-          "/a/b//Folder0"
-        ],
-        "editPaths": [
-          "/a/b//Folder0",
-          "/a/b//Folder0"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -8015,8 +7428,6 @@
         "contextMenuPaths": [
           "//"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "trashIsEmpty": null
@@ -8066,14 +7477,7 @@
         ],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -8105,8 +7509,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "tabCount": 5,
@@ -8185,10 +7587,7 @@
           "/a/b//link"
         ],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": null
+        "openTerminal": []
       }
     },
     {
@@ -8221,8 +7620,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup",
-        "selectedContentFolderPath": "/Volumes/Backup/.Trashes/501",
         "canGoBack": true,
         "hasCachedSearch": false,
         "trashPath": "/Users/me/.Trash/old",
@@ -8307,18 +7704,7 @@
           "/Users/me/link",
           "/Users/me/.Trash/Folder",
           "/Applications/c"
-        ],
-        "openPaths": [
-          "/Users/me/link",
-          "/Users/me/.Trash/Folder",
-          "/Applications/c"
-        ],
-        "editPaths": [
-          "/Users/me/link",
-          "/Users/me/.Trash/Folder",
-          "/Applications/c"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -8351,8 +7737,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -8436,10 +7820,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -8482,8 +7863,6 @@
         "contextMenuPaths": [
           "/Users/me/Documents"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 5,
         "homePath": "",
@@ -8569,14 +7948,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -8610,8 +7982,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 1,
@@ -8657,10 +8027,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -8689,8 +8056,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "trashPath": "relative",
         "trashIsEmpty": null
@@ -8771,14 +8136,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -8835,8 +8193,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -8914,10 +8270,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": null
+        "openTerminal": []
       }
     },
     {
@@ -8956,8 +8309,6 @@
         "contextMenuPaths": [
           "/a/b/"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -9006,14 +8357,7 @@
         ],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [
-          "/a/b/"
-        ],
-        "editPaths": [
-          "/a/b/"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -9053,8 +8397,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -9108,10 +8450,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -9151,8 +8490,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -9196,16 +8533,7 @@
         "openTerminal": [
           "/Users/me/.Trash/old/é.txt0",
           "/Users/me/Documents/c"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old/é.txt0",
-          "/Users/me/Documents/c"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old/é.txt0",
-          "/Users/me/Documents/c"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -9264,8 +8592,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/",
         "canGoForward": true,
         "hasCachedSearch": true,
         "homePath": "/Users/me",
@@ -9293,14 +8619,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -9341,8 +8660,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/a/b/",
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -9430,10 +8747,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -9487,8 +8801,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/.Trash",
         "tabCount": 1,
         "trashPath": "/Volumes/Backup/.Trashes/501",
         "homePath": "/Users/me"
@@ -9532,10 +8844,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/.Trash"
+        "openTerminal": []
       }
     },
     {
@@ -9600,8 +8909,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 5,
         "trashPath": "//",
@@ -9688,14 +8995,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -9738,8 +9038,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "trashPath": "/Users/me/.Trash",
         "homePath": "/Users/me",
@@ -9776,10 +9074,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -9828,8 +9123,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "//",
         "hasCachedSearch": false,
         "trashPath": null,
         "trashIsEmpty": null
@@ -9924,26 +9217,7 @@
           "/Volumes/Backup/.Trashes/é.txt1",
           "/Volumes/Backup/.Trashes/é.txt1",
           "/Volumes/Backup/.Trashes/é.txt1"
-        ],
-        "openPaths": [
-          "/Volumes/Backup",
-          "/Volumes/Backup/.Trashes/é.txt1",
-          "/Volumes/Backup",
-          "/Volumes/Backup",
-          "/Volumes/Backup/.Trashes/é.txt1",
-          "/Volumes/Backup/.Trashes/é.txt1",
-          "/Volumes/Backup/.Trashes/é.txt1"
-        ],
-        "editPaths": [
-          "/Volumes/Backup",
-          "/Volumes/Backup/.Trashes/é.txt1",
-          "/Volumes/Backup",
-          "/Volumes/Backup",
-          "/Volumes/Backup/.Trashes/é.txt1",
-          "/Volumes/Backup/.Trashes/é.txt1",
-          "/Volumes/Backup/.Trashes/é.txt1"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -9972,8 +9246,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "homePath": "/Users/me",
@@ -10060,10 +9332,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -10092,8 +9361,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/é",
         "canGoForward": true,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -10133,10 +9400,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -10196,8 +9460,6 @@
         "contextMenuPaths": [
           "/"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "trashIsEmpty": false,
@@ -10285,14 +9547,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [
-          "/"
-        ],
-        "editPaths": [
-          "/"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -10341,8 +9596,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "trashPath": null,
         "trashIsEmpty": null
@@ -10389,10 +9642,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -10457,8 +9707,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -10543,14 +9791,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -10606,8 +9847,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Volumes/Backup",
         "canGoBack": false,
         "canGoForward": true,
         "tabCount": 5,
@@ -10690,14 +9929,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -10737,8 +9969,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "tabCount": 5,
@@ -10777,10 +10007,7 @@
           "/Users/me/.Trash/old/é.txt"
         ],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": null
+        "openTerminal": []
       }
     },
     {
@@ -10821,8 +10048,6 @@
         "contextMenuPaths": [
           "/Users/me"
         ],
-        "contextMenuFolderPath": "/Volumes/Backup/.Trashes",
-        "selectedContentFolderPath": "/Users/me/.Trash",
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 0
@@ -10871,14 +10096,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [
-          "/Users/me"
-        ],
-        "editPaths": [
-          "/Users/me"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -10932,8 +10150,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Volumes/Backup",
         "hasCachedSearch": false,
         "trashIsEmpty": null
       },
@@ -10977,10 +10193,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -11038,8 +10251,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 1,
         "homePath": "/Users/me",
@@ -11125,10 +10336,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -11170,8 +10378,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 5,
         "trashPath": null,
@@ -11221,14 +10427,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -11270,8 +10469,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "//",
-        "selectedContentFolderPath": "/é",
         "trashPath": "/Users/me/.Trash/old",
         "trashIsEmpty": null,
         "ejectTargetPath": "/é"
@@ -11312,10 +10509,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -11352,8 +10546,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/",
         "hasCachedSearch": true,
         "tabCount": 1,
         "trashPath": "/a//b",
@@ -11435,14 +10627,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -11473,8 +10658,6 @@
         "contextMenuPaths": [
           ""
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "tabCount": 5,
         "trashPath": "/Users/me/Documents",
         "homePath": "/Users/me",
@@ -11557,14 +10740,7 @@
         ],
         "openTerminal": [
           ""
-        ],
-        "openPaths": [
-          ""
-        ],
-        "editPaths": [
-          ""
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -11593,8 +10769,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 5,
@@ -11676,14 +10850,7 @@
         ],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [
-          "/a/b/"
-        ],
-        "editPaths": [
-          "/a/b/"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -11726,8 +10893,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 2,
@@ -11763,14 +10928,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é/Folder"
-        ],
-        "openPaths": [
-          "/é/Folder"
-        ],
-        "editPaths": [
-          "/é/Folder"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -11823,8 +10981,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "tabCount": 2,
@@ -11874,10 +11030,7 @@
         ],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -11908,8 +11061,6 @@
         "contextMenuPaths": [
           ""
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "homePath": "/Users/me"
       },
@@ -11989,14 +11140,7 @@
         ],
         "openTerminal": [
           ""
-        ],
-        "openPaths": [
-          ""
-        ],
-        "editPaths": [
-          ""
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -12033,8 +11177,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 0,
@@ -12082,14 +11224,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [
-          "/a//b"
-        ],
-        "editPaths": [
-          "/a//b"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -12131,8 +11266,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/Documents",
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 5,
@@ -12171,10 +11304,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -12236,8 +11366,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -12321,14 +11449,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -12361,8 +11482,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -12401,18 +11520,7 @@
           "/Volumes/Backup/.Trashes/Thing.app",
           "/Users/me/.Trash/old/é.txt",
           "/é/Thing.app"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/Thing.app",
-          "/Users/me/.Trash/old/é.txt",
-          "/é/Thing.app"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/Thing.app",
-          "/Users/me/.Trash/old/é.txt",
-          "/é/Thing.app"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -12449,8 +11557,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "relative",
-        "selectedContentFolderPath": null,
         "trashPath": "relative",
         "homePath": ""
       },
@@ -12496,26 +11602,7 @@
           "/é/a.txt",
           "/a/b//b.md",
           "/a//b/c"
-        ],
-        "openPaths": [
-          "/a//b/link",
-          "/é.txt",
-          "/Volumes/Backup/.Trashes/link",
-          "/a/b//é.txt",
-          "/é/a.txt",
-          "/a/b//b.md",
-          "/a//b/c"
-        ],
-        "editPaths": [
-          "/a//b/link",
-          "/é.txt",
-          "/Volumes/Backup/.Trashes/link",
-          "/a/b//é.txt",
-          "/é/a.txt",
-          "/a/b//b.md",
-          "/a//b/c"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -12560,8 +11647,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "trashPath": "/",
@@ -12603,10 +11688,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -12647,8 +11729,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -12688,10 +11768,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -12733,8 +11810,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -12786,26 +11861,7 @@
           "/Volumes/Backup/.Trashes/d d0",
           "/Volumes/Backup/.Trashes/d d0",
           "/Volumes/Backup/.Trashes/d d0"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0",
-          "/Volumes/Backup/.Trashes/d d0"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -12839,8 +11895,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 0,
         "trashPath": "/Users/me",
@@ -12914,10 +11968,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        "openTerminal": []
       }
     },
     {
@@ -12955,8 +12006,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/Documents",
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false
@@ -13009,10 +12058,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -13071,8 +12117,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/é",
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -13116,10 +12160,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -13176,8 +12217,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "trashPath": null
@@ -13256,16 +12295,7 @@
         "openTerminal": [
           "/Users/me/link3",
           "/Users/me/b.md5"
-        ],
-        "openPaths": [
-          "/Users/me/link3",
-          "/Users/me/b.md5"
-        ],
-        "editPaths": [
-          "/Users/me/link3",
-          "/Users/me/b.md5"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -13305,8 +12335,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "",
         "canGoBack": true,
         "canGoForward": false,
         "trashPath": "/Users/me/.Trash/old",
@@ -13345,16 +12373,7 @@
         "openTerminal": [
           "/Users/me/.Trash/old/Thing.app0",
           "///link"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old/Thing.app0",
-          "///link"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old/Thing.app0",
-          "///link"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -13395,8 +12414,6 @@
         "contextMenuPaths": [
           "/Users/me/.Trash/old"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 0,
         "trashPath": "//",
@@ -13431,14 +12448,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -13469,8 +12479,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/é",
         "canGoForward": false,
         "hasCachedSearch": true,
         "tabCount": 1,
@@ -13502,14 +12510,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents/d d"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/d d"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/d d"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -13566,8 +12567,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -13648,10 +12647,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -13682,8 +12678,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "relative",
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -13769,14 +12763,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/é.txt"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/é.txt"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/é.txt"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -13819,8 +12806,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 0,
         "homePath": "/Users/me",
@@ -13906,14 +12891,7 @@
         ],
         "openTerminal": [
           "/b.md1"
-        ],
-        "openPaths": [
-          "/b.md1"
-        ],
-        "editPaths": [
-          "/b.md1"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -13950,8 +12928,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Applications",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -13982,16 +12958,7 @@
         "openTerminal": [
           "/Users/me/é.txt0",
           "/Users/me/é.txt0"
-        ],
-        "openPaths": [
-          "/Users/me/é.txt0",
-          "/Users/me/é.txt0"
-        ],
-        "editPaths": [
-          "/Users/me/é.txt0",
-          "/Users/me/é.txt0"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -14033,8 +13000,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "homePath": "/Users/me",
         "trashIsEmpty": false,
@@ -14079,10 +13044,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -14119,8 +13081,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -14165,10 +13125,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -14213,8 +13170,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -14306,14 +13261,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -14375,8 +13323,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "relative",
         "canGoBack": false,
         "hasCachedSearch": false,
         "trashPath": "/Users/me/Documents",
@@ -14472,14 +13418,7 @@
         ],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [
-          "/Applications"
-        ],
-        "editPaths": [
-          "/Applications"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -14525,8 +13464,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "tabCount": 1,
         "homePath": "/Users/me",
         "ejectTargetPath": null
@@ -14567,18 +13504,7 @@
           "///é.txt",
           "/Users/me/Documents",
           "/a/b//a.txt"
-        ],
-        "openPaths": [
-          "///é.txt",
-          "/Users/me/Documents",
-          "/a/b//a.txt"
-        ],
-        "editPaths": [
-          "///é.txt",
-          "/Users/me/Documents",
-          "/a/b//a.txt"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -14634,8 +13560,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "tabCount": 1,
@@ -14717,10 +13641,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -14749,8 +13670,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "trashPath": "/Applications",
@@ -14797,10 +13716,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -14841,8 +13757,6 @@
         "contextMenuPaths": [
           "/é"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": true,
         "trashPath": "/a/b/",
@@ -14888,14 +13802,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -14960,8 +13867,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -15041,10 +13946,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -15113,8 +14015,6 @@
         "contextMenuPaths": [
           "/Volumes/Backup"
         ],
-        "contextMenuFolderPath": "/a/b/",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 5,
@@ -15149,14 +14049,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -15203,8 +14096,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "homePath": "/Users/me",
@@ -15288,14 +14179,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents/b.md"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/b.md"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/b.md"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -15335,8 +14219,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "//",
-        "selectedContentFolderPath": "",
         "canGoForward": true,
         "hasCachedSearch": false,
         "tabCount": 5,
@@ -15383,14 +14265,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -15427,8 +14302,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -15520,26 +14393,7 @@
           "/Users/me/b.md",
           "/Volumes/Backup/.Trashes/501/é.txt",
           "/Volumes/Backup/é.txt"
-        ],
-        "openPaths": [
-          "/Thing.app",
-          "/Users/me/Documents/Thing.app",
-          "///b.md",
-          "/Users/me/.Trash/old/é.txt",
-          "/Users/me/b.md",
-          "/Volumes/Backup/.Trashes/501/é.txt",
-          "/Volumes/Backup/é.txt"
-        ],
-        "editPaths": [
-          "/Thing.app",
-          "/Users/me/Documents/Thing.app",
-          "///b.md",
-          "/Users/me/.Trash/old/é.txt",
-          "/Users/me/b.md",
-          "/Volumes/Backup/.Trashes/501/é.txt",
-          "/Volumes/Backup/é.txt"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -15597,8 +14451,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 0,
         "ejectTargetPath": null
@@ -15683,18 +14535,7 @@
           "/Applications/a.txt5",
           "/a//b/é.txt0",
           "/a//b/é.txt0"
-        ],
-        "openPaths": [
-          "/Applications/a.txt5",
-          "/a//b/é.txt0",
-          "/a//b/é.txt0"
-        ],
-        "editPaths": [
-          "/Applications/a.txt5",
-          "/a//b/é.txt0",
-          "/a//b/é.txt0"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -15728,8 +14569,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Volumes/Backup/.Trashes",
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -15815,10 +14654,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -15855,8 +14691,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Applications",
-        "selectedContentFolderPath": "/Users/me/Documents",
         "canGoBack": false,
         "hasCachedSearch": true,
         "homePath": "/Users/me",
@@ -15939,10 +14773,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -15983,8 +14814,6 @@
         "contextMenuPaths": [
           "/Volumes/Backup/.Trashes/501"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/é",
         "canGoBack": false,
         "canGoForward": false,
         "trashPath": "/Users/me/Documents",
@@ -16028,14 +14857,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -16064,8 +14886,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "trashIsEmpty": false
       },
@@ -16109,14 +14929,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -16165,8 +14978,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 0,
         "trashPath": "/Volumes/Backup/.Trashes",
@@ -16250,18 +15061,7 @@
           "/Users/me/.Trash/old/é.txt",
           "/é/c1",
           "/Volumes/Backup/c0"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old/é.txt",
-          "/é/c1",
-          "/Volumes/Backup/c0"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old/é.txt",
-          "/é/c1",
-          "/Volumes/Backup/c0"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -16306,8 +15106,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me",
         "canGoBack": true,
         "hasCachedSearch": false,
         "tabCount": 5,
@@ -16400,14 +15198,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -16449,8 +15240,6 @@
         "contextMenuPaths": [
           "/a/b/"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "tabCount": 1,
@@ -16493,14 +15282,7 @@
         ],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [
-          "/a/b/"
-        ],
-        "editPaths": [
-          "/a/b/"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -16531,8 +15313,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -16587,10 +15367,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -16621,8 +15398,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -16703,14 +15478,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Folder"
-        ],
-        "openPaths": [
-          "/Folder"
-        ],
-        "editPaths": [
-          "/Folder"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -16742,8 +15510,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "trashPath": "/a/b/",
@@ -16826,16 +15592,7 @@
         "openTerminal": [
           "/Applications/d d",
           "/Volumes/Backup/.Trashes/é.txt"
-        ],
-        "openPaths": [
-          "/Applications/d d",
-          "/Volumes/Backup/.Trashes/é.txt"
-        ],
-        "editPaths": [
-          "/Applications/d d",
-          "/Volumes/Backup/.Trashes/é.txt"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -16864,8 +15621,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "tabCount": 0,
@@ -16906,10 +15661,7 @@
         ],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -16974,8 +15726,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/",
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -17018,10 +15768,7 @@
         ],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -17052,8 +15799,6 @@
         "contextMenuPaths": [
           "/é"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 5,
         "trashPath": null,
@@ -17096,14 +15841,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -17162,8 +15900,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -17197,14 +15933,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/é.txt1"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/é.txt1"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/é.txt1"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -17261,8 +15990,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -17305,14 +16032,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -17369,8 +16089,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/.Trash",
-        "selectedContentFolderPath": null,
         "tabCount": 0,
         "trashPath": "/Users/me/.Trash/old",
         "homePath": "/Users/me",
@@ -17413,14 +16131,7 @@
         ],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -17493,8 +16204,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "trashPath": null,
         "homePath": "/Users/me"
@@ -17550,26 +16259,7 @@
           "/c0",
           "/é.txt7",
           "/é/é.txt"
-        ],
-        "openPaths": [
-          "/é/é.txt3",
-          "/é.txt7",
-          "/é.txt7",
-          "/é.txt5",
-          "/c0",
-          "/é.txt7",
-          "/é/é.txt"
-        ],
-        "editPaths": [
-          "/é/é.txt3",
-          "/é.txt7",
-          "/é.txt7",
-          "/é.txt5",
-          "/c0",
-          "/é.txt7",
-          "/é/é.txt"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -17634,8 +16324,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -17690,10 +16378,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -17731,8 +16416,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "tabCount": 2,
         "trashPath": "/Volumes/Backup/.Trashes/501",
@@ -17780,18 +16463,7 @@
           "/Users/me/Documents/c",
           "/Users/me/é.txt0",
           "/Users/me/é.txt0"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/c",
-          "/Users/me/é.txt0",
-          "/Users/me/é.txt0"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/c",
-          "/Users/me/é.txt0",
-          "/Users/me/é.txt0"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -17830,8 +16502,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "tabCount": 0,
         "trashPath": "/Volumes/Backup/.Trashes/501",
@@ -17915,14 +16585,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/link0"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/link0"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/link0"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -17961,8 +16624,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/.Trash/old",
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -18005,14 +16666,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -18081,8 +16735,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "//",
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 2,
@@ -18128,14 +16780,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [
-          "/"
-        ],
-        "editPaths": [
-          "/"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -18175,8 +16820,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me",
         "canGoForward": true,
         "tabCount": 1,
         "trashPath": "/Volumes/Backup/.Trashes",
@@ -18213,10 +16856,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -18262,8 +16902,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/a/b/",
-        "selectedContentFolderPath": "/Volumes/Backup/.Trashes/501",
         "tabCount": 0,
         "trashPath": "//",
         "homePath": "/Users/me",
@@ -18307,18 +16945,7 @@
           "/Volumes/Backup/Folder2",
           "/Volumes/Backup/b.md1",
           "relative/Folder0"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/Folder2",
-          "/Volumes/Backup/b.md1",
-          "relative/Folder0"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/Folder2",
-          "/Volumes/Backup/b.md1",
-          "relative/Folder0"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -18360,8 +16987,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -18455,14 +17080,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -18494,8 +17112,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "relative",
-        "selectedContentFolderPath": "/Volumes/Backup/.Trashes/501",
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -18535,16 +17151,7 @@
         "openTerminal": [
           "relative/a.txt",
           "relative/é.txt"
-        ],
-        "openPaths": [
-          "relative/a.txt",
-          "relative/é.txt"
-        ],
-        "editPaths": [
-          "relative/a.txt",
-          "relative/é.txt"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -18581,8 +17188,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -18628,10 +17233,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -18695,8 +17297,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "trashPath": "/a/b/",
         "ejectTargetPath": null
       },
@@ -18778,14 +17378,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501/a.txt7"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501/a.txt7"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501/a.txt7"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -18822,8 +17415,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "trashPath": "relative",
@@ -18878,10 +17469,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -18921,8 +17509,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "trashPath": "/Volumes/Backup/.Trashes/501",
@@ -19004,14 +17590,7 @@
         ],
         "openTerminal": [
           "/a//b/Folder1"
-        ],
-        "openPaths": [
-          "/a//b/Folder1"
-        ],
-        "editPaths": [
-          "/a//b/Folder1"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -19075,8 +17654,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/.Trash",
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -19158,14 +17735,7 @@
         "calculateSize": [],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -19197,8 +17767,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "trashPath": "/é",
         "trashIsEmpty": false,
@@ -19282,14 +17850,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [
-          "/a/b/"
-        ],
-        "editPaths": [
-          "/a/b/"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -19329,8 +17890,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "homePath": "/Users/me",
         "ejectTargetPath": null
@@ -19368,16 +17927,7 @@
         "openTerminal": [
           "/é/b.md0",
           "/é/b.md0"
-        ],
-        "openPaths": [
-          "/é/b.md0",
-          "/é/b.md0"
-        ],
-        "editPaths": [
-          "/é/b.md0",
-          "/é/b.md0"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -19422,8 +17972,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/.Trash",
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 0,
@@ -19509,18 +18057,7 @@
           "/é/link0",
           "/a/b//d d1",
           "/é/link0"
-        ],
-        "openPaths": [
-          "/é/link0",
-          "/a/b//d d1",
-          "/é/link0"
-        ],
-        "editPaths": [
-          "/é/link0",
-          "/a/b//d d1",
-          "/é/link0"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -19554,8 +18091,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Volumes/Backup",
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -19638,10 +18173,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -19683,8 +18215,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "tabCount": 1,
@@ -19786,26 +18316,7 @@
           "/Folder",
           "/é.txt0",
           "/é.txt0"
-        ],
-        "openPaths": [
-          "/é.txt0",
-          "/é.txt0",
-          "/Volumes/Backup/a.txt",
-          "/é.txt0",
-          "/Folder",
-          "/é.txt0",
-          "/é.txt0"
-        ],
-        "editPaths": [
-          "/é.txt0",
-          "/é.txt0",
-          "/Volumes/Backup/a.txt",
-          "/é.txt0",
-          "/Folder",
-          "/é.txt0",
-          "/é.txt0"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -19834,8 +18345,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -19922,10 +18431,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -19995,8 +18501,6 @@
         "contextMenuPaths": [
           "/a/b/"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 1,
         "trashPath": null,
@@ -20040,14 +18544,7 @@
         ],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [
-          "/a/b/"
-        ],
-        "editPaths": [
-          "/a/b/"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -20097,8 +18594,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -20191,26 +18686,7 @@
           "/Users/me/.Trash/old/é.txt2",
           "/Users/me/.Trash/old/é.txt0",
           "/a//b/d d1"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old/é.txt2",
-          "/Users/me/link",
-          "/Users/me/.Trash/old/é.txt2",
-          "/a//b/d d1",
-          "/Users/me/.Trash/old/é.txt2",
-          "/Users/me/.Trash/old/é.txt0",
-          "/a//b/d d1"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old/é.txt2",
-          "/Users/me/link",
-          "/Users/me/.Trash/old/é.txt2",
-          "/a//b/d d1",
-          "/Users/me/.Trash/old/é.txt2",
-          "/Users/me/.Trash/old/é.txt0",
-          "/a//b/d d1"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -20257,8 +18733,6 @@
         "contextMenuPaths": [
           "/Volumes/Backup/.Trashes"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -20356,14 +18830,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -20410,8 +18877,6 @@
         "contextMenuPaths": [
           "/é"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "trashPath": "/Users/me/Documents",
         "trashIsEmpty": null,
@@ -20493,14 +18958,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -20533,8 +18991,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me",
         "canGoForward": false,
         "tabCount": 2,
         "ejectTargetPath": "/é"
@@ -20618,14 +19074,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -20654,8 +19103,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "",
         "hasCachedSearch": true,
         "trashPath": "/Users/me/Documents",
         "homePath": "/Users/me",
@@ -20736,10 +19183,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -20770,8 +19214,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "ejectTargetPath": "/a/b/"
@@ -20848,14 +19290,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Thing.app"
-        ],
-        "openPaths": [
-          "/Users/me/Thing.app"
-        ],
-        "editPaths": [
-          "/Users/me/Thing.app"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -20904,8 +19339,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 5,
         "trashPath": "relative",
@@ -20991,18 +19424,7 @@
           "/é/b.md1",
           "/é/b.md1",
           "/é/d d0"
-        ],
-        "openPaths": [
-          "/é/b.md1",
-          "/é/b.md1",
-          "/é/d d0"
-        ],
-        "editPaths": [
-          "/é/b.md1",
-          "/é/b.md1",
-          "/é/d d0"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -21033,8 +19455,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Applications",
         "canGoBack": true,
         "trashPath": "relative",
         "homePath": "/Users/me",
@@ -21114,14 +19534,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Thing.app"
-        ],
-        "openPaths": [
-          "/Thing.app"
-        ],
-        "editPaths": [
-          "/Thing.app"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -21159,8 +19572,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "//",
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 1,
         "trashPath": null,
@@ -21247,18 +19658,7 @@
           "/é/b.md0",
           "///a.txt",
           "/Users/me/Documents/link"
-        ],
-        "openPaths": [
-          "/é/b.md0",
-          "///a.txt",
-          "/Users/me/Documents/link"
-        ],
-        "editPaths": [
-          "/é/b.md0",
-          "///a.txt",
-          "/Users/me/Documents/link"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -21304,8 +19704,6 @@
         "contextMenuPaths": [
           "/a/b/"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -21340,14 +19738,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [
-          "/a/b/"
-        ],
-        "editPaths": [
-          "/a/b/"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -21389,8 +19780,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -21474,10 +19863,7 @@
         ],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -21514,8 +19900,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -21615,26 +19999,7 @@
           "/Users/me/Documents/c",
           "/a//b/Thing.app",
           "/a//b/a.txt"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/Thing.app",
-          "/a/b//é.txt",
-          "/Users/me/Documents/link",
-          "/Users/me/a.txt",
-          "/Users/me/Documents/c",
-          "/a//b/Thing.app",
-          "/a//b/a.txt"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/Thing.app",
-          "/a/b//é.txt",
-          "/Users/me/Documents/link",
-          "/Users/me/a.txt",
-          "/Users/me/Documents/c",
-          "/a//b/Thing.app",
-          "/a//b/a.txt"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -21673,8 +20038,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 2,
         "trashPath": "/",
@@ -21756,14 +20119,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Thing.app0"
-        ],
-        "openPaths": [
-          "/Thing.app0"
-        ],
-        "editPaths": [
-          "/Thing.app0"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -21807,8 +20163,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup",
-        "selectedContentFolderPath": "/a/b/",
         "tabCount": 0,
         "trashPath": null,
         "homePath": "/Users/me",
@@ -21838,14 +20192,7 @@
         ],
         "openTerminal": [
           "relative/Folder2"
-        ],
-        "openPaths": [
-          "relative/Folder2"
-        ],
-        "editPaths": [
-          "relative/Folder2"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -21881,8 +20228,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "",
         "hasCachedSearch": true,
         "trashIsEmpty": false
       },
@@ -21962,14 +20307,7 @@
         ],
         "openTerminal": [
           "/a//b/link0"
-        ],
-        "openPaths": [
-          "/a//b/link0"
-        ],
-        "editPaths": [
-          "/a//b/link0"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -22008,8 +20346,6 @@
         "contextMenuPaths": [
           "//"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "trashIsEmpty": true,
         "ejectTargetPath": "/Volumes/Backup/.Trashes"
@@ -22088,14 +20424,7 @@
         "calculateSize": [],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -22124,8 +20453,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "",
-        "selectedContentFolderPath": "/é",
         "hasCachedSearch": false,
         "trashPath": "/Volumes/Backup"
       },
@@ -22205,10 +20532,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -22245,8 +20569,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -22340,26 +20662,7 @@
           "/é.txt",
           "/Users/me/.Trash/old/b.md",
           "/a/b//c"
-        ],
-        "openPaths": [
-          "/a//b/é.txt",
-          "/Users/me/Documents/Folder",
-          "/Users/me/.Trash/Thing.app",
-          "/é/b.md",
-          "/é.txt",
-          "/Users/me/.Trash/old/b.md",
-          "/a/b//c"
-        ],
-        "editPaths": [
-          "/a//b/é.txt",
-          "/Users/me/Documents/Folder",
-          "/Users/me/.Trash/Thing.app",
-          "/é/b.md",
-          "/é.txt",
-          "/Users/me/.Trash/old/b.md",
-          "/a/b//c"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -22418,8 +20721,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Volumes/Backup",
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -22504,14 +20805,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/d d0"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/d d0"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/d d0"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -22549,8 +20843,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me",
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -22636,10 +20928,7 @@
         ],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -22684,8 +20973,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": null,
         "tabCount": 5
       },
       "output": {
@@ -22767,10 +21054,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -22811,8 +21095,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 1,
@@ -22897,14 +21179,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -22948,8 +21223,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "trashPath": "/Volumes/Backup/.Trashes",
@@ -23030,14 +21303,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -23078,8 +21344,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me",
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 2,
@@ -23122,10 +21386,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -23154,8 +21415,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/a/b/",
         "canGoBack": false,
         "tabCount": 2,
         "trashPath": "/Volumes/Backup/.Trashes/501",
@@ -23235,10 +21494,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -23276,8 +21532,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -23369,14 +21623,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [
-          "/"
-        ],
-        "editPaths": [
-          "/"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -23415,8 +21662,6 @@
         "contextMenuPaths": [
           ""
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "tabCount": 0,
         "trashPath": "/Users/me/.Trash",
@@ -23462,14 +21707,7 @@
         "calculateSize": [],
         "openTerminal": [
           ""
-        ],
-        "openPaths": [
-          ""
-        ],
-        "editPaths": [
-          ""
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -23513,8 +21751,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "homePath": "/Users/me",
@@ -23556,14 +21792,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -23594,8 +21823,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "tabCount": 2,
         "trashPath": "/Users/me/.Trash"
       },
@@ -23639,14 +21866,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/é.txt"
-        ],
-        "openPaths": [
-          "/Users/me/é.txt"
-        ],
-        "editPaths": [
-          "/Users/me/é.txt"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -23692,8 +21912,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "//",
         "canGoBack": false,
         "trashPath": "/Volumes/Backup",
         "trashIsEmpty": null
@@ -23740,26 +21958,7 @@
           "/b.md1",
           "/b.md1",
           "/b.md1"
-        ],
-        "openPaths": [
-          "/b.md1",
-          "/b.md1",
-          "/Volumes/Backup",
-          "/Volumes/Backup",
-          "/b.md1",
-          "/b.md1",
-          "/b.md1"
-        ],
-        "editPaths": [
-          "/b.md1",
-          "/b.md1",
-          "/Volumes/Backup",
-          "/Volumes/Backup",
-          "/b.md1",
-          "/b.md1",
-          "/b.md1"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -23802,8 +22001,6 @@
         "contextMenuPaths": [
           "/é"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "trashPath": "/Users/me/.Trash/old",
         "ejectTargetPath": null
@@ -23840,14 +22037,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -23892,8 +22082,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -23934,10 +22122,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -23979,8 +22164,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup/.Trashes/501",
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "tabCount": 0,
@@ -24031,14 +22214,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -24069,8 +22245,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup/.Trashes/501",
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "tabCount": 2,
         "homePath": "/Users/me"
@@ -24153,14 +22327,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a//b/Folder"
-        ],
-        "openPaths": [
-          "/a//b/Folder"
-        ],
-        "editPaths": [
-          "/a//b/Folder"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -24197,8 +22364,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 2,
         "homePath": "/Users/me",
@@ -24239,14 +22404,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -24293,8 +22451,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "homePath": "",
         "trashIsEmpty": false
@@ -24371,14 +22527,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -24417,8 +22566,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "tabCount": 1,
@@ -24503,14 +22650,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/c0"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/c0"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/c0"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -24550,8 +22690,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me",
-        "selectedContentFolderPath": "//",
         "hasCachedSearch": true,
         "tabCount": 0,
         "trashIsEmpty": true
@@ -24630,14 +22768,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents/Thing.app0"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/Thing.app0"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/Thing.app0"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -24684,8 +22815,6 @@
         "contextMenuPaths": [
           "/a//b"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "trashPath": "/Users/me",
         "homePath": "",
@@ -24768,14 +22897,7 @@
         ],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [
-          "/a//b"
-        ],
-        "editPaths": [
-          "/a//b"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -24834,8 +22956,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 5,
         "ejectTargetPath": "relative"
@@ -24920,14 +23040,7 @@
         ],
         "openTerminal": [
           "relative/a.txt0"
-        ],
-        "openPaths": [
-          "relative/a.txt0"
-        ],
-        "editPaths": [
-          "relative/a.txt0"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -24966,8 +23079,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -25055,10 +23166,7 @@
         ],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -25087,8 +23195,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/a//b",
         "canGoForward": false,
         "hasCachedSearch": true,
         "tabCount": 5,
@@ -25134,10 +23240,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -25174,8 +23277,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "homePath": "/Users/me",
         "trashIsEmpty": true,
@@ -25216,10 +23317,7 @@
         "calculateSize": [],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -25284,8 +23382,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Applications",
         "canGoForward": true,
         "tabCount": 5,
         "trashPath": "/Users/me",
@@ -25366,10 +23462,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -25398,8 +23491,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "",
         "canGoBack": false,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -25476,10 +23567,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": null
+        "openTerminal": []
       }
     },
     {
@@ -25521,8 +23609,6 @@
         "contextMenuPaths": [
           "//"
         ],
-        "contextMenuFolderPath": "/a//b",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -25564,14 +23650,7 @@
         ],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -25612,8 +23691,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -25663,18 +23740,7 @@
           "///link0",
           "/é/link",
           "///link0"
-        ],
-        "openPaths": [
-          "///link0",
-          "/é/link",
-          "///link0"
-        ],
-        "editPaths": [
-          "///link0",
-          "/é/link",
-          "///link0"
-        ],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -25719,8 +23785,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "trashPath": "/a//b",
         "trashIsEmpty": true,
@@ -25757,10 +23821,7 @@
         ],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -25801,8 +23862,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": "/",
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 2,
@@ -25845,18 +23904,7 @@
           "",
           "",
           ""
-        ],
-        "openPaths": [
-          "",
-          "",
-          ""
-        ],
-        "editPaths": [
-          "",
-          "",
-          ""
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -25906,8 +23954,6 @@
         "contextMenuPaths": [
           "/a//b"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "trashIsEmpty": true,
@@ -25992,14 +24038,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [
-          "/a//b"
-        ],
-        "editPaths": [
-          "/a//b"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -26061,8 +24100,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -26107,10 +24144,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -26167,8 +24201,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 2,
         "trashPath": "/é",
@@ -26213,10 +24245,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -26282,8 +24311,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "tabCount": 5,
@@ -26321,14 +24348,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -26366,8 +24386,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 5,
@@ -26412,10 +24430,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -26469,8 +24484,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup",
-        "selectedContentFolderPath": "/Applications",
         "canGoForward": true,
         "tabCount": 2,
         "trashPath": "relative",
@@ -26553,14 +24566,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -26630,8 +24636,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": "/Volumes/Backup/.Trashes",
         "homePath": "/Users/me",
         "ejectTargetPath": ""
       },
@@ -26724,26 +24728,7 @@
           "/Users/me/Documents/d d0",
           "/Users/me/Documents/Folder4",
           "/é"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/link5",
-          "/Users/me/Documents/Folder6",
-          "/é/Thing.app",
-          "/Users/me/.Trash/old",
-          "/Users/me/Documents/d d0",
-          "/Users/me/Documents/Folder4",
-          "/é"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/link5",
-          "/Users/me/Documents/Folder6",
-          "/é/Thing.app",
-          "/Users/me/.Trash/old",
-          "/Users/me/Documents/d d0",
-          "/Users/me/Documents/Folder4",
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -26803,8 +24788,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "trashPath": "/Users/me/.Trash",
         "homePath": "/Users/me",
@@ -26889,16 +24872,7 @@
         "openTerminal": [
           "/Volumes/Backup/a.txt",
           "/a/b//é.txt1"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/a.txt",
-          "/a/b//é.txt1"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/a.txt",
-          "/a/b//é.txt1"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -26948,8 +24922,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -27040,10 +25012,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -27076,8 +25045,6 @@
         "contextMenuPaths": [
           "/é"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -27118,14 +25085,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -27167,8 +25127,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -27198,10 +25156,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -27263,8 +25218,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "tabCount": 0,
         "homePath": "/Users/me",
@@ -27319,10 +25272,7 @@
         ],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -27353,8 +25303,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/a//b",
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -27393,14 +25341,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/a.txt"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/a.txt"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/a.txt"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -27439,8 +25380,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "tabCount": 5,
@@ -27525,14 +25464,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -27565,8 +25497,6 @@
         "contextMenuPaths": [
           "/a//b"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "relative",
         "canGoBack": true,
         "hasCachedSearch": false,
         "tabCount": 5,
@@ -27611,14 +25541,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [
-          "/a//b"
-        ],
-        "editPaths": [
-          "/a//b"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -27655,8 +25578,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "trashPath": "/",
@@ -27699,14 +25620,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [
-          "/Volumes/Backup"
-        ],
-        "editPaths": [
-          "/Volumes/Backup"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -27737,8 +25651,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -27779,14 +25691,7 @@
         "calculateSize": [],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [
-          "relative"
-        ],
-        "editPaths": [
-          "relative"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -27842,8 +25747,6 @@
         "contextMenuPaths": [
           "/a/b/"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "trashPath": "/Users/me",
         "homePath": "/Users/me",
@@ -27926,14 +25829,7 @@
         ],
         "openTerminal": [
           "/a/b/"
-        ],
-        "openPaths": [
-          "/a/b/"
-        ],
-        "editPaths": [
-          "/a/b/"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -27970,8 +25866,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/a/b/",
         "canGoBack": false,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -28059,10 +25953,7 @@
         ],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -28132,8 +26023,6 @@
         "contextMenuPaths": [
           "/Users/me/Documents"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -28216,14 +26105,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -28290,8 +26172,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/a/b/",
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "tabCount": 0,
         "trashPath": "/é",
@@ -28322,10 +26202,7 @@
         ],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -28374,8 +26251,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": true,
         "homePath": "/Users/me",
@@ -28419,18 +26294,7 @@
           "/b.md1",
           "/b.md0",
           "/b.md0"
-        ],
-        "openPaths": [
-          "/b.md1",
-          "/b.md0",
-          "/b.md0"
-        ],
-        "editPaths": [
-          "/b.md1",
-          "/b.md0",
-          "/b.md0"
-        ],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -28466,8 +26330,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "tabCount": 0,
         "homePath": "/Users/me",
@@ -28548,14 +26410,7 @@
         ],
         "openTerminal": [
           "/Users/me/é.txt0"
-        ],
-        "openPaths": [
-          "/Users/me/é.txt0"
-        ],
-        "editPaths": [
-          "/Users/me/é.txt0"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -28598,8 +26453,6 @@
         "contextMenuPaths": [
           "//"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": false,
         "trashPath": "/a//b",
@@ -28682,14 +26535,7 @@
         ],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -28722,8 +26568,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "trashIsEmpty": true,
         "ejectTargetPath": null
@@ -28766,18 +26610,7 @@
           "/Users/me/Documents/Folder",
           "/Volumes/Backup/é.txt",
           "/Volumes/Backup/.Trashes/501/c"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/Folder",
-          "/Volumes/Backup/é.txt",
-          "/Volumes/Backup/.Trashes/501/c"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/Folder",
-          "/Volumes/Backup/é.txt",
-          "/Volumes/Backup/.Trashes/501/c"
-        ],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -28815,8 +26648,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "homePath": "/Users/me"
       },
@@ -28890,10 +26721,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": null
+        "openTerminal": []
       }
     },
     {
@@ -28937,8 +26765,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -28968,10 +26794,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -29002,8 +26825,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/Documents",
-        "selectedContentFolderPath": null,
         "canGoForward": false,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -29053,14 +26874,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/link"
-        ],
-        "openPaths": [
-          "/link"
-        ],
-        "editPaths": [
-          "/link"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -29118,8 +26932,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/é",
-        "selectedContentFolderPath": "/Users/me/.Trash",
         "canGoBack": true,
         "hasCachedSearch": true,
         "homePath": "/Users/me",
@@ -29162,18 +26974,7 @@
           "/é/c",
           "/Users/me/.Trash/é.txt5",
           "///é.txt2"
-        ],
-        "openPaths": [
-          "/é/c",
-          "/Users/me/.Trash/é.txt5",
-          "///é.txt2"
-        ],
-        "editPaths": [
-          "/é/c",
-          "/Users/me/.Trash/é.txt5",
-          "///é.txt2"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -29239,8 +27040,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 1,
@@ -29326,10 +27125,7 @@
         ],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "//"
+        ]
       }
     },
     {
@@ -29360,8 +27156,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "trashPath": null
@@ -29391,14 +27185,7 @@
         "calculateSize": [],
         "openTerminal": [
           "relative/d d"
-        ],
-        "openPaths": [
-          "relative/d d"
-        ],
-        "editPaths": [
-          "relative/d d"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -29454,8 +27241,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Volumes/Backup",
         "canGoBack": false,
         "homePath": "/Users/me",
         "trashIsEmpty": false
@@ -29499,14 +27284,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/é.txt5"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/é.txt5"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/é.txt5"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -29535,8 +27313,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "tabCount": 1,
         "trashIsEmpty": false,
@@ -29583,14 +27359,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -29627,8 +27396,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": false,
@@ -29680,26 +27447,7 @@
           "/Users/me/.Trash/old/b.md",
           "/Applications/a.txt",
           "/é.txt"
-        ],
-        "openPaths": [
-          "/Thing.app",
-          "/c",
-          "/Users/me/Documents/b.md",
-          "/é/Folder",
-          "/Users/me/.Trash/old/b.md",
-          "/Applications/a.txt",
-          "/é.txt"
-        ],
-        "editPaths": [
-          "/Thing.app",
-          "/c",
-          "/Users/me/Documents/b.md",
-          "/é/Folder",
-          "/Users/me/.Trash/old/b.md",
-          "/Applications/a.txt",
-          "/é.txt"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -29764,8 +27512,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup",
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "homePath": "/Users/me",
@@ -29846,16 +27592,7 @@
         "openTerminal": [
           "/é/é.txt7",
           "/Users/me/Documents/d d"
-        ],
-        "openPaths": [
-          "/é/é.txt7",
-          "/Users/me/Documents/d d"
-        ],
-        "editPaths": [
-          "/é/é.txt7",
-          "/Users/me/Documents/d d"
-        ],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -29924,8 +27661,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -29975,14 +27710,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -30030,8 +27758,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -30121,14 +27847,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash/old"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -30168,8 +27887,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "relative",
         "canGoBack": true,
         "hasCachedSearch": false,
         "homePath": "/Users/me",
@@ -30206,16 +27923,7 @@
         "openTerminal": [
           "/a//b/é.txt0",
           "/a/b//Folder"
-        ],
-        "openPaths": [
-          "/a//b/é.txt0",
-          "/a/b//Folder"
-        ],
-        "editPaths": [
-          "/a//b/é.txt0",
-          "/a/b//Folder"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -30260,8 +27968,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "trashPath": "/Users/me/Documents",
         "trashIsEmpty": null,
@@ -30343,18 +28049,7 @@
           "/Volumes/Backup/a.txt1",
           "/Volumes/Backup/a.txt1",
           "/Volumes/Backup/a.txt1"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/a.txt1",
-          "/Volumes/Backup/a.txt1",
-          "/Volumes/Backup/a.txt1"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/a.txt1",
-          "/Volumes/Backup/a.txt1",
-          "/Volumes/Backup/a.txt1"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -30390,8 +28085,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/Documents",
         "canGoBack": false,
         "hasCachedSearch": true,
         "trashPath": "/Volumes/Backup/.Trashes",
@@ -30471,10 +28164,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -30505,8 +28195,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "tabCount": 0,
         "trashIsEmpty": true
@@ -30589,14 +28277,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/.Trash/old/d d"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old/d d"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old/d d"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -30636,8 +28317,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/a/b/",
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "trashPath": "/Volumes/Backup",
         "homePath": "/Users/me",
@@ -30673,16 +28352,7 @@
         "openTerminal": [
           "relative/Thing.app0",
           "relative/Thing.app0"
-        ],
-        "openPaths": [
-          "relative/Thing.app0",
-          "relative/Thing.app0"
-        ],
-        "editPaths": [
-          "relative/Thing.app0",
-          "relative/Thing.app0"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -30748,8 +28418,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/a//b",
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -30833,18 +28501,7 @@
           "/a//b/é.txt",
           "relative/link",
           "/é/d d7"
-        ],
-        "openPaths": [
-          "/a//b/é.txt",
-          "relative/link",
-          "/é/d d7"
-        ],
-        "editPaths": [
-          "/a//b/é.txt",
-          "relative/link",
-          "/é/d d7"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -30900,9 +28557,7 @@
         "textEditing": false,
         "focusedPane": null,
         "lastFocusedPane": "tree",
-        "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/.Trash/old"
+        "contextMenuPaths": []
       },
       "output": {
         "disabled": [
@@ -30938,14 +28593,7 @@
         ],
         "openTerminal": [
           "/a//b"
-        ],
-        "openPaths": [
-          "/a//b"
-        ],
-        "editPaths": [
-          "/a//b"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -30974,8 +28622,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": true,
         "trashPath": "",
@@ -31053,10 +28699,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": null
+        "openTerminal": []
       }
     },
     {
@@ -31098,8 +28741,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "trashIsEmpty": true,
@@ -31146,18 +28787,7 @@
           "/Volumes/Backup/.Trashes/501/c0",
           "/é/d d1",
           "/é/d d1"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501/c0",
-          "/é/d d1",
-          "/é/d d1"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501/c0",
-          "/é/d d1",
-          "/é/d d1"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -31197,8 +28827,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "trashPath": null,
@@ -31251,14 +28879,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Users/me/Documents"
-        ],
-        "openPaths": [
-          "/Users/me/Documents"
-        ],
-        "editPaths": [
-          "/Users/me/Documents"
-        ],
-        "rootTree": "/Users/me/Documents"
+        ]
       }
     },
     {
@@ -31307,8 +28928,6 @@
         "contextMenuPaths": [
           "/Volumes/Backup/.Trashes/501"
         ],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Applications",
         "canGoBack": true,
         "hasCachedSearch": true,
         "trashPath": null,
@@ -31388,14 +29007,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/501"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -31426,8 +29038,6 @@
         "contextMenuPaths": [
           "/Applications"
         ],
-        "contextMenuFolderPath": "/Users/me/.Trash",
-        "selectedContentFolderPath": "/é",
         "canGoBack": false,
         "trashPath": "/Users/me/Documents"
       },
@@ -31477,14 +29087,7 @@
         ],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [
-          "/Applications"
-        ],
-        "editPaths": [
-          "/Applications"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -31551,8 +29154,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Volumes/Backup/.Trashes/501",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "trashPath": "/",
@@ -31634,14 +29235,7 @@
         ],
         "openTerminal": [
           "/Users/me/.Trash"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -31682,8 +29276,6 @@
         "contextMenuPaths": [
           "//"
         ],
-        "contextMenuFolderPath": "/Volumes/Backup/.Trashes",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": true,
         "tabCount": 1,
@@ -31766,14 +29358,7 @@
         "calculateSize": [],
         "openTerminal": [
           "//"
-        ],
-        "openPaths": [
-          "//"
-        ],
-        "editPaths": [
-          "//"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes"
+        ]
       }
     },
     {
@@ -31802,8 +29387,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 0
@@ -31848,10 +29431,7 @@
         "favorite": null,
         "showInFinder": [],
         "calculateSize": [],
-        "openTerminal": [],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": null
+        "openTerminal": []
       }
     },
     {
@@ -31893,8 +29473,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 2,
@@ -31940,14 +29518,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [
-          "relative"
-        ],
-        "editPaths": [
-          "relative"
-        ],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -31989,8 +29560,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/.Trash",
         "canGoBack": false,
         "canGoForward": false,
         "trashPath": "/é",
@@ -32033,10 +29602,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Volumes/Backup"
+        ]
       }
     },
     {
@@ -32100,8 +29666,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/.Trash/old",
         "canGoBack": false,
         "canGoForward": false,
         "tabCount": 5,
@@ -32182,14 +29746,7 @@
         ],
         "openTerminal": [
           "/Applications"
-        ],
-        "openPaths": [
-          "/Applications"
-        ],
-        "editPaths": [
-          "/Applications"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -32231,8 +29788,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/a//b",
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "trashPath": "/é"
@@ -32318,18 +29873,7 @@
           "/Applications/a.txt0",
           "/b.md",
           "/Applications/é.txt1"
-        ],
-        "openPaths": [
-          "/Applications/a.txt0",
-          "/b.md",
-          "/Applications/é.txt1"
-        ],
-        "editPaths": [
-          "/Applications/a.txt0",
-          "/b.md",
-          "/Applications/é.txt1"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     },
     {
@@ -32365,8 +29909,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "trashPath": "/Applications",
@@ -32449,14 +29991,7 @@
         "calculateSize": [],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [
-          "relative"
-        ],
-        "editPaths": [
-          "relative"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -32514,8 +30049,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "tabCount": 2,
         "trashPath": "/é",
         "homePath": "/Users/me"
@@ -32597,10 +30130,7 @@
         ],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -32644,8 +30174,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/.Trash",
-        "selectedContentFolderPath": "/é",
         "canGoBack": false,
         "hasCachedSearch": true,
         "trashPath": "",
@@ -32732,14 +30260,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [
-          "relative"
-        ],
-        "editPaths": [
-          "relative"
-        ],
-        "rootTree": "/Users/me/.Trash"
+        ]
       }
     },
     {
@@ -32776,8 +30297,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "tabCount": 0,
@@ -32819,10 +30338,7 @@
         ],
         "openTerminal": [
           "relative"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "relative"
+        ]
       }
     },
     {
@@ -32867,8 +30383,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": false,
@@ -32959,18 +30473,7 @@
           "/Users/me/.Trash/old",
           "/Users/me/.Trash/old",
           "/Volumes/Backup/.Trashes/501/b.md1"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/old",
-          "/Users/me/.Trash/old",
-          "/Volumes/Backup/.Trashes/501/b.md1"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/old",
-          "/Users/me/.Trash/old",
-          "/Volumes/Backup/.Trashes/501/b.md1"
-        ],
-        "rootTree": "/Volumes/Backup/.Trashes/501"
+        ]
       }
     },
     {
@@ -33019,8 +30522,6 @@
         "focusedPane": null,
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "hasCachedSearch": false,
         "tabCount": 1,
@@ -33067,26 +30568,7 @@
           "/é/b.md1",
           "/Users/me/.Trash/é.txt",
           "/é/b.md1"
-        ],
-        "openPaths": [
-          "/é/c0",
-          "/é/b.md1",
-          "/é/c0",
-          "/é/c0",
-          "/é/b.md1",
-          "/Users/me/.Trash/é.txt",
-          "/é/b.md1"
-        ],
-        "editPaths": [
-          "/é/c0",
-          "/é/b.md1",
-          "/é/c0",
-          "/é/c0",
-          "/é/b.md1",
-          "/Users/me/.Trash/é.txt",
-          "/é/b.md1"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -33123,8 +30605,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/Users/me/.Trash/old",
         "canGoForward": false,
         "hasCachedSearch": false,
         "trashPath": "/Volumes/Backup/.Trashes/501",
@@ -33215,26 +30695,7 @@
           "/Users/me/Documents/Thing.app",
           "/é.txt",
           "///Thing.app"
-        ],
-        "openPaths": [
-          "/d d",
-          "/é/b.md",
-          "/é/link",
-          "/Users/me/c",
-          "/Users/me/Documents/Thing.app",
-          "/é.txt",
-          "///Thing.app"
-        ],
-        "editPaths": [
-          "/d d",
-          "/é/b.md",
-          "/é/link",
-          "/Users/me/c",
-          "/Users/me/Documents/Thing.app",
-          "/é.txt",
-          "///Thing.app"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -33271,8 +30732,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": false,
         "hasCachedSearch": true,
@@ -33369,26 +30828,7 @@
           "/Users/me/Thing.app",
           "/Thing.app",
           "/é/a.txt"
-        ],
-        "openPaths": [
-          "/Users/me/.Trash/Thing.app",
-          "/Users/me/.Trash/old/é.txt",
-          "/a//b/b.md",
-          "/a/b//é.txt",
-          "/Users/me/Thing.app",
-          "/Thing.app",
-          "/é/a.txt"
-        ],
-        "editPaths": [
-          "/Users/me/.Trash/Thing.app",
-          "/Users/me/.Trash/old/é.txt",
-          "/a//b/b.md",
-          "/a/b//é.txt",
-          "/Users/me/Thing.app",
-          "/Thing.app",
-          "/é/a.txt"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -33420,8 +30860,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": false,
         "tabCount": 0,
         "trashPath": "/Users/me/.Trash/old",
@@ -33507,16 +30945,7 @@
         "openTerminal": [
           "/Volumes/Backup/.Trashes/c",
           "/é/b.md"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes/c",
-          "/é/b.md"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes/c",
-          "/é/b.md"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -33550,8 +30979,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/",
-        "selectedContentFolderPath": "/a/b/",
         "tabCount": 1,
         "homePath": "",
         "trashIsEmpty": true
@@ -33596,10 +31023,7 @@
         ],
         "openTerminal": [
           "/Volumes/Backup/.Trashes/501"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/"
+        ]
       }
     },
     {
@@ -33635,8 +31059,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "canGoForward": true,
         "hasCachedSearch": true,
@@ -33720,14 +31142,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/c0"
-        ],
-        "openPaths": [
-          "/c0"
-        ],
-        "editPaths": [
-          "/c0"
-        ],
-        "rootTree": null
+        ]
       }
     },
     {
@@ -33780,8 +31195,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "/a/b/",
         "hasCachedSearch": false,
         "trashPath": "//",
         "trashIsEmpty": false,
@@ -33830,26 +31243,7 @@
           "/c0",
           "/c0",
           "/Users/me/Thing.app"
-        ],
-        "openPaths": [
-          "/é/link1",
-          "/é/link1",
-          "/Volumes/Backup/.Trashes/501",
-          "/c0",
-          "/c0",
-          "/c0",
-          "/Users/me/Thing.app"
-        ],
-        "editPaths": [
-          "/é/link1",
-          "/é/link1",
-          "/Volumes/Backup/.Trashes/501",
-          "/c0",
-          "/c0",
-          "/c0",
-          "/Users/me/Thing.app"
-        ],
-        "rootTree": "/a/b/"
+        ]
       }
     },
     {
@@ -33906,8 +31300,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "hasCachedSearch": true,
         "homePath": "/Users/me",
         "ejectTargetPath": null
@@ -33944,10 +31336,7 @@
         ],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -33978,8 +31367,6 @@
         "focusedPane": "content",
         "lastFocusedPane": null,
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/Users/me/.Trash/old",
-        "selectedContentFolderPath": "/Volumes/Backup",
         "canGoBack": true,
         "tabCount": 5,
         "trashPath": "/Users/me",
@@ -34026,14 +31413,7 @@
         ],
         "openTerminal": [
           "/Users/me/Documents/c"
-        ],
-        "openPaths": [
-          "/Users/me/Documents/c"
-        ],
-        "editPaths": [
-          "/Users/me/Documents/c"
-        ],
-        "rootTree": "/Users/me/.Trash/old"
+        ]
       }
     },
     {
@@ -34098,8 +31478,6 @@
         "focusedPane": null,
         "lastFocusedPane": "content",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": true,
         "hasCachedSearch": false,
         "tabCount": 0,
@@ -34182,16 +31560,7 @@
         "openTerminal": [
           "/Volumes/Backup/.Trashes",
           "//"
-        ],
-        "openPaths": [
-          "/Volumes/Backup/.Trashes",
-          "//"
-        ],
-        "editPaths": [
-          "/Volumes/Backup/.Trashes",
-          "//"
-        ],
-        "rootTree": "/Applications"
+        ]
       }
     },
     {
@@ -34248,8 +31617,6 @@
         "focusedPane": null,
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": null,
         "canGoBack": false,
         "tabCount": 1,
         "trashPath": "/Volumes/Backup/.Trashes/501",
@@ -34330,14 +31697,7 @@
         "calculateSize": [],
         "openTerminal": [
           "/é"
-        ],
-        "openPaths": [
-          "/é"
-        ],
-        "editPaths": [
-          "/é"
-        ],
-        "rootTree": "/é"
+        ]
       }
     },
     {
@@ -34375,8 +31735,6 @@
         "focusedPane": "tree",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": null,
-        "selectedContentFolderPath": "relative",
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 2,
@@ -34416,10 +31774,7 @@
         ],
         "openTerminal": [
           "/Users/me"
-        ],
-        "openPaths": [],
-        "editPaths": [],
-        "rootTree": "/Users/me"
+        ]
       }
     },
     {
@@ -34450,8 +31805,6 @@
         "focusedPane": "content",
         "lastFocusedPane": "tree",
         "contextMenuPaths": [],
-        "contextMenuFolderPath": "/a//b",
-        "selectedContentFolderPath": null,
         "canGoForward": true,
         "hasCachedSearch": true,
         "tabCount": 0,
@@ -34535,14 +31888,7 @@
         ],
         "openTerminal": [
           "/é/d d"
-        ],
-        "openPaths": [
-          "/é/d d"
-        ],
-        "editPaths": [
-          "/é/d d"
-        ],
-        "rootTree": "/a//b"
+        ]
       }
     }
   ]

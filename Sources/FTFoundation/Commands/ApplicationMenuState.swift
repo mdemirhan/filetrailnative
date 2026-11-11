@@ -36,20 +36,6 @@ public struct ApplicationMenuState: Equatable, Sendable {
     /// INITIAL_APPLICATION_MENU_STATE: before the window has reported, everything is available and nothing checked.
     public static let initial = ApplicationMenuState()
 
-    /// The state as it arrives where command names are plain strings; unknown names are
-    /// dropped.
-    public init(
-        disabledCommandNames: [String], viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool,
-        hiddenFilesShown: Bool, folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, favoriteIsSet: Bool,
-        textEditing: Bool
-    ) {
-        self.init(
-            disabledCommands: disabledCommandNames.compactMap(RendererCommand.init(rawValue:)), viewMode: viewMode,
-            sortBy: sortBy, foldersFirst: foldersFirst, hiddenFilesShown: hiddenFilesShown,
-            folderTreeOpen: folderTreeOpen, infoPanelOpen: infoPanelOpen, infoRowOpen: infoRowOpen,
-            favoriteIsSet: favoriteIsSet, textEditing: textEditing)
-    }
-
     /// What the application menu is told about the window: every command that can not
     /// run now, and what its checkmarks show.
     public static func build(

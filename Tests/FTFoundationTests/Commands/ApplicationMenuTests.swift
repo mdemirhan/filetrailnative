@@ -247,12 +247,7 @@ struct ApplicationMenuTests {
         #expect(notEditing.disabledCommands == RendererCommand.allCases)
     }
 
-    @Test func dropsCommandNamesItDoesNotKnow() {
-        let state = ApplicationMenuState(
-            disabledCommandNames: ["goBack", "zoomIn", "bogus", "newTab"], viewMode: .list, sortBy: .name,
-            foldersFirst: true, hiddenFilesShown: false, folderTreeOpen: true, infoPanelOpen: false,
-            infoRowOpen: false, favoriteIsSet: false, textEditing: false)
-        #expect(state.disabledCommands == [.goBack, .newTab])
+    @Test func startsInTheListView() {
         #expect(ApplicationMenuState.initial.viewMode == .list)
         #expect(ApplicationMenuState.initial.disabledCommands == [])
     }

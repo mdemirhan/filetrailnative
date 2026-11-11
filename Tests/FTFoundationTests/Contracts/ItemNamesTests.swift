@@ -60,9 +60,4 @@ struct ItemNamesTests {
             Output(error: ItemNames.error(for: $0), package: ItemNames.isMacOSPackageName($0))
         }
     }
-
-    @Test func limitsHaveTheirSetValues() {
-        #expect(Limits.maxPathsPerRequest == 100_000)
-        #expect(Limits.maxFileDragImages == 5)
-    }
 }

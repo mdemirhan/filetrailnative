@@ -50,10 +50,6 @@ public enum ShortcutCommands {
         definitionByID[id] ?? all[0]
     }
 
-    public static func isCommandID(_ value: String) -> Bool {
-        ShortcutCommandID(rawValue: value) != nil
-    }
-
     private static func normalizeAll(_ shortcuts: [String]) -> [String] {
         shortcuts.compactMap(Shortcuts.normalize)
     }

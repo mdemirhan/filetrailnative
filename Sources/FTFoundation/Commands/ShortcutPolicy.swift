@@ -57,7 +57,7 @@ public enum ShortcutPolicy {
     private static let helpCommands: Set<RendererCommand> = [.openHelp, .openKeyboardShortcuts]
 
     private static let treeSafeRawShortcuts: Set<RawExplorerShortcutID> = [
-        .copyPath, .openInTerminal, .copySelection, .cutSelection, .pasteSelection,
+        .copyPath, .copySelection, .cutSelection, .pasteSelection,
     ]
 
     public static func canHandle(_ command: RendererCommand, _ context: ShortcutContext) -> Bool {
@@ -107,9 +107,6 @@ public enum ShortcutPolicy {
             return false
         }
         if context.focusedPane != .tree {
-            return true
-        }
-        if treeFocusBucket(of: shortcut) != .contentOnly {
             return true
         }
         return treeSafeRawShortcuts.contains(shortcut)

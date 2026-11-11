@@ -28,74 +28,16 @@ extension ShortcutPolicy {
     }
 }
 
-/// The explorer's raw key handlers.
+/// The explorer's raw key handlers that the right-click menus ask about for their shortcut badges. All of them act on
+/// the file list's selection, so from the tree only the few that are safe there are handled.
 public enum RawExplorerShortcutID: String, CaseIterable, Sendable, Hashable {
-    case paneTabSwitch
     case copySelection
     case cutSelection
     case pasteSelection
     case duplicateSelection
     case trashSelection
     case renameSelection
-    case selectAllContent
-    case focusTreePane
-    case focusContentPane
-    case showCachedSearchResults
-    case focusFileSearch
-    case historyBack
-    case historyForward
-    case openParentTree
-    case openParentContent
-    case openSelectedContentWithCommand
-    case openTreeNodeWithCommand
-    case toggleHiddenFiles
-    case refreshOrApplySearchSort
     case copyPath
-    case openInTerminal
     case moveSelection
     case newFolder
-    case openLocationSheet
-    case toggleInfoRow
-    case toggleFolderTree
-    case toggleInfoPanel
-    case goHomeRootTree
-    case rootTreeAtSelection
-    case newTab
-    case reopenClosedTab
-    case closeTab
-    case selectNextTab
-    case selectPreviousTab
-    case pageBackward
-    case pageForward
-    case halfPageBackward
-    case halfPageForward
-    case pagedSelectionExtend
-    case listFilterEdit
-    case typeahead
-    case treeArrowNavigation
-    case contentArrowNavigation
-    case treeEnter
-    case contentEnter
-    case quickLook
-}
-
-extension ShortcutPolicy {
-    /// RAW_EXPLORER_SHORTCUT_TREE_FOCUS_BUCKETS.
-    public static func treeFocusBucket(of shortcut: RawExplorerShortcutID) -> TreeFocusShortcutBucket {
-        switch shortcut {
-        case .paneTabSwitch, .focusTreePane, .focusContentPane, .openParentTree, .openTreeNodeWithCommand,
-            .pageBackward, .pageForward, .halfPageBackward, .halfPageForward, .pagedSelectionExtend, .typeahead,
-            .treeArrowNavigation, .treeEnter:
-            .treeNavigation
-        case .copySelection, .cutSelection, .pasteSelection, .duplicateSelection, .trashSelection, .renameSelection,
-            .selectAllContent, .openParentContent, .openSelectedContentWithCommand, .copyPath, .openInTerminal,
-            .moveSelection, .newFolder, .listFilterEdit, .contentArrowNavigation, .contentEnter, .quickLook:
-            .contentOnly
-        case .showCachedSearchResults, .focusFileSearch, .historyBack, .historyForward, .toggleHiddenFiles,
-            .refreshOrApplySearchSort, .openLocationSheet, .toggleInfoRow, .toggleFolderTree, .toggleInfoPanel,
-            .goHomeRootTree, .rootTreeAtSelection, .newTab, .reopenClosedTab, .closeTab, .selectNextTab,
-            .selectPreviousTab:
-            .globalExplorer
-        }
-    }
 }

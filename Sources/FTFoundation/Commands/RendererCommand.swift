@@ -75,9 +75,4 @@ public enum RendererCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case focusContentPane
     case openHelp
     case openKeyboardShortcuts
-
-    /// Whether `value` names a command (`isRendererCommandType`).
-    public static func isRendererCommandType(_ value: String) -> Bool {
-        RendererCommand(rawValue: value) != nil
-    }
 }

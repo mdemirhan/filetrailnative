@@ -87,11 +87,6 @@ struct ShortcutPolicyTests {
         #expect(!Self.raw(.newFolder, Self.ctx(focusedPane: .tree)))
     }
 
-    @Test func keepsAllowedRawShortcutsAvailableWhenTheTreeIsFocused() {
-        #expect(Self.raw(.treeArrowNavigation, Self.ctx(focusedPane: .tree)))
-        #expect(Self.raw(.focusFileSearch, Self.ctx(focusedPane: .tree)))
-    }
-
     private func contentOnlyCommands(_ context: ShortcutContext) -> [RendererCommand] {
         RendererCommand.allCases.filter {
             ShortcutPolicy.treeFocusBucket(of: $0) == .contentOnly && Self.handle($0, context)
@@ -99,9 +94,7 @@ struct ShortcutPolicyTests {
     }
 
     private func contentOnlyRawShortcuts(_ context: ShortcutContext) -> [RawExplorerShortcutID] {
-        RawExplorerShortcutID.allCases.filter {
-            ShortcutPolicy.treeFocusBucket(of: $0) == .contentOnly && Self.raw($0, context)
-        }
+        RawExplorerShortcutID.allCases.filter { Self.raw($0, context) }
     }
 
     @Test func allowsOnlyTheSafeContentTargetCommandsForFilesystemTreeFolders() {
@@ -112,9 +105,7 @@ struct ShortcutPolicyTests {
                 .openSelectionInNewTab, .openSelectionInNewWindow,
             ])
         #expect(
-            contentOnlyRawShortcuts(treeFolder) == [
-                .copySelection, .cutSelection, .pasteSelection, .copyPath, .openInTerminal,
-            ])
+            contentOnlyRawShortcuts(treeFolder) == [.copySelection, .cutSelection, .pasteSelection, .copyPath])
     }
 
     @Test func allowsOnlyTheSafeContentTargetCommandsForFavorites() {
@@ -124,7 +115,7 @@ struct ShortcutPolicyTests {
                 .openSelection, .openInTerminal, .pasteSelection, .copyPath, .openSelectionInNewTab,
                 .openSelectionInNewWindow,
             ])
-        #expect(contentOnlyRawShortcuts(favorite) == [.pasteSelection, .copyPath, .openInTerminal])
+        #expect(contentOnlyRawShortcuts(favorite) == [.pasteSelection, .copyPath])
     }
 
     @Test func blocksContentTargetActionsEntirelyForTheFavoritesRoot() {
@@ -223,8 +214,6 @@ struct ShortcutPolicyTests {
             let context = Self.ctx(focusedPane: pane, selectedTreeTargetKind: .filesystemFolder)
             #expect(Self.handle(.goHomeRootTree, context))
             #expect(Self.handle(.rootTreeAtSelection, context))
-            #expect(Self.raw(.goHomeRootTree, context))
-            #expect(Self.raw(.rootTreeAtSelection, context))
         }
         #expect(!Self.handle(.rootTreeAtSelection, Self.ctx(mainView: .help)))
         #expect(
@@ -241,12 +230,5 @@ struct ShortcutPolicyTests {
         // Two commands that sit with the global explorer ones.
         #expect(ShortcutPolicy.treeFocusBucket(of: .ejectVolume) == .globalExplorer)
         #expect(ShortcutPolicy.treeFocusBucket(of: .calculateSize) == .globalExplorer)
-    }
-
-    @Test func keepsRawShortcutTreeFocusBucketsExhaustive() {
-        for shortcut in RawExplorerShortcutID.allCases {
-            _ = ShortcutPolicy.treeFocusBucket(of: shortcut)
-        }
-        #expect(RawExplorerShortcutID.allCases.count == 47)
     }
 }

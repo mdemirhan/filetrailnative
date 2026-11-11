@@ -49,7 +49,7 @@ public struct FileDragPlacement: Equatable, Sendable {
 
 public enum FileDragImages {
     /// A few pictures say a drag of many, and the rest go along unseen.
-    public static let maxImages = Limits.maxFileDragImages
+    public static let maxImages = 5
     /// A drag of more files than one copy takes is refused as a whole.
     public static let maxPaths = 100_000
 

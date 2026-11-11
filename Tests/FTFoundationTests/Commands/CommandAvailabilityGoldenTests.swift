@@ -36,8 +36,6 @@ struct CommandAvailabilityGoldenTests {
         let focusedPane: String?
         let lastFocusedPane: String?
         let contextMenuPaths: [String]
-        let contextMenuFolderPath: String?
-        let selectedContentFolderPath: String?
         let canGoBack: Bool?
         let canGoForward: Bool?
         let hasCachedSearch: Bool?
@@ -55,9 +53,6 @@ struct CommandAvailabilityGoldenTests {
         let showInFinder: [String]
         let calculateSize: [String]
         let openTerminal: [String]
-        let openPaths: [String]
-        let editPaths: [String]
-        let rootTree: String?
     }
 
     static func pane(_ name: String?) -> FocusedPane? { name.flatMap { FocusedPane(rawValue: $0) } }
@@ -99,15 +94,7 @@ struct CommandAvailabilityGoldenTests {
             favorite: CommandAvailability.favoriteTargetPath(target),
             showInFinder: CommandAvailability.showInFinderPaths(target),
             calculateSize: CommandAvailability.calculateSizePaths(target),
-            openTerminal: ShortcutTargets.openInTerminalPaths(selection),
-            openPaths: ShortcutTargets.openSelectionPaths(selection),
-            editPaths: ShortcutTargets.editSelectionPaths(selection),
-            rootTree: ShortcutTargets.rootTreeTargetPath(
-                ShortcutTargets.RootTreeInput(
-                    focusedPane: pane(input.focusedPane), lastFocusedPane: pane(input.lastFocusedPane),
-                    contextMenuFolderPath: input.contextMenuFolderPath,
-                    selectedContentFolderPath: input.selectedContentFolderPath,
-                    selectedTreePath: input.selectedTreeTargetPath, currentPath: input.currentPath)))
+            openTerminal: ShortcutTargets.openInTerminalPaths(selection))
     }
 
     @Test func commandAvailabilityMatchesTheGoldenFile() throws {

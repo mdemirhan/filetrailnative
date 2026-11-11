@@ -19,14 +19,13 @@ public struct FlowItemStyle: Equatable, Sendable {
 }
 
 extension FlowListLayout {
-    /// What rows per column depend on.
-    public var rowsLayout: FlowRowsLayout {
-        FlowRowsLayout(rowHeight: rowHeight, rowGap: rowGap, paddingTop: paddingTop, paddingBottom: paddingBottom)
-    }
-
-    /// How many rows a column holds in this layout.
+    /// How many rows a column holds in a pane this tall. A height of zero or less (not measured yet) gives one row.
     public func rowsPerColumn(containerHeight: Double) -> Int {
-        Virtualization.rowsPerColumn(containerHeight: containerHeight, layout: rowsLayout)
+        guard containerHeight > 0 else { return 1 }
+        let content = containerHeight - paddingTop - paddingBottom + rowGap
+        let rows = (max(content, rowHeight) / rowHeight).rounded(.down)
+        guard rows.isFinite else { return Int.max / 4 }
+        return max(1, Int(min(1e15, rows)))
     }
 
     public func columnCount(itemCount: Int, rowsPerColumn: Int) -> Int {

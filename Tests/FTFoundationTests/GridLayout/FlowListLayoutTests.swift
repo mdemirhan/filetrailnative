@@ -68,23 +68,16 @@ struct FlowListLayoutTests {
         var compact: Bool?
         var height: Double?
         var itemCount: Int?
-        var count: Int?
         var rowsPerColumn: Int?
-        var columns: Int?
         var currentScrollLeft: Double?
         var viewportWidth: Double?
         var itemIndex: Int?
         var maxScrollLeft: Double?
-        var itemSize: Double?
-        var viewportSize: Double?
-        var scrollOffset: Double?
-        var overscan: Int?
     }
 
     enum Output: Codable, Equatable, Sendable {
         case number(Double)
         case rows([[Double]])
-        case range(VirtualRange)
         case constants([String: Double])
 
         init(from decoder: any Decoder) throws {
@@ -93,8 +86,6 @@ struct FlowListLayoutTests {
                 self = .number(value)
             } else if let value = try? single.decode([[Double]].self) {
                 self = .rows(value)
-            } else if let value = try? single.decode(VirtualRange.self) {
-                self = .range(value)
             } else {
                 self = .constants(try single.decode([String: Double].self))
             }
@@ -105,7 +96,6 @@ struct FlowListLayoutTests {
             switch self {
             case .number(let value): try single.encode(value)
             case .rows(let value): try single.encode(value)
-            case .range(let value): try single.encode(value)
             case .constants(let value): try single.encode(value)
             }
         }
@@ -124,24 +114,12 @@ struct FlowListLayoutTests {
                     let frame = layout.cellFrame(index: index, rowsPerColumn: rows)
                     return [Double(place.column), Double(place.row), frame.x, frame.y]
                 })
-        case "columnMajor":
-            let items = (0..<(input.count ?? 0)).map { Double($0 + 1) }
-            return .rows(Virtualization.columnMajorRows(items, rowsPerColumn: input.rowsPerColumn ?? 0))
-        case "chunk":
-            let items = (0..<(input.count ?? 0)).map { Double($0 + 1) }
-            return .rows(Virtualization.chunkIntoRows(items, columns: input.columns ?? 0))
         case "reveal":
             return .number(
                 layout.revealScrollLeft(
                     currentScrollLeft: input.currentScrollLeft ?? 0, viewportWidth: input.viewportWidth ?? 0,
                     itemIndex: input.itemIndex ?? 0, rowsPerColumn: input.rowsPerColumn ?? 0,
                     maxScrollLeft: input.maxScrollLeft))
-        case "range":
-            return .range(
-                Virtualization.range(
-                    itemCount: input.itemCount ?? 0, itemSize: input.itemSize ?? 0,
-                    viewportSize: input.viewportSize ?? 0, scrollOffset: input.scrollOffset ?? 0,
-                    overscan: input.overscan ?? 0))
         default:
             return .constants([
                 "rowHeight": layout.rowHeight, "rowGap": layout.rowGap, "itemWidth": layout.itemWidth,
@@ -158,12 +136,23 @@ struct FlowListLayoutTests {
     }
 }
 
-struct VirtualizationTests {
-    static let normal = FlowRowsLayout(rowHeight: 44, rowGap: 4, paddingTop: 10, paddingBottom: 4)
-    static let compact = FlowRowsLayout(rowHeight: 36, rowGap: 2, paddingTop: 8, paddingBottom: 4)
+struct RowsPerColumnTests {
+    static func layout(rowHeight: Double, rowGap: Double, paddingTop: Double, paddingBottom: Double)
+        -> FlowListLayout
+    {
+        var layout = DesignTokens.flowList(density: .standard)
+        layout.rowHeight = rowHeight
+        layout.rowGap = rowGap
+        layout.paddingTop = paddingTop
+        layout.paddingBottom = paddingBottom
+        return layout
+    }
 
-    static func rows(_ height: Double, _ layout: FlowRowsLayout = normal) -> Int {
-        Virtualization.rowsPerColumn(containerHeight: height, layout: layout)
+    static let normal = layout(rowHeight: 44, rowGap: 4, paddingTop: 10, paddingBottom: 4)
+    static let compact = layout(rowHeight: 36, rowGap: 2, paddingTop: 8, paddingBottom: 4)
+
+    static func rows(_ height: Double, _ layout: FlowListLayout = normal) -> Int {
+        layout.rowsPerColumn(containerHeight: height)
     }
 
     @Test func computesRowsForAStandardViewport() {
@@ -217,32 +206,5 @@ struct VirtualizationTests {
         #expect(Self.rows(449) == 9)
         #expect(Self.rows(670) == 15)
         #expect(Self.rows(669) == 14)
-    }
-
-    @Test func computesAStableVirtualRangeWithOverscan() {
-        #expect(
-            Virtualization.range(itemCount: 100, itemSize: 40, viewportSize: 200, scrollOffset: 160, overscan: 2)
-                == VirtualRange(startIndex: 2, endIndex: 11))
-    }
-
-    @Test func returnsAnEmptyRangeWhenThereAreNoItems() {
-        #expect(
-            Virtualization.range(itemCount: 0, itemSize: 40, viewportSize: 200, scrollOffset: 0, overscan: 2)
-                == VirtualRange(startIndex: 0, endIndex: 0))
-    }
-
-    @Test func clampsStaleScrollOffsetsSoANewShorterListStillRendersImmediately() {
-        #expect(
-            Virtualization.range(itemCount: 3, itemSize: 40, viewportSize: 200, scrollOffset: 4000, overscan: 2)
-                == VirtualRange(startIndex: 0, endIndex: 3))
-    }
-
-    @Test func chunksItemsIntoEvenRowGroups() {
-        #expect(Virtualization.chunkIntoRows([1, 2, 3, 4, 5], columns: 2) == [[1, 2], [3, 4], [5]])
-    }
-
-    @Test func buildsColumnMajorRowsForVerticalFirstLayouts() {
-        #expect(
-            Virtualization.columnMajorRows([1, 2, 3, 4, 5, 6, 7], rowsPerColumn: 3) == [[1, 4, 7], [2, 5], [3, 6]])
     }
 }
