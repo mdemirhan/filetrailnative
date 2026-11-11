@@ -1301,7 +1301,7 @@ tests are the check; add a test only where an item says so.
 This also ends the parsing per cell refresh (`ListCellText.swift:42, 49` use `ISO8601DateFormatter` each time).
 Separately, `Sources/FTFoundation/Formatting/DateText.swift:137` creates a formatter per call: keep one.
 
-### [ ] 6.4. Errors carry their number; one table of names
+### [x] 6.4. Errors carry their number; one table of names
 
 - Errors are identified by Node-style string codes compared as text (about 60 `errorCode(error) == "E…"` sites),
   backed by four hand-written errno-name tables: `Sources/CFileTrail/foldersize.c` 714–893 (`ft_errno_code`, one
@@ -2352,3 +2352,13 @@ anything that differed from the plan, and anything found on the way that is not 
   after the text editor changed (a rebuild); plain "Undo" undoing typing in the search field. Found, not fixed: the
   `textEditing:` parameter of `ApplicationMenu.undoLabels` is only ever false; `menuBuilt()` only calls `sync()`; a
   doc comment names `INITIAL_APPLICATION_MENU_STATE` (Phase 10).
+- 2026-11-11. 6.4, done in a worktree of its own and brought over, with 5.8's `NativeError` fields (`errnum`,
+  `syscall`, `dest`, `cocoaCode`; only the test expectations that read them went). One table: `Errno` in FTFileSystem
+  (the C, eject and write-engine tables were identical, 106 names; the listing named 26, fd 6). The write engine's
+  codes are `ErrorCode` (`.errno(Int32)` or `.noTrash`); about 58 comparisons in 20 files and about 190 test edits
+  compare numbers, with FTOperationsTests run after each file. A test recorded from the old code holds every name and
+  text for -5...999: each code named before keeps its text byte for byte. Visible, as the item intends: ESTALE and
+  EDQUOT get their names; differs from the plan in reach: so does every number the listing's or fd's table lacked
+  but the shared one names (a failed fd start names it instead of "errno N"). Also: the write service's
+  "ERR_FS_EISDIR" is EISDIR and the folder size's "ECANCELLED" is ECANCELED (same sentences; nothing compared them).
+  No code crossed an on-disk boundary. Found, not fixed: `ExplorerError.nodeText`/`libuvWords` (Phase 10).

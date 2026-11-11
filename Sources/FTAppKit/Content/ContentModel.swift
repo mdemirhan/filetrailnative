@@ -87,8 +87,8 @@ enum FolderReadFailure {
         return FolderReadError(message: message(error), errnum: errnum)
     }
 
-    /// `isTrashListingRefused`: macOS refuses to list the Trash to an app without Full Disk Access (EPERM), even
-    /// though everything inside it can still be read.
+    /// Whether the Trash was refused for want of Full Disk Access: macOS refuses to list it to an app without
+    /// (EPERM), even though everything inside it can still be read.
     static func isTrashRefused(path: String, error: FolderReadError?, homePath: String) -> Bool {
         guard let error, !path.isEmpty, path == FavoriteLabel.trashPath(homePath: homePath) else { return false }
         return error.errnum == EPERM
