@@ -7,10 +7,10 @@ import Testing
 @testable import FTAppKit
 
 @MainActor
-struct RerunFixTests {
+struct BaselinesFadesAndShadowsTests {
     // MARK: Baselines
 
-    @Test func theBrowsersAscentIsRoundedToADevicePixel() {
+    @Test func theAscentIsRoundedToADevicePixel() {
         // At 2x every size of the system font the app uses lands half a point above AppKit's whole-point baseline.
         for size in [10.0, 11, 12, 13, 14, 15] {
             let font = NSFont.systemFont(ofSize: size)

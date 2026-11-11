@@ -45,7 +45,7 @@ import Testing
     }
 
     // Help doesn't describe the tab and panel gestures the system's tab bar and customizing sheet replaced.
-    @Test func saysNothingOfWhatTheApprovedDeviationsRemoved() {
+    @Test func saysNothingOfTheTabAndPanelGesturesTheSystemReplaced() {
         let text = HelpContent.topics.flatMap(\.sections).flatMap(\.rows).map(\.description).joined(separator: "\n")
         for gone in [
             "Duplicate Tab, Move Tab", "onto a tab", "over the tab", "or on a tab", "from the panel", "far right",

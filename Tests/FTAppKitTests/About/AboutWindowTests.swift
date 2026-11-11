@@ -153,7 +153,7 @@ func texts(_ identifier: String, in root: NSView) -> [String] {
     }
 
     // The layout: the 72 point icon 28 in, the rows of 31 under a hairline, then the buttons and the link 28 in
-    @Test func laysTheWindowOutAsTheStylesheetDoes() {
+    @Test func laysOutTheIconRowsButtonsAndLink() {
         let view = make(info, Recorder()).aboutView
         let icon = views("about.icon", in: view).first?.frame
         #expect(icon == NSRect(x: 28, y: 42, width: 72, height: 72))

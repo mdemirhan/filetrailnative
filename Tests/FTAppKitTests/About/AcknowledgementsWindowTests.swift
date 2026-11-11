@@ -102,7 +102,7 @@ import Testing
     }
 
     // The layout: a title strip of 40, then the intro 16 below it, and entries of 31 under a hairline
-    @Test func laysTheWindowOutAsTheStylesheetDoes() {
+    @Test func laysOutTheTitleIntroAndEntries() {
         let view = make({ self.components }).listView
         #expect(views("acknowledgements.title", in: view).first?.frame == NSRect(x: 0, y: 0, width: 620, height: 40))
         #expect(views("acknowledgements.intro", in: view).first.map { rect($0, in: view).minY } == 56)

@@ -55,7 +55,7 @@ import Testing
         observation.cancel()
     }
 
-    @Test func picksTheStylesheetsPaletteAndAppliesTheAccent() {
+    @Test func picksTheThemesPaletteAndAppliesTheAccent() {
         let (model, _) = make()
         model.apply(theme: .dark, accent: "#2CB5A0")
         let theme = model.theme

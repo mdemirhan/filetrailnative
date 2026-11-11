@@ -19,7 +19,7 @@ extension ExplorerWindowlessTests {
         // 680 wide and 60 below the window's top; the header, the centered mode control, the
         // grid's columns (Find 112 wide, then its field, Replace with 132 wide, then its field, the two fields sharing what
         // is left), the preview's header and rows, and the footer.
-        @Test func laysTheSheetOutAsTheStylesheetDoes() async throws {
+        @Test func laysOutTheHeaderModesGridPreviewAndFooter() async throws {
             let fixture = await BatchRenameSheetFixture([
                 BatchRenameSheetFixture.target("IMG_1.jpg"), BatchRenameSheetFixture.target("IMG_2.jpg"),
             ])

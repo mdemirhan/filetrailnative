@@ -200,7 +200,7 @@ extension ExplorerWindowlessTests {
 struct RealDiskImageGUITests {
     @Test func aRealImageMountsAndItsDiskOpensInATab() async throws {
         let harness = try ExplorerHarness.windowless()
-        let name = "FT Port Test \(UUID().uuidString.prefix(6))"
+        let name = "FT Open Test \(UUID().uuidString.prefix(6))"
         let image = harness.folder.appending("real.dmg")
         let made = await HdiutilProcess.run(["create", "-size", "4m", "-fs", "HFS+", "-volname", name, image.path])
         #expect(made.ok)

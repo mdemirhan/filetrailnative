@@ -1696,8 +1696,8 @@ hand-drawn parts) go with the control; tests of behaviour stay.
 - [x] 10.2 `Sources/FTFileSystem` and `Sources/CFileTrail`
 - [x] 10.3 `Sources/FTOperations`
 - [ ] 10.4 `Sources/FTAppKit`
-- [ ] 10.5 `Tests`: comments
-- [ ] 10.6 `Tests`: names of tests and fixtures (step 6)
+- [x] 10.5 `Tests`: comments
+- [x] 10.6 `Tests`: names of tests and fixtures (step 6)
 - [ ] 10.7 Identifiers in Sources (step 7), after [Q16]
 - [x] 10.8 `tools`, `scripts`, `docs`
 
@@ -2527,3 +2527,11 @@ anything that differed from the plan, and anything found on the way that is not 
   from the fixed now, and the README screenshots freeze the app's clock at 14:46); scripts and README needed nothing.
   Found, not changed: every element in `tools/capture/elements.json` sits under a key named `swift`, a leftover of a
   sibling key for the earlier app; it is data the automation reads.
+- 2026-11-11. 10.5 and 10.6: test comments (41 commits, one per folder) and test names (5 commits); no golden changed.
+  Left: the three test files 9.1 changes (a CSS class name in `CopyPasteSheetLookTests` and a record number in
+  `GoToBoxTests`, for after 9.1 lands); the five `ShortcutPolicyTests` names that say `RendererCommand`, for 10.7.
+  Golden data that keeps old words: icon-grid-layout's op "css", the accent's `cssVariables`, `exec-copy.json`'s file
+  text "File Trail parity". The disk images folder is now `ft-exec-disks`, so leftovers under the old name from a
+  crashed older run are not detached by the tests. Found, not fixed: `FileThumbnailService.javaScriptNumber`,
+  `ContentSelection.isNarrowingClick`'s `detail`; the FolderSize bench prints a line that is not JSON, which
+  `tools/bench/report.py` would choke on when the deep fixture tree exists (11.4).

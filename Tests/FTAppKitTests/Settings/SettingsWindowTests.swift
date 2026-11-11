@@ -113,7 +113,7 @@ import Testing
     }
 
     // The page is at most 560 wide, 20 in from the sidebar and 4 under the header; groups are cards
-    @Test func laysThePageOutAsTheStylesheetDoes() throws {
+    @Test func laysOutThePageAndItsGroups() throws {
         let (controller, _) = Kit.make()
         let page = try Kit.page(controller)
         // 720 - 196 = 524 for the pane; the scroll bar's 8, then 20 and 12 of padding: 484.
