@@ -79,7 +79,7 @@ final class IconViewController: ItemGridPane {
             left: box.left - left, top: box.top - top, right: box.right - left, bottom: box.bottom - top)
         // Sizes are of the names; the hit test places them itself.
         return DragSelection.iconGridItems(
-            box: inItems, entryPaths: entries.map(\.path), columns: columns,
+            box: inItems, entryPaths: entryPaths, columns: columns,
             gridWidth: layout.gridWidth(containerWidth: Double(viewport.width)), layout: layout, sizes: sizes
         ).map { hit in
             var moved = hit

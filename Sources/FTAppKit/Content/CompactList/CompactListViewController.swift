@@ -117,7 +117,7 @@ final class CompactListViewController: ItemGridPane {
         let inItems = DragSelectionBox(
             left: box.left - left, top: box.top - top, right: box.right - left, bottom: box.bottom - top)
         return DragSelection.flowListItems(
-            box: inItems, entryPaths: entries.map(\.path), rowsPerColumn: rowsPerColumn, rowHeight: layout.rowHeight,
+            box: inItems, entryPaths: entryPaths, rowsPerColumn: rowsPerColumn, rowHeight: layout.rowHeight,
             itemWidth: layout.itemWidth, columnGap: layout.columnGap, sizes: sizes
         ).map { hit in
             var moved = hit

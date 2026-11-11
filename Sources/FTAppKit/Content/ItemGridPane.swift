@@ -47,6 +47,14 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
         indexCache = made
         return made
     }
+    private var pathsCache: [String]?
+    /// The entries' paths, in order, kept until the entries change: a drag-to-select reads them per mouse move.
+    var entryPaths: [String] {
+        if let pathsCache { return pathsCache }
+        let made = entries.map(\.path)
+        pathsCache = made
+        return made
+    }
     /// The paths selected, for drawing.
     private(set) var selectedPaths = Set<String>()
     /// Stands for this reading of the folder: previews are checked against their files once for each
@@ -160,6 +168,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     func reload(scrollToTop: Bool) {
         entries = host?.entries ?? []
         indexCache = nil
+        pathsCache = nil
         listing = NSObject()
         _ = metricsChanged()
         readSelection()
@@ -177,6 +186,7 @@ class ItemGridPane: NSViewController, FolderPane, NSCollectionViewDataSource, NS
     func reloadRows(paths: Set<String>) {
         entries = host?.entries ?? []
         indexCache = nil
+        pathsCache = nil
         listing = NSObject()
         let indexPaths = Set(paths.compactMap { indexByPath[$0] }.map { IndexPath(item: $0, section: 0) })
         collection.reloadItems(at: indexPaths)
