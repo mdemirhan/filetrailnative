@@ -270,7 +270,7 @@ extension ExplorerWindowlessTests {
             timers.advance(0.35)
             #expect(await waitUntil { names(box) == ["Alpha"] })
             #expect(box.hintLabel.stringValue == "⇥ Completes")
-            // All of the hint fits inside the cell's insets, and the row's label stops short of it (16).
+            // All of the hint fits inside the cell's insets, and the row's label stops short of it.
             box.layoutSubtreeIfNeeded()
             let hintRoom = box.hintLabel.frame.width - 2 * GoToRowView.cellInset
             #expect(hintRoom >= box.hintLabel.attributedStringValue.size().width)
