@@ -49,16 +49,6 @@ public struct ClipboardSummary: Equatable, Sendable {
 
     /// The button's accessible name.
     public var accessibilityLabel: String { "Clipboard: \(countLabel)" }
-
-    static func grouped(_ value: Int) -> String {
-        let digits = Array(String(value.magnitude))
-        var out = ""
-        for (index, digit) in digits.enumerated() {
-            if index > 0, (digits.count - index) % 3 == 0 { out.append(",") }
-            out.append(digit)
-        }
-        return value < 0 ? "-" + out : out
-    }
 }
 
 /// The items under the folder each came from (`ClipboardItemGroup`).

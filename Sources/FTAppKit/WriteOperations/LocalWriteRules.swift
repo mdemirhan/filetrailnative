@@ -113,7 +113,7 @@ enum LocalWriteRules {
     }
 
     private static func count(_ paths: [String]) -> String {
-        paths.count.formatted(.number.locale(Locale(identifier: "en_US")))
+        ReviewCount.format(paths.count)
     }
 
     // MARK: Questions

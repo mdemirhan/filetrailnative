@@ -278,5 +278,7 @@ struct ContextMenuRulesTests {
     @Test func theShortcutsAreCountedWithGroupedDigits() {
         #expect(ContextMenuRules.groupedCount(1_204) == "1,204")
         #expect(ContextMenuRules.groupedCount(7) == "7")
+        #expect(ContextMenuRules.groupedCount(1234) == "1,234")
+        #expect(ContextMenuRules.groupedCount(1_234_567) == "1,234,567")
     }
 }

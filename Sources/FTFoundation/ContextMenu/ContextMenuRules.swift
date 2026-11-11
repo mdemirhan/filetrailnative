@@ -112,7 +112,7 @@ public enum ContextMenuRules {
             ejectLabel: subject.ejectableDiskName.map { "Eject “\($0)”" } ?? ejectLabel)
     }
 
-    /// `Number.prototype.toLocaleString()` for a count.
+    /// A count with its thousands grouped as in US English, whatever the app's language: "1,234".
     static func groupedCount(_ count: Int) -> String {
         count.formatted(.number.grouping(.automatic).locale(Locale(identifier: "en_US")))
     }

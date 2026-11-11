@@ -286,10 +286,4 @@ struct CopyPasteClipboardTests {
         #expect(both.sourcePaths.count == 2)
         #expect(ClipboardRules.dropPaths(both, [nfc]).sourcePaths.map { Array($0.utf8) } == [Array(nfd.utf8)])
     }
-
-    @Test func groupsTheButtonCountAsEnUSDoes() {
-        #expect(ClipboardSummary.grouped(7) == "7")
-        #expect(ClipboardSummary.grouped(1234) == "1,234")
-        #expect(ClipboardSummary.grouped(1_234_567) == "1,234,567")
-    }
 }

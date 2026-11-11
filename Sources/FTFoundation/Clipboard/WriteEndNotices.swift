@@ -215,6 +215,6 @@ public enum WriteEndNotices {
 
     /// `toLocaleString()` grouping.
     private static func countLabel(_ count: Int, _ noun: String) -> String {
-        "\(ClipboardSummary.grouped(count)) \(noun)\(count == 1 ? "" : "s")"
+        "\(ContextMenuRules.groupedCount(count)) \(noun)\(count == 1 ? "" : "s")"
     }
 }
