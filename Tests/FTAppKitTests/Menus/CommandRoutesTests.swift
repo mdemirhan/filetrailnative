@@ -224,6 +224,68 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // MARK: Checkmarks
+
+        /// The checkmarks of the View menu and its Sort By, by item id, as `state` says they should show.
+        private func marks(_ state: ApplicationMenuState) -> [String: Bool] {
+            [
+                "viewAsIcons": state.viewMode == .icons, "viewAsDetails": state.viewMode == .details,
+                "viewAsList": state.viewMode == .list, "sortByName": state.sortBy == .name,
+                "sortByKind": state.sortBy == .kind, "sortByModified": state.sortBy == .modified,
+                "sortBySize": state.sortBy == .size, "toggleFoldersFirst": state.foldersFirst,
+                "toggleHiddenFiles": state.hiddenFilesShown,
+            ]
+        }
+
+        private func shown(_ menu: MainMenu) throws -> [String: Bool] {
+            let built = try #require(menu.built)
+            var shown: [String: Bool] = [:]
+            for id in marks(.initial).keys { shown[id] = built.itemsByID[id]?.state == .on }
+            return shown
+        }
+
+        // Each view, each order, Folders First and Hidden Files chosen from the menu bar as the app has it: every mark
+        // shows what the window last said, the moment the item is chosen and once the window has said what it is now.
+        @Test func theMarksShowTheWindowAfterEachItemIsChosen() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let (tab, _) = try await harness.openList()
+            // The tab's window has the keyboard, as it would on screen.
+            let menu = MainMenu(windows: harness.windows, focusedWindow: { tab.window })
+            menu.build()
+            defer { NSApp.mainMenu = nil }
+            harness.windows.onMenuState = { [weak menu] id, state in menu?.sync.setWindowState(windowID: id, state) }
+            let target = ExplorerCommandTarget(handle: tab, focused: true)
+            harness.windows.reportMenuState(tab)
+            #expect(try shown(menu) == marks(tab.menuState))
+
+            let chosen = [
+                "viewAsIcons", "viewAsList", "viewAsDetails", "sortBySize", "sortByKind", "sortByModified",
+                "sortByName", "toggleFoldersFirst", "toggleFoldersFirst", "toggleHiddenFiles", "toggleHiddenFiles",
+            ]
+            for id in chosen {
+                let before = tab.menuState
+                let built = try #require(menu.built)
+                let item = try #require(built.itemsByID[id])
+                let owner = try #require(item.menu)
+                // As AppKit carries out an item the user picks: it is on, and the menu sends its action.
+                #expect(item.isEnabled, "\(id)")
+                owner.performActionForItem(at: owner.index(of: item))
+                #expect(try shown(menu) == marks(menu.sync.state(of: target)), "\(id), as chosen")
+                // (Only the marks: what can run may change without the window saying so until it is asked.)
+                #expect(
+                    await waitUntil {
+                        marks(tab.menuState) != marks(before)
+                            && marks(menu.sync.state(of: target)) == marks(tab.menuState)
+                    })
+                let now = tab.menuState
+                #expect(try shown(menu) == marks(now), "\(id), once the window has said")
+                #expect(now.viewMode == tab.viewMode && now.sortBy == tab.sortBy, "\(id)")
+                #expect(now.foldersFirst == tab.foldersFirst && now.hiddenFilesShown == tab.includeHidden, "\(id)")
+            }
+            #expect(tab.viewMode == .details && tab.sortBy == .name)
+            await harness.close()
+        }
+
         // MARK: Text fields
 
         // While a field has the keyboard Undo and Redo are its own, always on and plainly named, with no file operation

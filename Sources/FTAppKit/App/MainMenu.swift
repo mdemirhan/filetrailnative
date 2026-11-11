@@ -15,11 +15,13 @@ public final class MainMenu {
     var shortcuts: () -> ShortcutBindings = { ShortcutCommands.defaultBindings }
     var textEditorName: () -> String? = { nil }
 
-    init(windows: any ExplorerWindowListing) {
+    /// `focusedWindow` is the window that has the keyboard; a test whose windows are never shown names its own.
+    init(windows: any ExplorerWindowListing, focusedWindow: @escaping () -> NSWindow? = { NSApp.keyWindow }) {
         sync = ApplicationMenuSync(
             .init(
-                windows: windows, focusedWindow: { NSApp.keyWindow }, menu: { [weak self] in self?.index },
+                windows: windows, focusedWindow: focusedWindow, menu: { [weak self] in self?.index },
                 build: { [weak self] in self?.build() }))
+        router.focusedWindow = focusedWindow
         router.explorerFor = { [weak sync] window in sync?.explorerFor(window) }
         router.isTextEditing = { [weak sync] target in sync?.state(of: target).textEditing ?? false }
         router.onCommandSent = { [weak sync] in sync?.sync() }
