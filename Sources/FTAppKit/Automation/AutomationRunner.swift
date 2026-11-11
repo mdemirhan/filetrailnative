@@ -319,15 +319,6 @@
                     outcome.message = outcome.message ?? AutomationFocus.whyUnfocused(window)
                 }
                 return outcome
-            case .geometry(let name, let allViews):
-                AutomationTags.apply(in: window)
-                let dump = GeometryDump(window: window, name: name, allViews: allViews)
-                do {
-                    try dump.encoded().write(to: options.out.appendingPathComponent(name + ".json"), options: .atomic)
-                    return Outcome(.ok)
-                } catch {
-                    return Outcome(.failed, "could not write the geometry: \(error.localizedDescription)")
-                }
             case .click(let ref, let button, let count, let modifiers, let hold):
                 return await click(
                     ref, button: button, count: count, modifiers: modifiers, holdMilliseconds: hold, window: window)

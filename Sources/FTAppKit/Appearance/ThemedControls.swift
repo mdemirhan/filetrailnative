@@ -2,7 +2,7 @@ import AppKit
 import FTFoundation
 
 /// A control that is also a label: the field draws its text, and `drawChrome` paints what lies under it (a fill, a key).
-/// Being a text field is what lets the geometry dump read its text, font and color.
+/// Being a text field is what lets the scenarios and the tests read its text.
 @MainActor
 public class TextControl: NSTextField, ThemeApplying {
     public override class var cellClass: AnyClass? {

@@ -155,7 +155,7 @@ public final class ThemedText: NSTextField, ThemeApplying {
 
     public func applyTheme(_ theme: Theme) {
         let text = content(theme)
-        // The field's own font and color say what it shows (accessibility, the geometry dumps); the string keeps its runs.
+        // The field's own font and color say what it shows (accessibility, the tests); the string keeps its runs.
         if text.length > 0 {
             font = text.attribute(.font, at: 0, effectiveRange: nil) as? NSFont ?? font
             textColor =

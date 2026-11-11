@@ -80,7 +80,6 @@
             case command(id: String)
             case wait(milliseconds: Int)
             case snapshot(name: String)
-            case geometry(name: String, allViews: Bool)
             /// `holdMilliseconds` keeps the button down that long (a press and hold).
             case click(ElementRef, button: MouseButton, count: Int, modifiers: [String], holdMilliseconds: Int)
             /// Sets a pop-up button to the item with this title, as choosing it does.
@@ -122,7 +121,6 @@
                 case .rootTree: "rootTree"
                 case .windowShot: "windowShot"
                 case .marqueeShot: "marqueeShot"
-                case .geometry: "geometry"
                 case .click: "click"
                 case .pick: "pick"
                 case .menu: "menu"
@@ -302,8 +300,6 @@
                 return .marqueeShot(
                     start: NSPoint(x: start[0], y: start[1]), end: NSPoint(x: end[0], y: end[1]),
                     name: try string("name"))
-            case "geometry":
-                return .geometry(name: try string("name"), allViews: step["allViews"] as? Bool ?? false)
             case "click":
                 let buttonName = step["button"] as? String ?? "left"
                 guard let button = MouseButton(rawValue: buttonName) else { throw fail("unknown button \(buttonName)") }

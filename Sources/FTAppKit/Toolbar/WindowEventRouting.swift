@@ -1,7 +1,7 @@
 // How an explorer window's events reach the open menu, the tooltips and the toolbar's customizing
 import AppKit
 
-/// A view that shows its text through a text field inside it: the geometry dump compares that field's font and color.
+/// A view that shows its text through a text field inside it: a scenario finds the view by that field's text.
 @MainActor
 protocol TextStyleSource: AnyObject {
     var styleTextField: NSTextField? { get }

@@ -9,9 +9,6 @@ public enum AppClock {
         return frozen.addingTimeInterval(ProcessInfo.processInfo.systemUptime - base.uptime)
     }
 
-    /// Whether `FILETRAIL_NOW` is set (and could be read).
-    public static var isFrozen: Bool { base.frozen != nil }
-
     /// Fixes the start instant. Called at launch so that elapsed time counts from then.
     public static func start() { _ = base }
 

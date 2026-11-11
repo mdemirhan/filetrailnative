@@ -59,8 +59,6 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
     let adviceGlyph = BatchRenameGlyphView(.warning, identifier: "batchRename.warning")
     let adviceText: ThemedText
     // Preview and footer
-    /// The header's box, for the geometry dumps; it draws nothing.
-    let headerBox = NSView()
     let preview = BatchRenamePreviewView()
     let footerLine = BatchRenameFooterLine()
     let summaryLabel = ThemedText(wrapping: false) { _ in NSAttributedString() }
@@ -131,7 +129,6 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
 
     private func build() {
         titleLabel.setAccessibilityIdentifier("batchRename.title")
-        headerBox.setAccessibilityIdentifier("batchRename.header")
         footerLine.setAccessibilityIdentifier("batchRename.footer")
         presetCancelButton.setAccessibilityIdentifier("batchRename.presetCancel")
         presetSaveButton.setAccessibilityIdentifier("batchRename.presetSave")
@@ -154,7 +151,7 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         advice.addSubview(adviceText)
         let views: [NSView] =
             [
-                headerBox, titleLabel, presetsPopUp, presetNameField, presetCancelButton, presetSaveButton, modeControl,
+                titleLabel, presetsPopUp, presetNameField, presetCancelButton, presetSaveButton, modeControl,
                 findField,
                 replaceField, findMessage, regexHint, matchCaseCheck, regexCheck, addTextField, addWherePopUp,
                 nameFormatPopUp, formatWherePopUp, customNameField, keepNamesCheck, dateSourcePopUp, separatorPopUp,
@@ -814,7 +811,6 @@ final class BatchRenameSheetView: NSView, DialogPanel, ThemeApplying {
         let header = BatchRenameSheetLayout.Header.self
         let control = CGFloat(BatchRenameSheetLayout.controlHeight)
         // Header: the title, then the Presets pull-down or the preset's name with Cancel and Save.
-        headerBox.frame = NSRect(x: 0, y: 0, width: width, height: headerHeight)
         var right = width - CGFloat(header.paddingHorizontal)
         let headerY = CGFloat(header.paddingTop)
         if savingPreset {

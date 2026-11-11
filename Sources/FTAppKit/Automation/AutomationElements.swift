@@ -6,7 +6,7 @@
     struct AutomationElements: Equatable, Sendable {
         /// Logical name → accessibility identifier.
         var identifiers: [String: String]
-        /// The names whose `textAttribute` in `elements.json` is `aria-label`: their text is their accessibility label.
+        /// The names marked `labelled` in `elements.json`: their text is their accessibility label.
         var labelled: Set<String> = []
 
         struct LoadError: Error, CustomStringConvertible {
@@ -24,8 +24,7 @@
                     throw LoadError(description: "elements.json: \"\(name)\" has no \"swift\" identifier")
                 }
                 identifiers[name] = swift
-                let electron = spec["electron"] as? [String: Any]
-                if electron?["textAttribute"] as? String == "aria-label" { labelled.insert(name) }
+                if spec["labelled"] as? Bool == true { labelled.insert(name) }
             }
             return AutomationElements(identifiers: identifiers, labelled: labelled)
         }
@@ -51,7 +50,38 @@
     enum ElementFinder {
         struct Match {
             var view: NSView
-            var frame: GeometryDump.Frame
+            var frame: Frame
+        }
+
+        /// A view's place in window content coordinates: points, origin at the top left.
+        struct Frame: Equatable {
+            var x: Double
+            var y: Double
+            var width: Double
+            var height: Double
+        }
+
+        static func frame(of view: NSView, in window: NSWindow) -> Frame {
+            let inWindow = view.convert(view.bounds, to: nil)
+            let height = window.contentView?.bounds.height ?? window.frame.height
+            let origin = window.contentView.map { $0.convert(inWindow, from: nil) } ?? inWindow
+            let y = (window.contentView?.isFlipped ?? false) ? origin.minY : height - origin.maxY
+            func round(_ value: Double) -> Double { (value * 100).rounded() / 100 }
+            return Frame(x: round(origin.minX), y: round(y), width: round(origin.width), height: round(origin.height))
+        }
+
+        /// The text a view shows itself: a text field's (its placeholder when empty), a table cell's, a titled
+        /// button's, or that of the text field it is drawn around.
+        static func ownText(of view: NSView) -> String? {
+            if let source = view as? TextStyleSource, let field = source.styleTextField, field !== view {
+                return ownText(of: field)
+            }
+            if let field = view as? NSTextField {
+                return field.stringValue.isEmpty ? (field.placeholderString ?? "") : field.stringValue
+            }
+            if let cell = view as? NSTableCellView, let field = cell.textField { return ownText(of: field) }
+            if let button = view as? NSButton, !button.title.isEmpty { return button.title }
+            return nil
         }
 
         /// The windows a step looks in: the window, the sheet on it, its child windows (popovers) and an
@@ -88,7 +118,7 @@
                 let views = roots(of: candidate).flatMap { Views.all(NSView.self, in: $0) }
                 for view in views
                 where view.accessibilityIdentifier() == identifier && !AutomationTags.mirrorsItsItem(view) {
-                    let frame = GeometryDump.frame(of: view, in: candidate)
+                    let frame = frame(of: view, in: candidate)
                     guard frame.width > 0 || frame.height > 0 else { continue }
                     if !clipped {
                         // On screen: its center is in the window (a step acts at the center).
@@ -134,7 +164,7 @@
         /// Whether the view shows `text`: as its own text, a text field inside it, or (an icon button) as
         /// its accessibility label.
         static func shows(_ text: String, _ view: NSView) -> Bool {
-            if GeometryDump.text(of: view)?.string == text { return true }
+            if ownText(of: view) == text { return true }
             if view.accessibilityLabel() == text { return true }
             return Views.first(NSTextField.self, in: view) { $0.stringValue == text } != nil
         }
@@ -147,7 +177,7 @@
 
         /// The text a view shows, for `expect {text}`: its own, or its text fields' joined by a space.
         static func text(of view: NSView) -> String {
-            if let own = GeometryDump.text(of: view)?.string { return own }
+            if let own = ownText(of: view) { return own }
             return Views.all(NSTextField.self, in: view).map(\.stringValue).filter { !$0.isEmpty }
                 .joined(separator: " ")
         }

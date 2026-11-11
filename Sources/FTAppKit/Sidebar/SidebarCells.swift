@@ -2,14 +2,6 @@ import AppKit
 import CoreText
 import FTFoundation
 
-/// A view named for the geometry dump that shows another view's text style: a tree row is compared by its box and by
-/// the style of the label inside it.
-final class SidebarTagView: SidebarPlainView, TextStyleSource {
-    weak var source: NSTextField?
-    var styleTextField: NSTextField? { source }
-    override func hitTest(_ point: NSPoint) -> NSView? { nil }
-}
-
 /// The box of a row: its fill, its ring, and the parts inside.
 final class SidebarRowBox: SidebarPlainView, TextStyleSource {
     weak var label: NSTextField?
@@ -103,12 +95,6 @@ final class SidebarItemCell: NSTableCellView {
     private let markGlyph = ClipboardMarkGlyph(identifier: "sidebar.row.clipboardMark")
     private let loading = SidebarLabelField()
     private let error = SidebarLabelField()
-    private let treeRowTag = SidebarTagView()
-    private let favoriteTag = SidebarTagView()
-    private let selectedTag = SidebarTagView()
-    private let menuTargetTag = SidebarTagView()
-    private let expandedTag = SidebarTagView()
-    private let kindTag = SidebarTagView()
     private(set) var state: SidebarRowState?
     private var noteHeight = 0.0
 
@@ -127,18 +113,11 @@ final class SidebarItemCell: NSTableCellView {
         for (view, name) in [
             (box, "sidebar.row"), (chevron, "sidebar.row.chevron"), (icon, "sidebar.row.icon"),
             (label, "sidebar.row.label"), (badge, "sidebar.row.badge"), (eject, "sidebar.row.eject"),
-            (treeRowTag, "sidebar.treeRow"),
         ] as [(NSView, String)] {
             view.setAccessibilityIdentifier(name)
         }
-        favoriteTag.setAccessibilityIdentifier("sidebar.favorite")
-        selectedTag.setAccessibilityIdentifier("sidebar.row.selected")
-        menuTargetTag.setAccessibilityIdentifier("sidebar.row.menuTarget")
-        expandedTag.setAccessibilityIdentifier("sidebar.row.expanded")
-        for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] { tag.source = label }
         for view in [
-            chevron, icon, label, badge, eject, treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag,
-            kindTag, markGlyph,
+            chevron, icon, label, badge, eject, markGlyph,
         ] as [NSView] {
             box.addSubview(view)
         }
@@ -306,18 +285,6 @@ final class SidebarItemCell: NSTableCellView {
         error.textColor = ChromeColors.color(palette.danger)
         error.stringValue = item.error ?? ""
 
-        // Tags for the scenarios
-        favoriteTag.isHidden = item.kind != .favorite
-        selectedTag.isHidden = state.selection == .none && !state.isCurrentRow
-        menuTargetTag.isHidden = !state.menuTarget
-        expandedTag.isHidden = !(item.canExpand && item.expanded)
-        switch item.kind {
-        case .filesystem: kindTag.setAccessibilityIdentifier("sidebar.folder")
-        case .location: kindTag.setAccessibilityIdentifier("sidebar.location")
-        case .favorite: kindTag.setAccessibilityIdentifier("sidebar.favoriteRow")
-        case .favoritesRoot, .locationsRoot: kindTag.setAccessibilityIdentifier("sidebar.heading")
-        }
-
         noteHeight = Self.noteHeight(state, width: width)
         needsLayout = true
         needsDisplay = true
@@ -411,9 +378,6 @@ final class SidebarItemCell: NSTableCellView {
         }
         textX = 0
         textLimit = 0
-        for tag in [treeRowTag, favoriteTag, selectedTag, menuTargetTag, expandedTag, kindTag] {
-            tag.frame = box.bounds
-        }
 
         // Notes under the row
         var noteY = rowHeight
@@ -493,7 +457,6 @@ final class SidebarHeaderCell: NSTableCellView {
 /// The button of a section header: a title and a chevron.
 final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
     private let title = SidebarLabelField()
-    private let stateTag = SidebarTagView()
     private var state: SidebarHeaderState?
     private var isHovered = false
     var onClick: (() -> Void)?
@@ -532,8 +495,6 @@ final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
         setAccessibilityIdentifier("sidebar.sectionHeader")
         title.setAccessibilityIdentifier("sidebar.sectionHeader.title")
         addSubview(title)
-        stateTag.source = title
-        addSubview(stateTag)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -546,8 +507,6 @@ final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
         title.textColor = ChromeColors.color(theme.palette.textSecondary)
         title.stringValue = state.title
         toolTip = state.expanded ? "Hide \(state.title)" : "Show \(state.title)"
-        stateTag.setAccessibilityIdentifier(
-            state.expanded ? "sidebar.sectionHeader.expanded" : "sidebar.sectionHeader.collapsed")
         setAccessibilityLabel(toolTip)
         needsLayout = true
         needsDisplay = true
@@ -557,7 +516,6 @@ final class SidebarHeaderButton: SidebarPlainView, TextStyleSource {
         super.layout()
         guard let state else { return }
         let layout = SidebarLayout(density: state.density)
-        stateTag.frame = bounds
         let font = title.font ?? ChromeColors.font(size: layout.headingFontSizeSmall, weight: 600)
         let height = SidebarText.lineHeight(font)
         title.frame = NSRect(

@@ -35,9 +35,8 @@ import Testing
         let spec = Data(
             """
             {"elements": {
-              "settings popup": {"electron": {"selector": "select", "textAttribute": "aria-label"},
-                                 "swift": "settings.popup"},
-              "settings row title": {"electron": {"selector": ".title"}, "swift": "settings.row.title"}}}
+              "settings popup": {"swift": "settings.popup", "labelled": true},
+              "settings row title": {"swift": "settings.row.title"}}}
             """.utf8)
         let elements = try AutomationElements.parse(spec)
         #expect(elements.labelled == ["settings popup"])

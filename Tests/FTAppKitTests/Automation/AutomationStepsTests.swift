@@ -173,7 +173,7 @@
             #expect(elements.identifiers["list row"] == "list.row")
             #expect(elements.identifiers["review sheet"] == "reviewSheet")
             #expect(throws: AutomationElements.LoadError.self) {
-                try AutomationElements.parse(Data(#"{"elements": {"x": {"electron": {"selector": "a"}}}}"#.utf8))
+                try AutomationElements.parse(Data(#"{"elements": {"x": {"labelled": true}}}"#.utf8))
             }
             let scenario = Self.capture.appendingPathComponent("readme/search.json")
             #expect(AutomationElements.locate(near: scenario)?.lastPathComponent == "elements.json")
@@ -329,31 +329,6 @@
                 return
             }
             #expect(failure.message == "unknown element \"nope\"")
-        }
-
-        @Test @MainActor func leavesOutWhatItsScrollViewHides() throws {
-            _ = NSApplication.shared
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 400, height: 300), styleMask: [.titled],
-                backing: .buffered, defer: true)
-            let content = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 300))
-            window.contentView = content
-            let scroll = NSScrollView(frame: NSRect(x: 0, y: 0, width: 200, height: 100))
-            let document = NSView(frame: NSRect(x: 0, y: 0, width: 200, height: 400))
-            scroll.documentView = document
-            content.addSubview(scroll)
-            // The clip view shows the document's bottom 100 points: a row at y 0 shows, one at y 300 is scrolled away.
-            for (y, name) in [(0.0, "shown"), (300.0, "scrolled away")] {
-                let row = NSTextField(labelWithString: name)
-                row.frame = NSRect(x: 0, y: y, width: 100, height: 20)
-                row.setAccessibilityIdentifier("tree.row")
-                document.addSubview(row)
-            }
-            scroll.contentView.scroll(to: .zero)
-            let rows = GeometryDump(window: window, name: "x").elements.filter { $0.id == "tree.row" }
-            #expect(rows.map { $0.text?.string } == ["shown"])
-            let all = GeometryDump(window: window, name: "x", allViews: true).elements.filter { $0.id == "tree.row" }
-            #expect(all.count == 2)
         }
 
         @MainActor private final class OneRow: NSObject, NSTableViewDataSource {

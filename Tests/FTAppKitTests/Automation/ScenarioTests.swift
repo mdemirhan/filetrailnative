@@ -26,9 +26,7 @@
                     { "step": "type", "text": "Trip" },
                     { "step": "command", "id": "goBack" },
                     { "step": "wait", "ms": 250 },
-                    { "step": "snapshot", "name": "main" },
-                    { "step": "geometry", "name": "main" },
-                    { "step": "geometry", "name": "all", "allViews": true }
+                    { "step": "snapshot", "name": "main" }
                   ]
                 }
                 """)
@@ -46,8 +44,6 @@
                     .command(id: "goBack"),
                     .wait(milliseconds: 250),
                     .snapshot(name: "main"),
-                    .geometry(name: "main", allViews: false),
-                    .geometry(name: "all", allViews: true),
                 ])
             #expect(scenario.steps.map(\.kind).first == "window")
         }
