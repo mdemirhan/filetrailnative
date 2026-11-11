@@ -2,7 +2,6 @@
   "name": "dark-mode",
   "description": "The same in Dark",
   "root": "/Users/Shared/Lighthouse",
-  "now": "2026-10-13T14:46:00",
   "steps": [
     {
       "step": "window",

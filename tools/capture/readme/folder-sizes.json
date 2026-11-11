@@ -2,7 +2,6 @@
   "name": "folder-sizes",
   "description": "Lighthouse in List view sorted by size, with the Info panel",
   "root": "/Users/Shared/Lighthouse",
-  "now": "2026-10-13T14:46:00",
   "steps": [
     {
       "step": "window",

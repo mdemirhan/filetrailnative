@@ -378,14 +378,6 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
                 })
         }
     }
-
-    // MARK: Windows the automation opens
-
-    /// New Window on `url`, from the tab in front; the new window's tab.
-    @discardableResult
-    func openWindow(at url: URL) -> MainWindowController? {
-        explorerWindows.openWindow(at: url)
-    }
 }
 
 /// Whether a quit asked of AppKit ("terminate later") still waits for its answer. Each is answered once: a second ⌘Q

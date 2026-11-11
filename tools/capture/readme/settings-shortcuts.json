@@ -2,7 +2,6 @@
   "name": "settings-shortcuts",
   "description": "The Shortcuts section of Settings",
   "root": "/Users/Shared/Lighthouse",
-  "now": "2026-10-13T14:46:00",
   "steps": [
     {
       "step": "window",

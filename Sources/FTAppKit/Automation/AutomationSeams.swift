@@ -1,10 +1,9 @@
 #if DEBUG
     import AppKit
 
-    /// Debug seams for the `drag` step. A drag of files starts a native `NSDraggingSession`, which the
-    /// window server runs and synthesized mouse events can't drive. A view that starts one adopts
-    /// `AutomationDragSource`, and a view that takes drops adopts `AutomationDropTarget`; the step then
-    /// hands the items straight to the drop handler, and the report says so.
+    /// Debug seams for drags. A drag of files starts a native `NSDraggingSession`, which the window server
+    /// runs and synthesized mouse events can't drive. A view that starts one adopts `AutomationDragSource`,
+    /// and a view that takes drops adopts `AutomationDropTarget`, which is handed the items straight.
     @MainActor
     protocol AutomationDragSource: AnyObject {
         /// The items a drag starting at `point` (in the view's coordinates) would carry.
@@ -90,7 +89,7 @@
             case noDestination
             /// The view AppKit asks answered that it takes none of them.
             case refused(by: String)
-            /// The view offers to take them; the step stopped short of the drop.
+            /// The view offers to take them; the drag stopped short of the drop.
             case offered(by: String)
             case dropped(by: String, taken: Bool)
         }

@@ -17,7 +17,7 @@
             case .success(let found): match = found
             }
             // A right click opens a native menu, whose tracking loop would hold the run: the menu is
-            // resolved and not shown, as contextMenu does.
+            // found and not shown.
             // The app's own right-click menus (Back and Forward's history) are drawn in the window: the press is sent.
             if button == .right, let target = match.view.window,
                 let pressed = target.contentView?.superview?.hitTest(MouseEvents.center(of: match.view)),
@@ -27,7 +27,7 @@
                 target.sendEvent(event)
                 return Outcome(.ok)
             }
-            if button == .right { return contextMenu(match, choose: [], ref: ref) }
+            if button == .right { return contextMenu(match, ref: ref) }
             guard let target = match.view.window else { return Outcome(.failed, "\(ref) is in no window") }
             if holdMilliseconds > 0 {
                 let done = await MouseEvents.press(
@@ -40,37 +40,10 @@
             return done ? Outcome(.ok) : Outcome(.failed, "could not make the mouse events")
         }
 
-        /// Sets a pop-up button to the item titled `option` and sends its action, as choosing it does.
-        func pick(_ ref: Scenario.ElementRef, option: String, window: NSWindow) -> Outcome {
-            let match: ElementFinder.Match
-            switch ElementFinder.find(ref, elements: elements, in: window) {
-            case .failure(let failure): return Outcome(.failed, failure.message)
-            case .success(let found): match = found
-            }
-            guard let popUp = Views.first(NSPopUpButton.self, in: match.view) else {
-                return Outcome(.failed, "\(ref) is not a pop-up button")
-            }
-            popUp.menu?.update()
-            guard let item = popUp.item(withTitle: option) else { return Outcome(.failed, "no option “\(option)”") }
-            guard item.isEnabled else { return Outcome(.failed, "“\(option)” is disabled") }
-            popUp.select(item)
-            if let action = popUp.action {
-                NSApp.sendAction(action, to: popUp.target, from: popUp)
-            }
-            return Outcome(.ok)
-        }
-
-        func contextMenu(_ ref: Scenario.ElementRef, choose: [String], window: NSWindow) -> Outcome {
-            switch ElementFinder.find(ref, elements: elements, in: window) {
-            case .failure(let failure): return Outcome(.failed, failure.message)
-            case .success(let match): return contextMenu(match, choose: choose, ref: ref)
-            }
-        }
-
         /// The menu a right click on the element would show: asked of the view under its center and the
-        /// views above it, as AppKit asks. The item chosen is carried out; with none, the menu is only
-        /// found, since a native menu can't be drawn into the window's capture.
-        private func contextMenu(_ match: ElementFinder.Match, choose: [String], ref: Scenario.ElementRef) -> Outcome {
+        /// views above it, as AppKit asks. It is only found, since a native menu can't be drawn into the
+        /// window's capture.
+        private func contextMenu(_ match: ElementFinder.Match, ref: Scenario.ElementRef) -> Outcome {
             guard let window = match.view.window else { return Outcome(.failed, "\(ref) is in no window") }
             let point = MouseEvents.center(of: match.view)
             guard let event = MouseEvents.event(.rightMouseDown, at: point, in: window) else {
@@ -85,121 +58,10 @@
             guard let menu else { return Outcome(.unsupported, "no context menu on \(ref)") }
             menu.delegate?.menuNeedsUpdate?(menu)
             menu.delegate?.menuWillOpen?(menu)
-            guard !choose.isEmpty else {
-                menu.delegate?.menuDidClose?(menu)
-                let titles = menu.items.filter { !$0.isSeparatorItem && !$0.isHidden }.map(\.title)
-                return Outcome(
-                    .partial, "menu found, not shown (a native menu isn't captured): \(titles.joined(separator: ", "))")
-            }
-            switch AutomationMenus.find(choose, in: menu) {
-            case .failure(let failure):
-                menu.delegate?.menuDidClose?(menu)
-                return Outcome(.failed, failure.message)
-            case .success(let (owner, item)):
-                return AutomationMenus.perform(item, in: owner, window: window)
-            }
-        }
-
-        func drag(
-            from: Scenario.ElementRef, to: Scenario.ElementRef, modifiers names: [String], toEdge: Scenario.Edge?,
-            window: NSWindow
-        ) async -> Outcome {
-            guard let modifiers = KeyEvents.modifiers(names) else {
-                return Outcome(.failed, "unknown modifier in \(names)")
-            }
-            let source: ElementFinder.Match
-            switch ElementFinder.find(from, elements: elements, in: window) {
-            case .failure(let failure): return Outcome(.failed, "from: \(failure.message)")
-            case .success(let found): source = found
-            }
-            // The target may be in another window (between windows): looked for in every window.
-            var destination: ElementFinder.Match?
-            var reason = "no \(to) on screen"
-            for candidate in [window] + NSApp.orderedWindows where candidate.isVisible {
-                switch ElementFinder.find(to, elements: elements, in: candidate) {
-                case .success(let found): destination = found
-                case .failure(let failure): reason = failure.message
-                }
-                if destination != nil { break }
-            }
-            guard let destination, let sourceWindow = source.view.window,
-                let targetWindow = destination.view.window
-            else { return Outcome(.failed, "to: \(reason)") }
-
-            let start = MouseEvents.center(of: source.view)
-            let center = MouseEvents.center(of: destination.view)
-            let quarter = destination.view.convert(destination.view.bounds, to: nil).height / 4
-            // Window coordinates grow upward: the top quarter is above the center.
-            let shift: CGFloat = toEdge == .top ? quarter : toEdge == .bottom ? -quarter : 0
-            let end = NSPoint(x: center.x, y: center.y + shift)
-            // What the view's own drag session writes goes on a real pasteboard, and the destination takes it from there.
-            if let (view, carrier) = AutomationDrag.nearest(AutomationPasteboardDragSource.self, from: source.view),
-                let drag = carrier.automationPasteboardDrag(at: view.convert(start, from: nil))
-            {
-                let result = AutomationDrag.play(drag, over: destination.view, at: end)
-                return result == .dropped ? Outcome(.ok) : Outcome(.failed, "the drop was refused (\(result))")
-            }
-            // No items under the press (empty space of a list): the view runs the drag itself with the pointer (a
-            // marquee), as a drag that starts on no entry does.
-            let items = AutomationDrag.nearest(AutomationDragSource.self, from: source.view).map { found in
-                found.1.automationDragItems(at: found.0.convert(start, from: nil))
-            }
-            if items?.isEmpty == true || AutomationDrag.pressesNoItem(source.view, at: start) {
-                guard sourceWindow === targetWindow else {
-                    return Outcome(.failed, "nothing to drag at \(from), and \(to) is in another window")
-                }
-                let done = await MouseEvents.drag(from: start, to: end, in: sourceWindow, modifiers: modifiers)
-                return done
-                    ? Outcome(.ok, "pointer drag: nothing to drag at \(from)")
-                    : Outcome(.failed, "could not make the mouse events")
-            }
-            if let items,
-                let (targetView, dropTarget) = AutomationDrag.nearest(
-                    AutomationDropTarget.self, from: destination.view)
-            {
-                let taken = dropTarget.automationDrop(
-                    items, at: targetView.convert(end, from: nil), allowed: AutomationDrag.allowed(modifiers))
-                let note = "drop handler called through the debug seam: a native drag session can't be driven"
-                return taken ? Outcome(.ok, note) : Outcome(.failed, "the drop was refused (\(note))")
-            }
-            if AutomationDrag.startsDraggingSession(source.view) {
-                return Outcome(.unsupported, "\(from) has no drag seam, and its drag session can't be driven")
-            }
-            guard sourceWindow === targetWindow else {
-                return Outcome(.unsupported, "a drag between windows needs the drag seams")
-            }
-            let done = await MouseEvents.drag(from: start, to: end, in: sourceWindow, modifiers: modifiers)
-            return done ? Outcome(.ok) : Outcome(.failed, "could not make the mouse events")
-        }
-
-        /// A drag of files from another app: what it carries goes on a pasteboard,
-        /// and the view AppKit would send the drag to is asked what it makes of it.
-        func dragFiles(_ files: [String], to: Scenario.ElementRef, hold: Bool, refused: Bool, window: NSWindow) async
-            -> Outcome
-        {
-            guard let scenario else { return Outcome(.failed, "no scenario") }
-            let target: ElementFinder.Match
-            switch ElementFinder.find(to, elements: elements, in: window) {
-            case .failure(let failure): return Outcome(.failed, "to: \(failure.message)")
-            case .success(let found): target = found
-            }
-            let urls = files.map { URL(fileURLWithPath: scenario.resolve($0).path) }
-            switch await AutomationDrag.playFiles(urls, over: target.view, refused: refused, hold: hold) {
-            case .noDestination:
-                return refused
-                    ? Outcome(.ok, "refused: nothing under \(to) takes files")
-                    : Outcome(.failed, "nothing under \(to) takes files")
-            case .refused(let by):
-                return refused
-                    ? Outcome(.ok, "refused by \(by) at \(to), as the step expects")
-                    : Outcome(.failed, "\(by) refused the files at \(to)")
-            case .offered(let by):
-                return refused
-                    ? Outcome(.failed, "\(by) offered to take the files at \(to)")
-                    : Outcome(.ok, "\(to) offers to take the files; not dropped")
-            case .dropped(let by, let taken):
-                return taken ? Outcome(.ok, "dropped on \(by)") : Outcome(.failed, "\(by) did not take the drop")
-            }
+            menu.delegate?.menuDidClose?(menu)
+            let titles = menu.items.filter { !$0.isSeparatorItem && !$0.isHidden }.map(\.title)
+            return Outcome(
+                .partial, "menu found, not shown (a native menu isn't captured): \(titles.joined(separator: ", "))")
         }
 
         // MARK: Dialogs
@@ -217,31 +79,7 @@
             return Outcome(.failed, "no \(name) shown")
         }
 
-        /// Clicks the button titled `label` in the sheet, alert or panel in front, else in the window.
-        func sheetButton(_ label: String, window: NSWindow) -> Outcome {
-            let places = ElementFinder.windows(around: window).filter { $0 !== window } + [window]
-            for place in places {
-                let root = place.contentView?.superview ?? place.contentView
-                let button = Views.first(NSButton.self, in: root) {
-                    $0.title == label && $0.isEnabled && $0.window?.isVisible == true
-                }
-                if let button {
-                    button.performClick(nil)
-                    return Outcome(.ok)
-                }
-            }
-            return Outcome(.failed, "no enabled button “\(label)”")
-        }
-
         // MARK: Windows and tabs
-
-        func newWindow() -> Outcome {
-            guard let delegate = NSApp.delegate as? AppDelegate else { return Outcome(.failed, "no app delegate") }
-            let folder = currentController?.folder ?? FileManager.default.homeDirectoryForCurrentUser
-            guard let opened = delegate.openWindow(at: folder) else { return Outcome(.failed, "no window opened") }
-            current = opened.window
-            return Outcome(.ok)
-        }
 
         func newTab(window: NSWindow) -> Outcome {
             guard let controller = currentController else { return Outcome(.failed, "no explorer window") }
@@ -357,39 +195,6 @@
                 }
                 .sorted { $0.1 < $1.1 }
                 .map(\.0)
-        }
-
-        // MARK: Expectations
-
-        /// A soft assertion: the step is ok when it could look, and the report records what it found.
-        func expect(
-            _ ref: Scenario.ElementRef, text: String?, visible: Bool?, count: Int?, window: NSWindow
-        ) -> Outcome {
-            guard let elements, let identifier = elements.identifiers[ref.name] else {
-                return Outcome(.failed, "unknown element \"\(ref.name)\"")
-            }
-            let matches = ElementFinder.all(identifier: identifier, text: ref.text, in: window)
-            let picked = matches.indices.contains(ref.index ?? 0) ? matches[ref.index ?? 0] : nil
-            var problems: [String] = []
-            var found: [String] = []
-            if let count {
-                found.append("count \(matches.count)")
-                if matches.count != count { problems.append("count \(matches.count), expected \(count)") }
-            }
-            if let visible {
-                found.append(picked == nil ? "hidden" : "visible")
-                if visible != (picked != nil) { problems.append(visible ? "not shown" : "shown") }
-            }
-            if let text {
-                let actual = picked.map { ElementFinder.text(of: $0.view, named: ref.name, elements: elements) }
-                found.append("text “\(actual ?? "")”")
-                if actual != text { problems.append(actual.map { "text “\($0)”, expected “\(text)”" } ?? "no \(ref)") }
-            }
-            let check = AutomationReport.Check(
-                passed: problems.isEmpty,
-                detail: problems.isEmpty
-                    ? "\(ref): " + found.joined(separator: ", ") : "\(ref): " + problems.joined(separator: "; "))
-            return Outcome(.ok, check: check)
         }
     }
 #endif

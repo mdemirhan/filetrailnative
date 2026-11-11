@@ -169,13 +169,13 @@
             return Views.first(NSTextField.self, in: view) { $0.stringValue == text } != nil
         }
 
-        /// The text of the element `name` for `expect {text}`: the accessibility label for a `labelled` name,
-        /// otherwise what the view shows.
+        /// The text of the element `name`: the accessibility label for a `labelled` name, otherwise what the view
+        /// shows.
         static func text(of view: NSView, named name: String, elements: AutomationElements) -> String {
             elements.labelled.contains(name) ? (view.accessibilityLabel() ?? "") : text(of: view)
         }
 
-        /// The text a view shows, for `expect {text}`: its own, or its text fields' joined by a space.
+        /// The text a view shows: its own, or its text fields' joined by a space.
         static func text(of view: NSView) -> String {
             if let own = ownText(of: view) { return own }
             return Views.all(NSTextField.self, in: view).map(\.stringValue).filter { !$0.isEmpty }

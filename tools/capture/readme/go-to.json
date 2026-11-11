@@ -2,7 +2,6 @@
   "name": "go-to",
   "description": "Go To listing the folders used most lately",
   "root": "/Users/Shared/Lighthouse",
-  "now": "2026-10-13T14:46:00",
   "steps": [
     {
       "step": "window",

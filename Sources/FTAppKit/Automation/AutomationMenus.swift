@@ -1,7 +1,7 @@
 #if DEBUG
     import AppKit
 
-    /// Choosing menu items by their titles, for the `menu` and `contextMenu` steps. Actions go to the
+    /// Choosing menu items by their titles, for the `menu` step. Actions go to the
     /// window the step acts on, not to whichever window is key: a run started from a terminal may leave
     /// the app inactive.
     @MainActor

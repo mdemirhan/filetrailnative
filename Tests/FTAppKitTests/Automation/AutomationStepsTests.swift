@@ -57,30 +57,12 @@
                     { "step": "click", "element": "list row", "text": "Avatar.jsx", "count": 2, "modifiers": ["cmd"] },
                     { "step": "click", "element": "back button", "holdMs": 600 },
                     { "step": "click", "element": { "name": "tab", "index": 1 }, "button": "right" },
-                    { "step": "pick", "element": "batch rename presets", "option": "Save as Preset…" },
                     { "step": "menu", "path": ["File", "New Folder"] },
-                    { "step": "contextMenu", "element": "list row", "index": 2, "choose": "Rename" },
-                    { "step": "contextMenu", "element": "list row", "choose": ["Open With", "TextEdit"] },
-                    { "step": "drag", "from": { "name": "favorite row", "text": "docs" },
-                      "to": { "name": "favorite row", "index": 0 }, "modifiers": ["option"], "toEdge": "top" },
-                    { "step": "dragFiles", "files": ["out/a.txt"], "to": "search field", "refused": true },
-                    { "step": "dragFiles", "files": ["out/a.txt", "out/b.txt"], "to": "content", "hold": true },
                     { "step": "expectSheet", "name": "review sheet" },
-                    { "step": "sheetButton", "label": "Keep Both" },
-                    { "step": "newWindow" }, { "step": "newTab" },
+                    { "step": "newTab" },
                     { "step": "selectTab", "index": 1 },
                     { "step": "selectWindow", "title": "Settings" },
-                    { "step": "selectWindow", "index": 0 },
-                    { "step": "fs", "op": "create", "path": "a/Copies", "directory": true },
-                    { "step": "fs", "op": "write", "path": "a/b.txt", "contents": "more", "append": true },
-                    { "step": "fs", "op": "rename", "path": "a/b.txt", "to": "a/c.txt" },
-                    { "step": "fs", "op": "delete", "path": "a/c.txt" },
-                    { "step": "fs", "op": "chmod", "path": "a", "mode": "755" },
-                    { "step": "fs", "op": "lock", "path": "a", "locked": false },
-                    { "step": "fs", "op": "touch", "path": "a" },
-                    { "step": "expect", "element": { "name": "list row", "text": "a.txt" }, "visible": true },
-                    { "step": "expect", "element": "cut list row", "count": 4 },
-                    { "step": "expect", "element": "title", "text": "components" }
+                    { "step": "selectWindow", "index": 0 }
                   ]
                 }
                 """)
@@ -92,31 +74,12 @@
                         holdMilliseconds: 0),
                     .click(Ref("back button"), button: .left, count: 1, modifiers: [], holdMilliseconds: 600),
                     .click(Ref("tab", index: 1), button: .right, count: 1, modifiers: [], holdMilliseconds: 0),
-                    .pick(Ref("batch rename presets"), option: "Save as Preset…"),
                     .menu(path: ["File", "New Folder"]),
-                    .contextMenu(Ref("list row", index: 2), choose: ["Rename"]),
-                    .contextMenu(Ref("list row"), choose: ["Open With", "TextEdit"]),
-                    .drag(
-                        from: Ref("favorite row", text: "docs"), to: Ref("favorite row", index: 0),
-                        modifiers: ["option"], toEdge: .top),
-                    .dragFiles(files: ["out/a.txt"], to: Ref("search field"), hold: false, refused: true),
-                    .dragFiles(files: ["out/a.txt", "out/b.txt"], to: Ref("content"), hold: true, refused: false),
                     .expectSheet(name: "review sheet"),
-                    .sheetButton(label: "Keep Both"),
-                    .newWindow, .newTab,
+                    .newTab,
                     .selectTab(index: 1),
                     .selectWindow(index: nil, title: "Settings"),
                     .selectWindow(index: 0, title: nil),
-                    .fs(.create(path: "a/Copies", contents: "", directory: true)),
-                    .fs(.write(path: "a/b.txt", contents: "more", append: true)),
-                    .fs(.rename(path: "a/b.txt", to: "a/c.txt")),
-                    .fs(.delete(path: "a/c.txt")),
-                    .fs(.chmod(path: "a", mode: "755")),
-                    .fs(.lock(path: "a", locked: false)),
-                    .fs(.touch(path: "a")),
-                    .expect(Ref("list row", text: "a.txt"), text: nil, visible: true, count: nil),
-                    .expect(Ref("cut list row"), text: nil, visible: nil, count: 4),
-                    .expect(Ref("title"), text: "components", visible: nil, count: nil),
                 ])
             #expect(scenario.steps.map(\.kind).contains("selectWindow"))
         }
@@ -127,19 +90,8 @@
                 #"{"step": "click", "element": "x", "count": 4}"#,
                 #"{"step": "click", "element": "x", "button": "middle"}"#,
                 #"{"step": "click", "element": "x", "holdMs": 9000}"#,
-                #"{"step": "pick", "element": "x"}"#,
                 #"{"step": "menu", "path": []}"#,
-                #"{"step": "contextMenu", "element": "x", "choose": 3}"#,
-                #"{"step": "drag", "from": "a", "to": "b", "toEdge": "left"}"#,
-                #"{"step": "dragFiles", "to": "x"}"#,
-                #"{"step": "dragFiles", "files": [], "to": "x"}"#,
-                #"{"step": "dragFiles", "files": ["a"]}"#,
-                #"{"step": "dragFiles", "files": ["a"], "to": "x", "hold": true, "refused": true}"#,
                 #"{"step": "selectWindow"}"#,
-                #"{"step": "fs", "op": "chmod", "path": "a", "mode": "rwx"}"#,
-                #"{"step": "fs", "op": "explode", "path": "a"}"#,
-                #"{"step": "fs", "op": "rename", "path": "a"}"#,
-                #"{"step": "expect", "element": "x"}"#,
             ]
             for step in bad {
                 #expect(throws: Scenario.ParseError.self, "\(step)") {
@@ -159,13 +111,6 @@
                         "terminalApp": .null,
                     ])
                 ])
-        }
-
-        @Test func readsTheClockAsLocalTime() throws {
-            let scenario = try parse(#"{"name": "x", "now": "2026-10-13T14:38:00", "steps": []}"#)
-            let parts = Calendar.current.dateComponents(
-                [.year, .month, .day, .hour, .minute], from: try #require(scenario.nowDate))
-            #expect([parts.year, parts.month, parts.day, parts.hour, parts.minute] == [2026, 10, 13, 14, 38])
         }
 
         @Test func elementsNameOneIdentifierEach() throws {
@@ -203,52 +148,6 @@
             defer { AutomationPrefs.unregister("openItemLimit") }
             #expect(apply(["openItemLimit": .number(7)]).status == .ok)
             #expect(apply(["openItemLimit": .number(0)]).status == .failed)
-        }
-
-        // MARK: File changes
-
-        @Test func changesOnlyTheScratchCopy() throws {
-            try withTemporaryDirectory { folder in
-                let root = folder.appending("Lighthouse")
-                try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
-                let environment = ["FILETRAIL_SCENARIO_ROOT": root.path]
-                let scenario = try parse(#"{"name": "x", "now": "2026-10-13T14:38:00", "steps": []}"#)
-                func run(_ op: Scenario.FileOp) throws {
-                    try AutomationFileOps.perform(op, scenario: scenario, environment: environment)
-                }
-                let fm = FileManager.default
-                try run(.create(path: "Copies", contents: "", directory: true))
-                try run(.create(path: "Copies/a.txt", contents: "alpha", directory: false))
-                #expect(throws: AutomationFileOps.Failure.self) {
-                    try run(.create(path: "Copies/a.txt", contents: "again", directory: false))
-                }
-                try run(.write(path: "Copies/a.txt", contents: "+", append: true))
-                #expect(
-                    try String(contentsOf: root.appendingPathComponent("Copies/a.txt"), encoding: .utf8) == "alpha+")
-                let modified =
-                    try fm.attributesOfItem(atPath: root.appendingPathComponent("Copies/a.txt").path)[
-                        .modificationDate] as? Date
-                #expect(modified == scenario.nowDate)
-                try run(.rename(path: "Copies/a.txt", to: "Copies/b.txt"))
-                #expect(fm.fileExists(atPath: root.appendingPathComponent("Copies/b.txt").path))
-                try run(.chmod(path: "Copies/b.txt", mode: "600"))
-                let mode =
-                    try fm.attributesOfItem(atPath: root.appendingPathComponent("Copies/b.txt").path)[
-                        .posixPermissions] as? Int
-                #expect(mode == 0o600)
-                try run(.lock(path: "Copies/b.txt", locked: true))
-                #expect(
-                    try fm.attributesOfItem(atPath: root.appendingPathComponent("Copies/b.txt").path)[.immutable]
-                        as? Bool == true)
-                try run(.lock(path: "Copies/b.txt", locked: false))
-                try run(.touch(path: "Copies"))
-                try run(.delete(path: "Copies/b.txt"))
-                #expect(!fm.fileExists(atPath: root.appendingPathComponent("Copies/b.txt").path))
-                #expect(throws: AutomationFileOps.Failure.self) { try run(.delete(path: "../outside")) }
-                #expect(throws: AutomationFileOps.Failure.self) {
-                    try AutomationFileOps.perform(.delete(path: "Copies"), scenario: scenario, environment: [:])
-                }
-            }
         }
 
         // MARK: Menus, elements, events
@@ -402,19 +301,6 @@
             #expect(AutomationDrag.allowed([.command]) == .move)
             #expect(AutomationDrag.allowed([.option, .command]) == .link)
             #expect(AutomationDrag.allowed([]).contains(.generic))
-        }
-
-        @Test func recordsExpectations() throws {
-            var report = AutomationReport(scenario: "x")
-            report.steps.append(
-                .init(
-                    index: 1, step: "expect", status: .ok, message: nil, milliseconds: 1,
-                    check: .init(passed: false, detail: "title: text “a”, expected “b”")))
-            report.steps.append(.init(index: 2, step: "expect", status: .ok, message: nil, milliseconds: 1))
-            #expect(report.failedChecks == 1)
-            #expect(report.failedCount == 0)
-            let decoded = try JSONDecoder().decode(AutomationReport.self, from: report.encoded())
-            #expect(decoded == report)
         }
     }
 #endif

@@ -22,16 +22,8 @@
             var status: Status
             var message: String?
             var milliseconds: Int
-            /// An `expect` step's soft assertion: recorded, never stopping the run.
-            var check: Check?
             /// A snapshot taken with the app not in front or the window not key: its colors don't compare.
             var unfocused: Bool?
-        }
-
-        struct Check: Codable, Equatable, Sendable {
-            var passed: Bool
-            /// What was expected and what was found.
-            var detail: String
         }
 
         var scenario: String
@@ -41,7 +33,6 @@
 
         var unsupportedCount: Int { steps.filter { $0.status == .unsupported || $0.status == .partial }.count }
         var failedCount: Int { steps.filter { $0.status == .failed || $0.status == .timeout }.count }
-        var failedChecks: Int { steps.filter { $0.check?.passed == false }.count }
 
         func encoded() throws -> Data {
             let encoder = JSONEncoder()

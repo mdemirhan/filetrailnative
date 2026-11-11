@@ -243,17 +243,6 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     // MARK: Opening
 
-    /// New Window on `folder`, from the tab in front (the automation's `newWindow`); the new window's tab.
-    @discardableResult
-    func openWindow(at folder: URL) -> MainWindowController? {
-        if let tab = front as? MainWindowController, let group = tab.group {
-            group.openNewWindow(from: tab, path: folder.path)
-        } else {
-            controller.openWindowOnFolder(folder.path)
-        }
-        return front as? MainWindowController
-    }
-
     private func makeGroup(_ record: StoredExplorerWindow, launch: ExplorerLaunchContext) -> ExplorerTabGroup {
         let preferences = store.windowPreferences(record.id)
         let resolved = StartupTabs.resolve(

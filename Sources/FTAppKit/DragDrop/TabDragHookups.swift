@@ -82,7 +82,7 @@ extension SidebarViewController {
 
 #if DEBUG
     extension TabDragDrop {
-        /// A scenario's `drag` step: the items it carries are the window's own drag until it is dropped.
+        /// A drag through the debug seams: the items it carries are the window's own drag until it is dropped.
         func automationDragStarted(_ entries: [DirectoryEntry]) -> [URL] {
             guard let tab, let window = tab.window, !entries.isEmpty else { return entries.map(\.url) }
             if let session = DragRules.session(
@@ -97,7 +97,7 @@ extension SidebarViewController {
             return entries.map(\.url)
         }
 
-        /// The drag the step hands over: the window's own when it carries its items, else one from another app
+        /// The drag the seam hands over: the window's own when it carries its items, else one from another app
         /// (another window of the app included).
         private func automationSession(_ urls: [URL]) -> DragSession? {
             let paths = urls.map(\.path)
@@ -113,7 +113,7 @@ extension SidebarViewController {
             return DragSession(sourceSurface: .external, sourceItems: items, leadPath: lead.path, leadKind: lead.kind)
         }
 
-        /// The keys the step held, from what the drag offers (⌥ copies, ⌘ moves, ⌥⌘ links).
+        /// The keys held, from what the drag offers (⌥ copies, ⌘ moves, ⌥⌘ links).
         private func automationModifiers(_ allowed: NSDragOperation) -> NSEvent.ModifierFlags {
             switch allowed {
             case .copy: [.option]

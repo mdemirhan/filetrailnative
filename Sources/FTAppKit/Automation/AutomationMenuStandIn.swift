@@ -14,9 +14,8 @@
 
     /// An open system menu as a scenario sees it. A native menu's tracking loop would hold the run and its rows are not
     /// the app's views, so in a test or a scenario run the menu isn't shown: this clear view stands where it would be,
-    /// with a clear view for each row carrying the names of `elements.json`. A click on one chooses that item, as the
-    /// `contextMenu` step carries out an item of a right-click menu. A capture doesn't show it (a native menu isn't
-    /// captured either).
+    /// with a clear view for each row carrying the names of `elements.json`. A click on one chooses that item. A capture
+    /// doesn't show it (a native menu isn't captured either).
     @MainActor
     final class AppMenuStandIn {
         private let view: AppMenuStandInView

@@ -123,7 +123,7 @@
                     $0.steps.append(
                         .init(
                             index: offset + 1, step: step.kind, status: outcome.status, message: outcome.message,
-                            milliseconds: elapsed, check: outcome.check, unfocused: outcome.unfocused))
+                            milliseconds: elapsed, unfocused: outcome.unfocused))
                 }
                 report.write()
             }
@@ -134,7 +134,7 @@
             let current = report.current
             FileHandle.standardError.write(
                 Data(
-                    "automation \(current.scenario): \(current.steps.count) steps, \(current.unsupportedCount) unsupported, \(current.failedCount) failed, \(current.failedChecks) expectations unmet\n"
+                    "automation \(current.scenario): \(current.steps.count) steps, \(current.unsupportedCount) unsupported, \(current.failedCount) failed\n"
                         .utf8))
             // Not from inside this task or a main-queue block: terminate waits in a nested event loop for the quit
             // coordinator's reply, a main-actor task that cannot run while the main queue is busy with this call.
@@ -240,14 +240,12 @@
         struct Outcome {
             var status: AutomationReport.Status
             var message: String?
-            var check: AutomationReport.Check?
             /// A snapshot taken with the window not in focus.
             var unfocused: Bool?
 
-            init(_ status: AutomationReport.Status, _ message: String? = nil, check: AutomationReport.Check? = nil) {
+            init(_ status: AutomationReport.Status, _ message: String? = nil) {
                 self.status = status
                 self.message = message
-                self.check = check
             }
         }
 
@@ -322,38 +320,16 @@
             case .click(let ref, let button, let count, let modifiers, let hold):
                 return await click(
                     ref, button: button, count: count, modifiers: modifiers, holdMilliseconds: hold, window: window)
-            case .pick(let ref, let option):
-                return pick(ref, option: option, window: window)
             case .menu(let path):
                 return AutomationMenus.choose(path, window: window)
-            case .contextMenu(let ref, let choose):
-                return contextMenu(ref, choose: choose, window: window)
-            case .drag(let from, let to, let modifiers, let edge):
-                return await drag(from: from, to: to, modifiers: modifiers, toEdge: edge, window: window)
-            case .dragFiles(let files, let to, let hold, let refused):
-                return await dragFiles(files, to: to, hold: hold, refused: refused, window: window)
             case .expectSheet(let name):
                 return await expectSheet(name, window: window)
-            case .sheetButton(let label):
-                return sheetButton(label, window: window)
-            case .newWindow:
-                return newWindow()
             case .newTab:
                 return newTab(window: window)
             case .selectTab(let index):
                 return selectTab(index, window: window)
             case .selectWindow(let index, let title):
                 return await selectWindow(index: index, title: title)
-            case .fs(let op):
-                guard let scenario else { return Outcome(.failed, "no scenario") }
-                do {
-                    try AutomationFileOps.perform(op, scenario: scenario)
-                    return Outcome(.ok)
-                } catch {
-                    return Outcome(.failed, "\(op.name): \(error)")
-                }
-            case .expect(let ref, let text, let visible, let count):
-                return expect(ref, text: text, visible: visible, count: count, window: window)
             }
         }
 
