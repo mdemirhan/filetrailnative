@@ -87,13 +87,14 @@ struct ContentModelTests {
         #expect(FolderReadFailure.isGone(ExplorerError.notADirectory("/x")))
         #expect(!FolderReadFailure.isGone(ExplorerError.system(code: EACCES, path: "/ENOENT")))
         #expect(!FolderReadFailure.isGone(ExplorerError.system(code: EPERM, path: "/x")))
-        let message = FolderReadFailure.message(ExplorerError.system(code: EPERM, path: "/Users/demo/.Trash"))
-        #expect(FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", message: message, homePath: "/Users/demo"))
-        #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/Other", message: message, homePath: "/Users/demo"))
+        let refused = FolderReadFailure.readError(ExplorerError.system(code: EPERM, path: "/Users/demo/.Trash"))
+        #expect(FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", error: refused, homePath: "/Users/demo"))
+        #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/Other", error: refused, homePath: "/Users/demo"))
         #expect(
             !FolderReadFailure.isTrashRefused(
-                path: "/Users/demo/.Trash", message: "No such file", homePath: "/Users/demo"))
-        #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", message: nil, homePath: "/Users/demo"))
+                path: "/Users/demo/.Trash", error: FolderReadError(message: "No such file", errnum: ENOENT),
+                homePath: "/Users/demo"))
+        #expect(!FolderReadFailure.isTrashRefused(path: "/Users/demo/.Trash", error: nil, homePath: "/Users/demo"))
     }
 
     // The selection is the accent in the focused list of the front window, grey otherwise.

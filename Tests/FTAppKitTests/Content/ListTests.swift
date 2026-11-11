@@ -107,11 +107,13 @@ extension ExplorerWindowlessTests {
             tab.perform(.viewAsDetails)
             #expect(await waitUntil { tab.content.container(for: .empty(text: "Empty folder · 1 hidden item")) })
             // A folder that can't be read shows its error, with nothing behind it.
-            tab.content.showError(folder: empty.path, message: "Operation not permitted: /x")
+            tab.content.showError(
+                folder: empty.path, error: FolderReadError(message: "Operation not permitted: /x", errnum: EPERM))
             #expect(tab.content.container(for: .error(message: "Operation not permitted: /x")))
             #expect(tab.content.entries.isEmpty)
             let trash = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".Trash").path
-            tab.content.showError(folder: trash, message: "Operation not permitted: \(trash)")
+            tab.content.showError(
+                folder: trash, error: FolderReadError(message: "Operation not permitted: \(trash)", errnum: EPERM))
             #expect(tab.content.container(for: .fullDiskAccess))
             tab.content.showNoFolder()
             #expect(tab.content.container(for: .empty(text: "Select a folder to see what’s in it.")))
@@ -152,7 +154,8 @@ extension ExplorerWindowlessTests {
                     listViews("content", in: tab.content.view).compactMap { $0 as? ContentContainerView }.first)
                 let scroll = try #require(container.paneView?.subviews.compactMap { $0 as? NSScrollView }.first)
                 let top = scroll.frame.minY
-                tab.content.showReadError("EACCES: permission denied, scandir '/x'")
+                tab.content.showReadError(
+                    FolderReadError(message: "EACCES: permission denied, scandir '/x'", errnum: EACCES))
                 container.layoutSubtreeIfNeeded()
                 let card = try #require(container.stateView.subviews.first)
                 #expect(card.frame.height > 0)

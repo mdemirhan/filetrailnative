@@ -140,7 +140,7 @@ struct ReviewStaleDetailsTests {
     // that opens nothing goes back to it.
     @MainActor @Test func aReadErrorOrACancelledReadLeavesTheFolderAsItWas() async {
         let (controller, entries) = await loadedController()
-        controller.showReadError("EACCES: permission denied")
+        controller.showReadError(FolderReadError(message: "EACCES: permission denied", errnum: EACCES))
         #expect(controller.loadState == .loaded)
         #expect(controller.readError != nil)
         controller.beginLoading(quiet: false)
@@ -150,7 +150,7 @@ struct ReviewStaleDetailsTests {
         #expect(controller.loadState == .loaded)
         controller.showNoFolder()
         controller.beginLoading(quiet: false)
-        controller.showReadError("gone")
+        controller.showReadError(FolderReadError(message: "gone", errnum: ENOENT))
         #expect(controller.loadState == .idle)
         controller.show(folder: "/f", entries: entries, selecting: nil, keepingScroll: false)
         #expect(controller.loadState == .loaded && controller.readError == nil)

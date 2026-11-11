@@ -582,8 +582,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         view.treeScrollTop = sidebar.tree.scrollTop
         view.sidebarSectionsScrollTop = sidebar.sections.scrollTop
         view.folderViewMemories = folderMemories
-        if case .failed(let message) = content.loadState {
-            view.directoryError = message
+        if case .failed(let error) = content.loadState {
+            view.directoryError = error
         } else {
             view.directoryError = content.readError
         }
@@ -871,7 +871,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             if FolderReadFailure.isGone(error) {
                 await openNearestExistingFolder(above: url.path)
             } else {
-                content.showError(folder: url.path, message: FolderReadFailure.message(error))
+                content.showError(folder: url.path, error: FolderReadFailure.readError(error))
             }
         }
     }
@@ -1045,8 +1045,8 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             content.clearFilter()
         }
         // A folder with a message over it (a Go To that failed) has it still.
-        if folderWasRead, let message = carried.directoryError {
-            content.showReadError(message)
+        if folderWasRead, let error = carried.directoryError {
+            content.showReadError(error)
         }
     }
 
@@ -1130,10 +1130,10 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             entries = snapshot.entries
             shown = URL(fileURLWithPath: snapshot.path)
         case .failure(let error):
-            let message = FolderReadFailure.message(error)
+            let readError = FolderReadFailure.readError(error)
             if let goToFailure {
-                content.showReadError(message)
-                goToFailure(message)
+                content.showReadError(readError)
+                goToFailure(readError.message)
                 return .failed
             }
             switch readFailure ?? (open.origin.opensWhenUnreadable ? .opens : .leavesFolderOnScreen) {
@@ -1143,7 +1143,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             }
             guard opensWithError else {
                 // A quiet read shows nothing: the search for a folder that can be read goes on from it.
-                if !quiet { content.showReadError(message) }
+                if !quiet { content.showReadError(readError) }
                 sidebar.openFailed()
                 notify(.history)
                 return .failed
@@ -1205,7 +1205,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
             // tree and the path bar show it.
             if bringsResultsBack { searchStore?.session.showCachedResults() }
         case .failure(let error):
-            content.showError(folder: shown.path, message: FolderReadFailure.message(error))
+            content.showError(folder: shown.path, error: FolderReadFailure.readError(error))
         }
         if let carried { showCarried(carried, folderWasRead: !opensWithError) }
         if let sidebarKeyboard {

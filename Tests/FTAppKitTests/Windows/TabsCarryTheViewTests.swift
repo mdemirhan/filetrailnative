@@ -252,14 +252,14 @@ extension ExplorerWindowlessTests {
             var failure: String?
             await tab.navigate(to: locked, goToFailure: { failure = $0 })
             let message = try #require(failure)
-            #expect(tab.content.readError == message)
+            #expect(tab.content.readError?.message == message)
             let group = try #require(tab.group)
 
             if duplicate { group.duplicateTab(tab) } else { tab.perform(.newTab) }
             let new = try await opened(tab, after: 1)
 
             #expect(new.shownFolderPath == tab.shownFolderPath)
-            #expect(new.content.readError == message)
+            #expect(new.content.readError?.message == message)
             #expect(new.content.loadState == .loaded)
             #expect(!new.content.listed.isEmpty)
             await harness.close()

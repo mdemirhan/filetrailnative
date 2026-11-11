@@ -8,7 +8,7 @@ import Foundation
 public struct TabViewState: Equatable, Sendable {
     public var treeNodes = TreeNodes()
     /// The read error on screen (`directoryError`): a new tab on the folder shows the same.
-    public var directoryError: String?
+    public var directoryError: FolderReadError?
     public var contentSelection = ContentSelection.empty
     public var listFilterQuery = ""
     public var contentScroll = CGPoint.zero

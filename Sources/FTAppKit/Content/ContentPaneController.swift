@@ -149,7 +149,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
     /// A Go To that couldn't read its folder (`directoryError` over the folder still shown): the error card shows over
     /// the items until the next folder is read.
-    private(set) var readError: String?
+    private(set) var readError: FolderReadError?
     private(set) var hiddenItemCount = 0
     private(set) var sortBy = SortByPreference.name
     private(set) var sortDirection = SortDirectionPreference.asc
@@ -361,11 +361,11 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         settled = state
     }
 
-    /// A Go To that couldn't be read: the folder on screen stays, with "Couldn’t open this folder" and `message` over
-    /// it, whether or not a read was begun for it.
-    func showReadError(_ message: String) {
+    /// A Go To that couldn't be read: the folder on screen stays, with "Couldn’t open this folder" and the error's
+    /// message over it, whether or not a read was begun for it.
+    func showReadError(_ error: FolderReadError) {
         endLoading()
-        readError = message
+        readError = error
         refreshState()
     }
 
@@ -459,10 +459,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     }
 
     /// A folder that could not be read: its error shows, and nothing is selected.
-    func showError(folder path: String, message: String) {
+    func showError(folder path: String, error: FolderReadError) {
         if searchDisplay != nil, var kept = keptFolder, path == folderPath {
             kept.listed = []
-            kept.loadState = .failed(message: message)
+            kept.loadState = .failed(error)
             keptFolder = kept
             return
         }
@@ -476,7 +476,7 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         positionsCache = nil
         rowsCache = nil
         startDetailsOver()
-        settle(.failed(message: message))
+        settle(.failed(error))
         setSelection(.empty, notify: true)
         closeRenameIfItemLeft()
         pane?.reload(scrollToTop: true)
@@ -621,10 +621,10 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
             kind = .empty(text: ContentStateText.noFolder)
         case .loading:
             kind = entries.isEmpty && loading?.cardShown == true ? .loading : .none
-        case .failed(let message):
+        case .failed(let error):
             kind =
-                FolderReadFailure.isTrashRefused(path: folderPath, message: message, homePath: loaders.homePath)
-                ? .fullDiskAccess : .error(message: message)
+                FolderReadFailure.isTrashRefused(path: folderPath, error: error, homePath: loaders.homePath)
+                ? .fullDiskAccess : .error(message: error.message)
         case .loaded:
             if listed.isEmpty {
                 kind = .empty(text: ContentStateText.empty(path: folderPath, hiddenItemCount: hiddenItemCount))
@@ -636,8 +636,8 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
         }
         if let readError {
             kind =
-                FolderReadFailure.isTrashRefused(path: folderPath, message: readError, homePath: loaders.homePath)
-                ? .fullDiskAccess : .error(message: readError)
+                FolderReadFailure.isTrashRefused(path: folderPath, error: readError, homePath: loaders.homePath)
+                ? .fullDiskAccess : .error(message: readError.message)
         }
         if let searchDisplay {
             kind =

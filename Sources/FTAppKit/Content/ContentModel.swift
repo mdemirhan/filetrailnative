@@ -42,6 +42,17 @@ extension URL {
     var comparablePath: String { standardizedFileURL.path }
 }
 
+/// A folder's read error as the window shows it: the message, and the errno when a system call failed.
+public struct FolderReadError: Equatable, Sendable {
+    public var message: String
+    public var errnum: Int32?
+
+    public init(message: String, errnum: Int32?) {
+        self.message = message
+        self.errnum = errnum
+    }
+}
+
 /// Why a folder could not be read, as the window needs to tell it apart.
 enum FolderReadFailure {
     /// The folder is no longer there (ENOENT, ENOTDIR, or "Path is not a directory"), and the
@@ -59,16 +70,28 @@ enum FolderReadFailure {
     }
 
     /// The message the folder's error card shows.
-    static func message(_ error: any Error) -> String {
+    private static func message(_ error: any Error) -> String {
         if let explorer = error as? ExplorerError { return explorer.description }
         return error.localizedDescription
     }
 
-    /// `isTrashListingRefused`: macOS refuses to list the Trash to an app without Full Disk Access, even though
-    /// everything inside it can still be read.
-    static func isTrashRefused(path: String, message: String?, homePath: String) -> Bool {
-        guard let message, !path.isEmpty, path == FavoriteLabel.trashPath(homePath: homePath) else { return false }
-        return message.contains("EPERM") || message.lowercased().contains("operation not permitted")
+    /// The error as the window keeps it: its message, and the errno of a system call that failed.
+    static func readError(_ error: any Error) -> FolderReadError {
+        let errnum: Int32?
+        if let explorer = error as? ExplorerError {
+            if case .system(let code, _, _) = explorer { errnum = code } else { errnum = nil }
+        } else {
+            let error = error as NSError
+            errnum = error.domain == NSPOSIXErrorDomain ? Int32(truncatingIfNeeded: error.code) : nil
+        }
+        return FolderReadError(message: message(error), errnum: errnum)
+    }
+
+    /// `isTrashListingRefused`: macOS refuses to list the Trash to an app without Full Disk Access (EPERM), even
+    /// though everything inside it can still be read.
+    static func isTrashRefused(path: String, error: FolderReadError?, homePath: String) -> Bool {
+        guard let error, !path.isEmpty, path == FavoriteLabel.trashPath(homePath: homePath) else { return false }
+        return error.errnum == EPERM
     }
 }
 
@@ -79,7 +102,7 @@ enum ContentLoadState: Equatable {
     /// A folder is being read.
     case loading
     case loaded
-    case failed(message: String)
+    case failed(FolderReadError)
 }
 
 /// The folder on screen: what was listed, the order and filter it is shown in, and the sizes bars and the size order
