@@ -93,7 +93,7 @@ extension ExplorerToolbar {
         let view = context.viewState
         var items = SortByPreference.menuOrder.map { value in
             AppMenuItem(
-                title: Self.sortLabel(value), checked: view.sortBy == value,
+                title: value.title, checked: view.sortBy == value,
                 action: { [weak self] in
                     if value != view.sortBy { self?.context?.perform(Self.sortCommand(value)) }
                 })
@@ -209,7 +209,7 @@ extension ExplorerToolbar {
             return submenu(
                 ToolbarItems.definition(id).label,
                 SortByPreference.menuOrder.map { value in
-                    overflowItem("Sort by \(Self.sortLabel(value))", checked: view.sortBy == value) { [weak self] in
+                    overflowItem("Sort by \(value.title)", checked: view.sortBy == value) { [weak self] in
                         if value != view.sortBy { self?.context?.perform(Self.sortCommand(value)) }
                     }
                 })

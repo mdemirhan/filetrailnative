@@ -60,6 +60,16 @@ public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable 
 
     /// SORT_BY_ORDER: the order every menu lists it in.
     public static let menuOrder: [SortByPreference] = [.name, .kind, .modified, .size]
+
+    /// What every menu calls it.
+    public var title: String {
+        switch self {
+        case .name: "Name"
+        case .modified: "Date Modified"
+        case .kind: "Kind"
+        case .size: "Size"
+        }
+    }
 }
 
 public enum FavoritesPlacement: String, Codable, CaseIterable, Sendable, Hashable {

@@ -174,7 +174,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
             let submenu = NSMenu(title: entry.title)
             for field in SortByPreference.menuOrder {
                 let item = NSMenuItem(
-                    title: Self.sortLabel(field), action: #selector(chooseSort(_:)), keyEquivalent: "")
+                    title: field.title, action: #selector(chooseSort(_:)), keyEquivalent: "")
                 item.target = self
                 item.representedObject = field.rawValue
                 item.state = request.sortBy == field ? .on : .off
@@ -183,15 +183,6 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
             entry.submenu = submenu
         default:
             break
-        }
-    }
-
-    static func sortLabel(_ field: SortByPreference) -> String {
-        switch field {
-        case .name: "Name"
-        case .modified: "Date Modified"
-        case .kind: "Kind"
-        case .size: "Size"
         }
     }
 

@@ -257,7 +257,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             case .sort:
                 button.isEnabled = context.canPerform(.sortByName)
                 button.tooltip =
-                    "Sort By: \(Self.sortLabel(view.sortBy)), \(view.sortDirection == .asc ? "Ascending" : "Descending")"
+                    "Sort By: \(view.sortBy.title), \(view.sortDirection == .asc ? "Ascending" : "Descending")"
             case .viewOptions: button.tooltip = "View Options"
             case .theme:
                 let theme = context.preferences.theme
@@ -300,15 +300,6 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
             return "Searching “\(ExplorerTabs.folderDisplayName(root))”"
         }
         return ExplorerTabs.folderDisplayName(context.shownFolderPath)
-    }
-
-    static func sortLabel(_ sortBy: SortByPreference) -> String {
-        switch sortBy {
-        case .size: "Size"
-        case .modified: "Date Modified"
-        case .kind: "Kind"
-        case .name: "Name"
-        }
     }
 
     // MARK: Looking at the items
