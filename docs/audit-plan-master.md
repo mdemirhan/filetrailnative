@@ -1652,7 +1652,7 @@ hand-drawn parts) go with the control; tests of behaviour stay.
   `BatchRenameSheetView.swift` 439–474, `DialogScrim.swift` 369–386): one shared base.
 - Do not replace the in-window dialog framework itself (see "Left out on purpose").
 
-### [ ] 9.2. Settings uses system controls
+### [x] 9.2. Settings uses system controls
 
 - Replace with the system control, keeping behaviour: `SettingsPopup` (`Settings/SettingsControls.swift` 296–418)
   and `SettingsAppPopup` (`SettingsPopovers.swift` 262–344, `SettingsPages.swift` 481–544) → `NSPopUpButton`;
@@ -1665,7 +1665,7 @@ hand-drawn parts) go with the control; tests of behaviour stay.
 - `SettingsMetrics.swift` shrinks to what is still read.
 - Do it one control kind at a time, one commit each.
 
-### [ ] 9.3. Toolbar and menu icons are SF Symbols
+### [x] 9.3. Toolbar and menu icons are SF Symbols
 
 - About 48 toolbar glyphs and 30 context-menu glyphs are stroked from path strings
   (`Toolbar/ToolbarIcons.swift`, `ContextMenus/ContextMenuIcons.swift`; 18 icons are drawn in both; eject a third
@@ -2550,3 +2550,16 @@ anything that differed from the plan, and anything found on the way that is not 
   advice glyph's kind now "has an image"). The shared panel set `masksToBounds = false` on every panel at first,
   which put a hairline at Go To's and the Rename sheet's corners in the pictures; only the alert and the paste
   sheets set it, as before. Go To and a plain alert are pixel-identical before and after.
+- 2026-11-11. 9.2 and 9.3, the owner approved the before and after pictures. 9.2: six of seven parts; the row and
+  card layout on `NSGridView`/`NSStackView` is left out on the owner's word (page layout, not a control; a dozen
+  layout tests pin exact frames), so `SettingsMetrics` keeps its layout constants. A switch shows the system's focus
+  ring whenever it has the keyboard, including after a click. Deleted with its subject: `anOpenAppMenuLetsCommandWThrough`
+  (the drawn app menu; a system menu takes all keys while open). Dragging a list row was not driven in the app (the
+  automation has no drag step); the drop position and the move are tested. 9.3: every command has a symbol, Finder's
+  where Finder has the command; the sidebar's disclosure chevron keeps its drawing (not a command); with hidden files
+  shown, Quick Look and the hidden-files button both show an eye (owner: as is). A drawing bug applied a translucent
+  colour's alpha twice to symbols, which made the Info panel's, Help's, a search tab's magnifier and the sidebar's eject
+  faint; fixed before approval. The checkbox colours of the theme went once 9.1 and 9.2 had both landed. Found: the
+  checks' "zero warnings" holds only for files the build actually recompiles; a build `swift test` already made can
+  hide a new warning from `ci.sh --affected`. Found, not fixed: `MenuLayout.chevronSize` and several `ToolbarLayout`
+  tokens look unread; `SidebarIcons.symbol`/`drawFavorite` repeat the new `SymbolGlyph`.

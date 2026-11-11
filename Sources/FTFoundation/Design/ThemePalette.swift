@@ -30,12 +30,6 @@ public struct ThemePalette: Equatable, Sendable {
     /// Faint lines: under headers, between a sheet's parts, in the Info panel.
     public let borderLight: RGBA
 
-    /// The edge of a checkbox that is off.
-    public let checkBorder: RGBA
-
-    /// The fill of a checkbox that is off.
-    public let checkOffBg: RGBA
-
     /// The sign in a notification's icon, and the fill behind a refused name's message in the rename field.
     public let contextMenuBg: RGBA
 
@@ -169,8 +163,6 @@ public struct ThemePalette: Equatable, Sendable {
         border: RGBA(r: 220, g: 220, b: 225),
         borderActive: RGBA(r: 0, g: 0, b: 0, alpha: 0.12),
         borderLight: RGBA(r: 0, g: 0, b: 0, alpha: 0.07),
-        checkBorder: RGBA(r: 0, g: 0, b: 0, alpha: 0.25),
-        checkOffBg: RGBA(r: 255, g: 255, b: 255),
         contextMenuBg: RGBA(r: 246, g: 246, b: 248),
         contextMenuBorder: RGBA(r: 0, g: 0, b: 0, alpha: 0.16),
         contextMenuDestructive: RGBA(r: 224, g: 56, b: 62),
@@ -236,8 +228,6 @@ public struct ThemePalette: Equatable, Sendable {
         border: RGBA(r: 56, g: 56, b: 59),
         borderActive: RGBA(r: 255, g: 255, b: 255, alpha: 0.1),
         borderLight: RGBA(r: 255, g: 255, b: 255, alpha: 0.07),
-        checkBorder: RGBA(r: 255, g: 255, b: 255, alpha: 0.25),
-        checkOffBg: RGBA(r: 255, g: 255, b: 255, alpha: 0.06),
         contextMenuBg: RGBA(r: 44, g: 44, b: 48),
         contextMenuBorder: RGBA(r: 255, g: 255, b: 255, alpha: 0.12),
         contextMenuDestructive: RGBA(r: 255, g: 69, b: 58),
