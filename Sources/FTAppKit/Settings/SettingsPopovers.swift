@@ -1,4 +1,4 @@
-// The icon grid in a system popover, the app pop-up's menu a system menu
+// The icon grid in a system popover, and the app pop-up
 import AppKit
 import FTFoundation
 
@@ -10,14 +10,12 @@ enum SettingsAppIcon {
 
 /// The panels of Settings: the favorite icon grid, in a system popover, one at a time. It takes Escape before the window
 /// does, closes on a press elsewhere and when the window goes to the back, and gives the keyboard back to the control
-/// that opened it (203, 209). The app menus are system menus (`menus`).
+/// that opened it (203, 209).
 @MainActor
 final class SettingsPopovers {
     private(set) var view: NSView?
     private var popover: AnchoredPopover?
     private weak var owner: NSView?
-    /// A presenter of its own: Settings isn't an explorer window, and its tests run beside theirs.
-    let menus = AppMenuPresenter()
 
     var isOpen: Bool { view != nil }
 
@@ -44,7 +42,6 @@ final class SettingsPopovers {
 
     /// Closes the panel; with `returnFocus` the control that opened it takes the keyboard.
     func close(returnFocus: Bool) {
-        menus.close()
         guard view != nil else { return }
         view = nil
         popover?.close()
@@ -57,9 +54,6 @@ final class SettingsPopovers {
 
     /// An event on its way to the window: true when the panel took it.
     func handle(_ event: NSEvent) -> Bool {
-        #if DEBUG
-            if let window = event.window ?? owner?.window, menus.intercept(event, in: window) { return true }
-        #endif
         guard let view else { return false }
         switch event.type {
         case .leftMouseDown, .rightMouseDown:
@@ -260,49 +254,56 @@ final class FavoriteIconGrid: ThemedView {
 
 // MARK: App pop-up
 
-/// An app chosen in Settings, shown as a pop-up button with the app's icon.
-final class SettingsAppPopup: SettingsControlView, SettingsSized {
-    private(set) var application: ApplicationSelection
-    /// The app's icon, looked up when the app changes rather than on each draw.
-    private var icon = NSImage()
-    let defaultApplication: ApplicationSelection
-    private let nameText = FlushTextField(labelWithString: "")
-    var isExpanded: () -> Bool = { false }
-    private static var font: NSFont { ThemeFonts.sans(DesignTokens.typeScale.body) }
+/// An app chosen in Settings: the system's pop-up button, its menu the app in use and the default (each with its
+/// icon), then Choose….
+final class SettingsAppPopup: NSPopUpButton, SettingsSized {
+    /// What a choice in the menu asks for.
+    enum Pick {
+        /// The default app, chosen while another is in use.
+        case defaultApplication
+        /// Choose…: another app, from a picker.
+        case other
+    }
 
-    init(label: String, application: ApplicationSelection, defaultApplication: ApplicationSelection, theme: Theme) {
+    private(set) var application: ApplicationSelection
+    let defaultApplication: ApplicationSelection
+    /// The icons of the app in use and of the default, looked up when the app changes rather than on each draw.
+    private var icon = NSImage()
+    private let defaultIcon: NSImage
+    var onPick: (Pick) -> Void = { _ in }
+
+    init(label: String, application: ApplicationSelection, defaultApplication: ApplicationSelection) {
         self.application = application
         self.defaultApplication = defaultApplication
-        super.init(theme: theme)
-        nameText.font = Self.font
-        nameText.lineBreakMode = .byTruncatingTail
-        addSubview(nameText)
-        setAccessibilityElement(true)
-        setAccessibilityRole(.popUpButton)
+        defaultIcon = Self.menuIcon(defaultApplication.appPath)
+        super.init(frame: .zero, pullsDown: false)
+        autoenablesItems = false
+        font = ThemeFonts.sans(DesignTokens.typeScale.body)
+        target = self
+        action = #selector(chose(_:))
         setAccessibilityLabel(label)
         setAccessibilityIdentifier("settings.appPopup")
-        update(application)
+        icon = Self.menuIcon(application.appPath)
+        rebuild()
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    override var acceptsFirstResponder: Bool { true }
+    /// Tab comes here whatever the system's keyboard navigation setting says.
+    override var acceptsFirstResponder: Bool { isEnabled }
+    override var canBecomeKeyView: Bool { acceptsFirstResponder }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
-    func update(_ application: ApplicationSelection) {
-        if application.appPath != self.application.appPath || icon.size == .zero {
-            icon = SettingsAppIcon.image(application.appPath)
-        }
-        self.application = application
-        nameText.stringValue = application.appName
-        nameText.textColor = NSColor(theme.palette.textPrimary)
-        setAccessibilityValue(application.appName)
-        needsLayout = true
-        needsDisplay = true
+    private static func menuIcon(_ path: String) -> NSImage {
+        let image = (SettingsAppIcon.image(path).copy() as? NSImage) ?? NSImage()
+        image.size = NSSize(width: SettingsMetrics.appIconSize, height: SettingsMetrics.appIconSize)
+        return image
     }
 
-    override func applyTheme(_ theme: Theme) {
-        super.applyTheme(theme)
-        nameText.textColor = NSColor(theme.palette.textPrimary)
+    func update(_ application: ApplicationSelection) {
+        if application.appPath != self.application.appPath { icon = Self.menuIcon(application.appPath) }
+        self.application = application
+        rebuild()
     }
 
     var isDefault: Bool { application.appPath == defaultApplication.appPath }
@@ -312,38 +313,50 @@ final class SettingsAppPopup: SettingsControlView, SettingsSized {
         isDefault ? [(defaultApplication, true)] : [(application, false), (defaultApplication, true)]
     }
 
+    /// The menu's items: the apps, a separator and Choose…, the app in use chosen.
+    private func rebuild() {
+        removeAllItems()
+        for choice in choices {
+            let item = NSMenuItem(title: choice.application.appName, action: nil, keyEquivalent: "")
+            item.image = choice.isDefault && !isDefault ? defaultIcon : icon
+            item.toolTip = choice.application.appPath
+            item.representedObject = choice.isDefault
+            menu?.addItem(item)
+        }
+        menu?.addItem(.separator())
+        menu?.addItem(NSMenuItem(title: "Choose…", action: nil, keyEquivalent: ""))
+        selectItem(at: 0)
+    }
+
     var preferredSize: NSSize {
-        let natural =
-            SettingsMetrics.appPopupPaddingLeading + SettingsMetrics.appIconSize + SettingsMetrics.appPopupGap
-            + SettingsGlyph.textWidth(application.appName, Self.font) + SettingsMetrics.popupPaddingTrailing
+        let size = cell?.cellSize ?? intrinsicContentSize
         return NSSize(
-            width: min(SettingsMetrics.appPopupMaxWidth, max(SettingsMetrics.popupMinWidth, natural)),
-            height: CGFloat(DesignTokens.controlHeights.regular))
+            width: min(SettingsMetrics.appPopupMaxWidth, max(SettingsMetrics.popupMinWidth, ceil(size.width))),
+            height: ceil(size.height))
     }
 
-    override func layout() {
-        super.layout()
-        let x = SettingsMetrics.appPopupPaddingLeading + SettingsMetrics.appIconSize + SettingsMetrics.appPopupGap
-        let height = nameText.intrinsicContentSize.height
-        nameText.frame = NSRect(
-            x: x, y: ((bounds.height - height) / 2).rounded(),
-            width: max(0, bounds.width - x - SettingsMetrics.popupPaddingTrailing),
-            height: height)
+    /// Chooses the item at `index` of the menu, as the menu does.
+    func choose(at index: Int) {
+        guard itemArray.indices.contains(index), !itemArray[index].isSeparatorItem else { return }
+        selectItem(at: index)
+        chose(self)
     }
 
-    override func draw(_ dirtyRect: NSRect) {
-        SettingsGlyph.bezel(in: bounds, theme: theme, hovering: isHovering, pressed: isPressed || isExpanded())
-        let size = SettingsMetrics.appIconSize
-        icon.draw(
-            in: NSRect(
-                x: SettingsMetrics.appPopupPaddingLeading, y: (bounds.height - size) / 2, width: size, height: size),
-            from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
-        SettingsGlyph.popupChevron(in: bounds, theme: theme)
+    @objc private func chose(_ sender: Any?) {
+        let index = indexOfSelectedItem
+        // The button goes on showing the app in use until the preferences say otherwise.
+        selectItem(at: 0)
+        if index == numberOfItems - 1 {
+            onPick(.other)
+        } else if index > 0, !isDefault {
+            onPick(.defaultApplication)
+        }
     }
 
     override func keyDown(with event: NSEvent) {
-        if event.charactersIgnoringModifiers == " " || event.keyCode == 36 || event.keyCode == 125 {
-            press()
+        // Return and the up and down arrows open the menu, as Space does.
+        if event.keyCode == 36 || event.keyCode == 125 || event.keyCode == 126 {
+            performClick(nil)
         } else {
             super.keyDown(with: event)
         }

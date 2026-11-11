@@ -19,16 +19,6 @@ import Testing
         #expect(after.searchField.text == "dup")
     }
 
-    /// The menu takes only Esc, Tab, the arrows and the keys that choose; ⌘W still closes the window.
-    @Test func anOpenAppMenuLetsCommandWThrough() throws {
-        let (controller, _) = Kit.make(tab: .files)
-        let popup = try Kit.control("Text editor", SettingsAppPopup.self, in: controller)
-        popup.press()
-        #expect(controller.popovers.menus.isOpen)
-        let commandW = Kit.letter("w", [.command], window: controller.window)
-        #expect(!controller.handle(commandW))
-    }
-
     /// ColumnList keeps the selected key, so the selection follows its column.
     @Test func columnSelectionFollowsTheColumnAfterRestoreDefaults() throws {
         let (controller, _) = Kit.make(tab: .browsing)

@@ -89,13 +89,8 @@ enum SettingsMetrics {
 
     // MARK: Controls
 
-    static let popupPaddingTrailing: CGFloat = 26
+    /// A pop-up is at least 120 wide.
     static var popupMinWidth: CGFloat { CGFloat(DesignTokens.settingsPopupMinWidth) }
-    /// A pop-up's chevron: 11 by 11, 8 from the right, stroke 2.4.
-    static let chevronSize: CGFloat = 11
-    static let chevronInset: CGFloat = 8
-    static let chevronStroke: CGFloat = 2.4
-    static let chevronPath = "M8 9.5l4-4 4 4M8 14.5l4 4 4-4"
     /// A number field is 48 wide.
     static let numberFieldWidth: CGFloat = 48
     /// What an editable field's cell keeps between its frame and its text on each side (the Rename sheet's fields).
@@ -198,14 +193,9 @@ enum SettingsMetrics {
 
     // MARK: App pop-ups and menus
 
-    /// An app pop-up: 6 between icon and name, at most 240 wide, 6 of padding before and 26 after. The icons
-    /// are 18.
-    static let appPopupGap: CGFloat = 6
+    /// An app pop-up is at most 240 wide; its icons are 16, as a menu's are.
     static let appPopupMaxWidth: CGFloat = 240
-    static let appPopupPaddingLeading: CGFloat = 6
-    static let appIconSize: CGFloat = 18
-    /// The menu hangs 4 under its control.
-    static let menuOffset: CGFloat = 4
+    static let appIconSize: CGFloat = 16
 
     // MARK: Shortcuts
 

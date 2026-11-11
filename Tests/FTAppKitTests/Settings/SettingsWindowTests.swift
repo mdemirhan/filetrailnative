@@ -530,33 +530,33 @@ import Testing
         let (controller, recorder) = Kit.make(tab: .files)
         let terminal = try Kit.control("Terminal", SettingsAppPopup.self, in: controller)
         #expect(terminal.application.appName == "Terminal")
-        Kit.click(terminal)
-        var menu = try #require(controller.popovers.menus.menu)
-        #expect(menu.rows.map(\.title) == ["Terminal", "Choose…"])
-        #expect(menu.rows.map(\.checked) == [true, nil])
-        #expect(menu.nsMenu.items[1].isSeparatorItem)
-        #expect(menu.nsMenu.minimumWidth == terminal.frame.width)
-        #expect(terminal.isExpanded())
+        #expect(terminal.itemTitles == ["Terminal", "", "Choose…"])
+        #expect(terminal.titleOfSelectedItem == "Terminal")
+        #expect(terminal.itemArray[1].isSeparatorItem)
         recorder.pickedApplication = ApplicationSelection(appPath: "/Applications/iTerm.app", appName: "iTerm")
-        menu.onChoose(2)
+        terminal.choose(at: 2)
+        // The button goes on showing the app in use while the picker is open.
+        #expect(terminal.titleOfSelectedItem == "Terminal")
         await Kit.settle()
         #expect(terminal.application.appName == "iTerm")
         #expect(recorder.saved["terminalApp"]?["appName"] == .string("iTerm"))
-        Kit.click(terminal)
-        menu = try #require(controller.popovers.menus.menu)
-        #expect(menu.rows.map(\.title) == ["iTerm", "Terminal", "Choose…"])
-        // Choosing the default clears the custom app.
-        menu.onChoose(1)
-        #expect(!controller.popovers.menus.isOpen)
+        #expect(terminal.itemTitles == ["iTerm", "Terminal", "", "Choose…"])
+        #expect(terminal.titleOfSelectedItem == "iTerm")
+        // Choosing the app in use changes nothing; choosing the default clears the custom app.
+        let patches = recorder.patches.count
+        terminal.choose(at: 0)
+        #expect(recorder.patches.count == patches)
+        terminal.choose(at: 1)
         #expect(recorder.saved["terminalApp"] == .null)
         #expect(terminal.application.appName == "Terminal")
+        #expect(terminal.itemTitles == ["Terminal", "", "Choose…"])
         // A cancelled picker changes nothing.
         recorder.pickedApplication = nil
         let editor = try Kit.control("Text editor", SettingsAppPopup.self, in: controller)
-        Kit.click(editor)
-        controller.popovers.menus.menu?.onChoose(2)
+        editor.choose(at: 2)
         await Kit.settle()
         #expect(editor.application.appName == "TextEdit")
+        #expect(editor.titleOfSelectedItem == "TextEdit")
     }
 
     @Test func editsTheAppsAlwaysInOpenWithByTheirIDs() async throws {
@@ -670,13 +670,11 @@ import Testing
         #expect(openWith.card.frame.height == 40)
         // The bar's buttons are centred under its top line.
         #expect(list.barButtons.allSatisfy { $0.frame.minY == 4.5 && $0.frame.height == 20 })
-        // The app menu's rows, the checked one first, with the app's icon.
-        Kit.click(try Kit.control("Text editor", SettingsAppPopup.self, in: controller))
-        let menu = try #require(controller.popovers.menus.menu)
-        #expect(menu.identifier == "toolbarMenu" && menu.rowIdentifier == "toolbarMenu.item")
-        #expect(menu.rows.map(\.title) == ["TextEdit", "Choose…"])
-        #expect(menu.rows.filter { $0.checked == true }.map(\.title) == ["TextEdit"])
-        #expect(menu.nsMenu.items[0].image != nil && menu.nsMenu.items[2].image == nil)
+        // The app menu's items, the chosen one first, with the app's icon.
+        let editor = try Kit.control("Text editor", SettingsAppPopup.self, in: controller)
+        #expect(editor.itemTitles == ["TextEdit", "", "Choose…"])
+        #expect(editor.titleOfSelectedItem == "TextEdit")
+        #expect(editor.itemArray[0].image != nil && editor.itemArray[2].image == nil)
     }
 
     // A press on a favorite's icon focuses the button in the row, so the row is selected

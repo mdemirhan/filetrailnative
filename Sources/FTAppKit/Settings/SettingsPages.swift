@@ -488,64 +488,20 @@ final class SettingsPageView: NSView {
         current: @escaping (AppPreferences) -> ApplicationSelection, failure: String,
         set: @escaping (inout AppPreferences, ApplicationSelection?) -> Void
     ) -> SettingsAppPopup {
-        let popup = SettingsAppPopup(
-            label: label, application: current(preferences), defaultApplication: defaultApp, theme: theme)
-        popup.isExpanded = { [weak self, weak popup] in
-            guard let self, let popup, let popovers = self.host?.popovers else { return false }
-            return popovers.menus.isOpen(from: popup)
-        }
-        popup.onPress = { [weak self, weak popup] in
-            guard let self, let popup else { return }
-            self.toggleAppMenu(popup, failure: failure, set: set)
+        let popup = SettingsAppPopup(label: label, application: current(preferences), defaultApplication: defaultApp)
+        popup.onPick = { [weak self] pick in
+            switch pick {
+            case .defaultApplication:
+                self?.update { set(&$0, nil) }
+            case .other:
+                Task { @MainActor [weak self] in
+                    guard let self, let app = await self.pickApplication(failure) else { return }
+                    self.update { set(&$0, app) }
+                }
+            }
         }
         onRefresh { popup.update(current($0)) }
         return popup
-    }
-
-    private func toggleAppMenu(
-        _ popup: SettingsAppPopup, failure: String, set: @escaping (inout AppPreferences, ApplicationSelection?) -> Void
-    ) {
-        guard let menus = host?.popovers.menus else { return }
-        if menus.isOpen(from: popup) {
-            menus.close()
-            return
-        }
-        var items: [AppMenuItem] = popup.choices.map { choice in
-            AppMenuItem(
-                title: choice.application.appName, checked: choice.application.appPath == popup.application.appPath,
-                tooltip: choice.application.appPath, appPath: choice.application.appPath,
-                action: { [weak self, weak popup] in
-                    guard let popup, choice.isDefault, !popup.isDefault else { return }
-                    self?.update { set(&$0, nil) }
-                })
-        }
-        items.append(.separator)
-        items.append(
-            AppMenuItem(
-                title: "Choose…",
-                action: { [weak self] in
-                    Task { @MainActor [weak self] in
-                        guard let self, let app = await self.pickApplication(failure) else { return }
-                        self.update { set(&$0, app) }
-                    }
-                }))
-        let menu = AppMenu(
-            items: items, identifier: "toolbarMenu", rowIdentifier: "toolbarMenu.item",
-            minWidth: Double(popup.bounds.width))
-        // A menu opened with a key shows the keyboard on its checked item at once (`:focus-visible`).
-        if NSApp.currentEvent?.type == .keyDown { menu.markedIndex = items.firstIndex { $0.checked == true } }
-        popup.needsDisplay = true
-        guard let window = popup.window, let host = AppMenuPresenter.overlayHost(of: window) else { return }
-        // Below the control, 4 under it; it gives the keyboard back to it.
-        let rect = popup.convert(popup.bounds, to: host)
-        let top = host.isFlipped ? rect.maxY : host.bounds.height - rect.minY
-        menus.show(
-            menu, in: window, at: NSPoint(x: rect.minX, y: top + SettingsMetrics.menuOffset), owner: popup
-        ) { [weak popup] in
-            guard let popup else { return }
-            popup.needsDisplay = true
-            popup.window?.makeFirstResponder(popup)
-        }
     }
 
     private func openWithList() -> SettingsListView {

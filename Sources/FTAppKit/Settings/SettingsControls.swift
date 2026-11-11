@@ -64,35 +64,6 @@ enum SettingsGlyph {
         path.stroke()
     }
 
-    /// The pop-up's double chevron at the end of `bounds`.
-    static func popupChevron(in bounds: NSRect, theme: Theme) {
-        let size = SettingsMetrics.chevronSize
-        let rect = NSRect(
-            x: bounds.maxX - SettingsMetrics.chevronInset - size, y: (bounds.height - size) / 2, width: size,
-            height: size)
-        stroke(
-            SettingsMetrics.chevronPath, box: 24, in: rect, width: SettingsMetrics.chevronStroke,
-            color: NSColor(theme.palette.settingsLabelSecondary))
-    }
-
-    /// The push button's bezel and fill, with its hover and pressed looks.
-    static func bezel(in bounds: NSRect, theme: Theme, hovering: Bool, pressed: Bool) {
-        let radius = CGFloat(DesignTokens.radii.control)
-        let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
-        let palette = theme.palette
-        NSColor(palette.pushButtonBg).setFill()
-        shape.fill()
-        drawPushButtonBezel(palette, around: bounds, radius: radius)
-        if hovering {
-            NSColor(palette.bgHover).setFill()
-            shape.fill()
-        }
-        if pressed {
-            NSColor.black.withAlphaComponent(CGFloat(1 - palette.pushButtonPressed)).setFill()
-            shape.fill()
-        }
-    }
-
     /// The focus ring: the accent at 50% around a control.
     static func focusRing(around bounds: NSRect, radius: CGFloat, theme: Theme) {
         let ring = NSBezierPath(
