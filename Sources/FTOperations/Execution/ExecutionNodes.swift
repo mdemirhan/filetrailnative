@@ -516,14 +516,14 @@ private func isAppPastedOnItsOwn(_ context: ExecutionContext, _ sourcePath: Stri
     return items.count == 1 && sameText(items[0].sourcePath, sourcePath) && hasAppExtension(sourcePath)
 }
 
-/// `preserveModeIfSupported`.
+/// Gives the folder at `destinationPath` the mode it was copied with, unless the disk can't keep it.
 func preserveModeIfSupported(_ fileSystem: some WriteServiceFileSystem, _ destinationPath: String, _ mode: UInt32?)
     throws
 {
     try FolderMetadata.preserveMode(destinationPath, mode, fileSystem.chmod)
 }
 
-/// `preserveTimestampsIfSupported`.
+/// Gives the folder at `destinationPath` the modification date it was copied with, unless the disk can't keep it.
 func preserveTimestampsIfSupported(
     _ fileSystem: some WriteServiceFileSystem, _ destinationPath: String, _ mtimeMs: Double?
 ) throws {

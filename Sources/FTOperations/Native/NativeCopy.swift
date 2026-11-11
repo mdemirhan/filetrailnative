@@ -95,7 +95,7 @@ extension timespec {
 /// The metadata a folder copy carries over once its items are in (a read-only or locked folder can't be
 /// written into afterwards).
 public enum FolderMetadata {
-    /// `preserveModeIfSupported`.
+    /// Gives the folder `mode`, unless the disk can't keep it (ENOTSUP).
     static func preserveMode(_ path: String, _ mode: UInt32?, _ chmod: (String, UInt32) throws -> Void) throws {
         guard let mode else { return }
         do {
@@ -103,7 +103,7 @@ public enum FolderMetadata {
         } catch  where isUnsupported(error) {}
     }
 
-    /// `preserveTimestampsIfSupported`.
+    /// Gives the folder `mtimeMs` as its access and modification dates, unless the disk can't keep them (ENOTSUP).
     static func preserveTimestamps(
         _ path: String, _ mtimeMs: Double?, _ utimes: (String, Double, Double) throws -> Void
     ) throws {

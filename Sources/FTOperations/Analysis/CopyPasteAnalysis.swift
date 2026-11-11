@@ -526,7 +526,7 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
     }
 }
 
-/// `.sort()`: by UTF-16 code unit, as JavaScript sorts strings.
+/// Names in the order of their UTF-16 code units: the same order on every Mac, whatever its language.
 func sortedJS(_ names: [String]) -> [String] {
     names.sorted { $0.utf16.lexicographicallyPrecedes($1.utf16) }
 }
@@ -655,7 +655,7 @@ private func summarizeAnalysis(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAna
     return summary
 }
 
-/// `path.join(folder, name)` for a name a folder listed, as the walk builds one for every item it reads. When the
+/// The path of a name a folder listed, as the walk builds one for every item it reads. When the
 /// folder is already normalized and absolute and the name is a plain one, the join is the two put together with a
 /// "/" between, so that is what is built: normalizing every path again cost more than reading the items. Anything
 /// else goes through `NodePath.join`.

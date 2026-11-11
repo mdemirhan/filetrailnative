@@ -294,8 +294,8 @@ func rebaseItemResults(_ items: [CopyPasteItemResult], _ fromPath: String, _ toP
     }
 }
 
-/// `path` under `toPath` instead of `fromPath`, compared byte for byte (scalar for scalar, as `===` and
-/// `startsWith` compare): a folder of 100,000 items has each of their paths rebased.
+/// `path` under `toPath` instead of `fromPath`, compared byte for byte (scalar for scalar, so the NFC and NFD
+/// spellings of a name differ): a folder of 100,000 items has each of their paths rebased.
 func rebasePath(_ path: String, _ fromPath: String, _ toPath: String) -> String {
     let bytes = path.utf8
     let from = fromPath.utf8

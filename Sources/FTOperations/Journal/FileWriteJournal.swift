@@ -170,7 +170,7 @@ public final class FileWriteJournal: WriteJournal, @unchecked Sendable {
     }
 }
 
-/// `JSON.stringify` of the journal's plain values, keys in the order given.
+/// The journal's plain values as compact JSON text, keys in the order given.
 enum JournalJSON {
     static func array(_ objects: [[(String, Any)]]) -> String {
         "[" + objects.map(object).joined(separator: ",") + "]"

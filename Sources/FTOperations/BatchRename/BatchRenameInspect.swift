@@ -3,7 +3,7 @@ import FTFileSystem
 import FTFoundation
 import Foundation
 
-/// What the Rename sheet asks about the items it renames (`batchRename:inspect`).
+/// What the Rename sheet asks about the items it renames: their paths, and whether to read when photos were taken.
 public struct BatchRenameInspectRequest: Equatable, Sendable {
     public var paths: [String]
     /// Whether to read when each photo was taken: only the date settings that use it ask.

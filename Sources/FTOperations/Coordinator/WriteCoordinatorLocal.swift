@@ -13,7 +13,7 @@ public struct LocalWriteOperation {
     public let signal: StopSignal
     weak var coordinator: WriteCoordinator?
 
-    /// `emitLocalWriteOperationEvent`: tells the window how the operation is doing. A terminal event first forgets
+    /// Tells the window how the operation is doing. A terminal event first forgets
     /// what the operation changed (`removedItems`: what a delete removed, read just before, taken off the measured
     /// folders' sizes), records `undoLog` for Undo (left out when it changed nothing), and frees the slot.
     public func emit(_ event: WriteOperationEvent, removedItems: [RemovedItem] = [], undoLog: UndoLog? = nil) {

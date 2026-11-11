@@ -116,7 +116,7 @@ public enum BatchRenameExecution {
         var temporaryPath: String?
     }
 
-    /// `runBatchRename`: renames items to the names asked for, each in its own folder, one after another.
+    /// Renames items to the names asked for, each in its own folder, one after another.
     ///
     /// Items may swap names or pass them along ("File 2" to "File 1" while "File 1" becomes "File 2"): an item whose
     /// name another item wants is first moved to a hidden temporary name in its folder, and takes its new name after
@@ -486,7 +486,8 @@ public enum BatchRenameExecution {
             ?? describeCopyPasteError(error)
     }
 
-    /// `toLowerCase()` (names never hold a NUL, which Foundation's version stops at).
+    /// Lowercased by Unicode's rules, with none of a language (names never hold a NUL, which Foundation's lowercasing
+    /// stops at).
     private static func lowercased(_ text: String) -> String {
         text.lowercased(with: nil)
     }
@@ -497,7 +498,7 @@ public enum BatchRenameExecution {
         NameKeys.Exact("\(folder)\0\(NameKeys.looseKey(name))")
     }
 
-    /// `defaultTemporaryName`.
+    /// A hidden name, random enough to be free, for an item to wait under while another takes its name.
     static func defaultTemporaryName() -> String {
         ".filetrail-rename-\(randomHex(bytes: 6))"
     }

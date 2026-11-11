@@ -36,7 +36,7 @@ public struct NodeFingerprint: Equatable, Codable, Sendable {
 
     public static let missing = NodeFingerprint(exists: false, kind: .missing)
 
-    // `===` on strings: scalar for scalar.
+    // A link's target compares scalar for scalar: its NFC and NFD spellings are different targets.
     public static func == (left: NodeFingerprint, right: NodeFingerprint) -> Bool {
         left.exists == right.exists && left.kind == right.kind && left.size == right.size
             && left.mtimeMs == right.mtimeMs && left.mode == right.mode && left.ino == right.ino
@@ -316,7 +316,7 @@ public func fileIdOf(_ ino: UInt64?) -> UInt64? {
     return ino
 }
 
-/// `===` on two strings: scalar for scalar (Swift's `==` takes NFC and NFD as equal).
+/// Whether two strings are the same scalar for scalar (Swift's `==` takes NFC and NFD as equal); two nils are.
 func sameText(_ left: String?, _ right: String?) -> Bool {
     switch (left, right) {
     case (nil, nil): true
@@ -325,7 +325,7 @@ func sameText(_ left: String?, _ right: String?) -> Bool {
     }
 }
 
-/// `text.startsWith(prefix)`, scalar for scalar.
+/// Whether `text` starts with `prefix`, scalar for scalar.
 func startsWith(_ text: String, _ prefix: String) -> Bool {
     text.unicodeScalars.starts(with: prefix.unicodeScalars)
 }

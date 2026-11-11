@@ -56,8 +56,8 @@ public final class StopSignal: Sendable {
     }
 }
 
-/// What a stopped operation throws: the signal's `AbortError` ("This operation was aborted"), which has no
-/// `code`.
+/// What a stopped operation throws: named "AbortError", saying "This operation was aborted", and without an error
+/// code.
 public struct StopError: CodedError, Equatable, Sendable, CustomStringConvertible {
     public init() {}
 

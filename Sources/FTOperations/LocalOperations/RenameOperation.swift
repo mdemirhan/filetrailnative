@@ -18,7 +18,7 @@ extension WriteCoordinator {
     public func rename(sourcePath: String, destinationName: String, window: any WriteOperationWindow) async throws
         -> WriteOperationHandle
     {
-        // The contract's name check.
+        // A name no item can have (empty, holding a "/", too long) is refused before the slot is taken.
         if let refusal = ItemNames.error(for: destinationName) {
             throw WriteCoordinatorError(refusal)
         }

@@ -21,7 +21,7 @@ public enum WriteGuards {
         }
     }
 
-    /// `assertNotAlreadyInTrash`.
+    /// Refuses items that are in the Trash already.
     public static func assertNotAlreadyInTrash(_ paths: [String], homePath: String) throws {
         for path in paths where Paths.isInsideTrash(NodePath.resolve(path), homePath: homePath) {
             throw WriteCoordinatorError("\u{201C}\(NodePath.basename(path))\u{201D} is already in the Trash.")

@@ -2,7 +2,7 @@ import FTFileSystem
 import FTFoundation
 import Foundation
 
-/// What one window's Move to Trash found has no Trash to go to (`itemsWithoutTrash`'s map for a sender): by path,
+/// What one window's Move to Trash found has no Trash to go to (its record in `itemsWithoutTrash`): by path,
 /// the item that was there, by its id (or, on a disk without usable ids, how it looked). Another item put at its
 /// path while the question was open was never asked about.
 @MainActor
@@ -53,7 +53,8 @@ extension WriteCoordinator {
         return record
     }
 
-    /// `itemsWithoutTrash.get(sender)`.
+    /// The record of `window`'s items without a Trash; nil when it has none, or the record is of a window since
+    /// closed that had the same identity.
     func recordOfItemsWithoutTrash(_ window: any WriteOperationWindow) -> ItemsWithoutTrash? {
         guard let record = itemsWithoutTrash[ObjectIdentifier(window)], record.window === window else { return nil }
         return record

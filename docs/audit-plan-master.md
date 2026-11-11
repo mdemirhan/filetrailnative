@@ -1692,9 +1692,9 @@ hand-drawn parts) go with the control; tests of behaviour stay.
 
 ## Phase 10. Comments on the app's own terms
 
-- [ ] 10.1 `Sources/FTFoundation`
-- [ ] 10.2 `Sources/FTFileSystem` and `Sources/CFileTrail`
-- [ ] 10.3 `Sources/FTOperations`
+- [x] 10.1 `Sources/FTFoundation`
+- [x] 10.2 `Sources/FTFileSystem` and `Sources/CFileTrail`
+- [x] 10.3 `Sources/FTOperations`
 - [ ] 10.4 `Sources/FTAppKit`
 - [ ] 10.5 `Tests`: comments
 - [ ] 10.6 `Tests`: names of tests and fixtures (step 6)
@@ -2516,3 +2516,10 @@ anything that differed from the plan, and anything found on the way that is not 
   comes back) and are corrected. 11.3: README and `CLAUDE.md` (owner's yes) agree with the scripts. 11.5: the
   fixtures are found through `FILETRAIL_DEV_CACHE` everywhere; `FILETRAIL_FIXTURES`, which nothing set, is gone.
   11.6: all four held; the `release.sh` fix has a test. 11.7: a known-issues entry.
+- 2026-11-11. 10.1 to 10.3: comments only, one commit per folder (44); CFileTrail needed nothing. The plan's wrong
+  comments in these targets are fixed or were already settled (`WriteServiceAnalysis.swift` went in 6.6). Kept on
+  purpose: `JSRegExp.swift` saying "JavaScript" where it states the regex rules the app keeps (decision 4); regex
+  patterns written as comments; CSS-like shorthand in `SearchLayout` and `DialogLayout` ("padding 0 4 0 8"); doc
+  comments starting with a live identifier; POSIX call names. Found, not fixed: `Date.epochMilliseconds` is public
+  in both FTFoundation (rounds) and FTFileSystem (rounds down); identifiers with the old vocabulary besides Q16's five
+  (`sortedJS`, `jsTrimmed`, `isJSWhitespace`, `jsLowercased`, `jsRound`, `nodeText`, `libuvWords`, `menuAccelerator`).

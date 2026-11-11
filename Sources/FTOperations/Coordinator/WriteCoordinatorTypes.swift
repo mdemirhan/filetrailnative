@@ -1,4 +1,5 @@
-// WriteOperationKind, FinishedWrite, WriteOperationSender, and what the coordinator is given
+// The window an operation answers to and what it is sent, the kinds of operation, a finished write, and the
+// requests the coordinator is given
 import FTFileSystem
 import FTFoundation
 import Foundation
@@ -35,7 +36,7 @@ extension WriteService: CoordinatorWriteService {
 /// coordinator when one closes (`windowClosed`).
 @MainActor
 public protocol WriteOperationWindow: AnyObject {
-    /// `isDestroyed()`: closed, or on its way out.
+    /// Closed, or on its way out.
     var isClosed: Bool { get }
     /// Sends it a message.
     func receive(_ message: WriteOperationMessage)
@@ -43,9 +44,9 @@ public protocol WriteOperationWindow: AnyObject {
 
 /// What the coordinator sends a window.
 public enum WriteOperationMessage: Equatable, Sendable {
-    /// `filetrail:writeOperationProgress`.
+    /// How the operation is doing: its progress, a question it waits on, or its end.
     case progress(WriteOperationEvent)
-    /// `filetrail:writeOperationAdopted`: the operation is this window's now; the one that started it closed.
+    /// The operation is this window's now; the one that started it closed.
     case adopted(WriteOperationAdoption)
 }
 
@@ -134,7 +135,7 @@ public struct WriteOperationHandle: Equatable, Sendable {
     }
 }
 
-/// An error the coordinator refuses a request with (`new Error(message)`).
+/// An error the coordinator refuses a request with: its message is the sentence to show.
 public struct WriteCoordinatorError: Error, Equatable, Sendable, CustomStringConvertible, LocalizedError {
     public var message: String
 
@@ -145,7 +146,7 @@ public struct WriteCoordinatorError: Error, Equatable, Sendable, CustomStringCon
     public var description: String { message }
     public var errorDescription: String? { message }
 
-    /// `ensureNoWriteOperationInFlight`.
+    /// Another write holds the slot: one write runs at a time (`ensureNoWriteOperationInFlight`).
     public static let busy = WriteCoordinatorError(WriteServiceMessages.writeOperationBusy)
     public static let quitting = WriteCoordinatorError("File Trail is quitting.")
     /// One paste is reviewed at a time.

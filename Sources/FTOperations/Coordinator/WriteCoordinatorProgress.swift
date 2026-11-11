@@ -50,7 +50,7 @@ extension WriteCoordinator {
         }
     }
 
-    /// `forgetProgress`.
+    /// Drops what is held back for the operation, and its timer.
     func forgetProgress(_ operationId: String) {
         throttles[operationId]?.cancelTimer?()
         throttles[operationId] = nil

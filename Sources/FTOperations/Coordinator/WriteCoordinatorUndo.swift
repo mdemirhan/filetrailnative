@@ -25,7 +25,7 @@ struct UndoState {
     var run: @Sendable ([UndoUnit], UndoRunOptions) throws -> UndoRun = { UndoExecution.runUndo($0, $1) }
 }
 
-/// What `undo:prepare` answers.
+/// What `prepareUndo` answers: what the Undo (or Redo) would ask, or why it can't run.
 public struct UndoPrepared: Equatable, Sendable {
     public enum Refusal: String, Sendable {
         case busy, nothing
@@ -66,7 +66,7 @@ extension WriteCoordinator {
     /// nothing.
     public nonisolated static let undoCheckWithinMs: Double = 10_000
 
-    /// `undo:prepare`: what undoing (or redoing) the last operation would ask, without changing anything. It doesn't
+    /// What undoing (or redoing) the last operation would ask, without changing anything. It doesn't
     /// take the write slot.
     public func prepareUndo(_ direction: UndoDirection) async throws -> UndoPrepared {
         let history = options.undoHistory
@@ -104,7 +104,7 @@ extension WriteCoordinator {
             })
     }
 
-    /// `undo:start`: runs what `prepareUndo` looked at, once what would be asked now was asked then.
+    /// Runs what `prepareUndo` looked at, once what would be asked now was asked then.
     @discardableResult
     public func startUndo(ticket: String, window: any WriteOperationWindow) async throws -> WriteOperationHandle {
         let look = undo.asked[ticket]

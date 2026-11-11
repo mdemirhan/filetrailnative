@@ -43,7 +43,7 @@ enum LocalOperations {
         return asked.size == now.size
     }
 
-    /// `lstatOrNull`.
+    /// What `lstat` says of the item at `path`, or nil when it can't be read (whatever the reason).
     static func lstatOrNull(_ fileSystem: some IdentityFileSystem, _ path: String) -> WriteServiceStats? {
         try? fileSystem.lstat(path)
     }
@@ -67,7 +67,7 @@ enum LocalOperations {
         }
     }
 
-    /// `isSameItem`.
+    /// Whether the two are one item: the same disk and the same file id, when the id can be trusted.
     static func isSameItem(_ left: WriteServiceStats, _ right: WriteServiceStats) -> Bool {
         left.dev != nil && hasFileId(left) && left.dev == right.dev && left.ino == right.ino
     }
@@ -101,9 +101,9 @@ enum LocalOperations {
         return described.isEmpty ? "\u{201C}\(name)\u{201D} couldn\u{2019}t be moved to the Trash." : described
     }
 
-    /// Disk work, off the main actor. It runs on a queue of its own rather than in Swift's shared pool: a call can
-    /// block for long (the Trash, a large folder deleted, a disk that stops answering), and blocked pool threads
-    /// would hold up every other task.
+    /// Disk work, off the main actor. It runs on a global dispatch queue, which starts more threads while some are
+    /// blocked, rather than in Swift's shared pool: a call can block for long (the Trash, a large folder deleted, a
+    /// disk that stops answering), and blocked pool threads would hold up every other task.
     static func onDisk<T: Sendable>(_ work: @escaping @Sendable () throws -> T) async throws -> T {
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {

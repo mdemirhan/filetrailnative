@@ -251,7 +251,7 @@ public enum UndoPlan {
         return "\u{201C}\(name)\u{201D} is no longer in \u{201C}\(NodePath.basename(NodePath.dirname(path)))\u{201D}."
     }
 
-    /// `/^\/Volumes\/([^/]+)\//u.exec(path)?.[1]`.
+    /// The name of the disk under /Volumes that `path` is inside (not the disk's own path); nil for any other path.
     private static func volumeName(_ path: String) -> String? {
         let scalars = Array(path.unicodeScalars)
         let prefix = Array("/Volumes/".unicodeScalars)
@@ -379,7 +379,8 @@ public enum UndoPlan {
         return !(entries?.contains { sameText($0, name) } ?? false)
     }
 
-    /// `checkTrash`.
+    /// Whether the item a step would move to the Trash is still the one the operation made: refused when it is
+    /// gone, unreadable or another item; otherwise whether it changed since.
     public static func checkTrash(_ fileSystem: some IdentityFileSystem, _ step: PlannedTrash) -> TrashCheck {
         let item: WriteServiceStats
         switch lookUp(step.path, { try fileSystem.lstat($0) }) {

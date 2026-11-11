@@ -134,7 +134,7 @@ public final class WriteCoordinator {
 
     var closing: Bool { slot.withLock { $0.closing } }
 
-    /// `ensureNoWriteOperationInFlight`.
+    /// Refuses when a write holds the slot, or when the app is quitting.
     func ensureNoWriteOperationInFlight() throws {
         try slot.withLock { slot in
             if slot.closing { throw WriteCoordinatorError.quitting }
@@ -151,7 +151,7 @@ public final class WriteCoordinator {
         }
     }
 
-    /// `freeWriteSlot`.
+    /// Frees the slot if `holder` holds it, and tells those waiting for it to be free.
     func freeWriteSlot(_ holder: SlotHolder) {
         let freed = slot.withLock { slot -> Bool in
             guard slot.holder == holder else { return false }
@@ -419,7 +419,7 @@ public final class WriteCoordinator {
         return handle
     }
 
-    /// `copyPaste:resolveConflict`: answers the question a paste waits on; only from the operation's own window.
+    /// Answers the question a paste waits on; only from the operation's own window.
     @discardableResult
     public func resolveConflict(
         _ operationId: String, conflictId: String, resolution: CopyPasteChoice, applyToRemaining: Bool = false,
@@ -510,7 +510,7 @@ public final class WriteCoordinator {
 
     // MARK: Quitting
 
-    /// `shutdown`: stops the running operation, if any, and waits until it has finished (up to `maxWaitMs`): an
+    /// On quitting: stops the running operation, if any, and waits until it has finished (up to `maxWaitMs`): an
     /// operation stops after the item it is on and removes any partly copied file. No new operation can start
     /// afterwards. Finder empties the Trash and goes on after File Trail quits: there is nothing to stop or wait for.
     public func shutDown(maxWaitMs: Double = WriteCoordinator.shutdownWaitLimitMs) async {

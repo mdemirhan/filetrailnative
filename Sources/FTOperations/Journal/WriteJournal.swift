@@ -173,7 +173,7 @@ extension WriteJournalEntry {
                 moved: moved, staged: staged, movingCopy: Self.bool(entry["movingCopy"]) == true))
     }
 
-    /// A JSON boolean: `typeof value === "boolean"`, which a number never is.
+    /// A JSON `true` or `false`, never a number, though Foundation reads both as an `NSNumber`.
     private static func bool(_ value: Any?) -> Bool? {
         guard let number = value as? NSNumber, CFGetTypeID(number) == CFBooleanGetTypeID() else { return nil }
         return number.boolValue
