@@ -114,7 +114,7 @@ extension ExplorerWindowlessTests {
             content.view.layoutSubtreeIfNeeded()
             let scroller = try #require(content.pane as? any RevealScroller)
             func comeIn(_ path: String) {
-                jobs.nextStart = JobStart(jobId: path, status: .ready)
+                jobs.nextStart = FolderSizeStartResponse(jobId: path, status: .ready)
                 jobs.finish(path, path, size: 1_000)
                 sizes.calculate(path)
                 timers.advance(1)
@@ -154,7 +154,7 @@ extension ExplorerWindowlessTests {
             content.show(folder: "/f", entries: folders, selecting: nil, keepingScroll: false)
             content.view.layoutSubtreeIfNeeded()
             for (index, folder) in folders.enumerated() {
-                jobs.nextStart = JobStart(jobId: folder.path, status: .ready)
+                jobs.nextStart = FolderSizeStartResponse(jobId: folder.path, status: .ready)
                 jobs.finish(folder.path, folder.path, size: Int64(1_000 - index))
                 sizes.calculate(folder.path)
                 timers.advance(1)

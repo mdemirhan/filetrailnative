@@ -102,7 +102,7 @@ struct AutoFolderSizeControllerTests {
         auto.setPath("/Users/demo/a")
         wait()
         #expect(jobs.starts.map(\.automatic) == [true])
-        jobs.nextStart = JobStart(jobId: "job-2", status: .running)
+        jobs.nextStart = FolderSizeStartResponse(jobId: "job-2", status: .running)
         sizes.calculate("/Users/demo/a", recalculate: true)
         auto.setPath(nil)
         #expect(jobs.cancels.isEmpty)

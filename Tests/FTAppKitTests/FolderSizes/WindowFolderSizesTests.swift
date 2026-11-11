@@ -43,30 +43,31 @@ final class FakeJobs: FolderSizeBackend {
     var probes: [[String]] = []
     var starts: [FolderSizeStartRequest] = []
     var cancels: [String] = []
-    var statuses: [String: JobState] = [:]
-    var nextStart = JobStart(jobId: "job-1", status: .running)
+    var statuses: [String: FolderSizeJob] = [:]
+    var nextStart = FolderSizeStartResponse(jobId: "job-1", status: .running)
 
-    func probeMany(_ paths: [String]) -> [SizeProbe] {
+    func probeMany(_ paths: [String]) -> [FolderSizeProbe] {
         probes.append(paths)
         return paths.compactMap { path in
-            known[path].map { SizeProbe(path: path, sizeBytes: $0, diskBytes: $0, fileCount: 1, folderCount: 0) }
+            known[path].map { FolderSizeProbe(path: path, sizeBytes: $0, diskBytes: $0, fileCount: 1, folderCount: 0) }
         }
     }
 
-    func start(_ request: FolderSizeStartRequest, owner: Int) -> JobStart {
+    func start(_ request: FolderSizeStartRequest, owner: Int) -> FolderSizeStartResponse {
         starts.append(request)
         return nextStart
     }
 
-    func state(jobId: String) -> JobState {
-        statuses[jobId] ?? JobState(status: .running)
+    func getStatus(jobId: String) -> FolderSizeJob {
+        statuses[jobId] ?? FolderSizeJob(jobId: jobId, path: "", status: .running)
     }
 
     func cancel(jobId: String) { cancels.append(jobId) }
 
     func finish(_ jobId: String, _ path: String, size: Int64) {
-        statuses[jobId] = JobState(
-            status: .ready, sizeBytes: size, diskBytes: size, fileCount: 2, folderCount: 1, measuredFolderCount: 1)
+        statuses[jobId] = FolderSizeJob(
+            jobId: jobId, path: path, status: .ready, sizeBytes: size, diskBytes: size, fileCount: 2, folderCount: 1,
+            measuredFolderCount: 1)
     }
 }
 
@@ -147,7 +148,7 @@ struct WindowFolderSizesTests {
     // Calculate goes calculating at once; a size the jobs
     // hold goes straight to ready; the flags go through.
     @Test func aKnownSizeGoesStraightToReady() {
-        jobs.nextStart = JobStart(jobId: "job-9", status: .ready)
+        jobs.nextStart = FolderSizeStartResponse(jobId: "job-9", status: .ready)
         jobs.finish("job-9", "/a", size: 42)
         sizes.calculate("/a", recalculate: true, automatic: true)
         #expect(sizes.cachedEntry("/a") == .ready(sizeBytes: 42, diskBytes: 42, fileCount: 2, folderCount: 1))
@@ -173,7 +174,7 @@ struct WindowFolderSizesTests {
         sizes.settled(jobId: "job-1")
         #expect(sizes.readySize("/a") == 3)
         sizes.settled(jobId: "job-2")
-        jobs.nextStart = JobStart(jobId: "job-2", status: .running)
+        jobs.nextStart = FolderSizeStartResponse(jobId: "job-2", status: .running)
         jobs.finish("job-2", "/b", size: 4)
         sizes.calculate("/b")
         #expect(sizes.readySize("/b") == 4)
@@ -190,7 +191,7 @@ struct WindowFolderSizesTests {
     // A job error shows its message.
     @Test func aJobErrorShowsItsMessage() {
         sizes.calculate("/a")
-        jobs.statuses["job-1"] = JobState(status: .error)
+        jobs.statuses["job-1"] = FolderSizeJob(jobId: "job-1", path: "/a", status: .error)
         timers.advance(0.2)
         #expect(sizes.cachedEntry("/a") == .error(message: "Unknown error"))
     }

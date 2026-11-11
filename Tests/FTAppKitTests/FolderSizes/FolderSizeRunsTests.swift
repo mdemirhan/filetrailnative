@@ -12,36 +12,40 @@ private final class OneAtATimeJobs: FolderSizeBackend {
     var probes: [[String]] = []
     var starts: [FolderSizeStartRequest] = []
     var cancels: [String] = []
-    var states: [String: JobState] = [:]
+    var states: [String: FolderSizeJob] = [:]
 
     var started: [String] { starts.map(\.path) }
     var asked: [String] { probes.flatMap { $0 } }
 
-    func probeMany(_ paths: [String]) -> [SizeProbe] {
+    func probeMany(_ paths: [String]) -> [FolderSizeProbe] {
         probes.append(paths)
         return paths.compactMap { path in
-            known[path].map { SizeProbe(path: path, sizeBytes: $0, diskBytes: $0, fileCount: 1, folderCount: 0) }
+            known[path].map { FolderSizeProbe(path: path, sizeBytes: $0, diskBytes: $0, fileCount: 1, folderCount: 0) }
         }
     }
 
-    func start(_ request: FolderSizeStartRequest, owner: Int) -> JobStart {
+    func start(_ request: FolderSizeStartRequest, owner: Int) -> FolderSizeStartResponse {
         starts.append(request)
-        return JobStart(jobId: Self.job(request.path), status: .running)
+        return FolderSizeStartResponse(jobId: Self.job(request.path), status: .running)
     }
 
-    func state(jobId: String) -> JobState { states[jobId] ?? JobState(status: .running) }
+    func getStatus(jobId: String) -> FolderSizeJob {
+        states[jobId] ?? FolderSizeJob(jobId: jobId, path: "", status: .running)
+    }
     func cancel(jobId: String) { cancels.append(jobId) }
 
     static func job(_ path: String) -> String { "job:\(path)" }
 
     func finish(_ path: String, size: Int64 = 9) {
-        states[Self.job(path)] = JobState(
-            status: .ready, sizeBytes: size, diskBytes: size, fileCount: 1, folderCount: 0, measuredFolderCount: 1)
+        states[Self.job(path)] = FolderSizeJob(
+            jobId: Self.job(path), path: path, status: .ready, sizeBytes: size, diskBytes: size, fileCount: 1,
+            folderCount: 0, measuredFolderCount: 1)
     }
 
     /// The walk of `path` has measured this many folders so far.
     func measured(_ count: Int, in path: String) {
-        states[Self.job(path)] = JobState(status: .running, measuredFolderCount: count)
+        states[Self.job(path)] = FolderSizeJob(
+            jobId: Self.job(path), path: path, status: .running, measuredFolderCount: count)
     }
 }
 
@@ -125,7 +129,8 @@ struct FolderSizeRunsTests {
     // A calculation started meanwhile stops the walk under way (the jobs cancel it) and ends the run.
     @Test func aWalkTheJobsCancelledEndsTheRun() {
         sizes.calculate(["/a", "/b"])
-        jobs.states[OneAtATimeJobs.job("/a")] = JobState(status: .cancelled)
+        jobs.states[OneAtATimeJobs.job("/a")] = FolderSizeJob(
+            jobId: OneAtATimeJobs.job("/a"), path: "/a", status: .cancelled)
         sizes.settled(jobId: OneAtATimeJobs.job("/a"))
         #expect(sizes.cachedEntry("/a") == .idle)
         #expect(jobs.started == ["/a"])
@@ -143,7 +148,8 @@ struct FolderSizeRunsTests {
     // A folder that fails was not stopped: the run goes on (`entry.status === "idle"` only ends it).
     @Test func aFolderThatFailsLeavesTheRunGoing() {
         sizes.calculate(["/a", "/b"])
-        jobs.states[OneAtATimeJobs.job("/a")] = JobState(status: .error, error: "No access")
+        jobs.states[OneAtATimeJobs.job("/a")] = FolderSizeJob(
+            jobId: OneAtATimeJobs.job("/a"), path: "/a", status: .error, error: "No access")
         sizes.settled(jobId: OneAtATimeJobs.job("/a"))
         #expect(sizes.cachedEntry("/a") == .error(message: "No access"))
         #expect(jobs.started == ["/a", "/b"])
@@ -206,7 +212,8 @@ struct FolderSizeRunsTests {
         await show("/out/a")
         sizes.calculate("/out")
         jobs.known = ["/out/a": 400]
-        jobs.states[OneAtATimeJobs.job("/out")] = JobState(status: .error)
+        jobs.states[OneAtATimeJobs.job("/out")] = FolderSizeJob(
+            jobId: OneAtATimeJobs.job("/out"), path: "/out", status: .error)
         await poll()
         #expect(sizes.readySize("/out/a") == 400)
     }

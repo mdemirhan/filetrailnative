@@ -20,6 +20,21 @@ public struct FolderSizeJob: Equatable, Sendable {
     /// waiting on when this goes up.
     public var measuredFolderCount: Int
     public var error: String?
+
+    public init(
+        jobId: String, path: String, status: FolderSizeJobStatus, sizeBytes: Int64? = nil, diskBytes: Int64? = nil,
+        fileCount: Int? = nil, folderCount: Int? = nil, measuredFolderCount: Int = 0, error: String? = nil
+    ) {
+        self.jobId = jobId
+        self.path = path
+        self.status = status
+        self.sizeBytes = sizeBytes
+        self.diskBytes = diskBytes
+        self.fileCount = fileCount
+        self.folderCount = folderCount
+        self.measuredFolderCount = measuredFolderCount
+        self.error = error
+    }
 }
 
 public struct FolderSizeStartRequest: Sendable {
@@ -38,6 +53,11 @@ public struct FolderSizeStartRequest: Sendable {
 public struct FolderSizeStartResponse: Equatable, Sendable {
     public var jobId: String
     public var status: FolderSizeJobStatus
+
+    public init(jobId: String, status: FolderSizeJobStatus) {
+        self.jobId = jobId
+        self.status = status
+    }
 }
 
 /// The size known of one folder.
@@ -47,9 +67,15 @@ public struct FolderSizeProbe: Equatable, Sendable {
     public var diskBytes: Int64
     public var fileCount: Int
     public var folderCount: Int
-}
 
-public typealias FolderSizeStatus = FolderSizeJob
+    public init(path: String, sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int) {
+        self.path = path
+        self.sizeBytes = sizeBytes
+        self.diskBytes = diskBytes
+        self.fileCount = fileCount
+        self.folderCount = folderCount
+    }
+}
 
 /// Each folder size job queue, told what a write changed, and when one starts and ends: a size stored while a
 /// write runs may have been measured after it had already removed something, so taking the removal off it when
@@ -500,7 +526,7 @@ public final class FolderSizeJobs {
         }
     }
 
-    public func getStatus(jobId: String) -> FolderSizeStatus {
+    public func getStatus(jobId: String) -> FolderSizeJob {
         jobs[jobId]
             ?? FolderSizeJob(
                 jobId: jobId, path: "", status: .error, sizeBytes: nil, diskBytes: nil, fileCount: nil,

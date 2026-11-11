@@ -1435,7 +1435,7 @@ Only merge code proven identical. Where two helpers differ in any case, do not m
 - Rebuild only when the shortcuts or the text editor change, as the header comment says.
 - Not in this item: replacing the pushed `ApplicationMenuState` with `validateMenuItem` (see "Left out on purpose").
 
-### [ ] 6.11. Folder sizes: remove the copies
+### [x] 6.11. Folder sizes: remove the copies
 
 - Three pairs of structs copied field by field at `Sources/FTAppKit/FolderSizes/WindowFolderSizes.swift` 5–60
   (`FolderSizeProbe`/`SizeProbe`, `FolderSizeJob`/`JobState`, `FolderSizeStartResponse`/`JobStart`) and
@@ -2262,3 +2262,8 @@ anything that differed from the plan, and anything found on the way that is not 
   the new code then matched them. `shortcutOrder` stays (the golden test reads it).
 - 2026-11-11. Q8 (delete both): `NavigationHistory.mapPaths` and `QuickLookController.windowWillChange` are gone;
   neither had a caller, a selector or a script use.
+- 2026-11-11. 6.11, done. The window's backend protocol stays (two test doubles implement it) but speaks
+  `FolderSizeProbe`, `FolderSizeStartResponse` and `FolderSizeJob`, which gained public initializers for them;
+  `state(jobId:)` is `getStatus(jobId:)`, which the jobs answer as they are. Differs from the plan: the `Task` hop
+  before the probes are asked stays. It is not a hop to another thread but the coalescing of every folder drawn in
+  one pass into one question and one repaint; only the 5,000-at-a-time chunking went.
