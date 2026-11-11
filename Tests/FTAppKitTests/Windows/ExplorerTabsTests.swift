@@ -157,7 +157,7 @@ import Testing
 
     // MARK: collectFollowedMoves
 
-    private func result(_ action: WriteOperationAction, mode: FTAppKit.CopyPasteMode? = nil) -> WriteOperationOutcome {
+    private func result(_ action: WriteOperationAction, mode: CopyPasteMode? = nil) -> WriteOperationOutcome {
         WriteOperationOutcome(
             action: action, mode: mode,
             items: [

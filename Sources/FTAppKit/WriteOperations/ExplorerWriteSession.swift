@@ -372,7 +372,7 @@ final class ExplorerWriteSession: WriteOperationWindow {
         guard let result = event.result, AfterWrite.movedItems(result) else { return }
         let moves = ExplorerTabs.collectFollowedMoves(
             WriteOperationOutcome(
-                action: result.action, mode: result.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
+                action: result.action, mode: result.mode,
                 items: result.items.map(\.effect)))
         host?.followMovesOnScreen(moves)
     }

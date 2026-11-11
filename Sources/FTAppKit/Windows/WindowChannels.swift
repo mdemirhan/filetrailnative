@@ -57,9 +57,6 @@ public final class WindowPreferenceChannel {
     }
 }
 
-/// Copy or Cut, as the app's clipboard holds it (`CopyPasteClipboard`, FTFoundation's `ClipboardMode`).
-public typealias CopyPasteMode = ClipboardMode
-
 /// What Copy or Cut put on the clipboard, in whichever window: every window pastes it (`app:getClipboard`,
 /// `app:setClipboard`).
 @MainActor

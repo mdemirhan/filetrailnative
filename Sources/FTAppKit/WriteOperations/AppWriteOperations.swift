@@ -165,7 +165,7 @@ final class AppWriteOperations {
                 status: event.status,
                 result: event.result.map {
                     WriteOperationOutcome(
-                        action: $0.action, mode: $0.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
+                        action: $0.action, mode: $0.mode,
                         items: $0.items.map(\.effect))
                 }))
         if event.status.isTerminal, let result = event.result {

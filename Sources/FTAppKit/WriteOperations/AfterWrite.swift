@@ -70,7 +70,7 @@ enum AfterWrite {
         var inLeft = Set(left.map(NameKeys.Exact.init))
         if movedItems(result) {
             let outcome = WriteOperationOutcome(
-                action: result.action, mode: result.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
+                action: result.action, mode: result.mode,
                 items: result.items.map(\.effect))
             for move in ExplorerTabs.collectFollowedMoves(outcome)
             where ExplorerTabs.parentDirectoryPath(move.from) != ExplorerTabs.parentDirectoryPath(move.to)
