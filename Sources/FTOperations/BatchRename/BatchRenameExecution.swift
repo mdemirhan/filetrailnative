@@ -502,15 +502,6 @@ public enum BatchRenameExecution {
         ".filetrail-rename-\(randomHex(bytes: 6))"
     }
 
-    /// `count` random bytes as lowercase hex, two characters per byte.
-    static func randomHex(bytes count: Int) -> String {
-        var generator = SystemRandomNumberGenerator()
-        return (0..<count).map { _ in
-            let byte = UInt8.random(in: 0...255, using: &generator)
-            return String(byte, radix: 16).leftPadded(to: 2)
-        }.joined()
-    }
-
     // MARK: Undo
 
     /// `movedItemsOf`: what a batch rename moved, for Undo: each item that is somewhere else than it was, and still
@@ -600,12 +591,6 @@ public enum BatchRenameExecution {
             }
         }
         return recovery
-    }
-}
-
-extension String {
-    fileprivate func leftPadded(to length: Int) -> String {
-        count >= length ? self : String(repeating: "0", count: length - count) + self
     }
 }
 
