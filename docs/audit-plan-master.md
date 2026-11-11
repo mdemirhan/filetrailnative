@@ -1804,7 +1804,7 @@ what `fixed` does first). Changes to `CLAUDE.md` need the user's yes.
 
 2.1 and 2.6 already change these files for the warnings claim and `bun`, and 4.1 for the minimum macOS.
 
-### [ ] 11.4. `tools/bench`
+### [x] 11.4. `tools/bench`
 
 `run.sh` cites a `PLAN.md` that does not exist, the committed baseline is over budget on six
 metrics, the idle-memory launch can measure the wrong thing (`run.sh:82`: no `--user-data-dir`, no
@@ -2585,3 +2585,6 @@ anything that differed from the plan, and anything found on the way that is not 
   a copy of `JSString.equals` and went (`JSString` is now public for it). Other identifiers with old words found in
   Phase 10 (`sortedJS`, `jsTrimmed`, `isJSWhitespace`, `jsLowercased`, `jsRound`, `nodeText`, `libuvWords`,
   `menuAccelerator`, `javaScriptNumber`, `PageWindow…`) were not part of the answer and are left.
+- 2026-11-12. 11.4 finished: the baseline is recorded with the screen awake. Over budget: `stall_100000_ms` 71.6
+  against 50 and `scroll_max_ms` 26 against 16 (report-only budgets; neither looked into). `open_N_ms` is the median
+  of three opens, two of them cached, so a first open of a large folder is not what it measures.
