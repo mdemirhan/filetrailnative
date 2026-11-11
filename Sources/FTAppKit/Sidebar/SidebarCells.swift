@@ -272,7 +272,6 @@ final class SidebarItemCell: NSTableCellView {
         let showsEject = item.kind == .location && item.canEject && item.path != nil
         eject.isHidden = !showsEject
         eject.iconSize = layout.ejectIcon
-        eject.strokeWidth = layout.ejectStroke
         eject.color = selectedFocused ? onSelection : ChromeColors.color(palette.textSecondary)
         eject.hoverColor = selectedFocused ? onSelection : ChromeColors.color(palette.textPrimary)
         eject.isEnabled = !state.ejecting

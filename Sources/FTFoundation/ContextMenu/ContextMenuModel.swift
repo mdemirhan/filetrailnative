@@ -20,18 +20,10 @@ public enum ContextMenuActionID: String, Sendable, CaseIterable, Hashable, Codab
     public var isSubmenu: Bool { self == .openWith || self == .viewAs || self == .sortBy }
 }
 
-/// The 14 pt line icon of an item (`ContextMenuIconName`).
-public enum ContextMenuIconName: String, Sendable, CaseIterable, Hashable {
-    case revealInFolder, revealInTree, open, openFile, openInNewTab, openInNewWindow, openWith, quickLook
-    case showPackageContents, edit, showInfo, calculateSize, cut, copy, paste, move, rename, duplicate, newFolder
-    case viewAs, sortBy, terminal, showInFinder, copyPath, rootTreeHere, trash, deleteImmediately, emptyTrash
-    case eject, favorite
-}
-
 public enum ContextMenuItem: Equatable, Sendable {
     case separator(key: String)
     case action(
-        id: ContextMenuActionID, label: String, icon: ContextMenuIconName, destructive: Bool, hasSubmenu: Bool)
+        id: ContextMenuActionID, label: String, icon: CommandIcon, destructive: Bool, hasSubmenu: Bool)
 
     public var actionID: ContextMenuActionID? {
         if case .action(let id, _, _, _, _) = self { return id }
@@ -70,7 +62,7 @@ public struct ContextMenuOptions: Equatable, Sendable {
 
 public enum ContextMenuItems {
     private static func item(
-        _ id: ContextMenuActionID, _ label: String, _ icon: ContextMenuIconName, destructive: Bool = false,
+        _ id: ContextMenuActionID, _ label: String, _ icon: CommandIcon, destructive: Bool = false,
         submenu: Bool = false
     ) -> ContextMenuItem {
         .action(id: id, label: label, icon: icon, destructive: destructive, hasSubmenu: submenu)

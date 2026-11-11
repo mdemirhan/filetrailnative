@@ -4,12 +4,12 @@ import FTFoundation
 /// The copy or scissors glyph after an item's name: 12 pt, in the accent, or the color of the text on a selected row.
 /// It ignores the pointer.
 final class ClipboardMarkGlyph: NSView {
-    private let glyph = ToolbarIconView(.copy)
+    private let glyph = SymbolIconView(CommandIcon.copy.symbolName)
 
     var mark: ClipboardMark? {
         didSet {
             isHidden = mark == nil
-            glyph.name = mark == .cut ? .cut : .copy
+            glyph.symbolName = (mark == .cut ? CommandIcon.cut : .copy).symbolName
         }
     }
 

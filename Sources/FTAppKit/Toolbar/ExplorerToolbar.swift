@@ -471,8 +471,10 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         default:
             break
         }
+        // Every item left is a button with an icon.
+        guard let icon = definition.icon else { return NSView() }
         let identifier = wired ? "toolbar.\(id.rawValue)" : ""
-        let button = ToolbarButton(icon: definition.icon, label: Self.accessibilityLabel(id), identifier: identifier)
+        let button = ToolbarButton(icon: icon, label: Self.accessibilityLabel(id), identifier: identifier)
         if wired { wire(button, id) }
         return button
     }

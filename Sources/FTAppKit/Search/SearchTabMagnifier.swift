@@ -31,7 +31,6 @@ final class SearchTabMagnifier: NSView {
         let color =
             searching
             ? ChromeColors.color(ChromeColors.accent(for: self).solid) : ChromeColors.color(palette.textSecondary)
-        ToolbarGlyph.draw(
-            .search, in: bounds, strokeWidth: DesignTokens.toolbar.iconStrokeWidth, color: color, flipped: true)
+        SymbolGlyph.draw(CommandIcon.search.symbolName, in: bounds, color: color)
     }
 }

@@ -1,51 +1,6 @@
 // The toolbar's table: each item's icon, label, command and tooltip, the items a new window starts with, and the
 // order they are offered in while the toolbar is customized.
 
-/// The icon a toolbar item draws (`ToolbarIconName`).
-public enum ToolbarIconName: String, CaseIterable, Sendable, Hashable {
-    case back
-    case forward
-    case up
-    case location
-    case hidden
-    case hiddenShown
-    case refresh
-    case icons
-    case list
-    case details
-    case drawer
-    case sidebar
-    case edit
-    case chevron
-    case open
-    case theme
-    case close
-    case help
-    case settings
-    case search
-    case trash
-    case infoRow
-    case foldersFirst
-    case copy
-    case cut
-    case paste
-    case move
-    case duplicate
-    case newFolder
-    case terminal
-    case copyPath
-    case rename
-    case separatorVertical
-    case more
-    case sort
-    case title
-    case newTab
-    case quickLook
-    case showInFinder
-    case revealInFolder
-    case calculateSize
-}
-
 /// The items of the toolbar over the file list; the raw value is what is saved in the toolbar's order.
 public enum ToolbarItemID: String, Codable, CaseIterable, Sendable, Hashable {
     case back
@@ -99,15 +54,15 @@ extension ToolbarItems {
             id: .refresh, label: "Refresh", icon: .refresh, commandType: .refreshOrApplySearchSort,
             shortcutCommand: .refreshOrApplySearchSort),
         ToolbarItemDefinition(
-            id: .topSeparator, label: "Space", icon: .separatorVertical, allowDuplicates: true),
-        ToolbarItemDefinition(id: .view, label: "View Mode", icon: .list),
-        ToolbarItemDefinition(id: .sort, label: "Sort", icon: .sort),
-        ToolbarItemDefinition(id: .title, label: "Title", icon: .title, topRequired: true),
+            id: .topSeparator, label: "Space", icon: nil, allowDuplicates: true),
+        ToolbarItemDefinition(id: .view, label: "View Mode", icon: nil),
+        ToolbarItemDefinition(id: .sort, label: "Sort", icon: .sortBy),
+        ToolbarItemDefinition(id: .title, label: "Title", icon: nil, topRequired: true),
         ToolbarItemDefinition(id: .clipboard, label: "Clipboard", icon: .copy, topRequired: true),
-        ToolbarItemDefinition(id: .viewOptions, label: "View Options", icon: .more, topRequired: true),
+        ToolbarItemDefinition(id: .viewOptions, label: "View Options", icon: .viewOptions, topRequired: true),
         ToolbarItemDefinition(id: .search, label: "Search", icon: .search, topRequired: true),
         ToolbarItemDefinition(
-            id: .goToFolder, label: "Go To", icon: .location, commandType: .openLocationSheet,
+            id: .goToFolder, label: "Go To", icon: .goTo, commandType: .openLocationSheet,
             shortcutCommand: .openLocationSheet),
         ToolbarItemDefinition(
             id: .foldersFirst, label: "Folders First", icon: .foldersFirst,
@@ -115,10 +70,10 @@ extension ToolbarItems {
         ToolbarItemDefinition(
             id: .hidden, label: "Hidden Files", icon: .hidden, shortcutCommand: .toggleHiddenFiles),
         ToolbarItemDefinition(
-            id: .folderTree, label: "Folder Tree", icon: .sidebar, commandType: .toggleFolderTree,
+            id: .folderTree, label: "Folder Tree", icon: .folderTree, commandType: .toggleFolderTree,
             shortcutCommand: .toggleFolderTree),
         ToolbarItemDefinition(
-            id: .infoPanel, label: "Info Panel", icon: .drawer, commandType: .toggleInfoPanel,
+            id: .infoPanel, label: "Info Panel", icon: .infoPanel, commandType: .toggleInfoPanel,
             shortcutCommand: .toggleInfoPanel),
         ToolbarItemDefinition(
             id: .infoRow, label: "Info Row", icon: .infoRow, commandType: .toggleInfoRow,

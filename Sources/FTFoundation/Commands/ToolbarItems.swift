@@ -3,7 +3,8 @@ import Foundation
 public struct ToolbarItemDefinition: Sendable, Equatable {
     public var id: ToolbarItemID
     public var label: String
-    public var icon: ToolbarIconName
+    /// The icon of its button; the items that are not buttons (the space, the title, the view switch) have none.
+    public var icon: CommandIcon?
     public var commandType: RendererCommand?
     /// Always in the toolbar: it can be moved there, but not taken off.
     public var topRequired: Bool
@@ -14,7 +15,7 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
     public var allowDuplicates: Bool
 
     init(
-        id: ToolbarItemID, label: String, icon: ToolbarIconName, commandType: RendererCommand? = nil,
+        id: ToolbarItemID, label: String, icon: CommandIcon?, commandType: RendererCommand? = nil,
         topRequired: Bool = false, shortcutCommand: ShortcutCommandID? = nil, tooltipLabel: String? = nil,
         allowDuplicates: Bool = false
     ) {

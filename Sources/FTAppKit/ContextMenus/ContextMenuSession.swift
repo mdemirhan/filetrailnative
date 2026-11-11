@@ -77,7 +77,7 @@ final class ContextMenuSession: NSObject, NSMenuDelegate, NSMenuItemValidation {
                 let entry = NSMenuItem(title: label, action: #selector(choose(_:)), keyEquivalent: "")
                 entry.target = self
                 entry.identifier = NSUserInterfaceItemIdentifier(id.rawValue)
-                entry.showImage(ContextMenuGlyph.image(icon))
+                entry.showImage(icon.image)
                 if destructive {
                     entry.attributedTitle = NSAttributedString(
                         string: label,

@@ -1,17 +1,17 @@
 import AppKit
 import FTFoundation
 
-/// An icon-only toolbar button: the system's toolbar button, which draws its own Liquid Glass, with its stroke icon as
-/// a template image. A toggle that is on, and a menu button with its menu open, show the system's pressed look, a gray
+/// An icon-only toolbar button: the system's toolbar button, which draws its own Liquid Glass, with its command's
+/// system symbol. A toggle that is on, and a menu button with its menu open, show the system's pressed look, a gray
 /// pill as on Finder's selected view: the button's real on state fills it with the accent color, whatever its
 /// `tintProminence`, `bezelColor` or `contentTintColor`, so the button's `state` stays off. The presses are its own,
 /// for the buttons that do more than click (Back's and Forward's hold and right-click). Tab reaches it from the search
 /// field and from the buttons beside it (`ToolbarKeyboard`), where Return or Space presses it; a click leaves the
 /// keyboard where it is.
 class ToolbarButton: NSButton {
-    var iconName: ToolbarIconName {
+    var iconName: CommandIcon {
         didSet {
-            if iconName != oldValue { image = ToolbarGlyph.image(iconName) }
+            if iconName != oldValue { image = iconName.image }
         }
     }
     /// A click: a press released over the button.
@@ -57,12 +57,12 @@ class ToolbarButton: NSButton {
         "toolbar.back", "toolbar.forward", "toolbar.sort", "toolbar.viewOptions", "toolbar.theme", "toolbar.clipboard",
     ]
 
-    init(icon name: ToolbarIconName, label: String, identifier: String) {
+    init(icon name: CommandIcon, label: String, identifier: String) {
         iconName = name
         opensMenu = Self.menuIdentifiers.contains(identifier)
         super.init(frame: .zero)
         title = ""
-        image = ToolbarGlyph.image(name)
+        image = name.image
         imagePosition = .imageOnly
         bezelStyle = .toolbar
         isBordered = true

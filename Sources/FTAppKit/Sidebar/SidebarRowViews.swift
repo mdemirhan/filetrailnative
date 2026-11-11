@@ -238,7 +238,6 @@ final class SidebarEjectView: SidebarPlainView {
         didSet { needsDisplay = true }
     }
     var iconSize = 14.0
-    var strokeWidth = 1.8
     var isEnabled = true {
         didSet {
             alphaValue = isEnabled ? 1 : DesignTokens.disabledOpacity
@@ -261,7 +260,7 @@ final class SidebarEjectView: SidebarPlainView {
         }
         let rect = NSRect(
             x: (bounds.width - iconSize) / 2, y: (bounds.height - iconSize) / 2, width: iconSize, height: iconSize)
-        SidebarIcons.drawEject(in: rect, color: isHovered && isEnabled ? hoverColor : color, stroke: strokeWidth)
+        SidebarIcons.drawEject(in: rect, color: isHovered && isEnabled ? hoverColor : color)
     }
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }

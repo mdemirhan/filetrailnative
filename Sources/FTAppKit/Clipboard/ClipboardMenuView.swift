@@ -608,7 +608,7 @@ final class ClipboardMenuItemRow: NSView {
 
 /// The × that removes an item.
 final class ClipboardMenuRemoveButton: NSView {
-    private let glyph = ToolbarIconView(.close)
+    private let glyph = SymbolIconView("xmark")
     var onClick: () -> Void = {}
     var color: NSColor = .labelColor {
         didSet { glyph.color = color }

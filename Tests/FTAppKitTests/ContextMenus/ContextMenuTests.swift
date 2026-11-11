@@ -222,13 +222,13 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // 14 pt line icons, destructive items red
-        @Test func everyItemHasAFourteenPointTemplateIconAndTheTrashItemIsRed() async throws {
+        // System symbols, destructive items red
+        @Test func everyItemHasATemplateIconAndTheTrashItemIsRed() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await opened(harness)
             let menu = tab.contextMenus.contentMenu(for: [try entry(tab, "note.txt")])
             for entry in menu?.items ?? [] where !entry.isSeparatorItem && entry.view == nil {
-                #expect(entry.image?.size == NSSize(width: 14, height: 14), "\(entry.title)")
+                #expect(entry.image?.isValid == true, "\(entry.title)")
                 #expect(entry.image?.isTemplate == true)
                 // From macOS 27 the system hides a menu item's image unless it is asked to show it.
                 if #available(macOS 27, *) { #expect(entry.preferredImageVisibility == .visible, "\(entry.title)") }

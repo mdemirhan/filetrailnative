@@ -180,9 +180,6 @@ extension ExplorerWindowlessTests {
             let run = frames.dropFirst()
             for (left, right) in zip(run, run.dropFirst()) { #expect(abs(right.minX - left.maxX - 8) <= 1) }
             #expect(try #require(toolbar.button(.back)).frame.width == 36)
-            // The glyphs' box: a mark of the box's middle 16 units comes out 16 points across, with its stroke.
-            #expect(toolbar.button(.back)?.image?.size == NSSize(width: 22, height: 22))
-            #expect(toolbar.viewSwitch?.image(forSegment: 0)?.size == NSSize(width: 22, height: 22))
             #expect(abs(toolbar.searchField.frame.width - DesignTokens.toolbar.searchWidth) <= 0.5)
             // Finder's selected segment is 34 by 28; the system's control takes its height from the toolbar.
             let viewSwitch = try #require(toolbar.viewSwitch)

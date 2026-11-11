@@ -1,7 +1,7 @@
 import AppKit
 import FTFoundation
 
-/// The icons of favorites and locations, the system's symbols as Finder's; the headings, the eject and the
+/// The icons of favorites and locations and the eject, the system's symbols as Finder's; the headings and the
 /// chevron are line icons drawn from SVG paths.
 enum SidebarIcons {
     /// A heading's line icon, as an SVG path: 24-unit box, stroke 1.7, round caps and joins, no fill.
@@ -81,15 +81,12 @@ enum SidebarIcons {
         image.draw(in: fitted, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
     }
 
-    /// Finder's eject symbol: a triangle over a bar.
-    static func drawEject(in rect: NSRect, color: NSColor, stroke width: Double) {
-        let triangle = SVGPath.path("M12 5.5l7 8H5z")
-        let bar = SVGPath.path("M5 18.5h14")
-        stroke(triangle, box: 24, in: rect, width: width, color: color)
-        stroke(bar, box: 24, in: rect, width: width, color: color)
+    /// Finder's eject symbol.
+    static func drawEject(in rect: NSRect, color: NSColor) {
+        SymbolGlyph.draw(CommandIcon.eject.symbolName, in: rect, color: color)
     }
 
-    /// The disclosure chevron of rows (the toolbar's `chevron` icon), pointing right; `rotation` turns it about the
+    /// The disclosure chevron of rows, pointing right, in a 24-unit box; `rotation` turns it about the
     /// center of `rect` (90° when open).
     static func drawChevron(in rect: NSRect, color: NSColor, stroke width: Double, rotation: CGFloat) {
         NSGraphicsContext.saveGraphicsState()
@@ -101,7 +98,7 @@ enum SidebarIcons {
             transform.translateX(by: -rect.midX, yBy: -rect.midY)
             transform.concat()
         }
-        ToolbarGlyph.draw(.chevron, in: rect, strokeWidth: width, color: color, flipped: true)
+        stroke(SVGPath.path("M9.5 7l5 5-5 5"), box: 24, in: rect, width: width, color: color)
     }
 
     private static func stroke(_ path: NSBezierPath, box: Double, in rect: NSRect, width: Double, color: NSColor) {

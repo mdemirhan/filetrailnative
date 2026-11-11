@@ -175,9 +175,8 @@ final class ClipboardBadgeView: PassThroughView {
         circle.stroke()
         let glyph = CGFloat(style.badgeGlyphSize)
         let box = NSRect(x: (bounds.width - glyph) / 2, y: (bounds.height - glyph) / 2, width: glyph, height: glyph)
-        ToolbarGlyph.draw(
-            mark == .cut ? .cut : .copy, in: box, strokeWidth: DesignTokens.toolbar.iconStrokeWidth,
-            color: NSColor(theme.accent.solidButton), flipped: true)
+        SymbolGlyph.draw(
+            (mark == .cut ? CommandIcon.cut : .copy).symbolName, in: box, color: NSColor(theme.accent.solidButton))
     }
 }
 

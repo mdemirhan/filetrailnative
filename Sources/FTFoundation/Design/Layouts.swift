@@ -204,7 +204,6 @@ public struct ToolbarLayout: Equatable, Sendable {
     public var titlePaddingTrailing: Double
     public var titleFontSize: Double
     public var iconSize: Double
-    public var iconStrokeWidth: Double
     public var segmentedTrackPadding: Double
     public var segmentWidth: Double
     public var segmentHeight: Double
@@ -214,7 +213,7 @@ public struct ToolbarLayout: Equatable, Sendable {
             titleMinWidth: 96, searchWidth: 200, searchMinWidth: 110, controlHeight: 32,
             buttonWidth: 32, minHeight: 52, paddingLeading: 8, paddingTrailing: 12,
             titlePaddingLeading: 8, titlePaddingTrailing: 4, titleFontSize: 15, iconSize: 17,
-            iconStrokeWidth: 1.7, segmentedTrackPadding: 4, segmentWidth: 32, segmentHeight: 24)
+            segmentedTrackPadding: 4, segmentWidth: 32, segmentHeight: 24)
     }
 }
 
@@ -318,7 +317,6 @@ public struct SidebarLayout: Equatable, Sendable {
     public let badgePaddingY = 1.0
     public let ejectBox = 20.0
     public let ejectIcon = 14.0
-    public let ejectStroke = 1.8
     public let ejectMarginRight = -4.0
     /// The line that shows where a dragged favorite will drop.
     public let dropLineHeight = 2.0

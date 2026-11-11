@@ -74,7 +74,7 @@ final class ToolbarTitleView: NSView, TextStyleSource {
 /// The view switch, the system's segmented control: three icons, one selected. Search results are one table: it is
 /// disabled in search mode.
 final class ToolbarViewSwitch: NSSegmentedControl {
-    static let modes: [(ExplorerViewMode, ToolbarIconName, String, ShortcutCommandID)] = [
+    static let modes: [(ExplorerViewMode, CommandIcon, String, ShortcutCommandID)] = [
         (.icons, .icons, "View as Icons", .viewAsIcons), (.details, .details, "View as List", .viewAsDetails),
         (.list, .list, "View as Compact List", .viewAsList),
     ]
@@ -96,7 +96,7 @@ final class ToolbarViewSwitch: NSSegmentedControl {
         segmentCount = Self.modes.count
         trackingMode = .selectOne
         for (index, (_, icon, label, _)) in Self.modes.enumerated() {
-            let image = ToolbarGlyph.image(icon)
+            let image = icon.image
             image.accessibilityDescription = label
             setImage(image, forSegment: index)
             setImageScaling(.scaleNone, forSegment: index)
