@@ -30,7 +30,7 @@ public struct Volume: Sendable, Equatable {
     }
 }
 
-/// A stable sort by natural order of a key, as `Array.prototype.sort` is.
+/// A sort by natural order of a key; items whose keys compare equal keep their order.
 func naturallySorted<T>(_ items: [T], by key: (T) -> String) -> [T] {
     items.enumerated().sorted { first, second in
         switch naturalCompare(key(first.element), key(second.element)) {

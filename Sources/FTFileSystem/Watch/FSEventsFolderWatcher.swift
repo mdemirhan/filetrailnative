@@ -3,8 +3,8 @@ import Darwin
 import FTFoundation
 import Foundation
 
-/// An FSEvents stream on one folder. FSEvents is recursive, so, as libuv does for a watch that isn't, it
-/// keeps the events of the folder itself (told of by its own name) and of its direct children.
+/// An FSEvents stream on one folder. FSEvents is recursive and the watch is not, so it keeps only the events of the
+/// folder itself (told of by its own name) and of its direct children.
 public enum FSEventsFolderWatcher {
     /// How long FSEvents may collect events before handing them over: the watches settle on their own.
     static let latencySeconds = 0.25

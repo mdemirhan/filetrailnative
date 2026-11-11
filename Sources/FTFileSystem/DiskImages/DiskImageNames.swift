@@ -28,13 +28,14 @@ public enum DiskImageNames {
         return (title, "\(String(first).uppercased())\(trimmed.dropFirst()).")
     }
 
-    /// `path.slice(path.lastIndexOf("/") + 1)`.
+    /// What follows the last slash; the whole path when there is none.
     private static func lastComponent(_ path: String) -> String {
         guard let slash = path.lastIndex(of: "/") else { return path }
         return String(path[path.index(after: slash)...])
     }
 
-    /// `String.prototype.trim`: ECMAScript white space and line terminators.
+    /// The text without white space at either end: tab to carriage return, the space and no-break space, the other
+    /// Unicode spaces, the line and paragraph separators, and the byte-order mark.
     private static func jsTrimmed(_ text: String) -> String {
         func isTrimmed(_ scalar: Unicode.Scalar) -> Bool {
             switch scalar.value {

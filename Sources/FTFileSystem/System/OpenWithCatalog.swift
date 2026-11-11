@@ -41,8 +41,8 @@ public final class OpenWithCatalog: @unchecked Sendable {
 
     public init() {}
 
-    /// `app.on("browser-window-focus", forgetOpenWithCache)`: apps installed, removed or updated while File Trail was in
-    /// the background show in Open With the next time it comes forward.
+    /// What is held is forgotten whenever a window becomes key: apps installed, removed or updated while File Trail
+    /// was in the background show in Open With the next time it comes forward.
     func forgetsWhenAWindowComesForward(center: NotificationCenter = .default) {
         observedCenter = center
         windowFocusObserver = center.addObserver(

@@ -46,7 +46,7 @@ public struct LaunchServicesAnswer: Equatable, Sendable {
     }
 }
 
-/// What the Open With menu is built from (`system:getOpenWithApplications`).
+/// What the Open With menu is built from.
 public struct OpenWithLookup: Equatable, Sendable {
     public var defaultApp: ApplicationInfo?
     public var apps: [ApplicationInfo]

@@ -388,6 +388,6 @@ public final class AppStateStore: @unchecked Sendable {
 }
 
 extension Date {
-    /// `Date.now()`: milliseconds since 1970.
+    /// Whole milliseconds since 1970, rounded down.
     public var epochMilliseconds: Double { (timeIntervalSince1970 * 1000).rounded(.down) }
 }

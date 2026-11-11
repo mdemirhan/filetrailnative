@@ -53,7 +53,8 @@ public final class FileDragSource: NSObject, NSDraggingSource {
         MainActor.assumeIsolated { ended(at: screenPoint, operation: operation) }
     }
 
-    /// `endedAtPoint:operation:`.
+    /// The drag ended at `screenPoint`: whether over this window, another of the app's windows or elsewhere, and
+    /// what was done with the items, are told to `onEnded`.
     func ended(at screenPoint: NSPoint, operation: NSDragOperation) {
         let number = windowNumberAt(screenPoint)
         let over: FileDragEndedOver =

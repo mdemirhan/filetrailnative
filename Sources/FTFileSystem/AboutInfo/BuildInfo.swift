@@ -7,7 +7,7 @@ import Foundation
 public enum BuildInfo {
     public static let versionKey = "FTVersion"
     public static let commitKey = "FTCommit"
-    /// The version of a run that has no `Info.plist` (`swift run`, tests): `app.getVersion()`'s placeholder.
+    /// The version of a run that has no `Info.plist` (`swift run`, tests): a placeholder.
     public static let fallbackVersion = "0.1.0"
 
     /// The commit the app was built from, as the build recorded it; nil when it didn't, or the value is no text.
@@ -35,7 +35,7 @@ public enum AboutInfoReader {
         "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
     }
 
-    /// `app:getAboutInfo`.
+    /// What the About window shows, from the app's `Info.plist`, the running macOS and the bundled `fd`.
     public static func read(
         info: [String: Any]? = Bundle.main.infoDictionary,
         systemVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion,

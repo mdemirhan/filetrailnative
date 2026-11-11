@@ -167,8 +167,8 @@ public final class ResponseCache: @unchecked Sendable {
         return value
     }
 
-    /// Item details are cached per path instead of per request because the renderer asks for overlapping
-    /// visible ranges as the user scrolls and changes layouts. `load` is handed the paths not kept.
+    /// Item details are cached per path instead of per request because the views ask for overlapping ranges of
+    /// rows as the user scrolls and changes layouts. `load` is handed the paths not kept.
     public func metadata(
         for paths: [String], load: ([String]) async throws -> [EntryMetadata]
     ) async rethrows -> [EntryMetadata] {

@@ -28,7 +28,7 @@ public enum SearchResults {
 
     private static let slash = UInt16(UInt8(ascii: "/"))
 
-    /// `path.extname(name).replace(/^\./, "").toLowerCase()`.
+    /// The extension of `name`, from its last dot, lowercased; "" when the name has no dot or only one at its start.
     static func extensionOf(_ name: String) -> String {
         let units = Array(name.utf16)
         let dot = UInt16(UInt8(ascii: "."))
@@ -41,7 +41,7 @@ public enum SearchResults {
         return jsLowercased(String(decoding: ext, as: UTF16.self))
     }
 
-    /// `path.relative(from, to)` for absolute, normalized paths.
+    /// `to` as seen from `from`, both absolute and normalized: ".." for each folder to go up, then the rest of `to`.
     static func relative(from: String, to: String) -> String {
         if from == to { return "" }
         let fromParts = from.split(separator: "/", omittingEmptySubsequences: true)
@@ -169,7 +169,7 @@ public enum SearchResults {
 
     // MARK: - Folder column
 
-    /// The folder a result is in, from where the search started, with › between folders ("src › renderer"); a result
+    /// The folder a result is in, from where the search started, with › between folders ("Taxes › 2025"); a result
     /// right in that folder shows the folder's name (the startup disk's for `/`).
     public static func folderText(
         path: String, rootPath: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
@@ -211,7 +211,7 @@ public enum SearchResults {
         return String(scalars)
     }
 
-    /// `toLowerCase()`: full case mappings, and the Greek capital sigma lowered to its final form at the end of a word.
+    /// Lowercased: full case mappings, and the Greek capital sigma lowered to its final form at the end of a word.
     static func jsLowercased(_ text: String) -> String {
         var result = String.UnicodeScalarView()
         let scalars = Array(text.unicodeScalars)

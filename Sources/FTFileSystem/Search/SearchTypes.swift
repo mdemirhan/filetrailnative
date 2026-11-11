@@ -63,7 +63,7 @@ public struct SearchResultItem: Sendable, Equatable {
     }
 }
 
-/// `search:start`'s answer.
+/// What starting a search answers: the job's id, to ask how it is doing.
 public struct SearchStartResponse: Sendable, Equatable {
     public var jobId: String
     public var status: SearchJobStatus

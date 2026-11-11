@@ -82,7 +82,8 @@ public enum TrashState {
         }.value
     }
 
-    /// system:emptyTrash. What is reported is the script engine's own error line, not the script that ran.
+    /// Empties the Trash through Finder. What is reported is the script engine's own error line, not the script that
+    /// ran.
     public static func empty(run: ScriptRunner = runAppleScript) async -> OperationResult {
         do {
             try await run(emptyTrashScript)

@@ -61,7 +61,7 @@ public enum EjectPlanning {
 
     private static let listedNames = 3
 
-    /// `toLocaleString()` of a count.
+    /// A count with its thousands grouped as in US English, whatever the app's language: "1,234".
     private static func countText(_ count: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal

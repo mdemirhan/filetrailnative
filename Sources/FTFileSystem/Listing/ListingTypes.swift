@@ -141,7 +141,8 @@ public enum ExplorerError: Error, Equatable, CustomStringConvertible, Sendable {
         }
     }
 
-    /// The start of the message, the code first: libuv's words, which are the system's in lower case but for a few.
+    /// The start of the message, the code first: the system's description in lower case, but for a few codes with
+    /// words of their own ("i/o error", "resource busy or locked").
     private static func nodeText(_ code: Int32) -> String {
         guard let name = Errno.name(of: code) else {
             return "Unknown system error -\(code): Unknown system error -\(code)"

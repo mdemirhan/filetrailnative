@@ -72,7 +72,7 @@ public struct SystemOpener: Sendable {
 }
 
 public enum SystemActions {
-    /// system:openPath
+    /// Opens the item as a double-click in Finder would: a file in its app, a folder or an app as itself.
     public static func openPath(_ path: String, opener: SystemOpener = .workspace) async -> OperationResult {
         let error = await opener.openPath(path)
         return error.isEmpty ? .success : .failure(error)
@@ -135,8 +135,7 @@ public enum SystemActions {
         }
     }
 
-    /// system:setDefaultApplication. Always Open With: every file of the kind opens in the app from now on, in
-    /// Finder too.
+    /// Always Open With: every file of the kind opens in the app from now on, in Finder too.
     public static func setDefaultApplication(
         applicationPath: String, contentType: String,
         setDefault: @Sendable (String, String) async throws -> Void = { appPath, type in
@@ -165,7 +164,7 @@ public enum SystemActions {
 
     static let defaultTerminalName = "Terminal"
 
-    /// system:openInTerminal. Files open Terminal in their containing directory; directories open directly.
+    /// Open in Terminal: a file opens Terminal in its folder, a folder in itself.
     public static func openInTerminal(
         path: String, terminalApp: ApplicationSelection?, opener: SystemOpener = .workspace
     ) async -> TerminalResult {

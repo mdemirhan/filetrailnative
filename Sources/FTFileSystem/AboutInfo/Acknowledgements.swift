@@ -1,6 +1,6 @@
 import Foundation
 
-/// One piece of bundled software and its license (`app:getAcknowledgements`).
+/// One piece of bundled software and its license, as the Acknowledgements window lists it.
 public struct Acknowledgement: Equatable, Sendable {
     public var id: String
     public var name: String

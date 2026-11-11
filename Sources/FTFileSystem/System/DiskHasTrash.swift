@@ -13,7 +13,8 @@ public struct Mount: Equatable, Sendable {
 }
 
 public enum MountTable {
-    /// `getmntinfo(MNT_NOWAIT)`.
+    /// The mounted file systems, from the table the system keeps (`MNT_NOWAIT`: no file system is asked, so a network
+    /// share that stopped answering can't hold this up).
     public static func list() -> [Mount] {
         let count = getfsstat(nil, 0, MNT_NOWAIT)
         guard count > 0 else { return [] }
@@ -30,7 +31,8 @@ public enum MountTable {
         }
     }
 
-    /// `fs.realpathSync.native`.
+    /// The path with every link followed and every "." and ".." resolved, as `realpath` gives it; throws when it
+    /// can't be.
     public static func realPath(_ path: String) throws -> String {
         guard let resolved = realpath(path, nil) else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
         defer { free(resolved) }

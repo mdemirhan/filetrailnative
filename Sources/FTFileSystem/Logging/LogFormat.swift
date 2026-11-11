@@ -49,9 +49,10 @@ public enum LogFormat {
         }
     }
 
-    // MARK: util.inspect
+    // MARK: Values
 
-    // `util.inspect(value, { depth: 8, breakLength: Infinity, compact: true, sorted: true })`.
+    // A value on one line, an object's members sorted; nested deeper than 8 levels, an array is written "[Array]"
+    // and an object "[Object]".
     private static let maxDepth = 8
 
     static func inspect(_ node: JSONNode, depth: Int) -> String {

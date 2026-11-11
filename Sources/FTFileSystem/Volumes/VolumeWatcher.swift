@@ -140,7 +140,7 @@ public final class VolumeWatcher {
         timers.remove(handle)?.cancel()
     }
 
-    /// `fs.watch("/Volumes")`: a write to the folder is a disk mounted or unmounted.
+    /// Watches the /Volumes folder itself: a change to it is a disk mounted or unmounted.
     public nonisolated static func watchVolumesDirectory(
         _ onChange: @escaping @MainActor () -> Void
     ) -> () -> Void {

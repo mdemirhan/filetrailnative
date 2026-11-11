@@ -71,7 +71,7 @@ enum AppStateJSON {
         return "\(value)"
     }
 
-    /// A string as `JSON.stringify` quotes it.
+    /// A string as a JSON string literal: in quotes, with quotes, backslashes and control characters escaped.
     private static func quoted(_ text: String) -> String {
         var result = "\""
         for scalar in text.unicodeScalars {

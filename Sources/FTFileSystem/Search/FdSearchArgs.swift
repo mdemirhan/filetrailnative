@@ -17,8 +17,8 @@ public enum FdSearchArgs {
             args += ["--exclude", ".git"]
         }
 
-        // Macintosh HD is the startup disk alone, as in Finder: other disks, mounted at /Volumes, are searched from
-        // their own top. The data volume, where /Users and /Applications really are, is also mounted at
+        // A search of "/" covers the startup disk alone, as in Finder: other disks, mounted at /Volumes, are searched
+        // from their own top. The data volume, where /Users and /Applications really are, is also mounted at
         // /System/Volumes/Data; searched there as well, every item under them would be found twice. (A leading "/"
         // matches only at the search's top, so a search started inside /System/Volumes is unaffected, and
         // --one-file-system would also leave out /Users and /Applications, on another APFS volume.)

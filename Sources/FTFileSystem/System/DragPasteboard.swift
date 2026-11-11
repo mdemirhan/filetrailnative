@@ -13,7 +13,7 @@ public struct DragPasteboardContents: Equatable, Sendable {
     }
 }
 
-/// A file a drag from another app carries, as it is on disk (`system:readDraggedIn`'s items).
+/// A file a drag from another app carries, as it is on disk.
 public struct DraggedInItem: Equatable, Sendable {
     public var path: String
     public var kind: EntryKind

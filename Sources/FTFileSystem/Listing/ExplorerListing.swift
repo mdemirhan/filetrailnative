@@ -70,7 +70,7 @@ public final class KindLabeler: @unchecked Sendable {
 enum ExplorerListing {
     // MARK: Paths
 
-    /// `path.resolve(path)`: absolute, normalized, without a trailing slash.
+    /// The path made absolute (from the current folder when it is relative), normalized, without a trailing slash.
     static func resolve(_ path: String) -> String {
         if path.hasPrefix("/") { return NodePath.resolve(path) }
         return NodePath.resolve(FileManager.default.currentDirectoryPath + "/" + path)
@@ -80,7 +80,7 @@ enum ExplorerListing {
         directory == "/" ? "/" + name : directory + "/" + name
     }
 
-    /// `extname(path)` without its dot, lowercased.
+    /// The extension of the path's last name, without its dot, lowercased.
     static func extensionName(_ path: String) -> String {
         extensionName(ofName: NodePath.basename(path))
     }
@@ -362,8 +362,8 @@ enum ExplorerListing {
 
     // MARK: Metadata
 
-    /// Metadata batches are constrained to a single parent directory so the renderer cannot use this as a
-    /// generic arbitrary-path stat API.
+    /// The details of items of one folder: every path must be directly inside `directoryPath`, so a batch can't be
+    /// used to look at any path on the disk.
     static func metadataBatch(
         directoryPath: String, paths: [String], _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
     ) throws -> MetadataBatch {
