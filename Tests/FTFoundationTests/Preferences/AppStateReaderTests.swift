@@ -52,6 +52,13 @@ struct AppStateReaderTests {
             ])
     }
 
+    /// `patch` over `preferences`, read as the file's reader reads it: a value that isn't valid takes its default.
+    static func applied(_ patch: [String: JSONNode], over preferences: AppPreferences) -> AppPreferences {
+        var record = (try? JSONNode.of(preferences))?.object ?? [:]
+        record.merge(patch) { _, new in new }
+        return PreferencesSanitizer.sanitize(.object(record), defaults: preferences)
+    }
+
     // With no file the store holds the defaults of the platform's first-launch theme and no windows.
     @Test func returnsDefaultsWhenNoStateFileExists() {
         let defaults = AppPreferences.defaults(theme: .dark)
@@ -134,7 +141,7 @@ struct AppStateReaderTests {
                  "lastVisitedFavoritePath": ""}
                 """
             ).object ?? [:]
-        let applied = PreferencesSanitizer.apply(patch, to: defaults, defaults: defaults)
+        let applied = Self.applied(patch, over: defaults)
         let state = AppState(preferences: applied)
         let reloaded =
             (try? AppStateReader.read(data: JSONEncoder().encode(state), defaults: defaults))?.preferences ?? defaults
@@ -189,7 +196,7 @@ struct AppStateReaderTests {
     @Test func preservesAnExplicitlyEmptyOpenWithApplicationList() {
         let defaults = AppPreferences.defaults(theme: .dark)
         let patch: [String: JSONNode] = ["openWithApplications": .array([])]
-        let applied = PreferencesSanitizer.apply(patch, to: defaults, defaults: defaults)
+        let applied = Self.applied(patch, over: defaults)
         let reloaded =
             (try? AppStateReader.read(data: JSONEncoder().encode(AppState(preferences: applied)), defaults: defaults))?
             .preferences
@@ -228,7 +235,7 @@ struct AppStateReaderTests {
                  "favoritesInitialized": true}
                 """
             ).object ?? [:]
-        let applied = PreferencesSanitizer.apply(patch, to: defaults, defaults: defaults)
+        let applied = Self.applied(patch, over: defaults)
         let bounds = StoredWindowState(x: 120, y: 140, width: 1600, height: 1000, maximized: true)
         let state = AppState(
             preferences: applied,

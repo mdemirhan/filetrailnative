@@ -99,6 +99,16 @@ enum StateTestKit {
 
     static func tabs(_ paths: [String]) -> JSONNode { .array(paths.map(tab)) }
 
+    /// The tabs of `tabs(paths)`, as the preferences hold them.
+    static func openTabs(_ paths: [String]) -> [OpenTabPreference] {
+        PreferencesSanitizer.sanitize(.object(["openTabs": tabs(paths)]), defaults: .defaults()).openTabs
+    }
+
+    /// `preferences` read back as the file's reader reads them, every value checked again.
+    static func readAgain(_ preferences: AppPreferences) -> AppPreferences {
+        PreferencesSanitizer.sanitize(try? JSONNode.of(preferences), defaults: preferences)
+    }
+
     static let bounds = StoredWindowState(width: 900, height: 600, maximized: false)
 
     /// A folder to keep the state files in; removed when `body` ends.

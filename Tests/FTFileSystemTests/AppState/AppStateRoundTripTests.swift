@@ -94,10 +94,10 @@ struct AppStateRoundTripTests {
             #expect(first.lastClosedWindow()?.id == "window-0")
 
             // A change that touches nothing else makes the store write the whole file.
-            first.updatePreferences(["restoreSessionOnStartup": .bool(true)])
-            first.updatePreferences(["restoreSessionOnStartup": .bool(false)])
-            first.updatePreferences(["propertiesOpen": .bool(false)])
-            first.updatePreferences(["propertiesOpen": .bool(true)])
+            first.update { $0.restoreSessionOnStartup = true }
+            first.update { $0.restoreSessionOnStartup = false }
+            first.update { $0.propertiesOpen = false }
+            first.update { $0.propertiesOpen = true }
             first.flush()
 
             let second = Kit.store(path)
@@ -120,8 +120,8 @@ struct AppStateRoundTripTests {
 
             // Writing again changes nothing in the text.
             let text = try String(contentsOfFile: path, encoding: .utf8)
-            second.updatePreferences(["propertiesOpen": .bool(false)])
-            second.updatePreferences(["propertiesOpen": .bool(true)])
+            second.update { $0.propertiesOpen = false }
+            second.update { $0.propertiesOpen = true }
             second.flush()
             #expect(try String(contentsOfFile: path, encoding: .utf8) == text)
         }
@@ -158,7 +158,7 @@ struct AppStateRoundTripTests {
                 filePath: path, defaultTheme: .dark, timer: ManualTimer(), onReadError: { failures.add($0) })
             #expect(failures.all.count == 1)
             #expect(store.preferences() == .defaults(theme: .dark))
-            store.updatePreferences(["foldersFirst": .bool(false)])
+            store.update { $0.foldersFirst = false }
             store.flush()
             #expect(Kit.store(path).preferences().foldersFirst == false)
         }

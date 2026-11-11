@@ -130,16 +130,16 @@ struct AppPreferencesTests {
     }
 
     @Test func aWindowKeepsTwentyTwoSessionKeysOfItsOwn() {
-        #expect(WindowSessionKeys.all.count == 22)
-        #expect(WindowSessionKeys.isSessionKey("openTabs"))
-        #expect(WindowSessionKeys.isSessionKey("searchColumnWidths"))
-        #expect(!WindowSessionKeys.isSessionKey("theme"))
+        #expect(WindowSession.keys.count == 22)
+        #expect(PreferenceKey.openTabs.isWindowSessionKey)
+        #expect(PreferenceKey.searchColumnWidths.isWindowSessionKey)
+        #expect(!PreferenceKey.theme.isWindowSessionKey)
         let encoded = (try? JSONNode.of(AppPreferences.defaults().windowSession))?.object ?? [:]
-        #expect(Set(encoded.keys) == Set(WindowSessionKeys.all))
+        #expect(Set(encoded.keys) == Set(WindowSession.keys.map(\.rawValue)))
         // Every preference key is listed.
         let preferenceKeys = (try? JSONNode.of(AppPreferences.defaults()))?.object ?? [:]
-        #expect(Set(preferenceKeys.keys) == Set(AppPreferences.keys))
-        #expect(AppPreferences.keys.count == 53)
+        #expect(Set(preferenceKeys.keys) == Set(PreferenceKey.allCases.map(\.rawValue)))
+        #expect(PreferenceKey.allCases.count == 53)
     }
 
     @Test func filesRoundTripWithTheSameJSONKeys() throws {

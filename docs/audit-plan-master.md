@@ -1321,7 +1321,7 @@ for byte.
 
 - From 5.8 (the owner, 2026-11-11): `NativeError`'s fields that nothing in the app reads (six test files read them).
 
-### [ ] 6.5. Preferences are changed by typed updates
+### [x] 6.5. Preferences are changed by typed updates
 
 - 35 `updatePreferences(` call sites build `[String: JSONNode]` literals. Each change filters by a string key
   list, JSON-encodes the whole `AppPreferences`, overlays, runs the full sanitizer, and encodes before and after
@@ -2362,3 +2362,15 @@ anything that differed from the plan, and anything found on the way that is not 
   but the shared one names (a failed fd start names it instead of "errno N"). Also: the write service's
   "ERR_FS_EISDIR" is EISDIR and the folder size's "ECANCELLED" is ECANCELED (same sentences; nothing compared them).
   No code crossed an on-disk boundary. Found, not fixed: `ExplorerError.nodeText`/`libuvWords` (Phase 10).
+- 2026-11-11. 6.5, done in a worktree of its own and brought over. `store.update { … }` with a `PreferenceKey` enum
+  that names every preference in the file's order and compares them field by field in one place; `EditedPreferences`
+  records each field a change sets, as observers were told the keys sent, not only the changed ones. A test sent
+  1,500 random changes through both APIs to two stores and found no difference in preferences, notifications, timers
+  or bytes written; it went with the old API. The file format is unchanged (no golden changed). Differs from the
+  plan, visibly: Settings edits reach the windows and the store at once instead of 300 ms after the last edit, so
+  other windows follow a dragged accent colour live; the disk write is still one (the store's 150 ms timer). Settings
+  tests that checked the old sync's own cadence now check the same end state; `PreferencePatchTests`,
+  `PreferencesSyncTests` and `SettingsTabTests` (a patch with an invalid value, which a typed change can't carry)
+  went with their subjects. 5.8's legacy keys stay: `AppStateReader` still reads them, and readme-screenshots.sh
+  needs its preferences-only fallback. Found: `CommandRoutesTests.theMenuReadsTheWindowWhenAsked` fails when all
+  FTAppKitTests run in one process (being looked into).

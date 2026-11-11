@@ -135,14 +135,4 @@ public enum BatchRenamePresetList {
     public static func deleting(_ name: String, from presets: [BatchRenamePreset]) -> [BatchRenamePreset] {
         presets.filter { $0.name != name }
     }
-
-    /// The presets as the saved state holds them.
-    public static func node(of presets: [BatchRenamePreset]) -> JSONNode {
-        (try? JSONNode.of(presets)) ?? .array([])
-    }
-
-    /// The settings as the saved state holds them.
-    public static func node(of settings: BatchRenameSettings) -> JSONNode {
-        BatchRename.node(of: settings)
-    }
 }

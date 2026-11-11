@@ -76,7 +76,10 @@ import Testing
     @Test func opensAWindowFromAnotherWithItsTabsAndPanelsAStepDownAndToTheRight() throws {
         let setup = try WindowSetup.withWindows(1)
         let first = try #require(setup.windows.first)
-        setup.store.updateWindowPreferences(first.recordID, ["propertiesOpen": .bool(true), "treeWidth": .number(333)])
+        setup.store.updateWindow(first.recordID) {
+            $0.propertiesOpen = true
+            $0.treeWidth = 333
+        }
 
         #expect(
             setup.controller.openWindowFrom(
@@ -103,7 +106,7 @@ import Testing
 
     @Test func opensAWindowFromNoWindowAtTheDefaultSizeWithTheAppsLatestPanels() throws {
         let setup = try WindowSetup()
-        setup.store.updatePreferences(["propertiesOpen": .bool(true)])
+        setup.store.update { $0.propertiesOpen = true }
 
         #expect(setup.controller.openWindowFrom(nil, tabs: [tab("/Users/demo/x")], activeTabIndex: 0))
 
@@ -138,12 +141,11 @@ import Testing
         setup.controller.openNewWindowFromFront()
         #expect(setup.windows.count == 1)
         let front = try #require(setup.windows.first)
-        setup.store.updateWindowPreferences(
-            front.recordID,
-            [
-                "openTabs": node([tab("/Users/demo/a"), tab("/Users/demo/b")]), "activeTabIndex": .number(1),
-                "propertiesOpen": .bool(true),
-            ])
+        setup.store.updateWindow(front.recordID) {
+            $0.openTabs = [tab("/Users/demo/a"), tab("/Users/demo/b")]
+            $0.activeTabIndex = 1
+            $0.propertiesOpen = true
+        }
 
         // Opened here, not by the window in front, which can't while a sheet is open in it.
         setup.controller.openNewWindowFromFront()

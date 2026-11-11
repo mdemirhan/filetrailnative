@@ -79,7 +79,7 @@ import Testing
         let store = try makeStore()
         store.addExplorerWindow(
             id: "window-a", bounds: StoredWindowState(width: 900, height: 600, maximized: false),
-            session: store.createWindowSession(overrides: [:]))
+            session: store.createWindowSession())
         let channel = WindowPreferenceChannel(
             store: store, explorerWindowID: { $0 == 1 ? "window-a" : nil },
             onPreferencesChanged: { changes(Changed(preferences: $0, change: $1)) })
@@ -88,8 +88,8 @@ import Testing
 
     @Test func showsAnExplorerWindowTheAppsPreferencesWithItsOwnSession() throws {
         let (store, channel) = try channel()
-        store.updateWindowPreferences("window-a", ["treeWidth": .number(333)])
-        store.updatePreferences(["treeWidth": .number(280)])
+        store.updateWindow("window-a") { $0.treeWidth = 333 }
+        store.update { $0.treeWidth = 280 }
 
         #expect(channel.preferences(for: 1).treeWidth == 333)
         #expect(channel.preferences(for: 2).treeWidth == 280)

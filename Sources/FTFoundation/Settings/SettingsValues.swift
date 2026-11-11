@@ -11,29 +11,6 @@ extension Density {
 }
 
 public enum SettingsValues {
-    /// The keys the Settings window shows and writes (the window's `payload`).
-    public static let payloadKeys: [String] = [
-        "theme", "accent", "density", "singleClickExpandTreeItems", "detailColumns", "detailColumnOrder",
-        "searchColumns", "searchColumnOrder", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
-        "restoreSessionOnStartup", "favorites", "favoritesPlacement", "terminalApp", "defaultTextEditor",
-        "openWithApplications", "fileActivationAction", "diskImageOpensIn", "returnKeyAction", "shortcutOverrides",
-        "openItemLimit", "searchPatternMode", "searchMatchScope", "searchRecursive", "searchSkipGitFolders",
-        "searchSkipGitIgnored",
-    ]
-
-    /// The payload of `preferences`: the keys Settings writes, as JSON.
-    public static func payload(_ preferences: AppPreferences) -> PreferencesPatch {
-        let all = (try? JSONNode.of(preferences).object) ?? [:]
-        return all.filter { payloadKeys.contains($0.key) }
-    }
-
-    /// `preferences` with the values of `patch`, checked key by key as the app's store checks them: a value that
-    /// isn't valid for its key takes the key's default, and the rest of the patch still applies.
-    public static func applying(_ patch: PreferencesPatch, to preferences: AppPreferences) -> AppPreferences {
-        guard !patch.isEmpty else { return preferences }
-        return PreferencesSanitizer.apply(patch, to: preferences, defaults: AppPreferences.defaults())
-    }
-
     /// `describeKeys`: the keys a sentence names, or nothing when none of them is set, as "⌘O and ⌘↓ always open.".
     public static func describeKeys(_ labels: [String?], before: String, after: String, separator: String = ", ")
         -> String

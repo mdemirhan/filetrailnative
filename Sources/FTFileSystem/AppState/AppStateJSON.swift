@@ -17,27 +17,13 @@ enum AppStateJSON {
     private static let windowKeys = ["id", "bounds", "session"]
     private static let columnKeys = ["modified", "size", "kind", "created", "permissions"]
 
-    private static let preferenceKeys = [
-        "theme", "accent", "viewMode", "searchViewMode", "sortBy", "sortDirection", "foldersFirst", "density",
-        "detailColumns", "detailColumnOrder", "detailColumnWidths", "searchColumns", "searchColumnOrder",
-        "searchColumnWidths", "notificationsEnabled", "markClipboardItems", "autoCalculateFolderSizes",
-        "folderTreeOpen", "propertiesOpen", "detailRowOpen", "topToolbarItems", "terminalApp", "defaultTextEditor",
-        "openWithApplications",
-        "fileActivationAction", "diskImageOpensIn", "returnKeyAction", "shortcutOverrides", "openItemLimit",
-        "includeHidden", "searchPatternMode", "searchMatchScope", "searchRecursive", "searchSkipGitFolders",
-        "searchSkipGitIgnored", "searchResultsSortBy", "searchResultsSortDirection", "treeWidth", "inspectorWidth",
-        "restoreSessionOnStartup", "openTabs", "activeTabIndex", "treeRootPath", "lastVisitedPath",
-        "lastVisitedFavoritePath", "favorites", "favoritesPlacement", "favoritesExpanded", "locationsExpanded",
-        "favoritesInitialized", "singleClickExpandTreeItems", "batchRenameSettings", "batchRenamePresets",
-    ]
-
     private static let orders: [String: [String]] = [
         "": ["preferences", "windows", "lastClosedWindow"],
-        "preferences": preferenceKeys,
+        "preferences": PreferenceKey.allCases.map(\.rawValue),
         "windows": windowKeys,
         "lastClosedWindow": windowKeys,
         "bounds": ["width", "height", "maximized", "x", "y"],
-        "session": WindowSessionKeys.all,
+        "session": WindowSession.keys.map(\.rawValue),
         "openTabs": tabKeys,
         "detailColumns": columnKeys,
         "searchColumns": ["folder"] + columnKeys,

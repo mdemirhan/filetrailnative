@@ -76,9 +76,4 @@ extension BatchRename {
         }
         return presets
     }
-
-    /// The settings as the saved state holds them.
-    static func node(of settings: BatchRenameSettings) -> JSONNode {
-        (try? JSONNode.of(settings)) ?? .object([:])
-    }
 }

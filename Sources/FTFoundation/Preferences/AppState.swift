@@ -102,10 +102,14 @@ public enum AppStateReader {
             guard let record = candidate.object, let id = record["id"]?.string, !id.isEmpty,
                 !windows.contains(where: { JSString.equals($0.id, id) })
             else { continue }
+            // The saved session's keys over the app's preferences, read together: a key the session lacks or holds
+            // a value it can't use takes the app's.
             let saved = record["session"]?.object ?? [:]
-            let merged = PreferencesSanitizer.apply(
-                WindowSessionKeys.pick(saved), to: preferences, defaults: preferences)
-            var session = merged.windowSession
+            var merged = (try? JSONNode.of(preferences))?.object ?? [:]
+            for key in WindowSession.keys {
+                if let value = saved[key.rawValue] { merged[key.rawValue] = value }
+            }
+            var session = PreferencesSanitizer.sanitize(.object(merged), defaults: preferences).windowSession
             session.activeTabIndex = session.frontTabIndex
             windows.append(StoredExplorerWindow(id: id, bounds: windowState(record["bounds"]), session: session))
             if windows.count == windowsLimit {
@@ -128,26 +132,5 @@ public enum AppStateReader {
             x: record["x"]?.number, y: record["y"]?.number,
             width: size("width", StoredWindowState.default.width),
             height: size("height", StoredWindowState.default.height), maximized: record["maximized"]?.bool == true)
-    }
-}
-
-extension WindowSessionKeys {
-    /// The session keys of `value`, a patch.
-    public static func pick(_ value: [String: JSONNode]) -> [String: JSONNode] {
-        value.filter { isSessionKey($0.key) }
-    }
-}
-
-extension PreferencesSanitizer {
-    /// A change applied to preferences: `patch` over `current`, sanitized. A patch value that is not valid for its key
-    /// gives the key's default from `defaults`.
-    public static func apply(
-        _ patch: [String: JSONNode], to current: AppPreferences, defaults: AppPreferences
-    ) -> AppPreferences {
-        var record = (try? JSONNode.of(current))?.object ?? [:]
-        for (key, value) in patch {
-            record[key] = value
-        }
-        return sanitize(.object(record), defaults: defaults)
     }
 }

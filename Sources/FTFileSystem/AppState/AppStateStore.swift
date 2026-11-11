@@ -77,13 +77,6 @@ public final class AppStateStore: @unchecked Sendable {
         locked { updateApp(change) }
     }
 
-    /// `updatePreferences`: applies a change (a patch of preference keys, each checked as when a file is read) and
-    /// returns the preferences now. A key whose value is the same is no change and writes nothing.
-    @discardableResult
-    public func updatePreferences(_ patch: [String: JSONNode]) -> AppPreferences {
-        locked { update(patch) }
-    }
-
     // MARK: Visited folders
 
     public func folders() -> [VisitedFolder] {
@@ -160,38 +153,10 @@ public final class AppStateStore: @unchecked Sendable {
         }
     }
 
-    /// A change made in the window `windowID`. Its session keys are the window's own; every key also becomes the app's
-    /// latest value. For a window not known, the change is the app's alone.
-    @discardableResult
-    public func updateWindowPreferences(_ windowID: String, _ patch: [String: JSONNode]) -> AppPreferences {
-        locked {
-            guard let window = windows.first(where: { Self.sameID($0.id, windowID) }) else { return update(patch) }
-            let (preferences, appKeys) = apply(patch)
-            let current = window.session.applied(to: preferences)
-            let session = PreferencesSanitizer.apply(
-                WindowSessionKeys.pick(patch), to: current, defaults: current
-            ).windowSession
-            let windowKeys = session.applied(to: current).keys(differingFrom: current)
-            if !windowKeys.isEmpty {
-                replaceWindow(StoredExplorerWindow(id: window.id, bounds: window.bounds, session: session))
-            }
-            let (sessionKeys, sharedKeys) = (
-                appKeys.filter(\.isWindowSessionKey), appKeys.filter { !$0.isWindowSessionKey }
-            )
-            saveChanges(windowKeys + sharedKeys, following: sessionKeys)
-            return session.applied(to: preferences)
-        }
-    }
-
     /// A window's session as a new window would start it: the app's latest values, changed by `change` and checked as
     /// when the file is read.
     public func createWindowSession(_ change: (inout WindowSession) -> Void = { _ in }) -> WindowSession {
         locked { newWindowSession(change) }
-    }
-
-    /// A window's session as a new window would start it: the app's latest values, with `overrides` on top.
-    public func createWindowSession(overrides: [String: JSONNode]) -> WindowSession {
-        locked { newWindowSession(overrides) }
     }
 
     /// Adds a window in front of the others. Only open windows are kept, so none is dropped to keep to
@@ -301,20 +266,6 @@ public final class AppStateStore: @unchecked Sendable {
         return (checked, edited.written)
     }
 
-    private func update(_ patch: [String: JSONNode]) -> AppPreferences {
-        let (next, changedKeys) = apply(patch)
-        saveChanges(changedKeys)
-        return next
-    }
-
-    // Takes the patch into the app's preferences; saving it is the caller's.
-    private func apply(_ patch: [String: JSONNode]) -> (preferences: AppPreferences, changedKeys: [PreferenceKey]) {
-        let current = currentPreferences
-        let next = PreferencesSanitizer.apply(patch, to: current, defaults: defaults)
-        state.preferences = next
-        return (next, next.keys(differingFrom: current))
-    }
-
     // Saves the state file, soon when `keys` hold a deliberate change. `following` changed too, but never hurries it.
     private func saveChanges(_ keys: [PreferenceKey], following: [PreferenceKey] = []) {
         guard !keys.isEmpty || !following.isEmpty else { return }
@@ -324,10 +275,6 @@ public final class AppStateStore: @unchecked Sendable {
         } else {
             saveLater()
         }
-    }
-
-    private func newWindowSession(_ overrides: [String: JSONNode]) -> WindowSession {
-        PreferencesSanitizer.apply(overrides, to: currentPreferences, defaults: defaults).windowSession
     }
 
     private func newWindowSession(_ change: (inout WindowSession) -> Void) -> WindowSession {

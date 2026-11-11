@@ -90,20 +90,6 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     }
 }
 
-/// The keys kept per window; the other keys belong to the app.
-public enum WindowSessionKeys {
-    public static let all: [String] = [
-        "openTabs", "activeTabIndex", "treeRootPath", "lastVisitedPath", "lastVisitedFavoritePath", "viewMode",
-        "searchViewMode", "sortBy", "sortDirection", "searchResultsSortBy", "searchResultsSortDirection",
-        "includeHidden", "foldersFirst", "favoritesExpanded", "locationsExpanded", "folderTreeOpen", "propertiesOpen",
-        "detailRowOpen", "treeWidth", "inspectorWidth", "detailColumnWidths", "searchColumnWidths",
-    ]
-
-    private static let set = Set(all)
-
-    public static func isSessionKey(_ key: String) -> Bool { set.contains(key) }
-}
-
 extension WindowSession {
     /// The keys each window keeps of its own, in the order the file writes them.
     public static let keys: [PreferenceKey] = [

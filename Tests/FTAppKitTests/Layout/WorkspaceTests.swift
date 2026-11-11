@@ -129,7 +129,7 @@ extension ExplorerWindowlessTests {
         @Test func slidesTheInfoPanelInAndOutOverTheContent() async throws {
             let harness = try ExplorerHarness.windowless()
             // A panel open when the window is restored does not slide.
-            _ = harness.store.updatePreferences(["propertiesOpen": .bool(true)])
+            harness.store.update { $0.propertiesOpen = true }
             let tab = try await harness.open()
             let workspace = tab.workspace
             #expect(workspace.infoPanelOpen && workspace.slide == nil)
@@ -172,7 +172,7 @@ extension ExplorerWindowlessTests {
         // the same way doesn't cut it short.
         @Test func aSlideStartedWhileAnotherRunsIsNotCutShortByItsEnd() async throws {
             let harness = try ExplorerHarness.windowless()
-            _ = harness.store.updatePreferences(["propertiesOpen": .bool(true)])
+            harness.store.update { $0.propertiesOpen = true }
             let tab = try await harness.open()
             let workspace = tab.workspace
             tab.perform(.toggleInfoPanel)

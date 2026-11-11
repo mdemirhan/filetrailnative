@@ -81,7 +81,10 @@ func storedWindow(
 ) -> StoredExplorerWindow {
     StoredExplorerWindow(
         id: id, bounds: StoredWindowState(x: x, y: y, width: 900, height: 600, maximized: maximized),
-        session: store.createWindowSession(overrides: ["openTabs": node(paths.map(tab)), "activeTabIndex": .number(0)]))
+        session: store.createWindowSession {
+            $0.openTabs = paths.map(tab)
+            $0.activeTabIndex = 0
+        })
 }
 
 func add(_ store: AppStateStore, _ window: StoredExplorerWindow) {

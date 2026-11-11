@@ -73,16 +73,6 @@ public final class WindowPreferenceChannel {
         return preferences
     }
 
-    @discardableResult
-    public func update(_ patch: [String: JSONNode], from senderID: Int?) -> AppPreferences {
-        let windowID = explorerWindowID(senderID)
-        let preferences =
-            windowID.map { store.updateWindowPreferences($0, patch) } ?? store.updatePreferences(patch)
-        // What belongs to one window (its tabs, panels, column widths) stays with it.
-        let shared = Set(patch.keys.compactMap(PreferenceKey.init(rawValue:)).filter { !$0.isWindowSessionKey })
-        onPreferencesChanged(store.preferences(), PreferencesChange(keys: shared, senderID: senderID))
-        return preferences
-    }
 }
 
 /// What Copy or Cut put on the clipboard, in whichever window: every window pastes it (`app:getClipboard`,
