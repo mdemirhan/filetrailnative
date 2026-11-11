@@ -13658,7 +13658,19 @@
           ]
         }
       },
-      "output": null
+      "output": [
+        null,
+        null,
+        null,
+        "C",
+        "c",
+        "c",
+        "c",
+        null,
+        null,
+        null,
+        null
+      ]
     },
     {
       "name": "230: highlight regex/name \"C++\"",
@@ -13682,7 +13694,19 @@
           ]
         }
       },
-      "output": null
+      "output": [
+        null,
+        null,
+        null,
+        "C",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
     },
     {
       "name": "231: highlight regex/name \"a.c\"",
@@ -14006,7 +14030,19 @@
           ]
         }
       },
-      "output": null
+      "output": [
+        "App",
+        "app",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
     },
     {
       "name": "241: highlight regex/name \"[\"",

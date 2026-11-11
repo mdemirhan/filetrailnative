@@ -14,7 +14,7 @@ struct ContentSearchDisplay {
     var sortBy: SearchResultsSortByPreference
     var sortDirection: SortDirectionPreference
     /// What the search matched in names, to mark.
-    var highlight: JSLegacyRegExp?
+    var highlight: HighlightPattern?
     var isRunning: Bool
     var error: String?
     var errorIsQuiet: Bool
@@ -25,7 +25,7 @@ struct ContentSearchDisplay {
 @MainActor
 final class ContentSearchContext {
     let rootPath: String
-    let highlight: JSLegacyRegExp?
+    let highlight: HighlightPattern?
     let sortBy: SearchResultsSortByPreference
     let sortDirection: SortDirectionPreference
     /// A header asked for the results to be ordered by this column.

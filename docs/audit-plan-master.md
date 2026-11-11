@@ -862,7 +862,7 @@ Leave the read-only test seams wherever a test uses one as its only way to obser
 - Goes with it: the test `sortsCoveredNamesAsTheGoldenFileSaysWithoutICU`. `listing-sort.json` stays; the ICU
   path is what passes it. Correct the doc comment in `ICUCollator.swift:5`.
 
-### [ ] 5.2. The JavaScript regex emulation used only for the search highlight (666 lines)
+### [x] 5.2. The JavaScript regex emulation used only for the search highlight (666 lines)
 
 [Q7]
 
@@ -2143,3 +2143,10 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-11. 5.1: without the system's collator, names are compared as text by Foundation (`NameKeys(icu: nil)`
   is the test seam, with a test of its own in place of the table's golden test). `Collation.weight(of:)`, read only
   by the table's keys, went too.
+- 2026-11-11. 5.2: the highlight is a `HighlightPattern`, a regular expression on `NSRegularExpression` or plain text.
+  Differs from the plan: `range(of:options:[.caseInsensitive, .literal])` does full case folding after all ("ss"
+  marked the "ß" of "straße", as `NSRegularExpression` with `.ignoreMetacharacters` does too), so plain text is matched
+  by hand, each character folded on its own where the fold keeps its length: "k" still marks the Kelvin sign, "ss"
+  marks no "ß". Goldens edited by hand as the item says: 13 cases of `name-highlight.json` (`^.`, `^.{2}`, `[🎉]`,
+  `🎉+`: an emoji is one character; `x{`, `\k`, `\8`, `(?=a)*b`: no longer taken; `\p{L}` is a letter class; `ſ`
+  and `k` fold as Unicode does) and 3 of `search-sort.json` (`c++`, `C++`, `(?i)app`, which JavaScript refused).

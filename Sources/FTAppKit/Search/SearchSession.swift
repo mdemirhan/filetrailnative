@@ -218,7 +218,7 @@ final class SearchSession {
     var errorIsQuiet: Bool { startedLive && patternMode != .text }
 
     /// What a search matched in names, to mark it.
-    var highlightPattern: JSLegacyRegExp? {
+    var highlightPattern: HighlightPattern? {
         if let cache = highlightCache, cache.key == highlightKey { return cache.pattern }
         let pattern = SearchResults.highlightPattern(
             query: committedQuery, patternMode: patternMode, matchScope: matchScope)
@@ -227,7 +227,7 @@ final class SearchSession {
     }
 
     private var highlightKey: String { "\(patternMode.rawValue)\0\(matchScope.rawValue)\0\(committedQuery)" }
-    private var highlightCache: (key: String, pattern: JSLegacyRegExp?)?
+    private var highlightCache: (key: String, pattern: HighlightPattern?)?
 
     private func resultsChanged() {
         resultsVersion += 1

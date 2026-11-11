@@ -79,7 +79,7 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
             return .none
         }
         let range = pattern.firstMatch(in: text)
-        return .some(range.map { String(text[Range($0.range, in: text)!]) })
+        return .some(range.map { String(text[Range($0, in: text)!]) })
     }
 
     @Test func marksTheMatchedPartOfNamesForPlainTextAndRegexNameSearches() {
@@ -222,7 +222,7 @@ private enum SortOutput: Codable, Equatable {
                 return .matches(
                     highlight.texts.map { text in
                         pattern.firstMatch(in: text).map {
-                            String(text[Range($0.range, in: text)!])
+                            String(text[Range($0, in: text)!])
                         }
                     })
             }

@@ -375,12 +375,12 @@
       "output": {
         "match": {
           "start": 0,
-          "end": 1
+          "end": 2
         },
         "ranges": [
           {
             "start": 0,
-            "end": 1
+            "end": 2
           }
         ]
       }
@@ -397,12 +397,12 @@
       "output": {
         "match": {
           "start": 0,
-          "end": 2
+          "end": 3
         },
         "ranges": [
           {
             "start": 0,
-            "end": 2
+            "end": 3
           }
         ]
       }
@@ -413,50 +413,6 @@
         "name": "x🎉.txt",
         "label": "x🎉.txt",
         "query": "[🎉]",
-        "patternMode": "regex",
-        "matchScope": "name"
-      },
-      "output": {
-        "match": {
-          "start": 1,
-          "end": 2
-        },
-        "ranges": [
-          {
-            "start": 1,
-            "end": 2
-          }
-        ]
-      }
-    },
-    {
-      "name": "21: regex name \"🎉+\" in 🎉🎉.txt as 🎉🎉.txt",
-      "input": {
-        "name": "🎉🎉.txt",
-        "label": "🎉🎉.txt",
-        "query": "🎉+",
-        "patternMode": "regex",
-        "matchScope": "name"
-      },
-      "output": {
-        "match": {
-          "start": 0,
-          "end": 2
-        },
-        "ranges": [
-          {
-            "start": 0,
-            "end": 2
-          }
-        ]
-      }
-    },
-    {
-      "name": "22: regex name \"x{\" in ax{b}.txt as ax{b}.txt",
-      "input": {
-        "name": "ax{b}.txt",
-        "label": "ax{b}.txt",
-        "query": "x{",
         "patternMode": "regex",
         "matchScope": "name"
       },
@@ -474,33 +430,46 @@
       }
     },
     {
-      "name": "23: regex name \"\\\\p{L}\" in ap{L}.txt as ap{L}.txt",
+      "name": "21: regex name \"🎉+\" in 🎉🎉.txt as 🎉🎉.txt",
       "input": {
-        "name": "ap{L}.txt",
-        "label": "ap{L}.txt",
-        "query": "\\p{L}",
+        "name": "🎉🎉.txt",
+        "label": "🎉🎉.txt",
+        "query": "🎉+",
         "patternMode": "regex",
         "matchScope": "name"
       },
       "output": {
         "match": {
-          "start": 1,
-          "end": 5
+          "start": 0,
+          "end": 4
         },
         "ranges": [
           {
-            "start": 1,
-            "end": 5
+            "start": 0,
+            "end": 4
           }
         ]
       }
     },
     {
-      "name": "24: regex name \"\\\\k\" in k.txt as k.txt",
+      "name": "22: regex name \"x{\" in ax{b}.txt as ax{b}.txt",
       "input": {
-        "name": "k.txt",
-        "label": "k.txt",
-        "query": "\\k",
+        "name": "ax{b}.txt",
+        "label": "ax{b}.txt",
+        "query": "x{",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "ranges": []
+      }
+    },
+    {
+      "name": "23: regex name \"\\\\p{L}\" in ap{L}.txt as ap{L}.txt",
+      "input": {
+        "name": "ap{L}.txt",
+        "label": "ap{L}.txt",
+        "query": "\\p{L}",
         "patternMode": "regex",
         "matchScope": "name"
       },
@@ -518,6 +487,19 @@
       }
     },
     {
+      "name": "24: regex name \"\\\\k\" in k.txt as k.txt",
+      "input": {
+        "name": "k.txt",
+        "label": "k.txt",
+        "query": "\\k",
+        "patternMode": "regex",
+        "matchScope": "name"
+      },
+      "output": {
+        "ranges": []
+      }
+    },
+    {
       "name": "25: regex name \"\\\\8\" in a8.txt as a8.txt",
       "input": {
         "name": "a8.txt",
@@ -527,16 +509,7 @@
         "matchScope": "name"
       },
       "output": {
-        "match": {
-          "start": 1,
-          "end": 2
-        },
-        "ranges": [
-          {
-            "start": 1,
-            "end": 2
-          }
-        ]
+        "ranges": []
       }
     },
     {
@@ -571,16 +544,7 @@
         "matchScope": "name"
       },
       "output": {
-        "match": {
-          "start": 1,
-          "end": 2
-        },
-        "ranges": [
-          {
-            "start": 1,
-            "end": 2
-          }
-        ]
+        "ranges": []
       }
     },
     {
@@ -607,8 +571,16 @@
         "matchScope": "name"
       },
       "output": {
-        "match": null,
-        "ranges": []
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
       }
     },
     {
@@ -644,13 +616,13 @@
       },
       "output": {
         "match": {
-          "start": 7,
-          "end": 8
+          "start": 0,
+          "end": 1
         },
         "ranges": [
           {
-            "start": 7,
-            "end": 8
+            "start": 0,
+            "end": 1
           }
         ]
       }
@@ -665,8 +637,16 @@
         "matchScope": "name"
       },
       "output": {
-        "match": null,
-        "ranges": []
+        "match": {
+          "start": 0,
+          "end": 1
+        },
+        "ranges": [
+          {
+            "start": 0,
+            "end": 1
+          }
+        ]
       }
     },
     {
@@ -702,13 +682,13 @@
       },
       "output": {
         "match": {
-          "start": 7,
-          "end": 8
+          "start": 0,
+          "end": 1
         },
         "ranges": [
           {
-            "start": 7,
-            "end": 8
+            "start": 0,
+            "end": 1
           }
         ]
       }

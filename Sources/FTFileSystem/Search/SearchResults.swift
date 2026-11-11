@@ -157,19 +157,19 @@ public enum SearchResults {
 
     /// What a name search matched, to mark it in the names. fd uses smart case (case-sensitive only when the query has
     /// an uppercase letter); glob patterns match the whole name, so they are not marked, and neither are patterns that
-    /// the JavaScript-compatible matcher (`JSLegacyRegExp`) cannot parse.
+    /// the system's regular expressions don't take.
     public static func highlightPattern(
         query: String, patternMode: SearchPatternModePreference, matchScope: SearchMatchScopePreference
-    ) -> JSLegacyRegExp? {
+    ) -> HighlightPattern? {
         let trimmed = jsTrimmed(query)
         if trimmed.isEmpty || patternMode == .glob || matchScope != .name {
             return nil
         }
         let hasUppercase = trimmed.unicodeScalars.contains { $0.properties.generalCategory == .uppercaseLetter }
         if patternMode == .text {
-            return try? JSLegacyRegExp(literal: trimmed, ignoreCase: !hasUppercase)
+            return HighlightPattern(text: trimmed, ignoreCase: !hasUppercase)
         }
-        return try? JSLegacyRegExp(source: trimmed, ignoreCase: !hasUppercase)
+        return HighlightPattern(regex: trimmed, ignoreCase: !hasUppercase)
     }
 
     // MARK: - Folder column

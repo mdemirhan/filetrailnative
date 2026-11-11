@@ -4,8 +4,8 @@ import Testing
 @testable import FTFoundation
 
 @Suite struct NameHighlightTests {
-    private func pattern(_ source: String, ignoreCase: Bool = false) -> JSLegacyRegExp? {
-        try? JSLegacyRegExp(source: source, ignoreCase: ignoreCase)
+    private func pattern(_ source: String, ignoreCase: Bool = false) -> HighlightPattern? {
+        HighlightPattern(regex: source, ignoreCase: ignoreCase)
     }
 
     @Test func findsTheMatchAndNothingForAnEmptyOne() {

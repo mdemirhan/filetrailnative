@@ -1,5 +1,5 @@
 // What a search marks in names, against the golden: the pattern the query makes, its match in the name, and where
-// that shows in a label shortened in the middle, with the JavaScript-compatible matcher
+// that shows in a label shortened in the middle
 import FTFileSystem
 import FTFoundation
 import FTTestSupport

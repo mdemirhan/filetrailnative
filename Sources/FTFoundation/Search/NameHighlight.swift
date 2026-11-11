@@ -18,9 +18,9 @@ public enum NameHighlight {
     private static let ellipsis = UInt16(0x2026)
 
     /// Where `pattern` matches in `name`; nil when it does not, or matches nothing.
-    public static func match(_ pattern: JSLegacyRegExp?, in name: String) -> HighlightRange? {
-        guard let found = pattern?.firstMatch(in: name), found.range.length > 0 else { return nil }
-        return HighlightRange(start: found.range.location, end: found.range.location + found.range.length)
+    public static func match(_ pattern: HighlightPattern?, in name: String) -> HighlightRange? {
+        guard let found = pattern?.firstMatch(in: name), found.length > 0 else { return nil }
+        return HighlightRange(start: found.location, end: found.location + found.length)
     }
 
     /// The match in a name as it shows in a label that may have lost its middle
