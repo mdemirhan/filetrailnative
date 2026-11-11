@@ -46,23 +46,5 @@ public typealias UndoBatchRenamer =
         _ journal: (any WriteJournal)?
     ) -> UndoBatchRenameRun
 
-public enum UndoBatchRename {
-    /// `movedItemsOf`: the items of a batch's results that moved, each with its id and kind as it is now (read where
-    /// it went), for Undo.
-    public static func movedItemsOf(_ fileSystem: some IdentityFileSystem, _ items: [WriteOperationItem])
-        -> [BatchRenamedItem]
-    {
-        var moved: [BatchRenamedItem] = []
-        for item in items {
-            guard let sourcePath = item.sourcePath, let destinationPath = item.destinationPath,
-                !sameText(destinationPath, sourcePath),
-                !sameText(NodePath.basename(destinationPath), NodePath.basename(sourcePath))
-            else { continue }
-            let now = readItemRef({ try fileSystem.lstat($0) }, destinationPath)
-            if let kind = now.kind {
-                moved.append(BatchRenamedItem(from: sourcePath, to: destinationPath, id: now.id, itemKind: kind))
-            }
-        }
-        return moved
-    }
-}
+/// How an Undo renames a batch back (`runBatchRename`).
+public enum UndoBatchRename {}

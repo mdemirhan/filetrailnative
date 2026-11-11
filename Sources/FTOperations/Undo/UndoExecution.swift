@@ -707,7 +707,7 @@ public enum UndoExecution {
             }
             leftover.append(left)
         }
-        let renamed = UndoBatchRename.movedItemsOf(fileSystem, moves)
+        let renamed = BatchRenameExecution.movedItemsOf(LocalBatchRenameFileSystem(fileSystem), moves)
         let produced: UndoStep? = renamed.isEmpty ? nil : .batchRenamed(items: renamed)
         // What is left of the step, as the operation named it, each item where it is now.
         let left = UndoStep.batchRenamed(
