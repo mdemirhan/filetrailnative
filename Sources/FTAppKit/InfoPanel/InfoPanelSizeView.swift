@@ -24,7 +24,7 @@ final class InfoPanelSizeView: NSView {
     init(identifier: String) {
         cell = FolderSizeCellView(style: .panel, identifier: identifier)
         refresh = InfoIconButton(
-            glyph: .refresh, iconSize: FolderSizeCellView.refreshSize, strokeWidth: 2, cornerRadius: 0,
+            glyph: .refresh, iconSize: FolderSizeCellView.refreshSize, cornerRadius: 0,
             identifier: identifier + ".refresh", label: "Recalculate folder size")
         super.init(frame: .zero)
         sizeLine.lineBreakMode = .byTruncatingTail

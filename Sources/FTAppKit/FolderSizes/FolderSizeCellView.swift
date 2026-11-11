@@ -115,7 +115,7 @@ final class FolderSizeCellView: NSView {
         self.style = style
         calculate = TextLinkView(identifier: identifier + ".calculate")
         refresh = InfoIconButton(
-            glyph: .refresh, iconSize: Self.refreshSize, strokeWidth: 2, cornerRadius: 0,
+            glyph: .refresh, iconSize: Self.refreshSize, cornerRadius: 0,
             identifier: identifier + ".refresh", label: "Recalculate folder size")
         super.init(frame: .zero)
         setAccessibilityIdentifier(identifier)

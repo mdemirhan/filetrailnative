@@ -28,68 +28,33 @@ extension DateText {
     static var original: DateText { .shared }
 }
 
-/// The line icons of the Info panel, in a 24-unit box, stroked in the text color with round caps and joins.
+/// The icons of the Info panel, system symbols in the text color; a quick action shows its command's symbol.
 enum InfoGlyph {
     case close, quickLook, edit, name, favorite, rootTree, finder, terminal, copy, check, refresh
     case openChevron, popupChevron
 
-    var box: Double {
+    var symbolName: String {
         switch self {
-        case .openChevron: 8
-        default: 24
+        case .close: "xmark"
+        case .quickLook: CommandIcon.quickLook.symbolName
+        case .edit: CommandIcon.edit.symbolName
+        case .name: "textformat"
+        case .favorite: CommandIcon.favorite.symbolName
+        case .rootTree: CommandIcon.rootTreeHere.symbolName
+        case .finder: CommandIcon.showInFinder.symbolName
+        case .terminal: CommandIcon.terminal.symbolName
+        case .copy: CommandIcon.copyPath.symbolName
+        case .check: "checkmark"
+        case .refresh: CommandIcon.refresh.symbolName
+        case .openChevron: "chevron.down"
+        case .popupChevron: "chevron.up.chevron.down"
         }
     }
 
-    var paths: [String] {
-        switch self {
-        case .close: ["M6 6l12 12", "M18 6L6 18"]
-        case .quickLook:
-            [
-                "M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
-                "M14 7h3v3M10 17H7v-3M17 7l-4 4M7 17l4-4",
-            ]
-        case .edit:
-            [
-                "M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5",
-                "M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z",
-            ]
-        case .name: ["M4 7V5h16v2", "M12 5v14", "M9 19h6"]
-        case .favorite: ["m12 17.27-5.18 3.05 1.39-5.88L3 9.97l6.01-.5L12 4l2.99 5.47 6.01.5-5.21 4.47 1.39 5.88Z"]
-        case .rootTree: ["M4 5h8", "M8 5v12h6", "M8 11h6", "M17 9l3 2-3 2", "M17 15l3 2-3 2"]
-        case .finder:
-            [
-                "M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z",
-                "M14 13a2.5 2.5 0 1 1-5 0a2.5 2.5 0 1 1 5 0z", "M13.5 15l2.5 2.5",
-            ]
-        case .terminal:
-            ["M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z", "M7 9l3 3-3 3", "M13 15h4"]
-        case .copy:
-            [
-                "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71",
-                "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
-            ]
-        case .check: ["M5 12l4 4L19 6"]
-        case .refresh: ["M1 4v6h6", "M3.51 15a9 9 0 1 0 2.13-9.36L1 10"]
-        case .openChevron: ["M1.5 3 4 5.5 6.5 3"]
-        case .popupChevron: ["M8 9.5l4-4 4 4M8 14.5l4 4 4-4"]
-        }
-    }
-
-    /// Strokes the glyph into `rect`; `strokeWidth` is in box units, as the stylesheet gives it.
+    /// Draws the symbol as large as fits in `rect`, centered there.
     @MainActor
-    func draw(in rect: NSRect, strokeWidth: Double, color: NSColor) {
-        let scale = rect.width / box
-        var transform = AffineTransform(translationByX: rect.minX, byY: rect.minY)
-        transform.scale(x: scale, y: scale)
-        color.setStroke()
-        for data in paths {
-            let path = SVGPath.path(data)
-            path.transform(using: transform)
-            path.lineWidth = strokeWidth * scale
-            path.lineCapStyle = .round
-            path.lineJoinStyle = .round
-            path.stroke()
-        }
+    func draw(in rect: NSRect, color: NSColor) {
+        SymbolGlyph.draw(symbolName, in: rect, color: color)
     }
 }
 
@@ -110,9 +75,8 @@ final class InfoIconButton: NSView {
             syncToolTip()
         }
     }
-    /// The size of the drawn glyph and its stroke width (box units).
+    /// The size of the drawn glyph.
     var iconSize: Double
-    var strokeWidth: Double
     var cornerRadius: Double
     /// (normal, hovered) colors, and the fill under the pointer.
     var normalColor: (Theme) -> RGBA = { $0.palette.textSecondary }
@@ -121,11 +85,10 @@ final class InfoIconButton: NSView {
     private var pressed = false
 
     init(
-        glyph: InfoGlyph, iconSize: Double, strokeWidth: Double, cornerRadius: Double, identifier: String, label: String
+        glyph: InfoGlyph, iconSize: Double, cornerRadius: Double, identifier: String, label: String
     ) {
         self.glyph = glyph
         self.iconSize = iconSize
-        self.strokeWidth = strokeWidth
         self.cornerRadius = cornerRadius
         super.init(frame: .zero)
         setAccessibilityElement(true)
@@ -152,7 +115,7 @@ final class InfoIconButton: NSView {
         }
         let rect = NSRect(
             x: (bounds.width - iconSize) / 2, y: (bounds.height - iconSize) / 2, width: iconSize, height: iconSize)
-        glyph.draw(in: rect, strokeWidth: strokeWidth, color: NSColor(hover ? hoverColor(theme) : normalColor(theme)))
+        glyph.draw(in: rect, color: NSColor(hover ? hoverColor(theme) : normalColor(theme)))
     }
 
     override func updateTrackingAreas() {

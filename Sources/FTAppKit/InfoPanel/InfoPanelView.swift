@@ -137,7 +137,7 @@ final class InfoPanelHeader: NSView {
     let title = TextBoxField(labelWithString: "Info")
     let spinner = InfoSpinnerView(diameter: 10, lineWidth: 1.5)
     let close = InfoIconButton(
-        glyph: .close, iconSize: InfoMetrics.closeIcon, strokeWidth: 2.5, cornerRadius: DesignTokens.radii.xs,
+        glyph: .close, iconSize: InfoMetrics.closeIcon, cornerRadius: DesignTokens.radii.xs,
         identifier: "infoPanel.close", label: "Hide Info Panel")
     var showsSpinner = false {
         didSet {
@@ -307,7 +307,7 @@ final class SplitOpenButton: NSView, TextStyleSource {
             in: NSRect(
                 x: mainWidth + (InfoMetrics.openChevronWidth - box) / 2 + 0.5, y: (bounds.height - box) / 2,
                 width: box, height: box),
-            strokeWidth: 1.6, color: NSColor(theme.accent.onSolid))
+            color: NSColor(theme.accent.onSolid))
         NSGraphicsContext.restoreGraphicsState()
         if let appIcon {
             let textWidth = textExtent(title, label.font)
@@ -452,7 +452,7 @@ final class OpensWithPopupView: NSView {
         InfoGlyph.popupChevron.draw(
             in: NSRect(
                 x: bounds.width - Self.paddingTrailing - box, y: (bounds.height - box) / 2, width: box, height: box),
-            strokeWidth: 2.4, color: NSColor(theme.palette.textSecondary))
+            color: NSColor(theme.palette.textSecondary))
     }
 
     override func updateTrackingAreas() {
@@ -584,7 +584,7 @@ final class InfoPanelContentView: NSView {
             for action in item.actions {
                 let button = InfoIconButton(
                     glyph: Self.glyph(action.id, copied: item.copied == action.id), iconSize: InfoMetrics.actionIcon,
-                    strokeWidth: 1.8, cornerRadius: DesignTokens.radii.control, identifier: "infoPanel.action",
+                    cornerRadius: DesignTokens.radii.control, identifier: "infoPanel.action",
                     label: action.label)
                 button.tooltip = Tooltips.format(action.label, shortcutLabel: action.shortcut)
                 button.isEnabled = !action.disabled
