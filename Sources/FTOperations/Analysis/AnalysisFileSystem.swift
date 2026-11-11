@@ -81,16 +81,6 @@ public func resolveDuplicateName(
         exists: { isPathTaken(fileSystem, $0) })
 }
 
-/// `resolveKeepBothDestinationPath` on a disk: the Keep Both path for a source pasted at `destinationPath`.
-public func resolveKeepBothDestinationPath(
-    sourcePath: String, destinationPath: String, _ fileSystem: some AnalysisFileSystem,
-    options: CopyPasteNames.Options = .init()
-) throws -> String {
-    try CopyPasteNames.resolveKeepBothDestinationPath(
-        sourcePath: sourcePath, destinationPath: destinationPath, options: options,
-        isPackageFolder: { (try? fileSystem.isPackage($0)) ?? nil }, exists: { isPathTaken(fileSystem, $0) })
-}
-
 /// `detectCaseSensitivity` on a disk: whether the volume holding `directory` tells names apart by letter case.
 public func detectCaseSensitivity(_ fileSystem: some AnalysisFileSystem, in directory: String) -> Bool {
     CopyPasteNames.detectCaseSensitivity(CaseProbe(fileSystem: fileSystem), in: directory)

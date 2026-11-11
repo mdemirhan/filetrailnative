@@ -44,22 +44,6 @@ public enum CopyPasteNames {
     /// real one.
     public typealias Exists = (String) -> Bool
 
-    /// The Keep Both path for a source pasted at `destinationPath`. `isPackageFolder` is asked (with the
-    /// source path) for a folder when `options.isPackage` is not given.
-    public static func resolveKeepBothDestinationPath(
-        sourcePath: String, destinationPath: String, options: Options = Options(),
-        isPackageFolder: (String) -> Bool? = { _ in nil }, exists: Exists
-    ) throws -> String {
-        let sourceName = NodePath.basename(sourcePath)
-        var resolved = options
-        resolved.isPackage =
-            options.isPackage
-            ?? (options.isDirectory ? isPackage(folderAt: sourcePath, asked: isPackageFolder) : nil)
-        return try resolveDuplicateName(
-            sourceName: sourceName, in: NodePath.dirname(destinationPath), reserved: nil,
-            options: resolved, exists: exists)
-    }
-
     /// "name copy.ext", "name copy 2.ext", … that is free on disk and not already claimed by another item
     /// of the same paste (`reserved`, keyed by `NameKeys.destinationPathKey`).
     public static func resolveDuplicateName(

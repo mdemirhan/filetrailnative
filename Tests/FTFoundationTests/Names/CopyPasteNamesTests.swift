@@ -47,13 +47,6 @@ struct CopyPasteNamesTests {
         }
     }
 
-    @Test func resolvesKeepBothPathsFromTheSourceBasename() throws {
-        let disk = Disk("report copy.txt")
-        let path = try CopyPasteNames.resolveKeepBothDestinationPath(
-            sourcePath: "/source/report.txt", destinationPath: "/target/report.txt", exists: disk.exists)
-        #expect(path == "/target/report copy 2.txt")
-    }
-
     @Test func generatesDuplicateNamesForFilesWithAndWithoutExtensions() throws {
         let disk = Disk("notes copy.txt", "archive copy")
         #expect(try Self.duplicate("notes.txt", disk) == "/target/notes copy 2.txt")
@@ -102,9 +95,8 @@ struct CopyPasteNamesTests {
 
     @Test func askedForAFolderThePackageAnswerWinsOverTheExtension() throws {
         func keepBoth(_ answer: Bool?) throws -> String {
-            try CopyPasteNames.resolveKeepBothDestinationPath(
-                sourcePath: "/source/Movie.fcpxbundle", destinationPath: "/target/Movie.fcpxbundle",
-                options: .init(isDirectory: true), isPackageFolder: { _ in answer }, exists: { _ in false })
+            let isPackage = CopyPasteNames.isPackage(folderAt: "/source/Movie.fcpxbundle") { _ in answer }
+            return try Self.duplicate("Movie.fcpxbundle", isDirectory: true, isPackage: isPackage)
         }
         #expect(try keepBoth(false) == "/target/Movie.fcpxbundle copy")
         #expect(try keepBoth(true) == "/target/Movie copy.fcpxbundle")
