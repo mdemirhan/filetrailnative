@@ -74,7 +74,7 @@ public struct SearchStartResponse: Sendable, Equatable {
     public var status: SearchJobStatus
 }
 
-/// `search:getUpdate`'s answer: the results from the cursor on, and where the job stands.
+/// What a search says when asked how it is doing: the results from the cursor on, and where the job stands.
 public struct SearchUpdate: Sendable, Equatable {
     public var jobId: String
     public var status: SearchJobStatus
@@ -83,6 +83,19 @@ public struct SearchUpdate: Sendable, Equatable {
     public var done: Bool
     public var truncated: Bool
     public var error: String?
+
+    public init(
+        jobId: String, status: SearchJobStatus, items: [SearchResultItem], nextCursor: Int, done: Bool,
+        truncated: Bool, error: String?
+    ) {
+        self.jobId = jobId
+        self.status = status
+        self.items = items
+        self.nextCursor = nextCursor
+        self.done = done
+        self.truncated = truncated
+        self.error = error
+    }
 }
 
 public struct UnknownSearchJob: Error, Equatable, CustomStringConvertible {

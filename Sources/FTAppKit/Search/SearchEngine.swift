@@ -7,7 +7,7 @@ import Foundation
 protocol SearchEngine: AnyObject {
     /// The new job's id; it starts running.
     func start(_ request: SearchRequest) throws -> String
-    func update(jobID: String, cursor: Int) throws -> TabSearchUpdate
+    func update(jobID: String, cursor: Int) throws -> SearchUpdate
     func cancel(jobID: String)
 }
 
@@ -39,8 +39,8 @@ final class SearchRuntime: SearchEngine {
         try resolved().startSearch(request).jobId
     }
 
-    func update(jobID: String, cursor: Int) throws -> TabSearchUpdate {
-        TabSearchUpdate(try resolved().getUpdate(jobId: jobID, cursor: cursor))
+    func update(jobID: String, cursor: Int) throws -> SearchUpdate {
+        try resolved().getUpdate(jobId: jobID, cursor: cursor)
     }
 
     func cancel(jobID: String) {

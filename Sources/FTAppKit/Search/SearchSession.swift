@@ -69,7 +69,8 @@ final class SearchSession {
     private(set) var resultsVisible = false
     /// As the walk found them, in arrival order.
     private(set) var results: [SearchResultItem] = []
-    private(set) var status: TabSearchStatus = .idle
+    /// Where the search stands; nil before one has run, and once it is cleared.
+    private(set) var status: SearchJobStatus?
     private(set) var error: String?
     /// Started by typing: a pattern that does not parse yet is not shown as a failure.
     private(set) var startedLive = false
@@ -329,7 +330,7 @@ final class SearchSession {
         resultsGeneration += 1
         keptResultPaths = []
         resultsChanged()
-        status = .idle
+        status = nil
         error = nil
         truncated = false
         resultsVisible = false
@@ -621,7 +622,7 @@ final class SearchSession {
     /// until the search is done.
     private func poll(jobID: String, counter: Int) {
         guard counter == sessionCounter, self.jobID == jobID else { return }
-        let update: TabSearchUpdate
+        let update: SearchUpdate
         do {
             update = try engine.update(jobID: jobID, cursor: cursor)
         } catch {
@@ -641,7 +642,7 @@ final class SearchSession {
         }
     }
 
-    private func apply(_ update: TabSearchUpdate) {
+    private func apply(_ update: SearchUpdate) {
         let newItems =
             keptResultPaths.isEmpty ? update.items : update.items.filter { !keptResultPaths.contains($0.path) }
         var change: Change = .status
@@ -659,7 +660,7 @@ final class SearchSession {
             startSearch(committedQuery, rootPath: resolveRootPath(), live: true, keepMatching: true)
             return
         }
-        status = TabSearchStatus(update.status)
+        status = update.status
         error = update.error
         truncated = update.truncated
         let finishedAway = (awaitingFirstUpdateAfterReturn || isBackground) && update.done

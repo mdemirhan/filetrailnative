@@ -48,13 +48,13 @@ final class FakeSearchEngine: SearchEngine {
         jobs[id] = job
     }
 
-    func update(jobID: String, cursor: Int) throws -> TabSearchUpdate {
+    func update(jobID: String, cursor: Int) throws -> SearchUpdate {
         updates.append((jobID, cursor))
         guard let job = jobs[jobID] else { throw UnknownJob() }
         let start = max(0, min(cursor, job.items.count))
         let status: SearchJobStatus = job.running ? .running : (job.truncated ? .truncated : .complete)
-        return TabSearchUpdate(
-            jobID: jobID, status: status, items: Array(job.items[start...]), nextCursor: job.items.count,
+        return SearchUpdate(
+            jobId: jobID, status: status, items: Array(job.items[start...]), nextCursor: job.items.count,
             done: !job.running, truncated: job.truncated, error: nil)
     }
 
@@ -298,7 +298,7 @@ final class FakeSearchHost: SearchSessionHost {
         search.clearCommittedSearch()
         #expect(!search.hasCachedSearch)
         #expect(search.draftQuery.isEmpty)
-        #expect(search.status == .idle)
+        #expect(search.status == nil)
         #expect(host.applied.last == .empty)
     }
 

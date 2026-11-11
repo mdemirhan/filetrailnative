@@ -22,11 +22,11 @@ private final class FailingSearchEngine: SearchEngine {
         return "search-1"
     }
 
-    func update(jobID: String, cursor: Int) throws -> TabSearchUpdate {
+    func update(jobID: String, cursor: Int) throws -> SearchUpdate {
         updates += 1
         if updateFails { throw Failure() }
-        return TabSearchUpdate(
-            jobID: jobID, status: .running, items: [], nextCursor: cursor, done: false, truncated: false, error: nil)
+        return SearchUpdate(
+            jobId: jobID, status: .running, items: [], nextCursor: cursor, done: false, truncated: false, error: nil)
     }
 
     func cancel(jobID: String) {}

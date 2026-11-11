@@ -4,45 +4,6 @@ import FTFoundation
 import FTOperations
 import Foundation
 
-/// Where a tab's search stands: the worker's statuses, or `idle` before it has run.
-public enum TabSearchStatus: String, Sendable, Equatable {
-    case idle, running, complete, cancelled, truncated, error
-
-    init(_ status: SearchJobStatus) {
-        self = TabSearchStatus(rawValue: status.rawValue) ?? .error
-    }
-}
-
-/// What a search says when a background tab asks how it is doing (`search:getUpdate`).
-public struct TabSearchUpdate: Equatable, Sendable {
-    public var jobID: String
-    public var status: SearchJobStatus
-    public var items: [SearchResultItem]
-    public var nextCursor: Int
-    public var done: Bool
-    public var truncated: Bool
-    public var error: String?
-
-    public init(
-        jobID: String, status: SearchJobStatus, items: [SearchResultItem], nextCursor: Int, done: Bool,
-        truncated: Bool, error: String?
-    ) {
-        self.jobID = jobID
-        self.status = status
-        self.items = items
-        self.nextCursor = nextCursor
-        self.done = done
-        self.truncated = truncated
-        self.error = error
-    }
-
-    public init(_ update: SearchUpdate) {
-        self.init(
-            jobID: update.jobId, status: update.status, items: update.items, nextCursor: update.nextCursor,
-            done: update.done, truncated: update.truncated, error: update.error)
-    }
-}
-
 /// What a tab had on screen: enough to show it again at once, before its folder is read again.
 public struct TabViewState: Equatable, Sendable {
     public var treeNodes = TreeNodes()
