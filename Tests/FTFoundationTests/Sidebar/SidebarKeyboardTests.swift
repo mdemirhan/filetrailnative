@@ -188,6 +188,12 @@ struct SidebarKeyboardTests {
         #expect(SidebarKeyboard.typeaheadMatch("des", integrated) == .favorite("/Users/demo/Desktop"))
         #expect(SidebarKeyboard.typeaheadMatch("DESK", integrated) == .favorite("/Users/demo/Desktop"))
         #expect(SidebarKeyboard.typeaheadMatch("zzz", integrated) == nil)
+        // An accented letter is found however the label stores it.
+        let cafe = SidebarKeyContext(
+            separate: true, subview: .favorites, selected: nil,
+            favoriteList: [(id: .favorite("/Users/demo/Cafe\u{301}"), label: "Cafe\u{301}")],
+            presentation: integrated.presentation, nodes: nodes, rootPath: Self.home)
+        #expect(SidebarKeyboard.typeaheadMatch("caf\u{E9}", cafe) == .favorite("/Users/demo/Cafe\u{301}"))
         // A heading is a candidate by its label: it is found, and selecting it does nothing.
         #expect(SidebarKeyboard.typeaheadMatch("fav", integrated) == .favoritesRoot)
         #expect(SidebarKeyboard.typeaheadMatch("loc", integrated) == .locationsRoot)

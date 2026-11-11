@@ -105,16 +105,18 @@ public enum Places {
     /// The places matching `query`, best first. Each word typed must be found, in the name or failing
     /// that in the path. With nothing typed, the most used places are listed.
     public static func rank(_ places: [Place], query: String) -> [PlaceMatch] {
-        let words = JSString.words(JSString.lowercased(query))
+        let words = JSString.words(NameFolding.folded(query))
         var ranked: [(place: Place, nameRanges: [Range<Int>], quality: Int)] = []
         for place in places {
             if words.isEmpty {
                 ranked.append((place, [], 0))
                 continue
             }
-            let name = Array(JSString.lowercased(place.name).utf16)
+            // Matched folded (`NameFolding`); the letters marked are those of the name as stored.
+            let mapped = NameFolding.mapped(place.name)
+            let name = mapped.units
             // The shortened path, so the name of the home folder does not match every folder in it.
-            let path = Array(JSString.lowercased(place.displayPath).utf16)
+            let path = Array(NameFolding.folded(place.displayPath).utf16)
             var quality = Int.max
             var nameRanges: [Range<Int>] = []
             for word in words {
@@ -132,7 +134,7 @@ public enum Places {
                 break
             }
             if quality > 0 {
-                ranked.append((place, mergeRanges(nameRanges), quality))
+                ranked.append((place, mergeRanges(nameRanges.map(mapped.original)), quality))
             }
         }
         // A stable sort, so equals keep their order: most recently opened first, then the favorites

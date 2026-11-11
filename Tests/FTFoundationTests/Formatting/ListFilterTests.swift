@@ -42,6 +42,25 @@ struct ListFilterTests {
         #expect(names("zzz") == [])
     }
 
+    @Test func findsAnAccentedLetterHoweverTheNameStoresIt() {
+        // "Café" stored as a letter and its accent (as some disks and apps keep names), and "Résumé" as one character
+        // each: what is typed matches both, composed or not.
+        let decomposed = "Cafe\u{301}.txt"
+        let composed = "R\u{E9}sum\u{E9}.pdf"
+        let entries = [
+            Entry(id: 1, name: decomposed, relativeParentPath: ""),
+            Entry(id: 2, name: composed, relativeParentPath: "Docs/Cafe\u{301}"),
+        ]
+        func names(_ query: String) -> [String] { ListFilter.filterByName(entries, query: query).map(\.name) }
+        #expect(names("caf\u{E9}") == [decomposed])
+        #expect(names("CAF\u{C9}") == [decomposed])
+        #expect(names("re\u{301}sume\u{301}") == [composed])
+        #expect(ListFilter.selection(in: entries, query: "caf\u{E9}")?.id == 1)
+        #expect(ListFilter.filterSearchResults(entries, query: "caf\u{E9}").map(\.id) == [1, 2])
+        // Stored names are not changed.
+        #expect(ListFilter.filterByName(entries, query: "caf\u{E9}").first?.name.unicodeScalars.count == 9)
+    }
+
     @Test func returnsTheSameListWhenThereIsNoFilter() {
         #expect(ListFilter.filterByName(entries, query: "") == entries)
     }

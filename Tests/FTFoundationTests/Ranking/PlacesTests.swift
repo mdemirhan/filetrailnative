@@ -89,6 +89,18 @@ struct PlacesTests {
         #expect(match("apps desk")?.nameRanges == [0..<4])
     }
 
+    @Test func findsAnAccentedLetterHoweverTheNameStoresItAndMarksTheLettersOfTheStoredName() {
+        // "Café Photos" stored as a letter and its accent: "café" typed composed finds it, and the letters marked are
+        // the stored name's (five UTF-16 units for "Café").
+        let places = Places.build(
+            visitedFolders: [visited("/Users/demo/Cafe\u{301} Photos", 1)], favoritePaths: [],
+            currentPath: "/somewhere/else", homePath: Self.home, now: Self.now)
+        let match = Places.rank(places, query: "caf\u{E9}").first
+        #expect(match?.place.name == "Cafe\u{301} Photos")
+        #expect(match?.nameRanges == [0..<5])
+        #expect(Places.rank(places, query: "phot").first?.nameRanges == [6..<10])
+    }
+
     @Test func saysWhereAPlaceIs() {
         #expect(Places.describeLocation(name: "filetrail", displayPath: "~/src/filetrail") == "~/src")
         #expect(Places.describeLocation(name: "Desktop", displayPath: "~/Desktop") == "~")

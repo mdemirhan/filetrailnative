@@ -15,9 +15,10 @@ public enum ListFilter {
     /// is Quick Look again, so a filtered item can be previewed.
     public static let spaceWindow: TimeInterval = 1
 
-    /// Case-insensitive "name contains"; the order of the list is kept.
+    /// Case-insensitive "name contains", an accented letter matching however it is stored; the order of the list is
+    /// kept.
     public static func filterByName<T: ListFilterEntry>(_ entries: [T], query: String) -> [T] {
-        let normalizedQuery = JSString.lowercased(query)
+        let normalizedQuery = NameFolding.folded(query)
         if normalizedQuery.isEmpty {
             return entries
         }
@@ -25,8 +26,8 @@ public enum ListFilter {
         return entries.filter { matches($0.name, needle: needle, query: normalizedQuery, prefixOnly: false) }
     }
 
-    /// Whether the lowercased `name` contains (or starts with) the lowercased `query`. A name of ASCII letters only,
-    /// nearly every name, is compared byte by byte with no copy; any other goes through the full case mapping.
+    /// Whether the folded `name` contains (or starts with) the folded `query` (`NameFolding`). A name of ASCII letters
+    /// only, nearly every name, is compared byte by byte with no copy; any other is folded in full.
     private static func matches(_ name: String, needle: [UInt8], query: String, prefixOnly: Bool) -> Bool {
         var name = name
         let fast: Bool? = name.withUTF8 { bytes in
@@ -34,7 +35,7 @@ public enum ListFilter {
             return asciiFolded(bytes, needle, prefixOnly: prefixOnly)
         }
         if let fast { return fast }
-        let lowered = JSString.lowercased(name)
+        let lowered = NameFolding.folded(name)
         return prefixOnly ? JSString.hasPrefix(lowered, query) : JSString.includes(lowered, query)
     }
 
@@ -60,20 +61,20 @@ public enum ListFilter {
     /// Search results are spread over many folders, so their filter also looks at the folder a
     /// result is in: "src" keeps the results under a folder named src as well as names with it.
     public static func filterSearchResults<T: ListFilterSearchResult>(_ results: [T], query: String) -> [T] {
-        let normalizedQuery = JSString.lowercased(query)
+        let normalizedQuery = NameFolding.folded(query)
         if normalizedQuery.isEmpty {
             return results
         }
         return results.filter {
-            JSString.includes(JSString.lowercased($0.name), normalizedQuery)
-                || JSString.includes(JSString.lowercased($0.relativeParentPath), normalizedQuery)
+            JSString.includes(NameFolding.folded($0.name), normalizedQuery)
+                || JSString.includes(NameFolding.folded($0.relativeParentPath), normalizedQuery)
         }
     }
 
     /// The item a filter selects: the first name that starts with the text, as type-to-select would
     /// pick, otherwise the first match.
     public static func selection<T: ListFilterEntry>(in matches: [T], query: String) -> T? {
-        let normalizedQuery = JSString.lowercased(query)
+        let normalizedQuery = NameFolding.folded(query)
         if normalizedQuery.isEmpty {
             return nil
         }
