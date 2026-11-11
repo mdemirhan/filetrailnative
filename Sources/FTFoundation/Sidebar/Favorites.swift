@@ -55,7 +55,7 @@ public enum Favorites {
     }
 
     /// Finder's sidebar places, all ordinary favorites the user can remove or reorder. Home,
-    /// Macintosh HD and the Trash are under Locations, as in Finder.
+    /// the startup disk and the Trash are under Locations, as in Finder.
     public static func defaults(homePath: String) -> [FavoritePreference] {
         if homePath.isEmpty {
             return [FavoritePreference(path: "/Applications", icon: .applications)]

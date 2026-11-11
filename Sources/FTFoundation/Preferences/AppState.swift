@@ -17,7 +17,7 @@ public struct StoredWindowState: Codable, Equatable, Sendable {
         self.maximized = maximized
     }
 
-    /// DEFAULT_WINDOW_STATE.
+    /// The size a window opens at when none was saved.
     public static let `default` = StoredWindowState(width: 1200, height: 760, maximized: false)
 }
 
@@ -54,16 +54,15 @@ public struct AppState: Codable, Equatable, Sendable {
 }
 
 public enum AppStateReader {
-    /// STORED_EXPLORER_WINDOWS_LIMIT: no more windows are read back than anyone keeps open; a damaged file can't make
-    /// more.
+    /// No more windows are read back than anyone keeps open; a damaged file can't make more.
     public static let windowsLimit = 50
 
     /// The id the one window saved before there were several is given.
     public static let legacyWindowID = "window-1"
 
-    /// `readState` once the file is parsed: loading is best-effort, corrupt state never blocks startup. The result is
-    /// empty for anything that is not an object; a file that is not JSON is the caller's to treat the same way
-    /// (`read(data:)` throws for it).
+    /// The saved state, once the file is parsed: loading is best-effort, corrupt state never blocks startup. The
+    /// result is empty for anything that is not an object; a file that is not JSON is the caller's to treat the same
+    /// way (`read(data:)` throws for it).
     public static func read(_ parsed: JSONNode, defaults: AppPreferences) -> AppState {
         guard let file = parsed.object else { return AppState() }
         let preferences = PreferencesSanitizer.sanitize(file["preferences"], defaults: defaults)
@@ -87,7 +86,7 @@ public enum AppStateReader {
         return AppState(preferences: preferences, windows: windows, lastClosedWindow: lastClosedWindow)
     }
 
-    /// `readState` for the file's bytes: throws when they are not JSON.
+    /// The saved state from the file's bytes: throws when they are not JSON.
     public static func read(data: Data, defaults: AppPreferences) throws -> AppState {
         read(try JSONNode.parse(data), defaults: defaults)
     }

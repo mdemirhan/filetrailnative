@@ -1,6 +1,6 @@
 import Foundation
 
-/// What kind of item a listing row is (`DirectoryEntry["kind"]`).
+/// What kind of item a listing row is.
 public enum EntryKind: String, Codable, CaseIterable, Sendable, Hashable {
     case directory
     case file
@@ -134,7 +134,8 @@ public enum CommandAvailability {
         return "/" + parts.dropLast().joined(separator: "/")
     }
 
-    /// Where New Folder makes a folder, as the Eject, New Folder and menu rules use it (no context scope).
+    /// Where New Folder from the keyboard or the menu bar makes a folder: the folder on screen, whatever is selected;
+    /// none in search results or in the Trash. The menu bar dims New Folder when there is none.
     static func newFolderTargetPath(
         currentPath: String, selectedPaths: [String], isSearchMode: Bool, homePath: String
     ) -> String? {

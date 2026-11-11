@@ -210,7 +210,7 @@ public enum ClipboardRules {
         return nil
     }
 
-    /// `path.slice(0, max(0, path.lastIndexOf("/")))`.
+    /// Everything before the last slash, by code units: "" for a top folder ("/a") and for a path without a slash.
     static func parentPrefix(_ path: String) -> String {
         let units = Array(path.utf16)
         guard let slash = JSString.lastIndex(of: 0x2F, in: units) else { return "" }
@@ -239,7 +239,8 @@ public enum ClipboardRules {
         return false
     }
 
-    /// `replacePathPrefix`.
+    /// `path` with `source` at its start changed to `destination`: `source` itself, or what is inside it; any other
+    /// path as it is.
     static func replacePathPrefix(_ path: String, _ source: String, _ destination: String) -> String {
         if JSString.equals(path, source) { return destination }
         guard JSString.hasPrefix(path, source + "/") else { return path }

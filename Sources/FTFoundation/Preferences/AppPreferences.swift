@@ -67,7 +67,7 @@ public struct AppPreferences: Codable, Equatable, Sendable {
     public var batchRenameSettings: BatchRenameSettings
     public var batchRenamePresets: [BatchRenamePreset]
 
-    /// DEFAULT_APP_PREFERENCES, with the theme a new install starts with.
+    /// What a new install starts with, given the theme it starts in.
     public static func defaults(theme: ThemePreference = .auto) -> AppPreferences {
         AppPreferences(
             theme: theme, accent: AppPreferenceLimits.defaultAccent, viewMode: .icons,

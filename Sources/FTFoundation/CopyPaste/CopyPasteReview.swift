@@ -255,8 +255,8 @@ public enum CopyPasteReview {
             override: overrides[node.id])
     }
 
-    /// `policyForAllConflicts`: Add Missing and Keep All merge folders, so what is inside gets the same treatment; Skip
-    /// and Replace apply to the folder as a whole.
+    /// What a "For all conflicts" choice does: Add Missing and Keep All merge folders, so what is inside gets the same
+    /// treatment; Skip and Replace apply to the folder as a whole.
     public static func policy(for choice: AllConflictsChoice) -> CopyPastePolicy {
         switch choice {
         case .skip: CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
@@ -554,7 +554,7 @@ public enum CopyPasteReview {
         PathText.leafName(path)
     }
 
-    /// `dirnameOf`: the folder a path is in; "/" at the top.
+    /// The folder a path is in; "/" at the top.
     public static func dirname(_ path: String) -> String {
         var units = Array(path.utf16)
         while units.last == 0x2F { units.removeLast() }

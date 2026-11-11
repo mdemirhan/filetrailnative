@@ -14,10 +14,10 @@ public enum ThemePreference: String, Codable, CaseIterable, Sendable, Hashable {
 public enum ExplorerViewMode: String, Codable, CaseIterable, Sendable, Hashable {
     case icons, list, details
 
-    /// VIEW_MODE_ORDER: the views in the order every menu lists them.
+    /// The views in the order every menu lists them.
     public static let menuOrder: [ExplorerViewMode] = [.icons, .details, .list]
 
-    /// VIEW_MODE_NAMES: the names the menus give the views.
+    /// The names the menus give the views.
     public var menuName: String {
         switch self {
         case .icons: "Icons"
@@ -31,7 +31,7 @@ public enum ExplorerViewMode: String, Codable, CaseIterable, Sendable, Hashable 
 public enum SearchPatternModePreference: String, Codable, CaseIterable, Sendable, Hashable {
     case text, glob, regex
 
-    /// SEARCH_PATTERN_MODE_LABELS.
+    /// The mode's name in the search options menu.
     public var label: String {
         switch self {
         case .text: "Plain Text"
@@ -58,7 +58,7 @@ public enum SortDirectionPreference: String, Codable, CaseIterable, Sendable, Ha
 public enum SortByPreference: String, Codable, CaseIterable, Sendable, Hashable {
     case name, modified, kind, size
 
-    /// SORT_BY_ORDER: the order every menu lists it in.
+    /// The order every menu lists the fields in.
     public static let menuOrder: [SortByPreference] = [.name, .kind, .modified, .size]
 
     /// What every menu calls it.
@@ -90,11 +90,11 @@ public enum ReturnKeyAction: String, Codable, CaseIterable, Sendable, Hashable {
     case rename, open
 }
 
-/// The columns of the List view, in display order (DETAIL_COLUMN_KEYS).
+/// The columns of the List view, in display order.
 public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     case name, modified, size, kind, created, permissions
 
-    /// DETAIL_COLUMN_LABELS.
+    /// The column's title.
     public var label: String {
         switch self {
         case .name: "Name"
@@ -106,7 +106,7 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
         }
     }
 
-    /// DETAIL_COLUMN_WIDTH_LIMITS.
+    /// The least and the greatest width the column can be given, in points.
     public var widthLimits: ClosedRange<Int> {
         switch self {
         case .name: 140...720
@@ -119,7 +119,7 @@ public enum DetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     }
 }
 
-/// DetailColumnKey without Name, which is always shown (OPTIONAL_DETAIL_COLUMN_KEYS).
+/// The List's columns but Name, which is always shown: the ones that can be hidden and moved.
 public enum OptionalDetailColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     case modified, size, kind, created, permissions
 }
@@ -128,18 +128,18 @@ public enum OptionalDetailColumnKey: String, Codable, CaseIterable, Sendable, Ha
 public enum SearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     case name, folder, modified, size, kind, created, permissions
 
-    /// SEARCH_COLUMN_LABELS.
+    /// The column's title: Folder's own, the others as in a folder's List.
     public var label: String {
         self == .folder ? "Folder" : DetailColumnKey(rawValue: rawValue)?.label ?? rawValue
     }
 
-    /// SEARCH_COLUMN_WIDTH_LIMITS.
+    /// The least and the greatest width the column can be given: Folder's own, the others as in a folder's List.
     public var widthLimits: ClosedRange<Int> {
         self == .folder ? 80...720 : DetailColumnKey(rawValue: rawValue)?.widthLimits ?? 80...720
     }
 }
 
-/// OPTIONAL_SEARCH_COLUMN_KEYS: in the order of the columns, Name aside.
+/// Search results' columns but Name, which is always shown, in the order of the columns.
 public enum OptionalSearchColumnKey: String, Codable, CaseIterable, Sendable, Hashable {
     case folder, modified, size, kind, created, permissions
 }
@@ -152,7 +152,7 @@ public struct DetailColumnVisibility: Codable, Equatable, Sendable {
     public var created: Bool
     public var permissions: Bool
 
-    /// DEFAULT_DETAIL_COLUMN_VISIBILITY: Finder's list view columns; Date Created and Permissions are opt-in.
+    /// Before any is changed: Finder's list view columns; Date Created and Permissions are opt-in.
     public static let defaults = DetailColumnVisibility(
         modified: true, size: true, kind: true, created: false, permissions: false)
 
@@ -186,7 +186,7 @@ public struct DetailColumnWidths: Codable, Equatable, Sendable {
     public var created: Int
     public var permissions: Int
 
-    /// DEFAULT_DETAIL_COLUMN_WIDTHS.
+    /// The widths before any column is resized.
     public static let defaults = DetailColumnWidths(
         name: 320, modified: 152, size: 108, kind: 148, created: 152, permissions: 108)
 
@@ -222,7 +222,7 @@ public struct SearchColumnVisibility: Codable, Equatable, Sendable {
     public var created: Bool
     public var permissions: Bool
 
-    /// DEFAULT_SEARCH_COLUMN_VISIBILITY.
+    /// Before any is changed: Folder, Date Modified and Size.
     public static let defaults = SearchColumnVisibility(
         folder: true, modified: true, size: true, kind: false, created: false, permissions: false)
 
@@ -259,7 +259,7 @@ public struct SearchColumnWidths: Codable, Equatable, Sendable {
     public var created: Int
     public var permissions: Int
 
-    /// DEFAULT_SEARCH_COLUMN_WIDTHS.
+    /// The widths before any column is resized: Name and Folder their own, the others as in a folder's List.
     public static let defaults = SearchColumnWidths(
         name: 300, folder: 240, modified: DetailColumnWidths.defaults.modified, size: DetailColumnWidths.defaults.size,
         kind: DetailColumnWidths.defaults.kind, created: DetailColumnWidths.defaults.created,
@@ -314,7 +314,7 @@ public struct OpenWithApplication: Codable, Equatable, Sendable {
     }
 }
 
-/// The icons a favorite can have (FAVORITE_ICON_OPTIONS).
+/// The icons a favorite can have, in the order Settings offers them.
 public enum FavoriteIconID: String, Codable, CaseIterable, Sendable, Hashable {
     case home, applications, desktop, documents, downloads, trash, folder, star, drive, code, terminal, globe, music
     case photos, videos, archive, cloud, server, projects, books, camera, toolbox, network
@@ -403,18 +403,18 @@ public enum AppPreferenceLimits {
     public static let treeWidthRange = 220...520
     public static let inspectorWidthRange = 260...480
 
-    /// OPTIONAL_DETAIL_COLUMN_KEYS order, which is DEFAULT_DETAIL_COLUMN_ORDER.
+    /// The order of the columns before any is moved: the order `OptionalDetailColumnKey` lists them in.
     public static let defaultDetailColumnOrder: [OptionalDetailColumnKey] = OptionalDetailColumnKey.allCases
     public static let defaultSearchColumnOrder: [OptionalSearchColumnKey] = OptionalSearchColumnKey.allCases
 
-    /// ACCENT_OPTIONS: macOS's own accents in System Settings order, then the copper the app used to default to.
+    /// macOS's own accents in System Settings order, then the copper the app used to default to.
     public static let accentOptions: [(value: String, label: String)] = [
         ("#007aff", "Blue"), ("#a550a7", "Purple"), ("#f74f9e", "Pink"), ("#e0383e", "Red"), ("#f7821b", "Orange"),
         ("#ffc600", "Yellow"), ("#62ba46", "Green"), ("#8c8c8c", "Graphite"), ("#d4845a", "Copper"),
     ]
     public static let defaultAccent = "#007aff"
 
-    /// THEME_OPTIONS: Auto, Light and Dark, in the order Settings shows them.
+    /// Auto, Light and Dark, in the order Settings shows them.
     public static let themeOptions: [(value: ThemePreference, label: String)] = [
         (.auto, "Auto"), (.light, "Light"), (.dark, "Dark"),
     ]
@@ -424,7 +424,7 @@ public enum AppPreferenceLimits {
     public static let defaultTerminalApplication = ApplicationSelection(
         appPath: "/System/Applications/Utilities/Terminal.app", appName: "Terminal")
 
-    /// `clampPaneWidth`.
+    /// A pane width kept within `range`, then rounded half up.
     public static func clampPaneWidth(_ value: Double, _ range: ClosedRange<Int>) -> Int {
         clampRounded(value, Double(range.lowerBound), Double(range.upperBound))
     }
@@ -441,8 +441,8 @@ public enum AppPreferenceLimits {
         clampRounded(value, Double(key.widthLimits.lowerBound), Double(key.widthLimits.upperBound))
     }
 
-    /// `normalizeDetailColumnOrder`: unknown and repeated keys are dropped, and columns the saved order leaves out
-    /// follow in their default order.
+    /// The saved order of the List's columns, made whole: unknown and repeated keys are dropped, and columns the saved
+    /// order leaves out follow in their default order.
     public static func normalizeDetailColumnOrder(_ value: JSONNode?) -> [OptionalDetailColumnKey] {
         normalizeColumnOrder(value, defaults: OptionalDetailColumnKey.allCases)
     }

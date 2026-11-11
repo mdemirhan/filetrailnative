@@ -62,7 +62,7 @@ public struct DragFacts: Sendable {
     let paths: Set<ExactKey>
     /// The folders whose disks decide a move.
     public let folderPaths: [String]
-    /// The folder each item is in; "" stands for none ("/").
+    /// The folder each item is in; a NUL character stands for none (an item that is "/" itself).
     let parentPaths: Set<ExactKey>
     let parentCount: Int
     /// The folders, apps and packages among the items, which can't go into themselves.

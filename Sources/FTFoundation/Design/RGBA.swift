@@ -15,7 +15,7 @@ public struct RGBA: Equatable, Hashable, Sendable {
         self.alpha = alpha
     }
 
-    /// From 0...255 channels, as written in CSS.
+    /// From 0...255 channels, as a `#rrggbb` colour holds them.
     public init(r: Int, g: Int, b: Int, alpha: Double = 1) {
         self.init(red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255, alpha: alpha)
     }

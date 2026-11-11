@@ -38,7 +38,7 @@ public enum SettingsValues {
         return (String(next), next == current ? nil : next)
     }
 
-    /// `moveItem`: an item of a list moved to another place in it; out of range changes nothing.
+    /// An item of a list moved to another place in it; out of range changes nothing.
     public static func move<T>(_ items: [T], from index: Int, to target: Int) -> [T] {
         guard items.indices.contains(index), items.indices.contains(target) else { return items }
         var next = items

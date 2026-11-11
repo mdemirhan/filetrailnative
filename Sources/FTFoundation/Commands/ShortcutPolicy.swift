@@ -36,9 +36,9 @@ public struct ShortcutContext: Equatable, Sendable {
     }
 }
 
-/// Which commands and keys act where. App-level view toggles such as `?` and `Cmd+,` are handled outside the explorer
-/// registry. This only classifies renderer commands and raw explorer shortcuts that dispatch through the central key
-/// binding table. The tree-focus bucket tables are in TreeFocusBuckets.swift.
+/// Which commands and keys act where. Keys the app handles itself, such as `?` and `Cmd+,`, are not decided here: this
+/// sorts only the window's commands (`RendererCommand`) and the window's own keys that go through the shortcut table.
+/// The tables of what works while the tree has the keyboard are in TreeFocusBuckets.swift.
 public enum ShortcutPolicy {
     private static let editCommands: Set<RendererCommand> = [.editCut, .editCopy, .editPaste, .editSelectAll]
 
@@ -96,7 +96,8 @@ public enum ShortcutPolicy {
         return context.mainView == .explorer
     }
 
-    /// `canHandleExplorerKeyboardShortcuts`.
+    /// Whether the window's keys reach its commands: the files are showing (not Help or Settings), and no alert,
+    /// paste dialog or Go To box is open.
     public static func canHandleExplorerKeyboardShortcuts(_ context: ShortcutContext) -> Bool {
         context.mainView == .explorer && !context.actionNoticeOpen && !context.copyPasteModalOpen
             && !context.locationSheetOpen

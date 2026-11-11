@@ -58,7 +58,8 @@ public enum BottomStack {
         return max(edgeOffset, (windowHeight - top + gapAbove).rounded())
     }
 
-    /// `offsetAboveBarsAndCard`.
+    /// How far above the window's bottom the notifications sit: above the bars, and above the progress card when one
+    /// shows (`cardHeight`), `gapBetween` from it.
     public static func offsetAboveBarsAndCard(
         windowHeight: Double, barTops: [Double], cardHeight: Double?
     ) -> Double {
@@ -68,8 +69,7 @@ public enum BottomStack {
     }
 }
 
-/// How long an operation runs before its progress card shows, and the other delays before
-/// something shows (ui.md §9).
+/// How long an operation runs before its progress card shows: a quick one ends without a card flashing up.
 public enum ShowDelays {
     public static let progressCardMs = 500.0
 }

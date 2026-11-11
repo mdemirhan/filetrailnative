@@ -1,6 +1,6 @@
 import Foundation
 
-/// `WriteOperationAction`.
+/// Which file operation a write is: what its progress card and the notice when it ends call it.
 public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
     case paste
     case copyTo = "copy_to"
@@ -13,7 +13,7 @@ public enum WriteOperationAction: String, Sendable, CaseIterable, Equatable {
     case undo, redo
 }
 
-/// Where a running operation is (`WriteOperationCardState["stage"]`).
+/// Where a running operation is.
 public enum WriteOperationStage: String, Sendable, Equatable {
     case starting, queued, running, analyzing
     case awaitingResolution = "awaiting_resolution"

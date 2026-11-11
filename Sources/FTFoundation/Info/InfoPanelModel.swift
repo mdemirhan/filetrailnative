@@ -145,7 +145,9 @@ public enum InfoPanelModel {
         return index == 0 ? "/" : String(trimmed.prefix(index))
     }
 
-    /// The rows and the subtitle of one item, in the order of.
+    /// The rows and the subtitle of one item. The rows, top to bottom: Kind; Opens with (a file); Capacity, Available
+    /// and Used for a disk, or else Contains (a folder) and Size; then Created, Modified, Permissions and Where. The
+    /// subtitle is the kind, and the size when it is known.
     public static func itemContent(
         item: InfoItem, pending isPending: Bool, volume: InfoVolume?, isVolumeRoot: Bool, hasFolderSize: Bool,
         folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared,
@@ -249,7 +251,7 @@ public enum InfoPanelModel {
         public var disabled = false
     }
 
-    /// /056: which quick actions an item gets.
+    /// Which quick actions an item gets, in the order the panel shows them.
     public static func quickActions(
         item: InfoItem, textEditorName: String, isFavorite: Bool, canFavorite: Bool, copied: QuickAction.ID?,
         shortcut: (ShortcutCommandID) -> String?

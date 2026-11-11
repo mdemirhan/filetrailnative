@@ -32,7 +32,7 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
 /// The toolbar over the file list: its items, their order, and what can be done to that order.
 /// The table itself (`definitions`, `defaultTopItems`, `paletteOrder`) is in ToolbarItemTable.swift.
 public enum ToolbarItems {
-    /// TOOLBAR_ITEM_IDS.
+    /// Every item, in the table's order.
     public static let ids: [ToolbarItemID] = definitions.map(\.id)
 
     private static let definitionByID: [ToolbarItemID: ToolbarItemDefinition] = Dictionary(

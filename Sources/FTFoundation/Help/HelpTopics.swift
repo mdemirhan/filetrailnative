@@ -1,4 +1,4 @@
-// The Help window's topics; generated once, now edited by hand.
+// The Help window's topics, in the order its sidebar lists them.
 
 extension HelpContent {
     public static let topics: [HelpTopic] = [

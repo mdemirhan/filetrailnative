@@ -217,7 +217,7 @@ public enum Places {
 
     /// Where a place is, as its row says it beside the name: the folder it is in, since the name
     /// already says the rest ("~/Projects" for Lighthouse). A place named otherwise than its folder
-    /// (Home, Macintosh HD) shows its own path.
+    /// (Home, the startup disk) shows its own path.
     public static func describeLocation(name: String, displayPath: String) -> String {
         let units = Array(displayPath.utf16)
         guard let lastSlash = units.lastIndex(of: 0x2F),

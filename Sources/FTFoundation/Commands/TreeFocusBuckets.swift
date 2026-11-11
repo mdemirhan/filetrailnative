@@ -1,4 +1,4 @@
-// The tree-focus bucket tables. Generated once; now edited by hand.
+// What each command and key does while the folder tree has the keyboard.
 
 /// What a command or key does while the folder tree has the keyboard.
 public enum TreeFocusShortcutBucket: String, Sendable, Hashable {
@@ -6,7 +6,7 @@ public enum TreeFocusShortcutBucket: String, Sendable, Hashable {
 }
 
 extension ShortcutPolicy {
-    /// RENDERER_COMMAND_TREE_FOCUS_BUCKETS.
+    /// What the command does while the folder tree has the keyboard.
     public static func treeFocusBucket(of command: RendererCommand) -> TreeFocusShortcutBucket {
         switch command {
         case .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .focusFileSearch, .openLocationSheet,

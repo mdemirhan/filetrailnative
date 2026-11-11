@@ -93,7 +93,7 @@ public enum DetailsColumns {
         return clamp((max(title, widest + valueExtraWidth)).rounded(.up) + layout.fitSlack)
     }
 
-    /// `clampDetailColumnWidth` / `clampSearchColumnWidth`: a width rounded and kept within the column's limits.
+    /// A width rounded and kept within the column's limits, a folder's List or search results'.
     public static func clamp(_ width: Double, column: DetailColumn, search: Bool) -> Double {
         let limits = ColumnWidths.make(column, search: search)
         return min(max(width.rounded(), limits.min), limits.max)

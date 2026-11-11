@@ -260,7 +260,7 @@ public struct ControlHeights: Equatable, Sendable {
     }
 }
 
-/// A CSS `padding` of four lengths.
+/// Room inside an edge, on each of the four sides.
 public struct SidebarInsets: Equatable, Sendable {
     public let top: Double
     public let right: Double

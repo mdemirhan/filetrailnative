@@ -13,8 +13,8 @@ public enum InlineRenameRules {
         case submit
     }
 
-    /// `commit`: an unchanged or emptied name means there is nothing to rename; a name already refused is not sent
-    /// again until it has been edited (Return keeps the field open, leaving the field gives up).
+    /// What ending an edit does: an unchanged or emptied name means there is nothing to rename; a name already
+    /// refused is not sent again until it has been edited (Return keeps the field open, leaving the field gives up).
     public static func decide(draft: String, original: String, refused: String?, trigger: Trigger) -> Decision {
         if draft == original || JSText.trimmed(draft).isEmpty { return .cancel }
         if let refused, draft == refused { return trigger == .blur ? .cancel : .keepOpen }

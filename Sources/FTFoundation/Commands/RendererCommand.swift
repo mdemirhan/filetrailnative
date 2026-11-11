@@ -1,5 +1,3 @@
-// Generated once; now edited by hand.
-
 /// The commands the application menu, the toolbar and the keys send to the explorer window. The raw value is the
 /// command's name.
 public enum RendererCommand: String, CaseIterable, Sendable, Hashable, Codable {

@@ -128,7 +128,7 @@ public enum Paths {
         scalars(JSText.lowercased(path.decomposedStringWithCanonicalMapping))
     }
 
-    /// `.replace(/\/+$/u, "")`
+    /// Every slash at the end taken off; a path of slashes alone becomes "".
     private static func trimmingAllTrailingSlashes(_ text: Scalars) -> Scalars {
         var end = text.count
         while end > 0 && text[end - 1] == "/" {
@@ -137,8 +137,8 @@ public enum Paths {
         return Array(text[..<end])
     }
 
-    /// `.replace(/(.)\/+$/u, "$1")`: the leftmost match wins, and `.` matches no line terminator, so
-    /// a run of slashes after one keeps a slash, and a path of slashes alone becomes "/".
+    /// The slashes at the end taken off, except that one stays when a line terminator comes before them, and a
+    /// path of slashes alone becomes "/".
     private static func trimmingTrailingSlashesAfterCharacter(_ text: Scalars) -> Scalars {
         let trimmed = trimmingAllTrailingSlashes(text)
         guard trimmed.count < text.count else { return text }

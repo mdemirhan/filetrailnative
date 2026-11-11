@@ -1,4 +1,5 @@
-// Generated once; now edited by hand.
+// The table of keyboard shortcuts: the groups Settings and Help list commands under, and every command with its
+// default keys.
 
 public enum ShortcutGroup: String, CaseIterable, Sendable, Hashable {
     case navigation
@@ -8,7 +9,7 @@ public enum ShortcutGroup: String, CaseIterable, Sendable, Hashable {
     case view
     case standard
 
-    /// SHORTCUT_GROUP_LABELS.
+    /// The heading the group's commands are listed under in Settings and Help.
     public var label: String {
         switch self {
         case .navigation: "Navigation"

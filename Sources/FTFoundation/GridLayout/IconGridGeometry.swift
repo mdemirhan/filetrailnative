@@ -4,7 +4,7 @@ import Foundation
 public struct IconItemStyle: Equatable, Sendable {
     /// The item's padding at its sides.
     public var paddingInline: Double
-    /// An item is 2 px shorter than its row.
+    /// An item is 2 pt shorter than its row.
     public var heightInset: Double
     /// The tile's corners (the control radius).
     public var tileRadius: Double
@@ -20,7 +20,7 @@ public struct IconItemStyle: Equatable, Sendable {
     public var thumbnailShadowOffsetY: Double
     public var thumbnailShadowBlur: Double
     public var thumbnailShadowAlpha: Double
-    /// The clipboard mark's badge: a 1 px edge of the accent at 70%, a glyph 11 px square.
+    /// The clipboard mark's badge: a 1 pt edge of the accent at 70%, a glyph 11 pt square.
     public var badgeBorderWidth: Double
     public var badgeBorderAlpha: Double
     public var badgeGlyphSize: Double
@@ -82,7 +82,7 @@ extension IconGridLayout {
         return paddingTop + Double(rows) * rowHeight + paddingBottom
     }
 
-    /// Where the item at `index` sits: centred in its column, `cellMinWidth` wide and 2 px shorter than its row.
+    /// Where the item at `index` sits: centred in its column, `cellMinWidth` wide and 2 pt shorter than its row.
     public func itemFrame(index: Int, columns: Int, containerWidth: Double, style: IconItemStyle) -> GridRect {
         let columnCount = max(1, columns)
         let columnWidth = gridWidth(containerWidth: containerWidth) / Double(columnCount)

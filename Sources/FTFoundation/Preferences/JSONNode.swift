@@ -41,7 +41,7 @@ public indirect enum JSONNode: Sendable, Equatable, Codable {
         }
     }
 
-    /// `JSON.parse`.
+    /// Reads JSON text; throws when it isn't JSON.
     public static func parse(_ data: Data) throws -> JSONNode {
         try JSONDecoder().decode(JSONNode.self, from: data)
     }
@@ -63,27 +63,27 @@ public indirect enum JSONNode: Sendable, Equatable, Codable {
         if case .object(let members) = self { members } else { nil }
     }
 
-    /// `Array.isArray`.
+    /// An array.
     public var array: [JSONNode]? {
         if case .array(let items) = self { items } else { nil }
     }
 
-    /// `typeof value === "string"`.
+    /// A string.
     public var string: String? {
         if case .string(let text) = self { text } else { nil }
     }
 
-    /// `typeof value === "number"`.
+    /// A number.
     public var number: Double? {
         if case .number(let number) = self { number } else { nil }
     }
 
-    /// `typeof value === "boolean"`.
+    /// A boolean.
     public var bool: Bool? {
         if case .bool(let flag) = self { flag } else { nil }
     }
 
-    /// `Number.isInteger(value)` for a number.
+    /// A finite number with no fraction.
     public var integer: Double? {
         if case .number(let number) = self, number.isFinite, number == number.rounded(.towardZero) {
             number
@@ -105,7 +105,7 @@ func jsRound(_ value: Double) -> Double {
     return (value + 0.5).rounded(.down)
 }
 
-/// `value` held between `lower` and `upper`, then rounded as JavaScript's `Math.round` does.
+/// `value` held between `lower` and `upper`, then rounded half up (-2.5 gives -2).
 func clampRounded(_ value: Double, _ lower: Double, _ upper: Double) -> Int {
     Int(jsRound(max(lower, min(upper, value))))
 }

@@ -153,9 +153,8 @@ public enum BatchRename {
         return segments
     }
 
-    /// A replacement with what was matched put in, as JavaScript's String.replace does: $$ is a dollar sign, $& the
-    /// match, $` and $' what is before and after it, $1 to $99 the groups, $<name> a named group. Anything else is
-    /// kept as typed.
+    /// A replacement with what was matched put in: $$ is a dollar sign, $& the match, $` and $' what is before and
+    /// after it, $1 to $99 the groups, $<name> a named group. Anything else is kept as typed.
     static func expandReplacement(_ template: String, match: JSMatch, subject: String) -> String {
         let units = Array(template.utf16)
         let subjectUnits = Array(subject.utf16)
@@ -233,7 +232,7 @@ public enum BatchRename {
         }
     }
 
-    /// `toUpperCase()`: Unicode's full upper-case mappings ("ß" is "SS"), with no rule that depends on the language.
+    /// Unicode's full upper-case mappings ("ß" is "SS"), with no rule that depends on the language.
     private static func uppercased(_ text: String) -> String {
         var result = String.UnicodeScalarView()
         for scalar in text.unicodeScalars {
@@ -242,9 +241,8 @@ public enum BatchRename {
         return String(result)
     }
 
-    // `text.replace(/(^|[\s_\-.([{])(\p{Ll})/gu, …)`: a lower-case letter at the start or after white space,
-    // "_", "-", ".", "(", "[" or "{" is raised. The character before is part of the match, so it can't also be the
-    // letter of another.
+    // A lower-case letter at the start, or right after white space, "_", "-", ".", "(", "[" or "{", is raised;
+    // every other character is kept as it is.
     private static func titleCased(_ text: String) -> String {
         let scalars = Array(text.unicodeScalars)
         func isLower(_ scalar: Unicode.Scalar) -> Bool { scalar.properties.generalCategory == .lowercaseLetter }
@@ -412,7 +410,8 @@ public enum BatchRename {
         public var second = 0
     }
 
-    /// `/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/u`; a date it can't read is all zeros.
+    /// "2026-05-14T18:02:11" as its six numbers; anything after the seconds is ignored, and a date it can't read is
+    /// all zeros.
     public static func readLocalDateTime(_ date: LocalDateTime) -> LocalDateParts {
         let units = Array(date.utf16)
         // Positions of the digit groups: 4, 2, 2, 2, 2, 2 with "-", "-", "T", ":", ":" between.

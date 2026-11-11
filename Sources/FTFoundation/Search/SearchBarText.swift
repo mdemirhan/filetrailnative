@@ -13,7 +13,7 @@ public enum SearchTiming {
     /// Stop and its spinner come only for a search that runs on this long.
     public static let stopDelay: TimeInterval = 0.4
 
-    /// `text.trim()`: what a query is searched as.
+    /// What a query is searched as: the text without white space at either end.
     public static func trimmed(_ text: String) -> String {
         JSString.trimmed(text)
     }

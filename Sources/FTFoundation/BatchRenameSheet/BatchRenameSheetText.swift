@@ -1,4 +1,5 @@
-// PREVIEW_ROW_LIMIT, EXAMPLE_DATE, MODES, DATE_TOKEN_NAMES, the pop-ups' choices, describeRow and Summary
+// The Rename sheet's fixed text: the preview's row limit, the example date, the modes, the date tokens, the
+// pop-ups' choices, the note under each row and the footer's line.
 import Foundation
 
 /// What the Rename sheet for several items says: its title, its choices, each row's note and the footer's summary.
@@ -133,7 +134,7 @@ public enum BatchRenameSheetText {
         public var tone: NoteTone
     }
 
-    /// `describeRow`: what is said under an item's new name, if anything.
+    /// What is said under an item's new name, if anything.
     public static func describeRow(_ item: BatchRenamePlanItem) -> RowNote? {
         switch item {
         case .unchanged:
@@ -210,7 +211,7 @@ public enum BatchRenameSheetText {
         public var danger: Bool
     }
 
-    /// `Summary`: the footer's line, in its order of precedence.
+    /// The footer's line: the first that applies, in order of precedence.
     public static func summary(plan: BatchRenamePlan, checking: Bool, checkError: String?) -> Summary {
         if let checkError, !checkError.isEmpty {
             return Summary(text: checkError, danger: true)

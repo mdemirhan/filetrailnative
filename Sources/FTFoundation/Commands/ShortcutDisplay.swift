@@ -50,7 +50,7 @@ public struct ShortcutDisplay: Sendable {
         self.returnKeyAction = returnKeyAction
     }
 
-    /// DEFAULT_SHORTCUT_DISPLAY.
+    /// Every command's default keys, as the menus, tooltips and Help show them.
     public static let defaults = ShortcutDisplay(shortcuts: ShortcutCommands.defaultResolved)
 
     /// Return renames while Settings → Files says so; it then comes before the keys Rename was given.
@@ -66,7 +66,7 @@ public struct ShortcutDisplay: Sendable {
 
     /// The same key as symbols ("⌘D"), or nil.
     public func label(_ id: ShortcutCommandID) -> String? {
-        // `shortcut ? formatShortcut(shortcut) : null`: an empty text is no shortcut either.
+        // An empty text is no shortcut either.
         guard let shortcut = written(id), !shortcut.isEmpty else { return nil }
         return ShortcutLabels.format(shortcut)
     }

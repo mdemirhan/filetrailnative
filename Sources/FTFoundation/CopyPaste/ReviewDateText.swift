@@ -59,7 +59,7 @@ public final class ReviewDateText: @unchecked Sendable {
 
 /// The counts the copy and paste dialogs write.
 public enum ReviewCount {
-    /// "1,200", as `toLocaleString()` writes it.
+    /// "1,200": thousands grouped as in US English, whatever the app's language.
     public static func format(_ count: Int) -> String {
         ContextMenuRules.groupedCount(count)
     }

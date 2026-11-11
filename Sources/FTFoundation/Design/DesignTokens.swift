@@ -14,14 +14,14 @@ public struct CubicBezier: Equatable, Sendable {
     }
 }
 
-/// Motion durations in milliseconds (`--duration-*`) and the standard easing.
+/// Motion durations in milliseconds and the standard easing.
 public struct Motion: Equatable, Sendable {
     public var fast = 120.0
     public var base = 180.0
     public var slow = 220.0
     public var flash = 700.0
     public var spin = 700.0
-    /// `--ease-standard`: cubic-bezier(0.2, 0, 0, 1).
+    /// A cubic Bézier through (0.2, 0) and (0, 1): quick to start, slow to settle.
     public var easing = CubicBezier(x1: 0.2, y1: 0, x2: 0, y2: 1)
 
     public init() {}
@@ -35,9 +35,9 @@ public enum DesignTokens {
     public static let toolbar = ToolbarLayout.make()
     public static let motion = Motion()
 
-    /// A control that can't be used now is drawn at this opacity (`--disabled-opacity`).
+    /// A control that can't be used now is drawn at this opacity.
     public static let disabledOpacity = 0.4
-    /// Width of the keyboard focus ring (`--focus-ring`); its colour is the accent at 50%.
+    /// Width of the keyboard focus ring; its colour is the accent at 50%.
     public static let focusRingWidth = 3.0
     public static let scrollbarWidth = 8.0
     public static let paneHeaderHeight = 30.0

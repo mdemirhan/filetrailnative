@@ -1,4 +1,5 @@
-// Generated once; now edited by hand.
+// The toolbar's table: each item's icon, label, command and tooltip, the items a new window starts with, and the
+// order they are offered in while the toolbar is customized.
 
 /// The icon a toolbar item draws (`ToolbarIconName`).
 public enum ToolbarIconName: String, CaseIterable, Sendable, Hashable {
@@ -181,7 +182,7 @@ extension ToolbarItems {
             tooltipLabel: "File Trail Help"),
     ]
 
-    /// DEFAULT_TOP_TOOLBAR_ITEMS.
+    /// The toolbar's items before it is customized.
     public static let defaultTopItems: [ToolbarItemID] = [
         .folderTree,
         .topSeparator,
@@ -196,7 +197,7 @@ extension ToolbarItems {
         .infoPanel,
     ]
 
-    /// The order the items are offered in while the toolbar is customized (TOP_TOOLBAR_PALETTE_ORDER).
+    /// The order the items are offered in while the toolbar is customized.
     static let paletteOrder: [ToolbarItemID] = [
         .topSeparator,
         .back,

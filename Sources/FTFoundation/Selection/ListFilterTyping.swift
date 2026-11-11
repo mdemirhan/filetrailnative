@@ -52,8 +52,8 @@ public enum ListFilterKey: Equatable, Sendable {
     case erase
     case clear
 
-    /// The key as the file list reads it, or nil when it is none of the filter's: `key` is a DOM key name ("Backspace",
-    /// "Escape", " ", or the character typed). No ⌘, ⌃ or ⌥ may be held.
+    /// The key as the file list reads it, or nil when it is none of the filter's: `key` is the key's name
+    /// ("Backspace", "Escape") or the character it types (" " for Space). No ⌘, ⌃ or ⌥ may be held.
     public static func from(key: String, filter: ListFilterTyping, now: TimeInterval) -> ListFilterKey? {
         if filter.isActive {
             if key == "Backspace" { return .erase }

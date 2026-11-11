@@ -33,7 +33,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
         self.textEditing = textEditing
     }
 
-    /// INITIAL_APPLICATION_MENU_STATE: before the window has reported, everything is available and nothing checked.
+    /// Before the window has reported: everything is available and nothing checked.
     public static let initial = ApplicationMenuState()
 
     /// What the application menu is told about the window: every command that can not

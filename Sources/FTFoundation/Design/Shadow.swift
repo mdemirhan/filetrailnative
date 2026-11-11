@@ -5,7 +5,7 @@ public enum ThemeAppearance: String, CaseIterable, Sendable {
     case dark
 }
 
-/// One layer of a shadow, as `box-shadow` writes it: offset, blur, spread and colour.
+/// One layer of a shadow: its offset, blur, spread and colour, drawn outside the shape or, when `inset`, inside it.
 public struct ShadowLayer: Equatable, Sendable {
     public var inset: Bool
     public var x: Double

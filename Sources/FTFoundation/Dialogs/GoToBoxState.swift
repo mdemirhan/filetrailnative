@@ -76,7 +76,7 @@ public struct GoToBoxState: Equatable, Sendable {
 
     public var isPathMode: Bool { Places.isPathQuery(text) }
     public var trimmedText: String { JSString.trimmed(text) }
-    /// `trim()`, as the box trims what it submits.
+    /// The text without white space at either end, as the box submits it.
     public static func trim(_ text: String) -> String { JSString.trimmed(text) }
     public var hasQuery: Bool { !trimmedText.isEmpty }
     public var selectedRow: GoToRow? { rows.indices.contains(selectedIndex) ? rows[selectedIndex] : nil }

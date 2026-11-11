@@ -3,20 +3,20 @@ import Foundation
 /// Which folders the sidebar's tree holds, where it is rooted, and which hidden folders and packages stay on the way
 /// to the folder on screen.
 public enum TreePaths {
-    /// Two paths are the same when their code units are (`===` of strings): the NFC and NFD spellings of a name differ.
+    /// Two paths are the same when their code units are: the NFC and NFD spellings of a name differ.
     public static func same(_ first: String, _ second: String) -> Bool {
         JSString.equals(first, second)
     }
 
     // MARK: Tree root
 
-    /// `isPathWithinRoot`.
+    /// Whether `path` is `rootPath` or inside it, by code units; everything is within "/".
     public static func isWithinRoot(_ path: String, _ rootPath: String) -> Bool {
         if JSString.equals(rootPath, "/") { return true }
         return JSString.equals(path, rootPath) || path.utf8.starts(with: (rootPath + "/").utf8)
     }
 
-    /// Whether the folder tree rooted at `rootPath` holds `path`. Rooted at Macintosh HD it
+    /// Whether the folder tree rooted at `rootPath` holds `path`. Rooted at the startup disk ("/") it
     /// holds the startup disk's own folders only: another disk, though mounted inside it at /Volumes, is shown from
     /// its own top.
     public static func isWithinTreeRoot(_ path: String, _ rootPath: String) -> Bool {
@@ -27,7 +27,7 @@ public enum TreePaths {
     }
 
     /// The top the tree takes for `path` when it is not rooted somewhere holding it:
-    /// Home for what is in Home, the disk for what is on another disk, otherwise Macintosh HD.
+    /// Home for what is in Home, the disk for what is on another disk, otherwise the startup disk.
     public static func resolveRootPath(for path: String, homePath: String) -> String {
         if !homePath.isEmpty, isWithinRoot(path, homePath) { return homePath }
         return VolumePaths.volumeRootPath(path)
@@ -35,7 +35,7 @@ public enum TreePaths {
 
     // MARK: Paths in the tree
 
-    /// `parentDirectoryPath`: nil above `/`.
+    /// The folder `path` is in; nil for "/".
     public static func parent(of path: String) -> String? {
         if JSString.equals(path, "/") { return nil }
         let parts = JSString.components(path, separator: 0x2F)

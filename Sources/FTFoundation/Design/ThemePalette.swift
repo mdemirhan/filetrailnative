@@ -1,171 +1,171 @@
-// Every theme colour the app draws with, edited by hand.
+// Every theme colour the app draws with, light and dark.
 
 /// Every theme-dependent colour and shadow, light and dark. Tokens that follow the
 /// accent colour live in `AccentPalette`.
 public struct ThemePalette: Equatable, Sendable {
-    /// `--bg-active-inactive`
+    /// A selected row's fill while its list doesn't have the keyboard (the file list, Help's and Settings' lists).
     public let bgActiveInactive: RGBA
 
-    /// `--bg-base`
+    /// The background of the content: Help, About, Acknowledgements, the rename field.
     public let bgBase: RGBA
 
-    /// `--bg-elevated`
+    /// Cards above the window and what sits on them: alerts, sheets, Go To, the list filter's pill.
     public let bgElevated: RGBA
 
-    /// `--bg-hover`
+    /// A row or button under the pointer.
     public let bgHover: RGBA
 
-    /// `--bg-input`
+    /// Code in Help, and the box of licence texts in Acknowledgements.
     public let bgInput: RGBA
 
-    /// `--bg-surface`
+    /// The Rename sheet's preview.
     public let bgSurface: RGBA
 
-    /// `--border`
+    /// Lines between panes, bars and columns, and the edges of boxes.
     public let border: RGBA
 
-    /// `--border-active`
+    /// The edge of a field: the rename field, the search fields, the Rename sheet's preview.
     public let borderActive: RGBA
 
-    /// `--border-light`
+    /// Faint lines: under headers, between a sheet's parts, in the Info panel.
     public let borderLight: RGBA
 
-    /// `--check-border`
+    /// The edge of a checkbox that is off.
     public let checkBorder: RGBA
 
-    /// `--check-off-bg`
+    /// The fill of a checkbox that is off.
     public let checkOffBg: RGBA
 
-    /// `--context-menu-bg`
+    /// The sign in a notification's icon, and the fill behind a refused name's message in the rename field.
     public let contextMenuBg: RGBA
 
-    /// `--context-menu-border`
+    /// A notification's edge.
     public let contextMenuBorder: RGBA
 
-    /// `--context-menu-destructive`
+    /// A context menu item that deletes (Delete Immediately).
     public let contextMenuDestructive: RGBA
 
-    /// `--context-menu-separator`
+    /// The clipboard menu's separators.
     public let contextMenuSeparator: RGBA
 
-    /// `--context-menu-shadow`
+    /// A notification's shadow.
     public let contextMenuShadow: [ShadowLayer]
 
-    /// `--context-menu-shortcut`
+    /// The clipboard menu's shortcuts.
     public let contextMenuShortcut: RGBA
 
-    /// `--context-menu-text`
+    /// The clipboard menu's text.
     public let contextMenuText: RGBA
 
-    /// `--danger`
+    /// Errors and destructive choices: a refused name, Replace, an item that failed.
     public let danger: RGBA
 
-    /// `--danger-text`
+    /// An error's text under a field or in a list.
     public let dangerText: RGBA
 
-    /// `--dropdown-bg`
+    /// The path bar's list of suggestions.
     public let dropdownBg: RGBA
 
-    /// `--elevation-dialog`
+    /// The edge and the drop shadows of alerts, sheets and Go To.
     public let elevationDialog: [ShadowLayer]
 
-    /// `--field-bg`
+    /// The fill of a text field.
     public let fieldBg: RGBA
 
-    /// `--field-edge`
+    /// The thin edge of a text field.
     public let fieldEdge: [ShadowLayer]
 
-    /// `--get-info-close-icon`
+    /// The Info panel's close button.
     public let getInfoCloseIcon: RGBA
 
-    /// `--get-info-close-icon-hover`
+    /// The Info panel's close button under the pointer.
     public let getInfoCloseIconHover: RGBA
 
-    /// `--get-info-meta-value`
+    /// A value in the Info panel's rows.
     public let getInfoMetaValue: RGBA
 
-    /// `--get-info-meta-value-muted`
+    /// A value the Info panel doesn't have (yet).
     public let getInfoMetaValueMuted: RGBA
 
-    /// `--icon-neutral`
+    /// An icon in Settings' choice of favorite icons, not selected.
     public let iconNeutral: RGBA
 
-    /// `--neutral-ink`
+    /// The ink of stripes and bars, drawn at a low alpha: the List's odd rows, the paste review's bars.
     public let neutralInk: RGBA
 
-    /// `--push-button-bezel`
+    /// The edge and shadow of a push button.
     public let pushButtonBezel: [ShadowLayer]
 
-    /// `--push-button-bg`
+    /// A push button's fill.
     public let pushButtonBg: RGBA
 
-    /// `--push-button-pressed`
+    /// How bright a pressed push button stays: black at one minus this is drawn over it.
     public let pushButtonPressed: Double
 
-    /// `--scrim`
+    /// The dimming over a window behind an alert or a sheet.
     public let scrim: RGBA
 
-    /// `--segmented-selected-text`
+    /// The selected segment's label.
     public let segmentedSelectedText: RGBA
 
-    /// `--settings-card-bg`
+    /// The fill of Settings' grouped boxes.
     public let settingsCardBg: RGBA
 
-    /// `--settings-card-border`
+    /// The edge of Settings' grouped boxes.
     public let settingsCardBorder: RGBA
 
-    /// `--settings-keycap`
+    /// A key's cap in Settings' Shortcuts.
     public let settingsKeycap: RGBA
 
-    /// `--settings-label-secondary`
+    /// Secondary text in Settings.
     public let settingsLabelSecondary: RGBA
 
-    /// `--settings-page-bg`
+    /// The background of Settings' pages.
     public let settingsPageBg: RGBA
 
-    /// `--settings-separator`
+    /// Lines between rows in Settings.
     public let settingsSeparator: RGBA
 
-    /// `--settings-sidebar-edge`
+    /// The line between Settings' sidebar and its page.
     public let settingsSidebarEdge: RGBA
 
-    /// `--settings-sidebar-selection`
+    /// The selected section in Settings' sidebar.
     public let settingsSidebarSelection: RGBA
 
-    /// `--shadow-lg`
+    /// The shadow of the path bar's list of suggestions.
     public let shadowLg: [ShadowLayer]
 
-    /// `--sidebar-bg`
+    /// The sidebar of Help and of Settings.
     public let sidebarBg: RGBA
 
-    /// `--text-dim`
+    /// The faintest text: the Info Row's separating dot, a folder size's refresh button.
     public let textDim: RGBA
 
-    /// `--text-placeholder`
+    /// Placeholder text in Go To's field.
     public let textPlaceholder: RGBA
 
-    /// `--text-primary`
+    /// Text, and icons drawn as text.
     public let textPrimary: RGBA
 
-    /// `--text-secondary`
+    /// Secondary text: labels, hints, icons that are not selected.
     public let textSecondary: RGBA
 
-    /// `--text-tertiary`
+    /// Text fainter than secondary: an empty or fixed shortcut, a hint in the Rename sheet's preview.
     public let textTertiary: RGBA
 
-    /// `--toolbar-bg`
+    /// Acknowledgements' bar.
     public let toolbarBg: RGBA
 
-    /// `--toolbar-toggle-icon-active`
+    /// A search option's toggle while it is on.
     public let toolbarToggleIconActive: RGBA
 
-    /// `--warning-glyph-fill`
+    /// The fill of the warning triangle in the paste review and the Rename sheet.
     public let warningGlyphFill: RGBA
 
-    /// `--warning-glyph-mark`
+    /// The warning triangle's exclamation mark.
     public let warningGlyphMark: RGBA
 
-    /// `--warning-glyph-stroke`
+    /// The warning triangle's edge.
     public let warningGlyphStroke: RGBA
 
     public static let light = ThemePalette(

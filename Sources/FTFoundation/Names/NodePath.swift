@@ -66,7 +66,7 @@ public enum NodePath {
         return scalarString(Array(name[startDot..<end]))
     }
 
-    /// `path.resolve(path)` for an absolute path: normalized, without a trailing slash.
+    /// An absolute path normalized ("." and ".." parts and doubled slashes taken out), without a trailing slash.
     public static func resolve(_ path: String) -> String {
         let normalized = normalize(path)
         var scalars = Array(normalized.unicodeScalars)

@@ -63,7 +63,7 @@ public enum Shortcuts {
         "Up", "Down", "Left", "Right", "Home", "End", "Tab", "Return", "Esc", "Backspace",
     ]
 
-    /// `/^F([1-9]|1[0-9]|20)$/`.
+    /// F1 to F20.
     static func isFunctionKey(_ text: String) -> Bool {
         let units = Array(text.utf16)
         guard units.count == 2 || units.count == 3, units[0] == 0x46 else { return false }
@@ -77,7 +77,8 @@ public enum Shortcuts {
         (unit >= 0x41 && unit <= 0x5A) || (unit >= 0x61 && unit <= 0x7A)
     }
 
-    /// `normalizeKeyName`.
+    /// The one name of a key: a letter in capitals, a digit or punctuation as typed, "+" as "Plus", F1 to F20,
+    /// "Esc" for Escape, "Return" for Enter, and the other named keys in their own spelling; nil for anything else.
     static func normalizeKeyName(_ value: String) -> String? {
         let units = Array(value.utf16)
         if units.count == 1 {
@@ -243,7 +244,8 @@ public enum Shortcuts {
         shortcuts.first(where: hasCommandOrControl)
     }
 
-    /// A shortcut in the menu accelerator form, "Command+Shift+G".
+    /// A shortcut written out for a menu item's key equivalent: "Command+Shift+G", with Option as "Alt"; nil for "?",
+    /// which a menu can't listen for.
     public static func menuAccelerator(_ shortcut: String) -> String? {
         guard let parsed = parse(shortcut), parsed.key != "?" else { return nil }
         var parts: [String] = []

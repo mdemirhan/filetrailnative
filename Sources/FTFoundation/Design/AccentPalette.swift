@@ -15,7 +15,7 @@ public struct AccentPalette: Equatable, Sendable {
     public let selectionBg: RGBA
     /// Text on `selectionBg`: always white.
     public let onSelection: RGBA
-    /// `--ft-accent-on-selection-soft`: selection text for secondary cells.
+    /// Secondary text on `selectionBg`: a selected row's other cells and placeholders.
     public let onSelectionSoft: RGBA
     public let pillText: RGBA
     public let border: RGBA
@@ -26,7 +26,7 @@ public struct AccentPalette: Equatable, Sendable {
     public let batchRenameMarkText: RGBA
     public let batchRenameMarkBg: RGBA
 
-    /// `--focus-ring`: 3 px, the accent at 50%.
+    /// The keyboard focus ring: 3 pt wide, the accent at 50%.
     public var focusRing: ShadowLayer {
         ShadowLayer(x: 0, y: 0, blur: 0, spread: 3, color: solid.withAlpha(0.5))
     }
@@ -126,7 +126,7 @@ public struct AccentPalette: Equatable, Sendable {
         return (background, .white)
     }
 
-    /// `color-mix(in srgb, color percent%, other)` for an opaque `other`, rounded to bytes.
+    /// `percent`% of `color` and the rest of `other`, channel by channel in sRGB, rounded to bytes; `other` is opaque.
     static func mix(_ color: RGBA, _ percent: Double, _ other: RGBA) -> RGBA {
         let w1 = percent / 100
         let w2 = (100 - percent) / 100

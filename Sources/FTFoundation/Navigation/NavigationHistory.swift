@@ -48,10 +48,10 @@ public struct NavigationHistory: Equatable, Sendable {
 
     public var current: String? { paths.indices.contains(index) ? paths[index] : nil }
 
-    /// `canGoBack`: `historyIndex > 0`.
+    /// There is a folder before the current one.
     public var canGoBack: Bool { index > 0 }
 
-    /// `canGoForward`: `historyIndex >= 0 && historyIndex < historyPaths.length - 1`.
+    /// There is a folder after the current one.
     public var canGoForward: Bool { index >= 0 && index < paths.count - 1 }
 
     /// The folder Back goes to; nil at the first entry.
@@ -83,7 +83,7 @@ public struct NavigationHistory: Equatable, Sendable {
         }
     }
 
-    /// `goBack`: the index moves at once, before the folder is read. Returns the folder to open.
+    /// Back: the position moves at once, before the folder is read. Returns the folder to open.
     @discardableResult
     public mutating func goBack() -> String? {
         guard let target = backTarget else { return nil }
@@ -91,7 +91,7 @@ public struct NavigationHistory: Equatable, Sendable {
         return target
     }
 
-    /// `goForward`.
+    /// Forward: the position moves at once, before the folder is read. Returns the folder to open.
     @discardableResult
     public mutating func goForward() -> String? {
         guard let target = forwardTarget else { return nil }
@@ -99,7 +99,7 @@ public struct NavigationHistory: Equatable, Sendable {
         return target
     }
 
-    /// `goToHistoryIndex`: a jump within the history from the Back and Forward hold menus; nothing is added.
+    /// A jump within the history from the Back and Forward hold menus; nothing is added.
     @discardableResult
     public mutating func jump(to target: Int) -> String? {
         guard paths.indices.contains(target), target != index else { return nil }

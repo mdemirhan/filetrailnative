@@ -40,7 +40,7 @@ public struct ResolvedShortcuts: Sendable, Equatable {
 /// Help and Settings all read it, so a shortcut changed in Settings changes everywhere at once. The table itself
 /// (`all`) is in ShortcutCommandTable.swift.
 public enum ShortcutCommands {
-    /// SHORTCUTS_PER_COMMAND.
+    /// How many keys a command can have.
     public static let perCommand = 2
 
     private static let definitionByID: [ShortcutCommandID: ShortcutCommandDefinition] = Dictionary(
@@ -54,7 +54,7 @@ public enum ShortcutCommands {
         shortcuts.compactMap(Shortcuts.normalize)
     }
 
-    /// DEFAULT_SHORTCUT_BINDINGS.
+    /// Each command's keys before any is changed in Settings.
     public static let defaultBindings: ShortcutBindings = Dictionary(
         uniqueKeysWithValues: all.map { ($0.id, normalizeAll($0.defaults)) })
 

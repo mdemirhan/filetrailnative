@@ -49,15 +49,14 @@ public enum OpenItems {
         return openPlan(items, limit: limit)
     }
 
-    /// `editPaths`.
+    /// The files open in the text editor, unless there are more than `limit`.
     public static func editPlan(_ paths: [String], limit: Int) -> Plan {
         guard !paths.isEmpty else { return .nothing }
         if paths.count > limit { return .tooMany(action: .edit, selected: paths.count, limit: limit) }
         return .edit(paths)
     }
 
-    /// `openPaths`: only a single selected item goes through the logic of what it is; several are each handed to the
-    /// system, folders included.
+    /// Only a single selected item is opened by what it is; several are each handed to the system, folders included.
     public static func openPlan(_ items: [CommandEntry], limit: Int) -> Plan {
         guard !items.isEmpty else { return .nothing }
         if items.count > limit { return .tooMany(action: .open, selected: items.count, limit: limit) }
@@ -65,7 +64,7 @@ public enum OpenItems {
         return .steps(items.map { .openExternally($0.path) })
     }
 
-    /// `openEntry`.
+    /// What opening one item does: a folder opens in place, a link is followed first, anything else the system opens.
     public static func step(for item: CommandEntry) -> Step {
         switch item.kind {
         case .directory: .navigate(item.path)

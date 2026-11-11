@@ -70,7 +70,7 @@ public struct BatchRenamePresetMenu: Equatable, Sendable {
         return items
     }
 
-    /// `choosePreset`: the pull-down never stays on a command; what the item does.
+    /// What choosing an item of the pull-down does. The pull-down never stays on a command.
     public mutating func choose(_ item: Item) -> Choice {
         switch item {
         case .preset(let name):

@@ -1,6 +1,6 @@
 import Foundation
 
-/// The places the Go menu goes to, as Finder's does. Macintosh HD and the Trash are rows of the
+/// The places the Go menu goes to, as Finder's does. The startup disk and the Trash are rows of the
 /// sidebar's Locations and open as a click on the row does; the folders open as Go to Folder opens them.
 public struct GoMenuPlace: Equatable, Sendable {
     public var path: String

@@ -72,11 +72,11 @@ public enum CopyPasteNames {
         throw NoFreeName(sourceName: sourceName)
     }
 
-    /// `/^(.+?) copy(?: ([2-9]|[1-9]\d+))?$/u`: "x copy" continues as "x copy 2". The number is a double,
-    /// as `Number(…)` makes it.
+    /// `/^(.+?) copy(?: ([2-9]|[1-9]\d+))?$/u`: "x copy" continues as "x copy 2". The number is read as a double,
+    /// so a very long one is not exact.
     static func existingCopy(of name: String) -> (base: String, number: Double)? {
         let scalars = Array(name.unicodeScalars)
-        // `.` matches no line terminator.
+        // A name with a line terminator in it is never taken for a copy.
         func isLineTerminator(_ scalar: Unicode.Scalar) -> Bool {
             scalar == "\n" || scalar == "\r" || scalar == "\u{2028}" || scalar == "\u{2029}"
         }

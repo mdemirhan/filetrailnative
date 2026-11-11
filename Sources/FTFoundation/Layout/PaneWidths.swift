@@ -42,7 +42,7 @@ public struct PaneWidths: Equatable, Sendable {
             viewportWidth - layout.minContentWidth - resizers)
     }
 
-    /// `clampPaneWidth`: rounded half up, after clamping.
+    /// `value` kept between `lower` and `upper`, then rounded half up.
     static func clamp(_ value: Double, _ lower: Double, _ upper: Double) -> Double {
         (max(lower, min(upper, value)) + 0.5).rounded(.down)
     }

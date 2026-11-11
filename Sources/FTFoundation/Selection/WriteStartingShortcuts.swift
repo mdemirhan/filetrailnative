@@ -7,7 +7,7 @@ public enum WriteStartingShortcuts {
         "editPaste",
     ]
 
-    /// Whether the command (a shortcut id or renderer command name) starts a write.
+    /// Whether the command (a shortcut id, or the name of a `RendererCommand`) starts a write.
     public static func contains(_ command: String) -> Bool { names.contains(command) }
 
     /// Whether a key press runs the command: a key repeat does not run one that starts a write.

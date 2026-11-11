@@ -57,8 +57,8 @@ public enum BatchRenameTextRules {
         return result
     }
 
-    /// `insertToken`: a date token put in place of the pattern's selection (UTF-16 offsets, as the field gives them),
-    /// the caret after it.
+    /// A date token put in place of the pattern's selection (UTF-16 offsets, as the field gives them), the caret
+    /// after it.
     public static func insert(_ token: String, into pattern: String, selection: Range<Int>?) -> (
         text: String, caret: Int
     ) {

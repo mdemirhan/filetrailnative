@@ -15,7 +15,7 @@ public enum SettingsTab: String, CaseIterable, Sendable, Hashable {
         }
     }
 
-    /// The colours of the tile behind the section's icon, top to bottom (`.settings-sidebar-icon[data-tone]`).
+    /// The colours of the tile behind the section's icon in Settings' sidebar, top to bottom.
     public var tone: (top: RGBA, bottom: RGBA) {
         switch self {
         case .general: (RGBA(r: 0xa3, g: 0xa3, b: 0xa9), RGBA(r: 0x80, g: 0x80, b: 0x86))

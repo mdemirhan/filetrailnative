@@ -87,9 +87,9 @@ public enum TreeItemKind: String, Sendable, Hashable {
     case filesystem
 }
 
-/// A place in the sidebar's Locations, as in Finder's: the home folder (under the account's name), Macintosh HD, the
-/// other disks mounted, and the Trash. Like a favorite it is a place to go to, not a folder to expand. A disk Finder
-/// would eject has an Eject button after its name.
+/// A place in the sidebar's Locations, as in Finder's: the home folder (under the account's name), the startup disk,
+/// the other disks mounted, and the Trash. Like a favorite it is a place to go to, not a folder to expand. A disk
+/// Finder would eject has an Eject button after its name.
 public struct SidebarLocation: Equatable, Sendable {
     public var path: String
     public var label: String
@@ -119,7 +119,7 @@ public struct SidebarVolume: Equatable, Sendable {
     }
 }
 
-/// A folder of the tab's tree (`TreeNodeState`). A link to a folder is listed but never expands.
+/// A folder of the tab's tree. A link to a folder is listed but never expands.
 public struct TreeNodeState: Equatable, Sendable {
     public var path: String
     public var name: String

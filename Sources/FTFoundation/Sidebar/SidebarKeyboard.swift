@@ -8,7 +8,7 @@ public enum SidebarSubview: String, Sendable, Hashable {
 
 /// What the keyboard decisions look at.
 public struct SidebarKeyContext: Sendable {
-    /// `favoritesPlacement === "separate"`.
+    /// Favorites are a section of their own, apart from the folder tree (Settings' favorites placement).
     public var separate: Bool
     public var subview: SidebarSubview
     public var selected: TreeItemID?
@@ -152,7 +152,7 @@ public enum SidebarKeyboard {
         return .select(.filesystem(parent), subview: nil)
     }
 
-    /// `isVolumeRootPath`.
+    /// Whether `path` is the top of a disk: "/" or /Volumes/<name>.
     static func isVolumeRoot(_ path: String) -> Bool {
         JSString.equals(VolumePaths.volumeRootPath(path), path)
     }

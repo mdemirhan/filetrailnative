@@ -8,7 +8,7 @@ public struct SpringHold: Sendable {
     public enum Step: Equatable, Sendable {
         /// Nothing to show (a new hold, or none).
         case idle
-        /// The folder is about to open (`data-drop-target-state="springing"`).
+        /// The folder is about to open: its icon wiggles.
         case warning(String)
         /// Open the folder now.
         case open(String)

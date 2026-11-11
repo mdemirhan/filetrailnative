@@ -124,7 +124,7 @@ public struct BatchRenameSettings: Equatable, Sendable, Codable {
     public var applyTo: BatchRenameApplyTo
     public var onConflict: BatchRenameOnConflict
 
-    /// DEFAULT_BATCH_RENAME_SETTINGS: Finder's starting point, Replace Text, and "File 1" for Format.
+    /// What the sheet starts with: Finder's starting point, Replace Text, and "File 1" for Format.
     public static let defaults = BatchRenameSettings()
 
     public init(

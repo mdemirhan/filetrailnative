@@ -2,7 +2,8 @@ import Foundation
 
 /// String rules where Swift's differ: trimming, lowercasing, UTF-16 length.
 enum JSText {
-    /// `WhiteSpace` and `LineTerminator` of ECMAScript, which trimming removes.
+    /// White space, which trimming removes: tab to carriage return, the space and no-break space, the other Unicode
+    /// spaces, the line and paragraph separators, and the byte-order mark.
     static func isTrimmed(_ scalar: Unicode.Scalar) -> Bool {
         switch scalar.value {
         case 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x20, 0xA0, 0x2028, 0x2029, 0xFEFF:
@@ -32,7 +33,7 @@ enum JSText {
         return String(scalars)
     }
 
-    /// `toLowerCase()`: Unicode lowercasing with the final-sigma rule, which Swift's `lowercased()` leaves out.
+    /// Unicode lowercasing with the final-sigma rule, which Swift's `lowercased()` leaves out.
     /// Foundation's version cuts a string at a NUL, so each part between NULs is lowercased on its own
     /// (a NUL is neither cased nor ignorable, so the sigma rule can't reach across it).
     static func lowercased(_ text: String) -> String {
@@ -41,7 +42,7 @@ enum JSText {
         return parts.map { String(String.UnicodeScalarView($0)).lowercased(with: nil) }.joined(separator: "\0")
     }
 
-    /// Numbers as `String(number)` writes the whole ones: digits up to 1e21, then "1e+21".
+    /// A whole number as text: plain digits below 1e21, then the shortest digits with an exponent ("1e+21").
     static func integerText(_ value: Double) -> String {
         if abs(value) < 9_007_199_254_740_992 {
             return String(Int64(value))

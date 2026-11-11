@@ -1,6 +1,7 @@
 import Foundation
 
-/// What the About window shows and Copy Details copies (`app:getAboutInfo`).
+/// What the About window shows and Copy Details copies: the app's version and commit, the macOS version, the kind
+/// of processor and the version of the bundled `fd`.
 public struct AboutInfo: Equatable, Sendable {
     public var version: String
     /// The short git hash the build was made from; nil when the build doesn't know it.

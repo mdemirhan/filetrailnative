@@ -39,14 +39,14 @@ public struct JSRegExp: @unchecked Sendable {
     /// The name of each capture group, in order (nil for an unnamed one).
     let groupNames: [String?]
 
-    /// `new RegExp(source, "gu")` or `"giu"`.
+    /// The pattern as typed, matched everywhere in a name, ignoring case when asked.
     public init(source: String, ignoreCase: Bool) throws {
         var translator = try JSRegExpTranslator(source: source, ignoreCase: ignoreCase)
         let pattern = try translator.translate()
         try self.init(icuPattern: pattern, groupNames: translator.groupNames, ignoreCase: ignoreCase)
     }
 
-    /// The pattern `escapeRegExp(text)` writes: `text` itself, as typed.
+    /// A pattern that matches `text` itself, as typed: none of its characters has a meaning of its own.
     public init(literal text: String, ignoreCase: Bool) throws {
         let pattern = text.unicodeScalars.map { JSRegExpTranslator.literal($0, ignoreCase: ignoreCase) }.joined()
         try self.init(icuPattern: pattern, groupNames: [], ignoreCase: ignoreCase)
@@ -67,7 +67,7 @@ public struct JSRegExp: @unchecked Sendable {
         self.groupNames = groupNames
     }
 
-    /// `[...text.matchAll(regex)]`.
+    /// Every match in `text`, from the left, none overlapping.
     func matches(in text: String) -> [JSMatch] {
         let string = text as NSString
         let found = regex.matches(in: text, options: [], range: NSRange(location: 0, length: string.length))

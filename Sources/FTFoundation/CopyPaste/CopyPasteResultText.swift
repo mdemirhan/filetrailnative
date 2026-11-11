@@ -10,7 +10,7 @@ public struct ResultItem: Equatable, Sendable {
     public var destinationPath: String?
     public var status: Status
     public var error: String?
-    /// "runtime_conflict_resolution" for an item skipped after it changed during the operation.
+    /// Skipped by an answer given while the operation ran, after the item changed (not by the review's plan).
     public var skippedAfterChange: Bool
     public var childFailureCount: Int?
     public var note: Bool
