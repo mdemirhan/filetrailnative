@@ -34,7 +34,7 @@ public typealias SearchSpawn =
     ) -> SearchProcess
 
 /// Searches run as `fd` processes, one per job, whose NUL-separated output is parsed as it arrives. The UI asks for
-/// the results found since its last look (`getUpdate`), or takes them as a stream (`results`).
+/// the results found since its last look (`getUpdate`).
 public final class FdSearchRuntime: @unchecked Sendable {
     private static let maxFinishedJobRecords = 64
 
@@ -75,6 +75,59 @@ public final class FdSearchRuntime: @unchecked Sendable {
         var stdoutBuffer = Data()
         var stderr = Data()
         var done = false
+
+        /// `records` with what reading them needs. The filter is lent with the folders it knows, so the reader adds to
+        /// them without copying them, and gives it back with the results.
+        mutating func lend(_ records: Data) -> Reading {
+            let reading = Reading(
+                records: records, rootPath: rootPath, includeHidden: includeHidden, filter: filter,
+                room: SearchLimits.resultLimit - items.count)
+            filter.folders = [:]
+            return reading
+        }
+
+        /// Adds results read outside the lock; the process to stop when that makes the `SearchLimits.resultLimit`th.
+        mutating func add(_ found: [SearchResultItem], from reading: Reading) -> SearchProcess? {
+            filter = reading.filter
+            for item in found {
+                items.append(item)
+                guard items.count >= SearchLimits.resultLimit else { continue }
+                truncated = true
+                status = .truncated
+                done = true
+                stdoutBuffer = Data()
+                return process
+            }
+            return nil
+        }
+    }
+
+    /// A job's records, taken out of it with what turning them into results needs, so the disk is looked at outside the
+    /// lock.
+    private struct Reading {
+        /// NUL-separated paths, as fd writes them.
+        var records: Data
+        var rootPath: String
+        var includeHidden: Bool
+        var filter: HiddenFilter
+        /// How many more results the job takes before it reaches `SearchLimits.resultLimit`.
+        var room: Int
+
+        /// The results among the records, at most `room` of them. Without hidden files, what has the flag that hides an
+        /// item, or is in a folder that has it, is left out; with them, what has the flag is marked hidden.
+        mutating func results() -> [SearchResultItem] {
+            var found: [SearchResultItem] = []
+            for record in records.split(separator: 0) where found.count < room {
+                var item = SearchResults.item(rootPath: rootPath, outputPath: String(decoding: record, as: UTF8.self))
+                if includeHidden {
+                    item.isHidden = item.isHidden || filter.hasHiddenFlag(item.path)
+                } else if filter.isInHiddenFolder(item.path) || filter.hasHiddenFlag(item.path) {
+                    continue
+                }
+                found.append(item)
+            }
+            return found
+        }
     }
 
     /// A finished job's terminal state, kept after its last results were handed out, so late or duplicate polls stay
@@ -211,29 +264,24 @@ public final class FdSearchRuntime: @unchecked Sendable {
         }
     }
 
+    /// The complete records in each chunk are taken out under the lock and only the unterminated tail is carried over.
+    /// They are turned into results on the reader's thread, which looks at the disk, and added under the lock again,
+    /// with the count checked as each is added, so the search stops at its limit exactly.
     private func handleStdout(_ jobId: String, _ chunk: Data) {
-        let toStop: SearchProcess? = lock.withLock {
-            guard var job = jobs[jobId], !job.done else { return nil }
-            // Complete records are parsed out of each chunk at once; only the unterminated tail is carried over.
-            let buffer = job.stdoutBuffer.isEmpty ? chunk : job.stdoutBuffer + chunk
-            var start = buffer.startIndex
-            var stop: SearchProcess?
-            while let separator = buffer[start...].firstIndex(of: 0) {
-                let entry = String(decoding: buffer[start..<separator], as: UTF8.self)
-                start = buffer.index(after: separator)
-                if !entry.isEmpty {
-                    stop = append(entry, to: &job)
-                    if job.truncated {
-                        job.stdoutBuffer = Data()
-                        jobs[jobId] = job
-                        return stop
-                    }
-                }
-            }
+        let taken: Reading? = lock.withLock {
+            guard let tail = jobs[jobId]?.stdoutBuffer, jobs[jobId]?.done == false else { return nil }
+            let buffer = tail.isEmpty ? chunk : tail + chunk
+            let end = buffer.lastIndex(of: 0).map { buffer.index(after: $0) } ?? buffer.startIndex
             // A copy of the tail, so the buffer does not pin the whole chunk.
-            job.stdoutBuffer = start < buffer.endIndex ? Data(buffer[start...]) : Data()
-            jobs[jobId] = job
-            return stop
+            jobs[jobId]?.stdoutBuffer = end < buffer.endIndex ? Data(buffer[end...]) : Data()
+            guard end > buffer.startIndex else { return nil }
+            return jobs[jobId]?.lend(buffer[..<end])
+        }
+        guard var reading = taken else { return }
+        let found = reading.results()
+        let toStop: SearchProcess? = lock.withLock {
+            guard jobs[jobId]?.done == false else { return nil }
+            return jobs[jobId]?.add(found, from: reading) ?? nil
         }
         toStop?.terminate()
     }
@@ -242,34 +290,20 @@ public final class FdSearchRuntime: @unchecked Sendable {
         lock.withLock { jobs[jobId]?.stderr.append(chunk) }
     }
 
-    /// Adds a result; the process to stop when that makes the `SearchLimits.resultLimit`th.
-    private func append(_ output: String, to job: inout Job) -> SearchProcess? {
-        var item = SearchResults.item(rootPath: job.rootPath, outputPath: output)
-        if job.includeHidden {
-            item.isHidden = item.isHidden || hasHiddenFlag(item.path)
-        } else if job.filter.isInHiddenFolder(item.path) || hasHiddenFlag(item.path) {
-            return nil
-        }
-        job.items.append(item)
-        guard job.items.count >= SearchLimits.resultLimit else { return nil }
-        job.truncated = true
-        job.status = .truncated
-        job.done = true
-        return job.process
-    }
-
     private func handleClose(_ jobId: String, code: Int32?, signal: Int32?) {
+        // What is left after the last NUL is a record all the same, read as the others are.
+        var trailing: Reading? = lock.withLock {
+            guard let tail = jobs[jobId]?.stdoutBuffer, !tail.isEmpty, jobs[jobId]?.done == false else { return nil }
+            jobs[jobId]?.stdoutBuffer = Data()
+            return jobs[jobId]?.lend(tail)
+        }
+        let found = trailing?.results() ?? []
         lock.withLock {
             guard var job = jobs[jobId] else { return }
             defer { jobs[jobId] = job }
-            if !job.stdoutBuffer.isEmpty && !job.done {
-                var trailing = String(decoding: job.stdoutBuffer, as: UTF8.self)
-                while trailing.hasSuffix("\0") { trailing.removeLast() }
-                if !trailing.isEmpty {
-                    // Over the limit here only ends the job, there is nothing left to stop.
-                    _ = append(trailing, to: &job)
-                }
-                job.stdoutBuffer = Data()
+            if let trailing, !job.done {
+                // Over the limit here only ends the job, there is nothing left to stop.
+                _ = job.add(found, from: trailing)
             }
             if job.status == .cancelled || job.status == .truncated {
                 job.done = true

@@ -59,6 +59,30 @@ private final class LookedAt: @unchecked Sendable {
     func add(_ path: String) { lock.withLock { asked.append(path) } }
 }
 
+/// Asks how a search is doing from another thread while the search looks at the disk, and keeps whether it was told.
+private final class AskedWhileLooking: @unchecked Sendable {
+    private let lock = NSLock()
+    private weak var runtime: FdSearchRuntime?
+    private var jobId = ""
+    private var answers: [Bool] = []
+    var answered: [Bool] { lock.withLock { answers } }
+
+    func watch(_ runtime: FdSearchRuntime, _ jobId: String) {
+        lock.withLock { (self.runtime, self.jobId) = (runtime, jobId) }
+    }
+
+    func ask() {
+        let (runtime, jobId) = lock.withLock { (self.runtime, self.jobId) }
+        let told = DispatchSemaphore(value: 0)
+        Thread.detachNewThread {
+            _ = try? runtime?.getUpdate(jobId: jobId, cursor: 0)
+            told.signal()
+        }
+        let answered = told.wait(timeout: .now() + 10) == .success
+        lock.withLock { answers.append(answered) }
+    }
+}
+
 @Suite struct FdSearchRuntimeTests {
     private func make() -> (FdSearchRuntime, MockSearchProcess) {
         let process = MockSearchProcess()
@@ -105,6 +129,24 @@ private final class LookedAt: @unchecked Sendable {
         let job = runtime.startSearch(search).jobId
         process.write("/usr/\0/usr/local/bin/tool\0/Users/demo/kept.txt\0/kept.txt\0")
         #expect(try paths(runtime, job).map(\.path) == ["/Users/demo/kept.txt", "/kept.txt"])
+    }
+
+    @Test func looksAtTheDiskWithoutHoldingUpTheQuestionsOfTheWindow() throws {
+        let process = MockSearchProcess()
+        let asked = AskedWhileLooking()
+        let runtime = FdSearchRuntime(
+            fdBinaryPath: "/tmp/fd", spawn: process.spawn,
+            hasHiddenFlag: { _ in
+                asked.ask()
+                return false
+            })
+        let job = runtime.startSearch(demo()).jobId
+        asked.watch(runtime, job)
+        // The second record has no NUL after it: it is read when fd ends.
+        process.write("/Users/demo/project/a.txt\0/Users/demo/project/b.txt")
+        process.close(code: 0)
+        #expect(asked.answered == [true, true])
+        #expect(try paths(runtime, job).map(\.name) == ["a.txt", "b.txt"])
     }
 
     @Test func whatIsDroppedDoesNotCountTowardsTheLimit() throws {
