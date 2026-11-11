@@ -64,7 +64,8 @@ import Testing
 
     @Test func everyNumberHasItsName() {
         for number in Self.numbers {
-            #expect(ErrnoName.name(of: number) == Self.names[number] ?? "UNKNOWN", "\(number)")
+            #expect(Errno.name(of: number) == Self.names[number], "\(number)")
+            #expect(Errno.nameOrUnknown(of: number) == Self.names[number] ?? "UNKNOWN", "\(number)")
         }
     }
 
@@ -73,9 +74,27 @@ import Testing
             let text = ExplorerError.system(code: number, path: "/x").description
             if let start = Self.listingTexts[number] {
                 #expect(text == "\(start), scandir '/x'")
+            } else if let name = Self.names[number] {
+                // Named by the same table as every other error, in the system's words.
+                let words = String(cString: strerror(number))
+                #expect(text == "\(name): \(words.prefix(1).lowercased())\(words.dropFirst()), scandir '/x'")
             } else {
                 #expect(text == "Unknown system error -\(number): Unknown system error -\(number), scandir '/x'")
             }
+        }
+    }
+
+    // A stale network volume and a full quota were "Unknown system error -70" and "-69".
+    @Test func aFolderOnAStaleNetworkVolumeOrPastItsQuotaSaysSo() {
+        #expect(
+            ExplorerError.system(code: ESTALE, path: "/x").description == "ESTALE: stale NFS file handle, scandir '/x'")
+        #expect(
+            ExplorerError.system(code: EDQUOT, path: "/x").description == "EDQUOT: disc quota exceeded, scandir '/x'")
+    }
+
+    @Test func aSearchThatCantStartNamesItsError() {
+        for number in Self.numbers {
+            #expect(FdProcess.errnoName(number) == Self.names[number] ?? "errno \(number)")
         }
     }
 
@@ -85,7 +104,7 @@ import Testing
             disk: "disk4")
         for number in Self.numbers where ![ETIMEDOUT, EPERM, EACCES].contains(number) {
             let notice = EjectPlanning.describeEjectFailure(
-                [volume], path: "/Volumes/USB", failedPath: nil, code: ErrnoName.name(of: number), reason: nil)
+                [volume], path: "/Volumes/USB", failedPath: nil, code: Errno.nameOrUnknown(of: number), reason: nil)
             #expect(notice.message == "An unexpected error occurred (\(Self.names[number] ?? "UNKNOWN")).")
         }
     }

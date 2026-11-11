@@ -48,8 +48,8 @@ public final class NativeFolderSize: FolderSizeNative {
     }
 
     nonisolated static func error(_ errnum: Int32, _ syscall: String, _ path: String) -> FolderSizeError {
-        let code = String(cString: ft_errno_code(errnum))
-        let description = String(cString: strerror(errnum))
+        let code = Errno.nameOrUnknown(of: errnum)
+        let description = Errno.description(of: errnum)
         return FolderSizeError(code: code, message: "\(code): \(description), \(syscall) '\(path)'")
     }
 }

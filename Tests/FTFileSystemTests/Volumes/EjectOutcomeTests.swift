@@ -61,7 +61,7 @@ private final class Calls: @unchecked Sendable {
         #expect(VolumeEjector.errno(ofStatus: Int32(0xc000 | EBUSY)) == EBUSY)
         #expect(VolumeEjector.errno(ofStatus: Int32(bitPattern: 0xf8da_0002)) == EBUSY)
         #expect(VolumeEjector.errno(ofStatus: Int32(bitPattern: 0xf8da_000b)) == EIO)
-        #expect(ErrnoName.name(of: ETIMEDOUT) == "ETIMEDOUT")
-        #expect(ErrnoName.name(of: 9999) == "UNKNOWN")
+        #expect(EjectError(errnum: ETIMEDOUT, path: "/Volumes/USB").code == "ETIMEDOUT")
+        #expect(EjectError(errnum: 9999, path: "/Volumes/USB").code == "UNKNOWN")
     }
 }

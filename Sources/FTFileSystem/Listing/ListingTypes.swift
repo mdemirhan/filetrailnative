@@ -143,9 +143,11 @@ public enum ExplorerError: Error, Equatable, CustomStringConvertible, Sendable {
 
     /// The start of the message, the code first: libuv's words, which are the system's in lower case but for a few.
     private static func nodeText(_ code: Int32) -> String {
-        guard let name = errnoNames[code] else { return "Unknown system error -\(code): Unknown system error -\(code)" }
+        guard let name = Errno.name(of: code) else {
+            return "Unknown system error -\(code): Unknown system error -\(code)"
+        }
         if let words = libuvWords[code] { return "\(name): \(words)" }
-        let reason = String(cString: strerror(code))
+        let reason = Errno.description(of: code)
         return "\(name): \(reason.prefix(1).lowercased())\(reason.dropFirst())"
     }
 
@@ -153,13 +155,5 @@ public enum ExplorerError: Error, Equatable, CustomStringConvertible, Sendable {
         EIO: "i/o error", ELOOP: "too many symbolic links encountered", EBUSY: "resource busy or locked",
         ENOMEM: "not enough memory", ENAMETOOLONG: "name too long", EMFILE: "too many open files",
         ETIMEDOUT: "connection timed out", ENOTSUP: "operation not supported on socket",
-    ]
-
-    private static let errnoNames: [Int32: String] = [
-        EPERM: "EPERM", ENOENT: "ENOENT", EIO: "EIO", ENXIO: "ENXIO", EBADF: "EBADF", ENOMEM: "ENOMEM",
-        EACCES: "EACCES", EFAULT: "EFAULT", EBUSY: "EBUSY", EEXIST: "EEXIST", EXDEV: "EXDEV", ENODEV: "ENODEV",
-        ENOTDIR: "ENOTDIR", EISDIR: "EISDIR", EINVAL: "EINVAL", ENFILE: "ENFILE", EMFILE: "EMFILE", ENOSPC: "ENOSPC",
-        EROFS: "EROFS", ELOOP: "ELOOP", ENAMETOOLONG: "ENAMETOOLONG", ENOTEMPTY: "ENOTEMPTY", ETIMEDOUT: "ETIMEDOUT",
-        EOVERFLOW: "EOVERFLOW", ENOTSUP: "ENOTSUP", ECANCELED: "ECANCELED",
     ]
 }

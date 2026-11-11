@@ -121,16 +121,9 @@ public final class FdProcess: SearchProcess, @unchecked Sendable {
         return .success(Started(pid: pid, stdout: outPipe[0], stderr: errPipe[0]))
     }
 
-    private static func errnoName(_ code: Int32) -> String {
-        switch code {
-        case ENOENT: "ENOENT"
-        case EACCES: "EACCES"
-        case ENOTDIR: "ENOTDIR"
-        case ENOEXEC: "ENOEXEC"
-        case EAGAIN: "EAGAIN"
-        case ENOMEM: "ENOMEM"
-        default: "errno \(code)"
-        }
+    /// How a failed start names its error: "ENOENT", "errno 107" for a number without a name.
+    static func errnoName(_ code: Int32) -> String {
+        Errno.name(of: code) ?? "errno \(code)"
     }
 
     public func terminate() {

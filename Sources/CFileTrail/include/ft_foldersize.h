@@ -75,7 +75,4 @@ typedef struct {
 /// One item as the walk counts it inside its folder. Returns 0, or the errno.
 int ft_item_size_of(const char *path, ft_item_size *out);
 
-/// The name of an errno ("ENOENT"), "UNKNOWN" for one not listed.
-const char *ft_errno_code(int errnum);
-
 #endif

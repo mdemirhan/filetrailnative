@@ -1,5 +1,6 @@
 // Helpers for the native tests: fillDisk, waitUntil, and files made byte by byte
 import Darwin
+import FTFileSystem
 import Foundation
 
 @testable import FTOperations
@@ -7,7 +8,7 @@ import Foundation
 enum NativeTestFiles {
     struct WriteFailure: Error {
         let errnum: Int32
-        var code: String { NativeErrno.name(of: errnum) }
+        var code: String { Errno.nameOrUnknown(of: errnum) }
     }
 
     /// Creates or truncates the file and writes `bytes`, also to a named fork

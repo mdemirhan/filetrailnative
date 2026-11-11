@@ -1,4 +1,5 @@
 import Darwin
+import FTFileSystem
 import Foundation
 
 extension NativeFS {
@@ -32,7 +33,7 @@ extension NativeFS {
             return NativeError.errno(errnum, syscall: "trash", path: path)
         }
         return NativeError(
-            message: message, code: errnum != 0 ? NativeErrno.name(of: errnum) : nil,
+            message: message, code: errnum != 0 ? Errno.nameOrUnknown(of: errnum) : nil,
             errnum: errnum != 0 ? errnum : nil, syscall: "trash", path: path, cocoaCode: cocoaCode)
     }
 
