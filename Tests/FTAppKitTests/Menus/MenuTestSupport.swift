@@ -113,3 +113,41 @@ func choose(_ item: NSMenuItem, _ router: MenuCommandRouter) {
     #expect(item.target === router)
     router.chooseMenuItem(item)
 }
+
+/// The windows a test keeps, front to back.
+@MainActor
+final class ExplorerWindowList: ExplorerWindowListing {
+    private(set) var all: [any ExplorerWindowHandle] = []
+
+    init() {}
+
+    var front: (any ExplorerWindowHandle)? { all.first }
+    var count: Int { all.count }
+
+    func add(_ handle: any ExplorerWindowHandle, inFront: Bool = true) {
+        remove(handle)
+        if inFront { all.insert(handle, at: 0) } else { all.append(handle) }
+    }
+
+    func remove(_ handle: any ExplorerWindowHandle) {
+        all.removeAll { $0 === handle }
+    }
+
+    func bringToFront(_ handle: any ExplorerWindowHandle) {
+        guard all.contains(where: { $0 === handle }) else { return }
+        add(handle)
+    }
+
+    func handle(for window: NSWindow) -> (any ExplorerWindowHandle)? {
+        var current: NSWindow? = window
+        while let candidate = current {
+            if let found = all.first(where: { $0.window === candidate }) { return found }
+            current = candidate.sheetParent
+        }
+        return nil
+    }
+
+    func handle(windowID: Int) -> (any ExplorerWindowHandle)? {
+        all.first { $0.windowID == windowID }
+    }
+}

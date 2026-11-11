@@ -57,15 +57,6 @@ import Testing
         #expect(nodes["/a"] == node)
     }
 
-    @Test func movesATabAlongTheRowWithoutDisturbingTheOrderOfTheOthers() {
-        func ids(_ list: [String]) -> String { list.joined() }
-        #expect(ids(ExplorerTabs.moveTab(tabs, "a", to: 2)) == "bca")
-        #expect(ids(ExplorerTabs.moveTab(tabs, "c", to: 0)) == "cab")
-        #expect(ids(ExplorerTabs.moveTab(tabs, "b", to: 1)) == "abc")
-        #expect(ids(ExplorerTabs.moveTab(tabs, "a", to: 9)) == "bca")
-        #expect(ids(ExplorerTabs.moveTab(tabs, "missing", to: 0)) == "abc")
-    }
-
     @Test func keepsAClosedTabsFolderAndViewNotItsHistoryOrWhatItHadOnScreen() {
         var view = TabViewState()
         view.contentSelection = .single("/Users/demo/work/a")

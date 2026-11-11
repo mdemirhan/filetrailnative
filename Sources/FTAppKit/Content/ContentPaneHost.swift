@@ -217,10 +217,6 @@ enum ContentViewRegistry {
         .list: { CompactListViewController() },
     ]
 
-    static func register(_ mode: ExplorerViewMode, _ factory: @escaping Factory) {
-        factories[mode] = factory
-    }
-
     /// A view for the mode; a mode with none registered shows the List.
     static func make(_ mode: ExplorerViewMode) -> any FolderPane {
         (factories[mode] ?? factories[.details]!)()

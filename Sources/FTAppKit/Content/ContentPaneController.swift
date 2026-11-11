@@ -662,7 +662,6 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
     // MARK: Selection
 
     var selectedEntries: [DirectoryEntry] { selection.paths.compactMap { rowsByPath[$0] } }
-    var selectedItems: [DirectoryEntry] { selectedEntries }
 
     func position(of path: String?) -> Int? {
         guard let path else { return nil }

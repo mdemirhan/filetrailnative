@@ -27,7 +27,7 @@ import Testing
         #expect(list.count == 2)
     }
 
-    @Test func findsAWindowByItsIDItsNumberAndItself() {
+    @Test func findsAWindowByItsIDAndItsNumber() {
         let list = ExplorerWindowOrder<Window>()
         let a = entry("a", 7)
         list.add(a)
@@ -36,8 +36,6 @@ import Testing
         #expect(list.byWindowID(7) === a)
         #expect(list.byWindowID(8) == nil)
         #expect(list.byWindowID(nil) == nil)
-        #expect(list.byWindow(a.window) === a)
-        #expect(list.byWindow(Window()) == nil)
     }
 }
 

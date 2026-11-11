@@ -25,28 +25,17 @@ struct ExplorerViewState: Equatable, Sendable {
     var foldersFirst: Bool
 }
 
-/// The search a tab shows: where it runs from, what it looks for, and whether it is still running. The toolbar's
-/// title ("Searching “X”") and the sidebar's search mode follow it.
-struct ExplorerSearchState: Equatable, Sendable {
-    var rootPath: String
-    var query: String
-    var isRunning: Bool
-    /// The results found and narrowed to the query, before the filter.
-    var resultCount: Int
-}
-
 /// What changed in a window, for the panes that show it.
 enum ExplorerWindowChange: Equatable, Sendable {
     case folder
     case history
     case selection
     case focusedPane
-    case treeRoot
     case view
     case panels
     case preferences
     case clipboard
-    /// A search started or ended (`searchRootPath`), or how it stands changed (`searchState`).
+    /// A search started or ended (`searchRootPath`), or how it stands changed.
     case search
     /// Something else the commands read changed (a file operation started or ended, the Trash).
     case commands
@@ -56,9 +45,7 @@ enum ExplorerWindowChange: Equatable, Sendable {
 @MainActor
 struct ExplorerServices {
     var directoryService: DirectoryService
-    var folderWatches: FolderWatches?
     var iconStore: FileIconStore?
-    var volumeWatcher: VolumeWatcher?
     /// What Copy and Cut put on the app's clipboard.
     var clipboard: SharedClipboard
     /// Preference changes, as every window sees them.
@@ -69,9 +56,8 @@ struct ExplorerServices {
         if let installed { return installed }
         let app = NSApp.delegate as? AppDelegate
         return ExplorerServices(
-            directoryService: app?.directoryService ?? fallbackDirectoryService, folderWatches: app?.folderWatches,
-            iconStore: nil, volumeWatcher: nil,
-            clipboard: app?.explorerWindowsIfStarted?.clipboard ?? fallbackClipboard,
+            directoryService: app?.directoryService ?? fallbackDirectoryService, iconStore: nil,
+            clipboard: app?.explorerWindows?.clipboard ?? fallbackClipboard,
             preferences: fallbackChannel(app))
     }
 
@@ -90,11 +76,11 @@ struct ExplorerServices {
         let channel = WindowPreferenceChannel(
             store: store,
             explorerWindowID: { senderID in
-                senderID.flatMap { app.explorerWindowsIfStarted?.tab(windowID: $0)?.group?.recordID }
+                senderID.flatMap { app.explorerWindows?.tab(windowID: $0)?.group?.recordID }
             },
             onPreferencesChanged: { preferences, change in
                 if change.patch["theme"] != nil { app.applyAppearance(preferences.theme) }
-                for tab in app.explorerWindowsIfStarted?.allTabs ?? [] { tab.preferencesChanged(change) }
+                for tab in app.explorerWindows?.allTabs ?? [] { tab.preferencesChanged(change) }
             })
         madeChannel = channel
         return channel
@@ -102,11 +88,6 @@ struct ExplorerServices {
 }
 
 extension AppDelegate {
-    /// The explorer windows, once the services have started.
-    var explorerWindowsIfStarted: ExplorerWindows? {
-        let windows: ExplorerWindows? = explorerWindows
-        return windows
-    }
 }
 
 /// A reference that doesn't keep its object.
@@ -184,8 +165,6 @@ protocol ExplorerWindowContext: AnyObject {
     /// While the tab shows search results, the folder the search runs from (`searchRootPath` in search mode);
     /// nil otherwise.
     var searchRootPath: String? { get }
-    /// The search on screen while the tab shows results; nil otherwise.
-    var searchState: ExplorerSearchState? { get }
 
     /// Tells `handler` of every change until the token goes.
     func observe(_ handler: @escaping @MainActor (ExplorerWindowChange) -> Void) -> ExplorerWindowObservation

@@ -207,7 +207,7 @@ final class TabDragDrop {
             clipboard.set(followed, follows: clipboard.contents.capturedAt, from: tab.windowID)
             tab.clipboardChanged()
         }
-        let tabs = (NSApp.delegate as? AppDelegate)?.explorerWindowsIfStarted?.allTabs ?? [tab]
+        let tabs = (NSApp.delegate as? AppDelegate)?.explorerWindows?.allTabs ?? [tab]
         for each in tabs {
             // Before a size order puts what left at the end: its place is kept for the arrow keys.
             each.content.keepOrderBeforeRemoval()

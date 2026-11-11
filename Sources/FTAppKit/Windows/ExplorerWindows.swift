@@ -235,11 +235,6 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
 
     // MARK: Running operations
 
-    /// The explorer window a tab is in: an operation belongs to the window that started it.
-    func explorerWindowID(ofTab windowID: Int) -> Int? {
-        tab(windowID: windowID)?.group?.windowID
-    }
-
     /// `successorOf`: the tab in front of the window a running operation goes to when its own window closes; nil for a
     /// window closed with Stop and Close, or with no other window open. The write coordinator asks it.
     func successor(ofExplorerWindow windowID: Int) -> MainWindowController? {

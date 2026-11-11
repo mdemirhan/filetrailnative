@@ -54,8 +54,6 @@ public struct TabViewState: Equatable, Sendable {
     public var sidebarSectionsScrollTop: Double = 0
     /// How the folders in its history were left, for Back and Forward.
     public var folderViewMemories: FolderViewMemories = [:]
-    /// The listing is of another folder than the tab's: the folder is read afresh when the tab is shown.
-    public var listingOutOfDate = false
 
     public init() {}
 }
@@ -244,15 +242,6 @@ public enum ExplorerTabs {
         guard tabs.count >= 2, let index = tabs.firstIndex(of: active) else { return nil }
         let step = direction == .next ? 1 : -1
         return tabs[(index + step + tabs.count) % tabs.count]
-    }
-
-    /// Moves a tab to `toIndex` in the row; the other tabs keep their order.
-    public static func moveTab<ID: Equatable>(_ tabs: [ID], _ tab: ID, to toIndex: Int) -> [ID] {
-        var next = tabs
-        guard let from = next.firstIndex(of: tab) else { return next }
-        let moved = next.remove(at: from)
-        next.insert(moved, at: max(0, min(toIndex, next.count)))
-        return next
     }
 
     // MARK: Snapshots

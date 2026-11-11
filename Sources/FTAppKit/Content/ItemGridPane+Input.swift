@@ -299,8 +299,6 @@ extension ItemGridPane {
         guard entries.indices.contains(index), let item = visibleItem(at: index) else { return }
         refreshLook(of: item, entry: entries[index])
     }
-
-    var isRenaming: Bool { renamingPath != nil }
 }
 
 // MARK: Keyboard layout

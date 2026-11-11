@@ -49,8 +49,7 @@ final class ExplorerHarness {
                 for tab in windows?.allTabs ?? [] { tab.preferencesChanged(change) }
             })
         services = ExplorerServices(
-            directoryService: DirectoryService(), folderWatches: nil, iconStore: nil, volumeWatcher: nil,
-            clipboard: windows.clipboard, preferences: channel)
+            directoryService: DirectoryService(), iconStore: nil, clipboard: windows.clipboard, preferences: channel)
     }
 
     /// For a test of the tree above the folder: windows opened after this start it at the disk, as the app's do.

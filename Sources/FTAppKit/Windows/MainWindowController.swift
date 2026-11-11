@@ -2390,13 +2390,6 @@ extension MainWindowController: ExplorerWindowContext {
 
     var services: ExplorerServices { servicesOverride ?? ExplorerServices.current }
 
-    var searchState: ExplorerSearchState? {
-        guard let session = searchStore?.session, session.isSearchMode else { return nil }
-        return ExplorerSearchState(
-            rootPath: session.rootPath, query: session.committedQuery, isRunning: session.isRunning,
-            resultCount: session.shownResults.count)
-    }
-
     func observe(_ handler: @escaping @MainActor (ExplorerWindowChange) -> Void) -> ExplorerWindowObservation {
         let token = ExplorerWindowObservation()
         observers.append((Weak(token), handler))

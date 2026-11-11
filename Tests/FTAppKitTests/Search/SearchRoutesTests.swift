@@ -482,8 +482,8 @@ extension ExplorerWindowlessTests {
             let shownAlpha = tab.shownFolderPath
             let reads = HeldReads(held: shownAlpha)
             tab.servicesOverride = ExplorerServices(
-                directoryService: DirectoryService(fileSystem: reads), folderWatches: nil,
-                iconStore: nil, volumeWatcher: nil, clipboard: harness.windows.clipboard, preferences: harness.channel)
+                directoryService: DirectoryService(fileSystem: reads), iconStore: nil,
+                clipboard: harness.windows.clipboard, preferences: harness.channel)
             tab.reload()
             #expect(await waitUntil { reads.reading > 0 })
             tab.go(to: URL(fileURLWithPath: beta))

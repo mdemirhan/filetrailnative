@@ -73,7 +73,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         self.context = context
         observation = context.observe { [weak self] change in
             switch change {
-            case .selection, .focusedPane, .treeRoot, .commands: self?.refreshStates()
+            case .selection, .focusedPane, .commands: self?.refreshStates()
             default: self?.reload()
             }
         }

@@ -39,7 +39,7 @@ public final class ExplorerWindowEntry<W: AnyObject> {
     }
 }
 
-/// `ExplorerWindowList`: the windows, front to back.
+/// The windows, front to back.
 @MainActor
 public final class ExplorerWindowOrder<W: AnyObject> {
     public enum Place: Sendable { case front, back }
@@ -76,10 +76,6 @@ public final class ExplorerWindowOrder<W: AnyObject> {
     public func byWindowID(_ windowID: Int?) -> ExplorerWindowEntry<W>? {
         guard let windowID else { return nil }
         return all.first { $0.windowID == windowID }
-    }
-
-    public func byWindow(_ window: W) -> ExplorerWindowEntry<W>? {
-        all.first { $0.window === window }
     }
 
     // Ids are compared by UTF-16 unit.

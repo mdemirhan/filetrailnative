@@ -126,8 +126,8 @@ extension ExplorerWindowlessTests {
             _ fileSystem: any ExplorerFileSystem, _ tab: MainWindowController, _ harness: ExplorerHarness
         ) {
             tab.servicesOverride = ExplorerServices(
-                directoryService: DirectoryService(fileSystem: fileSystem), folderWatches: nil,
-                iconStore: nil, volumeWatcher: nil, clipboard: harness.windows.clipboard, preferences: harness.channel)
+                directoryService: DirectoryService(fileSystem: fileSystem), iconStore: nil,
+                clipboard: harness.windows.clipboard, preferences: harness.channel)
         }
 
         // Refresh and a write's end, while another folder is being opened from the tree: neither takes the tree

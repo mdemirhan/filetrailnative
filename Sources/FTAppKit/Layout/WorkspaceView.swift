@@ -480,7 +480,7 @@ final class WorkspaceContentColumn: NSView {
     }
 }
 
-/// A cell of the workspace grid; its one view fills it, below `contentTop`.
+/// A cell of the workspace grid; its one view fills it.
 final class WorkspaceCell: NSView {
     var content: NSView? {
         didSet {
@@ -488,9 +488,6 @@ final class WorkspaceCell: NSView {
             if let content { addSubview(content) }
             needsLayout = true
         }
-    }
-    var contentTop = 0.0 {
-        didSet { needsLayout = true }
     }
     /// How far the content is moved to the right (the Info panel sliding).
     var contentOffset = 0.0 {
@@ -512,8 +509,7 @@ final class WorkspaceCell: NSView {
 
     override func layout() {
         super.layout()
-        content?.frame = NSRect(
-            x: contentOffset, y: contentTop, width: bounds.width, height: max(0, bounds.height - contentTop))
+        content?.frame = NSRect(x: contentOffset, y: 0, width: bounds.width, height: bounds.height)
     }
 }
 

@@ -262,15 +262,6 @@ final class DetailsHeaderView: NSView {
     /// The cell showing a column, as it is on screen.
     func cell(for column: DetailColumn) -> DetailsHeaderCell? { cells.first { $0.column == column } }
 
-    func configure(
-        fitted: DetailsColumnSet, sortBy: SortByPreference, sortDirection: SortDirectionPreference, search: Bool,
-        theme: Theme, layout: DetailsLayout
-    ) {
-        configure(
-            fitted: fitted, sortKey: sortBy.rawValue, sortDirection: sortDirection, search: search, theme: theme,
-            layout: layout)
-    }
-
     /// `sortKey` is the key the list is ordered by: a folder's (`SortByPreference`) or search results'
     /// (`SearchResultsSortByPreference`).
     func configure(
