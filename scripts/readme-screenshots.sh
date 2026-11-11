@@ -28,9 +28,14 @@ if [ -e "$project" ]; then
     exit 1
 fi
 
-scripts/build-app.sh debug --out "$folder"
 # The grant in Privacy & Security goes by the signature, so it lasts from one build to the next.
-identity="$(security find-identity -v -p codesigning | sed -n 's/.*"\(Developer ID Application:.*\)"/\1/p' | head -1)"
+identity="${MACOS_SIGN_IDENTITY:-$(security find-identity -v -p codesigning | sed -n 's/.*"\(Developer ID Application:.*\)"/\1/p' | head -1)}"
+if [ -z "$identity" ]; then
+    echo "No Developer ID Application identity in the keychain to sign the app with: set MACOS_SIGN_IDENTITY to the name or SHA-1 of a code signing identity there." >&2
+    exit 1
+fi
+
+scripts/build-app.sh debug --out "$folder"
 codesign --force --sign "$identity" "$app/Contents/Helpers/fd"
 codesign --force --sign "$identity" "$app"
 
