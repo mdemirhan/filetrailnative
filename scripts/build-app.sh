@@ -77,7 +77,16 @@ vtool -set-build-version macos "$minimum" "$(xcrun --show-sdk-version)" -replace
 # Resources/Acknowledgements/fd.txt.
 mkdir -p "$app/Contents/Helpers"
 cp Resources/fd/darwin-arm64/fd "$app/Contents/Helpers/fd"
-codesign --force --sign - --options runtime "$app/Contents/Helpers/fd" >/dev/null 2>&1
-codesign --force --sign - "$app" >/dev/null 2>&1
+# codesign says "replacing existing signature" each time: its output is shown only when it fails.
+sign() {
+    local output
+    if ! output="$(codesign --force --sign - "$@" 2>&1)"; then
+        echo "$output" >&2
+        echo "codesign failed on ${*: -1}" >&2
+        exit 1
+    fi
+}
+sign --options runtime "$app/Contents/Helpers/fd"
+sign "$app"
 
 echo "Built $app, version $version ($(du -sh "$app" | cut -f1)) in ${SECONDS}s"
