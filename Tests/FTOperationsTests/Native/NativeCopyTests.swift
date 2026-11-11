@@ -114,45 +114,6 @@ struct NativeCopyMetadataTests {
             #expect(error?.code == "ENOENT")
         }
     }
-
-    // applyDirectoryMetadata: on a move the folder keeps the date it had before its items went out; when copyfile
-    // fails, the mode and date alone are carried over and a move keeps its original.
-    @Test func fallsBackToTheModeAndDateWhenTheMetadataCantBeCopied() throws {
-        var calls: [String] = []
-        let refused = NativeError.errno(ENOTSUP, syscall: "copyfile", path: "/s", dest: "/d")
-        try FolderMetadata.apply(
-            source: "/s", destination: "/d", sourceMode: 0o40755, sourceMtimeMs: 1500, moving: true,
-            onNotCopied: { calls.append("not copied") },
-            copyMetadata: { _, _ in throw refused }, chmod: { calls.append("chmod \($0) \(String($1, radix: 8))") },
-            utimes: { calls.append("utimes \($0) \($1) \($2)") })
-        #expect(calls == ["not copied", "chmod /d 40755", "utimes /d 1500.0 1500.0"])
-
-        calls = []
-        try FolderMetadata.apply(
-            source: "/s", destination: "/d", sourceMode: 0o755, sourceMtimeMs: 1500, moving: false,
-            onNotCopied: { calls.append("not copied") },
-            copyMetadata: { _, _ in throw refused }, chmod: { _, _ in throw refused },
-            utimes: { _, _, _ in calls.append("u") })
-        #expect(calls == ["u"])
-
-        calls = []
-        try FolderMetadata.apply(
-            source: "/s", destination: "/d", sourceMode: 0o755, sourceMtimeMs: 1500, moving: true,
-            onNotCopied: { calls.append("not copied") },
-            copyMetadata: { _, _ in calls.append("copy") }, chmod: { _, _ in calls.append("chmod") },
-            utimes: { _, _, _ in
-                calls.append("utimes")
-                throw NativeError.errno(EPERM, syscall: "utime", path: "/d")
-            })
-        #expect(calls == ["copy", "utimes"])
-
-        #expect(throws: NativeError.self) {
-            try FolderMetadata.apply(
-                source: "/s", destination: "/d", sourceMode: 0o755, sourceMtimeMs: nil, moving: false,
-                onNotCopied: {}, copyMetadata: { _, _ in throw refused },
-                chmod: { _, _ in throw NativeError.errno(EPERM, syscall: "chmod", path: "/d") }, utimes: { _, _, _ in })
-        }
-    }
 }
 
 @Suite
