@@ -144,12 +144,6 @@ final class ContextMenuCoordinator: ContextMenuResponder {
         current = nil
     }
 
-    func contextMenu(openedSubmenu id: ContextMenuActionID) {
-        #if DEBUG
-            AutomationSubmenuMarker.show(in: tab.window)
-        #endif
-    }
-
     func contextMenu(setViewMode mode: ExplorerViewMode) {
         tab.setMode(mode)
     }

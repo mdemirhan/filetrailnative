@@ -1193,7 +1193,7 @@ Found by both audits, and settled by the standing decision that VoiceOver is not
 automation runner and `ElementFinder` do not find or press sidebar rows through these overrides; keep whatever
 they use.
 
-### [ ] 5.12. What exists only to compare this app with the earlier one (decision 1)
+### [x] 5.12. What exists only to compare this app with the earlier one (decision 1)
 
 All of `Sources/FTAppKit/Automation` is `#if DEBUG` and does not ship; these are the parts with no remaining use,
 and the pieces of release code kept alive for them.
@@ -2219,3 +2219,18 @@ anything that differed from the plan, and anything found on the way that is not 
   from `LaunchContext`; the kits' unused hooks went (each proved by marking it deprecated and building), and
   `LocalOperationsTestKit`'s closures, set once, are `let`. 5.14 (Q10 yes): `GoldenFile` holds only `cases`; 48 files
   lost their four metadata lines and nothing else (each checked byte for byte before the edit).
+- 2026-11-11. 5.12, done in four commits, the last two in a worktree of their own. Gone: the geometry dump and its
+  step and tests, `AppClock.isFrozen`, the `"electron"` halves of `elements.json` (each entry is its identifier and
+  `labelled`), the invisible tags only the dump read, `AutomationPrefs.originalKeys`, `AutomationReport.side`, the
+  second `theme`/`accent` registration (the one in `AutomationLayoutPrefs` stays), the Info keys but
+  `propertiesOpen`; the steps `pick`, `contextMenu`, `drag`, `dragFiles`, `sheetButton`, `newWindow`, `fs` (with
+  `AutomationFileOps.swift`) and `expect`, with `AutomationReport.Check`, `Scenario.now`,
+  `FILETRAIL_SCENARIO_ROOT` and the window opener only `newWindow` used. Under `#if DEBUG`: `fileDropURLs`,
+  `dropURLs` (so the `#else return false` branch is gone), `AppMenuPresenter.intercept` and its calls,
+  `onItemsChange`, `rowIdentifier`, `setSection`; `contextMenu(openedSubmenu:)` is deleted with
+  `AutomationSubmenuMarker.swift`. Kept, as something still reads them: `TextStyleSource` (`ElementFinder.ownText`
+  and the Info tests), `.reportedColor` (shipping `ThemedText.applyTheme` sets the text color from it, and
+  `DialogLookTests` checks the 50% color), `AutomationSearchPrefs` (a test sets `searchColumnWidths`), the segment
+  views and Info panel parts tests reach, `--snapshot` (see 5.10). Left alone, as unlisted: `ContentDragHooks`'s
+  `itemsToDrag`/`acceptDrop` and the content's `backgroundDrop`, release members only the debug seams use; and
+  `AutomationDrag`'s helpers, now used only by Automation tests. `swift build -c release` compiles.

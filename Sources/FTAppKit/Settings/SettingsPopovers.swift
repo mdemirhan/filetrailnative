@@ -57,7 +57,9 @@ final class SettingsPopovers {
 
     /// An event on its way to the window: true when the panel took it.
     func handle(_ event: NSEvent) -> Bool {
-        if let window = event.window ?? owner?.window, menus.intercept(event, in: window) { return true }
+        #if DEBUG
+            if let window = event.window ?? owner?.window, menus.intercept(event, in: window) { return true }
+        #endif
         guard let view else { return false }
         switch event.type {
         case .leftMouseDown, .rightMouseDown:

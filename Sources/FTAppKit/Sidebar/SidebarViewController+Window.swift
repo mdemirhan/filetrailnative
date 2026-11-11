@@ -175,16 +175,19 @@ extension SidebarViewController {
         model.selectItem(.location(path))
     }
 
-    /// Opens or closes Favorites or Locations (a capture scenario sets what a person clicks).
-    func setSection(favorites: Bool, open: Bool) {
-        model.setSections(
-            favorites: favorites ? open : model.favoritesExpanded, locations: favorites ? model.locationsExpanded : open
-        )
-        updatePreferences([
-            "favoritesExpanded": .bool(model.favoritesExpanded), "locationsExpanded": .bool(model.locationsExpanded),
-        ])
-        stateChanged()
-    }
+    #if DEBUG
+        /// Opens or closes Favorites or Locations (a capture scenario sets what a person clicks).
+        func setSection(favorites: Bool, open: Bool) {
+            model.setSections(
+                favorites: favorites ? open : model.favoritesExpanded,
+                locations: favorites ? model.locationsExpanded : open)
+            updatePreferences([
+                "favoritesExpanded": .bool(model.favoritesExpanded),
+                "locationsExpanded": .bool(model.locationsExpanded),
+            ])
+            stateChanged()
+        }
+    #endif
 
     var typeaheadQuery: String { model.typeaheadQuery }
 }

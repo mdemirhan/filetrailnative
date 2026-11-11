@@ -19,9 +19,11 @@ struct AppMenuItem {
     var tooltip: String?
     /// The app whose icon the row shows before its label (`AppIcon`).
     var appPath: String?
-    /// What automation calls this row, when it isn't the menu's name for its rows (a note in the folder menu).
-    var rowIdentifier: String?
     var action: () -> Void = {}
+    #if DEBUG
+        /// What automation calls this row, when it isn't the menu's name for its rows (a note in the folder menu).
+        var rowIdentifier: String?
+    #endif
 
     static var separator: AppMenuItem { AppMenuItem(kind: .separator) }
 
@@ -44,8 +46,10 @@ final class AppMenu: NSObject, NSMenuDelegate {
     var onChoose: (Int) -> Void = { _ in }
     /// The system closed the menu: a choice, Escape or a press elsewhere.
     var onSystemClose: () -> Void = {}
-    /// Tells automation's stand-in for the menu that the rows changed.
-    var onItemsChange: () -> Void = {}
+    #if DEBUG
+        /// Tells automation's stand-in for the menu that the rows changed.
+        var onItemsChange: () -> Void = {}
+    #endif
     /// The rows for Option up or down, for a menu that changes with it (Open With).
     private(set) var itemsForOption: ((Bool) -> [AppMenuItem])?
     private var optionHeld = false
@@ -77,7 +81,9 @@ final class AppMenu: NSObject, NSMenuDelegate {
         self.items = items
         nsMenu.removeAllItems()
         for (index, item) in items.enumerated() { nsMenu.addItem(makeItem(item, index: index)) }
-        onItemsChange()
+        #if DEBUG
+            onItemsChange()
+        #endif
         if isTracking { showMark() }
     }
 
@@ -379,10 +385,10 @@ final class AppMenuPresenter {
         done?()
     }
 
-    /// An event on its way to `window`: true when the open menu took it. The system's menu sees its own events, so only
-    /// its stand-in has any to take: Escape closes it, and a press elsewhere closes it and goes on.
-    func intercept(_ event: NSEvent, in window: NSWindow) -> Bool {
-        #if DEBUG
+    #if DEBUG
+        /// An event on its way to `window`: true when the open menu took it. The system's menu sees its own events, so
+        /// only its stand-in has any to take: Escape closes it, and a press elsewhere closes it and goes on.
+        func intercept(_ event: NSEvent, in window: NSWindow) -> Bool {
             guard let standIn, standIn.window === window else { return false }
             switch event.type {
             case .leftMouseDown, .rightMouseDown:
@@ -396,8 +402,6 @@ final class AppMenuPresenter {
             default:
                 return false
             }
-        #else
-            return false
-        #endif
-    }
+        }
+    #endif
 }

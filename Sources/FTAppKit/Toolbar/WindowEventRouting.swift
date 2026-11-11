@@ -37,7 +37,10 @@ enum WindowEventRouting {
 
     /// True when something took the event.
     static func intercept(_ event: NSEvent, in window: NSWindow) -> Bool {
-        if AppMenuPresenter.shared.intercept(event, in: window) { return true }
+        #if DEBUG
+            // A menu's stand-in, in a test or a scenario run, takes its events first.
+            if AppMenuPresenter.shared.intercept(event, in: window) { return true }
+        #endif
         for interceptor in interceptors[ObjectIdentifier(window)] ?? [] where interceptor.handle(event) {
             return true
         }

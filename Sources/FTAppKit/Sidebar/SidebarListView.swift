@@ -609,8 +609,10 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     /// Files dragged over a row.
     var fileDropOperation: ((SidebarListView, any NSDraggingInfo, NSPoint) -> NSDragOperation)?
     var fileDrop: ((SidebarListView, any NSDraggingInfo, NSPoint) -> Bool)?
-    /// Files handed to a row by the debug seam (`AutomationDropTarget`).
-    var fileDropURLs: ((SidebarListView, SidebarRowState, [URL], NSDragOperation) -> Bool)?
+    #if DEBUG
+        /// Files handed to a row by the debug seam (`AutomationDropTarget`).
+        var fileDropURLs: ((SidebarListView, SidebarRowState, [URL], NSDragOperation) -> Bool)?
+    #endif
 }
 
 extension SidebarListView: NSDraggingSource {

@@ -475,8 +475,10 @@ struct SidebarFileDrops {
     var over: (_ row: SidebarRowState?, _ info: any NSDraggingInfo) -> NSDragOperation
     /// Files dropped on a row.
     var drop: (_ row: SidebarRowState, _ info: any NSDraggingInfo) -> Bool
-    /// URLs dropped by the debug seam (`AutomationDropTarget`).
-    var dropURLs: (_ row: SidebarRowState, _ urls: [URL], _ allowed: NSDragOperation) -> Bool
+    #if DEBUG
+        /// URLs dropped by the debug seam (`AutomationDropTarget`).
+        var dropURLs: (_ row: SidebarRowState, _ urls: [URL], _ allowed: NSDragOperation) -> Bool = { _, _, _ in false }
+    #endif
 }
 
 /// The "Jump to" pill: the prefix typed in the sidebar.

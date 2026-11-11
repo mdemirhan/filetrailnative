@@ -77,7 +77,11 @@ final class PathFolderMenuController {
     /// Notes ("Loading…", "3 more folders above") and folders, the one on the path ticked.
     private func items() -> [AppMenuItem] {
         func note(_ text: String) -> AppMenuItem {
-            AppMenuItem(title: text, enabled: false, rowIdentifier: "pathBarMenu.note")
+            var note = AppMenuItem(title: text, enabled: false)
+            #if DEBUG
+                note.rowIdentifier = "pathBarMenu.note"
+            #endif
+            return note
         }
         guard let folders else { return [note("Loading…")] }
         if failed { return [note("Can’t Read This Folder")] }

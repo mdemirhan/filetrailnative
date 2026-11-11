@@ -25,14 +25,12 @@ extension MainWindowController {
         #endif
         sidebarController.fileDrops = SidebarFileDrops(
             over: { [weak drags] row, info in drags?.sidebarDragUpdated(info, row: row) ?? [] },
-            drop: { [weak drags] row, info in drags?.sidebarPerformDrop(info, row: row) ?? false },
-            dropURLs: { [weak drags] row, urls, allowed in
-                #if DEBUG
-                    return drags?.automationDrop(urls, row: row, allowed: allowed) ?? false
-                #else
-                    return false
-                #endif
-            })
+            drop: { [weak drags] row, info in drags?.sidebarPerformDrop(info, row: row) ?? false })
+        #if DEBUG
+            sidebarController.fileDrops?.dropURLs = { [weak drags] row, urls, allowed in
+                drags?.automationDrop(urls, row: row, allowed: allowed) ?? false
+            }
+        #endif
         sidebarController.installFileDrops()
         clipboardMarksChanged()
     }
@@ -51,9 +49,11 @@ extension SidebarViewController {
                 guard let drops = self?.fileDrops, let row = Self.rowState(list, at: point) else { return false }
                 return drops.drop(row, info)
             }
-            list.fileDropURLs = { [weak self] _, row, urls, allowed in
-                self?.fileDrops?.dropURLs(row, urls, allowed) ?? false
-            }
+            #if DEBUG
+                list.fileDropURLs = { [weak self] _, row, urls, allowed in
+                    self?.fileDrops?.dropURLs(row, urls, allowed) ?? false
+                }
+            #endif
         }
     }
 
