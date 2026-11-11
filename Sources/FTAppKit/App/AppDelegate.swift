@@ -342,11 +342,13 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
     /// its folder in a new tab. macOS sends it before the windows are open when it launches File Trail to open it: it
     /// waits for them.
     public func application(_ application: NSApplication, open urls: [URL]) {
-        let claimed = openFiles.open(urls.filter(\.isFileURL).map(\.path))
-        for request in claimed {
-            logger?.info(
-                "[filetrail] open file",
-                .context(["path": .string(request.path), "kind": .string(request.kind.rawValue)]))
+        let taken = openFiles.open(urls.filter(\.isFileURL).map(\.path))
+        Task { [weak self] in
+            for request in await taken.value {
+                self?.logger?.info(
+                    "[filetrail] open file",
+                    .context(["path": .string(request.path), "kind": .string(request.kind.rawValue)]))
+            }
         }
     }
 

@@ -81,16 +81,50 @@ private func attachOutput(_ mountPoints: String...) -> String {
 
 @MainActor @Suite struct OpenFileEntryPointTests {
     // The app's open-file handling: what `describe` says of each, queued until windows exist.
-    @Test func takesWhatItIsToldAndWaitsForTheWindows() {
+    @Test func takesWhatItIsToldAndWaitsForTheWindows() async {
         var opened: [String] = []
         let entry = OpenFileEntryPoint(
             describe: { $0 == "/a/gone" ? nil : OpenRequest(path: $0, kind: .diskImage) },
             open: { opened.append($0.path) })
-        #expect(entry.open(["/a/gone", "/a/Install.dmg"]) == [OpenRequest(path: "/a/Install.dmg", kind: .diskImage)])
+        #expect(
+            await entry.open(["/a/gone", "/a/Install.dmg"]).value == [
+                OpenRequest(path: "/a/Install.dmg", kind: .diskImage)
+            ])
         #expect(opened.isEmpty)
         entry.startupWindowsOpened()
         #expect(opened == ["/a/Install.dmg"])
-        entry.open(["/a/c.iso"])
+        _ = await entry.open(["/a/c.iso"]).value
         #expect(opened == ["/a/Install.dmg", "/a/c.iso"])
+    }
+
+    // An item on a disk slow to answer holds up neither the main thread nor the items given before it; the items given
+    // after it wait for it, so they open in the order given.
+    @Test func anItemSlowToLookAtHoldsUpOnlyTheItemsAfterIt() async {
+        let slowAnswers = DispatchSemaphore(value: 0)
+        let fastLooked = DispatchSemaphore(value: 0)
+        var opened: [String] = []
+        let entry = OpenFileEntryPoint(
+            describe: { path in
+                if path == "/slow/a.txt" { slowAnswers.wait() }
+                defer { if path == "/fast/b.txt" { fastLooked.signal() } }
+                return OpenRequest(path: path, kind: .reveal)
+            }, open: { opened.append($0.path) })
+        entry.startupWindowsOpened()
+        _ = await entry.open(["/before/c.txt"]).value
+        let slow = entry.open(["/slow/a.txt"])
+        let fast = entry.open(["/fast/b.txt"])
+        await withCheckedContinuation { looked in
+            DispatchQueue.global().async {
+                fastLooked.wait()
+                looked.resume()
+            }
+        }
+        for _ in 0..<10 { await Task.yield() }
+        #expect(opened == ["/before/c.txt"])
+
+        slowAnswers.signal()
+        #expect(await fast.value.map(\.path) == ["/fast/b.txt"])
+        #expect(await slow.value.map(\.path) == ["/slow/a.txt"])
+        #expect(opened == ["/before/c.txt", "/slow/a.txt", "/fast/b.txt"])
     }
 }

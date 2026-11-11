@@ -141,19 +141,19 @@ import Testing
     }
 
     // Items wait until the windows exist, and one that isn't there is left out
-    @Test func queuesItemsUntilTheWindowsExistAndLeavesOutOnesThatAreNotThere() {
+    @Test func queuesItemsUntilTheWindowsExistAndLeavesOutOnesThatAreNotThere() async {
         var opened: [String] = []
         let entry = OpenFileEntryPoint(
             describe: { path in
                 LaunchContext.describeOpenedPath(path) { $0 == "/tmp/gone" ? nil : $0 == "/Users/me/Documents" }
             }, open: { opened.append($0.path) })
 
-        let claimed = entry.open(["/tmp/a.dmg", "/Users/me/Documents", "/tmp/notes.txt", "/tmp/gone"])
+        let claimed = await entry.open(["/tmp/a.dmg", "/Users/me/Documents", "/tmp/notes.txt", "/tmp/gone"]).value
         #expect(claimed.map(\.kind) == [.diskImage, .folder, .reveal])
         #expect(opened.isEmpty)
         entry.startupWindowsOpened()
         #expect(opened == ["/tmp/a.dmg", "/Users/me/Documents", "/tmp/notes.txt"])
-        _ = entry.open(["/tmp/b.iso"])
+        _ = await entry.open(["/tmp/b.iso"]).value
         #expect(opened == ["/tmp/a.dmg", "/Users/me/Documents", "/tmp/notes.txt", "/tmp/b.iso"])
     }
 }
