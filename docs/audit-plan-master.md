@@ -1348,7 +1348,7 @@ for byte.
 - From 5.8 (the owner, 2026-11-11): `AppState`'s `legacyWindowID` and top-level `"window"` key, if the typed
   store leaves them unread. `prefs-sanitize.json` (161 cases) carries them; any change to it is by hand, case by case.
 
-### [ ] 6.6. The paste review is a call, not a job to poll
+### [x] 6.6. The paste review is a call, not a job to poll
 
 - Today: `WriteService.startCopyPasteAnalysis` stores the report under an id; the window polls
   `coordinator.analysisUpdate` every 120 ms (`Sources/FTAppKit/WriteOperations/WindowWriteActions.swift` 23,
@@ -2374,3 +2374,19 @@ anything that differed from the plan, and anything found on the way that is not 
   went with their subjects. 5.8's legacy keys stay: `AppStateReader` still reads them, and readme-screenshots.sh
   needs its preferences-only fallback. Found: `CommandRoutesTests.theMenuReadsTheWindowWhenAsked` fails when all
   FTAppKitTests run in one process (being looked into).
+- 2026-11-11. 6.6, done in a worktree of its own and brought over, with 5.8's analysis fields. `WriteService.analyze`
+  is a call the window waits on (a stop ends it at once, even while a read hangs); the coordinator keeps the rule (no
+  review while the write slot is held, one review at a time across windows, refused with the same message); the
+  window pastes from the report it holds. The analysis goldens pass unchanged: the test engine works out the dropped
+  `warnings`/`disposition`/`blockedCount` the way the recordings did. Differs from the plan: the report trim became
+  part of the review's own reading (`ReviewReportTests` pins it); a window closing or the app quitting mid-review now
+  cancels silently, where a refusal nobody could see was raised before; the dialog no longer shows up to 120 ms late
+  after a review ends. Tests the item doesn't name changed only through the new call or as their subject went
+  (`WriteCoordinatorQuitTests` lost its owner test; `LargeTreeAnalysisTests` checks `report != nil` for
+  `.complete`; `TrashOperationTests` compares the analysis id). Eight `CoordinatorWriteService` stubs, not nine.
+  Found, not fixed: `CopyPasteExecution.analysisId` repeats `report.analysisId`; a test comment names V8 (Phase 10).
+- 2026-11-11. Found, not fixed (outside Phase 6): `CommandRoutesTests.theMenuReadsTheWindowWhenAsked` fails when all
+  of FTAppKitTests run in one process (`swift test --filter FTAppKitTests`): with the Go To sheet open, Move to Trash
+  and New Tab still read as enabled. It fails the same way before Phase 6 (at e70b5a8) and passes alone and in
+  `scripts/ci.sh`, so something an earlier test leaves behind decides the window the menu reads
+  (`ApplicationMenuSync.readWindowState` falls back to `windows.front`).

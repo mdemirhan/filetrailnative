@@ -502,7 +502,6 @@ private func keepPlannedDestinations(
             context.fileSystem, source: (fresh.sourcePath, fresh.sourceKind),
             destination: (fresh.destinationPath, planned.destinationKind))
         : nil
-    node.disposition = planned.destinationFingerprint.exists ? .conflict : .new
     return node
 }
 

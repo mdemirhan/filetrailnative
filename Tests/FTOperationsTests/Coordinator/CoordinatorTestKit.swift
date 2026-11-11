@@ -193,10 +193,10 @@ enum Coordinators {
     static func report(_ analysisId: String, _ request: CopyPasteAnalysisRequest) -> CopyPasteAnalysisReport {
         CopyPasteAnalysisReport(
             analysisId: analysisId, mode: request.mode, sourcePaths: request.sourcePaths,
-            destinationDirectoryPath: request.destinationDirectoryPath, nodes: [], issues: [], warnings: [],
+            destinationDirectoryPath: request.destinationDirectoryPath, nodes: [], issues: [],
             summary: CopyPasteAnalysisSummary(
                 topLevelItemCount: 0, totalNodeCount: 0, totalBytes: 0, fileConflictCount: 0,
-                directoryConflictCount: 0, mismatchConflictCount: 0, blockedCount: 0))
+                directoryConflictCount: 0, mismatchConflictCount: 0))
     }
 
     static func fingerprint() -> NodeFingerprint {

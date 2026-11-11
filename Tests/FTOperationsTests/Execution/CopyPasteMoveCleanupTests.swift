@@ -27,8 +27,7 @@ struct CopyPasteMoveCleanupTests {
         try buildCopyPasteAnalysisReport(
             analysisId: "analysis-1",
             request: CopyPasteAnalysisRequest(mode: .cut, sourcePaths: sources, destinationDirectoryPath: "/target"),
-            fileSystem: fileSystem,
-            thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1000))
+            fileSystem: fileSystem)
     }
 
     private func move(

@@ -12,8 +12,8 @@ private func node(_ name: String, conflict: Bool, blocked: String? = nil) -> Cop
     let exists = NodeFingerprint(exists: true, kind: .file, size: 1)
     return CopyPasteAnalysisNode(
         id: name, sourcePath: "/src/\(name)", destinationPath: "/dest/\(name)", sourceKind: .file,
-        destinationKind: conflict ? .file : .missing, disposition: conflict ? .conflict : .new,
-        conflictClass: conflict ? .fileConflict : nil, sourceFingerprint: exists,
+        destinationKind: conflict ? .file : .missing, conflictClass: conflict ? .fileConflict : nil,
+        sourceFingerprint: exists,
         destinationFingerprint: conflict ? exists : NodeFingerprint(exists: false, kind: .missing),
         children: [], totalNodeCount: 1, conflictNodeCount: conflict ? 1 : 0,
         keepBothDestinationPath: conflict ? "/dest/\(name) copy" : nil, replaceBlockedReason: blocked)
@@ -22,11 +22,11 @@ private func node(_ name: String, conflict: Bool, blocked: String? = nil) -> Cop
 private func report(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport {
     CopyPasteAnalysisReport(
         analysisId: "analysis-1", mode: .copy, sourcePaths: nodes.map(\.sourcePath),
-        destinationDirectoryPath: "/dest", nodes: nodes, issues: [], warnings: [],
+        destinationDirectoryPath: "/dest", nodes: nodes, issues: [],
         summary: CopyPasteAnalysisSummary(
             topLevelItemCount: nodes.count, totalNodeCount: nodes.count, totalBytes: Int64(nodes.count),
             fileConflictCount: nodes.filter { $0.conflictClass != nil }.count, directoryConflictCount: 0,
-            mismatchConflictCount: 0, blockedCount: 0))
+            mismatchConflictCount: 0))
 }
 
 /// The review's limit on the rows it draws, on its model: drawing hundreds of real rows takes a second.
@@ -79,8 +79,8 @@ private func report(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport
         let there = conflictClass != nil
         return CopyPasteAnalysisNode(
             id: path, sourcePath: "/src/\(path)", destinationPath: "/dest/\(path)", sourceKind: kind,
-            destinationKind: there ? kind : .missing, disposition: there ? .conflict : .new,
-            conflictClass: conflictClass, sourceFingerprint: NodeFingerprint(exists: true, kind: kind),
+            destinationKind: there ? kind : .missing, conflictClass: conflictClass,
+            sourceFingerprint: NodeFingerprint(exists: true, kind: kind),
             destinationFingerprint: there
                 ? NodeFingerprint(exists: true, kind: kind) : NodeFingerprint(exists: false, kind: .missing),
             children: children, totalNodeCount: 1 + children.reduce(0) { $0 + $1.totalNodeCount },

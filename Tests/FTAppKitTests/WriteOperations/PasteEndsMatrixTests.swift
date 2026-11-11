@@ -150,15 +150,15 @@ private func report(
     let absent = NodeFingerprint(exists: false, kind: .missing)
     let node = CopyPasteAnalysisNode(
         id: "item-1", sourcePath: PasteFixture.source, destinationPath: PasteFixture.destination + "/source.txt",
-        sourceKind: .file, destinationKind: .missing, disposition: .new, conflictClass: nil,
+        sourceKind: .file, destinationKind: .missing, conflictClass: nil,
         sourceFingerprint: NodeFingerprint(exists: true, kind: .file, size: 1), destinationFingerprint: absent,
         children: [], totalNodeCount: 1, conflictNodeCount: 0)
     return CopyPasteAnalysisReport(
         analysisId: "analysis-1", mode: mode, sourcePaths: [PasteFixture.source],
-        destinationDirectoryPath: PasteFixture.destination, nodes: [node], issues: issues, warnings: [],
+        destinationDirectoryPath: PasteFixture.destination, nodes: [node], issues: issues,
         summary: CopyPasteAnalysisSummary(
             topLevelItemCount: 1, totalNodeCount: 1, totalBytes: 1, fileConflictCount: 0, directoryConflictCount: 0,
-            mismatchConflictCount: 0, blockedCount: 0))
+            mismatchConflictCount: 0))
 }
 
 @MainActor

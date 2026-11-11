@@ -10,7 +10,7 @@ private func analyze(_ fileSystem: MockAnalysisFileSystem, _ sourcePaths: [Strin
     try buildCopyPasteAnalysisReport(
         analysisId: "analysis-review",
         request: CopyPasteAnalysisRequest(mode: .copy, sourcePaths: sourcePaths, destinationDirectoryPath: "/target"),
-        fileSystem: fileSystem, thresholds: .init(largeBatchItemThreshold: 1000, largeBatchByteThreshold: 100))
+        fileSystem: fileSystem)
 }
 
 private func withoutNativeAnswer(_ fileSystem: MockAnalysisFileSystem) -> MockAnalysisFileSystem {
@@ -97,14 +97,6 @@ struct CopyPasteReviewEdgesTests {
 
         #expect(report.nodes.first?.destinationTotalNodeCount == 2)
         #expect(report.nodes.first?.destinationOnly == CopyPasteDestinationOnlySummary(count: 1, samplePaths: ["Old"]))
-    }
-
-    @Test func warnsAboutAPasteThatIsLargeBySizeNotOnlyByCount() throws {
-        let fileSystem = MockAnalysisFileSystem([("/source/big.bin", .file(size: 500)), ("/target", .directory())])
-
-        let report = try analyze(fileSystem, ["/source/big.bin"])
-
-        #expect(report.warnings.map(\.code).contains(.largeBatch))
     }
 
     // MARK: Fitting a name

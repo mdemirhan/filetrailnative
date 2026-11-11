@@ -1,20 +1,6 @@
 import FTFoundation
 import Foundation
 
-public struct CopyPasteThresholds: Sendable, Equatable {
-    public var largeBatchItemThreshold: Int
-    public var largeBatchByteThreshold: Int64
-
-    public init(largeBatchItemThreshold: Int, largeBatchByteThreshold: Int64) {
-        self.largeBatchItemThreshold = largeBatchItemThreshold
-        self.largeBatchByteThreshold = largeBatchByteThreshold
-    }
-
-    /// The write service's: 100 items, 1 GiB.
-    public static let writeService = CopyPasteThresholds(
-        largeBatchItemThreshold: 100, largeBatchByteThreshold: 1024 * 1024 * 1024)
-}
-
 /// Every path resolved, repeats dropped, and any path inside another picked left out.
 public func normalizeCopyPasteAnalysisRequest(_ request: CopyPasteAnalysisRequest) -> CopyPasteAnalysisRequest {
     var seen = Set<NameKeys.Exact>()
@@ -27,14 +13,13 @@ public func normalizeCopyPasteAnalysisRequest(_ request: CopyPasteAnalysisReques
         destinationDirectoryPath: NodePath.resolve(request.destinationDirectoryPath))
 }
 
-/// The review of a paste: each item and what is in its way, the issues that refuse it, and the warnings. Reads
-/// the disk on the calling thread; `signal` stops it with a `StopError`.
+/// The review of a paste: each item and what is in its way, and the issues that refuse it. Reads the disk on the
+/// calling thread; `signal` stops it with a `StopError`.
 public func buildCopyPasteAnalysisReport(
     analysisId: String, request: CopyPasteAnalysisRequest, fileSystem: some AnalysisFileSystem,
-    thresholds: CopyPasteThresholds, signal: StopSignal? = nil
+    signal: StopSignal? = nil
 ) throws -> CopyPasteAnalysisReport {
-    try ReportBuilder(request: request, fileSystem: fileSystem, signal: signal).build(
-        analysisId: analysisId, thresholds: thresholds)
+    try ReportBuilder(request: request, fileSystem: fileSystem, signal: signal).build(analysisId: analysisId)
 }
 
 /// Reads one item again from disk, as the review would read it now: used when the item changed after the review
@@ -82,9 +67,8 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
     let fileSystem: FileSystem
     let signal: StopSignal?
 
-    func build(analysisId: String, thresholds: CopyPasteThresholds) throws -> CopyPasteAnalysisReport {
+    func build(analysisId: String) throws -> CopyPasteAnalysisReport {
         var issues: [CopyPasteAnalysisIssue] = []
-        var warnings: [CopyPasteAnalysisWarning] = []
         var nodes: [CopyPasteAnalysisNode] = []
         let destinationDirectory = request.destinationDirectoryPath
         // A symlink to a folder is pasted into as that folder.
@@ -282,25 +266,10 @@ private struct ReportBuilder<FileSystem: AnalysisFileSystem> {
         }
 
         try annotateKeepBothNames(&nodes, fileSystem, caseSensitive: caseSensitive, signal: signal)
-        let summary = summarizeAnalysis(nodes)
-        if summary.totalNodeCount > thresholds.largeBatchItemThreshold
-            || (summary.totalBytes ?? 0) > thresholds.largeBatchByteThreshold
-        {
-            warnings.append(
-                CopyPasteAnalysisWarning(
-                    code: .largeBatch, message: "This operation will write \(summary.totalNodeCount) items."))
-        }
-        if request.mode == .cut {
-            warnings.append(
-                CopyPasteAnalysisWarning(
-                    code: .cutRequiresDelete,
-                    message: "Cut/Paste removes the original items after the copy succeeds."))
-        }
-
         return CopyPasteAnalysisReport(
             analysisId: analysisId, mode: request.mode, sourcePaths: request.sourcePaths,
-            destinationDirectoryPath: destinationDirectory, nodes: nodes, issues: issues, warnings: warnings,
-            summary: summary, destinationCaseSensitive: caseSensitive)
+            destinationDirectoryPath: destinationDirectory, nodes: nodes, issues: issues,
+            summary: summarizeAnalysis(nodes), destinationCaseSensitive: caseSensitive)
     }
 }
 
@@ -419,8 +388,7 @@ private struct NodeWalker<FileSystem: AnalysisFileSystem> {
 
         return CopyPasteAnalysisNode(
             id: id, sourcePath: sourcePath, destinationPath: destinationPath, sourceKind: sourceKind,
-            destinationKind: destinationKind, disposition: conflictClass == nil ? .new : .conflict,
-            conflictClass: conflictClass, sourceFingerprint: sourceFingerprint,
+            destinationKind: destinationKind, conflictClass: conflictClass, sourceFingerprint: sourceFingerprint,
             destinationFingerprint: destinationFingerprint, children: children,
             issueCode: unreadableReason == nil ? nil : .sourceUnreadable, issueMessage: unreadableReason,
             totalNodeCount: totalNodeCount, conflictNodeCount: conflictNodeCount,
@@ -664,7 +632,7 @@ private func folderIdsHolding(_ fileSystem: some AnalysisFileSystem, _ realPath:
 private func summarizeAnalysis(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisSummary {
     var summary = CopyPasteAnalysisSummary(
         topLevelItemCount: nodes.count, totalNodeCount: 0, totalBytes: 0, fileConflictCount: 0,
-        directoryConflictCount: 0, mismatchConflictCount: 0, blockedCount: 0)
+        directoryConflictCount: 0, mismatchConflictCount: 0)
     // What a folder renamed whole holds wasn't read: the size of the whole isn't known.
     var bytesKnown = true
     var totalBytes: Int64 = 0

@@ -7,7 +7,7 @@ import os
 
 @testable import FTOperations
 
-/// The review and resolution of a paste on the disk itself (thresholds 100 items, 10,000 bytes).
+/// The review and resolution of a paste on the disk itself.
 func realOperation(
     _ fileSystem: any WriteServiceFileSystem, mode: CopyPasteMode, sources: [String], into destination: String,
     policy: CopyPastePolicy = addMissing
@@ -15,8 +15,7 @@ func realOperation(
     let report = try buildCopyPasteAnalysisReport(
         analysisId: "analysis-realfs",
         request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
-        fileSystem: fileSystem,
-        thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 10000))
+        fileSystem: fileSystem)
     return (report, try resolveAnalysisWithPolicy(report: report, policy: policy, fileSystem: fileSystem))
 }
 

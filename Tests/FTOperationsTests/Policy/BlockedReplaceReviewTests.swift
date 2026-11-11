@@ -14,7 +14,7 @@ private func analyze(
     try buildCopyPasteAnalysisReport(
         analysisId: "analysis-1",
         request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
-        fileSystem: fileSystem, thresholds: .init(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1000))
+        fileSystem: fileSystem)
 }
 
 struct BlockedReplaceReviewTests {

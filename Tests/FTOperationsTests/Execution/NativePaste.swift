@@ -181,8 +181,7 @@ func runPaste(
         CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination))
     let report = try await WriteService.withRoomForDepth(name: "test review") {
         try buildCopyPasteAnalysisReport(
-            analysisId: "analysis-test", request: request, fileSystem: fileSystem,
-            thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100_000, largeBatchByteThreshold: 1 << 40))
+            analysisId: "analysis-test", request: request, fileSystem: fileSystem)
     }
     let recorder = PasteRecorder()
     if !report.issues.isEmpty {
@@ -207,8 +206,7 @@ func runPaste(
     return PasteRun(report: report, result: recorder.result, conflicts: recorder.conflicts, events: recorder.events)
 }
 
-/// `createResolvedOperation`: the review of a paste on a mock disk (thresholds 100 items, 1000 bytes) and its
-/// resolution with `policy`.
+/// `createResolvedOperation`: the review of a paste on a mock disk and its resolution with `policy`.
 func createResolvedOperation(
     _ fileSystem: some WriteServiceFileSystem, mode: CopyPasteMode = .copy, sources: [String], into destination: String,
     policy: CopyPastePolicy = CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip),
@@ -217,8 +215,7 @@ func createResolvedOperation(
     let report = try buildCopyPasteAnalysisReport(
         analysisId: "analysis-1",
         request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
-        fileSystem: fileSystem,
-        thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1000))
+        fileSystem: fileSystem)
     let resolvedNodes = try resolveAnalysisWithPolicy(
         report: report, policy: policy, overrides: overrides, fileSystem: fileSystem)
     return (report, resolvedNodes)

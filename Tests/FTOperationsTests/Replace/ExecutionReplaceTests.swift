@@ -425,8 +425,7 @@ struct ExecutionReplaceRealFSTests {
                 analysisId: "analysis-realfs",
                 request: CopyPasteAnalysisRequest(
                     mode: .cut, sourcePaths: [srcDir + "/data.txt"], destinationDirectoryPath: dstDir),
-                fileSystem: fileSystem,
-                thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 10000))
+                fileSystem: fileSystem)
             let resolvedNodes = try resolveAnalysisWithPolicy(
                 report: report, policy: overwriteFilesAndMismatches, fileSystem: fileSystem)
 

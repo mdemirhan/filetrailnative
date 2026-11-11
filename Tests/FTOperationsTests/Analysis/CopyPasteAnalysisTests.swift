@@ -5,21 +5,20 @@ import Testing
 @testable import FTOperations
 
 private func analyze(
-    _ fileSystem: MockAnalysisFileSystem, _ sourcePaths: [String], into destination: String, items: Int = 100,
-    bytes: Int64 = 1000, signal: StopSignal? = nil
+    _ fileSystem: MockAnalysisFileSystem, _ sourcePaths: [String], into destination: String,
+    signal: StopSignal? = nil
 ) throws -> CopyPasteAnalysisReport {
-    try analyze(fileSystem, .copy, sourcePaths, into: destination, items: items, bytes: bytes, signal: signal)
+    try analyze(fileSystem, .copy, sourcePaths, into: destination, signal: signal)
 }
 
 private func analyze(
     _ fileSystem: MockAnalysisFileSystem, _ mode: CopyPasteMode, _ sourcePaths: [String],
-    into destination: String, items: Int = 100, bytes: Int64 = 1000, signal: StopSignal? = nil
+    into destination: String, signal: StopSignal? = nil
 ) throws -> CopyPasteAnalysisReport {
     try buildCopyPasteAnalysisReport(
         analysisId: "analysis-1",
         request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: sourcePaths, destinationDirectoryPath: destination),
-        fileSystem: fileSystem, thresholds: .init(largeBatchItemThreshold: items, largeBatchByteThreshold: bytes),
-        signal: signal)
+        fileSystem: fileSystem, signal: signal)
 }
 
 private func findChild(_ node: CopyPasteAnalysisNode?, endingWith suffix: String) -> CopyPasteAnalysisNode? {
@@ -56,7 +55,6 @@ struct CopyPasteAnalysisTests {
         #expect(node.sourcePath == "/workspace/file.txt")
         #expect(node.destinationPath == "/target/file.txt")
         #expect(node.conflictClass == nil)
-        #expect(node.disposition == .new)
     }
 
     @Test func resolvesSameDirectoryCopyToAKeepBothDestinationName() throws {
@@ -260,21 +258,6 @@ struct CopyPasteAnalysisTests {
         #expect(read.paths.contains("/source/Project/lib"))
     }
 
-    @Test func includesLargeBatchAndCutWarnings() throws {
-        // On another disk, so the folder is read through rather than renamed whole.
-        let fileSystem = MockAnalysisFileSystem([
-            ("/workspace", .directory(dev: 2)), ("/workspace/folder", .directory()),
-            ("/workspace/folder/a.txt", .file(size: 5)), ("/workspace/folder/b.txt", .file(size: 7)),
-            ("/target", .directory()),
-        ])
-
-        let report = try analyze(fileSystem, .cut, ["/workspace/folder"], into: "/target", items: 2, bytes: 4)
-
-        let codes = report.warnings.map(\.code)
-        #expect(codes.contains(.largeBatch))
-        #expect(codes.contains(.cutRequiresDelete))
-    }
-
     // MARK: destinationTotalNodeCount
 
     @Test func countsDestinationItemsRecursivelyForADirectoryConflict() throws {
@@ -285,7 +268,7 @@ struct CopyPasteAnalysisTests {
             ("/target/Photos/sub/z.png", .file(size: 5)),
         ])
 
-        let report = try analyze(fileSystem, ["/source/Photos"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/Photos"], into: "/target")
 
         #expect(report.nodes.first?.conflictClass == .directoryConflict)
         // x.png, y.png, sub, sub/z.png
@@ -299,7 +282,7 @@ struct CopyPasteAnalysisTests {
             ("/target/folder/.config", .directory()), ("/target/folder/.config/settings", .file(size: 1)),
         ])
 
-        let report = try analyze(fileSystem, ["/source/folder"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/folder"], into: "/target")
 
         // .hidden, .config, .config/settings
         #expect(report.nodes.first?.destinationTotalNodeCount == 3)
@@ -311,7 +294,7 @@ struct CopyPasteAnalysisTests {
             ("/target", .directory()), ("/target/folder", .directory()),
         ])
 
-        let report = try analyze(fileSystem, ["/source/folder"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/folder"], into: "/target")
 
         #expect(report.nodes.first?.destinationTotalNodeCount == 0)
     }
@@ -323,7 +306,7 @@ struct CopyPasteAnalysisTests {
             ("/target/folder/link", .symlink("/elsewhere")),
         ])
 
-        let report = try analyze(fileSystem, ["/source/folder"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/folder"], into: "/target")
 
         #expect(report.nodes.first?.destinationTotalNodeCount == 1)
     }
@@ -334,7 +317,7 @@ struct CopyPasteAnalysisTests {
             ("/target/file.txt", .file(size: 10)),
         ])
 
-        let report = try analyze(fileSystem, ["/source/file.txt"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/file.txt"], into: "/target")
 
         #expect(report.nodes.first?.conflictClass == .fileConflict)
         #expect(report.nodes.first?.destinationTotalNodeCount == nil)
@@ -346,7 +329,7 @@ struct CopyPasteAnalysisTests {
             ("/target/item", .directory()),
         ])
 
-        let report = try analyze(fileSystem, ["/source/item"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/item"], into: "/target")
 
         #expect(report.nodes.first?.conflictClass == .typeMismatch)
         // The existing (empty) folder would be lost to Replace, so it is counted too.
@@ -359,7 +342,7 @@ struct CopyPasteAnalysisTests {
             ("/source", .directory()), ("/source/file.txt", .file(size: 5)), ("/target", .directory()),
         ])
 
-        let report = try analyze(fileSystem, ["/source/file.txt"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/file.txt"], into: "/target")
 
         #expect(report.nodes.first?.conflictClass == nil)
         #expect(report.nodes.first?.destinationTotalNodeCount == nil)
@@ -378,7 +361,7 @@ struct CopyPasteAnalysisTests {
             return try base.readdir(path)
         }
 
-        let report = try analyze(fileSystem, ["/source/folder"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/folder"], into: "/target")
 
         #expect(report.nodes.first?.conflictClass == .directoryConflict)
         #expect(report.nodes.first?.destinationTotalNodeCount == nil)
@@ -392,7 +375,7 @@ struct CopyPasteAnalysisTests {
             ("/target/root/a/b/c/deep.txt", .file(size: 1)), ("/target/root/sibling.txt", .file(size: 1)),
         ])
 
-        let report = try analyze(fileSystem, ["/source/root"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/root"], into: "/target")
 
         // a, a/b, a/b/c, a/b/c/deep.txt, sibling.txt
         #expect(report.nodes.first?.destinationTotalNodeCount == 5)
@@ -405,7 +388,7 @@ struct CopyPasteAnalysisTests {
             ("/target/dir/sub", .directory()), ("/target/dir/link", .symlink("/elsewhere")),
         ])
 
-        let report = try analyze(fileSystem, ["/source/dir"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/dir"], into: "/target")
 
         // file.txt, sub, link
         #expect(report.nodes.first?.destinationTotalNodeCount == 3)
@@ -426,7 +409,7 @@ struct CopyPasteAnalysisTests {
             return try base.readdir(path)
         }
 
-        let report = try analyze(fileSystem, ["/source/root"], into: "/target", bytes: 10000)
+        let report = try analyze(fileSystem, ["/source/root"], into: "/target")
 
         #expect(report.nodes.first?.destinationTotalNodeCount == 2)
         #expect(report.nodes.first?.children.first?.destinationTotalNodeCount == 1)
@@ -444,7 +427,7 @@ struct CopyPasteAnalysisTests {
         signal.stop()
 
         #expect(throws: StopError.self) {
-            try analyze(fileSystem, ["/source/folder"], into: "/target", bytes: 10000, signal: signal)
+            try analyze(fileSystem, ["/source/folder"], into: "/target", signal: signal)
         }
     }
 
@@ -525,7 +508,7 @@ struct CopyPasteAnalysisTests {
                 fileSystem.addFile("/dst/item-\(index).txt", size: 2)
                 sourcePaths.append("/src/item-\(index).txt")
             }
-            let report = try analyze(fileSystem, sourcePaths, into: "/dst", items: 100_000, bytes: 1_000_000)
+            let report = try analyze(fileSystem, sourcePaths, into: "/dst")
             #expect(report.summary.fileConflictCount == count)
             return fileSystem.lstatCount
         }

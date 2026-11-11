@@ -33,10 +33,7 @@ struct SwiftExecEngine: ExecEngine {
         let service = WriteService(
             .init(
                 fileSystem: fileSystem, writeJournal: journal, createOperationId: { "op-test" },
-                createAnalysisId: { "analysis-test" },
-                // No large-batch warnings: they don't change what is pasted.
-                thresholds: CopyPasteThresholds(
-                    largeBatchItemThreshold: 100_000, largeBatchByteThreshold: 1_000_000_000_000)))
+                createAnalysisId: { "analysis-test" }))
 
         // The review.
         let mode = try Self.mode(scenario.paste.mode)

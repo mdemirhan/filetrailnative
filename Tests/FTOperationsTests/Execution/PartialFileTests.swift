@@ -46,8 +46,7 @@ struct PartialFileTests {
             analysisId: "analysis-1",
             request: CopyPasteAnalysisRequest(
                 mode: mode, sourcePaths: [Self.source], destinationDirectoryPath: "/target"),
-            fileSystem: fileSystem,
-            thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1_000_000_000_000))
+            fileSystem: fileSystem)
         let resolvedNodes = try resolveAnalysisWithPolicy(report: report, policy: Self.skip, fileSystem: fileSystem)
         let journal = MemoryJournal()
         let recorder = PasteRecorder()

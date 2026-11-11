@@ -11,8 +11,7 @@ func makeNode(
 ) -> CopyPasteAnalysisNode {
     CopyPasteAnalysisNode(
         id: id, sourcePath: sourcePath, destinationPath: destinationPath, sourceKind: sourceKind,
-        destinationKind: destinationKind, disposition: conflictClass == nil ? .new : .conflict,
-        conflictClass: conflictClass,
+        destinationKind: destinationKind, conflictClass: conflictClass,
         sourceFingerprint: NodeFingerprint(
             exists: true, kind: sourceKind, size: 1, mtimeMs: 1, mode: 0o644, ino: 1, dev: 1),
         destinationFingerprint: NodeFingerprint(exists: destinationKind != .missing, kind: destinationKind),
@@ -23,12 +22,12 @@ func makeReport(_ nodes: [CopyPasteAnalysisNode]) -> CopyPasteAnalysisReport {
     CopyPasteAnalysisReport(
         analysisId: "analysis-1", mode: .copy, sourcePaths: nodes.map(\.sourcePath),
         destinationDirectoryPath: "/target",
-        nodes: nodes, issues: [], warnings: [],
+        nodes: nodes, issues: [],
         summary: CopyPasteAnalysisSummary(
             topLevelItemCount: nodes.count, totalNodeCount: nodes.count, totalBytes: 1,
             fileConflictCount: nodes.filter { $0.conflictClass == .fileConflict }.count,
             directoryConflictCount: nodes.filter { $0.conflictClass == .directoryConflict }.count,
-            mismatchConflictCount: nodes.filter { $0.conflictClass == .typeMismatch }.count, blockedCount: 0))
+            mismatchConflictCount: nodes.filter { $0.conflictClass == .typeMismatch }.count))
 }
 
 /// `resolveSingleNodeWithAction` with no names reserved yet.

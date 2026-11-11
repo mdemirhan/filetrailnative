@@ -14,8 +14,7 @@ struct FolderSafetyTests {
         let report = try buildCopyPasteAnalysisReport(
             analysisId: "analysis-folder-safety",
             request: CopyPasteAnalysisRequest(mode: mode, sourcePaths: sources, destinationDirectoryPath: destination),
-            fileSystem: fileSystem,
-            thresholds: CopyPasteThresholds(largeBatchItemThreshold: 1000, largeBatchByteThreshold: 1_000_000_000))
+            fileSystem: fileSystem)
         #expect(report.issues.isEmpty)
         let resolvedNodes = try resolveAnalysisWithPolicy(report: report, policy: addMissing, fileSystem: fileSystem)
         return await execute(fileSystem, (report, resolvedNodes), operationId: "op-folder-safety").last?.result

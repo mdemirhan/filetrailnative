@@ -39,8 +39,7 @@ struct NativePasteTests {
         let report = try buildCopyPasteAnalysisReport(
             analysisId: "analysis-native",
             request: CopyPasteAnalysisRequest(mode: .copy, sourcePaths: sources, destinationDirectoryPath: destination),
-            fileSystem: fileSystem,
-            thresholds: CopyPasteThresholds(largeBatchItemThreshold: 1000, largeBatchByteThreshold: 1_000_000_000))
+            fileSystem: fileSystem)
         let resolvedNodes = try resolveAnalysisWithPolicy(report: report, policy: addMissing, fileSystem: fileSystem)
         return await execute(fileSystem, (report, resolvedNodes), operationId: "op-native").last?.result
     }

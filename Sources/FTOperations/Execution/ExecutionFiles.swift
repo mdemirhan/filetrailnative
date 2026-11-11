@@ -277,7 +277,6 @@ func rebaseResolvedNode(_ node: ResolvedCopyPasteNode, _ fromPath: String, _ toP
     var rebased = node
     rebased.destinationPath = destinationPath
     rebased.node.destinationPath = destinationPath
-    rebased.node.disposition = .new
     rebased.node.conflictClass = nil
     rebased.node.destinationKind = .missing
     rebased.node.destinationFingerprint = .missing

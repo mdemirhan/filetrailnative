@@ -152,8 +152,7 @@ struct LargeTreeAnalysisSpeedTests {
                 review,
                 try clock.measure {
                     let report = try buildCopyPasteAnalysisReport(
-                        analysisId: "analysis-1", request: request, fileSystem: fileSystem,
-                        thresholds: .writeService)
+                        analysisId: "analysis-1", request: request, fileSystem: fileSystem)
                     #expect(report.summary.totalNodeCount == Self.fileCount + 2)
                 })
         }

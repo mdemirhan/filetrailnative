@@ -16,7 +16,7 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
                 mode: try Self.mode(scenario.paste.mode), sourcePaths: scenario.paste.sources.map(places.resolve),
                 destinationDirectoryPath: places.resolve(scenario.paste.destination)))
         let report = try buildCopyPasteAnalysisReport(
-            analysisId: "analysis-test", request: request, fileSystem: fileSystem, thresholds: .writeService)
+            analysisId: "analysis-test", request: request, fileSystem: fileSystem)
         var overrideChoices: [String: CopyPasteChoice] = [:]
         let overrides = try (scenario.overrides ?? []).map { item in
             CopyPasteNodeOverride(nodeId: item.nodeId, action: try Self.choice(item.action))
@@ -125,8 +125,7 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
                         "sourcePath": optional($0.sourcePath), "destinationPath": optional($0.destinationPath),
                     ])
                 }),
-            "warnings": .array(
-                report.warnings.map { .object(["code": .string($0.code.rawValue), "message": .string($0.message)]) }),
+            "warnings": .array(warnings(report)),
             "summary": .object([
                 "topLevelItemCount": .int(report.summary.topLevelItemCount),
                 "totalNodeCount": .int(report.summary.totalNodeCount),
@@ -134,10 +133,32 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
                 "fileConflictCount": .int(report.summary.fileConflictCount),
                 "directoryConflictCount": .int(report.summary.directoryConflictCount),
                 "mismatchConflictCount": .int(report.summary.mismatchConflictCount),
-                "blockedCount": .int(report.summary.blockedCount),
+                // Nothing was ever counted as blocked.
+                "blockedCount": .int(0),
             ]),
             "destinationCaseSensitive": .bool(report.destinationCaseSensitive),
         ])
+    }
+
+    /// The warnings the recordings carry, which the app never showed: a paste of more than 100 items or 1 GiB, and a
+    /// cut.
+    private static func warnings(_ report: CopyPasteAnalysisReport) -> [JSONValue] {
+        var warnings: [JSONValue] = []
+        if report.summary.totalNodeCount > 100 || (report.summary.totalBytes ?? 0) > 1024 * 1024 * 1024 {
+            warnings.append(
+                .object([
+                    "code": .string("large_batch"),
+                    "message": .string("This operation will write \(report.summary.totalNodeCount) items."),
+                ]))
+        }
+        if report.mode == .cut {
+            warnings.append(
+                .object([
+                    "code": .string("cut_requires_delete"),
+                    "message": .string("Cut/Paste removes the original items after the copy succeeds."),
+                ]))
+        }
+        return warnings
     }
 
     static func json(_ node: CopyPasteAnalysisNode) -> JSONValue {
@@ -147,7 +168,8 @@ struct SwiftAnalysisEngine: ExecAnalysisEngine {
             "destinationPath": .string(node.destinationPath),
             "sourceKind": .string(node.sourceKind.rawValue),
             "destinationKind": .string(node.destinationKind.rawValue),
-            "disposition": .string(node.disposition.rawValue),
+            // New, or in conflict with what is at the destination.
+            "disposition": .string(node.conflictClass == nil ? "new" : "conflict"),
             "conflictClass": optional(node.conflictClass?.rawValue),
             "sourceFingerprint": json(node.sourceFingerprint),
             "destinationFingerprint": json(node.destinationFingerprint),

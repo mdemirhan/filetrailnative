@@ -22,15 +22,6 @@ public enum CopyPastePlanIssueCode: String, Codable, Sendable {
     case sourceUnreadable = "source_unreadable"
 }
 
-public enum CopyPastePlanWarningCode: String, Codable, Sendable {
-    case largeBatch = "large_batch"
-    case cutRequiresDelete = "cut_requires_delete"
-}
-
-public enum CopyPasteAnalysisNodeDisposition: String, Codable, Sendable {
-    case new, conflict, blocked
-}
-
 public struct CopyPasteAnalysisRequest: Codable, Equatable, Sendable {
     public var mode: CopyPasteMode
     public var sourcePaths: [String]
@@ -68,16 +59,6 @@ public struct CopyPasteAnalysisIssue: Codable, Equatable, Sendable {
     }
 }
 
-public struct CopyPasteAnalysisWarning: Codable, Equatable, Sendable {
-    public var code: CopyPastePlanWarningCode
-    public var message: String
-
-    public init(code: CopyPastePlanWarningCode, message: String) {
-        self.code = code
-        self.message = message
-    }
-}
-
 public struct CopyPasteDestinationOnlySummary: Codable, Equatable, Sendable {
     /// Items (files and folders, nested ones included) found only at the destination.
     public var count: Int
@@ -97,7 +78,6 @@ public struct CopyPasteAnalysisNode: Codable, Equatable, Sendable {
     /// Never `.missing`.
     public var sourceKind: CopyPasteNodeKind
     public var destinationKind: CopyPasteNodeKind
-    public var disposition: CopyPasteAnalysisNodeDisposition
     public var conflictClass: ConflictClass?
     public var sourceFingerprint: NodeFingerprint
     public var destinationFingerprint: NodeFingerprint
@@ -119,8 +99,7 @@ public struct CopyPasteAnalysisNode: Codable, Equatable, Sendable {
 
     public init(
         id: String, sourcePath: String, destinationPath: String, sourceKind: CopyPasteNodeKind,
-        destinationKind: CopyPasteNodeKind, disposition: CopyPasteAnalysisNodeDisposition,
-        conflictClass: ConflictClass?,
+        destinationKind: CopyPasteNodeKind, conflictClass: ConflictClass?,
         sourceFingerprint: NodeFingerprint, destinationFingerprint: NodeFingerprint, children: [CopyPasteAnalysisNode],
         issueCode: CopyPastePlanIssueCode? = nil, issueMessage: String? = nil, totalNodeCount: Int,
         conflictNodeCount: Int, destinationTotalNodeCount: Int? = nil, keepBothDestinationPath: String? = nil,
@@ -132,7 +111,6 @@ public struct CopyPasteAnalysisNode: Codable, Equatable, Sendable {
         self.destinationPath = destinationPath
         self.sourceKind = sourceKind
         self.destinationKind = destinationKind
-        self.disposition = disposition
         self.conflictClass = conflictClass
         self.sourceFingerprint = sourceFingerprint
         self.destinationFingerprint = destinationFingerprint
@@ -157,11 +135,10 @@ public struct CopyPasteAnalysisSummary: Codable, Equatable, Sendable {
     public var fileConflictCount: Int
     public var directoryConflictCount: Int
     public var mismatchConflictCount: Int
-    public var blockedCount: Int
 
     public init(
         topLevelItemCount: Int, totalNodeCount: Int, totalBytes: Int64?, fileConflictCount: Int,
-        directoryConflictCount: Int, mismatchConflictCount: Int, blockedCount: Int
+        directoryConflictCount: Int, mismatchConflictCount: Int
     ) {
         self.topLevelItemCount = topLevelItemCount
         self.totalNodeCount = totalNodeCount
@@ -169,7 +146,6 @@ public struct CopyPasteAnalysisSummary: Codable, Equatable, Sendable {
         self.fileConflictCount = fileConflictCount
         self.directoryConflictCount = directoryConflictCount
         self.mismatchConflictCount = mismatchConflictCount
-        self.blockedCount = blockedCount
     }
 }
 
@@ -180,15 +156,14 @@ public struct CopyPasteAnalysisReport: Codable, Equatable, Sendable {
     public var destinationDirectoryPath: String
     public var nodes: [CopyPasteAnalysisNode]
     public var issues: [CopyPasteAnalysisIssue]
-    public var warnings: [CopyPasteAnalysisWarning]
     public var summary: CopyPasteAnalysisSummary
     /// Whether the destination volume tells names apart by letter case (default: no).
     public var destinationCaseSensitive: Bool
 
     public init(
         analysisId: String, mode: CopyPasteMode, sourcePaths: [String], destinationDirectoryPath: String,
-        nodes: [CopyPasteAnalysisNode], issues: [CopyPasteAnalysisIssue], warnings: [CopyPasteAnalysisWarning],
-        summary: CopyPasteAnalysisSummary, destinationCaseSensitive: Bool = false
+        nodes: [CopyPasteAnalysisNode], issues: [CopyPasteAnalysisIssue], summary: CopyPasteAnalysisSummary,
+        destinationCaseSensitive: Bool = false
     ) {
         self.analysisId = analysisId
         self.mode = mode
@@ -196,7 +171,6 @@ public struct CopyPasteAnalysisReport: Codable, Equatable, Sendable {
         self.destinationDirectoryPath = destinationDirectoryPath
         self.nodes = nodes
         self.issues = issues
-        self.warnings = warnings
         self.summary = summary
         self.destinationCaseSensitive = destinationCaseSensitive
     }

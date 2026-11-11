@@ -19,8 +19,7 @@ struct LargeFileJournalTests {
         let report = try buildCopyPasteAnalysisReport(
             analysisId: "analysis-1",
             request: CopyPasteAnalysisRequest(mode: .copy, sourcePaths: sources, destinationDirectoryPath: "/target"),
-            fileSystem: fileSystem,
-            thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1_000_000_000_000))
+            fileSystem: fileSystem)
         let policy = CopyPastePolicy(file: .skip, directory: .skip, mismatch: .skip)
         let resolvedNodes = try resolveAnalysisWithPolicy(report: report, policy: policy, fileSystem: fileSystem)
         await execute(

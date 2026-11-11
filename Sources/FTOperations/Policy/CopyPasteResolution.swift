@@ -168,7 +168,6 @@ private struct PolicyResolver<FileSystem: AnalysisFileSystem> {
         var normalizedNode = node
         normalizedNode.destinationPath = destinationPath
         if shouldNormalizeDestination {
-            normalizedNode.disposition = .new
             normalizedNode.conflictClass = nil
             normalizedNode.destinationKind = .missing
             normalizedNode.destinationFingerprint = .missing

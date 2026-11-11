@@ -25,10 +25,10 @@ private final class StubWriteService: CoordinatorWriteService, @unchecked Sendab
     func analyze(_ request: CopyPasteAnalysisRequest, signal: StopSignal) async throws -> CopyPasteAnalysisReport {
         CopyPasteAnalysisReport(
             analysisId: "analysis-1", mode: request.mode, sourcePaths: request.sourcePaths,
-            destinationDirectoryPath: request.destinationDirectoryPath, nodes: [], issues: [], warnings: [],
+            destinationDirectoryPath: request.destinationDirectoryPath, nodes: [], issues: [],
             summary: CopyPasteAnalysisSummary(
                 topLevelItemCount: 0, totalNodeCount: 0, totalBytes: 0, fileConflictCount: 0,
-                directoryConflictCount: 0, mismatchConflictCount: 0, blockedCount: 0))
+                directoryConflictCount: 0, mismatchConflictCount: 0))
     }
 
     func startCopyPaste(

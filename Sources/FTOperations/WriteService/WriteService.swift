@@ -14,7 +14,6 @@ public struct WriteServiceDependencies: Sendable {
     public var createOperationId: (@Sendable () -> String)?
     /// Ids "analysis-1", "analysis-2", … when not given.
     public var createAnalysisId: (@Sendable () -> String)?
-    public var thresholds: CopyPasteThresholds
     /// Runs a paste from its reviewed report; `executeCopyPasteFromAnalysis` when not given (see
     /// WriteServicePaste.swift).
     public var executeCopyPaste: CopyPasteExecutor?
@@ -22,15 +21,13 @@ public struct WriteServiceDependencies: Sendable {
     public init(
         fileSystem: any WriteServiceFileSystem, writeJournal: (any WriteJournal)? = nil,
         now: @escaping @Sendable () -> Date = { Date() }, createOperationId: (@Sendable () -> String)? = nil,
-        createAnalysisId: (@Sendable () -> String)? = nil, thresholds: CopyPasteThresholds = .writeService,
-        executeCopyPaste: CopyPasteExecutor? = nil
+        createAnalysisId: (@Sendable () -> String)? = nil, executeCopyPaste: CopyPasteExecutor? = nil
     ) {
         self.fileSystem = fileSystem
         self.writeJournal = writeJournal
         self.now = now
         self.createOperationId = createOperationId
         self.createAnalysisId = createAnalysisId
-        self.thresholds = thresholds
         self.executeCopyPaste = executeCopyPaste
     }
 }
@@ -62,7 +59,6 @@ public final class WriteService: Sendable {
     let fileSystem: any WriteServiceFileSystem
     let writeJournal: (any WriteJournal)?
     let now: @Sendable () -> Date
-    let thresholds: CopyPasteThresholds
     let executeCopyPaste: CopyPasteExecutor
     private let operationIds: (@Sendable () -> String)?
     private let analysisIds: (@Sendable () -> String)?
@@ -72,7 +68,6 @@ public final class WriteService: Sendable {
         fileSystem = dependencies.fileSystem
         writeJournal = dependencies.writeJournal
         now = dependencies.now
-        thresholds = dependencies.thresholds
         executeCopyPaste = dependencies.executeCopyPaste ?? engineCopyPasteExecutor
         operationIds = dependencies.createOperationId
         analysisIds = dependencies.createAnalysisId
@@ -150,7 +145,6 @@ extension WriteService {
         let request = normalizeCopyPasteAnalysisRequest(request)
         let analysisId = state.withLock { nextAnalysisId(&$0) }
         let fileSystem = fileSystem
-        let thresholds = thresholds
         return try await withCheckedThrowingContinuation { continuation in
             let answer = ReviewAnswer(continuation)
             guard let stopToken = signal.onStop({ answer.give(.failure(StopError())) }) else {
@@ -160,8 +154,7 @@ extension WriteService {
             Self.runWithRoomForDepth(name: "FileTrail paste review") {
                 let outcome = Result {
                     try buildCopyPasteAnalysisReport(
-                        analysisId: analysisId, request: request, fileSystem: fileSystem, thresholds: thresholds,
-                        signal: signal)
+                        analysisId: analysisId, request: request, fileSystem: fileSystem, signal: signal)
                 }
                 signal.removeHandler(stopToken)
                 // A review stopped once it had read everything still counts as stopped.

@@ -17,8 +17,7 @@ struct BlockedReplaceTests {
             analysisId: "analysis-1",
             request: CopyPasteAnalysisRequest(
                 mode: .copy, sourcePaths: ["/x/a.txt", "/d/a.txt"], destinationDirectoryPath: "/d"),
-            fileSystem: fileSystem,
-            thresholds: CopyPasteThresholds(largeBatchItemThreshold: 100, largeBatchByteThreshold: 1000))
+            fileSystem: fileSystem)
         // A plan made without the review's note (or a runtime answer of Replace).
         for index in report.nodes.indices {
             report.nodes[index].replaceBlockedReason = nil
