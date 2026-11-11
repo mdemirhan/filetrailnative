@@ -237,8 +237,7 @@ public final class AcknowledgementEntryView: NSView, ThemeApplying {
             title: component.url.replacingOccurrences(of: "^https://(www\\.)?", with: "", options: .regularExpression),
             fontSize: DesignTokens.typeScale.callout, theme: theme)
         box = ThemedView(theme: theme)
-        var licenseStyle = TextStyle(font: Self.textFont, color: { $0.palette.textSecondary }, lineHeight: 1.5)
-        licenseStyle.background = { $0.palette.bgInput.flattened(over: $0.palette.bgBase) }
+        let licenseStyle = TextStyle(font: Self.textFont, color: { $0.palette.textSecondary }, lineHeight: 1.5)
         licenseBody = ThemedText(component.text, style: licenseStyle, wrapping: true, selectable: true)
         super.init(frame: .zero)
         nameText.setAccessibilityIdentifier("acknowledgements.name")

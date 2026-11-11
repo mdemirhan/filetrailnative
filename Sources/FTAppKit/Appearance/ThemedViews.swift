@@ -158,9 +158,7 @@ public final class ThemedText: NSTextField, ThemeApplying {
         // The field's own font and color say what it shows (accessibility, the tests); the string keeps its runs.
         if text.length > 0 {
             font = text.attribute(.font, at: 0, effectiveRange: nil) as? NSFont ?? font
-            textColor =
-                text.attribute(.reportedColor, at: 0, effectiveRange: nil) as? NSColor
-                ?? text.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor ?? textColor
+            textColor = text.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor ?? textColor
         }
         attributedStringValue = text
     }
@@ -179,27 +177,10 @@ public final class ThemedText: NSTextField, ThemeApplying {
     }
 }
 
-extension NSAttributedString.Key {
-    /// The color a run is meant to have, with its alpha: the run itself is drawn in that color flattened onto its
-    /// background (AppKit draws a translucent text color of an attributed string as an opaque one).
-    static let reportedColor = NSAttributedString.Key("filetrail.reportedColor")
-}
-
-extension RGBA {
-    /// This color over an opaque `background`, as one opaque color.
-    public func flattened(over background: RGBA) -> RGBA {
-        RGBA(
-            red: red * alpha + background.red * (1 - alpha), green: green * alpha + background.green * (1 - alpha),
-            blue: blue * alpha + background.blue * (1 - alpha))
-    }
-}
-
 /// Styles for the text of the stylesheet: font, color and line height.
 public struct TextStyle {
     public var font: NSFont
     public var color: @MainActor (Theme) -> RGBA
-    /// What the text lies on, for a translucent color to be flattened onto; the page's background by default.
-    public var background: @MainActor (Theme) -> RGBA = { $0.palette.bgBase }
     /// CSS `line-height` as a multiple of the font size; nil is the font's own.
     public var lineHeight: Double?
     public var alignment: NSTextAlignment = .left
@@ -227,11 +208,8 @@ public struct TextStyle {
             paragraph.minimumLineHeight = height
             paragraph.maximumLineHeight = height
         }
-        let wanted = color(theme)
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: NSColor(wanted.alpha < 1 ? wanted.flattened(over: background(theme)) : wanted),
-            .paragraphStyle: paragraph, .reportedColor: NSColor(wanted),
+            .font: font, .foregroundColor: NSColor(color(theme)), .paragraphStyle: paragraph,
         ]
         if kern != 0 { attributes[.kern] = kern }
         return attributes

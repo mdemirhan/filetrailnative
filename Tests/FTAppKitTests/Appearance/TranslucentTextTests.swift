@@ -80,4 +80,38 @@ import Testing
     @Test func theSearchFieldsTextFieldDrawsItOnce() throws {
         #expect(drawnOnce(try darkest(unbordered(SearchTextField(string: "")))))
     }
+
+    // MARK: An attributed string keeps the alpha of its color
+
+    private final class AttributedText: NSView {
+        let text: NSAttributedString
+
+        init(_ text: NSAttributedString) {
+            self.text = text
+            super.init(frame: .zero)
+        }
+
+        required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
+
+        override var isFlipped: Bool { true }
+
+        override func draw(_ dirtyRect: NSRect) {
+            text.draw(with: bounds, options: [.usesLineFragmentOrigin], context: nil)
+        }
+    }
+
+    @Test func anAttributedStringDrawsATranslucentColorWithItsAlpha() throws {
+        let text = NSAttributedString(string: "HHH", attributes: [.font: Self.font, .foregroundColor: Self.halfBlack])
+        #expect(drawnOnce(try darkest(AttributedText(text))))
+    }
+
+    @Test func themedTextDrawsTheStylesTranslucentColorAsItIs() throws {
+        let color = RGBA(r: 0, g: 0, b: 0, alpha: 0.5)
+        let style = TextStyle(font: Self.font, color: { _ in color })
+        let attributes = style.attributes(AppearanceModel.shared.theme)
+        #expect((attributes[.foregroundColor] as? NSColor) == NSColor(color))
+        let text = ThemedText("HHH", style: style)
+        #expect(text.textColor == NSColor(color))
+        #expect(drawnOnce(try darkest(text)))
+    }
 }

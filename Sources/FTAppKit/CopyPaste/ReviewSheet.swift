@@ -253,15 +253,13 @@ final class ReviewBarView: NSView, ThemeApplying {
 
     init(model: ReviewSheetModel) {
         self.model = model
-        var labelStyle = TextStyle(
+        let labelStyle = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.body, .medium), color: { $0.palette.textPrimary })
-        labelStyle.background = { $0.palette.bgElevated }
         label = ThemedText(ReviewSheetText.allConflictsLabel, style: labelStyle)
         control = AllConflictsControl(
             choices: CopyPasteReview.allConflictsChoices(model.review), value: model.allConflicts)
-        var hintStyle = TextStyle(
+        let hintStyle = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.callout), color: { $0.palette.textSecondary })
-        hintStyle.background = { $0.palette.bgElevated }
         self.hintStyle = hintStyle
         hint = ThemedText("", style: hintStyle, wrapping: true)
         super.init(frame: .zero)
@@ -400,8 +398,7 @@ final class ReviewRowView: NSView, ThemeApplying {
         nameLabel.content = { theme in
             singleLineText(
                 [(name, Self.nameFont, theme.palette.textPrimary)]
-                    + (rename.map { [(" \u{2192} \($0)", Self.font, theme.palette.textSecondary)] } ?? []),
-                background: theme.palette.bgElevated)
+                    + (rename.map { [(" \u{2192} \($0)", Self.font, theme.palette.textSecondary)] } ?? []))
         }
         nameLabel.toolTip = row.relativePath
         let hint = ReviewSheetText.folderHint(row, maxIndentDepth: CopyPasteSheetLayout.maxIndentDepth)
@@ -409,14 +406,13 @@ final class ReviewRowView: NSView, ThemeApplying {
         pathLabel.toolTip = hint
         pathLabel.content = { theme in
             singleLineText(
-                [(hint ?? "", Self.font, theme.palette.textSecondary)], background: theme.palette.bgElevated)
+                [(hint ?? "", Self.font, theme.palette.textSecondary)])
         }
         let detail = row.detail
         let tone = row.tone
-        var detailStyle = TextStyle(
+        let detailStyle = TextStyle(
             font: Self.font, color: { tone == .danger ? $0.palette.danger : $0.palette.textSecondary },
             lineHeight: Double(Self.lineHeight) / Double(Self.font.pointSize))
-        detailStyle.background = { $0.palette.bgElevated }
         detailLabel.content = { detailStyle.string(detail, $0) }
         if let choice = row.choice {
             popUp.isHidden = false
@@ -428,7 +424,7 @@ final class ReviewRowView: NSView, ThemeApplying {
             popUp.isHidden = true
             addsLabel.isHidden = false
             addsLabel.content = { theme in
-                singleLineText([(adds, Self.font, theme.palette.textSecondary)], background: theme.palette.bgElevated)
+                singleLineText([(adds, Self.font, theme.palette.textSecondary)])
             }
         }
         setAccessibilityLabel(row.relativePath)

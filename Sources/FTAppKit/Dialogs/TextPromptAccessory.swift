@@ -18,10 +18,9 @@ final class TextPromptAccessory: NSView, AlertAccessory, ThemeApplying, NSTextFi
     init(text: String, label: String, selectsAll: Bool) {
         field = PromptField()
         self.selectsAll = selectsAll
-        var style = TextStyle(
+        let style = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.small), color: { $0.palette.dangerText },
             lineHeight: DialogLayout.TextPrompt.errorLineHeight)
-        style.background = { $0.palette.bgElevated }
         errorLabel = ThemedText("", style: style, wrapping: true)
         super.init(frame: .zero)
         setAccessibilityIdentifier("alert.accessory")
@@ -69,11 +68,9 @@ final class TextPromptAccessory: NSView, AlertAccessory, ThemeApplying, NSTextFi
     }
 
     private var errorStyle: TextStyle {
-        var style = TextStyle(
+        TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.small), color: { $0.palette.dangerText },
             lineHeight: DialogLayout.TextPrompt.errorLineHeight)
-        style.background = { $0.palette.bgElevated }
-        return style
     }
 
     func applyTheme(_ theme: Theme) {

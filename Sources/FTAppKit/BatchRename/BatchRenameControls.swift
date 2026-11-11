@@ -7,11 +7,9 @@ func batchRenameStyle(
     _ size: Double, _ color: @escaping @MainActor (Theme) -> RGBA, lineHeight: Double? = nil,
     weight: NSFont.Weight = .regular, alignment: NSTextAlignment = .left
 ) -> TextStyle {
-    var style = TextStyle(
+    TextStyle(
         font: ThemeFonts.sans(size, weight), color: color, lineHeight: lineHeight.map { $0 / size },
         alignment: alignment)
-    style.background = { $0.palette.bgElevated }
-    return style
 }
 
 /// The natural height of a line of text of this size.

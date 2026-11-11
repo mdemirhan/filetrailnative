@@ -78,8 +78,7 @@ final class BatchRenameSheetView: DialogPanelView {
     init(model: BatchRenameSheetModel) {
         self.model = model
         let count = model.sheet?.targets.count ?? 0
-        var titleStyle = batchRenameStyle(BatchRenameSheetLayout.Fonts.body, { $0.palette.textPrimary }, weight: .bold)
-        titleStyle.background = { $0.palette.bgElevated }
+        let titleStyle = batchRenameStyle(BatchRenameSheetLayout.Fonts.body, { $0.palette.textPrimary }, weight: .bold)
         titleLabel = ThemedText(BatchRenameSheetText.title(count: count), style: titleStyle)
         let small = BatchRenameSheetLayout.Fonts.small
         regexHint = ThemedText(
@@ -450,9 +449,8 @@ final class BatchRenameSheetView: DialogPanelView {
         let small = BatchRenameSheetLayout.Fonts.small
         presetMenu.presets = model.presets
         titleLabel.content = { [count = model.sheet?.targets.count ?? 0] theme in
-            var style = batchRenameStyle(BatchRenameSheetLayout.Fonts.body, { $0.palette.textPrimary }, weight: .bold)
-            style.background = { $0.palette.bgElevated }
-            return style.string(BatchRenameSheetText.title(count: count), theme)
+            batchRenameStyle(BatchRenameSheetLayout.Fonts.body, { $0.palette.textPrimary }, weight: .bold).string(
+                BatchRenameSheetText.title(count: count), theme)
         }
         setAccessibilityLabel(titleLabel.stringValue)
         // Header

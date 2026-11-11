@@ -13,8 +13,7 @@ final class RuntimeConflictAccessory: NSView, AlertAccessory, ThemeApplying {
 
     init(text: RuntimeConflictText) {
         cards = text.cards.map(ConflictCardView.init)
-        var style = TextStyle(font: ThemeFonts.sans(DesignTokens.typeScale.callout), color: { $0.palette.textPrimary })
-        style.background = { $0.palette.bgElevated }
+        let style = TextStyle(font: ThemeFonts.sans(DesignTokens.typeScale.callout), color: { $0.palette.textPrimary })
         checkboxLabel = ThemedText(text.checkboxLabel, style: style, wrapping: true)
         super.init(frame: .zero)
         setAccessibilityIdentifier("conflictAlert.accessory")
@@ -93,16 +92,13 @@ final class ConflictCardView: NSView, ThemeApplying {
     init(_ card: RuntimeConflictCard) {
         label = ThemedText { theme in
             singleLineText(
-                [(card.label, ThemeFonts.sans(DesignTokens.typeScale.small, .semibold), theme.palette.textSecondary)],
-                background: theme.palette.bgElevated)
+                [(card.label, ThemeFonts.sans(DesignTokens.typeScale.small, .semibold), theme.palette.textSecondary)])
         }
         name = ThemedText { theme in
             singleLineText(
-                [(card.name, ThemeFonts.sans(DesignTokens.typeScale.body, .medium), theme.palette.textPrimary)],
-                background: theme.palette.bgElevated)
+                [(card.name, ThemeFonts.sans(DesignTokens.typeScale.body, .medium), theme.palette.textPrimary)])
         }
-        var factsStyle = TextStyle(font: Self.font, color: { $0.palette.textSecondary })
-        factsStyle.background = { $0.palette.bgElevated }
+        let factsStyle = TextStyle(font: Self.font, color: { $0.palette.textSecondary })
         facts = ThemedText(card.facts, style: factsStyle, wrapping: true)
         super.init(frame: .zero)
         setAccessibilityElement(true)

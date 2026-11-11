@@ -255,14 +255,12 @@ final class SettingsListRow: ThemedView {
 
     private func applyColors() {
         let palette = theme.palette
-        let background =
-            showsAccent ? theme.accent.selectionBg : isSelected ? palette.bgActiveInactive : palette.settingsPageBg
         let primary =
             showsAccent
             ? theme.accent.onSelection : spec.disabled ? palette.settingsLabelSecondary : palette.textPrimary
         let secondary = showsAccent ? theme.accent.onSelection : palette.settingsLabelSecondary
-        nameText.textColor = NSColor(primary.flattened(over: background))
-        noteText.textColor = NSColor(palette.settingsLabelSecondary.flattened(over: background))
+        nameText.textColor = NSColor(primary)
+        noteText.textColor = NSColor(palette.settingsLabelSecondary)
         handle.contentTintColor = NSColor(showsAccent ? theme.accent.onSelection : palette.textTertiary)
         if let path = spec.path {
             let attributed = NSMutableAttributedString()
@@ -273,9 +271,7 @@ final class SettingsListRow: ThemedView {
                         string: SettingsText.missingApp,
                         attributes: [
                             .font: font,
-                            .foregroundColor: NSColor(
-                                (showsAccent ? theme.accent.onSelection : palette.dangerText).flattened(
-                                    over: background)),
+                            .foregroundColor: NSColor(showsAccent ? theme.accent.onSelection : palette.dangerText),
                         ]))
             }
             let paragraph = NSMutableParagraphStyle()
@@ -283,7 +279,7 @@ final class SettingsListRow: ThemedView {
             attributed.append(
                 NSAttributedString(
                     string: path,
-                    attributes: [.font: font, .foregroundColor: NSColor(secondary.flattened(over: background))]))
+                    attributes: [.font: font, .foregroundColor: NSColor(secondary)]))
             attributed.addAttribute(
                 .paragraphStyle, value: paragraph, range: NSRange(location: 0, length: attributed.length))
             pathText.attributedStringValue = attributed

@@ -214,8 +214,7 @@ extension ExplorerWindowlessTests {
             await close(harness)
         }
 
-        // The empty list's words are in the secondary color, a translucent one drawn flattened onto the panel; the
-        // field itself says the color meant.
+        // The empty list's words are in the secondary color, translucent as it is.
         @Test func theEmptyStateIsInTheSecondaryColor() async throws {
             let (harness, tab) = try await open()
             let box = try openBox(tab)
@@ -224,7 +223,7 @@ extension ExplorerWindowlessTests {
             let palette = AppearanceModel.shared.theme.palette
             #expect(box.emptyLabel.textColor == NSColor(palette.textSecondary))
             let drawn = box.emptyLabel.attributedStringValue.attribute(.foregroundColor, at: 0, effectiveRange: nil)
-            #expect((drawn as? NSColor) == NSColor(palette.textSecondary.flattened(over: palette.bgElevated)))
+            #expect((drawn as? NSColor) == NSColor(palette.textSecondary))
             #expect(box.emptyLabel.alignment == .center)
             await close(harness)
         }

@@ -227,10 +227,8 @@ final class BatchRenamePreviewHead: NSView, ThemeApplying {
 
     override init(frame: NSRect) {
         let style = batchRenameStyle(BatchRenameSheetLayout.Fonts.small, { $0.palette.textTertiary })
-        var onSurface = style
-        onSurface.background = { $0.palette.bgSurface }
-        nameLabel = ThemedText("Name", style: onSurface)
-        newNameLabel = ThemedText("New Name", style: onSurface)
+        nameLabel = ThemedText("Name", style: style)
+        newNameLabel = ThemedText("New Name", style: style)
         super.init(frame: frame)
         setAccessibilityIdentifier("batchRename.previewHead")
         setAccessibilityElement(false)

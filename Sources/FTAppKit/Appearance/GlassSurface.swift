@@ -14,8 +14,8 @@ enum GlassSurface {
     /// The corners of a sheet, as the system's.
     static let sheetRadius: CGFloat = 20
 
-    /// Text that would be secondary on an opaque surface is the primary color on glass: a translucent color is flattened
-    /// onto an opaque background (`TextStyle`), which reads too light over what shows through.
+    /// Text that would be secondary on an opaque surface is the primary color on glass: a translucent color reads too
+    /// light over what shows through.
     static func text(_ theme: Theme) -> RGBA {
         theme.palette.textPrimary
     }

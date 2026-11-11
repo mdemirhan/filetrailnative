@@ -55,18 +55,16 @@ final class AlertCard: DialogPanelView {
         let layout = DialogLayout.Alert.self
         // The system's alert on glass is left aligned too.
         let alignment: NSTextAlignment = content.wide || content.isOnGlass ? .left : .center
-        var titleStyle = TextStyle(
+        let titleStyle = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.body, .bold), color: { $0.palette.textPrimary },
             lineHeight: layout.titleLineHeight, alignment: alignment)
-        titleStyle.background = { $0.palette.bgElevated }
         titleLabel = ThemedText(content.title, style: titleStyle, wrapping: true)
         titleLabel.setAccessibilityIdentifier("alert.title")
         if let message = content.message, !message.isEmpty {
-            var style = TextStyle(
+            let style = TextStyle(
                 font: ThemeFonts.sans(DesignTokens.typeScale.small),
                 color: { [onGlass = content.isOnGlass] in onGlass ? GlassSurface.text($0) : $0.palette.textSecondary },
                 lineHeight: layout.messageLineHeight, alignment: alignment)
-            style.background = { $0.palette.bgElevated }
             let label = ThemedText(message, style: style, wrapping: true)
             label.setAccessibilityIdentifier("alert.message")
             messageLabel = label
@@ -290,10 +288,9 @@ final class DetailListView: NSView, AlertAccessory, ThemeApplying {
     private var theme = AppearanceModel.shared.theme
 
     init(lines: [String]) {
-        var style = TextStyle(
+        let style = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.small), color: { $0.palette.textSecondary },
             lineHeight: DialogLayout.DetailList.lineHeight)
-        style.background = { $0.palette.bgElevated }
         rows = lines.map { ThemedText($0, style: style, wrapping: true) }
         super.init(frame: .zero)
         setAccessibilityIdentifier("alert.detailList")

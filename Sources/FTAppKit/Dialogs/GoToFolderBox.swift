@@ -379,9 +379,7 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
         superview?.needsLayout = true
     }
 
-    /// The labels' text in their colors. A translucent color (the secondary text's) is drawn flattened onto the panel,
-    /// since AppKit applies a label's text alpha twice and draws it too dark; the field's own color stays the one
-    /// meant.
+    /// The labels' text in their colors.
     private func styleLabels() {
         let palette = theme.palette
         let labels: [(NSTextField, RGBA)] = [
@@ -393,11 +391,10 @@ final class GoToFolderBox: DialogPanelView, NSTextFieldDelegate {
             let paragraph = NSMutableParagraphStyle()
             paragraph.alignment = label.alignment
             paragraph.lineBreakMode = label.lineBreakMode
-            let shown = color.alpha < 1 ? color.flattened(over: palette.bgElevated) : color
             label.attributedStringValue = NSAttributedString(
                 string: label.stringValue,
                 attributes: [
-                    .font: label.font ?? Self.hintFont, .foregroundColor: NSColor(shown), .paragraphStyle: paragraph,
+                    .font: label.font ?? Self.hintFont, .foregroundColor: NSColor(color), .paragraphStyle: paragraph,
                 ])
         }
     }

@@ -81,19 +81,16 @@ final class ResultSectionView: NSView {
 
     init(_ section: ResultSectionText) {
         self.section = section
-        var titleStyle = TextStyle(
+        let titleStyle = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.small, .semibold), color: { $0.palette.textSecondary })
-        titleStyle.background = { $0.palette.bgElevated }
         titleLabel = ThemedText(section.label, style: titleStyle)
         let danger = section.tone == .danger
-        var detailStyle = TextStyle(
+        let detailStyle = TextStyle(
             font: Self.font, color: { danger ? $0.palette.danger : $0.palette.textSecondary })
-        detailStyle.background = { $0.palette.bgElevated }
         rows = section.rows.map { row in
             let path = ThemedText { theme in
                 singleLineText(
-                    [(row.path, ThemeFonts.sans(DesignTokens.typeScale.body, .medium), theme.palette.textPrimary)],
-                    background: theme.palette.bgElevated)
+                    [(row.path, ThemeFonts.sans(DesignTokens.typeScale.body, .medium), theme.palette.textPrimary)])
             }
             path.lineBreakMode = .byTruncatingTail
             path.toolTip = row.path
@@ -102,8 +99,7 @@ final class ResultSectionView: NSView {
             detail.setAccessibilityIdentifier("resultSheet.row.detail")
             return (path, detail)
         }
-        var moreStyle = TextStyle(font: Self.font, color: { $0.palette.textSecondary })
-        moreStyle.background = { $0.palette.bgElevated }
+        let moreStyle = TextStyle(font: Self.font, color: { $0.palette.textSecondary })
         moreLabel = section.more.map { ThemedText($0, style: moreStyle) }
         super.init(frame: .zero)
         setAccessibilityElement(true)

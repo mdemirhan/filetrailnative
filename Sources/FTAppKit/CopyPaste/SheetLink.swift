@@ -66,19 +66,15 @@ final class SheetLink: TextControl {
 
 /// One line of text, never wrapped, cut short with an ellipsis at the end when it doesn't fit.
 @MainActor
-func singleLineText(_ runs: [(String, NSFont, RGBA)], background: RGBA) -> NSAttributedString {
+func singleLineText(_ runs: [(String, NSFont, RGBA)]) -> NSAttributedString {
     let paragraph = NSMutableParagraphStyle()
     paragraph.lineBreakMode = .byTruncatingTail
     let text = NSMutableAttributedString()
     for (string, font, color) in runs {
-        let shown = color.alpha < 1 ? color.flattened(over: background) : color
-        text.append(
-            NSAttributedString(
-                string: string,
-                attributes: [
-                    .font: font, .foregroundColor: NSColor(shown), .paragraphStyle: paragraph,
-                    .reportedColor: NSColor(color),
-                ]))
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font, .foregroundColor: NSColor(color), .paragraphStyle: paragraph,
+        ]
+        text.append(NSAttributedString(string: string, attributes: attributes))
     }
     return text
 }

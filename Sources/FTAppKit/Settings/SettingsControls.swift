@@ -16,15 +16,11 @@ protocol SettingsSized: NSView {
 /// The text styles of Settings.
 @MainActor
 enum SettingsStyle {
-    static let background: @MainActor (Theme) -> RGBA = { $0.palette.settingsPageBg }
-
     static func style(
         _ size: Double, _ weight: NSFont.Weight = .regular, lineHeight: Double? = nil,
         color: @escaping @MainActor (Theme) -> RGBA
     ) -> TextStyle {
-        var style = TextStyle(font: ThemeFonts.sans(size, weight), color: color, lineHeight: lineHeight)
-        style.background = background
-        return style
+        TextStyle(font: ThemeFonts.sans(size, weight), color: color, lineHeight: lineHeight)
     }
 
     /// A row's title, a list row's name, a shortcut's label.
@@ -352,7 +348,7 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
 
     func applyTheme(_ theme: Theme) {
         self.theme = theme
-        unit.textColor = NSColor(theme.palette.settingsLabelSecondary.flattened(over: theme.palette.settingsPageBg))
+        unit.textColor = NSColor(theme.palette.settingsLabelSecondary)
     }
 
     /// The value changed elsewhere: the field shows it.

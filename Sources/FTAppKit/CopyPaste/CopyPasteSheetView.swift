@@ -36,15 +36,13 @@ class CopyPasteSheetView: DialogPanelView {
 
     init(identifier: String) {
         let layout = CopyPasteSheetLayout.self
-        var titleStyle = TextStyle(
+        let titleStyle = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.body, .bold), color: { $0.palette.textPrimary },
             lineHeight: layout.titleLineHeight)
-        titleStyle.background = { $0.palette.bgElevated }
         titleLabel = ThemedText("", style: titleStyle, wrapping: true)
-        var messageStyle = TextStyle(
+        let messageStyle = TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.callout), color: { $0.palette.textSecondary },
             lineHeight: layout.messageLineHeight)
-        messageStyle.background = { $0.palette.bgElevated }
         messageLabel = ThemedText("", style: messageStyle, wrapping: true)
         self.titleStyle = titleStyle
         self.messageStyle = messageStyle
@@ -254,11 +252,9 @@ final class FooterNoteView: NSView {
     override var isFlipped: Bool { true }
 
     private static func style(warning: Bool) -> TextStyle {
-        var style = TextStyle(
+        TextStyle(
             font: ThemeFonts.sans(DesignTokens.typeScale.body),
             color: { warning ? $0.palette.textPrimary : $0.palette.textSecondary })
-        style.background = { $0.palette.bgElevated }
-        return style
     }
 
     func set(_ text: String, warning: Bool) {
