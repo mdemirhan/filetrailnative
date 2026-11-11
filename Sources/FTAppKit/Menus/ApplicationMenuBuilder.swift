@@ -7,6 +7,8 @@ struct ApplicationMenuOptions {
     var shortcuts: ShortcutBindings = ShortcutCommands.defaultBindings
     /// The text editor chosen in Settings → Files, which File names.
     var textEditorName: String?
+    /// What the startup disk is called, which Go names.
+    var startupDiskName = VolumePaths.defaultStartupDiskName
 }
 
 /// The menu bar and where its parts are.
@@ -147,7 +149,7 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.goDownloads, "Downloads"))
             menu.addItem(context.command(.goHomeRootTree, "Home"))
             menu.addItem(context.command(.goLibrary, "Library"))
-            menu.addItem(context.command(.goMacintoshHD, "Macintosh HD"))
+            menu.addItem(context.command(.goMacintoshHD, options.startupDiskName))
             menu.addItem(context.command(.goApplications, "Applications"))
             menu.addItem(context.command(.goTrash, "Trash"))
             menu.addItem(.separator())

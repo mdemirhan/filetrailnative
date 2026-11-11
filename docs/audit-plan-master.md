@@ -2504,3 +2504,6 @@ anything that differed from the plan, and anything found on the way that is not 
   found a composed one. Not driven in the app: its automation types by key codes and has no key for "é".
 - 2026-11-11. 8.5: seen in the app with the Trash as a favorite: selecting it in the sidebar, File ▸ Remove from
   Favorites takes it out.
+- 2026-11-11. The Phase 8 review found nothing serious. Taken from it: the Go menu's item for `/` now follows the
+  disk's name too (the Shortcuts row and Help keep "Macintosh HD"). Its claim that Finder's Go menu names the disk
+  does not hold (Finder has no disk item); the item follows because the rest of the window shows the real name.

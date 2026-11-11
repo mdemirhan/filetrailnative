@@ -64,6 +64,13 @@ import Testing
         #expect(file(nil).contains("Edit in Text Editor"))
     }
 
+    @Test func namesTheStartupDiskInGoByItsName() {
+        let go = { (name: String) in titles(submenu(self.build(.init(startupDiskName: name)).0.menu, "Go")) }
+        #expect(go("Data").contains("Data"))
+        #expect(!go("Data").contains("Macintosh HD"))
+        #expect(titles(submenu(build().0.menu, "Go")).contains("Macintosh HD"))
+    }
+
     @Test func namesTheAppItselfRatherThanItsPackage() {
         let (built, _) = build()
         let appMenu = submenu(built.menu, "File Trail")

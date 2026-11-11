@@ -15,6 +15,9 @@ public final class MainMenu {
     /// The keys chosen in Settings → Shortcuts, and the text editor Settings → Files names. Read at every build.
     var shortcuts: () -> ShortcutBindings = { ShortcutCommands.defaultBindings }
     var textEditorName: () -> String? = { nil }
+    /// What the startup disk is called, which Go names; the menu is built again when it is renamed.
+    var startupDiskName: () -> String = { StartupDisk.shared.name }
+    private var renameObserver: (any NSObjectProtocol)?
 
     /// `focusedWindow` is the window that has the keyboard; a test whose windows are never shown names its own.
     init(windows: any ExplorerWindowListing, focusedWindow: @escaping () -> NSWindow? = { NSApp.keyWindow }) {
@@ -48,7 +51,8 @@ public final class MainMenu {
     func build() {
         let result = ApplicationMenuBuilder.build(
             target: router,
-            options: ApplicationMenuOptions(shortcuts: shortcuts(), textEditorName: textEditorName()))
+            options: ApplicationMenuOptions(
+                shortcuts: shortcuts(), textEditorName: textEditorName(), startupDiskName: startupDiskName()))
         built = result
         index = MenuItemIndex(result, router: router)
         // The enabled flags belong to the old items; the new ones start on.
@@ -58,6 +62,13 @@ public final class MainMenu {
         NSApp.windowsMenu = result.windowsMenu
         NSApp.helpMenu = result.helpMenu
         sync.menuBuilt()
+        if renameObserver == nil {
+            renameObserver = NotificationCenter.default.addObserver(
+                forName: StartupDisk.nameChanged, object: nil, queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated { self?.build() }
+            }
+        }
     }
 
     /// While Settings has the keyboard the explorer's commands do not apply, and its Undo is its text fields'. A
