@@ -135,45 +135,78 @@ private struct NoSuchFile: Error {}
 
 @Suite struct TrashStateTests {
     private static func reader(_ folders: [String: Result<[String], POSIXError>]) -> TrashState.Reader {
-        { path in
+        { path, matches in
             guard let found = folders[path] else { throw POSIXError(.ENOENT) }
-            return try found.get()
+            return try found.get().first(where: matches)
         }
+    }
+
+    private static func isEmpty(_ read: @escaping TrashState.Reader) -> Bool? {
+        TrashState.isEmpty(home: "/Users/demo", uid: 501, listMounts: { mounts }, read: read)
     }
 
     @Test func isEmptyWhenNoTrashHoldsAnythingButFindersDSStore() {
         let read = Self.reader([
             "/Users/demo/.Trash": .success([".DS_Store"]),
-            "/Volumes": .success(["Macintosh HD", "USB"]),
             "/Volumes/USB/.Trashes/501": .success([]),
         ])
-        #expect(TrashState.isEmpty(home: "/Users/demo", uid: 501, read: read) == true)
+        #expect(Self.isEmpty(read) == true)
     }
 
     // Finder's Empty Trash empties every disk's Trash, so one with items makes it worth it.
     @Test func isntEmptyWhenAnotherDisksTrashHoldsSomething() {
         let read = Self.reader([
             "/Users/demo/.Trash": .success([]),
-            "/Volumes": .success(["USB"]),
             "/Volumes/USB/.Trashes/501": .success(["old.txt"]),
         ])
-        #expect(TrashState.isEmpty(home: "/Users/demo", uid: 501, read: read) == false)
+        #expect(Self.isEmpty(read) == false)
     }
 
     // Without Full Disk Access macOS refuses to list the Trash: nothing says it is empty.
     @Test func cantTellWhenTheTrashCantBeRead() {
         let read = Self.reader([
-            "/Users/demo/.Trash": .failure(POSIXError(.EPERM)),
-            "/Volumes": .success([]),
+            "/Users/demo/.Trash": .failure(POSIXError(.EPERM))
         ])
-        #expect(TrashState.isEmpty(home: "/Users/demo", uid: 501, read: read) == nil)
+        #expect(Self.isEmpty(read) == nil)
     }
 
-    @Test func readsTheRealDirectoryListing() throws {
+    // A network share has no Trash, and reading one may stall: only the home folder's and the local disks' are read,
+    // and the first name that counts ends the reading.
+    @Test func readsOnlyTheLocalDisksTrashesAndStopsAtTheFirstItem() {
+        let asked = ScriptLog()
+        let looked = ScriptLog()
+        let read: TrashState.Reader = { path, matches in
+            asked.add(path)
+            for name in [".DS_Store", "a.txt", "b.txt"] {
+                looked.add(name)
+                if matches(name) { return name }
+            }
+            return nil
+        }
+        #expect(Self.isEmpty(read) == false)
+        #expect(asked.sources == ["/Users/demo/.Trash"])
+        #expect(looked.sources == [".DS_Store", "a.txt"])
+
+        let askedOfEmpty = ScriptLog()
+        let none: TrashState.Reader = { path, _ in
+            askedOfEmpty.add(path)
+            return nil
+        }
+        #expect(Self.isEmpty(none) == true)
+        #expect(
+            askedOfEmpty.sources == [
+                "/Users/demo/.Trash", "/Volumes/Share 2/.Trashes/501", "/Volumes/USB/.Trashes/501",
+            ])
+    }
+
+    @Test func readsTheRealDirectoryListingUpToTheFirstMatch() throws {
         try withTemporaryDirectory { root in
             try Data().write(to: root.appending("a.txt"))
-            #expect(try TrashState.readDirectory(root.path) == ["a.txt"])
-            #expect(throws: POSIXError.self) { try TrashState.readDirectory(root.appending("missing").path) }
+            #expect(try TrashState.readDirectory(root.path) { _ in true } == "a.txt")
+            #expect(try TrashState.readDirectory(root.path) { $0 != "a.txt" } == nil)
+            #expect(throws: POSIXError.self) {
+                try TrashState.readDirectory(root.appending("missing").path) { _ in true }
+            }
         }
     }
 }

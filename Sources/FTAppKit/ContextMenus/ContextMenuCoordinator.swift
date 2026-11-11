@@ -88,9 +88,12 @@ final class ContextMenuCoordinator: ContextMenuResponder {
             subject, world, clipboardSourcePaths: clipboardSourcePaths())
         world.hasPasteDestination = destination != nil
         world.canPaste = clipboardHasItems && destination != nil
-        // Whether the Trash has anything to empty is looked at only where Empty Trash could show.
+        // Whether the Trash has anything to empty matters only where Empty Trash could show. The menu goes by what the
+        // tab last read, as reading the Trashes here would hold the menu up behind a slow disk; it is read again behind
+        // the menu, for the Trash's bar and the next menu.
         if showsEmptyTrash(subject, world) {
-            world.trashIsEmpty = TrashState.isEmpty(home: home, uid: getuid())
+            world.trashIsEmpty = tab.trashIsEmpty
+            tab.refreshTrashState()
         }
         let preferences = tab.preferences
         let isTree = subject.surface == .treeFolder || subject.surface == .favorite

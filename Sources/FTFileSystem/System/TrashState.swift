@@ -2,35 +2,37 @@ import Darwin
 import Foundation
 
 public enum TrashState {
-    /// Lists a folder's names; throws a `POSIXError` as `readdir` does.
-    public typealias Reader = @Sendable (String) throws -> [String]
+    /// The first name in a folder that `matches`, nil when none does; throws a `POSIXError` as `readdir` does. It stops
+    /// at that name: a Trash with thousands of items is not read in full to tell it has one.
+    public typealias Reader = @Sendable (_ folder: String, _ matches: (String) -> Bool) throws -> String?
 
-    public static let readDirectory: Reader = { path in
+    public static let readDirectory: Reader = { path, matches in
         guard let directory = opendir(path) else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
         defer { closedir(directory) }
-        var names: [String] = []
         while let entry = readdir(directory) {
             let name = withUnsafePointer(to: &entry.pointee.d_name) {
                 $0.withMemoryRebound(to: CChar.self, capacity: Int(MAXPATHLEN)) { String(cString: $0) }
             }
-            if name != "." && name != ".." { names.append(name) }
+            if name != "." && name != ".." && matches(name) { return name }
         }
-        return names
+        return nil
     }
 
-    /// Whether the Trashes hold anything Finder's Empty Trash would erase: the home folder's, and each other disk's
-    /// for this user. Finder's own .DS_Store doesn't count. `nil` when a Trash can't be read (without Full Disk
-    /// Access, macOS refuses to list it): Empty Trash then stays available, as nothing says it has nothing to do.
-    /// Returns `empty`.
-    public static func isEmpty(home: String, uid: UInt32, read: Reader = readDirectory) -> Bool? {
-        var trashes = [home + "/.Trash"]
-        let volumes = (try? read("/Volumes")) ?? []
-        for volume in volumes { trashes.append("/Volumes/\(volume)/.Trashes/\(uid)") }
+    /// Whether the Trashes hold anything Finder's Empty Trash would erase: the home folder's, and this user's on each
+    /// other local disk, as `TrashFolders` has them (a network share has no Trash, and reading one may stall). Finder's
+    /// own .DS_Store doesn't count. `nil` when a Trash can't be read (without Full Disk Access, macOS refuses to list
+    /// it): Empty Trash then stays available, as nothing says it has nothing to do. Returns `empty`.
+    public static func isEmpty(
+        home: String, uid: UInt32, listMounts: @escaping @Sendable () -> [Mount] = MountTable.list,
+        read: Reader = readDirectory
+    ) -> Bool? {
+        let folders = TrashFolders(homePath: home, uid: uid, listMounts: listMounts)
+        let trashes = [folders.home] + folders.onOtherDisks
         var unknown = false
         for (index, trash) in trashes.enumerated() {
-            let names: [String]
+            let found: String?
             do {
-                names = try read(trash)
+                found = try read(trash) { $0 != ".DS_Store" }
             } catch {
                 let code = (error as? POSIXError)?.code
                 // Another disk without a Trash of this user's has nothing to empty.
@@ -38,7 +40,7 @@ public enum TrashState {
                 unknown = true
                 continue
             }
-            if names.contains(where: { $0 != ".DS_Store" }) { return false }
+            if found != nil { return false }
         }
         return unknown ? nil : true
     }

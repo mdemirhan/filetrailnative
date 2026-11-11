@@ -603,6 +603,26 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
+        // The Trash's Empty Trash goes by what the tab last read, so a slow disk does not hold the menu up; the Trashes
+        // are read again behind the menu, and the next menu has that answer.
+        @Test func emptyTrashGoesByTheLastAnswerAndTheTrashIsReadAgainBehindTheMenu() async throws {
+            let harness = try ExplorerHarness.windowless()
+            let tab = try await opened(harness)
+            let trash = FavoriteLabel.trashPath(homePath: FileManager.default.homeDirectoryForCurrentUser.path)
+            let request = SidebarContextMenuRequest(
+                item: TreePresentationItem(
+                    id: .favorite(trash), kind: .favorite, label: "Trash", depth: 0, path: trash, parentID: nil,
+                    expanded: false, canExpand: false),
+                subview: .favorites, kind: .favorite)
+            await settle()
+            tab.trashIsEmptyReader = { false }
+            tab.trashIsEmpty = true
+            #expect(item(tab.contextMenus.sidebarMenu(for: request), "Empty Trash…") == nil)
+            #expect(await waitUntil { tab.trashIsEmpty == false })
+            #expect(item(tab.contextMenus.sidebarMenu(for: request), "Empty Trash…") != nil)
+            await harness.close()
+        }
+
         // A menu that closes lets go of its own hold only: a sheet that came up meanwhile (a background copy's
         // result) keeps the list as it is.
         @Test func aMenuClosingLeavesASheetsHoldInPlace() async throws {
