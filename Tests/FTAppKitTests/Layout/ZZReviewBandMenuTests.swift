@@ -36,25 +36,20 @@ extension ExplorerWindowlessTests {
             await harness.close()
         }
 
-        // A button's tooltip, which starts in the band (under the button), is drawn over the title bar too.
-        @Test func aTooltipInTheBandIsOverTheTitleBar() async throws {
+        // A toolbar button's tooltip is the system's: there while it can be used, quiet while its menu is open.
+        @Test func aToolbarButtonsTooltipIsTheSystemsWhileItCanBeUsed() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open()
-            harness.layout(tab)
-            let window = try #require(tab.window)
-            let workspace = tab.workspace
-            let frameView = try #require(window.contentView?.superview)
-            let back = try #require(tab.explorerToolbar.button(.back))
-            let tooltips = TooltipController.of(window)
-            tooltips.scheduler.onShow(back, "Back")
-            let bubble = try #require(Views.first(TooltipBubble.self, in: frameView))
-            let top = frameView.subviews.last
-            #expect(top is WindowOverlayView)
-            #expect(top.map { bubble.isDescendant(of: $0) } == true)
-            let rect = workspace.convert(bubble.bounds, from: bubble)
-            #expect(rect.minY < WindowMetrics.standard.toolbar.minHeight, "\(rect)")
-            tooltips.scheduler.onHide()
-            TooltipController.remove(window)
+            let button = try #require(tab.explorerToolbar.button(.sort))
+            button.isEnabled = true
+            button.tooltip = "Sort"
+            #expect(button.toolTip == "Sort")
+            button.menuOpen = true
+            #expect(button.toolTip == nil)
+            button.menuOpen = false
+            #expect(button.toolTip == "Sort")
+            button.isEnabled = false
+            #expect(button.toolTip == nil)
             await harness.close()
         }
 

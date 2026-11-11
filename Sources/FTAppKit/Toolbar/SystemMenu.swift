@@ -265,7 +265,6 @@ final class AppMenuPresenter {
             guard let menu, self?.menu === menu, self?.isMoving == false else { return }
             self?.close()
         }
-        TooltipController.of(window).scheduler.dismiss()
         let place = place(of: menu, at: origin, positioning: positioning, in: host)
         self.host = host
         self.place = place

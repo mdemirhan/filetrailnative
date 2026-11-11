@@ -8,7 +8,7 @@ import FTFoundation
 /// for the buttons that do more than click (Back's and Forward's hold and right-click). Tab reaches it from the search
 /// field and from the buttons beside it (`ToolbarKeyboard`), where Return or Space presses it; a click leaves the
 /// keyboard where it is.
-class ToolbarButton: NSButton, TooltipAnchor {
+class ToolbarButton: NSButton {
     var iconName: ToolbarIconName {
         didSet {
             if iconName != oldValue { image = ToolbarGlyph.image(iconName) }
@@ -31,14 +31,16 @@ class ToolbarButton: NSButton, TooltipAnchor {
             // The system's menu took the release of a press that opened it (a hold on Back).
             if !menuOpen { pressed = false }
             syncState()
+            syncToolTip()
             setAccessibilityExpanded(menuOpen)
         }
     }
-    /// The tooltip (`title`); an icon button has no visible label.
+    /// The tooltip; an icon button has no visible label. The system shows it (`toolTip`) while the button can be used
+    /// and its menu isn't open.
     var tooltip = "" {
         didSet {
             setAccessibilityHelp(tooltip)
-            TooltipController.refreshIfShowing(self)
+            syncToolTip()
         }
     }
     /// `aria-haspopup="menu"` of the buttons that open a menu, which a dimmed history button doesn't say.
@@ -46,7 +48,6 @@ class ToolbarButton: NSButton, TooltipAnchor {
     private var takingKeyboard = false
     private var pressed = false
     private var pressLeft = false
-    private var hoverArea: NSTrackingArea?
     /// Finder's icon button. The toolbar's control size gives the system's height of 36, but its width grows with the
     /// image, and the glyph's box has room to spare.
     static let iconOnlyWidth = 36.0
@@ -77,13 +78,21 @@ class ToolbarButton: NSButton, TooltipAnchor {
         willSet {
             if !newValue { letKeyboardGo() }
         }
-        didSet { syncRole() }
+        didSet {
+            syncRole()
+            syncToolTip()
+        }
     }
 
     /// The button is about to stop taking the keyboard: if it has it, it goes back to the pane.
     func letKeyboardGo() {
         guard let window, window.firstResponder === self else { return }
         (window.windowController as? MainWindowController)?.keyboardBackToPane()
+    }
+
+    private func syncToolTip() {
+        let shown = isEnabled && !menuOpen && !tooltip.isEmpty ? tooltip : nil
+        if toolTip != shown { toolTip = shown }
     }
 
     private func syncRole() {
@@ -100,28 +109,6 @@ class ToolbarButton: NSButton, TooltipAnchor {
     override var intrinsicContentSize: NSSize {
         let size = super.intrinsicContentSize
         return imagePosition == .imageOnly ? NSSize(width: Self.iconOnlyWidth, height: size.height) : size
-    }
-
-    var tooltipText: String { isEnabled ? tooltip : "" }
-    var tooltipIsQuiet: Bool { menuOpen }
-
-    override func updateTrackingAreas() {
-        super.updateTrackingAreas()
-        if let hoverArea { removeTrackingArea(hoverArea) }
-        let area = NSTrackingArea(
-            rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect], owner: self)
-        addTrackingArea(area)
-        hoverArea = area
-    }
-
-    override func mouseEntered(with event: NSEvent) {
-        super.mouseEntered(with: event)
-        if let window { TooltipController.of(window).hover(self) }
-    }
-
-    override func mouseExited(with event: NSEvent) {
-        super.mouseExited(with: event)
-        if let window { TooltipController.of(window).hover(nil) }
     }
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
@@ -353,14 +340,5 @@ enum ToolbarKeyboard {
         case let clear as KeyboardStopView: clear.takeKeyboard()
         default: window.makeFirstResponder(stop)
         }
-    }
-}
-
-extension TooltipController {
-    /// A tooltip showing for `anchor` takes up its new text.
-    static func refreshIfShowing(_ anchor: TooltipAnchor & NSView) {
-        guard let window = anchor.window else { return }
-        let controller = of(window)
-        if controller.scheduler.anchor === anchor { controller.scheduler.refresh() }
     }
 }

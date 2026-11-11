@@ -33,12 +33,10 @@ enum WindowEventRouting {
 
     static func forget(_ window: NSWindow) {
         interceptors.removeValue(forKey: ObjectIdentifier(window))
-        TooltipController.remove(window)
     }
 
     /// True when something took the event.
     static func intercept(_ event: NSEvent, in window: NSWindow) -> Bool {
-        TooltipController.of(window).observe(event)
         if AppMenuPresenter.shared.intercept(event, in: window) { return true }
         for interceptor in interceptors[ObjectIdentifier(window)] ?? [] where interceptor.handle(event) {
             return true

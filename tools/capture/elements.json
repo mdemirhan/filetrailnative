@@ -153,7 +153,6 @@
     "toolbar menu": {"electron":{"selector":".toolbar-menu:not(.history-menu):not(.toolbar-search-menu)"},"swift":"toolbarMenu"},
     "toolbar menu item": {"electron":{"selector":".toolbar-menu:not(.history-menu):not(.toolbar-search-menu) .toolbar-menu-item","textSelector":".toolbar-menu-label"},"swift":"toolbarMenu.item","text":true},
     "checked toolbar menu item": {"electron":{"selector":".toolbar-menu:not(.history-menu):not(.toolbar-search-menu) .toolbar-menu-item[aria-checked=\"true\"]","textSelector":".toolbar-menu-label"},"swift":"toolbarMenu.item.checked","geometry":false},
-    "tooltip": {"electron":{"selector":".app-tooltip"},"swift":"tooltip","text":true},
     "sidebar sections area": {"electron":{"selector":".tree-pane .sidebar-sections"},"swift":"sidebar.sections"},
     "sidebar folders header": {"electron":{"selector":".tree-pane .sidebar-header"},"swift":"sidebar.foldersHeader"},
     "sidebar folders title": {"electron":{"selector":".tree-pane .sidebar-header .sidebar-title"},"swift":"sidebar.foldersTitle","text":true},

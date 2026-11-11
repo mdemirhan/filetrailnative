@@ -90,23 +90,7 @@ public struct ProgressCardLayout: Equatable, Sendable {
     }
 }
 
-/// The app's tooltips.
-public struct TooltipLayout: Equatable, Sendable {
-    public var paddingTop: Double
-    public var paddingLeading: Double
-    public var paddingBottom: Double
-    public var paddingTrailing: Double
-    public var maxWidth: Double
-    public var lineHeight: Double
-
-    static func make() -> TooltipLayout {
-        TooltipLayout(
-            paddingTop: 3, paddingLeading: 8, paddingBottom: 3, paddingTrailing: 8, maxWidth: 420, lineHeight: 1.35)
-    }
-}
-
 extension DesignTokens {
-    public static let tooltip = TooltipLayout.make()
     public static let menu = MenuLayout.make()
     public static let toast = ToastLayout.make()
     public static let progressCard = ProgressCardLayout.make()

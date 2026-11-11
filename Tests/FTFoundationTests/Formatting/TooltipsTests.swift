@@ -112,25 +112,6 @@ struct TooltipsTests {
         #expect(tooltip(.copySelection) == "Copy (⌘C)")
     }
 
-    @Test func placesTheTooltipUnderAControlFlipsAboveNearTheBottomAndStaysOnScreen() {
-        let viewport = TitleTooltips.Size(width: 1000, height: 800)
-        let bubble = TitleTooltips.Size(width: 80, height: 20)
-        #expect(
-            TitleTooltips.placement(
-                anchor: .init(left: 300, top: 10, right: 330, bottom: 38, width: 30), bubble: bubble, viewport: viewport
-            )
-                == TitleTooltips.Placement(left: 275, top: 44))
-        #expect(
-            TitleTooltips.placement(
-                anchor: .init(left: 40, top: 760, right: 70, bottom: 788, width: 30), bubble: bubble, viewport: viewport
-            )
-                == TitleTooltips.Placement(left: 15, top: 734))
-        #expect(
-            TitleTooltips.placement(
-                anchor: .init(left: 980, top: 10, right: 998, bottom: 38, width: 18), bubble: bubble, viewport: viewport
-            ).left == 914)
-    }
-
     @Test func tabLabels() {
         #expect(
             TabText.describe(

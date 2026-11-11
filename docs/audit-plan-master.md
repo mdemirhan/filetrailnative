@@ -937,7 +937,7 @@ Decision 1 makes the comparison itself obsolete.
 Also reported unread by the second audit (prove each): members of `SidebarLayout`, `ExplorerLayout` and
 `SettingsMetrics`, and eleven `SearchLayout` fields at `Search/SearchLayout.swift:26`.
 
-### [ ] 5.5. The second tooltip system (about 330 lines, 250 of tests)
+### [x] 5.5. The second tooltip system (about 330 lines, 250 of tests)
 
 - Delete `Sources/FTAppKit/Tooltips/TooltipController.swift` and `TooltipScheduler.swift`; `TitleTooltips` in
   `Sources/FTFoundation/Formatting/Tooltips.swift` (keep `toolbarItemLabel`/`toolbarItemTooltip` if used); the
@@ -2163,3 +2163,7 @@ anything that differed from the plan, and anything found on the way that is not 
   `RGBA.hexString`, which tests in two bundles read and the shared test support can't hold (it doesn't see
   FTFoundation); the accent test spells colours as the golden does by itself. Found, not fixed: `Metrics`' members
   other than `explorer`, `toolbar` and `controlHeights` may have no reader but `MetricsTests`.
+- 2026-11-11. 5.5: the toolbar's and the Info panel's icon buttons show the system's tooltip (`toolTip`), set while
+  the button can be used and, on the toolbar, while its menu isn't open. `TooltipLayout`/`DesignTokens.tooltip` went
+  with the controller; the test of the bubble over the title bar is now one of the system tooltip's state.
+  `tooltip` stays as the text the buttons are given (and their accessibility help).

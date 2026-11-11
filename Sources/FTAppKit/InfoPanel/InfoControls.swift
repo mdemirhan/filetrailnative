@@ -95,20 +95,21 @@ enum InfoGlyph {
     }
 }
 
-/// An icon-only button of the Info views: a glyph, a hover fill, a tooltip (`title`) once the pointer has rested.
-final class InfoIconButton: NSView, TooltipAnchor {
+/// An icon-only button of the Info views: a glyph, a hover fill, and the system's tooltip while it can be used.
+final class InfoIconButton: NSView {
     var glyph: InfoGlyph { didSet { needsDisplay = true } }
     var onClick: (() -> Void)?
     var tooltip = "" {
         didSet {
             setAccessibilityHelp(tooltip)
-            TooltipController.refreshIfShowing(self)
+            syncToolTip()
         }
     }
     var isEnabled = true {
         didSet {
             alphaValue = isEnabled ? 1 : DesignTokens.disabledOpacity
             needsDisplay = true
+            syncToolTip()
         }
     }
     /// The size of the drawn glyph and its stroke width (box units).
@@ -138,8 +139,11 @@ final class InfoIconButton: NSView, TooltipAnchor {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
-    var tooltipText: String { isEnabled ? tooltip : "" }
-    var tooltipIsQuiet: Bool { false }
+
+    private func syncToolTip() {
+        let shown = isEnabled && !tooltip.isEmpty ? tooltip : nil
+        if toolTip != shown { toolTip = shown }
+    }
 
     override func draw(_ dirtyRect: NSRect) {
         let theme = infoTheme
@@ -163,12 +167,10 @@ final class InfoIconButton: NSView, TooltipAnchor {
 
     override func mouseEntered(with event: NSEvent) {
         isHovered = true
-        if let window { TooltipController.of(window).hover(self) }
     }
 
     override func mouseExited(with event: NSEvent) {
         isHovered = false
-        if let window { TooltipController.of(window).hover(nil) }
     }
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
