@@ -103,13 +103,11 @@ step() {
     fi
 }
 
-# The files changed on this branch, committed or not, and in commits not yet on GitHub. A file moved counts at both its
-# places: the bundle it left must run too.
+# The files the last commit changed, and those changed since and not committed yet, new files included: what a check
+# before or right after a commit is about. A file moved counts at both its places: the bundle it left must run too.
 changed_files() {
     {
-        git diff --name-only --no-renames main...HEAD
-        git diff --name-only --no-renames origin/main...HEAD
-        git diff --name-only --no-renames HEAD
+        git diff --name-only --no-renames HEAD~1
         git ls-files --others --exclude-standard
     } 2>/dev/null | sort -u
 }
@@ -148,17 +146,18 @@ affected_bundles() {
 bundles=""
 if [ "$affected" = 1 ]; then
     changed="$(changed_files)"
-    if ! git rev-parse --verify -q 'main^{commit}' >/dev/null; then
-        # No main to compare with: what changed can't be told, so all of it runs, the format lint included.
+    if ! git rev-parse --verify -q 'HEAD~1^{commit}' >/dev/null; then
+        # No commit before this one to compare with: what changed can't be told, so all of it runs, the format lint
+        # included.
         bundles=all
         affected=0
-        echo "affected: all (no main to compare with)" >>"$out"
+        echo "affected: all (no previous commit to compare with)" >>"$out"
     elif [ -z "$changed" ]; then
-        # Nothing to go by (on main, everything pushed): a run that checked nothing would pass, so all of it runs,
-        # the format lint included.
+        # Nothing to go by (an empty commit, nothing changed since): a run that checked nothing would pass, so all of
+        # it runs, the format lint included.
         bundles=all
         affected=0
-        echo "affected: all (no file changed on this branch)" >>"$out"
+        echo "affected: all (no file changed since the previous commit)" >>"$out"
     else
         bundles="$(echo "$changed" | affected_bundles)"
         echo "affected: $bundles" >>"$out"

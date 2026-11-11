@@ -146,7 +146,7 @@ While working on the code:
 ```bash
 scripts/ci.sh                      # the app and the tests built with zero warnings, the tests, format lint
 scripts/ci.sh --scope <filter>     # the same, with only the tests a swift test filter names
-scripts/ci.sh --affected           # the same, with only the test bundles the changed files can reach
+scripts/ci.sh --affected           # the same, with only the bundles the last commit and uncommitted changes reach
 scripts/ci.sh --full               # all of it built from clean, and the release app as well
 ```
 

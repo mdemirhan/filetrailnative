@@ -2568,3 +2568,7 @@ anything that differed from the plan, and anything found on the way that is not 
   were left for after it (their web-term comments are listed in the 10.4 report). Found, not fixed: an empty
   `extension RGBA {}` in `Appearance/ThemeColors.swift`; `PageWindow`, `PageWindows`, `PageWindowSpec` and
   `pageWindowBackground` carry the web's "page"; three colour-mix helpers (two premultiplied, one straight).
+- 2026-11-11. The owner asked for `scripts/ci.sh --affected` to compare with the previous commit instead of `main`:
+  on this branch every module has changed since `main`, so it ran every bundle each time. It now takes the last
+  commit's files, uncommitted changes and new files; with no commit before HEAD or nothing changed, everything runs.
+  The format lint follows the same files.
