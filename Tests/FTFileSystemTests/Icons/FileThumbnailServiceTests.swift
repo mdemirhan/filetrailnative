@@ -94,7 +94,7 @@ private let sample = ThumbnailPicture(image: NSImage(size: NSSize(width: 1, heig
         }
     }
 
-    @Test func numbersAreWrittenTheWayJavaScriptWritesThem() {
+    @Test func numbersAreWrittenShortestWithNoTrailingPointZero() {
         #expect(FileThumbnailService.javaScriptNumber(1700) == "1700")
         #expect(FileThumbnailService.javaScriptNumber(0) == "0")
         #expect(FileThumbnailService.javaScriptNumber(1700.25) == "1700.25")

@@ -161,7 +161,7 @@ struct LargeTreeAnalysisSpeedTests {
     }
 
     // A child's path is its folder's and its name put together only where `NodePath.join` would give just that.
-    @Test func joinsAChildPathAsPathJoinDoes() {
+    @Test func joinsAChildPathAsNodePathJoinDoes() {
         let folders = [
             "/", "/a", "/a/b", "/a b/c.d", "/.hidden", "/a/..b", "/a/b..", "/...", "/a/...", "/\u{0301}e", "/e\u{0301}",
             "//", "/a/", "/a//b", "/./a", "/a/.", "/a/..", "/../a", "/a/./b", "/a/../b", ".", "a", "a/b", "./a", "",

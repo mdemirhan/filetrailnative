@@ -12,7 +12,7 @@ struct CopyPasteErrorsTests {
     }
 
     // The write service's rm says "Path is a directory: rm returned EISDIR (is a directory) /var/…".
-    @Test func readsNodesOwnCodeForAFolderRemovedAsAFile() {
+    @Test func readsTheCodeOfAFolderRemovedAsAFile() {
         let error = OperationError("Path is a directory: rm returned EISDIR /var/x", code: .errno(EISDIR))
         #expect(describeCopyPasteError(error) == "A folder is in the way where a file was expected.")
     }

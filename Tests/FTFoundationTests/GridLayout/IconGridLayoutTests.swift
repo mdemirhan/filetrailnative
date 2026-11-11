@@ -9,23 +9,23 @@ struct IconGridLayoutTests {
     static let finder = DesignTokens.iconGrid(density: .finder)
 
     /// The icon grid's fixed lengths, as the icon-grid-layout golden holds them.
-    static func css() throws -> [String: Double] {
+    static func goldenLengths() throws -> [String: Double] {
         let cases: [GoldenCase<Input, Output>] = try Golden.load(suite: "icon-grid-layout")
         guard let found = cases.first(where: { $0.input.op == "css" }), case .constants(let values) = found.output
         else { return [:] }
         return values
     }
 
-    @Test func putsTheIconAsFarDownInItsItemAsTheStylesheetDoes() throws {
-        let css = try Self.css()
-        #expect(css["itemPaddingTop"] == Self.layout.itemPaddingTop)
+    @Test func putsTheIconAsFarDownInItsItemAsTheGoldenHasIt() throws {
+        let golden = try Self.goldenLengths()
+        #expect(golden["itemPaddingTop"] == Self.layout.itemPaddingTop)
     }
 
-    @Test func takesClicksOnTheTileAndTheNameWhereTheStylesheetDrawsThem() throws {
-        let css = try Self.css()
-        #expect(css["iconBox"] == Self.layout.iconBoxSize)
-        #expect(css["labelWidth"] == Self.layout.labelWidth)
-        #expect(css["labelGap"] == Self.layout.labelGap)
+    @Test func takesClicksOnTheTileAndTheNameWhereTheGoldenPutsThem() throws {
+        let golden = try Self.goldenLengths()
+        #expect(golden["iconBox"] == Self.layout.iconBoxSize)
+        #expect(golden["labelWidth"] == Self.layout.labelWidth)
+        #expect(golden["labelGap"] == Self.layout.labelGap)
     }
 
     // Finder's Icons view keeps 64 point icons in its default View Options, with 12 point names.

@@ -35,8 +35,8 @@ import Testing
 
         var mismatches: [String] = []
         func check(_ label: String, _ expected: String?, _ actual: RGBA) {
-            if expected != Self.css(actual) {
-                mismatches.append("\(label): expected \(expected ?? "nil"), got \(Self.css(actual))")
+            if expected != Self.goldenSpelling(actual) {
+                mismatches.append("\(label): expected \(expected ?? "nil"), got \(Self.goldenSpelling(actual))")
             }
         }
         for entry in cases {
@@ -88,7 +88,7 @@ import Testing
     }
 
     /// A colour as the golden spells it: `#rrggbb` when opaque, otherwise `rgba(r, g, b, a)`.
-    private static func css(_ color: RGBA) -> String {
+    private static func goldenSpelling(_ color: RGBA) -> String {
         guard color.alpha != 1 else { return color.hexString }
         let (r, g, b) = color.bytes
         let alpha = color.alpha == color.alpha.rounded() ? String(Int(color.alpha)) : "\(color.alpha)"

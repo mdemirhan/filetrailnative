@@ -48,7 +48,7 @@ struct ExecGoldenTests {
     }
 
     // Guards the shape of the recordings, not the engine.
-    @Test func suitesCoverWhatTheBriefAsks() throws {
+    @Test func suitesHoldTheCasesTheEngineIsCheckedOn() throws {
         let execution = try ExecHarness.executionSuites.flatMap { try ExecHarness.cases(suite: $0) }
         let analysis = try ExecHarness.analysisSuites.flatMap { try ExecHarness.cases(suite: $0) }
         #expect(execution.count >= 40)
@@ -66,7 +66,7 @@ struct ExecGoldenTests {
     /// coordinator, with changes made outside the app before each, both answers to both questions, the Can't Undo of
     /// merges and of copies without a Trash, and Undos that left items as they were. Guards the shape of the
     /// recordings, not the engine.
-    @Test func undoSuiteCoversWhatTheBriefAsks() throws {
+    @Test func undoSuiteHoldsTheCasesUndoIsCheckedOn() throws {
         let cases = try ExecHarness.cases(suite: "exec-undo")
         #expect(cases.count >= 30)
         let steps = cases.flatMap { $0.output["undo"]?["steps"]?.arrayValue ?? [] }
@@ -247,7 +247,7 @@ struct ExecGoldenTests {
     /// exec-batch-rename holds the cases a batch rename is checked on: swaps, cycles, case-only changes on disks that
     /// ignore case and on one that minds it, stops, crashes with recovery, and the Rename sheet's checks. Guards the
     /// shape of the recordings, not the engine.
-    @Test func batchRenameSuiteCoversWhatTheBriefAsks() throws {
+    @Test func batchRenameSuiteHoldsTheCasesTheRenameIsCheckedOn() throws {
         let cases = try ExecBatchRenameHarness.cases()
         let names = cases.map(\.name)
         for needed in [

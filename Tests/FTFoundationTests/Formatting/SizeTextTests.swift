@@ -35,7 +35,7 @@ struct SizeTextTests {
     }
 
     // A size halfway between two shown values rounds up, where printf would round it to even.
-    @Test func roundsATieUpAsToFixedDoes() {
+    @Test func roundsAHalfUpNotToEven() {
         #expect(SizeText.size(1250) == "1.3 KB")
         #expect(SizeText.size(2250) == "2.3 KB")
         #expect(SizeText.size(12_500) == "13 KB")

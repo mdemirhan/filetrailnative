@@ -135,7 +135,7 @@ struct NativeFileSystemTests {
     }
 
     // The message gives the code first, naming the call and the path.
-    @Test func aFailureSaysWhatNodeSays() async throws {
+    @Test func aFailureNamesTheCodeTheCallAndThePath() async throws {
         try await withTemporaryDirectory { directory in
             let closed = directory.path + "/closed"
             try FileManager.default.createDirectory(atPath: closed, withIntermediateDirectories: false)

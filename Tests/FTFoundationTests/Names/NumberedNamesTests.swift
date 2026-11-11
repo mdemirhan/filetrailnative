@@ -56,7 +56,7 @@ struct NumberedNamesTests {
         #expect(error?.description == "An item named \u{201C}x\u{201D} already exists.")
     }
 
-    @Test func newFolderWritesNumbersAsJavaScriptDoes() throws {
+    @Test func newFolderWritesNumbersInFullBelow1e21ThenWithAnExponent() throws {
         #expect(try Self.folder("x 99999999999999999999", taken: []) == "/p/x 100000000000000000000")
         #expect(JSText.integerText(1e21) == "1e+21")
         #expect(JSText.integerText(1.2345678901234568e20) == "123456789012345680000")

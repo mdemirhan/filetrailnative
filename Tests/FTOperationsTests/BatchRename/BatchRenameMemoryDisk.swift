@@ -89,7 +89,7 @@ final class MemoryDisk: BatchRenameFileSystem, @unchecked Sendable {
     /// The names in a folder, sorted by UTF-16 code unit.
     func names(_ folder: String = "/trip") -> [String] {
         locked {
-            (folders[bytes(folder)]?.entries.values.map(\.name) ?? []).sorted(by: jsLess)
+            (folders[bytes(folder)]?.entries.values.map(\.name) ?? []).sorted(by: utf16Less)
         }
     }
 
@@ -102,7 +102,7 @@ final class MemoryDisk: BatchRenameFileSystem, @unchecked Sendable {
                     all.append((folder.path == "/" ? "/\(entry.name)" : "\(folder.path)/\(entry.name)", entry.ino))
                 }
             }
-            return all.sorted { jsLess($0.path, $1.path) }
+            return all.sorted { utf16Less($0.path, $1.path) }
         }
     }
 
@@ -250,7 +250,7 @@ func split(_ path: String) -> (folder: String, name: String) {
 private func bytes(_ text: String) -> [UInt8] { Array(text.utf8) }
 
 /// Whether `left` comes before `right` by UTF-16 code unit.
-func jsLess(_ left: String, _ right: String) -> Bool {
+func utf16Less(_ left: String, _ right: String) -> Bool {
     left.utf16.lexicographicallyPrecedes(right.utf16)
 }
 

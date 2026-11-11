@@ -51,7 +51,7 @@ import Testing
         nodes.flatMap { ($0.conflictClass == nil ? [] : [$0]) + conflicts($0.children) }
     }
 
-    @Test func matchesTheReference() throws {
+    @Test func matchesTheGolden() throws {
         let cases: [GoldenCase<Input, [Output]>] = try Golden.load(suite: "copy-paste-review")
         #expect(!cases.isEmpty)
         Golden.expectMatches(cases) { input in

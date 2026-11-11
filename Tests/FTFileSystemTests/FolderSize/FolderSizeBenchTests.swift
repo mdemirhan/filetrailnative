@@ -39,7 +39,7 @@ extension RealWalks {
             let warm = milliseconds.dropFirst(2).sorted()
             let median = warm[warm.count / 2]
             print(
-                "BENCH port ms:", milliseconds.map { Int($0.rounded()) }, "median", Int(median.rounded()), "min",
+                "BENCH walk ms:", milliseconds.map { Int($0.rounded()) }, "median", Int(median.rounded()), "min",
                 Int((warm.first ?? 0).rounded()))
             if let reference = ProcessInfo.processInfo.environment["FILETRAIL_BENCH_REFERENCE_MS"].flatMap(Double.init)
             {

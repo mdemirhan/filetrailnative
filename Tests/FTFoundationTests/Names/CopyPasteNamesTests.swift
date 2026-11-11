@@ -216,7 +216,7 @@ struct CopyPasteNamesTests {
         #expect(!CopyPasteNames.detectCaseSensitivity(Volume(answer: nil, caseSensitive: true, files: []), in: "/"))
     }
 
-    @Test func caseProbeIgnoresIdsAJavaScriptNumberCouldNotHold() {
+    @Test func caseProbeIgnoresIdsADoubleCannotHoldExactly() {
         struct EmptyFiles: CopyPasteNames.CaseProbingFileSystem {
             func isCaseSensitive(_ directory: String) -> Bool? { nil }
             func entries(_ directory: String) -> [String] { ["Readme"] }

@@ -64,7 +64,7 @@ private func makeFolder(_ root: TemporaryDirectory, _ files: [(String, String)])
 }
 
 private func names(_ folder: String) throws -> [String] {
-    try FileManager.default.contentsOfDirectory(atPath: folder).sorted(by: jsLess)
+    try FileManager.default.contentsOfDirectory(atPath: folder).sorted(by: utf16Less)
 }
 
 private func visibleNames(_ folder: String) throws -> [String] {
