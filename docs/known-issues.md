@@ -11,6 +11,10 @@ A folder holding something shows Finder's sheet of paper, read from the folder's
 - **Changes inside a folder**: the icon changes when the folder around it is next read, not as they happen.
 - **The tree, Info for the current folder and the clipboard list**: these don't know the count, so every plain folder has the sheet.
 
+## Copy, Cut and Paste of files stay inside File Trail
+
+File Trail keeps the files you copy or cut on a clipboard of its own, by design: the one the toolbar's clipboard button lists. So files copied or cut in File Trail can't be pasted in Finder or other apps, and files copied in Finder or another app can't be pasted in File Trail. Drag them between apps instead. Copy Path puts the paths on the system's clipboard as text, and text in fields is copied and pasted as anywhere else.
+
 ## The Trash across disks
 
 The Trash lists what is in the Trash of every local disk (`TrashFolders`), as Finder's does. Two things still see only the home folder's:

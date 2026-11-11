@@ -1770,7 +1770,7 @@ More from the first audit:
 
 ## Phase 11. Docs, scripts, tools
 
-### [ ] 11.1. Documents that no longer match the code
+### [x] 11.1. Documents that no longer match the code
 
 [Q17] for the first bullet.
 
@@ -1787,7 +1787,7 @@ More from the first audit:
 
 Found by both audits: the patch was made 48 commits before `c58b3fe` and `git apply --check` fails.
 
-### [ ] 11.2. `docs/battery.md:31` lists the timers that really run
+### [x] 11.2. `docs/battery.md:31` lists the timers that really run
 
 It says other repeating timers run only during an
 animation, an open menu or a copy. Also running: a search polls every 0.12 s, and once a second in a background tab
@@ -1795,7 +1795,7 @@ animation, an open menu or a copy. Also running: a search polls every 0.12 s, an
 (`FolderSizes/WindowFolderSizes.swift:68`); a marquee drag ticks at 60 Hz; `RecoveryRetry` fires for as long as
 crash-journal entries remain (`WriteOperations/AppWriteOperations.swift:93`). Confirm each, then correct the doc.
 
-### [ ] 11.3. `CLAUDE.md` and `README.md` agree with the scripts
+### [x] 11.3. `CLAUDE.md` and `README.md` agree with the scripts
 
 Document `--full` or remove it (`scripts/ci.sh:20`);
 README mentions `--affected` and `FILETRAIL_GUI_TESTS`; README's "you can change any of them" about shortcuts vs
@@ -1811,7 +1811,7 @@ metrics, the idle-memory launch can measure the wrong thing (`run.sh:82`: no `--
 `FILETRAIL_ALLOW_MULTIPLE`), `run.sh:90` only works from the repo root, and nothing calls it. The `#if RELEASE`
 budgets in the bench tests are therefore never enforced. [Q18]
 
-### [ ] 11.5. `tools/fixtures`
+### [x] 11.5. `tools/fixtures`
 
 `README.md:10` describes images `disk-images.sh` does not make; the script's `clone`
 mode has no consumer; `scripts/readme-screenshots.sh:25` builds all three fixture trees when only `lighthouse` is
@@ -1820,7 +1820,7 @@ needed; the fixtures location is spelled three ways (`FILETRAIL_DEV_CACHE`, `FIL
 
 `disk-images.sh` and the README lines about it go in 5.10; what is left here is the last two points.
 
-### [ ] 11.6. Small script fixes
+### [x] 11.6. Small script fixes
 
 - `scripts/build-app.sh:81-82` hides `codesign` output, so a failure stops with no message.
 - `scripts/readme-screenshots.sh:33-35` ignores `MACOS_SIGN_IDENTITY` and fails unexplained with no identity.
@@ -1828,7 +1828,7 @@ needed; the fixtures location is spelled three ways (`FILETRAIL_DEV_CACHE`, `FIL
 - The release-tag regex is duplicated in `scripts/version.sh:10-12` and `scripts/lib/release-lib.sh:2-9`.
 - `scripts/hands-on-setup.sh` and `tools/acknowledgements`: see 5.10.
 
-### [ ] 11.7. Say in the docs that file Copy and Cut use the app's own clipboard
+### [x] 11.7. Say in the docs that file Copy and Cut use the app's own clipboard
 
 - Decision 3 keeps the private clipboard. Add an entry to `docs/known-issues.md`: files copied or cut in File
   Trail cannot be pasted in Finder or other apps, and files copied elsewhere cannot be pasted in File Trail; this
@@ -2507,3 +2507,12 @@ anything that differed from the plan, and anything found on the way that is not 
 - 2026-11-11. The Phase 8 review found nothing serious. Taken from it: the Go menu's item for `/` now follows the
   disk's name too (the Shortcuts row and Help keep "Macintosh HD"). Its claim that Finder's Go menu names the disk
   does not hold (Finder has no disk item); the item follows because the rest of the window shows the real name.
+- 2026-11-11. Phase 11 but 11.4 (which waits for a quiet machine). 11.1: `known-issues.md` already named the
+  workaround diff's commit (`afa0076`) but said to apply it to the current tree; all nine files match `afa0076`, so it
+  now says to check that commit out and apply the diff there. `tools/fixtures/README.md` needed nothing after 5.10.
+  The `PasteThroughputTests` comment citing a budget that does not exist is left for 10.5. 11.2: every timer the plan
+  named holds; two claims in the doc were wrong too (the minute date timer runs only while a visible List shows a date
+  under an hour old, else it fires at midnight; the Info panel's free space is read on those ticks and when its window
+  comes back) and are corrected. 11.3: README and `CLAUDE.md` (owner's yes) agree with the scripts. 11.5: the
+  fixtures are found through `FILETRAIL_DEV_CACHE` everywhere; `FILETRAIL_FIXTURES`, which nothing set, is gone.
+  11.6: all four held; the `release.sh` fix has a test. 11.7: a known-issues entry.
