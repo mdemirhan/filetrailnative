@@ -14,19 +14,12 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
     let base: any WriteServiceFileSystem
     var lstatImpl: ((String) throws -> WriteServiceStats)?
     var statImpl: ((String) throws -> WriteServiceStats)?
-    var realpathImpl: ((String) throws -> String)?
-    var readdirImpl: ((String) throws -> [String])?
-    var readlinkImpl: ((String) throws -> String)?
     var renameExclusiveImpl: ((String, String) throws -> Void)?
     var mkdirImpl: ((String) throws -> Void)?
     var rmImpl: ((String, Bool, Bool) throws -> Void)?
-    var rmdirImpl: ((String) throws -> Void)?
     var copyFileImpl: ((String, String, StopSignal?, (@Sendable (Int64) -> Void)?) throws -> Void)?
     var getFlagsImpl: ((String) throws -> UInt32)?
-    var setFlagsImpl: ((String, UInt32) throws -> Void)?
     var isPackageImpl: ((String) throws -> Bool?)?
-    var isAppleDoubleImpl: ((String) -> Bool)?
-    var isCaseSensitiveImpl: ((String) throws -> Bool?)?
     var chmod: ((String, UInt32) throws -> Void)?
     var utimes: ((String, Double, Double) throws -> Void)?
     var copyMetadata: ((String, String) throws -> Void)?
@@ -46,18 +39,15 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
 
     func lstat(_ path: String) throws -> WriteServiceStats { try lstatImpl?(path) ?? base.lstat(path) }
     func stat(_ path: String) throws -> WriteServiceStats { try statImpl?(path) ?? base.stat(path) }
-    func realpath(_ path: String) throws -> String { try realpathImpl?(path) ?? base.realpath(path) }
-    func readdir(_ path: String) throws -> [String] { try readdirImpl?(path) ?? base.readdir(path) }
-    func readlink(_ path: String) throws -> String { try readlinkImpl?(path) ?? base.readlink(path) }
-    func isCaseSensitive(_ path: String) throws -> Bool? {
-        if let isCaseSensitiveImpl { return try isCaseSensitiveImpl(path) }
-        return try base.isCaseSensitive(path)
-    }
+    func realpath(_ path: String) throws -> String { try base.realpath(path) }
+    func readdir(_ path: String) throws -> [String] { try base.readdir(path) }
+    func readlink(_ path: String) throws -> String { try base.readlink(path) }
+    func isCaseSensitive(_ path: String) throws -> Bool? { try base.isCaseSensitive(path) }
     func isPackage(_ path: String) throws -> Bool? {
         if let isPackageImpl { return try isPackageImpl(path) }
         return try base.isPackage(path)
     }
-    func isAppleDouble(_ path: String) -> Bool { isAppleDoubleImpl?(path) ?? base.isAppleDouble(path) }
+    func isAppleDouble(_ path: String) -> Bool { base.isAppleDouble(path) }
     func isQuarantined(_ path: String) -> Bool { base.isQuarantined(path) }
     var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { base.copyMetadataToRunInPlace }
     func renameExclusive(_ from: String, _ to: String) throws {
@@ -72,10 +62,7 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
         if let rmImpl { return try rmImpl(path, recursive, force) }
         try base.rm(path, recursive: recursive, force: force)
     }
-    func rmdir(_ path: String) throws {
-        if let rmdirImpl { return try rmdirImpl(path) }
-        try base.rmdir(path)
-    }
+    func rmdir(_ path: String) throws { try base.rmdir(path) }
     func copyFile(
         _ source: String, _ destination: String, stop: StopSignal?, onProgress: (@Sendable (Int64) -> Void)?
     ) throws {
@@ -83,10 +70,7 @@ final class TestFileSystem: WriteServiceFileSystem, @unchecked Sendable {
         try base.copyFile(source, destination, stop: stop, onProgress: onProgress)
     }
     func getFlags(_ path: String) throws -> UInt32 { try getFlagsImpl?(path) ?? base.getFlags(path) }
-    func setFlags(_ path: String, _ flags: UInt32) throws {
-        if let setFlagsImpl { return try setFlagsImpl(path, flags) }
-        try base.setFlags(path, flags)
-    }
+    func setFlags(_ path: String, _ flags: UInt32) throws { try base.setFlags(path, flags) }
 }
 
 enum NativePaste {

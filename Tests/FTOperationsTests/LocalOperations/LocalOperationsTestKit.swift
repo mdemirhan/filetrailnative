@@ -26,15 +26,15 @@ final class TestLocalFileSystem: LocalWriteFileSystem, @unchecked Sendable {
     private var recorded = Calls()
 
     var lstatImpl: @Sendable (String) throws -> WriteServiceStats
-    var statImpl: @Sendable (String) throws -> WriteServiceStats
-    var mkdirImpl: @Sendable (String) throws -> Void
+    private let statImpl: @Sendable (String) throws -> WriteServiceStats
+    private let mkdirImpl: @Sendable (String) throws -> Void
     var renameImpl: @Sendable (String, String) throws -> Void
     var renameExclusiveImpl: @Sendable (String, String) throws -> Void
     var rmImpl: @Sendable (String, Bool, Bool) throws -> Void
     var trashImpl: @Sendable (String) throws -> String?
     var readdirImpl: @Sendable (String) throws -> [String]
     var realpathImpl: @Sendable (String) throws -> String
-    var getFlagsImpl: @Sendable (String) throws -> UInt32
+    private let getFlagsImpl: @Sendable (String) throws -> UInt32
     var itemSizeImpl: (@Sendable (String) throws -> ItemSize)?
 
     init(

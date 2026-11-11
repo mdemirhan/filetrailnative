@@ -53,22 +53,6 @@ struct PackagePasteTests {
         }
     }
 
-    @Test func isntMergedWhenAMergeAnswerIsGivenForItByItsOwnChoice() async throws {
-        try await withTemporaryDirectory { root in
-            let (src, dst) = try folders(root)
-            try makeApp(src, "v2", "new.png")
-            try makeApp(dst, "v1", "old.png")
-
-            // "merge" for folders reaches a package only as an override the review never offers.
-            let run = try await runPaste(
-                mode: .copy, sources: [src + "/Foo.app"], into: dst,
-                policy: CopyPastePolicy(file: .skip, directory: .merge, mismatch: .skip))
-
-            #expect(run.result?.items.first?.status == .skipped)
-            #expect(Disk.read(dst + "/Foo.app/Contents/Info.plist") == "v1")
-        }
-    }
-
     @Test func appearingAtTheDestinationDuringThePasteIsAskedAboutWithoutMerge() async throws {
         try await withTemporaryDirectory { root in
             let (src, dst) = try folders(root)

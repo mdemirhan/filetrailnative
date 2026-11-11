@@ -122,7 +122,6 @@ import Testing
         #expect(button.bezelColor == NSColor(blue.accent.solidButton))
         #expect(blue.accent.onSolid == .white)
         #expect(button.titleColor == nil)
-        #expect(blue.accent.onSolid == .white)
         // Disabled, it has the system's own look, tint and title.
         button.isEnabled = false
         #expect(button.bezelColor == nil)

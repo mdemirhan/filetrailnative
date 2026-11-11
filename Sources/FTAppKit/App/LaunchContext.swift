@@ -3,16 +3,16 @@ import FTFoundation
 import Foundation
 
 public enum LaunchContext {
-    /// `resolveStartupFolderPath`: the folder named by `--folder <p>`, `--folder=<p>`, or the first positional
-    /// argument that is not the app's own path; `~` is expanded and the path must be a directory.
+    /// `resolveStartupFolderPath`: the folder named in `argv` (the launch arguments, without the executable's path) by
+    /// `--folder <p>`, `--folder=<p>`, or the first positional argument that is not the app's own path; `~` is expanded
+    /// and the path must be a directory.
     public static func resolveStartupFolderPath(
-        argv: [String], cwd: String, argvOffset: Int = 1, homePath: String = NSHomeDirectory(), appPath: String? = nil,
+        argv: [String], cwd: String, homePath: String = NSHomeDirectory(), appPath: String? = nil,
         isDirectory: (String) -> Bool = LaunchContext.isDirectoryOnDisk
     ) -> String? {
-        let userArgs = Array(argv.dropFirst(argvOffset))
         guard
-            let rawPath = folderOption(userArgs)
-                ?? positionalFolderArgument(userArgs, cwd: cwd, homePath: homePath, appPath: appPath)
+            let rawPath = folderOption(argv)
+                ?? positionalFolderArgument(argv, cwd: cwd, homePath: homePath, appPath: appPath)
         else { return nil }
         let candidate = resolveLaunchPath(rawPath, cwd: cwd, homePath: homePath)
         return isDirectory(candidate) ? candidate : nil

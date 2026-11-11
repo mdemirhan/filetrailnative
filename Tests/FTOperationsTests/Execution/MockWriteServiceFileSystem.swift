@@ -72,30 +72,21 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     private var nextIno: UInt64 = 10
     private var nextMtimeMs: Double = 1_000
 
-    var realpathOverrides: [String: String] = [:]
     var copyFileImpl: ((String, String, StopSignal?, (@Sendable (Int64) -> Void)?) throws -> Void)?
     var utimesImpl: ((String, Double, Double) throws -> Void)?
     var chmodImpl: ((String, UInt32) throws -> Void)?
     /// Every rename goes through it, the exclusive ones included (see renameExclusive).
     var renameImpl: ((String, String) throws -> Void)?
-    var mkdirImpl: ((String) throws -> Void)?
     var rmImpl: ((String, Bool, Bool) throws -> Void)?
     var rmdirImpl: ((String) throws -> Void)?
-    var readlinkImpl: ((String) throws -> String)?
     var lstatImpl: ((String) throws -> WriteServiceStats)?
-    var statImpl: ((String) throws -> WriteServiceStats)?
     var readdirImpl: ((String) throws -> [String])?
-    var realpathImpl: ((String) throws -> String)?
     var trashImpl: ((String) throws -> String?)?
     var getFlagsImpl: ((String) throws -> UInt32)?
     var setFlagsImpl: ((String, UInt32) throws -> Void)?
-    var isPackageImpl: ((String) throws -> Bool?)?
-    var isAppleDoubleImpl: ((String) -> Bool)?
     /// The calls tests add to the mock as they need them.
-    var canModifyFolderImpl: ((String) throws -> Void)?
     var copyMetadataImpl: ((String, String) throws -> Void)?
     var copyMetadataToRunInPlaceImpl: ((String, String) throws -> Void)?
-    var setAclImpl: ((String, String?) throws -> Void)?
     /// The macOS default; tests of case-sensitive volumes set this to true.
     var caseSensitive = false
     /// How the volume takes two names for one, when not as APFS does.
@@ -159,18 +150,8 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         try locked { Self.stats(try nodeOrThrow(path)) }
     }
 
-    /// `readdir` as the mock does it.
-    func readdirDirectly(_ path: String) throws -> [String] {
-        try locked {
-            let node = try nodeOrThrow(path)
-            guard node.kind == .directory else { throw Self.error("ENOTDIR", path) }
-            return listChildren(path)
-        }
-    }
-
     func stat(_ path: String) throws -> WriteServiceStats {
-        if let statImpl { return try statImpl(path) }
-        return try locked {
+        try locked {
             let node = try nodeOrThrow(path)
             if node.kind == .symlink {
                 guard let target = node.target, !target.isEmpty else { throw Self.error("ENOENT", path) }
@@ -181,11 +162,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     }
 
     func realpath(_ path: String) throws -> String {
-        if let realpathImpl { return try realpathImpl(path) }
-        return try locked {
-            if let override = realpathOverrides[path] {
-                return override
-            }
+        try locked {
             _ = try nodeOrThrow(path)
             // As macOS does, with the names as they are stored.
             return existingKey(path)
@@ -202,8 +179,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     }
 
     func readlink(_ path: String) throws -> String {
-        if let readlinkImpl { return try readlinkImpl(path) }
-        return try locked {
+        try locked {
             let node = try nodeOrThrow(path)
             guard node.kind == .symlink, let target = node.target else { throw Self.error("EINVAL", path) }
             return target
@@ -212,13 +188,9 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
 
     func isCaseSensitive(_ path: String) throws -> Bool? { caseSensitive }
 
-    func isPackage(_ path: String) throws -> Bool? {
-        try isPackageImpl?(path) ?? nil
-    }
+    func isPackage(_ path: String) throws -> Bool? { nil }
 
-    func isAppleDouble(_ path: String) -> Bool {
-        isAppleDoubleImpl?(path) ?? false
-    }
+    func isAppleDouble(_ path: String) -> Bool { false }
 
     var chmod: ((String, UInt32) throws -> Void)? {
         { [self] path, mode in
@@ -232,12 +204,7 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
     }
 
     func mkdir(_ path: String) throws {
-        if let mkdirImpl { return try mkdirImpl(path) }
         try locked { try ensureDirectory(path, recursive: false) }
-    }
-
-    func mkdirRecursive(_ path: String) throws {
-        try locked { try ensureDirectory(path, recursive: true) }
     }
 
     func rm(_ path: String, recursive: Bool, force: Bool) throws {
@@ -322,10 +289,8 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
         try locked { try nodeOrThrow(path).flags = flags }
     }
 
-    var canModifyFolder: ((String) throws -> Void)? { canModifyFolderImpl }
     var copyMetadata: ((String, String) throws -> Void)? { copyMetadataImpl }
     var copyMetadataToRunInPlace: ((String, String) throws -> Void)? { copyMetadataToRunInPlaceImpl }
-    var setAcl: ((String, String?) throws -> Void)? { setAclImpl }
 
     /// rename(2) as the mock does it, for a `renameImpl` that changes only some renames.
     func renameDirectly(_ oldPath: String, _ newPath: String) throws {
@@ -436,10 +401,6 @@ final class MockWriteServiceFileSystem: WriteServiceFileSystem, @unchecked Senda
             next.mtimeMs = bumpMtime()
             set(key, next)
         }
-    }
-
-    func setRealpath(_ path: String, _ realPath: String) {
-        realpathOverrides[Self.normalize(path)] = Self.normalize(realPath)
     }
 
     func exists(_ path: String) -> Bool {

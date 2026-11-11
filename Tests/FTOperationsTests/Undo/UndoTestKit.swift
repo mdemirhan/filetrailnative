@@ -16,15 +16,11 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
 
     var lstatImpl: ((String) throws -> WriteServiceStats)?
     var statImpl: ((String) throws -> WriteServiceStats)?
-    var readdirImpl: ((String) throws -> [String])?
     var renameImpl: ((String, String) throws -> Void)?
     var renameExclusiveImpl: ((String, String) throws -> Void)?
     var trashImpl: ((String) throws -> String?)?
     var getFlagsImpl: ((String) throws -> UInt32)?
     var setFlagsImpl: ((String, UInt32) throws -> Void)?
-    var chmodImpl: ((String, UInt32) throws -> Void)?
-    var getAclImpl: ((String) throws -> String?)?
-    var setAclImpl: ((String, String?) throws -> Void)?
     var isPackageImpl: ((String) throws -> Bool?)?
     var rmImpl: ((String, Bool, Bool) throws -> Void)?
     var itemSizeImpl: ((String) throws -> ItemSize)?
@@ -57,7 +53,7 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
     func lstat(_ path: String) throws -> WriteServiceStats { try impl(\.lstatImpl)?(path) ?? base.lstat(path) }
     func stat(_ path: String) throws -> WriteServiceStats { try impl(\.statImpl)?(path) ?? base.stat(path) }
     func realpath(_ path: String) throws -> String { try base.realpath(path) }
-    func readdir(_ path: String) throws -> [String] { try impl(\.readdirImpl)?(path) ?? base.readdir(path) }
+    func readdir(_ path: String) throws -> [String] { try base.readdir(path) }
     func readlink(_ path: String) throws -> String { try base.readlink(path) }
     func isCaseSensitive(_ path: String) throws -> Bool? { try base.isCaseSensitive(path) }
     func isPackage(_ path: String) throws -> Bool? {
@@ -90,26 +86,11 @@ final class UndoTestFileSystem: UndoFileSystem, @unchecked Sendable {
         if let setFlagsImpl = impl(\.setFlagsImpl) { return try setFlagsImpl(path, flags) }
         try base.setFlags(path, flags)
     }
-    var chmod: ((String, UInt32) throws -> Void)? {
-        { [self] path, mode in
-            if let chmodImpl = impl(\.chmodImpl) { return try chmodImpl(path, mode) }
-            try base.chmod?(path, mode)
-        }
-    }
+    var chmod: ((String, UInt32) throws -> Void)? { base.chmod }
     var utimes: ((String, Double, Double) throws -> Void)? { base.utimes }
     var copyMetadata: ((String, String) throws -> Void)? { base.copyMetadata }
-    var setAcl: ((String, String?) throws -> Void)? {
-        { [self] path, acl in
-            if let setAclImpl = impl(\.setAclImpl) { return try setAclImpl(path, acl) }
-            try base.setAcl?(path, acl)
-        }
-    }
-    var getAcl: ((String) throws -> String?)? {
-        { [self] path in
-            if let getAclImpl = impl(\.getAclImpl) { return try getAclImpl(path) }
-            return try base.getAcl?(path) ?? nil
-        }
-    }
+    var setAcl: ((String, String?) throws -> Void)? { base.setAcl }
+    var getAcl: ((String) throws -> String?)? { base.getAcl }
     var trash: ((String) throws -> String?)? {
         { [self] path in
             if let trashImpl = impl(\.trashImpl) { return try trashImpl(path) }

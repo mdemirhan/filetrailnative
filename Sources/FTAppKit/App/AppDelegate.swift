@@ -82,7 +82,7 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
             argv: launchArguments,
             cwd: LaunchContext.resolveWorkingDirectory(
                 envPWD: ProcessInfo.processInfo.environment["PWD"], cwd: FileManager.default.currentDirectoryPath),
-            argvOffset: 0, homePath: home.path, appPath: Bundle.main.bundlePath)
+            homePath: home.path, appPath: Bundle.main.bundlePath)
 
         #if DEBUG
             let automation = AutomationRunner.options(from: arguments).map { options in
