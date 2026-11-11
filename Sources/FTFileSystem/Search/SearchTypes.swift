@@ -1,8 +1,8 @@
 import FTFoundation
 import Foundation
 
-/// What `search:start` takes. The defaults are the contract's.
-public struct SearchRequest: Codable, Sendable, Equatable {
+/// What a search looks for, and where.
+public struct SearchRequest: Sendable, Equatable {
     public var rootPath: String
     public var query: String
     public var patternMode: SearchPatternModePreference
@@ -30,12 +30,12 @@ public struct SearchRequest: Codable, Sendable, Equatable {
     }
 }
 
-public enum SearchJobStatus: String, Codable, Sendable, Equatable {
+public enum SearchJobStatus: String, Sendable, Equatable {
     case running, complete, cancelled, truncated, error
 }
 
 /// One result.
-public struct SearchResultItem: Codable, Sendable, Equatable {
+public struct SearchResultItem: Sendable, Equatable {
     public var path: String
     public var name: String
     /// Lowercased, without the dot; "" when the name has none.
@@ -60,11 +60,6 @@ public struct SearchResultItem: Codable, Sendable, Equatable {
         self.isSymlink = isSymlink
         self.parentPath = parentPath
         self.relativeParentPath = relativeParentPath
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case path, name, kind, isHidden, isSymlink, parentPath, relativeParentPath
-        case fileExtension = "extension"
     }
 }
 

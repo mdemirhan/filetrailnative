@@ -15,6 +15,24 @@ private func request(
         skipGitFolders: gitFolders, skipGitIgnored: gitIgnored)
 }
 
+/// A request as the golden spells it.
+private struct GoldenRequest: Codable {
+    var rootPath: String
+    var query: String
+    var patternMode: SearchPatternModePreference
+    var matchScope: SearchMatchScopePreference
+    var recursive: Bool
+    var includeHidden: Bool
+    var skipGitFolders: Bool
+    var skipGitIgnored: Bool
+
+    var request: SearchRequest {
+        SearchRequest(
+            rootPath: rootPath, query: query, patternMode: patternMode, matchScope: matchScope, recursive: recursive,
+            includeHidden: includeHidden, skipGitFolders: skipGitFolders, skipGitIgnored: skipGitIgnored)
+    }
+}
+
 @Suite struct FdSearchArgsTests {
     @Test func buildsArgsForGlobPathSearchesWithDepthAndHiddenFlags() {
         let args = FdSearchArgs.build(
@@ -84,8 +102,8 @@ private func request(
 
     // The golden: every combination of the options and the arguments it gives.
     @Test func matchesTheGoldenFileForEveryCombinationOfOptions() throws {
-        let cases: [GoldenCase<SearchRequest, [String]>] = try Golden.load(suite: "search-args")
+        let cases: [GoldenCase<GoldenRequest, [String]>] = try Golden.load(suite: "search-args")
         #expect(cases.count > 300)
-        Golden.expectMatches(cases) { FdSearchArgs.build($0) }
+        Golden.expectMatches(cases) { FdSearchArgs.build($0.request) }
     }
 }

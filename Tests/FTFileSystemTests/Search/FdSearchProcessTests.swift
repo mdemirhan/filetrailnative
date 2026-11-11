@@ -27,10 +27,34 @@ private struct ResultsInput: Codable {
 }
 
 private struct ResultsOutput: Codable {
-    var status: SearchJobStatus
+    /// A `SearchJobStatus`, by its raw value.
+    var status: String
     var truncated: Bool
     var error: String?
-    var items: [SearchResultItem]
+    var items: [ResultItem]
+}
+
+/// A result as the golden spells it.
+private struct ResultItem: Codable {
+    var path: String
+    var name: String
+    var `extension`: String
+    var kind: FTFileSystem.EntryKind
+    var isHidden: Bool
+    var isSymlink: Bool
+    var parentPath: String
+    var relativeParentPath: String
+
+    init(_ item: SearchResultItem) {
+        path = item.path
+        name = item.name
+        `extension` = item.fileExtension
+        kind = item.kind
+        isHidden = item.isHidden
+        isSymlink = item.isSymlink
+        parentPath = item.parentPath
+        relativeParentPath = item.relativeParentPath
+    }
 }
 
 private let fixtures: URL = {
@@ -90,13 +114,13 @@ private func runToEnd(_ runtime: FdSearchRuntime, _ request: SearchRequest) thro
                 skipGitIgnored: input.skipGitIgnored)
             let (update, items) = try runToEnd(runtime, request)
             let masked = items.sorted { Array($0.path.utf16).lexicographicallyPrecedes(Array($1.path.utf16)) }.map {
-                var item = $0
+                var item = ResultItem($0)
                 item.path = item.path.replacingOccurrences(of: top, with: "$ROOT")
                 item.parentPath = item.parentPath.replacingOccurrences(of: top, with: "$ROOT")
                 return item
             }
             return ResultsOutput(
-                status: update.status, truncated: update.truncated,
+                status: update.status.rawValue, truncated: update.truncated,
                 error: update.error?.replacingOccurrences(of: top, with: "$ROOT"), items: masked)
         }
         runtime.close()
