@@ -608,7 +608,7 @@ import Testing
     }
 
     // A settings row keeps its line in its height (a row of a pop-up is 41, the last 40), and the checkbox of the
-    // column that is always on is dimmed.
+    // column that is always on is checked and can't be changed.
     @Test func rowsCountTheirLineAndTheFixedColumnsCheckboxIsDimmed() throws {
         let (controller, _) = Kit.make(tab: .files)
         let rows = views("settings.row", in: controller.settingsView).compactMap { $0 as? SettingsRowView }
@@ -622,7 +622,7 @@ import Testing
         let (browsing, _) = Kit.make(tab: .browsing)
         let boxes = views("settings.checkbox", in: browsing.settingsView).compactMap { $0 as? SettingsCheckbox }
         let fixed = try #require(boxes.first { !$0.isEnabled })
-        #expect(fixed.alphaValue == CGFloat(DesignTokens.disabledOpacity))
+        #expect(fixed.isChecked)
         #expect(boxes.filter(\.isEnabled).count > 1)
     }
 

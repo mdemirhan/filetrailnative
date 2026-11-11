@@ -200,13 +200,13 @@ final class SettingsPageView: NSView {
         toggle: @escaping (inout AppPreferences, Key) -> Void
     ) -> SettingsListView where Key.RawValue == String {
         // A checked box that can't be changed: the box dims; the name beside it stays as it is.
-        let fixedCheckbox = SettingsCheckbox(label: name, isChecked: true, theme: theme)
+        let fixedCheckbox = SettingsCheckbox(label: name, isChecked: true)
         fixedCheckbox.isEnabled = false
         let list = SettingsListView(
             label: label, keys: .columns,
             fixedRow: SettingsListRow.Spec(
                 name: name, trailingNote: "Always first", draggable: false, disabled: true,
-                leading: fixedCheckbox.sized(SettingsMetrics.checkboxSize),
+                leading: fixedCheckbox,
                 height: SettingsMetrics.columnRowHeight),
             theme: theme)
         let up = SettingsListBarButton(
@@ -247,15 +247,14 @@ final class SettingsPageView: NSView {
             list.move(index, to: index + 1)
         }
         restore.onPress = { [weak self] in self?.update { $0[keyPath: order] = defaultOrder } }
-        onRefresh { [weak self, weak list] preferences in
-            guard let self, let list else { return }
+        onRefresh { [weak list] preferences in
+            guard let list else { return }
             list.setRows(
                 preferences[keyPath: order].enumerated().map { index, key in
-                    let checkbox = SettingsCheckbox(
-                        label: "Show \(labels(key))", isChecked: visible(preferences, key), theme: self.theme)
+                    let checkbox = SettingsCheckbox(label: "Show \(labels(key))", isChecked: visible(preferences, key))
                     checkbox.onPress = { [weak list] in list?.onToggle(index) }
                     return SettingsListRow.Spec(
-                        name: labels(key), key: key.rawValue, leading: checkbox.sized(SettingsMetrics.checkboxSize),
+                        name: labels(key), key: key.rawValue, leading: checkbox,
                         height: SettingsMetrics.columnRowHeight)
                 })
         }
@@ -659,13 +658,5 @@ final class SettingsAppIconView: NSView {
     override func draw(_ dirtyRect: NSRect) {
         icon.draw(
             in: bounds, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
-    }
-}
-
-extension NSView {
-    /// The view, `side` by `side` (a leading view of a list row keeps its frame's size).
-    func sized(_ side: CGFloat) -> Self {
-        frame.size = NSSize(width: side, height: side)
-        return self
     }
 }

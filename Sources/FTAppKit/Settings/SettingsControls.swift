@@ -466,47 +466,36 @@ final class SettingsNumberField: NSView, SettingsSized, ThemeApplying, NSTextFie
 
 // MARK: Checkbox
 
-/// A checkbox: 14 by 14, the accent with a white tick when on.
-final class SettingsCheckbox: SettingsControlView {
+/// A checkbox: the system's, without a title (the row it is in names it). A click toggles it; the list it is in keeps
+/// the keyboard.
+final class SettingsCheckbox: NSButton {
+    /// Told on a click, once the box has its new state.
+    var onPress: () -> Void = {}
+
     var isChecked: Bool {
-        didSet {
-            setAccessibilityValue(isChecked ? 1 : 0)
-            needsDisplay = true
-        }
+        get { state == .on }
+        set { state = newValue ? .on : .off }
     }
 
-    init(label: String, isChecked: Bool, theme: Theme) {
+    init(label: String, isChecked: Bool) {
+        super.init(frame: .zero)
+        setButtonType(.switch)
+        title = ""
+        imagePosition = .imageOnly
+        refusesFirstResponder = true
+        target = self
+        action = #selector(toggled(_:))
         self.isChecked = isChecked
-        super.init(theme: theme)
-        setAccessibilityElement(true)
-        setAccessibilityRole(.checkBox)
         setAccessibilityLabel(label)
-        setAccessibilityValue(isChecked ? 1 : 0)
         setAccessibilityIdentifier("settings.checkbox")
+        frame.size = fittingSize
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    override func draw(_ dirtyRect: NSRect) {
-        let radius = CGFloat(DesignTokens.radii.xs)
-        let box = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
-        if isChecked {
-            NSColor(theme.accent.solid).setFill()
-            box.fill()
-            SettingsGlyph.stroke(
-                SettingsMetrics.checkPath, box: SettingsMetrics.checkboxSize, in: bounds,
-                width: SettingsMetrics.checkStroke, color: .white)
-        } else {
-            NSColor(theme.palette.checkOffBg).setFill()
-            box.fill()
-            let edge = NSBezierPath(
-                roundedRect: bounds.insetBy(dx: SettingsMetrics.hairline / 2, dy: SettingsMetrics.hairline / 2),
-                xRadius: radius, yRadius: radius)
-            edge.lineWidth = SettingsMetrics.hairline
-            NSColor(theme.palette.checkBorder).setStroke()
-            edge.stroke()
-        }
-    }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    @objc private func toggled(_ sender: Any?) { onPress() }
 }
 
 // MARK: Small push button

@@ -124,6 +124,7 @@ enum SettingsTestKit {
     /// Clicks a Settings control or push button.
     static func click(_ view: NSView?) {
         if let control = view as? SettingsControlView { control.press() }
+        if let checkbox = view as? SettingsCheckbox { checkbox.performClick(nil) }
         if let settingsSwitch = view as? SettingsSwitch { settingsSwitch.press() }
         if let button = view as? SystemButton { button.perform() }
         if let text = view as? TextControl { text.perform() }

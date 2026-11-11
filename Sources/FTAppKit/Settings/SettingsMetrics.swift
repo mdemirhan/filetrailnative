@@ -108,10 +108,6 @@ enum SettingsMetrics {
     static let unitGap: CGFloat = 6
     /// The system's mini switch.
     static let switchSize = NSSize(width: 36, height: 16)
-    /// A checkbox: 14 by 14, the extra-small corner radius.
-    static let checkboxSize: CGFloat = 14
-    static let checkPath = "M3.5 7.2l2.3 2.3 4.7-5"
-    static let checkStroke: CGFloat = 1.8
 
     // MARK: Appearance
 
@@ -248,8 +244,7 @@ enum SettingsMetrics {
 
     // MARK: Hairlines, shadows and motion
 
-    /// The 0.5 px edges of swatches, thumbnails, checkboxes and
-    /// the push button's bezel.
+    /// The 0.5 px edges of swatches, thumbnails and the push button's bezel.
     static let hairline: CGFloat = 0.5
     /// A row starts to drag 3 points from where it was pressed, and is dimmed to 0.4 while dragged.
     static let dragThreshold: CGFloat = 3
