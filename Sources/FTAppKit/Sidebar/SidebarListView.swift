@@ -21,7 +21,6 @@ protocol SidebarListDelegate: AnyObject {
     /// A key went down in the list; true when the sidebar took it.
     func sidebarList(_ list: SidebarListView, keyDown event: NSEvent) -> Bool
     func sidebarList(_ list: SidebarListView, focusChanged focused: Bool)
-    func sidebarList(_ list: SidebarListView, rowArrived state: SidebarRowState)
     func sidebarList(_ list: SidebarListView, favoriteDragStarted path: String)
     func sidebarList(
         _ list: SidebarListView, favoriteDragOver target: (path: String, position: Favorites.DropPosition)?)
@@ -571,10 +570,6 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
                     let menu = self.delegate?.sidebarList(self, menuFor: state, event: event)
                 else { return }
                 NSMenu.popUpContextMenu(menu, with: event, for: self.outline)
-            }
-            cell.onIconArrived = { [weak self, weak cell] in
-                guard let self, let state = cell?.state else { return }
-                self.delegate?.sidebarList(self, rowArrived: state)
             }
             cell.configure(state, width: max(1, Double(outlineView.bounds.width)))
             if takeChevronTurn(state.item.id) { cell.turnChevron() }

@@ -210,14 +210,10 @@ import Testing
                 item: item, subview: .tree, selection: .none, menuTarget: false, drop: nil, ejecting: false,
                 dragging: false, dropLine: nil, showsLoading: false, density: .standard, hasDisclosure: false)
             let cell = SidebarItemCell(frame: NSRect(x: 0, y: 0, width: 240, height: 26))
-            var arrived = 0
-            cell.onIconArrived = { arrived += 1 }
             cell.configure(state, width: 240)
             let before = try shownFolder(cell)
             #expect(before == nil)
-            #expect(await waitUntil { arrived == 1 })
-            let after = try shownFolder(cell)
-            #expect(after != nil)
+            #expect(await waitUntil { ((try? shownFolder(cell)) ?? nil) != nil })
         }
     }
 }

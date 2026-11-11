@@ -47,11 +47,9 @@ struct ToolbarIconTests {
         for id in ToolbarItemID.allCases { #expect(!outline(ToolbarItems.definition(id).icon).isEmpty) }
     }
 
-    @Test func rendersSpecializedShapesForListDetailsSearchClearAndStopIcons() {
-        let shapes: [ToolbarIconName] = [.list, .details, .search, .clear, .stop]
+    @Test func rendersSpecializedShapesForListDetailsAndSearchIcons() {
+        let shapes: [ToolbarIconName] = [.list, .details, .search]
         #expect(Set(shapes.map(signature)).count == shapes.count)
-        #expect(ToolbarGlyph.drawing(.clear).box == 16)
-        #expect(ToolbarGlyph.drawing(.stop).box == 16)
     }
 
     @Test func rendersDistinctIconsForCopyVsCopyPath() {

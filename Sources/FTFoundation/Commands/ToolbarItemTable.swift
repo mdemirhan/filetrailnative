@@ -19,8 +19,6 @@ public enum ToolbarIconName: String, CaseIterable, Sendable, Hashable {
     case open
     case theme
     case close
-    case sortAsc
-    case sortDesc
     case help
     case settings
     case search
@@ -30,8 +28,6 @@ public enum ToolbarIconName: String, CaseIterable, Sendable, Hashable {
     case copy
     case cut
     case paste
-    case clear
-    case stop
     case move
     case duplicate
     case newFolder
@@ -40,7 +36,6 @@ public enum ToolbarIconName: String, CaseIterable, Sendable, Hashable {
     case rename
     case separatorVertical
     case more
-    case overflow
     case sort
     case title
     case newTab

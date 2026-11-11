@@ -104,8 +104,6 @@ extension SidebarViewController {
         eject(path)
     }
 
-    func sidebarList(_ list: SidebarListView, rowArrived state: SidebarRowState) {}
-
     func sidebarList(_ list: SidebarListView, focusChanged focused: Bool) {
         if focused {
             setFocused(true)

@@ -85,9 +85,6 @@ final class HelpRowView: ThemedView {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    var labelText: String { label.stringValue }
-    var descriptionText: String { detail.stringValue }
-
     private var border: CGFloat { isFirst ? 0 : 1 }
 
     func height(forWidth width: CGFloat, compact: Bool) -> CGFloat {
@@ -139,9 +136,6 @@ final class HelpShortcutRowView: ThemedView {
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    var descriptionText: String { detail.stringValue }
-    var keys: [String] { keycaps.map(\.key) }
 
     private var border: CGFloat { isFirst ? 0 : 1 }
     private var keysWidth: CGFloat {
@@ -268,7 +262,6 @@ final class HelpSectionView: NSView {
 /// The page itself: the title, the introduction and the sections, in a column at most 720 wide.
 @MainActor
 final class HelpPageView: NSView, ThemeApplying {
-    let kind: HelpPageKind
     private(set) var theme: Theme
     private let title: ThemedText
     private var intro: ThemedText?
@@ -285,7 +278,6 @@ final class HelpPageView: NSView, ThemeApplying {
     init(
         kind: HelpPageKind, display: ShortcutDisplay, theme: Theme, onCustomize: (() -> Void)?
     ) {
-        self.kind = kind
         self.theme = theme
         let titleText: String
         switch kind {
@@ -454,12 +446,6 @@ final class HelpPageView: NSView, ThemeApplying {
     }
 
     // MARK: Introspection
-
-    /// Every shortcut row on the page.
-    var allShortcutRows: [HelpShortcutRowView] { sections.flatMap(\.shortcutRows) }
-    var allRows: [HelpRowView] { sections.flatMap(\.rows) }
-    var introText: String? { intro?.stringValue }
-    var titleText: String { title.stringValue }
 }
 
 /// Lets a plain closure be the target of a control (a control keeps its target unretained).

@@ -116,7 +116,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
     var onToggle: (() -> Void)?
     var onEject: (() -> Void)?
     var onMenu: ((NSEvent) -> Void)?
-    var onIconArrived: (() -> Void)?
 
     override var isFlipped: Bool { true }
 
@@ -250,7 +249,6 @@ final class SidebarItemCell: NSTableCellView, SidebarAccessibleCell {
                     // The cell may show another row by now.
                     guard let self, self.state?.item.id == item.id else { return }
                     self.icon.content = .folder(image)
-                    self.onIconArrived?()
                 }
             }
             icon.content = .folder(image)

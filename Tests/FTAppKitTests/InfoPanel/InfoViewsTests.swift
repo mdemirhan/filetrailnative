@@ -103,7 +103,7 @@ struct InfoPanelViewTests {
         return InfoPanelDisplay(
             body: .item(
                 .init(
-                    item: item, content: content, folderSize: nil, openApp: app, hasOpenWith: true, actions: actions,
+                    item: item, content: content, folderSize: nil, openApp: app, actions: actions,
                     copied: nil)),
             wantsSpinner: pending)
     }
@@ -161,7 +161,7 @@ struct InfoPanelViewTests {
         return InfoPanelDisplay(
             body: .item(
                 .init(
-                    item: folder, content: content, folderSize: entry, openApp: nil, hasOpenWith: true, actions: [],
+                    item: folder, content: content, folderSize: entry, openApp: nil, actions: [],
                     copied: nil)),
             wantsSpinner: false)
     }
@@ -322,7 +322,7 @@ struct InfoPanelViewTests {
         let state = InfoPanelDisplay(
             body: .item(
                 .init(
-                    item: root, content: content, folderSize: nil, openApp: nil, hasOpenWith: true, actions: [],
+                    item: root, content: content, folderSize: nil, openApp: nil, actions: [],
                     copied: nil)),
             wantsSpinner: false)
         let view = panel(state)

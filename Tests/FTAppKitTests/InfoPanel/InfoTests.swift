@@ -167,7 +167,7 @@ extension ExplorerWindowlessTests {
             select(["note.txt"], in: tab, harness: harness)
             let content = try #require(tab.window?.contentView)
             let group = try #require(findViews("infoPanel.openGroup", in: content).first as? SplitOpenButton)
-            #expect(await waitUntil { group.isSplit })
+            #expect(await waitUntil { !group.isHidden })
             group.layoutSubtreeIfNeeded()
             let window = try #require(tab.window)
             let point = group.chevron.convert(

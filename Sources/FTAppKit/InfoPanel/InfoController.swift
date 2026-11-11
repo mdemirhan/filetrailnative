@@ -380,7 +380,7 @@ final class InfoController {
         return InfoPanelDisplay(
             body: .item(
                 .init(
-                    item: item, content: content, folderSize: folderSize, openApp: app, hasOpenWith: true,
+                    item: item, content: content, folderSize: folderSize, openApp: app,
                     actions: actionList, copied: copied)),
             wantsSpinner: resolved.pending || (loading && properties == nil))
     }

@@ -101,7 +101,7 @@ extension ExplorerWindowlessTests {
             tab.content.select(paths: [image.path])
             let content = try #require(tab.window?.contentView)
             let group = try #require(findViews("infoPanel.openGroup", in: content).first as? SplitOpenButton)
-            #expect(await waitUntil { group.isSplit })
+            #expect(await waitUntil { !group.isHidden })
             group.layoutSubtreeIfNeeded()
             let window = try #require(tab.window)
             let point = group.mainPart.convert(

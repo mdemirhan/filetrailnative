@@ -33,11 +33,9 @@ enum CopyPasteDialogs {
     /// Shows `panel` over `tab`'s window, the tab's folder changes held until the last of these dialogs there goes.
     @discardableResult
     static func present(
-        _ panel: any DialogPanel, placement: DialogScrim.Placement, on tab: MainWindowController, in window: NSWindow,
-        onWindowClose: (() -> Void)? = nil
+        _ panel: any DialogPanel, placement: DialogScrim.Placement, on tab: MainWindowController, in window: NSWindow
     ) -> DialogScrim {
         let scrim = DialogScrim(panel: panel, placement: placement)
-        scrim.onWindowClose = onWindowClose
         track(scrim, on: tab)
         scrim.present(in: window)
         return scrim

@@ -53,15 +53,13 @@ enum InWindowAlerts {
 
     /// A notice, its detail list under the message. Return and Escape dismiss it too.
     static func notice(
-        title: String, message: String, detailLines: [String] = [], in window: NSWindow,
-        onClose: @escaping () -> Void = {}
+        title: String, message: String, detailLines: [String] = [], in window: NSWindow
     ) {
         let list = detailLines.isEmpty ? nil : DetailListView(lines: detailLines)
         Task { @MainActor in
             _ = await ask(
                 title: title, message: message, buttons: AlertButtons.notice, escape: .cancel, accessory: list,
                 in: window)
-            onClose()
         }
     }
 

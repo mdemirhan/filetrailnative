@@ -69,11 +69,11 @@ final class GoToFolderBox: NSView, DialogPanel, ThemeApplying, NSTextFieldDelega
     private static let titleFont = ThemeFonts.sans(DesignTokens.typeScale.body, .bold)
 
     init(
-        places: [Place], options: GoToBoxOptions, canForget: Bool = true, timers: any TimerScheduling,
+        places: [Place], options: GoToBoxOptions, timers: any TimerScheduling,
         requestCompletions: @escaping @MainActor (String) async -> [GoToCompletion]?
     ) {
         self.options = options
-        state = GoToBoxState(places: places, selectFirstPlace: options.selectFirstPlace, canForgetPlaces: canForget)
+        state = GoToBoxState(places: places, selectFirstPlace: options.selectFirstPlace, canForgetPlaces: true)
         requests = PathCompletionRequests(timers: timers, request: requestCompletions)
         shell = GoToFieldShell(label: options.fieldLabel)
         if let title = options.title {

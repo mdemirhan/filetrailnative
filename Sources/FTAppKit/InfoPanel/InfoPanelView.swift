@@ -23,8 +23,6 @@ struct InfoPanelDisplay: Equatable {
         var content: InfoPanelModel.ItemContent
         var folderSize: FolderSizeEntry?
         var openApp: InfoOpenApp?
-        /// Open With has items, so the chevron half shows.
-        var hasOpenWith: Bool
         var actions: [InfoPanelModel.QuickAction]
         var copied: InfoPanelModel.QuickAction.ID?
     }
@@ -222,7 +220,6 @@ final class SplitOpenButton: NSView, TextStyleSource {
     var styleTextField: NSTextField? { label }
     var title = "Open" { didSet { needsLayout = true } }
     var appIcon: NSImage? { didSet { needsLayout = true } }
-    var isSplit = false { didSet { needsDisplay = true } }
     var onMain: () -> Void = {}
     var onChevron: () -> Void = {}
     private var hoverMain = false { didSet { needsDisplay = true } }
@@ -249,7 +246,6 @@ final class SplitOpenButton: NSView, TextStyleSource {
         mainPart.setAccessibilityIdentifier("infoPanel.open")
         chevron.setAccessibilityIdentifier("infoPanel.openWith")
         addSubview(chevron)
-        chevron.isHidden = true
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
@@ -263,13 +259,12 @@ final class SplitOpenButton: NSView, TextStyleSource {
         needsLayout = true
     }
 
-    private var mainWidth: Double { isSplit ? bounds.width - InfoMetrics.openChevronWidth : bounds.width }
+    private var mainWidth: Double { bounds.width - InfoMetrics.openChevronWidth }
     /// The app's icon, 18 rather than 16.
     private let iconSize = 18.0
 
     override func layout() {
         super.layout()
-        chevron.isHidden = !isSplit
         mainPart.frame = NSRect(x: 0, y: 0, width: mainWidth, height: bounds.height)
         chevron.frame = NSRect(x: mainWidth, y: 0, width: InfoMetrics.openChevronWidth, height: bounds.height)
         label.stringValue = title
@@ -302,16 +297,14 @@ final class SplitOpenButton: NSView, TextStyleSource {
             NSColor.black.withAlphaComponent(0.08).setFill()
             (part == 0 ? NSRect(x: 0, y: 0, width: mainWidth, height: bounds.height) : chevron.frame).fill()
         }
-        if isSplit {
-            NSColor(theme.accent.onSolid.withAlpha(0.35)).setFill()
-            NSRect(x: mainWidth, y: 0, width: 1, height: bounds.height).fill()
-            let box = 8.0
-            InfoGlyph.openChevron.draw(
-                in: NSRect(
-                    x: mainWidth + (InfoMetrics.openChevronWidth - box) / 2 + 0.5, y: (bounds.height - box) / 2,
-                    width: box, height: box),
-                strokeWidth: 1.6, color: NSColor(theme.accent.onSolid))
-        }
+        NSColor(theme.accent.onSolid.withAlpha(0.35)).setFill()
+        NSRect(x: mainWidth, y: 0, width: 1, height: bounds.height).fill()
+        let box = 8.0
+        InfoGlyph.openChevron.draw(
+            in: NSRect(
+                x: mainWidth + (InfoMetrics.openChevronWidth - box) / 2 + 0.5, y: (bounds.height - box) / 2,
+                width: box, height: box),
+            strokeWidth: 1.6, color: NSColor(theme.accent.onSolid))
         NSGraphicsContext.restoreGraphicsState()
         if let appIcon {
             let textWidth = textExtent(title, label.font)
@@ -327,7 +320,7 @@ final class SplitOpenButton: NSView, TextStyleSource {
     private func part(at event: NSEvent) -> Int? {
         let point = convert(event.locationInWindow, from: nil)
         guard bounds.contains(point) else { return nil }
-        return isSplit && point.x >= mainWidth ? 1 : 0
+        return point.x >= mainWidth ? 1 : 0
     }
 
     override func updateTrackingAreas() {
@@ -581,7 +574,6 @@ final class InfoPanelContentView: NSView {
             subtitle.stringValue = item.content.subtitle
             open.title = item.openApp.map { "Open in \($0.name)" } ?? "Open"
             open.toolTip = open.title
-            open.isSplit = item.hasOpenWith
             loadOpenIcon(item.openApp)
             sectionTitles = [sectionTitle("Information"), sectionTitle("Quick Actions")]
             buildRows(

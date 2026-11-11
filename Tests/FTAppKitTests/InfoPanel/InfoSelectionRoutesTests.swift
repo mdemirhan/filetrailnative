@@ -233,7 +233,7 @@ extension ExplorerWindowlessTests {
             info.actions.opener = spy.opener
             harness.layout(tab)
             let group = try #require(views("infoPanel.openGroup", in: tab).first as? SplitOpenButton)
-            #expect(await waitUntil { group.isSplit })
+            #expect(await waitUntil { !group.isHidden })
             group.onChevron()
             let menu = try #require(AppMenuPresenter.shared.menu)
             #expect(group.menuOpen)

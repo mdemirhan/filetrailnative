@@ -15,7 +15,7 @@ final class TextPromptAccessory: NSView, AlertAccessory, ThemeApplying, NSTextFi
     private let selectsAll: Bool
     private static let font = ThemeFonts.sans(DesignTokens.typeScale.body)
 
-    init(text: String, label: String, placeholder: String? = nil, selectsAll: Bool) {
+    init(text: String, label: String, selectsAll: Bool) {
         field = PromptField()
         self.selectsAll = selectsAll
         var style = TextStyle(
@@ -39,7 +39,6 @@ final class TextPromptAccessory: NSView, AlertAccessory, ThemeApplying, NSTextFi
         field.delegate = self
         field.setAccessibilityLabel(label)
         field.setAccessibilityIdentifier("prompt.field")
-        if let placeholder { field.placeholderString = placeholder }
         field.onFocus = { [weak self] in self?.focused() }
         addSubview(field)
         addSubview(errorLabel)

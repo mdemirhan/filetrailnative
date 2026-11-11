@@ -44,15 +44,6 @@ enum ToolbarGlyph {
             return Drawing(shapes: [.path("M8 4v16M4 16l4 4 4-4M16 20V4M12 8l4-4 4 4")])
         case .search:
             return Drawing(shapes: [.circle(x: 11, y: 11, radius: 7), .line(x1: 16.5, y1: 16.5, x2: 21, y2: 21)])
-        case .clear:
-            return Drawing(
-                box: 16,
-                shapes: [
-                    .circle(x: 8, y: 8, radius: 6), .line(x1: 5.7, y1: 5.7, x2: 10.3, y2: 10.3),
-                    .line(x1: 10.3, y1: 5.7, x2: 5.7, y2: 10.3),
-                ])
-        case .stop:
-            return Drawing(box: 16, shapes: [.rect(x: 4, y: 4, width: 8, height: 8, radius: 1.5)])
         case .separatorVertical:
             return Drawing(box: 16, shapes: [.line(x1: 8, y1: 2.5, x2: 8, y2: 13.5)])
         case .newTab:
@@ -128,10 +119,7 @@ enum ToolbarGlyph {
         case .theme:
             "M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 16a4 4 0 1 0 0-8a4 4 0 0 0 0 8"
         case .chevron: "M9.5 7l5 5-5 5"
-        case .overflow: "M6.5 7l5 5-5 5M12.5 7l5 5-5 5"
         case .close: "M6 6l12 12M18 6l-12 12"
-        case .sortAsc: "M12 5v14M5 12l7-7 7 7"
-        case .sortDesc: "M12 19V5M5 12l7 7 7-7"
         case .help: "M12 22a10 10 0 1 0 0-20a10 10 0 0 0 0 20M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4M12 17h.01"
         case .settings:
             "M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1zM12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
