@@ -80,9 +80,10 @@ public enum PathBarItem: Equatable, Sendable {
 }
 
 public enum PathBarModel {
-    public static func label(_ path: String) -> String {
+    /// A folder's name: the startup disk's name for `/`.
+    public static func label(_ path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName) -> String {
         path == "/"
-            ? "Macintosh HD"
+            ? startupDiskName
             : (path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? path)
     }
 
@@ -95,18 +96,20 @@ public enum PathBarModel {
 
     /// One per folder from the top of the disk, a path on another volume starting at that volume.
     /// The Trash is one place on every disk: its path starts at a segment called Trash, which goes to the Trash.
-    public static func segments(_ path: String, homePath: String = "") -> [PathbarSegment] {
+    public static func segments(
+        _ path: String, homePath: String = "", startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> [PathbarSegment] {
         if path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return [PathbarSegment(label: "No folder selected", path: "")]
         }
-        if path == "/" { return [PathbarSegment(label: "Macintosh HD", path: "/")] }
+        if path == "/" { return [PathbarSegment(label: startupDiskName, path: "/")] }
         let homeTrash = FavoriteLabel.trashPath(homePath: homePath)
         if !homeTrash.isEmpty, path == homeTrash || path.hasPrefix(homeTrash + "/") {
             return inTrash(start: homeTrash, rest: path.dropFirst(homeTrash.count), trashPath: homeTrash)
         }
         let root = VolumePaths.volumeRootPath(path)
         let rest = path.dropFirst(root == "/" ? 0 : root.count)
-        var result = [PathbarSegment(label: label(root), path: root)]
+        var result = [PathbarSegment(label: label(root, startupDiskName: startupDiskName), path: root)]
         var current = root == "/" ? "" : root
         let parts = rest.split(separator: "/", omittingEmptySubsequences: true)
         if root != "/" && parts.count > 1 && parts[0] == ".Trashes" {

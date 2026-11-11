@@ -154,10 +154,12 @@ public struct TreeNodeState: Equatable, Sendable {
         self.childPaths = childPaths
     }
 
-    /// A folder not read yet; "Macintosh HD" for `/`.
+    /// A folder not read yet. The tree draws `/` with the startup disk's name (`Favorites.presentation`).
     public init(path: String, expanded: Bool) {
         self.init(
-            path: path, name: path == "/" ? "Macintosh HD" : (JSString.components(path, separator: 0x2F).last ?? path),
+            path: path,
+            name: path == "/"
+                ? VolumePaths.defaultStartupDiskName : (JSString.components(path, separator: 0x2F).last ?? path),
             expanded: expanded)
     }
 }

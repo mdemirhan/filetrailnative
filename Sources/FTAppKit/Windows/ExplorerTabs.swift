@@ -143,9 +143,11 @@ public enum ExplorerTabs {
         return name.isEmpty ? "/" : prefix + name
     }
 
-    /// "Macintosh HD" for `/`.
-    public static func folderDisplayName(_ path: String) -> String {
-        TabText.folderDisplayName(path)
+    /// The startup disk's name for `/`.
+    public static func folderDisplayName(
+        _ path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> String {
+        TabText.folderDisplayName(path, startupDiskName: startupDiskName)
     }
 
     /// `path` and the folders above it, nearest first: where a tab goes when its folder is gone.
@@ -163,16 +165,19 @@ public enum ExplorerTabs {
 
     /// Its folder, or its search while results are showing.
     public static func describe(
-        currentPath: String, searchVisible: Bool, searchQuery: String, searchRootPath: String, searchRunning: Bool
+        currentPath: String, searchVisible: Bool, searchQuery: String, searchRootPath: String, searchRunning: Bool,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> TabDescription {
         TabText.describe(
             currentPath: currentPath, searchVisible: searchVisible, searchQuery: searchQuery,
-            searchRootPath: searchRootPath, searchRunning: searchRunning)
+            searchRootPath: searchRootPath, searchRunning: searchRunning, startupDiskName: startupDiskName)
     }
 
     /// Tabs on folders with the same name are told apart by the folder each one is in. Tabs
     /// on the same folder, and search tabs, keep their labels.
-    public static func disambiguate(_ items: [TabLabel]) -> [TabLabel] {
+    public static func disambiguate(
+        _ items: [TabLabel], startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> [TabLabel] {
         items.enumerated().map { index, item in
             guard item.kind == .folder else { return item }
             let clashes = items.enumerated().contains { otherIndex, other in
@@ -180,7 +185,7 @@ public enum ExplorerTabs {
             }
             guard clashes, let parent = parentDirectoryPath(item.path) else { return item }
             var labelled = item
-            labelled.label = "\(item.label) — \(folderDisplayName(parent))"
+            labelled.label = "\(item.label) — \(folderDisplayName(parent, startupDiskName: startupDiskName))"
             return labelled
         }
     }

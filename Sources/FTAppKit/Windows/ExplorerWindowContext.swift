@@ -50,6 +50,8 @@ struct ExplorerServices {
     var clipboard: SharedClipboard
     /// Preference changes, as every window sees them.
     var preferences: WindowPreferenceChannel?
+    /// What the startup disk is called.
+    var startupDisk = StartupDisk.shared
 
     /// The services the app runs, which it installs before any window opens.
     static var current: ExplorerServices {

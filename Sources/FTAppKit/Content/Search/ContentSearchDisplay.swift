@@ -18,6 +18,8 @@ struct ContentSearchDisplay {
     var isRunning: Bool
     var error: String?
     var errorIsQuiet: Bool
+    /// What a result right in `/` shows in its Folder column.
+    var startupDiskName = VolumePaths.defaultStartupDiskName
 }
 
 /// What the views of the folder draw differently for search results: the Folder column, the marks in names, and the
@@ -32,6 +34,7 @@ final class ContentSearchContext {
     let requestSort: (SearchResultsSortByPreference) -> Void
     /// The order was set from outside (a scenario's sort step).
     let setSort: (SearchResultsSortByPreference, SortDirectionPreference) -> Void
+    private let startupDiskName: String
     private var folderLabels: [String: String] = [:]
     private var matches: [String: HighlightRange?] = [:]
 
@@ -41,6 +44,7 @@ final class ContentSearchContext {
     ) {
         self.setSort = setSort
         rootPath = display.rootPath
+        startupDiskName = display.startupDiskName
         highlight = display.highlight
         sortBy = display.sortBy
         sortDirection = display.sortDirection
@@ -50,7 +54,7 @@ final class ContentSearchContext {
     /// "src › renderer", or the root's name for a result right in it.
     func folderLabel(_ path: String) -> String {
         if let known = folderLabels[path] { return known }
-        let made = SearchResults.folderText(path: path, rootPath: rootPath)
+        let made = SearchResults.folderText(path: path, rootPath: rootPath, startupDiskName: startupDiskName)
         folderLabels[path] = made
         return made
     }

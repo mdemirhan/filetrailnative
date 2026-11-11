@@ -3,9 +3,11 @@ import Foundation
 public enum Favorites {
     // MARK: Locations
 
-    /// Home, Macintosh HD and the Trash always come first and keep their rows; the disks
+    /// Home, the startup disk and the Trash always come first and keep their rows; the disks
     /// come and go after them.
-    public static func locations(volumes: [SidebarVolume], homePath: String) -> [SidebarLocation] {
+    public static func locations(
+        volumes: [SidebarVolume], homePath: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> [SidebarLocation] {
         var places: [SidebarLocation] = []
         if !homePath.isEmpty {
             places.append(
@@ -13,7 +15,7 @@ public enum Favorites {
                     path: homePath, label: JSString.components(homePath, separator: 0x2F).last ?? homePath,
                     icon: .home))
         }
-        places.append(SidebarLocation(path: "/", label: "Macintosh HD", icon: .drive))
+        places.append(SidebarLocation(path: "/", label: startupDiskName, icon: .drive))
         if !homePath.isEmpty {
             places.append(
                 SidebarLocation(path: FavoriteLabel.trashPath(homePath: homePath), label: "Trash", icon: .trash))
@@ -144,11 +146,13 @@ public enum Favorites {
         /// Shown as a Locations row after Favorites when `includeFavorites` is set.
         public var locations: [SidebarLocation] = []
         public var locationsExpanded = true
+        /// What the favorite and the folder of the tree that are `/` are called.
+        public var startupDiskName = VolumePaths.defaultStartupDiskName
 
         public init(
             favorites: [FavoritePreference], favoritesExpanded: Bool, homePath: String, rootPath: String,
             nodes: TreeNodes, includeFavorites: Bool = true, locations: [SidebarLocation] = [],
-            locationsExpanded: Bool = true
+            locationsExpanded: Bool = true, startupDiskName: String = VolumePaths.defaultStartupDiskName
         ) {
             self.favorites = favorites
             self.favoritesExpanded = favoritesExpanded
@@ -158,6 +162,7 @@ public enum Favorites {
             self.includeFavorites = includeFavorites
             self.locations = locations
             self.locationsExpanded = locationsExpanded
+            self.startupDiskName = startupDiskName
         }
     }
 
@@ -182,7 +187,9 @@ public enum Favorites {
                     add(
                         TreePresentationItem(
                             id: .favorite(favorite.path), kind: .favorite,
-                            label: FavoriteLabel.label(for: favorite.path, homePath: input.homePath), depth: 1,
+                            label: FavoriteLabel.label(
+                                for: favorite.path, homePath: input.homePath, startupDiskName: input.startupDiskName),
+                            depth: 1,
                             path: favorite.path, parentID: .favoritesRoot, expanded: false, canExpand: false,
                             icon: favorite.icon))
                 }
@@ -203,9 +210,11 @@ public enum Favorites {
         func addNode(_ path: String, depth: Int, parent: TreeItemID?) {
             guard let node = input.nodes[path] else { return }
             let id = TreeItemID.filesystem(path)
+            // `/` is named when drawn, so a rename of the startup disk reaches a tree read before it.
+            let label = path == "/" ? input.startupDiskName : node.name
             add(
                 TreePresentationItem(
-                    id: id, kind: .filesystem, label: node.name, depth: depth, path: path, parentID: parent,
+                    id: id, kind: .filesystem, label: label, depth: depth, path: path, parentID: parent,
                     expanded: node.expanded, canExpand: !node.isSymlink, loading: node.loading, error: node.error,
                     isSymlink: node.isSymlink, isHidden: node.isHidden,
                     childIDs: node.childPaths.map { .filesystem($0) }))

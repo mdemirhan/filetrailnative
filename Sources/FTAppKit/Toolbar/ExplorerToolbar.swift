@@ -297,13 +297,14 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         if id != .search { item.menuFormRepresentation = overflowEntry(id, canPerform) }
     }
 
-    /// `ExplorerTabs.folderDisplayName`: "Macintosh HD" for `/`; while searching, "Searching “…”" with the folder the
-    /// search runs from (`toolbarTitle`).
+    /// `ExplorerTabs.folderDisplayName`: the startup disk's name for `/`; while searching, "Searching “…”" with the
+    /// folder the search runs from (`toolbarTitle`).
     static func title(of context: ExplorerWindowContext) -> String {
+        let disk = context.services.startupDisk.name
         if let root = context.searchRootPath {
-            return "Searching “\(ExplorerTabs.folderDisplayName(root))”"
+            return "Searching “\(ExplorerTabs.folderDisplayName(root, startupDiskName: disk))”"
         }
-        return ExplorerTabs.folderDisplayName(context.shownFolderPath)
+        return ExplorerTabs.folderDisplayName(context.shownFolderPath, startupDiskName: disk)
     }
 
     // MARK: Looking at the items

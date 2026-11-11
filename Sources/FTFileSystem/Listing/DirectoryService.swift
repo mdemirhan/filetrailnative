@@ -94,8 +94,10 @@ public final class DirectoryService: Sendable {
     }
 
     @concurrent
-    public func itemProperties(path: String) async -> ItemProperties {
-        ExplorerListing.itemProperties(path: path, fileSystem, kinds: kinds)
+    public func itemProperties(
+        path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) async -> ItemProperties {
+        ExplorerListing.itemProperties(path: path, fileSystem, kinds: kinds, startupDiskName: startupDiskName)
     }
 
     @concurrent

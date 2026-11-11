@@ -143,6 +143,13 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
                 }
             })
         volumesToken = SidebarVolumes.shared.observe { [weak self] in self?.volumesChanged($0) }
+        observers.append(
+            NotificationCenter.default.addObserver(forName: StartupDisk.nameChanged, object: nil, queue: .main) {
+                [weak self] _ in
+                MainActor.assumeIsolated {
+                    for group in self?.groups ?? [] { group.startupDiskNameChanged() }
+                }
+            })
     }
 
     // MARK: Tabs that follow the disk

@@ -7,6 +7,8 @@ extension MainWindowController {
     /// Connects the path bar to the window: what it opens, and the folders and suggestions it asks for.
     func wirePathBar() {
         let bar = content.contentShell.pathBarRow
+        bar.startupDiskName = { [weak self] in self?.services.startupDisk.name ?? VolumePaths.defaultStartupDiskName }
+        bar.namesChanged()
         bar.path = folder.path
         bar.onNavigate = { [weak self] path in
             guard let self else { return }

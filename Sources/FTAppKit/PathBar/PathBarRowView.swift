@@ -31,9 +31,12 @@ final class PathBarRowView: NSView {
             pathBar.setExpanded(false)
             folderMenu.close()
             if isEditing { endEditing(restoreFocus: false) }
-            pathBar.segments = PathBarModel.segments(path, homePath: NSHomeDirectory())
+            showSegments()
         }
     }
+
+    /// What the startup disk is called.
+    var startupDiskName: () -> String = { VolumePaths.defaultStartupDiskName }
 
     private(set) var isEditing = false
     var onNavigate: (String) -> Void = { _ in }
@@ -61,7 +64,7 @@ final class PathBarRowView: NSView {
         addSubview(status)
         addSubview(editor)
         editor.isHidden = true
-        pathBar.segments = PathBarModel.segments(path, homePath: NSHomeDirectory())
+        showSegments()
         pathBar.onNavigate = { [weak self] in self?.onNavigate($0) }
         pathBar.onOpenInNewTab = { [weak self] in self?.onOpenInNewTab($0) }
         pathBar.onEdit = { [weak self] in self?.beginEditing() }
@@ -86,6 +89,17 @@ final class PathBarRowView: NSView {
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
     override var isFlipped: Bool { true }
+
+    /// The startup disk was renamed: the segments say its new name.
+    func namesChanged() {
+        showSegments()
+    }
+
+    private func showSegments() {
+        let name = startupDiskName()
+        pathBar.startupDiskName = name
+        pathBar.segments = PathBarModel.segments(path, homePath: NSHomeDirectory(), startupDiskName: name)
+    }
 
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)

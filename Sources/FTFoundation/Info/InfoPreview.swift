@@ -89,11 +89,13 @@ public enum InfoPreview {
     /// from what the file list already knows, so switching items updates in place instead of blanking.
     public static func resolve(
         path: String?, currentPath: String, entries: [InfoEntry], metadataByPath: [String: InfoMetadata],
-        properties: InfoItem?
+        properties: InfoItem?, startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> Resolved? {
         guard let path, !path.isEmpty else { return nil }
         if let properties, properties.path == path { return Resolved(item: properties, pending: false) }
-        let entry = entries.first { $0.path == path } ?? (path == currentPath ? folderEntry(path) : nil)
+        let entry =
+            entries.first { $0.path == path }
+            ?? (path == currentPath ? folderEntry(path, startupDiskName: startupDiskName) : nil)
         guard let entry else { return nil }
         let metadata = metadataByPath[path]
         return Resolved(
@@ -107,8 +109,11 @@ public enum InfoPreview {
             pending: true)
     }
 
-    public static func folderEntry(_ path: String) -> InfoEntry {
-        let name = path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? "Macintosh HD"
+    /// A folder the list shows no row of; `/` has the startup disk's name.
+    public static func folderEntry(
+        _ path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> InfoEntry {
+        let name = path.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? startupDiskName
         return InfoEntry(path: path, name: name, kind: .directory)
     }
 

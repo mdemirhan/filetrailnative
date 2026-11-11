@@ -74,7 +74,7 @@ extension MainWindowController {
         Places.build(
             visitedFolders: Self.visitStore()?.folders() ?? [], favoritePaths: preferences.favorites.map(\.path),
             currentPath: shownFolderPath, homePath: FileManager.default.homeDirectoryForCurrentUser.path,
-            now: AppClock.now.timeIntervalSince1970 * 1000)
+            now: AppClock.now.timeIntervalSince1970 * 1000, startupDiskName: services.startupDisk.name)
     }
 
     /// The typed text trimmed, `~` expanded, hidden folders only when the tab shows them,

@@ -52,6 +52,8 @@ final class SidebarModel {
     /// The folder on screen.
     var currentPath = ""
     private(set) var volumes: [SidebarVolume] = []
+    /// What the startup disk is called.
+    var startupDiskName: () -> String = { VolumePaths.defaultStartupDiskName }
     /// Reads a folder's subfolders (`tree:getChildren`).
     /// Whether a folder has the flag that hides it, which its path doesn't tell.
     var hasHiddenFlag: (_ path: String) async -> Bool = { _ in false }
@@ -141,7 +143,14 @@ final class SidebarModel {
 
     // MARK: What is drawn
 
-    var locations: [SidebarLocation] { Favorites.locations(volumes: volumes, homePath: homePath) }
+    var locations: [SidebarLocation] {
+        Favorites.locations(volumes: volumes, homePath: homePath, startupDiskName: startupDiskName())
+    }
+
+    /// The startup disk was renamed: its rows are drawn again with the new name.
+    func namesChanged() {
+        onChange()
+    }
 
     private var separate: Bool { placement == .separate }
 
@@ -151,7 +160,7 @@ final class SidebarModel {
             .init(
                 favorites: favorites, favoritesExpanded: favoritesExpanded, homePath: homePath, rootPath: rootPath,
                 nodes: nodes, includeFavorites: !separate, locations: locations,
-                locationsExpanded: locationsExpanded))
+                locationsExpanded: locationsExpanded, startupDiskName: startupDiskName()))
     }
 
     /// The separate Favorites list.
@@ -159,7 +168,8 @@ final class SidebarModel {
         favorites.map {
             TreePresentationItem(
                 id: .favorite($0.path), kind: .favorite,
-                label: FavoriteLabel.label(for: $0.path, homePath: homePath), depth: 0, path: $0.path, parentID: nil,
+                label: FavoriteLabel.label(for: $0.path, homePath: homePath, startupDiskName: startupDiskName()),
+                depth: 0, path: $0.path, parentID: nil,
                 expanded: false, canExpand: false, icon: $0.icon)
         }
     }

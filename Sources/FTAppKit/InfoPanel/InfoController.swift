@@ -158,7 +158,16 @@ final class InfoController {
         let found = content.listedEntry(at: path).map { [infoEntry($0)] } ?? []
         let metadata = infoMetadata(content.metadata(for: path)).map { [path: $0] } ?? [:]
         return InfoPreview.resolve(
-            path: path, currentPath: folderPath, entries: found, metadataByPath: metadata, properties: properties)
+            path: path, currentPath: folderPath, entries: found, metadataByPath: metadata, properties: properties,
+            startupDiskName: startupDiskName)
+    }
+
+    private var startupDiskName: String { host.services.startupDisk.name }
+
+    /// The startup disk was renamed: the item is asked for again, so `/` comes back with its new name.
+    func namesChanged() {
+        if let path = targetPath { scheduleFetch(path, immediately: true) }
+        update()
     }
 
     // MARK: Properties
@@ -189,8 +198,9 @@ final class InfoController {
         guard liveHost != nil else { return }
         fetchTimer = nil
         let service = host.services.directoryService
+        let disk = startupDiskName
         Task { @MainActor [weak self] in
-            let item = await service.itemProperties(path: path)
+            let item = await service.itemProperties(path: path, startupDiskName: disk)
             guard let self else { return }
             let mapped = InfoItem(
                 path: item.path, name: item.name, fileExtension: item.fileExtension,
@@ -358,7 +368,8 @@ final class InfoController {
                     .init(
                         summary: summary,
                         rows: InfoPanelModel.selectionRows(
-                            summary, hasFolderSize: hasFolders, folderSize: selection.size.folderSizeEntry),
+                            summary, hasFolderSize: hasFolders, folderSize: selection.size.folderSizeEntry,
+                            startupDiskName: startupDiskName),
                         folderSize: selection.size.folderSizeEntry)), wantsSpinner: false)
         }
         guard let resolved else {
@@ -376,7 +387,7 @@ final class InfoController {
         let content = InfoPanelModel.itemContent(
             item: item, pending: resolved.pending, volume: volume?.path == item.path ? volume?.value : nil,
             isVolumeRoot: isVolume, hasFolderSize: folderSize != nil, folderSize: folderSize, opensWith: opens,
-            dates: .original)
+            dates: .original, startupDiskName: startupDiskName)
         let app =
             isFile ? lookup.answer(for: item.path)?.defaultApp.map { InfoOpenApp(path: $0.path, name: $0.name) } : nil
         let trash = FavoriteLabel.trashPath(homePath: homePath)
@@ -421,7 +432,7 @@ final class InfoController {
             active = infoEntry(single)
             iconEntry = single.iconEntry
         } else if !folderPath.isEmpty {
-            active = InfoPreview.folderEntry(folderPath)
+            active = InfoPreview.folderEntry(folderPath, startupDiskName: startupDiskName)
             iconEntry = IconEntry(path: folderPath, name: active?.name ?? "", kind: .directory)
         } else {
             return nil

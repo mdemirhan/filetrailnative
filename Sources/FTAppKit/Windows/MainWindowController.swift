@@ -600,11 +600,12 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         guard let session = searchStore?.session else {
             return ExplorerTabs.describe(
                 currentPath: shownFolderPath, searchVisible: false, searchQuery: "", searchRootPath: "",
-                searchRunning: false)
+                searchRunning: false, startupDiskName: services.startupDisk.name)
         }
         return ExplorerTabs.describe(
             currentPath: shownFolderPath, searchVisible: session.resultsVisible, searchQuery: session.committedQuery,
-            searchRootPath: session.rootPath, searchRunning: session.isRunning)
+            searchRootPath: session.rootPath, searchRunning: session.isRunning,
+            startupDiskName: services.startupDisk.name)
     }
 
     /// Reads the tab's folder the first time it is shown, or again when it was sent elsewhere in the background.
@@ -984,9 +985,19 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     private func updateTitle() {
         // The window title is the folder name, which the toolbar shows; the tab bar and the Window menu have the
         // tab's label (ExplorerTabGroup.refreshTitles).
-        let name = ExplorerTabs.folderDisplayName(shownFolderPath)
+        let name = ExplorerTabs.folderDisplayName(shownFolderPath, startupDiskName: services.startupDisk.name)
         window?.title = name.isEmpty ? "File Trail" : name
         window?.representedURL = folderLetGo ? nil : folder
+    }
+
+    /// The startup disk was renamed: the window title, the toolbar's title, the path bar, the sidebar and the Info panel
+    /// say its new name. The tab bar follows with the window's titles (`ExplorerTabGroup.startupDiskNameChanged`).
+    func startupDiskNameChanged() {
+        updateTitle()
+        explorerToolbar.reload()
+        content.contentShell.pathBarRow.namesChanged()
+        sidebar.model.namesChanged()
+        infoController?.namesChanged()
     }
 
     // MARK: Navigation
@@ -1739,6 +1750,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// Opens the Sidebar's closures: what it needs of the window.
     private func configureSidebar() {
         sidebar.preferences = { [weak self] in self?.preferences ?? AppPreferences.defaults() }
+        sidebar.model.startupDiskName = { [weak self] in
+            self?.services.startupDisk.name ?? VolumePaths.defaultStartupDiskName
+        }
         sidebar.updatePreferences = { [weak self] change in self?.updatePreferences(change) }
         sidebar.directoryService = { [weak self] in
             self?.services.directoryService ?? ExplorerServices.current.directoryService

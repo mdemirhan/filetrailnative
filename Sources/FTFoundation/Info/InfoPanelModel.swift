@@ -105,9 +105,10 @@ public enum InfoPanelModel {
     }
 
     /// The summary's rows: Contains when folders are among the items, Size and Where.
-    public static func selectionRows(_ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?)
-        -> [InfoRow]
-    {
+    public static func selectionRows(
+        _ selection: InfoSelection, hasFolderSize: Bool, folderSize: FolderSizeEntry?,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> [InfoRow] {
         let size = selection.totalBytes.map { SizeText.size($0) }
         let sizeRow: InfoRow
         if hasFolderSize, let folderSize {
@@ -120,7 +121,9 @@ public enum InfoPanelModel {
         let whereRow: InfoRow
         if let parent = selection.parentPath {
             whereRow = InfoRow(
-                label: "Where", value: .whereLink(label: PathBarModel.label(parent), path: parent), muted: false)
+                label: "Where",
+                value: .whereLink(label: PathBarModel.label(parent, startupDiskName: startupDiskName), path: parent),
+                muted: false)
         } else {
             whereRow = InfoRow(label: "Where", value: .text("Several folders"), muted: true)
         }
@@ -145,7 +148,8 @@ public enum InfoPanelModel {
     /// The rows and the subtitle of one item, in the order of.
     public static func itemContent(
         item: InfoItem, pending isPending: Bool, volume: InfoVolume?, isVolumeRoot: Bool, hasFolderSize: Bool,
-        folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared
+        folderSize: FolderSizeEntry?, opensWith: OpensWithState, dates: DateText = .shared,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> ItemContent {
         let isFile = item.kind == .file || item.kind == .symlinkFile
         let folderEligible = item.kind.isFolderSizeEligible
@@ -209,7 +213,10 @@ public enum InfoPanelModel {
         if let parent = parentPath(item.path) {
             rows.append(
                 InfoRow(
-                    label: "Where", value: .whereLink(label: PathBarModel.label(parent), path: parent), muted: false))
+                    label: "Where",
+                    value: .whereLink(
+                        label: PathBarModel.label(parent, startupDiskName: startupDiskName), path: parent),
+                    muted: false))
         } else {
             rows.append(InfoRow(label: "Where", value: .text("—"), muted: true))
         }

@@ -170,8 +170,10 @@ public enum SearchResults {
     // MARK: - Folder column
 
     /// The folder a result is in, from where the search started, with › between folders ("src › renderer"); a result
-    /// right in that folder shows the folder's name.
-    public static func folderText(path: String, rootPath: String) -> String {
+    /// right in that folder shows the folder's name (the startup disk's for `/`).
+    public static func folderText(
+        path: String, rootPath: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> String {
         let pathUnits = Array(path.utf16)
         let lastSlash = pathUnits.lastIndex(of: slash) ?? -1
         let parentPath = Array(pathUnits[..<max(1, lastSlash)])
@@ -181,7 +183,7 @@ public enum SearchResults {
         }
         let root = String(decoding: rootUnits, as: UTF16.self)
         if parentPath == rootUnits {
-            if root == "/" { return "Macintosh HD" }
+            if root == "/" { return startupDiskName }
             return root.split(separator: "/", omittingEmptySubsequences: true).last.map(String.init) ?? root
         }
         let cut = root == "/" ? 1 : rootUnits.count + 1

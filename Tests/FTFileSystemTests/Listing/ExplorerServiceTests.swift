@@ -89,6 +89,13 @@ struct ExplorerServiceTests {
         #expect(item.permissionMode != nil)
     }
 
+    @Test func theRootFolderIsNamedAsTheStartupDiskIsCalled() async {
+        let item = await DirectoryService().itemProperties(path: "/", startupDiskName: "Data")
+        #expect(item.name == "Data")
+        let folder = await DirectoryService().itemProperties(path: "/Users", startupDiskName: "Data")
+        #expect(folder.name == "Users")
+    }
+
     @Test func namesKindsAsTheSystemDoesAskingOncePerExtension() async throws {
         try await withTemporaryDirectory { directory in
             for name in ["a.md", "b.md", "c.xyz"] {

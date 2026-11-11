@@ -134,6 +134,9 @@ private func result(_ path: String, kind: FTFileSystem.EntryKind = .file) -> Sea
         #expect(SearchResults.folderText(path: "/Users/demo/app/README.md", rootPath: "/Users/demo/app") == "app")
         #expect(SearchResults.folderText(path: "/etc/hosts", rootPath: "/") == "etc")
         #expect(SearchResults.folderText(path: "/notes.txt", rootPath: "/") == "Macintosh HD")
+        // A renamed startup disk is named as it is called.
+        #expect(SearchResults.folderText(path: "/notes.txt", rootPath: "/", startupDiskName: "Data") == "Data")
+        #expect(SearchResults.folderText(path: "/etc/hosts", rootPath: "/", startupDiskName: "Data") == "etc")
     }
 
     @Test func theSearchStatusLineIsTheFoundationOne() {

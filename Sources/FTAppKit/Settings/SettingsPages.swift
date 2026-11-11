@@ -273,7 +273,9 @@ final class SettingsPageView: NSView {
             .text("Restore Defaults"), label: "Restore the default favorites", theme: theme)
         list.setBar([.button(add), .button(remove), .divider, .button(change), .spacer, .button(restore)])
         let home = store?.homePath ?? ""
-        let name: (FavoritePreference) -> String = { FavoriteLabel.label(for: $0.path, homePath: home) }
+        let name: (FavoritePreference) -> String = {
+            FavoriteLabel.label(for: $0.path, homePath: home, startupDiskName: StartupDisk.shared.name)
+        }
         list.onSelectionChange = { [weak list, weak self] in
             guard let list, let self else { return }
             let favorites = self.preferences.favorites

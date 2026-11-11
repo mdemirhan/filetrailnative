@@ -5,6 +5,9 @@ import Foundation
 public enum VolumePaths {
     private static let prefix = "/Volumes/"
 
+    /// What the startup disk is called until the app has read its name, and in tests: the name macOS gives it.
+    public static let defaultStartupDiskName = "Macintosh HD"
+
     /// `/Volumes/<name>` for a path on another disk, otherwise `/`.
     public static func volumeRootPath(_ path: String) -> String {
         // /^\/Volumes\/([^/]+)/

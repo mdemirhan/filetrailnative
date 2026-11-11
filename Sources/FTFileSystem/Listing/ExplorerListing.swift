@@ -429,15 +429,16 @@ enum ExplorerListing {
     /// The info panel uses this richer single-item shape rather than stitching fields together from
     /// snapshot + metadata batch responses.
     static func itemProperties(
-        path: String, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler
+        path: String, _ fileSystem: any ExplorerFileSystem, kinds: KindLabeler,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> ItemProperties {
         let resolvedPath = resolve(path)
         let details = readDetails(path: resolvedPath, fileSystem, kinds: kinds)
         let name = NodePath.basename(resolvedPath)
         return ItemProperties(
             path: resolvedPath,
-            // `/` has no base name, and the response needs one: it is named as the app names it.
-            name: resolvedPath == "/" ? "Macintosh HD" : name,
+            // `/` has no base name, and the response needs one: the startup disk's name.
+            name: resolvedPath == "/" ? startupDiskName : name,
             fileExtension: extensionName(resolvedPath), kind: details.kind, kindLabel: details.kindLabel,
             isHidden: isHidden(name) || safeLstat(resolvedPath, fileSystem)?.hasHiddenFlag == true,
             isSymlink: details.isSymlink, createdAt: details.createdAt,

@@ -56,14 +56,15 @@ public enum SearchBarText {
     public static let optionsName = "Search options"
 
     /// The folder on screen, Home, the disk it is on when that is another disk, and
-    /// Macintosh HD, without repeats (the first of two with the same path wins).
-    public static func scopeOptions(currentPath: String, homePath: String) -> [SearchScopeOption] {
+    /// the startup disk, without repeats (the first of two with the same path wins).
+    public static func scopeOptions(
+        currentPath: String, homePath: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> [SearchScopeOption] {
         let volume = VolumePaths.volumeRootPath(currentPath)
-        var candidates: [(String, String)] = [
-            (currentPath, "\u{201C}\(TabText.folderDisplayName(currentPath))\u{201D}"), (homePath, "Home"),
-        ]
+        let shown = TabText.folderDisplayName(currentPath, startupDiskName: startupDiskName)
+        var candidates: [(String, String)] = [(currentPath, "\u{201C}\(shown)\u{201D}"), (homePath, "Home")]
         if volume != "/" { candidates.append((volume, TabText.folderDisplayName(volume))) }
-        candidates.append(("/", "Macintosh HD"))
+        candidates.append(("/", startupDiskName))
         var options: [SearchScopeOption] = []
         for (path, label) in candidates
         where !path.isEmpty && !options.contains(where: { JSString.equals($0.path, path) }) {

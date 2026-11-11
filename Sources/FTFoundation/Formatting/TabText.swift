@@ -13,28 +13,32 @@ public struct TabDescription: Equatable, Sendable {
 }
 
 public enum TabText {
-    /// A folder's name as the tab strip and the path bar say it: "Macintosh HD" for the root.
-    public static func folderDisplayName(_ path: String) -> String {
+    /// A folder's name as the tab strip and the path bar say it: the startup disk's name for the root.
+    public static func folderDisplayName(
+        _ path: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> String {
         if JSString.equals(path, "/") {
-            return "Macintosh HD"
+            return startupDiskName
         }
         return path.isEmpty ? "" : PathText.leafName(path)
     }
 
     /// What a tab is called in the strip: its folder, or its search while results are showing.
     public static func describe(
-        currentPath: String, searchVisible: Bool, searchQuery: String, searchRootPath: String, searchRunning: Bool
+        currentPath: String, searchVisible: Bool, searchQuery: String, searchRootPath: String, searchRunning: Bool,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> TabDescription {
         if searchVisible, !JSString.trimmed(searchQuery).isEmpty {
             let root = searchRootPath.isEmpty ? currentPath : searchRootPath
             return TabDescription(
-                label: "“\(searchQuery)” in \(folderDisplayName(root))",
+                label: "“\(searchQuery)” in \(folderDisplayName(root, startupDiskName: startupDiskName))",
                 tooltip: "Searching \(root)",
                 kind: .search,
                 searching: searchRunning)
         }
         return TabDescription(
-            label: currentPath.isEmpty ? "Favorites" : folderDisplayName(currentPath),
+            label: currentPath.isEmpty
+                ? "Favorites" : folderDisplayName(currentPath, startupDiskName: startupDiskName),
             tooltip: currentPath,
             kind: .folder,
             searching: false)

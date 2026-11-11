@@ -68,12 +68,15 @@ extension ExplorerToolbar {
     func showHistoryMenu(back: Bool, from button: ToolbarButton) {
         guard let context, button.isEnabled else { return }
         let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let disk = context.services.startupDisk.name
         let entries =
             back
             ? HistoryMenu.backEntries(
-                historyPaths: context.historyPaths, historyIndex: context.historyIndex, homePath: home)
+                historyPaths: context.historyPaths, historyIndex: context.historyIndex, homePath: home,
+                startupDiskName: disk)
             : HistoryMenu.forwardEntries(
-                historyPaths: context.historyPaths, historyIndex: context.historyIndex, homePath: home)
+                historyPaths: context.historyPaths, historyIndex: context.historyIndex, homePath: home,
+                startupDiskName: disk)
         guard !entries.isEmpty, let rect = frameInContent(button), let host = menuHost(of: button) else { return }
         let items = entries.map { entry in
             AppMenuItem(

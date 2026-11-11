@@ -137,14 +137,16 @@ final class TabSearch: NSObject, SearchSessionHost, NSSearchFieldDelegate {
         }
         tab.refreshColumns()
         let rootPath = session.rootPath
+        let disk = tab.services.startupDisk.name
         content.showSearch(
             ContentSearchDisplay(
                 rootPath: rootPath, viewKey: "search:\(rootPath):\(session.committedQuery)",
                 results: session.shownResults, sortBy: session.sortBy, sortDirection: session.sortDirection,
                 highlight: session.highlightPattern, isRunning: session.isRunning, error: session.error,
-                errorIsQuiet: session.errorIsQuiet))
+                errorIsQuiet: session.errorIsQuiet, startupDiskName: disk))
         header.show(
-            scopes: SearchBarText.scopeOptions(currentPath: tab.shownFolderPath, homePath: Self.homePath),
+            scopes: SearchBarText.scopeOptions(
+                currentPath: tab.shownFolderPath, homePath: Self.homePath, startupDiskName: disk),
             rootPath: rootPath, isRunning: session.isRunning, truncated: session.truncated, filterText: content.filter)
         layoutHeader()
     }

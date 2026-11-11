@@ -189,6 +189,8 @@ public final class AppDelegate: NSObject, NSApplicationDelegate {
         let store = store ?? AppStateStore(filePath: AppStatePaths.appState(in: AppStatePaths.userDataDirectory()).path)
         let windows = ExplorerWindows(store: store, quit: quit)
         explorerWindows = windows
+        // Read off the main thread: the windows say "Macintosh HD" until it returns, then the name it read.
+        StartupDisk.shared.start()
         let pages = PageWindows(preferences: { [weak self] in self?.store?.preferences() ?? .defaults() })
         pageWindows = pages
         let channel = WindowPreferenceChannel(

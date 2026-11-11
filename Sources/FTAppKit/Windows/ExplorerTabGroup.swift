@@ -451,6 +451,13 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     /// Closed Tab doesn't offer them; when they are all the window's tabs, the window closes. While the tabs can't
     /// change (a sheet or an alert is open), the tabs in the background go Home instead, and the tab on screen opens
     /// Home. `volumeRoot` says which disk a path is on.
+    /// The startup disk was renamed: each tab says its new name, and so do the tab bar and the Window menu.
+    func startupDiskNameChanged() {
+        guard !isDestroyed else { return }
+        for tab in tabs { tab.startupDiskNameChanged() }
+        refreshTitles()
+    }
+
     func disksUnmounted(_ unmounted: Set<String>, homePath: String, volumeRoot: (String) -> String) {
         guard !unmounted.isEmpty, !isDestroyed else { return }
         func isGone(_ path: String) -> Bool { !path.isEmpty && unmounted.contains(volumeRoot(path)) }
@@ -613,7 +620,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
     func refreshTitles() {
         let descriptions = tabs.map(\.tabDescription)
         let labels = ExplorerTabs.disambiguate(
-            zip(tabs, descriptions).map { TabLabel(label: $1.label, kind: $1.kind, path: $0.shownFolderPath) })
+            zip(tabs, descriptions).map { TabLabel(label: $1.label, kind: $1.kind, path: $0.shownFolderPath) },
+            startupDiskName: tabs.first?.services.startupDisk.name ?? VolumePaths.defaultStartupDiskName)
         for (index, tab) in tabs.enumerated() {
             guard let window = tab.window else { continue }
             let label = labels[index].label

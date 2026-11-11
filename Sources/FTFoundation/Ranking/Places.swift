@@ -33,12 +33,14 @@ public enum FavoriteLabel {
         homePath.isEmpty ? "" : "\(homePath)/.Trash"
     }
 
-    /// Home, Applications, Trash, Macintosh HD, or the folder's own name.
-    public static func label(for path: String, homePath: String) -> String {
+    /// Home, Applications, Trash, the startup disk's name, or the folder's own name.
+    public static func label(
+        for path: String, homePath: String, startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> String {
         if JSString.equals(path, homePath) { return "Home" }
         if JSString.equals(path, "/Applications") { return "Applications" }
         if JSString.equals(path, trashPath(homePath: homePath)) { return "Trash" }
-        if JSString.equals(path, "/") { return "Macintosh HD" }
+        if JSString.equals(path, "/") { return startupDiskName }
         return PathText.leafName(path)
     }
 }
@@ -58,7 +60,8 @@ public enum Places {
 
     /// Every opened folder and every favorite, once each, without the folder on screen.
     public static func build(
-        visitedFolders: [VisitedFolder], favoritePaths: [String], currentPath: String, homePath: String, now: Double
+        visitedFolders: [VisitedFolder], favoritePaths: [String], currentPath: String, homePath: String, now: Double,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
     ) -> [Place] {
         let favorites = Set(favoritePaths.map(ExactKey.init))
         // Insertion order is kept, as a Map keeps it; setting a path again replaces its value in place.
@@ -74,8 +77,9 @@ public enum Places {
                 ExactKey(folder.path),
                 Place(
                     path: folder.path,
-                    // Named as the sidebar names them: Home, Trash, Macintosh HD.
-                    name: FavoriteLabel.label(for: folder.path, homePath: homePath),
+                    // Named as the sidebar names them: Home, Trash, the startup disk.
+                    name: FavoriteLabel.label(
+                        for: folder.path, homePath: homePath, startupDiskName: startupDiskName),
                     displayPath: abbreviate(folder.path, homePath: homePath),
                     isFavorite: favorites.contains(ExactKey(folder.path)),
                     isVisited: true,
@@ -86,7 +90,7 @@ public enum Places {
                 ExactKey(path),
                 Place(
                     path: path,
-                    name: FavoriteLabel.label(for: path, homePath: homePath),
+                    name: FavoriteLabel.label(for: path, homePath: homePath, startupDiskName: startupDiskName),
                     displayPath: abbreviate(path, homePath: homePath),
                     isFavorite: true,
                     isVisited: false,

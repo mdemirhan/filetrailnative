@@ -15,22 +15,33 @@ public struct HistoryMenuEntry: Equatable, Sendable {
 public enum HistoryMenu {
     public static let limit = 12
 
-    public static func backEntries(historyPaths: [String], historyIndex: Int, homePath: String) -> [HistoryMenuEntry] {
+    public static func backEntries(
+        historyPaths: [String], historyIndex: Int, homePath: String,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> [HistoryMenuEntry] {
         var entries: [HistoryMenuEntry] = []
         var index = historyIndex - 1
         while index >= 0, entries.count < limit {
-            entries.append(entry(path: path(in: historyPaths, at: index), index: index, homePath: homePath))
+            entries.append(
+                entry(
+                    path: path(in: historyPaths, at: index), index: index, homePath: homePath,
+                    startupDiskName: startupDiskName))
             index -= 1
         }
         return entries
     }
 
-    public static func forwardEntries(historyPaths: [String], historyIndex: Int, homePath: String) -> [HistoryMenuEntry]
-    {
+    public static func forwardEntries(
+        historyPaths: [String], historyIndex: Int, homePath: String,
+        startupDiskName: String = VolumePaths.defaultStartupDiskName
+    ) -> [HistoryMenuEntry] {
         var entries: [HistoryMenuEntry] = []
         var index = max(0, historyIndex + 1)
         while index < historyPaths.count, entries.count < limit {
-            entries.append(entry(path: path(in: historyPaths, at: index), index: index, homePath: homePath))
+            entries.append(
+                entry(
+                    path: path(in: historyPaths, at: index), index: index, homePath: homePath,
+                    startupDiskName: startupDiskName))
             index += 1
         }
         return entries
@@ -40,13 +51,13 @@ public enum HistoryMenu {
         index < paths.count ? paths[index] : ""
     }
 
-    private static func entry(path: String, index: Int, homePath: String) -> HistoryMenuEntry {
+    private static func entry(path: String, index: Int, homePath: String, startupDiskName: String) -> HistoryMenuEntry {
         let units = Array(path.utf16)
         let parentPath = JSString.string(units[..<min(units.count, max(1, units.lastIndex(of: 0x2F) ?? -1))])
         return HistoryMenuEntry(
             index: index,
             path: path,
-            label: FavoriteLabel.label(for: path, homePath: homePath),
+            label: FavoriteLabel.label(for: path, homePath: homePath, startupDiskName: startupDiskName),
             detail: JSString.equals(path, "/") ? "" : Places.abbreviate(parentPath, homePath: homePath))
     }
 }
