@@ -1477,7 +1477,7 @@ enough.
 Measure before and after each (a CPU-time test with `CPUTime.measureThread`, or a timing printed from a debug
 build), and put the numbers in the commit body. Skip any that measures as not worth it and note that in the Log.
 
-### [ ] 7.1. One slow folder no longer stalls every window's listing
+### [x] 7.1. One slow folder no longer stalls every window's listing
 
 `Sources/FTFileSystem/Listing/DirectoryService.swift:26-60, 78-95`: every listing, tree read, `itemProperties`,
 `pathSuggestions` and `hasHiddenFlag` runs synchronously on the one shared actor. Only `metadata` is detached. *Fix:*
@@ -2434,3 +2434,12 @@ anything that differed from the plan, and anything found on the way that is not 
   review and again at run time. Not done. Found, not looked into: the other 600 ms of that review (likely
   `annotateKeepBothNames` or `resolveDuplicateName`); a top-level file copy looks at its target about three times
   before writing.
+- 2026-11-11. 7.1 held only in part. `hasHiddenFlag`, `itemProperties` and `pathSuggestions` read the disk on the
+  shared actor, and one of them stuck held every later request of every window; listings and tree reads already
+  read off the actor (their closures were not isolated to it), only their start and end were on it. The service is
+  now a `Sendable` class whose requests are `@concurrent`; a test holds each kind of request on a gate and checks
+  the others finish. CPU time unchanged within noise. The plan's premise that `ResponseCache` merges identical
+  requests in flight does not hold: it never did, two listings of one folder asked at once both read it; left as is.
+  Found, not fixed: a read that hangs for good still holds one thread of the shared pool (as `metadata`'s detached
+  task did before); 16 at once, one per pool thread here, would hold them all. Blocking reads on a GCD queue would
+  close that.
