@@ -85,7 +85,7 @@ extension MainWindowController {
         let hidden = includeHidden
         guard
             let answer = try? await services.directoryService.pathSuggestions(
-                inputPath: path, includeHidden: hidden, limit: PathCompletionRequests.limit)
+                inputPath: path, includeHidden: hidden, limit: InfoMetrics.suggestionLimit)
         else { return nil }
         return answer.suggestions.map { GoToCompletion(path: $0.path, name: $0.name) }
     }

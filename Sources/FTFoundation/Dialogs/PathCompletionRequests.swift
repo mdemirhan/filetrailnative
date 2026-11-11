@@ -1,14 +1,11 @@
 import Foundation
 
-/// When a box asks the disk for completions, and which answers it drops: a request 350 ms after the last change
-/// (earlier ones cancelled), and an answer only while the box is open, for the newest request, and while the field
-/// still holds the text asked about. A request that failed counts as no completions.
+/// When a box asks the disk for completions, and which answers it drops: a request after the same pause as the path
+/// bar's suggestions (`InfoMetrics.suggestionDebounce`, earlier ones cancelled), and an answer only while the box is
+/// open, for the newest request, and while the field still holds the text asked about. A request that failed counts
+/// as no completions. It asks for as many as the path bar does (`InfoMetrics.suggestionLimit`).
 @MainActor
 public final class PathCompletionRequests {
-    public static let debounce = 0.35
-    /// The most suggestions asked for.
-    public static let limit = 12
-
     public var timers: any TimerScheduling
     /// Asks the disk; nil when the request failed.
     public var request: @MainActor (String) async -> [GoToCompletion]?
@@ -46,7 +43,7 @@ public final class PathCompletionRequests {
 
     private func schedule(_ input: String) {
         timer?.cancel()
-        timer = timers.schedule(after: Self.debounce) { [weak self] in
+        timer = timers.schedule(after: InfoMetrics.suggestionDebounce) { [weak self] in
             guard let self else { return }
             self.timer = nil
             self.send(input)
