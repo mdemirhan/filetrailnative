@@ -30,8 +30,11 @@ protocol SidebarListDelegate: AnyObject {
 
 final class SidebarListItem: NSObject {
     var row: SidebarListRow
-    init(_ row: SidebarListRow) {
+    /// The row's height, worked out whenever its row is set: the outline asks for it by item, for every row.
+    var height: Double
+    init(_ row: SidebarListRow, height: Double) {
         self.row = row
+        self.height = height
     }
 }
 
@@ -192,7 +195,6 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     /// Favorites are dragged to a new place in this list.
     var reordersFavorites = true
     private var items: [SidebarListItem] = []
-    private var heights: [Double] = []
     private var width: Double { Double(outline.bounds.width) }
     private let fade = CAGradientLayer()
     /// Where a dragged favorite will land. It sits on the gap between two rows, so it belongs to the list: a row clips
@@ -342,11 +344,11 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
             items = rows.map { row in
                 if let item = known[row.id] {
                     item.row = row
+                    item.height = rowHeight(row)
                     return item
                 }
-                return SidebarListItem(row)
+                return SidebarListItem(row, height: rowHeight(row))
             }
-            heights = rows.map { rowHeight($0) }
             outline.reloadData()
             if let anchor, let index = ids.firstIndex(of: anchor.id) {
                 outline.layoutSubtreeIfNeeded()
@@ -358,8 +360,8 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
         for (index, row) in rows.enumerated() where row != items[index].row {
             items[index].row = row
             let height = rowHeight(row)
-            if height != heights[index] {
-                heights[index] = height
+            if height != items[index].height {
+                items[index].height = height
                 changedHeights.insert(index)
             }
             outline.reloadItem(items[index])
@@ -401,7 +403,7 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     }
 
     func reloadAll() {
-        heights = items.map { rowHeight($0.row) }
+        for item in items { item.height = rowHeight(item.row) }
         outline.reloadData()
     }
 
@@ -421,7 +423,7 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     }
 
     /// The total height of the rows.
-    var contentHeight: Double { items.indices.reduce(0) { $0 + heights[$1] } }
+    var contentHeight: Double { items.reduce(0) { $0 + $1.height } }
 
     // MARK: Scrolling
 
@@ -465,10 +467,8 @@ final class SidebarListView: NSView, NSOutlineViewDataSource, NSOutlineViewDeleg
     func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool { false }
 
     func outlineView(_ outlineView: NSOutlineView, heightOfRowByItem item: Any) -> CGFloat {
-        guard let item = item as? SidebarListItem, let index = items.firstIndex(where: { $0 === item }) else {
-            return 0
-        }
-        return CGFloat(heights.indices.contains(index) ? heights[index] : rowHeight(item.row))
+        guard let item = item as? SidebarListItem else { return 0 }
+        return CGFloat(item.height)
     }
 
     func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool { false }

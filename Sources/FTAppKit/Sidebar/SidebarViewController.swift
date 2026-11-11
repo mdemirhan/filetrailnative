@@ -242,9 +242,8 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     }
 
     /// The rows of the folder tree (with Favorites and Locations ahead of it when integrated).
-    private func treeRows() -> [SidebarListRow] {
+    private func treeRows(_ presentation: TreePresentation) -> [SidebarListRow] {
         let layout = self.layout
-        let presentation = model.treePresentation
         var rows: [SidebarListRow] = [
             .spacer(id: "top", height: separate ? layout.foldersTreePaddingTop : layout.treeListPaddingTop)
         ]
@@ -289,7 +288,9 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         let showsSections = separate
         // The selected row isn't brought back from where it was scrolled to, and doesn't get pushed out of view either.
         let leavesSelection = model.isApplyingBranches && !selectionIsInView
-        tree.apply(treeRows(), keepingRowsInPlace: model.isApplyingBranches)
+        // Made once: it walks every open folder of the tree.
+        let presentation = model.treePresentation
+        tree.apply(treeRows(presentation), keepingRowsInPlace: model.isApplyingBranches)
         sections.apply(showsSections ? sectionRows() : [])
         let hadSections = !sections.isHidden
         sections.isHidden = !showsSections || sections.rowCount == 0
@@ -300,7 +301,7 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
         if hadSections != sections.isHidden { root.needsLayout = true }
         root.needsLayout = true
         layoutIfNeeded()
-        revealSelectionIfNeeded(leavingSelection: leavesSelection)
+        revealSelectionIfNeeded(presentation, leavingSelection: leavesSelection)
         selectionChanged()
     }
 
@@ -368,11 +369,11 @@ final class SidebarViewController: NSViewController, SidebarListDelegate {
     }
 
     /// Scrolls the selected row into view, as little as it takes, when the selection changes or the rows do.
-    private func revealSelectionIfNeeded(leavingSelection: Bool = false) {
+    private func revealSelectionIfNeeded(_ presentation: TreePresentation, leavingSelection: Bool) {
         let signature = [
             model.placement.rawValue, model.favoritesExpanded ? "f" : "-", model.locationsExpanded ? "l" : "-",
             model.favoriteRows.map(\.id.rawValue).joined(separator: "\0"),
-            model.treePresentation.visibleItemIDs.map(\.rawValue).joined(separator: "\0"),
+            presentation.visibleItemIDs.map(\.rawValue).joined(separator: "\0"),
             model.selected?.rawValue ?? "",
         ].joined(separator: "|")
         guard signature != revealSignature else { return }
