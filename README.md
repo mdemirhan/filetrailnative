@@ -12,7 +12,7 @@ A Mac file browser with fast search, a real folder tree and true cut and paste. 
 - **A folder tree beside your files.** See where you are and what is around it, and open any folder's arrow to look inside without leaving.
 - **Cut and paste files.** ⌘X and ⌘V to move files. What you cut or copied stays marked until you paste it, and a paste never destroys anything: what it replaces goes to the Trash.
 - **Any folder in a few keystrokes.** ⌘K lists the folders you use most and finds any of them from a few letters. In a folder, start typing and the list narrows to the names that match.
-- **Your keys.** Every command has a keyboard shortcut, and you can change any of them, two keys per command.
+- **Your keys.** Every command can have a keyboard shortcut, two keys per command, and you choose them. Only the keys every Mac app shares, like ⌘C, ⌘V, ⌘Z and ⌘Q, stay as they are.
 - **See what's taking the space.** Sort by size and every folder gets a bar, so the big ones stand out at a glance.
 
 Switching costs nothing. File Trail keeps most of Finder's shortcuts, Quick Look on Space, drag and drop with other apps, tabs, and the sidebar's Locations.
@@ -62,7 +62,7 @@ In Finder, moving files with the keyboard means ⌘C and then ⌥⌘V, and nothi
 
 ## Your keys, your toolbar
 
-Every command is on a keyboard shortcut, shown in the menus and listed in the built-in Help. In Finder, changing one means System Settings, App Shortcuts and the menu item's exact name; in File Trail, it is a list in Settings, with two keys per command and a warning before one is taken from another command.
+Every command can be on a keyboard shortcut, shown in the menus and listed in the built-in Help. In Finder, changing one means System Settings, App Shortcuts and the menu item's exact name; in File Trail, it is a list in Settings, with two keys per command and a warning before one is taken from another command.
 
 <table>
   <tr>
@@ -146,13 +146,15 @@ While working on the code:
 ```bash
 scripts/ci.sh                      # the app and the tests built with zero warnings, the tests, format lint
 scripts/ci.sh --scope <filter>     # the same, with only the tests a swift test filter names
+scripts/ci.sh --affected           # the same, with only the test bundles the changed files can reach
+scripts/ci.sh --full               # all of it built from clean, and the release app as well
 ```
 
 Each step prints one line, and the full logs are in `build/logs/`.
 
 Open issues are in [docs/known-issues.md](docs/known-issues.md) and [docs/battery.md](docs/battery.md).
 
-`scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk). Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh` before a release; `scripts/release.sh` includes them.
+`scripts/ci.sh` leaves out the few tests that write large files to disk images (stopping a long copy, filling a disk), and the tests that put real windows, menus and disks on screen. Run them with `FILETRAIL_LARGE_FILE_TESTS=1 scripts/ci.sh` and `FILETRAIL_GUI_TESTS=1 swift test --filter GUITests` before a release; `scripts/release.sh` runs both.
 
 <details>
 <summary>Making a signed app and a release</summary>
@@ -172,7 +174,7 @@ A version comes from git: a release is a commit tagged `vX.Y.Z`, and any other b
 scripts/release.sh <major|minor|patch|X.Y.Z> [--yes] [--dry-run]
 ```
 
-From a clean `main` that is already on GitHub, it runs `scripts/ci.sh` with the large-file tests, tags the commit, builds the notarized app, checks that the built version is the tag and that nothing moved meanwhile, pushes the tag, and makes a draft GitHub release with the disk image, the ZIP and the commit subjects as notes. A failure before the push removes the tag. It stops if an earlier release was left unfinished, and it never publishes: rewrite the notes for people, then press Publish release on GitHub. The first release is asked for by exact version, as there is nothing yet for `major`, `minor` or `patch` to count from. `--dry-run` only says what it would release and what would stop it.
+From a clean `main` that is already on GitHub, with the test fixtures built, it runs `scripts/ci.sh --full` with the large-file tests and then the tests of real windows, tags the commit, builds the notarized app, checks that the built version is the tag and that nothing moved meanwhile, pushes the tag, and makes a draft GitHub release with the disk image, the ZIP and the commit subjects as notes. A failure before the push removes the tag. It stops if an earlier release was left unfinished, and it never publishes: rewrite the notes for people, then press Publish release on GitHub. The first release is asked for by exact version, as there is nothing yet for `major`, `minor` or `patch` to count from. `--dry-run` only says what it would release and what would stop it.
 
 The screenshots on this page come from `scripts/readme-screenshots.sh`, which shows the demo project in a throwaway home folder.
 

@@ -8,7 +8,7 @@ A native macOS file browser in Swift and AppKit. It's a Swift package with no Xc
 - Tests that drive real windows: `FILETRAIL_GUI_TESTS=1 swift test --filter GUITests` runs all of them (every such suite's name ends in `GUITests`). `scripts/release.sh` runs them.
 - Large-file tests: set `FILETRAIL_LARGE_FILE_TESTS=1`. A release runs them.
 - App: `scripts/build-app.sh`, then `open "build/File Trail.app"`.
-- Release: `scripts/release.sh <version>` makes a draft GitHub release; publishing stays manual.
+- Release: `scripts/release.sh <major|minor|patch|X.Y.Z>` makes a draft GitHub release; publishing stays manual.
 - README screenshots: `scripts/readme-screenshots.sh`.
 
 ## Test data
