@@ -201,7 +201,7 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
         var retriedCut: String?
         if event.action == .moveTo,
             case .ready(.cut, let sources, _, let capturedAt) = actions.session.clipboard?.contents,
-            paths.contains(where: { path in sources.contains { JSStringEquality.equals($0, path) } })
+            paths.contains(where: { path in sources.contains { JSString.equals($0, path) } })
         {
             retriedCut = capturedAt
         }
@@ -217,13 +217,6 @@ final class CopyPasteResultPresenter: WriteResultPresenting {
                     actions: actions)
             }
         }
-    }
-}
-
-/// `===` on two paths, unit for unit.
-enum JSStringEquality {
-    static func equals(_ left: String, _ right: String) -> Bool {
-        left.utf8.elementsEqual(right.utf8)
     }
 }
 

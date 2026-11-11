@@ -13,9 +13,9 @@ public struct ExplorerLaunchContext: Equatable, Sendable {
     /// Opened while the app runs: it opens the tabs it was given, whatever the restore setting says.
     public var restoreTabs: Bool
     /// A place of the Go menu chosen while no window was open.
-    public var initialCommand: RendererCommand?
+    public var initialCommand: AppCommand?
 
-    public init(startupFolderPath: String? = nil, restoreTabs: Bool = false, initialCommand: RendererCommand? = nil) {
+    public init(startupFolderPath: String? = nil, restoreTabs: Bool = false, initialCommand: AppCommand? = nil) {
         self.startupFolderPath = startupFolderPath
         self.restoreTabs = restoreTabs
         self.initialCommand = initialCommand

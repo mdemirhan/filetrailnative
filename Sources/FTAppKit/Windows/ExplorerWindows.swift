@@ -200,7 +200,7 @@ final class ExplorerWindows: ExplorerWindowHost, ExplorerWindowListing {
         controller.openStartupWindows(folder: folder)
     }
 
-    func openDefaultWindow(initialCommand: RendererCommand?) {
+    func openDefaultWindow(initialCommand: AppCommand?) {
         controller.openDefaultWindow(initialCommand: initialCommand)
     }
 

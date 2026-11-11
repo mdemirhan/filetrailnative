@@ -85,7 +85,7 @@ extension ExplorerWindowlessTests {
         // moves on.
         @Test func gridItemsShowTheDropTarget() async throws {
             let harness = try ExplorerHarness.windowless()
-            for mode in [RendererCommand.viewAsIcons, .viewAsList] {
+            for mode in [AppCommand.viewAsIcons, .viewAsList] {
                 let (tab, probe) = try await harness.openGrid(mode)
                 let alpha = try #require(tab.content.entries.first { $0.name == "Alpha" })
                 tab.content.setDropTarget(alpha.path, .valid, background: nil)

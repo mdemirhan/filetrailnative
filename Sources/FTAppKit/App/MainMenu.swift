@@ -33,7 +33,7 @@ public final class MainMenu {
     /// none open. The Settings, Help and About windows and the window controller plug in here.
     func connect(
         openAbout: (() -> Void)? = nil, openSettings: (() -> Void)? = nil, openHelp: ((HelpTopicID?) -> Void)? = nil,
-        openWindowFor: @escaping (RendererCommand) -> Void, openNewWindowFromFront: @escaping () -> Void
+        openWindowFor: @escaping (AppCommand) -> Void, openNewWindowFromFront: @escaping () -> Void
     ) {
         router.onOpenAbout = openAbout
         router.onOpenSettings = openSettings

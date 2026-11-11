@@ -114,7 +114,7 @@ extension ExplorerWindowlessTests {
             let menu = menuBar(app)
             defer { NSApp.mainMenu = nil }
             menu.router.focusedWindow = { first.window }
-            menu.router.choose(itemID: RendererCommand.duplicateTab.rawValue)
+            menu.router.choose(itemID: AppCommand.duplicateTab.rawValue)
             #expect(await waitUntil { group.tabs.count == 3 })
             let copy = group.tabs[1]
             #expect(copy !== first)

@@ -11,7 +11,7 @@ extension ExplorerWindowlessTests {
     @MainActor
     @Suite struct LeadStaysInViewTests {
         private func open(
-            _ view: RendererCommand, files: Int = 400
+            _ view: AppCommand, files: Int = 400
         ) async throws -> (ExplorerHarness, MainWindowController, String) {
             let harness = try ExplorerHarness.windowless()
             let path = try harness.makeFolder(named: "Many", files: files).path
@@ -36,7 +36,7 @@ extension ExplorerWindowlessTests {
         }
 
         /// As scrolling by hand does; each view scrolls its own way.
-        private func scrollAway(_ view: RendererCommand, _ tab: MainWindowController) {
+        private func scrollAway(_ view: AppCommand, _ tab: MainWindowController) {
             tab.content.pane?.scrollPosition = view == .viewAsList ? (top: 0, left: 2_000) : (top: 2_000, left: 0)
         }
 
@@ -52,8 +52,8 @@ extension ExplorerWindowlessTests {
 
         // Items come before the lead: where the view is scrolled it would
         // be out of view.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func keepsTheLeadInViewWhenTheListChangesAroundIt(_ view: RendererCommand) async throws {
+        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
+        func keepsTheLeadInViewWhenTheListChangesAroundIt(_ view: AppCommand) async throws {
             let (harness, tab, folder) = try await open(view)
             let lead = tab.content.entries[150].path
             tab.content.select(paths: [lead])
@@ -69,8 +69,8 @@ extension ExplorerWindowlessTests {
         }
 
         // A lead the view was scrolled away from doesn't bring the view back.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func staysWhereItWasScrolledWhenAnItemIsAddedAboveALeadOutOfView(_ view: RendererCommand) async throws {
+        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
+        func staysWhereItWasScrolledWhenAnItemIsAddedAboveALeadOutOfView(_ view: AppCommand) async throws {
             let (harness, tab, folder) = try await open(view)
             tab.content.select(paths: [tab.content.entries[5].path])
             scrollAway(view, tab)
@@ -84,8 +84,8 @@ extension ExplorerWindowlessTests {
         }
 
         // A new item is selected before the folder is read again with it.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func bringsANewItemIntoViewOnceTheListHasIt(_ view: RendererCommand) async throws {
+        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
+        func bringsANewItemIntoViewOnceTheListHasIt(_ view: AppCommand) async throws {
             let (harness, tab, folder) = try await open(view)
             let made = (folder as NSString).appendingPathComponent("zz-new.txt")
             tab.content.applySelection(.single(made))
@@ -268,8 +268,8 @@ extension ExplorerWindowlessTests {
 
         // The item being renamed, and a refused name, come into view in the List and the Icons view;
         // the Compact List follows only the lead.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func theItemBeingRenamedIsBroughtIntoViewButNotInTheCompactList(_ view: RendererCommand) async throws {
+        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
+        func theItemBeingRenamedIsBroughtIntoViewButNotInTheCompactList(_ view: AppCommand) async throws {
             let (harness, tab, _) = try await open(view)
             let taken = tab.content.entries[6].name
             tab.content.select(paths: [tab.content.entries[5].path])
@@ -289,8 +289,8 @@ extension ExplorerWindowlessTests {
         }
 
         // The explanation of a refused name stays under the field when the window changes size.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsIcons])
-        func theRenameErrorBoxFollowsItsFieldWhenTheWindowResizes(_ view: RendererCommand) async throws {
+        @Test(arguments: [AppCommand.viewAsDetails, .viewAsIcons])
+        func theRenameErrorBoxFollowsItsFieldWhenTheWindowResizes(_ view: AppCommand) async throws {
             let (harness, tab, _) = try await open(view)
             let taken = tab.content.entries[6].name
             tab.renameItem = { _, name in .refused("An item named \u{201C}\(name)\u{201D} already exists.") }

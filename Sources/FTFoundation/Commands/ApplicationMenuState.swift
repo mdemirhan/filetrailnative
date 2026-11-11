@@ -3,7 +3,7 @@ import Foundation
 /// What the application menu shows of the explorer window: which commands can run now (the rest are dimmed) and which
 /// of its checkmarks are on. The window sends it whenever it changes.
 public struct ApplicationMenuState: Equatable, Sendable {
-    public var disabledCommands: [RendererCommand]
+    public var disabledCommands: [AppCommand]
     public var viewMode: ExplorerViewMode
     public var sortBy: SortByPreference
     public var foldersFirst: Bool
@@ -17,7 +17,7 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public var textEditing: Bool
 
     public init(
-        disabledCommands: [RendererCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
+        disabledCommands: [AppCommand] = [], viewMode: ExplorerViewMode = .list, sortBy: SortByPreference = .name,
         foldersFirst: Bool = true, hiddenFilesShown: Bool = false, folderTreeOpen: Bool = true,
         infoPanelOpen: Bool = false, infoRowOpen: Bool = false, favoriteIsSet: Bool = false, textEditing: Bool = false
     ) {
@@ -41,11 +41,11 @@ public struct ApplicationMenuState: Equatable, Sendable {
     public static func build(
         viewMode: ExplorerViewMode, sortBy: SortByPreference, foldersFirst: Bool, hiddenFilesShown: Bool,
         folderTreeOpen: Bool, infoPanelOpen: Bool, infoRowOpen: Bool, favoriteIsSet: Bool, textEditing: Bool,
-        canRun: (RendererCommand) -> Bool
+        canRun: (AppCommand) -> Bool
     ) -> ApplicationMenuState {
         // A text field's Undo and Redo are always there, even in a dialog or while a file operation runs: they only
         // change its text.
-        let disabled = RendererCommand.allCases.filter { command in
+        let disabled = AppCommand.allCases.filter { command in
             !(textEditing && (command == .undo || command == .redo)) && !canRun(command)
         }
         return ApplicationMenuState(
@@ -75,13 +75,13 @@ public enum ApplicationMenu {
     /// The commands that still do something while a window other than an explorer window (Settings) has the keyboard:
     /// the edit commands act on its text field, ⌘W closes it, and New Window opens one beside the explorer window in
     /// front.
-    public static let commandsForAnyWindow: Set<RendererCommand> = [
+    public static let commandsForAnyWindow: Set<AppCommand> = [
         .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .closeTab, .newWindow,
     ]
 
     /// What the menu still does with no explorer window open, as Finder's does: New Window, and the Go menu's places,
     /// which open a window there.
-    public static let commandsWithoutExplorerWindow: Set<RendererCommand> = [
+    public static let commandsWithoutExplorerWindow: Set<AppCommand> = [
         .newWindow, .goHomeRootTree, .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD,
         .goApplications, .goTrash, .openLocationSheet,
     ]
@@ -149,7 +149,7 @@ public enum ApplicationMenu {
         // While a text field (or another window) has the keyboard, Undo and Redo are its own: plainly named, and on
         // whenever there is a window to send them to.
         let textUndo = state.textEditing || !window.explorerFocused
-        func isEnabled(_ type: RendererCommand) -> Bool {
+        func isEnabled(_ type: AppCommand) -> Bool {
             if type == .undo || type == .redo, textUndo {
                 return window.explorerFocused || window.otherWindowFocused != false
             }
@@ -174,7 +174,7 @@ public enum ApplicationMenu {
             }
             return true
         }
-        func checked(_ type: RendererCommand) -> Bool? {
+        func checked(_ type: AppCommand) -> Bool? {
             switch type {
             case .viewAsIcons: state.viewMode == .icons
             case .viewAsList: state.viewMode == .list
@@ -191,7 +191,7 @@ public enum ApplicationMenu {
             }
         }
 
-        func title(_ type: RendererCommand) -> String? {
+        func title(_ type: AppCommand) -> String? {
             switch type {
             case .undo: textUndo ? "Undo" : window.undoLabels?.undo ?? "Undo"
             case .redo: textUndo ? "Redo" : window.undoLabels?.redo ?? "Redo"
@@ -201,7 +201,7 @@ public enum ApplicationMenu {
             }
         }
 
-        return RendererCommand.allCases.map {
+        return AppCommand.allCases.map {
             ApplicationMenuItemState(id: $0.rawValue, enabled: isEnabled($0), checked: checked($0), title: title($0))
         }
     }

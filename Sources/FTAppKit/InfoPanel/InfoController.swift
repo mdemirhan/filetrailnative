@@ -387,7 +387,7 @@ final class InfoController {
         let content = InfoPanelModel.itemContent(
             item: item, pending: resolved.pending, volume: volume?.path == item.path ? volume?.value : nil,
             isVolumeRoot: isVolume, hasFolderSize: folderSize != nil, folderSize: folderSize, opensWith: opens,
-            dates: .original, startupDiskName: startupDiskName)
+            dates: .shared, startupDiskName: startupDiskName)
         let app =
             isFile ? lookup.answer(for: item.path)?.defaultApp.map { InfoOpenApp(path: $0.path, name: $0.name) } : nil
         let trash = FavoriteLabel.trashPath(homePath: homePath)
@@ -442,7 +442,7 @@ final class InfoController {
         let facts = InfoPanelModel.rowFacts(
             entry: active, metadata: infoMetadata(content.metadata(for: active.path)),
             item: properties, folderSizeKnown: folderSize != nil, now: RelativeClock.shared.relativeNow,
-            dates: .original)
+            dates: .shared)
         var list: [InfoRowDisplay.Fact] = [.init(content: .text(facts.kind), tooltip: facts.kind)]
         if facts.showsFolderSize, let folderSize {
             var tooltip: String?

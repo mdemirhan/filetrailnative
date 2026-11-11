@@ -50,7 +50,7 @@ public struct InfoRow: Equatable, Sendable {
 /// The locale numbers and dates are formatted in: the app's language alone, not the system's region, so
 /// "48,611 files" and "Sep 17, 2026, 2:08 PM" on a machine set to a European region.
 public enum InfoLocale {
-    public static let original: Locale = {
+    public static let appLanguage: Locale = {
         let language =
             Locale.preferredLanguages.first.flatMap { Locale(identifier: $0).language.languageCode?.identifier } ?? "en"
         return Locale(identifier: language)
@@ -61,7 +61,7 @@ public enum InfoPanelModel {
     public static let pending = "—"
 
     /// With thousands separators.
-    static func integer(_ value: Int, locale: Locale = InfoLocale.original) -> String {
+    static func integer(_ value: Int, locale: Locale = InfoLocale.appLanguage) -> String {
         let formatter = NumberFormatter()
         formatter.locale = locale
         formatter.numberStyle = .decimal
@@ -282,7 +282,7 @@ public enum InfoPanelModel {
 
     /// "<size> (<disk> on disk)" and "N files, M folders".
     public static func folderSizeLines(
-        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, locale: Locale = InfoLocale.original
+        sizeBytes: Int64, diskBytes: Int64, fileCount: Int, folderCount: Int, locale: Locale = InfoLocale.appLanguage
     ) -> (top: String, items: String) {
         let detail = SizeText.folderDetail(
             sizeBytes: sizeBytes, diskBytes: diskBytes, fileCount: fileCount, folderCount: folderCount, locale: locale)

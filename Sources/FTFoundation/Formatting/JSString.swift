@@ -3,7 +3,7 @@ import Foundation
 /// Strings compared, searched and measured in UTF-16 code units, with no Unicode equivalence; Swift's
 /// `String` does it by characters and takes NFC and NFD as equal. Name ranges and which names contain a
 /// text depend on the code units, so the code goes through these helpers.
-enum JSString {
+public enum JSString {
     /// Whether the code unit is white space, as trimming and splitting on white space count it: tab to carriage
     /// return, the space and no-break space, the other Unicode spaces, the line and paragraph separators, and the
     /// byte-order mark.
@@ -72,7 +72,7 @@ enum JSString {
     }
 
     /// Whether the two are the same code units; Swift's `==` takes the NFC and NFD spellings as equal.
-    static func equals(_ left: String, _ right: String) -> Bool {
+    public static func equals(_ left: String, _ right: String) -> Bool {
         left.utf8.elementsEqual(right.utf8)
     }
 

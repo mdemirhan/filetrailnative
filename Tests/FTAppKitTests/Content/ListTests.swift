@@ -147,7 +147,7 @@ extension ExplorerWindowlessTests {
         @Test func aFolderLeftOnScreenHasItsItemsBelowTheErrorCard() async throws {
             let harness = try ExplorerHarness.windowless()
             let tab = try await harness.open(harness.folder.path)
-            for mode in [RendererCommand.viewAsIcons, .viewAsDetails, .viewAsList] {
+            for mode in [AppCommand.viewAsIcons, .viewAsDetails, .viewAsList] {
                 tab.perform(mode)
                 harness.layout(tab)
                 let container = try #require(

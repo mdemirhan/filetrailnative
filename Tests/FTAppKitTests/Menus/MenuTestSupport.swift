@@ -11,7 +11,7 @@ final class FakeExplorerWindow: ExplorerWindowHandle {
     let windowID: Int
     let window: NSWindow?
     var isOnScreen = true
-    private(set) var performed: [RendererCommand] = []
+    private(set) var performed: [AppCommand] = []
 
     init(id: Int) {
         windowID = id
@@ -19,7 +19,7 @@ final class FakeExplorerWindow: ExplorerWindowHandle {
         window = makeOffscreenWindow()
     }
 
-    func perform(_ command: RendererCommand) { performed.append(command) }
+    func perform(_ command: AppCommand) { performed.append(command) }
 }
 
 /// A window that is built but never ordered front.
@@ -42,7 +42,7 @@ final class FakeWindowHost: ExplorerWindowHost {
     var takesFilesFromOtherApps = true
 
     func openStartupWindows(folder: String?) { calls.append("startup \(folder ?? "-")") }
-    func openDefaultWindow(initialCommand: RendererCommand?) {
+    func openDefaultWindow(initialCommand: AppCommand?) {
         calls.append("default \(initialCommand?.rawValue ?? "-")")
     }
     func openNewWindowFromFront() { calls.append("newWindowFromFront") }

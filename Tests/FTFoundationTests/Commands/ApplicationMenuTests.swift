@@ -14,12 +14,12 @@ struct ApplicationMenuTests {
             ?? ApplicationMenuItemState(id: "missing \(id)")
     }
 
-    static func enabledCommands(_ window: Window) -> [RendererCommand] {
-        RendererCommand.allCases.filter { stateOf($0.rawValue, initial, window).enabled == true }
+    static func enabledCommands(_ window: Window) -> [AppCommand] {
+        AppCommand.allCases.filter { stateOf($0.rawValue, initial, window).enabled == true }
     }
 
     @Test func withNoExplorerWindowOpenOffersOnlyWhatOpensOneBesidesAnotherWindowsOwn() {
-        let placesAndNewWindow: [RendererCommand] = [
+        let placesAndNewWindow: [AppCommand] = [
             .openLocationSheet, .goHomeRootTree, .goDocuments, .goDesktop, .goDownloads, .goLibrary, .goMacintoshHD,
             .goApplications, .goTrash, .newWindow,
         ]
@@ -52,7 +52,7 @@ struct ApplicationMenuTests {
     // A state exists for every command the menu can send, and one only.
     @Test func hasAStateForEveryCommand() {
         let ids = ApplicationMenu.itemStates(Self.initial, window: Self.explorerWindow).map(\.id)
-        #expect(ids == RendererCommand.allCases.map(\.rawValue))
+        #expect(ids == AppCommand.allCases.map(\.rawValue))
     }
 
     @Test func dimsTheCommandsTheWindowSaysCanNotRun() {
@@ -240,7 +240,7 @@ struct ApplicationMenuTests {
         let notEditing = ApplicationMenuState.build(
             viewMode: .list, sortBy: .name, foldersFirst: true, hiddenFilesShown: false, folderTreeOpen: true,
             infoPanelOpen: false, infoRowOpen: false, favoriteIsSet: false, textEditing: false, canRun: { _ in false })
-        #expect(notEditing.disabledCommands == RendererCommand.allCases)
+        #expect(notEditing.disabledCommands == AppCommand.allCases)
     }
 
     @Test func startsInTheListView() {

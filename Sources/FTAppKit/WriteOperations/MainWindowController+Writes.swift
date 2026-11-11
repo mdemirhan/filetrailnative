@@ -5,7 +5,7 @@ import FTOperations
 
 extension MainWindowController {
     /// The commands that write, the clipboard's among them: each goes to the file operations.
-    static let writeCommands: Set<RendererCommand> = [
+    static let writeCommands: Set<AppCommand> = [
         .undo, .redo, .renameSelection, .duplicateSelection, .newFolder, .trashSelection, .emptyTrash, .cutSelection,
         .copySelection, .pasteSelection, .moveSelection, .editCut, .editCopy, .editPaste,
     ]
@@ -44,7 +44,7 @@ extension MainWindowController {
     }
 
     /// Carries out a write command; false for any other command.
-    func performWriteCommand(_ command: RendererCommand) -> Bool {
+    func performWriteCommand(_ command: AppCommand) -> Bool {
         guard Self.writeCommands.contains(command) else { return false }
         // A command the focused pane doesn't take does nothing (Move To with the tree focused, Cut on a favorite).
         guard Self.canRunWriteCommand(command, writeCommandContext), let actions = writeActions else { return true }
@@ -214,8 +214,8 @@ extension MainWindowController {
     /// Asked before a write command acts (Cut, Copy and Paste of the Edit menu as the list's own): the list's commands
     /// only with the list focused, Cut and Copy from the tree only on a folder of it (a favorite only points to one),
     /// Paste also with no pane focused.
-    static func canRunWriteCommand(_ command: RendererCommand, _ context: ShortcutContext) -> Bool {
-        let asked: RendererCommand =
+    static func canRunWriteCommand(_ command: AppCommand, _ context: ShortcutContext) -> Bool {
+        let asked: AppCommand =
             switch command {
             case .editCut: .cutSelection
             case .editCopy: .copySelection

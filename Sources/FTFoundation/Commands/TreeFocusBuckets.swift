@@ -7,7 +7,7 @@ public enum TreeFocusShortcutBucket: String, Sendable, Hashable {
 
 extension ShortcutPolicy {
     /// What the command does while the folder tree has the keyboard.
-    public static func treeFocusBucket(of command: RendererCommand) -> TreeFocusShortcutBucket {
+    public static func treeFocusBucket(of command: AppCommand) -> TreeFocusShortcutBucket {
         switch command {
         case .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .focusFileSearch, .openLocationSheet,
             .openSettings, .emptyTrash, .ejectVolume, .showClipboard, .clearClipboard, .refreshOrApplySearchSort,

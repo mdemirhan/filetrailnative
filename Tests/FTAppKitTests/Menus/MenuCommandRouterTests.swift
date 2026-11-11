@@ -125,7 +125,7 @@ import Testing
         var sent = 0
         for found in flatten(built.menu) {
             guard let id = found.identifier?.rawValue,
-                let command = RendererCommand(rawValue: id)
+                let command = AppCommand(rawValue: id)
             else {
                 continue
             }
@@ -267,7 +267,7 @@ import Testing
     @Test func withNoExplorerWindowOpensOneForNewWindowAndTheGoMenusPlaces() {
         let (built, router, log) = make()
         let settings = makeOffscreenWindow()
-        var opened: [RendererCommand] = []
+        var opened: [AppCommand] = []
         router.onCommandWithoutExplorerWindow = { opened.append($0) }
         router.explorerFor = { _ in nil }
 

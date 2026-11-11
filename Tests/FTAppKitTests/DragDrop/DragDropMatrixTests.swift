@@ -219,8 +219,8 @@ extension ExplorerWindowlessTests {
         }
 
         // The same in the Icons view and the Compact List.
-        @Test(arguments: [RendererCommand.viewAsIcons, .viewAsList])
-        func onlyFolderItemsAreTargetsInTheGrids(_ view: RendererCommand) async throws {
+        @Test(arguments: [AppCommand.viewAsIcons, .viewAsList])
+        func onlyFolderItemsAreTargetsInTheGrids(_ view: AppCommand) async throws {
             let harness = try ExplorerHarness.windowless()
             let (tab, probe) = try await harness.openGrid(view)
             let grid = try #require(probe.grid)

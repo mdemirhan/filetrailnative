@@ -1,6 +1,6 @@
 /// The commands the application menu, the toolbar and the keys send to the explorer window. The raw value is the
 /// command's name.
-public enum RendererCommand: String, CaseIterable, Sendable, Hashable, Codable {
+public enum AppCommand: String, CaseIterable, Sendable, Hashable, Codable {
     case undo
     case redo
     case editCut

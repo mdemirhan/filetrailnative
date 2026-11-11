@@ -26,7 +26,7 @@ let applicationMenuName = "File Trail"
 
 @MainActor
 enum ApplicationMenuBuilder {
-    /// Ids of the items that are not a window's command (`RendererCommand`).
+    /// Ids of the items that are not a window's command (`AppCommand`).
     static let aboutItemID = "about"
     static let settingsItemID = "settings"
 
@@ -222,7 +222,7 @@ enum ApplicationMenuBuilder {
 
         /// A command item. Its id is the command, which is how the states find it.
         func command(
-            _ type: RendererCommand, _ title: String, fixed: ShortcutCommandID? = nil
+            _ type: AppCommand, _ title: String, fixed: ShortcutCommandID? = nil
         ) -> NSMenuItem {
             let item = NSMenuItem(
                 title: title, action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")

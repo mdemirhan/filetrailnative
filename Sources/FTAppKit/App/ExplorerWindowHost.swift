@@ -11,7 +11,7 @@ public protocol ExplorerWindowHandle: AnyObject {
     /// Visible and not minimized: a menu command may act on it unseen only when it is not.
     var isOnScreen: Bool { get }
     /// Carries out a menu command.
-    func perform(_ command: RendererCommand)
+    func perform(_ command: AppCommand)
     /// What the application menu should show of it now; nil when it doesn't say.
     var currentMenuState: ApplicationMenuState? { get }
 }
@@ -44,7 +44,7 @@ public protocol ExplorerWindowHost: AnyObject {
     func openStartupWindows(folder: String?)
     /// A window opened with none open (the Dock icon, New Window, a place of the Go menu): it starts where the
     /// window closed last was, and runs `initialCommand` once opened.
-    func openDefaultWindow(initialCommand: RendererCommand?)
+    func openDefaultWindow(initialCommand: AppCommand?)
     /// New Window from the Dock menu, or while another window (Settings) has the keyboard.
     func openNewWindowFromFront()
     /// A second launch, or the Dock icon with every window minimized.

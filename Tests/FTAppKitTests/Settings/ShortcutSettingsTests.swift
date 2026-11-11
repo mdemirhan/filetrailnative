@@ -311,7 +311,7 @@ import Testing
         #expect(controller.window?.firstResponder === place)
         let commandD = Kit.letter("d", .command, window: controller.window)
         let router = MenuCommandRouter()
-        router.setItem(RendererCommand.duplicateSelection.rawValue, enabled: false)
+        router.setItem(AppCommand.duplicateSelection.rawValue, enabled: false)
         let built = ApplicationMenuBuilder.build(target: router)
         #expect(built.menu.performKeyEquivalent(with: commandD))
         #expect(view.model.note == nil)

@@ -13,7 +13,7 @@ struct ShortcutPolicyTests {
             locationSheetOpen: locationSheetOpen, mainView: mainView, selectedTreeTargetKind: selectedTreeTargetKind)
     }
 
-    static func handle(_ command: RendererCommand, _ context: ShortcutContext) -> Bool {
+    static func handle(_ command: AppCommand, _ context: ShortcutContext) -> Bool {
         ShortcutPolicy.canHandle(command, context)
     }
 
@@ -66,18 +66,18 @@ struct ShortcutPolicyTests {
         #expect(!ShortcutPolicy.canHandleExplorerKeyboardShortcuts(Self.ctx(locationSheetOpen: true)))
     }
 
-    @Test func blocksContentOnlyRendererCommandsWhenTheTreeIsFocused() {
+    @Test func blocksContentOnlyAppCommandsWhenTheTreeIsFocused() {
         #expect(!Self.handle(.newFolder, Self.ctx(focusedPane: .tree)))
     }
 
-    @Test func blocksContentOnlyRendererCommandsWhenNoExplorerPaneIsFocused() {
+    @Test func blocksContentOnlyAppCommandsWhenNoExplorerPaneIsFocused() {
         #expect(!Self.handle(.newFolder, Self.ctx(focusedPane: nil)))
         #expect(!Self.handle(.copySelection, Self.ctx(focusedPane: nil)))
         #expect(!Self.handle(.openSelection, Self.ctx(focusedPane: nil)))
         #expect(!Self.handle(.copyPath, Self.ctx(focusedPane: nil)))
     }
 
-    @Test func keepsGlobalRendererCommandsAvailableWhenTheTreeIsFocused() {
+    @Test func keepsGlobalAppCommandsAvailableWhenTheTreeIsFocused() {
         #expect(Self.handle(.focusFileSearch, Self.ctx(focusedPane: .tree)))
         #expect(Self.handle(.refreshOrApplySearchSort, Self.ctx(focusedPane: .tree)))
     }
@@ -87,8 +87,8 @@ struct ShortcutPolicyTests {
         #expect(!Self.raw(.newFolder, Self.ctx(focusedPane: .tree)))
     }
 
-    private func contentOnlyCommands(_ context: ShortcutContext) -> [RendererCommand] {
-        RendererCommand.allCases.filter {
+    private func contentOnlyCommands(_ context: ShortcutContext) -> [AppCommand] {
+        AppCommand.allCases.filter {
             ShortcutPolicy.treeFocusBucket(of: $0) == .contentOnly && Self.handle($0, context)
         }
     }
@@ -145,7 +145,7 @@ struct ShortcutPolicyTests {
 
     @Test func copiesAndCutsAFolderOfTheTreeButNeverAFavorite() {
         let treeFolder = Self.ctx(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
-        let pairs: [(RendererCommand, RawExplorerShortcutID)] = [
+        let pairs: [(AppCommand, RawExplorerShortcutID)] = [
             (.copySelection, .copySelection), (.cutSelection, .cutSelection),
         ]
         for (command, shortcut) in pairs {
@@ -159,8 +159,8 @@ struct ShortcutPolicyTests {
         }
     }
 
-    @Test func keepsTheDangerousRendererCommandDenylistFullyBlockedForTreeFoldersAndFavorites() {
-        let dangerous: [RendererCommand] = [
+    @Test func keepsTheDangerousAppCommandDenylistFullyBlockedForTreeFoldersAndFavorites() {
+        let dangerous: [AppCommand] = [
             .editSelection, .moveSelection, .renameSelection, .duplicateSelection, .newFolder, .trashSelection,
         ]
         for kind in [SelectedTreeTargetKind.filesystemFolder, .favorite, .favoritesRoot] {
@@ -222,11 +222,11 @@ struct ShortcutPolicyTests {
     }
 
     // The compiler checks that the bucket table covers every command.
-    @Test func keepsRendererCommandTreeFocusBucketsExhaustive() {
-        for command in RendererCommand.allCases {
+    @Test func keepsAppCommandTreeFocusBucketsExhaustive() {
+        for command in AppCommand.allCases {
             _ = ShortcutPolicy.treeFocusBucket(of: command)
         }
-        #expect(RendererCommand.allCases.count == 72)
+        #expect(AppCommand.allCases.count == 72)
         // Two commands that sit with the global explorer ones.
         #expect(ShortcutPolicy.treeFocusBucket(of: .ejectVolume) == .globalExplorer)
         #expect(ShortcutPolicy.treeFocusBucket(of: .calculateSize) == .globalExplorer)

@@ -151,7 +151,7 @@ private final class Shown {
     @Test func cutAndCopyOfAFavoriteDoNothing() {
         let favorite = ShortcutContext(focusedPane: .tree, selectedTreeTargetKind: .favorite)
         let folder = ShortcutContext(focusedPane: .tree, selectedTreeTargetKind: .filesystemFolder)
-        for command in [RendererCommand.editCut, .editCopy, .cutSelection, .copySelection] {
+        for command in [AppCommand.editCut, .editCopy, .cutSelection, .copySelection] {
             #expect(!MainWindowController.canRunWriteCommand(command, favorite))
             #expect(MainWindowController.canRunWriteCommand(command, folder))
         }
@@ -177,17 +177,17 @@ private final class Shown {
         let none = ShortcutContext(focusedPane: nil)
         let list = ShortcutContext(focusedPane: .content)
         for command in [
-            RendererCommand.moveSelection, .duplicateSelection, .renameSelection, .trashSelection, .newFolder,
+            AppCommand.moveSelection, .duplicateSelection, .renameSelection, .trashSelection, .newFolder,
         ] {
             #expect(!MainWindowController.canRunWriteCommand(command, tree))
             #expect(!MainWindowController.canRunWriteCommand(command, none))
             #expect(MainWindowController.canRunWriteCommand(command, list))
         }
-        for command in [RendererCommand.editPaste, .pasteSelection] {
+        for command in [AppCommand.editPaste, .pasteSelection] {
             #expect(MainWindowController.canRunWriteCommand(command, none))
             #expect(MainWindowController.canRunWriteCommand(command, tree))
         }
-        for command in [RendererCommand.undo, .redo, .emptyTrash] {
+        for command in [AppCommand.undo, .redo, .emptyTrash] {
             #expect(MainWindowController.canRunWriteCommand(command, none))
             #expect(MainWindowController.canRunWriteCommand(command, tree))
         }

@@ -42,12 +42,12 @@ struct ShortcutsTests {
 
     @Test func coversEveryCommandTheMenusAndToolbarsCanSend() {
         // These have a fixed key of their own (⌘C, ⌘,) under another name.
-        let fixedElsewhere: Set<RendererCommand> = [
+        let fixedElsewhere: Set<AppCommand> = [
             .editCut, .editCopy, .editPaste, .editSelectAll, .openSettings, .copySelection, .cutSelection,
             .pasteSelection,
         ]
         let ids = Set(ShortcutCommands.all.map(\.id.rawValue))
-        for command in RendererCommand.allCases {
+        for command in AppCommand.allCases {
             #expect(ids.contains(command.rawValue) || fixedElsewhere.contains(command), "\(command)")
         }
     }
@@ -396,7 +396,7 @@ struct ShortcutsTests {
         #expect(ShortcutCommandID(rawValue: "zoomIn") == nil)
         #expect(ShortcutCommandID(rawValue: "zoomOut") == nil)
         #expect(ShortcutCommandID(rawValue: "resetZoom") == nil)
-        #expect(RendererCommand(rawValue: "zoomIn") == nil)
+        #expect(AppCommand(rawValue: "zoomIn") == nil)
         #expect(Shortcuts.normalize("Cmd+Plus") == "Cmd+Plus")
         #expect(ShortcutCommands.defaultResolved.commandByShortcut["Cmd+Plus"] == nil)
     }

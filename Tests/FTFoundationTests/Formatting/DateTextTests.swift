@@ -34,8 +34,8 @@ struct DateTextTests {
 
     // The list writes its dates in the locale the Info panel uses, the app's language alone, not the machine's region.
     @Test func listDatesUseTheAppsLocale() {
-        #expect(DateText.shared.locale == InfoLocale.original)
-        #expect(DateText().locale == InfoLocale.original)
+        #expect(DateText.shared.locale == InfoLocale.appLanguage)
+        #expect(DateText().locale == InfoLocale.appLanguage)
         let now = Self.local(2026, 10, 19, 12)
         let date = Self.local(2026, 10, 5, 16, 12)
         let language = DateText(locale: Locale(identifier: "en"), timeZone: Self.zone)

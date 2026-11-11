@@ -96,7 +96,7 @@ public struct CommandAvailabilityContext: Equatable, Sendable {
 public enum CommandAvailability {
     /// What a running file operation blocks: anything that would start another one. Copy, Cut and Copy Path only fill
     /// a clipboard, so they stay available.
-    private static let writeLockedCommands: Set<RendererCommand> = [
+    private static let writeLockedCommands: Set<AppCommand> = [
         .undo, .redo, .pasteSelection, .moveSelection, .renameSelection, .duplicateSelection, .newFolder,
         .trashSelection, .emptyTrash,
     ]
@@ -259,7 +259,7 @@ public enum CommandAvailability {
 
     // MARK: Rules
 
-    public static func canRun(_ command: RendererCommand, _ context: CommandAvailabilityContext) -> Bool {
+    public static func canRun(_ command: AppCommand, _ context: CommandAvailabilityContext) -> Bool {
         if !ShortcutPolicy.canHandle(command, context.shortcutContext) {
             return false
         }

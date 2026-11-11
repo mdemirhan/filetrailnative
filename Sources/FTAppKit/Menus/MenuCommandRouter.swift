@@ -36,7 +36,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
     /// Help is a window too, opened from whichever window has the focus.
     var onOpenHelp: ((HelpTopicID?) -> Void)?
     /// A command chosen with no explorer window open (`ApplicationMenu.commandsWithoutExplorerWindow`).
-    var onCommandWithoutExplorerWindow: ((RendererCommand) -> Void)?
+    var onCommandWithoutExplorerWindow: ((AppCommand) -> Void)?
     /// New Window chosen while another window (Settings) has the keyboard: the host opens it beside the explorer window
     /// in front, which may not be able to take the command.
     var onNewWindowFromOtherWindow: (() -> Void)?
@@ -78,12 +78,12 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         case ApplicationMenuBuilder.settingsItemID:
             if let onOpenSettings { onOpenSettings() } else { send(.openSettings, focusedWindow: focusedWindow()) }
         default:
-            guard let command = RendererCommand(rawValue: itemID) else { return }
+            guard let command = AppCommand(rawValue: itemID) else { return }
             send(command, focusedWindow: focusedWindow())
         }
     }
 
-    static func nativeEditSelector(_ command: RendererCommand) -> Selector? {
+    static func nativeEditSelector(_ command: AppCommand) -> Selector? {
         switch command {
         case .undo: Selector(("undo:"))
         case .redo: Selector(("redo:"))
@@ -95,7 +95,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         }
     }
 
-    func send(_ command: RendererCommand, focusedWindow focused: NSWindow?) {
+    func send(_ command: AppCommand, focusedWindow focused: NSWindow?) {
         if command == .openHelp || command == .openKeyboardShortcuts, let onOpenHelp {
             onOpenHelp(command == .openKeyboardShortcuts ? .shortcuts : nil)
             return

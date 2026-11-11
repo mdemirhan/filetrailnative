@@ -5,7 +5,7 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
     public var label: String
     /// The icon of its button; the items that are not buttons (the space, the title, the view switch) have none.
     public var icon: CommandIcon?
-    public var commandType: RendererCommand?
+    public var commandType: AppCommand?
     /// Always in the toolbar: it can be moved there, but not taken off.
     public var topRequired: Bool
     /// The command whose shortcut the tooltip shows.
@@ -15,7 +15,7 @@ public struct ToolbarItemDefinition: Sendable, Equatable {
     public var allowDuplicates: Bool
 
     init(
-        id: ToolbarItemID, label: String, icon: CommandIcon?, commandType: RendererCommand? = nil,
+        id: ToolbarItemID, label: String, icon: CommandIcon?, commandType: AppCommand? = nil,
         topRequired: Bool = false, shortcutCommand: ShortcutCommandID? = nil, tooltipLabel: String? = nil,
         allowDuplicates: Bool = false
     ) {

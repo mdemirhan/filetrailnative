@@ -186,7 +186,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     /// `openDefaultWindow`: a window opened with none open (the Dock icon, New Window, the second launch). It starts
     /// where the window closed last was; `initialCommand` is run once it has opened.
-    public func openDefaultWindow(initialCommand: RendererCommand? = nil) {
+    public func openDefaultWindow(initialCommand: AppCommand? = nil) {
         // Not while quitting: the window would close again moments later.
         guard !shuttingDown else { return }
         let record = recordFromLastClosed()

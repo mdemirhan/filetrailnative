@@ -279,7 +279,7 @@ struct NativeWindowsGUITests {
 
         // File › New Window, from the menu.
         menu.router.focusedWindow = { first.window }
-        menu.router.choose(itemID: RendererCommand.newWindow.rawValue)
+        menu.router.choose(itemID: AppCommand.newWindow.rawValue)
         #expect(await waitUntil { groupCount(app) == 2 && frontTab(app)?.window?.isVisible == true })
         let second = try #require(frontTab(app))
         #expect(second !== first)
@@ -339,10 +339,10 @@ struct NativeWindowsGUITests {
         menu.router.focusedWindow = { nil }
         menu.sync.sync()
         let disabled = menu.router.disabledItemIDs
-        #expect(!disabled.contains(RendererCommand.newWindow.rawValue))
-        #expect(!disabled.contains(RendererCommand.goApplications.rawValue))
-        #expect(disabled.contains(RendererCommand.goBack.rawValue))
-        #expect(disabled.contains(RendererCommand.emptyTrash.rawValue))
+        #expect(!disabled.contains(AppCommand.newWindow.rawValue))
+        #expect(!disabled.contains(AppCommand.goApplications.rawValue))
+        #expect(disabled.contains(AppCommand.goBack.rawValue))
+        #expect(disabled.contains(AppCommand.emptyTrash.rawValue))
 
         // The Dock icon is clicked: a window opens where the last one was.
         ShellActions.activate(hasVisibleWindows: false, shutdownInProgress: false, host: app.windows)
@@ -352,7 +352,7 @@ struct NativeWindowsGUITests {
 
         // A place in the Go menu opens a window there. Applications rather than Desktop, whose
         // contents macOS asks the user before showing.
-        menu.router.choose(itemID: RendererCommand.goApplications.rawValue)
+        menu.router.choose(itemID: AppCommand.goApplications.rawValue)
         #expect(await waitUntil { groupCount(app) == 1 && frontTab(app)?.folder.path == "/Applications" })
         #expect(await waitUntil { frontTab(app)?.window?.title == "Applications" })
         await closeOnlyWindow()

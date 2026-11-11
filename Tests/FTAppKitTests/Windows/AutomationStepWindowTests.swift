@@ -36,7 +36,7 @@
         var windowID: Int { inner.windowID }
         var window: NSWindow? { inner.window }
         var isOnScreen: Bool { true }
-        func perform(_ command: RendererCommand) { inner.perform(command) }
+        func perform(_ command: AppCommand) { inner.perform(command) }
     }
 
     @MainActor

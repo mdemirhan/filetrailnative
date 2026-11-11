@@ -1438,7 +1438,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
     /// asked): a command that can't start says why itself.
     private func runKeyCommand(_ id: ShortcutCommandID) -> Bool {
         if id == .openSelectedItem { return openSelectedItem() }
-        guard let command = RendererCommand(rawValue: id.rawValue), ShortcutPolicy.canHandle(command, shortcutContext)
+        guard let command = AppCommand(rawValue: id.rawValue), ShortcutPolicy.canHandle(command, shortcutContext)
         else { return false }
         perform(command)
         return true
@@ -1451,7 +1451,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate {
         guard !isTextFieldEditing, !isDialogOpen,
             let pressed = Shortcuts.fromKeyboardEvent(ContentKeyboard.shortcutEvent(event)),
             let id = ShortcutCommands.resolve(preferences.shortcutOverrides).commandByShortcut[pressed],
-            id != .openSelectedItem, let command = RendererCommand(rawValue: id.rawValue), !canPerform(command),
+            id != .openSelectedItem, let command = AppCommand(rawValue: id.rawValue), !canPerform(command),
             ShortcutPolicy.canHandle(command, shortcutContext)
         else { return false }
         if WriteStartingShortcuts.runs(id.rawValue, isRepeat: event.isARepeat) { perform(command) }
@@ -2091,7 +2091,7 @@ extension MainWindowController: ExplorerWindowHandle {
     }
 
     /// Carries out a menu command in this tab, or in its explorer window.
-    func perform(_ command: RendererCommand) {
+    func perform(_ command: AppCommand) {
         // While the toolbar is customized the window waits, as under a sheet: only editing still works.
         if isCustomizingToolbar, MenuCommandRouter.nativeEditSelector(command) == nil, command != .customizeToolbar {
             return
@@ -2307,11 +2307,11 @@ extension MainWindowController: ExplorerWindowContext {
         go(to: URL(fileURLWithPath: paths[index]), history: .jump(index: index))
     }
 
-    func canPerform(_ command: RendererCommand) -> Bool {
+    func canPerform(_ command: AppCommand) -> Bool {
         CommandAvailability.canRun(command, commandContext)
     }
 
-    func commandAvailability() -> (RendererCommand) -> Bool {
+    func commandAvailability() -> (AppCommand) -> Bool {
         let context = commandContext
         return { CommandAvailability.canRun($0, context) }
     }

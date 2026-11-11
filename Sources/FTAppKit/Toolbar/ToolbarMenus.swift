@@ -115,7 +115,7 @@ extension ExplorerToolbar {
         present(menu, from: anchor, at: origin)
     }
 
-    static func sortCommand(_ value: SortByPreference) -> RendererCommand {
+    static func sortCommand(_ value: SortByPreference) -> AppCommand {
         switch value {
         case .name: .sortByName
         case .kind: .sortByKind
@@ -132,7 +132,7 @@ extension ExplorerToolbar {
         func key(_ shortcut: ShortcutCommandID) -> MenuKeyEquivalent? {
             shortcuts.written(shortcut).flatMap(MenuKeyEquivalent.parse)
         }
-        func toggle(_ title: String, _ shortcut: ShortcutCommandID, _ on: Bool, _ command: RendererCommand)
+        func toggle(_ title: String, _ shortcut: ShortcutCommandID, _ on: Bool, _ command: AppCommand)
             -> AppMenuItem
         {
             AppMenuItem(
@@ -169,11 +169,11 @@ extension ExplorerToolbar {
     /// What the system's » menu says for an item with no room, worded as in the menu bar. The
     /// items that are several choices (the view, the sort, the theme) are a submenu: the system's menu holds one entry
     /// per item. `canPerform`: which commands can run, when the caller has read it already.
-    func overflowEntry(_ id: ToolbarItemID, _ canPerform: ((RendererCommand) -> Bool)? = nil) -> NSMenuItem? {
+    func overflowEntry(_ id: ToolbarItemID, _ canPerform: ((AppCommand) -> Bool)? = nil) -> NSMenuItem? {
         guard let context else { return nil }
         let view = context.viewState
         let panels = context.panels
-        func run(_ command: RendererCommand) -> () -> Void { { [weak self] in self?.context?.perform(command) } }
+        func run(_ command: AppCommand) -> () -> Void { { [weak self] in self?.context?.perform(command) } }
         func submenu(_ title: String, _ items: [NSMenuItem]) -> NSMenuItem {
             let entry = NSMenuItem(title: title, action: nil, keyEquivalent: "")
             let menu = NSMenu(title: title)

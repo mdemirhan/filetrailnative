@@ -112,11 +112,11 @@ protocol ExplorerWindowContext: AnyObject {
     // MARK: Commands
 
     /// Carries out a command, as the menu bar, a key or a toolbar button sends it.
-    func perform(_ command: RendererCommand)
+    func perform(_ command: AppCommand)
     /// Whether the command can run now.
-    func canPerform(_ command: RendererCommand) -> Bool
+    func canPerform(_ command: AppCommand) -> Bool
     /// Whether each command can run now, from one look at the window: for asking about many commands at once.
-    func commandAvailability() -> (RendererCommand) -> Bool
+    func commandAvailability() -> (AppCommand) -> Bool
 
     // MARK: Selection and focus
 

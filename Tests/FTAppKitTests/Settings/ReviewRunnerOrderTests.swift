@@ -17,7 +17,7 @@ import Testing
         let window = try #require(settings.window)
         let commandD = SettingsTestKit.letter("d", .command, window: window)
         let router = MenuCommandRouter()
-        router.setItem(RendererCommand.duplicateSelection.rawValue, enabled: false)
+        router.setItem(AppCommand.duplicateSelection.rawValue, enabled: false)
         let mainMenu: NSMenu? = ApplicationMenuBuilder.build(target: router).menu
         #expect(KeyEvents.performKeyEquivalent(commandD, window: window, menu: mainMenu))
         #expect(view.model.note != nil)

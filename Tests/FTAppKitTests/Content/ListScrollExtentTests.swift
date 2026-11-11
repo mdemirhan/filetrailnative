@@ -54,7 +54,7 @@ extension ExplorerWindowlessTests {
         @Test func thePanelsAndAResizeLeaveTheEndWhereItIs() async throws {
             let (harness, tab) = try await openLong()
             let rows = tab.content.entries.count
-            let commands: [RendererCommand] = [
+            let commands: [AppCommand] = [
                 .toggleInfoRow, .toggleInfoRow, .toggleInfoPanel, .toggleInfoPanel, .toggleFolderTree,
                 .toggleFolderTree,
             ]

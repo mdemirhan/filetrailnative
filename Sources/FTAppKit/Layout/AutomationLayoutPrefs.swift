@@ -47,7 +47,7 @@
                 return .applied
             }
             func toggle(
-                _ key: PreferenceKey, _ command: RendererCommand, _ current: @escaping (ExplorerViewState) -> Bool
+                _ key: PreferenceKey, _ command: AppCommand, _ current: @escaping (ExplorerViewState) -> Bool
             ) {
                 AutomationPrefs.register(key) { value, context in
                     guard case .bool(let on) = value else { return .failed("\(key.rawValue) is not true or false") }

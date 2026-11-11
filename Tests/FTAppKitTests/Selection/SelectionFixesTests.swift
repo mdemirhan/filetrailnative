@@ -90,7 +90,7 @@ extension ExplorerWindowlessTests {
             harness.layout(tab)
             #expect(!switcher.isEnabled)
             #expect(!sort.isEnabled)
-            for command: RendererCommand in [.viewAsIcons, .sortByName, .newTab, .closeTab, .goEnclosingFolder] {
+            for command: AppCommand in [.viewAsIcons, .sortByName, .newTab, .closeTab, .goEnclosingFolder] {
                 #expect(!tab.canPerform(command), "\(command)")
             }
             #expect(tab.canPerform(.editPaste))

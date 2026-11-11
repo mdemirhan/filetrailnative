@@ -23,11 +23,6 @@ func textExtent(_ text: String, _ font: NSFont?) -> Double {
     Double((text as NSString).size(withAttributes: [.font: font ?? .systemFont(ofSize: 12)]).width)
 }
 
-/// The locale for dates (`InfoLocale.original`), which the list's dates share.
-extension DateText {
-    static var original: DateText { .shared }
-}
-
 /// The icons of the Info panel, system symbols in the text color; a quick action shows its command's symbol.
 enum InfoGlyph {
     case close, quickLook, edit, name, favorite, rootTree, finder, terminal, copy, check, refresh

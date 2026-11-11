@@ -2,7 +2,7 @@
     import AppKit
     import FTFoundation
 
-    /// Runs a scenario's `command` step. Its id is the raw value of a `RendererCommand`, the commands a window runs.
+    /// Runs a scenario's `command` step. Its id is the raw value of a `AppCommand`, the commands a window runs.
     @MainActor
     enum AutomationCommands {
         /// Every command id.
@@ -32,7 +32,7 @@
         /// Keyboard Shortcuts open the Help window, as the menu does.
         static func run(_ id: String, controller: MainWindowController, window: NSWindow) -> AutomationRunner.Outcome {
             guard all.contains(id) else { return .init(.failed, "unknown command \(id)") }
-            guard supported.contains(id), let command = RendererCommand(rawValue: id) else {
+            guard supported.contains(id), let command = AppCommand(rawValue: id) else {
                 return .init(.unsupported, "\(id) is left to the system here")
             }
             switch command {

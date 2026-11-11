@@ -33,7 +33,7 @@ struct CommandAvailabilityTests {
         return context
     }
 
-    static func run(_ command: RendererCommand, _ context: Context) -> Bool {
+    static func run(_ command: AppCommand, _ context: Context) -> Bool {
         CommandAvailability.canRun(command, context)
     }
 
@@ -43,7 +43,7 @@ struct CommandAvailabilityTests {
             $0.selectedEntry = nil
         }
         for command in [
-            RendererCommand.openSelection, .editSelection, .copySelection, .cutSelection, .moveSelection,
+            AppCommand.openSelection, .editSelection, .copySelection, .cutSelection, .moveSelection,
             .renameSelection, .duplicateSelection, .trashSelection, .copyPath,
         ] {
             #expect(!Self.run(command, context), "\(command)")
@@ -72,7 +72,7 @@ struct CommandAvailabilityTests {
                 $0.selectedEntry = nil
             }
         }
-        for command in [RendererCommand.copySelection, .cutSelection] {
+        for command in [AppCommand.copySelection, .cutSelection] {
             #expect(Self.run(command, treeContext("/Users/demo")))
             #expect(!Self.run(command, treeContext(nil)))
         }
@@ -80,7 +80,7 @@ struct CommandAvailabilityTests {
 
     @Test func showsAndClearsTheClipboardOnlyWhileItHoldsSomething() {
         let filled = Self.context { $0.clipboardHasItems = true }
-        for command in [RendererCommand.showClipboard, .clearClipboard] {
+        for command in [AppCommand.showClipboard, .clearClipboard] {
             #expect(!Self.run(command, Self.context()))
             #expect(Self.run(command, filled))
         }
@@ -391,7 +391,7 @@ struct CommandAvailabilityTests {
     @Test func leavesTheOrderOfSearchResultsToTheResultsBar() {
         let searching = Self.select { $0.isSearchMode = true }
         for command in [
-            RendererCommand.sortByName, .sortByModified, .sortBySize, .sortByKind, .toggleFoldersFirst,
+            AppCommand.sortByName, .sortByModified, .sortBySize, .sortByKind, .toggleFoldersFirst,
         ] {
             #expect(Self.run(command, Self.select()), "\(command)")
             #expect(!Self.run(command, searching), "\(command)")

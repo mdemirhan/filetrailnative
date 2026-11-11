@@ -117,7 +117,7 @@
             // Every command goes to the window but the zoom ones.
             #expect(
                 AutomationCommands.all.subtracting(AutomationCommands.supported) == ["zoomIn", "zoomOut", "resetZoom"])
-            #expect(AutomationCommands.supported.allSatisfy { RendererCommand(rawValue: $0) != nil })
+            #expect(AutomationCommands.supported.allSatisfy { AppCommand(rawValue: $0) != nil })
         }
     }
 #endif

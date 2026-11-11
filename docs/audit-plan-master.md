@@ -1698,7 +1698,7 @@ hand-drawn parts) go with the control; tests of behaviour stay.
 - [x] 10.4 `Sources/FTAppKit`
 - [x] 10.5 `Tests`: comments
 - [x] 10.6 `Tests`: names of tests and fixtures (step 6)
-- [ ] 10.7 Identifiers in Sources (step 7), after [Q16]
+- [x] 10.7 Identifiers in Sources (step 7), after [Q16]
 - [x] 10.8 `tools`, `scripts`, `docs`
 
 Do this last so removed code is not rewritten first. The rule is in `CLAUDE.md`. The audit found several hundred
@@ -2581,3 +2581,7 @@ anything that differed from the plan, and anything found on the way that is not 
   in an attributed string is drawn opaque) is false: the colour flattening, `TextStyle.background`, `.reportedColor`
   and `RGBA.flattened(over:)` went; Settings' descriptions are now their true colour over the card (4 levels darker).
   Checked on macOS 27, not 26. The eight files 10.4 left for after 9.4 have their comments fixed.
+- 2026-11-12. 10.7: the five renames the owner agreed (Q16); `originalKeys` was already gone, `JSStringEquality` was
+  a copy of `JSString.equals` and went (`JSString` is now public for it). Other identifiers with old words found in
+  Phase 10 (`sortedJS`, `jsTrimmed`, `isJSWhitespace`, `jsLowercased`, `jsRound`, `nodeText`, `libuvWords`,
+  `menuAccelerator`, `javaScriptNumber`, `PageWindow…`) were not part of the answer and are left.

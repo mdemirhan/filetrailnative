@@ -99,7 +99,7 @@ struct GridProbe {
 
 extension ExplorerHarness {
     /// A window on a folder of `count` files named item-000…, in a view mode.
-    func openGrid(_ mode: RendererCommand, files count: Int? = nil) async throws -> (MainWindowController, GridProbe) {
+    func openGrid(_ mode: AppCommand, files count: Int? = nil) async throws -> (MainWindowController, GridProbe) {
         let path = try count.map { try makeFolder(named: "Many", files: $0).path }
         let tab = try await open(path)
         tab.perform(mode)

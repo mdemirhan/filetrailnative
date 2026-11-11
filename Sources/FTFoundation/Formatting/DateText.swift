@@ -1,7 +1,7 @@
 import Foundation
 
 /// Dates as the lists and tooltips write them, in the system's time zone and the app's language alone, not the
-/// system's region (`InfoLocale.original`), so the list, the Info Row and the Info panel agree. Tests pass their own.
+/// system's region (`InfoLocale.appLanguage`), so the list, the Info Row and the Info panel agree. Tests pass their own.
 ///
 /// A medium date and a time are joined with a comma and a plain space ("Oct 5, 2026, 4:45 PM") where macOS
 /// writes "at" and a narrow no-break space.
@@ -24,7 +24,7 @@ public final class DateText: @unchecked Sendable {
     private let exact: DateFormatter
     private let short: DateFormatter
 
-    public init(locale: Locale = InfoLocale.original, timeZone: TimeZone = .autoupdatingCurrent) {
+    public init(locale: Locale = InfoLocale.appLanguage, timeZone: TimeZone = .autoupdatingCurrent) {
         self.locale = locale
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone

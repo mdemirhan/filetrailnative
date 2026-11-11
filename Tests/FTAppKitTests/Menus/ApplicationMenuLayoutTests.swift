@@ -90,7 +90,7 @@ import Testing
     // (the keys; the commands sent are checked in MenuCommandRouterTests)
     @Test func showsEachItemOnItsShortcut() {
         let (built, _) = build()
-        let expected: [(String, String, String?, RendererCommand)] = [
+        let expected: [(String, String, String?, AppCommand)] = [
             ("File", "New Window", "Command+N", .newWindow),
             ("File", "New Tab", "Command+T", .newTab),
             ("File", "Duplicate Tab", nil, .duplicateTab),
@@ -165,7 +165,7 @@ import Testing
             Issue.record("Sort By has no submenu")
             return
         }
-        let expected: [(String, RendererCommand)] = [
+        let expected: [(String, AppCommand)] = [
             ("Name", .sortByName), ("Kind", .sortByKind), ("Date Modified", .sortByModified), ("Size", .sortBySize),
         ]
         #expect(titles(sortMenu) == expected.map(\.0))

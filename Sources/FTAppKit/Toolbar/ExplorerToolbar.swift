@@ -240,7 +240,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
     var isCustomizing: Bool { toolbar.customizationPaletteIsRunning }
 
     private func refresh(
-        _ item: NSToolbarItem, _ id: ToolbarItemID, _ canPerform: @escaping (RendererCommand) -> Bool
+        _ item: NSToolbarItem, _ id: ToolbarItemID, _ canPerform: @escaping (AppCommand) -> Bool
     ) {
         guard let context else { return }
         let view = context.viewState
@@ -544,7 +544,7 @@ final class ExplorerToolbar: NSObject, NSToolbarDelegate, NSMenuItemValidation {
         }
     }
 
-    static func viewCommand(_ mode: ExplorerViewMode) -> RendererCommand {
+    static func viewCommand(_ mode: ExplorerViewMode) -> AppCommand {
         switch mode {
         case .icons: .viewAsIcons
         case .details: .viewAsDetails

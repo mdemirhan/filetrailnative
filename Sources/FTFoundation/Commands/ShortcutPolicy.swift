@@ -37,14 +37,14 @@ public struct ShortcutContext: Equatable, Sendable {
 }
 
 /// Which commands and keys act where. Keys the app handles itself, such as `?` and `Cmd+,`, are not decided here: this
-/// sorts only the window's commands (`RendererCommand`) and the window's own keys that go through the shortcut table.
+/// sorts only the window's commands (`AppCommand`) and the window's own keys that go through the shortcut table.
 /// The tables of what works while the tree has the keyboard are in TreeFocusBuckets.swift.
 public enum ShortcutPolicy {
-    private static let editCommands: Set<RendererCommand> = [.editCut, .editCopy, .editPaste, .editSelectAll]
+    private static let editCommands: Set<AppCommand> = [.editCut, .editCopy, .editPaste, .editSelectAll]
 
     /// Content commands that also work from the tree, on its selected folder and never on a selection left behind in
     /// the file list. Paste goes into that folder; copy and cut take the folder itself.
-    private static let treeSafeRendererCommands: Set<RendererCommand> = [
+    private static let treeSafeAppCommands: Set<AppCommand> = [
         .openSelection, .openSelectionInNewTab, .openSelectionInNewWindow, .openInTerminal, .copyPath, .copySelection,
         .cutSelection, .pasteSelection,
     ]
@@ -54,13 +54,13 @@ public enum ShortcutPolicy {
     private static let treeFolderOnlyCommands: Set<String> = ["copySelection", "cutSelection"]
 
     /// Help opens from anywhere a menu can be used, including the Help page itself.
-    private static let helpCommands: Set<RendererCommand> = [.openHelp, .openKeyboardShortcuts]
+    private static let helpCommands: Set<AppCommand> = [.openHelp, .openKeyboardShortcuts]
 
     private static let treeSafeRawShortcuts: Set<RawExplorerShortcutID> = [
         .copyPath, .copySelection, .cutSelection, .pasteSelection,
     ]
 
-    public static func canHandle(_ command: RendererCommand, _ context: ShortcutContext) -> Bool {
+    public static func canHandle(_ command: AppCommand, _ context: ShortcutContext) -> Bool {
         if editCommands.contains(command) {
             return true
         }
@@ -84,7 +84,7 @@ public enum ShortcutPolicy {
             case .content:
                 return context.mainView == .explorer
             case .tree:
-                if treeSafeRendererCommands.contains(command) {
+                if treeSafeAppCommands.contains(command) {
                     return isSafeTreeTarget(command.rawValue, context.selectedTreeTargetKind)
                         && context.mainView == .explorer
                 }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// The dates of the review rows and the conflict cards, in the system's time zone and the app's language alone
-/// (`InfoLocale.original`), with a comma and a plain space where macOS writes "at" and a narrow no-break space.
+/// (`InfoLocale.appLanguage`), with a comma and a plain space where macOS writes "at" and a narrow no-break space.
 /// Tests pass their own locale and zone.
 public final class ReviewDateText: @unchecked Sendable {
     public static let shared = ReviewDateText()
@@ -15,7 +15,7 @@ public final class ReviewDateText: @unchecked Sendable {
     private let day: DateFormatter
     private let dayYear: DateFormatter
 
-    public init(locale: Locale = InfoLocale.original, timeZone: TimeZone = .autoupdatingCurrent) {
+    public init(locale: Locale = InfoLocale.appLanguage, timeZone: TimeZone = .autoupdatingCurrent) {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
         calendar.locale = locale

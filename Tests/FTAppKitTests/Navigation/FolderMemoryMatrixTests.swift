@@ -11,7 +11,7 @@ extension ExplorerWindowlessTests {
     @Suite struct FolderMemoryMatrixTests {
         /// A list of 300 files with a 300-file folder inside, so both scroll.
         private func openLong(
-            _ view: RendererCommand = .viewAsDetails
+            _ view: AppCommand = .viewAsDetails
         ) async throws -> (harness: ExplorerHarness, tab: MainWindowController, outer: String, sub: String) {
             let harness = try ExplorerHarness.windowless()
             let outer = try harness.makeFolder(named: "Long", files: 300)
@@ -35,7 +35,7 @@ extension ExplorerWindowlessTests {
             return arrived
         }
 
-        private func scroll(_ tab: MainWindowController, _ view: RendererCommand = .viewAsDetails) throws
+        private func scroll(_ tab: MainWindowController, _ view: AppCommand = .viewAsDetails) throws
             -> (top: Double, left: Double)
         {
             tab.content.pane?.scrollPosition = view == .viewAsList ? (top: 0, left: 700) : (top: 700, left: 0)
@@ -133,8 +133,8 @@ extension ExplorerWindowlessTests {
 
         // Each view goes back to where it was scrolled, with what was selected,
         // the anchor and the lead.
-        @Test(arguments: [RendererCommand.viewAsDetails, .viewAsList, .viewAsIcons])
-        func backPutsEachViewWhereItWasScrolled(view: RendererCommand) async throws {
+        @Test(arguments: [AppCommand.viewAsDetails, .viewAsList, .viewAsIcons])
+        func backPutsEachViewWhereItWasScrolled(view: AppCommand) async throws {
             let (harness, tab, outer, _) = try await openLong(view)
             let chosen = try twoSelected(tab)
             let position = try scroll(tab, view)
