@@ -27,14 +27,8 @@ public enum BuildInfo {
 }
 
 public enum AboutInfoReader {
-    /// "Apple silicon" or "Intel".
-    public static var currentArchitectureName: String {
-        #if arch(arm64)
-            "Apple silicon"
-        #else
-            "Intel"
-        #endif
-    }
+    /// The app ships for Apple silicon only.
+    public static var currentArchitectureName: String { "Apple silicon" }
 
     /// `ProcessInfo`'s version as "27.0.0".
     public static func versionString(_ version: OperatingSystemVersion) -> String {

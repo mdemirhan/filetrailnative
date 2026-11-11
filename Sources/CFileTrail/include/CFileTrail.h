@@ -6,9 +6,6 @@
 #include "ft_copyfile.h"
 #include "ft_foldersize.h"
 
-/// A placeholder; nothing uses it.
-int ft_c_version(void);
-
 /// What an entry of a folder is (the object type getattrlistbulk reports).
 typedef enum {
     FT_ENTRY_OTHER = 0,
