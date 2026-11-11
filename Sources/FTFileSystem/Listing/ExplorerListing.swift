@@ -2,7 +2,8 @@ import FTFoundation
 import Foundation
 
 /// Names kinds as the system does ("Markdown Document"), asking once per extension; a file without one is
-/// asked each time. Without a describer, files are called "MD File" and the like.
+/// asked each time, and the system's describer asks Spotlight once per content type. Without a describer, files are
+/// called "MD File" and the like.
 public final class KindLabeler: @unchecked Sendable {
     public typealias Describer = @Sendable (String) -> String?
 
@@ -15,7 +16,10 @@ public final class KindLabeler: @unchecked Sendable {
     }
 
     /// The system's own kind strings (`FileKind`).
-    public static var system: KindLabeler { KindLabeler(describer: { FileKind.kind(forPath: $0) }) }
+    public static var system: KindLabeler {
+        let byContentType = FileKind.ByContentType()
+        return KindLabeler(describer: { byContentType.kind(forPath: $0) })
+    }
 
     /// What the system calls a file's kind, or nil.
     func describe(path: @autoclosure () -> String, fileExtension: String) -> String? {

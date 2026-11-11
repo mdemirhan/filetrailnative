@@ -9,21 +9,30 @@ public enum FileKind {
     static let maxPathBytes = 4095
 
     public static func kind(forPath path: String) -> String? {
+        guard let path = clipped(path) else { return nil }
+        return spotlightKind(ofPath: path) ?? fallbackKind(ofPath: path)
+    }
+
+    static func clipped(_ path: String) -> String? {
         guard !path.isEmpty else { return nil }
-        let path =
-            path.utf8.count > maxPathBytes
+        return path.utf8.count > maxPathBytes
             ? String(decoding: Array(path.utf8.prefix(maxPathBytes)), as: UTF8.self) : path
-        // Spotlight's kind (kMDItemKind) is the one Finder's Kind column shows: "Markdown Document",
-        // "Plain Text Document", where the type's own description is "Markdown" or "text". It is worked out
-        // from the file when asked, indexed or not.
-        if let item = MDItemCreate(kCFAllocatorDefault, path as CFString),
+    }
+
+    /// Spotlight's kind (kMDItemKind) is the one Finder's Kind column shows: "Markdown Document", "Plain Text
+    /// Document", where the type's own description is "Markdown" or "text". It is worked out from the file when
+    /// asked, indexed or not. nil for a file Spotlight cannot read.
+    static func spotlightKind(ofPath path: String) -> String? {
+        guard let item = MDItemCreate(kCFAllocatorDefault, path as CFString),
             let value = MDItemCopyAttribute(item, kMDItemKind) as? String, !value.isEmpty
-        {
-            return value
-        }
+        else { return nil }
+        return value
+    }
+
+    /// Launch Services' kind string, deprecated but without a replacement in the same words, then the type's own
+    /// description.
+    private static func fallbackKind(ofPath path: String) -> String? {
         let url = URL(fileURLWithPath: path)
-        // Then Launch Services' kind string, deprecated but without a replacement in the same words, then
-        // the type's own description.
         if let kind = launchServicesKind(of: url), !kind.isEmpty {
             return kind
         }
@@ -46,5 +55,26 @@ public enum FileKind {
         var kind: Unmanaged<CFString>?
         guard copyKindString(url as CFURL, &kind) == 0, let kind else { return nil }
         return kind.takeRetainedValue() as String
+    }
+
+    /// Kinds asked of Spotlight once per content type. A file without an extension is typed by its name ("README",
+    /// "Makefile"), its permissions (an executable) and Finder's type code, and Spotlight calls every file of one type
+    /// the same; asking it costs most of a millisecond a file, finding the type a few hundredths. A file Spotlight
+    /// cannot read gets the other words, as `kind(forPath:)` gives them, and they are not kept for its type.
+    final class ByContentType: @unchecked Sendable {
+        private let lock = NSLock()
+        private var kinds: [String: String] = [:]
+
+        func kind(forPath path: String) -> String? {
+            guard let path = clipped(path) else { return nil }
+            guard access(path, R_OK) == 0,
+                let type = try? URL(fileURLWithPath: path, isDirectory: false)
+                    .resourceValues(forKeys: [.contentTypeKey]).contentType?.identifier
+            else { return FileKind.kind(forPath: path) }
+            if let known = lock.withLock({ kinds[type] }) { return known }
+            guard let spotlight = spotlightKind(ofPath: path) else { return fallbackKind(ofPath: path) }
+            lock.withLock { kinds[type] = spotlight }
+            return spotlight
+        }
     }
 }

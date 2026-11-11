@@ -1527,7 +1527,7 @@ builds a whole context, twice per command button (`ToolbarMenus.swift:248`), plu
 `Sources/FTAppKit/Sidebar/SidebarListView.swift:519-523` uses `firstIndex(where:)` per row on every reload. Also
 `SidebarViewController.swift:291-310, 375-382` builds the tree presentation twice per refresh.
 
-### [ ] 7.7. No `Locale` per name comparison
+### [x] 7.7. No `Locale` per name comparison
 
 `Sources/FTFoundation/ListLayout/SizeOrder.swift:34` and
 `Sidebar/TreePaths.swift:148`; `Sources/FTFileSystem/Listing/Collation.swift:120` shows the static-locale pattern.
@@ -1535,13 +1535,13 @@ builds a whole context, twice per command button (`ToolbarMenus.swift:248`), plu
 6.9 merges these two compares into one and 8.2 may replace the comparator. If either has been done, check whether
 this is still needed.
 
-### [ ] 7.8. Sorting by Kind does not ask Spotlight per file
+### [x] 7.8. Sorting by Kind does not ask Spotlight per file
 
 `Sources/FTFileSystem/Listing/ExplorerListing.swift:23,
 255` calls `MDItemCreate` once per extension-less file, uncached, on the actor (`Icons/FileKind.swift:19`). Cache by
 whatever the answer depends on, or answer extension-less regular files without Spotlight.
 
-### [ ] 7.9. The write engine stops looking at destinations that cannot exist
+### [x] 7.9. The write engine stops looking at destinations that cannot exist
 
 `Sources/FTOperations/Execution/ExecutionFiles.swift:113`: a file copied into a folder this paste just made is
 looked at three times before and once after, though `copyfile` runs exclusive.
@@ -2418,3 +2418,19 @@ anything that differed from the plan, and anything found on the way that is not 
   again. Yes to the `CLAUDE.md` edits in 11.1 and 11.3. The owner checks nothing by hand unless asked: each
   visible change in Phases 8 and 9 is checked in the built app by the one doing the work, and Phase 9 still shows
   the owner before and after pictures of each control change before it is committed.
+- 2026-11-11. 7.7: after 6.9 one compare was left, `naturalCompare`, still making its locale per call. It now makes it
+  once, but the gain is small: Foundation keeps locales by name, so 100,000 compares went from about 31.8 to 30.2 ms
+  of CPU time, and a 5,000-name size sort measured the same.
+- 2026-11-11. 7.8: answering an extension-less file without Spotlight would change the words shown ("README" is
+  "Plain Text Document", "Makefile" "Makefile", an executable "Unix Executable File", a `TEXT` type code "SimpleText
+  Document"). Spotlight is asked once per content type instead; over 5,419 such files each type had one kind, and
+  files Spotlight cannot read are still asked one by one. 2,000 such files sort by Kind in about 100 ms, not 830 ms.
+- 2026-11-11. 7.9 skipped, measured as not worth it. In a hidden folder this paste made, a file's destination is
+  looked at twice before the copy (the run-time conflict check, which stays, and the `before` capture) and once
+  after (needed to restore metadata), not three times before. Dropping the `before` capture would save one `lstat`
+  (about 2.7 µs) of the 2.3 ms a small file takes, about 0.1%. At review, a conflicting file costs 2 `realpath`
+  calls and a conflicting folder 5 (the destination 3 times); for 2,000 conflicting files that is 68 ms of a 670 ms
+  review, and caching it would save about 5% by threading a cache through the replace-safety checks that must run at
+  review and again at run time. Not done. Found, not looked into: the other 600 ms of that review (likely
+  `annotateKeepBothNames` or `resolveDuplicateName`); a top-level file copy looks at its target about three times
+  before writing.
