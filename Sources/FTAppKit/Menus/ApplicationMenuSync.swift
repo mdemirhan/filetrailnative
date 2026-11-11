@@ -46,7 +46,7 @@ final class MenuItemIndex {
     nonisolated func control(_ id: String) -> Control? {
         MainActor.assumeIsolated {
             guard let item = built.itemsByID[id] else { return nil }
-            return Control(item: item, id: id, router: router, radioIDs: built.radioItemIDs)
+            return Control(item: item, id: id, router: router)
         }
     }
 
@@ -56,14 +56,11 @@ final class MenuItemIndex {
         private nonisolated(unsafe) let item: NSMenuItem
         private let router: MenuCommandRouter
         private let id: String
-        private let radioIDs: Set<String>
-        var isRadio: Bool { radioIDs.contains(id) }
 
-        init(item: NSMenuItem, id: String, router: MenuCommandRouter, radioIDs: Set<String>) {
+        init(item: NSMenuItem, id: String, router: MenuCommandRouter) {
             self.item = item
             self.id = id
             self.router = router
-            self.radioIDs = radioIDs
         }
 
         var isEnabled: Bool {
@@ -83,18 +80,7 @@ final class MenuItemIndex {
 
         var isChecked: Bool {
             get { MainActor.assumeIsolated { item.state == .on } }
-            set {
-                MainActor.assumeIsolated {
-                    item.state = newValue ? .on : .off
-                    // A radio item switched on switches the others of its group off.
-                    guard isRadio, newValue, let siblings = item.menu?.items else { return }
-                    for sibling in siblings where sibling !== item {
-                        if let siblingID = sibling.identifier?.rawValue, radioIDs.contains(siblingID) {
-                            sibling.state = .off
-                        }
-                    }
-                }
-            }
+            set { MainActor.assumeIsolated { item.state = newValue ? .on : .off } }
         }
     }
 }

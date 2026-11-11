@@ -24,7 +24,6 @@ public final class MainMenu {
         router.focusedWindow = focusedWindow
         router.explorerFor = { [weak sync] window in sync?.explorerFor(window) }
         router.isTextEditing = { [weak sync] target in sync?.state(of: target).textEditing ?? false }
-        router.onCommandSent = { [weak sync] in sync?.sync() }
         router.beforeValidating = { [weak sync] in sync?.readWindowState() }
     }
 

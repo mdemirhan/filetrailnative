@@ -222,8 +222,6 @@ public enum ApplicationMenu {
         var isEnabled: Bool { get set }
         var isVisible: Bool { get set }
         var isChecked: Bool { get set }
-        /// A radio item is only ever switched on: that switches the others in its group off.
-        var isRadio: Bool { get }
     }
 
     /// Sets what changed on the items the menu has, and skips the others.
@@ -236,7 +234,7 @@ public enum ApplicationMenu {
             if let visible = state.visible, control.isVisible != visible {
                 control.isVisible = visible
             }
-            if let checked = state.checked, control.isChecked != checked, !control.isRadio || checked {
+            if let checked = state.checked, control.isChecked != checked {
                 control.isChecked = checked
             }
         }

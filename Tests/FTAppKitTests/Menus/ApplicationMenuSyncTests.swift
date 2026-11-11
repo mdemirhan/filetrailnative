@@ -275,8 +275,8 @@ import Testing
         #expect(f.sync.undoLabels().undo == "Undo Rename")
     }
 
-    // Radio items are only ever switched on, and switching one on switches the others of its menu off
-    @Test func checksWhatTheWindowShowsAndSwitchesTheRadioGroupOver() {
+    // Each mark is set from what the window says: the view and the order it has on, the others off.
+    @Test func checksWhatTheWindowShowsAndUnchecksTheRest() {
         let f = Fixture()
         f.focused = f.open(1).window
 

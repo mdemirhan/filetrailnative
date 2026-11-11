@@ -335,19 +335,6 @@ import Testing
         #expect(explorer.performed.isEmpty)
     }
 
-    @Test func tellsTheHostAfterEachCommandSoItCanPutTheCheckmarksBack() {
-        let (built, router, _) = make()
-        let explorer = FakeExplorerWindow(id: 1)
-        routeTo(router, explorer)
-        var told = 0
-        router.onCommandSent = { told += 1 }
-
-        choose(menuItem(built, "View", "Hidden Files"), router)
-
-        #expect(told == 1)
-        #expect(explorer.performed == [.toggleHiddenFiles])
-    }
-
     // The menu validates an item by the state the explorer window reported
     @Test func validatesAnItemByWhatTheStateSays() {
         let (built, router, _) = make()

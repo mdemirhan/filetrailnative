@@ -35,9 +35,6 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
     var onOpenSettings: (() -> Void)?
     /// Help is a window too, opened from whichever window has the focus.
     var onOpenHelp: ((HelpTopicID?) -> Void)?
-    /// Called after an item has sent its command. macOS flips a checkmark on its own when the item is chosen; the host
-    /// puts back what the window last reported, so the marks only ever show what is really on.
-    var onCommandSent: (() -> Void)?
     /// A command chosen with no explorer window open (`ApplicationMenu.commandsWithoutExplorerWindow`).
     var onCommandWithoutExplorerWindow: ((RendererCommand) -> Void)?
     /// New Window chosen while another window (Settings) has the keyboard: the host opens it beside the explorer window
@@ -85,7 +82,6 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
             let name = itemID.split(separator: ":", maxSplits: 1).first.map(String.init) ?? itemID
             guard let command = RendererCommand(rawValue: name) else { return }
             send(command, focusedWindow: focusedWindow())
-            onCommandSent?()
         }
     }
 

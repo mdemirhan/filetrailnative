@@ -19,8 +19,6 @@ struct BuiltApplicationMenu {
     let helpMenu: NSMenu
     /// Every item that has an id, which is how the states find them.
     let itemsByID: [String: NSMenuItem]
-    /// The ids of the radio items; AppKit has no groups, so a group is the radio items of one menu.
-    let radioItemIDs: Set<String>
 }
 
 /// The name the menus use for the app: the bundle's is not it while the app runs unbundled.
@@ -121,20 +119,20 @@ enum ApplicationMenuBuilder {
         }
 
         context.addSubmenu(to: main, title: "View") { menu in
-            menu.addItem(context.command(.viewAsIcons, "as Icons", kind: .radio))
-            menu.addItem(context.command(.viewAsDetails, "as List", kind: .radio))
-            menu.addItem(context.command(.viewAsList, "as Compact List", kind: .radio))
+            menu.addItem(context.command(.viewAsIcons, "as Icons"))
+            menu.addItem(context.command(.viewAsDetails, "as List"))
+            menu.addItem(context.command(.viewAsList, "as Compact List"))
             menu.addItem(.separator())
             let sortBy = NSMenuItem(title: "Sort By", action: nil, keyEquivalent: "")
             let sortMenu = NSMenu(title: "Sort By")
-            sortMenu.addItem(context.command(.sortByName, "Name", kind: .radio))
-            sortMenu.addItem(context.command(.sortByKind, "Kind", kind: .radio))
-            sortMenu.addItem(context.command(.sortByModified, "Date Modified", kind: .radio))
-            sortMenu.addItem(context.command(.sortBySize, "Size", kind: .radio))
+            sortMenu.addItem(context.command(.sortByName, "Name"))
+            sortMenu.addItem(context.command(.sortByKind, "Kind"))
+            sortMenu.addItem(context.command(.sortByModified, "Date Modified"))
+            sortMenu.addItem(context.command(.sortBySize, "Size"))
             sortBy.submenu = sortMenu
             menu.addItem(sortBy)
-            menu.addItem(context.command(.toggleFoldersFirst, "Folders First", kind: .checkbox))
-            menu.addItem(context.command(.toggleHiddenFiles, "Hidden Files", kind: .checkbox))
+            menu.addItem(context.command(.toggleFoldersFirst, "Folders First"))
+            menu.addItem(context.command(.toggleHiddenFiles, "Hidden Files"))
             menu.addItem(context.command(.refreshOrApplySearchSort, "Refresh"))
             menu.addItem(.separator())
             menu.addItem(
@@ -142,8 +140,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(
                 context.command(
                     .toggleFolderTree, "Show Folder Tree", id: ApplicationMenu.folderTreeShowItemID, hidden: true))
-            menu.addItem(context.command(.toggleInfoPanel, "Info Panel", kind: .checkbox))
-            menu.addItem(context.command(.toggleInfoRow, "Info Row", kind: .checkbox))
+            menu.addItem(context.command(.toggleInfoPanel, "Info Panel"))
+            menu.addItem(context.command(.toggleInfoRow, "Info Row"))
             menu.addItem(.separator())
             menu.addItem(context.command(.customizeToolbar, "Customize Toolbar…"))
             // No Zoom In, Zoom Out or Actual Size, and no hidden full screen item: AppKit adds its
@@ -189,7 +187,7 @@ enum ApplicationMenuBuilder {
 
         return BuiltApplicationMenu(
             menu: main, servicesMenu: servicesMenu, windowsMenu: windowsMenu, helpMenu: helpMenu,
-            itemsByID: context.itemsByID, radioItemIDs: context.radioItemIDs)
+            itemsByID: context.itemsByID)
     }
 
     // MARK: Items
@@ -198,14 +196,11 @@ enum ApplicationMenuBuilder {
         let target: MenuCommandRouter
         let options: ApplicationMenuOptions
         var itemsByID: [String: NSMenuItem] = [:]
-        var radioItemIDs: Set<String> = []
 
         init(target: MenuCommandRouter, options: ApplicationMenuOptions) {
             self.target = target
             self.options = options
         }
-
-        enum Kind { case normal, radio, checkbox }
 
         @discardableResult
         func addSubmenu(to main: NSMenu, title: String, _ fill: (NSMenu) -> Void) -> NSMenu {
@@ -237,8 +232,8 @@ enum ApplicationMenuBuilder {
 
         /// A command item. Its id is the command, which is how the states find it.
         func command(
-            _ type: RendererCommand, _ title: String, id: String? = nil, kind: Kind = .normal,
-            fixed: ShortcutCommandID? = nil, hidden: Bool = false
+            _ type: RendererCommand, _ title: String, id: String? = nil, fixed: ShortcutCommandID? = nil,
+            hidden: Bool = false
         ) -> NSMenuItem {
             let item = NSMenuItem(
                 title: title, action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")
@@ -252,7 +247,7 @@ enum ApplicationMenuBuilder {
                 apply(chosenKey(shortcutID), to: item)
             }
             item.isHidden = hidden
-            register(item, id: itemID, kind: kind)
+            register(item, id: itemID)
             return item
         }
 
@@ -263,7 +258,7 @@ enum ApplicationMenuBuilder {
             item.target = target
             item.identifier = NSUserInterfaceItemIdentifier(id)
             if let fixed { apply(fixedKey(fixed), to: item) }
-            register(item, id: id, kind: .normal)
+            register(item, id: id)
             return item
         }
 
@@ -274,10 +269,9 @@ enum ApplicationMenuBuilder {
             return item
         }
 
-        private func register(_ item: NSMenuItem, id: String, kind: Kind) {
+        private func register(_ item: NSMenuItem, id: String) {
             precondition(itemsByID[id] == nil, "duplicate menu item id \(id)")
             itemsByID[id] = item
-            if kind == .radio { radioItemIDs.insert(id) }
         }
     }
 }

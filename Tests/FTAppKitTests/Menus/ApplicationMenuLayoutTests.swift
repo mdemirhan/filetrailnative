@@ -167,11 +167,8 @@ import Testing
         for (title, command) in expected {
             let found = item(sortMenu, title)
             #expect(found.identifier?.rawValue == command.rawValue)
-            #expect(built.radioItemIDs.contains(command.rawValue))
             #expect(accelerator(found) == nil)
         }
-        #expect(built.radioItemIDs.contains("viewAsIcons"))
-        #expect(!built.radioItemIDs.contains("toggleFoldersFirst"))
     }
 
     @Test func givesEveryItemThatSendsACommandAnIDOfItsOwn() {

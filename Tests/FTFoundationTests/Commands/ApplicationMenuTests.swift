@@ -163,11 +163,9 @@ struct ApplicationMenuTests {
         var isEnabled = true
         var isVisible = true
         var isChecked = false
-        let isRadio: Bool
 
-        init(checked: Bool = false, radio: Bool = false) {
+        init(checked: Bool = false) {
             isChecked = checked
-            isRadio = radio
         }
     }
 
@@ -188,17 +186,17 @@ struct ApplicationMenuTests {
         #expect(hidden.isChecked)
     }
 
-    @Test func onlyEverSwitchesARadioItemOn() {
-        let list = FakeItem(checked: true, radio: true)
-        let details = FakeItem(checked: false, radio: true)
+    // Every mark is set from the state, off as well as on: no item switches another.
+    @Test func switchesEachMarkOnOrOffAsTheStateSays() {
+        let list = FakeItem(checked: true)
+        let details = FakeItem(checked: false)
         let items = ["viewAsList": list, "viewAsDetails": details]
         ApplicationMenu.apply(
             [
                 ApplicationMenuItemState(id: "viewAsList", checked: false),
                 ApplicationMenuItemState(id: "viewAsDetails", checked: true),
             ], item: { items[$0] })
-        // The menu switches the rest of the group off when one is switched on.
-        #expect(list.isChecked)
+        #expect(!list.isChecked)
         #expect(details.isChecked)
     }
 
