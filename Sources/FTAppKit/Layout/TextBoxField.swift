@@ -1,42 +1,6 @@
 // Text drawn from its box's edges, whole when the box is as wide as the text
 import AppKit
 
-/// Where a line of text goes for its baseline to land where the browser puts it. The browser lays text out in device
-/// pixels: its baseline is the ascent rounded to a device pixel below the box's top, which is itself snapped to one.
-/// AppKit's line starts its baseline at the ascent rounded to a whole point, then rounds that up to a device pixel, so
-/// the same box draws its text up to 1 pt lower at 2x.
-@MainActor
-enum TextBaseline {
-    /// The ascent as the browser rounds it.
-    static func ascent(of font: NSFont, scale: CGFloat) -> CGFloat {
-        (font.ascender * scale).rounded() / scale
-    }
-
-    /// What to add to a box's top so AppKit's baseline falls at the browser's, before snapping.
-    static func offset(of font: NSFont, scale: CGFloat) -> CGFloat {
-        ascent(of: font, scale: scale) - font.ascender.rounded()
-    }
-
-    /// The y to draw a line of `font` at, in `view`, for a text box whose top is `top`.
-    static func lineTop(_ top: CGFloat, font: NSFont, in view: NSView) -> CGFloat {
-        guard let window = view.window else { return top + offset(of: font, scale: 2) }
-        let scale = window.backingScaleFactor
-        let sign: CGFloat = view.isFlipped ? 1 : -1
-        let baseline = view.convert(NSPoint(x: 0, y: top + sign * ascent(of: font, scale: scale)), to: nil)
-        let fromTop = window.frame.height - baseline.y
-        return lineTop(top, font: font, scale: scale, baselineFromWindowTop: fromTop, sign: sign)
-    }
-
-    /// The same, from where the unsnapped baseline falls in the window. A hair less than the snapped place, or AppKit's
-    /// rounding up could take a value that only floating point left above it to the next device pixel.
-    static func lineTop(
-        _ top: CGFloat, font: NSFont, scale: CGFloat, baselineFromWindowTop fromTop: CGFloat, sign: CGFloat = 1
-    ) -> CGFloat {
-        let snap = (fromTop * scale).rounded() / scale - fromTop
-        return top + sign * (offset(of: font, scale: scale) + snap - 0.001)
-    }
-}
-
 /// A label laid out as a CSS text box: its text starts at its frame's edge, and a frame as wide as the text (the
 /// measured width) draws the whole string. A plain label keeps 2 pt between its frame and its text on each side, and a
 /// centered one cuts its text short even when that padding is moved outside the frame, so this cell draws the text
@@ -73,12 +37,9 @@ class TextBoxCell: NSTextFieldCell {
         if isMultiline { options.insert(.truncatesLastVisibleLine) }
         let frame = textFrame(forBounds: cellFrame)
         // Text that fits with the slack is whole; text that doesn't is cut at the frame, as the browser cuts it.
-        var box =
+        let box =
             !isMultiline && text.size().width > frame.width + Self.slack
             ? frame : Self.box(frame, alignment: drawnAlignment(text))
-        if let font = text.attribute(.font, at: 0, effectiveRange: nil) as? NSFont {
-            box.origin.y = TextBaseline.lineTop(box.minY, font: font, in: controlView)
-        }
         text.draw(with: box, options: options, context: nil)
     }
 

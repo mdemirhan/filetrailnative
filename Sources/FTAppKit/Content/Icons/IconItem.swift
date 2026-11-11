@@ -91,7 +91,7 @@ final class IconNameLabel: ListLabel {
             }
             (line as NSString).draw(
                 with: NSRect(
-                    x: lineX, y: TextBaseline.lineTop(top, font: font, in: self), width: lineRoom, height: glyphHeight),
+                    x: lineX, y: top, width: lineRoom, height: glyphHeight),
                 options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine], attributes: attributes)
         }
     }

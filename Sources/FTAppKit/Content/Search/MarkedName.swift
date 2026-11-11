@@ -83,7 +83,7 @@ enum MarkedName {
         }
         text.draw(
             with: NSRect(
-                x: origin.x + line.leading, y: TextBaseline.lineTop(origin.y, font: font, in: view),
+                x: origin.x + line.leading, y: origin.y,
                 width: max(0, width - line.leading), height: lineHeight),
             options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine])
         guard underlined else { return }

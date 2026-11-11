@@ -1,5 +1,4 @@
-// Text baselines, the rename field staying over the rows, the tree's fade, the search folder column and the shadows
-// that fall down
+// The rename field staying over the rows, the tree's fade, the search folder column and the shadows that fall down
 import AppKit
 import FTFoundation
 import Testing
@@ -7,58 +6,7 @@ import Testing
 @testable import FTAppKit
 
 @MainActor
-struct BaselinesFadesAndShadowsTests {
-    // MARK: Baselines
-
-    @Test func theAscentIsRoundedToADevicePixel() {
-        // At 2x every size of the system font the app uses lands half a point above AppKit's whole-point baseline.
-        for size in [10.0, 11, 12, 13, 14, 15] {
-            let font = NSFont.systemFont(ofSize: size)
-            #expect(TextBaseline.offset(of: font, scale: 2) == -0.5)
-        }
-        // At 1x both round the same ascent to a pixel.
-        #expect(TextBaseline.offset(of: .systemFont(ofSize: 14), scale: 1) == 0)
-    }
-
-    @Test func aBaselineIsSnappedToTheNearestDevicePixelNotUp() {
-        let font = NSFont.systemFont(ofSize: 11)
-        // A box at 59.52 whose baseline falls at 70.02: it goes to the nearest device pixel, 70, not up to 70.5.
-        let top = TextBaseline.lineTop(59.52, font: font, scale: 2, baselineFromWindowTop: 70.02)
-        #expect(abs(top + font.ascender.rounded() - 70) < 0.01)
-        #expect(top + font.ascender.rounded() <= 70)
-    }
-
-    @Test func aDrawnLabelsBaselineIsHalfAPointAboveAppKits() throws {
-        let baseline = try #require(inkBottom(of: "HHH", in: TextBoxField(labelWithString: "HHH")))
-        // No window: a box at 4 with 14 pt text, whose ascent is rounded to 13.5 at 2x, the nearest device pixel.
-        #expect(baseline == (4 + 13.5) * 2)
-    }
-
-    /// The first pixel row under the text a label draws at y 4, at two pixels to the point.
-    private func inkBottom(of text: String, in field: NSTextField) -> Double? {
-        field.font = .systemFont(ofSize: 14)
-        field.textColor = .black
-        field.frame = NSRect(x: 2, y: 4, width: 100, height: 17)
-        let host = FlippedHost(frame: NSRect(x: 0, y: 0, width: 120, height: 30))
-        host.addSubview(field)
-        guard
-            let rep = NSBitmapImageRep(
-                bitmapDataPlanes: nil, pixelsWide: 240, pixelsHigh: 60, bitsPerSample: 8, samplesPerPixel: 4,
-                hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)
-        else { return nil }
-        rep.size = host.bounds.size
-        host.cacheDisplay(in: host.bounds, to: rep)
-        var bottom = -1
-        for y in 0..<60 {
-            for x in 0..<240 where (rep.colorAt(x: x, y: y)?.alphaComponent ?? 0) > 0.5 { bottom = max(bottom, y) }
-        }
-        return bottom < 0 ? nil : Double(bottom + 1)
-    }
-
-    private final class FlippedHost: NSView {
-        override var isFlipped: Bool { true }
-    }
-
+struct FadesAndShadowsTests {
     // MARK: The rename field
 
     @Test func rowsAddedAfterTheFieldStayUnderIt() {

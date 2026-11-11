@@ -71,7 +71,7 @@ final class NameLabel: ListLabel {
                 font: font, color: color, suffixColor: color, underlined: marksUnderlined)
             return
         }
-        let y = TextBaseline.lineTop((bounds.height - height) / 2, font: font, in: self)
+        let y = (bounds.height - height) / 2
         let plain: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: color]
         let suffixWidth = ceil((parts.extensionSuffix as NSString).size(withAttributes: plain).width)
         let stemRoom = max(0, bounds.width - suffixWidth)
@@ -128,7 +128,7 @@ final class FolderColumnLabel: ListLabel {
         let slack = TextBoxCell.slack
         (fit.text as NSString).draw(
             with: NSRect(
-                x: fit.isCut ? -slack : 0, y: TextBaseline.lineTop(0, font: font, in: self),
+                x: fit.isCut ? -slack : 0, y: 0,
                 width: bounds.width + slack, height: bounds.height),
             options: [.usesLineFragmentOrigin],
             attributes: [

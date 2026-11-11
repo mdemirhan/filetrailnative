@@ -31,7 +31,7 @@ final class CompactNameLabel: ListLabel {
                 font: font, color: color, suffixColor: extensionColor ?? color, underlined: marksUnderlined)
             return
         }
-        let y = TextBaseline.lineTop((bounds.height - height) / 2, font: font, in: self)
+        let y = (bounds.height - height) / 2
         let plain: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: color]
         var suffix = plain
         suffix[.foregroundColor] = extensionColor ?? color
