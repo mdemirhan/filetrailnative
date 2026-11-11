@@ -71,8 +71,9 @@ public enum WriteResultNoticeText {
         var reasons: [String] = []
         for case let error? in result.itemErrors where !error.isEmpty && error != message && !reasons.contains(error) {
             reasons.append(error)
+            if reasons.count == 3 { break }
         }
-        lines.append(contentsOf: reasons.prefix(3))
+        lines.append(contentsOf: reasons)
         return lines
     }
 }
