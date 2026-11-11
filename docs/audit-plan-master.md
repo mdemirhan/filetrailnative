@@ -1574,7 +1574,7 @@ unsure about one, leave it.
 Each item waits on its question. For each: test first, fix, build the app (`scripts/build-app.sh`), and stop for
 the owner to try it before the next.
 
-### [ ] 8.1. The startup disk is shown by its real name
+### [x] 8.1. The startup disk is shown by its real name
 
 [Q11]
 
@@ -1587,7 +1587,7 @@ the owner to try it before the next.
 
 Found by both audits. Also `Search/SearchBarText.swift:65`. Help can keep "Macintosh HD" as its example.
 
-### [ ] 8.2. Names sort in the user's language, the same way everywhere
+### [x] 8.2. Names sort in the user's language, the same way everywhere
 
 [Q12]
 
@@ -1607,7 +1607,7 @@ Found by both audits. Also `Search/SearchBarText.swift:65`. Help can keep "Macin
 Found by both audits. If the owner wants only the smallest version: search results sort by name with numeric
 ordering, as listings do, and the locale stays as it is.
 
-### [ ] 8.3. Listings know 10 package extensions, naming knows 37
+### [x] 8.3. Listings know 10 package extensions, naming knows 37
 
 [Q13]
 
@@ -1618,14 +1618,14 @@ check which goldens record it (`classify.json`, listing goldens) and stop to ask
 
 Paths are under `Sources/FTFoundation`. Do not change the list without the owner's yes.
 
-### [ ] 8.4. Accented letters typed in the list filter miss names stored decomposed
+### [x] 8.4. Accented letters typed in the list filter miss names stored decomposed
 
 `Formatting/ListFilter.swift:30`, also `Sidebar/SidebarKeyboard.swift:161` and `Ranking/Places.swift:107`.
 [Q14]
 
 Paths are under `Sources/FTFoundation`.
 
-### [ ] 8.5. File ▸ Remove from Favorites is never offered for Trash; the context menu offers it
+### [x] 8.5. File ▸ Remove from Favorites is never offered for Trash; the context menu offers it
 
 `Commands/CommandAvailability.swift:52, 216-217` vs `ContextMenu/ContextMenuRules.swift:91-94`. [Q15]
 
@@ -2480,3 +2480,27 @@ anything that differed from the plan, and anything found on the way that is not 
   the sanitizer (`JSONNode.of` encodes and parses again); the end of a paste's `usleep(50)` loop and the progress
   hop to the main queue (about 1 µs an event) belong to the two write slots kept in step, which "Left out on
   purpose" keeps.
+- 2026-11-11. Phase 7 review fix: overlapping reads of whether the Trash is empty could let an older answer replace a
+  newer one (the context menu now asks too). Reads are numbered and only the newest answer is kept, with a test. The
+  review's other point did not hold: the Trash is read again whenever a write ends, in every window.
+- 2026-11-11. 8.1: four more places named `/` "Macintosh HD" than the plan listed (Back and Forward's menus, the Info
+  panel's Where row, the path bar's "Folders in …" tooltip, Settings' favorites). The name is read off the main
+  thread at launch (`volumeLocalizedName`, else `volumeName`) and on every volume rename, and open windows follow.
+  Kept as "Macintosh HD": Help, the Go menu's item and its Shortcuts row, which name a command as Go ▸ Home does
+  (the Shortcuts label also feeds `help-content.json`). This Mac's disk is called Macintosh HD, so the new name was
+  not seen in the app; tests give the views another name and rename it.
+- 2026-11-11. 8.2: one `NameOrder` (ICU, the user's locale, primary strength, numeric) for every name order;
+  `Collation.swift` and its en_US fallback went, and ICU's collator moved to FTFoundation. Differs from the plan:
+  Kind labels and extensions compare as words (digits one by one), as numeric labels would have moved two
+  `listing-sort.json` cases. `search-sort.json` edited by hand in 18 cases where 2.txt and 10.txt change places.
+  The locale is read once at launch. Seen in the app: search results file1, file2, file10.
+- 2026-11-11. 8.3: one list of 37 package extensions. `classify.json` edited by hand in `names/packages`
+  (`Slides.key` a bundle, out of the tree); two tests that used `.key` and `.photoslibrary` as folders now use other
+  names. Seen in the app: a package other than the four the listing names itself showed Kind "Bundle" where it
+  showed "Folder" before; the system's kind is now used for those ("Keynote Presentation"), with a test.
+- 2026-11-11. 8.4: matched folded (lowercased, composed) in the list filter, the search results' filter, the
+  sidebar's type-to-select and Go To; Go To's marks are mapped back to the stored name. `list-filter.json` edited by
+  hand in seven cases with a decomposed name or query; plain "e" no longer finds a decomposed "Café", as it never
+  found a composed one. Not driven in the app: its automation types by key codes and has no key for "é".
+- 2026-11-11. 8.5: seen in the app with the Trash as a favorite: selecting it in the sidebar, File ▸ Remove from
+  Favorites takes it out.

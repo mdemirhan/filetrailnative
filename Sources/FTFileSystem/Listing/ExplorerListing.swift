@@ -55,7 +55,8 @@ public final class KindLabeler: @unchecked Sendable {
             case "framework": return "Framework"
             case "xcodeproj": return "Xcode Project"
             case "playground": return "Playground"
-            default: return "Bundle"
+            // Any other package as the system names it ("Keynote Presentation"), as a file is.
+            default: return describe(path: path(), fileExtension: fileExtension) ?? "Bundle"
             }
         case .file:
             if let described = describe(path: path(), fileExtension: fileExtension) { return described }
