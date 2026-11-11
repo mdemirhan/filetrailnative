@@ -86,30 +86,8 @@ struct ReplaceRecoveryAtStartTests {
 }
 
 struct PartialFileRemovalTests {
-    private static let folder = "/target/.movie.mov.filetrail-0000abcd"
-    /// Written by builds after v0.4.3 that were never released: the part was copied as "part" in a hidden folder
-    /// of its own (written down with the folder's id, no longer read).
-    private static let legacyEntry = PartialFileJournalEntry(
-        id: "p", partialPath: folder + "/part", finalPath: "/target/movie.mov")
     private static let part = "/target/.movie.mov.filetrail-0000abcd"
     private static let entry = PartialFileJournalEntry(id: "p", partialPath: part, finalPath: "/target/movie.mov")
-
-    @Test func removesTheHiddenFolderABuildAfterV043CopiedItIn() {
-        let fileSystem = MockWriteServiceFileSystem([
-            (Self.folder, .directory()), (Self.folder + "/part", .file(size: 9)),
-        ])
-
-        let outcomes = recoverPartialFiles([Self.legacyEntry], fileSystem)
-
-        #expect(outcomes.map(\.outcome) == [.removedCopy])
-        #expect(!fileSystem.exists(Self.folder))
-    }
-
-    @Test func findsNothingLeftOnceThatFolderIsGone() {
-        let fileSystem = MockWriteServiceFileSystem([("/target", .directory())])
-
-        #expect(recoverPartialFiles([Self.legacyEntry], fileSystem).map(\.outcome) == [.nothingLeft])
-    }
 
     @Test func leavesAPartForLaterWhenItsDiskDoesntAnswerOrAnotherWriteRuns() {
         let fileSystem = MockWriteServiceFileSystem([(Self.part, .file(size: 9))])

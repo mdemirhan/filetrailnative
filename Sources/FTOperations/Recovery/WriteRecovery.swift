@@ -98,8 +98,6 @@ public func recoverWrites(
         }
     }
     let options = RecoveryOptions(answerWithinMs: answerWithinMs, runWriteAlone: runWriteAlone)
-    // Parts of large files first: one inside a folder a paste was building (v0.4.3 wrote those down too) goes
-    // with it, and would then look like one on a disk that isn't connected.
     if !partialFiles.isEmpty {
         removePartialFiles(journal, partialFiles, fileSystem, logger, caches, options)
     }

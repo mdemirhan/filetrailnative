@@ -140,11 +140,7 @@ func runAlone<T>(_ runWriteAlone: RunWriteAlone?, _ write: () -> T) -> T? {
 private func removePartialFile(_ entry: PartialFileJournalEntry, _ fileSystem: some WriteServiceFileSystem) throws
     -> PartialFileRecoveryOutcome
 {
-    // Builds after v0.4.3 that were never released copied a large file as "part" inside a hidden folder of its
-    // own: that folder goes, with the part.
-    let inFolder =
-        sameText(basenameOf(entry.partialPath), "part") && isStagingName(basenameOf(dirnameOf(entry.partialPath)))
-    let path = inFolder ? dirnameOf(entry.partialPath) : entry.partialPath
+    let path = entry.partialPath
     do {
         _ = try fileSystem.lstat(path)
     } catch {

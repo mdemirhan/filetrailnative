@@ -4,11 +4,8 @@ import Foundation
 /// swapped in. A folder copied (or moved to another disk) whole is written down the same way. `moved` means the
 /// source itself was moved there (a move on the same volume), so the staged item is the only copy of it.
 /// `staged` means the item at `stagingPath` is complete. What is at `stagingPath`, a random hidden name made for
-/// it, is the paste's own. (Entries written by v0.4.3 carry ids as well, no longer read.)
+/// it, is the paste's own. It is written without a kind; the other entries name theirs.
 public struct ReplaceJournalEntry: Equatable, Sendable {
-    /// Entries written before the journal held anything else have no kind, and neither do the folder copies a
-    /// paste writes down.
-    public var hasKind: Bool
     public var id: String
     public var stagingPath: String
     public var finalPath: String
@@ -20,10 +17,9 @@ public struct ReplaceJournalEntry: Equatable, Sendable {
     public var movingCopy: Bool
 
     public init(
-        hasKind: Bool = false, id: String, stagingPath: String, finalPath: String, sourcePath: String, moved: Bool,
-        staged: Bool, movingCopy: Bool = false
+        id: String, stagingPath: String, finalPath: String, sourcePath: String, moved: Bool, staged: Bool,
+        movingCopy: Bool = false
     ) {
-        self.hasKind = hasKind
         self.id = id
         self.stagingPath = stagingPath
         self.finalPath = finalPath
@@ -113,11 +109,7 @@ extension WriteJournalEntry {
     var jsonObject: [(String, Any)] {
         switch self {
         case .replace(let entry):
-            var object: [(String, Any)] = []
-            if entry.hasKind {
-                object.append(("kind", "replace"))
-            }
-            object += [
+            var object: [(String, Any)] = [
                 ("id", entry.id), ("stagingPath", entry.stagingPath), ("finalPath", entry.finalPath),
                 ("sourcePath", entry.sourcePath), ("moved", entry.moved), ("staged", entry.staged),
             ]
@@ -168,8 +160,8 @@ extension WriteJournalEntry {
             self = .partialFile(PartialFileJournalEntry(id: id, partialPath: partialPath, finalPath: finalPath))
             return
         }
-        let hasKind = kind != nil
-        if hasKind && (kind as? String) != "replace" {
+        // A kind this build doesn't know: the entry is left out.
+        if kind != nil {
             return nil
         }
         guard let stagingPath = entry["stagingPath"] as? String, let sourcePath = entry["sourcePath"] as? String,
@@ -177,7 +169,7 @@ extension WriteJournalEntry {
         else { return nil }
         self = .replace(
             ReplaceJournalEntry(
-                hasKind: hasKind, id: id, stagingPath: stagingPath, finalPath: finalPath, sourcePath: sourcePath,
+                id: id, stagingPath: stagingPath, finalPath: finalPath, sourcePath: sourcePath,
                 moved: moved, staged: staged, movingCopy: Self.bool(entry["movingCopy"]) == true))
     }
 

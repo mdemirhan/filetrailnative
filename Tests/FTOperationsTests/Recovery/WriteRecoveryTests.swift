@@ -376,84 +376,23 @@ struct WriteRecoveryTests {
         }
     }
 
-    /// v0.4.3's way of writing a folder down: ids along with it, no longer read.
-    private func legacyFolderJSON(_ entry: ReplaceJournalEntry) -> String {
-        var json = JournalJSON.object(WriteJournalEntry.replace(entry).jsonObject)
-        json.removeLast()
-        return json + ",\"stagingId\":{\"dev\":1,\"ino\":2},\"stagingBornMs\":3,\"sourceId\":{\"dev\":4,\"ino\":5}}"
-    }
-
-    // v0.4.3 wrote down a large file copied inside a folder a paste was building, and ids along with each folder:
-    // read back from its file, the folder and the part both go, by their paths, and neither record stays.
-    @Test func clearsAFolderAndThePartOfALargeFileInItWrittenDownByV043() throws {
+    // Keys this build doesn't know are passed over: the entry is read by the ones it does.
+    @Test func readsAnEntryWithKeysItDoesntKnow() throws {
         try withTemporaryDirectory { directory in
             let root = directory.path
             let filePath = root + "/replace-journal.json"
-            let staging = root + "/.F.filetrail-0a1b2c3d"
-            let partial = staging + "/.movie.mov.filetrail-11111111"
-            try Disk.write(partial, "part of it")
-            let folder = createEntry(
-                root, "folder", stagingPath: staging, finalPath: root + "/F", sourcePath: root + "/source/F",
-                staged: false)
+            var folder = JournalJSON.object(WriteJournalEntry.replace(createEntry(root, "folder")).jsonObject)
+            folder.removeLast()
+            folder += ",\"stagingId\":{\"dev\":1,\"ino\":2},\"stagingBornMs\":3}"
             try Disk.write(
                 filePath,
-                "[\(legacyFolderJSON(folder)),{\"kind\":\"partial_file\",\"id\":\"p\",\"partialPath\":\(JournalJSON.string(partial)),\"finalPath\":\"x\"}]"
+                "[\(folder),{\"kind\":\"partial_file\",\"id\":\"p\",\"partialPath\":\"/a/.b.filetrail-00000000\",\"finalPath\":\"/a/b\",\"folderBornMs\":3}]"
             )
+
             let journal = FileWriteJournal.open(filePath)
 
-            _ = recoverWrites(journal, NativeWriteFileSystem(), logger: RecordingLogger().logger)
-
-            #expect(!Disk.exists(staging))
-            #expect(journal.entries().isEmpty)
-        }
-    }
-
-    // A folder being moved to another disk, complete under its hidden name when v0.4.3 stopped: put in place by its
-    // path (the ids it was written down with don't matter), and the person is told the original is still where it
-    // was.
-    @Test func putsInPlaceAMovedFoldersCopyWrittenDownByV043AndSaysSo() throws {
-        try withTemporaryDirectory { directory in
-            let root = directory.path
-            let filePath = root + "/replace-journal.json"
-            let staging = root + "/.F.filetrail-0a1b2c3d"
-            try Disk.write(staging + "/a.txt", "a")
-            let folder = createEntry(
-                root, "folder", stagingPath: staging, finalPath: root + "/F", sourcePath: root + "/source/F",
-                staged: true, movingCopy: true)
-            try Disk.write(filePath, "[\(legacyFolderJSON(folder))]")
-            let journal = FileWriteJournal.open(filePath)
-
-            let report = recoverWrites(journal, NativeWriteFileSystem(), logger: RecordingLogger().logger)
-
-            #expect(Disk.read(root + "/F/a.txt") == "a")
-            #expect(!Disk.exists(staging))
-            #expect(
-                report.notices == [
-                    "\u{201C}F\u{201D} was being moved when File Trail stopped. It is in \u{201C}\(NodePath.basename(root))\u{201D} now, and the original is still in \u{201C}source\u{201D} too."
-                ])
-            #expect(journal.entries().isEmpty)
-        }
-    }
-
-    // Builds after v0.4.3 that were never released copied a large file as "part" in a hidden folder of its own:
-    // that folder goes, and a record of one already gone clears.
-    @Test func removesTheHiddenFolderALargeFileWasCopiedInByABuildAfterV043() throws {
-        try withTemporaryDirectory { directory in
-            let root = directory.path
-            let filePath = root + "/replace-journal.json"
-            let folder = root + "/.movie.mov.filetrail-0a1b2c3d"
-            try Disk.write(folder + "/part", "part of it")
-            let gone = root + "/.gone.mov.filetrail-11111111/part"
-            let entries = [("p", folder + "/part"), ("gone", gone)].map { id, partialPath in
-                "{\"kind\":\"partial_file\",\"id\":\"\(id)\",\"partialPath\":\(JournalJSON.string(partialPath)),\"finalPath\":\(JournalJSON.string(root + "/movie.mov")),\"folderId\":{\"dev\":1,\"ino\":2},\"folderBornMs\":3}"
-            }
-            try Disk.write(filePath, "[" + entries.joined(separator: ",") + "]")
-            let journal = FileWriteJournal.open(filePath)
-
-            _ = recoverWrites(journal, NativeWriteFileSystem(), logger: RecordingLogger().logger)
-
-            #expect(Disk.list(root) == ["replace-journal.json"])
-            #expect(journal.entries().isEmpty)
+            #expect(ids(journal) == ["folder", "p"])
+            #expect(journal.entries().first == .replace(createEntry(root, "folder")))
         }
     }
 
