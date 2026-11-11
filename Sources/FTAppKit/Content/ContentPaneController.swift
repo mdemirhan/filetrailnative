@@ -661,6 +661,9 @@ final class ContentPaneController: NSViewController, ContentPaneHost {
 
     var selectedEntries: [DirectoryEntry] { selection.paths.compactMap { rowsByPath[$0] } }
 
+    /// The listed entry at `path`, shown or left out by the filter.
+    func listedEntry(at path: String) -> DirectoryEntry? { rowsByPath[path] }
+
     func position(of path: String?) -> Int? {
         guard let path else { return nil }
         if let positionsCache { return positionsCache[path] }

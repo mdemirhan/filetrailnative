@@ -136,11 +136,6 @@ final class InfoController {
         update()
     }
 
-    private func entry(at path: String) -> DirectoryEntry? {
-        if let selected = content.selectedEntries.first(where: { $0.path == path }) { return selected }
-        return content.listed.first { $0.path == path }
-    }
-
     private func infoEntry(_ entry: DirectoryEntry) -> InfoEntry {
         InfoEntry(
             path: entry.path, name: entry.name, fileExtension: entry.fileExtension,
@@ -160,7 +155,7 @@ final class InfoController {
     /// The item the views show for the target.
     var resolved: InfoPreview.Resolved? {
         guard let path = targetPath else { return nil }
-        let found = entry(at: path).map { [infoEntry($0)] } ?? []
+        let found = content.listedEntry(at: path).map { [infoEntry($0)] } ?? []
         let metadata = infoMetadata(content.metadata(for: path)).map { [path: $0] } ?? [:]
         return InfoPreview.resolve(
             path: path, currentPath: folderPath, entries: found, metadataByPath: metadata, properties: properties)
@@ -283,20 +278,25 @@ final class InfoController {
     /// Describes the target again (cheap: nothing is read from disk here).
     func update() {
         guard liveHost != nil else { return }
+        guard panelOpen || rowOpen else {
+            // Neither shows: nothing is described or asked for. Opening one updates them (`.panels`).
+            fetchTimer?.cancel()
+            fetchTimer = nil
+            propertiesLoad.stop()
+            volumeRequested = nil
+            auto.setPath(nil)
+            // The status text sums the selected files' sizes from the details asked for here.
+            if content.selection.paths.count > 1 { requestFileDetails(shownSelectedEntries) }
+            return
+        }
         let preferences = host.preferences
         let shortcuts = shortcutDisplay(preferences)
         panel.closeTooltip = Tooltips.format("Hide Info Panel", shortcutLabel: shortcuts.label(.toggleInfoPanel))
         let selection = selectionDetails()
         updateAutoSize(preferences)
         if !panelOpen { volumeRequested = nil }
-        if panelOpen || rowOpen {
-            if let path = targetPath, propertiesLoad.needsAsking(path) {
-                scheduleFetch(path, immediately: false)
-            }
-        } else {
-            fetchTimer?.cancel()
-            fetchTimer = nil
-            propertiesLoad.stop()
+        if let path = targetPath, propertiesLoad.needsAsking(path) {
+            scheduleFetch(path, immediately: false)
         }
         if panelOpen { panel.show(panelDisplay(preferences, shortcuts, selection)) }
         row.show(rowDisplay(selection))
@@ -314,12 +314,20 @@ final class InfoController {
         var size: SelectionSize
     }
 
+    /// The selected entries the filter leaves shown.
+    private var shownSelectedEntries: [DirectoryEntry] {
+        content.selectedEntries.filter { content.position(of: $0.path) != nil }
+    }
+
+    private func requestFileDetails(_ entries: [DirectoryEntry]) {
+        content.requestMetadata(for: entries.filter { !$0.isFolderSizeEligible }.map(\.path))
+    }
+
     private func selectionDetails() -> SelectionDetails? {
         guard content.selection.paths.count > 1 else { return nil }
-        let shown = Set(content.entries.map(\.path))
-        let entries = content.selectedEntries.filter { shown.contains($0.path) }
+        let entries = shownSelectedEntries
         guard entries.count > 1 else { return nil }
-        content.requestMetadata(for: entries.filter { !$0.isFolderSizeEligible }.map(\.path))
+        requestFileDetails(entries)
         let items = entries.map { SelectionItem(path: $0.path, isFolderSizeEligible: $0.isFolderSizeEligible) }
         let size = SelectionSizing.summarize(
             items,
