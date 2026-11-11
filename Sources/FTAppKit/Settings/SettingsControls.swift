@@ -230,7 +230,6 @@ final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
         self.theme = theme
         super.init(frame: .zero)
         controlSize = .mini
-        focusRingType = .none
         setAccessibilityLabel(label)
         setAccessibilityIdentifier("settings.switch")
         target = self
@@ -271,19 +270,6 @@ final class SettingsSwitch: NSSwitch, SettingsSized, ThemeApplying {
     override func accessibilityPerformPress() -> Bool {
         press()
         return true
-    }
-
-    /// The ring only when the keyboard brought the focus (`:focus-visible`), not after a click.
-    override func becomeFirstResponder() -> Bool {
-        focusRingType = NSApp.currentEvent?.type == .leftMouseDown ? .none : .default
-        noteFocusRingMaskChanged()
-        return super.becomeFirstResponder()
-    }
-
-    override func resignFirstResponder() -> Bool {
-        focusRingType = .none
-        noteFocusRingMaskChanged()
-        return super.resignFirstResponder()
     }
 }
 
