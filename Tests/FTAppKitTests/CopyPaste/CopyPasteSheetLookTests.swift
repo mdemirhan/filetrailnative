@@ -93,17 +93,19 @@ extension ExplorerWindowlessTests {
             await window.close()
         }
 
-        // A row's choice reads Replace in red, its down chevron too (`.copy-paste-choice.is-danger` sets the color the
-        // menu list's arrow is painted in); any other choice is in the primary color, chevron and all.
-        @Test func theChoiceChevronIsRedWhileItReadsReplace() {
+        // A row's choice reads Replace in red; the other choices keep the system's color, and so does a Replace that
+        // can't be done.
+        @Test func theChoiceReadsReplaceInRed() {
             let palette = AppearanceModel.shared.theme.palette
             let popUp = ReviewChoicePopUp()
+            func color(_ item: NSMenuItem?) -> NSColor? {
+                item?.attributedTitle?.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? NSColor
+            }
             popUp.set([.skip, .keepBoth, .overwrite], selected: .overwrite, blockedReason: nil, label: "Choice for a")
-            #expect(popUp.titleColor == NSColor(palette.danger))
-            #expect(popUp.chevronColor == NSColor(palette.danger))
-            popUp.set([.skip, .keepBoth, .overwrite], selected: .skip, blockedReason: nil, label: "Choice for a")
-            #expect(popUp.titleColor == NSColor(palette.textPrimary))
-            #expect(popUp.chevronColor == NSColor(palette.textPrimary))
+            #expect(color(popUp.selectedItem) == NSColor(palette.danger))
+            #expect(popUp.itemArray.prefix(2).allSatisfy { color($0) == nil })
+            popUp.set([.skip, .keepBoth, .overwrite], selected: .skip, blockedReason: "Locked", label: "Choice for a")
+            #expect(popUp.itemArray.allSatisfy { color($0) == nil })
         }
 
         // The result sheet holds the folder's changes from outside, but the operation's own read of the folder goes

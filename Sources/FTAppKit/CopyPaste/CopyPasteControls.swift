@@ -224,25 +224,15 @@ final class AllConflictsSegment: TextControl {
 
 // MARK: Choice popup
 
-/// A row's choice: a native popup button, whose platform menu opens on click, in the push button's bezel with the
-/// menu list's single down chevron; red while it reads Replace. Replace is disabled, with its reason, where it can't
-/// be done.
+/// A row's choice: the system's pop-up, whose menu opens on click; Replace reads in red. Replace is disabled, with its
+/// reason, where it can't be done.
 @MainActor
 final class ReviewChoicePopUp: NSPopUpButton, ThemeApplying {
     private var theme = AppearanceModel.shared.theme
     private static let font = ThemeFonts.sans(DesignTokens.typeScale.body)
-    /// The room the native popup's arrows take at its right.
-    static let arrowWidth = 16.0
-    /// Where the menu list's text starts past its padding, and its chevron.
-    static let textInset = 4.5
-    static let chevronInset = 7.5
-    static let chevronWidth = 7.0
-    static let chevronHeight = 3.5
-    static let chevronLineWidth = 1.25
 
     init() {
         super.init(frame: .zero, pullsDown: false)
-        isBordered = false
         autoenablesItems = false
         font = Self.font
         setAccessibilityIdentifier("reviewSheet.row.choice")
@@ -250,8 +240,9 @@ final class ReviewChoicePopUp: NSPopUpButton, ThemeApplying {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
+    /// Tab comes here whatever the system's keyboard navigation setting says.
     override var acceptsFirstResponder: Bool { isEnabled }
-    override var isFlipped: Bool { true }
+    override var canBecomeKeyView: Bool { acceptsFirstResponder }
 
     /// Sets the items, and the one chosen.
     func set(_ choices: [CopyPasteChoice], selected: CopyPasteChoice, blockedReason: String?, label: String) {
@@ -264,80 +255,35 @@ final class ReviewChoicePopUp: NSPopUpButton, ThemeApplying {
             item.isEnabled = !(choice == .overwrite && blockedReason != nil)
             menu?.addItem(item)
         }
+        applyTitleColors()
         if let index = choices.firstIndex(of: selected) { selectItem(at: index) }
         setAccessibilityLabel(label)
-        needsDisplay = true
     }
 
     var choice: CopyPasteChoice? {
         (selectedItem?.representedObject as? String).flatMap(CopyPasteChoice.init(rawValue:))
     }
 
-    /// As wide as its longest item, with the padding and the arrows, at least 112 (as a `select` is).
+    /// As wide as the system makes it for its longest item, at least 112 (as a `select` is).
     var preferredWidth: CGFloat {
-        let widest = itemArray.map { ($0.title as NSString).size(withAttributes: [.font: Self.font]).width }.max() ?? 0
-        return max(
-            CGFloat(CopyPasteSheetLayout.choiceMinWidth),
-            ceil(widest) + 2 * CGFloat(CopyPasteSheetLayout.choicePadding) + CGFloat(Self.arrowWidth))
+        max(CGFloat(CopyPasteSheetLayout.choiceMinWidth), ceil(cell?.cellSize.width ?? 0))
     }
 
     func applyTheme(_ theme: Theme) {
         self.theme = theme
-        needsDisplay = true
+        applyTitleColors()
     }
 
-    /// The chosen item's color: red while it reads Replace.
-    var titleColor: NSColor { NSColor(choice == .overwrite ? theme.palette.danger : theme.palette.textPrimary) }
-    /// The chevron follows the text's color.
-    var chevronColor: NSColor { titleColor }
-
-    override func draw(_ dirtyRect: NSRect) {
-        let palette = theme.palette
-        let radius = CGFloat(DesignTokens.radii.control)
-        let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
-        NSColor(palette.pushButtonBg).setFill()
-        shape.fill()
-        drawPushButtonBezel(palette, around: bounds, radius: radius)
-        let color = titleColor
-        // The menu list's own inner padding puts the text 4.5 in from the 8 of `padding: 0 8px`.
-        let inset = CGFloat(CopyPasteSheetLayout.choicePadding + Self.textInset)
-        let title = NSAttributedString(
-            string: titleOfSelectedItem ?? "", attributes: [.font: Self.font, .foregroundColor: color])
-        let size = title.size()
-        let available = bounds.width - inset - CGFloat(CopyPasteSheetLayout.choicePadding) - CGFloat(Self.arrowWidth)
-        title.draw(
-            with: NSRect(x: inset, y: (bounds.height - size.height) / 2, width: available, height: size.height),
-            options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine])
-        // The menu list's one down chevron, 7.5 in from the right edge, in the text's color.
-        let chevron = NSBezierPath()
-        let centerX = bounds.width - CGFloat(Self.chevronInset)
-        let midY = bounds.height / 2
-        let half = CGFloat(Self.chevronWidth / 2)
-        let rise = CGFloat(Self.chevronHeight / 2)
-        chevron.move(to: NSPoint(x: centerX - half, y: midY - rise))
-        chevron.line(to: NSPoint(x: centerX, y: midY + rise))
-        chevron.line(to: NSPoint(x: centerX + half, y: midY - rise))
-        chevron.lineWidth = CGFloat(Self.chevronLineWidth)
-        chevron.lineCapStyle = .round
-        chevron.lineJoinStyle = .round
-        chevronColor.setStroke()
-        chevron.stroke()
-        if window?.firstResponder === self {
-            let ring = NSBezierPath(
-                roundedRect: bounds.insetBy(dx: -1.5, dy: -1.5), xRadius: radius + 1.5, yRadius: radius + 1.5)
-            ring.lineWidth = CGFloat(DesignTokens.focusRingWidth)
-            NSColor(theme.accent.solid.withAlpha(0.5)).setStroke()
-            ring.stroke()
+    /// Replace's title in the danger color, in the menu and on the button while it is chosen.
+    private func applyTitleColors() {
+        for item in itemArray {
+            let replace = (item.representedObject as? String) == CopyPasteChoice.overwrite.rawValue
+            item.attributedTitle =
+                replace && item.isEnabled
+                ? NSAttributedString(
+                    string: item.title,
+                    attributes: [.font: Self.font, .foregroundColor: NSColor(theme.palette.danger)])
+                : nil
         }
-    }
-
-    override func becomeFirstResponder() -> Bool {
-        needsDisplay = true
-        return super.becomeFirstResponder()
-    }
-
-    override func resignFirstResponder() -> Bool {
-        needsDisplay = true
-        return super.resignFirstResponder()
     }
 }

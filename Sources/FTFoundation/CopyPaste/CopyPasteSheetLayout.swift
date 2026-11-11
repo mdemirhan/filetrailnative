@@ -53,9 +53,8 @@ public enum CopyPasteSheetLayout {
     /// Rows drawn before "Show all".
     public static let initialRowLimit = 300
 
-    /// A row's choice pop-up: at least 112 wide, 8 at the sides.
+    /// A row's choice pop-up: at least 112 wide.
     public static let choiceMinWidth = 112.0
-    public static let choicePadding = 8.0
 
     /// The footer: 12 above, 20 at the sides, 16 below; the buttons 8 apart.
     public static let footerGap = 8.0

@@ -226,33 +226,24 @@ final class BatchRenameTextField: NSView, ThemeApplying, NSTextFieldDelegate {
 
 // MARK: Pop-up
 
-/// A pop-up (or, for the presets, a pull-down) with the push button's bezel, its title 8 in and the chevrons Settings
-/// draws 8 from the right.
+/// A pop-up (or, for the presets, a pull-down): the system's, in the sheet's font.
 @MainActor
-final class BatchRenamePopUp: NSPopUpButton, ThemeApplying {
+final class BatchRenamePopUp: NSPopUpButton {
     /// Told the index of the item chosen (a pull-down's title item not counted).
     var onChoose: (Int) -> Void = { _ in }
-    private var theme = AppearanceModel.shared.theme
     private var titles: [String] = []
-    private var shownTitle = ""
-    private var showsFocusRing = false { didSet { needsDisplay = true } }
-    private let titleFont = ThemeFonts.sans(BatchRenameSheetLayout.Fonts.body)
 
     init(label: String, identifier: String = "batchRename.popup", pullsDown: Bool = false) {
         super.init(frame: .zero, pullsDown: pullsDown)
         setAccessibilityIdentifier(identifier)
         setAccessibilityLabel(label)
-        isBordered = false
-        font = titleFont
-        focusRingType = .none
+        font = ThemeFonts.sans(BatchRenameSheetLayout.Fonts.body)
         target = self
         action = #selector(chose(_:))
         autoenablesItems = false
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-    override var isFlipped: Bool { true }
 
     /// A pop-up's choices and the one chosen.
     func setChoices(_ titles: [String], selected: Int) {
@@ -262,8 +253,6 @@ final class BatchRenamePopUp: NSPopUpButton, ThemeApplying {
             addItems(withTitles: titles)
         }
         if indexOfSelectedItem != selected, itemArray.indices.contains(selected) { selectItem(at: selected) }
-        shownTitle = itemArray.indices.contains(selected) ? titles[selected] : ""
-        needsDisplay = true
     }
 
     /// A pull-down's items (separators as nil) under the title it shows closed.
@@ -276,18 +265,13 @@ final class BatchRenamePopUp: NSPopUpButton, ThemeApplying {
         }
         titles = [title] + items.map { $0 ?? "" }
         selectItem(at: 0)
-        shownTitle = title
-        needsDisplay = true
     }
 
-    var shownText: String { shownTitle }
+    /// What it shows closed: the choice, or a pull-down's title.
+    var shownText: String { (pullsDown ? itemArray.first?.title : titleOfSelectedItem) ?? "" }
 
-    /// The width the pop-up takes by itself: its widest choice and its padding.
-    var preferredWidth: CGFloat {
-        let layout = BatchRenameSheetLayout.Popup.self
-        let widest = titles.map { batchRenameTextWidth($0, BatchRenameSheetLayout.Fonts.body) }.max() ?? 0
-        return widest + CGFloat(layout.paddingLeft + layout.paddingRight)
-    }
+    /// The width the pop-up takes by itself: as wide as the system makes it for its widest item.
+    var preferredWidth: CGFloat { ceil(cell?.cellSize.width ?? 0) }
 
     @objc private func chose(_ sender: Any?) {
         let index = indexOfSelectedItem - (pullsDown ? 1 : 0)
@@ -295,89 +279,40 @@ final class BatchRenamePopUp: NSPopUpButton, ThemeApplying {
         onChoose(index)
     }
 
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        needsDisplay = true
-    }
-
+    /// Tab comes here whatever the system's keyboard navigation setting says.
     override var acceptsFirstResponder: Bool { isEnabled }
+    override var canBecomeKeyView: Bool { acceptsFirstResponder }
 
+    /// A click shows no focus ring; the keyboard does.
     override func becomeFirstResponder() -> Bool {
-        showsFocusRing = NSApp.currentEvent?.type != .leftMouseDown
+        focusRingType = NSApp.currentEvent?.type == .leftMouseDown ? .none : .default
         return super.becomeFirstResponder()
-    }
-
-    override func resignFirstResponder() -> Bool {
-        showsFocusRing = false
-        return super.resignFirstResponder()
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        let layout = BatchRenameSheetLayout.Popup.self
-        let radius = CGFloat(DesignTokens.radii.control)
-        let palette = theme.palette
-        let shape = NSBezierPath(roundedRect: bounds, xRadius: radius, yRadius: radius)
-        NSColor(palette.pushButtonBg).setFill()
-        shape.fill()
-        drawPushButtonBezel(palette, around: bounds, radius: radius)
-        if cell?.isHighlighted == true {
-            NSColor.black.withAlphaComponent(CGFloat(1 - palette.pushButtonPressed)).setFill()
-            shape.fill()
-        }
-        let font = titleFont
-        let lineHeight = ceil(font.ascender - font.descender + font.leading)
-        let textRect = NSRect(
-            x: CGFloat(layout.paddingLeft), y: ((bounds.height - lineHeight) / 2).rounded(),
-            width: max(0, bounds.width - CGFloat(layout.paddingLeft + layout.paddingRight)), height: lineHeight)
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.lineBreakMode = .byTruncatingTail
-        (shownTitle as NSString).draw(
-            with: textRect, options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine],
-            attributes: [.font: font, .foregroundColor: NSColor(palette.textPrimary), .paragraphStyle: paragraph])
-        let size = CGFloat(layout.chevronSize)
-        let box = NSRect(
-            x: bounds.width - CGFloat(layout.chevronRight) - size, y: ((bounds.height - size) / 2).rounded(),
-            width: size, height: size)
-        let data = pullsDown ? "M8 10l4 4 4-4" : "M8 9.5l4-4 4 4M8 14.5l4 4 4-4"
-        BatchRenameGlyphs.stroke(
-            data, in: box, viewBox: layout.chevronViewBox, width: layout.chevronStroke, color: palette.textTertiary)
-        if showsFocusRing { drawBatchRenameFocusRing(bounds, radius: radius, theme: theme) }
     }
 }
 
 // MARK: Checkbox
 
-/// A checkbox: the 14 pt box of Settings and its label, 6 apart. Space or a click toggles it.
+/// A checkbox: the system's, its title beside it. Space or a click toggles it.
 @MainActor
-final class BatchRenameCheckbox: NSView, ThemeApplying, TextStyleSource {
-    let label: ThemedText
+final class BatchRenameCheckbox: NSButton {
     var onToggle: (Bool) -> Void = { _ in }
-    private(set) var isChecked = false
-    private var theme = AppearanceModel.shared.theme
-    private var showsFocusRing = false { didSet { needsDisplay = true } }
 
     init(title: String) {
-        label = ThemedText(
-            title, style: batchRenameStyle(BatchRenameSheetLayout.Fonts.body, { $0.palette.textPrimary }))
         super.init(frame: .zero)
+        setButtonType(.switch)
+        self.title = title
+        font = ThemeFonts.sans(BatchRenameSheetLayout.Fonts.body)
+        target = self
+        action = #selector(toggled(_:))
         setAccessibilityIdentifier("batchRename.check")
-        setAccessibilityElement(true)
-        setAccessibilityRole(.checkBox)
-        setAccessibilityLabel(title)
-        label.setAccessibilityIdentifier("batchRename.check.label")
-        addSubview(label)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
 
-    override var isFlipped: Bool { true }
-    var styleTextField: NSTextField? { label }
+    var isChecked: Bool { state == .on }
 
     func setChecked(_ checked: Bool) {
-        guard checked != isChecked else { return }
-        isChecked = checked
-        setAccessibilityValue(checked)
-        needsDisplay = true
+        state = checked ? .on : .off
     }
 
     /// Toggles it, as a click does.
@@ -386,78 +321,22 @@ final class BatchRenameCheckbox: NSView, ThemeApplying, TextStyleSource {
         onToggle(isChecked)
     }
 
-    var preferredWidth: CGFloat {
-        CGFloat(BatchRenameSheetLayout.Check.boxSize + BatchRenameSheetLayout.Check.gap) + label.naturalWidth
-    }
+    @objc private func toggled(_ sender: Any?) { onToggle(isChecked) }
 
-    var boxRect: NSRect {
-        let size = CGFloat(BatchRenameSheetLayout.Check.boxSize)
-        return NSRect(x: 0, y: ((bounds.height - size) / 2).rounded(), width: size, height: size)
-    }
+    var preferredWidth: CGFloat { ceil(fittingSize.width) }
 
-    override func layout() {
-        super.layout()
-        let x = CGFloat(BatchRenameSheetLayout.Check.boxSize + BatchRenameSheetLayout.Check.gap)
-        let height = batchRenameLine(BatchRenameSheetLayout.Fonts.body)
-        label.frame = NSRect(
-            x: x, y: ((bounds.height - height) / 2).rounded(), width: label.naturalWidth, height: height)
-    }
+    /// Tab comes here whatever the system's keyboard navigation setting says.
+    override var acceptsFirstResponder: Bool { isEnabled }
+    override var canBecomeKeyView: Bool { acceptsFirstResponder }
 
-    func applyTheme(_ theme: Theme) {
-        self.theme = theme
-        needsDisplay = true
-    }
-
-    override var acceptsFirstResponder: Bool { true }
-    override var canBecomeKeyView: Bool { true }
-
+    /// A click shows no focus ring; the keyboard does.
     override func becomeFirstResponder() -> Bool {
-        showsFocusRing = NSApp.currentEvent?.type != .leftMouseDown
-        return true
-    }
-
-    override func resignFirstResponder() -> Bool {
-        showsFocusRing = false
-        return true
-    }
-
-    override func mouseDown(with event: NSEvent) {
-        window?.makeFirstResponder(self)
-        toggle()
+        focusRingType = NSApp.currentEvent?.type == .leftMouseDown ? .none : .default
+        return super.becomeFirstResponder()
     }
 
     override func keyDown(with event: NSEvent) {
         if event.charactersIgnoringModifiers == " " { toggle() } else { super.keyDown(with: event) }
-    }
-
-    override func accessibilityPerformPress() -> Bool {
-        toggle()
-        return true
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        let layout = BatchRenameSheetLayout.Check.self
-        let box = boxRect
-        let radius = CGFloat(DesignTokens.radii.xs)
-        let shape = NSBezierPath(roundedRect: box, xRadius: radius, yRadius: radius)
-        let palette = theme.palette
-        if isChecked {
-            NSColor(theme.accent.solid).setFill()
-            shape.fill()
-            BatchRenameGlyphs.stroke(
-                "M3.5 7.2l2.3 2.3 4.7-5", in: box, viewBox: layout.boxSize, width: layout.markStroke,
-                color: RGBA(red: 1, green: 1, blue: 1))
-        } else {
-            NSColor(palette.checkOffBg).setFill()
-            shape.fill()
-            let edge = NSBezierPath(
-                roundedRect: box.insetBy(dx: CGFloat(layout.edge) / 2, dy: CGFloat(layout.edge) / 2), xRadius: radius,
-                yRadius: radius)
-            edge.lineWidth = CGFloat(layout.edge)
-            NSColor(palette.checkBorder).setStroke()
-            edge.stroke()
-        }
-        if showsFocusRing { drawBatchRenameFocusRing(box, radius: radius, theme: theme) }
     }
 }
 
@@ -657,7 +536,7 @@ final class BatchRenameTokenButton: TextControl {
 
 // MARK: Glyphs
 
-/// The sheet's drawn glyphs: a folder, a file, the warning sign, the arrow between the names and the chevrons.
+/// The sheet's drawn glyphs: a folder, a file, the warning sign and the arrow between the names.
 @MainActor
 enum BatchRenameGlyphs {
     /// Strokes SVG path data drawn from a square `viewBox` into `rect`.

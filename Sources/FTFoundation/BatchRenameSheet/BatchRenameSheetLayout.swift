@@ -69,27 +69,10 @@ public enum BatchRenameSheetLayout {
         public static let invalidEdge = 1.0
     }
 
-    /// A pop-up: its text 8 from the left and 26 from the right, and its chevron 11 by 11, 8 from the right, stroked
-    /// 2.4 in a 24 box.
-    public enum Popup {
-        public static let paddingLeft = 8.0
-        public static let paddingRight = 26.0
-        public static let chevronSize = 11.0
-        public static let chevronRight = 8.0
-        public static let chevronViewBox = 24.0
-        public static let chevronStroke = 2.4
-    }
-
-    /// The checkboxes: 6 between lines and 16 between columns; each a 14 by 14 box, 6 before its title.
+    /// The checkboxes: 6 between lines and 16 between columns.
     public enum Check {
         public static let rowGap = 6.0
         public static let columnGap = 16.0
-        public static let gap = 6.0
-        public static let boxSize = 14.0
-        /// The check drawn in a 14 box, stroked 1.8.
-        public static let markStroke = 1.8
-        /// A half-point edge inside the box in the checkbox border color.
-        public static let edge = 0.5
     }
 
     /// The advice: the warning glyph 16 by 16, 6 before the text.
