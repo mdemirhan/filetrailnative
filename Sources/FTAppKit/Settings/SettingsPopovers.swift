@@ -263,6 +263,8 @@ final class FavoriteIconGrid: ThemedView {
 /// An app chosen in Settings, shown as a pop-up button with the app's icon.
 final class SettingsAppPopup: SettingsControlView, SettingsSized {
     private(set) var application: ApplicationSelection
+    /// The app's icon, looked up when the app changes rather than on each draw.
+    private var icon = NSImage()
     let defaultApplication: ApplicationSelection
     private let nameText = FlushTextField(labelWithString: "")
     var isExpanded: () -> Bool = { false }
@@ -287,6 +289,9 @@ final class SettingsAppPopup: SettingsControlView, SettingsSized {
     override var acceptsFirstResponder: Bool { true }
 
     func update(_ application: ApplicationSelection) {
+        if application.appPath != self.application.appPath || icon.size == .zero {
+            icon = SettingsAppIcon.image(application.appPath)
+        }
         self.application = application
         nameText.stringValue = application.appName
         nameText.textColor = NSColor(theme.palette.textPrimary)
@@ -329,7 +334,7 @@ final class SettingsAppPopup: SettingsControlView, SettingsSized {
     override func draw(_ dirtyRect: NSRect) {
         SettingsGlyph.bezel(in: bounds, theme: theme, hovering: isHovering, pressed: isPressed || isExpanded())
         let size = SettingsMetrics.appIconSize
-        SettingsAppIcon.image(application.appPath).draw(
+        icon.draw(
             in: NSRect(
                 x: SettingsMetrics.appPopupPaddingLeading, y: (bounds.height - size) / 2, width: size, height: size),
             from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)

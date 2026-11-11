@@ -641,6 +641,8 @@ final class SettingsPageView: NSView {
 /// An app's icon in a list row, 20 by 20.
 final class SettingsAppIconView: NSView {
     let path: String
+    /// Looked up once, not on each draw.
+    private lazy var icon = SettingsAppIcon.image(path)
 
     init(path: String) {
         self.path = path
@@ -653,7 +655,7 @@ final class SettingsAppIconView: NSView {
     override var isFlipped: Bool { true }
 
     override func draw(_ dirtyRect: NSRect) {
-        SettingsAppIcon.image(path).draw(
+        icon.draw(
             in: bounds, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
     }
 }
