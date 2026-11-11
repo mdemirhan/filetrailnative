@@ -159,9 +159,6 @@ public struct ThemePalette: Equatable, Sendable {
     /// A search option's toggle while it is on.
     public let toolbarToggleIconActive: RGBA
 
-
-
-
     public static let light = ThemePalette(
         bgActiveInactive: RGBA(r: 220, g: 220, b: 225),
         bgBase: RGBA(r: 255, g: 255, b: 255),

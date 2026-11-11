@@ -1640,7 +1640,7 @@ Decision 1 removes the reason these were hand-built. Every item changes how some
 tests and `tools/capture/elements.json` use. Tests that assert the old look (pixel positions, colours of
 hand-drawn parts) go with the control; tests of behaviour stay.
 
-### [ ] 9.1. Sheets and the Info panel use system checkboxes and pop-up buttons
+### [x] 9.1. Sheets and the Info panel use system checkboxes and pop-up buttons
 
 - `BatchRenameCheckbox` (`Sources/FTAppKit/BatchRename/BatchRenameControls.swift` 357–467): `RuntimeConflictAlert`
   already uses the system checkbox. The two `NSPopUpButton` subclasses that redraw everything
@@ -2544,3 +2544,9 @@ anything that differed from the plan, and anything found on the way that is not 
   11 MB, against 29 and 5.6 in the old baseline (not looked into). Still to do: run `tools/bench/run.sh
   --update-baseline` with the screen on. Found: `report.py --update-baseline` keeps a stale value for a metric
   that fails to measure.
+- 2026-11-11. 9.1, the owner approved the before and after pictures. The pop-ups and checkbox stay thin subclasses
+  of the system controls to keep their callbacks, identifiers and keyboard rules; Replace reads red through its menu
+  item's colour. Two tests that checked the drawn look changed with it (the chevron colour now the item colour; the
+  advice glyph's kind now "has an image"). The shared panel set `masksToBounds = false` on every panel at first,
+  which put a hairline at Go To's and the Rename sheet's corners in the pictures; only the alert and the paste
+  sheets set it, as before. Go To and a plain alert are pixel-identical before and after.
