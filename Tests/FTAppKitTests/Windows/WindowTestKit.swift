@@ -104,7 +104,8 @@ final class FakeWindow: ExplorerWindowLike {
     var fullScreen = false
     var bounds = WindowBounds(x: 100, y: 80, width: 900, height: 600)
     var normal = WindowBounds(x: 100, y: 80, width: 900, height: 600)
-    var told: [ExplorerWindowMessage] = []
+    /// How many times it was told items opened from another app are waiting for it.
+    var openRequestsTold = 0
     var focused = 0
     /// What it says when Merge All Windows asks for its tabs; left out, the tabs it last saved.
     var answer: WindowTabsAnswer?
@@ -158,7 +159,7 @@ final class FakeWindow: ExplorerWindowLike {
         log("maximize \(recordID)")
     }
 
-    func tell(_ message: ExplorerWindowMessage) { told.append(message) }
+    func openRequestsWaiting() { openRequestsTold += 1 }
 
     var mergeAnswer: WindowTabsAnswer { answer ?? WindowTabsAnswer(tabs: savedTabs(), busy: false) }
 }

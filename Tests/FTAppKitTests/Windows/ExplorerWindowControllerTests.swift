@@ -153,7 +153,7 @@ import Testing
         setup.controller.openNewWindowFromFront()
 
         #expect(setup.windows.count == 2)
-        #expect(front.told.isEmpty)
+        #expect(front.openRequestsTold == 0)
         let opened = setup.store.windowPreferences(setup.windows[1].recordID)
         #expect(opened.openTabs == [tab("/Users/demo/b")])
         #expect(opened.propertiesOpen)
@@ -210,8 +210,8 @@ import Testing
         #expect(setup.controller.openFromOtherApp(image))
         #expect(setup.controller.openFromOtherApp(projects))
 
-        #expect(front.told == [.openRequestsWaiting, .openRequestsWaiting])
-        #expect(back.told.isEmpty)
+        #expect(front.openRequestsTold == 2)
+        #expect(back.openRequestsTold == 0)
         #expect(setup.controller.takeOpenRequests(back.windowID).isEmpty)
         #expect(setup.controller.takeOpenRequests(front.windowID) == [image, projects])
         #expect(setup.controller.takeOpenRequests(front.windowID).isEmpty)
@@ -258,7 +258,7 @@ import Testing
         #expect(
             setup.controller.launchContext(for: opened.windowID)
                 == ExplorerLaunchContext(startupFolderPath: "/Users/demo/Notes"))
-        #expect(opened.told == [.openRequestsWaiting])
+        #expect(opened.openRequestsTold == 1)
         #expect(
             setup.controller.takeOpenRequests(opened.windowID) == [
                 OpenRequest(path: "/Users/demo/Notes/todo.txt", kind: .select)

@@ -180,10 +180,8 @@ final class ExplorerTabGroup: ExplorerWindowLike {
         finishClosing()
     }
 
-    func tell(_ message: ExplorerWindowMessage) {
-        switch message {
-        case .openRequestsWaiting: host?.openRequestsWaiting(in: self)
-        }
+    func openRequestsWaiting() {
+        host?.openRequestsWaiting(in: self)
     }
 
     /// Puts the tabs into one native tab group and shows it, the first time. False when it was shown already.

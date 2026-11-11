@@ -28,12 +28,6 @@ public struct ExplorerWindowEvents {
     public init() {}
 }
 
-/// What the controller can tell a window.
-public enum ExplorerWindowMessage: Equatable, Sendable {
-    /// Items opened with File Trail from another app are waiting for it (`filetrail:openRequestsWaiting`).
-    case openRequestsWaiting
-}
-
 /// The parts of a window the controller uses (`ExplorerWindowLike`).
 @MainActor
 public protocol ExplorerWindowLike: AnyObject {
@@ -56,7 +50,8 @@ public protocol ExplorerWindowLike: AnyObject {
     var normalBounds: WindowBounds { get }
     /// The window a question about it hangs from.
     var sheetParent: NSWindow? { get }
-    func tell(_ message: ExplorerWindowMessage)
+    /// Items opened with File Trail from another app are waiting for it.
+    func openRequestsWaiting()
     /// What it says when Merge All Windows asks for its tabs.
     var mergeAnswer: WindowTabsAnswer { get }
 }
@@ -317,7 +312,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
 
     private func addOpenRequest(_ request: OpenRequest, to entry: ExplorerWindowEntry<W>) {
         openRequests[entry.windowID, default: []].append(request)
-        entry.window.tell(.openRequestsWaiting)
+        entry.window.openRequestsWaiting()
     }
 
     /// `takeOpenRequests`: the items waiting for this window to open them; each is handed out once.
