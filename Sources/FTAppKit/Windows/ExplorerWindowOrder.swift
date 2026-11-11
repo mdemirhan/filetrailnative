@@ -22,20 +22,18 @@ public struct ExplorerLaunchContext: Equatable, Sendable {
     }
 }
 
-/// One open explorer window: its id kept between launches, and what it was opened with.
+/// One open explorer window: its id kept between launches, and its number while the app runs.
 @MainActor
 public final class ExplorerWindowEntry<W: AnyObject> {
     public let id: String
     public let window: W
     /// The window's own number while the app runs.
     public let windowID: Int
-    public var launch: ExplorerLaunchContext
 
-    public init(id: String, window: W, windowID: Int, launch: ExplorerLaunchContext = ExplorerLaunchContext()) {
+    public init(id: String, window: W, windowID: Int) {
         self.id = id
         self.window = window
         self.windowID = windowID
-        self.launch = launch
     }
 }
 

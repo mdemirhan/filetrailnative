@@ -23,10 +23,8 @@ import Testing
         #expect(setup.log == ["maximize window-b", "showInactive window-b", "show window-a"])
         #expect(setup.controller.windows.all.map(\.id) == ["window-a", "window-b"])
         // The folder File Trail was launched with goes to the window in front.
-        #expect(
-            setup.controller.launchContext(for: setup.window("window-a")?.windowID)
-                == ExplorerLaunchContext(startupFolderPath: "/Users/demo/launched"))
-        #expect(setup.controller.launchContext(for: setup.window("window-b")?.windowID) == ExplorerLaunchContext())
+        #expect(setup.launches["window-a"] == ExplorerLaunchContext(startupFolderPath: "/Users/demo/launched"))
+        #expect(setup.launches["window-b"] == ExplorerLaunchContext())
     }
 
     @Test func showsTheWindowsAnywayWhenAFirstFolderNeverComes() throws {
@@ -96,7 +94,7 @@ import Testing
         #expect(record.session.lastVisitedPath == "/Users/demo/y")
         #expect(record.session.propertiesOpen)
         #expect(record.session.treeWidth == 333)
-        #expect(setup.controller.launchContext(for: opened.windowID).restoreTabs)
+        #expect(setup.launches[opened.recordID]?.restoreTabs == true)
         // Shown once its first folder is drawn.
         opened.events.readyToShow()
         #expect(setup.log.last == "show \(opened.recordID)")
@@ -120,10 +118,8 @@ import Testing
         setup.controller.openDefaultWindow(initialCommand: .goDesktop)
 
         let window = try #require(setup.windows.first)
-        let expected = ExplorerLaunchContext(initialCommand: .goDesktop)
-        #expect(setup.controller.launchContext(for: window.windowID) == expected)
         // The window is made with it: it runs the command once, as it opens.
-        #expect(setup.launches[window.recordID] == expected)
+        #expect(setup.launches[window.recordID] == ExplorerLaunchContext(initialCommand: .goDesktop))
     }
 
     @Test func givesTheLaunchFolderToTheWindowAsItIsMade() throws {
@@ -242,9 +238,7 @@ import Testing
 
         let opened = try #require(setup.windows.last)
         #expect(setup.windows.count == 2)
-        #expect(
-            setup.controller.launchContext(for: opened.windowID)
-                == ExplorerLaunchContext(startupFolderPath: "/Volumes/Install"))
+        #expect(setup.launches[opened.recordID] == ExplorerLaunchContext(startupFolderPath: "/Volumes/Install"))
         #expect(setup.store.windowPreferences(opened.recordID).openTabs.isEmpty)
         #expect(setup.controller.takeOpenRequests(opened.windowID).isEmpty)
     }
@@ -255,9 +249,7 @@ import Testing
         setup.controller.openWindowOnFolder("/Users/demo/Notes", selecting: "/Users/demo/Notes/todo.txt")
 
         let opened = try #require(setup.windows.first)
-        #expect(
-            setup.controller.launchContext(for: opened.windowID)
-                == ExplorerLaunchContext(startupFolderPath: "/Users/demo/Notes"))
+        #expect(setup.launches[opened.recordID] == ExplorerLaunchContext(startupFolderPath: "/Users/demo/Notes"))
         #expect(opened.openRequestsTold == 1)
         #expect(
             setup.controller.takeOpenRequests(opened.windowID) == [

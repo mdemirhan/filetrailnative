@@ -2275,3 +2275,15 @@ anything that differed from the plan, and anything found on the way that is not 
   corrupt timestamps only: a time before 15 October 1582 used to be shifted about ten days by the text's round trip
   and is now the true instant. Found, not fixed: `Date.epochMilliseconds` is defined twice with different rounding
   (`JSString.swift` rounds, `AppStateStore.swift` rounds down), for 6.9.
+- 2026-11-11. 6.1, done in a worktree of its own and brought over, but for the last bullet. Merge All Windows reads
+  the other windows' answers in one step (`mergeAnswer` is part of `ExplorerWindowLike`); the two timeout tests and
+  the two "while the merge asks" tests went, as nothing waits any more. Differs from the plan: `tell` became
+  `openRequestsWaiting()` on the window, as the controller is generic over it; the six `entry.launch` assertions check
+  the launch context each window was made with instead of being deleted; two tests were trimmed to what can still
+  happen (`leavesOpenABusyWindowAndOneWhoseTabsDontFit`, `mergesNothingWhileQuitting`); the checks inside the merge's
+  loop went with the wait. Gap: the entry guard's "window on its way out" case has no test of its own. Not done, a
+  proof search disagrees with the plan: `ExplorerServices.current`'s fallbacks are what many tests run on
+  (`installed` is set only by `AppDelegate.startServices`; `NativeWindowsTests`, `NativeWindowsGUITests` and tabs a
+  group opens later in `ExplorerHarness` have no `servicesOverride`; `fallbackIcons` is every test's icon store):
+  asked of the owner. Found: an empty `extension AppDelegate {}` beside the fallbacks; earlier-app names in three
+  comments (for Phase 10).

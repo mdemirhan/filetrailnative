@@ -259,11 +259,6 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         return tabs
     }
 
-    /// What the window opened with.
-    public func launchContext(for windowID: Int?) -> ExplorerLaunchContext {
-        windows.byWindowID(windowID)?.launch ?? ExplorerLaunchContext()
-    }
-
     /// `openFromOtherApp`: an item opened with File Trail from another app (Finder's Open With, `open -a`): the window in
     /// front opens it. False when no window is open to take it.
     public func openFromOtherApp(_ request: OpenRequest) -> Bool {
@@ -354,7 +349,7 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         let record = StoredExplorerWindow(
             id: id, bounds: Self.stored(window), session: host.store.createWindowSession(overrides: overrides))
         host.store.addExplorerWindow(id: record.id, bounds: record.bounds, session: record.session)
-        attach(window, record: record, launch: ExplorerLaunchContext(restoreTabs: true), place: .front)
+        attach(window, record: record, place: .front)
     }
 
     /// A window whose tabs the system moved into another (a tab dragged onto another window's tab bar) closes as a
@@ -406,16 +401,14 @@ public final class ExplorerWindowController<W: ExplorerWindowLike> {
         -> W
     {
         let window = host.createWindow(record, launch)
-        attach(window, record: record, launch: launch, place: place)
+        attach(window, record: record, place: place)
         return window
     }
 
-    private func attach(
-        _ window: W, record: StoredExplorerWindow, launch: ExplorerLaunchContext, place: ExplorerWindowOrder<W>.Place
-    ) {
+    private func attach(_ window: W, record: StoredExplorerWindow, place: ExplorerWindowOrder<W>.Place) {
         let store = host.store
         let id = record.id
-        let entry = ExplorerWindowEntry(id: id, window: window, windowID: window.windowID, launch: launch)
+        let entry = ExplorerWindowEntry(id: id, window: window, windowID: window.windowID)
         windows.add(entry, place)
         saveWindowOrder()
 
