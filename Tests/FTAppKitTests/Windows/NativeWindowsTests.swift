@@ -1,6 +1,7 @@
 import AppKit
 import FTFileSystem
 import FTFoundation
+import FTOperations
 import FTTestSupport
 import Foundation
 import Testing
@@ -161,14 +162,14 @@ extension ExplorerWindowlessTests {
             // Every window hears the operation's progress: nothing moves while it runs, and the tabs follow it once it
             // has finished.
             let rename = WriteOperationOutcome(
-                action: "rename", mode: nil,
+                action: .rename, mode: nil,
                 items: [
                     WriteEffectItem(
                         sourcePath: folder.appending("Sub").path, destinationPath: folder.appending("Moved").path)
                 ])
-            app.windows.writeOperationProgress(WriteOperationProgress(status: "running", result: rename))
+            app.windows.writeOperationProgress(WriteOperationProgress(status: .running, result: rename))
             #expect(deep.folder.path == folder.appending("Sub/Deep").path)
-            app.windows.writeOperationProgress(WriteOperationProgress(status: "completed", result: rename))
+            app.windows.writeOperationProgress(WriteOperationProgress(status: .completed, result: rename))
 
             // The tab in the background goes along, history and all, and reads its folder when it is shown.
             #expect(deep.folder.path == folder.appending("Moved/Deep").path)

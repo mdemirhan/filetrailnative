@@ -79,7 +79,7 @@ public struct ClipboardWrite: Sendable {
     /// `collectFollowedMoves`.
     var followedMoves: [(from: String, to: String)] {
         items.compactMap { item in
-            guard WriteEffects.isFollowedMove(item, action: action.rawValue), let from = item.sourcePath,
+            guard WriteEffects.isFollowedMove(item, action: action), let from = item.sourcePath,
                 let to = item.destinationPath
             else { return nil }
             return (from, to)
@@ -91,13 +91,13 @@ public struct ClipboardWrite: Sendable {
     public var removedPaths: [String] {
         if action == .trash || action == .deleteImmediately {
             return items.compactMap { item in
-                guard item.status == "completed", let path = item.sourcePath, !path.isEmpty else { return nil }
+                guard item.status == .completed, let path = item.sourcePath, !path.isEmpty else { return nil }
                 return path
             }
         }
         if isUndoOrRedo {
             let removed = items.compactMap { item -> String? in
-                guard item.status == "completed", item.destinationPath == nil, let path = item.sourcePath,
+                guard item.status == .completed, item.destinationPath == nil, let path = item.sourcePath,
                     !path.isEmpty
                 else { return nil }
                 return path
@@ -192,8 +192,8 @@ public enum ClipboardRules {
         var items = Set<ExactKey>()
         var holders = Set<ExactKey>()
         for item in write.items {
-            guard let source = item.sourcePath, !source.isEmpty, item.status != "completed",
-                !WriteEffects.isFollowedMove(item, action: write.action.rawValue)
+            guard let source = item.sourcePath, !source.isEmpty, item.status != .completed,
+                !WriteEffects.isFollowedMove(item, action: write.action)
             else { continue }
             items.insert(ExactKey(source))
             var path = source

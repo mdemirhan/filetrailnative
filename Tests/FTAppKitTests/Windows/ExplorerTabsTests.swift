@@ -1,5 +1,6 @@
 import FTFileSystem
 import FTFoundation
+import FTOperations
 import Testing
 
 @testable import FTAppKit
@@ -156,51 +157,51 @@ import Testing
 
     // MARK: collectFollowedMoves
 
-    private func result(_ action: String, mode: CopyPasteMode? = nil) -> WriteOperationOutcome {
+    private func result(_ action: WriteOperationAction, mode: FTAppKit.CopyPasteMode? = nil) -> WriteOperationOutcome {
         WriteOperationOutcome(
             action: action, mode: mode,
             items: [
-                WriteEffectItem(sourcePath: "/a", destinationPath: "/b", status: "completed"),
-                WriteEffectItem(sourcePath: "/c", destinationPath: "/c 2", status: "failed"),
-                WriteEffectItem(sourcePath: "/d", destinationPath: nil, status: "failed"),
-                WriteEffectItem(sourcePath: "/e", destinationPath: "/e", status: "completed"),
+                WriteEffectItem(sourcePath: "/a", destinationPath: "/b", status: .completed),
+                WriteEffectItem(sourcePath: "/c", destinationPath: "/c 2", status: .failed),
+                WriteEffectItem(sourcePath: "/d", destinationPath: nil, status: .failed),
+                WriteEffectItem(sourcePath: "/e", destinationPath: "/e", status: .completed),
             ])
     }
 
     @Test func followsWhatWasRenamedAndAnItemOfSeveralPutBackUnderAnotherName() {
         #expect(
-            ExplorerTabs.collectFollowedMoves(result("batch_rename")) == [
+            ExplorerTabs.collectFollowedMoves(result(.batchRename)) == [
                 PathMove(from: "/a", to: "/b"), PathMove(from: "/c", to: "/c 2"),
             ])
     }
 
     @Test func followsOnlyWhatAMoveFinishedAFailedItemStayedWhereItWas() {
-        #expect(ExplorerTabs.collectFollowedMoves(result("move_to")) == [PathMove(from: "/a", to: "/b")])
+        #expect(ExplorerTabs.collectFollowedMoves(result(.moveTo)) == [PathMove(from: "/a", to: "/b")])
     }
 
     // The filter of the write progress the tabs follow: only a finished
     // operation that gave items new paths moves the tabs.
     @Test func followsTheMovesOfAFinishedRenameMoveOrCutPasteOnly() {
-        func moves(_ status: String, _ result: WriteOperationOutcome?) -> [PathMove] {
+        func moves(_ status: WriteOperationStatus, _ result: WriteOperationOutcome?) -> [PathMove] {
             ExplorerTabs.followedMoves(WriteOperationProgress(status: status, result: result))
         }
         let moved = [PathMove(from: "/a", to: "/b")]
-        for status in ["queued", "running", "awaiting_resolution"] {
-            #expect(moves(status, result("rename")).isEmpty)
+        for status: WriteOperationStatus in [.queued, .running, .awaitingResolution] {
+            #expect(moves(status, result(.rename)).isEmpty)
         }
-        #expect(moves("completed", nil).isEmpty)
-        for action in ["rename", "move_to", "undo", "redo"] {
-            #expect(moves("completed", result(action)) == moved)
+        #expect(moves(.completed, nil).isEmpty)
+        for action: WriteOperationAction in [.rename, .moveTo, .undo, .redo] {
+            #expect(moves(.completed, result(action)) == moved)
         }
         // A paste moves items only when they were cut; a copy, a trash or a new folder moves none.
-        #expect(moves("completed", result("paste", mode: .cut)) == moved)
-        #expect(moves("completed", result("paste", mode: .copy)).isEmpty)
-        #expect(moves("completed", result("copy_to")).isEmpty)
-        #expect(moves("completed", result("trash")).isEmpty)
-        #expect(moves("completed", result("new_folder")).isEmpty)
+        #expect(moves(.completed, result(.paste, mode: .cut)) == moved)
+        #expect(moves(.completed, result(.paste, mode: .copy)).isEmpty)
+        #expect(moves(.completed, result(.copyTo)).isEmpty)
+        #expect(moves(.completed, result(.trash)).isEmpty)
+        #expect(moves(.completed, result(.newFolder)).isEmpty)
         // What partly worked, or stopped, still moved what it finished.
-        for status in ["partial", "cancelled", "failed"] {
-            #expect(moves(status, result("move_to")) == moved)
+        for status: WriteOperationStatus in [.partial, .cancelled, .failed] {
+            #expect(moves(status, result(.moveTo)) == moved)
         }
     }
 

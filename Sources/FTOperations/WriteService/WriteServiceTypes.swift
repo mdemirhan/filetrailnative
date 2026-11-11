@@ -271,9 +271,8 @@ public struct CopyPasteRuntimeConflict: Codable, Equatable, Sendable {
 }
 
 public struct CopyPasteItemResult: Codable, Equatable, Sendable {
-    public enum Status: String, Codable, Sendable {
-        case completed, skipped, failed, cancelled
-    }
+    /// Completed, skipped, failed or cancelled, as every window and the clipboard hear of it.
+    public typealias Status = WriteItemEndStatus
 
     public enum SkipReason: String, Codable, Sendable {
         case plannedConflictPolicy = "planned_conflict_policy"

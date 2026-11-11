@@ -6,7 +6,7 @@ public enum WriteEndStatus: String, Sendable, Equatable {
 }
 
 /// How each item of a finished operation ended.
-public enum WriteItemEndStatus: String, Sendable, Equatable {
+public enum WriteItemEndStatus: String, Sendable, Equatable, Codable {
     case completed, failed, skipped, cancelled
 }
 

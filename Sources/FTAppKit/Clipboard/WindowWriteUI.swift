@@ -104,7 +104,7 @@ final class WindowWriteUI {
             items: result.items.map {
                 WriteEndSummary.Item(
                     sourcePath: $0.sourcePath, destinationPath: $0.destinationPath,
-                    status: WriteItemEndStatus($0.status),
+                    status: $0.status,
                     skipReason: $0.skipReason.map(WriteSkipReason.init), note: $0.note)
             }, totalItemCount: event.totalItemCount, currentSourcePath: event.currentSourcePath,
             currentDestinationPath: event.currentDestinationPath)
@@ -121,17 +121,6 @@ final class WindowWriteUI {
         {
             _ = NotificationOverlay.push(
                 toast.kind == .success ? .success : .info, title: toast.title, message: toast.message, in: tab.window)
-        }
-    }
-}
-
-extension WriteItemEndStatus {
-    init(_ status: CopyPasteItemResult.Status) {
-        switch status {
-        case .completed: self = .completed
-        case .skipped: self = .skipped
-        case .failed: self = .failed
-        case .cancelled: self = .cancelled
         }
     }
 }

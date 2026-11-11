@@ -4,15 +4,15 @@ import Foundation
 public protocol WrittenItem {
     var sourcePath: String? { get }
     var destinationPath: String? { get }
-    var status: String { get }
+    var status: WriteItemEndStatus { get }
 }
 
 public struct WriteEffectItem: WrittenItem, Equatable, Sendable {
     public var sourcePath: String?
     public var destinationPath: String?
-    public var status: String
+    public var status: WriteItemEndStatus
 
-    public init(sourcePath: String?, destinationPath: String?, status: String = "completed") {
+    public init(sourcePath: String?, destinationPath: String?, status: WriteItemEndStatus = .completed) {
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
         self.status = status
@@ -90,12 +90,12 @@ public enum WriteEffects {
 
     /// Where a rename or move took an item, for a window to follow it there: only what really moved, and
     /// for a rename of several also an item put back under another name ("b 2").
-    public static func isFollowedMove(_ item: some WrittenItem, action: String) -> Bool {
+    public static func isFollowedMove(_ item: some WrittenItem, action: WriteOperationAction) -> Bool {
         guard let source = item.sourcePath, !source.isEmpty, let destination = item.destinationPath,
             !destination.isEmpty
         else { return false }
         return !source.utf8.elementsEqual(destination.utf8)
-            && (item.status == "completed" || action == "batch_rename")
+            && (item.status == .completed || action == .batchRename)
     }
 
     /// The items of a finished operation that windows other than its own need, out of what can be
@@ -104,9 +104,9 @@ public enum WriteEffects {
     /// (`isFollowedMove`; the first move holding a path wins). An item is left out when neither tells it
     /// apart from the items kept before it: each of its paths is at or inside one of theirs, in a folder
     /// that holds one of theirs, and it either didn't move or a move kept before it holds it.
-    public static func itemsForOtherWindows<T: WrittenItem>(action: String, targetPath: String? = nil, items: [T])
-        -> [T]
-    {
+    public static func itemsForOtherWindows<T: WrittenItem>(
+        action: WriteOperationAction, targetPath: String? = nil, items: [T]
+    ) -> [T] {
         // As ChangeMatcher tells what is at or inside a change ("/a/" holds "/a/b" too).
         let changed = PathSet(withTrailingSlash: true)
         // Every folder holding a kept path (written without a trailing "/").

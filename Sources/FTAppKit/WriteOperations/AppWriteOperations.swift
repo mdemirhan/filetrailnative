@@ -162,10 +162,10 @@ final class AppWriteOperations {
         }
         windows.writeOperationProgress(
             WriteOperationProgress(
-                status: event.status.rawValue,
+                status: event.status,
                 result: event.result.map {
                     WriteOperationOutcome(
-                        action: $0.action.rawValue, mode: $0.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
+                        action: $0.action, mode: $0.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
                         items: $0.items.map(\.effect))
                 }))
         if event.status.isTerminal, let result = event.result {

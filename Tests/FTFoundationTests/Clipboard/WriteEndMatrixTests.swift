@@ -68,7 +68,7 @@ struct WriteEndMatrixTests {
     private func undo(_ items: [(String, String?)], action: WriteOperationAction = .undo) -> ClipboardWrite {
         ClipboardWrite(
             action: action,
-            items: items.map { WriteEffectItem(sourcePath: $0.0, destinationPath: $0.1, status: "completed") })
+            items: items.map { WriteEffectItem(sourcePath: $0.0, destinationPath: $0.1, status: .completed) })
     }
 
     // What an Undo sent to the Trash leaves the clipboard, what it moved is followed.

@@ -157,7 +157,7 @@ struct WriteEffectsTests {
 
     // MARK: itemsForOtherWindows
 
-    static func item(_ source: String?, _ destination: String?, _ status: String = "completed") -> Item {
+    static func item(_ source: String?, _ destination: String?, _ status: WriteItemEndStatus = .completed) -> Item {
         Item(sourcePath: source, destinationPath: destination, status: status)
     }
 
@@ -167,24 +167,24 @@ struct WriteEffectsTests {
             Self.item("/a/F/z", nil),
         ]
         #expect(
-            WriteEffects.itemsForOtherWindows(action: "paste", targetPath: "/b", items: items) == Array(items[0..<2]))
+            WriteEffects.itemsForOtherWindows(action: .paste, targetPath: "/b", items: items) == Array(items[0..<2]))
     }
 
     @Test func takesAChangeWrittenWithATrailingSlashAsHoldingWhatIsInsideIt() {
         let items = [Self.item("/b/x", nil), Self.item("/b/y", nil)]
-        #expect(WriteEffects.itemsForOtherWindows(action: "trash", targetPath: "/b/", items: items) == [])
+        #expect(WriteEffects.itemsForOtherWindows(action: .trash, targetPath: "/b/", items: items) == [])
     }
 
     @Test func keepsAnItemATabWouldFollowOnItsOwn() {
-        let items = [Self.item("/a/F", "/b/F", "failed"), Self.item("/a/F/x", "/b/F/x")]
-        #expect(WriteEffects.itemsForOtherWindows(action: "move_to", items: items) == items)
-        #expect(WriteEffects.isFollowedMove(items[0], action: "batch_rename"))
-        #expect(!WriteEffects.isFollowedMove(Self.item("/a", "/a"), action: "rename"))
+        let items = [Self.item("/a/F", "/b/F", .failed), Self.item("/a/F/x", "/b/F/x")]
+        #expect(WriteEffects.itemsForOtherWindows(action: .moveTo, items: items) == items)
+        #expect(WriteEffects.isFollowedMove(items[0], action: .batchRename))
+        #expect(!WriteEffects.isFollowedMove(Self.item("/a", "/a"), action: .rename))
     }
 
     @Test func goesByTheNamesAloneForPathsThatArentAbsolute() {
         let items = [Self.item("x", nil), Self.item("x", nil), Self.item("y", "")]
-        let kept = WriteEffects.itemsForOtherWindows(action: "trash", items: items)
+        let kept = WriteEffects.itemsForOtherWindows(action: .trash, items: items)
         #expect(kept == [items[0], items[2]])
     }
 
@@ -215,8 +215,29 @@ struct WriteEffectsTests {
         var indices: [Int]?
     }
 
+    /// The golden's item, with its status as the item's own (a missing one is "completed").
     static func effectItem(_ item: GoldenItem) -> Item {
-        Item(sourcePath: item.sourcePath, destinationPath: item.destinationPath, status: item.status ?? "completed")
+        guard let name = item.status else {
+            return Item(sourcePath: item.sourcePath, destinationPath: item.destinationPath)
+        }
+        guard let status = WriteItemEndStatus(rawValue: name) else {
+            Issue.record("unknown item status \(name) in the golden")
+            return Item(sourcePath: item.sourcePath, destinationPath: item.destinationPath)
+        }
+        return Item(sourcePath: item.sourcePath, destinationPath: item.destinationPath, status: status)
+    }
+
+    /// The golden's action, by its name in the file: "delete" is Delete Immediately.
+    static func action(_ name: String?) -> WriteOperationAction? {
+        guard let name else {
+            Issue.record("no action in the golden case")
+            return nil
+        }
+        guard let action = name == "delete" ? .deleteImmediately : WriteOperationAction(rawValue: name) else {
+            Issue.record("unknown action \(name) in the golden")
+            return nil
+        }
+        return action
     }
 
     /// An item that remembers its place, since equal items are told apart in the golden by identity.
@@ -225,7 +246,7 @@ struct WriteEffectsTests {
         let item: Item
         var sourcePath: String? { item.sourcePath }
         var destinationPath: String? { item.destinationPath }
-        var status: String { item.status }
+        var status: WriteItemEndStatus { item.status }
     }
 
     static func run(_ input: GoldenInput) -> GoldenOutput {
@@ -243,11 +264,13 @@ struct WriteEffectsTests {
             let path = input.path ?? ""
             output.matcher = [matcher.holdsChange(path), matcher.isAtOrInsideChange(path), matcher.isAffected(path)]
         case "isFollowedMove":
-            output.value = input.item.map { WriteEffects.isFollowedMove(effectItem($0), action: input.action ?? "") }
+            guard let action = action(input.action) else { break }
+            output.value = input.item.map { WriteEffects.isFollowedMove(effectItem($0), action: action) }
         case "itemsForOtherWindows":
+            guard let action = action(input.action) else { break }
             let items = (input.items ?? []).enumerated().map { Indexed(index: $0.offset, item: effectItem($0.element)) }
             let kept = WriteEffects.itemsForOtherWindows(
-                action: input.action ?? "", targetPath: input.targetPath, items: items
+                action: action, targetPath: input.targetPath, items: items
             ).map(\.index)
             output.indices = kept
         default:

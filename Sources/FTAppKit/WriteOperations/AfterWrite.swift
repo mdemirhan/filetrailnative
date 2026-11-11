@@ -13,7 +13,7 @@ enum AfterWrite {
 
     /// `movedItems`: a write that gave items new paths, a rename or move, or a paste that moved what was cut.
     static func movedItems(_ result: WriteOperationResult) -> Bool {
-        ExplorerTabs.isRenameOrMove(result.action.rawValue) || result.mode == .cut
+        ExplorerTabs.isRenameOrMove(result.action) || result.mode == .cut
     }
 
     /// The folder the items a write made are selected in: a rename's,
@@ -70,7 +70,7 @@ enum AfterWrite {
         var inLeft = Set(left.map(NameKeys.Exact.init))
         if movedItems(result) {
             let outcome = WriteOperationOutcome(
-                action: result.action.rawValue, mode: result.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
+                action: result.action, mode: result.mode.flatMap { CopyPasteMode(rawValue: $0.rawValue) },
                 items: result.items.map(\.effect))
             for move in ExplorerTabs.collectFollowedMoves(outcome)
             where ExplorerTabs.parentDirectoryPath(move.from) != ExplorerTabs.parentDirectoryPath(move.to)

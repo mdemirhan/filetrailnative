@@ -1,6 +1,7 @@
 import CoreGraphics
 import FTFileSystem
 import FTFoundation
+import FTOperations
 import Foundation
 
 /// Where a tab's search stands: the worker's statuses, or `idle` before it has run.
@@ -136,13 +137,12 @@ public struct PathMove: Equatable, Sendable {
 
 /// A file operation's result, as far as the windows' tabs look at it (`WriteOperationResult`).
 public struct WriteOperationOutcome: Equatable, Sendable {
-    /// `WriteOperationAction`: "paste", "move_to", "rename", "batch_rename", "undo" and the like.
-    public var action: String
+    public var action: WriteOperationAction
     /// For a paste, whether what it pasted was copied or cut.
     public var mode: CopyPasteMode?
     public var items: [WriteEffectItem]
 
-    public init(action: String, mode: CopyPasteMode?, items: [WriteEffectItem]) {
+    public init(action: WriteOperationAction, mode: CopyPasteMode?, items: [WriteEffectItem]) {
         self.action = action
         self.mode = mode
         self.items = items
@@ -151,11 +151,10 @@ public struct WriteOperationOutcome: Equatable, Sendable {
 
 /// A file operation's progress, as every window hears it.
 public struct WriteOperationProgress: Equatable, Sendable {
-    /// "queued", "running", "awaiting_resolution", or how it ended: "completed", "failed", "cancelled", "partial".
-    public var status: String
+    public var status: WriteOperationStatus
     public var result: WriteOperationOutcome?
 
-    public init(status: String, result: WriteOperationOutcome?) {
+    public init(status: WriteOperationStatus, result: WriteOperationOutcome?) {
         self.status = status
         self.result = result
     }
@@ -317,8 +316,8 @@ public enum ExplorerTabs {
     }
 
     /// `isRenameOrMove`.
-    public static func isRenameOrMove(_ action: String) -> Bool {
-        ["rename", "batch_rename", "move_to", "undo", "redo"].contains(action)
+    public static func isRenameOrMove(_ action: WriteOperationAction) -> Bool {
+        [.rename, .batchRename, .moveTo, .undo, .redo].contains(action)
     }
 
     /// `movedItems`: a write that gave items new paths, a rename or move, or a paste that moved what was cut.
@@ -339,8 +338,7 @@ public enum ExplorerTabs {
     /// The moves a window's tabs follow on hearing `event`: none until the operation has ended, and only from one that
     /// moved items.
     public static func followedMoves(_ event: WriteOperationProgress) -> [PathMove] {
-        guard !["queued", "running", "awaiting_resolution"].contains(event.status), let result = event.result,
-            movedItems(result)
+        guard event.status.isTerminal, let result = event.result, movedItems(result)
         else { return [] }
         return collectFollowedMoves(result)
     }

@@ -49,7 +49,7 @@ public struct WriteOperationItem: Equatable, Sendable {
 
     /// The item as `WriteEffects` looks at it.
     public var effect: WriteEffectItem {
-        WriteEffectItem(sourcePath: sourcePath, destinationPath: destinationPath, status: status.rawValue)
+        WriteEffectItem(sourcePath: sourcePath, destinationPath: destinationPath, status: status)
     }
 }
 
@@ -100,7 +100,7 @@ public struct WriteOperationResult: Equatable, Sendable {
     /// The items the windows other than the operation's own need (`itemsForOtherWindows`).
     public var itemsForOtherWindows: [WriteOperationItem] {
         let indexed = items.enumerated().map { IndexedItem(index: $0.offset, item: $0.element) }
-        return WriteEffects.itemsForOtherWindows(action: action.rawValue, targetPath: targetPath, items: indexed)
+        return WriteEffects.itemsForOtherWindows(action: action, targetPath: targetPath, items: indexed)
             .map { items[$0.index] }
     }
 
@@ -109,7 +109,7 @@ public struct WriteOperationResult: Equatable, Sendable {
         var item: WriteOperationItem
         var sourcePath: String? { item.sourcePath }
         var destinationPath: String? { item.destinationPath }
-        var status: String { item.status.rawValue }
+        var status: WriteItemEndStatus { item.status }
     }
 }
 
