@@ -27,20 +27,19 @@ import Testing
             titles(submenu(main, "File")) == [
                 "New Window", "New Tab", "Duplicate Tab", "New Folder", "-", "Open", "Open in New Tab",
                 "Open in New Window", "Edit in Text Editor", "Quick Look", "Reveal in Folder", "-", "Calculate Size",
-                "-", "Rename", "Duplicate", "Move to…", "Add to Favorites", "Remove from Favorites", "-",
+                "-", "Rename", "Duplicate", "Move to…", "Add to Favorites", "-",
                 "Open in Terminal", "Show in Finder", "-", "Move to Trash", "Eject", "-", "Reopen Closed Tab",
                 "Close Tab", "Close Window",
             ])
         #expect(
             titles(submenu(main, "Edit")) == [
-                // The files' Undo and Redo, each beside a text field's own.
-                "Undo", "Undo", "Redo", "Redo", "-", "Cut", "Copy", "Paste", "Copy Path", "Select All", "-",
+                "Undo", "Redo", "-", "Cut", "Copy", "Paste", "Copy Path", "Select All", "-",
                 "Show Clipboard", "Clear Clipboard", "-", "Find Files…", "Show Last Search Results",
             ])
         #expect(
             titles(submenu(main, "View")) == [
                 "as Icons", "as List", "as Compact List", "-", "Sort By", "Folders First", "Hidden Files", "Refresh",
-                "-", "Hide Folder Tree", "Show Folder Tree", "Info Panel", "Info Row", "-", "Customize Toolbar…",
+                "-", "Hide Folder Tree", "Info Panel", "Info Row", "-", "Customize Toolbar…",
             ])
         #expect(
             titles(submenu(main, "Go")) == [
@@ -102,7 +101,6 @@ import Testing
             ("File", "Duplicate", "Command+D", .duplicateSelection),
             ("File", "Move to…", "Command+Shift+M", .moveSelection),
             ("File", "Add to Favorites", nil, .toggleFavorite),
-            ("File", "Remove from Favorites", nil, .toggleFavorite),
             ("File", "Open in Terminal", "Command+Alt+T", .openInTerminal),
             ("File", "Show in Finder", nil, .showInFinder),
             ("File", "Move to Trash", "Command+Backspace", .trashSelection),
@@ -149,7 +147,7 @@ import Testing
             let found = item(submenu(built.menu, menu), title)
             #expect(accelerator(found) == key, "\(title)")
             if title != "Close Window" {
-                #expect(found.identifier?.rawValue.hasPrefix(command.rawValue) == true, "\(title)")
+                #expect(found.identifier?.rawValue == command.rawValue, "\(title)")
             }
         }
     }
@@ -210,26 +208,22 @@ import Testing
         #expect(accelerator(item(submenu(built.menu, "Edit"), "Copy")) == "Command+C")
     }
 
-    @Test func hasTheFilesAndATextFieldsUndoAndRedoOfWhichOneShowsAtATime() {
-        let (built, _) = build()
-        let edit = submenu(built.menu, "Edit")
-        let undoItems = edit.items.filter { $0.title.hasPrefix("Undo") }
-
-        #expect(undoItems.map { $0.identifier?.rawValue } == ["undo", "undo:text"])
-        #expect(undoItems.map(\.isHidden) == [false, true])
-        #expect(undoItems.map(accelerator) == ["Command+Z", "Command+Z"])
-        #expect(edit.items.filter { $0.title == "Redo" }.map(accelerator) == ["Command+Shift+Z", "Command+Shift+Z"])
-        #expect(built.itemsByID["undo:text"]?.isHidden == true)
-        #expect(built.itemsByID["redo:text"]?.isHidden == true)
-        #expect(built.itemsByID["toggleFavorite:remove"]?.isHidden == true)
-        #expect(built.itemsByID["toggleFolderTree:show"]?.isHidden == true)
-    }
-
-    @Test func keepsTheFolderTreeKeyOnItsToggles() {
-        let (built, _) = build()
-        let view = submenu(built.menu, "View")
-        #expect(accelerator(item(view, "Hide Folder Tree")) == "Control+Command+S")
-        #expect(accelerator(item(view, "Show Folder Tree")) == "Control+Command+S")
+    // Undo and Redo, Favorites and the folder tree are one item each, whose title the sync sets; none is hidden.
+    @Test func hasOneItemForEachCommandThatSaysTwoThings() {
+        let bindings = ShortcutCommands.resolve(["toggleFavorite": ["Cmd+Shift+B"]]).bindings
+        let (built, _) = build(.init(shortcuts: bindings))
+        let items = flatten(built.menu)
+        for (id, title, key) in [
+            ("undo", "Undo", "Command+Z"), ("redo", "Redo", "Command+Shift+Z"),
+            ("toggleFavorite", "Add to Favorites", "Command+Shift+B"),
+            ("toggleFolderTree", "Hide Folder Tree", "Control+Command+S"),
+        ] {
+            let found = items.filter { $0.identifier?.rawValue.hasPrefix(id) == true }
+            #expect(found.count == 1, "\(id)")
+            #expect(found.first?.title == title)
+            #expect(found.first.flatMap(accelerator) == key, "\(id)")
+        }
+        #expect(!items.contains { $0.isHidden })
     }
 
     @Test func keysOnlyComeFromTheShortcutTable() {

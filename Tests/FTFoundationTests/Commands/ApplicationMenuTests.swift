@@ -15,9 +15,7 @@ struct ApplicationMenuTests {
     }
 
     static func enabledCommands(_ window: Window) -> [RendererCommand] {
-        RendererCommand.allCases.filter {
-            $0 != .toggleFavorite && $0 != .toggleFolderTree && stateOf($0.rawValue, initial, window).enabled == true
-        }
+        RendererCommand.allCases.filter { stateOf($0.rawValue, initial, window).enabled == true }
     }
 
     @Test func withNoExplorerWindowOpenOffersOnlyWhatOpensOneBesidesAnotherWindowsOwn() {
@@ -51,19 +49,10 @@ struct ApplicationMenuTests {
                 == false)
     }
 
-    // A state exists for every command the menu can send.
+    // A state exists for every command the menu can send, and one only.
     @Test func hasAStateForEveryCommand() {
-        let ids = Set(ApplicationMenu.itemStates(Self.initial, window: Self.explorerWindow).map(\.id))
-        for command in RendererCommand.allCases where command != .toggleFavorite && command != .toggleFolderTree {
-            #expect(ids.contains(command.rawValue), "\(command)")
-        }
-        for id in [
-            "undo:text", "redo:text", "toggleFavorite:add", "toggleFavorite:remove", "toggleFolderTree:hide",
-            "toggleFolderTree:show",
-        ] {
-            #expect(ids.contains(id), "\(id)")
-        }
-        #expect(ids.count == RendererCommand.allCases.count - 2 + 6)
+        let ids = ApplicationMenu.itemStates(Self.initial, window: Self.explorerWindow).map(\.id)
+        #expect(ids == RendererCommand.allCases.map(\.rawValue))
     }
 
     @Test func dimsTheCommandsTheWindowSaysCanNotRun() {
@@ -71,8 +60,7 @@ struct ApplicationMenuTests {
         state.disabledCommands = [.renameSelection, .goBack, .toggleFavorite]
         #expect(Self.stateOf("renameSelection", state).enabled == false)
         #expect(Self.stateOf("goBack", state).enabled == false)
-        #expect(Self.stateOf("toggleFavorite:add", state).enabled == false)
-        #expect(Self.stateOf("toggleFavorite:remove", state).enabled == false)
+        #expect(Self.stateOf("toggleFavorite", state).enabled == false)
         #expect(Self.stateOf("goForward", state).enabled == true)
         #expect(Self.stateOf("newTab", state).enabled == true)
     }
@@ -100,19 +88,15 @@ struct ApplicationMenuTests {
     @Test func offersToAddTheFolderToTheFavoritesOrToRemoveItOnceItIsOne() {
         var added = Self.initial
         added.favoriteIsSet = true
-        #expect(Self.stateOf("toggleFavorite:add", Self.initial).visible == true)
-        #expect(Self.stateOf("toggleFavorite:remove", Self.initial).visible == false)
-        #expect(Self.stateOf("toggleFavorite:add", added).visible == false)
-        #expect(Self.stateOf("toggleFavorite:remove", added).visible == true)
+        #expect(Self.stateOf("toggleFavorite", Self.initial).title == "Add to Favorites")
+        #expect(Self.stateOf("toggleFavorite", added).title == "Remove from Favorites")
     }
 
     @Test func offersHideFolderTreeWhileTheTreeIsShownAndShowFolderTreeWhileHidden() {
         var hidden = Self.initial
         hidden.folderTreeOpen = false
-        #expect(Self.stateOf("toggleFolderTree:hide", Self.initial).visible == true)
-        #expect(Self.stateOf("toggleFolderTree:show", Self.initial).visible == false)
-        #expect(Self.stateOf("toggleFolderTree:hide", hidden).visible == false)
-        #expect(Self.stateOf("toggleFolderTree:show", hidden).visible == true)
+        #expect(Self.stateOf("toggleFolderTree", Self.initial).title == "Hide Folder Tree")
+        #expect(Self.stateOf("toggleFolderTree", hidden).title == "Show Folder Tree")
     }
 
     @Test func turnsTheFilesUndoAndRedoOnOnlyWhenThereIsSomethingToDo() {
@@ -135,16 +119,20 @@ struct ApplicationMenuTests {
 
     // The menu items themselves (their accelerators and what they send) are tested elsewhere; this is the state half.
     @Test func showsATextFieldsOwnUndoAndRedoInPlaceOfTheFilesWhileOneIsEdited() {
+        let named = Window(explorerFocused: true, undoLabels: (undo: "Undo Move of “a.txt”", redo: "Redo Rename"))
         var typing = Self.initial
         typing.textEditing = true
-        #expect(Self.stateOf("undo", typing).visible == false)
-        #expect(Self.stateOf("undo:text", typing).visible == true)
-        #expect(Self.stateOf("undo", Self.initial).visible == true)
-        #expect(Self.stateOf("redo:text", Self.initial).visible == false)
+        #expect(Self.stateOf("undo", typing, named).title == "Undo")
+        #expect(Self.stateOf("redo", typing, named).title == "Redo")
+        #expect(Self.stateOf("undo", Self.initial, named).title == "Undo Move of “a.txt”")
+        // Another window has the keyboard: its own too.
+        let settings = Window(explorerFocused: false, undoLabels: (undo: "Undo Move of “a.txt”", redo: "Redo Rename"))
+        #expect(Self.stateOf("undo", Self.initial, settings).title == "Undo")
+        #expect(Self.stateOf("undo", Self.initial, settings).enabled == true)
         // With no window at all there is nothing to undo.
         let none = Window(explorerFocused: false, explorerWindowCount: 0, otherWindowFocused: false)
-        let textUndo = Self.stateOf("undo:text", Self.initial, none)
-        #expect(textUndo.visible == true)
+        let textUndo = Self.stateOf("undo", Self.initial, none)
+        #expect(textUndo.title == "Undo")
         #expect(textUndo.enabled == false)
     }
 
@@ -162,14 +150,13 @@ struct ApplicationMenuTests {
             Self.enabledCommands(settingsFocused) == [
                 .undo, .redo, .editCut, .editCopy, .editPaste, .editSelectAll, .newWindow, .closeTab,
             ])
-        #expect(Self.stateOf("toggleFavorite:add", Self.initial, settingsFocused).enabled == false)
+        #expect(Self.stateOf("toggleFavorite", Self.initial, settingsFocused).enabled == false)
     }
 
     // MARK: Applying the states
 
     final class FakeItem: ApplicationMenu.ItemControl {
         var isEnabled = true
-        var isVisible = true
         var isChecked = false
         var title = ""
 
@@ -192,7 +179,6 @@ struct ApplicationMenuTests {
         #expect(rename.title == "Rename")
         #expect(hidden.title.isEmpty)
         #expect(!rename.isEnabled)
-        #expect(rename.isVisible)
         #expect(!rename.isChecked)
         #expect(hidden.isEnabled)
         #expect(hidden.isChecked)

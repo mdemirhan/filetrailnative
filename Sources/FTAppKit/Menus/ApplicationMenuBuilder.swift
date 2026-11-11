@@ -73,11 +73,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.renameSelection, "Rename"))
             menu.addItem(context.command(.duplicateSelection, "Duplicate"))
             menu.addItem(context.command(.moveSelection, "Move to…"))
-            menu.addItem(
-                context.command(.toggleFavorite, "Add to Favorites", id: ApplicationMenu.favoriteAddItemID))
-            menu.addItem(
-                context.command(
-                    .toggleFavorite, "Remove from Favorites", id: ApplicationMenu.favoriteRemoveItemID, hidden: true))
+            // "Remove from Favorites" while the folder is one.
+            menu.addItem(context.command(.toggleFavorite, "Add to Favorites"))
             menu.addItem(.separator())
             menu.addItem(context.command(.openInTerminal, "Open in Terminal"))
             menu.addItem(context.command(.showInFinder, "Show in Finder"))
@@ -93,13 +90,11 @@ enum ApplicationMenuBuilder {
         }
 
         context.addSubmenu(to: main, title: "Edit") { menu in
-            // The files' Undo and Redo are commands, not the standard actions: the window decides whether a text
-            // field or the files are undone. Each has a text field's own beside it, and one of the two shows at a
-            // time; the hidden one's key does nothing. The files' say what they would do once the menu is synced.
+            // Undo and Redo are commands, not the standard actions: the window decides whether a text field or the
+            // files are undone. Once the menu is synced they say what the files' would do, or plain "Undo" and "Redo"
+            // while a text field or another window has the keyboard.
             menu.addItem(context.command(.undo, "Undo", fixed: .undo))
-            menu.addItem(context.command(.undo, "Undo", id: ApplicationMenu.textUndoItemID, fixed: .undo, hidden: true))
             menu.addItem(context.command(.redo, "Redo", fixed: .redo))
-            menu.addItem(context.command(.redo, "Redo", id: ApplicationMenu.textRedoItemID, fixed: .redo, hidden: true))
             menu.addItem(.separator())
             menu.addItem(context.command(.editCut, "Cut", fixed: .cut))
             menu.addItem(context.command(.editCopy, "Copy", fixed: .copy))
@@ -131,11 +126,8 @@ enum ApplicationMenuBuilder {
             menu.addItem(context.command(.toggleHiddenFiles, "Hidden Files"))
             menu.addItem(context.command(.refreshOrApplySearchSort, "Refresh"))
             menu.addItem(.separator())
-            menu.addItem(
-                context.command(.toggleFolderTree, "Hide Folder Tree", id: ApplicationMenu.folderTreeHideItemID))
-            menu.addItem(
-                context.command(
-                    .toggleFolderTree, "Show Folder Tree", id: ApplicationMenu.folderTreeShowItemID, hidden: true))
+            // "Show Folder Tree" while the tree is hidden.
+            menu.addItem(context.command(.toggleFolderTree, "Hide Folder Tree"))
             menu.addItem(context.command(.toggleInfoPanel, "Info Panel"))
             menu.addItem(context.command(.toggleInfoRow, "Info Row"))
             menu.addItem(.separator())
@@ -228,22 +220,19 @@ enum ApplicationMenuBuilder {
 
         /// A command item. Its id is the command, which is how the states find it.
         func command(
-            _ type: RendererCommand, _ title: String, id: String? = nil, fixed: ShortcutCommandID? = nil,
-            hidden: Bool = false
+            _ type: RendererCommand, _ title: String, fixed: ShortcutCommandID? = nil
         ) -> NSMenuItem {
             let item = NSMenuItem(
                 title: title, action: #selector(MenuCommandRouter.chooseMenuItem(_:)), keyEquivalent: "")
             item.target = target
-            let itemID = id ?? type.rawValue
-            item.identifier = NSUserInterfaceItemIdentifier(itemID)
+            item.identifier = NSUserInterfaceItemIdentifier(type.rawValue)
             // A command the app never rebinds has its default key; the others have the one chosen in Settings.
             if let fixed {
                 apply(fixedKey(fixed), to: item)
             } else if let shortcutID = ShortcutCommandID(rawValue: type.rawValue) {
                 apply(chosenKey(shortcutID), to: item)
             }
-            item.isHidden = hidden
-            register(item, id: itemID)
+            register(item, id: type.rawValue)
             return item
         }
 

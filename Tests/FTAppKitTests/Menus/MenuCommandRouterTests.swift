@@ -125,7 +125,7 @@ import Testing
         var sent = 0
         for found in flatten(built.menu) {
             guard let id = found.identifier?.rawValue,
-                let command = RendererCommand(rawValue: id.split(separator: ":").first.map(String.init) ?? id)
+                let command = RendererCommand(rawValue: id)
             else {
                 continue
             }
@@ -149,8 +149,8 @@ import Testing
         for title in ["Cut", "Copy", "Paste", "Select All"] {
             choose(menuItem(built, "Edit", title), router)
         }
-        choose(built.itemsByID["undo:text"]!, router)
-        choose(built.itemsByID["redo:text"]!, router)
+        choose(menuItem(built, "Edit", "Undo"), router)
+        choose(menuItem(built, "Edit", "Redo"), router)
 
         #expect(
             log.calls == [

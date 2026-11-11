@@ -1421,7 +1421,7 @@ Only merge code proven identical. Where two helpers differ in any case, do not m
   twice); `ContentStateText.loadingDelayMilliseconds` and its twins.
 - Three seeded generators in tests (`Mulberry32`, `SeededRandom`, `RandomGenerator`): leave; not worth the churn.
 
-### [ ] 6.10. The menu bar is updated in place
+### [x] 6.10. The menu bar is updated in place
 
 - `Sources/FTAppKit/Menus/ApplicationMenuSync.swift` (113, 223–232) and `App/MainMenu.swift` rebuild the whole
   main menu and reassign `NSApp.mainMenu` whenever the Undo or Redo wording changes, on the stated ground that a
@@ -2342,3 +2342,13 @@ anything that differed from the plan, and anything found on the way that is not 
   and their do/catch and log lines are gone (the handling around `UndoHistory.finish` stays). Five tests that threw
   from them on purpose went whole: everything else each checked (the write ends completed, the slot is free, the next
   write's id) is checked by the remaining tests, so the rename test was not kept trimmed as first said.
+- 2026-11-11. 6.10, done in a worktree of its own and brought over. The claim held: AppKit flips no checkmark; a test
+  chooses each view mode, sort, Folders First and Hidden Files through the real main menu and checks every related
+  mark, and passed before the re-sync was removed and after. Differs from the plan: `MainMenu.init` takes a
+  `focusedWindow:` (default the key window) so a windowless test can carry out explorer commands; `setUndoHistory`
+  keeps waiting for the current task to end. The hand check was run in the built app by a throwaway scenario instead
+  of by the owner (at the owner's wish): Duplicate, then "Undo Duplicate of “f copy.txt”", Redo and Undo; Move to Trash
+  and its Undo; Add to and Remove from Favorites; ⌃⌘S and Hide/Show Folder Tree in both states; "Edit in TextEdit"
+  after the text editor changed (a rebuild); plain "Undo" undoing typing in the search field. Found, not fixed: the
+  `textEditing:` parameter of `ApplicationMenu.undoLabels` is only ever false; `menuBuilt()` only calls `sync()`; a
+  doc comment names `INITIAL_APPLICATION_MENU_STATE` (Phase 10).

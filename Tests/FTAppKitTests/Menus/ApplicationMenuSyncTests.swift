@@ -147,7 +147,7 @@ import Testing
         #expect(!f.item("trashSelection").isEnabled)
         #expect(!f.item("closeTab").isEnabled)
         #expect(!f.item("renameSelection").isEnabled)
-        #expect(!f.item("undo:text").isEnabled)
+        #expect(!f.item("undo").isEnabled)
         #expect(f.item("newWindow").isEnabled)
         #expect(f.item("goDesktop").isEnabled)
 
@@ -161,16 +161,19 @@ import Testing
     @Test func actsOnTheWindowInFrontOnceSettingsClosesAndLeavesNoWindowFocused() {
         let f = Fixture()
         _ = f.open(1)
+        f.sync.setUndoHistory(UndoHistoryMenu(undo: "Rename"))
+        f.afterTask()
         f.sync.setWindowState(windowID: 1, .initial)
         f.focused = makeOffscreenWindow()
         f.sync.sync()
         #expect(!f.item("trashSelection").isEnabled)
+        #expect(f.item("undo").title == "Undo")
 
         f.focused = nil
         f.sync.sync()
 
         #expect(f.item("trashSelection").isEnabled)
-        #expect(!f.item("undo").isHidden)
+        #expect(f.item("undo").title == "Undo Rename")
     }
 
     // The same items, renamed: the menu is not built again.
@@ -211,17 +214,17 @@ import Testing
         f.focused = f.open(1).window
         f.sync.setUndoHistory(UndoHistoryMenu(undo: "Move of “a.txt”", redo: "Rename"))
         f.afterTask()
-        let items = ["undo", "undo:text", "redo", "redo:text"].map { f.item($0) }
+        let items = ["undo", "redo"].map { f.item($0) }
 
         f.sync.setWindowState(windowID: 1, ApplicationMenuState(textEditing: true))
-        #expect(f.item("undo").isHidden)
-        #expect(!f.item("undo:text").isHidden)
-        #expect(!f.item("redo:text").isHidden)
+        #expect(f.item("undo").title == "Undo")
+        #expect(f.item("redo").title == "Redo")
+        #expect(f.item("undo").isEnabled && f.item("redo").isEnabled)
         f.sync.setWindowState(windowID: 1, .initial)
-        #expect(!f.item("undo").isHidden)
-        #expect(f.item("undo:text").isHidden)
+        #expect(f.item("undo").title == "Undo Move of “a.txt”")
+        #expect(f.item("redo").title == "Redo Rename")
 
-        #expect(["undo", "undo:text", "redo", "redo:text"].map { f.item($0) } == items)
+        #expect(["undo", "redo"].map { f.item($0) } == items)
     }
 
     @Test func usesTheTextFieldsOwnUndoWhileSettingsHasTheKeyboardAndNoExplorerWindowIsOpen() {
@@ -232,9 +235,8 @@ import Testing
 
         f.sync.sync()
 
-        #expect(f.item("undo").isHidden)
-        #expect(!f.item("undo:text").isHidden)
-        #expect(f.item("undo:text").isEnabled)
+        #expect(f.item("undo").title == "Undo")
+        #expect(f.item("undo").isEnabled)
         #expect(f.item("newWindow").isEnabled)
     }
 
@@ -250,11 +252,10 @@ import Testing
         f.focused = nil
         f.sync.windowsChanged()
 
-        #expect(f.item("undo").isHidden)
-        #expect(!f.item("undo:text").isHidden)
-        #expect(!f.item("undo:text").isEnabled)
-        #expect(!f.item("redo:text").isHidden)
-        #expect(!f.item("redo:text").isEnabled)
+        #expect(f.item("undo").title == "Undo")
+        #expect(!f.item("undo").isEnabled)
+        #expect(f.item("redo").title == "Redo")
+        #expect(!f.item("redo").isEnabled)
     }
 
     @Test func letsGoOfAClosedWindowsState() {
@@ -296,10 +297,21 @@ import Testing
         #expect(f.item("sortBySize").state == .on)
         #expect(f.item("sortByName").state == .off)
         #expect(f.item("toggleFoldersFirst").state == .on)
-        // One of each pair shows.
-        #expect(!f.item("toggleFavorite:add").isHidden)
-        #expect(f.item("toggleFavorite:remove").isHidden)
-        #expect(!f.item("toggleFolderTree:hide").isHidden)
-        #expect(f.item("toggleFolderTree:show").isHidden)
+    }
+
+    // Favorites and the folder tree each have one item, named for what it would do.
+    @Test func namesTheFavoritesAndFolderTreeItemsForWhatTheyWouldDo() {
+        let f = Fixture()
+        f.focused = f.open(1).window
+        let favorite = f.item("toggleFavorite")
+        let tree = f.item("toggleFolderTree")
+        f.sync.setWindowState(windowID: 1, .initial)
+        #expect(favorite.title == "Add to Favorites")
+        #expect(tree.title == "Hide Folder Tree")
+        f.sync.setWindowState(windowID: 1, ApplicationMenuState(folderTreeOpen: false, favoriteIsSet: true))
+        #expect(favorite.title == "Remove from Favorites")
+        #expect(tree.title == "Show Folder Tree")
+        #expect(f.item("toggleFavorite") === favorite && f.item("toggleFolderTree") === tree)
+        #expect(!favorite.isHidden && !tree.isHidden)
     }
 }

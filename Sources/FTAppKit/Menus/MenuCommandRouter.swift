@@ -78,9 +78,7 @@ final class MenuCommandRouter: NSObject, NSMenuItemValidation {
         case ApplicationMenuBuilder.settingsItemID:
             if let onOpenSettings { onOpenSettings() } else { send(.openSettings, focusedWindow: focusedWindow()) }
         default:
-            // Two items share a command: "toggleFavorite:add" and "undo:text" send the command before the colon.
-            let name = itemID.split(separator: ":", maxSplits: 1).first.map(String.init) ?? itemID
-            guard let command = RendererCommand(rawValue: name) else { return }
+            guard let command = RendererCommand(rawValue: itemID) else { return }
             send(command, focusedWindow: focusedWindow())
         }
     }

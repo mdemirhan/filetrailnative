@@ -73,11 +73,6 @@ final class MenuItemIndex {
             }
         }
 
-        var isVisible: Bool {
-            get { MainActor.assumeIsolated { !item.isHidden } }
-            set { MainActor.assumeIsolated { item.isHidden = !newValue } }
-        }
-
         var isChecked: Bool {
             get { MainActor.assumeIsolated { item.state == .on } }
             set { MainActor.assumeIsolated { item.state = newValue ? .on : .off } }
@@ -194,7 +189,7 @@ final class ApplicationMenuSync {
         return ExplorerCommandTarget(handle: front, focused: focusedWindow == nil)
     }
 
-    /// Dims, checks, shows and names the menu's items for the state the explorer window the menu acts on last reported,
+    /// Dims, checks and names the menu's items for the state the explorer window the menu acts on last reported,
     /// and for what Undo and Redo would do.
     func sync() {
         guard let menu = dependencies.menu() else { return }

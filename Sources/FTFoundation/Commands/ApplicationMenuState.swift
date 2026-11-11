@@ -60,33 +60,18 @@ public struct ApplicationMenuItemState: Equatable, Sendable {
     public var id: String
     public var enabled: Bool?
     public var checked: Bool?
-    public var visible: Bool?
     public var title: String?
 
-    public init(
-        id: String, enabled: Bool? = nil, checked: Bool? = nil, visible: Bool? = nil, title: String? = nil
-    ) {
+    public init(id: String, enabled: Bool? = nil, checked: Bool? = nil, title: String? = nil) {
         self.id = id
         self.enabled = enabled
         self.checked = checked
-        self.visible = visible
         self.title = title
     }
 }
 
-/// The menu's enable, check and visibility rules.
+/// The menu's enable, check and title rules.
 public enum ApplicationMenu {
-    /// Add to Favorites and Remove from Favorites are two items; one shows at a time.
-    public static let favoriteAddItemID = "toggleFavorite:add"
-    public static let favoriteRemoveItemID = "toggleFavorite:remove"
-    /// Hide Folder Tree and Show Folder Tree too.
-    public static let folderTreeHideItemID = "toggleFolderTree:hide"
-    public static let folderTreeShowItemID = "toggleFolderTree:show"
-    /// Undo and Redo are two items each: the files', and a text field's own (plain "Undo" and "Redo", sending the same
-    /// command), shown while a text field or another window has the keyboard.
-    public static let textUndoItemID = "undo:text"
-    public static let textRedoItemID = "redo:text"
-
     /// The commands that still do something while a window other than an explorer window (Settings) has the keyboard:
     /// the edit commands act on its text field, ⌘W closes it, and New Window opens one beside the explorer window in
     /// front.
@@ -161,7 +146,13 @@ public enum ApplicationMenu {
     /// reported.
     public static func itemStates(_ state: ApplicationMenuState, window: WindowFacts) -> [ApplicationMenuItemState] {
         let disabled = Set(state.disabledCommands)
+        // While a text field (or another window) has the keyboard, Undo and Redo are its own: plainly named, and on
+        // whenever there is a window to send them to.
+        let textUndo = state.textEditing || !window.explorerFocused
         func isEnabled(_ type: RendererCommand) -> Bool {
+            if type == .undo || type == .redo, textUndo {
+                return window.explorerFocused || window.otherWindowFocused != false
+            }
             if !window.explorerFocused {
                 if window.explorerWindowCount == 0 || window.otherWindowFocused == false,
                     commandsWithoutExplorerWindow.contains(type)
@@ -176,8 +167,8 @@ public enum ApplicationMenu {
             if type == .mergeAllWindows {
                 return (window.explorerWindowCount ?? 1) > 1
             }
-            // A text field's own Undo is always there; the files' only when there is one.
-            if type == .undo || type == .redo, !state.textEditing {
+            // The files' Undo and Redo only when there is one.
+            if type == .undo || type == .redo {
                 let available = window.undoAvailable
                 return (type == .undo ? available?.undo : available?.redo) ?? true
             }
@@ -200,29 +191,19 @@ public enum ApplicationMenu {
             }
         }
 
-        var items = RendererCommand.allCases.filter { $0 != .toggleFavorite && $0 != .toggleFolderTree }
-            .map { ApplicationMenuItemState(id: $0.rawValue, enabled: isEnabled($0), checked: checked($0)) }
-        // A text field's own Undo and Redo while one (or another window) has the keyboard; the files' otherwise.
-        let textUndo = state.textEditing || !window.explorerFocused
-        for index in items.indices where items[index].id == "undo" || items[index].id == "redo" {
-            items[index].visible = !textUndo
-            items[index].title =
-                items[index].id == "undo" ? window.undoLabels?.undo ?? "Undo" : window.undoLabels?.redo ?? "Redo"
+        func title(_ type: RendererCommand) -> String? {
+            switch type {
+            case .undo: textUndo ? "Undo" : window.undoLabels?.undo ?? "Undo"
+            case .redo: textUndo ? "Redo" : window.undoLabels?.redo ?? "Redo"
+            case .toggleFavorite: state.favoriteIsSet ? "Remove from Favorites" : "Add to Favorites"
+            case .toggleFolderTree: state.folderTreeOpen ? "Hide Folder Tree" : "Show Folder Tree"
+            default: nil
+            }
         }
-        let textUndoEnabled = window.explorerFocused || window.otherWindowFocused != false
-        items.append(contentsOf: [
-            ApplicationMenuItemState(id: textUndoItemID, enabled: textUndoEnabled, visible: textUndo),
-            ApplicationMenuItemState(id: textRedoItemID, enabled: textUndoEnabled, visible: textUndo),
-            ApplicationMenuItemState(
-                id: favoriteAddItemID, enabled: isEnabled(.toggleFavorite), visible: !state.favoriteIsSet),
-            ApplicationMenuItemState(
-                id: favoriteRemoveItemID, enabled: isEnabled(.toggleFavorite), visible: state.favoriteIsSet),
-            ApplicationMenuItemState(
-                id: folderTreeHideItemID, enabled: isEnabled(.toggleFolderTree), visible: state.folderTreeOpen),
-            ApplicationMenuItemState(
-                id: folderTreeShowItemID, enabled: isEnabled(.toggleFolderTree), visible: !state.folderTreeOpen),
-        ])
-        return items
+
+        return RendererCommand.allCases.map {
+            ApplicationMenuItemState(id: $0.rawValue, enabled: isEnabled($0), checked: checked($0), title: title($0))
+        }
     }
 
     // MARK: Applying the states
@@ -230,7 +211,6 @@ public enum ApplicationMenu {
     /// What `apply` needs of a menu item.
     public protocol ItemControl: AnyObject {
         var isEnabled: Bool { get set }
-        var isVisible: Bool { get set }
         var isChecked: Bool { get set }
         var title: String { get set }
     }
@@ -241,9 +221,6 @@ public enum ApplicationMenu {
             guard let control = item(state.id) else { continue }
             if let enabled = state.enabled, control.isEnabled != enabled {
                 control.isEnabled = enabled
-            }
-            if let visible = state.visible, control.isVisible != visible {
-                control.isVisible = visible
             }
             if let checked = state.checked, control.isChecked != checked {
                 control.isChecked = checked
