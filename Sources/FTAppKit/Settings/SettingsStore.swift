@@ -54,13 +54,15 @@ final class SettingsStore {
         self.shared = shared
     }
 
-    /// An edit made here: the app's preferences change, and the views follow.
+    /// An edit made here: the app's preferences change, and the views follow. The edit runs on this copy, to see
+    /// whether it changes anything, and again on the app's; what is shown is the app's, as an edit that makes something
+    /// new each time it runs (a pinned app's id) leaves the two copies different.
     func update(_ change: (inout AppPreferences) -> Void) {
         var next = preferences
         change(&next)
         guard next != preferences else { return }
-        preferences = next
         shared.update(change)
+        preferences = shared.read() ?? next
         onChange()
     }
 

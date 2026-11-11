@@ -2407,3 +2407,14 @@ anything that differed from the plan, and anything found on the way that is not 
   fixed: `ExplorerTabs.volumeRootPath`, a fourth exact copy a test calls; `OpenItems.limitMessage` and
   `ActionNoticeText.openItemLimit` write the same sentence from different inputs; `JSString.trimmed` matches the
   merged trim across modules.
+- 2026-11-11. The Phase 6 review found nothing serious; one point in 6.5 was fixed: Settings ran each edit on its own
+  copy and again on the app's, so an edit that makes a new pinned app's id left the two copies with different ids
+  until the next reload. Settings now shows the app's copy after each edit, with a test.
+- 2026-11-11. The owner's answers, asked at the start of Phase 7 for every later phase: Q11 yes, the startup disk
+  shows its real name; Q12 one order everywhere, in the user's language, numeric; Q13 yes, one list of 37 package
+  extensions; Q14 yes, match both stored forms in the list filter, type-select and place ranking; Q15 yes, File ▸
+  Remove from Favorites is offered for Trash too; Q16 rename the five plainly leftover identifiers only; Q17 keep the
+  Trash workaround diff and name the commit it applies to; Q18 fix `tools/bench/run.sh` and record the baseline
+  again. Yes to the `CLAUDE.md` edits in 11.1 and 11.3. The owner checks nothing by hand unless asked: each
+  visible change in Phases 8 and 9 is checked in the built app by the one doing the work, and Phase 9 still shows
+  the owner before and after pictures of each control change before it is committed.
