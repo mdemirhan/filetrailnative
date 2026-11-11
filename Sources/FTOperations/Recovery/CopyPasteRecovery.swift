@@ -186,7 +186,7 @@ private func foldersReadFor(_ entry: ReplaceJournalEntry) -> [String] {
 }
 
 /// Whether looking up each of `paths` comes back within `ms`, all looked up at once.
-private func allAnswerWithin(_ fileSystem: some WriteServiceFileSystem, _ paths: [String], _ ms: Int) -> Bool {
+func allAnswerWithin(_ fileSystem: some WriteServiceFileSystem, _ paths: [String], _ ms: Int) -> Bool {
     let deadline = DispatchTime.now() + .milliseconds(ms)
     let lookups = paths.map { lookUp(fileSystem, $0) }
     return lookups.allSatisfy { $0.wait(timeout: deadline) == .success }

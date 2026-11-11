@@ -111,18 +111,7 @@ private func putBackRenamedItems(
         let folders = entry.items.map { dirnameOf($0.temporaryPath) }.filter {
             seen.insert(NameKeys.Exact($0)).inserted
         }
-        let deadline = DispatchTime.now() + .milliseconds(ms)
-        let lookups = folders.map { folder in
-            let answered = DispatchSemaphore(value: 0)
-            let thread = Thread {
-                _ = try? fileSystem.lstat(folder)
-                answered.signal()
-            }
-            thread.name = "FileTrail disk lookup"
-            thread.start()
-            return answered
-        }
-        if !lookups.allSatisfy({ $0.wait(timeout: deadline) == .success }) {
+        if !allAnswerWithin(fileSystem, folders, ms) {
             return
         }
     }
